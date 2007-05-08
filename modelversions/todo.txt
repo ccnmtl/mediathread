@@ -1,7 +1,1 @@
-Need to work around the foreign key constraint in the Versions Models so that objects can be deleted but still have 
-their records persist in the shadow table.
-
-Removing the foreign key would work, but would also remove the versions attribute from the model.
-
-Best option may be to remove the foreign key, and manually set 'versions' to be a model manager for VersionModels
-that automatically adds the current object as a constraint.
+TEST!!!

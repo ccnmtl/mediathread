@@ -1,4 +1,6 @@
 """
+For questions or coments, please contact Robin Percy, rpercy at gmail dot com
+
 modelversions provides a framework for maintaining a complete change history for specific models. 
 To use it, require this module in your models.py and then issue a call to version_model(YourModelClass):
     eg. BookVersion = version_model(Book)

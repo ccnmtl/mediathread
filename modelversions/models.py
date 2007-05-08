@@ -1,4 +1,5 @@
 """
+#For questions or coments, please contact Robin Percy, rpercy at gmail dot com
 # Start doctests
 
 # Create instances

@@ -72,6 +72,29 @@ DELETED
 >>> res.name
 'foo'
 
+
+# FK constraints should not be copied to versions.  So they should work normally
+>>> p = TestParent(name='parent')
+>>> c = TestChild(name='child')
+
+>>> p.save()
+>>> c.parent=p
+>>> c.save()
+>>> c.parent.name
+'parent'
+>>> p2 = TestParent(name='new_parent')
+>>> p2.save()
+>>> c.parent = p2
+>>> c.save()
+>>> c.parent.name
+'new_parent'
+>>> c.revert()
+True
+>>> c.parent.name
+'parent'
+
+
+
 """
 from django.db import models
 from djangotest.modelversions import version_model
@@ -86,3 +109,12 @@ class ModelTwo(models.Model):
     name = models.CharField(maxlength=25)
     num = models.IntegerField()
 ModelTwoVersion = version_model(ModelTwo)
+
+class TestParent(models.Model):
+    name = models.CharField(maxlength=25)
+TestParentVersion = version_model(TestParent)
+
+class TestChild(models.Model):
+    name = models.CharField(maxlength=25)
+    parent = models.ForeignKey(TestParent)
+TestChildVersion = version_model(TestChild)

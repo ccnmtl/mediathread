@@ -17,8 +17,8 @@ reverting.
 from django.db import models as m # need to rename models or django doesn't recognize app
 from django.dispatch import dispatcher
 from django.db.models import signals
+from django.db.models.fields.related import RelatedField
 from django.core.exceptions import ObjectDoesNotExist
-
 def version_model(model):
     """
     Based on the passed model, build a second model to store versioning information.
@@ -31,7 +31,7 @@ def version_model(model):
             
     def record_change(instance,change_type):
         version_instance = _version_from_instance(instance,version_model)
-        version_instance.change_type = change_type      
+        version_instance.change_type = change_type  
         version_instance.save()    
 
     def record_save(sender,instance,signal, *args, **kwargs):
@@ -64,7 +64,7 @@ def undelete(model, id):
     try:      
         version = model.version_model.objects.filter(versioned_id=id).order_by('-version_number')[0]
         instance = model()
-        _copy_field_vals(version,instance)
+        _copy_instance_vals(version,instance)
         return instance
     except ObjectDoesNotExist,KeyError:
         return None
@@ -77,6 +77,25 @@ def _get_fields(model):
     """
     return dict([ (field.name,field) for field in model._meta.fields if field.name != model._meta.pk.attname])
 
+def _make_fields_versionable(fields):
+    """
+    Takes a dict of name:field pairs and converts foreign relations to
+    versionable fields.
+    """
+    versionable_fields = {}
+    for name in fields.keys():
+        if isinstance(fields[name],m.ForeignKey):
+            # Instead of copying the FK, copy the attribute storing it's PK
+            rel_pk = fields[name].rel.to._meta.pk
+            if(isinstance(rel_pk,m.AutoField)):                
+                # Don't want to auto increment the key, so convert to regular int
+                versionable_fields[name] = m.IntegerField()
+            else:
+                # Respect custom PKs
+                versionable_fields[name] = rel_pk
+        else:
+            versionable_fields[name] = fields[name]
+    return versionable_fields
 
 def _build_version_model(model):
     """
@@ -85,7 +104,8 @@ def _build_version_model(model):
     class Meta:        
         pass
         
-    version_attrs = _get_fields(model)   
+    version_attrs = _make_fields_versionable(_get_fields(model))
+    
     version_attrs.update({'__module__': model.__module__,
                       'Meta':Meta,
                       'versioned_id': m.IntegerField(),
@@ -155,19 +175,25 @@ def _decorate_model(model,version_model):
             version_instance = self.versions.get(version_number__exact=target_version)
         
         # Copy attribtues from version instance to object
-        _copy_field_vals(version_instance,self)
+        _rebuild_from_version(version_instance,self)
         return True       
     setattr(model,'revert',revert)
     
 
-def _copy_field_vals(source_instance,target_instance):    
+def _copy_instance_vals(source_instance,target_instance):    
     """
     Copies all non-pk field values from source to target
     by checking which fields from source are also in target
     """
-    for attr in source_instance.__dict__.keys():
+    for attr in _get_fields(source_instance).keys():
         if attr in _get_fields(target_instance.__class__).keys():
-            setattr(target_instance,attr,source_instance.__dict__[attr])
+            if isinstance(source_instance._meta.get_field(attr),m.ForeignKey):
+                # Just copy the value of the PK pointed to by the FK
+                pk_attr = source_instance._meta.get_field(attr).get_attname()
+                value = getattr(source_instance,pk_attr)
+            else: 
+                value = source_instance.__dict__[attr]
+            setattr(target_instance,attr,value)
             
 
 def _version_from_instance(model_instance,version_model):
@@ -176,7 +202,34 @@ def _version_from_instance(model_instance,version_model):
     by copying over shared field values and setting the relation
     """
     version_instance = version_model()    
-    _copy_field_vals(model_instance,version_instance)    
+    _copy_instance_vals(model_instance,version_instance)    
     version_instance.version_number = model_instance.get_latest_version() + 1    
     version_instance.versioned_id = model_instance.id
     return version_instance
+
+def _rebuild_from_version(version_instance,model_instance):
+    """
+    Populates the fields of a model instance based on versioned data. 
+    Need to be carefull of fields that are an FK in the model since only
+    the pk of the related object will have been versioned.
+    
+    For relation fields, we need to consider the possibility that the related object
+    has been deleted and is not availabel, in that case set the relation to None
+    """
+    # Loop through the model's fields
+    for field in _get_fields(model_instance).values():
+        if field.name not in _get_fields(version_instance).keys():
+            continue
+        
+        if isinstance(field,m.ForeignKey):
+            # The field is a Relation, get the pk value from the versioned data and 
+            # try to get the related object, 
+            rel_pk = getattr(version_instance,field.name)
+            related_type = model_instance._meta.get_field(field.name).rel.to
+            try:
+                value = related_type.objects.get(pk=rel_pk)
+            except ObjectDoesNotExist:
+                value = None            
+            setattr(model_instance,field.name,value)
+        else:
+            setattr(model_instance,field.name,getattr(version_instance,field.name))        

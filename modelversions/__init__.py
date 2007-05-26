@@ -203,7 +203,7 @@ def _copy_instance_vals(source_instance,target_instance):
                 pk_attr = source_instance._meta.get_field(attr).get_attname()
                 value = getattr(source_instance,pk_attr)
             else: 
-                value = source_instance.__dict__[attr]
+                value = source_instance._meta.get_field(attr).value_from_object(source_instance)
             setattr(target_instance,attr,value)
             
 

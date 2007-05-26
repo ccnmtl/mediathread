@@ -12,6 +12,7 @@ Called __getattr__
 # Versions should be created on each save
 >>> m_one_1.save()
 >>> m_one_1.name='foo2'
+>>> m_one_1.tag = "a b c"
 >>> m_one_1.save()
 >>> m_one_1.versions.count()
 2
@@ -30,10 +31,14 @@ Called __getattr__
 # By default, reverts back 1
 >>> m_one_1.name
 'foo2'
+>>> m_one_1.tag
+'a b c'
 >>> m_one_1.revert()
 True
 >>> m_one_1.name
 'foo'
+>>> m_one_1.tag
+''
 
 # Can specify version to revert to
 >>> m_two_1.name
@@ -120,11 +125,13 @@ True
 """
 from django.db import models
 from djangotest.modelversions import version_model
+from tagging.fields import TagField
 
 # Dummy models to test versioning
 class ModelOne(models.Model):
     name = models.CharField(maxlength=25)
     time = models.DateTimeField(auto_now_add=True)
+    tag = TagField()
     
     def __getattr__(self,name):
         if name == 'testattr':

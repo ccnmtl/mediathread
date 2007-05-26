@@ -6,6 +6,8 @@
 >>> m_one_1 = ModelOne(name='foo')
 >>> m_one_2 = ModelOne(name='bar')
 >>> m_two_1 = ModelTwo(name='franz',num=11)
+>>> print m_one_1.testattr
+Called __getattr__
 
 # Versions should be created on each save
 >>> m_one_1.save()
@@ -93,7 +95,27 @@ True
 >>> c.parent.name
 'parent'
 
-
+#Test Many To Many Field
+>>> many = ManyTest(name='manytest')
+>>> many.save()
+>>> many.subs.count()
+0L
+>>> m1 = ModelOne(name='one')
+>>> m1.save()
+>>> m2 = ModelOne(name='two')
+>>> m2.save()
+>>> m3 = ModelOne(name='three')
+>>> m3.save()
+>>> many.subs.add(m1)
+>>> many.subs.add(m2)
+>>> many.subs.add(m3)
+>>> many.save()
+>>> many.subs.count()
+3L
+>>> many.revert()
+True
+>>> many.subs.count()
+3L
 
 """
 from django.db import models
@@ -103,6 +125,12 @@ from djangotest.modelversions import version_model
 class ModelOne(models.Model):
     name = models.CharField(maxlength=25)
     time = models.DateTimeField(auto_now_add=True)
+    
+    def __getattr__(self,name):
+        if name == 'testattr':
+            return "Called __getattr__"
+        else: raise AttributeError, name
+        
 ModelOneVersion = version_model(ModelOne)
 
 class ModelTwo(models.Model):
@@ -118,3 +146,8 @@ class TestChild(models.Model):
     name = models.CharField(maxlength=25)
     parent = models.ForeignKey(TestParent)
 TestChildVersion = version_model(TestChild)
+
+class ManyTest(models.Model):
+    name = models.CharField(maxlength=25)
+    subs = models.ManyToManyField(ModelOne)
+ManyTestVersion = version_model(ManyTest)

@@ -65,6 +65,7 @@ def undelete(model, id):
         version = model.version_model.objects.filter(versioned_id=id).order_by('-version_number')[0]
         instance = model()
         _copy_instance_vals(version,instance)
+        instance.id = id
         return instance
     except ObjectDoesNotExist,KeyError:
         return None
@@ -84,7 +85,7 @@ def _make_fields_versionable(fields):
     """
     versionable_fields = {}
     for name in fields.keys():
-        if isinstance(fields[name],m.ForeignKey):
+        if isinstance(fields[name],RelatedField):
             # Instead of copying the FK, copy the attribute storing it's PK
             rel_pk = fields[name].rel.to._meta.pk
             if(isinstance(rel_pk,m.AutoField)):                
@@ -126,11 +127,21 @@ def _decorate_model(model,version_model):
     # manager, but seems more complicated since the instance id is required.  A regular
     # FK could not be used since it places constraints preventing deleting the versioned object
     
-    assert '__getattr__' not in model.__dict__.keys()    
+#    assert 'versions' not in model.__dict__.keys()
+    # Add to the model's __getattr__ function so that versinos are handled properly
+    try:
+        old_getattr = model.__getattr__
+    except AttributeError:
+        old_getattr = None
+    
     def _getattr(self, name):
         if name == 'versions':
             return version_model.objects.filter(versioned_id=self.id)
-        else:  raise AttributeError, name    
+        else:
+            if old_getattr <> None:
+                return old_getattr(self,name)
+            else: raise AttributeError, name
+                 
     model.__getattr__ = _getattr
     
     assert 'get_latest_version' not in model.__dict__.keys()
@@ -187,7 +198,7 @@ def _copy_instance_vals(source_instance,target_instance):
     """
     for attr in _get_fields(source_instance).keys():
         if attr in _get_fields(target_instance.__class__).keys():
-            if isinstance(source_instance._meta.get_field(attr),m.ForeignKey):
+            if isinstance(source_instance._meta.get_field(attr),RelatedField):
                 # Just copy the value of the PK pointed to by the FK
                 pk_attr = source_instance._meta.get_field(attr).get_attname()
                 value = getattr(source_instance,pk_attr)
@@ -221,7 +232,7 @@ def _rebuild_from_version(version_instance,model_instance):
         if field.name not in _get_fields(version_instance).keys():
             continue
         
-        if isinstance(field,m.ForeignKey):
+        if isinstance(field,RelatedField):
             # The field is a Relation, get the pk value from the versioned data and 
             # try to get the related object, 
             rel_pk = getattr(version_instance,field.name)

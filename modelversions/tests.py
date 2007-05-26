@@ -38,7 +38,7 @@ True
 >>> m_one_1.name
 'foo'
 >>> m_one_1.tag
-''
+'123'
 
 # Can specify version to revert to
 >>> m_two_1.name

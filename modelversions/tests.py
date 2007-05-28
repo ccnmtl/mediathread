@@ -124,7 +124,7 @@ True
 
 """
 from django.db import models
-from djangotest.modelversions import version_model
+from modelversions import version_model
 from tagging.fields import TagField
 
 # Dummy models to test versioning

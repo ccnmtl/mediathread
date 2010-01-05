@@ -1,0 +1,3 @@
+go ${base_url}/admin/djangosherd/sherdnote/${pk}/delete/
+submit
+find "was deleted successfully."

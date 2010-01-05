@@ -1,0 +1,5 @@
+go ${base_url}/admin/auth/user/
+follow ${user}
+fv user_form id_groups ${course}
+submit
+find "The user &quot;${user}&quot; was changed successfully."

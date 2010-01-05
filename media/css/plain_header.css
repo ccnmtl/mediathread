@@ -1,0 +1,29 @@
+#header #logo_project
+{
+	display: block;
+	float: left;
+	width: 650px;
+	height: auto;
+	overflow: hidden;
+	margin: 30px 0 0 10px;
+	padding: 0 0 10px 0;
+	border: 0;
+	font-size: 32px;
+	line-height: 1;
+}
+
+#header #logo_project a
+{
+	display: inline;
+	margin: 20px 0 0 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: #000;
+	text-decoration: none;
+}
+
+#header #logo_project span
+{
+	display: inline;
+}

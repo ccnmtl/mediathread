@@ -1,0 +1,3 @@
+go ${base_url}/admin/projects/project/${pk}/delete/
+submit
+find "was deleted successfully."

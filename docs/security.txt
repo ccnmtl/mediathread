@@ -1,0 +1,133 @@
+/  (the class portal)
+=====================
+ * Methods: GET
+ * Access: authenticated
+ * Links to: /asset/$ASSETID/
+             /asset/?tag=$TAGNAME
+             /yourspace/
+
+
+/save/
+======
+ * Methods: GET, POST
+ * Access: authenticated
+ * GET with no parameters displays form
+ * GET with parameters displays confirmation form 
+                       or redirects to existing asset record
+ * POST redirects to new asset record
+
+
+
+
+/yourspace/
+===========
+ * Methods: GET
+ * Access: authenticated
+ * Currently just a stub that lists all users.
+
+
+/yourspace/$USERNAME/
+=====================
+ * Methods: GET
+ * Redirects to /yourspace/$USERNAME/asset
+
+
+/yourspace/$USERNAME/asset/
+===========================
+ * Methods: GET
+ * Access: authenticated, [[space owner]]
+ * Links to: /asset/$ASSETID/ (view, [[edit tags]], [[edit notes]])
+             [[ /yourspace/$USERNAME/asset/$ASSETID/ (remove from my space) ]]
+             [[ /asset/$ASSETID/annotations/$ANNOTID/ (edit clip) ]]
+             [[ /asset/$ASSETID/annotations/$ANNOTID/?delete (delete clip) ]]
+
+
+/yourspace/$USERNAME/asset/$ASSETID/?delete
+===========================================
+ * Methods: GET, POST
+ * Access: space owner
+ * POST redirects to /yourspace/$USERNAME/
+ * POST removes saved record, GET displays a confirmation form
+
+
+/yourspace/$USERNAME/project/
+=============================
+ * Methods: GET, POST
+ * Access: space owner
+ * POST redirects to /yourspace/$USERNAME/project/$PROJECT/
+ * GET links to: /yourspace/$USERNAME/project/$PROJECT/ (one for each project)
+                 /yourspace/$USERNAME/project/$PROJECT/?delete (for each project)
+
+
+/yourspace/$USERNAME/project/$PROJECT/
+======================================
+ * Methods: GET, POST
+ * Access: space owner
+ * GET displays edit form
+ * POST saves project data, redirects to GET
+ * POST removes saved record, GET displays a confirmation form
+
+
+/yourspace/$USERNAME/project/$PROJECT/?delete
+=============================================
+ * Methods: GET, POST
+ * Access: space owner
+ * POST redirects to /yourspace/$USERNAME/project/
+ * POST removes saved record, GET displays a confirmation form
+
+
+
+
+/asset/
+=======
+ * Methods: GET
+ * Access: authenticated
+ * Links to: /asset/?tag=$TAGNAME (filtered view of same template)
+             /asset/$ASSETID/
+
+
+/asset/$ASSETID/
+================
+ * Methods: GET
+ * Access: authenticated
+ * Links to: various asset source urls (user contributed)
+             /yourspace/$USERNAME/asset/?tag=$TAGNAME/ (for each tag you have)
+             /asset/$ASSETID/annotations/$ANNOTID/ (for each annotation on the asset)
+ * Forms POST to: /asset/$ASSETID/annotations/ (to create a new clip)
+                  /asset/$ASSETID/annotations/$ANNOTID/ (to modify tags or notes globally on the asset)
+                  /comments/post/
+
+
+/asset/$ASSETID/annotations/
+============================
+ * Methods: POST
+ * Access: authenticated
+ * POST redirects to /asset/$ASSETID/
+
+
+/asset/$ASSETID/annotations/$ANNOTID/
+=====================================
+ * Methods: GET, POST
+ * Access: annotation author
+ * Links to: various asset source urls (user contributed)
+             /yourspace/$USERNAME/asset/?tag=$TAGNAME/ (for each tag you have)
+             /asset/$ASSETID/annotations/$ANNOTID/ (for each annotation on the asset)
+ * Forms POST to: /asset/$ASSETID/annotations/$ANNOTID/ (to modify tags or notes globally on the asset)
+                  /asset/$ASSETID/annotations/$ANNOTID/ (to modify the current annotation)
+                  /comments/post/
+ * POST redirects back to same view
+
+
+/asset/$ASSETID/annotations/$GLOBALANNOTID/
+===========================================
+ * Special case of /asset/$ASSETID/annotations/$ANNOTID/
+ * GET redirects to /asset/$ASSETID/
+
+
+/asset/$ASSETID/annotations/$ANNOTID/?delete
+============================================
+ * Methods: GET, POST
+ * Access: annotation author
+ * POST removes annotation, GET displays confirmation form
+ * POST redirects to /asset/$ASSETID/
+

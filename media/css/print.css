@@ -1,0 +1,213 @@
+body
+{
+	min-width: 1px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background-color: #fff;
+	font-family: arial, helvetica, verdana, sans-serif;
+	color: #000;
+}
+
+/* ########## Standard elements ########## */
+
+h1, h2, h3, h4, h5, h6
+{
+	margin: 0 0 0.7em 0;
+	padding: 0;
+	border: 0;
+	font-family: 'trebuchet ms', verdana, sans-serif;
+	font-weight: bold;
+}
+
+h1
+{
+	margin: 0 0 0.7em 0;
+	font-size: 180%;
+	font-weight: normal;
+}
+
+h2
+{
+	margin: 1.6em 0 0.7em 0;
+	font-size: 160%;
+}
+
+h3
+{
+	margin: 1.4em 0 0.7em 0;
+	font-size: 140%;
+}
+
+h4
+{
+	margin: 1.2em 0 0.7em 0;
+	font-size: 140%;
+	font-style: italic;
+}
+
+h5
+{
+	margin: 1em 0 0.7em 0;
+	font-size: 120%;
+}
+
+h6
+{
+	margin: 1em 0 0.7em 0;
+	font-size: 110%;
+}
+
+p
+{
+	display: block;
+	margin: 0 0 0.7em 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+}
+
+blockquote
+{
+	display: block;
+	margin: 0 4em 0.7em 4em;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+}
+
+table
+{
+	margin: 0 0 0.7em 0;
+	padding: 0;
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	font-size: 100%;
+}
+
+th
+{
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+td
+{
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}
+
+ol, ul
+{
+	display: block;
+	margin: 0 4em 0.7em 4em;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+}
+
+/*
+li
+{
+}
+*/
+
+a
+{
+	color: #06c;
+}
+
+a:hover
+{
+	color: #69c;
+}
+
+a:visited
+{
+	color: #900;
+}
+
+img, img a
+{
+	border: 0;
+}
+
+/* ########## Blocks style definitions ########## */
+
+#primarynav,
+#sidebar_left,
+#sidebar_right,
+#standardnav
+{
+	display: none !important;
+}
+
+/* ---- Header block elements ---------- */
+#header
+{
+	display: block;
+	width: 100%;
+	min-width: 1px;
+	height: 100px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #fffbc7 url('../img/bg_header.jpg') left top no-repeat;
+}
+
+#header #logo_project
+{
+	display: block;
+	float: left;
+	width: 430px;
+	height: 90px;
+	overflow: hidden;
+	margin: 5px 0 0 0;
+	padding: 0;
+	border: 0;
+}
+
+#header #logo_project a
+{
+	display: block;
+	width: 430px;
+	height: 90px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent url('../img/logo_project.png') left center no-repeat;
+}
+
+.visualhide
+{
+	display: none !important;
+}
+
+#header #logo_ccnmtl
+{
+	display: none;
+}
+
+#header #logo_project span,
+#header #logo_ccnmtl span
+{
+	display: none;
+}
+
+#pagebody
+{
+	border-top: 2px solid #ccc;
+	clear: both;
+	margin-top: 1.5em;
+	padding-top: 2em;
+}
+
+#footer
+{
+		border-top: 2px solid #ccc;
+}
+
+.printonly
+{
+	display: block;
+}

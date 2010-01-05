@@ -1,0 +1,5 @@
+go ${base_url}/admin/assetmgr/asset/${pk}/
+fv asset_form id_author ${user}
+fv asset_form id_course ${course}
+submit
+find "&lt;${pk}&gt;&quot; was changed successfully."

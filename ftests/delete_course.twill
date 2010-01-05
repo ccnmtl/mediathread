@@ -1,0 +1,8 @@
+# NOTE THAT DELETING A COURSE WILL CURRENTLY DELETE ALL ASSETS IN THAT COURSE.
+# This kind of sucks.
+
+go ${base_url}/admin/projects/course/
+follow ${course}
+follow Delete
+submit
+find "was deleted successfully."

@@ -1,0 +1,5 @@
+go ${base_url}/admin/projects/course/add
+fv course_form id_group ${group}
+fv course_form id_title ${title}
+submit
+find 'was added successfully.'

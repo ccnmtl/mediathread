@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+<title> {% block title %}
+Class Analysis
+{% endblock %}</title>
+
+{% block content %}
+    {{ block.super }}
+<div class="panel">    
+  {%if display.instructor %}
+  <div class="panel-column panel-light">
+    <h2>Instructor's Focus</h2>
+    <div class="scroll">
+    {%if faculty_feed.projects %}
+      <h3>START HERE:</h3>
+      <ul>
+	{%for p in faculty_feed.projects %}
+	<li><a href="{%url project-view p.id %}">{{p.title}}</a></li>
+	{%endfor%}
+      </ul>
+    {%endif%}
+
+    {%if faculty_feed.assets %}
+     <h3>ITEMS OF INTEREST</h3>
+      <ul>
+	{%for a in faculty_feed.assets%}
+	<li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
+	{%endfor%}
+      </ul>
+    {%endif%}
+
+    {%if faculty_feed.tags %}
+      <h3>PRIORITY TAGS</h3>
+      <ul class="tags">
+	{% for tag in faculty_feed.tags %}
+	<li>
+	  <span class="size{{tag.font_size}}">
+	    <a href="{% url asset-container %}?tag={{tag.name}}">
+	      {{tag.name}} 
+	    </a>
+	  </span>
+	</li>
+	{% endfor %}
+      </ul>
+    {%endif%}
+    </div>
+  </div>
+  {%endif%}{#display.instructor#}
+
+  {%if not display.course %}
+  <div class="panel-column">
+    <a href="{% url asset-container %}" class="float_right">View All</a>
+    <h2>Instructor Activity</h2>
+    <div class="scroll">
+    </div>
+  </div>
+  {%endif%}
+  <div id="class_activity">
+  <h2>Class Activities</h2>
+
+
+<div class="panel-column panel-column-stump">
+  
+  <h2>Top Tags</h2>
+
+  <div class="scroll">
+    <ul class="tags">
+    {% for tag in tag_cloud %}
+    <li>
+      <span class="size{{tag.font_size}}">
+	<a href="{% url asset-container %}?tag={{tag.name}}">
+	  {{tag.name}}</a>
+      </span>
+    </li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+
+  <div class="panel-column
+	      {%if not display.course %}panel-column-stump{%endif%}
+	      ">
+    <h2>Updates to My Items</h2>
+    <div class="scroll">
+      <ul>
+	{%for clump in my_feed%}
+	<li>
+	  <div class="asset_title type-{{clump.type}}">
+	    <a href="{{clump.href}}" class="title">{{clump.title}}</a>
+	  </div>
+	  <div class="asset-activities">
+	    {%for act in clump%}
+	    <div class="asset-activity">
+	      {{act.action}}
+	      {%if act.user%}
+	      by 
+	      <a href="{% url your-space-records act.user.username %}"
+		 >{{act.user.get_full_name|default:act.user.username}}</a>
+	      {%endif%}
+	      {%if act.text %}
+	      :
+	      {%if act.href %}<a href="{{act.href}}">{%endif%}
+		{{act.text|truncatewords:10 }}
+	      {%if act.href %}</a>{%endif%}
+	      {%endif%}
+	      {{act.date|date}}
+	    </div>
+	    {%endfor%}
+	  </div>
+	</li>
+	{%endfor%}
+      </ul>
+    </div>
+ </div> <div class="visualclear"></div>
+
+</div>
+</div>
+
+
+{% endblock %}

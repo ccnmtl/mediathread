@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<style type="text/css">
+  /*for remove users in Course admin view*/
+  ul li {padding:4px 0;} 
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="/">{% trans 'Django administration' %}</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

@@ -1,0 +1,21 @@
+<ul>
+{% for student in request.course.students %}
+<li>
+  <h3><a href="{% url your-space-records student.username %}"
+	 >{{student.get_full_name|default:student.username}}</a>
+  </h3>
+
+  {% load user_projects %}
+  {% get_projects by student in request.course as projects %}
+  {% if projects %}
+     <h4>Completed Projects</h4>
+     <ul>
+       {% for project in projects %}
+       <li><a href="{% url project-view project.pk %}">{{project.title}}</a>
+       {% endfor %}
+     </ul>
+  {% endif %}
+</li>
+{% endfor %}
+
+</ul>

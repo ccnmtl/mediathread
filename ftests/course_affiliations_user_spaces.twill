@@ -1,0 +1,38 @@
+# the class member listing should only return the users who are
+# in the summer09 class::
+go ${base_url}
+follow "Member Pages"
+find 'joe'
+notfind 'suzie'
+find 'bob'
+
+# we shouldn't even be able to go to the personal space of a user
+# who isn't in the summer09 class::
+go ${base_url}/yourspace/suzie/
+code 404
+go ${base_url}/yourspace/suzie/asset/
+code 404
+go ${base_url}/yourspace/suzie/asset/1/
+code 405
+# ^^ we can't GET this anyway
+go ${base_url}/yourspace/suzie/project/
+code 404
+go ${base_url}/yourspace/suzie/project/1/
+code 404
+
+# but of course users in the summer09 class are fine::
+go ${base_url}/yourspace/bob/
+code 200
+go ${base_url}/yourspace/bob/asset/
+code 200
+go ${base_url}/yourspace/suzie/asset/1/
+code 405
+# ^^ we can't GET this anyway
+go ${base_url}/yourspace/bob/project/
+code 200
+go ${base_url}/yourspace/bob/project/1/
+code 404
+# ^^ well this one's a bit cheap :) we don't really have
+#    any projects set up anyway, so we'll just drown in
+#    404s for this test :)
+

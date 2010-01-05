@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+{% with request.collaboration_context.content_object as course %}
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>{% block title %}{% endblock %} |Mondrian</title>
+
+	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css"></link>
+
+	<link rel="shortcut icon" href="/site_media/img/favicon.ico" type="image/x-icon" />
+
+    {% load cache %}
+    {% cache 500 heads course %}
+       {% if course.settings.custom_headers %}
+        {{course.settings.custom_headers|safe}}
+       {# DEFAULT IS ELSE #}
+       {% else %}
+	<link rel="stylesheet" href="/site_media/css/main.css" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/print.css" media="print" />
+	<!--[if IE 6]>
+	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css" media="screen" />
+	<![endif]-->
+       {% endif %}
+    {% endcache %}
+	{% block css %}{% endblock %}
+	{% block js %}{% endblock %}
+	{% block feeds %}{% endblock %}
+</head>
+<body class="one_column {% block widthtype %}fluid{% endblock %} {% block extra_body_class %}{% endblock %}">
+{% comment %}
+###### FOR WIDTH TYPE--
+   fixed : fixed width, doesn't change with browser resize
+   fluid : variable width, changes with browser resize
+   You can move this to base template if you don't want to deal with it
+   all time in flatpages templates
+{% endcomment %}
+
+<div id="container">
+
+
+{% block masthead %}
+	<!-- ###### Site banner ###### -->
+	<div id="header">
+		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
+		{% block standardnav %}
+		<ul id="standardnav">
+			
+{% if request.user.is_authenticated %}
+<li>Welcome, {{user.get_full_name|default:user}}!</li>
+			<li><a href="/accounts/logout/">Log Out</a></li>
+		{%if user.is_staff %}
+			<li>
+			  <a href="/admin/">ADMIN</a>
+			</li>
+		{%endif%}
+  {% load user_projects smartif %}
+  {% num_courses for user as user_courses %}
+  {% if user_courses > 1 %}
+			<li><a href="/?unset_course">Switch Course</a></li>
+  {% endif %}
+{% else %}
+			<li><a href="/accounts/login/">log In</a></li>
+{% endif %}
+
+<li><a href="/help/">Help</a></li>
+		</ul>
+		{% endblock %}
+		
+	</div><!-- id="header" -->
+{% endblock %}
+
+
+
+	<!-- ###### Don't touch this ###### -->
+	<div class="visualclear"></div>
+	
+
+{% block primarynav %}
+	<!-- ###### Primary navigation ###### -->
+	<div id="primarynav">
+		<div class="encase" id="{% block navalignment %}leftside{% endblock %}"><div id="course_title">{{course.title}}</div>
+
+
+{% comment %}
+###### FOR ALIGNMENT OF TABS on the primary navigation--
+   leftside : all tabs aligning to the left, login to the right
+   rightside :  all tabs aligning to the right, login to the left
+{% endcomment %}
+         {% if request.course %}
+			{% block primarynavtabs %}
+
+                        {% load user_projects %}
+
+			<ul>
+				<li class="{% active request 'Class Portal' %}"><a href="/">Home</a></li>
+				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
+				<li class="{% active request 'Your Items' %}"><a href="{% url your-space-records user %}">My Analysis</a></li>
+				<li class="{% active request 'Class Analysis' %}"><a href="{% url asset-container %}">Class Analysis</a></li>
+				<!--<li><a href="{% url asset-container %}">Class Archive</a></li>
+				<li><a href="{% url asset-save %}">add a new asset</a></li>-->
+			</ul><!-- id="primarynavtabs" -->
+			{% endblock %}
+	  {% endif %}
+			{% block usernav %}{% endblock %}
+
+		</div><!-- id="leftside/rightside" -->
+	</div><!-- id="primarynav" -->
+{% endblock %}
+
+{% comment %} not using this now <div id="breadcrumbs">{% block breadcrumbs %}{% endblock %}</div> {% endcomment %}
+
+
+	<!-- ###### Page: Sidebars and Content ###### -->
+	<div id="pagebody">
+
+
+		<!-- ###### Page Content ###### -->
+		<div id="content">
+			<div id="squish"><!-- Don't touch this div -->
+				<div class="block">
+					{% block pagetitle %}{% endblock %}
+				
+					{% block content %}{% endblock %}
+
+				<!-- ###### Don't touch this ###### -->
+				<div class="visualclear"></div><!-- id="visualclear" -->				
+
+				</div><!-- class="block" -->
+			</div><!-- id="squish" -->
+		</div><!-- id="content" -->
+
+
+		<!-- ###### Don't touch this ###### -->
+		<div class="visualclear"></div>
+	{% block footer %}
+	<!-- ###### Footer ###### -->
+	<div id="footer">
+	<p class="printonly"><br /><img src="/site_media/img/logo_ccnmtl_sidebar.gif" class="printonly" /></p>
+	<ul id="footernav"><li><a href="/about/">About</a></li>
+			<!--<li><a href="/partners/">Partners</a></li>-->
+			<li><a href="/contact/">Contact</a></li>
+				<li><a href="/terms/">Terms and Conditions</a></li>
+			
+			</ul>
+			
+			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning" alt="Produced by the Columbia Center for New Media Teaching and Learning"></a></h4>
+			</div><!-- id="footer" -->
+{% endblock %}
+	</div><!-- id="pagebody" -->
+
+
+
+
+
+</div><!-- id="container" -->
+
+<script type="text/javascript" src="http://www.google-analytics.com/ga.js"></script>
+<script type="text/javascript">
+  try { var pageTracker = _gat._getTracker("UA-311226-18");
+            pageTracker._trackPageview();
+      } catch(e){}
+</script>
+</body>
+{% endwith %}
+</html>

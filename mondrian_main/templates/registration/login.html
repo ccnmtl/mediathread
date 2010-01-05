@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Welcome to Project Mondrian!</h1>
+<p>Project Mondrian provides....ipso lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar. lorem foo and bar.</p>
+
+<p><strong><a href="http://ccnmtl.columbia.edu/digitalbridges/projects/vietnam_digital_library.html" target="blank">Click here</a> to learn more about Project Mondrian.</strong></p>
+
+<br /><br />
+
+{% if form.has_errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+{%if settings.WIND_BASE %}
+  <form method="get" action="{{ wind_base }}login">
+    <input type="hidden" name="service" value="{{ wind_service }}" />
+    <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next|urlencode }}" />
+    <h2>If you have a Columbia UNI, you already have an account and can
+    login through WIND with it</h2>
+    <input type="submit" value="Log In with UNI" />
+  </form>
+  <h2>Otherwise: </h2>
+{% endif %}
+<form name="login_local" method="post" action=".">
+<table>
+<tr><td><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
+<tr><td><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
+</table>
+<input type="submit" value="Log In{%if settings.WIND_BASE %} Without UNI{% endif %}" />
+<input type="hidden" name="next" value="{{ next|urlencode }}" />
+</form>
+{% endblock %}

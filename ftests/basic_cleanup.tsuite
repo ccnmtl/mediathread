@@ -1,0 +1,18 @@
+login(user='admin', pw='admin')
+unset_course
+
+#delete_affiliation(user='joe', course='summer09')
+#delete_affiliation(user='bob', course='summer09')
+
+delete_project(pk=1)
+
+delete_asset(pk=4)
+
+delete_annotation(pk=7)
+# ^^ this is a global annotation on asset 2
+# which was not provided in the initial data fixture
+# but was created when we viewed the asset during the test suite
+
+delete_course(course='summer09')
+delete_course(course='gardening')
+delete_course(course='painting')

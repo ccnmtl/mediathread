@@ -1,0 +1,34 @@
+extend_with flunc.xpath
+
+# next we'll tag the asset itself, without making a clip of it
+go ${base_url}/asset/4/
+fv not-clip-form tags foo
+submit
+code 200
+
+# after we've tagged it, the form will be pre-filled::
+find_in_css foo form#not-clip-form
+
+# the way that the system attaches tags to non-clipped assets is by
+# creating an annotation with no "clip range". this is called a
+# global annotation; it is a singleton per (asset,user) pair.
+
+# this means that there is actually an annotation in the system
+# and that the not-clip-form is actually POSTed to that annotation,
+# rather than to the asset itself. we don't want to expose this
+# annotation to the system's users (not because it would be a problem
+# if we did; only because it's like letting the wires show) so if
+# a user tries to navigate to the URL for a global annotation,
+# he will be redirected right back to the asset workspace itself,
+# where he can edit the global annotation using the not-clip-form
+
+# so, let's visit the global annotation we just edited when we tagged
+# the asset 'foo' above .. i happen to know the url of this global
+# annotation, but to be less brittle and respecting the black box,
+# we should get this information from not-clip-form's action attribute.
+go ${base_url}/asset/4/annotations/8
+url ${base_url}/asset/4/
+
+# there shouldn't be any link to the global annotation, either
+# (except the form's action link, of course)
+notfind 'href="/asset/4/annotations/8'

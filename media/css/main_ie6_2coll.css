@@ -1,0 +1,40 @@
+/* For IE6 */
+
+body.fluid #content
+{
+	margin: 0 0;
+	width: auto;
+}
+
+body.fluid #sidebar_left
+{
+	position: absolute;
+	top: 132px;
+	left: 10px;
+	margin: 0;
+	padding: 2em 0 0 0;
+}
+
+body.fluid #sidebar_right
+{
+	position: absolute;
+	top: 132px;
+	right: 10px;
+	margin: 0;
+	padding: 2em 0 0 0;
+}
+
+body.two_columns_left.fluid #content
+{
+	display: block;
+}
+
+body.two_columns_left.fluid #content
+{
+	margin-right: 0;
+}
+
+body.two_columns_left.fluid #squish
+{
+	margin: 0 0 0 210px;
+}

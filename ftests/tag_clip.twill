@@ -1,0 +1,4 @@
+go ${base_url}/asset/${pk}/
+fv clip-form tags ${tag}
+submit
+code 200

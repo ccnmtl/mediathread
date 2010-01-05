@@ -1,0 +1,19 @@
+login(user='admin', pw='admin')
+delete_project(pk=1)
+delete_project(pk=2)
+
+delete_asset(pk=4)
+delete_asset(pk=5)
+delete_asset(pk=6)
+
+#delete_affiliation(user='joe', course='summer09')
+#delete_affiliation(user='bob', course='summer09')
+
+#delete_affiliation(user='bob', course='painting')
+#delete_affiliation(user='suzie', course='painting')
+
+delete_user(user='suzie')
+
+#delete_course(course='summer09')
+#delete_course(course='painting')
+#delete_course(course='gardening')

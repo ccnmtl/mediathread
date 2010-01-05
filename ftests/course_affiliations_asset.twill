@@ -1,0 +1,57 @@
+# make sure the list of all saved records only contains
+# assets and annotations in the current course::
+go ${base_url}/asset
+find "Cows"
+find goodtag
+notfind "zombocom"
+notfind 'invisibletag'
+
+# we also need to make sure that only the correct
+# assets and tags show up in your saved records::
+go ${base_url}
+follow "My Items"
+find "Cows"
+notfind "zombocom"
+find "goodtag"
+notfind "invisibletag"
+
+# and on the class portal::
+go ${base_url}
+find Cows
+notfind zombocom
+find goodtag
+notfind invisibletag
+
+# we shouldn't be able to access an asset in someone
+# else's class at all::
+go ${base_url}/asset/4/metadata/
+code 200
+go ${base_url}/asset/5/metadata/
+code 404
+
+go ${base_url}/asset/4/
+code 200
+go ${base_url}/asset/5/
+code 404
+
+# even the logged-in user's tags from another course
+# ought not leak into the analysis space::
+go ${base_url}/asset/4/
+find goodtag
+notfind invisibletag
+go ${base_url}/asset/4/annotations/9/
+url ${base_url}/asset/4/annotations/9/
+code 200
+find goodtag
+find greattag
+notfind invisibletag
+
+# and you can't remove saved records on an asset
+# that isn't in the current course::
+go ${base_url}/yourspace/bob/asset/4/?delete
+submit
+code 200
+go ${base_url}/yourspace/bob/asset/5/?delete
+submit
+code 404
+

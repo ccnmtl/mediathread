@@ -1,0 +1,13 @@
+go ${base_url}/accounts/logout
+url ${base_url}
+
+notfind 'Log Out' i
+find 'log In'
+follow 'log In'
+
+fv login_local id_username ${user}
+fv login_local id_password ${pw}
+submit
+
+find 'Welcome ${user}!'
+find 'Log Out'

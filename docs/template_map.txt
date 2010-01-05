@@ -1,0 +1,62 @@
+Basically the templates live in three locations on the filesystem.
+
+=====================
+./templates/assetmgr/
+=====================
+
+ * asset.html: The Class Record (Analysis) screen, which displays all tags and
+   comments made on the record, lets users add new comments, and lets users 
+   annotate the record or a clipped segment of the record
+
+ * asset_container.html: The Class Saved Records screen, which displays all assets
+   that have been added and their tags (for filtering the results)
+
+ * asset_addform.html: A mock entry point into the application to simulate the
+   workflow of the "Analyze This Record" button
+
+=====================
+./templates/projects/
+=====================
+
+ * asset_table.html: Renders a user's saved records in a series of collapsible divs,
+   each with a table of annotations. Not intended as a full-page template; it is
+   included into the your_records.html and project.html templates. Its functionality
+   is influenced by two context variables. If `editable` is True, then various "edit"
+   and "delete" buttons will be rendered. If `page_in_edit_mode` is True, then links
+   will be rendered with "target=_blank" (to prevent loss of unsaved changes) and
+   "add to project" buttons will be rendered. Note: this template doesn't currently
+   include any JS, but does assume some.
+
+ * your_records.html: The Your Space (Saved Records) screen, which lists all assets
+   that have been clipped, tagged, or noted by the user, and lists all annotations
+   that have been saved by the user.
+
+ * your_projects.html: The Your Space (Projects) screen, which lists all projects
+   that are associated with the user.
+
+ * portal.html: The Class Portal screen, which lists the most recently added
+   assets, the most popular assets, and all tags.
+
+ * project.html: The Project Workspace, where a user can edit a project draft
+   and associate clips with it, as well as saving, printing and submitting the
+   draft.
+
+ * published_project.html: A read-only view of a project's contents, so that users
+   may view each other's (submitted/published) projects.
+
+ * classlisting.html: The Class Listing, which displays the collected annotations
+   and completed projects by all users in the class.
+
+=====================
+./templates/comments/
+=====================
+
+ * form.html: The comment form, rendered on the Class Record (Analysis) screen
+   whose template lives at ./templates/assetmgr/asset.html
+
+============
+./templates/
+============
+
+ * base.html: The main template that wraps all other templates in the application
+

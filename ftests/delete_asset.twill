@@ -1,0 +1,3 @@
+go ${base_url}/admin/assetmgr/asset/${pk}/delete/
+submit
+find "&lt;${pk}&gt;&quot; was deleted successfully."

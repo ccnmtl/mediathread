@@ -1,0 +1,38 @@
+{% load comments i18n %}
+
+<form action="{% comment_form_target %}" method="post">
+  {% for field in form %}
+    {% if field.is_hidden %}
+      {{ field }}
+    {% else %}
+      {% ifnotequal field.name "comment" %}
+        <!-- 
+	     CANNOT DO display:none, because then IE disables
+	     form-submit on Enter.
+	     Same with Submit button
+	-->
+        <input type="hidden" name="{{field.html_name}}"
+	       value="{{field.value}}" />
+        <!--p
+        {% if field.errors %} class="error"{% endif %}
+        style="display:none;">
+        {% if field.errors %}{{ field.errors }}{% endif %}
+        {{ field.label_tag }} {{ field }}
+        </p-->
+
+      {% else %}
+	<input type="text" name="{{field.html_name}}"
+	       value="Enter your comment here and press return"
+	       >
+
+      {% endifnotequal %}
+
+    {% endif %}
+  {% endfor %}
+
+  <p class="submit">
+    <input type="hidden" name="next" value="{{request.path}}" />
+    <input type="hidden{#NOT submit--see Above#}" name="post" class="submit-post" value="{% trans "Post" %}" />
+  </p>
+
+</form>

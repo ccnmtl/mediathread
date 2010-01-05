@@ -1,0 +1,5 @@
+extend_with flunc.xpath
+
+go ${base_url}
+find_in_css "2 people analyzed" li#asset-1-popularity
+find_in_css "1 people analyzed" li#asset-2-popularity

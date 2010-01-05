@@ -1,0 +1,33 @@
+go ${base_url}/save
+url ${base_url}/save/
+
+# if you try to save an asset whose url already exists in
+# the database, you will be redirected to that asset::
+go ${base_url}/save?url=http%3A%2F%2Fopenvaultresearch.wgbh.org%2Frecord%2Fdisplay%2Findex%2Fpid%2Fwgbh%3A131&quicktime=http%3A%2F%2Fopenvaultstreams.wgbh.org%2Fbarcode167399_H.264-STREAMED-320*240-356.mp4&quicktime_directstream=rtsp%3A%2F%2Fopenvaultstreams.wgbh.org%2Fbarcode167399_H.264-STREAMED-320*240-356.mp4&title=WGBH%3A+Interview+with+Robert+McFarlane
+url ${base_url}/asset/2/
+
+# the asset should be viewable even if it has no metadata stored::
+code 200
+
+# now we'll save a new asset. first we get a confirmation form
+# and after we confirm we'll end up in the analysis space::
+go ${base_url}/save?url=${secondary_url}%2Finterview-wth-mr-t/&quicktime=http%3A%2F%2Fopenvaultstreams.wgbh.org%2Fbarcode167399_H.264-STREAMED-320*240-356.mp4&title=WGBH%3A+Interview+with+Mr+T
+url ${base_url}/save/
+find '<body class="one_column fluid preview">'
+fv not-clip-form save-global-annotation click
+submit
+url ${base_url}/asset/4/
+
+# the asset will know its title, since we provided it in the submission::
+find "WGBH: Interview with Mr T"
+
+# behind the scenes, it also pulled in some canonical metadata about the asset
+# from the url we provided for the asset (${secondary_url}/interview-wth-mr-t/)
+
+# XXX temporarily disabled
+#find "Robert McFarlane was the National Security Advisor"
+
+go ${base_url}/asset/4/metadata/
+code 200
+#find "Robert McFarlane was the National Security Advisor"
+

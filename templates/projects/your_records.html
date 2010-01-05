@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load user_annotations tagging_tags smartif user_projects helpful_tags %}
+
+<title> {% block title %}
+{% if space_owner == user %}
+My Analysis > My Saved Items
+{% else %}
+Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s Analysis
+{% endif %}
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/mochikit/packed/MochiKit/MochiKit.js"></script>
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+<script type="text/javascript" src="/site_media/js/tablesort.js"></script>
+<script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
+{% endblock %}
+
+{% block content %}
+  {{ block.super }}
+
+
+
+<h1>
+<a href="{%url class-listing %}" class="breadcrumb">Member Pages</a> >
+{% if space_owner == user %}
+My Items
+{% else %}
+{{space_owner.get_full_name|default:space_owner.username}}'s Analysis 
+{% endif %}</h1><br />
+
+<div id="filter_col">
+
+{% if active_filters %}
+<h2>Displaying Results for:</h2>
+ <ul>
+  {% for filter, value in active_filters.items %}
+  <li>
+    {% if filter == "tag" %}
+    {{filter}}: {{value}}
+    {% else %}
+    {{filter}}: {{dates|getitem:value}}
+    {% endif %}
+
+   {% replace_value of filter with '' in request.GET as querystring %}
+   <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
+  </li>
+  {% endfor %}
+ </ul>
+{% endif %}
+
+<h2>Filter Saved Items by:</h2>
+
+ <h3>Tag</h3>
+ <div id="filterbytag"><ul>{% for tag in tags %}
+  
+   {% if tag.name == request.GET.tag %}
+   <li><span class="size{{tag.font_size}}">{{tag}}</span></li>
+   {% else %}
+    {% replace_value of 'tag' with tag.name in request.GET as querystring %}
+    <li> <a href="{{querystring|qsify}}"><span class="size{{tag.font_size}}">{{tag}}</span></a></li>
+   {% endif %}
+  </span>
+ {% endfor %}</ul></div>
+ <!--
+ <h3>Date Added</h3>
+ <ul>
+ {% for date, label in dates.items %}
+   <li>
+    {% if date == request.GET.added %}
+     {{label}}
+    {% else %}
+     {% replace_value of 'added' with date in request.GET as querystring %}
+     <a href="{{querystring|qsify}}">{{label}}</a>
+    {% endif %}
+ {% endfor %}
+ </ul>
+ -->
+ <h3>Date Modified</h3>
+  <ul>
+ {% for date, label in dates.items %}
+   <li>
+    {% if date == request.GET.modified %}
+     {{label}}
+    {% else %}
+     {% replace_value of 'modified' with date in request.GET as querystring %}
+     <a href="{{querystring|qsify}}">{{label}}</a>
+    {% endif %}
+ {% endfor %}
+  </ul>
+
+</div>
+
+<div id="project_col" class="project-table panel-column panel-light">
+  <h2>Projects</h2>
+  {% include "projects/project_list.html" %}
+</div>
+
+<div id="results_col" class="asset-table">
+  {% include "projects/asset_table.html" %}
+</div>
+
+{% endblock %}

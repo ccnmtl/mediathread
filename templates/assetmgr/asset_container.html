@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+<title> {% block title %}
+Class Analysis > Class Saved Items
+{% endblock %}</title>
+
+{% block content %}
+    {{ block.super }}
+
+{% load smartif user_projects helpful_tags %}
+<h1>Class Analysis > Class Saved Items</h1><br />
+<div id="filter_col">
+
+{% if active_filters %}
+<h2>Displaying Results for:</h2>
+ <ul>
+  {% for filter, value in active_filters.items %}
+  <li>
+   {{filter}}: {{value}}
+
+   {% replace_value of filter with '' in request.GET as querystring %}
+   <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
+  </li>
+  {% endfor %}
+ </ul>
+{% endif %}
+
+<h2>Filter Saved Items by:</h2>
+
+ <h3>Tag</h3>
+ <div id="filterbytag"><ul>{% for tag in tags %}
+ 
+   {% if tag.name == request.GET.tag %}
+    <li><span class="size{{tag.font_size}}">{{tag}}</span></li>
+   {% else %}
+    {% replace_value of 'tag' with tag.name in request.GET as querystring %}
+    <li> <a href="{{querystring|qsify}}"> <span class="size{{tag.font_size}}">{{tag}}</span></a></li>
+   {% endif %}
+ 
+ {% endfor %}</ul></div>
+</div>
+
+<div id="member_col" class="project-table panel-column panel-light">
+  <h2>Member Pages</h2>
+  {% include "projects/classlisting_embed.html" %}
+</div>
+
+<div id="results_col">
+
+  {% for asset in assets %}
+  <div class="record">
+    <h2><a href="{{asset.get_absolute_url}}">{{asset.title}}</a></h2>
+
+    <p>{{asset.metadata.description}}</p>
+    {%if asset.tags%}
+    <p>
+      <strong>Tags:</strong>
+      {% for tag in asset.tags %}
+        {% replace_value of 'tag' with tag.name in request.GET as querystring %}
+        <a href="{{querystring|qsify}}">
+	  {{tag.name}}
+        </a>&nbsp;
+      {% endfor %}</p>{%endif%}</div><!--class="record"-->
+
+   {% endfor %}<!--asset in assets-->
+</div><!--id="results_col"-->
+
+
+{% endblock %}

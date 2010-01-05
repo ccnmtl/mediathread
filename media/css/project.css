@@ -1,0 +1,103 @@
+img.materialCitation {
+	cursor:pointer;
+}
+
+input.materialCitation {
+	background: #fff url('/site_media/img/vital3/icon_video.gif') left no-repeat;
+	margin: 2px 0px 2px 4px;
+	padding: 1px;
+	border: 0;
+	padding-left: 14px;
+	font-size:12px;
+	color: #660000;
+	cursor:pointer;
+	display:inline;
+	width:auto;
+	overflow:visible; /* IE 5-6 hack */
+	text-decoration: underline;
+	font: normal 12px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
+}
+
+input.materialCitation:hover
+{
+	background-color: #efefef;
+}
+
+
+#materials {
+
+
+	border: 1px solid #ccc;
+	min-height: 350px;
+	height: 350px;
+	overflow: auto;
+	background-color: #ededed;
+
+}
+
+.essay-options
+{ 
+  padding:1em;
+  clear:both;
+ }
+
+.essay-space {
+float:left;
+max-width:650px;
+width:46%;
+}
+
+.essay-space.published
+{ 
+  float:left;
+  width:56%;
+  max-width:650px;
+  height: 29em;
+  overflow: auto;
+  margin-right: 2em;
+  border: 1px solid #ccc;
+  padding: 10px;
+ }
+ 
+ .asset-view {
+
+width: 370px;
+height: 370px;
+background-color: #EDEDED;
+border: 1px solid #ccc;
+float: left;
+}
+
+.annotation-links {
+
+	
+
+}
+
+.annotation-title.materialCitation {
+
+	background-image: url('/site_media/img/vital3/icon_video.gif') left no-repeat;
+	border: 0;
+	color: #660000;
+	width:auto;
+	overflow:visible; /* IE 5-6 hack */
+
+
+}
+
+.annotation-title.materialCitation h2 {
+	background: #969696 url('/site_media/img/vital3/icon_video.gif') 5px 3px no-repeat;
+	color:#DEDEDE;
+	font-weight:normal;
+	margin:0 0 0.5em;
+	padding:0.2em 0.5em .2em 1.8em;
+	text-align:left;
+}
+
+.active-annotation {
+	background-color: none;
+	padding: 0;
+	
+	}
+	
+.asset-title {margin-left: 10px;}

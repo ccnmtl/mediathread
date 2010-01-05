@@ -1,0 +1,54 @@
+{% load user_annotations tagging_tags smartif user_projects %}
+
+{% if not projects %}
+ {% if editable %}No projects yet. <br /><br />
+ {% else %}No (viewable) projects yet.
+ {% endif %}
+{% endif %}
+{% if editable %}
+
+   <br />
+   <form class="block" method="POST" action="{%url your-space-projects user%}">
+     <input type="hidden" name="title" />
+     <input type="submit" value="Create a new project!"/>
+   </form>
+{% endif %}
+
+  {% for project in projects %}
+
+  <div id="project-{{project.pk}}">
+
+    <div class="projectlist">
+      
+      <h3>
+	
+	{% if editable %}
+    
+	<div class="actions">
+	  <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
+	     href="{%url project-workspace user project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+	</div>
+	{% endif %}
+	
+	<a href="{%url project-workspace project.author project.id %}"
+	   class="asset_title type-project"
+	   >{{project.title}}</a>
+      </h3>
+    
+   
+      <div id="project-{{project.pk}}-metadata">
+	   <ul>
+	     <li>Collaborators: 
+	     <!--careful with whitespace here, since we want the comma to hug the previous
+		 name-->
+	     <span id="participants_chosen">{{project.attribution}}</span>
+	     </li>
+	     <li>Last modified: {{project.modified|date}}</li>
+	     <li>Status: {{project.status}}</li>
+
+	   </ul>
+
+	 </div><!-- id=project-pk-metadata -->
+       </div><!-- id=projectlist -->
+     </div><!-- id=project-pk -->
+     {% endfor %}<!--for project in projects -->

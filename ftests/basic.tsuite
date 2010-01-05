@@ -1,0 +1,24 @@
+course_affiliations
+
+login(user='admin', pw='admin')
+#create_course(group='summer09', title='summer09')
+
+#assign_to_course(user='joe', course='summer09')
+#assign_to_course(user='bob', course='summer09')
+#switch_asset_context(
+
+# a very simple test that the login behavior works properly
+login(user='joe', pw='testy')
+
+classportal
+
+# tests the drilldown filter on Your Saved Records
+yourspace
+
+# demonstrates what should happen when you save a new asset into the environment
+# up to the point where metadata is pulled in
+# then also submits the annotation form to smoketest that behavior
+analysis_space
+
+# very basic smoketest of the Your Projects behavior; just submits a form, really
+yourprojects

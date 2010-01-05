@@ -1,0 +1,5 @@
+go ${base_url}/admin/auth/user/
+follow ${user}
+follow Delete
+submit
+find "The user &quot;${user}&quot; was deleted successfully."

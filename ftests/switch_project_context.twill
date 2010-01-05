@@ -1,0 +1,5 @@
+go ${base_url}/admin/projects/project/${pk}/
+fv project_form id_author ${user}
+fv project_form id_course ${course}
+submit
+find "was changed successfully."

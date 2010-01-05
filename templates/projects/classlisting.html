@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+<title> {% block title %}
+Class Analysis > Member Pages
+{% endblock %}</title>
+
+
+{% block content %}
+  {{ block.super }}
+
+<h1>Member Pages</h1>
+
+{% for student in students %}
+<div>
+<h3>
+  {%if student.get_full_name %}
+    {{student.get_full_name}}
+  {%else%}
+    {{student.username}}
+  {%endif%}
+</h3>
+<h4><a href="{% url your-space-records student.username %}">Saved Items</a></h4>
+
+{% load user_projects %}
+{% get_projects by student in request.course as projects %}
+{% if projects %}
+
+<h4>Completed Projects</h4>
+
+<ul>
+{% for project in projects %}
+<li><a href="{% url project-view project.pk %}">{{project.title}}</a>
+{% endfor %}
+</ul>
+
+{% endif %}
+
+</div>
+{% endfor %}
+
+
+{% endblock %}

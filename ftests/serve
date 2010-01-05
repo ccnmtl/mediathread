@@ -1,0 +1,4 @@
+cd ftests/data
+./loaddata.py
+cd ../..
+./manage.py testserver ftests/data/users.json ftests/data/groups.json ftests/data/data.json ftests/data/mock_wgbh_record.json --addrport=$1 --settings=settings_test

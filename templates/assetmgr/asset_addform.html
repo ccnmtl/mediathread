@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {{ block.super }}
+
+{% if adding %}
+    <form method="POST" action="{% url asset-save %}">
+      {% for key, value in asset_request.items %}
+        <input type="hidden" name="{{key}}" value="{{value}}" />
+      {% endfor %}
+      <input type="submit" value="Really Save" />
+    </form>
+{% else %}
+      <h2>Add a collection</h2>
+      <form action="{% url asset-save %}" method="POST">
+	Collection Title: <input type="text" name="title" value=""/>
+	<br/>
+	Collection URL: <input type="text" name="archive" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
+	<br/>
+	Collection URL (yes, again): <input type="text" name="url" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
+	<br/>
+	Description:
+	<textarea cols="55" rows="5" 
+		  name="metadata-description"
+		  ></textarea>
+	<br/>
+	Thumb URL: <input type="text" name="thumb" value=""/>
+	<br/>
+	
+	<input type="submit" value="Submit Collection"/>
+      </form>
+
+      <h2>A website</h2>
+      <form action="{% url asset-save %}" method="GET">
+	Asset URL: <input type="text" name="url" value="http://slashdot.org"></input>
+	<br/>
+	Asset Title: <input type="text" name="title" value="SlashDot"></input>
+	<br/>
+	<input type="submit"/>
+      </form>
+
+      <h2>Local Quicktime Streaming Video</h2>
+      <form action="{% url asset-save %}" method="GET">
+	<!--Asset URL: <input type="text" name="url" value=""></input>
+	<br/>
+	-->
+	Asset QT Stream: <input type="text" name="quicktime" value="" />
+	<br/>
+	Asset Title: <input type="text" name="title" value=""></input>
+	<br/>
+	<input type="submit"/>
+      </form>
+      
+    <h2>YouTube Video</h2>
+      <form action="{% url asset-save %}" method="GET">
+          YouTube View (Watch) URL: <input type="text" name="url" value=""></input> (example: http://www.youtube.com/watch?v=MjdEEwzskck)
+          <br/>
+          YouTube Video URL: <input type="text" name="youtube" value="" /> (example: http://www.youtube.com/v/MjdEEwzskck&hl=en_US&fs=1)
+          <br/>
+          YouTube Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+      
+    {% if debug %}
+      <h1>Try out assetmgr</h1>
+      
+      <h2>A Streaming Video</h2>
+      <form action="{% url asset-save %}" method="GET">
+	Asset URL: <input type="text" name="url" value=""></input>
+	<br/>
+	Asset Stream: <input type="text" name="quicktime" value="" />
+	<br/>
+	Direct Stream:
+	<input type="text" name="quicktime_directstream" value="" />
+	<br/>
+	Asset Title: <input type="text" name="title" value=""></input>
+	<br/>
+	<input type="submit"/>
+      </form>
+
+    {% endif %}
+
+     {% if debug %}
+    <h2>Bookmarklets</h2>
+    <p>Right-click and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.</p>
+    <ul>
+         <li><a href='javascript:/*SHERD_YOUTUBE_BOOKMARKLET____________________*/location="{{request.build_absolute_uri}}?url="+escape(document.location)+"&title="+escape(document.title)+"&youtube="+escape(String(document.getElementById("embed_code").value).match(/src="([^"]+)"/).pop())'>Sherd@YouTube</a> - only works on youtube video pages, and directs browser immediately to Sherd.</li>
+
+      <li><a href='javascript:/*SHERD_VIDEO_BOOKMARKLET____________________*/(function(){/*ADD CODE HERE*/})()'>Sherd@Video</a> - adds a link to Sherd above each annotatable video found on the page</li>
+
+    </ul>
+     {% endif %}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+go ${base_url}
+follow "My Projects"
+
+notfind ${title}
+
+find "Create a new project!"
+submit
+
+fv editproject title ${title}
+fv editproject body ${body}
+submit
+
+find ${body}
+follow "Projects"
+find ${title}

@@ -1,0 +1,3 @@
+source ./ve/bin/activate
+cd ftests
+flunc -t http://localhost:8001 basic -w

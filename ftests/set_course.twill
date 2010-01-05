@@ -1,0 +1,3 @@
+go ${base_url}
+find "select a course"
+go ${base_url}?set_course=${course}

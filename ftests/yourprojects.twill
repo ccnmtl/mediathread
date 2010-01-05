@@ -1,0 +1,13 @@
+go ${base_url}/yourspace/joe
+follow "Projects"
+url ${base_url}/yourspace/joe/project/
+
+find "Create a new project!"
+submit
+
+fv editproject title "My first project"
+fv editproject body "Mary had a little lamb"
+submit
+
+url ${base_url}/yourspace/joe/project/1/
+find "My first project"

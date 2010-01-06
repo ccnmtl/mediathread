@@ -16,9 +16,14 @@ reverting.
 """
 from django.db import models as m # need to rename models or django doesn't recognize app
 from django.dispatch import dispatcher
+from django.db.models.signals import post_save, pre_delete
+
+
 from django.db.models import signals
 from django.db.models.fields.related import RelatedField
 from django.core.exceptions import ObjectDoesNotExist
+import pdb, inspect
+
 def version_model(model):
     """
     Based on the passed model, build a second model to store versioning information.
@@ -32,17 +37,40 @@ def version_model(model):
     def record_change(instance,change_type):
         version_instance = _version_from_instance(instance,version_model)
         version_instance.change_type = change_type  
-        version_instance.save()    
+        
+        whether_to_save = True
+        only_save_if_changed = False
+        if hasattr (instance, 'only_save_if_changed' ):
+            only_save_if_changed = instance.only_save_version_if_changed
+        
+        if only_save_if_changed and version_instance.version_number -2 > 0 and instance.versions[version_instance.version_number - 2]:
+            older_instance = instance.versions[version_instance.version_number - 2]
+            if hasattr (instance, 'only_save_version_if_changed_fields_to_ignore'):
+                ignored = instance.only_save_version_if_changed_fields_to_ignore
+            else:
+                ignored = []
+            
+            fields_to_test = [f for f in _get_fields(instance).keys() if f not in ignored ]
+            if [a for a in fields_to_test if getattr(version_instance, a)!= getattr(older_instance,a)] == []:
+                whether_to_save = False
+                #print "Unchanged so not saving"
+                
+        if whether_to_save:
+            version_instance.save()    
+
 
     def record_save(sender,instance,signal, *args, **kwargs):
         # Record the save to the shadow table
+        #pdb.set_trace()
         record_change(instance,"SAVE")
-    dispatcher.connect(record_save,signal=signals.post_save,sender=model,weak=False)
+    post_save.connect(record_save, model, weak=False)
+        
+        
         
     def record_delete(sender,instance,signal,*args,**kwargs):
         # Record the delete to the shadow table
         record_change(instance,"DELETE")      
-    dispatcher.connect(record_delete,signal=signals.pre_delete,sender=model,weak=False)     
+    pre_delete.connect(record_delete, model, weak=False)
 
     setattr(model,'version_model',version_model)
 
@@ -112,7 +140,9 @@ def _build_version_model(model):
                       'versioned_id': m.IntegerField(),
                       'version_number': m.IntegerField(),
                       'change_time': m.DateTimeField(auto_now_add=True),
-                      'change_type': m.CharField(maxlength=10),})    
+                      'change_type': m.TextField(),
+                      })
+                      
         
     return type(model.__name__+"Version",(m.Model,),version_attrs)
 
@@ -127,7 +157,7 @@ def _decorate_model(model,version_model):
     # manager, but seems more complicated since the instance id is required.  A regular
     # FK could not be used since it places constraints preventing deleting the versioned object
     
-#    assert 'versions' not in model.__dict__.keys()
+    # assert 'versions' not in model.__dict__.keys()
     # Add to the model's __getattr__ function so that versinos are handled properly
     try:
         old_getattr = model.__getattr__
@@ -144,51 +174,61 @@ def _decorate_model(model,version_model):
                  
     model.__getattr__ = _getattr
     
-    assert 'get_latest_version' not in model.__dict__.keys()
-    def get_latest_version(self):
-        try:        
-            latest_version = self.versions.order_by('-version_number')[0].version_number
-        except IndexError:
-            latest_version = 0 
-        return latest_version
-    setattr(model,'get_latest_version',get_latest_version)
     
-    assert 'revert' not in model.__dict__.keys()
-    def revert(self,version=-1):
-        """
-        NOTE: latest version may refer to a later version of the object
-                if the object has been reverted but not saved
-        
-        Reverts a versioned model back to the specified version.
-        If target_version is negative, go back that many versions
-        Minimum version is 1, anythin earlier just revert to first version
-        If requested version is greater than current version, do nothing
-        """
-        latest_version = self.get_latest_version()       
-        
-        # If no versions yet, do nothing. If version to high, revert to latest
-        if latest_version < 1:
-            return True
-        if version >= latest_version:
-            self.revert(latest_version)
-            return True
-        
-        # If negative version, go back that many versions
-        if version < 0:
-            target_version = latest_version + version
-        else:
-            target_version = version
-        
-        # If version earlier than 1, return first version
-        if target_version < 1:
-            version_instance = self.versions.get(version_number__exact=1)
-        else:
-            version_instance = self.versions.get(version_number__exact=target_version)
-        
-        # Copy attribtues from version instance to object
-        _rebuild_from_version(version_instance,self)
-        return True       
-    setattr(model,'revert',revert)
+    def __unicode__(self):
+        return u'Version %d' % (self.version_number)
+    
+    
+    #assert 'get_latest_version' not in model.__dict__.keys()
+    if 'get_latest_version' not in model.__dict__.keys():
+        #print "adding get latest version"
+        def get_latest_version(self):
+            try:        
+                latest_version = self.versions.order_by('-version_number')[0].version_number
+            except IndexError:
+                latest_version = 0 
+            return latest_version
+        setattr(model,'get_latest_version',get_latest_version)
+    
+    
+    #assert 'revert' not in model.__dict__.keys()
+    if 'revert' not in model.__dict__.keys():
+        #print "adding revert"
+        def revert(self,version=-1):
+            """
+            NOTE: latest version may refer to a later version of the object
+                    if the object has been reverted but not saved
+            
+            Reverts a versioned model back to the specified version.
+            If target_version is negative, go back that many versions
+            Minimum version is 1, anythin earlier just revert to first version
+            If requested version is greater than current version, do nothing
+            """
+            latest_version = self.get_latest_version()       
+            
+            # If no versions yet, do nothing. If version to high, revert to latest
+            if latest_version < 1:
+                return True
+            if version >= latest_version:
+                self.revert(latest_version)
+                return True
+            
+            # If negative version, go back that many versions
+            if version < 0:
+                target_version = latest_version + version
+            else:
+                target_version = version
+            
+            # If version earlier than 1, return first version
+            if target_version < 1:
+                version_instance = self.versions.get(version_number__exact=1)
+            else:
+                version_instance = self.versions.get(version_number__exact=target_version)
+            
+            # Copy attribtues from version instance to object
+            _rebuild_from_version(version_instance,self)
+            return True       
+        setattr(model,'revert',revert)    
     
 
 def _copy_instance_vals(source_instance,target_instance):    

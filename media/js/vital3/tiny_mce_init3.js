@@ -1,14 +1,11 @@
-var extraSKY = true;// (typeof console != 'undefined');
-
 var tiny_mce_settings_for_vital = {
   theme:"advanced",
   /* content_css:"tinyContent.css", CUSTOM CCNMTL--commenting out*/
   content_css:"/site_media/css/project.css",
   mode:"specific_textareas",
-	    /*CUSTOM CCNMTL: added 'citation' */
   entity_encoding : "numeric",
-	    /*CUSTOM CCNMTL: added 'citation' */
-    plugins:"searchreplace,table,citation" + (extraSKY?',inlinepopups,editorwindow,xhtmlxtras':''),
+	    /*CUSTOM CCNMTL: added 'citation' and 'editorwindow' --see bottom for explicit loading from a location */
+    plugins:"searchreplace,table,-citation,inlinepopups,-editorwindow,xhtmlxtras",
 	    /* CUSTOM CCNMTL: visual is set to false, so anchor tags don't get messed up.  This is probably a bug
 	       to be reported to tinyMCE */
   visual:false,
@@ -108,6 +105,9 @@ var tiny_mce_settings_for_vital = {
 if ( typeof (check_length_callbacks) != "undefined" ) {
     update (tiny_mce_settings_for_vital, check_length_callbacks);
 }
+
+tinymce.PluginManager.load('citation', '/site_media/js/sherdjs/lib/mcePlugin_citation/editor_plugin.js');
+tinymce.PluginManager.load('editorwindow', '/site_media/js/sherdjs/lib/mcePlugin_editorwindow/editor_plugin.js');
 
 tinyMCE.init(tiny_mce_settings_for_vital);
 

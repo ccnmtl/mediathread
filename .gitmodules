@@ -1,0 +1,12 @@
+[submodule "media/js/mochikit"]
+	path = media/js/mochikit
+	url = http://github.com/ccnmtl/mochikit-mirror.git
+[submodule "djangosherd/media/js/sherdjs"]
+	path = djangosherd/media/js/sherdjs
+	url = http://github.com/ccnmtl/SherdJS.git
+[submodule "django_courseaffils"]
+	path = django_courseaffils
+	url = http://github.com/ccnmtl/django_courseaffils.git
+[submodule "django-modelversions"]
+	path = django-modelversions
+	url = http://github.com/ccnmtl/django-modelversions.git

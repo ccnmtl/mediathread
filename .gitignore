@@ -2,5 +2,6 @@
 *~
 *.pyc
 ve
-ccnmtl_specific
+deploy_specific
 .svn
+\#*

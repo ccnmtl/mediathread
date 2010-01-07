@@ -1,4 +1,9 @@
 # Django settings for mondrian project.
+
+#if you add a 'deploy_specific' directory
+#then you can put a settings.py file and templates/ overrides there
+#(see bottom)
+
 import os.path
 import re
 
@@ -132,3 +137,13 @@ COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']
 
 COMMENTS_ALLOW_PROFANITIES = True
 
+
+#if you add a 'deploy_specific' directory
+#then you can put a settings.py file and templates/ overrides there
+try:
+    from mondrian.deploy_specific.settings import *
+    if locals().has_key('EXTRA_INSTALLED_APPS'):
+        INSTALLED_APPS = EXTRA_INSTALLED_APPS + INSTALLED_APPS
+
+except ImportError:
+    pass

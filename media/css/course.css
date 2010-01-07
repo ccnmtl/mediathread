@@ -537,9 +537,16 @@ dd {
 
 .delete_icon, .edit_icon {vertical-align: middle;}
 
-.record {margin-bottom: .5em;}
+.record {
+    margin-bottom: .5em;
+    clear:both;
+}
 
 .record p {margin: .5em .5em 1.5em .5em;}
+.record img.asset-thumb {
+    float:left;
+    padding:0 10px 8px 8px;
+}
 
 .record-metadata {
   padding: 0 1.5em;

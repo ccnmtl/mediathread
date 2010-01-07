@@ -159,7 +159,7 @@ def your_projects(request, user_name):
         if not editable:
             return HttpResponseForbidden("forbidden")
         
-        title = request.POST.get('title', "Add title here" % user)
+        title = request.POST.get('title','') or "%s's Project" % user.get_full_name()
         project = Project(author=user, course=request.course, title=title)
         project.save()
         return HttpResponseRedirect(project.get_absolute_url())

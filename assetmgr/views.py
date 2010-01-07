@@ -230,8 +230,8 @@ filter_by = {
 @rendered_with('assetmgr/asset_container.html')
 def container_view(request):
 
-    assets = Asset.objects.filter(
-        course=request.course).order_by('title')
+    assets = [a for a in Asset.objects.filter(course=request.course).order_by('title')
+              if a not in request.course.asset_set.archives()]
 
     from tagging.models import Tag
     all_tags = Tag.objects.usage_for_queryset(

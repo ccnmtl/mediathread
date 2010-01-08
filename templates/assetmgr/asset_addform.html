@@ -88,8 +88,9 @@
          <li><a href='javascript:/*SHERD_YOUTUBE_BOOKMARKLET____________________*/location="{{request.build_absolute_uri}}?url="+escape(document.location)+"&title="+escape(document.title)+"&youtube="+escape(String(document.getElementById("embed_code").value).match(/src="([^"]+)"/).pop())'>Sherd@YouTube</a> - only works on youtube video pages, and directs browser immediately to Sherd.</li>
 
       <li><a href='javascript:/*SHERD_VIDEO_BOOKMARKLET____________________*/(function(){/*ADD CODE HERE*/})()'>Sherd@Video</a> - adds a link to Sherd above each annotatable video found on the page</li>
-
+      <li><a href='javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(mondrian_url,mondrian_action){ {% include "assetmgr/bookmarklet.js" %}  })("http://{{request.get_host}}/save/?","jump")'>Analyze w/Mondrian</a></li>
     </ul>
+
      {% endif %}
 {% endif %}
 

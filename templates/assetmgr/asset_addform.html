@@ -11,6 +11,24 @@
       <input type="submit" value="Really Save" />
     </form>
 {% else %}
+    <h2>Bookmarklet</h2>
+    <p>
+      Right-click and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.
+      Then when you are on a supported site's asset page, run the bookmarklet.
+    </p>
+    <ul>
+      <li><a href='javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(mondrian_url,mondrian_action){ {% include "assetmgr/bookmarklet.js" %}  })("http://{{request.get_host}}/save/?","jump")'>Analyze w/Mondrian</a>
+      <br />
+      <b>Current Supported Sites</b>: 
+        <ul>
+          <li>YouTube</li>
+          <li>digitaltibet.ccnmtl.columbia.edu</li>
+          <li>vietnamwararchive.ccnmtl.columbia.edu</li>
+          <li>thlib.org</li>
+        </ul>
+      </li>
+    </ul>
+
       <h2>Add a collection</h2>
       <form action="{% url asset-save %}" method="POST">
 	Collection Title: <input type="text" name="title" value=""/>
@@ -82,16 +100,6 @@
     {% endif %}
 
      {% if debug %}
-    <h2>Bookmarklets</h2>
-    <p>Right-click and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.</p>
-    <ul>
-         <li><a href='javascript:/*SHERD_YOUTUBE_BOOKMARKLET____________________*/location="{{request.build_absolute_uri}}?url="+escape(document.location)+"&title="+escape(document.title)+"&youtube="+escape(String(document.getElementById("embed_code").value).match(/src="([^"]+)"/).pop())'>Sherd@YouTube</a> - only works on youtube video pages, and directs browser immediately to Sherd.</li>
-
-      <li><a href='javascript:/*SHERD_VIDEO_BOOKMARKLET____________________*/(function(){/*ADD CODE HERE*/})()'>Sherd@Video</a> - adds a link to Sherd above each annotatable video found on the page</li>
-      <li><a href='javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(mondrian_url,mondrian_action){ {% include "assetmgr/bookmarklet.js" %}  })("http://{{request.get_host}}/save/?","jump")'>Analyze w/Mondrian</a></li>
-      <script type="text/javascript" src="/site_media/js/sherdjs/src/bookmarklets/sherd.js"></script>
-    </ul>
-
      {% endif %}
 {% endif %}
 

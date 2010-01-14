@@ -1,0 +1,44 @@
+===========================================================
+Mondrian
+===========================================================
+
+Mondrian is a Django site for multimedia annotations facilitating
+collaboration on video and image analysis. Developed at the Columbia
+Center for New Media Teaching and Learning (CCNMTL)
+http://github.com/ccnmtl/Mondrian
+
+INSTALLATION
+------------
+
+1. Mondrian relies on several submodules.  The easiest way to download
+   it all is to run with git 1.6.5+ is:
+
+  git clone --recursive http://github.com/ccnmtl/mondrian.git 
+
+2. Bootstrap uses virtualenv to build a contained library in ve/
+  ./bootstrap.py
+
+(The rest of the instructions work like standard Django.  See:
+ http://docs.djangoproject.com/en/1.1/
+ for more details.
+)
+
+3. Build the (postgres) database
+  createdb mondrian
+  ./manage.py syncdb
+  #create a superuser
+
+4. Run locally (during development)
+  ./manage.py runserver myhost.example.com:8000
+
+5. For deployment to Apache, see our sample configuration in apache/prod.conf
+   This directory also contains standard django.wsgi file which can be used 
+   with other webservers
+
+#Go to your site in a web browser.
+6. The default database is not very useful.  Login with the superuser you
+   created in Step #3, and then click the Admin link in the upper right.
+7. Create a group (and a second for faculty) and a course (and users, e.g.)
+8. Experiment with saving assets by visiting:
+   http://myhost.example.com:8000/save/
+

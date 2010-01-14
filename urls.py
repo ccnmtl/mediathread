@@ -19,6 +19,12 @@ if hasattr(settings,'WIND_BASE'):
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 urlpatterns = patterns('',
+                       (r'^comments/', include('django.contrib.comments.urls')),
+                       
+                       
+                       #this is apparently not used any more:
+                       #(r'^threadedcomments/', include('threadedcomments.urls')),
+
                        (r'^accounts/logout/$','django.contrib.auth.views.logout', 
                         {'next_page': redirect_after_logout}),
                        login_page,#see above
@@ -46,11 +52,8 @@ urlpatterns = patterns('',
                            name='project-view'
                            ),
                        (r'^explore/$','assetmgr.views.archive_explore'),
-                       (r'^comments/', include('django.contrib.comments.urls')),
 
                        ### Public Access ###
-                       
                        (r'', include(structuredcollaboration.urls)), #import at root
                        
-
 )

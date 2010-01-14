@@ -79,7 +79,9 @@ INSTALLED_APPS = (
     'mondrian.projects',
     'django.contrib.comments',
     'djangohelpers',
-    'mondrian.mondrian_main'
+    'mondrian.mondrian_main',
+    'django.contrib.comments',
+    'threadedcomments',
 )
 
 THUMBNAIL_SUBDIR = "thumbs"
@@ -131,4 +133,5 @@ COURSEAFFILS_EXEMPT_PATHS = ANONYMOUS_PATHS
 COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']
 
 COMMENTS_ALLOW_PROFANITIES = True
+COMMENTS_APP = 'threadedcomments'
 

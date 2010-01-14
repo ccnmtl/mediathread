@@ -10,3 +10,6 @@
 [submodule "django-modelversions"]
 	path = django-modelversions
 	url = http://github.com/ccnmtl/django-modelversions.git
+[submodule "django-threadedcomments"]
+	path = django-threadedcomments
+	url = git://github.com/ccnmtl/django-threadedcomments.git

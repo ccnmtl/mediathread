@@ -62,6 +62,17 @@
           <input type="submit"/>
       </form>
       
+    <h2>Flash Video (.flv)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          Flash Video View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Flash Video URL: <input type="text" name="flashvideo" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+      
     {% if debug %}
       <h1>Try out assetmgr</h1>
       

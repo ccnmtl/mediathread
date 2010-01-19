@@ -103,7 +103,6 @@ class Clumper():
 
         @staticmethod
         def adapt_user(thing):
-            if isinstance(thing,Project): return None
             return getattr(thing,'author',
                            getattr(thing,'user',None))
 

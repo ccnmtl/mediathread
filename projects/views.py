@@ -86,11 +86,11 @@ def project_readonly_view(request, project_id):
         }
 
 @allow_http("GET", "POST", "DELETE")
-def view_project(request, user_name, project_id):
-    space_owner = in_course_or_404(user_name, request.course)
-
+def view_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id,
                                 course=request.course)
+
+    space_owner = in_course_or_404(project.author.username, request.course)
 
     if project not in Project.get_user_projects(space_owner,request.course):
         return HttpResponseForbidden("forbidden")
@@ -102,12 +102,12 @@ def view_project(request, user_name, project_id):
         return HttpResponseRedirect(
             reverse('your-space-projects', args=[user_name]))
 
-    if request.method == "GET":
-        if project.is_participant(request.user):
-            return project_workspace(request, space_owner, project)
-        else:
-            return project_readonly_view(request, project.id)
+    if not project.is_participant(request.user):
+        return project_readonly_view(request, project.id)
+    #ok, now we know is_participant
 
+    if request.method == "GET":
+        return project_workspace(request, space_owner, project)
     
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project,data=request.POST)
@@ -117,7 +117,9 @@ def view_project(request, user_name, project_id):
                 projectform.instance.submitted = True
                 redirect_to = reverse('your-space-projects', args=[user_name])
                 redirect_to += "?show=%d" % project.pk
-                
+
+            #this changes for version-tracking purposes
+            projectform.instance.author = request.user
             projectform.save()
 
         if "Preview" == request.POST.get('submit',None):

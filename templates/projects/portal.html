@@ -85,7 +85,7 @@ Class Analysis
 	{%for clump in my_feed%}
 	<li>
 	  <div class="asset_title type-{{clump.type}}">
-	    <a href="{{clump.href}}" class="title">{{clump.title}}</a>
+	    <a href="{{clump.href}}" class="title">{{clump.title|default:"(Untitled)"}}</a>
 	  </div>
 	  <div class="asset-activities">
 	    {%for act in clump%}

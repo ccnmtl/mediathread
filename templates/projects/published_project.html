@@ -12,6 +12,7 @@
      Projects > 
      {% if project.title %}{{project.title}}{% else %}New project{% endif %}
 {% endif %}
+{% if version_number %}Version {{version_number}}{% endif %}
 {% endblock %}</title>
 
 {% block css %}
@@ -24,6 +25,7 @@
 {% block js %}
   <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js"></script>
 
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
@@ -34,7 +36,9 @@
 {% block content %}
   {{ block.super }}
 
-  <h1>{{project.title}}</h1>
+  <h1>{{project.title}}
+  {% if version_number %}Version {{version_number}}{% endif %}
+  </h1>
   <h2>by <span id="participants_chosen">{{project.attribution}}</span>
   </h2>
 
@@ -78,10 +82,43 @@
     </div>
   </div>
 
-{% if is_preview %}
 <div class="essay-options" style="padding: 1em;">
+{% if is_preview %}
  <a class="button" href=".">Save and continue editing</a>
+{% endif %}
+{% if is_space_owner or is_faculty %}
+<h3>
+  <a class="hs-control" href="#revision-history"></a>
+  Revision History
+</h3>
+<div  id="revision-history" {%if not version_number%}class="hs-init-hide"{%endif%} >
+<table>
+  <thead>
+    <th>Revision</th><th>Modified</th>
+  </thead>
+  <tbody>
+  {% for v in project.versions reversed %}
+  <tr
+      {% ifequal v.version_number version_number %}
+      class="revision-selected"
+      {% endifequal %}
+   ><td>
+    {% ifnotequal v.version_number version_number%}
+    <a href="{%url project_version_preview v.versioned_id v.version_number %}">
+    {% endifnotequal %}
+    Revision {{v.version_number}}
+    {% ifnotequal v.version_number version_number%}
+    </a>
+    {% endifnotequal %}
+  </td><td>
+    {{v.modified|date}} by {{v.instance.author.get_full_name|default:v.instance.author.username }}
+  </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
 </div>
 {% endif %}
+</div>
 
 {% endblock %}

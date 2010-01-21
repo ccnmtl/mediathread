@@ -20,7 +20,7 @@ urlpatterns = patterns(
         name='project-workspace',
         ),
 
-    url(r'^project/(?P<project_id>\d+)/version/(?P<version_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
         'project_version_preview',
         name='project_version_preview',
         ),

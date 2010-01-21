@@ -790,3 +790,6 @@ text-align: left;
     margin-left: 4em;
 }
 
+.revision-selected {
+    background-color:#ededed;
+}

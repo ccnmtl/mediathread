@@ -28,8 +28,8 @@ class Project(models.Model):
                                           verbose_name = 'Project Collaborators',
                                           )
 
-    only_save_version_if_changed = True
-    only_save_version_if_changed_fields_to_ignore = ['modified']
+    only_save_if_changed = True
+    only_save_version_if_changed_fields_to_ignore = ['modified','author']
 
 
     body = models.TextField(blank=True)

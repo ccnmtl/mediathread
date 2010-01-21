@@ -15,12 +15,12 @@ urlpatterns = patterns(
         name='your-space-projects',
         ),
         
-    url(r'^(?P<user_name>\w+)/project/(?P<project_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/$',
         'view_project',
         name='project-workspace',
         ),
 
-    url(r'^(?P<user_name>\w+)/project/(?P<project_id>\d+)/version/(?P<version_id>\d+)/$',
+    url(r'^project/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
         'project_version_preview',
         name='project_version_preview',
         ),

@@ -26,13 +26,13 @@
     
 	<div class="actions">
 	  <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
-	     href="{%url project-workspace user project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+	     href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
 	</div>
 	{% endif %}
 	
-	<a href="{%url project-workspace project.author project.id %}"
+	<a href="{%url project-workspace project.id %}"
 	   class="asset_title type-project"
-	   >{{project.title}}</a>
+	   >{{project.title|default:"(Untitled)"}}</a>
       </h3>
     
    

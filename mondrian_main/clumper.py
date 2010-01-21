@@ -9,7 +9,7 @@ Comment = models.get_model('comments','comment')
 ContentType = models.get_model('contenttypes','contenttype')
 
 def adapt_date(b):
-    date_fields = ('submit_date','added','modified')
+    date_fields = ('submit_date','modified','added',)
     return [getattr(b,d) for d in date_fields if hasattr(b,d)][0]
 
 class Clumper():
@@ -103,7 +103,6 @@ class Clumper():
 
         @staticmethod
         def adapt_user(thing):
-            if isinstance(thing,Project): return None
             return getattr(thing,'author',
                            getattr(thing,'user',None))
 

@@ -82,11 +82,11 @@ INSTALLED_APPS = (
     'mondrian.djangosherd',#strangely must precede assetmgr
     'mondrian.assetmgr',
     'mondrian.projects',
-    'django.contrib.comments',
-    'djangohelpers',
-    'mondrian.mondrian_main',
+    'mondrian.discussions',
     'django.contrib.comments',
     'threadedcomments',
+    'djangohelpers',
+    'mondrian.mondrian_main',
 )
 
 THUMBNAIL_SUBDIR = "thumbs"

@@ -1,0 +1,81 @@
+
+from djangohelpers.lib import rendered_with
+from djangohelpers.lib import allow_http
+
+from discussions.models import Discussion
+from structuredcollaboration.models import Collaboration
+from django.http import HttpResponseForbidden, HttpResponseServerError
+from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse,resolve
+from django.contrib.contenttypes.models import ContentType
+
+
+from courseaffils.lib import in_course_or_404
+from projects.forms import ProjectForm
+
+
+# tree management (add/remove leaf)
+# re-ordering
+# DO NOT PROVIDE 'MOVE' (intended to be unoptimized)
+
+@rendered_with('discussions/class_discussion.html')
+@allow_http("GET")
+def test_view(request):
+    return {
+        'is_space_owner': 'asdasda',
+        'space_owner': 'asdasd',
+        'project': 'asd',
+        }
+            
+
+@rendered_with('discussions/class_discussion.html')
+@allow_http("GET")
+def show(request, obj_id):
+    """View a discussion."""
+    #find structured_collaboration object with id obj_id
+    return {
+        'is_space_owner': 'asdasda',
+        'space_owner': 'asdasd',
+        'project': 'asd',
+        }            
+
+if 1 == 0:
+    def project_readonly_view(request, project_id):
+        project = get_object_or_404(Project, pk=project_id,
+                                    course=request.collaboration_context.content_object,
+                                    submitted=True)
+        return {
+            'is_space_owner': project.is_participant(request),
+            'space_owner': project.author,
+            'project': project,
+            }
+
+    def view_collaboration(request,context_slug,obj_type,obj_id):
+        context = get_object_or_404(Collaboration,slug=context_slug)
+        request.collaboration_context = context
+        collab = get_object_or_404(Collaboration,
+                                   _parent=context,#will be context=context
+                                   content_type=ContentType.objects.get(model=obj_type),
+                                   object_pk=obj_id)
+        if not collab.permission_to('read',request):
+            return HttpResponseForbidden("forbidden")
+        
+        #todo:set context on request
+        #Method 1. obj.default_view(request,obj)
+        if hasattr(collab.content_object,'default_view'):
+            return collab.content_object.default_view(request,collab.content_object)
+        possible_link = reverse('%s-view' % obj_type,
+                                args=[obj_id]
+                                )
+        #Method 2. reverse('{obj-type}-view',obj_id)
+        if possible_link:
+            view, args, kwargs = resolve(possible_link)
+            kwargs['request'] = request
+            return view(*args,**kwargs)
+
+        return HttpResponseServerError('No method to view object %s/%s/%d' %
+                                       (context_slug,obj_type,obj_id))
+                
+    def collaboration_rss(request,context_slug):
+        "RSS feed for collaboration tree"
+        pass

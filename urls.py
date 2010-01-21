@@ -36,6 +36,7 @@ urlpatterns = patterns('',
                            name="asset-save"),
 
                        (r'^asset/',include('mondrian.assetmgr.urls')),
+                       (r'^annotations/',include('mondrian.djangosherd.urls')),
                        (r'^yourspace/',include('mondrian.mondrian_main.urls')),
 
                        #redundant, but for published projects/legacy

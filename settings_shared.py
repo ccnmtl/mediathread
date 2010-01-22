@@ -82,9 +82,11 @@ INSTALLED_APPS = (
     'mondrian.djangosherd',#strangely must precede assetmgr
     'mondrian.assetmgr',
     'mondrian.projects',
+    'mondrian.discussions',
     'django.contrib.comments',
+    'threadedcomments',
     'djangohelpers',
-    'mondrian.mondrian_main'
+    'mondrian.mondrian_main',
 )
 
 THUMBNAIL_SUBDIR = "thumbs"
@@ -137,6 +139,7 @@ COURSEAFFILS_EXEMPT_PATHS = ANONYMOUS_PATHS
 COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']
 
 COMMENTS_ALLOW_PROFANITIES = True
+COMMENTS_APP = 'threadedcomments'
 
 
 #if you add a 'deploy_specific' directory

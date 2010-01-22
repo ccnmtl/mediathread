@@ -86,6 +86,25 @@ class Collaboration(models.Model):
                                                             object_pk=str(object.pk),
                                                             )
         return coll
+        
+        
+        
+    
+    def get_associated_collab(obj):
+        """
+        collaboration, if any, associated with this object:
+        Collaboration.get_associated_collabs(my_course)
+        """
+        #import pdb
+        #pdb.set_trace()
+        ct = ContentType.objects.get_for_model(type(obj))
+        return Collaboration.objects.get(
+            content_type=ct,
+            object_pk=str(obj.pk)
+        )
+    get_associated_collab = staticmethod(get_associated_collab)
+    
+        
 
     #these methods are for optimized recursive structures
     #while for other cases, we optimize for shallow structures

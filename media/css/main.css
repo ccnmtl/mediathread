@@ -886,3 +886,12 @@ body.fluid #content
 	text-transform: capitalize;
 	margin: .5em .5em .5em 18px;
 }
+
+
+/* ---- Threaded comments ---------- */
+form.threaded_comments_form ul li {
+ background: #AAA;
+ list-style-type: none;
+}
+
+/* ---- End threaded comments ---------- */

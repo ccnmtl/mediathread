@@ -56,14 +56,14 @@ My Projects
        
     
 	  <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
-	     href="{%url project-workspace user project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
-	  <a href="{%url project-workspace user project.id %}"><img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit"  /></a>
+	     href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+	  <a href="{%url project-workspace project.id %}"><img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit"  /></a>
 	  
 	</div>
 	{% endif %}
     
 	<a class="hs-control" href="#project-{{project.pk}}-metadata">  </a>
-	<a href="{%url project-workspace user project.id %}">{{project.title}}</a>
+	<a href="{%url project-workspace project.id %}">{{project.title}}</a>
       </h2>
     
    

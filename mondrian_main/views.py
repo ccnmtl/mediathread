@@ -20,6 +20,7 @@ from courseaffils.lib import users_in_course
 Asset = get_model('assetmgr','asset')
 SherdNote = get_model('djangosherd','sherdnote')
 Project = get_model('projects','project')
+ProjectVersion = get_model('projects','projectversion')
 User = get_model('auth','user')
 #for portal
 Comment = get_model('comments','comment')

@@ -15,6 +15,7 @@ class Project(models.Model):
 
     course = models.ForeignKey(Course)
 
+    #this is actually the LAST UPDATER for version-control purposes
     author = models.ForeignKey(User)
 
     #should be limited to course members
@@ -27,8 +28,8 @@ class Project(models.Model):
                                           verbose_name = 'Project Collaborators',
                                           )
 
-    only_save_version_if_changed = True
-    only_save_version_if_changed_fields_to_ignore = ['modified']
+    only_save_if_changed = True
+    only_save_version_if_changed_fields_to_ignore = ['modified','author']
 
 
     body = models.TextField(blank=True)
@@ -42,7 +43,6 @@ class Project(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('project-workspace', (), {
-                'user_name': self.author.username,
                 'project_id': self.pk,
                 })
 
@@ -50,6 +50,8 @@ class Project(models.Model):
     def save(self, *args, **kw):
         self.modified = datetime.datetime.today()
         models.Model.save(self, *args, **kw)
+        self.participants.add(self.author)
+        models.Model.save(self)
 
     def status(self):
         """

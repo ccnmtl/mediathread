@@ -5,7 +5,6 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 
 
-from modelversions import _rebuild_from_version as rebuild
 from django.db.models import get_model
 
 from tagging.models import Tag
@@ -57,18 +56,22 @@ def project_preview(request, user, project):
         
         
 
-@rendered_with('projects/preview_project.html')
-def project_version_preview(request, user_name, project_id, version_id):
-    #import pdb
-    project = get_object_or_404(Project, pk=project_id, course=request.course)
-    space_owner = in_course_or_404(user_name, request.course)
-    version = ProjectVersion.objects.get(version_number=version_id)
-    rebuild(version, project)
+@rendered_with('projects/published_project.html')
+def project_version_preview(request, project_id, version_number):
+    if not request.user.is_staff \
+            and not project.is_participant(request.user) \
+            and not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")    
+    version = get_object_or_404(ProjectVersion,
+                                versioned_id = project_id,
+                                version_number=version_number,
+                                course=request.course.id,
+                                )
+    project = version.instance()
     return {
+        'is_space_owner': project.is_participant(request.user),
         'project': project,
-        'space_owner': project.author,
-        'version_id': int(version_id),
-        'all_version_ids':  [p.version_number for p in  project.versions]
+        'version_number': int(version_number),
         }
         
         
@@ -76,21 +79,23 @@ def project_version_preview(request, user_name, project_id, version_id):
 @rendered_with('projects/published_project.html')
 @allow_http("GET")
 def project_readonly_view(request, project_id):
+    course = request.collaboration_context.content_object
     project = get_object_or_404(Project, pk=project_id,
-                                course=request.collaboration_context.content_object,
+                                course=course,
                                 submitted=True)
     return {
         'is_space_owner': project.is_participant(request),
         'space_owner': project.author,
         'project': project,
+        'is_faculty': course.is_faculty(request.user),
         }
 
 @allow_http("GET", "POST", "DELETE")
-def view_project(request, user_name, project_id):
-    space_owner = in_course_or_404(user_name, request.course)
-
+def view_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id,
                                 course=request.course)
+
+    space_owner = in_course_or_404(project.author.username, request.course)
 
     if project not in Project.get_user_projects(space_owner,request.course):
         return HttpResponseForbidden("forbidden")
@@ -102,12 +107,12 @@ def view_project(request, user_name, project_id):
         return HttpResponseRedirect(
             reverse('your-space-projects', args=[user_name]))
 
-    if request.method == "GET":
-        if project.is_participant(request.user):
-            return project_workspace(request, space_owner, project)
-        else:
-            return project_readonly_view(request, project.id)
+    if not project.is_participant(request.user):
+        return project_readonly_view(request, project.id)
+    #ok, now we know is_participant
 
+    if request.method == "GET":
+        return project_workspace(request, space_owner, project)
     
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project,data=request.POST)
@@ -117,7 +122,9 @@ def view_project(request, user_name, project_id):
                 projectform.instance.submitted = True
                 redirect_to = reverse('your-space-projects', args=[user_name])
                 redirect_to += "?show=%d" % project.pk
-                
+
+            #this changes for version-tracking purposes
+            projectform.instance.author = request.user
             projectform.save()
 
         if "Preview" == request.POST.get('submit',None):

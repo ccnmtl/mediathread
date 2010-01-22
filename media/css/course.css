@@ -474,8 +474,7 @@ margin:-2px -0.3em
 .archive {
 
    float:left;
-   width: 25em;
-   height: 19em;
+   width: 18em;
    margin: 0 1em 1em 1em;
    background-color: #ededed;
    border: 1px solid #ccc;
@@ -714,13 +713,11 @@ li .size7, li .size9 {font-size: 1.4em;  line-height: 1.5em;}
 
 border:1px solid #CCCCCC;
 float:left;
-height:29em;
 margin:0 1em;
 overflow-x:hidden;
 overflow-y:auto;
 text-align:left;
-max-width:50%;
-width: auto;
+width:60%;
 
 
 }
@@ -733,10 +730,10 @@ padding: .2em .5em .2em .5em;
 color: #dedede;
 font-weight: normal;
 text-align: left;
-
 }
 
-#external-archives p {
+#external-archives p,
+#external-archives h4 {
 
 margin: 1em 2em;
 
@@ -744,7 +741,7 @@ margin: 1em 2em;
 }
 
 #instructor-items {
-
+width:30%;
 border:1px solid #CCCCCC;
 float:left;
 height:29em;
@@ -790,3 +787,6 @@ text-align: left;
     margin-left: 4em;
 }
 
+.revision-selected {
+    background-color:#ededed;
+}

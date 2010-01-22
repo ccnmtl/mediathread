@@ -39,10 +39,16 @@ class Collaboration(models.Model):
     object_pk      = models.TextField(_('object ID'),null=True)
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
+    #when content_object is a modelversion of another type, then versioned_pk
+    #is a pointer to the versioned object (while object_pk points to the specific version)
+    versioned_pk      = models.TextField(_('versioned ID'),null=True)
 
     _policy = models.ForeignKey(CollaborationPolicyRecord,null=True,default=None)
     
-    _parent = models.ForeignKey('self',null=True,default=None)
+    _parent = models.ForeignKey('self',related_name='children',null=True,default=None)
+
+    #will eventually be used instead of _parent
+    context = models.ForeignKey('self',related_name='context_children',null=True,default=None)
 
     def inc_order():
         return Collaboration.objects.inc_order()

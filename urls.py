@@ -23,7 +23,7 @@ urlpatterns = patterns('',
                         {'next_page': redirect_after_logout}),
                        login_page,#see above
 
-                       (r'^admin/(.*)', admin.site.root),
+                       (r'^admin/', admin.site.urls),
                        (r'^tinymce/', include('tinymce.urls')),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
@@ -36,6 +36,7 @@ urlpatterns = patterns('',
                            name="asset-save"),
 
                        (r'^asset/',include('mondrian.assetmgr.urls')),
+                       (r'^annotations/',include('mondrian.djangosherd.urls')),
                        (r'^yourspace/',include('mondrian.mondrian_main.urls')),
 
                        #redundant, but for published projects/legacy

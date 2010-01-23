@@ -9,6 +9,10 @@ from djangosherd.models import Asset, SherdNote
 from djangosherd.models import NULL_FIELDS
 
 from djangohelpers.lib import allow_http
+from djangohelpers.lib import rendered_with
+
+from assetmgr.lib import annotated_by
+from courseaffils.lib import in_course_or_404
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
@@ -124,3 +128,15 @@ def edit_annotation(request, annot_id):
     
     redirect_to = request.GET.get('next', '.')
     return HttpResponseRedirect(redirect_to)
+
+
+@login_required
+@rendered_with('assetmgr/asset_table.html')
+def annotations_collection_fragment(request,username):
+    space_viewer = in_course_or_404(username, request.course)
+    assets = annotated_by(Asset.objects.filter(course=request.course),
+                          space_viewer)
+    return {
+        'space_viewer':space_viewer,
+        'assets':assets,
+        }

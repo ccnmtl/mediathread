@@ -21,7 +21,7 @@ Comment = models.get_model('comments','comment')
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 
-from assetmgr.lib import get_metadata
+from assetmgr.lib import get_metadata, annotated_by
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud

@@ -55,7 +55,7 @@
 		{%endif%}
   {% load user_projects smartif %}
   {% num_courses for user as user_courses %}
-  {% if user_courses > 1 %}
+  {% if user_courses > 1 or user.is_staff %}
 			<li><a href="/?unset_course">Switch Course</a></li>
   {% endif %}
 {% else %}

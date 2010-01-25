@@ -59,15 +59,9 @@
 	<div class="asset-title">from <a href="{{annotation.asset.get_absolute_url}}">{{annotation.asset.title|escape}}</a></div>
 	<div class="asset-links">
 	  <ul>
-	    {% for link in annotation.asset.source_set.all %}
-	    <li><a class="assetsource assetlabel-{{link.label}}" href="{{link.url}}">
-	      {%ifequal link.label "url" %}
-	      View Complete Record in Archive
-	      {%else%}
-	      {{link.label}}
-	      {%endifequal%}
-	    </a></li>
-	    {% endfor %}
+            {% with annotation.asset.source_set.all as assets_to_link %}
+              {% include "assetmgr/asset_links.html" %}
+            {% endwith %}
 	  </ul>
 	</div>
       </div>

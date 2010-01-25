@@ -91,6 +91,10 @@ class Asset(models.Model):
     def sources(self):
         return dict([(s.label,s) for s in Source.objects.filter(asset=self) ])
 
+    @property
+    def primary(self):
+        return Source.objects.get(asset=self,primary=True)
+
     def tags(self):
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
 

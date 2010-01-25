@@ -48,7 +48,7 @@ Class Analysis > Class Saved Items
 
   {% for asset in assets %}
   <div class="record">
-    <h2><a href="{{asset.get_absolute_url}}">{{asset.title}}</a></h2>
+    <h2 class="asset_title asset-{{asset.primary.label}}"><a href="{{asset.get_absolute_url}}">{{asset.title}}</a></h2>
     {%if asset.sources.thumb %}
       <img class="asset-thumb" src="{{asset.sources.thumb.url}}" />
     {% endif %}

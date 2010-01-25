@@ -84,7 +84,11 @@ Class Analysis
       <ul>
 	{%for clump in my_feed%}
 	<li>
-	  <div class="asset_title type-{{clump.type}}">
+	  <div class="asset_title type-{{clump.type}}
+                      {%ifequal clump.type "asset"%}
+                      asset-{{clump.content_object.primary.label}}
+                      {%endifequal%}
+                      ">
 	    <a href="{{clump.href}}" class="title">{{clump.title|default:"(Untitled)"}}</a>
 	  </div>
 	  <div class="asset-activities">

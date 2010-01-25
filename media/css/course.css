@@ -260,19 +260,29 @@ font-weight: normal;
 text-align: left;
 }
 
-.asset_title 
+.asset_title,
+#results_col h2.asset_title 
 {
   display:block;
-  }
-  
-.asset_title.type-asset
-{
-	background-image: url(../img/item_icon.jpg);
 	background-repeat: no-repeat;
 	background-position: left center;
 	padding: 3px 22px;
-	margin-top: -3px;
 }
+.asset_title {
+	margin-top: -3px;
+  }
+  
+.asset_title.asset-quicktime,
+.asset_title.asset-youtube
+{
+	background-image: url(../img/item_video.png);
+}
+
+.asset_title.asset-image
+{
+	background-image: url(../img/item_image.png);
+}
+
 
 .asset_title.type-project
 {

@@ -5,7 +5,7 @@
   {% get_global_annotation on asset by space_viewer as annotation %}
   {% tags_for_object annotation as user_asset_tags %}
 
-  <h2>
+  <h2 class="asset_title asset-{{asset.primary.label}}">
     {% if editable %}
     <div class="actions">
       <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"

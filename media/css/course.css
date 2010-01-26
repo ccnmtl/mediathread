@@ -261,7 +261,8 @@ text-align: left;
 }
 
 .asset_title,
-#results_col h2.asset_title 
+#results_col h2.asset_title,
+#asset_browse_col h2.asset_title
 {
   display:block;
 	background-repeat: no-repeat;

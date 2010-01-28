@@ -1,7 +1,7 @@
 {% load user_annotations tagging_tags helpful_tags %}
 
  {% for asset in assets %}
- <div id="record-{{asset.pk}}">
+ <div id="record-{{asset.pk}}" class="record">
   {% get_global_annotation on asset by space_viewer as annotation %}
   {% tags_for_object annotation as user_asset_tags %}
 
@@ -19,6 +19,10 @@
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
        href="{{asset.get_absolute_url}}">{{asset.title}}</a>
   </h2>
+
+  {%if asset.sources.thumb %}
+  <img class="asset-thumb" src="{{asset.sources.thumb.url}}" />
+  {% endif %}
 
   <div id="record-{{asset.pk}}-metadata" class="record-metadata">
     <ul class="record-metadata-list">

@@ -10,4 +10,7 @@ urlpatterns = patterns(
     url(r'^(?P<username>\w+)/$', 
         'annotations_collection_fragment', name="annotations-fragment"),
 
+    url(r'^iframe/(?P<asset_id>\w+)/(?P<annot_id>\w+)/$', 
+        'annotation_iframe_view', name="annotation-iframe"),
+
     )

@@ -94,6 +94,7 @@ def class_portal(request):
                           len(class_feed) >9 ),
                }
     return {
+        'is_faculty':c.is_faculty(user),
         'faculty_feed':prof_feed,
         #'class_feed':class_feed,
         'my_feed':my_feed,

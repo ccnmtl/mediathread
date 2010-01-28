@@ -182,7 +182,7 @@
       <h2><a class="hs-control" href="#discussion"></a>Class Discussion</h2>
       <div id="discussion">
 	{% load comments %}
-	{% if comments %}
+	{% if comments.10 %}
 	  {% render_comment_form for asset %}	
 	{% endif %}
 	{% for comment in comments %}

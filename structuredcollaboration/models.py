@@ -69,10 +69,15 @@ class Collaboration(models.Model):
 
 
     def get_parent(self):
-        pass
+        return self._parent
 
     def get_top_ancestor(self): #i.e. domain
-        pass
+        result = self
+        while result.get_parent():
+            print "moving up one"
+            result = result.get_parent()
+        return result
+        
 
     def append_child(self,object=None):
         coll, created = Collaboration.objects.get_or_create(_parent=self,

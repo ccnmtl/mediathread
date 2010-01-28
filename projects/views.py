@@ -33,6 +33,10 @@ def project_workspace(request, user, project):
 
     assets = annotated_by(Asset.objects.filter(course=request.course),
                           space_viewer)
+                          
+    #print assets
+    #import pdb
+    #pdb.set_trace()
 
     projectform = ProjectForm(request, instance=project)
     

@@ -119,23 +119,13 @@ Class Analysis
     <h2>Class discussions</h2>
     <div class="scroll">
       <ul>
+	    {%for disc in course_discussions%}
 	        <li>
 	          <div class="asset_title type-project">
-	            <a href="/discussion/test_view/" class="title">What is the subject matter of metaphysics?</a>
+	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc}}</a>
 	          </div>
 	        </li>
-	        <li>
-	          <div class="asset_title type-project">
-	            <a href="/discussion/test_view/" class="title">Is there a distinction between essence and existence?</a>
-	          </div>
-	        </li>
-	        <li>
-	          <div class="asset_title type-project">
-	            <a href="/discussion/test_view/" class="title">Can one substance can have more than one substantial form?</a>
-	          </div>
-	        </li>
-      
-      
+	    {%endfor%}
     </div>
  </div>
  

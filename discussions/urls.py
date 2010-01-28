@@ -9,8 +9,6 @@ urlpatterns = patterns(
     #    'view_collaboration',
     #    name='collaboration-view'),
 
-    #'discussions.views', url(r'^test_view/$', 'test_view', name='test_view'),
-
     'discussions.views', url(r'^show/(?P<obj_id>\d+)$', 'show', name='show_discussion'),
     )
 

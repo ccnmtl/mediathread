@@ -314,10 +314,13 @@ text-align: left;
   padding-left:1em;
  } 
 
+.asset-view {
+    /*so youtube 620px's can play on left*/
+    min-width:1000px;
+}
+
   .asset-object {
     width:60%;
-    padding: 1em;
-    margin-left: 1em;
     margin-right: 1em;
     min-width: 356px;
   }
@@ -370,7 +373,7 @@ div.project-table
  }
 .asset-table ul.asset-clips 
 { 
-  margin:1em;
+  margin:1em 0 1em 1em;
   margin-left:0;
  }
 .asset-table ul.asset-clips li 

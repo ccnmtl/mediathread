@@ -1,7 +1,7 @@
 {% load user_annotations tagging_tags helpful_tags %}
 
  {% for asset in assets %}
- <div id="record-{{asset.pk}}" class="record">
+ <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
   {% get_global_annotation on asset by space_viewer as annotation %}
   {% tags_for_object annotation as user_asset_tags %}
 
@@ -29,7 +29,7 @@
       <!--li><strong>Date added:</strong> {{asset.added|date}}</li-->
      <!-- <li>Last modified: {{asset.modified|date}}</li>-->
      {%if user_asset_tags %}
-      <li><strong>Personal Tags:</strong>
+      <li class="annotation-global-tags"><strong>Personal Tags:</strong>
        {% for tag in user_asset_tags %}
         {% if not page_in_edit_mode %}
          {% replace_value of 'tag' with tag.name in request.GET as querystring %}
@@ -44,7 +44,7 @@
       </li><!--asset tags-->
       {% endif %}
       {% if annotation.body %} 
-      <li>
+      <li class="annotation-global-body">
 	<strong>Note:</strong> {{annotation.body}} 
 	{% if editable %}  <a href="/asset/{{asset.pk}}/"><img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Note"  /></a> {% endif %}
       </li><!--asset tags-->
@@ -54,7 +54,7 @@
       {% get_annotations on asset by space_viewer as annotations %}
 
     {% if annotations.1 %}
-    <li><h3 class="asset-clips-label">Clips</h3>
+    <li>
     <ul class="asset-clips">
     {% for annotation in annotations %}
       {% if not annotation.is_null %}
@@ -97,7 +97,7 @@
 	  </div>
 	  {% endif %}<!-- annotation.tags-->
 	  {% if annotation.body %} 
-	  <div class="annotation-metadata-tags annotation-metadata"><strong>Note:</strong>
+	  <div class="annotation-metadata-body annotation-metadata"><strong>Note:</strong>
 	    {{annotation.body}} 
 	  </div>
 	  {% endif %}<!--annotation.body -->

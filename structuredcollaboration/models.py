@@ -42,14 +42,10 @@ class Collaboration(models.Model):
 
     _policy = models.ForeignKey(CollaborationPolicyRecord,null=True,default=None, blank=True)
     
-<<<<<<< HEAD
-    _parent = models.ForeignKey('self',null=True,default=None)
-=======
     _parent = models.ForeignKey('self',related_name='children',null=True,default=None, blank=True)
 
     #will eventually be used instead of _parent
     context = models.ForeignKey('self',related_name='context_children',null=True,default=None, blank=True)
->>>>>>> master
 
     def inc_order():
         return Collaboration.objects.inc_order()

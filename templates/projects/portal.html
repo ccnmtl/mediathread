@@ -6,7 +6,7 @@ Class Analysis
 {% block content %}
     {{ block.super }}
 <div class="panel">    
-  {%if display.instructor %}
+  {%if display.instructor or is_faculty %}
   <div class="panel-column panel-light">
     <h2>Instructor's Focus</h2>
     <div class="scroll">
@@ -42,6 +42,21 @@ Class Analysis
 	{% endfor %}
       </ul>
     {%endif%}
+    {% if is_faculty and not faculty_feed.projects %}
+    <p>
+      <i>Instructor projects are posted here.</i>
+      <br />
+      For students 'projects' are their assignment submissions. For you, an instructor, 
+      submitting a project posts it to the home page here.  Use this for
+      intro notes, sample assignments, assignment instructions, etc.
+      If you do not create and submit and projects, this pane will not be 
+      visible to students.
+    </p><p>     
+      We suggest that any assignment instructions should include direction
+      on what kinds of assets are acceptable.  In the past, without direction, students, have posted links to YouTube and other miscellaneous web resources when a particular archive was meant to be the focus.
+    </p>
+    {% endif %}
+
     </div>
   </div>
   {%endif%}{#display.instructor#}
@@ -84,7 +99,11 @@ Class Analysis
       <ul>
 	{%for clump in my_feed%}
 	<li>
-	  <div class="asset_title type-{{clump.type}}">
+	  <div class="asset_title type-{{clump.type}}
+                      {%ifequal clump.type "asset"%}
+                      asset-{{clump.content_object.primary.label}}
+                      {%endifequal%}
+                      ">
 	    <a href="{{clump.href}}" class="title">{{clump.title|default:"(Untitled)"}}</a>
 	  </div>
 	  <div class="asset-activities">

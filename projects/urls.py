@@ -24,6 +24,10 @@ urlpatterns = patterns(
         'project_version_preview',
         name='project_version_preview',
         ),
+    url(r'^projectversion/(?P<projectversion_id>\d+)/$',
+        'project_version_view',
+        name='projectversion-view',
+        ),
 
 
     )

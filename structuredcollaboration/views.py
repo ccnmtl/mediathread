@@ -8,13 +8,34 @@ from django.contrib.contenttypes.models import ContentType
 # re-ordering
 # DO NOT PROVIDE 'MOVE' (intended to be unoptimized)
 
-def view_collaboration(request,context_slug,obj_type,collab_id):
+def view_collab_by_obj(request,context_slug,obj_type,obj_id):
     context = get_object_or_404(Collaboration,slug=context_slug)
     request.collaboration_context = context
     collab = get_object_or_404(Collaboration,
-                               _parent=context,#will be context=context
+                               context=context,
                                content_type=ContentType.objects.get(model=obj_type),
+                               object_pk=obj_id
+                               )
+    return serve_collaboration(request, collab)
+
+def view_collab_by_collab(request,context_slug,collab_id):
+    context = get_object_or_404(Collaboration,slug=context_slug)
+    request.collaboration_context = context
+    collab = get_object_or_404(Collaboration,
+                               context=context,
                                pk=collab_id)
+    return serve_collaboration(request, collab)
+
+def view_collab_by_slug(request,context_slug,collab_slug):
+    context = get_object_or_404(Collaboration,slug=context_slug)
+    request.collaboration_context = context
+    collab = get_object_or_404(Collaboration,
+                               context=context,
+                               slug=collab_slug)
+    return serve_collaboration(request, collab)
+            
+
+def serve_collaboration(request, collab):
     if not collab.permission_to('read',request):
         return HttpResponseForbidden("forbidden")
     
@@ -28,17 +49,22 @@ def view_collaboration(request,context_slug,obj_type,collab_id):
             return versioned_object.default_view(request,versioned_object)
 
     #Method 2. reverse('{obj-type}-view',obj_id)
-    possible_link = reverse('%s-view' % obj_type,
+    possible_link = reverse('%s-view' % collab.content_type.model,
                             args=[collab.content_object.pk]
                             )
     if possible_link:
         view, args, kwargs = resolve(possible_link)
         kwargs['request'] = request
+        if 'check_permission' in view.func_code.co_varnames:
+            kwargs['check_permission'] = False
         return view(*args,**kwargs)
 
     return HttpResponseServerError('No method to view object %s/%s/%d' %
-                                   (context_slug,obj_type,collab_id))
-            
+                                   (collab.pk, 
+                                    collab.content_type.model, 
+                                    collab.content_object.pk, )
+                                   )
+
 def collaboration_rss(request,context_slug):
     "RSS feed for collaboration tree"
     pass

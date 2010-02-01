@@ -104,6 +104,7 @@ def class_portal(request):
     discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == c]
     
     return {
+        'is_faculty':c.is_faculty(user),
         'faculty_feed':prof_feed,
         #'class_feed':class_feed,
         'my_feed':my_feed,

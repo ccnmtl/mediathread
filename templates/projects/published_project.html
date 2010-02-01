@@ -5,13 +5,9 @@
 <title>{% block title %}
 {% if is_space_owner %}
      Your Space > 
-     Projects > 
-     {% if project.title %}{{project.title}}{% else %}New project{% endif %}
-{% else %}
-     {{space_owner.get_full_name|default:space_owner.username}}'s Space > 
-     Projects > 
-     {% if project.title %}{{project.title}}{% else %}New project{% endif %}
 {% endif %}
+     Projects > 
+     {{project.title|default:"New project"}}
 {% if version_number %}Version {{version_number}}{% endif %}
 {% endblock %}</title>
 
@@ -50,7 +46,7 @@
       </div>  
     </p>
   </div>
-  <div class="asset-view">
+  <div class="asset-view asset-view-small">
     <div class="annotation-links">
       {% for annotation in project.citations %}      
       <div class="annotation annotation{{annotation.id}}">
@@ -59,15 +55,9 @@
 	<div class="asset-title">from <a href="{{annotation.asset.get_absolute_url}}">{{annotation.asset.title|escape}}</a></div>
 	<div class="asset-links">
 	  <ul>
-	    {% for link in annotation.asset.source_set.all %}
-	    <li><a class="assetsource assetlabel-{{link.label}}" href="{{link.url}}">
-	      {%ifequal link.label "url" %}
-	      View Complete Record in Archive
-	      {%else%}
-	      {{link.label}}
-	      {%endifequal%}
-	    </a></li>
-	    {% endfor %}
+            {% with annotation.asset.source_set.all as assets_to_link %}
+              {% include "assetmgr/asset_links.html" %}
+            {% endwith %}
 	  </ul>
 	</div>
       </div>

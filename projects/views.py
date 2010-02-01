@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseForbidden
+from django.http import HttpResponse
 
 from django.shortcuts import get_object_or_404
 
@@ -11,7 +12,9 @@ from tagging.models import Tag
 from tagging.utils import calculate_cloud
 
 from assetmgr.lib import annotated_by
-
+import simplejson as json
+from random import choice
+import string
 
 Asset = get_model('assetmgr','asset')
 SherdNote = get_model('djangosherd','sherdnote')
@@ -61,32 +64,42 @@ def project_preview(request, user, project):
         
 
 @rendered_with('projects/published_project.html')
-def project_version_preview(request, project_id, version_number):
-    if not request.user.is_staff \
+def project_version_preview(request, project_id, version_number, check_permission=True):
+    if check_permission and \
+            not request.user.is_staff \
             and not project.is_participant(request.user) \
             and not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")    
     version = get_object_or_404(ProjectVersion,
                                 versioned_id = project_id,
                                 version_number=version_number,
-                                course=request.course.id,
                                 )
     project = version.instance()
+    if request.META['HTTP_ACCEPT'].find('json') >=0:
+        return project_json(request, project)
     return {
         'is_space_owner': project.is_participant(request.user),
         'project': project,
         'version_number': int(version_number),
         }
         
-        
+def project_version_view(request, projectversion_id, check_permission=True):
+    pv = get_object_or_404(ProjectVersion,
+                           pk=projectversion_id)
+    return project_version_preview(request, 
+                                   pv.versioned_id, 
+                                   pv.version_number, 
+                                   check_permission=check_permission)
 
 @rendered_with('projects/published_project.html')
 @allow_http("GET")
-def project_readonly_view(request, project_id):
+def project_readonly_view(request, project_id, check_permission=True):
     course = request.collaboration_context.content_object
     project = get_object_or_404(Project, pk=project_id,
                                 course=course,
                                 submitted=True)
+    if request.META['HTTP_ACCEPT'].find('json') >=0:
+        return project_json(request, project)
     return {
         'is_space_owner': project.is_participant(request),
         'space_owner': project.author,
@@ -174,3 +187,42 @@ def your_projects(request, user_name):
         project = Project(author=user, course=request.course, title=title)
         project.save()
         return HttpResponseRedirect(project.get_absolute_url())
+
+def project_json(request,project):
+    rand = ''.join([choice(string.letters) for i in range(5)])
+    data = {'project':{'title':project.title,
+                       'body':project.body,
+                       'participants':[{'name':p.get_full_name()} for p in project.participants.all()],
+                       'id':project.pk,
+                       },
+            'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+                            {'sources':dict([(s.label, {
+                                        'label':s.label,
+                                        'url':s.url,
+                                        'width':s.width,
+                                        'height':s.height,
+                                        'primary':s.primary
+                                        }) for s in ann.asset.source_set.all()]),
+                             'primary':ann.asset.primary.label,
+                             'title':ann.asset.title, 
+                             'metadata':json.loads(ann.asset.metadata_blob)
+                             }
+                            ) for ann in project.citations()]),
+            
+            'annotations':[
+            {'asset_key':'%s_%s' % (rand,ann.asset_id),
+             'id':ann.pk,
+             'range1':ann.range1,
+             'range2':ann.range2,
+             'annotation':ann.annotation(),
+             'title':ann.title,
+             'author':{'id':ann.author_id,
+                       'name':ann.author.get_full_name(),
+                       },
+             
+             } for ann in project.citations()
+            ]
+            }
+    return HttpResponse(json.dumps(data, indent=2),
+                        mimetype='application/json')
+

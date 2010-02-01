@@ -1,5 +1,6 @@
 import datetime
 import re
+import simplejson as json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -27,6 +28,12 @@ class Annotation(models.Model):
     range1 = models.FloatField(default=None, null=True)
     range2 = models.FloatField(default=None, null=True)
     annotation_data = models.TextField(blank=True, null=True)
+
+    def annotation(self):
+        if self.annotation_data:
+            return json.loads(self.annotation_data)
+        else:
+            return None
 
     def is_null(self):
         return self.range1 is None and self.range2 is None

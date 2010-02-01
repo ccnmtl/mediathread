@@ -124,6 +124,7 @@ ANONYMOUS_PATHS = ('/accounts/',
                    )
 
 COURSEAFFILS_PATHS = ('/asset/',
+                      '/annotations/',
                       '/save',
                       '/yourspace/',
                       '/project/',

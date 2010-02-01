@@ -11,7 +11,7 @@ Explore Collections
 {%if request.course.asset_set.archives %}
     <div id="external-archives">
     <h2>External Archives</h2>
-    <p>Browse items from the collection(s) listed below. <br />To add an item to your "My Analysis" space, click its <img src="/site_media/img/analyze_this.png" alt="" style="vertical-align: bottom"> button.</p>
+    <p>Browse items from the archives listed below. <br />To add an item to your "My Analysis" space, click its <img src="/site_media/img/analyze_this.png" alt="" style="vertical-align: bottom"> button.</p>
     <br /> 
     {%for archive in archives %}
        <div class="archive">
@@ -24,6 +24,22 @@ Explore Collections
 	 </p>
        </div>
     {%endfor%}
+    <div style="clear:both">
+    <h2>Bookmarklet</h2>
+    <p>
+      Right-click [ <a href='javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(mondrian_url,mondrian_action){ {% include "assetmgr/bookmarklet.js" %}  })("http://{{request.get_host}}/save/?","jump")'>Analyze w/Mondrian</a> ] and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.
+      Then when you are on a supported site's asset page, run the bookmarklet.
+    </p>
+
+      <h4>Currently Supported Sites</h4> 
+
+      <ul>
+          <li><a href="http://www.youtube.com/">YouTube</a></li>
+          <li><a href="http://digitaltibet.ccnmtl.columbia.edu/">DigitalTibet.ccnmtl.columbia.edu</li>
+          <li><a href="http://vietnamwararchive.ccnmtl.columbia.edu/">vietnamwararchive.ccnmtl.columbia.edu</a> (CU affiliates only)</li>
+          <li><a href="http://thlib.org/places/monasteries/meru-nyingpa/murals/">The Tibetan & Himalayan Library</a> (e.g. click to see High-Resolution Murals) </li>
+        </ul>
+  </div>
 </div>
 {%endif%}
 

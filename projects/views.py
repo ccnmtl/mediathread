@@ -109,7 +109,7 @@ def view_project(request, project_id):
     if request.method == "DELETE":
         project.delete()
         return HttpResponseRedirect(
-            reverse('your-space-projects', args=[user_name]))
+            reverse('your-space-records', args=[request.user.username]))
 
     if not project.is_participant(request.user):
         return project_readonly_view(request, project.id)
@@ -124,7 +124,7 @@ def view_project(request, project_id):
         if projectform.is_valid():
             if "Submit"== request.POST.get('submit',None):
                 projectform.instance.submitted = True
-                redirect_to = reverse('your-space-projects', args=[user_name])
+                redirect_to = reverse('your-space-records', args=[request.user.username])
                 redirect_to += "?show=%d" % project.pk
 
             #this changes for version-tracking purposes

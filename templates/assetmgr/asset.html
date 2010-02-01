@@ -159,6 +159,47 @@
             {% endfor %}
 	  </ul>
       </div><!--end id="other_people_annotations" -->
+      
+      
+      
+      
+     <h2> <a class="hs-control" href="#discussions"></a>Discussions of this item</h2>
+     <div id="discussions" class="sub-control">
+	    <ul>
+	    {%if discussions%}
+	        {%for disc in discussions%}
+	            <li>
+	              <div class="asset_title type-project">
+	                <a href="/discussion/show/{{disc.id}}" class="title">{{disc}}</a>
+	              </div>
+	            </li>
+	        {%endfor%}
+	    {%endif%}
+            <form action="/discussion/new/" method="POST">
+                    <li>
+                        <label for="id_comment_html" >New discussion:</label>
+                        <input type="text" name="comment_html" id="comment_html" />
+                        <input type="hidden" name="app_label" id="app_label" value="assetmgr"/>
+                        <input type="hidden" name="model" id="model" value="asset"/>
+                        <input type="hidden" name="obj_pk" id="obj_pk" value="{{asset.pk}}"/>
+                    </li>
+                    <li><input type="submit" value="Start Discussion"/></li>
+            </form>
+      </ul>
+	  
+      </div><!--end id="discussions" -->
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       {% endif %}<!--end if not mock -->
    </div> <!-- end "analysis" tab -->
 

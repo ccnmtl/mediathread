@@ -894,6 +894,10 @@ form.threaded_comments_form ul li {
  list-style-type: none;
 }
 
+p.respond_prompt {
+    color:red
+}
+
 p.threaded_comment_text {
  background: #BBB;
 }

@@ -99,43 +99,17 @@ def class_portal(request):
                'course': (len(prof_feed['tags']) < 5 or
                           len(class_feed) >9 ),
                }
-               
-    
-    
-    current_plan = """
-
-    AS of FRIDAY:
-    Ditching the model for the project.
-        Just add for now:
-            a loop that checks for any threadedcomments_comment  objects that point at an SC that itself has the course as its ancestor.
-            for each of those, provide a link to a view in the discussion project views.
-	            in such a view, show the tree associated with that top-level threaded discussion.
-
-    """
-    
-    #Assumption: for now, on the course page, we are displaying all the course discussions.
-    
-    
-    #course_collab = Collaboration.get_associated_collab(c)
-    #Meh -- not sure if we want a discussion object at all.
-    #discussion_type = ContentType.objects.get_for_model(Discussion)
-    #collaborations_for_discussions = [c for c in all_collaborations_for_this_class if c.content_type == discussion_type]
-    #course_discussions =  [c.content_object for c in collaborations_for_discussions]
-    
-    
-    all_collaborations_for_this_course = [ccc for ccc in Collaboration.objects.all() if ccc.get_top_ancestor().content_object == c]
-    
-    
-    #for now let's just display ALL course discussions on the course page, regardless of what their collab object actually is for:
-    course_discussions = [z for z in ThreadedComment.objects.filter(parent=None) if z.content_object in all_collaborations_for_this_course]
-    
+         
+    #TODO: move this into a nice class method.           
+    discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == c]
     
     return {
         'faculty_feed':prof_feed,
         #'class_feed':class_feed,
         'my_feed':my_feed,
         'display':display,
-        'course_discussions' : course_discussions,
+        'discussions' : discussions,
+        'course_id' : c.id,
         #'new_assets':latest_saves,
         #'popular_assets': popular_assets,
         'tag_cloud': tag_cloud,

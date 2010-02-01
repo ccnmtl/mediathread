@@ -4,6 +4,8 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
+from threadedcomments import ThreadedComment
 
 from django.shortcuts import get_object_or_404
 from django.db import models
@@ -281,6 +283,13 @@ def asset_workspace(request, asset_id):
                 ), counts=True))
 
     comments = Comment.objects.for_model(asset)
+    
+    #import pdb
+    #pdb.set_trace()
+    
+    #TODO: make this a nice class method.
+    discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == asset]
+
 
     return {
         'asset': asset,
@@ -291,6 +300,7 @@ def asset_workspace(request, asset_id):
         'user_tags': user_tags,
         'annotation_form': AnnotationForm(prefix="annotation"),
         'global_annotation_form': GlobalAnnotationForm(instance=global_annotation, prefix="annotation"),
+        'discussions' : discussions
         }
 
 from django.http import HttpResponseForbidden

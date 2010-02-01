@@ -1,14 +1,13 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-
 urlpatterns = patterns(
 
-    #'structuredcollaboration.views',
-    #
-    #url(r'^(?P<context_slug>\w+)/(?P<obj_type>\w+)/(?P<obj_id>\d+)/$',
-    #    'view_collaboration',
-    #    name='collaboration-view'),
+    #show a discussion:    
+    'discussions.views', url(r'^show/(?P<discussion_id>\d+)$', 'show', name='show_discussion'),
 
-    'discussions.views', url(r'^show/(?P<obj_id>\d+)$', 'show', name='show_discussion'),
+    #create a new discussion of an arbitrary model instance:
+    (r'^new/$', 'new'),
+
+    #TODO: override comments posted view:    
+    #(r'^comments/posted/$', 'my_comment_posted'),
     )
-

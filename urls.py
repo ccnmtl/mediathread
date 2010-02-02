@@ -19,11 +19,13 @@ if hasattr(settings,'WIND_BASE'):
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 urlpatterns = patterns('',
+                       (r'^comments/', include('django.contrib.comments.urls')),
+                       
                        (r'^accounts/logout/$','django.contrib.auth.views.logout', 
                         {'next_page': redirect_after_logout}),
                        login_page,#see above
 
-                       (r'^admin/', admin.site.urls),
+                       (r'^admin/(.*)', admin.site.root),
                        (r'^tinymce/', include('tinymce.urls')),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
@@ -36,9 +38,8 @@ urlpatterns = patterns('',
                            name="asset-save"),
 
                        (r'^asset/',include('mondrian.assetmgr.urls')),
-                       (r'^annotations/',include('mondrian.djangosherd.urls')),
                        (r'^yourspace/',include('mondrian.mondrian_main.urls')),
-
+                       
                        #redundant, but for published projects/legacy
                        #(r'^project/',include('mondrian.projects.urls')),
                        #override/shortcut for published projects
@@ -47,11 +48,11 @@ urlpatterns = patterns('',
                            name='project-view'
                            ),
                        (r'^explore/$','assetmgr.views.archive_explore'),
-                       (r'^comments/', include('django.contrib.comments.urls')),
+
+                       #threaded discussion:
+                       (r'^discussion/',include('mondrian.discussions.urls')),
 
                        ### Public Access ###
-                       
                        (r'', include(structuredcollaboration.urls)), #import at root
                        
-
 )

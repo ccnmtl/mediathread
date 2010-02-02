@@ -3,6 +3,8 @@ from tagging.utils import calculate_cloud
 
 from assetmgr.lib import most_popular,annotated_by
 from courseaffils.lib import in_course_or_404
+from courseaffils.models import Course
+from discussions.models import Discussion
 
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
@@ -13,9 +15,13 @@ from django.core.urlresolvers import reverse
 import datetime
 from django.db.models import get_model,Q
 
+
 from clumper import Clumper
 
 from courseaffils.lib import users_in_course
+from threadedcomments import ThreadedComment
+from structuredcollaboration.models import Collaboration
+
 
 Asset = get_model('assetmgr','asset')
 SherdNote = get_model('djangosherd','sherdnote')
@@ -93,12 +99,18 @@ def class_portal(request):
                'course': (len(prof_feed['tags']) < 5 or
                           len(class_feed) >9 ),
                }
+         
+    #TODO: move this into a nice class method.           
+    discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == c]
+    
     return {
         'is_faculty':c.is_faculty(user),
         'faculty_feed':prof_feed,
         #'class_feed':class_feed,
         'my_feed':my_feed,
         'display':display,
+        'discussions' : discussions,
+        'course_id' : c.id,
         #'new_assets':latest_saves,
         #'popular_assets': popular_assets,
         'tag_cloud': tag_cloud,

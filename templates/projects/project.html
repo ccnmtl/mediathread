@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load user_annotations tagging_tags smartif user_projects %}
+{% load user_annotations tagging_tags smartif user_projects threadedcomments_tags %}
 
 <title> {% block title %}
 {% if is_space_owner %}
@@ -36,10 +36,7 @@
 {% endblock %}
 
 {% block content %}
-  {{ block.super }}
-
-
-  
+{{ block.super }}
 <h1>{% if is_space_owner %}
     My Projects > 
     Editing Project: {% if project.title %}{{project.title}}{% else %}New project{% endif %}
@@ -96,12 +93,13 @@
 	</div>
 	
       </p>
+      
+      
      <br /> 
       <input type="submit" name="submit" value="Save draft"/>
       <input type="submit" name="submit" value="Preview"/>
       <input type="submit" name="submit" value="Submit"/>
    
-  </div>
      </form>
-
+   </div>
 {% endblock %}

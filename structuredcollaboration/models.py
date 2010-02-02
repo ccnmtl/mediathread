@@ -39,9 +39,6 @@ class Collaboration(models.Model):
     object_pk      = models.TextField(_('object ID'),null=True)
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
-    #when content_object is a modelversion of another type, then versioned_pk
-    #is a pointer to the versioned object (while object_pk points to the specific version)
-    versioned_pk      = models.TextField(_('versioned ID'),null=True)
 
     _policy = models.ForeignKey(CollaborationPolicyRecord,null=True,default=None, blank=True)
     
@@ -75,10 +72,15 @@ class Collaboration(models.Model):
 
 
     def get_parent(self):
-        pass
+        return self._parent
 
     def get_top_ancestor(self): #i.e. domain
-        pass
+        result = self
+        while result.get_parent():
+            print "moving up one"
+            result = result.get_parent()
+        return result
+        
 
     def append_child(self,object=None):
         coll, created = Collaboration.objects.get_or_create(_parent=self,
@@ -86,6 +88,25 @@ class Collaboration(models.Model):
                                                             object_pk=str(object.pk),
                                                             )
         return coll
+        
+        
+        
+    
+    def get_associated_collab(obj):
+        """
+        collaboration, if any, associated with this object:
+        Collaboration.get_associated_collabs(my_course)
+        """
+        #import pdb
+        #pdb.set_trace()
+        ct = ContentType.objects.get_for_model(type(obj))
+        return Collaboration.objects.get(
+            content_type=ct,
+            object_pk=str(obj.pk)
+        )
+    get_associated_collab = staticmethod(get_associated_collab)
+    
+        
 
     #these methods are for optimized recursive structures
     #while for other cases, we optimize for shallow structures

@@ -129,7 +129,44 @@ Class Analysis
 	{%endfor%}
       </ul>
     </div>
- </div> <div class="visualclear"></div>
+ </div> 
+ 
+ <!-- start discussion list -->
+  <div class="panel-column
+	      {%if not display.course %}panel-column-stump{%endif%}
+	      ">
+    <h2>Class discussions</h2>
+    <div class="scroll">
+      <ul>
+	    {%for disc in discussions%}
+	        <li>
+	          <div class="asset_title type-project">
+	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc}}</a>
+	          </div>
+	        </li>
+	    {%endfor%}
+    	 <li>
+            <form action="/discussion/new/" method="POST">
+                <ul >
+                    <li>
+                        <label for="id_comment_html" class="invisible">Your comment:</label>
+                        <input type="text" name="comment_html" id="comment_html" />
+                        <input type="hidden" name="app_label" id="app_label" value="courseaffils"/>
+                        <input type="hidden" name="model" id="model" value="course"/>
+                        <input type="hidden" name="obj_pk" id="obj_pk" value="{{course_id}}"/>
+                    </li>
+                    <li><input type="submit" value="Start Discussion"/></li>
+                </ul>
+            </form>
+        </li>
+      </ul>
+    </div>
+ </div>
+ 
+ <!-- end discussion list -->
+ 
+ 
+ <div class="visualclear"></div>
 
 </div>
 </div>

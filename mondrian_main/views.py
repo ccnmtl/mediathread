@@ -100,7 +100,9 @@ def class_portal(request):
                           len(class_feed) >9 ),
                }
          
-    #TODO: move this into a nice class method.           
+    #TODO: move this into a nice class method.      
+    import pdb     
+    #pdb.set_trace()
     discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == c]
     
     return {

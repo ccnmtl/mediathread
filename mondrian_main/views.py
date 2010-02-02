@@ -19,10 +19,9 @@ from django.db.models import get_model,Q
 from clumper import Clumper
 
 from courseaffils.lib import users_in_course
-from threadedcomments import ThreadedComment
-from structuredcollaboration.models import Collaboration
 
-
+ThreadedComment = get_model('threadedcomments', 'threadedcomment')
+Collaboration = get_model('structuredcollaboration', 'collaboration')
 Asset = get_model('assetmgr','asset')
 SherdNote = get_model('djangosherd','sherdnote')
 Project = get_model('projects','project')

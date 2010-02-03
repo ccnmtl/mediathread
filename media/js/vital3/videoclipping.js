@@ -24,6 +24,7 @@ var CLIP_MARKER_WIDTH = 7;
 // createLoggingPane();
 
 function grabTime() {
+    log('grabTime');
     iotime = theMovie.GetTime();
     currtime = intToCode(iotime, tctime);
     $('currtime').innerHTML = currtime;
@@ -35,6 +36,7 @@ function grabTime() {
 }
 
 function startAtStartTime(autoplay) {
+    log('startAtStartTime');
     function tryStart(autoplay) {
         try {
             if (testQT()) {
@@ -51,6 +53,7 @@ function startAtStartTime(autoplay) {
     tryStart(autoplay);
 }
 
+/** Refactored into clipstrip
 function jumpToEndTime() {
     playRate = parseInt(theMovie.GetRate(), 10);
     theMovie.Stop(); // HACK: QT doesn't rebuffer if we don't stop-start
@@ -74,29 +77,56 @@ function jumpToStartTime(autoplay) {
         theMovie.Play();
     }
 }
+**/
 
 /**
- * Refactored into vitalwrapper.js. Soon to be deleted! function InMovieTime() { //
- * Set the Start Time if (currtime != '') { startime = currtime;
- * document.forms['videonoteform'].clipBegin.value = startime; startIntTime =
- * iotime; if (endIntTime < startIntTime) { wd('InMovieTime--bring end to
- * start', endIntTime, startIntTime); endtime = startime; stopAtEndTime = false;
- * endIntTime = startIntTime; document.forms['videonoteform'].clipEnd.value =
- * startime; } moveClipStrip(startIntTime, endIntTime); if
- * (document.forms['videonoteform'].clipType[1].checked) { //Marker cliptype
- * theMovie.Stop(); } initQtDuration(); } }
- * 
- * function OutMovieTime() { // Set the End Time if (currtime != '') { //
- * document.forms['videonoteform'].endsec.value = tctime.sec; //
- * document.forms['videonoteform'].endmin.value = tctime.min; //
- * document.forms['videonoteform'].endhrs.value = tctime.hr; endtime = currtime;
- * document.forms['videonoteform'].clipEnd.value = endtime; endIntTime = iotime;
- * if (endIntTime < startIntTime) { startime = endtime; startIntTime =
- * endIntTime; ; document.forms['videonoteform'].clipBegin.value = endtime; }
- * moveClipStrip(startIntTime, endIntTime); theMovie.Stop(); initQtDuration(); } }
- */
+  * Refactored into vitalwrapper.js. Soon to be deleted! 
+function InMovieTime() { 
+    // Set the Start Time 
+    if (currtime != '') { 
+        startime = currtime;
+        document.forms['videonoteform'].clipBegin.value = startime; 
+        startIntTime = iotime; 
+        if (endIntTime < startIntTime) { 
+            wd('InMovieTime--bring end to start', endIntTime, startIntTime); 
+            endtime = startime; 
+            stopAtEndTime = false;
+            endIntTime = startIntTime; 
+            document.forms['videonoteform'].clipEnd.value = startime; 
+        } 
+        moveClipStrip(startIntTime, endIntTime); 
+        if (document.forms['videonoteform'].clipType[1].checked) { 
+            //Marker cliptype
+            theMovie.Stop(); 
+        } 
+        initQtDuration(); 
+     } 
+}
 
+function OutMovieTime() { 
+    // Set the End Time 
+    if (currtime != '') { 
+        // document.forms['videonoteform'].endsec.value = tctime.sec; 
+        // document.forms['videonoteform'].endmin.value = tctime.min; 
+        // document.forms['videonoteform'].endhrs.value = tctime.hr; 
+        endtime = currtime;
+        document.forms['videonoteform'].clipEnd.value = endtime; 
+        endIntTime = iotime;
+        if (endIntTime < startIntTime) { 
+            startime = endtime; 
+            startIntTime = endIntTime; 
+            document.forms['videonoteform'].clipBegin.value = endtime; 
+        }
+        moveClipStrip(startIntTime, endIntTime); 
+        theMovie.Stop(); 
+        initQtDuration(); 
+    } 
+}
+**/
+
+/** NO LONGER IN USE. Was called by vitalwrapper.js
 function formToClip() {
+    log('formToClip');
     startime = document.forms['videonoteform'].clipBegin.value;
     endtime = document.forms['videonoteform'].clipEnd.value;
     if (startime.match(/[^0-9:.]/))
@@ -107,6 +137,7 @@ function formToClip() {
     endIntTime = codeToInt(endtime);
     moveClipStrip(startIntTime, endIntTime);
 }
+**/
 
 function codeToInt(code) {
     // takes a timecode like '0:01:36:00.0' and turns it into a QT int in frames
@@ -146,6 +177,7 @@ function intToCode(intTime, myTC) {
 }
 
 function testQT() {
+    log('testQT');
     // qtObj = document.movie1;
     if (typeof (theMovie) == 'undefined') {
         throw "movie object does not exist";
@@ -166,6 +198,7 @@ function testQT() {
 }
 
 function testClip() {
+    log('testClip: ' + clipType);
     if (clipType == 'Marker') {
         endtime = startime;
         if (typeof (theMovie) != 'undefined'
@@ -184,30 +217,51 @@ function testClip() {
     if (theMovie.GetMaxTimeLoaded() < startIntTime) {
         throw "not enough of the movie downloaded";
     }
-    initClipStrip();
+    //initClipStrip();
 }
 
+/** refactored into clipstrip
+function initClipStrip() {
+    log('initClipStrip');
+    try {
+        moveClipStrip(startIntTime, endIntTime);
+        if (!currentUID()) {
+            clipStripStart.style.display = 'none';
+            clipStripRange.style.display = 'none';
+            clipStripEnd.style.display = 'none';
+        }
+
+    } catch (err) {
+        logError('clipstrip failed to init', err);
+    }
+}
+**/
+/** NOT USED
 function afterQTreallyLoads() {
-    /*
      * If we can somehow know when QT has really really loaded (not just says
      * it's loaded) and all functions return valid values then this is what we
      * would run Since we can't do this, most of these are done 'just in time'
      * or quite redundantly
-     */
     conformProportions(theMovie, 320, 240);
     movscale = theMovie.GetTimeScale();
     initQtDuration();
     initClipStrip();
 }
+**/
 
 function initQtDuration() {
-    movDuration = theMovie.GetDuration();
-    movlen = intToCode(movDuration);
-    document.getElementById("totalcliplength").innerHTML = movlen;
+    log('initQTDuration ' + console.trace());
+    
+    if (theMovie) {
+        movDuration = theMovie.GetDuration();
+        movlen = intToCode(movDuration);
+        document.getElementById("totalcliplength").innerHTML = movlen;
+    }
 }
 
+/** NOT USED
 function conformProportions(mymovie, w, h) {
-    /*
+    
      * This function still doesn't work when QT loads the movie in the
      * mini-window that comes up before it auto-sizes. When this function is run
      * then, it doubles the proportions and then QT re-doubles them and so we
@@ -215,7 +269,7 @@ function conformProportions(mymovie, w, h) {
      * happening. Maybe doing something special if GetMatrix returns 2,2,0 on
      * the diagonal? Ideally we would stop it from loading in that stupid little
      * window to begin with.
-     */
+     
     return;
     // ASSUME width is always greater than height
     // alert(theMovie.GetPluginStatus()+mymovie.GetRectangle()+mymovie.GetMatrix());
@@ -234,7 +288,9 @@ function conformProportions(mymovie, w, h) {
     // alert('w'+w+' newH:'+newH+' '+theMovie.GetPluginStatus()+"--
     // "+matrix.join(','));
 }
+**/
 
+/** NOT USED
 function speedset(string) {
     if (string = "normal") {
         document.movie1.SetRate(1.0);
@@ -243,7 +299,8 @@ function speedset(string) {
         document.movie1.SetRate(0.4);
     }
 }
-
+**/
+/** in clipstrip
 function clipStripPos(timeCodeInteger) {
     if (!clipStripTarget) {
         clipStripTarget = $('clipStripTrack');
@@ -254,19 +311,16 @@ function clipStripPos(timeCodeInteger) {
     }
     try {
         movDuration = theMovie.GetDuration();
-    } catch (err) {/* who cares */
+    } catch (err) {
     }
     var ratio = clipStripLength / movDuration;
     return ratio * timeCodeInteger;
 }
 
-function moveClipStrip(intStartTime, intEndTime, noteID) {
+function moveClipStrip(intStartTime, intEndTime) {
     left = clipStripPos(intStartTime);
     right = clipStripPos(intEndTime);
-    if (noteID) {
-        // i forget why i had this conditional
-    }
-    // else {
+    
     clipStripStart.style.left = parseInt(left - CLIP_MARKER_WIDTH + 2, 10) + 'px';
     clipStripRange.style.left = left + 'px';
     clipStripRange.style.width = parseInt(right - left, 10) + 'px';
@@ -275,24 +329,11 @@ function moveClipStrip(intStartTime, intEndTime, noteID) {
     clipStripStart.style.display = 'block';
     clipStripRange.style.display = 'block';
     clipStripEnd.style.display = 'block';
-    // }
-
 }
+**/
 
-function initClipStrip() {
-    try {
-        moveClipStrip(startIntTime, endIntTime);
-        if (!currentUID()) {
-            clipStripStart.style.display = 'none';
-            clipStripRange.style.display = 'none';
-            clipStripEnd.style.display = 'none';
-        }
 
-    } catch (err) {
-        logError('clipstrip failed to init', err);
-    }
-}
-
+/** NOT USED 
 function addNoteStrip(noteID, noteclass) {
     var n = myNoteDetails[noteID];
     var left = clipStripPos(codeToInt(n.clipBegin));
@@ -321,8 +362,10 @@ function addNoteStrips() {
         addNoteStrip(noteID, noteclass);
     }
 }
+**/
 
 function giveUp() {
+    log('giveUp: ' + console.trace());
     clearTimeout(grabTimer_id);
     clearTimeout(grabber_id);
     clearTimeout(startTimeoutID);
@@ -338,11 +381,14 @@ function wd(str) {
 }
 
 function prepareGrabber() {
+    log('prepare Grabber');
     theMovie = document.movie1;
+    log('1');
     if (!theMovie)
         theMovie = document.getElementById('movie1');
-
+    log('2: ' + theMovie);
     if (theMovie != null) { // don't test GetPluginStatus here because IE fails
+        log('theMovie != null');
         try {
             if (testQT()) {
                 // if we get past it, it worked and it's ready.
@@ -352,9 +398,8 @@ function prepareGrabber() {
 
                 // addNoteStrips();
                 initQtDuration();
-                conformProportions(theMovie, 320, 240);
-                wd('finally starting, duration:', movDuration, theMovie
-                        .GetPluginStatus(), theMovie.GetRate());
+                //conformProportions(theMovie, 320, 240);
+                wd('finally starting, duration:', movDuration, theMovie.GetPluginStatus(), theMovie.GetRate());
                 return;
             }
         } catch (err) {
@@ -365,10 +410,13 @@ function prepareGrabber() {
         }
     }
     // otherwise try again
+    log('3');
     grabber_id = setTimeout(prepareGrabber, 500);
+    log('4');
 }
 
 function refresh_mymovie(stime, etime, cType) {
+    log('refresh my movie');
     /* my_movie is defined where the movie is written.  
      * It's basically a shell for the arguments for the qt movie
      */
@@ -383,4 +431,5 @@ function refresh_mymovie(stime, etime, cType) {
     }
 }
 
-addLoadEvent(prepareGrabber);
+
+//addLoadEvent(prepareGrabber);

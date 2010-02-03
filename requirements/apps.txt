@@ -6,6 +6,6 @@ requirements/src/django-survey-0.0.2.tar.gz
 requirements/src/tagging-0.3-pre.tar.gz
 requirements/src/template_utils-0.4p2.tar.gz
 requirements/src/typogrify-1.0.tar.gz
-requirements/src/django-tinymce-1.5.tar.gz
+#requirements/src/django-tinymce-1.5.tar.gz
 requirements/src/djangohelpers-0.1.tar.gz
 #requirements/src/django_courseaffils-0.2.tar.gz

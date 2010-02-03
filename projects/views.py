@@ -14,7 +14,7 @@ from tagging.utils import calculate_cloud
 from assetmgr.lib import annotated_by
 import simplejson as json
 from random import choice
-import string
+from string import letters
 
 Asset = get_model('assetmgr','asset')
 SherdNote = get_model('djangosherd','sherdnote')
@@ -189,11 +189,12 @@ def your_projects(request, user_name):
         return HttpResponseRedirect(project.get_absolute_url())
 
 def project_json(request,project):
-    rand = ''.join([choice(string.letters) for i in range(5)])
+    rand = ''.join([choice(letters) for i in range(5)])
     data = {'project':{'title':project.title,
                        'body':project.body,
                        'participants':[{'name':p.get_full_name()} for p in project.participants.all()],
                        'id':project.pk,
+                       'url':project.get_absolute_url(),
                        },
             'assets':dict([('%s_%s' % (rand,ann.asset.pk),
                             {'sources':dict([(s.label, {
@@ -205,7 +206,9 @@ def project_json(request,project):
                                         }) for s in ann.asset.source_set.all()]),
                              'primary':ann.asset.primary.label,
                              'title':ann.asset.title, 
-                             'metadata':json.loads(ann.asset.metadata_blob)
+                             'metadata':json.loads(ann.asset.metadata_blob),
+                             'url':ann.asset.get_absolute_url(),
+                             'id':ann.asset.pk,
                              }
                             ) for ann in project.citations()]),
             
@@ -215,9 +218,9 @@ def project_json(request,project):
              'range1':ann.range1,
              'range2':ann.range2,
              'annotation':ann.annotation(),
-             'title':ann.title,
+             #'title':ann.title,
              'author':{'id':ann.author_id,
-                       'name':ann.author.get_full_name(),
+                       #'name':ann.author.get_full_name(),
                        },
              
              } for ann in project.citations()

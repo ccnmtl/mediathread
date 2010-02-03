@@ -4,7 +4,6 @@ from tagging.utils import calculate_cloud
 from assetmgr.lib import most_popular,annotated_by
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
-from discussions.models import Discussion
 
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
@@ -14,15 +13,15 @@ from django.http import HttpResponseForbidden
 from django.core.urlresolvers import reverse
 import datetime
 from django.db.models import get_model,Q
+from discussions.utils import get_discussions
 
 
 from clumper import Clumper
 
 from courseaffils.lib import users_in_course
-from threadedcomments import ThreadedComment
-from structuredcollaboration.models import Collaboration
 
-
+ThreadedComment = get_model('threadedcomments', 'threadedcomment')
+Collaboration = get_model('structuredcollaboration', 'collaboration')
 Asset = get_model('assetmgr','asset')
 SherdNote = get_model('djangosherd','sherdnote')
 Project = get_model('projects','project')
@@ -100,8 +99,12 @@ def class_portal(request):
                           len(class_feed) >9 ),
                }
          
-    #TODO: move this into a nice class method.           
-    discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == c]
+         
+    discussions = get_discussions(c)
+       
+    #TODO: move this into a nice class method.
+    #coll = ContentType.objects.get_for_model(Collaboration)
+    #discussions = [d for d in ThreadedComment.objects.filter(parent=None, content_type = coll) if d.content_object.get_parent().content_object == c]
     
     return {
         'is_faculty':c.is_faculty(user),

@@ -6,9 +6,11 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
+from structuredcollaboration.models import Collaboration
 
 from django.shortcuts import get_object_or_404
 from django.db import models
+from discussions.utils import get_discussions
 
 import re
 
@@ -283,13 +285,7 @@ def asset_workspace(request, asset_id):
                 ), counts=True))
 
     comments = Comment.objects.for_model(asset)
-    
-    #import pdb
-    #pdb.set_trace()
-    
-    #TODO: make this a nice class method.
-    discussions = [d for d in ThreadedComment.objects.filter(parent=None) if d.content_object.get_parent().content_object == asset]
-
+    discussions = get_discussions(asset)
 
     return {
         'asset': asset,

@@ -26,8 +26,8 @@ DEFAULT_POLICY = getattr(settings,'DEFAULT_COLLABORATION_POLICY',PublicEditorsAr
 
 class Collaboration(models.Model):
     objects = CollaborationManager()
-    user = models.ForeignKey(User,null=True)
-    group = models.ForeignKey(Group,null=True)
+    user = models.ForeignKey(User,null=True, blank=True)
+    group = models.ForeignKey(Group,null=True, blank=True)
 
     title = models.CharField(max_length=1024,null=True,default=None)
     slug = models.SlugField(max_length=50,null=True,default=None)
@@ -43,12 +43,12 @@ class Collaboration(models.Model):
     #is a pointer to the versioned object (while object_pk points to the specific version)
     versioned_pk      = models.TextField(_('versioned ID'),null=True)
 
-    _policy = models.ForeignKey(CollaborationPolicyRecord,null=True,default=None)
+    _policy = models.ForeignKey(CollaborationPolicyRecord,null=True,default=None, blank=True)
     
-    _parent = models.ForeignKey('self',related_name='children',null=True,default=None)
+    _parent = models.ForeignKey('self',related_name='children',null=True,default=None, blank=True)
 
     #will eventually be used instead of _parent
-    context = models.ForeignKey('self',related_name='context_children',null=True,default=None)
+    context = models.ForeignKey('self',related_name='context_children',null=True,default=None, blank=True)
 
     def inc_order():
         return Collaboration.objects.inc_order()
@@ -103,3 +103,6 @@ class Collaboration(models.Model):
         pass
 
     
+    def __unicode__(self):
+        return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type, 
+                                        self.object_pk, self.slug)

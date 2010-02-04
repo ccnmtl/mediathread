@@ -140,3 +140,30 @@ def annotations_collection_fragment(request,username):
         'space_viewer':space_viewer,
         'assets':assets,
         }
+
+@rendered_with('djangosherd/iframe_annotation.html')
+def annotation_iframe_view(request, asset_id, annot_id):
+    annotation = get_object_or_404(SherdNote,
+                                   pk=annot_id, asset=asset_id)
+
+    #during testing and before SC wrapper
+    if annotation.author != request.user:
+        return HttpResponseForbidden("forbidden")
+
+    readonly = True
+    
+    asset = annotation.asset
+    course = asset.course
+
+    global_annotation = asset.global_annotation(annotation.author)
+
+    if global_annotation == annotation:
+        return HttpResponseRedirect(
+            reverse('asset-view', args=[asset_id]))
+
+    return {
+        'asset': asset,
+        'course': course,
+        'annotation': annotation,
+        'readonly': readonly,
+        }

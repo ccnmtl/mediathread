@@ -52,7 +52,7 @@ class Asset(models.Model):
     #an asset must have at least one source label from this list
     #'url' should probably stay at the end
     #that is how an asset gets 'blessed' as a collection
-    primary_labels = ('quicktime','youtube','image','archive','url',)
+    primary_labels = ('quicktime','youtube','flv', 'flv_pseudo', 'mp4', 'mp4_pseudo', 'image','archive','url',)
 
     @classmethod
     def good_args(cls, args):

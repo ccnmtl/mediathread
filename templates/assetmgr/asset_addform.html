@@ -80,6 +80,50 @@
           <input type="submit"/>
       </form>
       
+    <h2>Flash Video (.flv)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          Flash Video View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Flash Video URL: <input type="text" name="flv" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+      
+     <h2>Flash Video Pseudo Streaming(.flv)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          Flash Video View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Flash Video URL: <input type="text" name="flv_pseudo" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+    <h2>MP4 (.mp4)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Video URL: <input type="text" name="mp4" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+    <h2>MP4 Pseudo Streaming (.mp4)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Video URL: <input type="text" name="mp4_pseudo" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+      
+    
+      
     {% if debug %}
       <h1>Try out assetmgr</h1>
       

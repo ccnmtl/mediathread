@@ -1589,7 +1589,7 @@ h3.noteGrouping a:visited
 #clipStrip
 {
 	padding-left:0px;
-	padding-right:35px;
+	/*padding-right:35px;*/
 	height:7px;
 	width:283px;
 	border: 0;
@@ -1617,11 +1617,12 @@ h3.noteGrouping a:visited
 {
 	position:absolute;
 	left:38px;
-	width:230px;
 	height:7px;
 	padding:0px;
 	margin:0px;
 	z-index:0;
+	width: 100%;
+	background: #AAAAAA;
 }
 
 

@@ -12,6 +12,7 @@ from mondrian_main import views as mondrian_main
 import structuredcollaboration.urls
 
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
+bookmarklet_root = os.path.join(os.path.dirname(__file__),"media","bookmarklets")
 
 login_page = (r'^accounts/',include('django.contrib.auth.urls'))
 if hasattr(settings,'WIND_BASE'):
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
 
                        (r'^admin/', admin.site.urls),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),
+                       url(r'^bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve', {'document_root': bookmarklet_root}, name='analyze-bookmarklet'),
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###

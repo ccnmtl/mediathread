@@ -84,7 +84,9 @@
 <div  id="revision-history" {%if not version_number%}class="hs-init-hide"{%endif%} >
 <table>
   <thead>
-    <th>Revision</th><th>Modified</th>
+    <tr>
+      <th>Revision</th><th>Modified</th>
+    </tr>
   </thead>
   <tbody>
   {% for v in project.versions reversed %}

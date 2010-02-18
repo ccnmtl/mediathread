@@ -1,1 +1,0 @@
-../../djangosherd/media/js/sherdjs/src/bookmarklets/sherd.js

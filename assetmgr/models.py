@@ -121,6 +121,29 @@ class Asset(models.Model):
     @property
     def dir(self):
         return dir(self)
+
+    def sherd_json(self):
+        sources = {}
+        for s in self.source_set.all():
+            sources[s.label] = {
+                'label':s.label,
+                'url':s.url,
+                'width':s.width,
+                'height':s.height,
+                'primary':s.primary
+                }
+        try:
+            metadata = simplejson.loads(self.metadata_blob)
+        except ValueError:
+            metadata = None
+        return {
+            'sources':sources,
+            'type':self.primary.label,
+            'title':self.title, 
+            'metadata':metadata,
+            'local_url':self.get_absolute_url(),
+            'id':self.pk,
+            }
         
         
 class Source(models.Model):

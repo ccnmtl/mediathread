@@ -188,36 +188,16 @@ def your_projects(request, user_name):
 def project_json(request,project):
     rand = ''.join([choice(letters) for i in range(5)])
 
-    assets = {}
-    for ann in project.citations():
-        sources = {}
-        for s in ann.asset.source_set.all():
-            sources[s.label] = {
-                'label':s.label,
-                'url':s.url,
-                'width':s.width,
-                'height':s.height,
-                'primary':s.primary
-                }
-        try:
-            metadata = json.loads(ann.asset.metadata_blob)
-        except ValueError:
-            metadata = None
-        assets['%s_%s' % (rand,ann.asset.pk)] = {
-            'sources':sources,
-            'type':ann.asset.primary.label,
-            'title':ann.asset.title, 
-            'metadata':metadata,
-            'local_url':ann.asset.get_absolute_url(),
-            'id':ann.asset.pk,
-            }
     data = {'project':{'title':project.title,
                        'body':project.body,
                        'participants':[{'name':p.get_full_name()} for p in project.participants.all()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
                        },
-            'assets':assets,
+            'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+                            ann.asset.sherd_json()
+                            ) for ann in project.citations()
+                           ]),
             'annotations':[
             {'asset_key':'%s_%s' % (rand,ann.asset_id),
              'id':ann.pk,

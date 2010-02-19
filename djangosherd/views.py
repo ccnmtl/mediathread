@@ -14,6 +14,8 @@ from djangohelpers.lib import rendered_with
 from assetmgr.lib import annotated_by
 from courseaffils.lib import in_course_or_404
 
+import simplejson
+
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
 
@@ -122,7 +124,6 @@ def edit_annotation(request, annot_id):
         response = dict(title=annotation.title,
                         tags=annotation.tags,
                         body=annotation.body)
-        import simplejson
         response = simplejson.dumps(response)
         return HttpResponse(response, mimetype="application/json")
     
@@ -167,3 +168,28 @@ def annotation_iframe_view(request, asset_id, annot_id):
         'annotation': annotation,
         'readonly': readonly,
         }
+
+def annotation_json(request, annot_id):
+    ann = get_object_or_404(SherdNote,pk=annot_id)
+    rand = ''.join([choice(letters) for i in range(5)])
+
+    data = {'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+                            ann.asset.sherd_json())]),
+            #should correspond to same format in project.views.project_json
+            'annotations':[{
+                'asset_key':'%s_%s' % (rand,ann.asset_id),
+                'id':ann.pk,
+                'range1':ann.range1,
+                'range2':ann.range2,
+                'annotation':ann.annotation(),
+                'metadata':{
+                    'title':ann.title,
+                    'author':{'id':ann.author_id,
+                              #'name':ann.author.get_full_name(),
+                              },
+                    },
+                }],
+            }
+                          
+    return HttpResponse(simplejson.dumps(data, indent=2),
+                        mimetype='application/json')

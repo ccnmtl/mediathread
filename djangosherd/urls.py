@@ -13,4 +13,7 @@ urlpatterns = patterns(
     url(r'^iframe/(?P<asset_id>\w+)/(?P<annot_id>\w+)/$', 
         'annotation_iframe_view', name="annotation-iframe"),
 
+    url(r'^json/(?P<annot_id>\w+)/$', 
+        'annotation_json', name="annotation-json"),
+
     )

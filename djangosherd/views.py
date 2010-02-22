@@ -15,6 +15,8 @@ from assetmgr.lib import annotated_by
 from courseaffils.lib import in_course_or_404
 
 import simplejson
+from random import choice
+from string import letters
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())

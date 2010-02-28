@@ -67,7 +67,7 @@
       <div id="videoclipbox" style="width: 322px; display:none;"><!-- width changes here too if video size changes -->
 	<div id="videoclip" class="asset-display">
 	</div>
-	<div id="clipStrip"><div id="clipStripLabel"><!-- nothing --></div><div id="clipStripTrack"><div id="clipStripStart" class="clipSlider" onmouseover="return escape('Go to note start time')" onclick="jumpToStartTime()" style="display:none"></div><div id="clipStripRange" class="clipStripRange" onclick="jumpToStartTime(true)" onmouseover="return escape('Play note')" style="display:none"></div><div id="clipStripEnd" class="noteStripEnd" onmouseover="return escape('Go to note end time')" onclick="jumpToEndTime()" style="display:none"></div></div></div>
+	<div id="clipstrip-display"></div>    
       </div>
     </div>
   </div>
@@ -84,7 +84,9 @@
 <div  id="revision-history" {%if not version_number%}class="hs-init-hide"{%endif%} >
 <table>
   <thead>
-    <th>Revision</th><th>Modified</th>
+    <tr>
+      <th>Revision</th><th>Modified</th>
+    </tr>
   </thead>
   <tbody>
   {% for v in project.versions reversed %}

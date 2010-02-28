@@ -11,6 +11,7 @@
       <input type="submit" value="Really Save" />
     </form>
 {% else %}
+    {% comment %}
     <h2>Bookmarklet</h2>
     <p>
       Right-click and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.
@@ -29,6 +30,8 @@
       </li>
     </ul>
 
+    {% endcomment %}
+    
       <h2>Add a collection</h2>
       <form action="{% url asset-save %}" method="POST">
 	Collection Title: <input type="text" name="title" value=""/>
@@ -99,6 +102,8 @@
           <br/>
           Title: <input type="text" name="title" value=""></input>
           <br/>
+          QueryString: <input type="text" name="querystring" value=""></input>
+          <br />
           <input type="submit"/>
       </form>
     <h2>MP4 (.mp4)</h2>
@@ -119,9 +124,31 @@
           <br/>
           Title: <input type="text" name="title" value=""></input>
           <br/>
+          QueryString: <input type="text" name="querystring" value=""></input>
+          <br />
           <input type="submit"/>
       </form>
-      
+    <h2>RTMP (.mp4)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Video URL: <input type="text" name="mp4_rtmp" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+    <h2>RTMP (.flv)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Video URL: <input type="text" name="flv_rtmp" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+            
     
       
     {% if debug %}

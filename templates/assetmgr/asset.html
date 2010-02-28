@@ -88,7 +88,7 @@
     {% endif %}<!--end if annotation-->
       <div id="Clip" class="sub-control">
 	<!--keep id/name for now for vital-support-->
-	<form id="videonoteform" name="videonoteform" action="javascript:(function(){})()"></form>
+	<form id="clipform-display" name="clipform-display" action="javascript:(function(){})()"></form>
 
        {% if annotation and not readonly %}
 	<form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk annotation.pk %}{% endif %}">

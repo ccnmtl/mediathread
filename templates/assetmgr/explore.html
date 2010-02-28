@@ -27,8 +27,8 @@ Explore Collections
     <div style="clear:both">
     <h2>Bookmarklet</h2>
     <p>
-      Right-click [ <a href='javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(mondrian_url,mondrian_action){ {% include "assetmgr/bookmarklet.js" %}  })("http://{{request.get_host}}/save/?","jump")'>Analyze w/Mondrian</a> ] and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.
-      Then when you are on a supported site's asset page, run the bookmarklet.
+      Right-click [ <a href="javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/var b=document.body;var SherdBookmarkletOptions={mondrian_url:'http://{{request.get_host}}/save/?',action:'jump'};if(b){void(z=document.createElement('script'));void(z.type='text/javascript');void(z.src='http://{{request.get_host}}{%url analyze-bookmarklet "analyze.js" %}');void(b.appendChild(z));}">Analyze w/Mondrian</a> ] and choose 'Bookmark link' OR 'Add to Favorites'(IE) or try dragging it into your Bookmark toolbar.
+      Then when you are on a supported site's asset page, run the bookmarklet to add the asset into your items.
     </p>
 
       <h4>Currently Supported Sites</h4> 

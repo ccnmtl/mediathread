@@ -1,0 +1,1 @@
+../js/sherdjs/src/bookmarklets/sherd.js

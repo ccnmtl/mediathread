@@ -7,7 +7,7 @@ import urllib2
 
 def annotated_by(assets, user):
     assets = assets.filter(
-        sherdnote__author=user).distinct().select_related()
+        sherdnote__author=user,sherdnote__range1=None).distinct().order_by('-sherdnote__modified').select_related()
     to_return = []
     for asset in assets:
         if asset.sherdnote_set.filter(author=user).exclude(

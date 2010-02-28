@@ -1,12 +1,16 @@
+{% load smartif %}
 <ul>
-{% for student in request.course.students %}
+{% for member in request.course.members %}
 <li>
-  <h3><a href="{% url your-space-records student.username %}"
-	 >{{student.get_full_name|default:student.username}}</a>
+  <h3><a href="{% url your-space-records member.username %}"
+	 >{{member.get_full_name|default:member.username}}</a>
+      {% if member in request.course.faculty %}
+      (instructor)
+      {% endif %}
   </h3>
 
   {% load user_projects %}
-  {% get_projects by student in request.course as projects %}
+  {% get_projects by member in request.course as projects %}
   {% if projects %}
      <h4>Completed Projects</h4>
      <ul>

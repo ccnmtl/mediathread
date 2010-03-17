@@ -654,15 +654,20 @@ padding-bottom: .5em;
 
 #title_area {
 
-	float: left; 
 	margin-right: 3em;
 }
 
 #project_participants {
-	
-	float: left; 
+	padding-top:8px;
+	padding-bottom:8px;
 }
 
+#participant_update {
+    color:red;
+    padding:0.5em;
+    position:absolute;
+    left:20%;
+}
 #participant_list {
 
 	background-color: #dedede;
@@ -673,6 +678,7 @@ padding-bottom: .5em;
 	z-index:1;
 	width: 23em;
 	*margin:-1.8em 0 0 -25em;
+        left:40%;
 }
 
 #id_participants {*height: 15em;}

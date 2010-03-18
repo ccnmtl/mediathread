@@ -113,7 +113,8 @@ def view_project(request, project_id):
     if project not in Project.get_user_projects(space_owner,request.course):
         return HttpResponseForbidden("forbidden")
 
-
+    if request.META['HTTP_ACCEPT'].find('json') >=0:
+        return project_json(request, project)
 
     if request.method == "DELETE":
         project.delete()
@@ -186,6 +187,7 @@ def your_projects(request, user_name):
 
 def project_json(request,project):
     rand = ''.join([choice(letters) for i in range(5)])
+
     data = {'project':{'title':project.title,
                        'body':project.body,
                        'participants':[{'name':p.get_full_name()} for p in project.participants.all()],
@@ -193,32 +195,21 @@ def project_json(request,project):
                        'url':project.get_absolute_url(),
                        },
             'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                            {'sources':dict([(s.label, {
-                                        'label':s.label,
-                                        'url':s.url,
-                                        'width':s.width,
-                                        'height':s.height,
-                                        'primary':s.primary
-                                        }) for s in ann.asset.source_set.all()]),
-                             'primary':ann.asset.primary.label,
-                             'title':ann.asset.title, 
-                             'metadata':json.loads(ann.asset.metadata_blob),
-                             'url':ann.asset.get_absolute_url(),
-                             'id':ann.asset.pk,
-                             }
-                            ) for ann in project.citations()]),
-            
+                            ann.asset.sherd_json()
+                            ) for ann in project.citations()
+                           ]),
             'annotations':[
             {'asset_key':'%s_%s' % (rand,ann.asset_id),
              'id':ann.pk,
              'range1':ann.range1,
              'range2':ann.range2,
              'annotation':ann.annotation(),
-             #'title':ann.title,
-             'author':{'id':ann.author_id,
-                       #'name':ann.author.get_full_name(),
-                       },
-             
+             'metadata':{
+                    'title':ann.title,
+                    'author':{'id':ann.author_id,
+                              #'name':ann.author.get_full_name(),
+                              },
+                    },
              } for ann in project.citations()
             ]
             }

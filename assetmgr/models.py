@@ -52,7 +52,7 @@ class Asset(models.Model):
     #an asset must have at least one source label from this list
     #'url' should probably stay at the end
     #that is how an asset gets 'blessed' as a collection
-    primary_labels = ('quicktime','youtube','image','archive','url',)
+    primary_labels = ('quicktime','youtube','flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp', 'image','archive','url',)
 
     @classmethod
     def good_args(cls, args):
@@ -121,6 +121,29 @@ class Asset(models.Model):
     @property
     def dir(self):
         return dir(self)
+
+    def sherd_json(self):
+        sources = {}
+        for s in self.source_set.all():
+            sources[s.label] = {
+                'label':s.label,
+                'url':s.url,
+                'width':s.width,
+                'height':s.height,
+                'primary':s.primary
+                }
+        try:
+            metadata = simplejson.loads(self.metadata_blob)
+        except ValueError:
+            metadata = None
+        return {
+            'sources':sources,
+            'type':self.primary.label,
+            'title':self.title, 
+            'metadata':metadata,
+            'local_url':self.get_absolute_url(),
+            'id':self.pk,
+            }
         
         
 class Source(models.Model):

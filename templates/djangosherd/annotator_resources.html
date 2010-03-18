@@ -2,23 +2,25 @@
   <script type="text/javascript" src="/site_media/js/sherdjs/src/assets.js"></script>
 
   <!---JUST VIDEO-->
-  <script type="text/javascript" src="/site_media/js/vital3/ac_quicktime.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/videoclipping.js"></script>
-
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/video.js"></script>
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/quicktime.js"></script>
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/youtube.js"></script>
-  <!--script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/formfragment.js"></script-->
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/configs/vitalwrapper.js"></script>
-  <link rel="stylesheet" type="text/css" href="/site_media/css/vital3.css"></link>
+  <script type="text/javascript" src="/site_media/js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js"></script>
+  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/flowplayer.js"></script>
+  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipform.js"></script>
+  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipstrip.js"></script>
+  <link rel="stylesheet" type="text/css" href="/site_media/css/vital3.css" />
 
   <!---JUST IMAGE-->
-  <link rel="stylesheet" type="text/css" href="/site_media/js/sherdjs/lib/openlayers/openlayers/theme/default/style.css"></link>  
+  <link rel="stylesheet" type="text/css" href="/site_media/js/sherdjs/lib/openlayers/openlayers/theme/default/style.css" />
   <style type="text/css">
     /*override to fix bug where olImageLoadError style lingers past the image load*/
     img.olImageLoadError { opacity:1.0;} 
   </style>
-  <script src="/site_media/js/sherdjs/lib/openlayers/openlayers/lib/OpenLayers.js"></script>
+  <script src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
+  <script type="text/javascript">
+    OpenLayers.ImgPath = '/site_media/js/sherdjs/lib/openlayers/openlayers/img/';
+  </script>
   <script src="/site_media/js/sherdjs/src/image/views/openlayers.js"></script>
   <script src="/site_media/js/sherdjs/src/image/annotators/openlayers.js"></script>
 

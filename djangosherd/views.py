@@ -22,7 +22,7 @@ formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
 
 class AnnotationForm(forms.ModelForm):
-    body = forms.CharField(label='My Clip Notes')
+    body = forms.CharField(label='My Clip Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
     range1 = forms.FloatField(widget=forms.widgets.HiddenInput,initial=0)
     range2 = forms.FloatField(widget=forms.widgets.HiddenInput,initial=0)
     annotation_data = forms.CharField(widget=forms.widgets.HiddenInput)
@@ -33,7 +33,7 @@ class AnnotationForm(forms.ModelForm):
         exclude = ('author', 'asset')
 
 class GlobalAnnotationForm(forms.ModelForm):
-    body = forms.CharField(label='My Item Notes')
+    body = forms.CharField(label='My Item Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
     tags = forms.CharField(label='My Item Tags', help_text="<span class='helptext'>For multi-word tags, use underscores. Use commas to separate tags.<br />Example: Vietnam_War, Fall_of_Saigon</span>")
     class Meta:
         model = SherdNote

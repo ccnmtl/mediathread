@@ -63,12 +63,9 @@
     <div id="ItemAnalysis" class="sub-control">
     
         <div class="clipform">
-           <center>
               <!--  MOCHI -->
               <input type="radio" name="clipType" autocomplete="off" value="Whole" {% if not annotation %} checked {% endif %} onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');"/>Whole</input>
               <input type="radio" name="clipType" autocomplete="off" value="Portion" {% if annotation %} checked {% endif %} onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');">Portion</input>
-           </center>
-           <br />
         </div>
         
         {% if annotation %}

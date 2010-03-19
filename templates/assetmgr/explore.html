@@ -1,52 +1,119 @@
 {% extends "base.html" %}
 
-<title> {% block title %}
+{% block title %}
 Explore Collections
 {% endblock %}
-</title>
+
+{% block css %}
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+{% endblock %}
 
 {% block content %}
     {{ block.super }}
-    <h1>Explore Collections</h1>
-{%if request.course.asset_set.archives %}
-    <div id="external-archives">
-    <h2>External Archives</h2>
-    <p>Browse items from the archives listed below. <br />To add an item to your "My Analysis" space, click its <img src="/site_media/img/analyze_button.jpg" alt="" style="vertical-align: bottom"> button.</p>
-    <br /> 
-    {%for archive in archives %}
-       <div class="archive">
-	 <h2>{{archive.title}}</h2>
-	 <img src="{{archive.sources.thumb.url}}" alt="thumbnail image" height="82" />
-	 <br /><br />
-	 <p>
-	   {{archive.metadata.description}}
-	   <a href="{{archive.sources.archive.url}}" target="blank">Go Now!</a><img src="/site_media/img/external.gif" alt="(External Link)" width="15" height="15" />
-	 </p>
-       </div>
-    {%endfor%}
-    <div style="clear:both">
-    <h2>Bookmarklet</h2>
-    <p>
-      Right-click [ <a href="javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/var b=document.body;var SherdBookmarkletOptions={mondrian_url:'http://{{request.get_host}}/save/?',action:'jump'};if(b){void(z=document.createElement('script'));void(z.type='text/javascript');void(z.src='http://{{request.get_host}}{%url analyze-bookmarklet "analyze.js" %}');void(b.appendChild(z));}">Analyze w/Mondrian</a> ] and choose 'Bookmark link' OR 'Add to Favorites'(IE) or try dragging it into your Bookmark toolbar.
-      Then when you are on a supported site's asset page, run the bookmarklet to add the asset into your items.
-    </p>
-
-      <h4>Currently Supported Sites</h4> 
+{%if archives %}
+    <div id="import_instructions" class="top-archive">
+      <h2>Instructions</h2>
+      <p>
+        Your instructor has designated the following collections 
+        for your use in research associated with this class.
+        Items from these sources may be:
+      </p>
 
       <ul>
-          <li><a href="http://www.youtube.com/">YouTube</a></li>
-          <li><a href="http://digitaltibet.ccnmtl.columbia.edu/">DigitalTibet.ccnmtl.columbia.edu</li>
-          <li><a href="http://vietnamwararchive.ccnmtl.columbia.edu/">vietnamwararchive.ccnmtl.columbia.edu</a> (CU affiliates only)</li>
-          <li><a href="http://thlib.org/places/monasteries/meru-nyingpa/murals/">The Tibetan & Himalayan Library</a> (e.g. click to see High-Resolution Murals) </li>
-        </ul>
-  </div>
+        <li>imported into this analysis environment</li>
+        <li>saved to your "My Analysis" space</li>
+        <li>annotated and clipped</li>
+        <li>embedded in your assignments.</li>
+      </ul>
+    
+      <p>
+	<div class="import_class bookmarklet_import">
+          <h3>Bookmarklet Import:</h3>
+          <p>
+            For all archives, you can install and use our browser "bookmarklet."
+          </p>
+          <p>Once installed, on an asset page of any supported site, click the bookmarklet link to import the item to this environment.</p>
+          <h4>Bookmarklet Installation</h4>
+          <div id="browser-instructions" class="browser-specific-instructions">
+            <ol id="firefox" class="browser-instruction">
+              <lh>Firefox</lh>
+              <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li>
+              <li>Drag this link onto the toolbar:  <br />[ <a href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mondrian</a> ] </li>
+            </ol>
+            <ol id="ie" class="browser-instruction">
+              <lh> Internet Explorer</lh>
+              <li>Right-click on this link:  <br />[ <a href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mondrian</a> ]</li>
+              <li>and choose <b>Add to Favorites</b></li>
+            </ol>
+            <ol id="safari" class="browser-instruction">
+              <lh>Safari</lh>
+              <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li>
+              <li>Drag this link onto the toolbar:  <br />[ <a href="{% include "assetmgr/bookmarklet.js %}">Analyze w/Mondrian</a> ] .</li>
+            </ol>
+            <ol id="chrome" class="browser-instruction">
+              <lh>Google Chrome</lh>
+              <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li>
+              <li>Drag this link onto the toolbar:  <br />[ <a href="{% include "assetmgr/bookmarklet.js %}">Analyze w/Mondrian</a> ] .</li>
+            </ol>
+            <script type="text/javascript">
+              var u = navigator.userAgent;
+              var i = $('browser-instructions');
+              if (/Chrome/.test(u)) {
+                 $('.browser-instruction').hide();
+                 $('#chrome').show();
+              } else if (/Safari/.test(u)) {
+                 $('.browser-instruction').hide();
+                 $('#safari').show();
+              } else if (/MSIE/.test(u)) {
+                 $('.browser-instruction').hide();
+                 $('#ie').show();
+              } else if (/Gecko/.test(u)) {
+                 $('.browser-instruction').hide();
+                 $('#firefox').show();
+              } 
+            </script>
+          </div>
+          <!--Confused? More Information here-->
+	
+          <h4>What are Bookmarklets?</h4>
+          <p>A bookmarklet is a tiny program (a JavaScript application) contained 
+             in a bookmark which can be saved and used the same way you use normal bookmarks. 
+             Bookmarklets run on the web page your browser is currently pointed at.
+          </p>
+          <p>For more information see the <a href="http://en.wikipedia.org/wiki/Bookmarklet">Bookmarklet Wikipedia article</a>
+          </p>
+	
+
+        </div>
+    </div>
+
+
+
+
+    <div id="external-archives" class="top-archive">
+    <h2>Collections</h2>
+    {%for archive in archives %}
+       <div class="archive">
+	 <a href="{{archive.sources.archive.url}}" target="blank" class="archive-link">{{archive.title}}</a>
+         <br />
+
+         <a href="{{archive.sources.archive.url}}" target="blank"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" height="82" />
+         </a>
+	 <p>
+	   {{archive.metadata.description}}
+	 </p>
+         {% if archive.sources.bookmarklet_button %}
+         <p class="archive-button">To add an asset to your "My Analysis" space, use the bookmarklet or click the <img src="{{archive.sources.bookmarklet_button.url}}" alt="" style="vertical-align: bottom"> button on the page.</p>
+         {% endif %}
+       </div>
+    {%endfor%}
 </div>
 {%endif%}
 
-
+{%if faculty_assets %}
        <div id="instructor-items" class="archive">
          
-	 <h2>Instructor Items</h2>
+	 <h2>Instructor's Collected Items</h2>
 	 <ol>
 	   {% for a in faculty_assets %}
 	   <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
@@ -54,4 +121,5 @@ Explore Collections
 	 </ol>
        
        </div>
+{%endif%}
 {% endblock %}

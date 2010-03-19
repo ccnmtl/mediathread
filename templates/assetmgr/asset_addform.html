@@ -11,34 +11,95 @@
       <input type="submit" value="Really Save" />
     </form>
 {% else %}
-    {% comment %}
-    <h2>Bookmarklet</h2>
-    <p>
-      Right-click and choose 'Bookmark link' OR just drag it into your Bookmark toolbar.
-      Then when you are on a supported site's asset page, run the bookmarklet.
-    </p>
-    <ul>
-      <li><a href='javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(mondrian_url,mondrian_action){ {% include "assetmgr/bookmarklet.js" %}  })("http://{{request.get_host}}/save/?","jump")'>Analyze w/Mondrian</a>
-      <br />
-      <b>Current Supported Sites</b>: 
-        <ul>
-          <li>YouTube</li>
-          <li>digitaltibet.ccnmtl.columbia.edu</li>
-          <li>vietnamwararchive.ccnmtl.columbia.edu</li>
-          <li>thlib.org</li>
-        </ul>
-      </li>
-    </ul>
 
-    {% endcomment %}
+    <h1>Supported Collections</h1>
+       <h2>YouTube</h2>
+       <form action="{% url asset-save %}" method="POST">
+         Collection Title: <input type="text" name="title" value="YouTube"/>
+         <br/>
+         Collection URL: <input type="text" name="archive" value="http://www.youtube.com/"/>
+         <br/>
+         Collection URL (yes, again): <input type="text" name="url" value="http://www.youtube.com/"/>
+         <br/>
+         Description:
+         <textarea cols="55" rows="5" 
+                   name="metadata-description"
+                   >The largest collection of video on the web, where you can also upload video yourself.</textarea>
+         <br/>
+         Thumb URL: <input type="text" name="thumb" value="http://mondrian.ccnmtl.columbia.edu/site_media/img/youtube_logo.jpg"/>
+         <br/>
+	
+	<input type="submit" value="Add to Class Collections"/>
+       </form>
+
+
+
+       <h2>Vietnam War Archive</h2>
+       <form action="{% url asset-save %}" method="POST">
+         Collection Title: <input type="text" name="title" value="Vietnam: A Television Archive"/>
+         <br/>
+         Collection URL: <input type="text" name="archive" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
+         <br/>
+         Collection URL (yes, again): <input type="text" name="url" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
+         <br/>
+         Description:
+         <textarea cols="55" rows="5" 
+                   name="metadata-description"
+                   >In 1983, public television station WGBH produced a 13-hour documentary on the Vietnam War. Through this digital archive, full-length interviews and select stock footage from the production are being made available to select classes at Columbia University. </textarea>
+         <br/>
+         Thumb URL: <input type="text" name="thumb" value="http://projectvietnam.ccnmtl.columbia.edu/site_media/img/bvault_bug.jpg"/>
+         "Analyze This" button: <input type="text" name="bookmarklet_button" value="http://vietnamwararchive.ccnmtl.columbia.edu/images/analyze_this.png"/>
+         <br/>
+	
+	<input type="submit" value="Add to Class Collections"/>
+       </form>
+       <h2>Digital Tibet</h2>
+       <form action="{% url asset-save %}" method="POST">
+         Collection Title: <input type="text" name="title" value="Engaging Digital Tibet"/>
+         <br/>
+         Collection URL: <input type="text" name="archive" value="http://digitaltibet.ccnmtl.columbia.edu/"/>
+         <br/>
+         Collection URL (yes, again): <input type="text" name="url" value="http://digitaltibet.ccnmtl.columbia.edu/"/>
+         <br/>
+         Description:
+         <textarea cols="55" rows="5" 
+                   name="metadata-description"
+                   >Engaging Digital Tibet contains an advanced, searchable repository of Tibetan objects from several collections including the Rubin Museum, Himalayan Art Resources, and the Starr East Asian Library.</textarea>
+         <br/>
+         Thumb URL: <input type="text" name="thumb" value="http://digitaltibet.ccnmtl.columbia.edu/sites/digitaltibet.ccnmtl.columbia.edu/themes/tibetan/ccnmtl_images/portfolio_image.jpg"/>
+         "Analyze This" button: <input type="text" name="bookmarklet_button" value="http://mondrian.ccnmtl.columbia.edu/site_media/img/analyze_button.jpg"/>
+         <br/>
+	
+	<input type="submit" value="Add to Class Collections"/>
+       </form>
+       
+       <h2>The Tibetan &amp; Himalayan Library</h2>
+       <form action="{% url asset-save %}" method="POST">
+         Collection Title: <input type="text" name="title" value="The Tibetan &amp; Himalayan Library"/>
+         <br/>
+         Collection URL: <input type="text" name="archive" value="http://thlib.org/places/monasteries/meru-nyingpa/murals/"/>
+         <br/>
+         Collection URL (yes, again): <input type="text" name="url" value="http://thlib.org/places/monasteries/meru-nyingpa/murals/"/>
+         <br/>
+         Description:
+         <textarea cols="55" rows="5" 
+                   name="metadata-description"
+                   >Includes murals from the Meru Nyingpa (rme ru rnying pa) Monastery which is located in the Barkor (bar skor) area at the heart of the old city of Lhasa (lha sa), just east of the famed Jokhang (jo khang) Temple.</textarea>
+         <br/>
+         Thumb URL: <input type="text" name="thumb" value="http://thlib.org/places/monasteries/meru-nyingpa/murals/preview/mnmural01.jpg"/>
+         <br/>
+	
+	<input type="submit" value="Add to Class Collections"/>
+       </form>
+
     
       <h2>Add a collection</h2>
       <form action="{% url asset-save %}" method="POST">
 	Collection Title: <input type="text" name="title" value=""/>
 	<br/>
-	Collection URL: <input type="text" name="archive" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
+	Collection URL: <input type="text" name="archive" value=""/>
 	<br/>
-	Collection URL (yes, again): <input type="text" name="url" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
+	Collection URL (yes, again): <input type="text" name="url" value=""/>
 	<br/>
 	Description:
 	<textarea cols="55" rows="5" 

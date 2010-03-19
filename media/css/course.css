@@ -22,10 +22,17 @@
   .indexcard div {
     padding: 0.25em 0.25em 0 0.25em;
   }
-  .indexcard input[type=text] {
+  .indexcard input[type=text],
+  .indexcard textarea
+ {
     width: 99%;
   }
 
+#id_annotation-body { height: 60px;}
+
+.clipform {
+    margin-bottom:1.5em;
+}
 
 
 div.button {
@@ -500,12 +507,10 @@ margin:-2px -0.3em
 .archive {
 
    float:left;
-   width: 18em;
    margin: 0 1em 1em 1em;
    background-color: #ededed;
    border: 1px solid #ccc;
-   text-align: center;
-   
+   width:94%;
    }
 	
 .archive h2, .tabberlive .tabbertab h2 {
@@ -519,12 +524,26 @@ font-weight: normal;
 text-align: left;
 }
 
-.archive p {
+.archive a.archive-link {
+    font-weight:bold;
+    line-height:150%;
+    text-decoration:none;
+    padding:10px 10px;
+}
+.archive img.archive-link {
+    float:left;
+    margin:0 10px 10px 10px;
+}
 
-margin: 1em;
-font-size: 85%;
-text-align: left;
-line-height: 150%;
+div.archive p {
+    font-size: 85%;
+    text-align: left;
+    line-height: 150%;
+    margin:0 10px 1em 10px;
+}
+div.archive p.archive-button {
+    clear:both;
+    
 }
 
 #asset_browse_col {
@@ -743,7 +762,7 @@ a#EditClip {background-image: url(../img/tabbertab_edit.gif);  }
 .size7, .size9, li .size5 {font-size: 1.3em;  line-height: 1.5em;}
 li .size7, li .size9 {font-size: 1.4em;  line-height: 1.5em;}
 
-#external-archives {
+.top-archive {
 
 border:1px solid #CCCCCC;
 float:left;
@@ -751,12 +770,12 @@ margin:0 1em;
 overflow-x:hidden;
 overflow-y:auto;
 text-align:left;
-width:60%;
+width:55%;
 
 
 }
 
-#external-archives h2 {
+.top-archive h2 {
 
 margin: 0 0 .5em 0;
 background-color: #969696;
@@ -766,8 +785,8 @@ font-weight: normal;
 text-align: left;
 }
 
-#external-archives p,
-#external-archives h4 {
+.top-archive p,
+.top-archive h4 {
 
 margin: 1em 2em;
 
@@ -775,15 +794,13 @@ margin: 1em 2em;
 }
 
 #instructor-items {
-width:30%;
 border:1px solid #CCCCCC;
 float:left;
-height:29em;
-margin:0 1em;
+margin:1em 1em;
 overflow-x:hidden;
 overflow-y:auto;
 text-align:left;
-
+width:55%;
 }
 
 #class_activity {
@@ -823,4 +840,57 @@ text-align: left;
 
 .revision-selected {
     background-color:#ededed;
+}
+
+#import_instructions {
+
+border:1px solid #CCCCCC;
+float:left;
+margin:0 1em;
+overflow-x:hidden;
+overflow-y:auto;
+text-align:left;
+width:30%;
+min-width: 335px;
+
+}
+
+#import_instructions p {
+
+	margin: 1em;
+
+}
+
+#import_instructions .import_class {
+
+	margin: 1em;
+	background-color: #eee;
+	padding-bottom: 1em;
+
+}
+
+#import_instructions .import_class h3 {
+
+margin: 0 0 .5em 0;
+background-color: #969696;
+padding: .2em .5em .2em .5em;
+color: #dedede;
+font-weight: normal;
+text-align: left;
+
+}
+
+#import_instructions h4 {
+
+margin: 1.5em 1em .5em 1em;
+
+
+}
+
+.browser-specific-instructions {
+
+}
+
+.browser-specific-instructions ol {
+
 }

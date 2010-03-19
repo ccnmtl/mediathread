@@ -53,90 +53,80 @@
     <!-- temporarily put analysis tab as default until we can get metadata again -->
     <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Analyze">
     {% endif %}<!--end request.GET.c -->
-      
-    <h2> <a class="hs-control" href="#Item"></a>      
-       My Item Analysis
-    </h2>
     
-    <div class="clipform">
-       <center>
-          <!--  MOCHI -->
-          <input type="radio" name="clipType" autocomplete="off" value="Whole" {% if not annotation %} checked {% endif %} onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');"/>Whole</input>
-          <input type="radio" name="clipType" autocomplete="off" value="Portion" {% if annotation %} checked {% endif %} onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');">Portion</input>
-       </center>
-       <br />
+    {% if annotation and readonly %}
+        <h2><a class="hs-control" href="#ItemAnalysis" id="disableform"></a>Item Analysis</h2>
+    {% else %}
+        <h2><a class="hs-control" href="#ItemAnalysis"></a>My Item Analysis</h2>
+    {% endif %}
+
+    <div id="ItemAnalysis" class="sub-control">
+    
+        <div class="clipform">
+           <center>
+              <!--  MOCHI -->
+              <input type="radio" name="clipType" autocomplete="off" value="Whole" {% if not annotation %} checked {% endif %} onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');"/>Whole</input>
+              <input type="radio" name="clipType" autocomplete="off" value="Portion" {% if annotation %} checked {% endif %} onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');">Portion</input>
+           </center>
+           <br />
+        </div>
+        
+        {% if annotation %}
+            <div id="original-annotation" class="annotation-data" 
+             data-begin="{{annotation.range1}}" 
+             data-end="{{annotation.range2}}" 
+             data-annotation='{{annotation.annotation_data|default_if_none:"{}"|escape}}'>
+            </div>
+        {% endif %}   
+     
+        <div id="whole-asset-form" class="sub-control" style="display: {% if annotation %} none {% else %} block {% endif %}">
+            <form class="tabber_form" name="not-clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
+                <div id="Item" class="sub-control">
+                    {{ global_annotation_form.as_p }}
+    
+                    {% if mock %}
+                         {% for k,v in request.GET.items %}
+                           <input type="hidden" name="{{k}}" value="{{v}}" />
+                         {% endfor %}
+                    {% endif %}
+                        <input type="submit" name="save-global-annotation" value="Save Asset"/>
+                    to My Items
+                </div>
+                <br />
+            </form>
+        </div> 
+    
+        <div id="portion-asset-form" class="sub-control" style="display: {% if annotation %} block {% else %} none {% endif %}">
+	    <!--keep id/name for now for vital-support-->
+            <center>
+	           <div id="clipform-display" name="clipform-display"></div>
+            </center>
+
+            <div id="Clip" class="sub-control">
+               {% if annotation and not readonly %}
+                   <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk annotation.pk %}{% endif %}">
+               {% else %}
+        	       <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk %}{% endif %}">
+               {% endif %}<!--end if annotation and not readonly-->
+                  
+               {{ annotation_form.as_p }}
+        
+        	   {% if mock %}
+        	       {% for k,v in request.GET.items %}
+        	           <input type="hidden" name="{{k}}" value="{{v}}" />
+        	       {% endfor %}
+        	   {% endif %}<!--end if mock-->
+        
+               <input type="submit" name="save-clip-annotation" value="Save Clip" />
+        	   {% if annotation %}
+                  <input type="button" value="New Clip" onclick="document.location='{% url asset-view asset.id %}'"/>	  
+        	   {% endif %}
+        	   </form>
+            </div> <!--id="Clip"-->
+            <br /><br />    
+        </div>
     </div>
     
-    {% if annotation %}
-        <div id="original-annotation" class="annotation-data" 
-         data-begin="{{annotation.range1}}" 
-         data-end="{{annotation.range2}}" 
-         data-annotation='{{annotation.annotation_data|default_if_none:"{}"|escape}}'>
-        </div>
-    {% endif %}   
-     
-     {% comment %}
-    {% if annotation %}
-      <h2> <a class="hs-control" href="#Clip"
-	   {% if readonly %}
-	   id="disableform"
-	   ></a>  Asset View </h2>
-	   {% else %}
-	   ></a>  Edit Asset View </h2>
-	   {% endif %}
-	{% else %}
-      <h2> <a class="hs-control" href="#Clip"></a> Create Asset View</h2>
-    {% endif %}<!--end if annotation-->
-    {% endcomment %}
-    
-    <div id="whole-asset-form" class="sub-control" style="display: {% if annotation %} none {% else %} block {% endif %}">
-      <form class="tabber_form" name="not-clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
-    
-    <div id="Item" class="sub-control">
-    {{ global_annotation_form.as_p }}
-
-    {% if mock %}
-         {% for k,v in request.GET.items %}
-           <input type="hidden" name="{{k}}" value="{{v}}" />
-         {% endfor %}
-    {% endif %}
-        <input type="submit" name="save-global-annotation" value="Save Asset"/>
-    to My Items
-      </div>
-      <br />
-       </form>
-    </div> 
-    
-    <div id="portion-asset-form" class="sub-control" style="display: {% if annotation %} block {% else %} none {% endif %}">
-	<!--keep id/name for now for vital-support-->
-    <center>
-	   <div id="clipform-display" name="clipform-display"></div>
-    </center>
-
-       {% if annotation and not readonly %}
-	<form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk annotation.pk %}{% endif %}">
-       {% else %}
-	<form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk %}{% endif %}">
-       {% endif %}<!--end if annotation and not readonly-->
-          {{ annotation_form.as_p }}
-
-	  {% if mock %}
-	     {% for k,v in request.GET.items %}
-	       <input type="hidden" name="{{k}}" value="{{v}}" />
-	     {% endfor %}
-	  {% endif %}<!--end if mock-->
-
-          <input type="submit" name="save-clip-annotation" value="Save Clip" />
-	  {% if annotation %}
-            <input type="button" value="New Clip" onclick="document.location='{% url asset-view asset.id %}'"/>	  
-	  {% endif %}
-      <br /><br />
-	</form>
-    
-
-      </div><!--id="Clip"-->
-   
-  
       {% if not mock %}
       <h2> <a class="hs-control" href="#annotations"></a>My Clips of This Item</h2>
       <div id="annotations" class="sub-control">

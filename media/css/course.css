@@ -25,10 +25,10 @@
   .indexcard input[type=text],
   .indexcard textarea
  {
-    width: 99%;
+    width: 95%;
   }
 
-#id_annotation-body { height: 60px;}
+#id_annotation-body { height: 65px;}
 
 .clipform {
     margin-bottom:1.5em;

@@ -61,7 +61,12 @@
 	if ($('disableform')!=null) {
 	    var elts = clip_form.elements;
 	    for (a in FIELDS_TO_DISABLE) {
-		elts[a].disabled = true;
+	        if (elts[a].type == 'textarea') {
+	            elts[a].readOnly = true; // IE
+	            elts[a].readonly = "readonly";
+	        } else {
+	            elts[a].disabled = true;
+	        }
 	    }
 	    var copy_btn = INPUT({
 		type:'button',

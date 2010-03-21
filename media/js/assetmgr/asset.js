@@ -34,7 +34,12 @@
     //enable form to 'copy' the annotation
     global.copyAnnotation = function copyAnnotation() {
 	for (a in FIELDS_TO_DISABLE) {
-	    clip_form.elements[a].disabled = false;
+       if (clip_form.elements[a].type == 'textarea') {
+           clip_form.elements[a].readOnly = false; // IE
+           clip_form.elements[a].readonly = "";
+        } else {
+            clip_form.elements[a].disabled = false;
+        }
 	}
 	removeElement('copy-annotation');
 	$('disableform').id = 'previously-disabled-form';

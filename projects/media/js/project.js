@@ -17,7 +17,9 @@ function updateVerticalHeight() {
     var pixels_free = getViewportDimensions().h-350;
 
     $('materials').style.height = pixels_free +'px';
-    tinyMCE.activeEditor.theme.resizeTo(0,pixels_free-40);
+    if (tinyMCE.activeEditor) {
+        tinyMCE.activeEditor.theme.resizeTo(0,pixels_free-40);
+    }
 }
 
 addLoadEvent(function(){

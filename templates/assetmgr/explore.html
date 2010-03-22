@@ -94,10 +94,10 @@ Explore Collections
     <h2>Collections</h2>
     {%for archive in archives %}
        <div class="archive">
-	 <a href="{{archive.sources.archive.url}}" target="blank" class="archive-link">{{archive.title}}</a>
+	 <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
          <br />
 
-         <a href="{{archive.sources.archive.url}}" target="blank"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" height="82" />
+         <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" height="82" />
          </a>
 	 <p>
 	   {{archive.metadata.description}}

@@ -31,6 +31,10 @@ ContentType = get_model('contenttypes','contenttype')
 @allow_http("GET")
 def class_portal(request):
     c = request.course
+
+    if not c:
+        return HttpResponseRedirect('/accounts/login/')
+
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])

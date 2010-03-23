@@ -14,6 +14,7 @@ import datetime
 from django.db.models import get_model,Q
 
 from clumper import Clumper
+from django.conf import settings
 
 from courseaffils.lib import users_in_course
 
@@ -26,6 +27,12 @@ User = get_model('auth','user')
 Comment = get_model('comments','comment')
 ContentType = get_model('contenttypes','contenttype')
         
+#returns important setting information for all web pages.
+def django_settings(request):
+    return {'settings':{'PUBLIC_CONTACT_EMAIL':getattr(settings,'PUBLIC_CONTACT_EMAIL',None),
+                       },
+            }
+
 
 @rendered_with('projects/portal.html')
 @allow_http("GET")

@@ -138,7 +138,9 @@
 	<p class="printonly"><br /><img src="/site_media/img/logo_ccnmtl_sidebar.gif" class="printonly" /></p>
 	<ul id="footernav"><li><a href="/about/">About</a></li>
 			<!--<li><a href="/partners/">Partners</a></li>-->
-			<li><a href="/contact/">Contact</a></li>
+                           {% if settings.PUBLIC_CONTACT_EMAIL %}                          
+                           <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact</a></li>
+                           {% endif %}
 			</ul>
 			
 			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning" alt="Produced by the Columbia Center for New Media Teaching and Learning"></a></h4>

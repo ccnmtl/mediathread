@@ -143,6 +143,7 @@ div.panel-light .scroll
   padding: 0 1em;
  
     overflow: auto;
+        position:relative;/*important companion to overflow:auto for IE7*/
   overflow-x: hidden;
  }
  
@@ -152,6 +153,7 @@ div.panel-light .scroll
  margin: -.6em 0  0 0;
   /*max-height: 15em;*/
     overflow: auto;
+        position:relative;/*important companion to overflow:auto for IE7*/
   overflow-x: hidden;
  
  }

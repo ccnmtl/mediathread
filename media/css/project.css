@@ -31,6 +31,7 @@ input.materialCitation:hover
 	min-height: 350px;
 	height: 350px;
 	overflow: auto;
+        position:relative;/*important companion to overflow:auto for IE7*/
 	background-color: #ededed;
 
 }
@@ -54,6 +55,7 @@ width:46%;
   max-width:650px;
   height: 29em;
   overflow: auto;
+        position:relative;/*important companion to overflow:auto for IE7*/
   margin-right: 2em;
   border: 1px solid #ccc;
   padding: 10px;

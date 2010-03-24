@@ -36,15 +36,7 @@
 {% endblock %}
 
 {% block content %}
-{{ block.super }}
-<h1>{% if is_space_owner %}
-    My Projects > 
-    Editing Project: {% if project.title %}{{project.title}}{% else %}New project{% endif %}
-{% else %}
-    Class Analysis > 
-    {{space_owner.username}}'s Projects > >
-    Editing Project: {% if project.title %}{{project.title}}{% else %}New project{% endif %}
-{% endif %}</h1><br />
+  {{ block.super }}
 
  <form class="yui-skin-sam" name="editproject" method="POST" action=".">
 
@@ -53,16 +45,17 @@
 <div id="title_area"><strong>Project Title: </strong>{{projectform.title}}</div>
       
 <div id="project_participants">
+	 <div id="participant_list" class="hs-init-hide hs-hide"> 
+           <p>{{projectform.participants.help_text }}</p>
+           <br />
+           {{projectform.participants}} <a id="participants_close" class="hs-control hs-control-show plist float" href="#participant_list" >Close</a>
+         </div>
 	  <b>{{projectform.participants.label_tag}}:</b>
 	  	<span id="participants_chosen"
 		      >{%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-		    {{part.username}}{%endfor%}</span>
-	  	<a class="hs-control hs-control-show plist" href="#participant_list">Edit</a>
-	 <div id="participant_list" class="hs-init-hide hs-hide"> 
-	 <p>{{projectform.participants.help_text }}</p>
-	  <br />
-	  {{projectform.participants}} <a id="participants_close" class="hs-control hs-control-show plist float" href="#participant_list" >Close</a></div>
-	  <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
+                   {{part.username}}{%endfor%}</span>
+                <a class="hs-control hs-control-show plist" href="#participant_list">Edit</a>
+         <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
 	</div></div><br />
 <div id="asset_browse_col" class="asset-table">
   <h2>Your Saved Items</h2>
@@ -77,10 +70,13 @@
       <p>
 	<h2>Project Content</h2>
 	<div id="essaybox" class="essaytextarea">
-	  <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce/tiny_mce.js"></script>
-	  <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
-	  <textarea id="project-content" tabindex="0" name="body" 
-		    mce_editable="true">{{project.body|safe}}</textarea>
+          <script type="text/javascript">
+            var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+          </script>
+          <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+          <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
+          <textarea id="project-content" tabindex="0" name="body" 
+                    mce_editable="true">{{project.body|safe}}</textarea>
 	  {#{{projectform.body}}#}
 	  <div id="project-template" style="display:none;"></div>
 	  <script type="text/javascript">

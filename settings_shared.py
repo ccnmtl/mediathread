@@ -41,6 +41,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
+    'mondrian_main.views.django_settings',
     )
 
 MIDDLEWARE_CLASSES = (
@@ -93,6 +94,7 @@ THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mondrian] "
 EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "mondrian@example.com"
+PUBLIC_CONTACT_EMAIL = "mondrian@example.com"
 
 # TinyMCE settings
 

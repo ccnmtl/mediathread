@@ -18,6 +18,18 @@
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
        href="{{asset.get_absolute_url}}">{{asset.title}}</a>
+
+	{% if page_in_edit_mode %}
+	  <span class="citationTemplate"><img 
+	      class="materialCitation" alt="" 
+	      src="/site_media/img/vital3/icon_clipping.gif#annotation={{annotation.get_absolute_url}}annotations/{{annotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}" 
+	      width="24" height="15" border="0" 
+	      onclick="addMaterialCitation(event)" 
+	      title="{{asset.title}}" 
+	      name="{{annotation.get_absolute_url}}"
+	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
+	      /></span>
+	{% endif %}
   </h2>
 
   {%if asset.sources.thumb %}

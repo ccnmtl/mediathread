@@ -14,7 +14,7 @@ function updateVerticalHeight() {
     ///350 is sadly a magical number with assumptions about header/footer
     ///ideally we'd measure those things at startup.
     ///probably worth doing once we have a different style or two
-    var pixels_free = getViewportDimensions().h-350;
+    var pixels_free = getViewportDimensions().h-250;
 
     $('materials').style.height = pixels_free +'px';
     if (tinyMCE.activeEditor) {

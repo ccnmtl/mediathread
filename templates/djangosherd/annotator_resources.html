@@ -14,8 +14,12 @@
   <!---JUST IMAGE-->
   <link rel="stylesheet" type="text/css" href="/site_media/js/sherdjs/lib/openlayers/openlayers/theme/default/style.css" />
   <style type="text/css">
-    /*override to fix bug where olImageLoadError style lingers past the image load*/
-    img.olImageLoadError { opacity:1.0;} 
+    img.olImageLoadError { 
+       /*override to fix bug where olImageLoadError style lingers past the image load*/
+       opacity:1.0; 
+       /*IE: so we don't see stupid broken-image icons*/
+       *display:none; 
+    } 
   </style>
   <script src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
   <!--script src="/site_media/js/sherdjs/lib/openlayers/openlayers/lib/OpenLayers.js"></script-->

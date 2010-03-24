@@ -1,4 +1,4 @@
-javascript:/*SHERD_UNIVERSAL_BOOKMARKLET____________________*/(function(host,bookmarklet_url){ 
+javascript:/*BOOKMARKLET:{{request.get_host}}*/(function(host,bookmarklet_url){ 
 
 var b=document.body;
 window.SherdBookmarkletOptions={mondrian_url:'http://'+host+'/save/?',action:'jump'};

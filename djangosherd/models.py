@@ -103,7 +103,10 @@ class SherdNoteManager(models.Manager):
                 
             except self.model.DoesNotExist:
                 #title is NON-STANDARD to Annotation base
-                note = self.model(id=note_id, title="Annotation Deleted")
+                note = self.model(id=note_id, 
+                                  title="Annotation Deleted",
+                                  asset_id=int(ann[1]),
+                                  )
             rv.append(note)
         return rv
 

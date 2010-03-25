@@ -201,6 +201,7 @@ def project_json(request,project):
             'assets':dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json()
                             ) for ann in project.citations()
+                           if ann.title != "Annotation Deleted"
                            ]),
             'annotations':[
             {'asset_key':'%s_%s' % (rand,ann.asset_id),

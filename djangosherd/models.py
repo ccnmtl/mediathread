@@ -94,7 +94,7 @@ class SherdNoteManager(models.Manager):
         but for now we regex for links to the annotations
         """
         #"'s to escape openCitation() duplicates
-        regex_string = r'(name|href)=[\'"]/asset/(\d+)/annotations/(\d+)'
+        regex_string = r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/annotations/(\d+)'
         rv = []
         for ann in re.findall(regex_string,text):
             note_id = int(ann[2])

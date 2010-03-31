@@ -96,8 +96,11 @@ def project_version_view(request, projectversion_id, check_permission=True):
 def project_readonly_view(request, project_id, check_permission=True):
     course = request.collaboration_context.content_object
     project = get_object_or_404(Project, pk=project_id,
-                                course=course,
-                                submitted=True)
+                                course=course)
+    if project.submitted != True \
+            and not (project.is_participant(request) or request.user.is_staff):
+        return HttpResponseForbidden("forbidden")
+        
     if request.META['HTTP_ACCEPT'].find('json') >=0:
         return project_json(request, project)
     return {

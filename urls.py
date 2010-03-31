@@ -46,7 +46,7 @@ urlpatterns = patterns('',
                        #redundant, but for published projects/legacy
                        #(r'^project/',include('mondrian.projects.urls')),
                        #override/shortcut for published projects
-                       url(r'^project/(?P<project_id>\d+)/$',
+                       url(r'^project/(?P<project_id>\d+)/[^v/]*$',
                            'projects.views.project_readonly_view',
                            name='project-view'
                            ),

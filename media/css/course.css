@@ -75,7 +75,8 @@ a.breadcrumb
   padding:0;
  }
 .asset-links a,
-.asset-links img
+.asset-links img,
+.asset-links li /*for IE7*/
 { 
   display:none; 
 }
@@ -749,7 +750,6 @@ display: none;
 
 .active-annotation
 { 
-  background-color:#FFff99;
   padding: 2px;
  }
  

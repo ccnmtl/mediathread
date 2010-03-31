@@ -1,11 +1,10 @@
 var tinyMCEmode = true;
-function toogleEditorMode(textarea_id) {
 
 function toggleEditor(id) {
-    if (!tinyMCE.get(id))
+    logDebug('toggleEditor',id);
+    if (!tinyMCE.get(id)) {
         tinyMCE.execCommand('mceAddControl', false, id);
-
-    else
+    } else {
         tinyMCE.execCommand('mceRemoveControl', false, id);
     }
 }
@@ -28,6 +27,7 @@ function makeInvisible(elem) {
 function connect_respond_clicked (e) {
     //logDebug (e.src().parentNode.id);
     div_id = e.src().parentNode.id 
+    logDebug('respond clicked',div_id);
     the_text_area =  $$('#' + div_id  + ' textarea')[0];
     the_div = $$('#' + div_id  + ' ul')[0]
     if (hasElementClass (the_div, 'invisible')) {
@@ -46,14 +46,6 @@ function connect_respond_prompt(a) {
 
 function discussion_init() {
     forEach ($$('div.respond_to_comment_form_div ul'), makeInvisible);
-    forEach ($$('input[name=url]'), makeInvisible);
-    forEach ($$('input[name=honeypot]'), makeInvisible);
-    forEach ($$('input[name=name]'), makeInvisible);
-    forEach ($$('input[name=email]'), makeInvisible);
-    forEach ($$('label[for=id_url]'), makeInvisible);
-    forEach ($$('label[for=id_honeypot]'), makeInvisible);
-    forEach ($$('label[for=id_name]'), makeInvisible);
-    forEach ($$('label[for=id_email]'), makeInvisible);
     
     forEach($$('.respond_prompt'), connect_respond_prompt)
         //connect (

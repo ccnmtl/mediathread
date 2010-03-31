@@ -129,6 +129,18 @@ div.respond_to_comment_form_div ul{
 
 .invisible { display: none; }
 
+.threaded_comments_form input[name=url],
+.threaded_comments_form input[name=honeypot],
+.threaded_comments_form input[name=name],
+.threaded_comments_form input[name=email],
+.threaded_comments_form input[name=title],
+.threaded_comments_form label[for=id_url],
+.threaded_comments_form label[for=id_honeypot],
+.threaded_comments_form label[for=id_name],
+.threaded_comments_form label[for=id_email],
+.threaded_comments_form label[for=id_title] {
+    display:none;
+}
 
 
 /* ---- End threaded comments ---------- */

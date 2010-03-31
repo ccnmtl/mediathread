@@ -103,3 +103,32 @@ float: left;
 	}
 	
 .asset-title {margin-left: 10px;}
+
+
+/* ---- Threaded comments ---------- */
+form.threaded_comments_form ul li {
+ background: #AAA;
+ list-style-type: none;
+}
+
+p.respond_prompt {
+    color:red
+}
+
+p.threaded_comment_text {
+ background: #BBB;
+}
+/*
+div.respond_to_comment_form_div ul{
+    display:none;
+}
+*/
+.respond_prompt {
+    cursor: pointer;
+}
+
+.invisible { display: none; }
+
+
+
+/* ---- End threaded comments ---------- */

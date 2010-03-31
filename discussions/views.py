@@ -29,8 +29,8 @@ Asset = get_model('assetmgr','asset')
 
 #TODO: check user is logged in before displaying
 
-@rendered_with('discussions/show_discussion.html')
 @allow_http("GET")
+@rendered_with('discussions/show_discussion.html')
 def show(request, discussion_id):
     """Show a threadedcomments discussion of an arbitrary object.
     discussion_id is the pk of the root comment."""
@@ -52,7 +52,7 @@ def show(request, discussion_id):
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
 
     assets = annotated_by(Asset.objects.filter(course=my_course), space_viewer)
-    
+
     return {
         'is_space_owner': True,
         'space_owner': space_owner,
@@ -94,6 +94,7 @@ def new(request):
     disc_sc._parent = obj_sc
     disc_sc.title = "Discussion of %s" % the_object
     disc_sc.content_object = None #or we could point it at the root threadedcomments object.
+    disc_sc.context = request.collaboration_context
     disc_sc.save()
 
     #finally create the root discussion object, pointing it at the CHILD.

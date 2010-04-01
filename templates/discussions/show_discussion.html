@@ -13,7 +13,8 @@
 {% endblock %}</title>
 
 {% block css %}
-<link rel="stylesheet" href="/site_media/css/project.css" />  
+  <link rel="stylesheet" href="/site_media/css/project.css" />  
+  <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />  
 {% endblock %}
 
 {% block js %}
@@ -70,20 +71,14 @@
             <li{% if current_comment.last %} class="last"{% endif %}>
             {{ current_comment.name }} said:
             <!-- ( #{{ current_comment.id }}): -->
-            <p class ="threaded_comment_text">
+            <div class ="threaded_comment_text">
             {{current_comment.comment|safe}}
-            </p>
+            </div>
                 <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
-                <p class = "respond_prompt" title="Click to show or hide the comment form">
-                Respond<!-- to comment {{ current_comment.id }}: -->
-                </p>
-                {% get_comment_form for root_comment.content_object as current_comment_form with current_comment.id %}
-                <form method="POST" action="/comments/post/" class="threaded_comments_form">
-                    <ul>
-                        {{ current_comment_form.as_ul }}
-                        <li><input type="submit" value="Submit Comment" /></li>
-                    </ul>
-                </form>
+                  <p class="respond_prompt" data-comment="{{ current_comment.id }}" title="Click to show or hide the comment form">
+                    Respond<!-- to comment {{ current_comment.id }}: -->
+                  </p><div class="comment_form_space"></div><!-- must be neighbor-->
+                
                 </div>
             {% if current_comment.added_path %} ADDED {% endif %}
             {% for close in current_comment.close %}
@@ -92,6 +87,14 @@
             {% endfor %}
             
         {% endfor %}        
+
+        {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
+        <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
+          <ul>
+            {{ current_comment_form.as_ul }}
+            <li><input type="submit" value="Submit Comment" /></li>
+          </ul>
+        </form>
         
       </p>
       

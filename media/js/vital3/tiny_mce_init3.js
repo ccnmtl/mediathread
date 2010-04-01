@@ -3,6 +3,7 @@ var tiny_mce_settings_for_vital = {
   /* content_css:"tinyContent.css", CUSTOM CCNMTL--commenting out*/
   content_css:"/site_media/css/project.css",
   mode:"specific_textareas",
+  editor_selector:"mceEditor",
   entity_encoding : "numeric",
 	    /*CUSTOM CCNMTL: added 'citation' and 'editorwindow' --see bottom for explicit loading from a location */
     plugins:"searchreplace,table,-citation,inlinepopups,-editorwindow,xhtmlxtras",

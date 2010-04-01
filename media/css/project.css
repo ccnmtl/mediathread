@@ -129,6 +129,7 @@ div.respond_to_comment_form_div ul{
 
 .invisible { display: none; }
 
+form.threaded_comments_form,
 .threaded_comments_form input[name=url],
 .threaded_comments_form input[name=honeypot],
 .threaded_comments_form input[name=name],

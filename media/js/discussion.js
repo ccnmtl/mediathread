@@ -1,7 +1,7 @@
 var tinyMCEmode = true;
 
 function toggleEditor(id) {
-    logDebug('toggleEditor',id);
+    //logDebug('toggleEditor',id);
     if (!tinyMCE.get(id)) {
         tinyMCE.execCommand('mceAddControl', false, id);
     } else {
@@ -24,30 +24,46 @@ function makeInvisible(elem) {
 
 
 
-function connect_respond_clicked (e) {
-    //logDebug (e.src().parentNode.id);
-    div_id = e.src().parentNode.id 
-    logDebug('respond clicked',div_id);
-    the_text_area =  $$('#' + div_id  + ' textarea')[0];
-    the_div = $$('#' + div_id  + ' ul')[0]
-    if (hasElementClass (the_div, 'invisible')) {
-        makeVisible(the_div);
-        tinyMCE.execCommand('mceAddControl', false, the_text_area);
-    }
-    else {
-        tinyMCE.execCommand('mceRemoveControl', false, the_text_area);
-        makeInvisible(the_div);
-    }
-}
-
 function connect_respond_prompt(a) {
     connect (a, 'onclick', connect_respond_clicked);
 }
 
 function discussion_init() {
+    var next_response_loc = false;
     forEach ($$('div.respond_to_comment_form_div ul'), makeInvisible);
     
-    forEach($$('.respond_prompt'), connect_respond_prompt)
-        //connect (
+    forEach($$('.respond_prompt'), function(elt) {
+        connect(elt,'onclick', function (evt) {
+            var respond = evt.src();
+            var frm = $('comment-form');
+            //console.log(tinyMCE.editors);
+            frm.elements['parent'].value = respond.getAttribute("data-comment");
+            if (tinyMCE.activeEditor == null) {
+                respond.nextSibling.appendChild(frm);
+                showElement(frm);
+                $('id_comment').focus();
+                tinyMCE.execCommand("mceAddControl", false, "id_comment");
+            } else {
+                next_response_loc = respond.nextSibling;
+                tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
+                tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
+                
+                //logDebug("second focus");
+            }
+        });
+    });
+
+    tinyMCE.onRemoveEditor.add(function(manager, ed) {
+        //logDebug("third focus");
+        next_response_loc.appendChild(document.forms[0]);
+        tinyMCE.execCommand("mceAddControl", false, "id_comment");
+    });
+    tinyMCE.onAddEditor.add(function(manager, ed) {
+        ed.onInit.add(function(editor) {
+            tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
+            //console.log(editor);
+        });
+    });
+
 }
 addLoadEvent(discussion_init);

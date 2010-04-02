@@ -536,6 +536,8 @@ text-align: left;
 .archive img.archive-link {
     float:left;
     margin:0 10px 10px 10px;
+    max-width:190px;
+    max-height:82px;
 }
 
 div.archive p {

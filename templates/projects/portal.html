@@ -141,7 +141,7 @@ Class Analysis
 	    {%for disc in discussions%}
 	        <li>
 	          <div class="asset_title type-project">
-	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc}}</a>
+	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc.comment.title}}</a>
 	          </div>
 	        </li>
 	    {%endfor%}
@@ -149,7 +149,7 @@ Class Analysis
             <form action="/discussion/new/" method="POST">
                 <ul >
                     <li>
-                        <label for="id_comment_html" class="invisible">Your comment:</label>
+                        <label for="id_comment_html" class="invisible">Start new discussion with title:</label>
                         <input type="text" name="comment_html" id="comment_html" />
                         <input type="hidden" name="app_label" id="app_label" value="courseaffils"/>
                         <input type="hidden" name="model" id="model" value="course"/>

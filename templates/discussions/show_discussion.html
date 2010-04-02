@@ -27,6 +27,7 @@
   
   
   <script type="text/javascript" src="/site_media/js/discussion.js"></script>
+  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
 
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
@@ -41,20 +42,15 @@
 {% block content %}
 {{ block.super }}
   
-<h1>Discussion of {{root_comment.content_object.get_parent.content_object}}</h1><br />
-
-      <div id="project_heading">
-	<br />
-<div id="asset_browse_col" class="asset-table">
+ <div id="asset_browse_col" class="asset-table">
   <h2>Your Saved Items</h2>
-  <div id="materials">
+  <div id="materials" class="resize-height">
     {% include "assetmgr/asset_table.html" %}
   </div>
 </div>
   <div class="essay-space">
-    <p>
-	<h2>Discussion:</h2>
-	  <div id="threadedcomments">
+	<h2>Discussion of {{root_comment.comment.title}}</h2>
+	  <div id="threadedcomments" class="resize-height">
         {%get_comment_list for root_comment.content_object as comment_list%}
         {% for current_comment in comment_list|fill_tree|annotate_tree %}
             <!-- starting comment: >{{ current_comment.id }}-->
@@ -66,23 +62,28 @@
                 </li>
             {% endif %}
             {% if current_comment.open %}
-                <ul >
+                <ul class="comment-thread">
             {% endif %}
-            <li{% if current_comment.last %} class="last"{% endif %}>
-            {{ current_comment.name }} said:
-            <!-- ( #{{ current_comment.id }}): -->
-            <div class ="threaded_comment_text">
-            {{current_comment.comment|safe}}
-            </div>
+            <li id="comment-{{current_comment.id}}"
+                class="comment-thread {% if current_comment.last %}last{% endif %}"
+                >
+              <div class="comment">
+                <div class="threaded_comment_author">{{ current_comment.name }} said:</div>
+                <!-- ( #{{ current_comment.id }}): -->
+                <div class="threaded_comment_text">
+                  {{current_comment.comment|safe}}
+                </div>
                 <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
                   <p class="respond_prompt" data-comment="{{ current_comment.id }}" title="Click to show or hide the comment form">
                     Respond<!-- to comment {{ current_comment.id }}: -->
-                  </p><div class="comment_form_space"></div><!-- must be neighbor-->
-                
+                    </p><div class="comment_form_space"></div><!-- must be neighbor-->
+                    
+                  
                 </div>
-            {% if current_comment.added_path %} ADDED {% endif %}
-            {% for close in current_comment.close %}
-                </li>
+              </div>
+              {% if current_comment.added_path %} ADDED {% endif %}
+              {% for close in current_comment.close %}
+            </li>
                 </ul>
             {% endfor %}
             
@@ -96,8 +97,6 @@
           </ul>
         </form>
         
-      </p>
-      
    </div>
 
 

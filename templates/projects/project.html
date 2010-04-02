@@ -42,8 +42,6 @@
 
       <div id="project_heading">
 	
-<div id="title_area"><strong>Project Title: </strong>{{projectform.title}}</div>
-      
 <div id="project_participants">
 	 <div id="participant_list" class="hs-init-hide hs-hide"> 
            <p>{{projectform.participants.help_text }}</p>
@@ -59,7 +57,7 @@
 	</div></div><br />
 <div id="asset_browse_col" class="asset-table">
   <h2>Your Saved Items</h2>
-  <div id="materials">
+  <div id="materials" class="resize-height">
     {% include "assetmgr/asset_table.html" %}
   </div>
 </div>
@@ -68,7 +66,7 @@
    
       
       <p>
-	<h2>Project Content</h2>
+	<h2>Project: {{projectform.title}}</h2>
 	<div id="essaybox" class="essaytextarea">
           <script type="text/javascript">
             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};

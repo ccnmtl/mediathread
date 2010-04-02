@@ -15,22 +15,24 @@ function updateVerticalHeight() {
     ///ideally we'd measure those things at startup.
     ///probably worth doing once we have a different style or two
     var pixels_free = getViewportDimensions().h-250;
-
-    $('materials').style.height = pixels_free +'px';
-    if (tinyMCE.activeEditor) {
-        tinyMCE.activeEditor.theme.resizeTo(0,pixels_free-40);
+    forEach($$('.resize-height'),function(elt) {
+        elt.style.height = pixels_free +'px';
+    });
+    if (tinyMCE.get('project-content')) {
+     tinyMCE.activeEditor.theme.resizeTo(0,pixels_free-40);
     }
 }
 
 addLoadEvent(function(){
-    //PROJECT PARTICIPANT UPDATES
-    
-    
-    connect('participants_close','onclick',updateParticipantList);
-    //connect(document.forms['editproject'].participants,'onchange', updateParticipantList);
-
     //RESIZING (vertical)
     connect(window,'onresize',updateVerticalHeight);
+
     updateVerticalHeight();
+
+    //PROJECT PARTICIPANT UPDATES
+    if ($('participants_close')) {
+        connect('participants_close','onclick',updateParticipantList);
+    }
+    //connect(document.forms['editproject'].participants,'onchange', updateParticipantList);
 
 });

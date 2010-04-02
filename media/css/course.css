@@ -574,6 +574,10 @@ overflow-x: hidden;
 
 }
 
+.metadata-title {
+    text-transform: capitalize;
+}
+
 dd {
 	margin: .5em; 
 	padding: 0;

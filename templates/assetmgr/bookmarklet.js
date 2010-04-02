@@ -1,7 +1,12 @@
 javascript:/*BOOKMARKLET:{{request.get_host}}*/(function(host,bookmarklet_url){ 
 
 var b=document.body;
-window.SherdBookmarkletOptions={mondrian_url:'http://'+host+'/save/?',action:'jump'};
+window.SherdBookmarkletOptions={mondrian_url:'http://'+host+'/save/?',
+                                action:'jump'
+                                {%for k,v in bookmarklet_vars.items%}
+                                ,'{{k}}':'{{v}}'
+                                {%endfor%}
+                               };
 var t='text/javascript';
 if(b){
     z=document.createElement('script');

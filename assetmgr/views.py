@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.conf import settings
 
 from django.shortcuts import get_object_or_404
 from django.db import models
@@ -391,11 +392,12 @@ def annotationview(request, asset_id, annot_id):
 @rendered_with('assetmgr/explore.html')
 def archive_explore(request):
     c = request.course
-    archives = c.asset_set.archives()
-    faculty_assets = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
-                      if a not in archives]
-    
-    return {
-        'faculty_assets':faculty_assets,
-        'archives':archives,
-        }
+    rv = {"archives":c.asset_set.archives()}
+    rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
+                            if a not in rv['archives'] ]
+
+    if getattr(settings,'DJANGOSHERD_FLICKR_APIKEY',None):
+        # MUST only contain string values for now!! 
+        # (see templates/assetmgr/bookmarklet.js to see why or fix)
+        rv['bookmarklet_vars'] = {'flickr_apikey':settings.DJANGOSHERD_FLICKR_APIKEY }
+    return rv

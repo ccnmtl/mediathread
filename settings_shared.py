@@ -140,6 +140,8 @@ COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']
 
 COMMENTS_ALLOW_PROFANITIES = True
 
+#if you set this to a string, then bookmarklet can import from flickr
+DJANGOSHERD_FLICKR_APIKEY = None
 
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there

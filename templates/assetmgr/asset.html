@@ -40,7 +40,7 @@
       <div class="asset-info">
 	{% for name, value in asset.metadata.items %}
 	<dl>
-	  <dt><h2>{{name}}</h2></dt>
+	  <dt><h2 class="metadata-title">{{name}}</h2></dt>
 	  <dd id="metadata-{{name}}">{{value|safe}}</dd>
 	</dl>
 	{% endfor %}

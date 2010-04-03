@@ -32,6 +32,26 @@
 	<input type="submit" value="Add to Class Collections"/>
        </form>
 
+       <h2>Flickr</h2>
+       <form action="{% url asset-save %}" method="POST">
+         Collection Title: <input type="text" name="title" value="Flickr"/>
+         <br/>
+         Collection URL: <input type="text" name="archive" value="http://www.flickr.com/"/>
+         <br/>
+         Collection URL (yes, again): <input type="text" name="url" value="http://www.flickr.com/"/>
+         <br/>
+         Description:
+         <textarea cols="55" rows="5" 
+                   name="metadata-description"
+                   >One of the largest collections of user-uploaded images on the web.
+         </textarea>
+         <br/>
+         Thumb URL: <input type="text" name="thumb" value="http://mondrian.ccnmtl.columbia.edu/site_media/img/flickr_logo.png"/>
+         <br/>
+	
+	<input type="submit" value="Add to Class Collections"/>
+       </form>
+
 
 
        <h2>Vietnam War Archive</h2>

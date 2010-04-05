@@ -39,13 +39,6 @@
   </h2>
 
   <br />
-  <div class="essay-space published">   
-    <p>
-      <div id="essaybox" class="essaytextarea">
-	{{project.body|safe}}
-      </div>  
-    </p>
-  </div>
   <div class="asset-view asset-view-small">
     <div class="annotation-links">
       {% for annotation in project.citations %}      
@@ -70,6 +63,13 @@
 	<div id="clipstrip-display"></div>    
       </div>
     </div>
+  </div>
+  <div class="essay-space published">   
+    <p>
+      <div id="essaybox" class="essaytextarea">
+	{{project.body|safe}}
+      </div>  
+    </p>
   </div>
 
 <div class="essay-options" style="padding: 1em;">

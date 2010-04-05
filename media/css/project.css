@@ -52,7 +52,6 @@ width:60%;
 
 .essay-space.published
 { 
-  float:left;
   width:56%;
   max-width:650px;
   height: 29em;
@@ -117,8 +116,9 @@ form.threaded_comments_form ul li {
  list-style-type: none;
 }
 
-p.respond_prompt {
-    color:red
+.respond_prompt {
+    color:red;
+    cursor:pointer;
 }
 
 p.threaded_comment_text {
@@ -129,9 +129,6 @@ div.respond_to_comment_form_div ul{
     display:none;
 }
 */
-.respond_prompt {
-    cursor: pointer;
-}
 
 .invisible { display: none; }
 

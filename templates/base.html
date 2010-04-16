@@ -7,7 +7,7 @@
 
 	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css" />
 
-	<link rel="shortcut icon" href="/site_media/img/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
 
     {% load cache %}
     {% cache 500 heads course %}
@@ -15,7 +15,7 @@
         {{course.settings.custom_headers|safe}}
        {# DEFAULT IS ELSE #}
        {% else %}
-	<link rel="stylesheet" href="/site_media/css/main.css" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/mediathread.css" media="screen" />
 	<link rel="stylesheet" href="/site_media/css/print.css" media="print" />
 	<!--[if IE 6]>
 	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css" media="screen" />

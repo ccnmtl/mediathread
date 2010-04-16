@@ -180,8 +180,10 @@ img, img a
 	margin: 0;
 	padding: 0;
 	border: 0;
+        /*
 	background: #dcdcdc;
 	background: transparent url('../img/header_gradient.jpg') left center repeat-x;
+        */
 }
 
 #header #logo_project
@@ -296,7 +298,7 @@ img, img a
   position:absolute;
   top:52px;
   border-bottom:2px solid black;
-  background: transparent url('../img/header_gradient.jpg') left center repeat-x;
+  z-index:100;
 }
 
 #primarynav div.encase
@@ -427,7 +429,7 @@ img, img a
 	min-width: 900px;
 	clear: both;
 	margin: 0;
-	padding: 1em 0 0 0;
+	padding: 0;
 	border: 0;
 	background-color: #fff;
 }
@@ -872,6 +874,7 @@ body.fluid #content
 
 #course_title
 {
+    z-index:9999;
 	float: left;
 	font-size: 1.2em;
 	text-transform: capitalize;

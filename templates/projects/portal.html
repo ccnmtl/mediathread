@@ -6,8 +6,9 @@ Class Analysis
 {% block content %}
     {{ block.super }}
 <div class="panel">    
+  <div class="panel-light">
   {%if display.instructor or is_faculty %}
-  <div class="panel-column panel-light">
+  <div class="panel-column">
     <h2>Instructor's Focus</h2>
     <div class="scroll">
     {%if faculty_feed.projects %}
@@ -43,23 +44,71 @@ Class Analysis
       </ul>
     {%endif%}
     {% if is_faculty and not faculty_feed.projects %}
-    <p>
-      <i>Instructor projects are posted here.</i>
-      <br />
-      For students 'projects' are their assignment submissions. For you, an instructor, 
-      submitting a project posts it to the home page here.  Use this for
-      intro notes, sample assignments, assignment instructions, etc.
-      If you do not create and submit and projects, this pane will not be 
-      visible to students.
-    </p><p>     
-      We suggest that any assignment instructions should include direction
-      on what kinds of assets are acceptable.  In the past, without direction, students, have posted links to YouTube and other miscellaneous web resources when a particular archive was meant to be the focus.
-    </p>
+    <div class="intro-text">
+      <h3>Instructor projects are posted here.</h3>
+      <p>
+        For students 'projects' are their assignment submissions. For you, an instructor, 
+        submitting a project posts it to the home page here.  Use this for
+        intro notes, sample assignments, assignment instructions--even to make a syllabus!
+        </p><p>     
+        If you do not create and submit any project, this pane will not be 
+        visible to students.
+        </p><p>     
+        We suggest that any assignment instructions should include direction
+        on what kinds of assets are acceptable.  In the past, without direction, students, have posted links to YouTube and other miscellaneous web resources when a particular archive was meant to be the focus.
+      </p>
+    </div>
     {% endif %}
 
     </div>
+
+
   </div>
   {%endif%}{#display.instructor#}
+
+
+
+{%if discussions or is_faculty %}
+ <!-- start discussion list -->
+  <div class="panel-column
+	      {%if not display.course %}panel-column-stump{%endif%}
+	      ">
+    <h2>Class discussions</h2>
+    <div class="scroll">
+      <ul>
+	    {%for disc in discussions%}
+	        <li>
+	          <div class="asset_title type-project">
+	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc.comment.title}}</a>
+	          </div>
+	        </li>
+	    {%endfor%}
+            {%if is_faculty %}
+    	 <li>
+            <form action="/discussion/new/" method="POST">
+                <ul >
+                    <li>
+                        <label for="id_comment_html" class="invisible">Start new discussion with title:</label>
+                        <input type="text" name="comment_html" id="comment_html" />
+                        <input type="hidden" name="app_label" id="app_label" value="courseaffils"/>
+                        <input type="hidden" name="model" id="model" value="course"/>
+                        <input type="hidden" name="obj_pk" id="obj_pk" value="{{course_id}}"/>
+                    </li>
+                    <li><input type="submit" value="Start Discussion"/></li>
+                </ul>
+            </form>
+        </li>
+        {%endif%} <!--end is_faculty-->
+      </ul>
+    </div>
+ </div>
+ 
+ <!-- end discussion list -->
+ {%endif%} <!--end discussions or is_faculty-->
+
+  </div><!--optional left column-->
+
+
 
   {%if not display.course %}
   <div class="panel-column">
@@ -126,49 +175,28 @@ Class Analysis
 	    {%endfor%}
 	  </div>
 	</li>
+        {% empty %}
+        <div class="intro-text">
+          <p>
+            This space will notify you of activity on your projects and to items you have
+            collected or commented on.
+          </p>
+          <p>
+            To add items to your collection, see the <a href="/explore">Explore Collections</a> tab or look at the <a href="{% url asset-container %}">Class Analysis</a> tab
+            to see what your colleagues have already collected.
+          </p>
+        </div>
 	{%endfor%}
       </ul>
     </div>
  </div> 
- 
- <!-- start discussion list -->
-  <div class="panel-column
-	      {%if not display.course %}panel-column-stump{%endif%}
-	      ">
-    <h2>Class discussions</h2>
-    <div class="scroll">
-      <ul>
-	    {%for disc in discussions%}
-	        <li>
-	          <div class="asset_title type-project">
-	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc.comment.title}}</a>
-	          </div>
-	        </li>
-	    {%endfor%}
-    	 <li>
-            <form action="/discussion/new/" method="POST">
-                <ul >
-                    <li>
-                        <label for="id_comment_html" class="invisible">Start new discussion with title:</label>
-                        <input type="text" name="comment_html" id="comment_html" />
-                        <input type="hidden" name="app_label" id="app_label" value="courseaffils"/>
-                        <input type="hidden" name="model" id="model" value="course"/>
-                        <input type="hidden" name="obj_pk" id="obj_pk" value="{{course_id}}"/>
-                    </li>
-                    <li><input type="submit" value="Start Discussion"/></li>
-                </ul>
-            </form>
-        </li>
-      </ul>
-    </div>
- </div>
- 
- <!-- end discussion list -->
- 
- 
+
  <div class="visualclear"></div>
 
 </div>
+
+ 
+
 </div>
 
 

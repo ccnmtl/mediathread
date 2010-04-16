@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% block title %}Save Page
+{% endblock %}
+
 {% block content %}
     {{ block.super }}
 
@@ -11,8 +14,16 @@
       <input type="submit" value="Really Save" />
     </form>
 {% else %}
-
-    <h1>Supported Collections</h1>
+<p class="intro-text">
+  This 'Save Page' allows you to add archives or other assets explicitly to appear on the Explore Collections page.
+  Each item is a form, though for the archive forms, only edit the values if you know what you're doing.
+  <ul>
+    <li><a href="#archives">Add supported archives</a></li>
+    <li><a href="#specific">Add single media assets</a></li>
+    <li><a href="#advanced">Advanced Documentation</a></li>
+  </ul>
+</p>
+    <h1 id="archives">Supported Collections</h1>
        <h2>YouTube</h2>
        <form action="{% url asset-save %}" method="POST">
          Collection Title: <input type="text" name="title" value="YouTube"/>
@@ -132,6 +143,8 @@
 	<input type="submit" value="Submit Collection"/>
       </form>
 
+      <h1 id="specific">Specific Internet Resources</h1>
+
       <h2>A website</h2>
       <form action="{% url asset-save %}" method="GET">
 	Asset URL: <input type="text" name="url" value="http://slashdot.org"></input>
@@ -230,29 +243,33 @@
           <input type="submit"/>
       </form>
             
-    
-      
-    {% if debug %}
-      <h1>Try out assetmgr</h1>
-      
-      <h2>A Streaming Video</h2>
-      <form action="{% url asset-save %}" method="GET">
-	Asset URL: <input type="text" name="url" value=""></input>
-	<br/>
-	Asset Stream: <input type="text" name="quicktime" value="" />
-	<br/>
-	Direct Stream:
-	<input type="text" name="quicktime_directstream" value="" />
-	<br/>
-	Asset Title: <input type="text" name="title" value=""></input>
-	<br/>
-	<input type="submit"/>
-      </form>
+      <p class="intro-text">
+        <h1 id="advanced">Advanced Documentation on how Assets are Saved</h1>    
 
-    {% endif %}
+        <p>
+          Mediathread does not store any assets directly, but instead embeds them from the site
+          they originally came from.  This has advantages and disadvantages.
+        </p>
+        <h2>Currently Supported <a href="/save">/save</a>? query arguments</h2>
+        <dl>
+          <dt>url</dt><dd>The URL the asset can be viewed at on the originating site.  This is used to link back to the site.</dd>
+          <dt>title</dt><dd>The human-readable title of the asset</dd>
 
-     {% if debug %}
-     {% endif %}
+          <dt>archive</dt><dd>The URL to the top-level archive the asset is from.  This will generally be the homepage for the <b>url</b> argument.</dd>
+          <dt>metadata-*</dt><dd>Besides "title" all other metadata can be conveyed by a general-purpose metadata-&gt;name&lt; argument.  So if you wanted to specify author, you would add an argument <code>metadata-author=Mark+Twain</code>.  Note that some browsers have maximum URL lengths, so it's unwise to include a whole description in a metadata argument.  These values will appear in the summary section of the asset.</dd>
+
+          <dt>thumb</dt><dd>A URL to a thumbnail representing the image/video resource.  Generally, this should be an image that fits within 100 pixels x 100 pixels.  (but will be displayed shrunken if you provide a larger image--though that will increase page load-time)</dd>
+          <dt>image</dt><dd>A URL to a simple image.  If you do not provide other supported image links which can query parts of a large image efficiently, then the larger the image, the longer the page will take to load.  However, this should be acceptable for any image that's 1000 pixels x 1000 pixels or less.</dd>
+          <dt>quicktime</dt><dd></dd>
+          <dt></dt><dd></dd>
+          <dt></dt><dd></dd>
+          <dt></dt><dd></dd>
+          <dt></dt><dd></dd>
+          <dt></dt><dd></dd>
+          <dt></dt><dd></dd>
+
+        </dl>
+      </p>
 {% endif %}
 
 {% endblock %}

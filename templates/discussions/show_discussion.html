@@ -15,6 +15,7 @@
 {% block css %}
   <link rel="stylesheet" href="/site_media/css/project.css" />  
   <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />  
+  <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css" />  
 {% endblock %}
 
 {% block js %}
@@ -44,13 +45,16 @@
   
  <div id="asset_browse_col" class="asset-table">
   <h2>Your Saved Items</h2>
-    <div class="asset-object">
-       <div id="videoclipbox" style="width: 322px; display:none;">
-         <div id="videoclip" class="asset-display"></div>
-         <div id="clipstrip-display"></div>    
-       </div>
+    <div id="videoclipbox" class="asset-view-small" style="display:none;">
+      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="return false;">x</a>
+      <div class="annotation-title materialCitation"></div>
+      <div class="asset-title"></div>
+      <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
+        <div class="asset-display"></div>
+	<div id="clipstrip-display" class="clipstrip-display"></div>    
+      </div>
     </div>
-
+  
   <div id="materials" class="resize-height">
     {% include "assetmgr/asset_table.html" %}
   </div>

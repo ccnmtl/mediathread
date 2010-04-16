@@ -160,8 +160,8 @@ def your_space(request, user_name):
                                         args=[user_name]))
 
 
-@rendered_with('projects/classlisting.html')
 @allow_http("GET")
+@rendered_with('projects/classlisting.html')
 def class_listing(request):
     
     students = users_in_course(request.course).order_by('username')
@@ -225,21 +225,23 @@ filter_by = {
 
 
 
-@rendered_with('projects/your_records.html')
 @allow_http("GET")
+@rendered_with('projects/your_records.html')
 def your_records(request, user_name):
 
-    in_course_or_404(user_name, request.course)
+    c = request.course
+    in_course_or_404(user_name, c)
 
     today = datetime.date.today()
     user = get_object_or_404(User, username=user_name)
 
     editable = (user==request.user)
-    assets = annotated_by(Asset.objects.filter(
-            course=request.course),
-                          user)
+    assets = annotated_by(Asset.objects.filter(course=c),
+                          user,
+                          include_archives=c.is_faculty(user)
+                          )
 
-    projects = Project.get_user_projects(user, request.course)
+    projects = Project.get_user_projects(user, c)
     if not editable:
         projects = projects.filter(submitted=True)
     projects = projects.order_by('modified')
@@ -253,7 +255,7 @@ def your_records(request, user_name):
 
     tags = calculate_cloud(Tag.objects.usage_for_queryset(
             user.sherdnote_set.filter(
-                asset__course=request.course),
+                asset__course=c),
             counts=True))
     
     active_filters = dict((filter, request.GET.get(filter))

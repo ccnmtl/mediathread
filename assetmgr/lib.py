@@ -5,20 +5,23 @@ from lxml.html import tostring
 from urlparse import urlsplit
 import urllib2
 
-def annotated_by(assets, user):
+def annotated_by(assets, user, include_archives=False):
     assets = assets.filter(
         sherdnote__author=user,sherdnote__range1=None).distinct().order_by('-sherdnote__modified').select_related()
     to_return = []
-    for asset in assets:
-        #sky: why do this?  disabling for now
-        #if nothing breaks for a bit, we'll drop it
-        #if asset.sherdnote_set.filter(author=user).exclude(
-        #    range1=None, range2=None, title=None,
-        #    tags='', body=None).count() == 0:
-        #    continue
-        if asset.primary.label != 'archive':
-            to_return.append(asset)
-    return to_return
+    if include_archives:
+        return assets
+    else:
+        for asset in assets:
+            #sky: why do this?  disabling for now
+            #if nothing breaks for a bit, we'll drop it
+            #if asset.sherdnote_set.filter(author=user).exclude(
+            #    range1=None, range2=None, title=None,
+            #    tags='', body=None).count() == 0:
+            #    continue
+            if asset.primary.label != 'archive':
+                to_return.append(asset)
+        return to_return
 
 def most_popular(assets):
     """

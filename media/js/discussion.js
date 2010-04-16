@@ -38,5 +38,11 @@ addLoadEvent(function discussion_init() {
         });
     });
 
+    if (window.djangosherd) {
+        djangosherd.onOpenCitation = function(id,ann_obj,options,targets) {
+            if (targets.top == 'videoclipbox') {
+                updateVerticalHeight(null,{'materials':260});
+            }
+        }
+    }
 });
-

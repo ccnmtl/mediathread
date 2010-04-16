@@ -27,16 +27,16 @@
   <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
   
   
-  <script type="text/javascript" src="/site_media/js/discussion.js"></script>
-  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
-
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
   <script type="text/javascript">        
-    DjangoSherd_Project_Config(/*no_open_from_hash=*/ true);           
+    DjangoSherd_Project_Config(/*no_open_from_hash=*/ false);           
   </script>
   <!--END for showing Annotations -->
+  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
+  <script type="text/javascript" src="/site_media/js/discussion.js"></script>
+
   
 {% endblock %}
 
@@ -46,8 +46,8 @@
  <div id="asset_browse_col" class="asset-table">
   <h2>Your Saved Items</h2>
     <div id="videoclipbox" class="asset-view-small" style="display:none;">
-      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="return false;">x</a>
-      <div class="annotation-title materialCitation"></div>
+      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
+      <div class="annotation-title"></div>
       <div class="asset-title"></div>
       <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
         <div class="asset-display"></div>

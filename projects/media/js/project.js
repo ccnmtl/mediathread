@@ -10,13 +10,23 @@ function updateParticipantList() {
     showElement("participant_update");
 }
 
-function updateVerticalHeight() {
+var resize_offsets = {};
+function updateVerticalHeight(evt,offsets) {
     ///350 is sadly a magical number with assumptions about header/footer
     ///ideally we'd measure those things at startup.
     ///probably worth doing once we have a different style or two
+    if (typeof offsets == 'object') {
+        for (a in offsets) {
+            resize_offsets[a] = offsets[a];
+        }
+    }
     var pixels_free = getViewportDimensions().h-220;
     forEach($$('.resize-height'),function(elt) {
-        elt.style.height = pixels_free +'px';
+        var offset = pixels_free;
+        if (elt.id && elt.id in resize_offsets) {
+            offset -= resize_offsets[elt.id];
+        }
+        elt.style.height = offset +'px';
     });
     if (tinyMCE.get('project-content')) {
      tinyMCE.activeEditor.theme.resizeTo(0,pixels_free-40);

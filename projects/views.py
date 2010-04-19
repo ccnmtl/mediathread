@@ -61,10 +61,12 @@ def project_preview(request, user, project):
 
 @rendered_with('projects/published_project.html')
 def project_version_preview(request, project_id, version_number, check_permission=True):
+    project = get_object_or_404(Project,pk = project_id)
+
     if check_permission and \
-            not request.user.is_staff \
-            and not project.is_participant(request.user) \
-            and not request.course.is_faculty(request.user):
+            not project.is_participant(request.user) \
+            and not request.course.is_faculty(request.user) \
+            and not request.user.is_staff:
         return HttpResponseForbidden("forbidden")    
     version = get_object_or_404(ProjectVersion,
                                 versioned_id = project_id,

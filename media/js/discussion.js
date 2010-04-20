@@ -6,7 +6,6 @@ addLoadEvent(function discussion_init() {
 
 
     function open_comment_form(evt) {
-        console.log('open_comment_form');
         var respond = evt.src();
         frm.elements['parent'].value = respond.getAttribute("data-comment");
         if (!next_response_loc) {
@@ -78,7 +77,6 @@ AjaxComment.prototype.submit = function(evt) {
         headers:[["Content-type","application/x-www-form-urlencoded"]]
         }
                    );
-    console.log(form_val_array[1]);
     //frm.elements['timestamp'].value = '';
     //frm.elements['security_hash'].value = '';
     def.addBoth(bind(this.oncomplete,this,form_val_array),
@@ -91,9 +89,7 @@ AjaxComment.prototype.oncomplete = function(form_val_array, func, xhr) {
         form_vals[form_val_array[0][i]] = form_val_array[1][i];
     }
 
-    try {
-        var res = this.parseResponse(xhr);
-        console.log(res);
+    var res = this.parseResponse(xhr);
     if (xhr.status ==200) {
         if (res.comment_id) {
             ///1. insert new comment into DOM
@@ -112,7 +108,6 @@ AjaxComment.prototype.oncomplete = function(form_val_array, func, xhr) {
                 getElementsByTagAndClassName('a','materialCitation',ul));
 
             var respond_elt = getFirstElementByTagAndClassName('span','respond_prompt',ul);
-            console.log(respond_elt);
             connect(respond_elt, 'onclick', open_comment_form);
             ///3. reset form and set new validation key
             
@@ -126,14 +121,10 @@ AjaxComment.prototype.oncomplete = function(form_val_array, func, xhr) {
 
         }
     }
-    } catch(e) {
-        console.log(e);
-    }
-    sky = arguments;
-    console.log(arguments);
 }
 
 AjaxComment.prototype.onfail = function(func, xhr) {
+    alert("There was an error submitting your comment!  Please report this to the system administrator.");
     console.log('error');
     console.log(xhr);    
 }

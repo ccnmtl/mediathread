@@ -46,7 +46,7 @@
 		<ul id="standardnav">
 			
 {% if request.user.is_authenticated %}
-<li>Welcome, {{user.get_full_name|default:user}}!</li>
+<li>Welcome, <span id="logged_in_name" class="username">{{user.get_full_name|default:user}}!</span></li>
 			<li><a href="/accounts/logout/">Log Out</a></li>
 		{%if user.is_staff %}
 			<li>

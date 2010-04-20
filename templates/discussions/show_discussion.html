@@ -1,16 +1,11 @@
 {% extends "base.html" %}
 {% load user_annotations tagging_tags smartif user_projects threadedcomments_tags %}
 
-<title> {% block title %}
-{% if is_space_owner %}
-    My Projects > 
-    {% if project.title %}{{project.title}}{% else %}New project{% endif %}
-{% else %}
-    Class Analysis > 
-    {{space_owner.username}}'s Projects > 
-    {% if project.title %}{{project.title}}{% else %}New project{% endif %}
-{% endif %}
-{% endblock %}</title>
+<title> 
+  {% block title %}
+  Discussion of {{root_comment.comment.title}}
+  {% endblock %}
+</title>
 
 {% block css %}
   <link rel="stylesheet" href="/site_media/css/project.css" />  
@@ -79,20 +74,23 @@
                 class="comment-thread {% if current_comment.last %}last{% endif %}"
                 >
               <div class="comment">
-                <div class="threaded_comment_author">{{ current_comment.name }} said:</div>
-                <!-- ( #{{ current_comment.id }}): -->
+                <div class="threaded_comment_author">{{current_comment.name}} 
+                  <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>
+                  <span class="comment-date">({{current_comment.submit_date|date:"D d M Y"}})</span>
+                </div>
+                <!-- ( #{{current_comment.id}}): -->
                 <div class="threaded_comment_text">
                   {{current_comment.comment|safe}}
                 </div>
                 <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
-                  <span class="respond_prompt" data-comment="{{ current_comment.id }}" title="Click to show or hide the comment form">
+                  <span class="respond_prompt" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">
                     Respond<!-- to comment {{ current_comment.id }}: -->
                     </span><div class="comment_form_space"></div><!-- must be neighbor-->
                     
                   
                 </div>
               </div>
-              {% if current_comment.added_path %} ADDED {% endif %}
+              {% if current_comment.added_path %} <span class="new-comment">ADDED</span> {% endif %}
               {% for close in current_comment.close %}
             </li>
                 </ul>
@@ -104,7 +102,8 @@
         <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
           <ul>
             {{ current_comment_form.as_ul }}
-            <li><input type="submit" value="Submit Comment" /></li>
+
+            <li><input id="comment-form-submit" type="submit" value="Submit Comment" /></li>
           </ul>
         </form>
         

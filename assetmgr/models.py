@@ -2,11 +2,17 @@ import datetime
 import simplejson
 
 from django.db import models
+from django.conf import settings
 
 Tag = models.get_model('tagging','tag')
 User = models.get_model('auth','user')
 Group = models.get_model('auth','group')
 Course = models.get_model('courseaffils','course')
+
+def default_url_processor(source,request):
+    return source.url
+
+url_processor = getattr(settings,'ASSET_URL_PROCESSOR',default_url_processor)
 
 class AssetManager(models.Manager):
     def get_by_args(self, args, **constraints):
@@ -122,12 +128,13 @@ class Asset(models.Model):
     def dir(self):
         return dir(self)
 
-    def sherd_json(self):
+    request = None
+    def sherd_json(self,request=None):
         sources = {}
         for s in self.source_set.all():
             sources[s.label] = {
                 'label':s.label,
-                'url':s.url,
+                'url':s.url_processed(request),
                 'width':s.width,
                 'height':s.height,
                 'primary':s.primary
@@ -189,6 +196,12 @@ class Source(models.Model):
 
     def is_image(self):
         return (self.label=='poster' or self.media_type.startswith('image/'))
+
+    request = None
+    def url_processed(self,request=None):
+        if request is None:
+            request = self.request or self.asset.request
+        return url_processor(self,request)
         
     @property
     def dir(self):

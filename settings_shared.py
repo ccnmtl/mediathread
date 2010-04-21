@@ -146,6 +146,7 @@ COMMENTS_APP = 'threadedcomments'
 
 #if you set this to a string, then bookmarklet can import from flickr
 DJANGOSHERD_FLICKR_APIKEY = None
+FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf"
 
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there

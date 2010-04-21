@@ -177,7 +177,7 @@ def annotation_json(request, annot_id):
     rand = ''.join([choice(letters) for i in range(5)])
 
     data = {'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                            ann.asset.sherd_json())]),
+                            ann.asset.sherd_json(request))]),
             #should correspond to same format in project.views.project_json
             'annotations':[{
                 'asset_key':'%s_%s' % (rand,ann.asset_id),

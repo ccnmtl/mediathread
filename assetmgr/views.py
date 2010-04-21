@@ -46,12 +46,15 @@ def good_asset_arg(key):
                  )
             and key not in OPERATION_TAGS)
 
-def sources_from_args(args,asset=None):
+def sources_from_args(request,asset=None):
     "returns a dict of sources represented in GET/POST args"
     sources = {}
+    args = request.REQUEST
     for key,val in args.items():
         if good_asset_arg(key):
             source = Source(label=key,url=val)
+            #UGLY non-functional programming for url_processing
+            source.request = request 
             if asset:
                 source.asset = asset
             src_metadata = args.get(key+'-metadata',None)
@@ -86,6 +89,7 @@ def add_view(request):
     if adding:
         return mock_analysis_space(request)
     else:
+        #no arguments so /save space
         return asset_addform(request)
 
 @rendered_with('assetmgr/asset.html')
@@ -97,7 +101,7 @@ def mock_analysis_space(request):
                 asset__course=request.course
                 ), counts=True))
 
-    sources = sources_from_args(request.GET)
+    sources = sources_from_args(request)
 
     title = getattr(request,request.method).get('title','')
 
@@ -149,7 +153,7 @@ def add_asset(request):
                       course=request.course,
                       author=request.user)
         asset.save()
-        for source in sources_from_args(req_dict, asset).values():
+        for source in sources_from_args(request, asset).values():
             source.save()
 
         transaction.commit()
@@ -364,6 +368,7 @@ def annotationview(request, asset_id, annot_id):
         readonly = True
         
     asset = annotation.asset
+
     global_annotation = asset.global_annotation(user)
 
     if global_annotation == annotation:

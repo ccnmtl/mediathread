@@ -200,7 +200,7 @@ def project_json(request,project):
                        'url':project.get_absolute_url(),
                        },
             'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                            ann.asset.sherd_json()
+                            ann.asset.sherd_json(request)
                             ) for ann in project.citations()
                            if ann.title != "Annotation Deleted"
                            ]),

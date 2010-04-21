@@ -909,3 +909,7 @@ margin: 1.5em 1em .5em 1em;
     max-width:500px;
     font-size:14px;
 }
+
+.resize-height {
+    height:350px;
+}

@@ -34,10 +34,10 @@ ContentType = get_model('contenttypes','contenttype')
         
 #returns important setting information for all web pages.
 def django_settings(request):
-    return {'settings':{'PUBLIC_CONTACT_EMAIL':getattr(settings,'PUBLIC_CONTACT_EMAIL',None),
-                       },
-            }
+    whitelist = ['PUBLIC_CONTACT_EMAIL',
+                 'FLOWPLAYER_SWF_LOCATION',]
 
+    return {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]) }
 
 @rendered_with('projects/portal.html')
 @allow_http("GET")

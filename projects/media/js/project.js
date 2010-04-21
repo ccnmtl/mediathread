@@ -44,5 +44,4 @@ addLoadEvent(function(){
         connect('participants_close','onclick',updateParticipantList);
     }
     //connect(document.forms['editproject'].participants,'onchange', updateParticipantList);
-
 });

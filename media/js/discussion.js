@@ -1,9 +1,6 @@
-
-
 addLoadEvent(function discussion_init() {
     var next_response_loc = false;
     var frm = $('comment-form');
-
 
     function open_comment_form(evt) {
         var respond = evt.src();
@@ -186,6 +183,5 @@ AjaxComment.prototype.create = function(obj,doc) {
 }
 
     var commenter = new AjaxComment(frm);
-
 
 });

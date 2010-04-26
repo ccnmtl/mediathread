@@ -58,7 +58,10 @@ class Asset(models.Model):
     #an asset must have at least one source label from this list
     #'url' should probably stay at the end
     #that is how an asset gets 'blessed' as a collection
-    primary_labels = ('quicktime','youtube','flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp', 'image','archive','url',)
+    primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
+                      'youtube','quicktime', 
+                      'image_fpx', #artstor.org and FSI flash image viewer in general
+                      'image','archive','url',)
 
     @classmethod
     def good_args(cls, args):

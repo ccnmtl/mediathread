@@ -196,3 +196,4 @@ def annotation_json(request, annot_id):
                           
     return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')
+

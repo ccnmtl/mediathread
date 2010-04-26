@@ -1,4 +1,4 @@
-javascript:/*BOOKMARKLET:{{request.get_host}}*/(function(host,bookmarklet_url){ 
+javascript:/*BOOKMARKLET:{{request.get_host}}*/(function(host,bookmarklet_url,user_url){ 
 
 var b=document.body;
 window.SherdBookmarkletOptions={mondrian_url:'http://'+host+'/save/?',
@@ -9,12 +9,12 @@ window.SherdBookmarkletOptions={mondrian_url:'http://'+host+'/save/?',
                                };
 var t='text/javascript';
 if(b){
-    z=document.createElement('script');
-    z.type=t;
-    z.src='http://'+host+bookmarklet_url;
+    var z=document.createElement('script'); z.type=t; z.src='http://'+host+bookmarklet_url;
     b.appendChild(z);
+    var x=document.createElement('script'); x.type=t; x.src='http://'+host+user_url;
+    b.appendChild(x);
     if (typeof jQuery=='undefined') {
-        y=document.createElement('script');
+        var y=document.createElement('script');
         y.type=t;
         y.src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js';
         var onload = (/Trident/.test(navigator.userAgent))?'onreadystatechange':'onload';
@@ -28,4 +28,6 @@ if(b){
     }
 }
 
- })('{{request.get_host}}','{%url analyze-bookmarklet "analyze.js" %}')
+})('{{request.get_host}}',
+   '{%url analyze-bookmarklet "analyze.js" %}',
+   '{%url is_logged_in.js %}')

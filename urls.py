@@ -30,6 +30,8 @@ urlpatterns = patterns('',
                        (r'^admin/', admin.site.urls),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),
                        url(r'^bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve', {'document_root': bookmarklet_root}, name='analyze-bookmarklet'),
+                       url(r'^accounts/logged_in.js$', 'courseaffils.views.is_logged_in',
+                           name='is_logged_in.js'),
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###

@@ -14,7 +14,7 @@
 
   <script type="text/javascript" src="/site_media/js/assetmgr/asset.js"></script>
 
-  <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css"></link>
+  <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
 
 {% endblock %}
 
@@ -64,8 +64,8 @@
     
         <div class="clipform">
               <!--  MOCHI -->
-              <input type="radio" name="clipType" autocomplete="off" value="Whole" {% if not annotation %} checked {% endif %} onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');"/>Whole</input>
-              <input type="radio" name="clipType" autocomplete="off" value="Portion" {% if annotation %} checked {% endif %} onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');">Portion</input>
+              <input type="radio" name="clipType" autocomplete="off" value="Whole" {% if not annotation %} checked {% endif %} onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');" />Whole
+              <input type="radio" name="clipType" autocomplete="off" value="Portion" {% if annotation %} checked {% endif %} onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');" />Portion
         </div>
         
         {% if annotation %}

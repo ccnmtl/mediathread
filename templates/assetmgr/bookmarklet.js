@@ -17,11 +17,11 @@ if(b){
         var y=document.createElement('script');
         y.type=t;
         y.src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js';
-        var onload = (/Trident/.test(navigator.userAgent))?'onreadystatechange':'onload';
+        var onload = (/MSIE/.test(navigator.userAgent))?'onreadystatechange':'onload';        
         y[onload]=function(){
-            window.SherdBookmarkletOptions.jQuery = jQuery.noConflict(true);
-            if (MondrianBookmarklet && MondrianBookmarklet.onJQuery) {
-                MondrianBookmarklet.onJQuery(window.SherdBookmarkletOptions.jQuery);
+            var jQ = window.SherdBookmarkletOptions.jQuery = jQuery.noConflict(true);
+            if (SherdBookmarkletOptions && SherdBookmarkletOptions.onJQuery) {
+                SherdBookmarkletOptions.onJQuery(jQ);
             }
         };
         b.appendChild(y);

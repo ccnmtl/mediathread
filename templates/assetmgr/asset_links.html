@@ -4,7 +4,9 @@
 	{% for link in assets_to_link %}
 	  <li><a class="assetsource assetlabel-{{link.label}}{%if link.primary %} asset-primary{%endif%}" 
 		 {%if link.width %}  data-metadata="w{{link.width}}h{{link.height}}"{%endif%}
-		 href="{{link|source_url:request }}">
+		 href="{{link|source_url:request }}"
+                 {%ifequal link.label "url" %} title="{{link.asset.title|escape}}" {%endifequal%}
+                 >
                  {%ifequal link.label "url" %}
                    View Complete Record in Archive
                  {%else%}

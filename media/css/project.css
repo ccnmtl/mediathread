@@ -159,8 +159,12 @@ li.comment-thread:target > .comment {
     border:1px solid black;
 }
 
-.threaded_comment_author {
+.threaded_comment_header {
     background-color:#CCCCCC;
 }
 
+.comment-actions {
+    float:right;
+    margin-right:10px;
+}
 /* ---- End threaded comments ---------- */

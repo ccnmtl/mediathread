@@ -254,7 +254,7 @@ img, img a
   	border-left:  1px solid #acacac;
 	background-color: #6f6f6f;
 	-moz-border-radius-bottomleft: 10px;
--webkit-border-radius-bottomleft: 10px;
+-webkit-border-bottom-left-radius: 10px;
 
 }
 
@@ -358,8 +358,8 @@ img, img a
 	border-bottom: none;
 	-moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
-    -webkit-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
     background-color: #6f6f6f;
 }
 
@@ -377,8 +377,8 @@ img, img a
 	color: #660000;
 	-moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
-    -webkit-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
     	border: 1px solid #9d9d9d; 
 	border-bottom: none;
 	margin: -1px;
@@ -906,12 +906,14 @@ body.fluid #content
     z-index:9999;
 	float: left;
 	font-size: 1.8em;
+        line-height:1.8em;
 	text-transform: capitalize;
 	margin-left: .5em;
-	margin-top: -10px;
+	margin-top: -26px;
   white-space:nowrap;
   font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
   font-style: italic;
+  *font-style: none;/*IE doesn't anti-alias italics well*/
   color: #e6e6e6;
 }
 

@@ -43,7 +43,9 @@
 	<div id="header">
 		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
 		{% block standardnav %}
-		<ul id="standardnav">
+	
+	<div id="mediathread_logo"><a href="#"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" /></a></div>
+	<ul id="standardnav">
 			
 {% if request.user.is_authenticated %}
 <li>Welcome, <span id="logged_in_name" class="username">{{user.get_full_name|default:user}}!</span></li>

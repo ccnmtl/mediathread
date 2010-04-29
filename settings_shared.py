@@ -1,4 +1,4 @@
-# Django settings for mondrian project.
+# Django settings for mediathread project.
 
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there
@@ -10,7 +10,7 @@ import re
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ADMINS = (
-    ('admin', 'mondrian@example.com'),
+    ('admin', 'mediathread@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -76,25 +76,28 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'django.contrib.admin',
     'tagging',
-    'modelversions',
-    'mondrian.structuredcollaboration',
     'smartif',
-    'mondrian.courseaffils',
-    'mondrian.djangosherd',#strangely must precede assetmgr
-    'mondrian.assetmgr',
-    'mondrian.projects',
-    'mondrian.discussions',
+    'modelversions',
+    #mediathread local
+    'structuredcollaboration',
+    'courseaffils',
+    'djangosherd',#strangely must precede assetmgr
+    'assetmgr',
+    'projects',
+    'discussions',
+
     'django.contrib.comments',
     'threadedcomments',
     'djangohelpers',
-    'mondrian.mondrian_main',
+    #mediathread local
+    'mondrian_main',
 )
 
 THUMBNAIL_SUBDIR = "thumbs"
-EMAIL_SUBJECT_PREFIX = "[mondrian] "
+EMAIL_SUBJECT_PREFIX = "[mediathread] "
 EMAIL_HOST = 'localhost'
-SERVER_EMAIL = "mondrian@example.com"
-PUBLIC_CONTACT_EMAIL = "mondrian@example.com"
+SERVER_EMAIL = "mediathread@example.com"
+PUBLIC_CONTACT_EMAIL = "mediathread@example.com"
 
 # TinyMCE settings
 

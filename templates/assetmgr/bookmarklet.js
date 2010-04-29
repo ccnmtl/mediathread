@@ -1,12 +1,16 @@
 javascript:/*BOOKMARKLET:{{request.get_host}}*/(function(host,bookmarklet_url,user_url){ 
 
 var b=document.body;
-window.SherdBookmarkletOptions={mondrian_url:'http://'+host+'/save/?',
-                                action:'jump'
-                                {%for k,v in bookmarklet_vars.items%}
-                                ,'{{k}}':'{{v}}'
-                                {%endfor%}
-                               };
+var sb=window.SherdBookmarkletOptions;
+if (!sb) {
+    sb = window.SherdBookmarkletOptions = {};
+    sb['action']='jump';
+}
+sb['host_url']='http://'+host+'/save/?';
+{%for k,v in bookmarklet_vars.items%}
+  sb['{{k}}']='{{v}}';
+{%endfor%}
+
 var t='text/javascript';
 if(b){
     var z=document.createElement('script'); z.type=t; z.src='http://'+host+bookmarklet_url;
@@ -19,9 +23,9 @@ if(b){
         y.src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js';
         var onload = (/MSIE/.test(navigator.userAgent))?'onreadystatechange':'onload';        
         y[onload]=function(){
-            var jQ = window.SherdBookmarkletOptions.jQuery = jQuery.noConflict(true);
-            if (SherdBookmarkletOptions && SherdBookmarkletOptions.onJQuery) {
-                SherdBookmarkletOptions.onJQuery(jQ);
+            var jQ = sb.jQuery = jQuery.noConflict(true);
+            if (sb && sb.onJQuery) {
+                sb.onJQuery(jQ);
             }
         };
         b.appendChild(y);

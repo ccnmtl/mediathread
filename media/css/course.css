@@ -285,6 +285,10 @@ text-align: left;
   
 .asset_title.asset-quicktime,
 .asset_title.asset-youtube
+.asset_title.asset-flv_pseudo,
+.asset_title.asset-flv_rtmp,
+.asset_title.asset-mp4_pseudo,
+.asset_title.asset-mp4_rtmp
 {
 	background-image: url(../img/item_video.png);
 }

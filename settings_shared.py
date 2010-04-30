@@ -117,6 +117,8 @@ TINYMCE_DEFAULT_CONFIG = {'cols': 80,
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 
 # for AuthRequirementMiddleware. this should be a list of 
 # url prefixes for paths that can be accessed by anonymous

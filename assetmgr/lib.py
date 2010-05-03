@@ -1,6 +1,4 @@
 import simplejson
-import lxml.html
-from lxml.html import tostring
 
 from urlparse import urlsplit
 import urllib2
@@ -92,6 +90,8 @@ def get_metadata(asset, authenticate=False, **auth_info):
     assert f.code == 200
 
     body = f.read()
+    import lxml.html
+
     fragment = lxml.html.fromstring(body)
     fragment.make_links_absolute(base_href)
 
@@ -140,6 +140,7 @@ def _get_metadata_citation(html, format=None):
 # XXX TODO: just pass in the whole html fragment, dude
 def _get_metadata_related(metadata):
     metadatas = metadata.cssselect("div.content ul>li>div.hentry")
+    from lxml.html import tostring
 
     if len(metadatas):
         return ''.join(tostring(metadata).replace('\n', '') 

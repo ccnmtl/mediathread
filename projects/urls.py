@@ -12,7 +12,7 @@ urlpatterns = patterns(
         'project_readonly_view',
         name='project-view'),
 
-    url(r'^(?P<user_name>\w+)/project/$',
+    url(r'^(?P<user_name>\w[^/]*)/project/$',
         'your_projects',
         name='your-space-projects',
         ),

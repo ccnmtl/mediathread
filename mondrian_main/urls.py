@@ -17,18 +17,18 @@ urlpatterns = patterns(
     #narrowly overrides the username space below for a project_id just numbers
     (r'', include('projects.urls')),
 
-    url(r'^(?P<user_name>\w+)/$',
+    url(r'^(?P<user_name>\w[^/]*)/$',
         'your_space',
         name='your-space'),
 
 
-    url(r'^(?P<user_name>\w+)/asset/(?P<asset_id>\d+)/$',
+    url(r'^(?P<user_name>\w[^/]*)/asset/(?P<asset_id>\d+)/$',
         'remove_record',
         name='my-asset-notes'
         ),
 
 
-    url(r'^(?P<user_name>\w+)/asset/$',
+    url(r'^(?P<user_name>\w[^/]*)/asset/$',
         'your_records',
         name='your-space-records'),
 

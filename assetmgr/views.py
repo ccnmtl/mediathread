@@ -292,7 +292,7 @@ def asset_workspace(request, asset_id):
                 ), counts=True))
 
     comments = Comment.objects.for_model(asset)
-    discussions = get_discussions(asset)
+    #discussions = get_discussions(asset)
 
     return {
         'asset': asset,
@@ -303,7 +303,7 @@ def asset_workspace(request, asset_id):
         'user_tags': user_tags,
         'annotation_form': AnnotationForm(prefix="annotation"),
         'global_annotation_form': GlobalAnnotationForm(instance=global_annotation, prefix="annotation"),
-        'discussions' : discussions
+        #'discussions' : discussions
         }
 
 from django.http import HttpResponseForbidden

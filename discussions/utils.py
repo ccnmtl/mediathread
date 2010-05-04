@@ -18,3 +18,5 @@ def get_discussions( arbitrary_object):
                 arbitrary_object == d.content_object.context.content_object:
             discussions.append(d)
     return discussions        
+
+

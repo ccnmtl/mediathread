@@ -263,11 +263,19 @@ text-align: center;
 {
 
 margin: 0 0 .5em 0;
-background-color: #969696;
+background-color: #6f6f6f;
 padding: .2em .5em .2em .5em;
 color: #dedede;
 font-weight: normal;
 text-align: left;
+}
+
+
+#saves h2 a, #tags h2 a, #popular h2 a, #classmates h2 a, #filter_col h2 a, #results_col h2 a, #projectlist h2 a, #materials h2 a,
+.panel-column  h2 a
+{
+
+color: #fff;
 }
 
 .asset_title,
@@ -398,7 +406,7 @@ div.project-table
 .asset-table ul.asset-clips li 
 {  
     background-color:#f7f7f7;
-  /*border-top:1px solid #969696;*/
+  /*border-top:1px solid #6f6f6f;*/
   padding:2px 5px 3px;
   border-radius:2px;
   -moz-border-radius:2px;
@@ -526,7 +534,7 @@ margin:-2px -0.3em
 
 margin: 0 0 1em 0;
 font-size: 110%;
-background-color: #969696;
+background-color: #6f6f6f;
 padding: .2em .5em .2em .5em;
 color: #dedede;
 font-weight: normal;
@@ -792,7 +800,7 @@ width:55%;
 .top-archive h2 {
 
 margin: 0 0 .5em 0;
-background-color: #969696;
+background-color: #6f6f6f;
 padding: .2em .5em .2em .5em;
 color: #dedede;
 font-weight: normal;
@@ -833,7 +841,7 @@ width:62%;
 #class_activity h2 {
 
 margin: 0 0 .5em 0;
-background-color: #969696;
+background-color: #6f6f6f;
 padding: .2em .5em .2em .5em;
 color: #dedede;
 font-weight: normal;
@@ -886,7 +894,7 @@ min-width: 335px;
 #import_instructions .import_class h3 {
 
 margin: 0 0 .5em 0;
-background-color: #969696;
+background-color: #6f6f6f;
 padding: .2em .5em .2em .5em;
 color: #dedede;
 font-weight: normal;

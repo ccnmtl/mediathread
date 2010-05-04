@@ -6,6 +6,7 @@ body
 	background-color: #fff;
 	font: normal 0.8em/120% 'lucida grande', arial, verdana, sans-serif;
 	color: #000;
+	min-width: 940px;
 }
 
 /* ########## Standard elements ########## */
@@ -301,7 +302,7 @@ img, img a
 
 #standardnav a:hover, #footernav a:hover
 {
-	color: #8d3b2f;
+	color: #e5da14;
 	text-decoration: none;
 }
 
@@ -428,7 +429,7 @@ img, img a
 }
 #primarynav li.active a:hover
 { 
-  background-color:#ffff62;
+
  }
 
 
@@ -687,7 +688,7 @@ img, img a
 	margin: 0;
 	padding: 6px 0 0 0;
 	border: 0;
-	background-color: #fff;
+	background-color: #444;
 }
 
 /* ########## MT-preserved style definitions ########## */
@@ -816,7 +817,7 @@ ul.tabbernav li.tabberactive a:hover
 
 body.fluid #container
 {
-	margin: 0 0 0 5px;
+	margin: 0 5px;
 	width: auto;
 }
 
@@ -831,7 +832,10 @@ body.fluid #header
 body.fluid #primarynav,
 body.fluid #primarynav div.encase
 {
-	width: 100%;
+	width: auto;
+	left: 5px;
+	right: 5px;
+	min-width: 800px;
 }
 
 /* ---- Pagebody block elements ---------- */
@@ -844,7 +848,7 @@ body.fluid #pagebody
 body.fluid #footer
 {
 	width: 100%;
-	background-color: #ddd;
+	background-color: #444;
 }
 
 /* ---- Content block elements ---------- */

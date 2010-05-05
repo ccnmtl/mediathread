@@ -24,5 +24,8 @@ requirements/src/uuid-1.30.tar.gz
 lxml>=2.0
 psycopg2
 
+#for djangosherd xmeml final cut pro support
+requirements/src/xmeml-0.9.tar.gz
+
 # for functional testing
 requirements/src/flunc-0.6-dev.tar.gz

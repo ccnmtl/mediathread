@@ -26,7 +26,10 @@
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
  
-  <script type="text/javascript">        DjangoSherd_Project_Config();           </script>
+  <script type="text/javascript">        
+    DjangoSherd_Project_Config();           
+     {% if user.is_staff %}var is_staff = true;{% endif %}
+  </script>
 {% endblock %}
 
 {% block content %}

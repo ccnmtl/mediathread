@@ -17,6 +17,8 @@ from courseaffils.lib import in_course_or_404
 import simplejson
 from random import choice
 from string import letters
+import urllib2
+from django.utils.http import urlquote  as django_urlquote
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
@@ -197,3 +199,24 @@ def annotation_json(request, annot_id):
     return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')
 
+
+def final_cut_pro_xml(request, annot_id):
+    "support for http://developer.apple.com/mac/library/documentation/AppleApplications/Reference/FinalCutPro_XML/Topics/Topics.html"
+    try:
+        from xmeml import VideoSequence
+        #http://github.com/ccnmtl/xmeml
+        ann = get_object_or_404(SherdNote, pk=annot_id)
+        xmeml = ann.asset.sources.get('xmeml', None)
+        if xmeml is None:
+            return HttpResponse("Not Found: This annotation's asset does not have a Final Cut Pro source XML associated with it", status=404)
+        f = urllib2.urlopen(xmeml.url)
+        assert f.code == 200
+        v = VideoSequence(xml_string=f.read())
+        clip = v.clip(ann.range1, ann.range2 ,units='seconds')
+        xmldom,dumb_uuid = v.clips2dom([clip])
+        res = HttpResponse(xmldom.toxml(), mimetype='application/xml')
+        res['Content-Disposition'] = 'attachment; filename="%s.xml"' % ann.title
+        return res
+
+    except ImportError:
+        return HttpResponse('Not Implemented: No Final Cut Pro Xmeml support', status=503)

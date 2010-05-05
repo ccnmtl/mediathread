@@ -82,8 +82,10 @@ a.breadcrumb
 }
 
 .annotation-links .annotation { display:none; }
-/*exception*/
-.annotation-links div.active-annotation { display:inline; }
+/*exception
+  sky:we are now using JS to put in the HTML rather than tweak the top
+*/
+/*.annotation-links div.active-annotation { display:inline; }*/
 /*exception to the exception (editing mode)*/
 .asset-clips .annotation-links div.active-annotation { display:none; }
 

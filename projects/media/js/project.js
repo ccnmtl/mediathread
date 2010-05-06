@@ -28,8 +28,11 @@ function updateVerticalHeight(evt,offsets) {
         }
         elt.style.height = offset +'px';
     });
-    if (tinyMCE.get('project-content')) {
-     tinyMCE.activeEditor.theme.resizeTo(0,pixels_free-40);
+    var project_editor = tinyMCE.get('project-content');
+    if (project_editor
+        && project_editor.getContainer() != null
+       ) {
+        project_editor.theme.resizeTo(0,pixels_free-40);
     }
 }
 

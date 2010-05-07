@@ -51,7 +51,7 @@ def sources_from_args(request,asset=None):
     sources = {}
     args = request.REQUEST
     for key,val in args.items():
-        if good_asset_arg(key):
+        if good_asset_arg(key) and val != '':
             source = Source(label=key,url=val)
             #UGLY non-functional programming for url_processing
             source.request = request 

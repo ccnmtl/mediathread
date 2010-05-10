@@ -16,7 +16,7 @@ var tiny_mce_settings_for_vital = {
   theme_advanced_toolbar_align:"left",
 	    /* CUSTOM CCNMTL: peared down the UI buttons available */
 	    /* Safari doesn't support buttons, so turn them off */
-    theme_advanced_buttons1:"bold, italic, underline, spacer, bullist, numlist, spacer, outdent, indent, spacer, undo, redo, spacer, link, unlink, image, spacer, code, cite, ins, del",
+    theme_advanced_buttons1:"bold, italic, underline, spacer, bullist, numlist, spacer, outdent, indent, spacer, undo, redo, spacer, link, unlink, image, spacer, code",
   theme_advanced_buttons2:"",
   theme_advanced_path_location:"",
   remove_linebreaks:true,

@@ -29,10 +29,11 @@ function updateVerticalHeight(evt,offsets) {
         elt.style.height = offset +'px';
     });
     var project_editor = tinyMCE.get('project-content');
-    if (project_editor
-        && project_editor.getContainer() != null
-       ) {
-        project_editor.theme.resizeTo(0,pixels_free-40);
+    if (project_editor) {
+        var container = project_editor.getContainer();
+        if (container != null) {
+            project_editor.theme.resizeTo(parseInt(container.style.width,10), pixels_free-40);
+        }
     }
 }
 

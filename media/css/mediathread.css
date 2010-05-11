@@ -921,3 +921,15 @@ body.fluid #content
   color: #e6e6e6;
 }
 
+li.course-choice {
+    width:60%;
+    max-width:400px;
+    min-width:300px;
+    
+    padding:5px;
+}
+
+span.manage-course {
+    float:right;
+    margin-left:10px;
+}

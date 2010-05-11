@@ -1,8 +1,0 @@
-1. You need to create the CourseAffiliation table. ./manage.py syncdb should do this.
-
-2. You need to add the "context" column, which is a foreign key into the CourseAffiliation table.  This seems to work:
- ALTER TABLE assetmgr_asset ADD COLUMN context_id INT;
-
-3. You need to create a course affiliation for each user linking them to the 'summer09' course.  You can do this in the django admin ui. (A bit tedious, sorry)
-
-4. You need to update each asset to assign a course affiliation to it, representing the course it was added to and the user who added it. (A bit tedious, sorry)

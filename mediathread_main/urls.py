@@ -4,7 +4,7 @@ from django.conf import settings
 import projects
 
 urlpatterns = patterns(
-    'mondrian_main.views',
+    'mediathread_main.views',
 
     url(r'^$',
         'class_listing',

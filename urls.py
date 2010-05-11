@@ -7,7 +7,7 @@ admin.autodiscover()
 
 from projects import views as project
 from assetmgr import views as asset
-from mondrian_main import views as mondrian_main
+from mediathread_main import views as mediathread_main
 
 import structuredcollaboration.urls
 
@@ -35,7 +35,7 @@ urlpatterns = patterns('',
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###
-                       (r'^$', mondrian_main.class_portal),
+                       (r'^$', mediathread_main.class_portal),
                        #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
 
                        url(r'^save/$', asset.add_view,
@@ -43,7 +43,7 @@ urlpatterns = patterns('',
 
                        (r'^asset/',include('mondrian.assetmgr.urls')),
                        (r'^annotations/',include('mondrian.djangosherd.urls')),
-                       (r'^yourspace/',include('mondrian.mondrian_main.urls')),
+                       (r'^yourspace/',include('mondrian.mediathread_main.urls')),
                        
                        #redundant, but for published projects/legacy
                        #(r'^project/',include('mondrian.projects.urls')),

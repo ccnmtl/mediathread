@@ -41,7 +41,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
-    'mondrian_main.views.django_settings',
+    'mediathread_main.views.django_settings',
     )
 
 MIDDLEWARE_CLASSES = (
@@ -90,7 +90,7 @@ INSTALLED_APPS = (
     'threadedcomments',
     'djangohelpers',
     #mediathread local
-    'mondrian_main',
+    'mediathread_main',
 )
 
 THUMBNAIL_SUBDIR = "thumbs"

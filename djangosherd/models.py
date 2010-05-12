@@ -7,8 +7,14 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.loading import get_model
 
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import ugettext_lazy as _
+
 from tagging.models import Tag
 from tagging.fields import TagField
+
+from structuredcollaboration.models import Collaboration
 
 Asset = models.get_model('assetmgr', 'asset')
 User = models.get_model('auth', 'user')
@@ -236,3 +242,23 @@ class SherdNote(Annotation):
     def dir(self):
         return dir(self)
             
+
+class CitationLog(models.Model):
+    asset = models.ForeignKey(Asset, related_name="citation_references")
+    annotation = models.ForeignKey(Annotation)
+
+    content_type   = models.ForeignKey(ContentType,
+                                       related_name="citation_set_for_%(class)s",
+                                       null=True)
+    #point to version?
+    #obviously makes sense for log
+    #but user will only get to see the main project
+    #when it's deleted from project what should happen?
+    #should we delete this ref?
+    #probably?
+    object_pk      = models.TextField(_('object ID'),null=True)
+    content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+
+    collaboration = models.ForeignKey(Collaboration, null=True)
+
+    user = models.ForeignKey(User, null=True)

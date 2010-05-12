@@ -99,7 +99,7 @@ def new(request):
     #now create the CHILD collaboration object for the discussion to point at.
     #This represents the auth for the discussion itself.
     disc_sc = Collaboration(_parent=obj_sc,
-                            title="Discussion for %s" % the_object,
+                            title=comment_html,
                             #or we could point it at the root threadedcomments object.
                             #content_object=None,
                             context=request.collaboration_context,

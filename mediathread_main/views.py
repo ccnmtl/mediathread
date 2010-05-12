@@ -81,7 +81,6 @@ def class_portal(request):
         if c == getattr(comment.content_object,'course',None):
             my_assets[str(comment.object_pk)] = 1
     my_discussions = DiscussionIndex.objects.filter(participant=user)
-
     my_feed=Clumper(Comment.objects
                     .filter(content_type=ContentType.objects.get_for_model(Asset),
                             object_pk__in = my_assets.keys())
@@ -98,7 +97,7 @@ def class_portal(request):
                     .filter(Q(participants=user.pk)|Q(author=user.pk), course=c)
                     .order_by('-modified'),
                     DiscussionIndex.objects
-                    .filter(Q(Q(asset__in=my_assets.keys())|Q(collaboration__in=my_discussions)) )
+                    .filter(Q(Q(asset__in=my_assets.keys())|Q(collaboration__in=[d.collaboration for d in my_discussions])) )
                     .order_by('-modified'),                    
                     )
     #latest_saves = assets.order_by('-added')

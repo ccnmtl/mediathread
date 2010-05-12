@@ -245,7 +245,7 @@ class SherdNote(Annotation):
     def dir(self):
         return dir(self)
 
-
+#TODO: show discussions that aren't part of an asset
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants
     helpful in answering:
@@ -264,24 +264,20 @@ class DiscussionIndex(models.Model):
 
     @property
     def content_object(self):
-        """Support similar property as Comment model"""
-        return self.asset
+        """Support similar property as Comment model for Clumper"""
+        return self.asset or self.collaboration
 
 
     def get_absolute_url(self):
-        print type(self.comment)
-        print self.comment
         if self.comment and self.comment.threadedcomment:
             return '/discussion/show/%s#comment-%s' % (self.comment.threadedcomment.root_id, self.comment.id)
 
 def comment_indexer(sender, instance=None, created=None, **kwargs):
-    print sender
     if not (hasattr(instance,'comment') and
             hasattr(instance,'user') and
             isinstance(getattr(instance,'content_object',None) , Collaboration)
             ): #duck-typing for Comment and ThreadedComment
         return
-    print 'taken'
     sherds = SherdNote.objects.references_in_string(instance.comment)
     di = None
     if not sherds:

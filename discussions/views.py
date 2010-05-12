@@ -90,20 +90,20 @@ def new(request):
     #now create the CHILD collaboration object for the discussion to point at.
     #This represents the auth for the discussion itself.
     
-    disc_sc = Collaboration()
-    disc_sc._parent = obj_sc
-    disc_sc.title = "Discussion of %s" % the_object
-    disc_sc.content_object = None #or we could point it at the root threadedcomments object.
-    disc_sc.context = request.collaboration_context
+    disc_sc = Collaboration(_parent=obj_sc,
+                            title="Discussion of %s" % the_object,
+                            #or we could point it at the root threadedcomments object.
+                            content_object=None
+                            context=request.collaboration_context,
+                            )
     disc_sc.save()
 
     #finally create the root discussion object, pointing it at the CHILD.
     #TODO point the context at the course
-    new_threaded_comment = ThreadedComment()
-    new_threaded_comment.parent = None
-    new_threaded_comment.comment = comment_html    
-    new_threaded_comment.user = request.user
-    new_threaded_comment.content_object = disc_sc
+    new_threaded_comment = ThreadedComment(parent=None, 
+                                           comment=comment_html, 
+                                           user=request.user, 
+                                           content_object=disc_sc)
     
     #TODO: find the default site_id
     new_threaded_comment.site_id = 1

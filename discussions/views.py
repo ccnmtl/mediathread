@@ -87,13 +87,21 @@ def new(request):
         obj_sc.content_object = the_object
         obj_sc.save()
     
+
+    #sky: I think what I want to do is have the ThreadedComment
+    #point to the_object
+    #and the collaboration will point to the threaded root comment
+    #that way, whereas, if we live in Collaboration-land, we can get to ThreadedComments
+    # threaded comments can also live in it's own world without 'knowing' about SC
+    # OTOH, threaded comment shouldn't be able to point to the regular object
+    # until Collaboration says it's OK (i.e. has permissions)
+
     #now create the CHILD collaboration object for the discussion to point at.
     #This represents the auth for the discussion itself.
-    
     disc_sc = Collaboration(_parent=obj_sc,
-                            title="Discussion of %s" % the_object,
+                            title="Discussion for %s" % the_object,
                             #or we could point it at the root threadedcomments object.
-                            content_object=None
+                            #content_object=None,
                             context=request.collaboration_context,
                             )
     disc_sc.save()

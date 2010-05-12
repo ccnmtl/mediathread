@@ -4,6 +4,7 @@ from tagging.utils import calculate_cloud
 from assetmgr.lib import most_popular,annotated_by
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
+from djangosherd.models import DiscussionIndex
 
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
@@ -79,6 +80,8 @@ def class_portal(request):
     for comment in Comment.objects.filter(user=user):
         if c == getattr(comment.content_object,'course',None):
             my_assets[str(comment.object_pk)] = 1
+    my_discussions = DiscussionIndex.objects.filter(participant=user)
+
     my_feed=Clumper(Comment.objects
                     .filter(content_type=ContentType.objects.get_for_model(Asset),
                             object_pk__in = my_assets.keys())
@@ -93,7 +96,10 @@ def class_portal(request):
                     .order_by('-added'),
                     Project.objects
                     .filter(Q(participants=user.pk)|Q(author=user.pk), course=c)
-                    .order_by('-modified')
+                    .order_by('-modified'),
+                    DiscussionIndex.objects
+                    .filter(Q(Q(asset__in=my_assets.keys())|Q(collaboration__in=my_discussions)) )
+                    .order_by('-modified'),                    
                     )
     #latest_saves = assets.order_by('-added')
     #popular_assets = most_popular(assets)

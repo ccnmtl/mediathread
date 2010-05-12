@@ -146,6 +146,7 @@ Class Analysis
     <h2>Updates to My Items</h2>
     <div class="scroll">
       <ul>
+        {%load user_annotations %}
 	{%for clump in my_feed%}
 	<li>
 	  <div class="asset_title type-{{clump.type}}
@@ -167,7 +168,7 @@ Class Analysis
 	      {%if act.text %}
 	      :
 	      {%if act.href %}<a href="{{act.href}}">{%endif%}
-		{{act.text|truncatewords:10 }}
+		{{act.text|striptags_better|safe|truncatewords:10 }}
 	      {%if act.href %}</a>{%endif%}
 	      {%endif%}
 	      {{act.date|date}}

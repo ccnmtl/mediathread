@@ -15,9 +15,12 @@ from tagging.models import Tag
 from tagging.fields import TagField
 
 from structuredcollaboration.models import Collaboration
+from django.db.models.signals import post_save
 
 Asset = models.get_model('assetmgr', 'asset')
 User = models.get_model('auth', 'user')
+Comment = get_model('comments','comment')
+
 
 NULL_FIELDS = dict((i, None) for i in
                    'range1 range2 title'.split())
@@ -241,24 +244,57 @@ class SherdNote(Annotation):
     @property
     def dir(self):
         return dir(self)
-            
 
-class CitationLog(models.Model):
-    asset = models.ForeignKey(Asset, related_name="citation_references")
-    annotation = models.ForeignKey(Annotation)
 
-    content_type   = models.ForeignKey(ContentType,
-                                       related_name="citation_set_for_%(class)s",
-                                       null=True)
-    #point to version?
-    #obviously makes sense for log
-    #but user will only get to see the main project
-    #when it's deleted from project what should happen?
-    #should we delete this ref?
-    #probably?
-    object_pk      = models.TextField(_('object ID'),null=True)
-    content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+class DiscussionIndex(models.Model):
+    """table to index discussions to assets and participants
+    helpful in answering:
+    1. what discussions does a user care about (those they participated in)
+    2. what discussions are connected to a particular asset (for asset page)
+    3. what new comments should be featured in Clumper
+    """
+    participant = models.ForeignKey(User, null=True)
+    collaboration = models.ForeignKey(Collaboration)
 
-    collaboration = models.ForeignKey(Collaboration, null=True)
+    asset=models.ForeignKey(Asset, null=True, related_name="discussion_references")
 
-    user = models.ForeignKey(User, null=True)
+    #just for use-case #3
+    comment=models.ForeignKey(Comment, null=True)
+    modified=models.DateTimeField(auto_now=True) #update on save
+
+    @property
+    def content_object(self):
+        """Support similar property as Comment model"""
+        return self.asset
+
+
+    def get_absolute_url(self):
+        print type(self.comment)
+        print self.comment
+        if self.comment and self.comment.threadedcomment:
+            return '/discussion/show/%s#comment-%s' % (self.comment.threadedcomment.root_id, self.comment.id)
+
+def comment_indexer(sender, instance=None, created=None, **kwargs):
+    print sender
+    if not (hasattr(instance,'comment') and
+            hasattr(instance,'user') and
+            isinstance(getattr(instance,'content_object',None) , Collaboration)
+            ): #duck-typing for Comment and ThreadedComment
+        return
+    print 'taken'
+    sherds = SherdNote.objects.references_in_string(instance.comment)
+    di = None
+    if not sherds:
+        class NoNote:
+            asset = None
+        sherds = [ NoNote(), ]
+    for ann in sherds:
+        di,c = DiscussionIndex.objects.get_or_create(
+            participant=instance.user,
+            collaboration = instance.content_object,
+            asset=ann.asset,
+            )
+        di.comment = instance
+        di.save()
+
+post_save.connect(comment_indexer)

@@ -2,6 +2,7 @@ from django.db import models
 
 Asset = models.get_model('assetmgr','asset')
 SherdNote = models.get_model('djangosherd','sherdnote')
+DiscussionIndex = models.get_model('djangosherd','discussionindex')
 Project = models.get_model('projects','project')
 User = models.get_model('auth','user')
 #for portal
@@ -104,7 +105,7 @@ class Clumper():
         @staticmethod
         def adapt_user(thing):
             return getattr(thing,'author',
-                           getattr(thing,'user',None))
+                           getattr(thing,'user',getattr(thing,'participant',None)))
 
         @staticmethod
         def adapt_action(thing):
@@ -112,6 +113,7 @@ class Clumper():
                     SherdNote:'analyzed',
                     Asset:'added',
                     Project:'updated',
+                    DiscussionIndex:'discussed',
                     }
             return amap.get(type(thing),'notes')
 

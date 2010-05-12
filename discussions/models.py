@@ -1,22 +1,23 @@
 from django.db import models
-from django.db.models import get_model,Max
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
-from django.core import urlresolvers
-from django.conf import settings
-from structuredcollaboration.models import Collaboration
-from django.utils.translation import ugettext_lazy as _
-from courseaffils.models import Course
-from datetime import datetime
-import pdb
+from django.db.models import get_model
 
 User = get_model('auth','user')
 Group = get_model('auth','group')
 
+
 #Hm.... don't really need this.
-
-
 if 1 == 0:
+    from django.db.models import Max
+    from django.contrib.contenttypes import generic
+    from django.contrib.contenttypes.models import ContentType
+    from django.core import urlresolvers
+    from django.conf import settings
+    from structuredcollaboration.models import Collaboration
+    from django.utils.translation import ugettext_lazy as _
+    from courseaffils.models import Course
+    from datetime import datetime
+    import pdb
+
     class Discussion(models.Model):
         """A threaded discussion.
         

@@ -3,6 +3,8 @@ echo ALTER DATABASE mondrian RENAME TO mediathread |psql postgres
 
 #2. SCHEMA tweak
 echo ALTER TABLE djangosherd_sherdnote ALTER COLUMN author_id DROP NOT NULL|psql mediathread
+#adds djangosherd_discussionindex
+./manage.py syncdb
 
 #2. change the child directory
 cd ..

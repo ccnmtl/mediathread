@@ -179,27 +179,24 @@ class SherdNote(Annotation):
     >>> six.range1
     7.5
     """
+    objects = SherdNoteManager()
 
     title = models.CharField(blank=True,max_length=1024, null=True)
-
     asset = models.ForeignKey(Asset)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, null=True)
     tags = TagField()
+
+    body = models.TextField(blank=True,db_index=True, null=True)
+
+    added = models.DateTimeField('date created', editable=False)
+    modified = models.DateTimeField('date modified', editable=False)
 
     def tags_split(self):
         "Because |split filter sucks and doesn't break at commas"
         return Tag.objects.get_for_object(self)
 
-
     def add_tag(self, tag):
         self.tags = "%s %s" % (self.tags, tag)
-
-    body = models.TextField(blank=True,db_index=True, null=True)
-
-    objects = SherdNoteManager()
-
-    added = models.DateTimeField('date created', editable=False)
-    modified = models.DateTimeField('date modified', editable=False)
 
     @property
     def content_object(self):
@@ -296,5 +293,9 @@ def comment_indexer(sender, instance=None, created=None, **kwargs):
             )
         di.comment = instance
         di.save()
+
+    @property
+    def dir(self):
+        return dir(self)
 
 post_save.connect(comment_indexer)

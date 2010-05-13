@@ -64,8 +64,8 @@
     
         <div class="clipform">
               <!--  MOCHI -->
-              <input type="radio" name="clipType" autocomplete="off" value="Whole" {% if not annotation %} checked {% endif %} onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');" />Whole
-              <input type="radio" name="clipType" autocomplete="off" value="Portion" {% if annotation %} checked {% endif %} onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');" />Portion
+              <input type="radio" name="clipType" autocomplete="off" value="Whole" onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');" />Whole
+              <input type="radio" name="clipType" autocomplete="off" value="Portion" checked onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');" />Portion
         </div>
         
         {% if annotation %}
@@ -76,7 +76,7 @@
             </div>
         {% endif %}   
      
-        <div id="whole-asset-form" class="sub-control" style="display: {% if annotation %} none {% else %} block {% endif %}">
+        <div id="whole-asset-form" class="sub-control" style="display: none">
             <form class="tabber_form" name="not-clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
                 <div id="Item" class="sub-control">
                     {{ global_annotation_form.as_p }}
@@ -93,7 +93,7 @@
             </form>
         </div> 
     
-        <div id="portion-asset-form" class="sub-control" style="display: {% if annotation %} block {% else %} none {% endif %}">
+        <div id="portion-asset-form" class="sub-control" style="display: block">
 	    <!--keep id/name for now for vital-support-->
             <center>
 	           <div id="clipform-display" name="clipform-display"></div>

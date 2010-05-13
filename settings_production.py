@@ -1,4 +1,4 @@
-from mondrian.settings import *
+from mediathread.settings import *
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
@@ -9,10 +9,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 DATABASE_ENGINE = 'postgresql_psycopg2'
 
 TEMPLATE_DIRS = (
-    "/var/www/mondrian/mondrian/templates",
+    "/var/www/mediathread/mediathread/templates",
 )
 
-MEDIA_ROOT = '/var/www/mondrian/uploads/'
+MEDIA_ROOT = '/var/www/mediathread/uploads/'
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG

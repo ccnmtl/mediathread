@@ -1,0 +1,15 @@
+#1. rename database
+echo ALTER DATABASE mondrian RENAME TO mediathread |psql postgres
+
+#2. SCHEMA tweak
+echo ALTER TABLE djangosherd_sherdnote ALTER COLUMN author_id DROP NOT NULL|psql mediathread
+
+#2. change the child directory
+cd ..
+mv mondrian mediathread
+cd mediathread
+
+#3. change checkouts
+sed -i -e's/mondrian/mediathread/' .git/config
+cd deploy_specific
+sed -i -e's/mondrian_deploy_specific/mediathread_deploy_specific/' .git/config

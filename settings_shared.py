@@ -16,7 +16,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql_psycopg2' # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'mondrian' # Or path to database file if using sqlite3.
+DATABASE_NAME = 'mediathread' # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
@@ -28,7 +28,7 @@ TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = False
-MEDIA_ROOT = "/var/www/mondrian/uploads/"
+MEDIA_ROOT = "/var/www/mediathread/uploads/"
 MEDIA_URL = '/uploads/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
@@ -55,14 +55,14 @@ MIDDLEWARE_CLASSES = (
     'djangohelpers.middleware.HttpDeleteMiddleware',
 )
 
-ROOT_URLCONF = 'mondrian.urls'
+ROOT_URLCONF = 'mediathread.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     # Put application templates before these fallback ones:
-    "/var/www/mondrian/templates/",
+    "/var/www/mediathread/templates/",
     os.path.join(os.path.dirname(__file__),"templates"),
 )
 
@@ -156,7 +156,7 @@ FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.1.5.s
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there
 try:
-    from mondrian.deploy_specific.settings import *
+    from mediathread.deploy_specific.settings import *
     if locals().has_key('EXTRA_INSTALLED_APPS'):
         INSTALLED_APPS = EXTRA_INSTALLED_APPS + INSTALLED_APPS
 

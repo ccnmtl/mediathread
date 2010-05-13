@@ -41,12 +41,12 @@ urlpatterns = patterns('',
                        url(r'^save/$', asset.add_view,
                            name="asset-save"),
 
-                       (r'^asset/',include('mondrian.assetmgr.urls')),
-                       (r'^annotations/',include('mondrian.djangosherd.urls')),
-                       (r'^yourspace/',include('mondrian.mediathread_main.urls')),
+                       (r'^asset/',include('mediathread.assetmgr.urls')),
+                       (r'^annotations/',include('mediathread.djangosherd.urls')),
+                       (r'^yourspace/',include('mediathread.mediathread_main.urls')),
                        
                        #redundant, but for published projects/legacy
-                       #(r'^project/',include('mondrian.projects.urls')),
+                       #(r'^project/',include('mediathread.projects.urls')),
                        #override/shortcut for published projects
                        url(r'^project/(?P<project_id>\d+)/[^v/]*$',
                            'projects.views.project_readonly_view',
@@ -55,7 +55,7 @@ urlpatterns = patterns('',
                        (r'^explore/$','assetmgr.views.archive_explore'),
 
                        #threaded discussion:
-                       (r'^discussion/',include('mondrian.discussions.urls')),
+                       (r'^discussion/',include('mediathread.discussions.urls')),
 
                        ### Public Access ###
                        (r'', include(structuredcollaboration.urls)), #import at root

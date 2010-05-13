@@ -1,19 +1,19 @@
 ===========================================================
-Mondrian
+Mediathread
 ===========================================================
 
-Mondrian is a Django site for multimedia annotations facilitating
+Mediathread is a Django site for multimedia annotations facilitating
 collaboration on video and image analysis. Developed at the Columbia
 Center for New Media Teaching and Learning (CCNMTL)
-http://github.com/ccnmtl/Mondrian
+http://github.com/ccnmtl/mediathread
 
 INSTALLATION
 ------------
 
-1. Mondrian relies on several submodules.  The easiest way to download
+1. Mediathread relies on several submodules.  The easiest way to download
    it all is to run with git 1.6.5+ is:
 
-  git clone --recursive http://github.com/ccnmtl/mondrian.git 
+  git clone --recursive http://github.com/ccnmtl/mediathread.git 
 
 2. Bootstrap uses virtualenv to build a contained library in ve/
   ./bootstrap.py
@@ -24,7 +24,7 @@ INSTALLATION
 )
 
 3. Build the (postgres) database
-  createdb mondrian
+  createdb mediathread
   ./manage.py syncdb
   #create a superuser
 

@@ -307,6 +307,7 @@ color: #fff;
 {
 	background-image: url(../img/item_image.png);
 }
+
 .record-image .annotation-timecode {
     display:none;
 }
@@ -319,6 +320,13 @@ color: #fff;
 	padding: 3px 22px;
 	margin-top: -3px;
 }
+
+.asset_title.type-collaboration
+{
+	background-image: url(../img/item_discussion.png);
+}
+
+
 
 .asset_title a.title {
 

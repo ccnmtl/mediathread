@@ -1,5 +1,6 @@
 from django.db import models
 
+Collaboration = models.get_model('structuredcollaboration','collaboration')
 Asset = models.get_model('assetmgr','asset')
 SherdNote = models.get_model('djangosherd','sherdnote')
 DiscussionIndex = models.get_model('djangosherd','discussionindex')
@@ -80,7 +81,7 @@ class Clumper():
 
         @property
         def href(self):
-            if self.add_only:
+            if self.add_only or isinstance(self.things[0],DiscussionIndex):
                 return self.things[0].get_absolute_url()
             else:
                 return self.content_object.get_absolute_url()

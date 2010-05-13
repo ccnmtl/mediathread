@@ -245,7 +245,7 @@ class SherdNote(Annotation):
     def dir(self):
         return dir(self)
 
-#TODO: show discussions that aren't part of an asset
+
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants
     helpful in answering:
@@ -270,7 +270,11 @@ class DiscussionIndex(models.Model):
 
     def get_absolute_url(self):
         if self.comment and self.comment.threadedcomment:
-            return '/discussion/show/%s#comment-%s' % (self.comment.threadedcomment.root_id, self.comment.id)
+            return '/discussion/show/%s#comment-%s' % (self.comment.threadedcomment.root_id, 
+                                                       self.comment.id)
+    @classmethod
+    def with_permission(cls, request,query):
+        return [di for di in query if di.collaboration.permission_to('read',request) ]
 
 def comment_indexer(sender, instance=None, created=None, **kwargs):
     if not (hasattr(instance,'comment') and

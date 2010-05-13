@@ -42,6 +42,9 @@ def show(request, discussion_id):
     
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
+
+    if not root_comment.content_object.permission_to('read',request):
+        return HttpResponseForbidden('You do not have permission to view this discussion.')
     
     try:
         my_course = root_comment.content_object.context.content_object

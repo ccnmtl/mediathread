@@ -19,16 +19,16 @@ class Clumper():
     stuff = None #don't make array here or it persists to other requests.
     items = None
     
-    def __init__(self, *feeds):
+    def __init__(self, *feeds, **kwargs):
         self.items = {}
-        
+        group_by = kwargs.get('group_by',None)
         for f in feeds:
             for item in f:
-                parent = self.ClumpItem.parent_object(item)
+                parent = self.ClumpItem.parent_object(item, group_by)
                 if self.items.has_key(parent):
                     self.items[parent].append(item)
                 else:
-                    self.items[parent] = self.ClumpItem(item)
+                    self.items[parent] = self.ClumpItem(item, group_by=group_by)
 
     def __len__(self):
         #used to be each unclumped-item, but...why?
@@ -43,10 +43,11 @@ class Clumper():
         things = None
         primary_thing = None
         
-        def __init__(self, thingie, primary=None):
+        def __init__(self, thingie, primary=None, group_by=None):
             self.things = []
             self.things.append(thingie)
             self.primary=primary
+            self.group_by = group_by
 
         def __cmp__(self,other):
             return self.order_by(self.things[0],other.things[0])
@@ -72,17 +73,21 @@ class Clumper():
             return (len(self.things)==1 and isinstance(self.things[0],Asset))
 
         @classmethod
-        def parent_object(cls,thingie):
-            return getattr(thingie,'content_object',None)
+        def parent_object(cls,thingie,group_by=None):
+            if hasattr(thingie, 'clump_parent'):
+                return thingie.clump_parent(group_by)
+            else:
+                return getattr(thingie,'content_object',None)
 
         @property
         def content_object(self):
-            return self.parent_object(self.things[0])
+            return self.parent_object(self.things[0], self.group_by)
 
         @property
         def href(self):
-            if self.add_only or isinstance(self.things[0],DiscussionIndex):
-                return self.things[0].get_absolute_url()
+            if self.add_only or isinstance(self.content_object,Collaboration):
+                return getattr(self.things[0],'get_parent_url',
+                               self.things[0].get_absolute_url)()
             else:
                 return self.content_object.get_absolute_url()
         @property
@@ -99,8 +104,8 @@ class Clumper():
         @staticmethod
         def adapt_str(thing):
             if isinstance(thing,Project): return None
-            return getattr(thing,'comment',
-                           getattr(thing,'title',None) or getattr(thing,'body',None)
+            return getattr(thing,'body',
+                           getattr(thing,'comment',None) or getattr(thing,'title',None)
                            )
 
         @staticmethod

@@ -193,7 +193,7 @@
    
       <h2><a class="hs-control" href="#classtags"></a>Class Item Analysis</h2>
 
-      <div id="classtags">
+      <div id="classtags" class="sub-control">
 	<h3>Tags:</h3>
 	{% for tag in tags %}
 	<span class="size{{tag.font_size}}">
@@ -205,18 +205,14 @@
  
       <br />
     
-      <h2><a class="hs-control" href="#discussion"></a>Class Discussion</h2>
+      <h2><a class="hs-control" href="#discussion"></a>Class Discussions Referencing this Item</h2>
       
          <div id="discussions" class="sub-control">
 	    {%if discussions%}
-	    <ul>
-	        {%for disc in discussions%}
-	            <li>
-	              <div class="asset_title type-project">
-	                <a href="/discussion/show/{{disc.id}}" class="title">{{disc}}</a>
-	              </div>
-	            </li>
-	        {%endfor%}
+	    <ul class="clumper">
+              {%for clump in discussions%}
+                 {%include "projects/clump.html" %}
+              {%endfor%}
             </ul>
 	    {%endif%}{#end if discussions #}
             <!-- NEW STYLE CREATE DISCUSSION 
@@ -234,7 +230,7 @@
           </div><!--end id="discussions" -->
 
 
-      <div id="discussion">
+      <div id="discussion" class="sub-control">
 	{% load comments %}
         {# {% if comments.10 %}  {% render_comment_form for asset %}{% endif %} #}
 	{% for comment in comments %}

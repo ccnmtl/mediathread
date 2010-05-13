@@ -19,7 +19,7 @@
   display: block;
   border: 2px solid gray;
 }
-  .indexcard div {
+  .indexcard div.sub-control {
     padding: 0.25em 0.25em 0 0.25em;
   }
   .indexcard input[type=text],
@@ -934,4 +934,9 @@ margin: 1.5em 1em .5em 1em;
 
 .resize-height {
     height:350px;
+}
+
+ul.clumper {
+    list-style:none;
+    margin:0;
 }

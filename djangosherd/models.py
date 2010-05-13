@@ -259,11 +259,25 @@ class DiscussionIndex(models.Model):
     comment=models.ForeignKey(Comment, null=True)
     modified=models.DateTimeField(auto_now=True) #update on save
 
+    def __unicode__(self):
+        return unicode(self.body)
+
+    @property
+    def body(self):
+        parts = re.split('\<\/?[a-zA-Z]+[^>]*>',self.comment.comment)
+        return ''.join(parts)
+
     @property
     def content_object(self):
         """Support similar property as Comment model for Clumper"""
         return self.asset or self.collaboration
 
+    def clump_parent(self, group_by=None):
+        return self.collaboration if group_by=='discussion' else self.content_object
+    
+    def get_parent_url(self):
+        if self.comment and self.comment.threadedcomment:
+            return '/discussion/show/%s' % self.comment.threadedcomment.root_id
 
     def get_absolute_url(self):
         if self.comment and self.comment.threadedcomment:

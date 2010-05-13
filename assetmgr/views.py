@@ -8,18 +8,19 @@ from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
 from structuredcollaboration.models import Collaboration
+from mediathread_main.clumper import Clumper
 
 from django.conf import settings
 
 from django.shortcuts import get_object_or_404
 from django.db import models
-from discussions.utils import get_discussions
 
 import re
 
 Asset = models.get_model('assetmgr','asset')
 Source = models.get_model('assetmgr','source')
 SherdNote = models.get_model('djangosherd','sherdnote')
+DiscussionIndex = models.get_model('djangosherd','discussionindex')
 User = models.get_model('auth','user')
 from djangosherd.views import AnnotationForm, GlobalAnnotationForm
 
@@ -292,7 +293,12 @@ def asset_workspace(request, asset_id):
                 ), counts=True))
 
     comments = Comment.objects.for_model(asset)
-    #discussions = get_discussions(asset)
+
+    discussions = Clumper(DiscussionIndex.with_permission(
+            request,
+            #order, to be easily groupable by discussion
+            DiscussionIndex.objects.filter(asset=asset).order_by('-modified')
+            ), group_by='discussion')
 
     return {
         'asset': asset,
@@ -303,7 +309,7 @@ def asset_workspace(request, asset_id):
         'user_tags': user_tags,
         'annotation_form': AnnotationForm(prefix="annotation"),
         'global_annotation_form': GlobalAnnotationForm(instance=global_annotation, prefix="annotation"),
-        #'discussions' : discussions
+        'discussions' : discussions
         }
 
 from django.http import HttpResponseForbidden

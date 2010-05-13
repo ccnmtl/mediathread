@@ -1,0 +1,28 @@
+	<li>
+	  <div class="asset_title type-{{clump.type}}
+                      {%ifequal clump.type "asset"%}
+                      asset-{{clump.content_object.primary.label}}
+                      {%endifequal%}
+                      ">
+	    <a href="{{clump.href}}" class="title">{{clump.title|default:"(Untitled)"}}</a>
+	  </div>
+	  <div class="asset-activities">
+	    {%for act in clump%}
+	    <div class="asset-activity">
+	      {{act.action}}
+	      {%if act.user%}
+	      by 
+	      <a href="{% url your-space-records act.user.username %}"
+		 >{{act.user.get_full_name|default:act.user.username}}</a>
+	      {%endif%}
+	      {%if act.text %}
+	      :
+	      {%if act.href %}<a href="{{act.href}}">{%endif%}
+		{{act.text|safe|truncatewords:10 }}
+	      {%if act.href %}</a>{%endif%}
+	      {%endif%}
+	      {{act.date|date}}
+	    </div>
+	    {%endfor%}
+	  </div>
+	</li>

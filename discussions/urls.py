@@ -3,7 +3,8 @@ from django.conf import settings
 urlpatterns = patterns(
 
     #show a discussion:    
-    'discussions.views', url(r'^show/(?P<discussion_id>\d+)$', 'show', name='show_discussion'),
+    'discussions.views', 
+    url(r'^show/(?P<discussion_id>\d+)$', 'show', name='show_discussion'),
 
     #create a new discussion of an arbitrary model instance:
     (r'^new/$', 'new'),

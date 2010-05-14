@@ -149,6 +149,8 @@ COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']
 COMMENTS_ALLOW_PROFANITIES = True
 COMMENTS_APP = 'threadedcomments'
 
+FORCE_LOWERCASE_TAGS = True
+
 #if you set this to a string, then bookmarklet can import from flickr
 DJANGOSHERD_FLICKR_APIKEY = None
 FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf"

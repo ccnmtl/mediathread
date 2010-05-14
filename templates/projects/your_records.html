@@ -60,7 +60,6 @@ My Items
     {% replace_value of 'tag' with tag.name in request.GET as querystring %}
     <li> <a href="{{querystring|qsify}}"><span class="size{{tag.font_size}}">{{tag}}</span></a></li>
    {% endif %}
-  </span>
  {% endfor %}</ul></div>
  <!--
  <h3>Date Added</h3>

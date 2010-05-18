@@ -77,6 +77,8 @@ AjaxComment.prototype.submit = function(evt) {
         error: self.onfail,
         context: {'self':self,'form_val_array':form_val_array}
     });
+    //frm.elements['timestamp'].value = '';
+    //frm.elements['security_hash'].value = '';
 }
 
 AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {

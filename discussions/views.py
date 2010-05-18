@@ -121,7 +121,11 @@ def new(request):
     new_threaded_comment.save()
     return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     
-    
+@allow_http("POST")    
+def comment_change(request):
+    "save comment, since comments/post only does add, no edit"
+    ####TODO TODO TODO TODO TODO 
+    pass
 
 
 #TODO: why is this attempt to override comment_posted not working?

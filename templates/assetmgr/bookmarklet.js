@@ -11,9 +11,10 @@ sb['host_url']='http://'+host+'/save/?';
   sb['{{k}}']='{{v}}';
 {%endfor%}
 
+var r=function(){return 'abcdefghijklmnopqrstuvwxyz0123456789'[parseInt(Math.random()*36)];};
 var t='text/javascript';
 if(b){
-    var z=document.createElement('script'); z.type=t; z.src='http://'+host+bookmarklet_url;
+    var z=document.createElement('script'); z.type=t; z.src='http://'+host+'/nocache/'+r()+r()+r()+bookmarklet_url;
     b.appendChild(z);
     var x=document.createElement('script'); x.type=t; x.src='http://'+host+user_url;
     b.appendChild(x);

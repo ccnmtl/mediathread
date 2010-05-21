@@ -10,8 +10,7 @@ sb['host_url']='http://'+host+'/save/?';
 {%for k,v in bookmarklet_vars.items%}
   sb['{{k}}']='{{v}}';
 {%endfor%}
-
-var r=function(){return 'abcdefghijklmnopqrstuvwxyz0123456789'[parseInt(Math.random()*36)];};
+var r=function(){return 'abcdefghijklmnopqrstuvwxyz0123456789'.charAt(parseInt(Math.random()*36));};
 var t='text/javascript';
 if(b){
     var z=document.createElement('script'); z.type=t; z.src='http://'+host+'/nocache/'+r()+r()+r()+bookmarklet_url;

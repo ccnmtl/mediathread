@@ -59,7 +59,7 @@ class Asset(models.Model):
     #'url' should probably stay at the end
     #that is how an asset gets 'blessed' as a collection
     primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
-                      'youtube','quicktime', 
+                      'youtube','quicktime','realplayer', 
                       'image_fpx', #artstor.org and FSI flash image viewer in general
                       'image','archive','url',)
 

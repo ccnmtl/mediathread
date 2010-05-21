@@ -80,7 +80,10 @@ def class_portal(request):
     for comment in Comment.objects.filter(user=user):
         if c == getattr(comment.content_object,'course',None):
             my_assets[str(comment.object_pk)] = 1
-    my_discussions = [d.collaboration_id for d in DiscussionIndex.objects.filter(participant=user)]
+    my_discussions = [d.collaboration_id for d in DiscussionIndex.objects
+                      .filter(participant=user,
+                              collaboration__context=request.collaboration_context
+                              )]
 
     my_feed=Clumper(Comment.objects
                     .filter(content_type=ContentType.objects.get_for_model(Asset),

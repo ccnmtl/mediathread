@@ -99,9 +99,12 @@
                   {{current_comment.comment|safe}}
                 </div>
                 <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
-                  <span class="respond_prompt" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">
+                  <span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the reply form">
                     Respond<!-- to comment {{ current_comment.id }}: -->
                     </span><div class="comment_form_space"></div><!-- must be neighbor-->
+                    {% if edit_comment_permission %}
+                    <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span><div class="comment_form_space"></div><!-- must be neighbor-->
+                    {% endif %}
                 </div>
               </div>
               {% if current_comment.added_path %} <span class="new-comment">ADDED</span> {% endif %}
@@ -114,10 +117,11 @@
 
         {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
         <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
+          <input type="hidden" id="comment-edit-id" name="edit-id" />
           <ul>
             {{ current_comment_form.as_ul }}
 
-            <li><input id="comment-form-submit" type="submit" value="Submit Comment" /></li>
+            <li><input id="comment-form-submit" type="submit" value="Save Comment" /></li>
           </ul>
         </form>
         

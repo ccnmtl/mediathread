@@ -116,9 +116,10 @@ form.threaded_comments_form ul li {
  list-style-type: none;
 }
 
-.respond_prompt {
-    color:red;
+.comment_action {
+    color:#992222;
     cursor:pointer;
+    text-decoration:underline;
 }
 
 p.threaded_comment_text {

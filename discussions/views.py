@@ -58,6 +58,7 @@ def show(request, discussion_id):
 
     return {
         'is_space_owner': True,
+        'edit_comment_permission': my_course.is_faculty,
         'space_owner': space_owner,
         'space_viewer': space_viewer,
         'root_comment': root_comment,
@@ -121,26 +122,21 @@ def new(request):
     new_threaded_comment.save()
     return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     
+
 @allow_http("POST")    
-def comment_change(request):
+@rendered_with('comments/posted.html')
+def comment_change(request, comment_id, next=None):
     "save comment, since comments/post only does add, no edit"
-    ####TODO TODO TODO TODO TODO 
-    pass
+    comment = ThreadedComment.objects.get(pk=comment_id)
+    if not comment.content_object.permission_to('edit',request):
+        return HttpResponseForbidden('You do not have permission to edit this discussion.')
 
+    comment.comment = request.POST['comment']
+    comment.title = request.POST['title']
 
-#TODO: why is this attempt to override comment_posted not working?
-@rendered_with('discussions/class_discussion.html')
-@allow_http("GET")
-def my_comment_posted( request ):
-    #if request.GET['c']:
-    #    comment_id, post_id  = request.GET['c'].split( ':' )
-    #    post = Post.objects.get( pk=post_id )
-    #
-    #    if post:
-    #        return HttpResponseRedirect( post.get_absolute_url() )
-    #
-    #return HttpResponseRedirect( "/" )
-    return HttpResponseRedirect( "/discussion/show/310" )
-    
-    
+    comment.save()
+
+    return {
+        'comment': comment,
+        }
     

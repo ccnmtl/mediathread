@@ -1,25 +1,52 @@
-addLoadEvent(function discussion_init() {
-    var next_response_loc = false;
-    var frm = jQuery('#comment-form').get(0);
+jQuery(function discussion_init() {
+    var next_response_loc = false,
+        frm = jQuery('#comment-form').get(0),
+        commenter,
+        mode='post';
 
-    function open_comment_form(evt) {
-        var respond = evt.target;
-        frm.elements['parent'].value = respond.getAttribute("data-comment");
+    function open_respond(evt) {
+        var respond = evt.target; //**
+        frm.elements['parent'].value = respond.getAttribute("data-comment"); //**
+        frm.elements['edit-id'].value = '';
+        open_comment_form(respond);
+        if (mode=='update') {
+            set_comment_content();//empty it
+        }
+        mode='post';
+    }
+    function open_edit(evt) {
+        mode='update';
+        var edit = evt.target;
+        frm.elements['parent'].value = '';
+        var id = frm.elements['edit-id'].value = edit.getAttribute("data-comment");
+
+        open_comment_form(edit);
+
+        set_comment_content(commenter.read({html:jQuery('#comment-'+id).get(0)}).comment);
+    }
+
+    function set_comment_content(content) {
+        content = content || '<p></p>';
+        frm.elements['comment'].value = content;
+        tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,content,false);
+    }
+
+    function open_comment_form(evt_target) {
         if (!next_response_loc) {
-	    next_response_loc = respond;
-            respond.nextSibling.appendChild(frm);
+	    next_response_loc = evt_target;
+            evt_target.nextSibling.appendChild(frm);
             jQuery(frm).show();
             jQuery('#id_comment').focus();
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
-            } else {
-		if (next_response_loc == respond) {
-		    next_response_loc = false;
-		} else {
-                    next_response_loc = respond;
-		}
-                tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
-                tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
-            }
+        } else {
+	    if (next_response_loc == evt_target) {
+		next_response_loc = false;
+	    } else {
+                next_response_loc = evt_target;
+	    }
+            tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
+            tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
+        }
     }
 
     function hide_comment_form() {
@@ -28,7 +55,8 @@ addLoadEvent(function discussion_init() {
         tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
     }
 
-    jQuery('.respond_prompt').click(open_comment_form);
+    jQuery('.respond_prompt').click(open_respond);
+    jQuery('.edit_prompt').click(open_edit);
 
     tinyMCE.onRemoveEditor.add(function(manager, ed) {
         //logDebug("third focus");
@@ -57,28 +85,37 @@ function AjaxComment(form) {
     this.form = form;
     this.username = jQuery('#logged_in_name').text();
 
-    jQuery(form).bind('submit',this,this.submit);
+    this.update_comment_url = '/discussion/comment/{id}';
+    this.post_comment_url = String(this.form.action);
+
+    jQuery(form).bind('submit',{self:this},this.submit);
 }
 
-AjaxComment.prototype.submit = function(evt) {
-    var self = evt.data;
+AjaxComment.prototype.submit = function(evt) {    
+    var self = evt.data.self;
     tinyMCE.triggerSave();
     evt.preventDefault();
 
     var frm = jQuery(self.form);
-    form_val_array = frm.serializeArray();
-
+    form_val_array = frm.serializeArray();//**
+    
+    var info = {'edit-id':self.form.elements['edit-id'].value};
+    info['mode'] = ((info['edit-id']=='') ?'post':'update');
+    switch (info['mode']) {
+    case 'update':
+        info['url'] = self.update_comment_url.replace('{id}',info['edit-id']); break;
+    case 'post':
+        info['url'] = self.post_comment_url; break;
+    }
     jQuery.ajax({
         type: 'POST',
-        url: self.form.action,
+        url: info.url,
         data: form_val_array,//default will serialize?
         dataType: 'html',
-        success: self.oncomplete,
+        success: self.oncomplete,//**
         error: self.onfail,
-        context: {'self':self,'form_val_array':form_val_array}
+        context: {'self':self,'form_val_array':form_val_array,'info':info}
     });
-    //frm.elements['timestamp'].value = '';
-    //frm.elements['security_hash'].value = '';
 }
 
 AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
@@ -91,30 +128,40 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
     if (xhr.status ==200) {
         if (res.comment_id) {
             ///1. insert new comment into DOM
-            var html_comment = self.create(
-                {'id':res.comment_id,
-                 'comment':form_vals.comment,
-                 'name':self.username
-                });
-            parent_html = $('comment-' +form_vals['parent']);
-            var ul = document.createElement('ul');
-            ul.setAttribute('class','comment-thread');
-            parent_html.appendChild(ul);
-            ul.innerHTML = html_comment.text;
-            ///2. decorate citations and respond link
+            var new_obj = {
+                'id':res.comment_id,
+                'comment':form_vals.comment,
+                'name':self.username
+            };
+            switch(this.info.mode) {
+            case 'post':
+                var parent_html = jQuery('#comment-' +form_vals['parent']).get(0);//**
+                var ul = this.info.target = document.createElement('ul');
+                ul.setAttribute('class','comment-thread');
+                parent_html.appendChild(ul);
+                ul.innerHTML = self.create(new_obj).text;
+                //decorate respond listener
+                jQuery('span.respond_prompt',ul).click(open_comment_form);
+                break;
+            case 'update':
+                var comment_html = jQuery('#comment-' +form_vals['edit-id']).get(0);
+                self.update(new_obj, comment_html);
+                this.info.target = self.components(comment_html).comment;
+                break;
+            }
+
+            ///2. decorate citations
             DjangoSherd_decorate_citations( 
                 //passing to Mochi forEach so needs to be an array
-                jQuery('a.materialCitation',ul).toArray()
+                jQuery('a.materialCitation',this.info.target).toArray()
             );
 
-            jQuery('span.respond_prompt',ul).click(open_comment_form);
-
             ///3. reset form and set new validation key
-            
-            frm.elements['comment'] ='';
-            tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,'<p></p>',false);
-            frm.elements['timestamp'].value = res.timestamp;
-            frm.elements['security_hash'].value = res.security_hash;
+            set_comment_content();//empty it
+            if (res.security_hash) {
+                frm.elements['timestamp'].value = res.timestamp;
+                frm.elements['security_hash'].value = res.security_hash;
+            }
             ///4. hide form
             hide_comment_form();
             document.location = '#comment-'+res.comment_id;
@@ -146,8 +193,31 @@ AjaxComment.prototype.parseResponse = function(xhr) {
     return rv;
 }
 
-AjaxComment.prototype.read = function() {
+AjaxComment.prototype.read = function(found_obj) {
+    //found_obj = {html:<DOM>}
+    var c = this.components(found_obj.html);
+    return {
+        'name':c.author.firstChild.nodeValue,
+        'comment':c.comment.innerHTML,
+        'id':String(c.top.id).substr(8)//comment- chopped
+    }
+}
 
+AjaxComment.prototype.update = function(obj,html_dom) {
+    if (obj.comment) {
+        if (jQuery('.threaded_comment_text:first',html_dom)
+            .html(obj.comment).length) {
+            return true;
+        }
+    }
+    return false; // if it fails
+}
+
+AjaxComment.prototype.components = function(html_dom,create_obj) {
+    return {'top':html_dom,
+            'comment':jQuery('div.threaded_comment_text:first',html_dom).get(0),
+            'author':jQuery('span.threaded_comment_author:first',html_dom).get(0)
+           }
 }
 
 AjaxComment.prototype.create = function(obj,doc) {
@@ -157,23 +227,22 @@ AjaxComment.prototype.create = function(obj,doc) {
     //{{current_comment.id}}
     //{{current_comment.name}}
     //{{current_comment.comment|safe}}
-    var html = '<li id="comment-{{current_comment.id}}"\
-                class="comment-thread"\
-                >\
-              <div class="comment new-comment">\
-                <div class="threaded_comment_author">{{current_comment.name}} \
-                  <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>\
-                </div>\
-                <div class="threaded_comment_text">\
-                  {{current_comment.comment|safe}}\
-                </div>\
-                <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">\
-                  <span class="respond_prompt" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">\
-                    Respond<!-- to comment {{current_comment.id}}: -->\
-                    </span><div class="comment_form_space"></div><!-- must be neighbor-->\
-                </div>\
-              </div>\
-            </li>';
+    var html = '<li id="comment-{{current_comment.id}}"'
+        +          'class="comment-thread">'
+        + '<div class="comment new-comment">'
+        +    '<div class="threaded_comment_author">{{current_comment.name}} '
+        +      '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>'
+        +    '</div>'
+        +    '<div class="threaded_comment_text">'
+        +      '{{current_comment.comment|safe}}'
+        +    '</div>'
+        +    '<div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">'
+        +      '<span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">'
+        +        'Respond<!-- to comment {{current_comment.id}}: -->'
+        +      '</span><div class="comment_form_space"></div><!-- must be neighbor-->'
+        +    '</div>'
+        + '</div>'
+        +'</li>';
     '</ul>';
     var text = html
     .replace(/\{\{current_comment\.id\}\}/g,obj.id)
@@ -185,6 +254,6 @@ AjaxComment.prototype.create = function(obj,doc) {
            };
 }
 
-    var commenter = new AjaxComment(frm);
+    commenter = new AjaxComment(frm);
 
 });

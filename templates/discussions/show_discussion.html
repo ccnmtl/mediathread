@@ -119,8 +119,21 @@
         <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
           <input type="hidden" id="comment-edit-id" name="edit-id" />
           <ul>
-            {{ current_comment_form.as_ul }}
+            <li><!-- instead of current_comment_form.as_ul since that has all the field labels of fields we don't care about -->
+              {% for field in current_comment_form %}
+                {% if field.is_hidden %}
+                  {{ field }}
+                {% else %}
+                  {% ifequal field.name "comment" %}
+                    {{ field }}
+                  {% else %}
+                    <input type="hidden" name="{{field.html_name}}"
+                           value="{{field.value}}" />
 
+                  {% endifequal %}
+                {% endif %}
+              {% endfor %}
+            </li>
             <li><input id="comment-form-submit" type="submit" value="Save Comment" /></li>
           </ul>
         </form>

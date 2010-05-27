@@ -113,6 +113,7 @@ def new(request):
     #finally create the root discussion object, pointing it at the CHILD.
     #TODO point the context at the course
     new_threaded_comment = ThreadedComment(parent=None, 
+                                           title=comment_html,
                                            comment=comment_html, 
                                            user=request.user, 
                                            content_object=disc_sc)
@@ -135,7 +136,6 @@ def comment_change(request, comment_id, next=None):
     comment.title = request.POST['title']
 
     comment.save()
-
     return {
         'comment': comment,
         }

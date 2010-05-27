@@ -30,6 +30,7 @@ jQuery(function discussion_init() {
         frm.elements['comment'].value = content;
         tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,content,false);
     }
+    set_comment_content();
 
     function open_comment_form(evt_target) {
         if (!next_response_loc) {
@@ -149,7 +150,6 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
                 this.info.target = self.components(comment_html).comment;
                 break;
             }
-
             ///2. decorate citations
             DjangoSherd_decorate_citations( 
                 //passing to Mochi forEach so needs to be an array
@@ -165,7 +165,6 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
             ///4. hide form
             hide_comment_form();
             document.location = '#comment-'+res.comment_id;
-
         }
     }
 }

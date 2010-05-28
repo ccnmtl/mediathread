@@ -55,7 +55,7 @@
   </div>
 </div>
   <div class="essay-space">
-	<h2>Discussion of {{root_comment.comment.title}}</h2>
+	<h2>Discussion of {{root_comment.content_object.title}}</h2>
 	  <div id="threadedcomments" class="resize-height">
         {%get_comment_list for root_comment.content_object as comment_list%}
         {% for current_comment in comment_list|fill_tree|annotate_tree %}
@@ -87,10 +87,12 @@
                   )</span>
                   <span class="comment-actions">
                     {% if space_viewer.is_staff %}
-                    <a class="comment-manage" 
-                       href="{%url admin:threadedcomments_threadedcomment_change current_comment.id %}">
-                      Manage 
-                    </a>
+                      <a class="comment-manage" 
+                         href="{%url admin:threadedcomments_threadedcomment_change current_comment.id %}">Manage</a>
+                      {% ifequal current_comment root_comment%}
+                      <a class="comment-manage"
+                         href="{%url admin:structuredcollaboration_collaboration_change root_comment.content_object.id %}">Title/Access</a>
+                      {% endifequal %}
                     {% endif %}
                   </span>
                 </div>

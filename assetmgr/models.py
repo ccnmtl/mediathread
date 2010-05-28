@@ -60,6 +60,7 @@ class Asset(models.Model):
     #that is how an asset gets 'blessed' as a collection
     primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
                       'youtube','quicktime','realplayer', 
+                      'video_pseudo','video_rtmp','video',#unknown format, but we can try to play
                       'image_fpx', #artstor.org and FSI flash image viewer in general
                       'image','archive','url',)
 

@@ -183,7 +183,7 @@ class SherdNote(Annotation):
 
     title = models.CharField(blank=True,max_length=1024, null=True)
     asset = models.ForeignKey(Asset)
-    author = models.ForeignKey(User, null=True)
+    author = models.ForeignKey(User, null=True, blank=True)
     tags = TagField()
 
     body = models.TextField(blank=True,db_index=True, null=True)

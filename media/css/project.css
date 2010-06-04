@@ -107,8 +107,18 @@ float: left;
 
 
 /* ---- Threaded comments ---------- */
+
+div.comment {
+
+	padding: 5px;
+
+
+}
+
 #threadedcomments {
     overflow-y:auto;
+    border: 1px solid #ccc;
+    padding: 0px 5px 0 0px;
 }
 
 form.threaded_comments_form ul li {
@@ -116,10 +126,21 @@ form.threaded_comments_form ul li {
  list-style-type: none;
 }
 
-.comment_action {
-    color:#992222;
-    cursor:pointer;
-    text-decoration:underline;
+.comment_action, .comment-manage, .comment_actions a.comment-manage {
+	background-color:#DDDDDD;
+	border:1px solid #999;
+	color:#992222;
+	cursor:pointer;
+	display:block;
+	float:right;
+	margin:0 2px;
+	padding:2px 5px;
+	text-decoration:none;
+}
+
+.comment-date {
+
+	font-size: 80%;
 }
 
 p.threaded_comment_text {
@@ -152,24 +173,70 @@ form.threaded_comments_form label[for=id_title] {
 }
 
 ul.comment-thread {
-    margin:0px 0 0.7em 3em; /*indent left only*/
+    margin: 0px; /*no left indent on first comment*/
+
+
 }
+
+
+ul.comment-thread > li.comment-thread > ul.comment-thread > li.comment-thread {
+margin-bottom: 1em;
+border:1px solid #CCCCCC;
+background-color: #ddd;
+margin-top: 4px;
+
+}
+
+
+
+ul.comment-thread li.comment-thread.last {
+border: none;
+margin-bottom: none;
+
+
+}
+
+
+li > ul.comment-thread {
+    margin:0px 0px 0 1.5em; /*indent each subsequent thread level*/
+    padding: 0px;
+    
+}
+
+li > ul.comment-thread.last {
+
+    background-color: none;
+    padding: 0px;
+    border-bottom: 1px solid #ccc;
+    
+}
+
+li > ul.comment-thread div.comment {
+    background-color: #fff;
+
+}
+
+
 
 li.comment-thread {
     list-style:none;
+
+
 }
 
 /*comment that someone has linked to*/
 li.comment-thread:target > .comment {
-    border:1px solid black;
+  /*  border:1px solid black;*/
 }
 
 .threaded_comment_header {
+    margin: -5px -5px 5px -5px;
+    padding: 2px 0px 2px 5px;
     background-color:#CCCCCC;
 }
 
 .comment-actions {
     float:right;
-    margin-right:10px;
+
 }
 /* ---- End threaded comments ---------- */

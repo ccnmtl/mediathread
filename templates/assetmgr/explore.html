@@ -38,30 +38,32 @@ Explore Collections
 	<div class="import_class bookmarklet_import">
           <h3>Bookmarklet Import:</h3>
           <p>
-            For all archives, you can install and use our browser "bookmarklet."
+            For all archives, install and use our browser "bookmarklet" to import to and analyze assets in this environment.
           </p>
-          <p>Once installed, on an asset page of any supported site, click the bookmarklet link to import the item to this environment.</p>
-          <h4>Bookmarklet Installation</h4>
+           <h4>Bookmarklet Installation</h4>
           <div id="browser-instructions" class="browser-specific-instructions">
-            <ol id="firefox" class="browser-instruction">
-              <lh>Firefox</lh>
-              <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li>
+            <ol id="firefox" class="browser-instruction"><h5>Firefox:</h5>
+              
+              <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
               <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
             </ol>
             <ol id="ie" class="browser-instruction">
-              <lh> Internet Explorer</lh>
-              <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+              <h5> Internet Explorer:</h5>
+              <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li><br />
               <li>and choose <b>Add to Favorites</b></li>
             </ol>
+            
+            
             <ol id="safari" class="browser-instruction">
-              <lh>Safari</lh>
-              <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li>
-              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a> .</li>
+              <h5>Safari:</h5>
+              <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
             </ol>
+            
             <ol id="chrome" class="browser-instruction">
-              <lh>Google Chrome</lh>
-              <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li>
-              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a> .</li>
+              <h5>Google Chrome:</h5>
+              <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
             </ol>
             <script type="text/javascript">
               var u = navigator.userAgent;
@@ -80,6 +82,10 @@ Explore Collections
                  $('#firefox').show();
               } 
             </script>
+
+<h4>Bookmarklet Use:</h4>
+<p>Click the bookmarklet link from any asset page of any supported site to import the item to this environment. You can then analyze the item and/or save it to your "My Analysis" space.</p>
+         
           </div>
           <!--Confused? More Information here-->
 	
@@ -110,9 +116,9 @@ Explore Collections
 	 <p>
 	   {{archive.metadata.description}}
 	 </p>
-         {% if archive.sources.bookmarklet_button %}
-         <p class="archive-button">To add an asset to your "My Analysis" space, use the bookmarklet or click the <img src="{{archive.sources.bookmarklet_button.url}}" alt="" style="vertical-align: bottom"> button on the page.</p>
-         {% endif %}
+         
+        
+     
        </div>
     {%endfor%}
 </div>

@@ -33,6 +33,7 @@ jQuery(function discussion_init() {
     set_comment_content();
 
     function open_comment_form(evt_target) {
+        console.log('open comment form');
         if (!next_response_loc) {
 	    next_response_loc = evt_target;
             evt_target.nextSibling.appendChild(frm);
@@ -142,7 +143,7 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
                 parent_html.appendChild(ul);
                 ul.innerHTML = self.create(new_obj).text;
                 //decorate respond listener
-                jQuery('span.respond_prompt',ul).click(open_comment_form);
+                jQuery('span.respond_prompt',ul).click(open_respond);
                 break;
             case 'update':
                 var comment_html = jQuery('#comment-' +form_vals['edit-id']).get(0);

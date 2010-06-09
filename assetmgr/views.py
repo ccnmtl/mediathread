@@ -33,7 +33,8 @@ from assetmgr.lib import get_metadata
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
-from courseaffils.lib import in_course_or_404
+from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
+
 
 
 OPERATION_TAGS = ('jump','title','noui','v','share')
@@ -311,6 +312,17 @@ def asset_workspace(request, asset_id):
         'global_annotation_form': GlobalAnnotationForm(instance=global_annotation, prefix="annotation"),
         'discussions' : discussions
         }
+
+def asset_workspace_courselookup(asset_id=None):
+    """lookup function corresponding to asset_workspace
+    if an asset is being requested then we can guess the course
+    """
+    if asset_id:
+        return Asset.objects.get(pk=asset_id).course
+
+AUTO_COURSE_SELECT[asset_workspace] = asset_workspace_courselookup
+
+
 
 from django.http import HttpResponseForbidden
 

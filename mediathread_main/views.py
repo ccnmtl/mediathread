@@ -257,7 +257,7 @@ def your_records(request, user_name):
     projects = Project.get_user_projects(user, c)
     if not editable:
         projects = projects.filter(submitted=True)
-    projects = projects.order_by('modified')
+    projects = projects.order_by('-modified')
 
 
     for fil in filter_by:

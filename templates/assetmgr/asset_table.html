@@ -17,7 +17,7 @@
    
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
-       href="{{asset.get_absolute_url}}">{{asset.title|default:"(Untitled)"}}</a>
+       href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
 
 	{% if page_in_edit_mode %}
 	  <span class="citationTemplate"><img 

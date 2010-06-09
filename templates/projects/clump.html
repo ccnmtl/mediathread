@@ -4,7 +4,7 @@
                       asset-{{clump.content_object.primary.label}}
                       {%endifequal%}
                       ">
-	    <a href="{{clump.href}}" class="title">{{clump.title|default:"(Untitled)"}}</a>
+	    <a href="{{clump.href}}" class="title">{{clump.title|striptags|safe|default:"(Untitled)"}}</a>
 	  </div>
 	  <div class="asset-activities">
 	    {%for act in clump%}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}"{{asset.title}}"{% endblock %}
+{% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
 {% block css %}
   {{ block.super }}
   <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
@@ -22,7 +22,7 @@
 
 {% block content %}
   {{ block.super }}
-<h1>Analyzing {{asset.title}}</h1> 
+<h1>Analyzing {{asset.title|striptags|safe}}</h1> 
 {%if asset.html_source.url %}
   <a class="fullrecord_button" href="{{asset.html_source.url}}">View complete record in archive</a>
 {%endif%}

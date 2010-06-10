@@ -126,16 +126,24 @@ form.threaded_comments_form ul li {
  list-style-type: none;
 }
 
-.comment_action, .comment-manage, .comment_actions a.comment-manage {
+.comment_action {
 	background-color:#DDDDDD;
 	border:1px solid #999;
 	color:#992222;
 	cursor:pointer;
-	display:block;
-	float:right;
-	margin:0 2px;
-	padding:2px 5px;
-	text-decoration:none;
+	padding:1px 3px;
+	text-decoration:none;font-size: 90%;
+	float: left;
+	margin:0 4px 0 0;
+}
+
+.comment-manage, .comment_actions a.comment-manage {
+	
+	color:#992222;
+	cursor:pointer;
+	padding:1px 3px;
+	text-decoration:underline;
+	font-size: 90%;
 }
 
 .comment-date {
@@ -180,9 +188,8 @@ ul.comment-thread {
 
 
 ul.comment-thread > li.comment-thread > ul.comment-thread > li.comment-thread {
-margin-bottom: 1em;
-border:1px solid #CCCCCC;
-background-color: #ddd;
+
+border-left:1px solid #CCCCCC;
 margin-top: 4px;
 
 }
@@ -220,6 +227,7 @@ li > ul.comment-thread div.comment {
 
 li.comment-thread {
     list-style:none;
+    padding-bottom: 4px;
 
 
 }

@@ -105,10 +105,11 @@
                 <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
                   <span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the reply form">
                     Respond<!-- to comment {{ current_comment.id }}: -->
-                    </span><div class="comment_form_space"></div><!-- must be neighbor-->
+                    </span>
                     {% if edit_comment_permission %}
-                    <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span><div class="comment_form_space"></div><!-- must be neighbor-->
+                       <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>
                     {% endif %}
+                    <div class="comment_form_space"></div>
                 </div>
               </div><br /><br />
               {% if current_comment.added_path %} <span class="new-comment">ADDED</span> {% endif %}

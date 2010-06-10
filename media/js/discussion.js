@@ -25,6 +25,10 @@ jQuery(function discussion_init() {
         set_comment_content(commenter.read({html:jQuery('#comment-'+id).get(0)}).comment);
     }
 
+    function comment_form_space(button) {
+        return jQuery('div.comment_form_space',button.parentNode).get(0);
+    }
+
     function set_comment_content(content) {
         content = content || '<p></p>';
         frm.elements['comment'].value = content;
@@ -36,7 +40,7 @@ jQuery(function discussion_init() {
         console.log('open comment form');
         if (!next_response_loc) {
 	    next_response_loc = evt_target;
-            evt_target.nextSibling.appendChild(frm);
+            comment_form_space(evt_target).appendChild(frm);
             jQuery(frm).show();
             jQuery('#id_comment').focus();
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
@@ -63,7 +67,7 @@ jQuery(function discussion_init() {
     tinyMCE.onRemoveEditor.add(function(manager, ed) {
         //logDebug("third focus");
 	if (next_response_loc) {
-            next_response_loc.nextSibling.appendChild(document.forms[0]);
+            comment_form_space(next_response_loc).appendChild(document.forms[0]);
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
 	} else {
             jQuery('#comment-form').hide();
@@ -230,9 +234,10 @@ AjaxComment.prototype.create = function(obj,doc) {
     var html = '<li id="comment-{{current_comment.id}}"'
         +          'class="comment-thread">'
         + '<div class="comment new-comment">'
-        +    '<div class="threaded_comment_author">{{current_comment.name}} '
+        + ' <div class="threaded_comment_header">'
+        +    '<span class="threaded_comment_author">{{current_comment.name}} </span>'
         +      '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>'
-        +    '</div>'
+        + ' </div>'
         +    '<div class="threaded_comment_text">'
         +      '{{current_comment.comment|safe}}'
         +    '</div>'

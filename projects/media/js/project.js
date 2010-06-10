@@ -32,7 +32,10 @@ function updateVerticalHeight(evt,offsets) {
     if (project_editor) {
         var container = project_editor.getContainer();
         if (container != null) {
-            project_editor.theme.resizeTo(parseInt(container.style.width,10), pixels_free-40);
+            project_editor.theme.resizeTo(
+                parseInt(container.style.width,10)||container.offsetWidth||500,
+                pixels_free-40
+            );
         }
     }
 }

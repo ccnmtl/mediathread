@@ -127,14 +127,15 @@ form.threaded_comments_form ul li {
 }
 
 .comment_action {
-	background-color:#DDDDDD;
-	border:1px solid #999;
-	color:#992222;
-	cursor:pointer;
-	padding:1px 3px;
-	text-decoration:none;font-size: 90%;
-	float: left;
-	margin:0 4px 0 0;
+background-color:#EEEEEE;
+border:1px solid #CCCCCC;
+color:#992222;
+cursor:pointer;
+float:left;
+font-size:80%;
+margin:0 4px 0 0;
+padding:0 3px;
+text-decoration:none;
 }
 
 .comment-manage, .comment_actions a.comment-manage {
@@ -190,7 +191,7 @@ ul.comment-thread {
 ul.comment-thread > li.comment-thread > ul.comment-thread > li.comment-thread {
 
 border-left:1px solid #CCCCCC;
-margin-top: 4px;
+margin-top: 3px;
 
 }
 
@@ -238,8 +239,8 @@ li.comment-thread:target > .comment {
 }
 
 .threaded_comment_header {
-    margin: -5px -5px 5px -5px;
-    padding: 2px 0px 2px 5px;
+    margin: -5px -10px 5px -5px;
+    padding: 1px 2px 1px 5px;
     background-color:#CCCCCC;
 }
 

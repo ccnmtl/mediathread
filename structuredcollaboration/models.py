@@ -30,13 +30,13 @@ class Collaboration(models.Model):
     group = models.ForeignKey(Group,null=True, blank=True)
 
     title = models.CharField(max_length=1024,null=True,default=None)
-    slug = models.SlugField(max_length=50,null=True,default=None)
+    slug = models.SlugField(max_length=50,null=True,default=None, blank=True)
     
     # Content-object field
     content_type   = models.ForeignKey(ContentType,
                                        related_name="collaboration_set_for_%(class)s",
-                                       null=True)
-    object_pk      = models.TextField(_('object ID'),null=True)
+                                       null=True, blank=True)
+    object_pk      = models.TextField(_('object ID'),null=True, blank=True)
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
 

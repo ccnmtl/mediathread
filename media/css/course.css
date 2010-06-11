@@ -621,8 +621,9 @@ dd {
 
 .record p {margin: .5em .5em 1.5em .5em;}
 .record img.asset-thumb {
-    float:left;
-    padding:0 10px 8px 8px;
+  border:1px solid #999999;
+float:left;
+margin:-1px 5px 5px;
     max-width:100px;
     max-height:100px;
 }

@@ -818,7 +818,7 @@ h2.noteGrouping a:visited
 .hs-control-show,
 .ex_show
 {
-	background: url('../images/expanded.gif') left center no-repeat;
+	/*background: url('../images/expanded.gif') left center no-repeat;*/
 	display: inline;
 	margin: 0;
 	padding: 0;
@@ -829,7 +829,7 @@ h2.noteGrouping a:visited
 .hs-control-hide,
 .ex_hide
 {
-	background: url('../images/collapsed.gif') left center no-repeat;
+	/*background: url('../images/collapsed.gif') left center no-repeat;*/
 	display: inline;
 	margin: 0;
 	padding: 0;

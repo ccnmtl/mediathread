@@ -38,10 +38,17 @@
 
     <div class="tabbertab" title="Summary">
       <div class="asset-info">
-	{% for name, value in asset.metadata.items %}
+	{% for name, values in asset.metadata.items %}
 	<dl>
 	  <dt><h2 class="metadata-title">{{name}}</h2></dt>
-	  <dd id="metadata-{{name}}">{{value|safe}}</dd>
+          {# is values a list or string? #}
+          {% if not values.lower %}
+            {% for v in values %}
+            <dd id="metadata-{{name}}">{{v}}</dd>
+            {% endfor %}
+          {% else %}
+	  <dd id="metadata-{{name}}">{{values}}</dd>
+          {% endif %}
 	</dl>
 	{% endfor %}
       </div>

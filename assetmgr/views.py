@@ -143,9 +143,9 @@ def add_asset(request):
     req_dict = getattr(request,request.method)
 
     metadata = {}
-    for key,val in req_dict.items():
+    for key in req_dict:
         if key.startswith('metadata-'):
-            metadata[key[len('metadata-'):]] = val
+            metadata[key[len('metadata-'):]] = req_dict.getlist(key)
 
     title = req_dict.get('title','')
     asset = Asset.objects.get_by_args(req_dict, asset__course=request.course)

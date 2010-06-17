@@ -129,7 +129,12 @@ Explore Collections
          {% endif %}
 
 	 <p>
-	   {{archive.metadata.description}}
+           {# is description a list or string? #}
+           {% if archive.metadata.description.lower %}           
+             {{archive.metadata.description}}
+           {% else %}
+             {{archive.metadata.description.0}}
+           {% endif %}
 	 </p>
        </div>
     {%endfor%}

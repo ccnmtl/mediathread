@@ -34,6 +34,8 @@ urlpatterns = patterns('',
                        url(r'^nocache/\w+/bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve', {'document_root': bookmarklet_root}, name='nocache-analyze-bookmarklet'),
                        url(r'^accounts/logged_in.js$', 'courseaffils.views.is_logged_in',
                            name='is_logged_in.js'),
+                       url(r'^nocache/\w+/accounts/logged_in.js$', 'courseaffils.views.is_logged_in',
+                           name='nocache-is_logged_in.js'),
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###

@@ -11,12 +11,13 @@ sb['host_url']='http://'+host+'/save/?';
   sb['{{k}}']='{{v}}';
 {%endfor%}
 var r=function(){return 'abcdefghijklmnopqrstuvwxyz0123456789'.charAt(parseInt(Math.random()*36));};
+var r3=function(){return '/nocache/'+r()+r()+r();};
 var t='text/javascript';
 if(b){
-    var z=document.createElement('script'); z.type=t; z.src='http://'+host+'/nocache/'+r()+r()+r()+bookmarklet_url;
-    b.appendChild(z);
-    var x=document.createElement('script'); x.type=t; x.src='http://'+host+user_url;
+    var x=document.createElement('script'); x.type=t; x.src='http://'+host+r3()+user_url;
     b.appendChild(x);
+    var z=document.createElement('script'); z.type=t; z.src='http://'+host+r3()+bookmarklet_url;
+    b.appendChild(z);
     if (typeof jQuery=='undefined') {
         var y=document.createElement('script');
         y.type=t;

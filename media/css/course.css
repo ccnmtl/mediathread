@@ -540,6 +540,9 @@ margin:-2px -0.3em
    width:94%;
    }
 
+.manage-asset {
+    float:right;
+}
 .manage-archive {
     float:right;
 }

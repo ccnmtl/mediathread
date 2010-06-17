@@ -268,6 +268,7 @@ def container_view(request):
         'assets':assets,
         'tags': all_tags,
         'active_filters': active_filters,
+        'space_viewer':request.user,
         }
 
 

@@ -107,18 +107,25 @@ Explore Collections
     <div id="external-archives" class="top-archive">
     <h2>Collections</h2>
     {%for archive in archives %}
-       <div class="archive">
+       <div id="archive-{{archive.id}}" class="archive">
+         {% if space_viewer.is_staff %}
+         <div class="manage-archive">
+           <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage Title/Description</a>
+           edit:
+           <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.archive.id %}">link</a>
+           <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.thumb.id %}">thumb</a>           
+         </div>
+         {% endif %}
+     
 	 <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
          <br />
 
          <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
          </a>
+
 	 <p>
 	   {{archive.metadata.description}}
 	 </p>
-         
-        
-     
        </div>
     {%endfor%}
 </div>

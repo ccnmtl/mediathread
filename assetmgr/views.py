@@ -425,6 +425,7 @@ def archive_explore(request):
     c = request.course
     rv = {"archives":c.asset_set.archives().order_by('title'),
           "is_faculty":c.is_faculty(request.user),
+          "space_viewer":request.user,
           }
     #rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
     #                        if a not in rv['archives'] ]

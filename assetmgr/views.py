@@ -121,9 +121,11 @@ def mock_analysis_space(request):
 
 @rendered_with('assetmgr/asset_addform.html')
 def asset_addform(request):
+    from supported_archives import all 
     return {
         'asset_request':request.GET,
         'adding': Asset.good_args(request.GET),
+        'supported_archives':all,
         }
 
 @transaction.commit_manually

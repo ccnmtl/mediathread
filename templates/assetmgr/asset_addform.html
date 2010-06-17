@@ -19,112 +19,41 @@
   Each item is a form, though for the archive forms, only edit the values if you know what you're doing.
   <ul>
     <li><a href="#archives">Add supported archives</a></li>
+    <li><a href="#custom_archive">Add your own archive</a></li>
     <li><a href="#specific">Add single media assets</a></li>
     <li><a href="#advanced">Advanced Documentation</a></li>
   </ul>
 </p>
-    <h1 id="archives">Supported Collections</h1>
-       <h2>YouTube</h2>
-       <form action="{% url asset-save %}" method="POST">
-         Collection Title: <input type="text" name="title" value="YouTube"/>
-         <br/>
-         Collection URL: <input type="text" name="archive" value="http://www.youtube.com/"/>
-         <br/>
-         Collection URL (yes, again): <input type="text" name="url" value="http://www.youtube.com/"/>
-         <br/>
-         Description:
-         <textarea cols="55" rows="5" 
-                   name="metadata-description"
-                   >The largest collection of video on the web, where you can also upload video yourself.</textarea>
-         <br/>
-         Thumb URL: <input type="text" name="thumb" value="http://mediathread.ccnmtl.columbia.edu/site_media/img/youtube_logo.jpg"/>
-         <br/>
-	
-	<input type="submit" value="Add to Class Collections"/>
-       </form>
-
-       <h2>Flickr</h2>
-       <form action="{% url asset-save %}" method="POST">
-         Collection Title: <input type="text" name="title" value="Flickr"/>
-         <br/>
-         Collection URL: <input type="text" name="archive" value="http://www.flickr.com/"/>
-         <br/>
-         Collection URL (yes, again): <input type="text" name="url" value="http://www.flickr.com/"/>
-         <br/>
-         Description:
-         <textarea cols="55" rows="5" 
-                   name="metadata-description"
-                   >One of the largest collections of user-uploaded images on the web.
-         </textarea>
-         <br/>
-         Thumb URL: <input type="text" name="thumb" value="http://mediathread.ccnmtl.columbia.edu/site_media/img/flickr_logo.png"/>
-         <br/>
-	
-	<input type="submit" value="Add to Class Collections"/>
-       </form>
-
-
-
-       <h2>Vietnam War Archive</h2>
-       <form action="{% url asset-save %}" method="POST">
-         Collection Title: <input type="text" name="title" value="Vietnam: A Television Archive"/>
-         <br/>
-         Collection URL: <input type="text" name="archive" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
-         <br/>
-         Collection URL (yes, again): <input type="text" name="url" value="http://vietnamwararchive.ccnmtl.columbia.edu/"/>
-         <br/>
-         Description:
-         <textarea cols="55" rows="5" 
-                   name="metadata-description"
-                   >In 1983, public television station WGBH produced a 13-hour documentary on the Vietnam War. Through this digital archive, full-length interviews and select stock footage from the production are being made available to select classes at Columbia University. </textarea>
-         <br/>
-         Thumb URL: <input type="text" name="thumb" value="http://projectvietnam.ccnmtl.columbia.edu/site_media/img/bvault_bug.jpg"/>
-         "Analyze This" button: <input type="text" name="bookmarklet_button" value="http://vietnamwararchive.ccnmtl.columbia.edu/images/analyze_this.png"/>
-         <br/>
-	
-	<input type="submit" value="Add to Class Collections"/>
-       </form>
-       <h2>Digital Tibet</h2>
-       <form action="{% url asset-save %}" method="POST">
-         Collection Title: <input type="text" name="title" value="Engaging Digital Tibet"/>
-         <br/>
-         Collection URL: <input type="text" name="archive" value="http://digitaltibet.ccnmtl.columbia.edu/"/>
-         <br/>
-         Collection URL (yes, again): <input type="text" name="url" value="http://digitaltibet.ccnmtl.columbia.edu/"/>
-         <br/>
-         Description:
-         <textarea cols="55" rows="5" 
-                   name="metadata-description"
-                   >Engaging Digital Tibet contains an advanced, searchable repository of Tibetan objects from several collections including the Rubin Museum, Himalayan Art Resources, and the Starr East Asian Library.</textarea>
-         <br/>
-         Thumb URL: <input type="text" name="thumb" value="http://digitaltibet.ccnmtl.columbia.edu/sites/digitaltibet.ccnmtl.columbia.edu/themes/tibetan/ccnmtl_images/portfolio_image.jpg"/>
-         "Analyze This" button: <input type="text" name="bookmarklet_button" value="http://mediathread.ccnmtl.columbia.edu/site_media/img/analyze_button.jpg"/>
-         <br/>
-	
-	<input type="submit" value="Add to Class Collections"/>
-       </form>
-       
-       <h2>The Tibetan &amp; Himalayan Library</h2>
-       <form action="{% url asset-save %}" method="POST">
-         Collection Title: <input type="text" name="title" value="The Tibetan &amp; Himalayan Library"/>
-         <br/>
-         Collection URL: <input type="text" name="archive" value="http://thlib.org/places/monasteries/meru-nyingpa/murals/"/>
-         <br/>
-         Collection URL (yes, again): <input type="text" name="url" value="http://thlib.org/places/monasteries/meru-nyingpa/murals/"/>
-         <br/>
-         Description:
-         <textarea cols="55" rows="5" 
-                   name="metadata-description"
-                   >Includes murals from the Meru Nyingpa (rme ru rnying pa) Monastery which is located in the Barkor (bar skor) area at the heart of the old city of Lhasa (lha sa), just east of the famed Jokhang (jo khang) Temple.</textarea>
-         <br/>
-         Thumb URL: <input type="text" name="thumb" value="http://thlib.org/places/monasteries/meru-nyingpa/murals/preview/mnmural01.jpg"/>
-         <br/>
-	
-	<input type="submit" value="Add to Class Collections"/>
-       </form>
-
+    <h1 id="archives">Supported Archives</h1>
+    <ul class="archive-gallery">
+      {%for archive in supported_archives %}
+      <li class="archive archive-across">
+        <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
+        <br />
+         {%if archive.sources.thumb%}
+           <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+         </a>
+         {% endif %}
+         <p>
+           {{archive.metadata.description}}
+         </p>
+         <form action="{% url asset-save %}" method="POST">
+           <input type="hidden" name="title" value="{{archive.title}}"/>
+           <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}"/>
+           {%for lbl,src in archive.sources.items %}
+             <input type="hidden" name="{{src.label}}" value="{{src.url}}"/>
+           {%endfor%}
+           <input type="submit" value="Add to Class"/>
+         </form>
+      </li>
+      {%endfor%}
+    </ul>
+    <br style="clear:both" />
     
-      <h2>Add a collection</h2>
+      <h2 id="custom_archive">Add your own archive</h2>
+      <p>
+        You may want to copy the links from above (including the thumbnail URL) and just change the description or link to a sub-section of the site.
+      </p>
       <form action="{% url asset-save %}" method="POST">
 	Collection Title: <input type="text" name="title" value=""/>
 	<br/>
@@ -140,19 +69,10 @@
 	Thumb URL: <input type="text" name="thumb" value=""/>
 	<br/>
 	
-	<input type="submit" value="Submit Collection"/>
+	<input type="submit" value="Add Archive to Class"/>
       </form>
 
       <h1 id="specific">Specific Internet Resources</h1>
-
-      <h2>A website</h2>
-      <form action="{% url asset-save %}" method="GET">
-	Asset URL: <input type="text" name="url" value="http://slashdot.org"></input>
-	<br/>
-	Asset Title: <input type="text" name="title" value="SlashDot"></input>
-	<br/>
-	<input type="submit"/>
-      </form>
 
       <h2>Local Quicktime Streaming Video</h2>
       <form action="{% url asset-save %}" method="GET">
@@ -250,15 +170,35 @@
           <br/>
           <input type="submit"/>
       </form>
+    <h2>RealPlayer (.rm)</h2>
+      <form action="{% url asset-save %}" method="GET">
+          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          <br/>
+          Video URL: <input type="text" name="realplayer" value="" /> (the actual video URL)
+          <br/>
+          Title: <input type="text" name="title" value=""></input>
+          <br/>
+          <input type="submit"/>
+      </form>
+      <h2>A website</h2>
+      <form action="{% url asset-save %}" method="GET">
+	Asset URL: <input type="text" name="url" value="http://slashdot.org"></input>
+	<br/>
+	Asset Title: <input type="text" name="title" value="SlashDot"></input>
+	<br/>
+	<input type="submit"/>
+      </form>
+
             
       <p class="intro-text">
-        <h1 id="advanced">Advanced Documentation on how Assets are Saved</h1>    
+        <h1 id="advanced">Advanced Documentation on How Assets are Saved</h1>    
 
         <p>
           Mediathread does not store any assets directly, but instead embeds them from the site
           they originally came from.  This has advantages and disadvantages.
         </p>
-        <h2>Currently Supported <a href="/save">/save</a>? query arguments</h2>
+        <h2>Currently supported <a href="/save">/save</a>? query arguments</h2>
+        <p>If the browser does a GET url, the asset will not automatically save until they visit the page again.  The advantage of a GET request is that it survives through login and course-selection.  A POST request will automatically create the asset.  The advantage of using POST is that it can accept much larger data, so POSTs with metadata (e.g. with long descriptions) should make sure the user is logged in, and then POST.</p>
         <dl>
           <dt>url</dt><dd>The URL the asset can be viewed at on the originating site.  This is used to link back to the site.</dd>
           <dt>title</dt><dd>The human-readable title of the asset</dd>
@@ -268,11 +208,17 @@
 
           <dt>thumb</dt><dd>A URL to a thumbnail representing the image/video resource.  Generally, this should be an image that fits within 100 pixels x 100 pixels.  (but will be displayed shrunken if you provide a larger image--though that will increase page load-time)</dd>
           <dt>image</dt><dd>A URL to a simple image.  If you do not provide other supported image links which can query parts of a large image efficiently, then the larger the image, the longer the page will take to load.  However, this should be acceptable for any image that's 1000 pixels x 1000 pixels or less.</dd>
+          <dt>*-metadata</dt>
+          <dd>
+            A string to specify the width,height and optionally mime-type of a url.  For example "thumb-metadata=w100h20" means the image available at the "thumb=" url is 100 pixels wide and 20 pixels high.
+          </dd>
           <dt>quicktime</dt><dd></dd>
-          <dt></dt><dd></dd>
-          <dt></dt><dd></dd>
-          <dt></dt><dd></dd>
-          <dt></dt><dd></dd>
+          <dt>realplayer</dt><dd></dd>
+          <dt>video{_pseudo,_rtmp}</dt><dd></dd>
+          <dt>mp4</dt><dd></dd>
+          <dt>flv_pseudo</dt><dd></dd>
+          <dt>ogg</dt><dd></dd>
+          <dt>image_fpx</dt><dd></dd>
           <dt></dt><dd></dd>
           <dt></dt><dd></dd>
 

@@ -539,7 +539,15 @@ margin:-2px -0.3em
    border: 1px solid #ccc;
    width:94%;
    }
+.archive-across {
+    width:450px;
+}
 
+.archive-gallery {
+    list-style-type:none;
+    padding:0px;
+    margin:0px;
+}
 .manage-asset {
     float:right;
 }

@@ -113,15 +113,20 @@ Explore Collections
            <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage Title/Description</a>
            edit:
            <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.archive.id %}">link</a>
-           <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.thumb.id %}">thumb</a>           
+           {%if archive.sources.thumb%}
+              <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.thumb.id %}">thumb</a>           
+              {% else %}
+              <a class="manage-archive-link" href="{%url admin:assetmgr_source_add %}">thumb</a>                    
+           {% endif %}           
          </div>
          {% endif %}
      
 	 <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
          <br />
-
-         <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+         {%if archive.sources.thumb%}
+           <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
          </a>
+         {% endif %}
 
 	 <p>
 	   {{archive.metadata.description}}

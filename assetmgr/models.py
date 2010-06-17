@@ -72,7 +72,7 @@ class Asset(models.Model):
         return rv
 
     def __unicode__(self):
-        return u'%s <%r>' % (self.title, self.pk)
+        return u'%s <%r> (%s)' % (self.title, self.pk, self.course.title)
 
     def metadata(self):
         if self.metadata_blob:

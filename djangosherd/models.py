@@ -191,6 +191,10 @@ class SherdNote(Annotation):
     added = models.DateTimeField('date created', editable=False)
     modified = models.DateTimeField('date modified', editable=False)
 
+    def __unicode__(self):
+        return "[%s] %s for (%s) in (%s)" % (self.author.username, self.title, 
+                                             self.asset.title, self.asset.course.title)
+
     def tags_split(self):
         "Because |split filter sucks and doesn't break at commas"
         return Tag.objects.get_for_object(self)

@@ -105,6 +105,10 @@ float: left;
 	
 .asset-title {margin-left: 10px;}
 
+.capabilities {
+    float:right;
+}
+
 
 /* ---- Threaded comments ---------- */
 
@@ -249,3 +253,5 @@ li.comment-thread:target > .comment {
 
 }
 /* ---- End threaded comments ---------- */
+
+

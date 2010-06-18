@@ -91,6 +91,10 @@ function AjaxComment(form) {
     this.form = form;
     this.username = jQuery('#logged_in_name').text();
 
+    this.capabilities = {
+        'edit': jQuery('.capabilities .can-edit').length
+    }
+
     this.update_comment_url = '/discussion/comment/{id}';
     this.post_comment_url = String(this.form.action);
 
@@ -148,6 +152,7 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
                 ul.innerHTML = self.create(new_obj).text;
                 //decorate respond listener
                 jQuery('span.respond_prompt',ul).click(open_respond);
+                jQuery('span.edit_prompt',ul).click(open_edit);
                 break;
             case 'update':
                 var comment_html = jQuery('#comment-' +form_vals['edit-id']).get(0);
@@ -243,8 +248,12 @@ AjaxComment.prototype.create = function(obj,doc) {
         +    '</div>'
         +    '<div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">'
         +      '<span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">'
-        +        'Respond<!-- to comment {{current_comment.id}}: -->'
-        +      '</span><div class="comment_form_space"></div><!-- must be neighbor-->'
+        +        'Respond<!-- to comment {{current_comment.id}}: --></span>'
+        +((this.capabilities.edit) 
+          ?' <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>'
+          :''
+         )
+        +      '<div class="comment_form_space"></div>'
         +    '</div>'
         + '</div>'
         +'</li>';

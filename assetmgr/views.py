@@ -281,7 +281,7 @@ def asset_workspace(request, asset_id):
                               course=request.course)
 
     user = request.user
-    if user.is_superuser and request.GET.has_key('as'):
+    if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
     global_annotation = asset.global_annotation(user)
@@ -370,7 +370,7 @@ def annotationview(request, asset_id, annot_id):
                                    asset__course=request.course)
 
     user = request.user
-    if user.is_superuser and request.GET.has_key('as'):
+    if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
     if request.method in ("DELETE", "POST"):
@@ -426,12 +426,18 @@ def annotationview(request, asset_id, annot_id):
 @rendered_with('assetmgr/explore.html')
 def archive_explore(request):
     c = request.course
+
+    user = request.user
+    if user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
+
     rv = {"archives":c.asset_set.archives().order_by('title'),
-          "is_faculty":c.is_faculty(request.user),
-          "space_viewer":request.user,
+          "is_faculty":c.is_faculty(user),
+          "space_viewer":user,
           }
-    #rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
-    #                        if a not in rv['archives'] ]
+    if not rv['archives']:
+        rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
+                                if a not in rv['archives'] ]
 
     if getattr(settings,'DJANGOSHERD_FLICKR_APIKEY',None):
         # MUST only contain string values for now!! 

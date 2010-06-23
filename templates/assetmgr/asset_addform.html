@@ -34,9 +34,9 @@
            <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
          </a>
          {% endif %}
-         <p>
-           {{archive.metadata.description}}
-         </p>
+         <span>
+           {{archive.metadata.description|urlize|linebreaks}}
+         </span>
          <form action="{% url asset-save %}" method="POST">
            <input type="hidden" name="title" value="{{archive.title}}"/>
            <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}"/>
@@ -68,7 +68,15 @@
 	<br/>
 	Thumb URL: <input type="text" name="thumb" value=""/>
 	<br/>
-	
+        Required Plugin
+	<select name="metadata-required">
+          <option value="">--None--</option>
+          <option value="flash">Flash</option>
+          <option value="quicktime">Quicktime</option>
+          <option value="realplayer">RealPlayer</option>
+          <option value="ogg">Ogg videotag support</option>
+        </select>
+        <br/>
 	<input type="submit" value="Add Archive to Class"/>
       </form>
 

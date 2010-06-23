@@ -3,7 +3,8 @@
 all = [
     {'title':'YouTube',
      'metadata':{'description':
-                     "The largest collection of video on the web, where you can also upload video yourself."
+                     "The largest collection of video on the web, where you can also upload video yourself.",
+                 'required':['flash'],
                  },
      'sources':{
             'url':{'label':'url',
@@ -19,7 +20,8 @@ all = [
      },
     {'title':'WGBH OpenVault: The Vietnam Collection',
      'metadata':{'description':
-                     "Vietnam: A Television History was a landmark documentary series produced by WGBH. This collection contains most of the materials gathered and created for the 1983 series, as well as additional Vietnam-related materials from the WGBH archive."
+                     "Vietnam: A Television History was a landmark documentary series produced by WGBH. This collection contains most of the materials gathered and created for the 1983 series, as well as additional Vietnam-related materials from the WGBH archive.",
+                 'required':['flash'],
                  },
      'sources':{
             'url':{'label':'url',
@@ -51,7 +53,7 @@ all = [
      },
     {'title':'Digital Tibet',
      'metadata':{'description':
-                     "Engaging Digital Tibet contains an advanced, searchable repository of Tibetan objects from several collections including the Rubin Museum, Himalayan Art Resources, and the Starr East Asian Library."
+                     "An advanced, searchable repository of Tibetan objects from several collections including the Rubin Museum, Himalayan Art Resources, and the Starr East Asian Library."
                  },
      'sources':{
             'url':{'label':'url',
@@ -70,7 +72,16 @@ all = [
      },
     {'title':'Vanderbilt Television News Archive',
      'metadata':{'description':
-                     "The Vanderbilt Television News Archive is the world's most extensive and complete archive of television news."
+                     """This archive has been recording, preserving and providing access to television news broadcasts of the national networks since August 5, 1968.	NBC footage in the archive is viewable online.
+
+INSTRUCTIONS
+Online video is in RealMedia format.  If  you are unable to view it, install the plugin from http://www.real.com/ 
+
+Find an online video in the database (indicated by a camera icon), and click the 'view video' button.  A window will pop up and the video will play; click on the video's 'permalink' to open it in your main browser window and close the pop-up.  
+
+Then click the Analyze w/Mediathread bookmarklet in your browser to bring the video into Mediathread.  You will be given the option at this point to give the video a descriptive title.
+""",
+                 'required':['realplayer'],
                  },
      'sources':{
             'url':{'label':'url',
@@ -102,7 +113,8 @@ all = [
      },
     {'title':'Shakespeare Performance in Asia',
      'metadata':{'description':
-                     "The MIT Shakespeare Electronic Archive presents an extensive collection of videos of Asian Shakespeare performances. Here you will also find interactive maps and timelines, interviews, biographies of directors and actors, for understanding intercultural Shakespeare."
+                     "The MIT Shakespeare Electronic Archive presents an extensive collection of videos of Asian Shakespeare performances. Here you will also find interactive maps and timelines, interviews, biographies of directors and actors, for understanding intercultural Shakespeare.",
+                 'required':['flash','quicktime'],
                  },
      'sources':{
             'url':{'label':'url',
@@ -118,7 +130,14 @@ all = [
      },
     {'title':'ARTstor',
      'metadata':{'description':
-                     "ARTstor is a nonprofit digital library of more than one million images in the arts, architecture, humanities, and social sciences."
+                     """A nonprofit digital library of more than one million images in the arts, architecture, humanities, and social sciences.
+
+INSTRUCTIONS
+You do not need to log in to ARTstor to bring images into Mediathread. 
+
+When you find an image you want to analyze in an ARTstor collection, click on its title (underneath its thumbnail).  A pop-up window will display the image's metadata.  At this point, click on the Analyze w/Mediathread bookmarklet in your main browser window.  The image will then load in Mediathread.
+""",
+                 'required':['flash'],
                  },
      'sources':{
             'url':{'label':'url',

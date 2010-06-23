@@ -130,9 +130,9 @@ Explore Collections
 	 <p>
            {# is description a list or string? #}
            {% if archive.metadata.description.lower %}           
-             {{archive.metadata.description}}
+             {{archive.metadata.description|urlize|linebreaks}}
            {% else %}
-             {{archive.metadata.description.0}}
+             {{archive.metadata.description.0|urlize|linebreaks}}
            {% endif %}
 	 </p>
        </div>

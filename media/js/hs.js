@@ -42,15 +42,16 @@ function setCookie(name, value, expires, path, domain, secure) {
 }
 
 
-function hs_addControlCallback(a) {
-	log("adding callback to " + a);
-	a.onclick = hs_toggle;
-	hs_controls[hs_getTarget(a).id] = a;
-	addElementClass(a,"hs-control-show");
+function hs_addControlCallback() {
+    //log("adding callback to " + a);
+    jQuery(this)
+     .click(hs_toggle)
+     .addClass('hs-control-show');
+    hs_controls[hs_getTarget(this).id] = this;
 }
 
-function hs_lookForCookie(a) {
-   var e = hs_getTarget(a);
+function hs_lookForCookie() {
+   var e = hs_getTarget(this);
    var s = getCookie(cookie_name(e));
    if (s == "hidden") {
       hs_hide(e);
@@ -65,45 +66,51 @@ function hs_getTarget(a) {
 }
 
 function hs_toggle() {
-	var target = hs_getTarget(this);
-	if (hasElementClass(target,"hs-hide")) {
-	   hs_show(target);
-	   setCookie(cookie_name(target),"show",futureDate());
-        } else {
-	   hs_hide(target);
-	   setCookie(cookie_name(target),"hidden",futureDate());
-	}
-	return false;
+    var target = hs_getTarget(this);
+    if (jQuery(target).hasClass("hs-hide")) {
+	hs_show(target);
+	setCookie(cookie_name(target),"show",futureDate());
+    } else {
+	hs_hide(target);
+	setCookie(cookie_name(target),"hidden",futureDate());
+    }
+    return false;
 }
 
 function hs_hide(e) {
-	log("hiding " + e);
-	removeElementClass(e,"hs-show");
-	addElementClass(e,"hs-hide");
+    e = (typeof e == 'number' ? this : e);
+    //log("hiding " + e);
+    jQuery(e)
+    .removeClass("hs-show")
+    .addClass("hs-hide");
 
-	var control = hs_controls[e.id];
-	removeElementClass(control,"hs-control-show");
-	addElementClass(control,"hs-control-hide");
+    jQuery(hs_controls[e.id])
+    .removeClass("hs-control-show")
+    .addClass("hs-control-hide");
 }
 
 function hs_show(e) {
-	log("showing " + e);
-	removeElementClass(e,"hs-hide");
-	addElementClass(e,"hs-show");
+    //log("showing " + e);
+    jQuery(e)
+    .removeClass("hs-hide")
+    .addClass("hs-show");
 	
-	var control = hs_controls[e.id];
-	removeElementClass(control,"hs-control-hide");
-	addElementClass(control,"hs-control-show");
+    jQuery(hs_controls[e.id])
+    .removeClass("hs-control-hide")
+    .addClass("hs-control-show");
 }
 
 function hs_init() {
-        log("initializing");
-	log("adding callbacks to controls");
-	forEach(getElementsByTagAndClassName("a","hs-control"),hs_addControlCallback);
-	log("hiding any divs that need to be initially hidden");
-	forEach(getElementsByTagAndClassName("*","hs-init-hide"),hs_hide);
-   log("check for cookies setting the state for any...");
-   forEach(getElementsByTagAndClassName("a","hs-control"),hs_lookForCookie);
+    //log("initializing");
+    //log("adding callbacks to controls");
+    jQuery('a.hs-control').each(hs_addControlCallback)
+	//forEach(getElementsByTagAndClassName("a","hs-control"),hs_addControlCallback);
+    //log("hiding any divs that need to be initially hidden");
+    jQuery('.hs-init-hide').each(hs_hide);
+	//forEach(getElementsByTagAndClassName("*","hs-init-hide"),hs_hide);
+    //log("check for cookies setting the state for any...");
+    jQuery('a.hs-control').each(hs_lookForCookie);
+    //forEach(getElementsByTagAndClassName("a","hs-control"),hs_lookForCookie);
 }
 
-addLoadEvent(hs_init);
+jQuery(hs_init);

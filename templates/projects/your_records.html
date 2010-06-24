@@ -21,14 +21,6 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 
 
 
-<h1>
-<a href="{%url class-listing %}" class="breadcrumb">Member Pages</a> >
-{% if space_owner == user %}
-My Items
-{% else %}
-{{space_owner.get_full_name|default:space_owner.username}}'s Analysis 
-{% endif %}</h1><br />
-
 <div id="filter_col">
 
 {% if active_filters %}
@@ -95,8 +87,8 @@ My Items
   {% include "projects/project_list.html" %}
 </div>
 
-<div id="results_col" class="asset-table">
-  {% include "assetmgr/asset_table.html" %}
+<div class="assets_wide_list" >
+ {% include "assetmgr/asset_table.html" %}
 </div>
 
 {% endblock %}

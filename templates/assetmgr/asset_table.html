@@ -1,19 +1,41 @@
 {% load user_annotations tagging_tags helpful_tags %}
-
+<div id="asset_browse_col" class="asset-table">
+  <h2>
+    {%if space_owner %}
+    {% ifequal space_owner user %}
+    Your Saved Items
+    {% else %}
+    {{space_owner.get_full_name|default:space_owner.username}}'s Saved Items
+    {% endifequal %}   
+    {% endif %} 
+  </h2>
+    <div id="videoclipbox" class="asset-view-small" style="display:none;">
+      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
+      <div class="annotation-title"></div>
+      <div class="asset-title"></div>
+      <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
+        <div class="asset-display"></div>
+	<div id="clipstrip-display" class="clipstrip-display"></div>    
+      </div>
+    </div>
+  
+<div id="materials" class="resize-height">
+<h1>LENGTH {{assets|length}}</h1>
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
   {% get_global_annotation on asset by space_viewer as annotation %}
   {% tags_for_object annotation as user_asset_tags %}
 
   <h2 class="asset_title asset-{{asset.primary.label}}">
-    {% if editable %}
     <div class="actions">
+    {% if editable %}
       <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"
 	 href="{% url my-asset-notes space_viewer.username asset.pk %}?delete">
        <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Asset and Clips from My Analysis"  />
       </a>
-    </div>
     {% endif %}
+      {%if space_viewer.is_staff and not space_owner %}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{%endif%}
+    </div>
    
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
@@ -41,7 +63,7 @@
       <!--li><strong>Date added:</strong> {{asset.added|date}}</li-->
      <!-- <li>Last modified: {{asset.modified|date}}</li>-->
      {%if user_asset_tags %}
-      <li class="annotation-global-tags"><strong>Personal Tags:</strong>
+      <li class="annotation-global-tags"><strong>My Tags:</strong>
        {% for tag in user_asset_tags %}
         {% if not page_in_edit_mode %}
          {% replace_value of 'tag' with tag.name in request.GET as querystring %}
@@ -54,6 +76,17 @@
 	 <a href="/asset/{{asset.pk}}/">  <img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Tags"  /></a>
        {% endif %}
       </li><!--asset tags-->
+      {%else%}
+        {%if not space_owner and asset.tags %}
+           <p>
+           <strong>Tags:</strong>
+           {% for tag in asset.tags %}
+             {% replace_value of 'tag' with tag.name in request.GET as querystring %}
+             <a href="{{querystring|qsify}}">
+                {{tag.name}}
+             </a>&nbsp;
+           {% endfor %}</p>
+        {% endif %}        
       {% endif %}
       {% if annotation.body %} 
       <li class="annotation-global-body">
@@ -150,3 +183,5 @@
 
  </div>
 {% endfor %}
+</div>
+<h1>LENGTH {{assets|length}}</h1>

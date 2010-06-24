@@ -1,4 +1,4 @@
-
+s
 
 .heading {
   display: block;
@@ -371,12 +371,14 @@ color: #fff;
   #stats form {
       margin:0;
 }
-  
+  #member_col {  
+      margin-top:24px;
+}
   #filter_col {
   
   float:left;
 width: 20%;
-margin: 0 1em;
+margin: 24px 1em 0;
 border: 1px solid #ccc;
 background-color: #fff;
 overflow: hidden;
@@ -391,12 +393,9 @@ div.project-table
   width:27%;
  }
 
-#results_col 
+.assets_wide_list #asset_browse_col
 {
-  width: 45%;
-  margin: 0 1em 0 24%;
   background-color: #ededed;
-  overflow: hidden;
 }
   
   
@@ -596,6 +595,10 @@ float:left;
 margin:0 10px;
 width:340px;
 
+}
+
+.assets_wide_list #asset_browse_col {
+    width:45%;
 }
 
 #asset_details_col {

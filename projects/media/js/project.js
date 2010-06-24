@@ -6,8 +6,10 @@ function updateParticipantList() {
 	    new_list.push(participant_options[i].innerHTML);
 	}
     }
-    jQuery('#participants_chosen').innerHTML = new_list.join(', ');
-    jQuery("#participant_update").show(); 
+
+    jQuery('#participants_chosen').text(new_list.join(', '));
+    jQuery("#participant_update").show('pulsate'); 
+    updateVerticalHeight();
 }
 
 var resize_offsets = {};
@@ -21,7 +23,6 @@ function updateVerticalHeight(evt,offsets) {
         }
     }
     var pixels_free = jQuery(window).height()-220;
-    //MOCHI
     jQuery('.resize-height').each(function() {
         var offset = pixels_free;
         if (this.id && this.id in resize_offsets) {
@@ -33,19 +34,25 @@ function updateVerticalHeight(evt,offsets) {
     if (project_editor) {
         var container = project_editor.getContainer();
         if (container != null) {
+            pixels_free -= jQuery('#participants_chosen').height()*2 || 0;
             project_editor.theme.resizeTo(
                 parseInt(container.style.width,10)||container.offsetWidth||500,
-                pixels_free-40
+                pixels_free-100
             );
         }
     }
 }
 
 
-jQuery(window).resize(updateVerticalHeight);
 jQuery(function(){
     updateVerticalHeight();
+    jQuery(window).resize(updateVerticalHeight);
 
+    tinyMCE.onAddEditor.add(function(manager, ed) {
+        ed.onInit.add(function(editor) {
+            updateVerticalHeight();
+        }) 
+    });
     //PROJECT PARTICIPANT UPDATES
     jQuery('#participants_close').click(updateParticipantList);
 

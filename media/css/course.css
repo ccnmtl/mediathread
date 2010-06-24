@@ -599,7 +599,7 @@ width:340px;
 }
 
 .assets_wide_list #asset_browse_col {
-    width:45%;
+    width:44%;
 }
 
 #asset_details_col {
@@ -728,29 +728,27 @@ padding-bottom: .5em;
 
 	margin-right: 3em;
 }
-
+#participants_close {
+    float:left;
+    margin-top:2em;
+}
+#participants_chosen {
+    display:inline-block;
+    padding-bottom:10px;
+}
 #project_participants {
 	padding-top:8px;
 	padding-bottom:8px;
 }
 
+
 #participant_update {
     color:red;
     padding:0.5em;
-    position:absolute;
-    left:20%;
 }
 #participant_list {
-
 	background-color: #dedede;
 	border: 1px solid #ccc;
-	padding: 1em;
-	margin:-1.8em 0 0 10.5em;
-	position:absolute;
-	z-index:1;
-	width: 23em;
-	*margin:-1.8em 0 0 -25em;
-        left:40%;
 }
 
 #id_participants {*height: 15em;}

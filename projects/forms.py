@@ -15,7 +15,7 @@ class ProjectForm(forms.ModelForm):
     
     def __init__(self,request, *args, **kwargs):
         super(ProjectForm,self).__init__(*args,**kwargs)
-        self.fields['participants'].queryset = request.course.user_set.get_query_set()
+        self.fields['participants'].choices = [(u.id,u.get_full_name() or u.username) for u in request.course.user_set.all()]
         self.fields['participants'].required = False
         self.fields['body'].required = False
         self.fields['submit'].required = False

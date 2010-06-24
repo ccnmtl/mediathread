@@ -42,9 +42,16 @@ input.materialCitation:hover
   clear:both;
  }
 
+.essay-space h2 input {
+    padding:0;
+}
+#essaybox {
+    margin-top:-5px;
+}
 .essay-space {
 left:0;
 position:absolute;
+margin-top:-3px;
 margin-left:380px;
 max-width:650px;
 width:60%;

@@ -925,11 +925,12 @@ li.course-choice {
     width:60%;
     max-width:400px;
     min-width:300px;
-    
+    list-style-type:none;
     padding:5px;
 }
 
 span.manage-course {
+    *margin-top:-1em;
     float:right;
     margin-left:10px;
 }

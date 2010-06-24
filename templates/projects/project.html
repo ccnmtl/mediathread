@@ -38,32 +38,12 @@
 {% block content %}
   {{ block.super }}
 
- <form class="yui-skin-sam" name="editproject" method="POST" action=".">
-
-      <div id="project_heading">
-	
-<div id="project_participants">
-	 <div id="participant_list" class="hs-init-hide hs-hide"> 
-           <p>{{projectform.participants.help_text }}</p>
-           <br />
-           {{projectform.participants}} <a id="participants_close" class="hs-control hs-control-show plist float" href="#participant_list" >Close</a>
-         </div>
-	  <b>{{projectform.participants.label_tag}}:</b>
-	  	<span id="participants_chosen"
-		      >{%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-                   {{part.username}}{%endfor%}</span>
-                <a class="hs-control hs-control-show plist" href="#participant_list">Edit</a>
-         <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
-	</div></div><br />
- {#<div id="asset_browse_col" class="asset-table">#}
-    {% include "assetmgr/asset_table.html" %}
- {#</div>#}
-</div>
   <div class="essay-space">
+    <form class="yui-skin-sam" name="editproject" method="POST" action=".">
+
     <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
    
       
-      <p>
 	<h2>Title: {{projectform.title}}</h2>
 	<div id="essaybox" class="essaytextarea">
           <script type="text/javascript">
@@ -83,16 +63,37 @@
 	      }
 	    }
 	  </script>
-	</div>
+	</div><!-- end -->
 	
-      </p>
+        <div id="project_participants">
+          <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
+          <b>{{projectform.participants.label_tag}}:</b>
+          <div id="participants_chosen"
+                >{%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
+          {{part.get_full_name|default:part.username}}{%endfor%}</div>
+          <a class="hs-control hs-control-show plist" href="#participant_list">Edit&nbsp;Collaborators</a>
+          <br />
+          <div id="participant_list" class="hs-init-hide hs-hide"> 
+            <p>{{projectform.participants.help_text }}</p>
+            <a id="participants_close" class="hs-control hs-control-show plist float" href="#participant_list" >Change Collaborators</a>
+            {{projectform.participants}} 
+          </div>
+        </div><!-- end id="project_participants" -->
       
       
-     <br /> 
-      <input type="submit" name="submit" value="Save draft"/>
-      <input type="submit" name="submit" value="Preview"/>
-      <input type="submit" name="submit" value="Submit"/>
+        <br /> 
+        <input type="submit" name="submit" value="Save draft"/>
+        <input type="submit" name="submit" value="Preview"/>
+        <input type="submit" name="submit" value="Submit"/>
    
-     </form>
-   </div>
+    </form>
+
+
+  </div><!-- end class="essay-space" -->
+
+ {#<div id="asset_browse_col" class="asset-table">#}
+    {% include "assetmgr/asset_table.html" %}
+ {#</div>#}
+
+
 {% endblock %}

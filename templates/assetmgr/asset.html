@@ -72,8 +72,8 @@
     
         <div class="clipform">
               <!--  MOCHI -->
-              <input type="radio" name="clipType" autocomplete="off" value="Whole" onclick="showElement('whole-asset-form'); hideElement('portion-asset-form');" />Whole
-              <input type="radio" name="clipType" autocomplete="off" value="Portion" checked onclick="hideElement('whole-asset-form'); showElement('portion-asset-form');" />Portion
+              <input type="radio" name="clipType" autocomplete="off" value="Whole" onclick="jQuery('#portion-asset-form').hide();jQuery('#whole-asset-form').show(); " />Whole
+              <input type="radio" name="clipType" autocomplete="off" value="Portion" checked onclick="jQuery('#whole-asset-form').hide();jQuery('#portion-asset-form').show();" />Portion
         </div>
         
         {% if annotation %}

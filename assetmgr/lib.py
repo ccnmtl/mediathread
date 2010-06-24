@@ -4,13 +4,13 @@ from urlparse import urlsplit
 import urllib2
 
 def annotated_by(assets, user, include_archives=False):
-    assets = assets.filter(
+    fassets = assets.filter(
         sherdnote__author=user,sherdnote__range1=None).distinct().order_by('-sherdnote__modified').select_related()
-    to_return = []
     if include_archives:
-        return assets
+        return fassets
     else:
-        for asset in assets:
+        to_return = []
+        for asset in fassets:
             #sky: why do this?  disabling for now
             #if nothing breaks for a bit, we'll drop it
             #if asset.sherdnote_set.filter(author=user).exclude(

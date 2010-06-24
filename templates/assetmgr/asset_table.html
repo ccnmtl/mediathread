@@ -1,32 +1,55 @@
 {% load user_annotations tagging_tags helpful_tags %}
-
+<div id="asset_browse_col" class="asset-table">
+  <h2>
+    {%if space_owner %}
+      {% ifequal space_owner user %}
+        Your Saved Items
+      {% else %}
+        {{space_owner.get_full_name|default:space_owner.username}}'s Saved Items
+      {% endifequal %}   
+    {% else %}
+        Class Items
+    {% endif %} 
+  </h2>
+    <div id="videoclipbox" class="asset-view-small" style="display:none;">
+      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
+      <div class="annotation-title"></div>
+      <div class="asset-title"></div>
+      <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
+        <div class="asset-display"></div>
+	<div id="clipstrip-display" class="clipstrip-display"></div>    
+      </div>
+    </div>
+  
+<div id="materials" class="resize-height">
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-  {% get_global_annotation on asset by space_viewer as annotation %}
-  {% tags_for_object annotation as user_asset_tags %}
+  {% get_global_annotation on asset by space_viewer as gannotation %}
+  
 
   <h2 class="asset_title asset-{{asset.primary.label}}">
-    {% if editable %}
     <div class="actions">
+    {% if editable %}
       <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"
 	 href="{% url my-asset-notes space_viewer.username asset.pk %}?delete">
        <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Asset and Clips from My Analysis"  />
       </a>
-    </div>
     {% endif %}
+      {%if space_viewer.is_staff and not space_owner %}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{%endif%}
+    </div>
    
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
        href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
 
-	{% if page_in_edit_mode %}
+	{% if page_in_edit_mode and gannotation %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="/site_media/img/vital3/icon_clipping.gif#annotation={{annotation.get_absolute_url}}annotations/{{annotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}" 
+	      src="/site_media/img/vital3/icon_clipping.gif#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{asset.title}}" 
-	      name="{{annotation.get_absolute_url}}"
+	      name="{{gannotation.get_absolute_url}}"
 	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
 	      /></span>
 	{% endif %}
@@ -40,9 +63,9 @@
     <ul class="record-metadata-list">
       <!--li><strong>Date added:</strong> {{asset.added|date}}</li-->
      <!-- <li>Last modified: {{asset.modified|date}}</li>-->
-     {%if user_asset_tags %}
-      <li class="annotation-global-tags"><strong>Personal Tags:</strong>
-       {% for tag in user_asset_tags %}
+     {%if gannotation and gannotation.tags_split %}
+      <li class="annotation-global-tags"><strong>My Tags:</strong>
+       {% for tag in gannotation.tags_split %}
         {% if not page_in_edit_mode %}
          {% replace_value of 'tag' with tag.name in request.GET as querystring %}
           <a href="{{querystring|qsify}}">{{tag}}</a>&nbsp;
@@ -54,16 +77,27 @@
 	 <a href="/asset/{{asset.pk}}/">  <img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Tags"  /></a>
        {% endif %}
       </li><!--asset tags-->
+      {%else%}
+        {%if not space_owner and asset.tags %}
+           <p>
+           <strong>Tags:</strong>
+           {% for tag in asset.tags %}
+             {% replace_value of 'tag' with tag.name in request.GET as querystring %}
+             <a href="{{querystring|qsify}}">
+                {{tag.name}}
+             </a>&nbsp;
+           {% endfor %}</p>
+        {% endif %}        
       {% endif %}
-      {% if annotation.body %} 
+      {% if gannotation.body %} 
       <li class="annotation-global-body">
-	<strong>Note:</strong> {{annotation.body}} 
+	<strong>Note:</strong> {{gannotation.body}} 
 	{% if editable %}  <a href="/asset/{{asset.pk}}/"><img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Note"  /></a> {% endif %}
       </li><!--asset tags-->
       {% endif %}
 
 
-      {% get_annotations on asset by space_viewer as annotations %}
+      {% get_annotations on asset by space_owner as annotations %}
 
     {% if annotations.1 %}
     <li>
@@ -145,8 +179,8 @@
 </ul><!-- class="record-metadata-list" -->
 
   </div>
-
-
-
+  <div class="visualclear"></div>
  </div>
 {% endfor %}
+
+</div>

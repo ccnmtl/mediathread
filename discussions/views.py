@@ -55,7 +55,6 @@ def show(request, discussion_id):
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
 
     assets = annotated_by(Asset.objects.filter(course=my_course), space_viewer)
-
     return {
         'is_space_owner': True,
         'edit_comment_permission': my_course.is_faculty,

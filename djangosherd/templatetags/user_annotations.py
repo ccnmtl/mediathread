@@ -14,7 +14,8 @@ class GetAnnotations(TemplateTagNode):
         TemplateTagNode.__init__(self, varname, author=author, asset=asset)
 
     def execute_query(self, author, asset):
-        return SherdNote.objects.filter(author=author, asset=asset)
+        if author:
+            return SherdNote.objects.filter(author=author, asset=asset)
 
 class GetAllAnnotations(TemplateTagNode):
 
@@ -28,7 +29,7 @@ class GetAllAnnotations(TemplateTagNode):
 
 class GetGlobalAnnotation(GetAnnotations):
     def execute_query(self, author, asset):
-        annotation, created = SherdNote.objects.global_annotation(asset, author)
+        annotation, created = SherdNote.objects.global_annotation(asset, author, auto_create=False)
         return annotation
 
 import re

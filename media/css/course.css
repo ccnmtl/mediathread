@@ -1,4 +1,4 @@
-
+s
 
 .heading {
   display: block;
@@ -371,12 +371,15 @@ color: #fff;
   #stats form {
       margin:0;
 }
-  
+  #member_col, #filter_col, #project_col {  
+      margin-top:25px;
+}
   #filter_col {
   
   float:left;
 width: 20%;
-margin: 0 1em;
+margin-left: 1em;
+margin-right: 1em;
 border: 1px solid #ccc;
 background-color: #fff;
 overflow: hidden;
@@ -391,12 +394,9 @@ div.project-table
   width:27%;
  }
 
-#results_col 
+.assets_wide_list #materials 
 {
-  width: 45%;
-  margin: 0 1em 0 24%;
   background-color: #ededed;
-  overflow: hidden;
 }
   
   
@@ -596,6 +596,10 @@ float:left;
 margin:0 10px;
 width:340px;
 
+}
+
+.assets_wide_list #asset_browse_col {
+    width:45%;
 }
 
 #asset_details_col {
@@ -948,8 +952,12 @@ margin: 1.5em 1em .5em 1em;
     font-size:14px;
 }
 
+
 .resize-height {
     height:350px;
+}
+.assets_wide_list .resize-height {
+    height:auto;
 }
 
 ul.clumper {

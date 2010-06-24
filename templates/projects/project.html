@@ -55,18 +55,16 @@
                 <a class="hs-control hs-control-show plist" href="#participant_list">Edit</a>
          <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
 	</div></div><br />
-<div id="asset_browse_col" class="asset-table">
-  <h2>Your Saved Items</h2>
-  <div id="materials" class="resize-height">
+ {#<div id="asset_browse_col" class="asset-table">#}
     {% include "assetmgr/asset_table.html" %}
-  </div>
+ {#</div>#}
 </div>
   <div class="essay-space">
     <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
    
       
       <p>
-	<h2>Project Title: {{projectform.title}}</h2>
+	<h2>Title: {{projectform.title}}</h2>
 	<div id="essaybox" class="essaytextarea">
           <script type="text/javascript">
             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};

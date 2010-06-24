@@ -271,6 +271,7 @@ def container_view(request):
         'tags': all_tags,
         'active_filters': active_filters,
         'space_viewer':request.user,
+        'space_owner':None,
         }
 
 

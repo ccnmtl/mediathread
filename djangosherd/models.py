@@ -83,13 +83,22 @@ class Annotation(models.Model):
 
 class SherdNoteManager(models.Manager):
 
-    def global_annotation(self, asset, author):
+    def global_annotation(self, asset, author, auto_create=True):
         """
         for non-clip-like annotations, we'll just use a single annotation per (asset, author)
         and store tags and an annotation body on it.
         """
-        global_annotation, created = self.get_or_create(asset=asset, author=author,
-                                                        **NULL_FIELDS)
+        args = NULL_FIELDS.copy()
+        args.update(asset=asset, author=author)
+
+        if auto_create:
+            return self.get_or_create(**args)
+        else:
+            try:
+                gannotation = self.get(**args)
+            except:
+                gannotation = None
+            return gannotation, False
         return global_annotation, created
     @property
     def dir(self):

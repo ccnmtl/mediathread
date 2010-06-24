@@ -6,8 +6,8 @@ function updateParticipantList() {
 	    new_list.push(participant_options[i].innerHTML);
 	}
     }
-    $('participants_chosen').innerHTML = new_list.join(', ');
-    showElement("participant_update");
+    jQuery('#participants_chosen').innerHTML = new_list.join(', ');
+    jQuery("#participant_update").show(); 
 }
 
 var resize_offsets = {};
@@ -20,13 +20,14 @@ function updateVerticalHeight(evt,offsets) {
             resize_offsets[a] = offsets[a];
         }
     }
-    var pixels_free = getViewportDimensions().h-220;
-    forEach($$('.resize-height'),function(elt) {
+    var pixels_free = jQuery(window).height()-220;
+    //MOCHI
+    jQuery('.resize-height').each(function() {
         var offset = pixels_free;
-        if (elt.id && elt.id in resize_offsets) {
-            offset -= resize_offsets[elt.id];
+        if (this.id && this.id in resize_offsets) {
+            offset -= resize_offsets[this.id];
         }
-        elt.style.height = offset +'px';
+        this.style.height = offset +'px';
     });
     var project_editor = tinyMCE.get('project-content');
     if (project_editor) {
@@ -40,15 +41,13 @@ function updateVerticalHeight(evt,offsets) {
     }
 }
 
-addLoadEvent(function(){
-    //RESIZING (vertical)
-    connect(window,'onresize',updateVerticalHeight);
 
+jQuery(window).resize(updateVerticalHeight);
+jQuery(function(){
     updateVerticalHeight();
 
     //PROJECT PARTICIPANT UPDATES
-    if ($('participants_close')) {
-        connect('participants_close','onclick',updateParticipantList);
-    }
+    jQuery('#participants_close').click(updateParticipantList);
+
     //connect(document.forms['editproject'].participants,'onchange', updateParticipantList);
 });

@@ -6,8 +6,6 @@ import urllib2
 def annotated_by(assets, user, include_archives=False):
     fassets = assets.filter(
         sherdnote__author=user,sherdnote__range1=None).distinct().order_by('-sherdnote__modified').select_related()
-    import pdb
-    pdb.set_trace()
     if include_archives:
         return fassets
     else:

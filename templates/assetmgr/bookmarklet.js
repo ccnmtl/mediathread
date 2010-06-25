@@ -10,13 +10,12 @@ sb['host_url']='http://'+host+'/save/?';
 {%for k,v in bookmarklet_vars.items%}
   sb['{{k}}']='{{v}}';
 {%endfor%}
-var r=function(){return 'abcdefghijklmnopqrstuvwxyz0123456789'.charAt(parseInt(Math.random()*36));};
-var r3=function(){return '/nocache/'+r()+r()+r();};
+var r4=function(){return '?nocache='+Number(new Date());};
 var t='text/javascript';
 if(b){
-    var x=document.createElement('script'); x.type=t; x.src='http://'+host+r3()+user_url;
+    var x=document.createElement('script'); x.type=t; x.src='http://'+host+user_url+r4();
     b.appendChild(x);
-    var z=document.createElement('script'); z.type=t; z.src='http://'+host+r3()+bookmarklet_url;
+    var z=document.createElement('script'); z.type=t; z.src='http://'+host+bookmarklet_url+r4();
     b.appendChild(z);
     if (typeof jQuery=='undefined') {
         var y=document.createElement('script');

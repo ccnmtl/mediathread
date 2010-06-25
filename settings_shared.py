@@ -153,7 +153,7 @@ FORCE_LOWERCASE_TAGS = True
 
 #if you set this to a string, then bookmarklet can import from flickr
 DJANGOSHERD_FLICKR_APIKEY = None
-FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.1.5.swf"
+FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.2.2.swf"
 
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there

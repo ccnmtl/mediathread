@@ -3,19 +3,21 @@
 {% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
 {% block css %}
   {{ block.super }}
+  <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
+
+{% endblock %}
+
+{% block js %}
   <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
 
   <script type="text/javascript" src="/site_media/js/tabber.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
-
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
   <script type="text/javascript">         DjangoSherd_Asset_Config();             </script>
 
   <script type="text/javascript" src="/site_media/js/assetmgr/asset.js"></script>
-
-  <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
 
 {% endblock %}
 

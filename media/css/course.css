@@ -1,5 +1,3 @@
-s
-
 .heading {
   display: block;
   padding: 1em;
@@ -293,12 +291,19 @@ color: #fff;
 	margin-top: -3px;
   }
   
-.asset_title.asset-quicktime,
-.asset_title.asset-youtube,
+.asset_title.asset-flv,
 .asset_title.asset-flv_pseudo,
 .asset_title.asset-flv_rtmp,
+.asset_title.asset-mp4,
 .asset_title.asset-mp4_pseudo,
-.asset_title.asset-mp4_rtmp
+.asset_title.asset-mp4_rtmp,
+.asset_title.asset-youtube,
+.asset_title.asset-quicktime,
+.asset_title.asset-realplayer,
+.asset_title.asset-ogg,
+.asset_title.asset-video_pseudo,
+.asset_title.asset-video_rtmp,
+.asset_title.asset-video
 {
 	background-image: url(../img/item_video.png);
 }
@@ -548,9 +553,7 @@ margin:-2px -0.3em
     padding:0px;
     margin:0px;
 }
-.manage-asset {
-    float:right;
-}
+
 .manage-archive {
     float:right;
 }

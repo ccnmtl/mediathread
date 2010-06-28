@@ -14,17 +14,18 @@ import structuredcollaboration.urls
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),"media","bookmarklets")
 
-login_page = (r'^accounts/',include('django.contrib.auth.urls'))
-if hasattr(settings,'WIND_BASE'):
-    login_page = (r'^accounts/',include('djangowind.urls'))
-
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
+
+auth_urls = (r'^accounts/',include('django.contrib.auth.urls'))
+logout_page = (r'^accounts/logout/$','django.contrib.auth.views.logout', {'next_page': redirect_after_logout})
+if hasattr(settings,'WIND_BASE'):
+    auth_urls = (r'^accounts/',include('djangowind.urls'))
+    logout_page = (r'^accounts/logout/$','djangowind.views.logout', {'next_page': redirect_after_logout})
+
 urlpatterns = patterns('',
                        (r'^comments/', include('django.contrib.comments.urls')),
-                       
-                       (r'^accounts/logout/$','django.contrib.auth.views.logout', 
-                        {'next_page': redirect_after_logout}),
-                       login_page,#see above
+                       logout_page,
+                       auth_urls,#see above
 
 
                        (r'^admin/', admin.site.urls),

@@ -2002,6 +2002,8 @@ input.savebutton:hover
 
 img.materialCitation {
 	cursor:pointer;
+	float:right;
+    margin-top:1px;
 }
 
 input.materialCitation {

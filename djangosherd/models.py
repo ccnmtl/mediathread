@@ -195,7 +195,7 @@ class SherdNote(Annotation):
     author = models.ForeignKey(User, null=True, blank=True)
     tags = TagField()
 
-    body = models.TextField(blank=True,db_index=True, null=True)
+    body = models.TextField(blank=True,null=True)
 
     added = models.DateTimeField('date created', editable=False)
     modified = models.DateTimeField('date modified', editable=False)

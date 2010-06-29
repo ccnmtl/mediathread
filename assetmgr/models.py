@@ -51,7 +51,7 @@ class Asset(models.Model):
     title = models.CharField(max_length=1024)
 
     #make it json or somethin
-    metadata_blob = models.TextField(blank=True,db_index=True,
+    metadata_blob = models.TextField(blank=True,
                                      help_text="""Be careful, this is a JSON blob, and is easy to format incorrectly.  Make sure not to add any "'s.""")
 
     #labels which determine the saving of an asset

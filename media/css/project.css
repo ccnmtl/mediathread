@@ -235,6 +235,12 @@ li > ul.comment-thread div.comment {
 
 }
 
+li > ul.comment-thread div.comment.new-comment {
+
+	padding-bottom: 33px;
+
+}
+
 
 
 li.comment-thread {

@@ -164,10 +164,7 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
                 break;
             }
             ///2. decorate citations
-            DjangoSherd_decorate_citations( 
-                //passing to Mochi forEach so needs to be an array
-                jQuery('a.materialCitation',this.info.target).toArray()
-            );
+            DjangoSherd_decorate_citations( this.info.target);
 
             ///3. reset form and set new validation key
             set_comment_content();//empty it

@@ -43,12 +43,12 @@
     {% if page_in_edit_mode and gannotation %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/insert_asset.png#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}" 
+	      src="/site_media/img/icons/insert_asset.png#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{asset.title}}" 
 	      name="{{gannotation.get_absolute_url}}"
-	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
+	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
 	      /></span>
 	{% endif %}
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
@@ -114,12 +114,12 @@
 	{% if page_in_edit_mode %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/insert_clip.png#annotation={{annotation.get_absolute_url}}&title={{annotation.title}}&type={{asset.primary.label}}" 
+	      src="/site_media/img/icons/insert_clip.png#annotation={{annotation.get_absolute_url}}&title={{annotation.title}}&type={{asset.primary.label}}&range1={{annotation.range1}}" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{annotation.title}}" 
 	      name="{{annotation.get_absolute_url}}"
-	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
+	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
 	      /></span>
 	{% endif %}
 

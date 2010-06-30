@@ -307,13 +307,13 @@ padding-right: 4px;
 .asset_title.asset-video_rtmp,
 .asset_title.asset-video
 {
-	background-image: url(http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/item_video.gif);
+	background-image: url(../img/icons/item_video.gif);
 }
 
 .asset_title.asset-image,
 .asset_title.asset-image_fpx
 {
-	background-image: url(http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/item_image.gif);
+	background-image: url(../img/icons/item_image.gif);
 }
 
 .record-image .annotation-timecode {
@@ -322,7 +322,7 @@ padding-right: 4px;
 
 .asset_title.type-project
 {
-	background-image: url(http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/item_project.gif);
+	background-image: url(../img/icons/item_project.gif);
 	background-repeat: no-repeat;
 	background-position: 2px center;
 	margin-top: -3px;
@@ -330,7 +330,7 @@ padding-right: 4px;
 
 .asset_title.type-collaboration
 {
-	background-image: url(http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/item_discussion.png);
+	background-image: url(../img/icons/item_discussion.png);
 }
 
 

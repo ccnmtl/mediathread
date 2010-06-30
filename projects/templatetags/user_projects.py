@@ -59,3 +59,10 @@ class UserCourses(TemplateTagNode):
         user_courses = Course.objects.filter(group__in=user.groups.all())
         return len(user_courses)
 register.tag('num_courses', UserCourses.process_tag)
+
+
+from django.template.defaultfilters import timesince
+def timesince_approx(value, arg=None):
+    return timesince(value, arg).split(',')[0]
+
+register.filter(timesince_approx)

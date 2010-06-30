@@ -39,10 +39,8 @@
     </div>
    
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
-    <a {% if page_in_edit_mode %}target="_blank"{% endif %}
-       href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
-
-	{% if page_in_edit_mode and gannotation %}
+    
+    {% if page_in_edit_mode and gannotation %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
 	      src="http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/insert_asset.png#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}" 
@@ -53,6 +51,10 @@
 	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
 	      /></span>
 	{% endif %}
+    <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+       href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
+
+	
   </h2>
 
   {%if asset.sources.thumb %}

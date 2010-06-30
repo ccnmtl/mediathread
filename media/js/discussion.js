@@ -22,7 +22,7 @@ jQuery(function discussion_init() {
 
         open_comment_form(edit);
 
-        set_comment_content(commenter.read({html:jQuery('#comment-'+id).get(0)}).comment);
+        set_comment_content(commenter.read({html:jQuery('#comment-'+id).get(0)}));
     }
 
     function comment_form_space(button) {
@@ -30,9 +30,12 @@ jQuery(function discussion_init() {
     }
 
     function set_comment_content(content) {
-        content = content || '<p></p>';
-        frm.elements['comment'].value = content;
-        tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,content,false);
+        content = content || {comment:'<p></p>'};
+        frm.elements['comment'].value = content.comment;
+        frm.elements['title'].value = content.title || '';
+        var action = (content.title) ? 'show' : 'hide';
+        jQuery('.formtitle')[action]();
+        tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,content.comment,false);
     }
     set_comment_content();
 
@@ -161,10 +164,7 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
                 break;
             }
             ///2. decorate citations
-            DjangoSherd_decorate_citations( 
-                //passing to Mochi forEach so needs to be an array
-                jQuery('a.materialCitation',this.info.target).toArray()
-            );
+            DjangoSherd_decorate_citations( this.info.target);
 
             ///3. reset form and set new validation key
             set_comment_content();//empty it
@@ -224,6 +224,7 @@ AjaxComment.prototype.read = function(found_obj) {
     return {
         'name':c.author.firstChild.nodeValue,
         'comment':comment.innerHTML,
+        'title':c.title.innerHTML,
         'id':String(c.top.id).substr(8)//comment- chopped
     }
 }
@@ -241,6 +242,7 @@ AjaxComment.prototype.update = function(obj,html_dom) {
 AjaxComment.prototype.components = function(html_dom,create_obj) {
     return {'top':html_dom,
             'comment':jQuery('div.threaded_comment_text:first',html_dom).get(0),
+            'title':jQuery('div.threaded_comment_title',html_dom).get(0),
             'author':jQuery('span.threaded_comment_author:first',html_dom).get(0)
            }
 }

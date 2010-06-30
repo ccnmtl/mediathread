@@ -636,7 +636,7 @@ img, img a
 	display: block;
 	float: left;
 	margin: 0;
-	padding: 1em 0;
+	padding: 1em 0 0;
 	border: 0;
 	width: 498px;
 }

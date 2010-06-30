@@ -3,7 +3,7 @@ img.materialCitation {
 }
 
 input.materialCitation {
-	background: #fff url('/site_media/img/vital3/icon_video.gif') left no-repeat;
+	background: #fff url('../img/icons/item_video.png') left no-repeat;
 	margin: 2px 0px 2px 4px;
 	padding: 1px;
 	border: 0;
@@ -86,7 +86,7 @@ float: left;
 
 .annotation-title.materialCitation {
 
-	background-image: url('/site_media/img/vital3/icon_video.gif') left no-repeat;
+	background-image: url('../img/icons/item_video.gif') left no-repeat;
 	border: 0;
 	color: #660000;
 	width:auto;
@@ -96,7 +96,7 @@ float: left;
 }
 
 .annotation-title.materialCitation h2 {
-	background: #969696 url('/site_media/img/vital3/icon_video.gif') 5px 3px no-repeat;
+	background: #969696 url('../img/icons/item_video.gif') 5px 3px no-repeat;
 	color:#DEDEDE;
 	font-weight:normal;
 	margin:0 0 0.5em;
@@ -177,8 +177,7 @@ div.respond_to_comment_form_div ul{
 
 /***
 doesn't work in WebKit OR IE?!!?
-***/
-form.threaded_comments_form,
+,
 form.threaded_comments_form input[name=url],
 form.threaded_comments_form input[name=honeypot],
 form.threaded_comments_form input[name=name],
@@ -188,7 +187,14 @@ form.threaded_comments_form label[for=id_url],
 form.threaded_comments_form label[for=id_honeypot],
 form.threaded_comments_form label[for=id_name],
 form.threaded_comments_form label[for=id_email],
-form.threaded_comments_form label[for=id_title] {
+form.threaded_comments_form label[for=id_title] 
+***/
+form.threaded_comments_form,
+form.threaded_comments_form .formtitle {
+    display:none;
+}
+
+.threaded_comment_title {
     display:none;
 }
 
@@ -232,6 +238,12 @@ li > ul.comment-thread.last {
 
 li > ul.comment-thread div.comment {
     background-color: #fff;
+
+}
+
+li > ul.comment-thread div.comment.new-comment {
+
+	padding-bottom: 33px;
 
 }
 

@@ -32,27 +32,28 @@
     {% if editable %}
       <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"
 	 href="{% url my-asset-notes space_viewer.username asset.pk %}?delete">
-       <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Asset and Clips from My Analysis"  />
-      </a>
+       <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Asset and Clips from My Analysis"  /></a>
     {% endif %}
       {%if space_viewer.is_staff and not space_owner %}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{%endif%}
     </div>
    
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
-    <a {% if page_in_edit_mode %}target="_blank"{% endif %}
-       href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
-
-	{% if page_in_edit_mode and gannotation %}
+    
+    {% if page_in_edit_mode and gannotation %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="/site_media/img/vital3/icon_clipping.gif#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}" 
+	      src="/site_media/img/icons/insert_asset.png#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{asset.title}}" 
 	      name="{{gannotation.get_absolute_url}}"
-	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
+	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
 	      /></span>
 	{% endif %}
+    <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+       href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
+
+	
   </h2>
 
   {%if asset.sources.thumb %}
@@ -104,23 +105,28 @@
     <ul class="asset-clips">
     {% for annotation in annotations %}
       {% if not annotation.is_null %}
-      <li>
+      <li id="annotation-{{annotation.pk}}">
 	{%if annotation.body or annotation.tags %}
-	<a class="hs-control" href="#annotation-{{annotation.pk}}"></a>
+	<a class="hs-control" href="#annotation-body-{{annotation.pk}}"></a>
 	{%endif%}
-
+        <div class="actions">
 	{% if page_in_edit_mode %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="/site_media/img/vital3/icon_clipping.gif#annotation={{annotation.get_absolute_url}}&title={{annotation.title}}&type={{asset.primary.label}}" 
+	      src="/site_media/img/icons/insert_clip.png#annotation={{annotation.get_absolute_url}}&title={{annotation.title}}&type={{asset.primary.label}}&range1={{annotation.range1}}" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{annotation.title}}" 
 	      name="{{annotation.get_absolute_url}}"
-	      {# draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);' #}
+	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
 	      /></span>
 	{% endif %}
-
+        {% if editable %}
+          <a onclick="return ajaxDelete(this, 'annotation-{{annotation.pk}}')"
+             href="{% url annotation-form asset.pk annotation.pk %}?delete">
+            <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+        {% endif %}
+        </div><!-- class="actions" -->
 	<a {% if page_in_edit_mode %}target="_blank"{% endif %}
 	  title="Last modified on {{annotation.modified|date}}"
 	  href="{{annotation.get_absolute_url}}">{{annotation.title}}</a> 	    
@@ -129,7 +135,7 @@
 
 
 	{%if annotation.body or annotation.tags %}	
-	<div id="annotation-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper" >
+	<div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper" >
 	  {% if annotation.tags %} 	  
 	  <div class="annotation-metadata-tags annotation-metadata"><strong>Tags:</strong>
 	    {% for tag in annotation.tags_split %}

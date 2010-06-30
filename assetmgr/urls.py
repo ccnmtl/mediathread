@@ -22,7 +22,7 @@ urlpatterns = patterns(
 
     url(r'^(?P<asset_id>\d+)/annotations/$',
         'annotationcontainerview',
-        name="annotation-form"),
+        name="annotations-container"),
     url(r'^(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
         'annotationview',
         name="annotation-form"),

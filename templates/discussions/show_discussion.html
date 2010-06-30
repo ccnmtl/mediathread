@@ -51,7 +51,7 @@
             <span class="capability can-manage">[can manage responses]</span>
           {% endif %}
         </div>
-	<h2>Discussion of {{root_comment.content_object.title}}</h2>
+	<h2>Discussion of {%firstof root_comment.title root_comment.content_object.title %}</h2>
 	  <div id="threadedcomments" class="resize-height">
         {%get_comment_list for root_comment.content_object as comment_list%}
         {% for current_comment in comment_list|fill_tree|annotate_tree %}
@@ -95,12 +95,13 @@
                  
                 </div>
                 <!-- ( #{{current_comment.id}}): -->
+                <div class="threaded_comment_title">{{current_comment.title}}</div>
                 <div class="threaded_comment_text">{{current_comment.comment|safe}}</div>
                 <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
                   <span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the reply form">
                     Respond<!-- to comment {{ current_comment.id }}: -->
                     </span>
-                    {% if edit_comment_permission or current_comment.user == space_viewer %}
+                    {% if current_comment.user == space_viewer or edit_comment_permission %}
                        <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>
                     {% endif %}
                     <div class="comment_form_space"></div>
@@ -123,15 +124,18 @@
                 {% if field.is_hidden %}
                   {{ field }}
                 {% else %}
+                  {#SWITCH#}
                   {% ifequal field.name "comment" %}
                     {{ field }}
-                  {% else %}
-                    {% ifequal field.name "email" %}
-                      <input type="hidden" name="email" value="{{field.value|default:'null@example.com'}}" />                    
+                     {% else %}
+                  {% ifequal field.name "title" %}
+                    <span class="formtitle"><label for="title">Title:</label> {{ field }}</span>
                     {% else %}
+                  {% ifequal field.name "email" %}
+                     <input type="hidden" name="email" value="{{field.value|default:'null@example.com'}}" />
+                  {% else %}
                       <input type="hidden" name="{{field.html_name}}" value="{{field.value}}" />
-                    {% endifequal %}
-                  {% endifequal %}
+                  {% endifequal %}{% endifequal %}{% endifequal %}
                 {% endif %}
               {% endfor %}
             </li>

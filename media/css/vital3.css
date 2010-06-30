@@ -1591,12 +1591,9 @@ h3.noteGrouping a:visited
 	padding-left:0px;
 	/*padding-right:35px;*/
 	height:7px;
-	width:283px;
-	border: 0;
 	border: 1px solid #999;
 	background-color: #e0e0e0;
-	position:relative;
-	margin: -1px 0px 2px 0px;
+	margin: -1px auto;
 }
 #clipStripLabel
 {
@@ -1615,13 +1612,11 @@ h3.noteGrouping a:visited
 
 #clipStripTrack
 {
-	position:absolute;
-	left:38px;
+	position:relative;
 	height:7px;
 	padding:0px;
-	margin:0px;
+	margin:0px 0 0 -2px;
 	z-index:0;
-	width: 100%;
 	background: #AAAAAA;
 }
 
@@ -2002,10 +1997,12 @@ input.savebutton:hover
 
 img.materialCitation {
 	cursor:pointer;
+	float:right;
+    margin-top:1px;
 }
 
 input.materialCitation {
-	background: #fff url('/site_media/img/vital3/icon_video.gif') left no-repeat;
+	background: #fff url('../img/icons/item_video.gif') left no-repeat;
 	margin: 2px 0px 2px 4px;
 	padding: 1px;
 	border: 0;

@@ -214,7 +214,7 @@ text-align: center;
   
  a.fullrecord_button
 {
-    margin-top:-40px;
+    margin-top:-30px;
     float:right;
   right:0;
   z-index:1000;
@@ -276,6 +276,7 @@ text-align: left;
 {
 
 color: #fff;
+padding-right: 4px;
 }
 
 .asset_title,
@@ -284,11 +285,12 @@ color: #fff;
 {
   display:block;
 	background-repeat: no-repeat;
-	background-position: 5px center;
-	padding: 4px 27px 3px;
+	background-position: 3px 1px;
+	padding: 2px 5px 4px 24px;
 }
 .asset_title {
 	margin-top: -3px;
+	font-size: 100%;
   }
   
 .asset_title.asset-flv,
@@ -305,12 +307,13 @@ color: #fff;
 .asset_title.asset-video_rtmp,
 .asset_title.asset-video
 {
-	background-image: url(../img/item_video.png);
+	background-image: url(../img/icons/item_video.gif);
 }
 
-.asset_title.asset-image
+.asset_title.asset-image,
+.asset_title.asset-image_fpx
 {
-	background-image: url(../img/item_image.png);
+	background-image: url(../img/icons/item_image.gif);
 }
 
 .record-image .annotation-timecode {
@@ -319,16 +322,15 @@ color: #fff;
 
 .asset_title.type-project
 {
-	background-image: url(../img/project_icon.png);
+	background-image: url(../img/icons/item_project.gif);
 	background-repeat: no-repeat;
-	background-position: left center;
-	padding: 3px 22px;
+	background-position: 2px center;
 	margin-top: -3px;
 }
 
 .asset_title.type-collaboration
 {
-	background-image: url(../img/item_discussion.png);
+	background-image: url(../img/icons/item_discussion.png);
 }
 
 
@@ -348,7 +350,7 @@ color: #fff;
 .asset-activities
 { 
   padding-top:3px;
-  padding-left:1em;
+  padding-left:25px;
  } 
 
 .asset-view-big {
@@ -359,6 +361,8 @@ color: #fff;
     width:60%;
     margin-right: 1em;
     min-width: 356px;
+    border:1px solid #ccc;
+    background-color: #dedede;
 }
 
 .asset-view-small  .asset-object {
@@ -367,7 +371,7 @@ color: #fff;
 }
 
 .asset-display {
-    border:1px solid #ccc;
+text-align:center;
 }
 
   #stats .sub-control {

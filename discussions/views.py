@@ -116,6 +116,7 @@ def new(request):
     #TODO: find the default site_id
     new_threaded_comment.site_id = 1
     new_threaded_comment.save()
+
     return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     
 
@@ -137,7 +138,8 @@ def comment_change(request, comment_id, next=None):
     else:
         return HttpResponseForbidden('You do not have permission to edit this discussion.')
 
-    comment.title = request.POST['title']
+    if request.POST['title']:
+        comment.title = request.POST['title']
 
     comment.save()
     return {

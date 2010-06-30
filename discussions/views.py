@@ -4,6 +4,7 @@ from djangohelpers.lib import allow_http
 
 from django.db.models import get_model
 
+from datetime import datetime
 
 from discussions.models import Discussion
 from structuredcollaboration.models import Collaboration
@@ -14,15 +15,11 @@ from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
 
 from courseaffils.lib import in_course_or_404
-from projects.forms import ProjectForm
-from projects.models import Project
 from courseaffils.models import Course
 from django.http import HttpResponseRedirect
 
 
 from assetmgr.lib import most_popular,annotated_by
-
-import pdb
 
 Asset = get_model('assetmgr','asset')
 
@@ -35,14 +32,14 @@ def show(request, discussion_id):
     """Show a threadedcomments discussion of an arbitrary object.
     discussion_id is the pk of the root comment."""
     root_comment = get_object_or_404(ThreadedComment, pk = discussion_id)
+    user = request.user
+    if user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
 
     #for_now:
-    space_viewer = request.user
-    space_owner = request.user
+    space_viewer = user
+    space_owner = user
     
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])
-
     if not root_comment.content_object.permission_to('read',request):
         return HttpResponseForbidden('You do not have permission to view this discussion.')
     
@@ -50,14 +47,14 @@ def show(request, discussion_id):
         my_course = root_comment.content_object.context.content_object
     except:
         #temporary:
-        my_courses = [c for c in Course.objects.all() if request.user in c.members]
+        my_courses = [c for c in Course.objects.all() if user in c.members]
         my_course = my_courses[-1]
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
 
     assets = annotated_by(Asset.objects.filter(course=my_course), space_viewer)
     return {
         'is_space_owner': True,
-        'edit_comment_permission': my_course.is_faculty,
+        'edit_comment_permission': my_course.is_faculty(user),
         'space_owner': space_owner,
         'space_viewer': space_viewer,
         'root_comment': root_comment,
@@ -71,7 +68,6 @@ def show(request, discussion_id):
 @allow_http("POST")
 def new(request):
     """Start a discussion of an arbitrary model instance."""
-    #pdb.set_trace()
     rp = request.POST
     app_label, model, obj_pk, comment_html =  ( rp['app_label'], rp['model'], rp['obj_pk'], rp['comment_html'] )
     #Find the object we're discussing.
@@ -128,10 +124,19 @@ def new(request):
 def comment_change(request, comment_id, next=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
-    if not comment.content_object.permission_to('edit',request):
+
+    if comment.content_object.permission_to('edit',request):
+        comment.comment = request.POST['comment']
+    elif comment.user == request.user:
+        now = datetime.now()
+        comment.comment = '<div class="postupdate">[Post updated at <time datetime="%s">%s</time>]</div>%s' % (
+            now.isoformat(),
+            now.strftime('%I:%M%p %D').lower(),
+            request.POST['comment']
+            )
+    else:
         return HttpResponseForbidden('You do not have permission to edit this discussion.')
 
-    comment.comment = request.POST['comment']
     comment.title = request.POST['title']
 
     comment.save()

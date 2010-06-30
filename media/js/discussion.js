@@ -5,8 +5,8 @@ jQuery(function discussion_init() {
         mode='post';
 
     function open_respond(evt) {
-        var respond = evt.target; //**
-        frm.elements['parent'].value = respond.getAttribute("data-comment"); //**
+        var respond = evt.target; 
+        frm.elements['parent'].value = respond.getAttribute("data-comment"); 
         frm.elements['edit-id'].value = '';
         open_comment_form(respond);
         if (mode=='update') {
@@ -37,7 +37,6 @@ jQuery(function discussion_init() {
     set_comment_content();
 
     function open_comment_form(evt_target) {
-        console.log('open comment form');
         if (!next_response_loc) {
 	    next_response_loc = evt_target;
             comment_form_space(evt_target).appendChild(frm);
@@ -107,7 +106,7 @@ AjaxComment.prototype.submit = function(evt) {
     evt.preventDefault();
 
     var frm = jQuery(self.form);
-    form_val_array = frm.serializeArray();//**
+    form_val_array = frm.serializeArray();
     
     var info = {'edit-id':self.form.elements['edit-id'].value};
     info['mode'] = ((info['edit-id']=='') ?'post':'update');
@@ -122,7 +121,7 @@ AjaxComment.prototype.submit = function(evt) {
         url: info.url,
         data: form_val_array,//default will serialize?
         dataType: 'html',
-        success: self.oncomplete,//**
+        success: self.oncomplete,
         error: self.onfail,
         context: {'self':self,'form_val_array':form_val_array,'info':info}
     });
@@ -134,18 +133,19 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
     for (var i=0;i<this.form_val_array.length;i++) {
         form_vals[this.form_val_array[i].name] = this.form_val_array[i].value;
     }
+
     var res = self.parseResponse(xhr);
-    if (xhr.status ==200) {
+    if (xhr.status ==200  && !res.error) {
         if (res.comment_id) {
             ///1. insert new comment into DOM
             var new_obj = {
                 'id':res.comment_id,
-                'comment':form_vals.comment,
+                'comment':res.comment || form_vals.comment,
                 'name':self.username
             };
             switch(this.info.mode) {
             case 'post':
-                var parent_html = jQuery('#comment-' +form_vals['parent']).get(0);//**
+                var parent_html = jQuery('#comment-' +form_vals['parent']).get(0);
                 var ul = this.info.target = document.createElement('ul');
                 ul.setAttribute('class','comment-thread');
                 parent_html.appendChild(ul);
@@ -176,17 +176,27 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
             hide_comment_form();
             document.location = '#comment-'+res.comment_id;
         }
+    } else {
+        self.onfail(xhr, textStatus, res.error);
     }
 }
 
 AjaxComment.prototype.onfail = function(xhr, textStatus, errorThrown) {
-    alert("There was an error submitting your comment!  Please report this to the system administrator.");
+    alert("There was an error submitting your comment!  Please report this to the system administrator: "+errorThrown);
     console.log('error:'+errorThrown);
     console.log(xhr);    
 }
 
 AjaxComment.prototype.parseResponse = function(xhr) {
     var rv = {};
+    var error_regex = /class="error"\s+>[^>]+>([\w ]+)<\/label/g;
+    var error = error_regex.exec(xhr.responseText);
+    if (error != null) {
+        rv["error"] = 'Required Fields: ';
+        do {
+            rv["error"]+= error[1] + ';';
+        } while ((error = error_regex.exec(xhr.responseText)) != null);
+    }
     var new_comment = String(xhr.responseText).match(/#comment-(\d+)/);
     if (new_comment != null) {
         rv["comment_id"] = new_comment[1];
@@ -199,15 +209,21 @@ AjaxComment.prototype.parseResponse = function(xhr) {
     if (security != null) {
         rv["security_hash"] = security[1];
     }
+    var comment_text = String(xhr.responseText).match(/id="commentposted">((.|\n)*)<!--endposted/)
+    if (comment_text != null) {
+        rv["comment"] = comment_text[1];
+    }
     return rv;
 }
 
 AjaxComment.prototype.read = function(found_obj) {
     //found_obj = {html:<DOM>}
     var c = this.components(found_obj.html);
+    var comment = c.comment.cloneNode(true);
+    jQuery('.postupdate',comment).remove();
     return {
         'name':c.author.firstChild.nodeValue,
-        'comment':c.comment.innerHTML,
+        'comment':comment.innerHTML,
         'id':String(c.top.id).substr(8)//comment- chopped
     }
 }
@@ -249,10 +265,7 @@ AjaxComment.prototype.create = function(obj,doc) {
         +    '<div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">'
         +      '<span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">'
         +        'Respond<!-- to comment {{current_comment.id}}: --></span>'
-        +((this.capabilities.edit) 
-          ?' <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>'
-          :''
-         )
+        +    ' <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>'
         +      '<div class="comment_form_space"></div>'
         +    '</div>'
         + '</div>'

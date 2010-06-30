@@ -163,8 +163,8 @@ text-decoration:none;
 	font-size: 80%;
 }
 
-p.threaded_comment_text {
- background: #BBB;
+.threaded_comment_text {
+    margin-bottom:10px;
 }
 /*
 div.respond_to_comment_form_div ul{

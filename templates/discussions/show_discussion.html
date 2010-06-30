@@ -44,12 +44,11 @@
 </div>
   <div class="essay-space">
         <div class="capabilities">
-          Privileges: 
           {% if edit_comment_permission %}
-            <span class="capability can-edit">[edit posts]</span>
+            <span class="capability can-edit">[can edit posts]</span>
           {% endif %}
           {% if space_viewer.is_staff %}
-            <span class="capability can-manage">[manage responses]</span>
+            <span class="capability can-manage">[can manage responses]</span>
           {% endif %}
         </div>
 	<h2>Discussion of {{root_comment.content_object.title}}</h2>

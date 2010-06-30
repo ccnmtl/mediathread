@@ -1,19 +1,20 @@
-/* requires MochiKit.Visual */
+/* requires jQueryUI */
 
     function ajaxDelete(link, container) {
-      var doReplaceForm = function (req) {
-        if( req.status == 200 ) {
-          fade(container);
-        };
-      };
-    
-      var doReplaceErrorForm = function (req) {
-        alert("Error!");
-      };
-
-      if( confirm("Are you sure?") ) {
-        var res = doXHR(link.href, {method:"POST"});
-        res.addCallbacks(doReplaceForm,doReplaceErrorForm);
-      };
-      return false;
+        if( confirm("Are you sure?") ) {
+            jQuery.ajax({
+                type: 'POST',
+                url: link.href,
+                success:function (responseText, textStatus, xhr) {
+                    if( xhr.status == 200 ) {
+                        jQuery('#'+container).hide("fade");
+                    } else alert("Error: "+textStatus);
+                },
+                error:function(xhr) {
+                    window.sky = xhr;
+                    alert("Error!");
+                }
+            });
+        }
+        return false;
     }

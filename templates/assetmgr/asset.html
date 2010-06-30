@@ -117,7 +117,7 @@
                {% if annotation and not readonly %}
                    <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk annotation.pk %}{% endif %}">
                {% else %}
-        	       <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk %}{% endif %}">
+        	       <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotations-container asset.pk %}{% endif %}">
                {% endif %}<!--end if annotation and not readonly-->
                   
                {{ annotation_form.as_p }}

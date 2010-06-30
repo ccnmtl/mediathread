@@ -359,6 +359,8 @@ color: #fff;
     width:60%;
     margin-right: 1em;
     min-width: 356px;
+    border:1px solid #ccc;
+    background-color: #dedede;
 }
 
 .asset-view-small  .asset-object {
@@ -367,7 +369,7 @@ color: #fff;
 }
 
 .asset-display {
-    border:1px solid #ccc;
+text-align:center;
 }
 
   #stats .sub-control {

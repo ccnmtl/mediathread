@@ -79,7 +79,7 @@ Class Analysis
 	    {%for disc in discussions%}
 	        <li>
 	          <div class="asset_title type-collaboration">
-	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc.content_object.title}}</a>
+	            <a href="/discussion/show/{{disc.id}}" class="title">{{disc.content_object.title|default:"(Untitled)"}}</a>
 	          </div>
 	        </li>
 	    {%endfor%}

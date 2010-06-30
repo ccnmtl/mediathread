@@ -310,7 +310,8 @@ padding-right: 4px;
 	background-image: url(http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/item_video.gif);
 }
 
-.asset_title.asset-image
+.asset_title.asset-image,
+.asset_title.asset-image_fpx
 {
 	background-image: url(http://ccnmtl.columbia.edu/projects/mediathread/skins/general/icons/item_image.gif);
 }

@@ -1,8 +1,10 @@
 from structuredcollaboration.models import Collaboration
-from django.http import HttpResponseForbidden, HttpResponseServerError
+from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse,resolve
 from django.contrib.contenttypes.models import ContentType
+
+from djangohelpers.lib import allow_http
 
 # tree management (add/remove leaf)
 # re-ordering
@@ -64,6 +66,28 @@ def serve_collaboration(request, collab):
                                     collab.content_type.model, 
                                     collab.content_object.pk, )
                                    )
+
+
+def collaboration_dispatch(request, collab_id, next=None):
+    if request.method == "DELETE":
+        return delete_collaboration(request, collab_id, next)
+
+    return HttpResponseNotFound
+
+def delete_collaboration(request, collab_id, next=None):
+    #only fake-delete it.  We move it out from 
+    disc_sc = get_object_or_404(Collaboration, pk=collab_id)
+    if not disc_sc.permission_to('delete',request):
+        return HttpResponseForbidden('You do not have permission to delete this discussion.')
+
+    disc_sc.context = None
+    disc_sc.content_object = None
+    disc_sc._parent = None
+    disc_sc.save()
+
+    return HttpResponseRedirect( next or "/" )
+
+
 
 def collaboration_rss(request,context_slug):
     "RSS feed for collaboration tree"

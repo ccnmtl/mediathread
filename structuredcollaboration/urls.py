@@ -4,6 +4,10 @@ from django.conf import settings
 urlpatterns = patterns(
     'structuredcollaboration.views',
 
+    url(r'^collaboration/(?P<collab_id>\d+)/$',
+        'collaboration_dispatch',
+        name='collaboration-dispatch'),
+
     url(r'^(?P<context_slug>\w+)/(?P<collab_id>\d+)/',
         'view_collab_by_collab',
         name='collaboration-view'),
@@ -15,6 +19,4 @@ urlpatterns = patterns(
         'view_collab_by_obj',
         name='collaboration-obj-view'),
 
-
     )
-

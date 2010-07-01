@@ -1,4 +1,3 @@
-
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 
@@ -31,7 +30,7 @@ Asset = get_model('assetmgr','asset')
 def show(request, discussion_id):
     """Show a threadedcomments discussion of an arbitrary object.
     discussion_id is the pk of the root comment."""
-    root_comment = get_object_or_404(ThreadedComment, pk = discussion_id)
+    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
@@ -119,6 +118,7 @@ def new(request):
 
     return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     
+
 
 @allow_http("POST")    
 @rendered_with('comments/posted.html')

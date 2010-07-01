@@ -3,6 +3,10 @@
 Class Analysis
 {% endblock %}</title>
 
+{% block js %}
+<script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
+{% endblock %}
+
 {% block content %}
     {{ block.super }}
 <div class="panel">    
@@ -77,7 +81,15 @@ Class Analysis
     <div class="scroll">
       <ul>
 	    {%for disc in discussions%}
-	        <li>
+	        <li id="discussion-{{disc.id}}">
+                  <div class="actions">
+                    {% if is_faculty %}
+                      <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
+                         href="{% url collaboration-dispatch disc.content_object.pk %}?delete">
+                      <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+                    {% endif %}
+
+                  </div>
 	          <div class="asset_title type-collaboration">
 	            <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
 	          </div>

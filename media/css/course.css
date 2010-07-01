@@ -389,8 +389,9 @@ text-align:center;
       margin:0;
 }
   #member_col, #filter_col, #project_col {  
-      margin-top:14px;
+      margin-top:26px;
 }
+
   #filter_col {
   
   float:left;

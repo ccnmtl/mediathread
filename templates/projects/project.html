@@ -37,14 +37,18 @@
 
 {% block content %}
   {{ block.super }}
-  <table id="top-slider-rail">
+  <table id="top-slider">
+    <tbody>
     <tr>
-      <td>
+      <td class="slider-cell slider-edge">
+	<h2>« <span id="slider-left-edge"></span></h2>
+      </td>
+      <td class="slider-cell">
  {#<div id="asset_browse_col" class="asset-table">#}
     {% include "assetmgr/asset_table.html" %}
  {#</div>#}
       </td>
-      <td>
+      <td class="slider-cell">
   <div class="essay-space slider-column">
     <form class="yui-skin-sam" name="editproject" method="POST" action=".">
 
@@ -98,7 +102,11 @@
 
   </div><!-- end class="essay-space" -->
       </td>
+      <td class="slider-cell slider-edge">
+	<h2><span id="slider-right-edge"></span> »</h2>
+      </td>
     </tr>
+    </tbody>
   </table>
 
 {% endblock %}

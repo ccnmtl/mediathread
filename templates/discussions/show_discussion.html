@@ -38,10 +38,20 @@
 {% block content %}
 {{ block.super }}
   
+  <table id="top-slider">
+    <tbody>
+    <tr>
+      <td class="slider-cell slider-edge">
+	<h2>« <span id="slider-left-edge"></span></h2>
+      </td>
+      <td class="slider-cell">
  {#<div id="asset_browse_col" class="asset-table">#}
     {% include "assetmgr/asset_table.html" %}
  {#</div>#}
 </div>
+      </td>
+      <td class="slider-cell">
+
   <div class="essay-space slider-column">
         <div class="capabilities">
           {% if edit_comment_permission %}
@@ -148,5 +158,9 @@
 
                     
       </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 {% endblock %}

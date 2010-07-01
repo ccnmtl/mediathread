@@ -20,6 +20,13 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
   {{ block.super }}
 
 
+  <table id="top-slider">
+    <tbody>
+    <tr>
+      <td class="slider-cell slider-edge">
+	<h2>« <span id="slider-left-edge"></span></h2>
+      </td>
+      <td class="slider-cell">
 
 <div id="filter_col">
 
@@ -81,14 +88,22 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
   </ul>
 
 </div>
+      </td>
+      <td class="slider-cell">
+
+<div class="assets_wide_list" >
+ {% include "assetmgr/asset_table.html" %}
+</div>
+      </td>
+      <td class="slider-cell">
 
 <div id="project_col" class="project-table panel-column panel-light">
   <h2>Projects</h2>
   {% include "projects/project_list.html" %}
 </div>
-
-<div class="assets_wide_list" >
- {% include "assetmgr/asset_table.html" %}
-</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 {% endblock %}

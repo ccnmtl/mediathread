@@ -2,47 +2,62 @@
 
 }
 
-#top-slider-rail #asset_browse_col {
+#top-slider div#member_col, 
+#top-slider div#project_col 
+{  
+  width:250px;
+  }
+#top-slider div#filter_col
+{ width:180px; }
+#top-slider #filter_col,
+#top-slider #member_col,
+#top-slider #project_col,
+#top-slider #asset_browse_col {
+   width:100%;
     float:none;
-}
-
-#top-slider-rail .essay-space {
+   }
+#top-slider .essay-space {
     position:relative;
     float:none;
     margin-left:0px;
+    width:100%;                       
 }
 
+table#top-slider .slider-cell
+{ 
+  padding-top:14px;
+ }
 
-table#top-slider-rail td {
+table#top-slider td.slider-edge 
+{ 
+  width:10px!important;
+ }
+
+table#top-slider td.slider-edge h2
+{ 
+  display:none;
+  margin-top:-19px;
+  position:absolute;
+  white-space:nowrap;
+ }
+
+table#top-slider td.slider-cell
+{
+  border:none;
     vertical-align:top;
+    width:auto;                       
 }
 
-
-
-
-
-
-
-/*
-OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD 
-
-*/
-
-
-
-
-#top-slider-rail {
-    width:110%;
+table#top-slider {
     /*-10px from .block in mondrian.css */
-    margin:-30px -10px 0 -10px;  /*.block in mondrian.css*/
-
+    /*margin:-30px -10px 0 -10px;  /*.block in mondrian.css*/
+       border:none;
     position:relative;
     min-height:600px;
 }
+/*
 #top-slider-rail table {
     position:absolute;
-    /*initial value: 400px from #asset-object in course.css*/
-    /*left:-380px;*/
 }
 
 #top-slider-rail > table > tbody > tr > td > div {
@@ -86,10 +101,7 @@ span.slider-panel-link-right {
 form {
     display:inline;
 }
-#top-slider-rail div#asset_browse_col
-{
-    /*width:100%;*/
-}
+
 #top-slider-rail div#asset_details_col
 {
     position:absolute;
@@ -99,3 +111,4 @@ form {
     top:200px;
     min-width:350px;
 }
+*/

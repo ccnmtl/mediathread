@@ -640,6 +640,11 @@ dd {
 
 .delete_icon, .edit_icon {vertical-align: middle;}
 
+.about-to-delete {
+    border:1px solid #AA5555;
+    opacity:0.7;
+}
+
 .record {
     margin-bottom: .5em;
     clear:both;

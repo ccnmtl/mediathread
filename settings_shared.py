@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'threadedcomments',
     'djangohelpers',
     #mediathread local
+    #'slider',
     'mediathread_main',
 )
 

@@ -224,19 +224,20 @@ AjaxComment.prototype.read = function(found_obj) {
     return {
         'name':c.author.firstChild.nodeValue,
         'comment':comment.innerHTML,
-        'title':c.title.innerHTML,
+        'title':(c.title)?c.title.innerHTML:'',
         'id':String(c.top.id).substr(8)//comment- chopped
     }
 }
 
 AjaxComment.prototype.update = function(obj,html_dom) {
+    var success = 0;
     if (obj.comment) {
-        if (jQuery('.threaded_comment_text:first',html_dom)
-            .html(obj.comment).length) {
-            return true;
-        }
+        success+=jQuery('.threaded_comment_text:first',html_dom).html(obj.comment).length
     }
-    return false; // if it fails
+    if (obj.title) {
+        success+=jQuery('.threaded_comment_title:first',html_dom).html(obj.title).length
+    }
+    return success;
 }
 
 AjaxComment.prototype.components = function(html_dom,create_obj) {
@@ -261,6 +262,7 @@ AjaxComment.prototype.create = function(obj,doc) {
         +    '<span class="threaded_comment_author">{{current_comment.name}} </span>'
         +      '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>'
         + ' </div>'
+        + '<div class="threaded_comment_title">{{current_comment.title}}</div>'
         +    '<div class="threaded_comment_text">'
         +      '{{current_comment.comment|safe}}'
         +    '</div>'
@@ -276,6 +278,7 @@ AjaxComment.prototype.create = function(obj,doc) {
     var text = html
     .replace(/\{\{current_comment\.id\}\}/g,obj.id)
     .replace(/\{\{current_comment.name\}\}/g,obj.name)
+    .replace(/\{\{current_comment.title\}\}/g,obj.title||'')
     .replace(/\{\{current_comment\.comment\|safe\}\}/g,obj.comment);
     return {htmlID:'comment-'+obj.id,
             object:obj,

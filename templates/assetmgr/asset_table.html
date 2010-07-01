@@ -1,5 +1,5 @@
 {% load user_annotations tagging_tags helpful_tags %}
-<div id="asset_browse_col" class="asset-table">
+<div id="asset_browse_col" class="asset-table slider-column">
     <div id="videoclipbox" class="asset-view-small" style="display:none;">
       <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
       <div class="annotation-title"></div>
@@ -11,29 +11,45 @@
     </div>
   
 
-  <h2>
-    {%if space_owner %}
-      {% ifequal space_owner user %}
-        Your Saved Items
-      {% else %}
-        {{space_owner.get_full_name|default:space_owner.username}}'s Saved Items
-      {% endifequal %}   
-    {% else %}
-        Class Items
-    {% endif %} 
-  </h2>
   <div class="filter-widget">
     <div class="switcher collection-chooser">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
-        <span class="title">Your Saved Items</span>
+        <span class="title">
+          {%if space_owner %}
+            {% ifequal space_owner user %}
+              Your Saved Items
+            {% else %}
+              {{space_owner.get_full_name|default:space_owner.username}}'s Saved Items
+            {% endifequal %}   
+          {% else %}
+            Class Items
+          {% endif %} 
+        </span>
       </a>
+      <ul class="switcher-options">
+        <li>Your Saved Items</li>
+        <li>All Class Items</li>
+        {%if space_owner %}
+          {% ifnotequal space_owner user %}
+            <li>{{space_owner.get_full_name|default:space_owner.username}}'s Saved Items</li>
+          {% endifnotequal %}   
+        {% endif %}   
+      </ul>
     </div>
     <div class="switcher collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
-        <span class="title">Filter by Tag/Date</span>
+        <span class="title">Filter</span>
       </a>
+      <ul class="switcher-options">
+        <li>Date Modified
+          <ul class="switcher-options"></ul>
+        </li>
+        <li>Tags
+          <ul class="switcher-options"></ul>
+        </li>
+      </ul>
     </div>
     <div class="visualclear"></div>
   </div>

@@ -37,8 +37,15 @@
 
 {% block content %}
   {{ block.super }}
-
-  <div class="essay-space">
+  <table id="top-slider-rail">
+    <tr>
+      <td>
+ {#<div id="asset_browse_col" class="asset-table">#}
+    {% include "assetmgr/asset_table.html" %}
+ {#</div>#}
+      </td>
+      <td>
+  <div class="essay-space slider-column">
     <form class="yui-skin-sam" name="editproject" method="POST" action=".">
 
     <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
@@ -90,10 +97,8 @@
 
 
   </div><!-- end class="essay-space" -->
-
- {#<div id="asset_browse_col" class="asset-table">#}
-    {% include "assetmgr/asset_table.html" %}
- {#</div>#}
-
+      </td>
+    </tr>
+  </table>
 
 {% endblock %}

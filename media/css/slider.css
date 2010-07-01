@@ -1,0 +1,101 @@
+#content .slider-column {
+
+}
+
+#top-slider-rail #asset_browse_col {
+    float:none;
+}
+
+#top-slider-rail .essay-space {
+    position:relative;
+    float:none;
+    margin-left:0px;
+}
+
+
+table#top-slider-rail td {
+    vertical-align:top;
+}
+
+
+
+
+
+
+
+/*
+OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD OLD 
+
+*/
+
+
+
+
+#top-slider-rail {
+    width:110%;
+    /*-10px from .block in mondrian.css */
+    margin:-30px -10px 0 -10px;  /*.block in mondrian.css*/
+
+    position:relative;
+    min-height:600px;
+}
+#top-slider-rail table {
+    position:absolute;
+    /*initial value: 400px from #asset-object in course.css*/
+    /*left:-380px;*/
+}
+
+#top-slider-rail > table > tbody > tr > td > div {
+    width:100%;
+}
+
+#top-slider-rail table,
+#top-slider-rail td
+ {
+    border:none;
+}
+#top-slider-rail .slider-panel {
+    padding:0;
+    vertical-align: top;
+    position:relative;
+    width:100%;
+}
+
+tr.slider-titles,
+tr.slider-titles td
+ {
+     border-top:2px solid black;
+     border-bottom:2px solid black;
+}
+
+.slider-panel-title,
+.slider-panel-link
+ {
+    line-height:30px;
+    font-size:120%;
+    padding-left:1.34em;
+}
+span.slider-panel-link {
+    padding-left:0.5em;
+}
+
+span.slider-panel-link-right {
+    float:right;
+}
+
+form {
+    display:inline;
+}
+#top-slider-rail div#asset_browse_col
+{
+    /*width:100%;*/
+}
+#top-slider-rail div#asset_details_col
+{
+    position:absolute;
+    width:91%;
+    height:400px;
+    background-color:blue;
+    top:200px;
+    min-width:350px;
+}

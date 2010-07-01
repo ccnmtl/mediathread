@@ -43,10 +43,10 @@ input.materialCitation:hover
  }
 
 .essay-space h2 input {
-    padding:0;
+    padding:0 3px;
 }
 #essaybox {
-    margin-top:-5px;
+    margin-top:-6px;
 }
 .essay-space {
 left:0;
@@ -130,6 +130,7 @@ div.comment {
     overflow-y:auto;
     border: 1px solid #ccc;
     padding: 0px 5px 0 0px;
+    margin-top:11px;
 }
 
 form.threaded_comments_form ul li {

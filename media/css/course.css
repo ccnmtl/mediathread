@@ -1,3 +1,6 @@
+@import url("./switcher.css");
+@import url("./slider.css");
+
 .heading {
   display: block;
   padding: 1em;
@@ -288,6 +291,11 @@ padding-right: 4px;
 	background-position: 3px 1px;
 	padding: 2px 5px 4px 24px;
 }
+
+#asset_browse_col .asset-view-small {
+    margin-bottom:5px;
+}
+
 .asset_title {
 	margin-top: -3px;
 	font-size: 100%;
@@ -381,7 +389,7 @@ text-align:center;
       margin:0;
 }
   #member_col, #filter_col, #project_col {  
-      margin-top:25px;
+      margin-top:14px;
 }
   #filter_col {
   

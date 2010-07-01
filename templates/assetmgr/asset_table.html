@@ -1,5 +1,16 @@
 {% load user_annotations tagging_tags helpful_tags %}
 <div id="asset_browse_col" class="asset-table">
+    <div id="videoclipbox" class="asset-view-small" style="display:none;">
+      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
+      <div class="annotation-title"></div>
+      <div class="asset-title"></div>
+      <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
+        <div class="asset-display"></div>
+	<div id="clipstrip-display" class="clipstrip-display"></div>    
+      </div>
+    </div>
+  
+
   <h2>
     {%if space_owner %}
       {% ifequal space_owner user %}
@@ -11,16 +22,22 @@
         Class Items
     {% endif %} 
   </h2>
-    <div id="videoclipbox" class="asset-view-small" style="display:none;">
-      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
-      <div class="annotation-title"></div>
-      <div class="asset-title"></div>
-      <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
-        <div class="asset-display"></div>
-	<div id="clipstrip-display" class="clipstrip-display"></div>    
-      </div>
+  <div class="filter-widget">
+    <div class="switcher collection-chooser">
+      <a class="switcher-top closed">
+        <span class="down-arrow"></span>
+        <span class="title">Your Saved Items</span>
+      </a>
     </div>
-  
+    <div class="switcher collection-filter">
+      <a class="switcher-top closed">
+        <span class="down-arrow"></span>
+        <span class="title">Filter by Tag/Date</span>
+      </a>
+    </div>
+    <div class="visualclear"></div>
+  </div>
+
 <div id="materials" class="resize-height">
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">

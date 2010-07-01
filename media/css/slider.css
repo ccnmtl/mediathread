@@ -8,19 +8,28 @@
   width:250px;
   }
 #top-slider div#filter_col
-{ width:180px; }
+{ 
+    width:180px; 
+}
+
+#top-slider #asset_browse_col {
+    /*do not set width: should stay 380px*/
+    width:390px;
+    float:none;
+   }
+
 #top-slider #filter_col,
 #top-slider #member_col,
-#top-slider #project_col,
-#top-slider #asset_browse_col {
+#top-slider #project_col {
    width:100%;
     float:none;
    }
-#top-slider .essay-space {
+#top-slider .essay-space,
+#top-slider #threadedcomments {
     position:relative;
     float:none;
-    margin-left:0px;
-    width:100%;                       
+    margin-left:10px;
+    width:auto;                       
 }
 
 table#top-slider .slider-cell

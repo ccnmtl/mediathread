@@ -6,6 +6,9 @@ media_root = os.path.join(os.path.dirname(__file__),"media")
 
 urlpatterns = patterns(
     'djangosherd.views',
+    #all in /annotations/ (from ./urls.py)
+    url(r'^all/$', 
+        'annotations_collection_fragment', name="all-annotations-fragment"),
 
     url(r'^(?P<username>\w+)/$', 
         'annotations_collection_fragment', name="annotations-fragment"),

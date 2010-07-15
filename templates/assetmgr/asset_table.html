@@ -28,8 +28,8 @@
         </span>
       </a>
       <ul class="switcher-options">
-        <li>Your Saved Items</li>
-        <li>All Class Items</li>
+        <li class="choice_my_items" href="{%url annotations-fragment space_viewer.username%}">Your Saved Items</li>
+        <li class="choice_class_items" href="{%url all-annotations-fragment %}">All Class Items</li>
         {%if space_owner %}
           {% ifnotequal space_owner user %}
             <li>{{space_owner.get_full_name|default:space_owner.username}}'s Saved Items</li>
@@ -131,7 +131,7 @@
       {% endif %}
 
 
-      {% get_annotations on asset by space_owner as annotations %}
+      {% get_annotations on asset by space_owner filter 0 as annotations %}
 
     {% if annotations.1 %}
     <li>
@@ -161,7 +161,7 @@
         {% endif %}
         </div><!-- class="actions" -->
 	<a {% if page_in_edit_mode %}target="_blank"{% endif %}
-	  title="Last modified on {{annotation.modified|date}}"
+	  title="Last modified on {{annotation.modified|date}} by {{annotation.author.get_full_name|default:annotation.author}}"
 	  href="{{annotation.get_absolute_url}}">{{annotation.title}}</a> 	    
 
 	<span class="annotation-timecode">{{annotation.range_as_timecode}}</span>

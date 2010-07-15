@@ -135,16 +135,32 @@ def edit_annotation(request, annot_id):
     redirect_to = request.GET.get('next', '.')
     return HttpResponseRedirect(redirect_to)
 
+filter_by = {
+    'tag': lambda asset, tag: filter(lambda x: x.name == tag,
+                                     asset.tags()),
+}
 
 @login_required
 @rendered_with('assetmgr/asset_table.html')
-def annotations_collection_fragment(request,username):
-    space_viewer = in_course_or_404(username, request.course)
-    assets = annotated_by(Asset.objects.filter(course=request.course),
-                          space_viewer)
+def annotations_collection_fragment(request,username=None):
+    space_owner = False #indicates we want the whole class (None is no one)
+    if username:
+        space_owner = in_course_or_404(username, request.course)
+        assets = annotated_by(Asset.objects.filter(course=request.course),
+                              space_viewer)
+    else:
+        assets = Asset.objects.filter(course=request.course)
+
+    #NEXT NEXT NEXT NEXT
+    active_filters = dict((filter, request.GET.get(filter))
+                          for filter in filter_by
+                          if filter in request.GET)
     return {
-        'space_viewer':space_viewer,
+        'space_viewer':request.user,
+        'space_owner':space_owner,
         'assets':assets,
+        'active_filters': active_filters,
+        'page_in_edit_mode': request.GET.has_key('edit_mode'),
         }
 
 @rendered_with('djangosherd/iframe_annotation.html')

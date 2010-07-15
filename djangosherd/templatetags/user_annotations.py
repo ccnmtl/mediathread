@@ -8,14 +8,23 @@ Comment = get_model('comments','comment')
 
 class GetAnnotations(TemplateTagNode):
 
-    noun_for = {"by":"author", "on":"asset"}
+    noun_for = {"filter":"filters", "by":"author", "on":"asset", }
 
-    def __init__(self, varname, author, asset):
-        TemplateTagNode.__init__(self, varname, author=author, asset=asset)
+    def __init__(self, varname, author, asset, filters):
+        TemplateTagNode.__init__(self, varname, author=author, asset=asset, filters=filters)
 
-    def execute_query(self, author, asset):
-        if author:
-            return SherdNote.objects.filter(author=author, asset=asset)
+    def execute_query(self, author, asset, filters):
+        notes = None
+        if author is False:
+            notes = SherdNote.objects.filter(asset=asset)
+        elif author:
+            notes = SherdNote.objects.filter(author=author, asset=asset)
+        if notes and filters:
+            #NEXT NEXT NEXT NEXT
+            pass
+        
+
+        return notes
 
 class GetAllAnnotations(TemplateTagNode):
 
@@ -28,6 +37,9 @@ class GetAllAnnotations(TemplateTagNode):
         return SherdNote.objects.filter(asset=asset)
 
 class GetGlobalAnnotation(GetAnnotations):
+    noun_for = {"by":"author", "on":"asset", }
+    def __init__(self, varname, author, asset):
+        TemplateTagNode.__init__(self, varname, author=author, asset=asset)
     def execute_query(self, author, asset):
         annotation, created = SherdNote.objects.global_annotation(asset, author, auto_create=False)
         return annotation

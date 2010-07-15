@@ -146,7 +146,7 @@
       <div id="annotations" class="sub-control">
 	<ul>
 	  {% load user_annotations %}
-	  {% get_annotations on asset by space_viewer as annotations %}
+	  {% get_annotations on asset by space_viewer filter 0 as annotations %}
 	  {% for ann in annotations %}
 	  {% if not ann.is_null %}
 	  <li

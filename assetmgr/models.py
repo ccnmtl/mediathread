@@ -76,7 +76,10 @@ class Asset(models.Model):
 
     def metadata(self):
         if self.metadata_blob:
-            return simplejson.loads(str(self.metadata_blob))
+            try:
+                return simplejson.loads(str(self.metadata_blob))
+            except: #presumably json decoding, but let's quiet everything
+                return {}
         return {}
 
     def saved_by(self):

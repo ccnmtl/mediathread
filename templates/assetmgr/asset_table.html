@@ -131,7 +131,7 @@
       {% endif %}
 
 
-      {% get_annotations on asset by space_owner filter 0 as annotations %}
+      {% get_annotations on asset by space_owner filter active_filters as annotations %}
 
     {% if annotations.1 %}
     <li>

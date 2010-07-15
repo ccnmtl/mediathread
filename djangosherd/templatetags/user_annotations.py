@@ -1,10 +1,14 @@
 from django import template
 from djangosherd.models import SherdNote
-
+import re
 from djangohelpers.templatetags import TemplateTagNode
 
 from django.db.models import get_model
 Comment = get_model('comments','comment')
+
+filter_by = {
+    'tag': lambda note, tag: re.search(r'\b%s\b'%tag, note.tags),
+}
 
 class GetAnnotations(TemplateTagNode):
 
@@ -20,10 +24,10 @@ class GetAnnotations(TemplateTagNode):
         elif author:
             notes = SherdNote.objects.filter(author=author, asset=asset)
         if notes and filters:
-            #NEXT NEXT NEXT NEXT
-            pass
-        
-
+            for f,v in filters.items():
+                #don't filter global annotations out
+                notes = [n for n in notes
+                         if n.is_null() or filter_by[f](n,v)]
         return notes
 
 class GetAllAnnotations(TemplateTagNode):

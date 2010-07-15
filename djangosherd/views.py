@@ -147,14 +147,21 @@ def annotations_collection_fragment(request,username=None):
     if username:
         space_owner = in_course_or_404(username, request.course)
         assets = annotated_by(Asset.objects.filter(course=request.course),
-                              space_viewer)
+                              space_owner)
     else:
         assets = Asset.objects.filter(course=request.course)
 
-    #NEXT NEXT NEXT NEXT
+    #copied from assetmgr/views.py
+    for fil in filter_by:
+        filter_value = request.GET.get(fil)
+        if filter_value:
+            assets = [asset for asset in assets
+                      if filter_by[fil](asset, filter_value)]
+
     active_filters = dict((filter, request.GET.get(filter))
                           for filter in filter_by
                           if filter in request.GET)
+
     return {
         'space_viewer':request.user,
         'space_owner':space_owner,

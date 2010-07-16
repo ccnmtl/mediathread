@@ -12,6 +12,8 @@ from tagging.models import Tag
 from tagging.utils import calculate_cloud
 
 from assetmgr.lib import annotated_by
+from assetmgr.views import filter_by, get_active_filters
+
 import simplejson as json
 from random import choice
 from string import letters
@@ -38,6 +40,8 @@ def project_workspace(request, user, project):
                           space_viewer)
                           
     projectform = ProjectForm(request, instance=project)
+
+    active_filters = get_active_filters(request)
     
     return {
         'is_space_owner': project.is_participant(user),
@@ -46,6 +50,7 @@ def project_workspace(request, user, project):
         'project': project,
         'projectform': projectform,
         'assets': assets,
+        'active_filters':active_filters,
         'page_in_edit_mode': True,
         }
 

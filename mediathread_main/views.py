@@ -1,7 +1,8 @@
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 
-from assetmgr.lib import most_popular,annotated_by
+from assetmgr.lib import most_popular, annotated_by, get_active_filters
+
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 from djangosherd.models import DiscussionIndex
@@ -271,9 +272,7 @@ def your_records(request, user_name):
                 asset__course=c),
             counts=True))
     
-    active_filters = dict((filter, request.GET.get(filter))
-                          for filter in filter_by
-                          if filter in request.GET)
+    active_filters = get_active_filters(request, filter_by)
     #bad language, we should change this to user_of_assets or something
     space_viewer = user 
     if request.GET.has_key('as') and request.user.is_staff:
@@ -283,9 +282,10 @@ def your_records(request, user_name):
         'assets'        : assets,
         'projects'      : projects,
         'tags'          : tags,
-        'dates'         : {'today':'today',
-                           'yesterday':'yesterday',
-                           'lastweek':'within the last week'},
+        'dates'         : (('today','today'),
+                           ('yesterday','yesterday'),
+                           ('lastweek','within the last week'),
+                           ),
         'space_owner'   : user,
         'space_viewer'  : space_viewer,
         'editable'      : editable,

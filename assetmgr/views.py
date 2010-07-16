@@ -29,7 +29,7 @@ Comment = models.get_model('comments','comment')
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 
-from assetmgr.lib import get_metadata
+from assetmgr.lib import get_metadata,filter_by,get_active_filters
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
@@ -38,7 +38,7 @@ from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
 
 
 OPERATION_TAGS = ('jump','title','noui','v','share')
-
+#NON_VIEW
 def good_asset_arg(key):
     #need support for some things like width,height,max_zoom
     return (not (key.startswith('annotation-')
@@ -48,6 +48,7 @@ def good_asset_arg(key):
                  )
             and key not in OPERATION_TAGS)
 
+#NON_VIEW
 def sources_from_args(request,asset=None):
     "returns a dict of sources represented in GET/POST args"
     sources = {}
@@ -75,6 +76,7 @@ def sources_from_args(request,asset=None):
             break
     return sources
 
+
 @login_required
 @allow_http("GET", "POST")
 def add_view(request):
@@ -99,9 +101,9 @@ def mock_analysis_space(request):
 
     user_tags = calculate_cloud(
         Tag.objects.usage_for_queryset(
-            request.user.sherdnote_set.filter(
-                asset__course=request.course
-                ), counts=True))
+            request.user.sherdnote_set.filter(asset__course=request.course), 
+            counts=True)
+        )
 
     sources = sources_from_args(request)
 
@@ -237,11 +239,6 @@ def metadata_view(request, asset_id):
 </form>
 """ % metadata)
 
-filter_by = {
-    'tag': lambda asset, tag: filter(lambda x: x.name == tag,
-                                     asset.tags()),
-}
-
 @rendered_with('assetmgr/asset_container.html')
 def container_view(request):
 
@@ -262,9 +259,7 @@ def container_view(request):
             assets = [asset for asset in assets
                       if filter_by[fil](asset, filter_value)]
 
-    active_filters = dict((filter, request.GET.get(filter))
-                          for filter in filter_by
-                          if filter in request.GET)
+    active_filters = get_active_filters(request)
 
     return {
         'assets':assets,

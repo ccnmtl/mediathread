@@ -255,6 +255,24 @@ class SherdNote(Annotation):
     def dir(self):
         return dir(self)
 
+    @classmethod
+    def date_filter_for(cls, field):
+
+        def date_filter(note, date_range):
+            date = getattr(note,field)
+            date = datetime.date(date.year, date.month, date.day)
+            today = datetime.date.today()
+            if date_range == 'today':
+                return date == today           
+            elif date_range == 'yesterday':
+                before_yesterday = today + datetime.timedelta(-2)
+                return date > before_yesterday and date < today
+            elif date_range == 'lastweek':
+                over_a_week_ago = today + datetime.timedelta(-8)
+                return date > over_a_week_ago
+
+        return date_filter
+                
 
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants

@@ -8,6 +8,8 @@ Comment = get_model('comments','comment')
 
 filter_by = {
     'tag': lambda note, tag: re.search(r'\b%s\b'%tag, note.tags),
+    'added': SherdNote.date_filter_for('added'),
+    'modified': SherdNote.date_filter_for('modified'),
 }
 
 class GetAnnotations(TemplateTagNode):
@@ -60,3 +62,7 @@ register.tag('get_all_annotations', GetAllAnnotations.process_tag)
 register.tag('get_global_annotation', GetGlobalAnnotation.process_tag)
 
 register.filter('striptags_better',striptags_better)
+
+def dictify(arry):
+    return dict(arry)
+register.filter('dictify', dictify)

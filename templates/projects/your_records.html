@@ -38,7 +38,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
     {% if filter == "tag" %}
     {{filter}}: {{value}}
     {% else %}
-    {{filter}}: {{dates|getitem:value}}
+    {{filter}}: {{dates|dictify|getitem:value}}
     {% endif %}
 
    {% replace_value of filter with '' in request.GET as querystring %}
@@ -76,7 +76,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
  -->
  <h3>Date Modified</h3>
   <ul>
- {% for date, label in dates.items %}
+ {% for date, label in dates %}
    <li>
     {% if date == request.GET.modified %}
      {{label}}
@@ -84,6 +84,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
      {% replace_value of 'modified' with date in request.GET as querystring %}
      <a href="{{querystring|qsify}}">{{label}}</a>
     {% endif %}
+   </li>
  {% endfor %}
   </ul>
 

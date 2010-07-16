@@ -52,7 +52,7 @@ class Asset(models.Model):
 
     #make it json or somethin
     metadata_blob = models.TextField(blank=True,
-                                     help_text="""Be careful, this is a JSON blob, and is easy to format incorrectly.  Make sure not to add any "'s.""")
+                                     help_text="""Be careful, this is a JSON blob and NOT a place to enter the description, etc, and is easy to format incorrectly.  Make sure not to add any "'s.""")
 
     #labels which determine the saving of an asset
     #in order of priority for which label is marked primary

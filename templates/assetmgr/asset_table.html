@@ -28,11 +28,17 @@
         </span>
       </a>
       <ul class="switcher-options">
-        <li class="choice_my_items" href="{%url annotations-fragment space_viewer.username%}">Your Saved Items</li>
-        <li class="choice_class_items" href="{%url all-annotations-fragment %}">All Class Items</li>
+        <li class="choice_my_items"><h4><a 
+            href="{%url your-space space_viewer.username%}" 
+            data-ajax="{%url annotations-fragment space_viewer.username%}"
+            >Your Saved Items</a></h4></li>
+        <li class="choice_class_items"><h4><a 
+            href="{%url asset-container %}" 
+            data-ajax="{%url all-annotations-fragment %}"
+            >All Class Items</a></h4></li>
         {%if space_owner %}
           {% ifnotequal space_owner user %}
-            <li>{{space_owner.get_full_name|default:space_owner.username}}'s Saved Items</li>
+            <li><h4>{{space_owner.get_full_name|default:space_owner.username}}'s Saved Items</h4></li>
           {% endifnotequal %}   
         {% endif %}   
       </ul>
@@ -40,14 +46,37 @@
     <div class="switcher collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
-        <span class="title">Filter</span>
+        <span class="title">Filter:</span>
       </a>
       <ul class="switcher-options">
-        <li>Date Modified
-          <ul class="switcher-options"></ul>
+        {%if active_filters %}
+        <li><a class="remove" href="?">Clear Filters</a></li>
+        {%endif%}
+        <li><h3>Date Modified</h3>
+          <ul>
+            <li>
+              {% for date, label in dates %}
+              
+                {% ifequal date request.GET.modified %}
+                   {{label}}
+                {% else %}
+                   {% replace_value of 'modified' with date in request.GET as querystring %}
+                   <a href="{{querystring|qsify}}">{{label}}</a>
+                {% endifequal %}
+              {% endfor %}
+            </li>
+          </ul>
         </li>
-        <li>Tags
-          <ul class="switcher-options"></ul>
+        <li><h3>Tags</h3>
+          <ul>
+            <li>
+            {%if not tags %}No tags{%endif%}
+            {%for tag in tags %}
+            {% replace_value of 'tag' with tag in request.GET as querystring %}
+            <a href="{{querystring|qsify}}" class="size{{tag.font_size}}">{{tag}}</a>
+            {%endfor%}
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

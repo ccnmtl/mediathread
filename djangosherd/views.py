@@ -7,11 +7,14 @@ from django.shortcuts import get_object_or_404
 
 from djangosherd.models import Asset, SherdNote
 from djangosherd.models import NULL_FIELDS
+from tagging.models import Tag
+from tagging.utils import calculate_cloud
 
 from djangohelpers.lib import allow_http
 from djangohelpers.lib import rendered_with
 
-from assetmgr.lib import annotated_by
+from assetmgr.lib import annotated_by,filter_by,get_active_filters
+
 from courseaffils.lib import in_course_or_404
 
 import simplejson
@@ -135,10 +138,7 @@ def edit_annotation(request, annot_id):
     redirect_to = request.GET.get('next', '.')
     return HttpResponseRedirect(redirect_to)
 
-filter_by = {
-    'tag': lambda asset, tag: filter(lambda x: x.name == tag,
-                                     asset.tags()),
-}
+
 
 @login_required
 @rendered_with('assetmgr/asset_table.html')
@@ -148,9 +148,17 @@ def annotations_collection_fragment(request,username=None):
         space_owner = in_course_or_404(username, request.course)
         assets = annotated_by(Asset.objects.filter(course=request.course),
                               space_owner)
+        tag_query = space_owner.sherdnote_set.filter(asset__course=request.course)
     else:
         assets = Asset.objects.filter(course=request.course)
+        tag_query = SherdNote.objects.filter(asset__course=request.course)
 
+    tags =  calculate_cloud(Tag.objects.usage_for_queryset(tag_query, counts=True))
+                               
+
+    #all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
+    #all_tags = calculate_cloud(all_tags)
+    
     #copied from assetmgr/views.py
     for fil in filter_by:
         filter_value = request.GET.get(fil)
@@ -158,16 +166,19 @@ def annotations_collection_fragment(request,username=None):
             assets = [asset for asset in assets
                       if filter_by[fil](asset, filter_value)]
 
-    active_filters = dict((filter, request.GET.get(filter))
-                          for filter in filter_by
-                          if filter in request.GET)
+    active_filters = get_active_filters(request)
 
     return {
         'space_viewer':request.user,
         'space_owner':space_owner,
         'assets':assets,
+        'tags':tags,
         'active_filters': active_filters,
         'page_in_edit_mode': request.GET.has_key('edit_mode'),
+        'dates':(('today','today'),
+                 ('yesterday','yesterday'),
+                 ('lastweek','within the last week'),
+                 ),
         }
 
 @rendered_with('djangosherd/iframe_annotation.html')

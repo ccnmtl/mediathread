@@ -46,15 +46,34 @@
     <div class="switcher collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
-        <span class="title">Filter:</span>
+        <span class="title">Filter:
+          {%if active_filters %}
+            <span class="filter-on">ON</span>
+          {%endif%}
+        </span>
       </a>
       <ul class="switcher-options">
         {%if active_filters %}
-        <li><a class="remove" href="?">Clear Filters</a></li>
+        <li><ul>
+          <li><a class="remove" href="?">Clear All Filters</a></li>
+          {% for filter, value in active_filters.items %}
+          <li>
+            {% ifequal filter "tag" %}
+              {{filter}}: {{value}}
+            {% else %}
+              {{filter}}: {{dates|dictify|getitem:value}}
+            {% endifequal %}
+
+            {% replace_value of filter with '' in request.GET as querystring %}
+            <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
+          </li>
+          {% endfor %}
+
+        </ul></li>
         {%endif%}
+        {%if dates %}
         <li><h3>Date Modified</h3>
-          <ul>
-            <li>
+          <p>
               {% for date, label in dates %}
               
                 {% ifequal date request.GET.modified %}
@@ -64,19 +83,17 @@
                    <a href="{{querystring|qsify}}">{{label}}</a>
                 {% endifequal %}
               {% endfor %}
-            </li>
-          </ul>
+          </p>
         </li>
+        {%endif%}
         <li><h3>Tags</h3>
-          <ul>
-            <li>
+          <p>
             {%if not tags %}No tags{%endif%}
             {%for tag in tags %}
             {% replace_value of 'tag' with tag in request.GET as querystring %}
             <a href="{{querystring|qsify}}" class="size{{tag.font_size}}">{{tag}}</a>
             {%endfor%}
-            </li>
-          </ul>
+          </p>
         </li>
       </ul>
     </div>

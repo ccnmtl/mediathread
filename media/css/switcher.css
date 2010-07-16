@@ -64,13 +64,15 @@ div.collection-chooser ul.switcher-options {
     line-height:16px;
     
 }
-.switcher ul.switcher-options ul li {
+.switcher ul.switcher-options p {
     padding:10px;
     /*font-size:14px;*/
     background-color: #f7f7f7;
     -moz-border-radius: 5px; 
     border-radius: 5px; 
     margin:0;
+    max-height:350px;
+    overflow-y:auto;
 
 }
 .switcher ul.switcher-options a {
@@ -78,7 +80,7 @@ div.collection-chooser ul.switcher-options {
     padding-right:4px;
     display:inline-block;
 }
-.switcher ul.switcher-options ul li a:hover {
+.switcher ul.switcher-options p a:hover {
     /*color:white;*/
     text-decoration:underline;
     color:black;

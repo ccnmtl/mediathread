@@ -58,7 +58,7 @@ function swapAssetColumn(asset_url) {
             jQuery('div.collection-filter a',new_assets).click(function(evt){
                 var newquery = this.getAttribute('data-ajax') || this.getAttribute('href');
                 if (newquery) {
-                    swapAssetColumn(url_path+newquery);
+                    swapAssetColumn(url_path+'?'+newquery.split('?')[1]);
                     evt.preventDefault();
                 }
             });

@@ -13,7 +13,7 @@ from tagging.utils import calculate_cloud
 from djangohelpers.lib import allow_http
 from djangohelpers.lib import rendered_with
 
-from assetmgr.lib import annotated_by,filter_by,get_active_filters
+from assetmgr.lib import annotated_by,get_active_filters
 
 from courseaffils.lib import in_course_or_404
 
@@ -138,36 +138,37 @@ def edit_annotation(request, annot_id):
     redirect_to = request.GET.get('next', '.')
     return HttpResponseRedirect(redirect_to)
 
-
-
 @login_required
 @rendered_with('assetmgr/asset_table.html')
 def annotations_collection_fragment(request,username=None):
     space_owner = False #indicates we want the whole class (None is no one)
     if username:
         space_owner = in_course_or_404(username, request.course)
-        assets = annotated_by(Asset.objects.filter(course=request.course),
-                              space_owner)
-        tag_query = space_owner.sherdnote_set.filter(asset__course=request.course)
+        #assets = annotated_by(Asset.objects.filter(course=request.course),
+        #                      space_owner)
+        note_query = space_owner.sherdnote_set.filter(asset__course=request.course)
     else:
-        assets = Asset.objects.filter(course=request.course)
-        tag_query = SherdNote.objects.filter(asset__course=request.course)
+        #assets = Asset.objects.filter(course=request.course)
+        note_query = SherdNote.objects.filter(asset__course=request.course)
 
-    tags =  calculate_cloud(Tag.objects.usage_for_queryset(tag_query, counts=True))
-                               
+    tags =  calculate_cloud(Tag.objects.usage_for_queryset(note_query, counts=True))
 
     #all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
     #all_tags = calculate_cloud(all_tags)
     
-    #copied from assetmgr/views.py
+    filter_by = ('tag','modified')
+
     for fil in filter_by:
         filter_value = request.GET.get(fil)
         if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value)]
+            s_filter = getattr(SherdNote.objects,'%s_filter'%fil)
+            note_query = s_filter(filter_value,note_query)
+
+    #until asset_table.html can work off the notes objects instead of the assets list
+    assets = Asset.objects.filter(id__in = note_query.values_list('asset',flat=True))
 
     active_filters = get_active_filters(request)
-
+        
     return {
         'space_viewer':request.user,
         'space_owner':space_owner,

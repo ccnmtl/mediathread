@@ -36,21 +36,14 @@ def project_workspace(request, user, project):
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
 
-    assets = annotated_by(Asset.objects.filter(course=request.course),
-                          space_viewer)
-                          
     projectform = ProjectForm(request, instance=project)
 
-    active_filters = get_active_filters(request)
-    
     return {
         'is_space_owner': project.is_participant(user),
         'space_owner': user,
         'space_viewer': space_viewer,
         'project': project,
         'projectform': projectform,
-        'assets': assets,
-        'active_filters':active_filters,
         'page_in_edit_mode': True,
         }
 

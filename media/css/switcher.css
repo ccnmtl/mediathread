@@ -5,6 +5,7 @@
 .switcher {
     float:left;
     position:relative;
+    z-index:9999;/*IE z-index bug workaround*/
 }
 
 div.collection-filter {

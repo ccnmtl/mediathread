@@ -18,7 +18,7 @@ from courseaffils.models import Course
 from django.http import HttpResponseRedirect
 
 
-from assetmgr.lib import most_popular,annotated_by,filter_by,get_active_filters
+from assetmgr.lib import most_popular,annotated_by
 
 Asset = get_model('assetmgr','asset')
 
@@ -50,35 +50,12 @@ def show(request, discussion_id):
         my_course = my_courses[-1]
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
 
-    assets = annotated_by(Asset.objects.filter(course=my_course), space_viewer)
-
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value)]
-
-    active_filters = get_active_filters(request)
-    
-    #from tagging.models import Tag
-    #from djangosherd.models import SherdNote
-    #from tagging.utils import calculate_cloud
-    #all_tags = Tag.objects.usage_for_queryset(
-    #    SherdNote.objects.filter(
-    #        asset__course=request.course),
-    #    counts=True)
-    #all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
-    #all_tags = calculate_cloud(all_tags)
-
     return {
         'is_space_owner': True,
         'edit_comment_permission': my_course.is_faculty(user),
         'space_owner': space_owner,
         'space_viewer': space_viewer,
         'root_comment': root_comment,
-        'assets': assets,
-        #'tags':all_tags,
-        'active_filters':active_filters,
         'page_in_edit_mode': True,
         }
         

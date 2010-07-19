@@ -20,7 +20,7 @@
             {% ifequal space_owner user %}
               Your Saved Items
             {% else %}
-              {{space_owner.get_full_name|default:space_owner.username}}'s Saved Items
+              {{space_owner.get_full_name|default:space_owner.username}}
             {% endifequal %}   
           {% else %}
             Class Items
@@ -28,19 +28,24 @@
         </span>
       </a>
       <ul class="switcher-options">
+        {%ifnotequal space_viewer space_owner%}
         <li class="choice_my_items"><h4><a 
             href="{%url your-space space_viewer.username%}" 
             data-ajax="{%url annotations-fragment space_viewer.username%}"
             >Your Saved Items</a></h4></li>
+        {%endifnotequal%}
+        {%if space_owner %}
         <li class="choice_class_items"><h4><a 
             href="{%url asset-container %}" 
             data-ajax="{%url all-annotations-fragment %}"
             >All Class Items</a></h4></li>
-        {%if space_owner %}
-          {% ifnotequal space_owner user %}
-            <li><h4>{{space_owner.get_full_name|default:space_owner.username}}'s Saved Items</h4></li>
-          {% endifnotequal %}   
-        {% endif %}   
+        {%endif%}
+        <li><h3>Course Members' Pages</h3></li>
+        {%for m in request.course.members%}
+        <li><h4><a href="{%url your-space m.username%}"
+                   data-ajax="{%url annotations-fragment m.username%}"
+                   >{{m.get_full_name|default:m.username}}</a></h4></li>
+        {%endfor%}
       </ul>
     </div>
     <div class="switcher collection-filter">
@@ -103,7 +108,7 @@
 <div id="materials" class="resize-height">
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-  {% get_global_annotation on asset by space_viewer as gannotation %}
+  {% get_global_annotation on asset by space_owner as gannotation %}
   
 
   <h2 class="asset_title asset-{{asset.primary.label}}">

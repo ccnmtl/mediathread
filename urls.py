@@ -10,6 +10,7 @@ from assetmgr import views as asset
 from mediathread_main import views as mediathread_main
 
 import structuredcollaboration.urls
+#import slider.urls
 
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),"media","bookmarklets")
@@ -62,6 +63,8 @@ urlpatterns = patterns('',
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),
 
+                       #(r'', include(slider.urls)),
+ 
                        ### Public Access ###
                        (r'', include(structuredcollaboration.urls)), #import at root
                        

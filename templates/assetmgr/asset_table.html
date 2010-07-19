@@ -1,16 +1,5 @@
 {% load user_annotations tagging_tags helpful_tags %}
-<div id="asset_browse_col" class="asset-table">
-  <h2>
-    {%if space_owner %}
-      {% ifequal space_owner user %}
-        Your Saved Items
-      {% else %}
-        {{space_owner.get_full_name|default:space_owner.username}}'s Saved Items
-      {% endifequal %}   
-    {% else %}
-        Class Items
-    {% endif %} 
-  </h2>
+<div id="asset_browse_col" class="asset-table slider-column">
     <div id="videoclipbox" class="asset-view-small" style="display:none;">
       <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
       <div class="annotation-title"></div>
@@ -21,10 +10,105 @@
       </div>
     </div>
   
+
+  <div class="filter-widget">
+    <div class="switcher collection-chooser">
+      <a class="switcher-top closed">
+        <span class="down-arrow"></span>
+        <span class="title">
+          {%if space_owner %}
+            {% ifequal space_owner user %}
+              Your Saved Items
+            {% else %}
+              {{space_owner.get_full_name|default:space_owner.username}}
+            {% endifequal %}   
+          {% else %}
+            Class Items
+          {% endif %} 
+        </span>
+      </a>
+      <ul class="switcher-options">
+        {%ifnotequal space_viewer space_owner%}
+        <li class="choice_my_items"><h4><a 
+            href="{%url your-space space_viewer.username%}" 
+            data-ajax="{%url annotations-fragment space_viewer.username%}"
+            >Your Saved Items</a></h4></li>
+        {%endifnotequal%}
+        {%if space_owner %}
+        <li class="choice_class_items"><h4><a 
+            href="{%url asset-container %}" 
+            data-ajax="{%url all-annotations-fragment %}"
+            >All Class Items</a></h4></li>
+        {%endif%}
+        <li><h3>Course Members' Pages</h3></li>
+        {%for m in request.course.members%}
+        <li><h4><a href="{%url your-space m.username%}"
+                   data-ajax="{%url annotations-fragment m.username%}"
+                   >{{m.get_full_name|default:m.username}}</a></h4></li>
+        {%endfor%}
+      </ul>
+    </div>
+    <div class="switcher collection-filter">
+      <a class="switcher-top closed">
+        <span class="down-arrow"></span>
+        <span class="title">Filter:
+          {%if active_filters %}
+            <span class="filter-on">ON</span>
+          {%endif%}
+        </span>
+      </a>
+      <ul class="switcher-options">
+        {%if active_filters %}
+        <li><ul>
+          <li><a class="remove" href="?">Clear All Filters</a></li>
+          {% for filter, value in active_filters.items %}
+          <li>
+            {% ifequal filter "tag" %}
+              {{filter}}: {{value}}
+            {% else %}
+              {{filter}}: {{dates|dictify|getitem:value}}
+            {% endifequal %}
+
+            {% replace_value of filter with '' in request.GET as querystring %}
+            <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
+          </li>
+          {% endfor %}
+
+        </ul></li>
+        {%endif%}
+        {%if dates %}
+        <li><h3>Date Modified</h3>
+          <p>
+              {% for date, label in dates %}
+              
+                {% ifequal date request.GET.modified %}
+                   {{label}}
+                {% else %}
+                   {% replace_value of 'modified' with date in request.GET as querystring %}
+                   <a href="{{querystring|qsify}}">{{label}}</a>
+                {% endifequal %}
+              {% endfor %}
+          </p>
+        </li>
+        {%endif%}
+        <li><h3>Tags</h3>
+          <p>
+            {%if not tags %}No tags{%endif%}
+            {%for tag in tags %}
+            {% replace_value of 'tag' with tag in request.GET as querystring %}
+            <a href="{{querystring|qsify}}" class="size{{tag.font_size}}">{{tag}}</a>
+            {%endfor%}
+          </p>
+        </li>
+      </ul>
+    </div>
+    <div class="visualclear"></div>
+  </div>
+
 <div id="materials" class="resize-height">
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-  {% get_global_annotation on asset by space_viewer as gannotation %}
+  {% get_global_annotation on asset by space_owner as gannotation %}
   
 
   <h2 class="asset_title asset-{{asset.primary.label}}">
@@ -98,7 +182,7 @@
       {% endif %}
 
 
-      {% get_annotations on asset by space_owner as annotations %}
+      {% get_annotations on asset by space_owner filter active_filters as annotations %}
 
     {% if annotations.1 %}
     <li>
@@ -128,7 +212,7 @@
         {% endif %}
         </div><!-- class="actions" -->
 	<a {% if page_in_edit_mode %}target="_blank"{% endif %}
-	  title="Last modified on {{annotation.modified|date}}"
+	  title="Last modified on {{annotation.modified|date}} by {{annotation.author.get_full_name|default:annotation.author}}"
 	  href="{{annotation.get_absolute_url}}">{{annotation.title}}</a> 	    
 
 	<span class="annotation-timecode">{{annotation.range_as_timecode}}</span>

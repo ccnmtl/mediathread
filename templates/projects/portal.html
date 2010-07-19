@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{%load user_annotations comments %}
+
 <title> {% block title %}
 Class Analysis
 {% endblock %}</title>
@@ -92,6 +94,8 @@ Class Analysis
                   </div>
 	          <div class="asset_title type-collaboration">
 	            <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+                    {% get_comment_count for disc.content_object as comment_count%}
+                    ({{comment_count}})
 	          </div>
 	        </li>
 	    {%endfor%}
@@ -158,7 +162,6 @@ Class Analysis
     <h2>Updates to My Items</h2>
     <div class="scroll">
       <ul class="clumper">
-        {%load user_annotations %}
 	{%for clump in my_feed%}
             {%include "projects/clump.html" %}
         {% empty %}

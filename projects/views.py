@@ -12,6 +12,8 @@ from tagging.models import Tag
 from tagging.utils import calculate_cloud
 
 from assetmgr.lib import annotated_by
+from assetmgr.views import filter_by, get_active_filters
+
 import simplejson as json
 from random import choice
 from string import letters
@@ -34,18 +36,14 @@ def project_workspace(request, user, project):
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
 
-    assets = annotated_by(Asset.objects.filter(course=request.course),
-                          space_viewer)
-                          
     projectform = ProjectForm(request, instance=project)
-    
+
     return {
         'is_space_owner': project.is_participant(user),
         'space_owner': user,
         'space_viewer': space_viewer,
         'project': project,
         'projectform': projectform,
-        'assets': assets,
         'page_in_edit_mode': True,
         }
 

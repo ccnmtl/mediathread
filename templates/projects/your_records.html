@@ -12,7 +12,6 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 {% block js %}
 <script type="text/javascript" src="/site_media/js/mochikit/packed/MochiKit/MochiKit.js"></script>
 <script type="text/javascript" src="/site_media/js/hs.js"></script>
-<script type="text/javascript" src="/site_media/js/tablesort.js"></script>
 <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
 {% endblock %}
 
@@ -20,6 +19,13 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
   {{ block.super }}
 
 
+  <table id="top-slider">
+    <tbody>
+    <tr>
+      <td class="slider-cell slider-edge">
+	<h2>« <span id="slider-left-edge"></span></h2>
+      </td>
+      <td class="slider-cell">
 
 <div id="filter_col">
 
@@ -31,7 +37,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
     {% if filter == "tag" %}
     {{filter}}: {{value}}
     {% else %}
-    {{filter}}: {{dates|getitem:value}}
+    {{filter}}: {{dates|dictify|getitem:value}}
     {% endif %}
 
    {% replace_value of filter with '' in request.GET as querystring %}
@@ -69,7 +75,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
  -->
  <h3>Date Modified</h3>
   <ul>
- {% for date, label in dates.items %}
+ {% for date, label in dates %}
    <li>
     {% if date == request.GET.modified %}
      {{label}}
@@ -77,18 +83,27 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
      {% replace_value of 'modified' with date in request.GET as querystring %}
      <a href="{{querystring|qsify}}">{{label}}</a>
     {% endif %}
+   </li>
  {% endfor %}
   </ul>
 
 </div>
+      </td>
+      <td class="slider-cell">
+
+<div class="assets_wide_list" >
+ {% include "assetmgr/asset_table.html" %}
+</div>
+      </td>
+      <td class="slider-cell">
 
 <div id="project_col" class="project-table panel-column panel-light">
   <h2>Projects</h2>
   {% include "projects/project_list.html" %}
 </div>
-
-<div class="assets_wide_list" >
- {% include "assetmgr/asset_table.html" %}
-</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 {% endblock %}

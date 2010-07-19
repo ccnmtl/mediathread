@@ -11,7 +11,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 
-from tagging.models import Tag
+from tagging.models import Tag, TaggedItem
 from tagging.fields import TagField
 
 from structuredcollaboration.models import Collaboration
@@ -105,6 +105,24 @@ class SherdNoteManager(models.Manager):
         return dir(self)
         
 
+    def modified_filter(self,txt_date_range,qs=None):
+        if qs is None:
+            qs = self
+        today = datetime.date.today()
+        ranges = {'today':today,
+                  'yesterday':today + datetime.timedelta(-2),
+                  'lastweek':today + datetime.timedelta(-8),
+                  }
+        return qs.filter(modified__range=(ranges[txt_date_range],datetime.datetime.now()))
+
+    def tag_filter(self,tag,qs=None):
+        if qs is None:
+            qs = self
+        me = ContentType.objects.get_for_model(SherdNote)
+        titems = TaggedItem.objects.filter(tag__name=tag,
+                                           content_type=me).values_list('object_id',flat=True)
+        return qs.filter(id__in = titems)
+    
     def references_in_string(self,text):
         """
         citation references to sherdnotes
@@ -255,6 +273,24 @@ class SherdNote(Annotation):
     def dir(self):
         return dir(self)
 
+    @classmethod
+    def date_filter_for(cls, field):
+
+        def date_filter(note, date_range):
+            date = getattr(note,field)
+            date = datetime.date(date.year, date.month, date.day)
+            today = datetime.date.today()
+            if date_range == 'today':
+                return date == today           
+            elif date_range == 'yesterday':
+                before_yesterday = today + datetime.timedelta(-2)
+                return date > before_yesterday and date < today
+            elif date_range == 'lastweek':
+                over_a_week_ago = today + datetime.timedelta(-8)
+                return date > over_a_week_ago
+
+        return date_filter
+                
 
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants

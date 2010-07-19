@@ -52,7 +52,7 @@ class Asset(models.Model):
 
     #make it json or somethin
     metadata_blob = models.TextField(blank=True,
-                                     help_text="""Be careful, this is a JSON blob, and is easy to format incorrectly.  Make sure not to add any "'s.""")
+                                     help_text="""Be careful, this is a JSON blob and NOT a place to enter the description, etc, and is easy to format incorrectly.  Make sure not to add any "'s.""")
 
     #labels which determine the saving of an asset
     #in order of priority for which label is marked primary
@@ -76,7 +76,10 @@ class Asset(models.Model):
 
     def metadata(self):
         if self.metadata_blob:
-            return simplejson.loads(str(self.metadata_blob))
+            try:
+                return simplejson.loads(str(self.metadata_blob))
+            except: #presumably json decoding, but let's quiet everything
+                return {}
         return {}
 
     def saved_by(self):

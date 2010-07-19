@@ -1,3 +1,6 @@
+@import url("./switcher.css");
+@import url("./slider.css");
+
 .heading {
   display: block;
   padding: 1em;
@@ -288,6 +291,11 @@ padding-right: 4px;
 	background-position: 3px 1px;
 	padding: 2px 5px 4px 24px;
 }
+
+#asset_browse_col .asset-view-small {
+    margin-bottom:5px;
+}
+
 .asset_title {
 	margin-top: -3px;
 	font-size: 100%;
@@ -381,8 +389,9 @@ text-align:center;
       margin:0;
 }
   #member_col, #filter_col, #project_col {  
-      margin-top:25px;
+      margin-top:26px;
 }
+
   #filter_col {
   
   float:left;
@@ -640,6 +649,11 @@ dd {
 
 .delete_icon, .edit_icon {vertical-align: middle;}
 
+.about-to-delete {
+    border:1px solid #AA5555;
+    opacity:0.7;
+}
+
 .record {
     margin-bottom: .5em;
     clear:both;
@@ -769,7 +783,7 @@ padding-bottom: .5em;
  }
  
  a.remove { 
- padding: 3px;
+ padding: 3px 3px 3px 20px;
  background-image: url(../img/x.png); 
  background-repeat: no-repeat;
  color: #000;
@@ -814,9 +828,9 @@ a#EditClip {background-image: url(../img/tabbertab_edit.gif);  }
 
 .size0 {font-size: .9em; line-height: 1.5em;}
 .size1, li .size0 {font-size: 1em; line-height: 1.5em;}
-.size3, li .size1 {font-size: 1.1em;  line-height: 1.5em;}
-.size5, li .size3 {font-size: 1.2em;  line-height: 1.5em;}
-.size7, .size9, li .size5 {font-size: 1.3em;  line-height: 1.5em;}
+.size3, .size4, li .size1 {font-size: 1.1em;  line-height: 1.5em;}
+.size5, .size6, li .size2, li .size3 {font-size: 1.2em;  line-height: 1.5em;}
+.size7, .size9, li .size4, li .size5 {font-size: 1.3em;  line-height: 1.5em;}
 li .size7, li .size9 {font-size: 1.4em;  line-height: 1.5em;}
 
 .top-archive {

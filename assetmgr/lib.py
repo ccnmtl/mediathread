@@ -166,3 +166,18 @@ def _get_metadata_description(metadata):
     assert description is not None
     return description
 
+
+filter_by = {
+    'tag': lambda asset, tag: filter(lambda x: x.name == tag,
+                                     asset.tags()),
+    #fake!!!
+    'modified': lambda asset, text_date:asset,
+}
+
+#NON_VIEW
+def get_active_filters(request, filter_by=filter_by):
+    return dict((filter, request.GET.get(filter))
+                for filter in filter_by
+                if filter in request.GET)
+
+

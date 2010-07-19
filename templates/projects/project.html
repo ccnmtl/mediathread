@@ -19,7 +19,6 @@
 {% block js %}
   <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
-  <script type="text/javascript" src="/site_media/js/tablesort.js"></script>
   <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
 
   <!--All the annotation javascript/css -->
@@ -44,9 +43,12 @@
 	<h2>« <span id="slider-left-edge"></span></h2>
       </td>
       <td class="slider-cell">
- {#<div id="asset_browse_col" class="asset-table">#}
-    {% include "assetmgr/asset_table.html" %}
- {#</div>#}
+        <div id="asset_browse_col" class="asset-table"
+             data-ajax="{%url annotations-fragment space_viewer.username%}"
+             >
+          {# added into ajax #}
+          {#% include "assetmgr/asset_table.html" %#}
+        </div>
       </td>
       <td class="slider-cell">
   <div class="essay-space slider-column">

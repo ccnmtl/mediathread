@@ -108,7 +108,7 @@
 <div id="materials" class="resize-height">
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-  {% get_global_annotation on asset by space_owner as gannotation %}
+  {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}
   
 
   <h2 class="asset_title asset-{{asset.primary.label}}">
@@ -126,11 +126,11 @@
     {% if page_in_edit_mode and gannotation %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="/site_media/img/icons/insert_asset.png#annotation={{gannotation.get_absolute_url}}annotations/{{gannotation.id}}/&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
+	      src="/site_media/img/icons/insert_asset.png#annotation={{asset.get_absolute_url}}{% if gannotation %}annotations/{{gannotation.id}}/{% endif %}&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{asset.title}}" 
-	      name="{{gannotation.get_absolute_url}}"
+	      name="{{asset.get_absolute_url}}"
 	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
 	      /></span>
 	{% endif %}

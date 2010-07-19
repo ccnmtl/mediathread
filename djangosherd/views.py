@@ -168,7 +168,7 @@ def annotations_collection_fragment(request,username=None):
     assets = Asset.objects.filter(id__in = note_query.values_list('asset',flat=True))
 
     active_filters = get_active_filters(request)
-        
+    
     return {
         'space_viewer':request.user,
         'space_owner':space_owner,

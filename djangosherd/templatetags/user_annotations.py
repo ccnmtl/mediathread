@@ -43,11 +43,12 @@ class GetAllAnnotations(TemplateTagNode):
         return SherdNote.objects.filter(asset=asset)
 
 class GetGlobalAnnotation(GetAnnotations):
-    noun_for = {"by":"author", "on":"asset", }
-    def __init__(self, varname, author, asset):
-        TemplateTagNode.__init__(self, varname, author=author, asset=asset)
-    def execute_query(self, author, asset):
-        annotation, created = SherdNote.objects.global_annotation(asset, author, auto_create=False)
+    noun_for = {"by":"author", "on":"asset", "or":"author2"}
+    def __init__(self, varname, author, asset, author2):
+        TemplateTagNode.__init__(self, varname, author=author, asset=asset, author2=author2)
+    def execute_query(self, author, asset, author2):
+        used_author = author or author2
+        annotation, created = SherdNote.objects.global_annotation(asset, used_author, auto_create=False)
         return annotation
 
 import re

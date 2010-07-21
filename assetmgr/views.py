@@ -15,6 +15,8 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.db import models
 
+import simplejson
+
 import re
 
 Asset = models.get_model('assetmgr','asset')
@@ -165,7 +167,6 @@ def add_asset(request):
         transaction.commit()
         try:
             if len(metadata):
-                import simplejson
                 asset.metadata_blob = simplejson.dumps(metadata)
                 asset.save()
             else:
@@ -440,3 +441,21 @@ def archive_explore(request):
         # (see templates/assetmgr/bookmarklet.js to see why or fix)
         rv['bookmarklet_vars'] = {'flickr_apikey':settings.DJANGOSHERD_FLICKR_APIKEY }
     return rv
+
+def asset_json(request, asset_id):
+    asset = get_object_or_404(Asset,pk=asset_id)
+    asset_key = 'x_%s' % asset.pk
+    data = {'assets':dict( [(asset_key,
+                             asset.sherd_json(request)
+                             )] ),
+            'annotations':[{
+                'asset_key':asset_key,
+                'range1':None,
+                'range2':None,
+                'annotation':None,
+                'id':'asset-%s' % asset.pk,
+                }]
+            }
+    return HttpResponse(simplejson.dumps(data, indent=2),
+                        mimetype='application/json')
+

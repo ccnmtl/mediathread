@@ -13,6 +13,9 @@ urlpatterns = patterns(
     url(r'^explore/?$', 'archive_explore',
         name='asset-archiveexplore'),
 
+    url(r'^json/(?P<asset_id>\d+)/$', 
+        'asset_json', name="asset-json"),
+
     url(r'^(?P<asset_id>\d+)/$', 
         'asset_workspace', name="asset-view"),
 

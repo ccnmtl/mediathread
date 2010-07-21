@@ -378,7 +378,14 @@ padding-right: 4px;
     min-width:0;
 }
 
-.asset-display {
+.sherd-flowplayer-wrapper,
+.sherd-flowplayer-wrapper div
+ {
+     /*to make the centering work*/
+    display:inline-block;
+}
+.asset-display
+ {
 text-align:center;
 }
 

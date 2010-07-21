@@ -123,7 +123,7 @@
    
     <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
     
-    {% if page_in_edit_mode and gannotation %}
+    {% if page_in_edit_mode %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
 	      src="/site_media/img/icons/insert_asset.png#annotation={{asset.get_absolute_url}}{% if gannotation %}annotations/{{gannotation.id}}/{% endif %}&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 

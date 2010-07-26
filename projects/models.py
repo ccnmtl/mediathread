@@ -9,6 +9,8 @@ from django.contrib.auth.models import User, Group
 from courseaffils.models import Course
 from modelversions import version_model
 
+from structuredcollaboration.models import Collaboration
+
 class Project(models.Model):
 
     title = models.CharField(max_length=1024)
@@ -51,6 +53,9 @@ class Project(models.Model):
         self.modified = datetime.datetime.today()
         models.Model.save(self, *args, **kw)
         self.participants.add(self.author)
+
+        self.collaboration(sync_group=True)
+
         models.Model.save(self)
 
     def status(self):
@@ -87,16 +92,43 @@ class Project(models.Model):
         """Support similar property as Comment model"""
         return self
 
-    @property
-    def attribution(self):
-        participants = list(self.participants.all())
-        if self.author not in participants:
-            participants.insert(0,self.author)
+    def attribution(self, participants=None):
+        if participants is None:
+            participants = list(self.participants.all())
+            if self.author not in participants:
+                participants.insert(0,self.author)
         return ', '.join([p.get_full_name() or p.username
                 for p in participants])
 
     def __unicode__(self):
-        return u'%s <%r> by %s' % (self.title, self.pk, self.attribution)
+        return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
+
+    def collaboration(self,request=None,sync_group=False):
+        col = None
+        try:
+            col = Collaboration.get_associated_collab(self)
+        except Collaboration.DoesNotExist:
+            if request is not None:
+                col = Collaboration.objects.create(user=self.author,
+                                                   title=self.title,
+                                                   content_object=self,
+                                                   context=request.collaboration_context,
+                                                   policy='PrivateEditorsAreOwners',
+                                                   )
+        if sync_group and col:
+            part = self.participants.all()
+            if len(part) > 1 or (col.group_id and col.group.user_set.count() > 1):
+                colgrp = col.have_group()
+                already_grp = set(colgrp.user_set.all())
+                for p in part:
+                    if p in already_grp:
+                        already_grp.discard(p)
+                    else:
+                        colgrp.user_set.add(p)
+                for oldp in already_grp:
+                    colgrp.user_set.remove(oldp)
+    
+        return col
         
     @property
     def dir(self):

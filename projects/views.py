@@ -23,13 +23,15 @@ SherdNote = get_model('djangosherd','sherdnote')
 Project = get_model('projects','project')
 ProjectVersion = get_model('projects','projectversion')
 User = get_model('auth','user')
-        
+Group = get_model('auth','group')        
 
 from courseaffils.lib import in_course_or_404
 from projects.forms import ProjectForm
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 
+
+### VIEWS ###
 @rendered_with('projects/project.html')
 def project_workspace(request, user, project):
     space_viewer = request.user
@@ -37,7 +39,6 @@ def project_workspace(request, user, project):
         space_viewer = get_object_or_404(User, username=request.GET['as'])
 
     projectform = ProjectForm(request, instance=project)
-
     return {
         'is_space_owner': project.is_participant(user),
         'space_owner': user,
@@ -48,11 +49,20 @@ def project_workspace(request, user, project):
         }
 
 @rendered_with('projects/published_project.html')
-def project_preview(request, user, project):
+def project_preview(request, user, project, is_participant=None, preview_num=0):
+    if is_participant is None:
+        is_participant = project.is_participant(user) 
+    course = request.collaboration_context.content_object
+    if request.META['HTTP_ACCEPT'].find('json') >=0:
+        return project_json(request, project)
+    print "FOOOOOOOOO"
     return {
-        'is_space_owner': project.is_participant(user),
+        'is_space_owner': is_participant,
         'project': project,
-        'is_preview': True,
+        'is_preview': preview_num,
+        'preview_num': preview_num,
+        'is_faculty': course.is_faculty(request.user),
+        #'space_owner':project.author, #was there for project_readonly_view()
         }
         
         
@@ -87,7 +97,7 @@ def project_version_view(request, projectversion_id, check_permission=True):
                                    pv.version_number, 
                                    check_permission=check_permission)
 
-@rendered_with('projects/published_project.html')
+
 @allow_http("GET")
 def project_readonly_view(request, project_id, check_permission=True):
     course = request.collaboration_context.content_object
@@ -96,15 +106,9 @@ def project_readonly_view(request, project_id, check_permission=True):
     if project.submitted != True \
             and not (project.is_participant(request) or request.user.is_staff):
         return HttpResponseForbidden("forbidden")
-        
-    if request.META['HTTP_ACCEPT'].find('json') >=0:
-        return project_json(request, project)
-    return {
-        'is_space_owner': project.is_participant(request),
-        'space_owner': project.author,
-        'project': project,
-        'is_faculty': course.is_faculty(request.user),
-        }
+
+    return project_preview(request, request.user, project)
+
 
 @allow_http("GET", "POST", "DELETE")
 def view_project(request, project_id):
@@ -135,6 +139,14 @@ def view_project(request, project_id):
         projectform = ProjectForm(request, instance=project,data=request.POST)
         redirect_to = '.'
         if projectform.is_valid():
+            if "Preview" == request.POST.get('submit',None):
+                #doesn't send project.author, and other non-exposed fields
+                mock_project = projectform.cleaned_data.copy()
+                mock_project['attribution'] = projectform.instance.attribution(
+                    mock_project['participants'])
+                return project_preview(request, space_owner, mock_project, 
+                                       is_participant=True, preview_num=request.GET.get('preview',1))
+
             if "Submit"== request.POST.get('submit',None):
                 projectform.instance.submitted = True
                 redirect_to = reverse('your-space-records', args=[request.user.username])
@@ -144,8 +156,8 @@ def view_project(request, project_id):
             projectform.instance.author = request.user
             projectform.save()
 
-        if "Preview" == request.POST.get('submit',None):
-            return project_preview(request, space_owner, project)
+            projectform.instance.collaboration(request, sync_group=True)
+
 
         return HttpResponseRedirect(redirect_to)
 
@@ -186,6 +198,9 @@ def your_projects(request, user_name):
         title = request.POST.get('title','') or "%s's Project" % user.get_full_name()
         project = Project(author=user, course=request.course, title=title)
         project.save()
+
+        project.collaboration(request, sync_group=True)
+
         return HttpResponseRedirect(project.get_absolute_url())
 
 def project_json(request,project):

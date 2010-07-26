@@ -53,7 +53,7 @@
       </td>
       <td class="slider-cell">
   <div class="essay-space slider-column">
-    <form class="yui-skin-sam" name="editproject" method="POST" action=".">
+    <form class="yui-skin-sam" name="editproject" method="POST" action="">
 
     <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
    
@@ -96,9 +96,9 @@
       
       
         <br /> 
-        <input type="submit" name="submit" value="Save draft"/>
-        <input type="submit" name="submit" value="Preview"/>
-        <input type="submit" name="submit" value="Submit"/>
+        <input type="submit" name="submit" value="Save draft" onclick="this.form.target='_self';"/>
+        <input type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+        <input type="submit" name="submit" value="Submit" onclick="this.form.target='_self';"/>
    
     </form>
 

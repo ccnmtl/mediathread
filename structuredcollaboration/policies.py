@@ -65,8 +65,7 @@ class PublicEditorsAreOwners(CollaborationPolicy,BasePublicPolicy):
     def edit(self,collaboration,request):
         user = request.user
         if user.is_authenticated():
-            return (user.is_staff or \
-                    user==collaboration.user or \
+            return (user==collaboration.user or \
                     (collaboration.group_id and \
                      collaboration.group.user_set.filter(pk=user.pk)
                      ))
@@ -94,6 +93,14 @@ class ProtectedParentEditorsAreOwners(PublicParentEditorsAreOwners,BaseProtected
     pass
 
 
+class PrivateEditorsAreOwners(PublicEditorsAreOwners):
+    def read(self,collaboration,request):
+        return (user.is_staff or self.edit(collaboration,request))
+
+
+
+
+
 CollaborationPolicies.register_policy(CollaborationPolicy,
                                       'forbidden',
                                       'Forbidden to everyone')
@@ -109,4 +116,8 @@ CollaborationPolicies.register_policy(PublicParentEditorsAreOwners,
 CollaborationPolicies.register_policy(ProtectedParentEditorsAreOwners,
                                       'ProtectedParentEditorsAreOwners',
                                       'Parent editors can manage the group, Viewing requires authentication')
+
+CollaborationPolicies.register_policy(PrivateEditorsAreOwners,
+                                      'PrivateEditorsAreOwners',
+                                      'User and group can view/edit/manage. Staff can read')
 

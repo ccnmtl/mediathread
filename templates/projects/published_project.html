@@ -3,12 +3,12 @@
 {% load smartif %}
 
 <title>{% block title %}
-{% if is_space_owner %}
-     Your Space > 
+{% if preview_num %}
+   Preview {{preview_num}} of
 {% endif %}
-     Projects > 
-     {{project.title|default:"New project"}}
-{% if version_number %}Version {{version_number}}{% endif %}
+
+  {{project.title|default:"New project"}}
+  {% if version_number %}Version {{version_number}}{% endif %}
 {% endblock %}</title>
 
 {% block css %}
@@ -69,18 +69,19 @@
     </div>
   </div>
   <div class="essay-space published">   
-    <p>
       <div id="essaybox" class="essaytextarea">
 	{{project.body|safe}}
       </div>  
-    </p>
   </div>
 
 <div class="essay-options" style="padding: 1em;">
+  <!--
 {% if is_preview %}
  <a class="button" href=".">Save and continue editing</a>
 {% endif %}
+-->
 {% if is_space_owner or is_faculty %}
+{% if project.versions %}
 <h3>
   <a class="hs-control" href="#revision-history"></a>
   Revision History
@@ -114,6 +115,7 @@
   </tbody>
 </table>
 </div>
+{% endif %}
 {% endif %}
 </div>
 

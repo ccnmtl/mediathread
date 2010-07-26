@@ -103,16 +103,12 @@ Class Analysis
     	 <li>
             <form action="/discussion/new/" method="POST" onsubmit="if (!this.elements['comment_html'].value){alert('Please enter a title and then click Create.');return false;}">
               <h4>Start a New Discussion</h4>
-                <ul >
-                    <li>
                         <label for="id_comment_html" >Enter Title:</label>
                         <input type="text" name="comment_html" id="comment_html" />
                         <input type="hidden" name="app_label" id="app_label" value="courseaffils"/>
                         <input type="hidden" name="model" id="model" value="course"/>
                         <input type="hidden" name="obj_pk" id="obj_pk" value="{{course_id}}"/>
                         <input type="submit" value="Create"/>
-                    </li>
-                </ul>
             </form>
         </li>
         {%endif%} <!--end is_faculty-->

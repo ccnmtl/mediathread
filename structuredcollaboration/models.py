@@ -22,6 +22,9 @@ class CollaborationPolicyRecord(models.Model):
     def policy(self):
         return CollaborationPolicies.registered_policies[self.policy_name]
 
+    def __unicode__(self):
+        return self.policy_name
+
 DEFAULT_POLICY = getattr(settings,'DEFAULT_COLLABORATION_POLICY',PublicEditorsAreOwners())
 
 class Collaboration(models.Model):
@@ -47,9 +50,25 @@ class Collaboration(models.Model):
     #will eventually be used instead of _parent
     context = models.ForeignKey('self',related_name='context_children',null=True,default=None, blank=True)
 
+    def save(self,*args,**kwargs):
+        create_group = (self.group and not self.group.id)
+        
+        super(Collaboration,self).save(*args,**kwargs)
+        if create_group:
+            self.have_group()
+
+    def have_group(self):
+        if self.id:
+            if self.group_id:
+                return self.group
+            else:
+                self.group = Group.objects.create(name='Collaboration %s: %s' % (self.pk, self.title))
+                self.save()
+                return self.group
+
     def inc_order():
         return Collaboration.objects.inc_order()
-    #autofield must have primary_key=true Dumb!
+
     _order = models.IntegerField(default=inc_order)
     
 
@@ -67,8 +86,7 @@ class Collaboration(models.Model):
         )
 
     def permission_to(self,permission,request):
-        policy = self._policy_id and self._policy.policy or DEFAULT_POLICY
-        return policy.permission_to(self,permission,request)
+        return self.policy.permission_to(self,permission,request)
 
 
     def get_parent(self):
@@ -89,10 +107,15 @@ class Collaboration(models.Model):
                                                             )
         return coll
         
-        
-        
-    
-    def get_associated_collab(obj):
+    def get_policy(self):
+        return self._policy_id and self._policy.policy or DEFAULT_POLICY
+    def set_policy(self,p):
+        self._policy, created = CollaborationPolicyRecord.objects.get_or_create(policy_name=p)
+    policy = property(get_policy,set_policy)
+
+
+    @classmethod
+    def get_associated_collab(cls, obj):
         """
         collaboration, if any, associated with this object:
         Collaboration.get_associated_collabs(my_course)
@@ -104,8 +127,6 @@ class Collaboration(models.Model):
             content_type=ct,
             object_pk=str(obj.pk)
         )
-    get_associated_collab = staticmethod(get_associated_collab)
-    
         
 
     #these methods are for optimized recursive structures

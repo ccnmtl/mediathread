@@ -100,16 +100,17 @@ function hs_show(e) {
     .addClass("hs-control-show");
 }
 
-function hs_init() {
+function hs_init(parent) {
+    parent = ((parent && parent.tagName)?parent:document);
     //log("initializing");
     //log("adding callbacks to controls");
-    jQuery('a.hs-control').each(hs_addControlCallback)
+    jQuery('a.hs-control',parent).each(hs_addControlCallback)
 	//forEach(getElementsByTagAndClassName("a","hs-control"),hs_addControlCallback);
     //log("hiding any divs that need to be initially hidden");
-    jQuery('.hs-init-hide').each(hs_hide);
+    jQuery('.hs-init-hide',parent).each(hs_hide);
 	//forEach(getElementsByTagAndClassName("*","hs-init-hide"),hs_hide);
     //log("check for cookies setting the state for any...");
-    jQuery('a.hs-control').each(hs_lookForCookie);
+    jQuery('a.hs-control',parent).each(hs_lookForCookie);
     //forEach(getElementsByTagAndClassName("a","hs-control"),hs_lookForCookie);
 }
 

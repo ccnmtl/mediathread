@@ -52,6 +52,9 @@ function swapAssetColumn(asset_url) {
         success:function(html) {
             jQuery('#asset_browse_col').replaceWith(html);
             var new_assets = jQuery('#asset_browse_col').get(0);
+            /***
+             All the stateful crap we have to update upon reload of an annotation list
+             ***/
 
             ///Ajaxify switcher links for swapping out asset_browse_col
             var url_path = asset_url.split('?')[0];
@@ -69,14 +72,14 @@ function swapAssetColumn(asset_url) {
                     evt.preventDefault();
                 }
             });
-
+            //length of list
             updateVerticalHeight();
-
+            //hide-show for annotation notes/tags
+            hs_init(new_assets);
             ///set onclick/drag listener
             if (tinyMCE.activeEditor) {
                 tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
             }
-
             ///Decorate thumbs
             DjangoSherd_createThumbs(new_assets);
 

@@ -138,6 +138,10 @@ def comment_change(request, comment_id, next=None):
 
     if request.POST['title']:
         comment.title = request.POST['title']
+        if not comment.parent:
+            disc_sc = comment.content_object
+            disc_sc.title = comment.title
+            disc_sc.save()
 
     comment.save()
     return {

@@ -106,7 +106,7 @@ def new(request):
     #TODO point the context at the course
     new_threaded_comment = ThreadedComment(parent=None, 
                                            title=comment_html,
-                                           comment=comment_html, 
+                                           comment='', 
                                            user=request.user, 
                                            content_object=disc_sc)
     

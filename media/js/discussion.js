@@ -14,13 +14,13 @@ jQuery(function discussion_init() {
         }
         mode='post';
     }
-    function open_edit(evt) {
+    function open_edit(evt,focus) {
         mode='update';
         var edit = evt.target;
         frm.elements['parent'].value = '';
         var id = frm.elements['edit-id'].value = edit.getAttribute("data-comment");
 
-        open_comment_form(edit);
+        open_comment_form(edit,focus);
 
         set_comment_content(commenter.read({html:jQuery('#comment-'+id).get(0)}));
     }
@@ -33,13 +33,15 @@ jQuery(function discussion_init() {
         content = content || {comment:'<p></p>'};
         frm.elements['comment'].value = content.comment;
         frm.elements['title'].value = content.title || '';
-        var action = (content.title) ? 'show' : 'hide';
+        var action = (content.title||content.base_comment) ? 'show' : 'hide';
         jQuery('.formtitle')[action]();
-        tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,content.comment,false);
+        try {
+            tinyMCE.execInstanceCommand('id_comment','mceSetContent',false,content.comment,false);
+        }catch(e) {/*IE totally SUX: throws some object error here. probably tinymce's fault */}
     }
     set_comment_content();
 
-    function open_comment_form(evt_target) {
+    function open_comment_form(evt_target,focus) {
         if (!next_response_loc) {
 	    next_response_loc = evt_target;
             comment_form_space(evt_target).appendChild(frm);
@@ -54,6 +56,18 @@ jQuery(function discussion_init() {
 	    }
             tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
             tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
+        }
+        if (focus && focus.select) {
+            var focused = false;
+            tinyMCE.onAddEditor.add(function(manager, ed) {
+                if (!focused) {
+                    setTimeout(function() {
+                        focus.select();
+                        focus.focus();
+                    },1000);
+                }
+                focused = true;
+            });
         }
     }
 
@@ -144,7 +158,8 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
             var new_obj = {
                 'id':res.comment_id,
                 'comment':res.comment || form_vals.comment,
-                'name':self.username
+                'name':self.username,
+                'title':res.title || ''
             };
             switch(this.info.mode) {
             case 'post':
@@ -159,8 +174,9 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
                 break;
             case 'update':
                 var comment_html = jQuery('#comment-' +form_vals['edit-id']).get(0);
+                var comp = self.components(comment_html);
                 self.update(new_obj, comment_html);
-                this.info.target = self.components(comment_html).comment;
+                this.info.target = comp.comment;
                 break;
             }
             ///2. decorate citations
@@ -213,6 +229,11 @@ AjaxComment.prototype.parseResponse = function(xhr) {
     if (comment_text != null) {
         rv["comment"] = comment_text[1];
     }
+    var comment_title = String(xhr.responseText).match(/id="commenttitle">(.+)<\/h2>/);
+    if (comment_title != null) {
+        rv["title"] = comment_title[1];
+    }
+
     return rv;
 }
 
@@ -225,17 +246,26 @@ AjaxComment.prototype.read = function(found_obj) {
         'name':c.author.firstChild.nodeValue,
         'comment':comment.innerHTML,
         'title':(c.title)?c.title.innerHTML:'',
-        'id':String(c.top.id).substr(8)//comment- chopped
+        'id':String(c.top.id).substr(8),//comment- chopped
+        'editable':Boolean(c.edit_button),
+        'base_comment':!c.parent
     }
 }
 
-AjaxComment.prototype.update = function(obj,html_dom) {
+AjaxComment.prototype.update = function(obj,html_dom,components) {
     var success = 0;
+    components = components || this.components(html_dom);
+    window.sky = components;
+    console.log(obj);
     if (obj.comment) {
-        success+=jQuery('.threaded_comment_text:first',html_dom).html(obj.comment).length
+        success+=jQuery(components.comment).html(obj.comment).length;
     }
     if (obj.title) {
-        success+=jQuery('.threaded_comment_title:first',html_dom).html(obj.title).length
+        success+=jQuery(components.title).html(obj.title).length;
+        if (! components.parent) {//if base_comment
+            jQuery('#discussion-subject-title').html(obj.title);
+            document.title = 'Discussion of '+obj.title;
+        }
     }
     return success;
 }
@@ -244,7 +274,9 @@ AjaxComment.prototype.components = function(html_dom,create_obj) {
     return {'top':html_dom,
             'comment':jQuery('div.threaded_comment_text:first',html_dom).get(0),
             'title':jQuery('div.threaded_comment_title',html_dom).get(0),
-            'author':jQuery('span.threaded_comment_author:first',html_dom).get(0)
+            'author':jQuery('span.threaded_comment_author:first',html_dom).get(0),
+            'edit_button':jQuery('div.respond_to_comment_form_div:first span.edit_prompt',html_dom).get(0),
+            'parent':jQuery(html_dom).parents('li.comment-thread').get(0)
            }
 }
 
@@ -286,6 +318,13 @@ AjaxComment.prototype.create = function(obj,doc) {
            };
 }
 
-    commenter = new AjaxComment(frm);
 
+/** INIT **/    
+    commenter = new AjaxComment(frm);
+    var base_comment = commenter.components(jQuery('li.comment-thread').get(0));
+    if (base_comment.edit_button
+        && (base_comment.title.innerHTML == ''
+            ||base_comment.title.innerHTML == 'Discussion Title')) {
+        open_edit({target:base_comment.edit_button}, jQuery('input[name=title]').get(0));
+    }
 });

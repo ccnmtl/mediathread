@@ -55,7 +55,6 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     course = request.collaboration_context.content_object
     if request.META['HTTP_ACCEPT'].find('json') >=0:
         return project_json(request, project)
-    print "FOOOOOOOOO"
     return {
         'is_space_owner': is_participant,
         'project': project,

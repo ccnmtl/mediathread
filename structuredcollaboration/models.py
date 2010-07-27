@@ -95,7 +95,6 @@ class Collaboration(models.Model):
     def get_top_ancestor(self): #i.e. domain
         result = self
         while result.get_parent():
-            print "moving up one"
             result = result.get_parent()
         return result
         

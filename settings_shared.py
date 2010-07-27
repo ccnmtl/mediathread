@@ -156,6 +156,10 @@ FORCE_LOWERCASE_TAGS = True
 DJANGOSHERD_FLICKR_APIKEY = None
 FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.2.2.swf"
 
+#from courseaffils.models import InstructorManaged
+from courseaffils import policies
+DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
+
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there
 try:

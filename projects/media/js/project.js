@@ -88,8 +88,7 @@ function swapAssetColumn(asset_url) {
 }
 
 function saveProject(evt) {
-    console.log(evt);
-    console.log(this);
+    tinyMCE.triggerSave();
     evt.preventDefault();
     var frm = evt.target;
     jQuery.ajax({
@@ -99,23 +98,18 @@ function saveProject(evt) {
         dataType: 'json',
         error: function(){alert('There was an error saving your project.');},
         success: function(json,textStatus,xhr){
-            console.log(json);
             jQuery('#last-version-link')
             .html('Revision '+json.revision.id)
             .attr('href',json.revision.url);
 
-            ///basically, make it glow, then fade back to normal
-            var msg = jQuery('#last-version-saved').show();
-            var bg_color = msg.css('backgroundColor');
-            console.log(bg_color);
-            msg
-            .addClass('highlight')
-            .animate({'backgroundColor':bg_color,
-                      complete:function(){
-                          console.log(this);
-                          jQuery(this).removeClass('highlight').css('backgroundColor',null);
-                      }
-                     });
+            jQuery('#last-version-saved')
+            .show()
+            .colorBlend([{
+                param:'background-color',
+                strobe:false,
+                colorList:['#fff100','#ffffff'],
+                cycles:1
+            }]);
         }
     });
 }

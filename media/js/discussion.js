@@ -323,8 +323,9 @@ AjaxComment.prototype.create = function(obj,doc) {
     commenter = new AjaxComment(frm);
     var base_comment = commenter.components(jQuery('li.comment-thread').get(0));
     if (base_comment.edit_button
-        && (base_comment.title.innerHTML == ''
-            ||base_comment.title.innerHTML == 'Discussion Title')) {
-        open_edit({target:base_comment.edit_button}, jQuery('input[name=title]').get(0));
+        && base_comment.title.innerHTML == 'Discussion Title')
+    {
+        open_edit({target:base_comment.edit_button}, 
+                  jQuery('input[name=title]').get(0));
     }
 });

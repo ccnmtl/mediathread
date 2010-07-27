@@ -105,6 +105,10 @@ class Project(models.Model):
 
     def collaboration(self,request=None,sync_group=False):
         col = None
+        policy = 'PrivateEditorsAreOwners'
+        if request:
+            policy = request.POST.get('publish','PrivateEditorsAreOwners')
+
         try:
             col = Collaboration.get_associated_collab(self)
         except Collaboration.DoesNotExist:
@@ -113,7 +117,7 @@ class Project(models.Model):
                                                    title=self.title,
                                                    content_object=self,
                                                    context=request.collaboration_context,
-                                                   policy='PrivateEditorsAreOwners',
+                                                   policy=policy,
                                                    )
         if sync_group and col:
             part = self.participants.all()
@@ -127,9 +131,12 @@ class Project(models.Model):
                         colgrp.user_set.add(p)
                 for oldp in already_grp:
                     colgrp.user_set.remove(oldp)
-    
+            if request and col.policy != policy:
+                col.policy = policy
+                col.save()
+
         return col
-        
+
     @property
     def dir(self):
         return dir(self)

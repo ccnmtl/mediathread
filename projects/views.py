@@ -55,7 +55,6 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     course = request.collaboration_context.content_object
     if request.META['HTTP_ACCEPT'].find('json') >=0:
         return project_json(request, project)
-    print "FOOOOOOOOO"
     return {
         'is_space_owner': is_participant,
         'project': project,
@@ -114,27 +113,22 @@ def project_readonly_view(request, project_id, check_permission=True):
 def view_project(request, project_id):
     project = get_object_or_404(Project, pk=project_id,
                                 course=request.course)
-
     space_owner = in_course_or_404(project.author.username, request.course)
 
+    #ok, now we know is_participant
     if project not in Project.get_user_projects(space_owner,request.course):
         return HttpResponseForbidden("forbidden")
 
-    if request.META['HTTP_ACCEPT'].find('json') >=0:
-        return project_json(request, project)
+    if request.method == "GET":
+        if request.META['HTTP_ACCEPT'].find('json') >=0:
+            return project_json(request, project)
+        return project_workspace(request, space_owner, project)
 
     if request.method == "DELETE":
         project.delete()
         return HttpResponseRedirect(
             reverse('your-space-records', args=[request.user.username]))
 
-    if not project.is_participant(request.user):
-        return project_readonly_view(request, project.id)
-    #ok, now we know is_participant
-
-    if request.method == "GET":
-        return project_workspace(request, space_owner, project)
-    
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project,data=request.POST)
         redirect_to = '.'
@@ -146,17 +140,28 @@ def view_project(request, project_id):
                     mock_project['participants'])
                 return project_preview(request, space_owner, mock_project, 
                                        is_participant=True, preview_num=request.GET.get('preview',1))
-
-            if "Submit"== request.POST.get('submit',None):
-                projectform.instance.submitted = True
-                redirect_to = reverse('your-space-records', args=[request.user.username])
-                redirect_to += "?show=%d" % project.pk
-
+            
+            #legacy
+            projectform.instance.submitted = (request.POST.get('publish',None) in 
+                                              ('CourseProtected', 'PublicEditorsAreOwners')
+                                              )
+            
             #this changes for version-tracking purposes
             projectform.instance.author = request.user
             projectform.save()
 
             projectform.instance.collaboration(request, sync_group=True)
+
+            if request.META['HTTP_ACCEPT'].find('json') >=0:
+                v_num = projectform.instance.get_latest_version()
+                return HttpResponse(json.dumps(
+                        {'status':'success',
+                         'revision':{
+                                'id':v_num,
+                                'url':reverse('project_version_preview',args=[project_id, v_num]),
+                                }
+                         }, indent=2),
+                                    mimetype='application/json')
 
 
         return HttpResponseRedirect(redirect_to)

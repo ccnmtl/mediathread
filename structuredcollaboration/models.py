@@ -25,6 +25,9 @@ class CollaborationPolicyRecord(models.Model):
     def __unicode__(self):
         return self.policy_name
 
+    def __eq__(self,other):
+        return self == other or self.policy_name == other
+
 DEFAULT_POLICY = getattr(settings,'DEFAULT_COLLABORATION_POLICY',PublicEditorsAreOwners())
 
 class Collaboration(models.Model):

@@ -256,7 +256,6 @@ AjaxComment.prototype.update = function(obj,html_dom,components) {
     var success = 0;
     components = components || this.components(html_dom);
     window.sky = components;
-    console.log(obj);
     if (obj.comment) {
         success+=jQuery(components.comment).html(obj.comment).length;
     }

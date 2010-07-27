@@ -102,8 +102,7 @@ def project_readonly_view(request, project_id, check_permission=True):
     course = request.collaboration_context.content_object
     project = get_object_or_404(Project, pk=project_id,
                                 course=course)
-    if project.submitted != True \
-            and not (project.is_participant(request) or request.user.is_staff):
+    if not project.visible(request):
         return HttpResponseForbidden("forbidden")
 
     return project_preview(request, request.user, project)
@@ -142,9 +141,7 @@ def view_project(request, project_id):
                                        is_participant=True, preview_num=request.GET.get('preview',1))
             
             #legacy
-            projectform.instance.submitted = (request.POST.get('publish',None) in 
-                                              ('CourseProtected', 'PublicEditorsAreOwners')
-                                              )
+            projectform.instance.submitted = (request.POST.get('publish',None) != 'PrivateEditorsAreOwners')
             
             #this changes for version-tracking purposes
             projectform.instance.author = request.user
@@ -176,10 +173,9 @@ def your_projects(request, user_name):
     editable = user==request.user
 
     if request.method == "GET":
-        projects = Project.get_user_projects(user, request.course)
+        projects = Project.get_user_projects(user, request.course).order_by('modified')
         if not editable:
-            projects = projects.filter(submitted=True)
-        projects = projects.order_by('modified')
+            projects = [p for p in projects if p.visible(request)]
 
         try:
             initially_expanded_project = int(request.GET['show'])

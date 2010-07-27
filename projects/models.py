@@ -11,6 +11,12 @@ from modelversions import version_model
 
 from structuredcollaboration.models import Collaboration
 
+PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
+                   ('PrivateStudentAndFaculty','Instructor Only'),
+                   ('CourseProtected','Course participants'),
+                   ('PublicEditorsAreOwners','World'),
+                   )
+
 class Project(models.Model):
 
     title = models.CharField(max_length=1024)
@@ -62,11 +68,15 @@ class Project(models.Model):
         """
         The project's status, one of "draft submitted complete".split()
         """
-        if self.submitted:
-            #if self.feedback is not None:
-            #    return u"complete"
+        o = dict(PUBLISH_OPTIONS)
+
+        col = self.collaboration()
+        if col:
+            return o[col._policy.policy_name]
+        elif self.submitted:
             return u"submitted"
-        return u"draft"
+        else:
+            return u"draft"
 
     @classmethod
     def get_user_projects(cls,user,course):
@@ -103,6 +113,13 @@ class Project(models.Model):
     def __unicode__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
+    def visible(self,request):
+        col = self.collaboration()
+        if col:
+            return col.permission_to('read',request)
+        else:
+            return self.submitted
+    
     def collaboration(self,request=None,sync_group=False):
         col = None
         policy = 'PrivateEditorsAreOwners'

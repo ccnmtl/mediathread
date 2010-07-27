@@ -9,11 +9,7 @@ class ProjectForm(forms.ModelForm):
                                         ('Save','Save'),
                                         ))
 
-    publish = forms.ChoiceField(choices=(('PrivateEditorsAreOwners','Draft (only collaborators)'),
-                                         ('PrivateStudentAndFaculty','Instructor Only'),
-                                         ('CourseProtected','Course participants'),
-                                         ('PublicEditorsAreOwners','World'),
-                                         ),
+    publish = forms.ChoiceField(choices=PUBLISH_OPTIONS,#from models
                                 label='Share with',
                                 )
     class Meta:

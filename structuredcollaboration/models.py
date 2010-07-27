@@ -91,7 +91,6 @@ class Collaboration(models.Model):
     def permission_to(self,permission,request):
         return self.policy.permission_to(self,permission,request)
 
-
     def get_parent(self):
         return self._parent
 

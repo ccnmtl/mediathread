@@ -255,10 +255,9 @@ def your_records(request, user_name):
                           include_archives=c.is_faculty(user)
                           )
 
-    projects = Project.get_user_projects(user, c)
+    projects = Project.get_user_projects(user, c).order_by('-modified')
     if not editable:
-        projects = projects.filter(submitted=True)
-    projects = projects.order_by('-modified')
+        projects = [p for p in projects if p.visible(request)]
 
 
     for fil in filter_by:

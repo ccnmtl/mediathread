@@ -2,9 +2,9 @@ class CollaborationPoliciesSingleton:
     registered_policies= dict() #purposely setting it where it stays static on the instance
     policy_options = dict()
     
-    def register_policy(self,policy_instance,policy_key,policy_title):
+    def register_policy(self,policy_class,policy_key,policy_title):
         assert(len(policy_key) < 512)
-        self.registered_policies[policy_key] = policy_instance
+        self.registered_policies[policy_key] = policy_class()
         self.policy_options[policy_key] = policy_title
 
     def __iter__(self):

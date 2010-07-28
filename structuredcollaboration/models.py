@@ -25,6 +25,9 @@ class CollaborationPolicyRecord(models.Model):
     def __unicode__(self):
         return self.policy_name
 
+    def __eq__(self,other):
+        return self == other or self.policy_name == other
+
 DEFAULT_POLICY = getattr(settings,'DEFAULT_COLLABORATION_POLICY',PublicEditorsAreOwners())
 
 class Collaboration(models.Model):
@@ -77,17 +80,24 @@ class Collaboration(models.Model):
         ordering = ['-_order']
         
     def get_content_object_url(self):
-        """
-        Get a URL suitable for redirecting to the content object.
-        """
+        "Get a URL suitable for redirecting to the content object."
         return urlresolvers.reverse(
             "comments-url-redirect",
             args=(self.content_type_id, self.object_pk)
         )
 
+    def get_absolute_url(self):
+        if self.context_id and self.context.slug:
+            return urlresolvers.reverse("collaboration-obj-view",
+                                        args=(self.context.slug,
+                                              self.content_type.model, 
+                                              self.object_pk))
+        else:
+            return urlresolvers.reverse("collaboration-dispatch",
+                                        args=(self.pk,) )
+
     def permission_to(self,permission,request):
         return self.policy.permission_to(self,permission,request)
-
 
     def get_parent(self):
         return self._parent
@@ -132,15 +142,11 @@ class Collaboration(models.Model):
     #while for other cases, we optimize for shallow structures
     #think of it as the datastructure equivalent to tail-recursion :-)
     def get_ancestor_different_type(self):
-        """
-        returns first ancestor that is a different type from self
-        """
+        "returns first ancestor that is a different type from self"
         pass
 
     def get_ancestor_same_type(self):
-        """
-        returns last ancestor of the same type in a continuous chain
-        """
+        "returns last ancestor of the same type in a continuous chain"
         pass
 
     

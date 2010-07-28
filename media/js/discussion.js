@@ -256,7 +256,6 @@ AjaxComment.prototype.update = function(obj,html_dom,components) {
     var success = 0;
     components = components || this.components(html_dom);
     window.sky = components;
-    console.log(obj);
     if (obj.comment) {
         success+=jQuery(components.comment).html(obj.comment).length;
     }
@@ -323,8 +322,9 @@ AjaxComment.prototype.create = function(obj,doc) {
     commenter = new AjaxComment(frm);
     var base_comment = commenter.components(jQuery('li.comment-thread').get(0));
     if (base_comment.edit_button
-        && (base_comment.title.innerHTML == ''
-            ||base_comment.title.innerHTML == 'Discussion Title')) {
-        open_edit({target:base_comment.edit_button}, jQuery('input[name=title]').get(0));
+        && base_comment.title.innerHTML == 'Discussion Title')
+    {
+        open_edit({target:base_comment.edit_button}, 
+                  jQuery('input[name=title]').get(0));
     }
 });

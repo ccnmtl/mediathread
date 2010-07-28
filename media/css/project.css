@@ -285,3 +285,9 @@ li.comment-thread:target > .comment .threaded_comment_header {
 /* ---- End threaded comments ---------- */
 
 
+#last-version-saved {
+    margin-top:-1em;
+    margin-bottom:-3px;
+    width:100%;
+    display:none;
+}

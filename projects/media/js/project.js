@@ -87,7 +87,36 @@ function swapAssetColumn(asset_url) {
     });
 }
 
+function saveProject(evt) {
+    tinyMCE.triggerSave();
+    evt.preventDefault();
+    var frm = evt.target;
+    jQuery.ajax({
+        type: 'POST',
+        url: frm.action,
+        data: jQuery(frm).serializeArray(),
+        dataType: 'json',
+        error: function(){alert('There was an error saving your project.');},
+        success: function(json,textStatus,xhr){
+            jQuery('#last-version-link')
+            .html('Revision '+json.revision.id)
+            .attr('href',json.revision.url);
+
+            jQuery('#last-version-saved')
+            .show()
+            .colorBlend([{
+                param:'background-color',
+                strobe:false,
+                colorList:['#fff100','#ffffff'],
+                cycles:1
+            }]);
+        }
+    });
+}
+
 jQuery(function (){/*onDOM Ready*/
+    jQuery(document.forms['editproject']).bind('submit',saveProject);
+
     jQuery(window).resize(updateVerticalHeight);
 
     tinyMCE.onAddEditor.add(function(manager, ed) {

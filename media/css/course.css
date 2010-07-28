@@ -1005,3 +1005,7 @@ a.bookmarklet {
     -webkit-border-radius: 8px;
     
 }
+
+.highlight {
+    background-color:#fff100;
+}

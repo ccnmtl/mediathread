@@ -6,15 +6,17 @@ from djangohelpers.templatetags import TemplateTagNode
 
 class GetProjects(TemplateTagNode):
 
-    noun_for = {"by":"author", "in":"course"}
+    noun_for = {"by":"author", "in":"course", "for":"request"}
 
-    def __init__(self, varname, author, course):
-        TemplateTagNode.__init__(self, varname, author=author, course=course)
+    def __init__(self, varname, author, course, request):
+        TemplateTagNode.__init__(self, varname, author=author, course=course, request=request)
 
-    def execute_query(self, author, course):
-        return Project.objects.filter(author=author,
-                                      course=course,
-                                      submitted=True)
+    def execute_query(self, author, course, request):
+        return [p for p in Project.objects.filter(author=author,
+                                                  course=course,
+                                                  submitted=True)
+                if p.visible(request)]
+
 
 register = template.Library()
 register.tag('get_projects', GetProjects.process_tag)

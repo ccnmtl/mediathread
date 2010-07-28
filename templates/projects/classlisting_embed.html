@@ -10,7 +10,7 @@
   </h3>
 
   {% load user_projects %}
-  {% get_projects by member in request.course as projects %}
+  {% get_projects by member in request.course for request as projects %}
   {% if projects %}
      <h4>Completed Projects</h4>
      <ul>

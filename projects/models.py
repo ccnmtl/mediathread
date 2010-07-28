@@ -11,6 +11,12 @@ from modelversions import version_model
 
 from structuredcollaboration.models import Collaboration
 
+PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
+                   ('PrivateStudentAndFaculty','Instructor Only'),
+                   ('CourseProtected','Course participants'),
+                   ('PublicEditorsAreOwners','World'),
+                   )
+
 class Project(models.Model):
 
     title = models.CharField(max_length=1024)
@@ -58,15 +64,30 @@ class Project(models.Model):
 
         models.Model.save(self)
 
+    def public_url(self,col=None):
+        if col is None:
+            col = self.collaboration()
+        if col and col._policy.policy_name=='PublicEditorsAreOwners':
+            return col.get_absolute_url()
+        
+
     def status(self):
         """
         The project's status, one of "draft submitted complete".split()
         """
-        if self.submitted:
-            #if self.feedback is not None:
-            #    return u"complete"
+        o = dict(PUBLISH_OPTIONS)
+
+        col = self.collaboration()
+        if col:
+            status = o[col._policy.policy_name]
+            public_url = self.public_url(col)
+            if public_url:
+                status += ' (<a href="%s">public url</a>)' % public_url
+            return status
+        elif self.submitted:
             return u"submitted"
-        return u"draft"
+        else:
+            return u"draft"
 
     @classmethod
     def get_user_projects(cls,user,course):
@@ -103,8 +124,19 @@ class Project(models.Model):
     def __unicode__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
+    def visible(self,request):
+        col = self.collaboration()
+        if col:
+            return col.permission_to('read',request)
+        else:
+            return self.submitted
+    
     def collaboration(self,request=None,sync_group=False):
         col = None
+        policy = 'PrivateEditorsAreOwners'
+        if request:
+            policy = request.POST.get('publish','PrivateEditorsAreOwners')
+
         try:
             col = Collaboration.get_associated_collab(self)
         except Collaboration.DoesNotExist:
@@ -113,7 +145,7 @@ class Project(models.Model):
                                                    title=self.title,
                                                    content_object=self,
                                                    context=request.collaboration_context,
-                                                   policy='PrivateEditorsAreOwners',
+                                                   policy=policy,
                                                    )
         if sync_group and col:
             part = self.participants.all()
@@ -127,9 +159,12 @@ class Project(models.Model):
                         colgrp.user_set.add(p)
                 for oldp in already_grp:
                     colgrp.user_set.remove(oldp)
-    
+            if request and col.policy != policy:
+                col.policy = policy
+                col.save()
+
         return col
-        
+
     @property
     def dir(self):
         return dir(self)

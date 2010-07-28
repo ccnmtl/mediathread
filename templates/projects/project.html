@@ -103,6 +103,9 @@
         <input type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
         {{projectform.publish.label_tag}}        
         {{projectform.publish}}
+        {% if project.public_url %}
+        (<a href="{{project.public_url}}">public url</a>)
+        {% endif %}
    
     </form>
 

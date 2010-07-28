@@ -64,6 +64,13 @@ class Project(models.Model):
 
         models.Model.save(self)
 
+    def public_url(self,col=None):
+        if col is None:
+            col = self.collaboration()
+        if col and col._policy.policy_name=='PublicEditorsAreOwners':
+            return col.get_absolute_url()
+        
+
     def status(self):
         """
         The project's status, one of "draft submitted complete".split()
@@ -72,7 +79,11 @@ class Project(models.Model):
 
         col = self.collaboration()
         if col:
-            return o[col._policy.policy_name]
+            status = o[col._policy.policy_name]
+            public_url = self.public_url(col)
+            if public_url:
+                status += ' (<a href="%s">public url</a>)' % public_url
+            return status
         elif self.submitted:
             return u"submitted"
         else:

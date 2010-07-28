@@ -95,7 +95,7 @@ class ProtectedParentEditorsAreOwners(PublicParentEditorsAreOwners,BaseProtected
 
 class PrivateEditorsAreOwners(PublicEditorsAreOwners):
     def read(self,collaboration,request):
-        return (user.is_staff or self.edit(collaboration,request))
+        return (request.user.is_staff or self.edit(collaboration,request))
 
 
 

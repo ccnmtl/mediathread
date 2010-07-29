@@ -41,6 +41,14 @@ div.collection-chooser ul.switcher-options {
     width:188px; /*width -2px for border*/ 
 }
 
+.switcher ul.switcher-options h3 {
+    margin:0 0 6px 0;
+}
+
+.switcher ul.switcher-options > li {
+    padding-top:10px;
+}
+
 .switcher ul.switcher-options {
     position:absolute;
     display:none;
@@ -65,7 +73,7 @@ div.collection-chooser ul.switcher-options {
     line-height:16px;
     
 }
-.switcher ul.switcher-options p {
+.switcher ul.switcher-options p.switcher-sub {
     padding:10px;
     /*font-size:14px;*/
     background-color: #f7f7f7;
@@ -76,12 +84,27 @@ div.collection-chooser ul.switcher-options {
     overflow-y:auto;
 
 }
+.switcher ul.switcher-options .switcher-sub li {
+    line-height:20px
+}
+.switcher ul.switcher-options .switcher-sub {
+    background-color: #f7f7f7;
+    -moz-border-radius: 5px; 
+    border-radius: 5px; 
+    padding:5px 5px;
+}
+.switcher ul.switcher-options ul.scroll {
+    max-height:300px;
+    overflow-y:auto;
+    
+}
+
 .switcher ul.switcher-options a {
     text-decoration:none;
     padding-right:4px;
     display:inline-block;
 }
-.switcher ul.switcher-options p a:hover {
+.switcher ul.switcher-options .switcher-sub a:hover {
     /*color:white;*/
     text-decoration:underline;
     color:black;

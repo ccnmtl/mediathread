@@ -28,24 +28,31 @@
         </span>
       </a>
       <ul class="switcher-options">
-        {%ifnotequal space_viewer space_owner%}
-        <li class="choice_my_items"><h4><a 
-            href="{%url your-space space_viewer.username%}" 
-            data-ajax="{%url annotations-fragment space_viewer.username%}"
-            >Your Saved Items</a></h4></li>
-        {%endifnotequal%}
-        {%if space_owner %}
-        <li class="choice_class_items"><h4><a 
-            href="{%url asset-container %}" 
-            data-ajax="{%url all-annotations-fragment %}"
-            >All Class Items</a></h4></li>
-        {%endif%}
-        <li><h3>Course Members' Pages</h3></li>
-        {%for m in request.course.members%}
-        <li><h4><a href="{%url your-space m.username%}"
+        <li>
+          <ul class="switcher-sub">
+            {%ifnotequal space_viewer space_owner%}
+            <li class="choice_my_items">
+              <a href="{%url your-space space_viewer.username%}" 
+                 data-ajax="{%url annotations-fragment space_viewer.username%}"
+                 >Your Saved Items</a></li>
+            {%endifnotequal%}
+            {%if space_owner %}
+            <li class="choice_class_items">
+              <a href="{%url asset-container %}" 
+                 data-ajax="{%url all-annotations-fragment %}"
+                 >All Class Items</a></li>
+            {%endif%}
+          </ul>
+        </li>
+        <li><h3>Course Members' Pages</h3>
+          <ul class="scroll switcher-sub">
+            {%for m in request.course.members%}
+            <li><a href="{%url your-space m.username%}"
                    data-ajax="{%url annotations-fragment m.username%}"
-                   >{{m.get_full_name|default:m.username}}</a></h4></li>
-        {%endfor%}
+                   >{{m.get_full_name|default:m.username}}</a></li>
+            {%endfor%}
+          </ul>
+        </li>
       </ul>
     </div>
     <div class="switcher collection-filter">
@@ -78,7 +85,7 @@
         {%endif%}
         {%if dates %}
         <li><h3>Date Modified</h3>
-          <p>
+          <p class="switcher-sub">
               {% for date, label in dates %}
               
                 {% ifequal date request.GET.modified %}
@@ -92,7 +99,7 @@
         </li>
         {%endif%}
         <li><h3>Tags</h3>
-          <p>
+          <p class="switcher-sub">
             {%if not tags %}No tags{%endif%}
             {%for tag in tags %}
             {% replace_value of 'tag' with tag in request.GET as querystring %}

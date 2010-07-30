@@ -4,7 +4,8 @@ urlpatterns = patterns(
     'discussions.views', 
 
     #create a new discussion of an arbitrary model instance:
-    (r'^new/$', 'new'),
+    url(r'^new/$', 'new',
+        name='new-discussion'),
 
     url(r'^show/(?P<discussion_id>\d+)$', 'show', 
         name='show_discussion'),

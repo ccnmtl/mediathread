@@ -29,23 +29,26 @@
       </a>
       <ul class="switcher-options">
         <li>
-          <ul class="switcher-sub">
+          <ul class="switcher-sub" id="switcher-extras"
             {%ifnotequal space_viewer space_owner%}
+            >
             <li class="choice_my_items">
               <a href="{%url your-space space_viewer.username%}" 
                  data-ajax="{%url annotations-fragment space_viewer.username%}"
                  >Your Saved Items</a></li>
+            {%else%}
+            style="display:none;">
             {%endifnotequal%}
-            {%if space_owner %}
-            <li class="choice_class_items">
-              <a href="{%url asset-container %}" 
-                 data-ajax="{%url all-annotations-fragment %}"
-                 >All Class Items</a></li>
-            {%endif%}
           </ul>
         </li>
         <li><h3>Course Members' Pages</h3>
           <ul class="scroll switcher-sub">
+            {%if space_owner %}
+            <li class="choice_class_items">
+              <a href="{%url asset-container %}" 
+                 data-ajax="{%url all-annotations-fragment %}"
+                 ><b>All Class Items</b></a></li>
+            {%endif%}
             {%for m in request.course.members%}
             <li><a href="{%url your-space m.username%}"
                    data-ajax="{%url annotations-fragment m.username%}"

@@ -9,6 +9,8 @@ from django.contrib.auth.models import User, Group
 from courseaffils.models import Course
 from modelversions import version_model
 
+from threadedcomments.models import ThreadedComment
+from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
 PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
@@ -54,6 +56,16 @@ class Project(models.Model):
                 'project_id': self.pk,
                 })
 
+
+    def feedback_discussion(self):
+        "returns the ThreadedComment object for Professor feedback (assuming it's private)"
+        col = self.collaboration()
+        comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        if col:
+            feedback = col.children.filter(content_type = comm_type)
+            if feedback:
+                return feedback[0].content_object
+            
 
     def save(self, *args, **kw):
         self.modified = datetime.datetime.today()

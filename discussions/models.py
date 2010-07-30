@@ -1,121 +1,89 @@
-from django.db import models
-from django.db.models import get_model
+#from django.db import models
+#from django.db.models import get_model
 
-User = get_model('auth','user')
-Group = get_model('auth','group')
-
-
-#Hm.... don't really need this.
-if 1 == 0:
-    from django.db.models import Max
-    from django.contrib.contenttypes import generic
-    from django.contrib.contenttypes.models import ContentType
-    from django.core import urlresolvers
-    from django.conf import settings
-    from structuredcollaboration.models import Collaboration
-    from django.utils.translation import ugettext_lazy as _
-    from courseaffils.models import Course
-    from datetime import datetime
-    import pdb
-
-    class Discussion(models.Model):
-        """A threaded discussion.
-        
-        In the database, threadedcomment objects have a "pointer" to a comment object, which in turn points (via content_type_id and object_pk) to a discussion object.
-        Contains helper methods to make it easier to manage all this from the template.
-        
-        
-        The collaboration object determines:
-            1) what type of object is being discussed
-            2) the pk of the object being discussed
-            3) access to the discussion (posting, viewing, etc.)
-        
-        In practice, for now, a course has a certain number of discussions associated with it via its collaboration object.
-        
-            
-        """
-        
-        if 1 == 0:
-            #removing this: if a discussion is affiliated with a course it
-            #should just point at an SC which itself points to the course.
-            course = models.ForeignKey(Course,null=True)
-        
-        collaboration = models.ForeignKey(Collaboration,null=True)
-        #Permissions - who is part of this discussion?
-        
-        #title
-        title = models.TextField(_('Title'), blank=True)
-        
-        #Faculty instructions, if applicable:
-        instructions =  models.TextField(_('Instructions'), blank=True)
-        
-        created = models.DateTimeField('date created', editable=False, default=datetime.now)
+from structuredcollaboration.models import Collaboration
+from django.contrib.contenttypes.models import ContentType
+from threadedcomments import ThreadedComment
 
 
-        def get_course(self):
-            course_type = ContentType.objects.get(app_label="courseaffils", model="course")
-            return course_type.get_object_for_this_type(pk = self.collaboration.object_pk)
+class CollaborationThreadedComment_Migration1:
+    """
+    The first implementation connected things like this:
+    threadedcomment -> collaboration -> _parent -> object
+    The new way will be:
+    threadedcomment -> collaboration -> _parent -> object
+                                     -> threadedcomment
+    
+    """
+    harmless = True
+    def run(self):
+        collab_type = ContentType.objects.get_for_model(Collaboration)
+        root_comments = ThreadedComment.objects.filter(parent=None, 
+                                                       content_type = collab_type)
+        for root in root_comments:
+            disc_sc = root.content_object
+            disc_sc.content_object = root
+            disc_sc.save()
 
-        def set_course(self, course):
-            """ set this discussion's collaboration to the course's collaboration"""
-            assert isinstance (course, Course)
-            if course is None:
-                self.collaboration = None
-            course_ct =  ContentType.objects.get (name = 'course')
-            sc = Collaboration.get_associated_collab(course)
-            assert sc is not None
-            self.collaboration = sc
-            
-          
-        def set_assignment(self):
-            pass
-        
-        def get_assignment(self):
-            pass
-        
-        def type_of_object_discussed(self):
-            """for now, this is simply a "course" or "project", but could be anything you can point an SC at."""
-            return self.collaboration.content_type.name
-        
-        
-        #static method:
-        def get_all_discussions_of_this_object (arbitrary_object):
-            """ all the discussions of this object- look up the object's content type, then look up"""
-            pass
-        get_all_discussions_of_this_object = staticmethod(get_all_discussions_of_this_object)
-        
-        @property
-        def date_created(self):
-            pass
-        
-        @property
-        def date_of_first_post(self):
-            pass
-        
-        @property
-        def date_of_most_recent_post(self):
-            pass
-        
-        @property
-        def how_many_threads(self):
-            """ number of top-level threads"""
-            pass
-
-        @property
-        def total_post_count(self):
-            """ number of top message counts"""
-            pass
-        
-        @property
-        def posts_in_the_past_week(self):
-            """ number of posts in the past week"""
-            pass
-
-        def delete_all_posts(self):
-            pass
+    def reverse(self):
+        collab_type = ContentType.objects.get_for_model(Collaboration)
+        root_comments = ThreadedComment.objects.filter(parent=None, 
+                                                       content_type = collab_type)
+        for root in root_comments:
+            disc_sc = root.content_object
+            disc_sc.content_object = None
+            disc_sc.save()
         
 
-class Discussion():
-    pass
+class CollaborationThreadedComment_Migration2:
+    """NEVER USED YET: CONSIDERING....
+       First implementation connected things like this:
+       threadedcomment -> collaboration -> _parent -> object
+       The new way will be:
+       collaboration -> threadedcomment -> object
+                     -> _parent -> object
+       The advantage is mostly that the collaboration knows what it's protecting
 
-        
+       This script moves the pointers around
+    """
+    harmless = False
+    def run(self):
+        collab_type = ContentType.objects.get_for_model(Collaboration)
+        root_comments = ThreadedComment.objects.filter(parent=None, 
+                                                       content_type = collab_type)
+        for root in root_comments:
+            disc_sc = root.content_object
+            target_object = disc_sc._parent.content_object
+            child_comments = ThreadedComment.objects.filter(content_type = collab_type,
+                                                            object_pk=disc_sc.pk)
+            for child in child_comments:
+                child.content_object = target_object
+                child.save()
+
+            disc_sc.content_object = root
+            disc_sc.save()
+            root.content_object = target_object
+            root.save()
+                                                       
+    def reverse(self):
+        comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        comment_collabs = Collaboration.objects.filter(content_type = comm_type)
+        for disc_sc in comment_collabs:
+            target_object = disc_sc._parent.content_object
+            root = disc_sc.content_object
+            target_type = ContentType.objects.get_for_model(target_object.__class__)
+            child_comments = ThreadedComment.objects.filter(content_type = target_type,
+                                                            object_pk=target_object.pk)
+            for child in child_comments:
+                child.content_object = disc_sc
+                child.save()
+            disc_sc.content_object = None
+            disc_sc.save()
+            root.content_object = disc_sc
+            root.save()
+                                                       
+
+class Discussion:
+    migrations = ( CollaborationThreadedComment_Migration1(), )
+
+    

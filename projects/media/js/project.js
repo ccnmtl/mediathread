@@ -89,8 +89,12 @@ function swapAssetColumn(asset_url) {
 
 function saveProject(evt) {
     tinyMCE.triggerSave();
-    evt.preventDefault();
     var frm = evt.target;
+    if (/preview/.test(frm.target)) {
+        return;
+    }
+    //else
+    evt.preventDefault();
     jQuery.ajax({
         type: 'POST',
         url: frm.action,

@@ -5,7 +5,6 @@ from django.db.models import get_model
 
 from datetime import datetime
 
-from discussions.models import Discussion
 from structuredcollaboration.models import Collaboration
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404
@@ -23,14 +22,22 @@ from assetmgr.lib import most_popular,annotated_by
 Asset = get_model('assetmgr','asset')
 
 
-#TODO: check user is logged in before displaying
-
-@allow_http("GET")
-@rendered_with('discussions/show_discussion.html')
 def show(request, discussion_id):
     """Show a threadedcomments discussion of an arbitrary object.
     discussion_id is the pk of the root comment."""
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
+    return show_discussion(request, root_comment)
+
+
+def show_collaboration(request, collab_id):
+    collab_type = ContentType.objects.get_for_model(Collaboration)
+    root_comment = get_object_or_404(ThreadedComment, 
+                                     object_pk=collab_id, content_type = collab_type)
+    return show_discussion(request, root_comment)
+
+@allow_http("GET")
+@rendered_with('discussions/show_discussion.html')
+def show_discussion(request, root_comment):
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
@@ -45,9 +52,8 @@ def show(request, discussion_id):
     try:
         my_course = root_comment.content_object.context.content_object
     except:
-        #temporary:
-        my_courses = [c for c in Course.objects.all() if user in c.members]
-        my_course = my_courses[-1]
+        #legacy: for when contexts weren't being set in new()
+        my_course = request.course
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
 
     return {
@@ -59,19 +65,17 @@ def show(request, discussion_id):
         'page_in_edit_mode': True,
         }
         
-        
-
-
 @allow_http("POST")
 def new(request):
     """Start a discussion of an arbitrary model instance."""
     rp = request.POST
-    app_label, model, obj_pk, comment_html =  ( rp['app_label'], rp['model'], rp['obj_pk'], rp['comment_html'] )
+
+    title = rp['comment_html']
     #Find the object we're discussing.
-    the_content_type = ContentType.objects.get(app_label=app_label, model=model)
+    the_content_type = ContentType.objects.get(app_label=rp['app_label'], model=rp['model'])
     assert the_content_type != None
     
-    the_object = the_content_type.get_object_for_this_type(pk = obj_pk)
+    the_object = the_content_type.get_object_for_this_type(pk = rp['obj_pk'])
     assert the_object != None
     
     
@@ -82,7 +86,6 @@ def new(request):
         #TODO: populate this collab with sensible auth defaults.
         obj_sc.content_object = the_object
         obj_sc.save()
-    
 
     #sky: I think what I want to do is have the ThreadedComment
     #point to the_object
@@ -91,28 +94,32 @@ def new(request):
     # threaded comments can also live in it's own world without 'knowing' about SC
     # OTOH, threaded comment shouldn't be able to point to the regular object
     # until Collaboration says it's OK (i.e. has permissions)
+    # ISSUE: how to migrate? (see models.py)
 
     #now create the CHILD collaboration object for the discussion to point at.
     #This represents the auth for the discussion itself.
     disc_sc = Collaboration(_parent=obj_sc,
-                            title=comment_html,
+                            title=title,
                             #or we could point it at the root threadedcomments object.
                             #content_object=None,
                             context=request.collaboration_context,
                             )
+    disc_sc.policy = rp.get('publish',None)
     disc_sc.save()
 
     #finally create the root discussion object, pointing it at the CHILD.
-    #TODO point the context at the course
-    new_threaded_comment = ThreadedComment(parent=None, 
-                                           title=comment_html,
-                                           comment='', 
-                                           user=request.user, 
+    new_threaded_comment = ThreadedComment(parent=None,
+                                           title=title,
+                                           comment='',
+                                           user=request.user,
                                            content_object=disc_sc)
     
     #TODO: find the default site_id
     new_threaded_comment.site_id = 1
     new_threaded_comment.save()
+
+    disc_sc.content_object = new_threaded_comment
+    disc_sc.save()
 
     return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     

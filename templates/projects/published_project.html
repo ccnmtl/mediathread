@@ -81,6 +81,25 @@
 {% endif %}
 -->
 {% if is_space_owner or is_faculty %}
+
+{% if project.collaboration %}
+  {#need to test it, because the default collaboration created won't have the right perms#}
+  {% if project.feedback_discussion %}
+    <a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a>
+  {% else %}
+    {% if is_faculty %}
+    <form action="{% url new-discussion %}" method="POST">
+      <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+      <input type="hidden" name="app_label" value="projects" />
+      <input type="hidden" name="model" value="project" />
+      <input type="hidden" name="obj_pk" value="{{project.pk}}" />
+      <input type="hidden" name="comment_html" value="Project:{{project.title}}" />
+      <input type="submit" value="Create Feedback Discussion for Project" />
+    </form>
+    {% endif %}
+  {% endif %}
+{% endif %}{# end project.collaboration #}
+
 {% if project.versions %}
 <h3>
   <a class="hs-control" href="#revision-history"></a>
@@ -115,8 +134,8 @@
   </tbody>
 </table>
 </div>
-{% endif %}
-{% endif %}
+{% endif %}{# end project.versions #}
+{% endif %}{# end is_space_owner or is_faculty #}
 </div>
 
 {% endblock %}

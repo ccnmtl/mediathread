@@ -119,7 +119,10 @@ class Collaboration(models.Model):
     def get_policy(self):
         return self._policy_id and self._policy.policy or DEFAULT_POLICY
     def set_policy(self,p):
-        self._policy, created = CollaborationPolicyRecord.objects.get_or_create(policy_name=p)
+        if p is None:
+            self._policy = None
+        else:
+            self._policy, created = CollaborationPolicyRecord.objects.get_or_create(policy_name=p)
     policy = property(get_policy,set_policy)
 
 

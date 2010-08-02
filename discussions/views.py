@@ -55,6 +55,12 @@ def show_discussion(request, root_comment):
         #legacy: for when contexts weren't being set in new()
         my_course = request.course
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
+        root_comment.content_object.save()
+
+    if 'project'==root_comment.content_object._parent.content_type.model:
+        ajax_switcher_url = reverse('annotations-fragment-none', args=['none'])
+    else:
+        ajax_switcher_url = reverse('annotations-fragment', args=[space_viewer.username])
 
     return {
         'is_space_owner': True,
@@ -62,6 +68,7 @@ def show_discussion(request, root_comment):
         'space_owner': space_owner,
         'space_viewer': space_viewer,
         'root_comment': root_comment,
+        'ajax_switcher_url':ajax_switcher_url,
         'page_in_edit_mode': True,
         }
         

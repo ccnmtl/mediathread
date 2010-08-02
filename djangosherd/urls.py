@@ -10,6 +10,9 @@ urlpatterns = patterns(
     url(r'^all/$', 
         'annotations_collection_fragment', name="all-annotations-fragment"),
 
+    url(r'^(?P<username>none)/$', 
+        'annotations_collection_fragment', name="annotations-fragment-none"),
+
     url(r'^(?P<username>\w+)/$', 
         'annotations_collection_fragment', name="annotations-fragment"),
 

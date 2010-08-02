@@ -43,49 +43,53 @@ function updateVerticalHeight(evt,offsets) {
     }
 }
 
-function swapAssetColumn(asset_url) {
-    var extra = (/\?/.test(asset_url)) ? '&' : '?';
-    ///TODO: show hourglass icon so people know to wait for a large query (e.g. class collection)
-    jQuery.ajax({
-        url:asset_url+extra+'edit_mode=true',
-        dataType:'html',
-        success:function(html) {
-            jQuery('#asset_browse_col').replaceWith(html);
-            var new_assets = jQuery('#asset_browse_col').get(0);
-            /***
-             All the stateful crap we have to update upon reload of an annotation list
-             ***/
-
-            ///Ajaxify switcher links for swapping out asset_browse_col
-            var url_path = asset_url.split('?')[0];
-            jQuery('div.collection-filter a',new_assets).click(function(evt){
-                var newquery = this.getAttribute('data-ajax') || this.getAttribute('href');
-                if (newquery) {
-                    swapAssetColumn(url_path+'?'+newquery.split('?')[1]);
-                    evt.preventDefault();
+var AssetList = new (function () {
+    var self= this;
+    this.collections = [];
+    this.swapAssetColumn = function (asset_url) {
+        var extra = (/\?/.test(asset_url)) ? '&' : '?';
+        ///TODO: show hourglass icon so people know to wait for a large query (e.g. class collection)
+        jQuery.ajax({
+            url:asset_url+extra+'edit_mode=true',
+            dataType:'html',
+            success:function(html) {
+                jQuery('#asset_browse_col').replaceWith(html);
+                var new_assets = jQuery('#asset_browse_col').get(0);
+                /***
+                 All the stateful crap we have to update upon reload of an annotation list
+                 ***/
+                
+                ///Ajaxify switcher links for swapping out asset_browse_col
+                var url_path = asset_url.split('?')[0];
+                jQuery('div.collection-filter a',new_assets).click(function(evt){
+                    var newquery = this.getAttribute('data-ajax') || this.getAttribute('href');
+                    if (newquery) {
+                        self.swapAssetColumn(url_path+'?'+newquery.split('?')[1]);
+                        evt.preventDefault();
+                    }
+                });
+                jQuery('div.collection-chooser a',new_assets).click(function(evt){
+                    var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
+                    if (newurl) {
+                        self.swapAssetColumn(newurl);
+                        evt.preventDefault();
+                    }
+                });
+                //length of list
+                updateVerticalHeight();
+                //hide-show for annotation notes/tags
+                hs_init(new_assets);
+                ///set onclick/drag listener
+                if (tinyMCE.activeEditor) {
+                    tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
                 }
-            });
-            jQuery('div.collection-chooser a',new_assets).click(function(evt){
-                var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
-                if (newurl) {
-                    swapAssetColumn(newurl);
-                    evt.preventDefault();
-                }
-            });
-            //length of list
-            updateVerticalHeight();
-            //hide-show for annotation notes/tags
-            hs_init(new_assets);
-            ///set onclick/drag listener
-            if (tinyMCE.activeEditor) {
-                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                ///Decorate thumbs
+                DjangoSherd_createThumbs(new_assets);
+                
             }
-            ///Decorate thumbs
-            DjangoSherd_createThumbs(new_assets);
-
-        }
-    });
-}
+        });
+    }
+})()
 
 function saveProject(evt) {
     tinyMCE.triggerSave();
@@ -132,5 +136,5 @@ jQuery(function (){/*onDOM Ready*/
     jQuery('#participants_close').click(updateParticipantList);
 
     //initialize Assets Column with ajax
-    swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' );
+    AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' );
 });

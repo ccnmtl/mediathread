@@ -30,15 +30,18 @@
       <ul class="switcher-options">
         <li>
           <ul class="switcher-sub" id="switcher-extras"
-            {%ifnotequal space_viewer space_owner%}
+              {%ifequal space_viewer space_owner%}
+              style="display:none;"
+              {%endifequal%}
             >
-            <li class="choice_my_items">
+            <li class="choice_my_items" id="choice_my_items"
+              {%ifequal space_viewer space_owner%}
+              style="display:none;"
+              {%endifequal%}
+                >
               <a href="{%url your-space space_viewer.username%}" 
                  data-ajax="{%url annotations-fragment space_viewer.username%}"
                  >Your Saved Items</a></li>
-            {%else%}
-            style="display:none;">
-            {%endifnotequal%}
           </ul>
         </li>
         <li><h3>Course Members' Pages</h3>
@@ -58,6 +61,7 @@
         </li>
       </ul>
     </div>
+    {%if dates or tags %}
     <div class="switcher collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
@@ -90,7 +94,6 @@
         <li><h3>Date Modified</h3>
           <p class="switcher-sub">
               {% for date, label in dates %}
-              
                 {% ifequal date request.GET.modified %}
                    {{label}}
                 {% else %}
@@ -112,6 +115,7 @@
         </li>
       </ul>
     </div>
+    {%endif%}{#end dates or tags#}
     <div class="visualclear"></div>
   </div>
 

@@ -209,7 +209,9 @@ def project_json(request,project):
 
     data = {'project':{'title':project.title,
                        'body':project.body,
-                       'participants':[{'name':p.get_full_name()} for p in project.participants.all()],
+                       'participants':[{'name':p.get_full_name(),
+                                        'id':p.id,
+                                        } for p in project.participants.all()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
                        },

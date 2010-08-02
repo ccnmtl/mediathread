@@ -141,46 +141,48 @@ def edit_annotation(request, annot_id):
 @login_required
 @rendered_with('assetmgr/asset_table.html')
 def annotations_collection_fragment(request,username=None):
-    space_owner = False #indicates we want the whole class (None is no one)
-    if username:
-        space_owner = in_course_or_404(username, request.course)
-        #assets = annotated_by(Asset.objects.filter(course=request.course),
-        #                      space_owner)
-        note_query = space_owner.sherdnote_set.filter(asset__course=request.course)
-    else:
-        #assets = Asset.objects.filter(course=request.course)
-        note_query = SherdNote.objects.filter(asset__course=request.course)
+    """username is WAY overloaded
+     username='none' : just give me the selection menu
+     username=None : give me all assets for the class
+     username=<username> : all username assets
+    """
+    rv = {'space_viewer':request.user,
+          'space_owner':False, #indicates we want the whole class (None is no one)
+          'page_in_edit_mode': request.GET.has_key('edit_mode'),
+          }
+    if username != 'none':
+        if username:
+            rv['space_owner'] = in_course_or_404(username, request.course)
+            #assets = annotated_by(Asset.objects.filter(course=request.course),
+            #                      space_owner)
+            note_query = rv['space_owner'].sherdnote_set.filter(asset__course=request.course)
+        else:
+            #assets = Asset.objects.filter(course=request.course)
+            note_query = SherdNote.objects.filter(asset__course=request.course)
 
-    tags =  calculate_cloud(Tag.objects.usage_for_queryset(note_query, counts=True))
+        rv['tags'] =  calculate_cloud(Tag.objects.usage_for_queryset(note_query, counts=True))
 
-    #all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
-    #all_tags = calculate_cloud(all_tags)
+        #all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
+        #all_tags = calculate_cloud(all_tags)
     
-    filter_by = ('tag','modified')
+        filter_by = ('tag','modified')
 
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            s_filter = getattr(SherdNote.objects,'%s_filter'%fil)
-            note_query = s_filter(filter_value,note_query)
+        for fil in filter_by:
+            filter_value = request.GET.get(fil)
+            if filter_value:
+                s_filter = getattr(SherdNote.objects,'%s_filter'%fil)
+                note_query = s_filter(filter_value,note_query)
 
-    #until asset_table.html can work off the notes objects instead of the assets list
-    assets = Asset.objects.filter(id__in = note_query.values_list('asset',flat=True))
+        #until asset_table.html can work off the notes objects instead of the assets list
+        rv['assets'] = Asset.objects.filter(id__in = note_query.values_list('asset',flat=True))
 
-    active_filters = get_active_filters(request)
+        rv['active_filters'] = get_active_filters(request)
+        rv['dates'] = (('today','today'),
+                       ('yesterday','yesterday'),
+                       ('lastweek','within the last week'),
+                       )
     
-    return {
-        'space_viewer':request.user,
-        'space_owner':space_owner,
-        'assets':assets,
-        'tags':tags,
-        'active_filters': active_filters,
-        'page_in_edit_mode': request.GET.has_key('edit_mode'),
-        'dates':(('today','today'),
-                 ('yesterday','yesterday'),
-                 ('lastweek','within the last week'),
-                 ),
-        }
+    return rv
 
 @rendered_with('djangosherd/iframe_annotation.html')
 def annotation_iframe_view(request, asset_id, annot_id):

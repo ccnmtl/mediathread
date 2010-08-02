@@ -83,9 +83,10 @@
         <div id="project_participants">
           <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
-          <div id="participants_chosen"
-                >{%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-          {{part.get_full_name|default:part.username}}{%endfor%}</div>
+          <div id="participants_chosen">
+            {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
+            {{part.get_full_name|default:part.username}}{%endfor%}
+          </div>
           <a class="hs-control hs-control-show plist" href="#participant_list">Edit&nbsp;Collaborators</a>
           <br />
           <div id="participant_list" class="hs-init-hide hs-hide"> 

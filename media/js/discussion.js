@@ -330,3 +330,24 @@ AjaxComment.prototype.create = function(obj,doc) {
                   jQuery('input[name=title]').get(0));
     }
 });
+
+if (window.AssetList) {
+    ///OVERRIDE to include project link, as well
+    var collaboratorLinks = AssetList.projectLinks;
+    AssetList.projectLinks = function(project) {
+        var links = collaboratorLinks(project);
+        links.unshift({type:'project',
+                       href:project.url,
+                       ajax:'/project/'+project.id+'/json',
+                       title:project.title
+                      });
+        return links;
+    }
+    AssetList.onInit = function() {
+        var proj = djangosherd.storage.lastProject();
+        if (proj) {
+            AssetList.replaceWithProject(proj);
+        }
+    }
+
+}

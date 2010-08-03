@@ -49,24 +49,55 @@ var AssetList = new (function () {
     this.switcherTitle = function(title) {
         jQuery('#switcher-title').html(title);
     };
+    this.projectLinks = function(project) {
+        var p = project.participants;
+        var links = [];
+        for (var i=0;i<p.length;i++) {
+            var u = p[i].username;
+            links.push({type:'assetlist',
+                        href:'/yourspace/'+u+'/asset/',
+                        ajax:'/annotations/'+u+'/',
+                        title:p[i].name
+                       });
+        }
+        return links;
+    }
+    this.linkifyList = function(link_ary) {
+        var html = '';
+        for (var i=0;i<link_ary.length;i++) {
+            html += '<li><a class="'+link_ary[i].type+'-switch" href="'+link_ary[i].href+'"'
+                +'data-ajax="'+link_ary[i].ajax+'">'+link_ary[i].title+'</a></li>'
+        }
+        return html;
+    }
+    this.extraLinks = function() {
+        ///NOTE: gets overridden in discussion so the project itself is also added.
+        var proj = djangosherd.storage.lastProject();
+        if (proj) {
+            return self.linkifyList(self.projectLinks(proj));
+        } else return '';
+    }
+    this.replaceWithProject = function(project) {
+        var dom = jQuery('#materials').html(
+            '<div class="essay-space published">'
+                +project.body
+                +'</div>'
+        ).get(0);
+
+        //update DOM state...
+        DjangoSherd_decorate_citations(dom);
+        self.switcherTitle(project.title);
+        jQuery('#choice_my_items').show();
+        jQuery('#switcher-collection-filter').hide();
+    }
     this.decorators = {
         project:function(evt) {
             var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
             if (newurl) {
-                djangosherd.storage.get({type:'project',url:newurl,id:'xxx'}, 
-                                        function(project) {
-                                            var dom = jQuery('#materials').html(
-                                                '<div class="essay-space published">'
-                                                    +project.body
-                                                    +'</div>'
-                                            ).get(0);
-                                            DjangoSherd_decorate_citations(dom);
-                                            self.switcherTitle(project.title);
-                                            jQuery('#choice_my_items').show();
-                                        });
+                djangosherd.storage.get({type:'project', url:newurl, id:'xxx'}, 
+                                        self.replaceWithProject);
                 evt.preventDefault();
             }
-            
         },
         asset:function(evt) {
             var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
@@ -76,7 +107,8 @@ var AssetList = new (function () {
             }
         }
     };
-    this.swapAssetColumn = function (asset_url) {
+    this.onInit = function(){};
+    this.swapAssetColumn = function (asset_url, init) {
         var extra = (/\?/.test(asset_url)) ? '&' : '?';
         ///TODO: show hourglass icon so people know to wait for a large query (e.g. class collection)
         jQuery.ajax({
@@ -88,8 +120,26 @@ var AssetList = new (function () {
                 /***
                  All the stateful crap we have to update upon reload of an annotation list
                  ***/
+                ///ASSETS UPDATE
+                //length of list
+                updateVerticalHeight();
+                //hide-show for annotation notes/tags
+                hs_init(new_assets);
+                ///set onclick/drag listener
+                if (tinyMCE.activeEditor) {
+                    tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                }
+                ///Decorate thumbs
+                DjangoSherd_createThumbs(new_assets);
+
                 ///SWITCHER UPDATE
                 ///Ajaxify switcher links for swapping out asset_browse_col
+                var extras = self.extraLinks();
+                if (extras) {
+                    jQuery('#switcher-extras').append(extras).show();
+                    
+                }
+
                 var url_path = asset_url.split('?')[0];
                 jQuery('div.collection-filter a',new_assets).click(function(evt){
                     var newquery = this.getAttribute('data-ajax') || this.getAttribute('href');
@@ -106,18 +156,9 @@ var AssetList = new (function () {
                     }
                 });
                 
-                ///ASSETS UPDATE
-                //length of list
-                updateVerticalHeight();
-                //hide-show for annotation notes/tags
-                hs_init(new_assets);
-                ///set onclick/drag listener
-                if (tinyMCE.activeEditor) {
-                    tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                if (init) {
+                    self.onInit();
                 }
-                ///Decorate thumbs
-                DjangoSherd_createThumbs(new_assets);
-                
             }
         });
     }
@@ -168,5 +209,5 @@ jQuery(function (){/*onDOM Ready*/
     jQuery('#participants_close').click(updateParticipantList);
 
     //initialize Assets Column with ajax
-    AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' );
+    AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
 });

@@ -46,6 +46,36 @@ function updateVerticalHeight(evt,offsets) {
 var AssetList = new (function () {
     var self= this;
     this.collections = [];
+    this.switcherTitle = function(title) {
+        jQuery('#switcher-title').html(title);
+    };
+    this.decorators = {
+        project:function(evt) {
+            var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
+            if (newurl) {
+                djangosherd.storage.get({type:'project',url:newurl,id:'xxx'}, 
+                                        function(project) {
+                                            var dom = jQuery('#materials').html(
+                                                '<div class="essay-space published">'
+                                                    +project.body
+                                                    +'</div>'
+                                            ).get(0);
+                                            DjangoSherd_decorate_citations(dom);
+                                            self.switcherTitle(project.title);
+                                            jQuery('#choice_my_items').show();
+                                        });
+                evt.preventDefault();
+            }
+            
+        },
+        asset:function(evt) {
+            var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
+            if (newurl) {
+                self.swapAssetColumn(newurl);
+                evt.preventDefault();
+            }
+        }
+    };
     this.swapAssetColumn = function (asset_url) {
         var extra = (/\?/.test(asset_url)) ? '&' : '?';
         ///TODO: show hourglass icon so people know to wait for a large query (e.g. class collection)
@@ -58,7 +88,7 @@ var AssetList = new (function () {
                 /***
                  All the stateful crap we have to update upon reload of an annotation list
                  ***/
-                
+                ///SWITCHER UPDATE
                 ///Ajaxify switcher links for swapping out asset_browse_col
                 var url_path = asset_url.split('?')[0];
                 jQuery('div.collection-filter a',new_assets).click(function(evt){
@@ -68,13 +98,15 @@ var AssetList = new (function () {
                         evt.preventDefault();
                     }
                 });
-                jQuery('div.collection-chooser a',new_assets).click(function(evt){
-                    var newurl = this.getAttribute('data-ajax') || this.getAttribute('href');
-                    if (newurl) {
-                        self.swapAssetColumn(newurl);
-                        evt.preventDefault();
+                jQuery('div.collection-chooser a',new_assets).each(function() {
+                    if (jQuery(this).hasClass('project-switch')) {
+                        jQuery(this).click(self.decorators.project);
+                    } else {
+                        jQuery(this).click(self.decorators.asset);
                     }
                 });
+                
+                ///ASSETS UPDATE
                 //length of list
                 updateVerticalHeight();
                 //hide-show for annotation notes/tags

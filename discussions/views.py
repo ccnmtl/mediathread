@@ -38,14 +38,10 @@ def show_collaboration(request, collab_id):
 @allow_http("GET")
 @rendered_with('discussions/show_discussion.html')
 def show_discussion(request, root_comment):
-    user = request.user
-    if user.is_staff and request.GET.has_key('as'):
-        user = get_object_or_404(User,username=request.GET['as'])
+    space_viewer = request.user
+    if space_viewer.is_staff and request.GET.has_key('as'):
+        space_viewer = get_object_or_404(User,username=request.GET['as'])
 
-    #for_now:
-    space_viewer = user
-    space_owner = user
-    
     if not root_comment.content_object.permission_to('read',request):
         return HttpResponseForbidden('You do not have permission to view this discussion.')
     
@@ -57,18 +53,25 @@ def show_discussion(request, root_comment):
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
         root_comment.content_object.save()
 
-    if 'project'==root_comment.content_object._parent.content_type.model:
-        ajax_switcher_url = reverse('annotations-fragment-none', args=['none'])
-    else:
-        ajax_switcher_url = reverse('annotations-fragment', args=[space_viewer.username])
+    switcher = {
+        'init':reverse('annotations-fragment', args=[space_viewer.username])
+        }
+    if root_comment.content_object._parent_id:
+        target = root_comment.content_object._parent
+        if 'project'==target.content_type.model:
+            switcher['init'] = reverse('annotations-fragment-none', args=['none'])
+            switcher['project_json'] = '%s%s' % (
+                reverse('project-view', args=[target.object_pk]),
+                'json', #appended for json content (and avoiding cache poisoning webkit)
+                )
 
     return {
         'is_space_owner': True,
-        'edit_comment_permission': my_course.is_faculty(user),
-        'space_owner': space_owner,
+        'edit_comment_permission': my_course.is_faculty(space_viewer),
+        'space_owner': space_viewer, #for now
         'space_viewer': space_viewer,
         'root_comment': root_comment,
-        'ajax_switcher_url':ajax_switcher_url,
+        'switcher':switcher,
         'page_in_edit_mode': True,
         }
         

@@ -210,7 +210,7 @@ def project_json(request,project):
     data = {'project':{'title':project.title,
                        'body':project.body,
                        'participants':[{'name':p.get_full_name(),
-                                        'id':p.id,
+                                        'username':p.username,
                                         } for p in project.participants.all()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
@@ -233,7 +233,8 @@ def project_json(request,project):
                               },
                     },
              } for ann in project.citations()
-            ]
+            ],
+            'type':'project',
             }
     return HttpResponse(json.dumps(data, indent=2),
                         mimetype='application/json')

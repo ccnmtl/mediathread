@@ -454,7 +454,9 @@ def asset_json(request, asset_id):
                 'range2':None,
                 'annotation':None,
                 'id':'asset-%s' % asset.pk,
-                }]
+                'asset_id': asset.pk,
+                }],
+            'type':'asset',
             }
     return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')

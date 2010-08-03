@@ -27,7 +27,7 @@
   {% include "djangosherd/annotator_resources.html" %}
  
   <script type="text/javascript">        
-    DjangoSherd_Project_Config();           
+    DjangoSherd_Project_Config({open_from_hash: false, project_json:'./json'});           
      {% if user.is_staff %}var is_staff = true;{% endif %}
   </script>
 {% endblock %}

@@ -57,8 +57,21 @@ Class Analysis > Class Saved Items
       </td>
       <td class="slider-cell">
 <div id="member_col" class="project-table panel-column panel-light">
-  <h2>Member Pages</h2>
-  {% include "projects/classlisting_embed.html" %}
+  <h2>Shared Projects</h2>
+  {% if is_faculty %}
+  <p><a href="{%url class-listing %}">Projects by member</a></p>
+  {% endif %}
+  {% load user_projects %}
+  <ul>
+    {% get_course_projects in request.course for request as projects %}
+    {% for project in projects %}
+    <li> 
+      <a href="{%url project-view project.pk %}">{{project.title}}</a>
+      <br />
+      by {{project.attribution}}
+    </li>
+    {% endfor %}
+  </ul>  
 </div>
 
       </td>

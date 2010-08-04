@@ -3,6 +3,7 @@ from projects.models import Project
 from django import template
 
 from djangohelpers.templatetags import TemplateTagNode
+register = template.Library()
 
 class GetProjects(TemplateTagNode):
 
@@ -12,14 +13,27 @@ class GetProjects(TemplateTagNode):
         TemplateTagNode.__init__(self, varname, author=author, course=course, request=request)
 
     def execute_query(self, author, course, request):
-        return [p for p in Project.objects.filter(author=author,
-                                                  course=course,
-                                                  submitted=True)
+        return [p for p in Project.get_user_projects(author, course).filter(submitted=True)
                 if p.visible(request)]
 
 
-register = template.Library()
 register.tag('get_projects', GetProjects.process_tag)
+
+class GetCourseProjects(TemplateTagNode):
+
+    noun_for = {"in":"course", "for":"request"}
+
+    def __init__(self, varname, course, request):
+        TemplateTagNode.__init__(self, varname, course=course, request=request)
+
+    def execute_query(self, course, request):
+        return [p for p in Project.objects.filter(course=course,
+                                                  submitted=True).order_by('title')
+                if p.visible(request)]
+
+
+register.tag('get_course_projects', GetCourseProjects.process_tag)
+
 
 from django.core.urlresolvers import reverse
 @register.simple_tag

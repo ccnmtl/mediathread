@@ -223,6 +223,7 @@ def container_view(request):
         'active_filters': active_filters,
         'space_viewer':request.user,
         'space_owner':None,
+        'is_faculty':request.course.is_faculty(request.user),
         }
 
 

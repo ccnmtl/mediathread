@@ -31,7 +31,7 @@ Comment = models.get_model('comments','comment')
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 
-from assetmgr.lib import get_metadata,filter_by,get_active_filters
+from assetmgr.lib import filter_by,get_active_filters
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
@@ -165,20 +165,11 @@ def add_asset(request):
             source.save()
 
         transaction.commit()
-        try:
-            if len(metadata):
-                asset.metadata_blob = simplejson.dumps(metadata)
-                asset.save()
-            else:
-                #after Source save because it needs asset.html_source
-                get_metadata(asset)
-        except:
-            # i really shouldn't be doing a blanket catch, but that
-            # seems like a minor sin compared to the rest of the
-            # flaws with this implementation :)
-            pass
-        finally:
+        if len(metadata):
+            asset.metadata_blob = simplejson.dumps(metadata)
+            asset.save()
             transaction.commit()
+
     # if we got here from an attempt to annotate the mock asset
     # we'll save that annotation now that the asset exists
     if asset:
@@ -203,42 +194,6 @@ def add_asset(request):
         #any primary_labels as arguments
         raise AssertionError("something didn't work")
 
-@allow_http("GET", "POST")
-def metadata_view(request, asset_id):
-    asset = get_object_or_404(Asset, pk=asset_id,
-                              course=request.course)
-
-    if request.method == "GET":
-        metadata = asset.metadata_blob
-
-    if request.method == "POST":
-        try:
-            auth_info = dict(realm=request.POST['realm'],
-                             user=request.POST['user'],
-                             passwd=request.POST['passwd'])
-            authenticate = True
-        except KeyError:
-            auth_info = {}
-            authenticate = False
-
-        metadata = get_metadata(asset, authenticate, **auth_info)
-
-    if request.is_ajax():
-        return HttpResponse(metadata, mimetype="application/json")
-    else:
-        if request.method == "POST":
-            return HttpResponseRedirect('.')
-        return HttpResponse("""
-<p>
-%s
-</p>
-<form method="POST">
-<input type='text' name='realm' />
-<input type='text' name='user' />
-<input type='password' name='passwd' />
-<input type='submit' />
-</form>
-""" % metadata)
 
 @rendered_with('assetmgr/asset_container.html')
 def container_view(request):

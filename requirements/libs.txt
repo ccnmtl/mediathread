@@ -21,11 +21,10 @@ requirements/src/uuid-1.30.tar.gz
 # packages is kind of broken since lib/python/site-packages has apparently been renamed
 # to dist-packages. so on my system i'm actually downloading and installing them locally
 # during bootstrap
-lxml>=2.0
 psycopg2
 
 #for djangosherd xmeml final cut pro support
 requirements/src/xmeml-0.9.tar.gz
 
 # for functional testing
-requirements/src/flunc-0.6-dev.tar.gz
+#requirements/src/flunc-0.6-dev.tar.gz

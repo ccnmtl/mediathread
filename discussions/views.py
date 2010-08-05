@@ -115,6 +115,9 @@ def new(request):
                             context=request.collaboration_context,
                             )
     disc_sc.policy = rp.get('publish',None)
+    if rp.get('inherit',None)=='true':
+        disc_sc.group_id = obj_sc.group_id
+        disc_sc.user_id = obj_sc.user_id
     disc_sc.save()
 
     #finally create the root discussion object, pointing it at the CHILD.
@@ -141,7 +144,7 @@ def comment_change(request, comment_id, next=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
 
-    if comment.content_object.permission_to('edit',request):
+    if comment.content_object.permission_to('manage',request):
         comment.comment = request.POST['comment']
     elif comment.user == request.user:
         now = datetime.now()

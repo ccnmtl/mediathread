@@ -114,8 +114,7 @@ def view_project(request, project_id):
                                 course=request.course)
     space_owner = in_course_or_404(project.author.username, request.course)
 
-    #ok, now we know is_participant
-    if project not in Project.get_user_projects(space_owner,request.course):
+    if not project.collaboration(request).permission_to('edit',request):
         return HttpResponseForbidden("forbidden")
 
     if request.method == "GET":

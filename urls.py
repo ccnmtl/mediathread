@@ -52,12 +52,8 @@ urlpatterns = patterns('',
                        (r'^yourspace/',include('mediathread.mediathread_main.urls')),
                        
                        #redundant, but for published projects/legacy
-                       #(r'^project/',include('mediathread.projects.urls')),
-                       #override/shortcut for published projects
-                       url(r'^project/(?P<project_id>\d+)/[^v/]*$',
-                           'projects.views.project_readonly_view',
-                           name='project-view'
-                           ),
+                       (r'^project/',include('mediathread.projects.urls')),
+
                        (r'^explore/$','assetmgr.views.archive_explore'),
 
                        #threaded discussion:

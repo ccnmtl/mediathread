@@ -90,6 +90,7 @@
     {% if is_faculty %}
     <form action="{% url new-discussion %}" method="POST">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+      <input type="hidden" name="inherit" value="true" />
       <input type="hidden" name="app_label" value="projects" />
       <input type="hidden" name="model" value="project" />
       <input type="hidden" name="obj_pk" value="{{project.pk}}" />

@@ -14,7 +14,7 @@ from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
 PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
-                   ('PrivateStudentAndFaculty','Instructor Only'),
+                   ('InstructorShared','Instructor Only'),
                    ('CourseProtected','Course participants'),
                    ('PublicEditorsAreOwners','World'),
                    )
@@ -91,7 +91,7 @@ class Project(models.Model):
 
         col = self.collaboration()
         if col:
-            status = o[col._policy.policy_name]
+            status = o.get(col._policy.policy_name, col._policy.policy_name)
             public_url = self.public_url(col)
             if public_url:
                 status += ' (<a href="%s">public url</a>)' % public_url

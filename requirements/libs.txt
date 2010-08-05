@@ -5,7 +5,7 @@ requirements/src/Paste-1.7.2.tar.gz
 requirements/src/PasteDeploy-1.3.3.tar.gz
 requirements/src/PasteScript-1.7.3.tar.gz
 requirements/src/cdap-1.0.tar.gz
-requirements/src/httplib2-0.4.0.tar.gz
+requirements/src/httplib2-0.6.0.tar.gz
 requirements/src/restclient-0.9.9.tar.gz
 requirements/src/feedparser-4.1.tar.gz
 requirements/src/imageuploader-0.1.tar.gz

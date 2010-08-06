@@ -75,7 +75,7 @@ def collaboration_dispatch(request, collab_id, next=None):
     return HttpResponseNotFound
 
 def delete_collaboration(request, collab_id, next=None):
-    #only fake-delete it.  We move it out from 
+    #only fake-delete it.  We move it out from the context
     disc_sc = get_object_or_404(Collaboration, pk=collab_id)
     if not disc_sc.permission_to('delete',request):
         return HttpResponseForbidden('You do not have permission to delete this discussion.')

@@ -6,6 +6,8 @@ from django.db.models import get_model
 from datetime import datetime
 
 from structuredcollaboration.models import Collaboration
+from structuredcollaboration.views import delete_collaboration
+
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse,resolve
@@ -35,12 +37,15 @@ def show_collaboration(request, collab_id):
                                      object_pk=collab_id, content_type = collab_type)
     return show_discussion(request, root_comment)
 
-@allow_http("GET")
+@allow_http("GET","DELETE")
 @rendered_with('discussions/show_discussion.html')
 def show_discussion(request, root_comment):
     space_viewer = request.user
     if space_viewer.is_staff and request.GET.has_key('as'):
         space_viewer = get_object_or_404(User,username=request.GET['as'])
+
+    if request.method == "DELETE":
+        return delete_collaboration(request, root_comment.object_pk)
 
     if not root_comment.content_object.permission_to('read',request):
         return HttpResponseForbidden('You do not have permission to view this discussion.')

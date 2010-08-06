@@ -87,7 +87,7 @@ Class Analysis
                   <div class="actions">
                     {% if is_faculty %}
                       <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                         href="{% url collaboration-dispatch disc.content_object.pk %}?delete">
+                         href="{% url discussion-view disc.id %}?delete">
                       <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
                     {% endif %}
 

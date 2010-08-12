@@ -74,13 +74,13 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.markup',
     'sorl.thumbnail',
+    'courseaffils',
     'django.contrib.admin',
     'tagging',
     'smartif',
     'modelversions',
     #mediathread local
     'structuredcollaboration',
-    'courseaffils',
     'djangosherd',#strangely must precede assetmgr
     'assetmgr',
     'projects',

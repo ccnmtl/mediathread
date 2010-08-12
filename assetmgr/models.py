@@ -1,4 +1,3 @@
-import datetime
 import simplejson
 
 from django.db import models
@@ -40,8 +39,8 @@ class AssetManager(models.Manager):
 class Asset(models.Model):
     objects = AssetManager() #custom manager
     
-    added = models.DateTimeField('date created', editable=False)
-    modified = models.DateTimeField('date modified', editable=False)    
+    added = models.DateTimeField('date created', editable=False, auto_now_add=True)
+    modified = models.DateTimeField('date modified', editable=False, auto_now=True)    
 
     author = models.ForeignKey(User)
     course = models.ForeignKey(Course)
@@ -84,12 +83,6 @@ class Asset(models.Model):
 
     def saved_by(self):
         return self.author
-
-    def save(self, *args, **kw):
-        if not self.pk:
-            self.added = datetime.datetime.today()
-        self.modified = datetime.datetime.today()
-        models.Model.save(self, *args, **kw)
 
     @models.permalink
     def get_absolute_url(self):
@@ -189,18 +182,13 @@ class Source(models.Model):
     height = models.PositiveSmallIntegerField(default=0)
     width = models.PositiveSmallIntegerField(default=0)
     
-    modified = models.DateTimeField('date modified', editable=False)
+    modified = models.DateTimeField('date modified', editable=False, auto_now=True)
 
     def __unicode__(self):
         asset = u'No Asset'
         if self.asset_id: #defensive for non-saved sources w/o an asset
             asset = self.asset
         return u'[%s] %s' % (self.label, unicode(asset))
-
-    def save(self, *args, **kw):
-        self.modified = datetime.datetime.today()
-        models.Model.save(self, *args, **kw)
-
 
     def is_image(self):
         return (self.label=='poster' or self.media_type.startswith('image/'))

@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models.loading import get_model
 from django.db.models import Q
 
-import datetime
 import re
 
 from django.contrib.auth.models import User, Group
@@ -47,7 +46,7 @@ class Project(models.Model):
     submitted = models.BooleanField(default=False)
     feedback = models.TextField(blank=True, null=True)
 
-    modified = models.DateTimeField('date modified', editable=False)
+    modified = models.DateTimeField('date modified', editable=False, auto_now=True)
 
 
     @models.permalink
@@ -68,10 +67,7 @@ class Project(models.Model):
             
 
     def save(self, *args, **kw):
-        self.modified = datetime.datetime.today()
-        models.Model.save(self, *args, **kw)
         self.participants.add(self.author)
-
         self.collaboration(sync_group=True)
 
         models.Model.save(self)

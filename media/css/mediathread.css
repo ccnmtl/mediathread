@@ -921,16 +921,17 @@ body.fluid #content
   color: #e6e6e6;
 }
 
-li.course-choice {
-    width:60%;
-    max-width:400px;
-    min-width:300px;
+tr.course-choices {
+    padding:5px;
+}
+
+td.course-choice {
+    max-width:500px;
+    min-width:400px;
     list-style-type:none;
     padding:5px;
 }
 
-span.manage-course {
-    *margin-top:-1em;
-    float:right;
-    margin-left:10px;
+td.manage-course {
+    text-align:center;
 }

@@ -74,10 +74,11 @@
       </a>
       <ul class="switcher-options">
         {%if active_filters %}
-        <li><ul>
+        <li><ul class="switcher-sub switcher-active-filters">
           <li><a class="remove" href="?">Clear All Filters</a></li>
           {% for filter, value in active_filters.items %}
           <li>
+            <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
             {% ifequal filter "tag" %}
               {{filter}}: {{value}}
             {% else %}
@@ -85,7 +86,6 @@
             {% endifequal %}
 
             {% replace_value of filter with '' in request.GET as querystring %}
-            <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
           </li>
           {% endfor %}
 

@@ -67,10 +67,10 @@ class Project(models.Model):
             
 
     def save(self, *args, **kw):
+        models.Model.save(self)
         self.participants.add(self.author)
         self.collaboration(sync_group=True)
 
-        models.Model.save(self)
 
     def public_url(self,col=None):
         if col is None:

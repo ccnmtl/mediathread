@@ -126,7 +126,7 @@
   {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}
   
 
-  <h2 class="asset_title asset-{{asset.primary.label}}">
+  <h2 id="asset-item-{{asset.pk}}" class="asset_title asset-{{asset.primary.label}}">
     <div class="actions">
     {% if editable %}
       <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"

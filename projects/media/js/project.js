@@ -128,6 +128,7 @@ var AssetList = new (function () {
                 ///set onclick/drag listener
                 if (tinyMCE.activeEditor) {
                     tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                    jQuery(new_assets.parentNode).addClass('annotation-embedding');
                 }
                 ///Decorate thumbs
                 DjangoSherd_createThumbs(new_assets);
@@ -196,8 +197,10 @@ function saveProject(evt) {
 }
 
 jQuery(function (){/*onDOM Ready*/
-    jQuery(document.forms['editproject']).bind('submit',saveProject);
-
+    if (document.forms['editproject']) {
+        jQuery(document.forms['editproject']).bind('submit',saveProject);
+        jQuery('#asset_browse_col').parent().addClass('annotation-embedding');
+    }
     jQuery(window).resize(updateVerticalHeight);
 
     tinyMCE.onAddEditor.add(function(manager, ed) {

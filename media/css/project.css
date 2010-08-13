@@ -1,5 +1,10 @@
 img.materialCitation {
-	cursor:pointer;
+    cursor:pointer;
+    display:none;
+}
+
+.annotation-embedding img.materialCitation {
+    display:block;
 }
 
 input.materialCitation {
@@ -144,15 +149,22 @@ form.threaded_comments_form ul li {
 }
 
 .comment_action {
-background-color:#EEEEEE;
-border:1px solid #CCCCCC;
-color:#992222;
-cursor:pointer;
-float:left;
-font-size:80%;
-margin:0 4px 0 0;
-padding:0 3px;
-text-decoration:none;
+    background-color:#EEEEEE;
+    border:1px solid #CCCCCC;
+    color:#992222;
+    cursor:pointer;
+    float:left;
+    font-size:80%;
+    margin:0 4px 0 0;
+    padding:1px 3px;
+    text-decoration:none;
+}
+
+.respond_to_comment_form_div .control-open {
+    padding-right:20px;
+    background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
+
+    
 }
 
 .comment-manage, .comment_actions a.comment-manage {

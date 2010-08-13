@@ -48,11 +48,15 @@ jQuery(function discussion_init() {
             jQuery(frm).show();
             jQuery('#id_comment').focus();
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
-        } else {
+            jQuery(evt_target).addClass('control-open');
+        } else { //actually, CLOSE form
 	    if (next_response_loc == evt_target) {
 		next_response_loc = false;
+                jQuery(evt_target).removeClass('control-open');
 	    } else {
                 next_response_loc = evt_target;
+                jQuery('span.control-open').removeClass('control-open');
+                jQuery(evt_target).addClass('control-open');
 	    }
             tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
             tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
@@ -75,6 +79,7 @@ jQuery(function discussion_init() {
         next_response_loc = false;
         tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
         tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
+        jQuery('span.control-open').removeClass('control-open');
     }
 
     jQuery('.respond_prompt').click(open_respond);
@@ -87,11 +92,13 @@ jQuery(function discussion_init() {
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
 	} else {
             jQuery('#comment-form').hide();
+            jQuery('#asset_browse_col').parent().removeClass('annotation-embedding');
 	}
     });
     tinyMCE.onAddEditor.add(function(manager, ed) {
         ed.onInit.add(function(editor) {
             tinyMCE.execCommand("mceFocus", false, "id_comment");//win.document is null
+            jQuery('#asset_browse_col').parent().addClass('annotation-embedding');
         });
     });
 

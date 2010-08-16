@@ -62,7 +62,7 @@ function hs_lookForCookie() {
 }
 
 function hs_getTarget(a) {
-	return $(a.href.split("#")[1]);
+    return jQuery(a.href).get(0);
 }
 
 function hs_toggle() {

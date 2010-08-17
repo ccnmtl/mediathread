@@ -37,12 +37,19 @@
 
 {% block content %}
   {{ block.super }}
+<div id="slider-parent">
+  <div class="slider-cell slider-edge">
+    <h2>« <span id="slider-left-edge">Asset Details</span></h2>
+  </div>
+  <div class="slider-cell slider-edge slider-edge-right">
+    <h2><span id="slider-left-edge">Reflection</span> »</h2>
+  </div>
+
   <table id="top-slider">
     <tbody>
     <tr>
-      <td class="slider-cell slider-edge">
-	<h2>« <span id="slider-left-edge"></span></h2>
-      </td>
+      <td class="slider-cell slider-empty" id="slider-cell-asset_details"></td>
+      <td class="slider-cell slider-empty" id="slider-cell-asset_large"></td>
       <td class="slider-cell">
         <div id="asset_browse_col" class="asset-table"
              data-ajax="{%url annotations-fragment space_viewer.username%}"
@@ -113,11 +120,8 @@
 
   </div><!-- end class="essay-space" -->
       </td>
-      <td class="slider-cell slider-edge">
-	<h2><span id="slider-right-edge"></span> »</h2>
-      </td>
     </tr>
     </tbody>
   </table>
-
+</div>
 {% endblock %}

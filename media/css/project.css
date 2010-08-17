@@ -120,6 +120,7 @@ float: left;
 .asset-title {margin-left: 10px;}
 
 .capabilities {
+    display:none;
     position:absolute;
     left:0px;
     top:-1.5em;

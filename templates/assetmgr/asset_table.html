@@ -150,6 +150,7 @@
 	      /></span>
 	{% endif %}
     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+       class="asset-title-link"
        href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
 
 	

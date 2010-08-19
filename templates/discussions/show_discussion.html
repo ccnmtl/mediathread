@@ -35,7 +35,7 @@
   <!--END for showing Annotations -->
   <script type="text/javascript" src="/site_media/js/project/project.js"></script>
   <script type="text/javascript" src="/site_media/js/discussion.js"></script>
-
+  <script type="text/javascript" src="/site_media/js/slider.js"></script>
   
 {% endblock %}
 
@@ -55,17 +55,18 @@
     <tr>
       <td class="slider-cell slider-empty" id="slider-cell-asset_details"></td>
       <td class="slider-cell slider-empty" id="slider-cell-asset_large"></td>
-      <td class="slider-cell" id="slider-cell-asset_column">
-        <div id="asset_browse_col" class="asset-table"
+      <td class="slider-cell slider-active" 
+          id="slider-cell-asset_column"><div 
+             id="asset_browse_col" class="asset-table"
              data-ajax="{{switcher.init}}"
              >
           {# added into ajax #}
           {#% include "assetmgr/asset_table.html" %#}
         </div>
       </td>
-      <td class="slider-cell" id="slider-cell-reflection">
-
-  <div class="essay-space slider-column">
+      <td class="slider-cell slider-active" 
+          id="slider-cell-reflection"><div 
+         class="essay-space slider-column">
         <div class="capabilities">
           {% if edit_comment_permission %}
             <span class="capability can-edit">[can edit posts]</span>

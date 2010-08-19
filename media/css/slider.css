@@ -5,6 +5,7 @@
 #slider-parent table#top-slider td.slider-empty {
     width:0px;
     padding:0;
+    display:none;
 }
 
 #slider-parent {
@@ -26,7 +27,7 @@
 
 #top-slider #asset_browse_col {
     /*do not set width: should stay 380px*/
-    width:390px;
+    width:350px;
     float:none;
    }
 
@@ -56,10 +57,16 @@ table#top-slider td.slider-edge
 
 .slider-edge h2
 { 
-    display:none;
+  /*  display:none;*/
   position:absolute;
   white-space:nowrap;
+  cursor:pointer;
  }
+
+.slider-edge h2:hover 
+{
+    color:#660000;
+}
 
 .slider-edge-right h2
 {

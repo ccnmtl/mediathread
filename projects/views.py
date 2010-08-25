@@ -155,6 +155,7 @@ def view_project(request, project_id):
                          'revision':{
                                 'id':v_num,
                                 'url':reverse('project_version_preview',args=[project_id, v_num]),
+                                'public_url':projectform.instance.public_url(),
                                 }
                          }, indent=2),
                                     mimetype='application/json')

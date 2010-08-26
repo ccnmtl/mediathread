@@ -378,8 +378,8 @@ padding-right: 4px;
     min-width:0;
 }
 
-.sherd-flowplayer-wrapper,
-.sherd-flowplayer-wrapper div
+.sherd-video-wrapper,
+.sherd-video-wrapper div
  {
      /*to make the centering work*/
     display:inline-block;

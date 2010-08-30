@@ -103,17 +103,19 @@
           </div>
         </div><!-- end id="project_participants" -->
       
-        <div id="last-version-saved" class="highlight">
-          Saved: <a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+        <div id="last-version-saved">
+          <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+          <span id="last-version-public">
+            {% if project.public_url %}
+            (<a href="{{project.public_url}}">public url</a>)
+            {% endif %}
+          </span>
         </div>
         <br />
         <input type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
         <input type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
         {{projectform.publish.label_tag}}        
         {{projectform.publish}}
-        {% if project.public_url %}
-        (<a href="{{project.public_url}}">public url</a>)
-        {% endif %}
    
     </form>
 

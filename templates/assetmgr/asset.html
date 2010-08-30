@@ -109,9 +109,8 @@
     
         <div id="portion-asset-form" class="sub-control" style="display: block">
 	    <!--keep id/name for now for vital-support-->
-            <center>
-	           <div id="clipform-display" name="clipform-display"></div>
-            </center>
+            
+            <div id="clipform-display" name="clipform-display"></div>
 
             <div id="Clip" class="sub-control">
                {% if annotation and not readonly %}
@@ -169,6 +168,37 @@
      </div><!-- end "annotations"  -->
 
 
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      {% endif %}<!--end if not mock -->
+   </div> <!-- end "analysis" tab -->
+
+   {% if not mock %}
+    <div class="tabbertab indexcard" title="Class Activity">
+   
+      <h2><a class="hs-control" href="#classtags"></a>Class Tags</h2>
+
+      <div id="classtags" class="sub-control">
+	{% for tag in tags %}
+	<span class="size{{tag.font_size}}">
+	  <a href="{% url asset-container %}?tag={{tag.name}}">
+	  {{tag.name}} ({{tag.count}})</a>
+	</span>&nbsp;
+	{% endfor %}
+      </div>
+ 
+      <br />
      <h2> <a class="hs-control" href="#other_people_annotations"></a>Other People's  Clips of This Item</h2>
      <div id="other_people_annotations" class="sub-control">
 	  <ul>
@@ -189,38 +219,7 @@
 	  </ul>
       </div><!--end id="other_people_annotations" -->
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      {% endif %}<!--end if not mock -->
-   </div> <!-- end "analysis" tab -->
-
-   {% if not mock %}
-    <div class="tabbertab indexcard" title="Class Activity">
-   
-      <h2><a class="hs-control" href="#classtags"></a>Class Item Analysis</h2>
-
-      <div id="classtags" class="sub-control">
-	<h3>Tags:</h3>
-	{% for tag in tags %}
-	<span class="size{{tag.font_size}}">
-	  <a href="{% url asset-container %}?tag={{tag.name}}">
-	  {{tag.name}} ({{tag.count}})</a>
-	</span>&nbsp;
-	{% endfor %}
-      </div>
- 
-      <br />
+<br />
     
       <h2><a class="hs-control" href="#discussion"></a>Class Discussions Referencing this Item</h2>
       

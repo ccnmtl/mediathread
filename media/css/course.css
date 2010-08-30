@@ -32,7 +32,7 @@
 #id_annotation-body { height: 65px;}
 
 .clipform {
-    margin-bottom:1.5em;
+    margin-bottom:0.5em;
 }
 
 
@@ -378,8 +378,8 @@ padding-right: 4px;
     min-width:0;
 }
 
-.sherd-flowplayer-wrapper,
-.sherd-flowplayer-wrapper div
+.sherd-video-wrapper,
+.sherd-video-wrapper div
  {
      /*to make the centering work*/
     display:inline-block;
@@ -798,12 +798,14 @@ padding-bottom: .5em;
  line-height: 1.5em;
  }
 
-.helptext {
+.helptext,
+.sherd-instructions {
 
 color:#666;
 display:block;
 font-size:80%;
 margin:0.4em 0 2em;
+text-align:left;
 
 }
 

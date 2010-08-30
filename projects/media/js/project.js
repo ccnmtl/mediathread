@@ -180,6 +180,8 @@ function saveProject(evt) {
         dataType: 'json',
         error: function(){alert('There was an error saving your project.');},
         success: function(json,textStatus,xhr){
+            jQuery('#last-version-prefix').html('Saved: ')
+
             jQuery('#last-version-link')
             .html('Revision '+json.revision.id)
             .attr('href',json.revision.url);
@@ -192,6 +194,14 @@ function saveProject(evt) {
                 colorList:['#fff100','#ffffff'],
                 cycles:1
             }]);
+
+            if (json.revision.public_url) {
+                jQuery('#last-version-public').html('(<a href="'
+                                                    +json.revision.public_url
+                                                    +'">public url</a>)');
+            } else {
+                jQuery('#last-version-public').html('');
+            }
         }
     });
 }

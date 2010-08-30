@@ -139,7 +139,7 @@ img, img a
 .block
 {
 	display: block;
-	margin: 0 10px .8em 10px;
+	margin: 0;
 	padding: 0;
 	border: 0;
 }

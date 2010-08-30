@@ -1011,3 +1011,22 @@ a.bookmarklet {
 .highlight {
     background-color:#fff100;
 }
+
+.sherd-clipform-play {
+    text-align: center; 
+    border-top: 2px solid #999; 
+    padding: 10px 0px
+}
+
+.sherd-clipform-editing input.timecode,
+.sherd-clipform-editing input.regButton {
+    width:6em;
+}
+
+.sherd-clipform-editing td {
+    padding:2px;
+}
+
+.sherd-clipform-editing td.sherd-clipform-timecodestart {
+    border-right: 1px dotted #999;
+}

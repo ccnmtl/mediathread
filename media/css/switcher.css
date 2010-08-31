@@ -1,5 +1,6 @@
 .filter-widget {
     margin-bottom:5px;
+    float:right;
 }
 
 .switcher {
@@ -11,16 +12,16 @@
 div.collection-filter {
     float:right;
     position:relative;
-    width:120px;
+   /* width:120px; */
 }
 
 div.collection-chooser {
-    width:190px;
+  /*  width:190px;*/
 }
 
 div.collection-chooser a.switcher-top,
 div.collection-chooser a.switcher-top:hover {
-    font-size: 15px; 
+    font-size: 90%; 
     font-weight:bold;
 }
 

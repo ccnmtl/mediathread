@@ -9,21 +9,23 @@
 	<div id="clipstrip-display" class="clipstrip-display"></div>    
       </div>
     </div>
-  
+   <h2>
+Analyzed Items 
+        </h2>
 
-  <div class="filter-widget">
+  Show:<div class="filter-widget">
     <div class="switcher collection-chooser">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
         <span class="title" id="switcher-title">
           {%if space_owner %}
             {% ifequal space_owner user %}
-              Your Saved Items
+             My Saved Items
             {% else %}
               {{space_owner.get_full_name|default:space_owner.username}}
             {% endifequal %}   
           {% else %}
-            Class Items
+           All Class Items
           {% endif %} 
         </span>
       </a>
@@ -63,10 +65,10 @@
       </ul>
     </div>
     {%if dates or tags %}
-    <div class="switcher collection-filter" id="switcher-collection-filter">
+    Filters:<div class="switcher collection-filter" id="switcher-collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
-        <span class="title">Filter:
+        <span class="title">Choose
           {%if active_filters %}
             <span class="filter-on">ON</span>
           {%endif%}

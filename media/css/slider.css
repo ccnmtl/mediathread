@@ -26,9 +26,11 @@
 
 #top-slider #asset_browse_col {
     /*do not set width: should stay 380px*/
-    width:390px;
+      /*changed width to auto to fill in space from hidden filter column*/
+    width:auto;
     float:none;
    }
+   
 
 #top-slider #filter_col,
 #top-slider #member_col,
@@ -70,7 +72,7 @@ table#top-slider td.slider-cell
 {
   border:none;
     vertical-align:top;
-    width:auto;                       
+    width:100%;                       
 }
 
 table#top-slider {

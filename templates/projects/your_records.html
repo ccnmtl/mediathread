@@ -25,7 +25,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
       <td class="slider-cell slider-edge">
 	<h2>« <span id="slider-left-edge"></span></h2>
       </td>
-      <td class="slider-cell">
+<!--      <td class="slider-cell">
 
 <div id="filter_col">
 
@@ -58,7 +58,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
     {% replace_value of 'tag' with tag.name in request.GET as querystring %}
     <li> <a href="{{querystring|qsify}}"><span class="size{{tag.font_size}}">{{tag}}</span></a></li>
    {% endif %}
- {% endfor %}</ul></div>
+ {% endfor %}</ul></div>-->
  <!--
  <h3>Date Added</h3>
  <ul>
@@ -72,7 +72,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
     {% endif %}
  {% endfor %}
  </ul>
- -->
+ --><!--
  <h3>Date Modified</h3>
   <ul>
  {% for date, label in dates %}
@@ -88,7 +88,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
   </ul>
 
 </div>
-      </td>
+      </td>-->
       <td class="slider-cell">
 
 <div class="assets_wide_list" >

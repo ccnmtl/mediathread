@@ -74,15 +74,18 @@ var SherdSlider = new (function() {
                     self.edges['left'] = index;
             }
         });
+        var getClickListener = function(lr) {
+            //factory to avert closure failure on lr variable
+            return function(evt) {
+                if (self.edges[lr]!=failon) {
+                    self.showPane(self.order[ self.edges[lr]+self.links[lr].dir ])
+                }
+            }
+        }
         for (a in self.links) {
             self.links[a].html = document.getElementById('slider-edge-'+a);
             var failon = Math.min(self.links[a].max, self.order.length-1);
-            var aa = a; //so we can use it in a closure
-            jQuery(self.links[a].html).parent().click(function(evt) {
-                if (self.edges[aa]!=failon) {
-                    self.showPane(self.order[ self.edges[aa]+self.links[aa].dir ])
-                }
-            });
+            jQuery(self.links[a].html).parent().click(getClickListener(a));
         }
 
         self.onResize();
@@ -134,7 +137,7 @@ var SherdSlider = new (function() {
         return w;
     }
     this.forEachColumn = function(func, init, max) {
-        max = max || self.order.length;
+        max = (typeof max=='number') ? max : self.order.length;
         var res = init || 0;
         for (var i=0;i<max;i++) {
             res += func.call(self, self.columns[self.order[i]], self.order[i]);
@@ -147,6 +150,22 @@ var SherdSlider = new (function() {
     }
     this.opp =function(dir) {
         return ((dir=='left')?'right':'left');
+    }
+
+    this.updateLinks = function() {
+        var b = {
+            'left':self.edges['left']-1,
+            'right':self.edges['right']+1
+        };
+        for (a in self.links) {
+            if (b[a]>=0 && b[a]<self.order.length && self.columns[ self.order[b[a]] ].title) {
+                jQuery(self.links[a].html)
+                .html(self.columns[ self.order[b[a]] ].title)
+                .parent().show();            
+            } else {
+                jQuery(self.links[a].html).parent().hide();
+            }
+        }
     }
     this.slide = function(direction,col) {
         /* This may be overly complex.  Basically we swap the new column
@@ -174,38 +193,32 @@ var SherdSlider = new (function() {
         //TODO: this will need to be more sophisticated
         /// we'll need to decide what/when to scrunch,
         var left_pos = self.forEachColumn(function(c){return -c.width;},
-                                          0,/*upto=*/self.edges['left']);
-
+                                          0,/*upto=*/self.edges['left'])
         ///update which columns are at the edges  ??TODO: confirm this is correct
-        self.edges[direction] += self.links[direction].dir;
-        self.edges[self.opp(direction)] += self.links[direction].dir;
+        self.edges[direction] += self.links[direction].dir
+        self.edges[self.opp(direction)] += self.links[direction].dir
 
 
         jQuery(self.components.secondary).width(
             self.forEachColumn(function(c){return c.width;})
         )
         var tr = jQuery(self.components.secondary)
-        .css({
-            position:'absolute',
-            left: (left_pos)+'px'
-        })
-        .find('tr').empty().get(0);
-
+                 .css({position:'absolute',left:left_pos+'px'})
+                 .find('tr').empty().get(0)
+        
         ///this will be multiple: all but current
         self.forEachColumn(function(c) {
-            jQuery(tr).append('<td class="slider-cell" style="width:'+c.width+'px"></td>');
-        });
+            jQuery(tr).append('<td class="slider-cell" style="width:'+c.width+'px"></td>')
+        })
         if (new_col.inner_dom) {
-            jQuery( tr.childNodes.item(new_col.index) ).append(new_col.inner_dom);
+            jQuery( tr.childNodes.item(new_col.index) ).append(new_col.inner_dom)
         }
-        self.show(col);
+        self.show(col)
 
-        self.preserveHeight(true);
+        self.preserveHeight(true)
         jQuery(self.components.top).css({position:'absolute'})
         .animate({left:dir+"="+width+'px'},{
             complete:function() {
-                console.log('hi');
-                console.log(col+':'+opp);
                 self.hide(opp);
                 self.forEachColumn(function(c,cname) {
                     if (cname == col) return;
@@ -217,10 +230,13 @@ var SherdSlider = new (function() {
                 var s = self.components.secondary;
                 self.components.secondary = self.components.top;
                 self.components.top = s;
+                self.updateLinks();
             }
         });
-        jQuery(self.components.secondary).animate({left:dir+"="+width+'px'},
-                                                  {step:function(){console.log(this.style.left);}});
+        jQuery(self.components.secondary).animate({left:dir+"="+width+'px'},{
+            step:function(){
+                ///console.log(this.style.left);
+            }});
     }
     var indexOf= function(arr,val) {
         if (arr.indexOf) return arr.indexOf(val)
@@ -241,7 +257,6 @@ var SherdSlider = new (function() {
     }
     
     this.showPane = function(colname, args) {
-        console.log(colname);
         if (!self.columns[colname].active) {
             self.slide(self.direction(colname), colname);
         }

@@ -46,6 +46,7 @@ var SherdSlider = new (function() {
             dir:+1
         }
     }
+    this.queue = [];
     this.order = [];//'asset_details','asset_large','asset_column','reflection'
     this.edges = {'left':null,'right':null};
 
@@ -58,8 +59,9 @@ var SherdSlider = new (function() {
         }
     }
     this.init = function() {
-        self.components['top'] = jQuery('#slider-top').get(0);
-        self.components['secondary'] = jQuery('<table class="slider-top"><tbody><tr></tr></tbody></table>').appendTo('#slider-parent').get(0);
+        self.components['top'] = self.components['original'] = jQuery('#slider-top').get(0);
+        
+        self.components['secondary'] = self.components['non-original'] = jQuery('<table class="slider-top"><tbody><tr></tr></tbody></table>').appendTo('#slider-parent').get(0);
 
         jQuery('#slider-top td.slider-cell').each(function(index) {
             var a = this.id.substr('slider-cell-'.length);
@@ -78,7 +80,7 @@ var SherdSlider = new (function() {
             //factory to avert closure failure on lr variable
             return function(evt) {
                 if (self.edges[lr]!=failon) {
-                    self.showPane(self.order[ self.edges[lr]+self.links[lr].dir ])
+                    self.showPane(self.order[ self.edges[lr]+self.links[lr].dir ]);
                 }
             }
         }
@@ -167,6 +169,7 @@ var SherdSlider = new (function() {
             }
         }
     }
+
     this.slide = function(direction,col) {
         /* This may be overly complex.  Basically we swap the new column
            into a secondary table and then move both tables into the space
@@ -184,6 +187,11 @@ var SherdSlider = new (function() {
             width = new_col.min_width;
         if (direction=='right') {
             width = self.columns[opp].width;
+            if (!will_fit) {
+                new_col.width = Math.max(new_col.min_width, 
+                                         self.winwidth
+                                         -self.columns[self.edge('right')].width);
+            }
         } else if (!will_fit && direction=='left') {
             width = new_col.width = Math.max(new_col.min_width, 
                                              self.winwidth
@@ -214,29 +222,34 @@ var SherdSlider = new (function() {
             jQuery( tr.childNodes.item(new_col.index) ).append(new_col.inner_dom)
         }
         self.show(col)
-
         self.preserveHeight(true)
-        jQuery(self.components.top).css({position:'absolute'})
-        .animate({left:dir+"="+width+'px'},{
+        jQuery(self.components.top).css({position:'absolute'});
+
+
+        self.queue.push(function() {
+            self.hide(opp);
+                    
+                    self.forEachColumn(function(c,cname) {
+                        if (cname == col) return;
+                        c.html = tr.childNodes.item(c.index);
+                        if (c.inner_dom) 
+                            c.html.appendChild(c.inner_dom);
+                    });
+                    //switch
+                    var s = self.components.secondary;
+                    self.components.secondary = self.components.top;
+                    self.components.top = s;
+                    self.updateLinks();
+        });
+        jQuery(self.components['original']).animate({left:dir+"="+width+'px'},{
             complete:function() {
-                self.hide(opp);
-                self.forEachColumn(function(c,cname) {
-                    if (cname == col) return;
-                    c.html = tr.childNodes.item(c.index);
-                    if (c.inner_dom) 
-                        jQuery(c.html).append(c.inner_dom);
-                });
-                //switch
-                var s = self.components.secondary;
-                self.components.secondary = self.components.top;
-                self.components.top = s;
-                self.updateLinks();
+                var w;
+                while (w = self.queue.shift()) {
+                    w();
+                }
             }
         });
-        jQuery(self.components.secondary).animate({left:dir+"="+width+'px'},{
-            step:function(){
-                ///console.log(this.style.left);
-            }});
+        jQuery(self.components['non-original']).animate({left:dir+"="+width+'px'});
     }
     var indexOf= function(arr,val) {
         if (arr.indexOf) return arr.indexOf(val)
@@ -257,10 +270,17 @@ var SherdSlider = new (function() {
     }
     
     this.showPane = function(colname, args) {
-        if (!self.columns[colname].active) {
-            self.slide(self.direction(colname), colname);
-        }
         self.signal('load',colname,args);
+        if (!self.columns[colname].active) {
+            var doThis = function() {
+                self.slide(self.direction(colname), colname);
+            }
+            if (self.queue.length) {
+                self.queue.push(doThis);
+            } else {
+                doThis();
+            }
+        }
     }
 
     this.junk = function() {

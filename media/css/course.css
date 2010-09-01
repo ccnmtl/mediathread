@@ -20,9 +20,7 @@
   display: block;
   border: 2px solid gray;
 }
-  .indexcard div.sub-control {
-    padding: 0.25em 0.25em 0 0.25em;
-  }
+  
   .indexcard input[type=text],
   .indexcard textarea
  {
@@ -363,11 +361,10 @@ padding-right: 4px;
 
 .asset-view-big {
     /*so youtube 620px's can play on left*/
-    min-width:1000px;
+
 }
 .asset-object {
     width:60%;
-    margin-right: 1em;
     min-width: 356px;
     border:1px solid #ccc;
     background-color: #dedede;
@@ -389,9 +386,7 @@ padding-right: 4px;
 text-align:center;
 }
 
-  #stats .sub-control {
-      margin-top:-7px;
-   }
+
   #stats form {
       margin:0;
 }
@@ -628,17 +623,14 @@ width:340px;
 #asset_details_col {
 
 float:right;
-margin:0 1em;
+margin:0 0 0 1em;
 width:35%;
-min-width:370px;
+
 }
 
 #asset_details_col .tabberlive .tabbertab {
 
-height:34.3em;
-padding: .5em;
-overflow: auto;
-overflow-x: hidden;
+
 
 }
 
@@ -1010,4 +1002,23 @@ a.bookmarklet {
 
 .highlight {
     background-color:#fff100;
+}
+
+.sherd-clipform-play {
+    text-align: center; 
+    border-top: 2px solid #999; 
+    padding: 10px 0px
+}
+
+.sherd-clipform-editing input.timecode,
+.sherd-clipform-editing input.regButton {
+    width:6em;
+}
+
+.sherd-clipform-editing td {
+    padding:2px;
+}
+
+.sherd-clipform-editing td.sherd-clipform-timecodestart {
+    border-right: 1px dotted #999;
 }

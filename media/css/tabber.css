@@ -15,7 +15,7 @@
 .tabber {
 }
 .tabberlive {
- margin-top:1em;
+ margin:1em;
 }
 
 /*--------------------------------------------------
@@ -28,7 +28,7 @@ ul.tabbernav
  font: bold 12px Verdana, sans-serif;
  padding: 0;
  display: block;
- height: 30px;
+ height: 27px;
  border-bottom: 1px solid #ccc;
 }
 
@@ -49,16 +49,17 @@ ul.tabbernav li a
 
  text-decoration: none;
  display: block;
-  width: 120px;
- height: 25px;
  text-align: center;
- border: none;
+  border: 1px solid #ccc;
  margin: 0px;
- padding: 5px 0 0 0;
+ padding: 5px 10px;
  float: left;
-  background-image: url("../img/tabbertab_off.png");
- background-repeat: no-repeat;
+ background-color: #ccc;
  margin-right: .25em;
+ -moz-border-radius: 10px 10px 0 0;
+    -webkit-border-radius: 10px 10px 0 0;
+    -khtml-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
  
 }
 
@@ -68,15 +69,14 @@ ul.tabbernav li a:visited { color: #666; }
 ul.tabbernav li a:hover
 {
  color: #8d382f;
-  background-image: url("../img/tabbertab_on.png");
- background-repeat: no-repeat;
+  background-color: #fff;
+ border: 1px solid #ccc;
 }
 
 ul.tabbernav li.tabberactive a
 {
- background-color: #fff;
-  background-image: url("../img/tabbertab_on.png");
- background-repeat: no-repeat;
+  background-color: #fff;
+ border: 1px solid #ccc;
  color: #333;
 
 }

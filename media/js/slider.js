@@ -5,11 +5,11 @@ var SherdSlider = new (function() {
     this.components = {};
     this.columns = {
         'asset_details': {
-            title:'Details',
+            title:'Asset Details',
             min_width:400
         },
         'asset_large': {
-            title:'Asset',
+            title:'',
             min_width:620,
             max_space:true,
             load:function(url) {
@@ -58,9 +58,13 @@ var SherdSlider = new (function() {
         }
     }
     this.init = function() {
+        self.components['top'] = jQuery('#slider-top').get(0);
+        self.components['secondary'] = jQuery('<table class="slider-top"><tbody><tr></tr></tbody></table>').appendTo('#slider-parent').get(0);
+
         jQuery('#slider-top td.slider-cell').each(function(index) {
             var a = this.id.substr('slider-cell-'.length);
             self.columns[a].html = this;
+            self.columns[a].inner_dom = jQuery('div',this).get(0);
             self.columns[a].index = self.order.push(a) -1;
             if (jQuery(this).hasClass('slider-active')) {
                 self.columns[a].active = true;
@@ -69,8 +73,6 @@ var SherdSlider = new (function() {
                 if (self.edges['left'] == null) 
                     self.edges['left'] = index;
             }
-
-            
         });
         for (a in self.links) {
             self.links[a].html = document.getElementById('slider-edge-'+a);
@@ -85,14 +87,14 @@ var SherdSlider = new (function() {
 
         self.onResize();
         jQuery(window).resize(self.onResize);
-        self.components = {
-            'top':jQuery('#slider-top').get(0),
-            'secondary':jQuery('<table class="slider-top"><tbody><tr></tr></tbody></table>').appendTo('#slider-parent').get(0)
-        }
     }
     this.onResize = function(evt) {
         self.winwidth = jQuery('#block').width();
         jQuery('#slider-parent').width(self.winwidth);
+        for (var i=0;i<self.order.length;i++) {
+            var c = self.columns[self.order[i]];
+            c.width = jQuery(c.html).width() || c.min_width;
+        }
     }
 
     this.options = {
@@ -112,26 +114,32 @@ var SherdSlider = new (function() {
             jQuery('#slider-parent').height('auto');
         }
     }
-    this.show = function(col,width) {
+    this.show = function(col) {
         self.columns[col].active = true;
-        jQuery(self.columns[col].html)
-        //.addClass('slider-active')
-        .css({width:width})
-        .show();
+        jQuery(self.columns[col].inner_dom).show();
+        //jQuery(self.columns[col].html).addClass('slider-active')
+        //.css({width:width})
     }
     this.hide = function(col) {
         self.columns[col].active = false;
-        jQuery(self.columns[col].html)
-        .removeClass('slider-active')
-        .hide();
+        jQuery(self.columns[col].inner_dom).hide();
+        //jQuery(self.columns[col].html).removeClass('slider-active')
     }
     this.currentFitWidth = function() {
         ///maybe we should return actual?
         var w = 0;
-        for (var i=self.edges.left;i<self.edges.right;i++) {
+        for (var i=self.edges.left;i<=self.edges.right;i++) {
             w+= self.order[i].min_width;
         }
         return w;
+    }
+    this.forEachColumn = function(func, init, max) {
+        max = max || self.order.length;
+        var res = init || 0;
+        for (var i=0;i<max;i++) {
+            res += func.call(self, self.columns[self.order[i]], self.order[i]);
+        }
+        return res;
     }
     this.edge = function(dir,is_opposite) {
         var d = (is_opposite ? self.opp(dir) : dir);
@@ -141,53 +149,93 @@ var SherdSlider = new (function() {
         return ((dir=='left')?'right':'left');
     }
     this.slide = function(direction,col) {
-        console.log('slide');
+        /* This may be overly complex.  Basically we swap the new column
+           into a secondary table and then move both tables into the space
+           This is meant to stop disruption based on the new column getting weird
+           widths (and thus bumping the content that's shown before animation)
+         */
         if ((direction=='left' && self.edges['left']==0)
             || (direction=='right' && self.edges['right']==self.order.length-1))
             return;//no place to slide to
 
-        console.log(direction);
-
-        var dir = ((direction=='left')?'+=':'-='),
+        var dir = ((direction=='left')?'+':'-'),
+            new_col = self.columns[col],
             opp = self.edge(direction,'opposite'),
-            will_fit = (self.currentFitWidth()
-                        +self.columns[col].min_width < self.winwidth),
-            width = ((will_fit || direction=='left')
-                     ? self.columns[col].min_width
-                     : self.columns[opp].min_width //TODO: actual width
-                    )+ 'px';
-            //TODO: this will need to be more sophisticated
-            /// we'll need to decide what/when to scrunch,
-        console.log(will_fit);
+            will_fit = (self.currentFitWidth()+new_col.min_width < self.winwidth),
+            width = new_col.min_width;
+        if (direction=='right') {
+            width = self.columns[opp].width;
+        } else if (!will_fit && direction=='left') {
+            width = new_col.width = Math.max(new_col.min_width, 
+                                             self.winwidth
+                                             -self.columns[self.edge('left')].width)
+        } 
+
+        //TODO: this will need to be more sophisticated
+        /// we'll need to decide what/when to scrunch,
+        var left_pos = self.forEachColumn(function(c){return -c.width;},
+                                          0,/*upto=*/self.edges['left']);
+
         ///update which columns are at the edges  ??TODO: confirm this is correct
         self.edges[direction] += self.links[direction].dir;
         self.edges[self.opp(direction)] += self.links[direction].dir;
-        console.log(self.edges);
+
+
+        jQuery(self.components.secondary).width(
+            self.forEachColumn(function(c){return c.width;})
+        )
+        var tr = jQuery(self.components.secondary)
+        .css({
+            position:'absolute',
+            left: (left_pos)+'px'
+        })
+        .find('tr').empty().get(0);
+
+        ///this will be multiple: all but current
+        self.forEachColumn(function(c) {
+            jQuery(tr).append('<td class="slider-cell" style="width:'+c.width+'px"></td>');
+        });
+        if (new_col.inner_dom) {
+            jQuery( tr.childNodes.item(new_col.index) ).append(new_col.inner_dom);
+        }
+        self.show(col);
 
         self.preserveHeight(true);
-        console.log(self.components);        
-        console.log(width);        
-
-        jQuery(self.components.top)
-        .css({position:'absolute'})
-        .animate({left:dir+width},{
+        jQuery(self.components.top).css({position:'absolute'})
+        .animate({left:dir+"="+width+'px'},{
             complete:function() {
                 console.log('hi');
-                self.show(col);
+                console.log(col+':'+opp);
                 self.hide(opp);
-                //jQuery(self.components.top).css({position:'static'});
-                //self.preserveHeight(false);
+                self.forEachColumn(function(c,cname) {
+                    if (cname == col) return;
+                    c.html = tr.childNodes.item(c.index);
+                    if (c.inner_dom) 
+                        jQuery(c.html).append(c.inner_dom);
+                });
+                //switch
+                var s = self.components.secondary;
+                self.components.secondary = self.components.top;
+                self.components.top = s;
             }
         });
+        jQuery(self.components.secondary).animate({left:dir+"="+width+'px'},
+                                                  {step:function(){console.log(this.style.left);}});
     }
-
+    var indexOf= function(arr,val) {
+        if (arr.indexOf) return arr.indexOf(val)
+        ///IE SUX
+        else for (var i=0;i<arr.length;i++) {
+            if (arr[i]==val) return i;
+        }
+    }
     this.direction = function(colname, from) {
-        var ind = self.order.indexOf(colname);
+        var ind = indexOf(self.order,colname);
         if (!from) {
             if (ind < self.edges.left) return 'left';
             if (ind > self.edges.right) return 'right';
         } else {
-            var frm_ind = self.order.indexOf(from);
+            var frm_ind = indexOf(self.order,from);
             return ((ind < frm_ind)?'left':'right');
         }
     }

@@ -231,17 +231,17 @@ var SherdSlider = new (function() {
             if (!will_fit)
                 self.hide(opp);
                     
-                    self.forEachColumn(function(c,cname) {
-                        if (cname == col) return;
-                        c.html = tr.childNodes.item(c.index);
-                        if (c.inner_dom) 
-                            c.html.appendChild(c.inner_dom);
-                    });
-                    //switch
-                    var s = self.components.secondary;
-                    self.components.secondary = self.components.top;
-                    self.components.top = s;
-                    self.updateLinks();
+            self.forEachColumn(function(c,cname) {
+                if (cname == col) return;
+                c.html = tr.childNodes.item(c.index);
+                if (c.inner_dom) 
+                    c.html.appendChild(c.inner_dom);
+            });
+            //switch
+            var s = self.components.secondary;
+            self.components.secondary = self.components.top;
+            self.components.top = s;
+            self.updateLinks();
         });
         jQuery(self.components['original']).animate({left:dir+"="+width+'px'},{
             complete:function() {

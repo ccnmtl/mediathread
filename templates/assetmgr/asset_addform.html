@@ -14,16 +14,18 @@
       <input type="submit" value="Really Save" />
     </form>
 {% else %}
-<p class="intro-text">
+<div class="intro-text">
+  <p>
   This 'Save Page' allows you to add archives or other assets explicitly to appear on the Explore Collections page.
   Each item is a form, though for the archive forms, only edit the values if you know what you're doing.
+  </p>
   <ul>
     <li><a href="#archives">Add supported archives</a></li>
     <li><a href="#custom_archive">Add your own archive</a></li>
     <li><a href="#specific">Add single media assets</a></li>
     <li><a href="#advanced">Advanced Documentation</a></li>
   </ul>
-</p>
+</div>
     <h1 id="archives">Supported Archives</h1>
     <ul class="archive-gallery">
       {%for archive in supported_archives %}
@@ -38,12 +40,12 @@
            {{archive.metadata.description|urlize|linebreaks}}
          </span>
          <form action="{% url asset-save %}" method="POST">
-           <input type="hidden" name="title" value="{{archive.title}}"/>
-           <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}"/>
+           <input type="hidden" name="title" value="{{archive.title}}" />
+           <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}" />
            {%for lbl,src in archive.sources.items %}
-             <input type="hidden" name="{{src.label}}" value="{{src.url}}"/>
+             <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
            {%endfor%}
-           <input type="submit" value="Add to Class"/>
+           <input type="submit" value="Add to Class" />
          </form>
       </li>
       {%endfor%}
@@ -55,18 +57,18 @@
         You may want to copy the links from above (including the thumbnail URL) and just change the description or link to a sub-section of the site.
       </p>
       <form action="{% url asset-save %}" method="POST">
-	Collection Title: <input type="text" name="title" value=""/>
+	Collection Title: <input type="text" name="title" value="" />
 	<br/>
-	Collection URL: <input type="text" name="archive" value=""/>
+	Collection URL: <input type="text" name="archive" value="" />
 	<br/>
-	Collection URL (yes, again): <input type="text" name="url" value=""/>
+	Collection URL (yes, again): <input type="text" name="url" value="" />
 	<br/>
 	Description:
 	<textarea cols="55" rows="5" 
 		  name="metadata-description"
 		  ></textarea>
 	<br/>
-	Thumb URL: <input type="text" name="thumb" value=""/>
+	Thumb URL: <input type="text" name="thumb" value="" />
 	<br/>
         Required Plugin
 	<select name="metadata-required">
@@ -77,128 +79,128 @@
           <option value="ogg">Ogg videotag support</option>
         </select>
         <br/>
-	<input type="submit" value="Add Archive to Class"/>
+	<input type="submit" value="Add Archive to Class" />
       </form>
 
       <h1 id="specific">Specific Internet Resources</h1>
 
       <h2>Local Quicktime Streaming Video</h2>
       <form action="{% url asset-save %}" method="GET">
-	<!--Asset URL: <input type="text" name="url" value=""></input>
+	<!--Asset URL: <input type="text" name="url" value="" />
 	<br/>
 	-->
 	Asset QT Stream: <input type="text" name="quicktime" value="" />
 	<br/>
-	Asset Title: <input type="text" name="title" value=""></input>
+	Asset Title: <input type="text" name="title" value="" />
 	<br/>
-	Dimensions: <input type="text" name="quicktime-metadata" value="w480h360"></input> (as w{width}h{height} do not include controller height)
+	Dimensions: <input type="text" name="quicktime-metadata" value="w480h360" /> (as w{width}h{height} do not include controller height)
 	<br/>
 	Final Cut Pro XML url: <input type="text" name="xmeml" value="" />
 	<br/>
-	<input type="submit"/>
+	<input type="submit" />
       </form>
       
     <h2>YouTube Video</h2>
       <form action="{% url asset-save %}" method="GET">
-          YouTube View (Watch) URL: <input type="text" name="url" value=""></input> (example: http://www.youtube.com/watch?v=MjdEEwzskck)
+          YouTube View (Watch) URL: <input type="text" name="url" value="" /> (example: http://www.youtube.com/watch?v=MjdEEwzskck)
           <br/>
           YouTube Video URL: <input type="text" name="youtube" value="" /> (example: http://www.youtube.com/v/MjdEEwzskck&hl=en_US&fs=1)
           <br/>
-          YouTube Title: <input type="text" name="title" value=""></input>
+          YouTube Title: <input type="text" name="title" value="" />
           <br/>
-          <input type="submit"/>
+          <input type="submit" />
       </form>
       
     <h2>Flash Video (.flv)</h2>
       <form action="{% url asset-save %}" method="GET">
-          Flash Video View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          Flash Video View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Flash Video URL: <input type="text" name="flv" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-          <input type="submit"/>
+          <input type="submit" />
       </form>
       
      <h2>Flash Video Pseudo Streaming(.flv)</h2>
       <form action="{% url asset-save %}" method="GET">
-          Flash Video View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          Flash Video View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Flash Video URL: <input type="text" name="flv_pseudo" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-	Dimensions: <input type="text" name="flv_pseudo-metadata" value="w480h360"></input> (as w{width}h{height} do not include controller height)
+	Dimensions: <input type="text" name="flv_pseudo-metadata" value="w480h360" /> (as w{width}h{height} do not include controller height)
 	<br/>
-          QueryString: <input type="text" name="querystring" value=""></input>
+          QueryString: <input type="text" name="querystring" value="" />
 	<br/>
 	Final Cut Pro XML url: <input type="text" name="xmeml" value="" />
           <br />
-          <input type="submit"/>
+          <input type="submit" />
       </form>
     <h2>MP4 (.mp4)</h2>
       <form action="{% url asset-save %}" method="GET">
-          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Video URL: <input type="text" name="mp4" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-          <input type="submit"/>
+          <input type="submit" />
       </form>
     <h2>MP4 Pseudo Streaming (.mp4)</h2>
       <form action="{% url asset-save %}" method="GET">
-          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Video URL: <input type="text" name="mp4_pseudo" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-          QueryString: <input type="text" name="querystring" value=""></input>
+          QueryString: <input type="text" name="querystring" value="" />
           <br />
-          <input type="submit"/>
+          <input type="submit" />
       </form>
     <h2>RTMP (.mp4)</h2>
       <form action="{% url asset-save %}" method="GET">
-          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Video URL: <input type="text" name="mp4_rtmp" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-          <input type="submit"/>
+          <input type="submit" />
       </form>
     <h2>RTMP (.flv)</h2>
       <form action="{% url asset-save %}" method="GET">
-          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Video URL: <input type="text" name="flv_rtmp" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-          <input type="submit"/>
+          <input type="submit" />
       </form>
     <h2>RealPlayer (.rm)</h2>
       <form action="{% url asset-save %}" method="GET">
-          View (Watch) URL: <input type="text" name="url" value=""></input> (the remote page containing the video)
+          View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
           <br/>
           Video URL: <input type="text" name="realplayer" value="" /> (the actual video URL)
           <br/>
-          Title: <input type="text" name="title" value=""></input>
+          Title: <input type="text" name="title" value="" />
           <br/>
-          <input type="submit"/>
+          <input type="submit" />
       </form>
       <h2>A website</h2>
       <form action="{% url asset-save %}" method="GET">
-	Asset URL: <input type="text" name="url" value="http://slashdot.org"></input>
+	Asset URL: <input type="text" name="url" value="http://slashdot.org" />
 	<br/>
-	Asset Title: <input type="text" name="title" value="SlashDot"></input>
+	Asset Title: <input type="text" name="title" value="SlashDot" />
 	<br/>
-	<input type="submit"/>
+	<input type="submit" />
       </form>
 
             
-      <p class="intro-text">
+      <div class="intro-text">
         <h1 id="advanced">Advanced Documentation on How Assets are Saved</h1>    
 
         <p>
@@ -231,7 +233,26 @@
           <dt></dt><dd></dd>
 
         </dl>
-      </p>
+      </div>
+      <div class="intro-text">
+        <h1 id="experimental">Experimental Testing</h1>
+        <p>There are some features we're working on that are incomplete
+           and experimental.  If you want to try out these features, then
+           enable the experimental cookie here.
+        </p>
+        <ul>
+          <li id="experimental_status"></li>
+          <li><a href="#experimental" onclick="document.cookie='experimental=on; expires='+new Date(9999999999999).toGMTString()+'; path=/';experimentalStatus();">Enable</a></li>
+          <li><a href="#experimental" onclick="document.cookie='experimental=OFF; expires='+new Date().toGMTString()+'; path=/';experimentalStatus();">Disable</a></li>
+        </ul>
+        <script type="text/javascript">
+          function experimentalStatus() {
+             document.getElementById('experimental_status').innerHTML = 'Status: '
+             + ((document.cookie.match(/experimental/)) ? 'ON' : 'OFF');
+          }
+          experimentalStatus();
+        </script>
+      </div>
 {% endif %}
 
 {% endblock %}

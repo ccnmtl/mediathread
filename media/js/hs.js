@@ -41,6 +41,21 @@ function setCookie(name, value, expires, path, domain, secure) {
         	((secure) ? "; secure" : "");
 }
 
+function hs_DataStore(name, value, expires, path, domain, secure) {   
+    if (window.localStorage) {
+        localStorage[name] = value;
+    } else {
+        setCookie(name, value, expires, path, domain, secure)
+    }
+}
+
+function hs_DataRetrieve(name) {   
+    if (window.localStorage) {
+        return localStorage.getItem(name);
+    } else {
+        return getCookie(name)
+    }
+}
 
 function hs_addControlCallback() {
     //log("adding callback to " + a);
@@ -52,7 +67,7 @@ function hs_addControlCallback() {
 
 function hs_lookForCookie() {
    var e = hs_getTarget(this);
-   var s = getCookie(cookie_name(e));
+   var s = hs_DataRetrieve(cookie_name(e));
    if (s == "hidden") {
       hs_hide(e);
    } 
@@ -69,10 +84,10 @@ function hs_toggle() {
     var target = hs_getTarget(this);
     if (jQuery(target).hasClass("hs-hide")) {
 	hs_show(target);
-	setCookie(cookie_name(target),"show",futureDate());
+	hs_DataStore(cookie_name(target),"show",futureDate());
     } else {
 	hs_hide(target);
-	setCookie(cookie_name(target),"hidden",futureDate());
+	hs_DataStore(cookie_name(target),"hidden",futureDate());
     }
     return false;
 }

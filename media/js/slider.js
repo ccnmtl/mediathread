@@ -92,6 +92,7 @@ var SherdSlider = new (function() {
 
         self.onResize();
         jQuery(window).resize(self.onResize);
+        self.updateLinks();
     }
     this.onResize = function(evt) {
         self.winwidth = jQuery('#block').width();
@@ -134,7 +135,7 @@ var SherdSlider = new (function() {
         ///maybe we should return actual?
         var w = 0;
         for (var i=self.edges.left;i<=self.edges.right;i++) {
-            w+= self.order[i].min_width;
+            w+= self.columns[self.order[i]].min_width;
         }
         return w;
     }
@@ -227,7 +228,8 @@ var SherdSlider = new (function() {
 
 
         self.queue.push(function() {
-            self.hide(opp);
+            if (!will_fit)
+                self.hide(opp);
                     
                     self.forEachColumn(function(c,cname) {
                         if (cname == col) return;

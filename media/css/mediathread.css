@@ -6,7 +6,7 @@ body
 	background-color: #fff;
 	font: normal 0.8em/120% 'lucida grande', arial, verdana, sans-serif;
 	color: #000;
-	min-width: 940px;
+	min-width: 990px;
 }
 
 /* ########## Standard elements ########## */
@@ -455,8 +455,8 @@ img, img a
 #pagebody
 {
 	display: block;
-	width: 900px;
-	min-width: 900px;
+	width: 950px;
+	min-width: 950px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -681,9 +681,9 @@ img, img a
 #footer
 {
 	display: block;
-	width: 900px;
+	width: 950px;
 		height: 33px;
-	min-width: 900px;
+	min-width: 950px;
 	clear: both;
 	margin: 0;
 	padding: 6px 0 0 0;

@@ -2,9 +2,10 @@
 
 }
 
-#slider-parent table#top-slider td.slider-empty {
+#slider-parent table.slider-top td.slider-empty {
     width:0px;
     padding:0;
+    display:none;
 }
 
 #slider-parent {
@@ -14,17 +15,25 @@
     /*mediathread.css: min-windth for #pagebody  is 900px */
 }
 
-#top-slider div#member_col, 
-#top-slider div#project_col 
+table.slider-top {
+    /*-10px from .block in mondrian.css */
+    /*margin:-30px -10px 0 -10px;  /*.block in mondrian.css*/
+    border:none;
+    min-height:600px;
+    margin-top:10px;
+}
+
+.slider-top div#member_col, 
+.slider-top div#project_col 
 {  
   width:250px;
   }
-#top-slider div#filter_col
+.slider-top div#filter_col
 { 
     width:180px; 
 }
 
-#top-slider #asset_browse_col {
+.slider-top #asset_browse_col {
     /*do not set width: should stay 380px*/
       /*changed width to auto to fill in space from hidden filter column*/
     width:auto;
@@ -32,57 +41,58 @@
    }
    
 
-#top-slider #filter_col,
-#top-slider #member_col,
-#top-slider #project_col {
+.slider-top #filter_col,
+.slider-top #member_col,
+.slider-top #project_col {
    width:100%;
     float:none;
    }
-#top-slider .essay-space,
-#top-slider #threadedcomments {
+.slider-top .essay-space,
+.slider-top #threadedcomments {
     position:relative;
     float:none;
     margin-left:10px;
     width:auto;                       
 }
 
-table#top-slider .slider-cell
+table.slider-top .slider-cell
 { 
   padding-top:14px;
+  border:none;
  }
 
-table#top-slider td.slider-edge 
+table.slider-top td.slider-edge 
 { 
   width:10px!important;
  }
 
 .slider-edge h2
 { 
-    display:none;
+  /*  display:none;*/
   position:absolute;
   white-space:nowrap;
+  cursor:pointer;
+  display:none;
  }
+
+.slider-edge h2:hover 
+{
+    color:#660000;
+}
 
 .slider-edge-right h2
 {
-    right:0px;
+    right:10px;
 }
 
-table#top-slider td.slider-cell
+table.slider-top td.slider-cell
 {
   border:none;
     vertical-align:top;
     width:100%;                       
 }
 
-table#top-slider {
-    /*-10px from .block in mondrian.css */
-    /*margin:-30px -10px 0 -10px;  /*.block in mondrian.css*/
-       border:none;
-    position:relative;
-    min-height:600px;
-    margin-top:10px;
-}
+
 /*
 #top-slider-rail table {
     position:absolute;

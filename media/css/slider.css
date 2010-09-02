@@ -35,7 +35,7 @@ table.slider-top {
 
 .slider-top #asset_browse_col {
     /*do not set width: should stay 380px*/
-    width:350px;
+    width:auto;
     float:none;
    }
 
@@ -70,6 +70,7 @@ table.slider-top td.slider-edge
   position:absolute;
   white-space:nowrap;
   cursor:pointer;
+  display:none;
  }
 
 .slider-edge h2:hover 

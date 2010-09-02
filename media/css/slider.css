@@ -34,8 +34,12 @@ table.slider-top {
 }
 
 .slider-top #asset_browse_col {
-    /*do not set width: should stay 380px*/
-    width:auto;
+    /*do not set width: should stay 380px
+      1: The slider needs a fixed width to rely upon
+      2: width + 620px asset (or even 640?! for video) must work along side asset
+      3: width:auto has issues as switching between users in project/discussion disruptively changes the width, because 'auto' changes the width based on the inner content (one set of assets will have more/less content)
+     */
+    width:380px;
     float:none;
    }
 

@@ -35,7 +35,9 @@
   <!--END for showing Annotations -->
   <script type="text/javascript" src="/site_media/js/project/project.js"></script>
   <script type="text/javascript" src="/site_media/js/discussion.js"></script>
-
+  {% if EXPERIMENTAL %}
+  <script type="text/javascript" src="/site_media/js/slider.js"></script>
+  {% endif %}
   
 {% endblock %}
 
@@ -43,29 +45,30 @@
 {{ block.super }}
 <div id="slider-parent">
   <div class="slider-cell slider-edge">
-    <h2>« <span id="slider-edge-left">Asset Details</span></h2>
+    <h2>« <span id="slider-edge-left"></span></h2>
   </div>
 
   <div class="slider-cell slider-edge slider-edge-right">
-    <h2><span id="slider-edge-right">Reflection</span> »</h2>
+    <h2><span id="slider-edge-right"></span> »</h2>
   </div>
 
-  <table id="top-slider">
+  <table id="slider-top" class="slider-top">
     <tbody>
     <tr>
       <td class="slider-cell slider-empty" id="slider-cell-asset_details"></td>
       <td class="slider-cell slider-empty" id="slider-cell-asset_large"></td>
-      <td class="slider-cell" id="slider-cell-asset_column">
-        <div id="asset_browse_col" class="asset-table"
+      <td class="slider-cell slider-active" 
+          id="slider-cell-asset_column"><div 
+             id="asset_browse_col" class="asset-table"
              data-ajax="{{switcher.init}}"
              >
           {# added into ajax #}
           {#% include "assetmgr/asset_table.html" %#}
         </div>
       </td>
-      <td class="slider-cell" id="slider-cell-reflection">
-
-  <div class="essay-space slider-column">
+      <td class="slider-cell slider-active" 
+          id="slider-cell-reflection"><div 
+         class="essay-space slider-column">
         <div class="capabilities">
           {% if edit_comment_permission %}
             <span class="capability can-edit">[can edit posts]</span>

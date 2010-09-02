@@ -159,6 +159,7 @@ var AssetList = new (function () {
                 
                 if (init) {
                     self.onInit();
+                    if (window.SherdSlider) SherdSlider.init();
                 }
             }
         });

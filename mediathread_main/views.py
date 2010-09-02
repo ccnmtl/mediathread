@@ -39,7 +39,9 @@ def django_settings(request):
     whitelist = ['PUBLIC_CONTACT_EMAIL',
                  'FLOWPLAYER_SWF_LOCATION',]
 
-    return {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]) }
+    return {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]),
+            'EXPERIMENTAL':request.COOKIES.has_key('experimental')
+            }
 
 @rendered_with('projects/portal.html')
 @allow_http("GET")

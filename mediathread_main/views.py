@@ -278,7 +278,7 @@ def your_records(request, user_name):
     
     active_filters = get_active_filters(request, filter_by)
     #bad language, we should change this to user_of_assets or something
-    space_viewer = user 
+    space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
 

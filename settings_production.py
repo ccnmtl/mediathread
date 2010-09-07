@@ -4,6 +4,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
     #'django.core.context_processors.debug',
     'django.core.context_processors.request',
+    'mediathread_main.views.django_settings',
     )
 
 DATABASE_ENGINE = 'postgresql_psycopg2'

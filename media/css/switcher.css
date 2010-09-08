@@ -1,6 +1,8 @@
 .filter-widget {
-    margin:5px;
+    margin:2px;
     float:right;
+    background-color: #ccc;
+    padding: 2px;
 }
 
 .filter-widget h4 {

@@ -2,6 +2,14 @@
 
 }
 
+#content .slider-column h2 {
+
+font-size: 95%;
+padding:0 0 10px;
+}
+
+
+
 #slider-parent table.slider-top td.slider-empty {
     width:0px;
     padding:0;
@@ -94,7 +102,7 @@ table.slider-top td.slider-cell
 {
   border:none;
     vertical-align:top;
-    width:100%;                       
+    width:auto;                       
 }
 
 

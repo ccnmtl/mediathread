@@ -2,11 +2,19 @@
 
 }
 
-#content .slider-column h2 {
+#content .slider-column h2{
 
 font-size: 95%;
 padding:0 0 10px;
 }
+
+
+#content .slider-cell h1{
+
+font-size: 95%;
+padding:0 0 0 15px;
+}
+
 
 
 

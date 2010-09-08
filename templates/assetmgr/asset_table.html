@@ -9,12 +9,8 @@
 	<div id="clipstrip-display" class="clipstrip-display"></div>    
       </div>
     </div>
-   <h2>
-Analyzed Items 
-        </h2>
-
-  Show:<div class="filter-widget">
-    <div class="switcher collection-chooser">
+    <div class="filter-widget">
+    <h4>Show:</h4><div class="switcher collection-chooser">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
         <span class="title" id="switcher-title">
@@ -43,7 +39,7 @@ Analyzed Items
                 >
               <a href="{%url your-space space_viewer.username%}" 
                  data-ajax="{%url annotations-fragment space_viewer.username%}"
-                 >Your Saved Items</a>
+                 >My Saved Items</a>
             </li>
           </ul>
         </li>
@@ -65,7 +61,7 @@ Analyzed Items
       </ul>
     </div>
     {%if dates or tags %}
-    Filters:<div class="switcher collection-filter" id="switcher-collection-filter">
+    <h4>Filters:</h4><div class="switcher collection-filter" id="switcher-collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
         <span class="title">Choose
@@ -120,7 +116,11 @@ Analyzed Items
     </div>
     {%endif%}{#end dates or tags#}
     <div class="visualclear"></div>
-  </div>
+  </div> <h2>
+Analyzed Items 
+        </h2>
+
+
 
 <div id="materials" class="resize-height">
  {% for asset in assets %}

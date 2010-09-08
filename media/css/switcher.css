@@ -1,7 +1,17 @@
 .filter-widget {
-    margin-bottom:5px;
+    margin:5px;
     float:right;
 }
+
+.filter-widget h4 {
+	font-size: 80%;
+	font-weight: bold;
+	display: inline;
+	float: left;
+	margin: 2px 5px;
+	
+}
+
 
 .switcher {
     float:left;
@@ -21,8 +31,8 @@ div.collection-chooser {
 
 div.collection-chooser a.switcher-top,
 div.collection-chooser a.switcher-top:hover {
-    font-size: 90%; 
-    font-weight:bold;
+    font-size: 80%; 
+    font-weight:normal;
 }
 
 div a.switcher-top {
@@ -43,7 +53,10 @@ div.collection-chooser ul.switcher-options {
 }
 
 .switcher ul.switcher-options h3 {
-    margin:0 0 6px 0;
+   
+   font-size: 90%;
+	font-weight: normal;
+   margin:0 0 6px 0;
 }
 
 .switcher ul.switcher-options > li {
@@ -53,7 +66,7 @@ div.collection-chooser ul.switcher-options {
 .switcher ul.switcher-options {
     position:absolute;
     display:none;
-    background-color:#6f6f6f;
+    background-color:#999;
     z-index:9999;
     width:inherit;
     left:-10px;
@@ -104,6 +117,7 @@ div.collection-chooser ul.switcher-options {
     text-decoration:none;
     padding-right:4px;
     display:inline-block;
+    font-size:80%;
 }
 .switcher ul.switcher-options .switcher-sub a:hover {
     /*color:white;*/
@@ -132,7 +146,7 @@ div.collection-chooser ul.switcher-options {
 .switcher a.closed {
     /*firefox*/
     border: 1px solid rgb(204, 204, 204); 
-    padding: 3px 3px 3px 8px; 
+    padding: 0px 3px 3px 8px; 
     /*rgb(238, 238, 238) url(http://jqueryui.com/themeroller/themeswitchertool/images/buttonbg.png)*/
     background: #DEDEDE  repeat-x scroll 50% 50%; 
     /*font-family: Trebuchet MS,Verdana,sans-serif; */
@@ -205,7 +219,7 @@ div.collection-chooser ul.switcher-options {
 
     border-width: 1px 1px 0px; 
     padding: 3px 3px 3px 8px; 
-    background: #6f6f6f none repeat scroll 0% 0%; 
+    background: #999 none repeat scroll 0% 0%; 
     color: white; 
     -moz-background-clip: border; 
     -moz-background-origin: padding; 

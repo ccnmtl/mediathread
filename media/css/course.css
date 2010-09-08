@@ -370,9 +370,10 @@ padding-right: 4px;
 }
 .asset-object {
     width:60%;
-    min-width: 356px;
+  /*  min-width: 356px; */
     border:1px solid #ccc;
     background-color: #dedede;
+  /*  margin: 1em auto; */
 }
 
 .asset-view-small  .asset-object {

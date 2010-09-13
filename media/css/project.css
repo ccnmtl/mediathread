@@ -164,7 +164,6 @@ form.threaded_comments_form ul li {
 .respond_to_comment_form_div .control-open {
     padding-right:20px;
     background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
-
     
 }
 
@@ -301,7 +300,6 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 
 #last-version-saved {
-    margin-top:-1em;
     margin-bottom:-3px;
     width:100%;
 }

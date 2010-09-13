@@ -695,7 +695,8 @@ a.hs-control.hs-control-hide
 	background-image: url(../img/right_arrow.png);
 }
 
-a.hs-control.hs-control-show.plist, a.hs-control.hs-control-hide.plist
+a.hs-control.hs-control-show.plist, a.hs-control.hs-control-hide.plist,
+a.plist
 {
 
 	background-image: none;
@@ -748,17 +749,13 @@ padding-bottom: .5em;
 
 	margin-right: 3em;
 }
-#participants_close {
-    float:left;
-    margin-top:2em;
-}
+
 #participants_chosen {
     display:inline-block;
     padding-bottom:10px;
 }
 #project_participants {
 	padding-top:8px;
-	padding-bottom:8px;
 }
 
 
@@ -769,10 +766,33 @@ padding-bottom: .5em;
 #participant_list {
 	background-color: #dedede;
 	border: 1px solid #ccc;
+        margin-bottom:1em;
 }
 
 #id_participants {*height: 15em;}
 
+body a.control-close {
+    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
+    display:block;
+  float:right;
+  /*IE7 with float:right makes the parent div width:100% and looks bad
+    so we float it left instead.  not perfect, but looks ok.
+   */
+    *float:left;
+  background-image:url(/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png);
+  margin-left:10px;
+    *margin-right:10px;
+    *margin-left:0px;
+  width:16px;
+  height:16px;
+  color:transparent;
+  /*for IE 6-8 not supporting transparent text:*/
+    overflow:hidden;
+    line-height:48px;
+}
+body a.control-close:hover {
+    background-image:url(/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx_red.png);
+}
  
  .preview input#id_annotation-tags,  .preview input#id_annotation-body, .preview input#id_annotation-title {
  

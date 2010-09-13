@@ -196,7 +196,7 @@ def your_projects(request, user_name):
         if not editable:
             return HttpResponseForbidden("forbidden")
         
-        title = request.POST.get('title','') or "%s's Project" % user.get_full_name()
+        title = request.POST.get('title','') or "Untitled" 
         project = Project(author=user, course=request.course, title=title)
         project.save()
 

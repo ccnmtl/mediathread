@@ -13,6 +13,9 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 <script type="text/javascript" src="/site_media/js/mochikit/packed/MochiKit/MochiKit.js"></script>
 <script type="text/javascript" src="/site_media/js/hs.js"></script>
 <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
+  {% if EXPERIMENTAL %}
+  <script type="text/javascript" src="/site_media/js/slider.js"></script>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -25,7 +28,7 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
       <td class="slider-cell slider-edge">
 	<h2>« <span id="slider-left-edge"></span></h2>
       </td>
-      <td class="slider-cell">
+      <td class="slider-cell" >
 
 <div id="filter_col">
 
@@ -89,13 +92,13 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 
 </div>
       </td>
-      <td class="slider-cell">
+      <td class="slider-cell slider-active" id="slider-cell-asset_column">
 
 <div class="assets_wide_list" >
  {% include "assetmgr/asset_table.html" %}
 </div>
       </td>
-      <td class="slider-cell">
+      <td class="slider-cell slider-active" id="slider-cell-reflection">
 
 <div id="project_col" class="project-table panel-column panel-light">
   <h2>{{space_owner.get_full_name|default:space_owner.username}}'s Projects</h2>

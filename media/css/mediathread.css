@@ -133,6 +133,10 @@ img, img a
 	border: 0;
 }
 
+p.para {
+    padding:10px;
+}
+
 /* ########## Globally useful definitions ########## */
 
 /* ---- Block block elements ---------- */

@@ -307,3 +307,11 @@ li.comment-thread:target > .comment .threaded_comment_header {
 #last-version-public {
     padding-left:10px;
 }
+
+body.mceContentBody {
+    /*overrides tinyMCE's default 10px which will not correspond
+      to styled as published (and 10px is too small for the image-annotation
+      icon)
+     */
+    font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
+}

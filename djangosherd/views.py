@@ -73,6 +73,11 @@ def create_annotation(request):
 
     annotation = SherdNote(**data)
     annotation.save()
+
+    #need to create global annotation if it doesn't exist already
+    #so it appears in the user's list
+    asset.global_annotation(annotation.author, auto_create=True)
+
     #new annotations should redirect 'back' to the asset
     # at the endpoint of the last annotation
     # so someone can create a new annotation ~lizday

@@ -87,10 +87,13 @@
         {% endif %}   
      
         <div id="whole-asset-form" class="sub-control" style="display: none">
-            <form class="tabber_form" name="not-clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
+            <form class="tabber_form" name="not-clip-form" method="POST" action="{% if not global_annotation %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
                 <div id="Item" class="sub-control">
                     {{ global_annotation_form.as_p }}
-    
+
+                    {% if not global_annotation %}    
+                          <input type="hidden" name="url" value="{{asset.sources.url.url}}" />
+                    {% endif %}
                     {% if mock %}
                          {% for k,v in request.GET.items %}
                            <input type="hidden" name="{{k}}" value="{{v}}" />

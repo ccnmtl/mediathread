@@ -1,11 +1,15 @@
 .filter-widget {
-    margin-bottom:8px;
+    /*margin-bottom here causes a firefox bug to push down the top instead
+      so put the margin-bottom on div.switcher
+     */
+    margin-bottom:0px;
 }
 
 .switcher {
     float:left;
     position:relative;
     z-index:9999;/*IE z-index bug workaround*/
+    margin-bottom:8px;
 }
 
 div.collection-filter {

@@ -11,44 +11,6 @@ Class Analysis > Class Saved Items
   <table id="slider-top" class="slider-top">
     <tbody>
     <tr>
-      <td class="slider-cell slider-edge">
-	<h2>« <span id="slider-left-edge"></span></h2>
-      </td>
-      <td class="slider-cell">
-
-
-<div id="filter_col">
-
-{% if active_filters %}
-<h2>Displaying Results for:</h2>
- <ul>
-  {% for filter, value in active_filters.items %}
-  <li>
-   {{filter}}: {{value}}
-
-   {% replace_value of filter with '' in request.GET as querystring %}
-   <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
-  </li>
-  {% endfor %}
- </ul>
-{% endif %}
-
-<h2>Filter Saved Items by:</h2>
-
- <h3>Tag</h3>
- <div id="filterbytag"><ul>{% for tag in tags %}
- 
-   {% if tag.name == request.GET.tag %}
-    <li><span class="size{{tag.font_size}}">{{tag}}</span></li>
-   {% else %}
-    {% replace_value of 'tag' with tag.name in request.GET as querystring %}
-    <li> <a href="{{querystring|qsify}}"> <span class="size{{tag.font_size}}">{{tag}}</span></a></li>
-   {% endif %}
- 
- {% endfor %}</ul></div>
-</div>
-
-      </td>
       <td class="slider-cell">
 
 <div class="assets_wide_list" >

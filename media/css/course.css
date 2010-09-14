@@ -430,7 +430,7 @@ div.project-table
  }
 .asset-table ul.asset-clips 
 { 
-  margin:1em 0 1em 1em;
+  margin:1em 0 0 1em;
   margin-left:0;
  }
 .asset-table ul.asset-clips li 
@@ -654,7 +654,6 @@ dd {
 }
 
 .record {
-    margin-bottom: .5em;
     clear:both;
 }
 
@@ -668,7 +667,7 @@ margin:-1px 5px 5px;
 }
 
 .record-metadata {
-  padding: 0 1.5em 0 105px;
+  padding: 0 1.5em 4px 105px;
 }
 
 a.hs-control

@@ -1,5 +1,5 @@
 .filter-widget {
-    margin-bottom:5px;
+    margin-bottom:8px;
 }
 
 .switcher {
@@ -11,11 +11,18 @@
 div.collection-filter {
     float:right;
     position:relative;
-    width:120px;
+    width:6em;
 }
 
 div.collection-chooser {
-    width:190px;
+    /*must update with */
+    width:260px;
+}
+
+span.switcher-prefix {
+    float:left;
+    line-height:20px;
+    padding-right:4px;
 }
 
 div.collection-chooser a.switcher-top,
@@ -33,16 +40,15 @@ div.collection-filter ul.switcher-options {
     width:350px; /*width -2px for border*/ 
     right:0px;
     left:auto;
-    -moz-border-radius-topleft: 10px; 
-    border-top-left-radius: 10px 10px; 
     
 }
 div.collection-chooser ul.switcher-options {  
-    width:188px; /*width -2px for border*/ 
+    width:258px; /*div.collection-chooser width -2px for border*/ 
 }
 
 .switcher ul.switcher-options h3 {
     margin:0 0 6px 0;
+    color:#DEDEDE;
 }
 
 .switcher ul.switcher-options > li {
@@ -64,6 +70,9 @@ div.collection-chooser ul.switcher-options {
     -moz-border-radius-bottomright: 10px; 
     border-bottom-left-radius: 10px; 
     border-bottom-right-radius: 10px; 
+
+    -moz-border-radius-topleft: 10px; 
+    border-top-left-radius: 10px 10px; 
 }
 .switcher ul.switcher-options ul {
     margin:0;

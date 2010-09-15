@@ -91,14 +91,17 @@
                 <div id="Item" class="sub-control">
                     {{ global_annotation_form.as_p }}
 
-                    {% if not global_annotation %}    
-                          <input type="hidden" name="url" value="{{asset.sources.url.url}}" />
-                    {% endif %}
                     {% if mock %}
                          {% for k,v in request.GET.items %}
                            <input type="hidden" name="{{k}}" value="{{v}}" />
                          {% endfor %}
+                    {% else %}
+                      {% if not global_annotation %}    
+                         {# This is so the global annotation is connected to the asset #}
+                         <input type="hidden" name="{{asset.primary.label}}" value="{{asset.primary.url}}" />
+                      {% endif %}
                     {% endif %}
+
                     {% if request.user in request.course.members %}
                        <input type="submit" name="save-global-annotation" value="Save Asset"/>
                     {% else %}

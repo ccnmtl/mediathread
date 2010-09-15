@@ -42,7 +42,12 @@ table.slider-top {
 .slider-top div#member_col, 
 .slider-top div#project_col 
 {  
-  width:510px;
+
+  width:250px;
+  /*So on member pages, the Collection selection box
+    doesn't get hidden by the footer  */
+  min-height:400px;
+
   }
 .slider-top div#filter_col
 { 

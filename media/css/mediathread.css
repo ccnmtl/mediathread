@@ -331,6 +331,33 @@ p.para {
 
 }
 
+.tab-prefix, .tab-subbutton {
+    float:left;
+}
+
+#primarynav span.tab-prefix {
+    color:white;
+    padding:0 10px;
+}
+
+#primarynav a.tab-subbutton,
+#primarynav a.tab-subbutton:hover {
+    border:1px solid #dedede;
+    line-height:20px;
+    margin:4px 9px 0 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+#primarynav li.tab-subparent a.tab-subbutton-last {
+    margin-right:15px;
+}
+
+#primarynav li.tab-subparent a.active {
+    background-color:white;
+    color:black;
+}
+
 #primarynav ul
 {
 	float: left;

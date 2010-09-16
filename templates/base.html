@@ -107,12 +107,12 @@
 				<li class="{% active request 'Class Portal' %}"><a href="/">Home</a></li>
 				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
                                 {% course_role for request.user in request.course as role_in_course %}
-                                {% ifnotequal role_in_course "non-member" %}
-				   <li class="{% active request 'Your Items' %}"><a href="{% url your-space-records user %}">My Analysis</a></li>
+                                <li class="tab-subparent"><span class="tab-prefix">Analysis:</span>
+                                  {% ifnotequal role_in_course "non-member" %}
+				   <a class="tab-subbutton {% active request 'Your Items' %}" href="{% url your-space-records user %}">Mine</a>
                                 {% endifnotequal %}
-				<li class="{% active request 'Class Analysis' %}"><a href="{% url asset-container %}">Class Analysis</a></li>
-				<!--<li><a href="{% url asset-container %}">Class Archive</a></li>
-				<li><a href="{% url asset-save %}">add a new asset</a></li>-->
+				<a class="tab-subbutton tab-subbutton-last {% active request 'Class Analysis' %}" href="{% url asset-container %}">Class</a>
+                                </li>
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
 	  {% endif %}

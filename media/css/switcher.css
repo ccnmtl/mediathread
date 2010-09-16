@@ -15,13 +15,18 @@
 div.collection-filter {
     float:right;
     position:relative;
-    width:6em;
+    width:126px;
 }
 
 div.collection-chooser {
-    /*must update with */
-    width:260px;
+    /*must update with this below: div.collection-filter ul.switcher-options */
+    width:235px;
 }
+
+table.analysis-tab div.collection-chooser 
+{
+  margin-left:-285px
+  }
 
 span.switcher-prefix {
     float:left;
@@ -41,13 +46,13 @@ div a.switcher-top {
 }
 
 div.collection-filter ul.switcher-options {  
-    width:350px; /*width -2px for border*/ 
+    width:350px; /*width -2px for border plus whatever the switcher-prefix adds */ 
     right:0px;
     left:auto;
     
 }
 div.collection-chooser ul.switcher-options {  
-    width:258px; /*div.collection-chooser width -2px for border*/ 
+    width:233px; /*div.collection-chooser width -2px for border*/ 
 }
 
 .switcher ul.switcher-options h3 {

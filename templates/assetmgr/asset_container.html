@@ -8,16 +8,9 @@ Class Analysis > Class Saved Items
 
 {% load smartif user_projects helpful_tags %}
 <div id="slider-parent">
-  <table id="slider-top" class="slider-top">
+  <table id="slider-top" class="slider-top analysis-tab">
     <tbody>
     <tr>
-      <td class="slider-cell">
-
-<div class="assets_wide_list" >
- {% include "assetmgr/asset_table.html" %}
-</div>
-
-      </td>
       <td class="slider-cell">
 <div id="member_col" class="project-table panel-column panel-light">
   <h2>Shared Projects</h2>
@@ -35,6 +28,13 @@ Class Analysis > Class Saved Items
     </li>
     {% endfor %}
   </ul>  
+</div>
+
+      </td>
+      <td class="slider-cell">
+
+<div class="assets_wide_list" >
+ {% include "assetmgr/asset_table.html" %}
 </div>
 
       </td>

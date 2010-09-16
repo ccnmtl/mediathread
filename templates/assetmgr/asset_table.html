@@ -13,7 +13,7 @@
 
   <div class="filter-widget">
     <div class="switcher collection-chooser">
-    <span class="switcher-prefix">View: </span>
+    <span class="switcher-prefix">Select: </span>
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
         <span class="title" id="switcher-title">
@@ -67,9 +67,12 @@
     <div class="switcher collection-filter" id="switcher-collection-filter">
       <a class="switcher-top closed">
         <span class="down-arrow"></span>
-        <span class="title">Filter:
-          {%if active_filters %}
-            <span class="filter-on">ON</span>
+        <span class="title">
+	  Filter annotations<span 
+	  {%if active_filters %}
+            class="filter-on"> ON</span>
+          {% else %}
+            class="filter-off">...</span>
           {%endif%}
         </span>
       </a>

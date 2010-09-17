@@ -9,14 +9,24 @@
 	<div id="clipstrip-display" class="clipstrip-display"></div>    
       </div>
     </div>
-    <div class="filter-widget">
-    <h4>Show:</h4><div class="switcher collection-chooser">
+  
+
+  <div class="filter-widget">
+    <!--h2 class="switcher-extraneous-title">
+      {%if space_owner %}
+         {{space_owner.get_full_name|default:space_owner.username}}'s Annotations
+      {% else %}
+         Class Items
+      {% endif %} 
+    </h2-->
+    <div class="switcher collection-chooser" tabindex="1">
+    <span class="switcher-prefix">View: </span>
       <a class="switcher-top closed">
-        <span class="down-arrow"></span>
+        <span class="down-arrow" tabindex="3"></span>
         <span class="title" id="switcher-title">
           {%if space_owner %}
             {% ifequal space_owner user %}
-             My Saved Items
+              My Saved Items
             {% else %}
               {{space_owner.get_full_name|default:space_owner.username}}
             {% endifequal %}   
@@ -61,12 +71,15 @@
       </ul>
     </div>
     {%if dates or tags %}
-    <h4>Filters:</h4><div class="switcher collection-filter" id="switcher-collection-filter">
+    <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
       <a class="switcher-top closed">
-        <span class="down-arrow"></span>
-        <span class="title">Choose
-          {%if active_filters %}
-            <span class="filter-on">ON</span>
+        <span class="down-arrow" tabindex="4"></span>
+        <span class="title">
+	  Filters<span 
+	  {%if active_filters %}
+            class="filter-on">: ON</span>
+          {% else %}
+            class="filter-off">...</span>
           {%endif%}
         </span>
       </a>
@@ -116,9 +129,7 @@
     </div>
     {%endif%}{#end dates or tags#}
     <div class="visualclear"></div>
-  </div> <h2>
-Analyzed Items 
-        </h2>
+  </div> 
 
 
 

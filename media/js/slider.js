@@ -37,13 +37,17 @@ var SherdSlider = new (function() {
             active:false,
             name:'',
             max:0,
-            dir:-1
+            dir:-1,
+            prefix:"« ",
+            suffix:""
         },
         'right':{
             active:false,
             name:'',
             max:100,
-            dir:+1
+            dir:+1,
+            prefix:"",
+            suffix:" »"
         }
     }
     this.queue = [];
@@ -156,6 +160,7 @@ var SherdSlider = new (function() {
     }
 
     this.updateLinks = function() {
+        /// "«"  "»"
         var b = {
             'left':self.edges['left']-1,
             'right':self.edges['right']+1
@@ -163,7 +168,11 @@ var SherdSlider = new (function() {
         for (a in self.links) {
             if (b[a]>=0 && b[a]<self.order.length && self.columns[ self.order[b[a]] ].title) {
                 jQuery(self.links[a].html)
-                .html(self.columns[ self.order[b[a]] ].title)
+                .html(
+                    self.links[a].prefix
+                    +self.columns[ self.order[b[a]] ].title
+                    +self.links[a].suffix
+                )
                 .parent().show();            
             } else {
                 jQuery(self.links[a].html).parent().hide();

@@ -163,7 +163,6 @@ form.threaded_comments_form ul li {
 .respond_to_comment_form_div .control-open {
     padding-right:20px;
     background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
-
     
 }
 
@@ -300,10 +299,17 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 
 #last-version-saved {
-
     width:100%;
 }
 
 #last-version-public {
     padding-left:10px;
+}
+
+body.mceContentBody {
+    /*overrides tinyMCE's default 10px which will not correspond
+      to styled as published (and 10px is too small for the image-annotation
+      icon)
+     */
+    font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }

@@ -7,8 +7,14 @@ function updateParticipantList() {
 	}
     }
 
-    jQuery('#participants_chosen').text(new_list.join(', '));
-    jQuery("#participant_update").show('pulsate'); 
+    jQuery("#participant_list").toggle(); 
+
+    var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'');
+    var new_list_str = new_list.join(', ');
+    if (old_list != new_list_str) {
+        jQuery('#participants_chosen').text(new_list_str);
+        jQuery("#participant_update").show(); 
+    }
     updateVerticalHeight();
 }
 
@@ -54,6 +60,9 @@ var AssetList = new (function () {
         var links = [];
         for (var i=0;i<p.length;i++) {
             var u = p[i].username;
+            ///don't include self, since that's already in there
+            if (p[i].username == project.username)
+                continue;
             links.push({type:'assetlist',
                         href:'/yourspace/'+u+'/asset/',
                         ajax:'/annotations/'+u+'/',
@@ -220,7 +229,7 @@ jQuery(function (){/*onDOM Ready*/
         }) 
     });
     //PROJECT PARTICIPANT UPDATES
-    jQuery('#participants_close').click(updateParticipantList);
+    jQuery('a.participants_toggle').click(updateParticipantList);
 
     //initialize Assets Column with ajax
     AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);

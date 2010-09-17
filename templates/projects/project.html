@@ -41,10 +41,10 @@
   	<h1>Editing Project</h1>
 <div id="slider-parent">
   <div class="slider-cell slider-edge">
-    <h2>« <span id="slider-left-edge">Asset Details</span></h2>
+    <h2><span id="slider-left-edge"></span></h2>
   </div>
   <div class="slider-cell slider-edge slider-edge-right">
-    <h2><span id="slider-left-edge">Reflection</span> »</h2>
+    <h2><span id="slider-right-edge"></span></h2>
   </div>
 
   <table id="slider-top" class="slider-top">
@@ -90,17 +90,20 @@
 	</div><!-- end -->
 	
         <div id="project_participants">
-          <div id="participant_update" style="display:none">Save the project to save new collaborator list.</div>
+          <div id="participant_update" style="display:none">Save the project to save the collaborator list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
           <div id="participants_chosen">
             {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
             {{part.get_full_name|default:part.username}}{%endfor%}
           </div>
-          <a class="hs-control hs-control-show plist" href="#participant_list">Edit&nbsp;Collaborators</a>
+          <a class="plist participants_toggle" href="#participant_list">Edit&nbsp;Collaborators</a>
           <br />
           <div id="participant_list" class="hs-init-hide hs-hide"> 
+            <a id="participants_close" class="control-close participants_toggle" href="#participant_list" >x</a>
+
+            <b>Select your collaborators</b>
             <p>{{projectform.participants.help_text }}</p>
-            <a id="participants_close" class="hs-control hs-control-show plist float" href="#participant_list" >Change Collaborators</a>
+
             {{projectform.participants}} 
           </div>
         </div><!-- end id="project_participants" -->

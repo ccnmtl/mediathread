@@ -1,9 +1,11 @@
 {% load user_annotations tagging_tags smartif user_projects %}
 
 {% if not projects %}
- {% if editable %}No projects yet. <br /><br />
+ <p class="para">
+ {% if editable %}No projects yet.
  {% else %}No (viewable) projects yet.
  {% endif %}
+ </p>
 {% endif %}
 {% if editable %}
 
@@ -43,7 +45,7 @@
    
       <div id="project-{{project.pk}}-metadata">
 	   <ul>
-	     <li>Collaborators: 
+	     <li>Authors: 
 	     <!--careful with whitespace here, since we want the comma to hug the previous
 		 name-->
 	     <span id="participants_chosen">{{project.attribution}}</span>

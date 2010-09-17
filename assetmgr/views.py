@@ -237,7 +237,11 @@ def asset_workspace(request, asset_id):
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    global_annotation = asset.global_annotation(user)
+    global_annotation = asset.global_annotation(user, auto_create=False)
+    if global_annotation:
+        global_annotation_form = GlobalAnnotationForm(instance=global_annotation, prefix="annotation")
+    else:
+        global_annotation_form = GlobalAnnotationForm(prefix="annotation")
 
     tags = calculate_cloud(
         Tag.objects.usage_for_queryset(
@@ -265,7 +269,7 @@ def asset_workspace(request, asset_id):
         'space_viewer':user,
         'user_tags': user_tags,
         'annotation_form': AnnotationForm(prefix="annotation"),
-        'global_annotation_form': GlobalAnnotationForm(instance=global_annotation, prefix="annotation"),
+        'global_annotation_form': global_annotation_form,
         'discussions' : discussions
         }
 
@@ -343,11 +347,15 @@ def annotationview(request, asset_id, annot_id):
         
     asset = annotation.asset
 
-    global_annotation = asset.global_annotation(user)
+    global_annotation = asset.global_annotation(user, auto_create=False)
 
     if global_annotation == annotation:
         return HttpResponseRedirect(
             reverse('asset-view', args=[asset_id]))
+    elif global_annotation:
+        global_annotation_form = GlobalAnnotationForm(instance=global_annotation, prefix="annotation")
+    else:
+        global_annotation_form = GlobalAnnotationForm(prefix="annotation")
 
     form = AnnotationForm(instance=annotation, prefix="annotation")
 
@@ -368,8 +376,7 @@ def annotationview(request, asset_id, annot_id):
         'comments': comments,
         'annotation': annotation,
         'global_annotation': global_annotation,
-        'global_annotation_form': GlobalAnnotationForm(
-            instance=global_annotation, prefix="annotation"),
+        'global_annotation_form': global_annotation_form,
         'tags': tags,
         'space_viewer':user,
         'user_tags': user_tags,

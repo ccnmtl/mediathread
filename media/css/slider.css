@@ -98,7 +98,6 @@ table.slider-top td.slider-edge
   position:absolute;
   white-space:nowrap;
   cursor:pointer;
-  display:none;
  }
 
 .slider-edge h2:hover 

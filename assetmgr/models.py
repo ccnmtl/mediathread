@@ -105,10 +105,10 @@ class Asset(models.Model):
     def tags(self):
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
 
-    def global_annotation(self, user):
+    def global_annotation(self, user, auto_create=True):
         SherdNote = models.get_model('djangosherd','sherdnote')
         if SherdNote:
-            return SherdNote.objects.global_annotation(self, user)[0]
+            return SherdNote.objects.global_annotation(self, user, auto_create=auto_create)[0]
 
     def save_tag(self, user, tag):
         """ 

@@ -99,7 +99,7 @@ class SherdNoteManager(models.Manager):
             except:
                 gannotation = None
             return gannotation, False
-        return global_annotation, created
+
     @property
     def dir(self):
         return dir(self)

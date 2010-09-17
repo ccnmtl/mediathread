@@ -3,6 +3,7 @@
       so put the margin-bottom on div.switcher
      */
     margin-bottom:0px;
+    position:relative;
 }
 
 .switcher {
@@ -10,19 +11,46 @@
     position:relative;
     z-index:9999;/*IE z-index bug workaround*/
     margin-bottom:8px;
+    outline:none;
+
 }
 
 div.collection-filter {
     float:right;
     position:relative;
-    width:6em;
+    width:80px;
 }
+
+h2.switcher-extraneous-title {
+    display:none;
+}
+
+table.analysis-tab h2.switcher-extraneous-title {
+    position:absolute;
+    left:0;
+    top:6px;
+    display:block;
+}
+
 
 div.collection-chooser {
-    /*must update with */
-    width:260px;
+    /*must update with this below: div.collection-filter ul.switcher-options */
+    width:235px;
 }
+/* 
+--- We decided against switching the asset_list with projects on Items&Projects page---
+table.analysis-tab div.collection-chooser 
+{
+  margin-left:-285px;
+  margin-top:-22px;
+  width:280px;
+  }
 
+table.analysis-tab div.collection-chooser ul.switcher-options 
+{  
+    width:278px;
+}
+*/
 span.switcher-prefix {
     float:left;
     line-height:20px;
@@ -30,7 +58,7 @@ span.switcher-prefix {
 }
 
 div.collection-chooser a.switcher-top,
-div.collection-chooser a.switcher-top:hover {
+div.collection-chooser:focus a.switcher-top {
     font-size: 15px; 
     font-weight:bold;
 }
@@ -41,13 +69,13 @@ div a.switcher-top {
 }
 
 div.collection-filter ul.switcher-options {  
-    width:350px; /*width -2px for border*/ 
+    width:350px; /*width -2px for border */ 
     right:0px;
     left:auto;
     
 }
 div.collection-chooser ul.switcher-options {  
-    width:258px; /*div.collection-chooser width -2px for border*/ 
+    width:233px; /*width -2px for border plus whatever the switcher-prefix adds */ 
 }
 
 .switcher ul.switcher-options h3 {
@@ -136,7 +164,8 @@ div.collection-chooser ul.switcher-options {
 }
 
 
-.switcher:hover ul.switcher-options,
+.switcher:focus ul.switcher-options,
+.switcher ul.switcher-options:hover,
 .switcher.open ul.switcher-options { 
     display:block;
 }
@@ -208,9 +237,10 @@ div.collection-chooser ul.switcher-options {
 }
 
 .switcher a.open,
-.switcher:hover a.closed
+.switcher:focus a.closed
  {
     /*firefox*/
+    pointer-events:none;
     border-style: solid solid none; 
     
     border-color: rgb(204, 204, 204) rgb(204, 204, 204) -moz-use-text-color; 
@@ -271,12 +301,22 @@ div.collection-chooser ul.switcher-options {
 }
 
 span.down-arrow {
-    background: transparent url(../img/switcher/icon_color_arrow.gif) no-repeat scroll 50% 50%; 
-    float: right; 
-    width: 16px; 
+    background: transparent url(../img/switcher/icon_color_arrow.gif) no-repeat scroll 100% 50%; 
+    position:absolute;
+    right:10px;
+    width: 5px; 
     height: 16px; 
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous;
+    pointer-events:none;
 }
 
+span.down-arrow:focus {
+    outline:none;
+}
+
+.switcher:focus span.down-arrow {
+    width:100%;
+    pointer-events:auto;
+}

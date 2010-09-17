@@ -215,6 +215,7 @@ def project_json(request,project):
                                         } for p in project.participants.all()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
+                       'username':request.user.username,
                        },
             'assets':dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)

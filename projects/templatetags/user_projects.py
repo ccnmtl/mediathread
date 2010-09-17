@@ -1,5 +1,5 @@
 from projects.models import Project
-
+import re
 from django import template
 
 from djangohelpers.templatetags import TemplateTagNode
@@ -52,6 +52,10 @@ def active(request, pattern):
             return 'active'
     if pattern == "Class Analysis":
         if request.path == '/asset/':
+            return 'active'
+
+    if pattern == "Analysis":
+        if request.path == '/asset/' or re.match('/yourspace/',request.path):
             return 'active'
 
     if pattern == 'Your Items' or pattern == 'Your Projects':

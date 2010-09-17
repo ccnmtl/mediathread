@@ -60,6 +60,9 @@ var AssetList = new (function () {
         var links = [];
         for (var i=0;i<p.length;i++) {
             var u = p[i].username;
+            ///don't include self, since that's already in there
+            if (p[i].username == project.username)
+                continue;
             links.push({type:'assetlist',
                         href:'/yourspace/'+u+'/asset/',
                         ajax:'/annotations/'+u+'/',

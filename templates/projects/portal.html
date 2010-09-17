@@ -164,13 +164,13 @@ Class Analysis
         {% empty %}
         <div class="intro-text">
           <p>
-            This space will notify you of activity on your projects and to items you have
-            collected or commented on.
+            This space will register updates to your Items, Projects, Discussions.
           </p>
-          <p>
-            To add items to your collection, see the <a href="/explore">Explore Collections</a> tab or look at the <a href="{% url asset-container %}">Class Analysis</a> tab
-            to see what your colleagues have already collected.
-          </p>
+          <ul>
+            <li>After you have collected <b>items</b>, any annotations of them by you or anyone else in the class will be listed here. To collect your own items, go to <a href="/explore">Explore Collections</a>. To see items that have been collected by members of this class, go to <a href="{% url asset-container %}">Analysis -> Class Items</a>.</li>
+            <li>If you participate in a Discussion, any additional posts in that discussion will be listed here.</li>
+            <li>After you create a Project, updates to it by you or collaborators (if any) will be listed here. To create a project, go to your <a href="{% url your-space-records user %}">Analysis</a></li>
+          </ul>
         </div>
 	{%endfor%}
       </ul>

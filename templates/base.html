@@ -107,10 +107,8 @@
 				<li class="{% active request 'Class Portal' %}"><a href="/">Home</a></li>
 				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
                                 {% course_role for request.user in request.course as role_in_course %}
-                                {% ifnotequal role_in_course "non-member" %}
-				   <li class="{% active request 'Analysis' %}{% ifequal role_in_course "non-member" %} non-member{% endifequal %}"
-                                       ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Analysis</a></li>
-                                {% endifnotequal %}
+                                <li class="{% active request 'Analysis' %}"
+                                       ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">{% ifequal role_in_course "non-member" %}Class{% endifequal %} Analysis</a></li>
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
 	  {% endif %}

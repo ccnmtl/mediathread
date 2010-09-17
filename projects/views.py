@@ -53,7 +53,8 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     if is_participant is None:
         is_participant = project.is_participant(user) 
     course = request.collaboration_context.content_object
-    if request.META['HTTP_ACCEPT'].find('json') >=0:
+    
+    if request.META.get('HTTP_ACCEPT','').find('json') >=0:
         return project_json(request, project)
     return {
         'is_space_owner': is_participant,
@@ -80,7 +81,7 @@ def project_version_preview(request, project_id, version_number, check_permissio
                                 version_number=version_number,
                                 )
     project = version.instance()
-    if request.META['HTTP_ACCEPT'].find('json') >=0:
+    if request.META.get('HTTP_ACCEPT','').find('json') >=0:
         return project_json(request, project)
     return {
         'is_space_owner': project.is_participant(request.user),
@@ -118,7 +119,7 @@ def view_project(request, project_id):
         return HttpResponseForbidden("forbidden")
 
     if request.method == "GET":
-        if request.META['HTTP_ACCEPT'].find('json') >=0:
+        if request.META.get('HTTP_ACCEPT','').find('json') >=0:
             return project_json(request, project)
         return project_workspace(request, space_owner, project)
 
@@ -148,7 +149,7 @@ def view_project(request, project_id):
 
             projectform.instance.collaboration(request, sync_group=True)
 
-            if request.META['HTTP_ACCEPT'].find('json') >=0:
+            if request.META.get('HTTP_ACCEPT','').find('json') >=0:
                 v_num = projectform.instance.get_latest_version()
                 return HttpResponse(json.dumps(
                         {'status':'success',

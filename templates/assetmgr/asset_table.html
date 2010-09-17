@@ -12,6 +12,13 @@
   
 
   <div class="filter-widget">
+    <h2 class="switcher-extraneous-title">
+      {%if space_owner %}
+         {{space_owner.get_full_name|default:space_owner.username}}'s Annotations
+      {% else %}
+         Class Items
+      {% endif %} 
+    </h2>
     <div class="switcher collection-chooser" tabindex="1">
     <span class="switcher-prefix">View: </span>
       <a class="switcher-top closed">
@@ -68,9 +75,9 @@
       <a class="switcher-top closed">
         <span class="down-arrow" tabindex="4"></span>
         <span class="title">
-	  Filter annotations<span 
+	  Filters<span 
 	  {%if active_filters %}
-            class="filter-on"> ON</span>
+            class="filter-on">: ON</span>
           {% else %}
             class="filter-off">...</span>
           {%endif%}

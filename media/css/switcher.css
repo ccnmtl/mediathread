@@ -3,6 +3,7 @@
       so put the margin-bottom on div.switcher
      */
     margin-bottom:0px;
+    position:relative;
 }
 
 .switcher {
@@ -17,8 +18,20 @@
 div.collection-filter {
     float:right;
     position:relative;
-    width:130px;
+    width:80px;
 }
+
+h2.switcher-extraneous-title {
+    display:none;
+}
+
+table.analysis-tab h2.switcher-extraneous-title {
+    position:absolute;
+    left:0;
+    top:6px;
+    display:block;
+}
+
 
 div.collection-chooser {
     /*must update with this below: div.collection-filter ul.switcher-options */
@@ -27,8 +40,15 @@ div.collection-chooser {
 
 table.analysis-tab div.collection-chooser 
 {
-  margin-left:-285px
+  margin-left:-285px;
+  margin-top:-22px;
+  width:280px;
   }
+
+table.analysis-tab div.collection-chooser ul.switcher-options 
+{  
+    width:278px;
+}
 
 span.switcher-prefix {
     float:left;
@@ -48,13 +68,13 @@ div a.switcher-top {
 }
 
 div.collection-filter ul.switcher-options {  
-    width:350px; /*width -2px for border plus whatever the switcher-prefix adds */ 
+    width:350px; /*width -2px for border */ 
     right:0px;
     left:auto;
     
 }
 div.collection-chooser ul.switcher-options {  
-    width:233px; /*div.collection-chooser width -2px for border*/ 
+    width:233px; /*width -2px for border plus whatever the switcher-prefix adds */ 
 }
 
 .switcher ul.switcher-options h3 {

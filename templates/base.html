@@ -108,11 +108,9 @@
 				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
                                 {% course_role for request.user in request.course as role_in_course %}
                                 {% ifnotequal role_in_course "non-member" %}
-				   <li class="{% active request 'Your Items' %}"><a href="{% url your-space-records user %}">My Analysis</a></li>
+				   <li class="{% active request 'Analysis' %}{% ifequal role_in_course "non-member" %} non-member{% endifequal %}"
+                                       ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Analysis</a></li>
                                 {% endifnotequal %}
-				<li class="{% active request 'Class Analysis' %}"><a href="{% url asset-container %}">Class Analysis</a></li>
-				<!--<li><a href="{% url asset-container %}">Class Archive</a></li>
-				<li><a href="{% url asset-save %}">add a new asset</a></li>-->
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
 	  {% endif %}

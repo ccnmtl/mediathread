@@ -29,17 +29,17 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
   <table id="slider-top" class="slider-top analysis-tab">
     <tbody>
     <tr>
+      <td class="slider-cell slider-active" id="slider-cell-asset_column">
+
+<div class="assets_wide_list" >
+ {% include "assetmgr/asset_table.html" %}
+</div>
+      </td>
       <td class="slider-cell slider-active" id="slider-cell-reflection">
 
 <div id="project_col" class="project-table panel-column panel-light">
   <h2>{{space_owner.get_full_name|default:space_owner.username}}'s Projects</h2>
   {% include "projects/project_list.html" %}
-</div>
-      </td>
-      <td class="slider-cell slider-active" id="slider-cell-asset_column">
-
-<div class="assets_wide_list" >
- {% include "assetmgr/asset_table.html" %}
 </div>
       </td>
     </tr>

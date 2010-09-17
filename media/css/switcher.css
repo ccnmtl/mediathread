@@ -37,7 +37,8 @@ div.collection-chooser {
     /*must update with this below: div.collection-filter ul.switcher-options */
     width:235px;
 }
-
+/* 
+--- We decided against switching the asset_list with projects on Items&Projects page---
 table.analysis-tab div.collection-chooser 
 {
   margin-left:-285px;
@@ -49,7 +50,7 @@ table.analysis-tab div.collection-chooser ul.switcher-options
 {  
     width:278px;
 }
-
+*/
 span.switcher-prefix {
     float:left;
     line-height:20px;

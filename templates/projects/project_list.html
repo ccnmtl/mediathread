@@ -9,9 +9,11 @@
 {% endif %}
 {% if editable %}
 
+
    <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
      <input type="hidden" name="title" />
-     <input class="project-createnew-button" type="submit" value="Create a new project!"/>
+     <input class="columnbutton project-createnew-button" type="submit" value="Create a new project!"/>
+
    </form>
 {% endif %}
 

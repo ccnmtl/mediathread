@@ -2,6 +2,22 @@
 
 }
 
+#content .slider-column h2{
+
+font-size: 95%;
+padding:0 0 10px;
+}
+
+
+#content .slider-cell h1{
+
+font-size: 95%;
+padding:0 0 0 15px;
+}
+
+
+
+
 #slider-parent table.slider-top td.slider-empty {
     width:0px;
     padding:0;
@@ -26,10 +42,12 @@ table.slider-top {
 .slider-top div#member_col, 
 .slider-top div#project_col 
 {  
+
   width:250px;
   /*So on member pages, the Collection selection box
     doesn't get hidden by the footer  */
   min-height:400px;
+
   }
 .slider-top div#filter_col
 { 
@@ -37,6 +55,8 @@ table.slider-top {
 }
 
 .slider-top #asset_browse_col {
+    /*do not set width: should stay 380px*/
+      /*changed width to auto to fill in space from hidden filter column     width:auto;*/
     /*do not set width: should stay 380px
       1: The slider needs a fixed width to rely upon
       2: width + 620px asset (or even 640?! for video) must work along side asset
@@ -45,6 +65,7 @@ table.slider-top {
     width:380px;
     float:none;
    }
+   
 
 .slider-top #filter_col,
 .slider-top #member_col,

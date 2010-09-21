@@ -4,6 +4,11 @@ Class Analysis > Class Saved Items
 {% endblock %}</title>
 
 {% block content %}
+
+
+<h1>Class Analysis</h1>
+
+
     {{ block.super }}
 
 {% load smartif user_projects helpful_tags %}
@@ -22,11 +27,12 @@ Class Analysis > Class Saved Items
 </div>
 
       </td>
-      <td class="slider-cell">
+      <td class="slider-cell"><h1>Published Projects</h1>
 <div id="member_col" class="project-table panel-column panel-light">
-  <h2>Shared Projects</h2>
+  
   {% if is_faculty %}
-  <p><a href="{%url class-listing %}">Projects by member</a></p>
+  <p>Projects by Title<br />
+  (<a href="{%url class-listing %}" style="font-size: 95%;">View by member</a>)</p>
   {% endif %}
   {% load user_projects %}
   <ul>

@@ -61,7 +61,6 @@ h6
 p
 {
 	display: block;
-	margin: 0 0 0.7em 0;
 	padding: 0;
 	border: 0;
 	font-size: 100%;
@@ -904,7 +903,7 @@ body.fluid #content
 
 .one_column.fluid #squish
 {
-	margin: 0 0 0 10px;
+	margin: 0 0 1em 10px;
 	padding: 0;
 	border: 0;
 }

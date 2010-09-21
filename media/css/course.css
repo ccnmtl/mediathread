@@ -125,6 +125,11 @@ background-color: #ededed;
 
  }
  
+ input.columnbutton {
+ 
+ 	margin: 10px;
+ }
+ 
  #class_activity .panel-column
 { 
   
@@ -365,9 +370,10 @@ padding-right: 4px;
 }
 .asset-object {
     width:60%;
-    min-width: 356px;
+  /*  min-width: 356px; */
     border:1px solid #ccc;
     background-color: #dedede;
+  /*  margin: 1em auto; */
 }
 
 .asset-view-small  .asset-object {
@@ -388,10 +394,14 @@ text-align:center;
 
 
   #stats form {
-      margin:0;
+      margin: 15px 5px 0px 5px;
 }
   #member_col, #filter_col, #project_col {  
       margin-top:29px;
+}
+
+  #member_col p, #filter_col p, #project_col p {  
+      margin:7px;
 }
 
   #filter_col {
@@ -624,12 +634,28 @@ width:340px;
 
 float:right;
 margin:0 0 0 1em;
-width:35%;
+width: 35%;
+font-size: 94%;
 
 }
 
 #asset_details_col .tabberlive .tabbertab {
 
+
+
+}
+
+#annotations ul {
+
+	list-style-type: none;
+
+}
+
+#annotations ul li {
+
+	background:url("../img/icons/item_clip.png") left center no-repeat; 
+	padding: 2px 5px 2px 25px; 
+	margin-bottom: 2px;
 
 
 }
@@ -816,6 +842,17 @@ color:#666;
 display:block;
 font-size:80%;
 margin:0.4em 0 2em;
+text-align:left;
+
+}
+
+p.helptext,
+p.sherd-instructions {
+
+color:#666;
+display:block;
+font-size:80%;
+margin:0.4em 0 2em .5em;
 text-align:left;
 
 }

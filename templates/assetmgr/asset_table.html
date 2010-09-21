@@ -31,7 +31,7 @@
               {{space_owner.get_full_name|default:space_owner.username}}
             {% endifequal %}   
           {% else %}
-            Class Items
+           All Class Items
           {% endif %} 
         </span>
       </a>
@@ -129,7 +129,9 @@
     </div>
     {%endif%}{#end dates or tags#}
     <div class="visualclear"></div>
-  </div>
+  </div> 
+
+
 
 <div id="materials" class="resize-height">
  {% if not assets %}

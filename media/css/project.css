@@ -313,3 +313,16 @@ body.mceContentBody {
      */
     font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }
+
+#project-form-buttons {
+    margin-top:5px;
+}
+
+span.project-dropdown {
+    margin-right:10px;
+}
+
+input.project-savebutton,
+span.project-dropdown {
+    float:right;
+}

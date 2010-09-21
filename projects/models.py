@@ -34,7 +34,7 @@ class Project(models.Model):
                                           null=True,
                                           blank=True,
                                           related_name = 'projects',
-                                          verbose_name = 'Project Collaborators',
+                                          verbose_name = 'Authors',
                                           )
 
     only_save_if_changed = True

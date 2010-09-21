@@ -20,12 +20,6 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 
 {% block content %}
 
-{% if space_owner == user %}
-<h1>My Analysis</h1>
-{% else %}
-<h1>Class Analysis</h1>
-{% endif %}
-
   {{ block.super }}
 
 <div id="slider-parent">

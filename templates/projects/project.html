@@ -38,7 +38,6 @@
 {% block content %}
   {{ block.super }}
   
-  	<h1>Editing Project</h1>
 <div id="slider-parent">
   <div class="slider-cell slider-edge">
     <h2><span id="slider-left-edge"></span></h2>
@@ -116,13 +115,14 @@
             {% endif %}
           </span>
         </div>
-	<div id="project-submitform"> 
+	<div id="project-form-buttons"> 
 	  <input class="project-previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+          <input class="project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+
 	  <span class="project-dropdown">
 	    {{projectform.publish.label_tag}}    
             {{projectform.publish}}
 	  </span>
-          <input class="project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
         </div>
    
     </form>

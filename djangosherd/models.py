@@ -227,7 +227,7 @@ class SherdNote(Annotation):
         return Tag.objects.get_for_object(self)
 
     def add_tag(self, tag):
-        self.tags = "%s %s" % (self.tags, tag)
+        self.tags = "%s,%s" % (self.tags, tag)
 
     @property
     def content_object(self):
@@ -252,6 +252,10 @@ class SherdNote(Annotation):
         if not self.pk:
             self.added = datetime.datetime.today()
         self.modified = datetime.datetime.today()
+
+        #stupid hack to get around stupid parsing if someone makes a single tag with spaces
+        if self.tags and not self.tags.startswith(','):
+            self.tags = ',%s' % self.tags
 
         if not self.is_null():
             # anything goes

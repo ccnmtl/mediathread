@@ -37,12 +37,26 @@ class AnnotationForm(forms.ModelForm):
         model = SherdNote
         exclude = ('author', 'asset')
 
+    def __init__(self, *args, **kw):
+        forms.ModelForm.__init__(self, *args, **kw)
+        # second part of tag 'space' hack (see models.py::SherdNote.save)
+        #to avoid 'American Revolution' being tagged as "American", "Revolution"
+        if self.initial.get('tags','').startswith(','):
+            self.initial['tags'] = self.initial['tags'][1:]
+
 class GlobalAnnotationForm(forms.ModelForm):
     body = forms.CharField(label='My Item Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
     tags = forms.CharField(label='My Item Tags', help_text="<span class='helptext'>For multi-word tags, use underscores. Use commas to separate tags.<br />Example: Vietnam_War, Fall_of_Saigon</span>")
     class Meta:
         model = SherdNote
         exclude = ('annotation_data', 'author', 'asset', 'range1', 'range2', 'title')
+
+    def __init__(self, *args, **kw):
+        forms.ModelForm.__init__(self, *args, **kw)
+        # second part of tag 'space' hack (see models.py::SherdNote.save)
+        #to avoid 'American Revolution' being tagged as "American", "Revolution"
+        if self.initial.get('tags','').startswith(','):
+            self.initial['tags'] = self.initial['tags'][1:]
 
 @login_required
 @allow_http("POST")

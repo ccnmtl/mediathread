@@ -132,6 +132,15 @@
   </div>
 
 <div id="materials" class="resize-height">
+ {% if not assets %}
+ <p class="para">
+   No items. 
+   {% ifequal space_owner user %}
+   <br />
+   Add items from the sources listed in <a href="{% url explore %}">Explore Collections</a>
+   {% endifequal %}
+ </p>
+ {%endif%}
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
   {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}

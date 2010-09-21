@@ -54,7 +54,9 @@ urlpatterns = patterns('',
                        #redundant, but for published projects/legacy
                        (r'^project/',include('mediathread.projects.urls')),
 
-                       (r'^explore/$','assetmgr.views.archive_explore'),
+                       url(r'^explore/$','assetmgr.views.archive_explore',
+                           name="explore"
+                           ),
 
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),

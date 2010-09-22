@@ -89,13 +89,6 @@ ul.tabbernav li.tabberactive a:hover
  
 }
 
-ul.tabbernav li.tabberactive a#Analyze,
-ul.tabbernav li a#Analyze
-{
-
-	float: right;
-}
-
 /*--------------------------------------------------
   .tabbertab = the tab content
   Add style only after the tabber interface is set up (.tabberlive)

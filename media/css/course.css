@@ -708,6 +708,17 @@ a.hs-control
 	
 }
 
+a.hs-control.hs-nostyle {
+    float:none;
+    display:inline;
+}
+
+a.hs-control.hs-nostyle.hs-control-show,
+a.hs-control.hs-nostyle.hs-control-hide
+{
+    background-image:none;
+}
+
 a.hs-control.hs-control-show
 {
 

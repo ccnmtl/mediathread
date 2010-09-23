@@ -14,8 +14,7 @@
 	<!--[if IE 6]>
 	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css" media="screen" />
 	<![endif]-->
-
-    {% load cache %}
+    {% load cache user_projects courseaffils %}
     {% cache 500 heads course %}
        {% if course.settings.custom_headers %}
         {{course.settings.custom_headers|safe}}
@@ -36,7 +35,8 @@
 	{% block js %}{% endblock %}
 	{% block feeds %}{% endblock %}
 </head>
-<body class="one_column {% block widthtype %}fluid{% endblock %} {% block extra_body_class %}{% endblock %}">
+{% course_role for request.user in course as role_in_course %}
+<body class="one_column {% block widthtype %}fluid{% endblock %} role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
 {% comment %}
 ###### FOR WIDTH TYPE--
    fixed : fixed width, doesn't change with browser resize
@@ -65,7 +65,6 @@
 			  <a href="/admin/">ADMIN</a>
 			</li>
 		{%endif%}
-  {% load user_projects %}
   {% num_courses for user as user_courses %}
   {% if user_courses.1 or user.is_staff %}
 			<li><a href="/?unset_course">Switch Course</a></li>
@@ -100,14 +99,10 @@
 {% endcomment %}
          {% if request.course %}
 			{% block primarynavtabs %}
-
-                        {% load user_projects courseaffils %}
-
-			<ul>
+			<ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
 				<li class="{% active request 'Class Portal' %}"><a href="/">Home</a></li>
 				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
-                                {% course_role for request.user in request.course as role_in_course %}
-                                <li class="{% active request 'Analysis' %}{% ifequal role_in_course "non-member" %} non-member{% endifequal %} "
+                                <li class="{% active request 'Analysis' %}"
                                        ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Items & Projects</a></li>
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}

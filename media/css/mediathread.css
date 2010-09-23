@@ -378,8 +378,9 @@ img, img a
     color: #333;
 	
 }
-
-
+#primarynav ul.non-member:after {
+    content:"not in course";
+}
 #primarynav li a:hover
 {
 	background-color: #fff;

@@ -48,6 +48,10 @@ span.switcher-prefix {
     padding-right:4px;
 }
 
+body.role-non-member li.choice_my_items {
+    display:none;
+}
+
 div.collection-chooser a.switcher-top,
 div.collection-chooser:focus a.switcher-top {
     font-size: 80%;

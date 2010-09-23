@@ -116,7 +116,9 @@ def view_project(request, project_id):
     space_owner = in_course_or_404(project.author.username, request.course)
 
     if not project.collaboration(request).permission_to('edit',request):
-        return HttpResponseForbidden("forbidden")
+        #LEGACY: try again for legacy projects
+        if not project.collaboration(request, sync_group=True).permission_to('edit',request):
+            return HttpResponseForbidden("forbidden")
 
     if request.method == "GET":
         if request.META.get('HTTP_ACCEPT','').find('json') >=0:

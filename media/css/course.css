@@ -794,6 +794,13 @@ padding-bottom: .5em;
 	padding-top:8px;
 }
 
+a.participants_toggle {
+    /*when authors list is multiple lines, we need a bottom margin
+      to avoid collision with  #last-version-saved
+     */
+    display:inline-block;
+    margin-bottom:6px;
+}
 
 #participant_update {
     color:red;

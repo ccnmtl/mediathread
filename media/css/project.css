@@ -329,3 +329,7 @@ input.project-savebutton,
 span.project-dropdown {
     float:right;
 }
+
+div.mce_editorwindow {
+    min-width:324px;
+}

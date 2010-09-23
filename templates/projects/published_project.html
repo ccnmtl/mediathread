@@ -37,6 +37,11 @@
 
   <h1>{{project.title}}
   {% if version_number %}Version {{version_number}}{% endif %}
+  {% if is_space_owner %}
+  <a href="{%url project-workspace project.id %}">
+    <img src="/site_media/img/pencil.gif" alt="Edit Project" />
+  </a>
+  {% endif %}
   </h1>
   <h2>by <span id="participants_chosen">{{project.attribution}}</span>
   </h2>

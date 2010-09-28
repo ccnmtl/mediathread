@@ -23,12 +23,15 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
         <script type="text/javascript">
+          var lt = String.fromCharCode(60);
           if (window.jQuery) {
             jQuery.noConflict();
           } else {
-            var lt = String.fromCharCode(60);
             document.write(lt+'script src="/site_media/js/sherdjs/lib/jquery.min.js" type="text/javascript">'+lt+'/script>');
             document.write(lt+'script src="/site_media/js/sherdjs/lib/jquery-ui.min.js" type="text/javascript">'+lt+'/script>');
+          }
+          if (!window.JSON) {
+            document.write(lt+'script src="/site_media/js/sherdjs/lib/json2.js" type="text/javascript">'+lt+'/script>');          
           }
         </script>
 	{% block css %}{% endblock %}

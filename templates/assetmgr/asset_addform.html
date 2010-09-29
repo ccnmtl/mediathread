@@ -6,14 +6,6 @@
 {% block content %}
     {{ block.super }}
 
-{% if adding %}
-    <form method="POST" action="{% url asset-save %}">
-      {% for key, value in asset_request.items %}
-        <input type="hidden" name="{{key}}" value="{{value}}" />
-      {% endfor %}
-      <input type="submit" value="Really Save" />
-    </form>
-{% else %}
 <div class="intro-text">
   <p>
   This 'Save Page' allows you to add archives or other assets explicitly to appear on the Explore Collections page.
@@ -253,6 +245,5 @@
           experimentalStatus();
         </script>
       </div>
-{% endif %}
 
 {% endblock %}

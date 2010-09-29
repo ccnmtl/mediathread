@@ -17,8 +17,12 @@ class AssetManager(models.Manager):
     def get_by_args(self, args, **constraints):
         "args typically is request.GET"
         criteria = Asset.good_args(args)
+
         if not criteria:
             return False
+        elif criteria.issubset(Asset.fundamental_labels):
+            constraints['primary'] = True
+
         q = reduce(lambda x,y:x|y, #composable Q's
                    [models.Q(label=k,url=args[k]) for k in criteria])
         sources = Source.objects.filter(q,**constraints)
@@ -57,18 +61,19 @@ class Asset(models.Model):
     #in order of priority for which label is marked primary
     #an asset must have at least one source label from this list
     #'url' should probably stay at the end
-    primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
+    useful_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
                       'youtube','quicktime','realplayer', 'ogg',
                       'video_pseudo','video_rtmp','video',#unknown format, but we can try to play
                       'image_fpx', #artstor.org and FSI flash image viewer in general
-                      'image','archive','url',)
+                      'image')
+
+    #not good for uniqueness
+    fundamental_labels = ('archive','url',)
+    primary_labels = useful_labels + fundamental_labels
 
     @classmethod
     def good_args(cls, args):
-        rv = set(cls.primary_labels) & set(args.keys())
-        rv.discard('archive') #not good for uniqueness
-        rv.discard('url') #not good for uniqueness for collection listings
-        return rv
+        return set(cls.primary_labels) & set(args.keys())
 
     def __unicode__(self):
         return u'%s <%r> (%s)' % (self.title, self.pk, self.course.title)

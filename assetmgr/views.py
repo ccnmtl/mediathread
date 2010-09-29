@@ -87,14 +87,13 @@ def add_view(request):
 
     asset = Asset.objects.get_by_args(request.GET,
                                       asset__course=request.course)
-    adding = (asset is None)
+
     if asset:
         return HttpResponseRedirect(
             reverse('asset-view', args=[asset.id]))
-    
-    if adding:
+    elif asset is None:
         return mock_analysis_space(request)
-    else:
+    else: #asset is False with no good args
         #no arguments so /save space
         return asset_addform(request)
 
@@ -128,7 +127,6 @@ def asset_addform(request):
     from supported_archives import all 
     return {
         'asset_request':request.GET,
-        'adding': Asset.good_args(request.GET),
         'supported_archives':all,
         }
 
@@ -155,7 +153,10 @@ def add_asset(request):
 
     title = req_dict.get('title','')
     asset = Asset.objects.get_by_args(req_dict, asset__course=request.course)
-    
+
+    if asset is False:
+        raise AssertionError("no arguments were supplied to make an asset")
+
     if asset is None:
         asset = Asset(title=title,
                       course=request.course,

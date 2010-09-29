@@ -47,7 +47,13 @@
           {# is values a list or string? #}
           {% if not values.lower %}
             {% for v in values %}
-            <dd id="metadata-{{name}}">{{v}}</dd>
+            <dd id="metadata-{{name}}">
+              {% if "http" in v %}
+                <a href="{{v}}">{{v}}</a>
+              {% else %}
+                {{v}}
+              {% endif %}
+            </dd>
             {% endfor %}
           {% else %}
 	  <dd id="metadata-{{name}}">{{values}}</dd>

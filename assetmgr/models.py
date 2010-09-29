@@ -57,7 +57,6 @@ class Asset(models.Model):
     #in order of priority for which label is marked primary
     #an asset must have at least one source label from this list
     #'url' should probably stay at the end
-    #that is how an asset gets 'blessed' as a collection
     primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
                       'youtube','quicktime','realplayer', 'ogg',
                       'video_pseudo','video_rtmp','video',#unknown format, but we can try to play
@@ -68,6 +67,7 @@ class Asset(models.Model):
     def good_args(cls, args):
         rv = set(cls.primary_labels) & set(args.keys())
         rv.discard('archive') #not good for uniqueness
+        rv.discard('url') #not good for uniqueness for collection listings
         return rv
 
     def __unicode__(self):

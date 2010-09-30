@@ -17,14 +17,17 @@ class AssetManager(models.Manager):
     def get_by_args(self, args, **constraints):
         "args typically is request.GET"
         criteria = Asset.good_args(args)
-
         if not criteria:
             return False
-        elif criteria.issubset(Asset.fundamental_labels):
-            constraints['primary'] = True
+
+        def q_constraint(key, val):
+            if key in Asset.fundamental_labels:
+                return models.Q(label=key,url=val, primary=True)
+            else:
+                return models.Q(label=key,url=val)
 
         q = reduce(lambda x,y:x|y, #composable Q's
-                   [models.Q(label=k,url=args[k]) for k in criteria])
+                   [q_constraint(k,args[k]) for k in criteria])
         sources = Source.objects.filter(q,**constraints)
         if sources:
             return sources[0].asset

@@ -298,7 +298,9 @@ var SherdSlider = new (function() {
             } else {
                 doThis();
             }
-        }
+        } else {
+	    self.signal('load',colname,args);
+	}
     }
 
     this.junk = function() {

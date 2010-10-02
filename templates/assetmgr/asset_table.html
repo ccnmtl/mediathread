@@ -250,6 +250,7 @@
         {% endif %}
         </div><!-- class="actions" -->
 	<a {% if page_in_edit_mode %}target="_blank"{% endif %}
+	  class="materialCitationLink"
 	  title="Last modified on {{annotation.modified|date}} by {{annotation.author.get_full_name|default:annotation.author}}"
 	  href="{{annotation.get_absolute_url}}">{{annotation.title}}</a> 	    
 

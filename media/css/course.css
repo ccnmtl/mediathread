@@ -38,7 +38,7 @@ div.button {
   float: right;
   display: block;
   text-align: center;
-  font-size: 1.05m;
+  font-size: 1.05em;
   font-weight: bold;
   background-color: gray;
   border: 1px solid black;
@@ -51,7 +51,7 @@ div.button {
   margin-bottom: 0.75em;
   margin-top: 0;
 }
-  div.button a,   {
+  div.button a   {
     color: black;
     background: white;
     padding: 0.1em 1.5em;
@@ -897,7 +897,7 @@ display: none;
   padding: 2px;
  }
  
- #currtime, #totalcliplength {display: inline; font-size: 80%; font-color: #666;}
+ #currtime, #totalcliplength {display: inline; font-size: 80%; }
  
 a#EditClip {background-image: url(../img/tabbertab_edit.gif);  }
 

@@ -2,6 +2,7 @@ DjangoSherd_createThumbs = function(){} //REMOVE: minimize js processing while d
 
 var SherdSlider = new (function() {
     var self = this;
+    this.scrollOffsets = [];
     this.components = {};
     this.columns = {
         'asset_details': {
@@ -13,14 +14,19 @@ var SherdSlider = new (function() {
             min_width:620,
             max_space:true,
             load:function(url) {
-                
+                openCitation(url,{
+		    autoplay:false,
+		    presentation:'default', //large
+		    targets:{asset:this.inner_dom}
+		});
             }
         },
         'asset_column': {
             title:'Analysis',
             min_width:404,
             onLoad:function(elt) {
-                jQuery('a.asset-title-link',elt).click(function(evt){
+		this.inner_dom = elt; //refresh pointer
+                jQuery('a.asset-title-link,a.materialCitationLink',elt).click(function(evt){
                     self.showPane('asset_large',this.href);
                     evt.preventDefault();
                 })
@@ -74,7 +80,7 @@ var SherdSlider = new (function() {
             self.columns[a].index = self.order.push(a) -1;
             if (jQuery(this).hasClass('slider-active')) {
                 self.columns[a].active = true;
-                self.signal('onLoad',a,self.columns[a].html);
+                //self.signal('onLoad',a,self.columns[a].html);//run in project.js now
                 self.edges['right'] = index;
                 if (self.edges['left'] == null) 
                     self.edges['left'] = index;
@@ -113,7 +119,7 @@ var SherdSlider = new (function() {
     };
     this.signal = function(func,colname,args) {
         if (self.columns[colname][func]) {
-            self.columns[colname][func](args);
+            self.columns[colname][func].call(self.columns[colname],args);
         }
     }
     this.preserveHeight = function(start) {
@@ -189,7 +195,7 @@ var SherdSlider = new (function() {
         if ((direction=='left' && self.edges['left']==0)
             || (direction=='right' && self.edges['right']==self.order.length-1))
             return;//no place to slide to
-
+	///1. set variables
         var dir = ((direction=='left')?'+':'-'),
             new_col = self.columns[col],
             opp = self.edge(direction,'opposite'),
@@ -212,11 +218,11 @@ var SherdSlider = new (function() {
         /// we'll need to decide what/when to scrunch,
         var left_pos = self.forEachColumn(function(c){return -c.width;},
                                           0,/*upto=*/self.edges['left'])
-        ///update which columns are at the edges  ??TODO: confirm this is correct
+        ///2. update which columns are at the edges  ??TODO: confirm this is correct
         self.edges[direction] += self.links[direction].dir
         self.edges[self.opp(direction)] += self.links[direction].dir
 
-
+	///3. match secondary columns with current ones
         jQuery(self.components.secondary).width(
             self.forEachColumn(function(c){return c.width;})
         )
@@ -261,7 +267,8 @@ var SherdSlider = new (function() {
             }
         });
         jQuery(self.components['non-original']).animate({left:dir+"="+width+'px'});
-    }
+    }/*end this.slide()*/
+
     var indexOf= function(arr,val) {
         if (arr.indexOf) return arr.indexOf(val)
         ///IE SUX
@@ -281,10 +288,10 @@ var SherdSlider = new (function() {
     }
     
     this.showPane = function(colname, args) {
-        self.signal('load',colname,args);
         if (!self.columns[colname].active) {
             var doThis = function() {
                 self.slide(self.direction(colname), colname);
+		self.signal('load',colname,args);
             }
             if (self.queue.length) {
                 self.queue.push(doThis);

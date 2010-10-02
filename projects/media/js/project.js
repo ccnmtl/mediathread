@@ -165,11 +165,11 @@ var AssetList = new (function () {
                         jQuery(this).click(self.decorators.asset);
                     }
                 });
-                
                 if (init) {
                     self.onInit();
                     if (window.SherdSlider) SherdSlider.init();
                 }
+                if (window.SherdSlider) SherdSlider.signal('onLoad','asset_column',new_assets);
             }
         });
     }

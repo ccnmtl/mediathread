@@ -42,7 +42,7 @@ class Collaboration(models.Model):
     content_type   = models.ForeignKey(ContentType,
                                        related_name="collaboration_set_for_%(class)s",
                                        null=True, blank=True)
-    object_pk      = models.TextField(_('object ID'),null=True, blank=True)
+    object_pk      = models.CharField(_('object ID'),max_length=255,null=True, blank=True)
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
 

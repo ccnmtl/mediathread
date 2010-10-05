@@ -60,6 +60,9 @@
     {% for source in adminform.form.instance.source_set.all %}
     <li>
       <a href="{%url admin:assetmgr_source_change source.id %}">{{source}}</a>
+      {% if source.primary %}
+      [Primary]
+      {% endif %}
     </li>
     {% endfor %}
   </ul>

@@ -20,15 +20,10 @@ class AssetManager(models.Manager):
         if not criteria:
             return False
 
-        def q_constraint(key, val):
-            if key in Asset.fundamental_labels:
-                return models.Q(label=key,url=val, primary=True)
-            else:
-                return models.Q(label=key,url=val)
-
         q = reduce(lambda x,y:x|y, #composable Q's
-                   [q_constraint(k,args[k]) for k in criteria])
-        sources = Source.objects.filter(q,**constraints)
+                   [models.Q(label=k,url=args[k], primary=True) 
+                    for k in criteria])
+        sources = Source.objects.filter(q, **constraints)
         if sources:
             return sources[0].asset
         else:

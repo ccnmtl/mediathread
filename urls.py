@@ -55,8 +55,10 @@ urlpatterns = patterns('',
                        (r'^project/',include('mediathread.projects.urls')),
 
                        url(r'^explore/$','assetmgr.views.archive_explore',
-                           name="explore"
-                           ),
+                           name="explore"),
+
+                       url(r'^reports/class_summary/$','mediathread_main.views.class_summary',
+                           name="class-summary"),
 
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),

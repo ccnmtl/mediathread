@@ -264,6 +264,14 @@ text-align: center;
 	margin-right: .5em;
 }
 
+.panel  h2 a.panel-title-addendum,
+.panel  h2 a.panel-title-addendum:visited
+ {
+    float:right;
+    color:white;
+    display:inline-block;
+}
+
 #saves h2, #tags h2, #popular h2, #classmates h2, #filter_col h2, #results_col h2, #projectlist h2, #materials h2 ,
 .panel-column  h2
 {

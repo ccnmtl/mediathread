@@ -133,7 +133,11 @@ Home
   </div>
   {%endif%}
   <div id="class_activity">
-  <h2>Class Activities</h2>
+  <h2>Class Activities
+      {% if is_faculty %}
+      <a class="panel-title-addendum" href="{%url class-summary %}">Instructor's Class Report</a>
+      {% endif %}
+  </h2>
 
 
 <div class="panel-column panel-column-stump">

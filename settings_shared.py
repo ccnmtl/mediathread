@@ -140,6 +140,7 @@ COURSEAFFILS_PATHS = ('/asset/',
                       '/project/',
                       '/explore/',
                       '/comments/',
+                      '/reports/',
                       '/discussion/',
                       re.compile(r'^/$'),
                       )

@@ -42,9 +42,8 @@ def active(request, pattern):
     yourspace_base = None
     if request.user.is_authenticated():
         yourspace_base = reverse('your-space', args=[request.user.username])
-
     if pattern == "Class Portal":
-        if request.path == "/": #or request.path.startswith("/asset"):
+        if request.path == "/" or re.search('/class_summary',request.path):
             return 'active'
 
     if pattern == "Explore":

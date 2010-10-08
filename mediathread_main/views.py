@@ -190,6 +190,42 @@ def class_listing(request):
         }
 
 
+@allow_http("GET")
+@rendered_with('projects/class_summary.html')
+def class_summary(request):
+    """FACULTY ONLY reporting of entire class activity """
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+        
+    students = []
+    for stud in users_in_course(request.course).order_by('last_name','first_name','username'):
+        students.append({
+                'get_full_name':stud.get_full_name(),
+                'username':stud.username,
+                'annotations':SherdNote.objects.filter(asset__course=request.course,
+                                                       author=stud).count(),
+                'projects':Project.get_user_projects(stud,request.course).count(),
+                'comments':DiscussionIndex.objects.filter(participant=stud,collaboration__context=request.collaboration_context).count()
+                })
+
+
+    my_feed=Clumper(
+        SherdNote.objects.filter(asset__course=request.course).order_by('-added')[:40],
+        Project.objects.filter(course=request.course).order_by('-modified')[:40],
+        DiscussionIndex.with_permission(request,
+            DiscussionIndex.objects.filter(collaboration__context=request.collaboration_context)
+                                        .order_by('-modified')[:40]
+                                        ),
+        )
+    
+    return {
+        'students': students,
+        'my_feed':my_feed,
+        }
+
+
+
+
 def date_filter_for(attr):
 
     def date_filter(asset, date_range, user):

@@ -12,6 +12,10 @@ urlpatterns = patterns(
         'class_portal',
         name='class-portal'),
     
+    url(r'^class_summary/$',
+        'class_summary',
+        name='class-summary'),
+    
     url(r'^(?P<user_name>\w[^/]*)/$',
         'your_space',
         name='your-space'),

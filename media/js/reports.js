@@ -12,6 +12,10 @@ var SherdReport = (new (function() {
         self.innerMouseDown.apply(this,arguments);
     }
 
+    this.nodeDefaultLineWidth = function(d) {
+        return (d.faculty ? 3 : 1)
+    }
+
     this.init = function (json) {
         var w = jQuery('#reports-graph-link').width(),//document.body.clientWidth,
             h = jQuery(window).height()-300,
@@ -55,9 +59,9 @@ var SherdReport = (new (function() {
             }
         })
         .strokeStyle(function(d) {
-            return (d.faculty ? this.fillStyle().brighter() : this.fillStyle().darker())
+            return (d.faculty ? new pv.Color.Rgb(200,0,0,1) : this.fillStyle().darker())
         })
-        .lineWidth(function(d) {return (d.faculty ? 3 : 1)})
+        .lineWidth(self.nodeDefaultLineWidth)
         .shape(function(d) {
             switch (d.group) {
             case 1:
@@ -76,13 +80,17 @@ var SherdReport = (new (function() {
         
         ///User summary actions
         jQuery('#reports-student-tbody tr').click(function(evt) {
+            var on = jQuery(this).hasClass('highlight')
             jQuery('#reports-student-tbody tr').removeClass('highlight')
-
-            var user = jQuery(this).addClass('highlight').attr('data-username');
-            
-            self.nodes.lineWidth(function(d) {
-                return (d.users && d.users[user] ? 10 : (d.faculty ? 3 : 1))
-            });
+            if (on) {
+                self.nodes.lineWidth(self.nodeDefaultLineWidth);
+            } else {
+                var user = jQuery(this).addClass('highlight').attr('data-username');
+                
+                self.nodes.lineWidth(function(d) {
+                    return (d.users && d.users[user] ? 10 : self.nodeDefaultLineWidth(d))
+                });
+            }
         });
         
     }

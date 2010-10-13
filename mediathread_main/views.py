@@ -245,7 +245,7 @@ def class_summary_graph(request):
         try: 
             domain = re.search('://([^/]+)/',a.primary.url).groups()[0]
         except: continue
-        rv['nodes'].append({'nodeName':a.title,
+        rv['nodes'].append({'nodeName':"%s (%s)" % (a.title,domain) ,
                             'group':2,
                             'href':a.get_absolute_url(),
                             'domain':domain,

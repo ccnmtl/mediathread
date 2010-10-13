@@ -59,6 +59,9 @@ urlpatterns = patterns('',
 
                        url(r'^reports/class_summary/$','mediathread_main.views.class_summary',
                            name="class-summary"),
+                       url(r'^reports/class_summary/graph.json$',
+                           'mediathread_main.views.class_summary_graph',
+                           name="class-summary-graph"),
 
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),

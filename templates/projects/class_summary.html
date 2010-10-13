@@ -7,11 +7,27 @@ Course Summary
 
 {% block js %}
 <script type="text/javascript" src="/site_media/js/hs.js"></script>
+<script type="text/javascript" src="/site_media/js/protovis/protovis.min.js"></script>
+<script type="text/javascript" src="/site_media/js/reports.js"></script>
 {% endblock %}
 
 {% block content %}
     {{ block.super }}
-<h1>Instructor Class Report </h1>    
+<h1>Instructor Class Report</h1>    
+{%if request.user.is_staff and courses %}
+   <div>
+     <form>
+       <label>Staff Class browsing</label>
+       <select onchange="document.location=this.value;">
+         {% for c in courses %}
+         <option value="?set_course={{c.group.name|urlencode}}"
+                 {% ifequal c request.course %}selected="selected"{%endifequal%}
+           >{{c.title}}</option>
+           {% endfor %}
+         </select>
+       </form>
+     </div>
+{% endif %}
 <div class="panel">    
   <div style="float:left;width:35%">
   <div class="panel-column">
@@ -40,9 +56,33 @@ Course Summary
     </table>
   </div>
   </div>
-  <div style="float:left;width:60%">
+  <div style="float:left;width:65%">
   <div class="panel-column">
     <h2>All Recent Class Activity</h2>
+    <div id="reports-graph-link">
+      <a class="hs-control" href="#reports-graph"></a> Experimental Graph Visualization
+    </div>
+      <div id="reports-graph" class="hs-init-hide hs-hide">
+        <ul>
+          <li><a class="hs-control" href="#reports-graph-help"></a> <b>Details</b></li>
+          <li id="reports-graph-help" class="help hs-init-show hs-show">
+            This graph tries to visualize the different inter-connected objects in the class.
+            It's incredibly experimental--we'd like to link the dots to the objects, and filter, and many other things.  Suggestions are welcome.
+            <ul>
+              <li>Fastest in Google Chrome and Safari, still supported in Firefox and IE9</li>
+              <li>
+                <b>Squares</b> are projects,
+                <b>Circles</b> are assets, colored by their archive source,
+                <b>Crosses</b> are comments
+              </li>
+              <li><b>Controls:</b> hover over an object for title/details, mouse-wheel zooms in/out, drag on whitespace to pan, drag a node to help the display algorithm.</li>
+            </ul>
+          </li>
+        </ul>
+        <div id="reports-graph-visualization"></div>
+      </div>
+
+
     <div class="scroll">
       <ul class="clumper">
 	{%for clump in my_feed%}

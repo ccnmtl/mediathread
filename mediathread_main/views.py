@@ -10,6 +10,7 @@ from djangosherd.models import DiscussionIndex
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseForbidden
 from django.core.urlresolvers import reverse
@@ -17,6 +18,8 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
+import simplejson as json
+import re
 
 from clumper import Clumper
 from django.conf import settings
@@ -208,21 +211,95 @@ def class_summary(request):
                 'comments':DiscussionIndex.objects.filter(participant=stud,collaboration__context=request.collaboration_context).count()
                 })
 
-
     my_feed=Clumper(
         SherdNote.objects.filter(asset__course=request.course).order_by('-added')[:40],
         Project.objects.filter(course=request.course).order_by('-modified')[:40],
-        DiscussionIndex.with_permission(request,
-            DiscussionIndex.objects.filter(collaboration__context=request.collaboration_context)
-                                        .order_by('-modified')[:40]
-                                        ),
+        DiscussionIndex.objects.filter(
+            collaboration__context=request.collaboration_context).order_by('-modified')[:40],
         )
     
-    return {
+    rv = {
         'students': students,
         'my_feed':my_feed,
         }
+    if request.user.is_staff:
+        rv['courses'] = Course.objects.all()
+    return rv
 
+@allow_http("GET")
+def class_summary_graph(request):
+    """FACULTY ONLY reporting of class activity graph """
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+    rv = {'nodes':[],#groups: 1=domains,2=assets,3=projects
+          'links':[]}
+
+    domains = {} #{index:0, assets:[{ind1},ind2]}
+    assets = {}
+    projects = {}
+    users= {} #{projects:[],assets:[]}
+    discussions = {}
+
+    #domains --> assets
+    for a in Asset.objects.filter(course=request.course):
+        try: 
+            domain = re.search('://([^/]+)/',a.primary.url).groups()[0]
+        except: continue
+
+        if not domains.has_key(domain):
+        #    rv['nodes'].append({'nodeName':domain,'group':1})
+            domains[domain] = {'internal':len(domains),
+                               #'index':len(rv['nodes'])-1,
+                               }
+        rv['nodes'].append({'nodeName':a.title,
+                            'group':2,
+                            'id':a.id,
+                            'domain':domain,
+                            })
+        assets[a.id] = len(rv['nodes'])-1
+        #rv['links'].append({'source':domains[domain]['index'],
+        #                    'target':assets[a.id],
+        #                    'value':10,
+        #                    })
+
+    #projects --> assets
+    for p in Project.objects.filter(course=request.course):
+        rv['nodes'].append({'nodeName':p.title,'group':3,'id':p.id})
+        projects[p.id] = {'index':len(rv['nodes'])-1,
+                          'assets':{}
+                          }
+        for ann in p.citations():
+            try: ann.asset
+            except: continue
+            a = projects[p.id]['assets'].setdefault(ann.asset.id,
+                                                    {'str':2,
+                                                     'bare':False
+                                                     })
+            a['str']=a['str']+1
+            a['bare']=(a['bare'] or ann.is_null())
+        for a_id,v in projects[p.id]['assets'].items():
+            if not assets.has_key(a_id): continue
+            rv['links'].append({'source':projects[p.id]['index'],
+                                'target':assets[a_id],
+                                'value':v['str'],
+                                'bare':v['bare'],
+                                })
+    #comments --> assets
+    c = request.collaboration_context
+    for di in DiscussionIndex.objects.filter(collaboration__context=c).order_by('-modified'):
+        rv['nodes'].append({'nodeName':'Comment: %s' % (di.participant.get_full_name() or di.participant.username),
+                            'group':4,
+                           })
+        d_ind = len(rv['nodes'])-1
+        if di.asset_id:
+            rv['links'].append({'source':d_ind,
+                                'target':assets[di.asset_id],
+                                'value':1,
+                                })
+        
+    return HttpResponse(json.dumps(
+            rv, 
+            indent=2), mimetype='application/json')
 
 
 

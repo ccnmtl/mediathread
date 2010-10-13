@@ -102,6 +102,10 @@ function hs_hide(e) {
     jQuery(hs_controls[e.id])
     .removeClass("hs-control-show")
     .addClass("hs-control-hide");
+
+    if (typeof window['hs_onhide_'+e.id] == 'function') {
+        window['hs_onhide_'+e.id](e);
+    }
 }
 
 function hs_show(e) {
@@ -113,6 +117,10 @@ function hs_show(e) {
     jQuery(hs_controls[e.id])
     .removeClass("hs-control-hide")
     .addClass("hs-control-show");
+
+    if (typeof window['hs_onshow_'+e.id] == 'function') {
+        window['hs_onshow_'+e.id](e);
+    }
 }
 
 function hs_init(parent) {

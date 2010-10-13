@@ -118,7 +118,8 @@ def view_project(request, project_id):
     if not project.collaboration(request).permission_to('edit',request):
         #LEGACY: try again for legacy projects
         if not project.collaboration(request, sync_group=True).permission_to('edit',request):
-            return HttpResponseForbidden("forbidden")
+            return HttpResponseRedirect(
+                reverse('project-view', args=[project_id]))
 
     if request.method == "GET":
         if request.META.get('HTTP_ACCEPT','').find('json') >=0:

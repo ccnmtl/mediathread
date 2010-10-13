@@ -41,9 +41,9 @@ Course Summary
           <th>Comments</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="reports-student-tbody">
         {% for student in students %}
-        <tr>
+        <tr data-username="{{student.username}}" class="">
           <td><a href="{%url your-space-records student.username %}">
             {{student.get_full_name|default:student.username}}
           </a></td>
@@ -61,6 +61,7 @@ Course Summary
     <h2>All Recent Class Activity</h2>
     <div id="reports-graph-link">
       <a class="hs-control" href="#reports-graph"></a> Experimental Graph Visualization
+      <a id="reports-graph-chosenlink" href=""></a>
     </div>
       <div id="reports-graph" class="hs-init-hide hs-hide">
         <ul>
@@ -73,7 +74,7 @@ Course Summary
               <li>
                 <b>Squares</b> are projects,
                 <b>Circles</b> are assets, colored by their archive source,
-                <b>Crosses</b> are comments
+                <b>Crosses</b> are comments linked to the discussion
               </li>
               <li><b>Controls:</b> hover over an object for title/details, mouse-wheel zooms in/out, drag on whitespace to pan, drag a node to help the display algorithm.</li>
             </ul>

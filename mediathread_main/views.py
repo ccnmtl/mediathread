@@ -235,8 +235,8 @@ def class_summary_graph(request):
           'links':[]}
 
     domains = {} #{index:0, assets:[{ind1},ind2]}
-    assets = {}
-    projects = {}
+    assets = {} # [a.id] = index
+    projects = {} #[p.id] = {index:0}
     users= {} #{projects:[],assets:[]}
     discussions = {}
 
@@ -245,29 +245,29 @@ def class_summary_graph(request):
         try: 
             domain = re.search('://([^/]+)/',a.primary.url).groups()[0]
         except: continue
-
-        if not domains.has_key(domain):
-        #    rv['nodes'].append({'nodeName':domain,'group':1})
-            domains[domain] = {'internal':len(domains),
-                               #'index':len(rv['nodes'])-1,
-                               }
         rv['nodes'].append({'nodeName':a.title,
                             'group':2,
-                            'id':a.id,
+                            'href':a.get_absolute_url(),
                             'domain':domain,
                             })
         assets[a.id] = len(rv['nodes'])-1
-        #rv['links'].append({'source':domains[domain]['index'],
-        #                    'target':assets[a.id],
-        #                    'value':10,
-        #                    })
 
     #projects --> assets
     for p in Project.objects.filter(course=request.course):
-        rv['nodes'].append({'nodeName':p.title,'group':3,'id':p.id})
-        projects[p.id] = {'index':len(rv['nodes'])-1,
-                          'assets':{}
-                          }
+        p_users = p.participants.all()
+        p_node = {'nodeName':p.title,
+                  'group':3,
+                  'href':p.get_absolute_url(),
+                  'users':dict([(u.username,1) for u in p_users]), 
+                  }
+        rv['nodes'].append(p_node)
+        projects[p.id] = {'index':len(rv['nodes'])-1,'assets':{},}
+
+        for u in p_users:
+            if request.course.is_faculty(u):
+                p_node['faculty'] = True
+            users.setdefault(u.username,{'projects':[]})['projects'].append(p.id)
+
         for ann in p.citations():
             try: ann.asset
             except: continue
@@ -284,19 +284,44 @@ def class_summary_graph(request):
                                 'value':v['str'],
                                 'bare':v['bare'],
                                 })
-    #comments --> assets
+    #comments
     c = request.collaboration_context
+    proj_type = ContentType.objects.get_for_model(Project)
+
     for di in DiscussionIndex.objects.filter(collaboration__context=c).order_by('-modified'):
         rv['nodes'].append({'nodeName':'Comment: %s' % (di.participant.get_full_name() or di.participant.username),
+                            'users':{di.participant.username:1},
                             'group':4,
+                            'href':di.get_absolute_url(),
+                            'faculty':request.course.is_faculty(di.participant),
                            })
+        
+
         d_ind = len(rv['nodes'])-1
+        #linking discussions in a chain
+        if discussions.has_key(di.collaboration_id):
+            rv['links'].append({'source':d_ind,
+                                'target':discussions[di.collaboration_id][-1],
+                                })
+            discussions[di.collaboration_id].append(d_ind)
+        else:
+            discussions[di.collaboration_id] = [d_ind]
+            if di.collaboration._parent_id and \
+                    di.collaboration._parent.content_type==proj_type:
+                rv['links'].append({'source':d_ind,
+                                    'target':projects[
+                            int(di.collaboration._parent.object_pk)]['index'],
+                                    })
+
+        #comment --> asset
         if di.asset_id:
             rv['links'].append({'source':d_ind,
                                 'target':assets[di.asset_id],
-                                'value':1,
                                 })
+            
         
+
+
     return HttpResponse(json.dumps(
             rv, 
             indent=2), mimetype='application/json')

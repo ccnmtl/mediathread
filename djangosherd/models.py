@@ -226,6 +226,9 @@ class SherdNote(Annotation):
         "Because |split filter sucks and doesn't break at commas"
         return Tag.objects.get_for_object(self)
 
+    def tags_lazy(self):
+        return re.split('\s*,\s*',self.tags)
+
     def add_tag(self, tag):
         self.tags = "%s,%s" % (self.tags, tag)
 

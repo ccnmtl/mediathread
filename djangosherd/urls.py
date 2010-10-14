@@ -10,6 +10,9 @@ urlpatterns = patterns(
     url(r'^all/$', 
         'annotations_collection_fragment', name="all-annotations-fragment"),
 
+    url(r'^tags.json$', 
+        'tags_json', name="all-annotation-tags"),
+
     url(r'^(?P<username>none)/$', 
         'annotations_collection_fragment', name="annotations-fragment-none"),
 

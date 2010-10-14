@@ -18,7 +18,7 @@ var SherdReport = (new (function() {
 
     this.init = function (json) {
         var w = jQuery('#reports-graph-link').width(),//document.body.clientWidth,
-            h = jQuery(window).height()-300,
+            h = Math.max(500,jQuery(window).height()-300),
             colors = pv.Colors.category10(),
             domain_colors = pv.Colors.category20()
         
@@ -53,9 +53,11 @@ var SherdReport = (new (function() {
         .fillStyle(function(d) {
             var color;
             switch (d.group) {
-            case 2: return domain_colors(d.domain);
+            case 1: return new pv.Color.Rgb(256,256,0,1) //tag
+            case 2: return domain_colors(d.domain); //asset
             case 3: return new pv.Color.Rgb(0,100,256,1) //project
             case 4: return new pv.Color.Rgb(0,100,0,1) //comment
+            default: return new pv.Color.Rgb(0,0,0,1)
             }
         })
         .strokeStyle(function(d) {
@@ -69,7 +71,7 @@ var SherdReport = (new (function() {
             case 3:return 'square' //project
             case 4:return 'diamond' //comment
             }})
-        .title(function(d) {return d.nodeName + (d.domain? ' ('+d.domain+')' : '') })
+        .title(function(d) {return d.nodeName;})
         .event("mousedown", self.nodeMouseDown)
         .event("drag", force);
 
@@ -104,6 +106,7 @@ window['hs_onshow_reports-graph'] = function() {
     SherdReport.started = true;
     jQuery.ajax({
         url:'/reports/class_summary/graph.json?nocache='+Number(new Date())+location.search.replace(/^./,'&'),
+        //url:'/annotations/tags.json?nocache='+Number(new Date())+location.search.replace(/^./,'&'),
         dataType:'json',
         success:SherdReport.init
     })

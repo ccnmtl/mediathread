@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 
 from djangosherd.models import Asset, SherdNote
 from djangosherd.models import NULL_FIELDS
@@ -18,6 +19,7 @@ from assetmgr.lib import annotated_by,get_active_filters
 from courseaffils.lib import in_course_or_404
 
 import simplejson
+import re
 from random import choice
 from string import letters
 import urllib2
@@ -229,6 +231,32 @@ def annotation_iframe_view(request, asset_id, annot_id):
         'annotation': annotation,
         'readonly': readonly,
         }
+
+def tags_json(request):
+    assets = {}
+    tags = {}
+    rv = {'nodes':[],'links':[]}
+
+    for ann in SherdNote.objects.filter(asset__course=request.course):
+        if not assets.has_key(ann.asset_id):
+            assets[ann.asset_id] = len(rv['nodes'])
+            rv['nodes'].append({'group':2,
+                                'href':reverse('asset-view', args=[ann.asset_id]),
+                                })
+        for t in ann.tags_lazy():
+            if not t in tags:
+                tags[t] = len(rv['nodes'])
+                rv['nodes'].append({'group':1,
+                                    'href':"%s?tag=%s" % (reverse('asset-container'),t),
+                                    })
+            rv['links'].append({'source':tags[t],
+                                'target':assets[ann.asset_id],
+                                'value':1,
+                                })
+    rv['tags'] = tags
+    return HttpResponse(simplejson.dumps(
+            rv, 
+            indent=2), mimetype='application/json')
 
 def annotation_json(request, annot_id):
     ann = get_object_or_404(SherdNote,pk=annot_id)

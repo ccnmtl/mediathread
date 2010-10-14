@@ -252,7 +252,7 @@ def class_summary_graph(request):
                             })
         assets[a.id] = len(rv['nodes'])-1
 
-    #projects --> assets
+    #projects
     for p in Project.objects.filter(course=request.course):
         p_users = p.participants.all()
         p_node = {'nodeName':p.title,
@@ -268,13 +268,10 @@ def class_summary_graph(request):
                 p_node['faculty'] = True
             users.setdefault(u.username,{'projects':[]})['projects'].append(p.id)
 
+        #projects-->assets
         for ann in p.citations():
-            try: ann.asset
-            except: continue
-            a = projects[p.id]['assets'].setdefault(ann.asset.id,
-                                                    {'str':2,
-                                                     'bare':False
-                                                     })
+            a = projects[p.id]['assets'].setdefault(ann.asset_id,
+                                                    {'str':2,'bare':False})
             a['str']=a['str']+1
             a['bare']=(a['bare'] or ann.is_null())
         for a_id,v in projects[p.id]['assets'].items():
@@ -306,8 +303,10 @@ def class_summary_graph(request):
             discussions[di.collaboration_id].append(d_ind)
         else:
             discussions[di.collaboration_id] = [d_ind]
-            if di.collaboration._parent_id and \
-                    di.collaboration._parent.content_type==proj_type:
+            if (di.collaboration._parent_id and 
+                di.collaboration._parent.content_type==proj_type and
+                projects.has_key(int(di.collaboration._parent.object_pk))
+                ):
                 rv['links'].append({'source':d_ind,
                                     'target':projects[
                             int(di.collaboration._parent.object_pk)]['index'],

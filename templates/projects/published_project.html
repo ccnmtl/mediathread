@@ -104,6 +104,16 @@
     </form>
     {% endif %}
   {% endif %}
+
+  <h3>Responses</h3>
+  <ul>
+    {% for child_collab in project.collaboration.children.all %}
+    <li>{{child_collab.content_type}}, {{child_collab.get_policy}}</li>
+    <li><a href="{{child_collab.content_object.get_absolute_url}}">
+      {{child_collab.content_object.title}}
+    </a></li>
+    {% endfor %}
+  </ul>
 {% endif %}{# end project.collaboration #}
 
 {% if project.versions %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load smartif %}
+{% load smartif collaborations %}
 
 <title>{% block title %}
 {% if preview_num %}
@@ -89,9 +89,7 @@
 
 {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
-  {% if project.feedback_discussion %}
-    <a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a>
-  {% else %}
+  {% if not project.feedback_discussion %}
     {% if is_faculty %}
     <form action="{% url new-discussion %}" method="POST">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
@@ -104,16 +102,23 @@
     </form>
     {% endif %}
   {% endif %}
-
-  <h3>Responses</h3>
-  <ul>
-    {% for child_collab in project.collaboration.children.all %}
-    <li>{{child_collab.content_type}}, {{child_collab.get_policy}}</li>
-    <li><a href="{{child_collab.content_object.get_absolute_url}}">
-      {{child_collab.content_object.title}}
-    </a></li>
-    {% endfor %}
-  </ul>
+  {% with_permission with project.collaboration.children.all for request as collabs %}
+  {% if collabs %}
+    <h3>Responses</h3>
+    <ul>
+      {% for child_collab in collabs %}
+      <li>
+        {% ifequal child_collab.content_type.name "Threaded comment" %}
+          Feedback Discussion:
+        {% endifequal %}
+        <a href="{{child_collab.content_object.get_absolute_url}}">
+          {{child_collab.content_object.title}}
+        </a>
+        <!-- policy: {{child_collab.get_policy}} -->
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endif %}{# end project.collaboration #}
 
 {% if project.versions %}

@@ -77,7 +77,7 @@ class Collaboration(models.Model):
 
     class Meta:
         unique_together = (("content_type", "object_pk"),)
-        ordering = ['-_order']
+        ordering = ['title']
         
     def get_content_object_url(self):
         "Get a URL suitable for redirecting to the content object."

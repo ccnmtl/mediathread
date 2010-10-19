@@ -55,6 +55,9 @@
              {% if project.feedback_discussion %}             
 	     <li><a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a></li>
              {%endif%}
+             {% if project.collaboration.get_parent %}
+             <li>Response for: <a href="{{project.collaboration.get_parent.content_object.get_absolute_url}}">{{project.collaboration.get_parent.title}}</a></li>
+             {%endif%}
 	   </ul>
 
 	 </div><!-- id=project-pk-metadata -->

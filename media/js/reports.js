@@ -31,7 +31,8 @@ var SherdReport = (new (function() {
         .event("mousedown", pv.Behavior.pan())
         .event("mousewheel", pv.Behavior.zoom(
             //clearly protovis default is calibrated for firefox
-            (/Firefox/.test(navigator.userAgent) ? 1 : 3)
+            //or a Mac with those stupid little dots for scroll-wheels
+            (/(Firefox|Mac OS X)/.test(navigator.userAgent) ? 1 : 3)
         ));
         
 

@@ -39,7 +39,7 @@ from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
 
 
 
-OPERATION_TAGS = ('jump','title','noui','v','share')
+OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course')
 #NON_VIEW
 def good_asset_arg(key):
     #need support for some things like width,height,max_zoom
@@ -140,7 +140,11 @@ def add_asset(request):
     """
 
     # XXX TODO: the error case here should be 401/403, not 404
-    in_course_or_404(request.user.username, request.course)
+    user = request.user
+    if user.is_staff and request.REQUEST.has_key('as'):
+        user = get_object_or_404(User,username=request.REQUEST['as'])
+
+    in_course_or_404(user.username, request.course)
 
     asset = None
 
@@ -160,7 +164,7 @@ def add_asset(request):
     if asset is None:
         asset = Asset(title=title,
                       course=request.course,
-                      author=request.user)
+                      author=user)
         asset.save()
         for source in sources_from_args(request, asset).values():
             source.save()
@@ -177,7 +181,7 @@ def add_asset(request):
         if request.POST.has_key('save-global-annotation'):
             # if the user is saving a global annotation
             # we need to create it first and then edit it
-            global_annotation = asset.global_annotation(request.user)
+            global_annotation = asset.global_annotation(user)
             annotationview(request, asset.pk, global_annotation.pk)
             transaction.commit()
         elif request.POST.has_key('save-clip-annotation'):

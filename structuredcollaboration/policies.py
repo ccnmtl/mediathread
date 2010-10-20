@@ -20,7 +20,7 @@ class CollaborationPolicy:
         return False
     
     def permission_to(self,collaboration,permission,request):
-        return getattr(self, permission, lambda s,c,r:False)(collaboration,request)
+        return getattr(self, permission, lambda c,r:False)(collaboration,request)
     
     #def manage(self,collaboration,request):
     #def read(self,collaboration,request):

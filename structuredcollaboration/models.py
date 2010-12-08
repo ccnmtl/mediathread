@@ -7,8 +7,7 @@ from django.conf import settings
 from structuredcollaboration.policies import CollaborationPolicies,PublicEditorsAreOwners
 from django.utils.translation import ugettext_lazy as _
 
-User = get_model('auth','user')
-Group = get_model('auth','group')
+from django.contrib.auth.models import User,Group
 
 class CollaborationManager(models.Manager):
     def inc_order(self):

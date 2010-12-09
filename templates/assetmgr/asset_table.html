@@ -179,7 +179,8 @@
   </h2>
 
   {%if asset.sources.thumb %}
-  <img class="asset-thumb" src="{{asset.sources.thumb.url}}" />
+  <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+     href="{{asset.get_absolute_url}}"><img class="asset-thumb" src="{{asset.sources.thumb.url}}" /></a>
   {% endif %}
 
   <div id="record-{{asset.pk}}-metadata" class="record-metadata">

@@ -47,6 +47,10 @@ jQuery(function discussion_init() {
             comment_form_space(evt_target).appendChild(frm);
             jQuery(frm).show();
             jQuery('#id_comment').focus();
+
+            ///makes it resizable--somewhat hacking tinyMCE.init()
+            tinyMCE.settings.theme_advanced_statusbar_location="bottom";
+
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
             jQuery(evt_target).addClass('control-open');
         } else { //actually, CLOSE form

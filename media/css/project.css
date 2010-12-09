@@ -166,6 +166,7 @@ form.threaded_comments_form ul li {
 .respond_to_comment_form_div .control-open {
     padding-right:20px;
     background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
+    font-weight:bold;
     
 }
 
@@ -274,6 +275,12 @@ li.comment-thread {
     padding-bottom: 4px;
 
 
+}
+
+/*TinyMCE adds _tbl to the #id_comment id for the table where the editor is dynamically created. */
+table#id_comment_tbl {
+    clear:both;
+    margin-left:10px;
 }
 
 /*comment that someone has linked to

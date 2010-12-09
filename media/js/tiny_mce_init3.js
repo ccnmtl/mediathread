@@ -16,9 +16,13 @@ var tiny_mce_settings_for_vital = {
   theme_advanced_toolbar_align:"left",
 	    /* CUSTOM CCNMTL: peared down the UI buttons available */
 	    /* Safari doesn't support buttons, so turn them off */
-    theme_advanced_buttons1:"bold, italic, underline, spacer, bullist, numlist, spacer, outdent, indent, spacer, undo, redo, spacer, link, unlink, image, spacer, code",
+  theme_advanced_buttons1:"bold, italic, underline, spacer, bullist, numlist, spacer, outdent, indent, spacer, undo, redo, spacer, link, unlink, image, spacer, code",
   theme_advanced_buttons2:"",
-  theme_advanced_path_location:"",
+  theme_advanced_path:false,
+  ///CCNMTL: ACTUALLY ENABLED IN DISCUSSIONS, see discussion.js
+  //theme_advanced_statusbar_location:"bottom",
+  theme_advanced_resizing:true,
+  theme_advanced_resize_horizontal : false,
   remove_linebreaks:true,
   convert_urls : false,
   //setupcontent_callback : "plugin_regexrep_setup",

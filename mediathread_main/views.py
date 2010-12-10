@@ -434,3 +434,7 @@ def your_records(request, user_name):
         }
 
 
+@allow_http("GET")
+@rendered_with('slide.html')
+def base_slide(request):
+    return {}

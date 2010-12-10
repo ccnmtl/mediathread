@@ -142,6 +142,8 @@ COURSEAFFILS_PATHS = ('/asset/',
                       '/comments/',
                       '/reports/',
                       '/discussion/',
+
+                      '/analysis/',
                       re.compile(r'^/$'),
                       )
 

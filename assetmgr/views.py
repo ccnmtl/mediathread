@@ -162,7 +162,7 @@ def add_asset(request):
         raise AssertionError("no arguments were supplied to make an asset")
 
     if asset is None:
-        asset = Asset(title=title,
+        asset = Asset(title=title[:1020], #max title length
                       course=request.course,
                       author=user)
         asset.save()

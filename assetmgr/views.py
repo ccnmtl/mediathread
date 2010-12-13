@@ -413,17 +413,22 @@ def archive_explore(request):
 def asset_json(request, asset_id):
     asset = get_object_or_404(Asset,pk=asset_id)
     asset_key = 'x_%s' % asset.pk
+    annotations = [{
+            'asset_key':asset_key,
+            'range1':None,
+            'range2':None,
+            'annotation':None,
+            'id':'asset-%s' % asset.pk,
+            'asset_id': asset.pk,
+            }]
+    if request.GET.has_key('annotations'):
+        for ann in asset.sherdnote_set.filter(range1__isnull=False):
+            annotations.append( ann.sherd_json(request, 'x', ('title','author') ) )
+            
     data = {'assets':dict( [(asset_key,
                              asset.sherd_json(request)
                              )] ),
-            'annotations':[{
-                'asset_key':asset_key,
-                'range1':None,
-                'range2':None,
-                'annotation':None,
-                'id':'asset-%s' % asset.pk,
-                'asset_id': asset.pk,
-                }],
+            'annotations':annotations,
             'type':'asset',
             }
     return HttpResponse(simplejson.dumps(data, indent=2),

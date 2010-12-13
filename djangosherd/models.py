@@ -21,7 +21,6 @@ Asset = models.get_model('assetmgr', 'asset')
 User = models.get_model('auth', 'user')
 Comment = get_model('comments','comment')
 
-
 NULL_FIELDS = dict((i, None) for i in
                    'range1 range2 title'.split())
 
@@ -80,6 +79,22 @@ class Annotation(models.Model):
     @property
     def dir(self):
         return dir(self)
+
+    def sherd_json(self, request=None, asset_key='', metadata_keys=tuple() ):
+        return {
+            'asset_key':'%s_%s' % (asset_key,self.asset_id),
+            'id':self.pk,
+            'range1':self.range1,
+            'range2':self.range2,
+            'annotation':self.annotation(),
+            'metadata':dict([
+                    (m,getattr(self,m,None))
+                    if m != 'author'
+                    else (m,{'id':getattr(self,'author_id',None)})
+                    for m in metadata_keys
+                    ])
+            }
+        
 
 class SherdNoteManager(models.Manager):
 
@@ -343,29 +358,42 @@ class DiscussionIndex(models.Model):
     def with_permission(cls, request,query):
         return [di for di in query if di.collaboration.permission_to('read',request) ]
 
-def comment_indexer(sender, instance=None, created=None, **kwargs):
-    if not (hasattr(instance,'comment') and
-            hasattr(instance,'user') and
-            isinstance(getattr(instance,'content_object',None) , Collaboration)
-            ): #duck-typing for Comment and ThreadedComment
-        return
-    sherds = SherdNote.objects.references_in_string(instance.comment)
-    di = None
-    if not sherds:
-        class NoNote:
-            asset = None
-        sherds = [ NoNote(), ]
-    for ann in sherds:
-        di,c = DiscussionIndex.objects.get_or_create(
-            participant=instance.user,
-            collaboration = instance.content_object,
-            asset=ann.asset,
-            )
-        di.comment = instance
-        di.save()
-
     @property
     def dir(self):
         return dir(self)
 
-post_save.connect(comment_indexer)
+def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
+    sherds = None
+    participant = None
+    comment = None
+    collaboration = None
+    if (hasattr(instance,'comment') and
+        hasattr(instance,'user') and
+        isinstance(getattr(instance,'content_object',None) , Collaboration)
+        ): #duck-typing for Comment and ThreadedComment
+        sherds = SherdNote.objects.references_in_string(instance.comment)
+        if not sherds:
+            class NoNote:
+                asset = None
+            sherds = [ NoNote(), ]
+        participant=instance.user
+        comment = instance
+        collaboration = instance.content_object
+    elif hasattr(instance,'author') and callable(getattr(instance,'collaboration',None)):
+        participant = None #not setting author, since get_or_create will break then
+        collaboration = instance.collaboration()
+        if collaboration is None:
+            return
+    else:
+        return #not comment, not project
+    for ann in sherds:
+        di,c = DiscussionIndex.objects.get_or_create(
+            participant=particpant,
+            collaboration = collaboration,
+            asset=ann.asset,
+            )
+        di.comment = comment
+        di.save()
+
+
+post_save.connect(commentNproject_indexer)

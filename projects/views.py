@@ -225,20 +225,9 @@ def project_json(request,project):
                             ) for ann in project.citations()
                            if ann.title != "Annotation Deleted"
                            ]),
-            'annotations':[
-            {'asset_key':'%s_%s' % (rand,ann.asset_id),
-             'id':ann.pk,
-             'range1':ann.range1,
-             'range2':ann.range2,
-             'annotation':ann.annotation(),
-             'metadata':{
-                    'title':ann.title,
-                    'author':{'id':ann.author_id,
-                              #'name':ann.author.get_full_name(),
-                              },
-                    },
-             } for ann in project.citations()
-            ],
+            'annotations':[ann.sherd_json(request, rand, ('title','author') )
+                           for ann in project.citations()
+                           ],
             'type':'project',
             }
     return HttpResponse(json.dumps(data, indent=2),

@@ -388,7 +388,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
         return #not comment, not project
     for ann in sherds:
         di,c = DiscussionIndex.objects.get_or_create(
-            participant=particpant,
+            participant=participant,
             collaboration = collaboration,
             asset=ann.asset,
             )

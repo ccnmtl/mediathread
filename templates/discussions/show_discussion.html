@@ -149,7 +149,7 @@
         {% endfor %}        
 
         {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
-        <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
+        <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{COMMENT_MAX_LENGTH}}">
           <input type="hidden" id="comment-edit-id" name="edit-id" />
           <ul>
             <li><!-- instead of current_comment_form.as_ul since that has all the field labels of fields we don't care about -->

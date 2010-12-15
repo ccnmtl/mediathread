@@ -37,19 +37,23 @@ Course Summary
         <tr>
           <th>Name</th>
           <th>Annotations</th>
-          <th>Projects</th>
           <th>Comments</th>
+          <th>Projects</th>
+          <th>Project adds</th>
+          <th>Project dels</th>
         </tr>
       </thead>
       <tbody id="reports-student-tbody">
         {% for student in students %}
-        <tr data-username="{{student.username}}" class="">
+        <tr data-username="{{student.username}}" class="user-{{student.username}}">
           <td><a href="{%url your-space-records student.username %}">
             {{student.get_full_name|default:student.username}}
           </a></td>
           <td>{{student.annotations}}</td>
-          <td>{{student.projects}}</td>
           <td>{{student.comments}}</td>
+          <td>{{student.projects}}</td>
+          <td>{{student.project_adds}}</td>
+          <td>{{student.project_deletes}}</td>
         </tr>
         {% endfor %}
       </tbody>

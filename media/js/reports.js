@@ -9,6 +9,13 @@ var SherdReport = (new (function() {
         .html(node.nodeName)
         .attr('href',node.href)
 
+        if (node.users) {
+            jQuery('#reports-student-tbody tr').removeClass('highlight');
+            for (author in node.users) {
+                jQuery('#reports-student-tbody tr.user-'+author).addClass('highlight');
+            }
+        }
+
         self.innerMouseDown.apply(this,arguments);
     }
 

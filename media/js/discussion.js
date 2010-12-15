@@ -114,6 +114,8 @@ function AjaxComment(form) {
     this.form = form;
     this.username = jQuery('#logged_in_name').text();
 
+    this.max_comment_length = parseInt(form.getAttribute('data-maxlength'));
+
     this.capabilities = {
         'edit': jQuery('.capabilities .can-edit').length
     }
@@ -129,10 +131,17 @@ AjaxComment.prototype.submit = function(evt) {
     tinyMCE.triggerSave();
     evt.preventDefault();
 
+    if (self.max_comment_length &&
+        self.form.elements['comment'].value.length > self.max_comment_length) {
+        alert('Your comment is above the allowed maximum length of '+self.max_comment_length+' characters (which includes HTML).  Your comment is '+self.form.elements['comment'].value.length+' characters long.');
+        return;
+    }
+
     var frm = jQuery(self.form);
     form_val_array = frm.serializeArray();
     
     var info = {'edit-id':self.form.elements['edit-id'].value};
+
     info['mode'] = ((info['edit-id']=='') ?'post':'update');
     switch (info['mode']) {
     case 'update':
@@ -262,7 +271,7 @@ AjaxComment.prototype.read = function(found_obj) {
 AjaxComment.prototype.update = function(obj,html_dom,components) {
     var success = 0;
     components = components || this.components(html_dom);
-    window.sky = components;
+
     if (obj.comment) {
         success+=jQuery(components.comment).html(obj.comment).length;
     }

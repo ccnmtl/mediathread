@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse,resolve
 from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
+from django.contrib.comments.models import COMMENT_MAX_LENGTH
 
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
@@ -78,6 +79,8 @@ def show_discussion(request, root_comment):
         'root_comment': root_comment,
         'switcher':switcher,
         'page_in_edit_mode': True,
+        #change this in settings.COMMENT_MAX_LENGTH
+        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH,
         }
         
 @allow_http("POST")

@@ -29,6 +29,21 @@ var tiny_mce_settings_for_vital = {
   //save_callback : "plugin_regexrep_save",
   //setupcontent_regex : regexes,
   //save_regex : regexes,
+  setup: function(inst) {
+      ///tab and shift-tab indent/outdent for Brie
+      ///http://tinymce.moxiecode.com/punbb/viewtopic.php?pid=44170#p44170
+      inst.onKeyDown.add(
+          function(ed, e) {
+              if (e.keyCode == 9 && !e.altKey && !e.ctrlKey)
+              {
+                  if (e.shiftKey)
+                      ed.execCommand('Outdent');
+                  else
+                      ed.execCommand('Indent');
+                  return tinymce.dom.Event.cancel(e);
+              }
+          });
+  },
   valid_elements:""
   +"a[class|href|id|name|tabindex|title|target],"
   +"abbr[class|id|title],"

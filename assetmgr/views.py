@@ -202,8 +202,12 @@ def add_asset(request):
 
 @rendered_with('assetmgr/asset_container.html')
 def container_view(request):
-
-    assets = [a for a in Asset.objects.filter(course=request.course).order_by('title')
+    "for all class assets view at /asset/ "
+    #extra() is case-insensitive order hack
+    #http://scottbarnham.com/blog/2007/11/20/case-insensitive-ordering-with-django-and-postgresql/
+    assets = [a for a in Asset.objects.filter(course=request.course).extra(
+            select={'lower_title': 'lower(title)'}
+            ).order_by('lower_title')
               if a not in request.course.asset_set.archives()]
 
     from tagging.models import Tag

@@ -167,7 +167,8 @@ class Project(models.Model):
                         colgrp.user_set.add(p)
                 for oldp in already_grp:
                     colgrp.user_set.remove(oldp)
-            if request and col.policy != policy:
+            if request and (col.policy != policy or col.title != self.title):
+                col.title = self.title
                 col.policy = policy
                 col.save()
 

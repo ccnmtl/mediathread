@@ -354,6 +354,8 @@ class DiscussionIndex(models.Model):
         if self.comment and self.comment.threadedcomment:
             return '/discussion/show/%s#comment-%s' % (self.comment.threadedcomment.root_id, 
                                                        self.comment.id)
+        else:
+            return self.collaboration.content_object.get_absolute_url()
     @classmethod
     def with_permission(cls, request,query):
         return [di for di in query if di.collaboration.permission_to('read',request) ]
@@ -363,7 +365,7 @@ class DiscussionIndex(models.Model):
         return dir(self)
 
 def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
-    sherds = None
+    sherdsource = None
     participant = None
     comment = None
     collaboration = None
@@ -371,21 +373,28 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
         hasattr(instance,'user') and
         isinstance(getattr(instance,'content_object',None) , Collaboration)
         ): #duck-typing for Comment and ThreadedComment
-        sherds = SherdNote.objects.references_in_string(instance.comment)
-        if not sherds:
-            class NoNote:
-                asset = None
-            sherds = [ NoNote(), ]
+        
+        
         participant=instance.user
         comment = instance
         collaboration = instance.content_object
-    elif hasattr(instance,'author') and callable(getattr(instance,'collaboration',None)):
+        sherdsource = instance.comment
+    elif hasattr(instance,'author') and hasattr(instance,'body') \
+            and callable(getattr(instance,'collaboration',None)):
         participant = None #not setting author, since get_or_create will break then
         collaboration = instance.collaboration()
         if collaboration is None:
             return
+        sherdsource = instance.body
     else:
         return #not comment, not project
+    
+    sherds = SherdNote.objects.references_in_string(sherdsource)
+    if not sherds:
+        class NoNote:
+            asset = None
+        sherds = [ NoNote(), ]
+
     for ann in sherds:
         di,c = DiscussionIndex.objects.get_or_create(
             participant=participant,

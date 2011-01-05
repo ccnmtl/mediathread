@@ -21,7 +21,21 @@
        opacity:1.0; 
        /*IE: so we don't see stupid broken-image icons*/
        *display:none; 
-    } 
+    }
+    div.olControlDrawFeatureSquareItemInactive {
+       background-image:url(/site_media/js/sherdjs/media/images/square_tool.png);
+       background-repeat: no-repeat;
+       height:23px;
+       width:25px;
+    }
+    
+    div.olControlDrawFeatureSquareItemActive {
+       background-image:url(/site_media/js/sherdjs/media/images/square_tool.png);
+       background-repeat: no-repeat;
+       background-position: 0px -23px;
+       height:23px;
+       width:25px;
+    }
   </style>
   <script src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
   <!--script src="/site_media/js/sherdjs/lib/openlayers/openlayers/lib/OpenLayers.js"></script-->

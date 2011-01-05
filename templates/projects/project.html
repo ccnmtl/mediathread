@@ -17,10 +17,8 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
 
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
@@ -73,7 +71,7 @@
             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
           </script>
           <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-          <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
+          <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
           <textarea id="project-content" tabindex="0" name="body" 
                     class="mceEditor"
                     mce_editable="true">{{project.body|safe}}</textarea>

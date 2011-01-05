@@ -167,11 +167,26 @@ class Project(models.Model):
                         colgrp.user_set.add(p)
                 for oldp in already_grp:
                     colgrp.user_set.remove(oldp)
-            if request and col.policy != policy:
+            if request and (col.policy != policy or col.title != self.title):
+                col.title = self.title
                 col.policy = policy
                 col.save()
 
         return col
+
+    def content_metrics(self):
+        "Do some rough heuristics on how much each author contributed"
+        last_content = ''
+        author_contributions = {}
+        for v in self.versions:
+            change = len(v.body) - len(last_content)
+            author_contributions.setdefault(v.author,[0,0])
+            if change > 0: #track adds
+                author_contributions[v.author][0] += change
+            elif change < 0: #track deletes
+                author_contributions[v.author][1] -= change
+            last_content = v.body
+        return author_contributions
 
     @property
     def dir(self):

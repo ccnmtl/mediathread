@@ -14,11 +14,13 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce/tiny_mce.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
+  <script type="text/javascript">
+    var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+  </script>
+
+  <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+  <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
   
   
   <!--All the annotation javascript/css -->
@@ -113,7 +115,7 @@
                     {% endif %}
                   </span>
                
-               <span class="threaded_comment_author">{{current_comment.name}} </span>
+               <span class="threaded_comment_author">{{current_comment.name}}</span>
                   <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>
                   <span class="comment-date">
                     (
@@ -147,7 +149,7 @@
         {% endfor %}        
 
         {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
-        <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
+        <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{COMMENT_MAX_LENGTH}}">
           <input type="hidden" id="comment-edit-id" name="edit-id" />
           <ul>
             <li><!-- instead of current_comment_form.as_ul since that has all the field labels of fields we don't care about -->

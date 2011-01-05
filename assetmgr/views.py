@@ -39,7 +39,7 @@ from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
 
 
 
-OPERATION_TAGS = ('jump','title','noui','v','share')
+OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course')
 #NON_VIEW
 def good_asset_arg(key):
     #need support for some things like width,height,max_zoom
@@ -140,7 +140,11 @@ def add_asset(request):
     """
 
     # XXX TODO: the error case here should be 401/403, not 404
-    in_course_or_404(request.user.username, request.course)
+    user = request.user
+    if user.is_staff and request.REQUEST.has_key('as'):
+        user = get_object_or_404(User,username=request.REQUEST['as'])
+
+    in_course_or_404(user.username, request.course)
 
     asset = None
 
@@ -158,9 +162,9 @@ def add_asset(request):
         raise AssertionError("no arguments were supplied to make an asset")
 
     if asset is None:
-        asset = Asset(title=title,
+        asset = Asset(title=title[:1020], #max title length
                       course=request.course,
-                      author=request.user)
+                      author=user)
         asset.save()
         for source in sources_from_args(request, asset).values():
             source.save()
@@ -177,7 +181,7 @@ def add_asset(request):
         if request.POST.has_key('save-global-annotation'):
             # if the user is saving a global annotation
             # we need to create it first and then edit it
-            global_annotation = asset.global_annotation(request.user)
+            global_annotation = asset.global_annotation(user)
             annotationview(request, asset.pk, global_annotation.pk)
             transaction.commit()
         elif request.POST.has_key('save-clip-annotation'):
@@ -198,8 +202,12 @@ def add_asset(request):
 
 @rendered_with('assetmgr/asset_container.html')
 def container_view(request):
-
-    assets = [a for a in Asset.objects.filter(course=request.course).order_by('title')
+    "for all class assets view at /asset/ "
+    #extra() is case-insensitive order hack
+    #http://scottbarnham.com/blog/2007/11/20/case-insensitive-ordering-with-django-and-postgresql/
+    assets = [a for a in Asset.objects.filter(course=request.course).extra(
+            select={'lower_title': 'lower(title)'}
+            ).order_by('lower_title')
               if a not in request.course.asset_set.archives()]
 
     from tagging.models import Tag
@@ -409,17 +417,22 @@ def archive_explore(request):
 def asset_json(request, asset_id):
     asset = get_object_or_404(Asset,pk=asset_id)
     asset_key = 'x_%s' % asset.pk
+    annotations = [{
+            'asset_key':asset_key,
+            'range1':None,
+            'range2':None,
+            'annotation':None,
+            'id':'asset-%s' % asset.pk,
+            'asset_id': asset.pk,
+            }]
+    if request.GET.has_key('annotations'):
+        for ann in asset.sherdnote_set.filter(range1__isnull=False):
+            annotations.append( ann.sherd_json(request, 'x', ('title','author') ) )
+            
     data = {'assets':dict( [(asset_key,
                              asset.sherd_json(request)
                              )] ),
-            'annotations':[{
-                'asset_key':asset_key,
-                'range1':None,
-                'range2':None,
-                'annotation':None,
-                'id':'asset-%s' % asset.pk,
-                'asset_id': asset.pk,
-                }],
+            'annotations':annotations,
             'type':'asset',
             }
     return HttpResponse(simplejson.dumps(data, indent=2),

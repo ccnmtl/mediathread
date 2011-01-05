@@ -1,4 +1,5 @@
-requirements/src/Django-1.1.tar.gz
+#Django-1.1.tar.gz
+requirements/src/Django-1.2.1.tar.gz
 requirements/src/resolver-0.2.1.tar.gz
 requirements/src/selector-0.8.11.tar.gz
 requirements/src/Paste-1.7.2.tar.gz
@@ -22,6 +23,8 @@ requirements/src/uuid-1.30.tar.gz
 # to dist-packages. so on my system i'm actually downloading and installing them locally
 # during bootstrap
 psycopg2
+
+#MySQLdb #this doesn't seem to work--just make sure it's in site-packages globally
 
 #for djangosherd xmeml final cut pro support
 requirements/src/xmeml-0.9.tar.gz

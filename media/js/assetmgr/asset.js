@@ -41,29 +41,29 @@
             clip_form.elements[a].disabled = false;
         }
 	}
-	removeElement('copy-annotation');
-	$('disableform').id = 'previously-disabled-form';
+	jQuery('#copy-annotation').remove();
+	jQuery('#disableform').attr('id','previously-disabled-form');
     }
 
-    function validateNoteForm(mochi_evt) {
-	var form = mochi_evt.src();
+    function validateNoteForm(evt) {
+	var form = this;//jQuery
 	var tag_field = form.elements['annotation-tags'];
 	if (tag_field) {//is this null?
 	    var tags = tag_field.value.split(',');
 	    for (var i=0;i<tags.length;i++) {
 		if (tags[i].length > 50) {
 		    alert('You are trying to add a tag with greater than the maximum 50 character-limit.  Be sure to separate your tags with commas.  Also, tags are best used as single words that you would tag other assets with.  Try using the Notes field for longer expressions.');
-		    mochi_evt.stop();
+		    evt.preventDefault();
 		    return;
 		}
 	    }
 	}
     }
 
-    addLoadEvent(function(){
+    jQuery(function(){
 	///Clip form disabling
 	clip_form = document.forms['clip-form'];
-	if ($('disableform')!=null) {
+	if (document.getElementById('disableform')!=null) {
 	    var elts = clip_form.elements;
 	    for (a in FIELDS_TO_DISABLE) {
 	        if (elts[a].type == 'textarea') {
@@ -73,34 +73,22 @@
 	            elts[a].disabled = true;
 	        }
 	    }
-	    var copy_btn = INPUT({
+	    var copy_btn = document.createElement('input');
+
+            var copy_attrs = {
 		type:'button',
 		id:'copy-annotation',
 		onclick:'copyAnnotation()',
 		value:'Copy Clip'
-	    });
+	    };
+            for (a in copy_attrs) {
+                copy_btn.setAttribute(a,copy_attrs[a]);
+            }
 	    clip_form.appendChild(copy_btn);
 	}
-	///delete comment on focus
-	forEach(document.getElementsByTagName('input'),
-		function(elt) {
-		    if (elt.name == 'comment') {
-			connect(elt,'onfocus',function(evt) {
-			    if (evt.src().value=='Enter your comment here and press return') {
-				evt.src().value = '';
-			    }
-			});
-		    }
-		});
 	///validate notes
-	if (clip_form) {
-	    connect(clip_form,'onsubmit',validateNoteForm);
-	} 
-	var noteform = document.forms['not-clip-form'];
-	if (noteform) {
-	    connect(noteform,'onsubmit',validateNoteForm);
-	}
-	
+        jQuery(clip_form).bind('submit',validateNoteForm);
+        jQuery(document.forms['not-clip-form']).bind('submit',validateNoteForm);
     });
 
 })();

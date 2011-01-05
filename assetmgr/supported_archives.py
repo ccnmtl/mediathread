@@ -25,10 +25,10 @@ all = [
                  },
      'sources':{
             'url':{'label':'url',
-                   'url':'http://openvault.wgbh.org/catalog/org.wgbh.mla:Vietnam',
+                   'url':'http://openvault.wgbh.org/catalog/org.wgbh.mla:vietnam',
                    },
             'archive':{'label':'archive',
-                       'url':'http://openvault.wgbh.org/catalog/org.wgbh.mla:Vietnam',
+                       'url':'http://openvault.wgbh.org/catalog/org.wgbh.mla:vietnam',
                        },
             'thumb':{'label':'thumb',
                      'url':'http://ccnmtl.columbia.edu/projects/mediathread/skins/vietnam//img/bvault_bug.jpg',

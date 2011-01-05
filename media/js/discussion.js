@@ -47,6 +47,10 @@ jQuery(function discussion_init() {
             comment_form_space(evt_target).appendChild(frm);
             jQuery(frm).show();
             jQuery('#id_comment').focus();
+
+            ///makes it resizable--somewhat hacking tinyMCE.init()
+            tinyMCE.settings.theme_advanced_statusbar_location="bottom";
+
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
             jQuery(evt_target).addClass('control-open');
         } else { //actually, CLOSE form
@@ -114,6 +118,8 @@ function AjaxComment(form) {
     this.form = form;
     this.username = jQuery('#logged_in_name').text();
 
+    this.max_comment_length = parseInt(form.getAttribute('data-maxlength'));
+
     this.capabilities = {
         'edit': jQuery('.capabilities .can-edit').length
     }
@@ -129,10 +135,17 @@ AjaxComment.prototype.submit = function(evt) {
     tinyMCE.triggerSave();
     evt.preventDefault();
 
+    if (self.max_comment_length &&
+        self.form.elements['comment'].value.length > self.max_comment_length) {
+        alert('Your comment is above the allowed maximum length of '+self.max_comment_length+' characters (which includes HTML).  Your comment is '+self.form.elements['comment'].value.length+' characters long.');
+        return;
+    }
+
     var frm = jQuery(self.form);
     form_val_array = frm.serializeArray();
     
     var info = {'edit-id':self.form.elements['edit-id'].value};
+
     info['mode'] = ((info['edit-id']=='') ?'post':'update');
     switch (info['mode']) {
     case 'update':
@@ -262,7 +275,7 @@ AjaxComment.prototype.read = function(found_obj) {
 AjaxComment.prototype.update = function(obj,html_dom,components) {
     var success = 0;
     components = components || this.components(html_dom);
-    window.sky = components;
+
     if (obj.comment) {
         success+=jQuery(components.comment).html(obj.comment).length;
     }
@@ -297,7 +310,7 @@ AjaxComment.prototype.create = function(obj,doc) {
         +          'class="comment-thread">'
         + '<div class="comment new-comment">'
         + ' <div class="threaded_comment_header">'
-        +    '<span class="threaded_comment_author">{{current_comment.name}} </span>'
+        +    '<span class="threaded_comment_author">{{current_comment.name}}</span>'
         +      '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>'
         + ' </div>'
         + '<div class="threaded_comment_title">{{current_comment.title}}</div>'
@@ -327,9 +340,11 @@ AjaxComment.prototype.create = function(obj,doc) {
 
 /** INIT **/    
     commenter = new AjaxComment(frm);
+  window.commenter = commenter;
     var threads = jQuery('li.comment-thread');
     var base_comment = commenter.components(threads.get(0));
     if (base_comment.edit_button
+        && base_comment.author.innerHTML == commenter.username
         && (base_comment.title.innerHTML == 'Discussion Title'
             || threads.length == 1))
     {

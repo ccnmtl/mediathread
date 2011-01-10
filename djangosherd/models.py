@@ -342,8 +342,11 @@ class DiscussionIndex(models.Model):
 
     @property
     def body(self):
-        parts = re.split('\<\/?[a-zA-Z]+[^>]*>',self.comment.comment)
-        return ''.join(parts)
+        if self.comment:
+            parts = re.split('\<\/?[a-zA-Z]+[^>]*>',self.comment.comment)
+            return ''.join(parts)
+        else:
+            return ''
 
     @property
     def content_object(self):

@@ -16,8 +16,13 @@ PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
                    ('InstructorShared','Instructor Only'),
                    ('CourseProtected','Course participants'),
                    ('PublicEditorsAreOwners','World'),
+                   ('Assignment','Course Assignment'),
                    )
 
+# Add keys from PUBLISH_OPTIONS if they should
+# be filtered out of the choices for non-faculty
+PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',
+                                )
 class Project(models.Model):
 
     title = models.CharField(max_length=1024)

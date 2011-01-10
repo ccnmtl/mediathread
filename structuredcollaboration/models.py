@@ -33,7 +33,7 @@ class Collaboration(models.Model):
     objects = CollaborationManager()
     user = models.ForeignKey(User,null=True, blank=True)
     group = models.ForeignKey(Group,null=True, blank=True)
-
+    
     title = models.CharField(max_length=1024,null=True,default=None)
     slug = models.SlugField(max_length=50,null=True,default=None, blank=True)
     
@@ -49,7 +49,6 @@ class Collaboration(models.Model):
     
     _parent = models.ForeignKey('self',related_name='children',null=True,default=None, blank=True)
 
-    #will eventually be used instead of _parent
     context = models.ForeignKey('self',related_name='context_children',null=True,default=None, blank=True)
 
     def save(self,*args,**kwargs):

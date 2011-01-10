@@ -24,6 +24,10 @@ class ProjectForm(forms.ModelForm):
     def __init__(self,request, *args, **kwargs):
         super(ProjectForm,self).__init__(*args,**kwargs)
         self.fields['participants'].choices = [(u.id,u.get_full_name() or u.username) for u in request.course.user_set.all()]
+        
+        if not request.course.is_faculty(request.user):
+            self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
+                                              if choice[0] not in PUBLISH_OPTIONS_FACULTY_ONLY]
 
         #not restrictive enough -- people can add children to their own projects
         # is that a good idea?

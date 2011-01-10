@@ -252,6 +252,13 @@ class SherdNote(Annotation):
         """Support similar property as Comment model"""
         return self.asset
 
+    @property
+    def author_name(self):
+        if not self.author_id:
+            return None
+        else:
+            return self.author.get_full_name() or self.author.username
+
     def delete(self):
         Tag.objects.get_for_object(self).delete()
         return Annotation.delete(self)
@@ -335,8 +342,11 @@ class DiscussionIndex(models.Model):
 
     @property
     def body(self):
-        parts = re.split('\<\/?[a-zA-Z]+[^>]*>',self.comment.comment)
-        return ''.join(parts)
+        if self.comment:
+            parts = re.split('\<\/?[a-zA-Z]+[^>]*>',self.comment.comment)
+            return ''.join(parts)
+        else:
+            return ''
 
     @property
     def content_object(self):
@@ -344,6 +354,8 @@ class DiscussionIndex(models.Model):
         return self.asset or self.collaboration
 
     def clump_parent(self, group_by=None):
+        if hasattr(self.collaboration.content_object,'body'):
+            return self.collaboration.content_object
         return self.collaboration if group_by=='discussion' else self.content_object
     
     def get_parent_url(self):

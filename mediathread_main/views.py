@@ -111,7 +111,8 @@ def class_portal(request):
                                                     .filter(Q(Q(asset__in=my_assets.keys())
                                                               |Q(collaboration__in=my_discussions)
                                                               |Q(collaboration__user=request.user)
-                                                              |Q(collaboration__group__user=request.user)
+                                                              |Q(collaboration__group__user=request.user),
+                                                              participant__isnull=False
                                                               )
                                                        )
                                                        .order_by('-modified')

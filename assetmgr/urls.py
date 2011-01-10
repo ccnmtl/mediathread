@@ -6,7 +6,7 @@ media_root = os.path.join(os.path.dirname(__file__),"media")
 
 urlpatterns = patterns(
     'assetmgr.views',
-
+    # urls available from /asset/
     url(r'^$', 'container_view',
         name='asset-container'),
 

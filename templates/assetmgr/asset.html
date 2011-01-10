@@ -65,10 +65,10 @@
     </div>
     
     {% if request.GET.c %}
-    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Analyze">
+    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Annotations">
     {% else %}
     <!-- temporarily put analysis tab as default until we can get metadata again -->
-    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Analyze">
+    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Annotations">
     {% endif %}<!--end request.GET.c -->
     
     {% if annotation and readonly %}
@@ -177,40 +177,7 @@
 	 {% endif %}
 	 {% endfor %}
        </ul>
-     </div><!-- end "annotations"  -->
 
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      {% endif %}<!--end if not mock -->
-   </div> <!-- end "analysis" tab -->
-
-   {% if not mock %}
-    <div class="tabbertab indexcard" title="Class Activity">
-   
-      <h2><a class="hs-control" href="#classtags"></a>Class Tags</h2>
-
-      <div id="classtags" class="sub-control">
-	{% for tag in tags %}
-	<span class="size{{tag.font_size}}">
-	  <a href="{% url asset-container %}?tag={{tag.name}}">
-	  {{tag.name}} ({{tag.count}})</a>
-	</span>&nbsp;
-	{% endfor %}
-      </div>
- 
-      <br />
      <h2> <a class="hs-control" href="#other_people_annotations"></a>Other People's  Clips of This Item</h2>
      <div id="other_people_annotations" class="sub-control">
 	  <ul>
@@ -231,9 +198,44 @@
 	  </ul>
       </div><!--end id="other_people_annotations" -->
       
+
+     </div><!-- end "annotations"  -->
+
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      {% endif %}<!--end if not mock -->
+   </div> <!-- end "analysis" tab -->
+
+   {% if not mock %}
+    <div class="tabbertab indexcard" title="Class References">
+   
+      <h2><a class="hs-control" href="#classtags"></a>Class Tags</h2>
+
+      <div id="classtags" class="sub-control">
+	{% for tag in tags %}
+	<span class="size{{tag.font_size}}">
+	  <a href="{% url asset-container %}?tag={{tag.name}}">
+	  {{tag.name}} ({{tag.count}})</a>
+	</span>&nbsp;
+	{% endfor %}
+      </div>
+ 
+      <br />
 <br />
     
-      <h2><a class="hs-control" href="#discussion"></a>Class References to this Item</h2>
+      <h2><a class="hs-control" href="#discussion"></a>References to this Item</h2>
       
          <div id="discussions" class="sub-control">
 	    {%if discussions%}

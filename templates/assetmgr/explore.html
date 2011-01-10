@@ -131,14 +131,14 @@ Explore Collections
          </a>
          {% endif %}
 
-	 <p>
+	 <div>
            {# is description a list or string? #}
            {% if archive.metadata.description.lower %}           
              {{archive.metadata.description|urlize|linebreaks}}
            {% else %}
              {{archive.metadata.description.0|urlize|linebreaks}}
            {% endif %}
-	 </p>
+	 </div>
        </div>
     {%endfor%}
 </div>

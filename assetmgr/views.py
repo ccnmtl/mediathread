@@ -427,7 +427,7 @@ def asset_json(request, asset_id):
             }]
     if request.GET.has_key('annotations'):
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            annotations.append( ann.sherd_json(request, 'x', ('title','author') ) )
+            annotations.append( ann.sherd_json(request, 'x', ('title','author','tags','author_name') ) )
             
     data = {'assets':dict( [(asset_key,
                              asset.sherd_json(request)

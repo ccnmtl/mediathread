@@ -252,6 +252,13 @@ class SherdNote(Annotation):
         """Support similar property as Comment model"""
         return self.asset
 
+    @property
+    def author_name(self):
+        if not self.author_id:
+            return None
+        else:
+            return self.author.get_full_name() or self.author.username
+
     def delete(self):
         Tag.objects.get_for_object(self).delete()
         return Annotation.delete(self)

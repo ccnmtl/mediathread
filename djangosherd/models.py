@@ -344,6 +344,8 @@ class DiscussionIndex(models.Model):
         return self.asset or self.collaboration
 
     def clump_parent(self, group_by=None):
+        if hasattr(self.collaboration.content_object,'body'):
+            return self.collaboration.content_object
         return self.collaboration if group_by=='discussion' else self.content_object
     
     def get_parent_url(self):

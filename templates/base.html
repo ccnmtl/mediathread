@@ -35,7 +35,6 @@
           }
         </script>
 	{% block css %}{% endblock %}
-	{% block js %}{% endblock %}
 	{% block feeds %}{% endblock %}
 </head>
 {% course_role for request.user in course as role_in_course %}
@@ -163,6 +162,7 @@
 
 </div><!-- id="container" -->
 
+{% block js %}{% endblock %}
 <script type="text/javascript">
    var _gaq = _gaq || [];
    var _gaq_mediathread = 'UA-311226-18';

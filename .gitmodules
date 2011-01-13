@@ -13,3 +13,6 @@
 [submodule "media/js/protovis"]
 	path = media/js/protovis
 	url = git://github.com/mbostock/protovis.git
+[submodule "media/js/mustache"]
+	path = media/js/mustache
+	url = git://github.com/schuyler1d/mustache.js.git

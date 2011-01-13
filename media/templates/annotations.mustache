@@ -1,0 +1,53 @@
+  <div id="asset-details-annotations" class="tab-box">
+    <div id="asset-details-annotations-actions">
+      <a class="annotation-actions-add" href="javascript:addAnnotation()">Add Annotation</a>
+      <a href="">Add Tag</a>
+      <a href="">Edit Your Item Note</a>
+    </div>
+
+    {{#>>annotation-current}}
+    <div id="asset-details-annotations-current">
+        {{#annotation}}
+        {{#editable?}}
+        <form name="new-annotation-form" action="javascript:saveAnnotation()">
+          <label for="annotation-title">Title:</label>
+          <input type="text" id="id_annotation-title" name="annotation-title" value="{{title}}" />
+          <label for="annotation-tags">Tags:</label>
+          <input type="text" id="id_annotation-tags" name="annotation-tags" value="{{tags}}"/>
+          <label for="annotation-body">Note:</label>
+          <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body"></textarea>
+        </form>
+        {{/editable?}}
+        {{^editable}}
+        <h4>{{title}}</h4>
+        <label for="">Tags:</label>
+        <p>{{tags}}</p>
+        <label for="">Note:</label>
+        <p>{{body?linebreaksbr}}</p>
+        {{/editable}}
+        {{/annotation}}
+    </div>
+    {{/>>annotation-current}}
+
+    {{#>>annotation-list}}
+    <ul id="asset-details-annotations-list">
+        {{#annotation_list}}
+        <li>
+          {{#category}}
+           <h4>{{title}}</h4>
+           <ul>
+             {{#annotations}}
+               {{#>>annotation-listitem}}
+                 <li id="annotation-listitem-{{id}}" class="annotation-listitem">
+                   <a href="{{annotation-form?url(asset.id,id)}}">{{title}}</a>
+                 </li>
+               {{/>>annotation-listitem}}
+             {{/annotations}}
+           </ul>
+          {{/category}}
+        </li>
+        {{/annotation_list}}
+    </ul>
+    {{/>>annotation-list}}
+
+</div>

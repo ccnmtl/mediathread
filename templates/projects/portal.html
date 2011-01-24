@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%load user_annotations comments %}
+{% load user_annotations comments collaborations %}
 
 <title> {% block title %}
 Home
@@ -22,7 +22,13 @@ Home
       <h3>START HERE:</h3>
       <ul>
 	{%for p in faculty_feed.projects %}
+	{% if_permission to "add_child" with p.collaboration for request as can_add_child %}
+	{% if can_add_child %}
+	<li class="assignment"><a href="{%url project-view p.id %}">{{p.title}}</a> (assignment)</li>
+	{% else %}
 	<li><a href="{%url project-view p.id %}">{{p.title}}</a></li>
+	{% endif %}
+
 	{%endfor%}
       </ul>
     {%endif%}

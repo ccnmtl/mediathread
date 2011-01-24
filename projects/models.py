@@ -61,6 +61,28 @@ class Project(models.Model):
                 })
 
 
+    @models.permalink
+    def get_readonly_url(self):
+        return ('project-view', (), {
+                'project_id': self.pk,
+                })
+
+
+    def assignment(self):
+        """
+        Returns the Project object that this Project is a response to,
+        or None if this Project is not a response to any other.
+        """
+        # TODO: this doesn't check content types in any way.
+        # It assumes that obj->collab->parent->obj is-a Project.
+        col = self.collaboration()
+        if not col:
+            return
+        parent = col.get_parent()
+        if not parent:
+            return
+        return parent.content_object
+
     def feedback_discussion(self):
         "returns the ThreadedComment object for Professor feedback (assuming it's private)"
         col = self.collaboration()

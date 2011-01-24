@@ -87,6 +87,18 @@
 	</div><!-- end -->
 	
         <div id="project_participants">
+
+	  {% with project.assignment as assignment %}
+	  {% if assignment %}
+	  <div>
+	  <h3>Response to
+	    <a href="{{assignment.get_readonly_url}}">
+	      {{assignment.title}}
+	    </a>
+	  </div>
+	  {% endif %}
+	  {% endwith %}
+
           <div id="participant_update" style="display:none">Save the project to save the collaborator list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
           <div id="participants_chosen">

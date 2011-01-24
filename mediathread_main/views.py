@@ -397,6 +397,32 @@ filter_by = {
     }
 
 
+def is_unanswered_assignment(assignment, user, request, expected_type):
+    collab = assignment.collaboration()
+    if not collab: 
+        # Who knows what it is
+        return False
+
+    if not collab.permission_to("add_child", request):
+        # It must not be an assignment
+        return False 
+
+    children = collab.children.all()
+    if not children:
+        # It has no responses, but it looks like an assignment
+        return True
+
+    for child in children:
+        if child.content_type != expected_type:
+            # Ignore this child, it isn't a project
+            continue
+        if child.content_object.author == user:
+            # Aha! We've answered it already
+            return False
+
+    # We are an assignment; we have children; 
+    # we haven't found a response by the target user.
+    return True
 
 @allow_http("GET")
 @rendered_with('projects/your_records.html')
@@ -418,17 +444,13 @@ def your_records(request, user_name):
     if not editable:
         projects = [p for p in projects if p.visible(request)]
 
-
+    project_type = ContentType.objects.get_for_model(Project)
     assignments = []
     maybe_assignments = Project.objects.filter(
         c.faculty_filter, submitted=True)
     for assignment in maybe_assignments:
-        collab = assignment.collaboration()
-        if not collab:
-            continue
-        if collab.permission_to("add_child", request):
+        if is_unanswered_assignment(assignment, user, request, project_type):
             assignments.append(assignment)
-
 
     for fil in filter_by:
         filter_value = request.GET.get(fil)

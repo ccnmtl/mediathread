@@ -26,7 +26,7 @@ class IfPermission(TemplateTagNode):
         TemplateTagNode.__init__(self, varname, collab=collab, perm=perm, request=request)
 
     def execute_query(self, collab, perm, request):
-        if collab.permission_to(perm, request):
+        if collab and collab.permission_to(perm, request):
             return collab
         else: return None
 

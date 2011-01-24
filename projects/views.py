@@ -140,6 +140,7 @@ def view_project(request, project_id):
                 mock_project = projectform.cleaned_data.copy()
                 mock_project['attribution'] = projectform.instance.attribution(
                     mock_project['participants'])
+                mock_project['assignment'] = projectform.instance.assignment()
                 return project_preview(request, space_owner, mock_project, 
                                        is_participant=True, preview_num=request.GET.get('preview',1))
             

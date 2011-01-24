@@ -43,6 +43,19 @@
   </h1>
   <h2>by <span id="participants_chosen">{{project.attribution}}</span>
   </h2>
+  
+  {% with project.assignment as assignment %}
+  {% if assignment %}
+  <div>
+    <h3>Response to
+      <a href="{{assignment.get_readonly_url}}">
+	{{assignment.title}}
+      </a>
+    </h3>
+  </div>
+  {% endif %}
+  {% endwith %}
+
 
   <br />
   <div class="asset-view asset-view-small">

@@ -101,8 +101,14 @@ MediaThread.templates = {};
     Mustache.set_pragma_default('?-CONDITIONAL',true);
 
     MediaThread.urls = {
-        'annotation-form':function(asset_id,annotation_id){
+        'annotation-form':function(asset_id,annotation_id) {
             return '/asset/'+asset_id+'/annotations/'+annotation_id;
+        },
+        'your-space':function(user_id) {
+            return '/yourspace/'+user_id+'/asset/';
+        },
+        'asset-json':function(asset_id, with_annotations) {
+            return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
         }
     }
 
@@ -111,14 +117,70 @@ MediaThread.templates = {};
         return MediaThread.urls[name].apply(this,url_args);
     }
 
-    jQuery.ajax({
-        url:'/site_media/templates/annotations.mustache',
-        dataType:'text',
-        success:function(text){
-            MediaThread.templates['annotations'] = Mustache.template('annotations',text);
-            
+
+    function AnnotationList(){}
+    AnnotationList.prototype = {
+        grouping: null,
+        current_asset_id: null,
+        //current_annotation
+        //mock_mode -- from page state
+        //storage
+        init:function() {
+            jQuery.ajax({
+                url:'/site_media/templates/annotations.mustache',
+                dataType:'text',
+                success:function(text){
+                    MediaThread.templates['annotations'] = Mustache.template('annotations',text);
+                    
+                }
+            })
+            return this;
+        },
+        GroupBy: function(grouping) {
+            if (this.grouping == grouping) 
+                return;
+            if (!this.current_asset_id) 
+                return;
+            djangosherd.storage.get(
+                {
+                    id:this.current_asset_id,
+                    type:'asset',
+                    url:MediaThread.urls['asset-json'](this.current_asset_id,/*annotations=*/true)
+                },
+                false,
+                function(asset_full) {
+                    for (var i=0;i<asset_full.annotations.length;i++) {
+                        var a = asset_full.annotations[i];
+                        if (a.annotation) {
+                            lay.add(a.annotation,{id:a.id});
+                        }
+                    }
+                }
+            );
         }
-    })
+        ///Groupby('author')
+        ///Groupby('tag')
+        //  - get, group
+        //  - replace/hide-show Layer, group-by color
+        //  - decorate
+
+        ///Annotation Copy
+        //  - get, clone, remove id, editable = true, replace
+
+        ///Annotation Save
+        //  - update list items
+        //  - replace with 'new' annotation
+        //
+        ///Annotation Open
+        //  - highlight on view
+        //  - 
+        ///Asset Save
+        //  - storage.update
+        
+        //decorateLink
+        //decorateForm
+
+    }
     
 
 })();

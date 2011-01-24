@@ -8,27 +8,39 @@
     {{#>>annotation-current}}
     <div id="asset-details-annotations-current">
         {{#annotation}}
-        {{#editable?}}
-        <form name="new-annotation-form" action="javascript:saveAnnotation()">
-          <label for="annotation-title">Title:</label>
-          <input type="text" id="id_annotation-title" name="annotation-title" value="{{title}}" />
-          <label for="annotation-tags">Tags:</label>
-          <input type="text" id="id_annotation-tags" name="annotation-tags" value="{{tags}}"/>
-          <label for="annotation-body">Note:</label>
-          <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body"></textarea>
-        </form>
-        {{/editable?}}
-        {{^editable}}
-        <h4>{{title}}</h4>
-        <label for="">Tags:</label>
-        <p>{{tags}}</p>
-        <label for="">Note:</label>
-        <p>{{body?linebreaksbr}}</p>
-        {{/editable}}
+          <form name="new-annotation-form" action="javascript:saveAnnotation()">
+
+          {{#editable?}}<!-- if editable -->
+            <label for="annotation-title">Title:</label>
+            <input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}" />
+            <label for="annotation-tags">Tags:</label>
+            <input type="text" id="id_annotation-tags" name="annotation-tags" value="{{metadata.tags}}"/>
+            <label for="annotation-body">Note:</label>
+            <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
+          {{/editable?}}
+
+          {{^editable}}<!-- if NOT editable -->
+            <h4>{{metadata.title}}</h4>
+            <div><b>Author:</b> <a href="{{your-space?url(metadata.author.id)}}">{{metadata.author_name}}</a></div>
+            <div><label for="">Tags:</label> {{metadata.tags}}</div>
+            <div><label for="">Note:</label> {{metadata.body?linebreaksbr}}</div>
+          {{/editable}}
+
+          {{#id?}}
+            <input type="hidden" name="annotation-id" value="{{id}}" />
+            <input type="button" onclick="" value="Copy" />
+          {{/id?}}
+          </form>
+
         {{/annotation}}
     </div>
     {{/>>annotation-current}}
-
+    
+    <div class="">
+       <form name="annotation-list-filter">
+         <select name="groupby"><option>Author</option><option>Tag</option></select>
+       </form>
+    </div>
     {{#>>annotation-list}}
     <ul id="asset-details-annotations-list">
         {{#annotation_list}}
@@ -38,8 +50,8 @@
            <ul>
              {{#annotations}}
                {{#>>annotation-listitem}}
-                 <li id="annotation-listitem-{{id}}" class="annotation-listitem">
-                   <a href="{{annotation-form?url(asset.id,id)}}">{{title}}</a>
+                 <li class="annotation-listitem-{{id}} annotation-listitem">
+                   <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title}}</a>
                  </li>
                {{/>>annotation-listitem}}
              {{/annotations}}

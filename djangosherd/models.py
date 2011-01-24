@@ -81,12 +81,14 @@ class Annotation(models.Model):
         return dir(self)
 
     def sherd_json(self, request=None, asset_key='', metadata_keys=tuple() ):
+        user_id = getattr(getattr(request,'user',None),'id',None)
         return {
             'asset_key':'%s_%s' % (asset_key,self.asset_id),
             'id':self.pk,
             'range1':self.range1,
             'range2':self.range2,
             'annotation':self.annotation(),
+            'editable':user_id == getattr(self,'author_id',-1),
             'metadata':dict([
                     (m,getattr(self,m,None))
                     if m != 'author'

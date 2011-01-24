@@ -108,10 +108,12 @@ class Collaboration(models.Model):
         
 
     def append_child(self,object=None):
-        coll, created = Collaboration.objects.get_or_create(_parent=self,
-                                                            content_type=ContentType.objects.get_for_model(type(object)),
-                                                            object_pk=str(object.pk),
-                                                            )
+        coll, created = Collaboration.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(type(object)),
+            object_pk=str(object.pk),
+            )
+        coll._parent = self
+        coll.save()
         return coll
         
     def get_policy(self):

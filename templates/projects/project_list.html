@@ -31,6 +31,41 @@
 	 {% endif %}
      </thead>
      <tbody>
+
+  {% for assignment in assignments %}
+  <tr class="projectlist" id="assignment-{{assignment.pk}}">
+    <td>
+      <h3>
+	{{assignment.title|default:"(Untitled)"}}
+      </h3>
+    </td>
+    <td>
+      <span id="participants_chosen">{{assignment.attribution}}</span>
+    </td>
+    <td>
+      {{assignment.modified|date}}
+    </td>
+    <td>
+      {{assignment.status|safe}}
+    </td>
+    <td>
+      <ul>
+	<li>
+	  <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+	    <input type="hidden" name="title" />
+	    <input type="hidden" name="parent" value="{{assignment.id}}" />
+	    <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+	  </form>
+
+	</li>
+      </ul>
+    </td>
+    {% if editable %}
+    <td></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+
   {% for project in projects %}
 
   <tr class="projectlist" id="project-{{project.pk}}">

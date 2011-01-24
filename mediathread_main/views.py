@@ -139,6 +139,9 @@ def class_portal(request):
     #TODO: move this into a nice class method.
     #coll = ContentType.objects.get_for_model(Collaboration)
     #discussions = [d for d in ThreadedComment.objects.filter(parent=None, content_type = coll) if d.content_object.get_parent().content_object == c]
+
+
+
     
     return {
         'is_faculty':c.is_faculty(user),
@@ -416,6 +419,17 @@ def your_records(request, user_name):
         projects = [p for p in projects if p.visible(request)]
 
 
+    assignments = []
+    maybe_assignments = Project.objects.filter(
+        c.faculty_filter, submitted=True)
+    for assignment in maybe_assignments:
+        collab = assignment.collaboration()
+        if not collab:
+            continue
+        if collab.permission_to("add_child", request):
+            assignments.append(assignment)
+
+
     for fil in filter_by:
         filter_value = request.GET.get(fil)
         if filter_value:
@@ -435,6 +449,7 @@ def your_records(request, user_name):
 
     return {
         'assets'        : assets,
+        'assignments'   : assignments,
         'projects'      : projects,
         'tags'          : tags,
         'dates'         : (('today','today'),

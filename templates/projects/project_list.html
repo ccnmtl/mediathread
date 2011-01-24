@@ -36,7 +36,10 @@
   <tr class="projectlist" id="assignment-{{assignment.pk}}">
     <td>
       <h3>
-	{{assignment.title|default:"(Untitled)"}}
+	<a href="{{assignment.get_readonly_url}}"
+	   class="asset_title type-project">
+	  {{assignment.title|default:"(Untitled)"}}
+	</a>
       </h3>
     </td>
     <td>
@@ -73,11 +76,11 @@
       <td>
 	<h3>
 	  {% if editable %}
-	  <a href="{%url project-workspace project.id %}"
+	  <a href="{{project.get_absolute_url}}"
 	     class="asset_title type-project"
 	     >{{project.title|default:"(Untitled)"}}</a>
           {% else %}
-	  <a href="{%url project-view project.id %}"
+	  <a href="{{project.get_readonly_url}}"
 	     class="asset_title type-project"
 	     >{{project.title|default:"(Untitled)"}}</a>
 	  {% endif %}

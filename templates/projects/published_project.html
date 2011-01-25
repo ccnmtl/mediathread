@@ -113,6 +113,17 @@
     </form>
     {% endif %}
   {% endif %}
+
+  {% if_permission to "add_child" with project.collaboration for request as can_add_child %}
+  {% if can_add_child %}
+    <form class="block project-createnew" method="POST"
+	  action="{%url your-space-projects user%}">
+      <input type="hidden" name="title" />
+      <input type="hidden" name="parent" value="{{project.id}}" />
+      <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+    </form>
+  {% endif %}
+
   {% with_permission with project.collaboration.children.all for request as collabs %}
   {% if collabs %}
     <h3>Responses</h3>

@@ -40,7 +40,9 @@ ContentType = get_model('contenttypes','contenttype')
 #returns important setting information for all web pages.
 def django_settings(request):
     whitelist = ['PUBLIC_CONTACT_EMAIL',
-                 'FLOWPLAYER_SWF_LOCATION',]
+                 'FLOWPLAYER_SWF_LOCATION',
+                 'DEBUG',
+                 ]
 
     return {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]),
             'EXPERIMENTAL':request.COOKIES.has_key('experimental')

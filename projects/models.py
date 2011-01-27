@@ -68,6 +68,18 @@ class Project(models.Model):
                 })
 
 
+    def responses(self, request):
+        col = self.collaboration()
+        if not col:
+            return []
+        project_type = ContentType.objects.get_for_model(Project)
+        children = col.children.filter(content_type=project_type)
+        viewable_children = []
+        for child in children:
+            if child.permission_to("read", request):
+                viewable_children.append(child)
+        return viewable_children
+
     def assignment(self):
         """
         Returns the Project object that this Project is a response to,

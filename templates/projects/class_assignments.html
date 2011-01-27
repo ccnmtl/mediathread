@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%load user_annotations comments %}
+{%load user_annotations comments user_projects %}
 
 <title> {% block title %}
 Course Summary
@@ -27,7 +27,7 @@ Course Summary
       <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
     </td>
     <td>
-      {{assignment.num_responses}} responses (out of {{num_students}})
+      {{assignment|assignment_responses:request|length}} / {{num_students}}
     </td>
   </tr>
 {% endfor %}

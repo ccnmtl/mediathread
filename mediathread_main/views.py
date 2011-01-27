@@ -206,11 +206,12 @@ def class_assignments(request):
     project_type = ContentType.objects.get_for_model(Project)
     assignments = []
     maybe_assignments = Project.objects.filter(
-        request.course.faculty_filter, submitted=True)
+        request.course.faculty_filter)
     for assignment in maybe_assignments:
-        if is_unanswered_assignment(assignment, request.user, request, project_type):
+        if is_assignment(assignment, request):
             assignments.append(assignment)
-
+            
+    x = assignments[0]
     num_students = users_in_course(request.course).count()
     return {
         'assignments': assignments,
@@ -416,8 +417,7 @@ filter_by = {
     'modified': date_filter_for('modified'),
     }
 
-
-def is_unanswered_assignment(assignment, user, request, expected_type):
+def is_assignment(assignment, request):
     collab = assignment.collaboration()
     if not collab: 
         # Who knows what it is
@@ -426,6 +426,13 @@ def is_unanswered_assignment(assignment, user, request, expected_type):
     if not collab.permission_to("add_child", request):
         # It must not be an assignment
         return False 
+
+    return True
+
+def is_unanswered_assignment(assignment, user, request, expected_type):
+
+    if not is_assignment(assignment, request):
+        return False
 
     children = collab.children.all()
     if not children:

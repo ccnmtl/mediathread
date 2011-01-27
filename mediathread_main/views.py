@@ -200,7 +200,22 @@ def class_listing(request):
 @allow_http("GET")
 @rendered_with('projects/class_assignments.html')
 def class_assignments(request):
-    return {}
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+    
+    project_type = ContentType.objects.get_for_model(Project)
+    assignments = []
+    maybe_assignments = Project.objects.filter(
+        request.course.faculty_filter, submitted=True)
+    for assignment in maybe_assignments:
+        if is_unanswered_assignment(assignment, request.user, request, project_type):
+            assignments.append(assignment)
+
+    num_students = users_in_course(request.course).count()
+    return {
+        'assignments': assignments,
+        'num_students': num_students
+        }
 
 @allow_http("GET")
 @rendered_with('projects/class_summary.html')

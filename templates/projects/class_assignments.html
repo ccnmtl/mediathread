@@ -13,8 +13,25 @@ Course Summary
     {{ block.super }}
 <h1>Instructor Class Report</h1>    
 
-  <div class="visualclear"></div>
-  
-</div>
+<table>
+  <thead>
+    <tr>
+      <th>Assignment</th>
+      <th>Responses</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for assignment in assignments %}
+  <tr>
+    <td>
+      <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
+    </td>
+    <td>
+      {{assignment.num_responses}} responses (out of {{num_students}})
+    </td>
+  </tr>
+{% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}

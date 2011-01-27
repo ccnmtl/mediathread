@@ -18,6 +18,13 @@ Home
   <div class="panel-column">
     <h2>Instructor's Focus</h2>
     <div class="scroll">
+    {% if is_faculty %}
+    <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+      <input type="hidden" name="title" />
+      <input class="columnbutton project-createnew-button" type="submit" value="Create a new project or assignment"/>
+   </form>
+
+    {% endif %}
     {%if faculty_feed.projects %}
       <h3>START HERE:</h3>
       <ul>

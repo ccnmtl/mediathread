@@ -198,6 +198,11 @@ def class_listing(request):
 
 
 @allow_http("GET")
+@rendered_with('projects/class_assignments.html')
+def class_assignments(request):
+    return {}
+
+@allow_http("GET")
 @rendered_with('projects/class_summary.html')
 def class_summary(request):
     """FACULTY ONLY reporting of entire class activity """

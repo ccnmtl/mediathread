@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{%load user_annotations comments %}
+
+<title> {% block title %}
+Course Summary
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+<h1>Instructor Class Report</h1>    
+
+  <div class="visualclear"></div>
+  
+</div>
+
+{% endblock %}

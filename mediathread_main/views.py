@@ -449,8 +449,13 @@ def your_records(request, user_name):
     maybe_assignments = Project.objects.filter(
         c.faculty_filter, submitted=True)
     for assignment in maybe_assignments:
+        if not assignment.visible(request):
+            continue
+        if assignment in projects:
+            continue
         if is_unanswered_assignment(assignment, user, request, project_type):
             assignments.append(assignment)
+            
 
     for fil in filter_by:
         filter_value = request.GET.get(fil)

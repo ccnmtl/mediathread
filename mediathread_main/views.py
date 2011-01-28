@@ -198,6 +198,16 @@ def class_listing(request):
 
 
 @allow_http("GET")
+@rendered_with('projects/class_assignment_report.html')
+def class_assignment_report(request, id):
+    assignment = get_object_or_404(Project, id=id)
+    responses = assignment.responses(request)
+    return {
+        'assignment': assignment,
+        'responses': responses,
+        }
+
+@allow_http("GET")
 @rendered_with('projects/class_assignments.html')
 def class_assignments(request):
     if not request.course.is_faculty(request.user):

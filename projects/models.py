@@ -77,7 +77,7 @@ class Project(models.Model):
         viewable_children = []
         for child in children:
             if child.permission_to("read", request):
-                viewable_children.append(child)
+                viewable_children.append(child.content_object)
         return viewable_children
 
     def assignment(self):

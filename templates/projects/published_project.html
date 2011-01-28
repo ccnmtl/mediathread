@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load smartif collaborations %}
+{% load smartif collaborations user_projects %}
 
 <title>{% block title %}
 {% if preview_num %}
@@ -124,23 +124,21 @@
     </form>
   {% endif %}
 
-  {% with_permission with project.collaboration.children.all for request as collabs %}
-  {% if collabs %}
+  {% with project|assignment_responses:request as responses %}
+  {% if responses %}
     <h3>Responses</h3>
     <ul>
-      {% for child_collab in collabs %}
+      {% for response in responses %}
       <li>
-        {% ifequal child_collab.content_type.name "Threaded comment" %}
-          Feedback Discussion:
-        {% endifequal %}
-        <a href="{{child_collab.content_object.get_absolute_url}}">
-          {{child_collab.content_object.title}}
+        <a href="{{response.get_absolute_url}}">
+          {{response.title}}
         </a>
-        <!-- policy: {{child_collab.get_policy}} -->
       </li>
       {% endfor %}
     </ul>
   {% endif %}
+  {% endwith %}
+
 {% endif %}{# end project.collaboration #}
 
 {% if project.versions %}

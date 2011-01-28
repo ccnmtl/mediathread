@@ -28,7 +28,7 @@ class IfPermission(TemplateTagNode):
     def execute_query(self, collab, perm, request):
         if collab and collab.permission_to(perm, request):
             return collab
-        else: return None
+        return None
 
 
 register.tag('if_permission', IfPermission.process_tag)

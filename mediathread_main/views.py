@@ -134,6 +134,7 @@ def class_portal(request):
                }
          
          
+    
     discussions = get_discussions(c)
        
     #TODO: move this into a nice class method.
@@ -221,7 +222,6 @@ def class_assignments(request):
         if is_assignment(assignment, request):
             assignments.append(assignment)
             
-    x = assignments[0]
     num_students = users_in_course(request.course).count()
     return {
         'assignments': assignments,

@@ -68,17 +68,24 @@ class Project(models.Model):
                 })
 
 
-    def responses(self, request):
+    def viewable_children_of_type(self, request, type):
         col = self.collaboration()
         if not col:
             return []
-        project_type = ContentType.objects.get_for_model(Project)
-        children = col.children.filter(content_type=project_type)
+        children = col.children.filter(content_type=type)
         viewable_children = []
         for child in children:
             if child.permission_to("read", request):
                 viewable_children.append(child.content_object)
         return viewable_children
+        
+    def discussions(self, request):
+        discussion_type = ContentType.objects.get_for_model(ThreadedComment)
+        return self.viewable_children_of_type(request, discussion_type)
+
+    def responses(self, request):
+        project_type = ContentType.objects.get_for_model(Project)
+        return self.viewable_children_of_type(request, project_type)
 
     def assignment(self):
         """
@@ -98,11 +105,13 @@ class Project(models.Model):
     def feedback_discussion(self):
         "returns the ThreadedComment object for Professor feedback (assuming it's private)"
         col = self.collaboration()
+        if not col:
+            return
         comm_type = ContentType.objects.get_for_model(ThreadedComment)
-        if col:
-            feedback = col.children.filter(content_type = comm_type)
-            if feedback:
-                return feedback[0].content_object
+
+        feedback = col.children.filter(content_type=comm_type)
+        if feedback:
+            return feedback[0].content_object
             
 
     def save(self, *args, **kw):

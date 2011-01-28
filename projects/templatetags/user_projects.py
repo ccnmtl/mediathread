@@ -90,3 +90,8 @@ def assignment_responses(project, request):
     return project.responses(request)
 
 register.filter(assignment_responses)
+
+def discussions(project, request):
+    return project.discussions(request)
+
+register.filter(discussions)

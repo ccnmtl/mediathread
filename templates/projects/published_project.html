@@ -139,6 +139,21 @@
   {% endif %}
   {% endwith %}
 
+  {% with project|discussions:request as responses %}
+  {% if responses %}
+    <h3>Discussions</h3>
+    <ul>
+      {% for response in responses %}
+      <li>
+        <a href="/discussion/show/{{response.id}}">
+          {{response.title}}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
 {% endif %}{# end project.collaboration #}
 
 {% if project.versions %}

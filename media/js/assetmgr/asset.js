@@ -217,17 +217,20 @@
                     //      so maybe they should get multiple colors? or just
                     //      colored by the first tag, but when the TAG is selected on the right
                     //      they all glow the right color.
-                    var tags = ann.metadata.tags.split(',');
-                    if (tags.length > 1 && !tags[0]) {
-                        return tags[1];
+                    var tags = ann.metadata.tags.split(/\s*,\s*/);
+                    if (tags.length && !tags[0]) {
+                        tags.shift(); //remove empty front tag
+                    } 
+                    if (tags.length) {
+                        return tags
                     } else {
-                        return tags[0] || 'None';
+                        return ['None']
                     }
                 }
                 break;
             case 'author':
                 color_by = function(ann,cats) {
-                    return ann.metadata.author_name;
+                    return [ann.metadata.author_name];
                 }
                 break;
             }
@@ -247,22 +250,26 @@
                     for (var i=0;i<asset_full.annotations.length;i++) {
                         var ann = asset_full.annotations[i];
                         if (ann.annotation) {
-                            var title = color_by(ann);
-                            /// add the annotation onto the layer in the right color
-                            self.layers[grouping].add(
-                                ann.annotation,{'id':ann.id,
-                                                'color':DjangoSherd_Colors.get(title)
-                                               }
-                            );
-                            ///..and setup the category for the AnnotationList
-                            if (!cats[title]) {
-                                cats[title] = {'title':title,
-                                               'color':DjangoSherd_Colors.get(title),
-                                               'annotations':[]
-                                              };
-                                context.annotation_list.push(title);
+                            var titles = color_by(ann);
+                            for (var j=0;j<titles.length;j++) {
+                                var title = titles[j];
+                                var color = DjangoSherd_Colors.get(title);
+                                /// add the annotation onto the layer in the right color
+                                self.layers[grouping].add(
+                                    ann.annotation,{'id':ann.id,
+                                                    'color':color
+                                                   }
+                                );
+                                ///..and setup the category for the AnnotationList
+                                if (!cats[title]) {
+                                    cats[title] = {'title':title,
+                                                   'color':color,
+                                                   'annotations':[]
+                                                  };
+                                    context.annotation_list.push(title);
+                                }
+                                cats[title].annotations.push(ann);
                             }
-                            cats[title].annotations.push(ann);
                         }
                     }
                     ///sort and build the annotation_list

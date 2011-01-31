@@ -657,19 +657,20 @@ font-size: 94%;
 
 }
 
-#annotations ul {
+#annotations-organized ul {
 
 	list-style-type: none;
 
 }
 
-#annotations ul li {
-
+#annotations-organized ul.annotation-group-sublist li {
 	background:url("../img/icons/item_clip.png") left center no-repeat; 
 	padding: 2px 5px 2px 25px; 
 	margin-bottom: 2px;
+}
 
-
+#annotations-organized ul.annotation-group-sublist li.annotation-image {
+	background:url("../img/icons/item_clip.png") left center no-repeat; 
 }
 
 .metadata-title {

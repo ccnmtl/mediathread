@@ -130,18 +130,16 @@
         //mock_mode -- from page state
         //storage
         this.init = function(config) {
-            ///disable for now.
-            return;
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache',
                 dataType:'text',
                 success:function(text){
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);
-                    jQuery('#stats').html(MediaThread.templates.annotations.render({
+                    
+                    Mustache.update('annotations-organized', {
                         'annotation':null,
                         'annotation_list':[]
-                    }));
-
+                    })
                     //now that the form exists...
                     var frm = document.forms['annotation-list-filter'];
                     frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
@@ -185,7 +183,15 @@
             }
             //show (and create) the new grouping
             if (!this.layers[grouping]) {
-                this.layers[grouping] = djangosherd.assetview.layer().create(grouping,{
+                this.layers[grouping] = djangosherd.assetview.layer();
+                if (!this.layers[grouping]) {
+                    //stub if it doesn't exist.
+                    this.layers[grouping] = {
+                        removeAll:function(){},
+                        add:function(){}
+                    }
+                } else {
+                    this.layers[grouping].create(grouping,{
                     /*
                     onclick:function(feature) {
                         console.log(feature);
@@ -194,12 +200,12 @@
                     onhover:function(feature) {
                         console.log('hover');
                     }*/
-                });
+                    });
+                }
             }
             this.grouping = grouping;
             this.showHide();
 
-            console.log(this.layers[grouping]);
             var color_by;
 
             switch (grouping) {
@@ -265,9 +271,8 @@
                     for (var i=0;i<context.annotation_list.length;i++) {
                         context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
                     }
-                    console.log(context);
-                    Mustache.update('annotation-list',context,{pre:function(elt){console.log(elt);}});
-                    //jQuery('#stats').html(MediaThread.templates.annotations.render({annotation:assetsky.annotations[1],'annotation_list':[{category:{title:'foo',annotations:assetsky.annotations}}]}))
+                    Mustache.update('annotation-list',context,{pre:function(elt){
+                    }});
                 }
             );
         };

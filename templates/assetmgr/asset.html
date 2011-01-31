@@ -158,68 +158,9 @@
     </div>
     
       {% if not mock %}
-      <h2> <a class="hs-control" href="#annotations"></a>My Clips of This Item</h2>
-      <div id="annotations" class="sub-control">
-	<ul>
-	  {% load user_annotations %}
-	  {% get_annotations on asset by space_viewer filter 0 as annotations %}
-	  {% for ann in annotations %}
-	  {% if not ann.is_null %}
-	  <li
-	   {% ifequal ann annotation %}
-	    class="active-annotation"
-	   {% endifequal %}
-	   >
-	   <a href="{{ann.get_absolute_url}}"
-	    >
-	   {% if ann.title %}
-	   {{ann.title}}
-	   {% else %}
-	   Annotation
-	   {% endif %}
-	   </a>
-	 </li>
-	 {% endif %}
-	 {% endfor %}
-       </ul>
-
-     <h2> <a class="hs-control" href="#other_people_annotations"></a>Other People's  Clips of This Item</h2>
-     <div id="other_people_annotations" class="sub-control">
-	  <ul>
-            {% get_all_annotations on asset as annotations %}
-            {% for ann in annotations %}
-                {% if not ann.is_null%}
-                     {% ifnotequal ann.author space_viewer %}
-                          <li 
-			      {% ifequal ann annotation %}
-			      class="active-annotation" 
-			      {%endifequal%}
-			      >
-                            <a href="{{ann.get_absolute_url}}">{{ann.title}}</a> by <a href="{% url your-space-records ann.author.username %}">{{ann.author.get_full_name|default:ann.author}}</a>
-                          </li>
-		     {% endifnotequal %}
-                {% endif %}
-            {% endfor %}
-	  </ul>
-      </div><!--end id="other_people_annotations" -->
-      
-
-     </div><!-- end "annotations"  -->
-
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      <div id="annotations-organized">
+        <!-- inserted with ajax now.  see media/templates/annotations.mustache -->
+      </div>
       {% endif %}<!--end if not mock -->
    </div> <!-- end "analysis" tab -->
 

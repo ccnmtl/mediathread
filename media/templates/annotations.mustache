@@ -35,7 +35,8 @@
         {{/annotation}}
     </div>
     {{/>>annotation-current}}
-    <div class="multipleannotations">
+    {{#>>annotations-organized}}
+    <div id="annotations-organized">
       <div class="annotation-list-controls">
         <form name="annotation-list-filter">
           <input type="checkbox" name="showall" /> Show all annotations by
@@ -63,4 +64,5 @@
       </ul>
       {{/>>annotation-list}}
     </div>
+    {{/>>annotations-organized}}
 </div>

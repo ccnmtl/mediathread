@@ -1,5 +1,6 @@
 from settings_shared import *
 
+
 DATABASE_ENGINE = 'sqlite3'
 
 # this is a temporary hack to let the tests pass, since the metadata screenscraper

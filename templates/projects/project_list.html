@@ -18,7 +18,7 @@
 {% endif %}
 
 {% if projects %}
-   <table class="project_list">
+   <table class="project_list sortable" onclick="sortColumn(event)">
      <thead>
        <tr>
 	 <th>Title</th>
@@ -27,7 +27,7 @@
 	 <th>Status</th>
 	 <th>Links</th>
 	 {% if editable %}
-	 <th>Actions</th>
+	 <th class="NoSort">Actions</th>
 	 {% endif %}
      </thead>
      <tbody>
@@ -43,7 +43,10 @@
       </h3>
     </td>
     <td>
-      <span id="participants_chosen">{{assignment.attribution}}</span>
+      <span class="participants">
+        <span class="participants-full">{{assignment.attribution}}</span>
+        <span class="participants-short">{{assignment.attribution|truncatewords:4 }}</span>
+      </span>
     </td>
     <td>
       {{assignment.modified|date}}
@@ -88,7 +91,10 @@
       </td>
    
       <td>
-	<span id="participants_chosen">{{project.attribution}}</span>
+        <span class="participants">
+          <span class="participants-short">{{project.attribution|truncatewords:4 }}</span>
+          <span class="participants-full">{{project.attribution}}</span>
+        </span>
       </td>
 
       <td>

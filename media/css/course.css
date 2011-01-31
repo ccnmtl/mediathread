@@ -1108,3 +1108,8 @@ a.bookmarklet {
 .sherd-clipform-editing td.sherd-clipform-timecodestart {
     border-right: 1px dotted #999;
 }
+
+table.project_list th {
+    background-color: #CCC;
+    white-space:nowrap;
+}

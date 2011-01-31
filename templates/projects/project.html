@@ -78,9 +78,9 @@
 	  {#{{projectform.body}}#}
 	  <div id="project-template" style="display:none;"></div>
 	  <script type="text/javascript">
-	    if ($("project-content").innerHTML == "") {
-	      if ($("project-template") != null) {
-	        $("project-content").innerHTML = $("project-template").innerHTML;
+	    if (jQuery("#project-content").html() == "") {
+	      if (document.getElementById("project-template") != null) {
+	        jQuery("#project-content").html(jQuery("#project-template").html());
 	      }
 	    }
 	  </script>

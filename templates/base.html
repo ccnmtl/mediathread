@@ -33,6 +33,13 @@
           if (!window.JSON) {
             document.write(lt+'script src="/site_media/js/sherdjs/lib/json2.js" type="text/javascript">'+lt+'/script>');          
           }
+          var MediaThread = new (function() {
+             this.templates = {};
+             {% if request.user.is_authenticated %}
+               this.current_user = {{request.user.id}};
+               this.user_full_name = '{{request.user.get_full_name|default:request.user.username|escapejs}}';
+             {% endif %}
+          })();
         </script>
 	{% block css %}{% endblock %}
 	{% block feeds %}{% endblock %}

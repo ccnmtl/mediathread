@@ -13,10 +13,14 @@
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
-  <script type="text/javascript">         DjangoSherd_Asset_Config();             </script>
-
   <script type="text/javascript" src="/site_media/js/mustache/mustache.js"></script>
   <script type="text/javascript" src="/site_media/js/assetmgr/asset.js"></script>
+  <script type="text/javascript">
+    DjangoSherd_Asset_Config();    
+    AnnotationList.init({ 
+       asset_id:{{asset.id}}
+    });
+  </script>
 
 {% endblock %}
 

@@ -1,6 +1,3 @@
-function MediaThread(){}
-MediaThread.templates = {};
-
 /*
   function error(req) {  };
   function styleRelated(req) {
@@ -95,52 +92,140 @@ MediaThread.templates = {};
     });
 
     ///MUSTACHE CODE
-    Mustache.set_pragma_default('EMBEDDED-PARTIALS',true);
-    Mustache.set_pragma_default('FILTERS',true);
-    Mustache.set_pragma_default('DOT-SEPARATORS',true);
-    Mustache.set_pragma_default('?-CONDITIONAL',true);
-
-    MediaThread.urls = {
-        'annotation-form':function(asset_id,annotation_id) {
-            return '/asset/'+asset_id+'/annotations/'+annotation_id;
-        },
-        'your-space':function(user_id) {
-            return '/yourspace/'+user_id+'/asset/';
-        },
-        'asset-json':function(asset_id, with_annotations) {
-            return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
+    if (window.Mustache) {
+        Mustache.set_pragma_default('EMBEDDED-PARTIALS',true);
+        Mustache.set_pragma_default('FILTERS',true);
+        Mustache.set_pragma_default('DOT-SEPARATORS',true);
+        Mustache.set_pragma_default('?-CONDITIONAL',true);
+        
+        MediaThread.urls = {
+            'annotation-form':function(asset_id,annotation_id) {
+                return '/asset/'+asset_id+'/annotations/'+annotation_id;
+            },
+            'your-space':function(user_id) {
+                return '/yourspace/'+user_id+'/asset/';
+            },
+            'asset-json':function(asset_id, with_annotations) {
+                return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
+            }
         }
-    }
 
-    Mustache.Renderer.prototype.filters_supported['url'] = function(name,context,args) {
-        var url_args = this.map(args,function(a){return this.get_object(a,context,this.context)},this);
-        return MediaThread.urls[name].apply(this,url_args);
-    }
+        Mustache.Renderer.prototype.filters_supported['url'] = function(name,context,args) {
+            var url_args = this.map(args,function(a){return this.get_object(a,context,this.context)},this);
+            return MediaThread.urls[name].apply(this,url_args);
+        }
+    }//END MUSTACHE CODE
 
 
-    function AnnotationList(){}
-    AnnotationList.prototype = {
-        grouping: null,
-        current_asset_id: null,
+    window.AnnotationList = new (function AnnotationListAbstract(){
+        var self = this;
+        this.layers = {}; //should we really store layers here?
+        this.grouping = null;
+
+        ////SETUP SOMEHOW!!!
+        this.current_asset_id = null;
+        this.global_annotation = {};
+
         //current_annotation
         //mock_mode -- from page state
         //storage
-        init:function() {
+        this.init = function(config) {
+            ///disable for now.
+            return;
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache',
                 dataType:'text',
                 success:function(text){
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);
+                    jQuery('#stats').html(MediaThread.templates.annotations.render({
+                        'annotation':null,
+                        'annotation_list':[]
+                    }));
+
+                    //now that the form exists...
+                    var frm = document.forms['annotation-list-filter'];
+                    frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
+                    
+                    jQuery(frm.elements['showall']).change(self.showHide);
+                    jQuery(frm.elements['groupby']).change(function() {
+                        self.GroupBy(jQuery(this).val());
+                    });
+                    self.GroupBy(jQuery(frm.elements['groupby']).val());
                     
                 }
             })
+            ///TODO: where do we set this??
+            this.current_asset_id = config.asset_id; 
             return this;
-        },
-        GroupBy: function(grouping) {
+        }
+
+        this.showHide = function() {
+            var show = document.forms['annotation-list-filter'].elements['showall'].checked;
+            hs_DataStore('annotation-list-filter__showall', show || '');
+            if (show)
+                self.layers[self.grouping].show()
+            else
+                self.layers[self.grouping].hide()
+        }
+
+        ///Groupby('author')
+        ///Groupby('tag')
+        //  - get, group
+        //  - replace/hide-show Layer, group-by color
+        //  - decorate
+        this.GroupBy = function(grouping) {
+            ///Do nothing if we can't or don't need to.
             if (this.grouping == grouping) 
                 return;
             if (!this.current_asset_id) 
                 return;
+            ///hide previous grouping so we can show the new one.
+            if (this.grouping) {
+                this.layers[this.grouping].hide();
+            }
+            //show (and create) the new grouping
+            if (!this.layers[grouping]) {
+                this.layers[grouping] = djangosherd.assetview.layer().create(grouping,{
+                    /*
+                    onclick:function(feature) {
+                        console.log(feature);
+                        return false;
+                    },
+                    onhover:function(feature) {
+                        console.log('hover');
+                    }*/
+                });
+            }
+            this.grouping = grouping;
+            this.showHide();
+
+            console.log(this.layers[grouping]);
+            var color_by;
+
+            switch (grouping) {
+            case 'tag':
+                color_by = function(ann,cats) {
+                    //HACK: just first tag.  
+                    //TODO: some magically complex nightmare for all tags
+                    //      becase annotations can be in more than one tag, 
+                    //      so maybe they should get multiple colors? or just
+                    //      colored by the first tag, but when the TAG is selected on the right
+                    //      they all glow the right color.
+                    var tags = ann.metadata.tags.split(',');
+                    if (tags.length > 1 && !tags[0]) {
+                        return tags[1];
+                    } else {
+                        return tags[0] || 'None';
+                    }
+                }
+                break;
+            case 'author':
+                color_by = function(ann,cats) {
+                    return ann.metadata.author_name;
+                }
+                break;
+            }
+            
             djangosherd.storage.get(
                 {
                     id:this.current_asset_id,
@@ -149,20 +234,43 @@ MediaThread.templates = {};
                 },
                 false,
                 function(asset_full) {
+                    var context = {'annotation_list':[]};
+                    var cats = {};
+                    self.layers[grouping].removeAll();
+                    DjangoSherd_Colors.reset(grouping);
                     for (var i=0;i<asset_full.annotations.length;i++) {
-                        var a = asset_full.annotations[i];
-                        if (a.annotation) {
-                            lay.add(a.annotation,{id:a.id});
+                        var ann = asset_full.annotations[i];
+                        if (ann.annotation) {
+                            var title = color_by(ann);
+                            /// add the annotation onto the layer in the right color
+                            self.layers[grouping].add(
+                                ann.annotation,{'id':ann.id,
+                                                'color':DjangoSherd_Colors.get(title)
+                                               }
+                            );
+                            ///..and setup the category for the AnnotationList
+                            if (!cats[title]) {
+                                cats[title] = {'title':title,
+                                               'color':DjangoSherd_Colors.get(title),
+                                               'annotations':[]
+                                              };
+                                context.annotation_list.push(title);
+                            }
+                            cats[title].annotations.push(ann);
                         }
                     }
+                    ///sort and build the annotation_list
+                    ///TODO: if by_author, then sort the owner to the top.
+                    context.annotation_list.sort();
+                    for (var i=0;i<context.annotation_list.length;i++) {
+                        context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
+                    }
+                    console.log(context);
+                    Mustache.update('annotation-list',context,{pre:function(elt){console.log(elt);}});
+                    //jQuery('#stats').html(MediaThread.templates.annotations.render({annotation:assetsky.annotations[1],'annotation_list':[{category:{title:'foo',annotations:assetsky.annotations}}]}))
                 }
             );
-        }
-        ///Groupby('author')
-        ///Groupby('tag')
-        //  - get, group
-        //  - replace/hide-show Layer, group-by color
-        //  - decorate
+        };
 
         ///Annotation Copy
         //  - get, clone, remove id, editable = true, replace
@@ -180,7 +288,8 @@ MediaThread.templates = {};
         //decorateLink
         //decorateForm
 
-    }
+        
+    })();
     
 
 })();

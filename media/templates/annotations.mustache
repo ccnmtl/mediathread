@@ -35,22 +35,23 @@
         {{/annotation}}
     </div>
     {{/>>annotation-current}}
-    
-    <div class="">
-       <form name="annotation-list-filter">
-         <select name="groupby"><option>Author</option><option>Tag</option></select>
-       </form>
-    </div>
-    {{#>>annotation-list}}
-    <ul id="asset-details-annotations-list">
+    <div class="multipleannotations">
+      <div class="annotation-list-controls">
+        <form name="annotation-list-filter">
+          <input type="checkbox" name="showall" /> Show all annotations by
+          <select name="groupby"><option>author</option><option>tag</option></select>
+        </form>
+      </div>
+      {{#>>annotation-list}}
+      <ul id="asset-details-annotations-list">
         {{#annotation_list}}
-        <li>
+        <li class="annotation-group">
           {{#category}}
-           <h4>{{title}}</h4>
-           <ul>
+           <h4 style="background-color:{{color}}">{{title}}</h4>
+           <ul class="annotation-group-sublist">
              {{#annotations}}
                {{#>>annotation-listitem}}
-                 <li class="annotation-listitem-{{id}} annotation-listitem">
+                 <li class="annotation-listitem-{{id}} annotation-listitem annotation-{{asset.type}}">
                    <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title}}</a>
                  </li>
                {{/>>annotation-listitem}}
@@ -59,7 +60,7 @@
           {{/category}}
         </li>
         {{/annotation_list}}
-    </ul>
-    {{/>>annotation-list}}
-
+      </ul>
+      {{/>>annotation-list}}
+    </div>
 </div>

@@ -140,6 +140,7 @@ def view_project(request, project_id):
                 mock_project = projectform.cleaned_data.copy()
                 mock_project['attribution'] = projectform.instance.attribution(
                     mock_project['participants'])
+                mock_project['assignment'] = projectform.instance.assignment()
                 return project_preview(request, space_owner, mock_project, 
                                        is_participant=True, preview_num=request.GET.get('preview',1))
             
@@ -206,6 +207,18 @@ def your_projects(request, user_name):
 
         project.collaboration(request, sync_group=True)
 
+        parent = request.POST.get("parent")
+        if parent is not None:
+            try:
+                parent = Project.objects.get(pk=parent)
+            except Project.DoesNotExist:
+                parent = None
+                return HttpResponseRedirect(project.get_absolute_url())
+
+            parent_collab = parent.collaboration(request)
+            if parent_collab.permission_to("add_child", request):
+                parent_collab.append_child(project)
+                
         return HttpResponseRedirect(project.get_absolute_url())
 
 def project_json(request,project):

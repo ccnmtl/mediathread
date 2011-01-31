@@ -85,3 +85,13 @@ def timesince_approx(value, arg=None):
     return timesince(value, arg).split(',')[0]
 
 register.filter(timesince_approx)
+
+def assignment_responses(project, request):
+    return project.responses(request)
+
+register.filter(assignment_responses)
+
+def discussions(project, request):
+    return project.discussions(request)
+
+register.filter(discussions)

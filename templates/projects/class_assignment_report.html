@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{%load user_annotations comments user_projects %}
+
+<title> {% block title %}
+Course Summary
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+<h1>Instructor Class Report: {{assignment.title}}</h1>    
+
+<table>
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Title</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for response in responses %}
+  <tr>
+    <td>
+      {{response.attribution}}
+    </td>
+    <td>
+      <a href="{{response.get_absolute_url}}">{{response.title}}</a>
+    </td>
+  </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

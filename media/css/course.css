@@ -407,7 +407,9 @@ text-align:center;
   #member_col, #filter_col, #project_col {  
       margin-top:29px;
 }
-
+  #project_col {
+  border: none;
+}
   #member_col p, #filter_col p, #project_col p {  
       margin:7px;
 }
@@ -481,12 +483,14 @@ div.project-table
   float:right;
 }
 
+  #filter_col h3 {
+background-color: #d3d3d3;
+}
   #filter_col h3 ,
   #project_col h3 {
 
 margin: .5em;
 font-size: 100%;
-background-color: #d3d3d3;
 padding: .2em .5em .2em .5em;
 color: #666;
 font-weight: normal;

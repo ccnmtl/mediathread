@@ -16,8 +16,13 @@ PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
                    ('InstructorShared','Instructor Only'),
                    ('CourseProtected','Course participants'),
                    ('PublicEditorsAreOwners','World'),
+                   ('Assignment','Course Assignment'),
                    )
 
+# Add keys from PUBLISH_OPTIONS if they should
+# be filtered out of the choices for non-faculty
+PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',
+                                )
 class Project(models.Model):
 
     title = models.CharField(max_length=1024)
@@ -56,14 +61,57 @@ class Project(models.Model):
                 })
 
 
+    @models.permalink
+    def get_readonly_url(self):
+        return ('project-view', (), {
+                'project_id': self.pk,
+                })
+
+
+    def viewable_children_of_type(self, request, type):
+        col = self.collaboration()
+        if not col:
+            return []
+        children = col.children.filter(content_type=type)
+        viewable_children = []
+        for child in children:
+            if child.permission_to("read", request):
+                viewable_children.append(child.content_object)
+        return viewable_children
+        
+    def discussions(self, request):
+        discussion_type = ContentType.objects.get_for_model(ThreadedComment)
+        return self.viewable_children_of_type(request, discussion_type)
+
+    def responses(self, request):
+        project_type = ContentType.objects.get_for_model(Project)
+        return self.viewable_children_of_type(request, project_type)
+
+    def assignment(self):
+        """
+        Returns the Project object that this Project is a response to,
+        or None if this Project is not a response to any other.
+        """
+        # TODO: this doesn't check content types in any way.
+        # It assumes that obj->collab->parent->obj is-a Project.
+        col = self.collaboration()
+        if not col:
+            return
+        parent = col.get_parent()
+        if not parent:
+            return
+        return parent.content_object
+
     def feedback_discussion(self):
         "returns the ThreadedComment object for Professor feedback (assuming it's private)"
         col = self.collaboration()
+        if not col:
+            return
         comm_type = ContentType.objects.get_for_model(ThreadedComment)
-        if col:
-            feedback = col.children.filter(content_type = comm_type)
-            if feedback:
-                return feedback[0].content_object
+
+        feedback = col.children.filter(content_type=comm_type)
+        if feedback:
+            return feedback[0].content_object
             
 
     def save(self, *args, **kw):

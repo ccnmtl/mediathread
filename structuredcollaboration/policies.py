@@ -16,11 +16,8 @@ class CollaborationPolicy:
     """
     Base Collaboration Policy
     """
-    def i_said_no(self,collaboration,request):
-        return False
-    
     def permission_to(self,collaboration,permission,request):
-        return getattr(self, permission, lambda s,c,r:False)(collaboration,request)
+        return getattr(self, permission, lambda c,r:False)(collaboration,request)
     
     #def manage(self,collaboration,request):
     #def read(self,collaboration,request):
@@ -71,7 +68,6 @@ class PublicEditorsAreOwners(CollaborationPolicy,BasePublicPolicy):
                      ))
 
     manage = edit
-    add_child = edit
     delete = edit
 
 class ProtectedEditorsAreOwners(PublicEditorsAreOwners,BaseProtectedPolicy):

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load smartif %}
+{% load smartif collaborations user_projects %}
 
 <title>{% block title %}
 {% if preview_num %}
@@ -43,6 +43,19 @@
   </h1>
   <h2>by <span id="participants_chosen">{{project.attribution}}</span>
   </h2>
+  
+  {% with project.assignment as assignment %}
+  {% if assignment %}
+  <div>
+    <h3>Response to
+      <a href="{{assignment.get_readonly_url}}">
+	{{assignment.title}}
+      </a>
+    </h3>
+  </div>
+  {% endif %}
+  {% endwith %}
+
 
   <br />
   <div class="asset-view asset-view-small">
@@ -87,9 +100,7 @@
 
 {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
-  {% if project.feedback_discussion %}
-    <a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a>
-  {% else %}
+  {% if not project.feedback_discussion %}
     {% if is_faculty %}
     <form action="{% url new-discussion %}" method="POST">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
@@ -102,6 +113,47 @@
     </form>
     {% endif %}
   {% endif %}
+
+  {% if_permission to "add_child" with project.collaboration for request as can_add_child %}
+  {% if can_add_child %}
+    <form class="block project-createnew" method="POST"
+	  action="{%url your-space-projects user%}">
+      <input type="hidden" name="title" />
+      <input type="hidden" name="parent" value="{{project.id}}" />
+      <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+    </form>
+  {% endif %}
+
+  {% with project|assignment_responses:request as responses %}
+  {% if responses %}
+    <h3>Responses</h3>
+    <ul>
+      {% for response in responses %}
+      <li>
+        <a href="{{response.get_absolute_url}}">
+          {{response.title}}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
+  {% with project|discussions:request as responses %}
+  {% if responses %}
+    <h3>Discussions</h3>
+    <ul>
+      {% for response in responses %}
+      <li>
+        <a href="/discussion/show/{{response.id}}">
+          {{response.title}}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endwith %}
+
 {% endif %}{# end project.collaboration #}
 
 {% if project.versions %}

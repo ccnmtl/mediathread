@@ -84,7 +84,11 @@
             <span class="capability can-manage">[can manage responses]</span>
           {% endif %}
         </div>
-	<h2>Discussion of <span id="discussion-subject-title">{%firstof root_comment.title root_comment.content_object.title %}</span></h2>
+	<h2>Discussion of 
+	  <span id="discussion-subject-title">
+	    {%firstof root_comment.title root_comment.content_object.title %}
+	  </span>
+	</h2>
 	  <div id="threadedcomments" class="resize-height">
         {%get_comment_list for root_comment.content_object as comment_list%}
         {% for current_comment in comment_list|fill_tree|annotate_tree %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%load user_annotations comments %}
+{% load user_annotations comments collaborations %}
 
 <title> {% block title %}
 Home
@@ -18,11 +18,34 @@ Home
   <div class="panel-column">
     <h2>Instructor's Focus</h2>
     <div class="scroll">
+    {% if is_faculty %}
+    <ul>
+      <li>
+	<form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+	  <input type="hidden" name="title" />
+	  <input class="columnbutton project-createnew-button" type="submit" value="Create a new project or assignment"/>
+	</form>
+      </li>
+      <li>
+	<form method="GET" action="{% url class-assignments %}">
+	  <input class="columnbutton project-createnew-button" type="submit" value="View class assignment report" />
+	</form>
+      </li>
+    </ul>
+
+    {% endif %}
+
     {%if faculty_feed.projects %}
       <h3>START HERE:</h3>
       <ul>
 	{%for p in faculty_feed.projects %}
+	{% if_permission to "add_child" with p.collaboration for request as can_add_child %}
+	{% if can_add_child %}
+	<li class="assignment"><a href="{%url project-view p.id %}">{{p.title}}</a> (assignment)</li>
+	{% else %}
 	<li><a href="{%url project-view p.id %}">{{p.title}}</a></li>
+	{% endif %}
+
 	{%endfor%}
       </ul>
     {%endif%}

@@ -52,7 +52,7 @@
            <ul class="annotation-group-sublist">
              {{#annotations}}
                {{#>>annotation-listitem}}
-                 <li class="annotation-listitem-{{id}} annotation-listitem annotation-{{asset.type}}">
+                 <li class="annotation-listitem-{{id}} annotation-listitem annotation-{{asset.type}}" data-id="{{id}}">
                    <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title}}</a>
                  </li>
                {{/>>annotation-listitem}}

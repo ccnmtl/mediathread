@@ -121,6 +121,7 @@
         var self = this;
         this.layers = {}; //should we really store layers here?
         this.grouping = null;
+        this.highlight_layer = null;
 
         ////SETUP SOMEHOW!!!
         this.current_asset_id = null;
@@ -143,7 +144,9 @@
                     //now that the form exists...
                     var frm = document.forms['annotation-list-filter'];
                     frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
-                    
+                    self.highlight_layer = djangosherd.assetview.layer().create('focus',
+                                                                                {zIndex:900});
+
                     jQuery(frm.elements['showall']).change(self.showHide);
                     jQuery(frm.elements['groupby']).change(function() {
                         self.GroupBy(jQuery(this).val());
@@ -280,7 +283,8 @@
                     for (var i=0;i<context.annotation_list.length;i++) {
                         context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
                     }
-                    Mustache.update('annotation-list',context,{pre:function(elt){
+                    Mustache.update('annotation-list',context,{post:function(elt){
+                        jQuery('li.annotation-listitem',elt).each(self.decorateLink);
                     }});
                 }
             );
@@ -299,7 +303,19 @@
         ///Asset Save
         //  - storage.update
         
-        //decorateLink
+        this.decorateLink = function(li) {
+            if (self.highlight_layer) {
+                jQuery(this).mouseenter(function(evt) {
+                    self.highlight_layer.removeAll();
+                    djangosherd.storage.get({
+                        'id':jQuery(this).attr('data-id'),
+                        'type':'annotations'
+                    }, function(ann) {
+                        self.highlight_layer.add(ann.annotation,{id:ann.id,color:'#ffffff'});
+                    });
+                });
+            }
+        }
         //decorateForm
 
         

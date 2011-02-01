@@ -211,12 +211,6 @@
             switch (grouping) {
             case 'tag':
                 color_by = function(ann,cats) {
-                    //HACK: just first tag.  
-                    //TODO: some magically complex nightmare for all tags
-                    //      becase annotations can be in more than one tag, 
-                    //      so maybe they should get multiple colors? or just
-                    //      colored by the first tag, but when the TAG is selected on the right
-                    //      they all glow the right color.
                     var tags = ann.metadata.tags.split(/\s*,\s*/);
                     if (tags.length && !tags[0]) {
                         tags.shift(); //remove empty front tag
@@ -245,6 +239,7 @@
                 function(asset_full) {
                     var context = {'annotation_list':[]};
                     var cats = {};
+                    var user_listing = false;
                     self.layers[grouping].removeAll();
                     DjangoSherd_Colors.reset(grouping);
                     for (var i=0;i<asset_full.annotations.length;i++) {
@@ -266,7 +261,11 @@
                                                    'color':color,
                                                    'annotations':[]
                                                   };
-                                    context.annotation_list.push(title);
+                                    if (title && title == MediaThread.user_full_name) {
+                                        user_listing = title;
+                                    } else {
+                                        context.annotation_list.push(title);
+                                    }
                                 }
                                 cats[title].annotations.push(ann);
                             }
@@ -275,6 +274,9 @@
                     ///sort and build the annotation_list
                     ///TODO: if by_author, then sort the owner to the top.
                     context.annotation_list.sort();
+                    if (user_listing) {
+                        context.annotation_list.unshift(user_listing);
+                    }
                     for (var i=0;i<context.annotation_list.length;i++) {
                         context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
                     }

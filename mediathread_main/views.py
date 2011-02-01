@@ -442,10 +442,10 @@ def is_assignment(assignment, request):
     return True
 
 def is_unanswered_assignment(assignment, user, request, expected_type):
-
     if not is_assignment(assignment, request):
         return False
 
+    collab = assignment.collaboration()
     children = collab.children.all()
     if not children:
         # It has no responses, but it looks like an assignment

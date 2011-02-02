@@ -143,6 +143,7 @@
                     })
                     //now that the form exists...
                     var frm = document.forms['annotation-list-filter'];
+
                     frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
                     self.highlight_layer = djangosherd.assetview.layer().create('focus',
                                                                                 {zIndex:900});
@@ -199,10 +200,11 @@
                     onclick:function(feature) {
                         console.log(feature);
                         return false;
-                    },
-                    onhover:function(feature) {
-                        console.log('hover');
-                    }*/
+                    },*/
+                    onhover:function(id, name) {
+                        self.highlight(id);
+                        //console.log(id);
+                    }// */
                     });
                 }
             }
@@ -303,16 +305,24 @@
         ///Asset Save
         //  - storage.update
         
+        this.highlight = function(ann_id) {
+            self.highlight_layer.removeAll();
+            djangosherd.storage.get({
+                        'id':ann_id,
+                        'type':'annotations'
+                    }, function(ann) {
+                        self.highlight_layer.add(ann.annotation,{id:ann.id,
+                                                                 color:'#ffffff',
+                                                                 pointerEvents:'none'
+                                                                });
+                    });
+        }
+
+
         this.decorateLink = function(li) {
             if (self.highlight_layer) {
                 jQuery(this).mouseenter(function(evt) {
-                    self.highlight_layer.removeAll();
-                    djangosherd.storage.get({
-                        'id':jQuery(this).attr('data-id'),
-                        'type':'annotations'
-                    }, function(ann) {
-                        self.highlight_layer.add(ann.annotation,{id:ann.id,color:'#ffffff'});
-                    });
+                    self.highlight(jQuery(this).attr('data-id'));
                 });
             }
         }

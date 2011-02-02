@@ -60,19 +60,8 @@ urlpatterns = patterns('',
                        url(r'^explore/$','assetmgr.views.archive_explore',
                            name="explore"),
 
-                       url(r'^reports/class_assignments/$',
-                           'mediathread_main.views.class_assignments',
-                           name="class-assignments"),
-                       url(r'^reports/class_assignments/(?P<id>\d+)/$',
-                           'mediathread_main.views.class_assignment_report',
-                           name="class-assignment-report"),
-                       
-                       url(r'^reports/class_summary/$','mediathread_main.views.class_summary',
-                           name="class-summary"),
-                       url(r'^reports/class_summary/graph.json$',
-                           'mediathread_main.views.class_summary_graph',
-                           name="class-summary-graph"),
 
+                       (r'^reports/',include('mediathread.reports.urls')),
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),
 

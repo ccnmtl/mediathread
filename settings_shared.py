@@ -93,6 +93,7 @@ INSTALLED_APPS = (
     'djangohelpers',
     #mediathread local
     #'slider',
+    'reports',
     'mediathread_main',
 )
 

@@ -25,6 +25,7 @@ from clumper import Clumper
 from django.conf import settings
 
 from courseaffils.lib import users_in_course
+from reports.views import is_unanswered_assignment
 
 ThreadedComment = get_model('threadedcomments', 'threadedcomment')
 Collaboration = get_model('structuredcollaboration', 'collaboration')

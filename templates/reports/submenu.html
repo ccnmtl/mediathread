@@ -1,0 +1,21 @@
+<ul class="submenu">
+  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Class Summary</a></li>
+  <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity</a></li>
+  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Class Assignments</a></li>
+</ul>
+
+{%if request.user.is_staff and courses %}
+   <div>
+     <form>
+       <label>Staff Class browsing</label>
+       <select onchange="document.location=this.value;">
+         {% for c in courses %}
+         <option value="?set_course={{c.group.name|urlencode}}"
+                 {% ifequal c request.course %}selected="selected"{%endifequal%}
+           >{{c.title}}</option>
+           {% endfor %}
+         </select>
+       </form>
+     </div>
+{% endif %}
+

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{%load user_annotations comments %}
+
+<title> {% block title %}
+Course Summary
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+<script type="text/javascript" src="/site_media/js/reports.js"></script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+<h1>Instructor Class Report</h1>    
+
+{% include "reports/submenu.html" %}
+<div class="panel">    
+  <div style="float:left;width:35%">
+  </div>
+  <div style="float:left;width:65%">
+  <div class="panel-column">
+    <h2>All Recent Class Activity</h2>
+
+    <div class="scroll">
+      <ul class="clumper">
+	{%for clump in my_feed%}
+            {%include "projects/clump.html" %}
+	{%endfor%}
+      </ul>
+    </div>
+  </div> 
+  </div> 
+
+  <div class="visualclear"></div>
+  
+</div>
+
+{% endblock %}

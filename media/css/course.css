@@ -664,13 +664,19 @@ font-size: 94%;
 }
 
 #annotations-organized ul.annotation-group-sublist li {
-	background:url("../img/icons/item_clip.png") left center no-repeat; 
+    /*do not tighten this up to one background: property
+      so we can set the background-color for highlighting without
+      affecting the image.
+     */
+	background-image:url("../img/icons/item_clip.png");
+        background-repeat: no-repeat; 
+        background-position:left center;
 	padding: 2px 5px 2px 25px; 
 	margin-bottom: 2px;
 }
 
 #annotations-organized ul.annotation-group-sublist li.annotation-image {
-	background:url("../img/icons/item_clip.png") left center no-repeat; 
+	background-image:url("../img/icons/item_clip.png"); 
 }
 
 .metadata-title {
@@ -1113,4 +1119,12 @@ a.bookmarklet {
 table.project_list th {
     background-color: #CCC;
     white-space:nowrap;
+}
+
+body.old-assetwindow #asset-details-annotations-list {
+    max-height:400px;
+}
+
+#asset-details-annotations-list {
+    overflow-y:auto;
 }

@@ -307,6 +307,11 @@
         
         this.highlight = function(ann_id) {
             self.highlight_layer.removeAll();
+            if (self.highlighted_nodes) {
+                jQuery(self.highlighted_nodes).removeClass('highlight');
+            }
+            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray();
+            console.log(self.highlighted_nodes);
             djangosherd.storage.get({
                         'id':ann_id,
                         'type':'annotations'

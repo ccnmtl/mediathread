@@ -45,9 +45,13 @@ def django_settings(request):
                  'DEBUG',
                  ]
 
-    return {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]),
-            'EXPERIMENTAL':request.COOKIES.has_key('experimental')
-            }
+    rv = {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]),
+          'EXPERIMENTAL':request.COOKIES.has_key('experimental'),
+          }
+    if request.course:
+        rv['is_course_faculty'] = request.course.is_faculty(request.user)
+
+    return rv
 
 @rendered_with('projects/portal.html')
 @allow_http("GET")

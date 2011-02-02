@@ -23,6 +23,42 @@ Project = get_model('projects','project')
 ContentType = get_model('contenttypes','contenttype')
 
 
+
+def is_assignment(assignment, request):
+    collab = assignment.collaboration()
+    if not collab: 
+        # Who knows what it is
+        return False
+
+    if not collab.permission_to("add_child", request):
+        # It must not be an assignment
+        return False 
+
+    return True
+
+def is_unanswered_assignment(assignment, user, request, expected_type):
+    if not is_assignment(assignment, request):
+        return False
+
+    collab = assignment.collaboration()
+    children = collab.children.all()
+    if not children:
+        # It has no responses, but it looks like an assignment
+        return True
+
+    for child in children:
+        if child.content_type != expected_type:
+            # Ignore this child, it isn't a project
+            continue
+        if child.content_object.author == user:
+            # Aha! We've answered it already
+            return False
+
+    # We are an assignment; we have children; 
+    # we haven't found a response by the target user.
+    return True
+
+
 @allow_http("GET")
 @rendered_with('reports/class_assignment_report.html')
 def class_assignment_report(request, id):
@@ -50,7 +86,8 @@ def class_assignments(request):
     num_students = users_in_course(request.course).count()
     return {
         'assignments': assignments,
-        'num_students': num_students
+        'num_students': num_students,
+        'submenu':'assignments',
         }
 
 @allow_http("GET")
@@ -84,16 +121,9 @@ def class_summary(request):
         
         
 
-    my_feed=Clumper(
-        SherdNote.objects.filter(asset__course=request.course).order_by('-added')[:40],
-        Project.objects.filter(course=request.course).order_by('-modified')[:40],
-        DiscussionIndex.objects.filter(
-            collaboration__context=request.collaboration_context).order_by('-modified')[:40],
-        )
-    
     rv = {
         'students': students,
-        'my_feed':my_feed,
+        'submenu':'summary',
         }
     if request.user.is_staff:
         rv['courses'] = Course.objects.all()
@@ -200,37 +230,24 @@ def class_summary_graph(request):
             indent=2), mimetype='application/json')
 
 
+@allow_http("GET")
+@rendered_with('reports/class_activity.html')
+def class_activity(request):
+    """FACULTY ONLY reporting of entire class activity """
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
 
-def is_assignment(assignment, request):
-    collab = assignment.collaboration()
-    if not collab: 
-        # Who knows what it is
-        return False
+    my_feed=Clumper(
+        SherdNote.objects.filter(asset__course=request.course).order_by('-added')[:40],
+        Project.objects.filter(course=request.course).order_by('-modified')[:40],
+        DiscussionIndex.objects.filter(
+            collaboration__context=request.collaboration_context).order_by('-modified')[:40],
+        )
 
-    if not collab.permission_to("add_child", request):
-        # It must not be an assignment
-        return False 
-
-    return True
-
-def is_unanswered_assignment(assignment, user, request, expected_type):
-    if not is_assignment(assignment, request):
-        return False
-
-    collab = assignment.collaboration()
-    children = collab.children.all()
-    if not children:
-        # It has no responses, but it looks like an assignment
-        return True
-
-    for child in children:
-        if child.content_type != expected_type:
-            # Ignore this child, it isn't a project
-            continue
-        if child.content_object.author == user:
-            # Aha! We've answered it already
-            return False
-
-    # We are an assignment; we have children; 
-    # we haven't found a response by the target user.
-    return True
+    rv = {
+        'my_feed':my_feed,
+        'submenu':'activity',
+        }
+    if request.user.is_staff:
+        rv['courses'] = Course.objects.all()
+    return rv

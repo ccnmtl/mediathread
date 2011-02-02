@@ -18,6 +18,8 @@ urlpatterns = patterns(
         'reports.views.class_summary_graph',
         name="class-summary-graph"),
     
+    url(r'^class_activity/$','reports.views.class_activity',
+        name="class-activity"),
     
     )
 

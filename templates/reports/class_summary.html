@@ -14,20 +14,9 @@ Course Summary
 {% block content %}
     {{ block.super }}
 <h1>Instructor Class Report</h1>    
-{%if request.user.is_staff and courses %}
-   <div>
-     <form>
-       <label>Staff Class browsing</label>
-       <select onchange="document.location=this.value;">
-         {% for c in courses %}
-         <option value="?set_course={{c.group.name|urlencode}}"
-                 {% ifequal c request.course %}selected="selected"{%endifequal%}
-           >{{c.title}}</option>
-           {% endfor %}
-         </select>
-       </form>
-     </div>
-{% endif %}
+
+{% include "reports/submenu.html" %}
+
 <div class="panel">    
   <div style="float:left;width:35%">
   <div class="panel-column">
@@ -91,14 +80,6 @@ Course Summary
         <div id="reports-graph-visualization"></div>
       </div>
 
-
-    <div class="scroll">
-      <ul class="clumper">
-	{%for clump in my_feed%}
-            {%include "projects/clump.html" %}
-	{%endfor%}
-      </ul>
-    </div>
   </div> 
   </div> 
 

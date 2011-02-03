@@ -1,7 +1,19 @@
+<div class="instructor-only">
+  This section is only accessible by instructors.
+</div>
 <ul class="submenu">
-  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Class Summary</a></li>
-  <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity</a></li>
-  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Class Assignments</a></li>
+  <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}">
+    <a href="{%url class-activity %}">Class Activity</a> -
+    scan the most recent activity by the class
+  </li>
+  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}">
+    <a href="{%url class-summary %}">Class Summary</a> -
+    report summarizing all contributions per class participant
+  </li>
+  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}">
+    <a href="{%url class-assignments %}">Class Assignments</a> -
+    track responses to individual assignments
+  </li>
 </ul>
 
 {%if request.user.is_staff and courses %}

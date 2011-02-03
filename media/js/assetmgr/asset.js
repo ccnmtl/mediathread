@@ -196,12 +196,13 @@
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
-                    /*
+                    
                     onclick:function(feature) {
                         console.log(feature);
                         return false;
-                    },*/
+                    },
                     onhover:function(id, name) {
+                        console.log(id);
                         self.highlight(id);
                         //console.log(id);
                     }// */
@@ -311,7 +312,6 @@
                 jQuery(self.highlighted_nodes).removeClass('highlight');
             }
             self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray();
-            console.log(self.highlighted_nodes);
             djangosherd.storage.get({
                         'id':ann_id,
                         'type':'annotations'

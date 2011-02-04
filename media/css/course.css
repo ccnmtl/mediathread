@@ -1128,3 +1128,25 @@ body.old-assetwindow #asset-details-annotations-list {
 #asset-details-annotations-list {
     overflow-y:auto;
 }
+
+#instructor-orientation {
+	margin: 10px 20px;
+	background-color: #dedede;
+	padding: 10px;
+	font-size: 95%;
+}
+
+#instructor-orientation h4 {
+	margin-top: 10px;
+}
+
+#instructor-orientation ul li {
+	margin-top: 3px;
+}
+
+#instructor-actions form {
+	display: inline;
+
+
+
+}

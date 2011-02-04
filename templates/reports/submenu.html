@@ -1,3 +1,63 @@
+<br /><a class="hs-control" href="#instructor-orientation"></a><b>QuickStart Guide:</b> Please read before beginning work with your class!
+<div id="instructor-orientation" class="help hs-init-show hs-show">
+
+<h4>Working in Mediathread</h4>
+<p>Work within the Mediathread tool centers around <b>Items</b>, <b>Projects</b>, and <b>Discussions</b>:</p>
+
+
+<p><b>Items</b> are chunks of media including all or part of an original media source, as selected and annotated by any Mediathread user.
+<ul>
+<li> In order to create Items, media sources must first be imported into Mediathread. </li>
+<li>Most videos and images found on the internet may easily be imported for analysis in Mediathread.</li>
+<li>To define media sources for your Course, you can either recommend external Collections or import a core group of Items for analysis.</li>
+</li>
+<li>All Items are public and available to all users for analysis</ul></p>
+
+
+<p><b>Projects</b> are written compositions with embedded Item "citations."
+<ul>
+<li>
+Any Mediathread user can create a project -- either alone, or with collaborators.
+</li>
+<li>Projects are private until "publishing," at which point they may be shared with others.</li>
+<li>Upon "publishing," you can also flag any project as an "assignment" for your class, allowing additional administrative functionality and response tracking. Course members use their own Project to respond to your "assignment."
+</ul>
+</p>
+
+
+<p><b>Discussions:</b> are a space for quick, real-time conversations about specific topic(s), asset(s) or projects(s). 
+<ul><li>
+Discussions are accessible to the whole class but can only be created by you.
+</li>
+</ul>
+</p>
+
+<br />
+<h4>Creating Assignments and Organizing Your Class</h4>
+
+<p>
+Potentially useful student activities may include one or more of the following:
+
+<ul>
+<li>Finding and/or organizing source media for a shared respository or independent analysis.</li>
+<li>Analyzing a single Item or multiple Items.</li>
+<li>Participating in one or more Discussions.</li>
+<li>Composing projects either independently or in response to your "assignments."</li>
+</ul>
+</p>
+
+<p>
+Because there is such a great variety of ways to use Mediathread in a Course, it's highly recommended that you document, contextualize and organize the activities you want students to do in an explicit way.
+<ul>
+<li>Any project you share with the class will automatically appear on the Class Home page.
+</li>
+<li>Only Projects "published" as "assignment" are recognized by Mediathread as officially "assigned" class activities.  These will automatically be grouped and highlighted for your students.
+</li>
+<li>Since Items and Discussions cannot be formally grouped or flagged as "assignment," you may want to create and share a Project titled "Syllabus," "Assignments, " etc. for this purpose. 
+</li>
+</p>
+</div>
+<br /><br />
 {%if request.user.is_staff and courses %}
    <div>
      <form>
@@ -12,21 +72,43 @@
        </form><br />
      </div>
 {% endif %}
+
+
+<div id="instructor-actions">
+
 <h3>Actions:</h3>
-<ul class="submenu">
-  <li class=""><a href="{%url class-summary %}">Create Assignment</a></li>
-  <li class=""><a href="{%url class-activity %}">Create Syllabus or Sample Project</a></li>
-  <li class=""><a href="{%url class-assignments %}">Create Discussion</a></li>
-</ul>
+
+
+<form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+  <input type="hidden" name="title" />
+  <input class="columnbutton project-createnew-button" type="submit" value="Create or Assign Project"/>
+ 
+ </form>
+ <form class="block discussion-createnew"  action="/discussion/new/" method="POST">
+              <!--h4>Start a New Discussion</h4>
+                        <label for="id_comment_html" >Enter Title:</label-->
+                        <input type="hidden" name="comment_html" value="Discussion Title" />
+                        <input type="hidden" name="app_label" value="courseaffils"/>
+                        <input type="hidden" name="model" value="course"/>
+                        <input type="hidden" name="obj_pk" value="{{course_id}}"/>
+                        <input type="submit" value="Create New Discussion"/>
+            </form>
+
+ <form class="block" method="POST" action="/save/">
+  <input type="hidden" name="title" />
+  <input class="columnbutton project-createnew-button" type="submit" value="+/- Course Collections"/>
+</form> 
+
+
 
 <h4>Course Reports:</h4>
 <ul class="submenu">
-  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Track Assignments</a></li>
-    <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Latest Class Activity</a></li>
-  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contributions</a></li>
+  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Student Responses to Assigned Projects</a></li>
+    <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity Index</a></li>
+  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contribution Summary</a></li>
 
 
 </ul>
 
-
+</div>
 <br />

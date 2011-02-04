@@ -13,7 +13,7 @@ Course Summary
 
 {% block content %}
     {{ block.super }}
-<h1>Instructor Class Report</h1>    
+<h1>Instructor Dashboard</h1>    
 
 {% include "reports/submenu.html" %}
 
@@ -28,8 +28,8 @@ Course Summary
           <th>Anno tations</th>
           <th>Comments</th>
           <th>Projects</th>
-          <th>Project adds</th>
-          <th>Project dels</th>
+        <!--  <th>Project adds</th>
+          <th>Project dels</th>-->
         </tr>
       </thead>
       <tbody id="reports-student-tbody">
@@ -41,8 +41,8 @@ Course Summary
           <td>{{student.annotations}}</td>
           <td>{{student.comments}}</td>
           <td>{{student.projects}}</td>
-          <td>{{student.project_adds}}</td>
-          <td>{{student.project_deletes}}</td>
+         <!-- <td>{{student.project_adds}}</td>
+          <td>{{student.project_deletes}}</td>-->
         </tr>
         {% endfor %}
       </tbody>

@@ -1,13 +1,7 @@
-<ul class="submenu">
-  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Class Summary</a></li>
-  <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity</a></li>
-  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Class Assignments</a></li>
-</ul>
-
 {%if request.user.is_staff and courses %}
    <div>
      <form>
-       <label>Staff Class browsing</label>
+       <label>Switch course (Staff Only):</label>
        <select onchange="document.location=this.value;">
          {% for c in courses %}
          <option value="?set_course={{c.group.name|urlencode}}"
@@ -15,7 +9,24 @@
            >{{c.title}}</option>
            {% endfor %}
          </select>
-       </form>
+       </form><br />
      </div>
 {% endif %}
+<h3>Actions:</h3>
+<ul class="submenu">
+  <li class=""><a href="{%url class-summary %}">Create Assignment</a></li>
+  <li class=""><a href="{%url class-activity %}">Create Syllabus or Sample Project</a></li>
+  <li class=""><a href="{%url class-assignments %}">Create Discussion</a></li>
+</ul>
 
+<h4>Course Reports:</h4>
+<ul class="submenu">
+  <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Assignments</a></li>
+    <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity</a></li>
+  <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contributions</a></li>
+
+
+</ul>
+
+
+<br />

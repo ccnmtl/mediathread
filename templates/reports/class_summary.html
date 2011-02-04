@@ -13,7 +13,7 @@ Course Summary
 
 {% block content %}
     {{ block.super }}
-<h1>Instructor Dashboard</h1>    
+<h1>Instructor Class Report</h1>    
 
 {% include "reports/submenu.html" %}
 
@@ -41,7 +41,7 @@ Course Summary
           <td>{{student.annotations}}</td>
           <td>{{student.comments}}</td>
           <td>{{student.projects}}</td>
-         <!-- <td>{{student.project_adds}}</td>
+       <!--   <td>{{student.project_adds}}</td>
           <td>{{student.project_deletes}}</td>-->
         </tr>
         {% endfor %}
@@ -51,18 +51,20 @@ Course Summary
   </div>
   <div style="float:left;width:65%">
   <div class="panel-column">
-    <h2>All Recent Class Activity</h2>
+    <h2>Experimental Graph Visualization</h2>
+    <p> This graph tries to visualize the different inter-connected objects in the class.
+            It's incredibly experimental--we'd like to link the dots to the objects, and filter, and many other things.  Suggestions are welcome.
+          </p>
+    
     <div id="reports-graph-link">
-      <a class="hs-control" href="#reports-graph"></a> Experimental Graph Visualization
+      <a class="hs-control" href="#reports-graph"></a> Show/Hide Graph
       <a id="reports-graph-chosenlink" href=""></a>
     </div>
       <div id="reports-graph" class="hs-init-hide hs-hide">
         <ul>
           <li><a class="hs-control" href="#reports-graph-help"></a> <b>Details</b></li>
           <li id="reports-graph-help" class="help hs-init-show hs-show">
-            This graph tries to visualize the different inter-connected objects in the class.
-            It's incredibly experimental--we'd like to link the dots to the objects, and filter, and many other things.  Suggestions are welcome.
-            <ul>
+             <ul>
               <li>Fastest in Google Chrome and Safari, still supported in Firefox and IE9</li>
               <li>
                 <b>Squares</b> are projects,

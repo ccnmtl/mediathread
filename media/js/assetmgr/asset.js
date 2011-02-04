@@ -145,8 +145,6 @@
                     var frm = document.forms['annotation-list-filter'];
 
                     frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
-                    self.highlight_layer = djangosherd.assetview.layer().create('focus',
-                                                                                {zIndex:900});
 
                     jQuery(frm.elements['showall']).change(self.showHide);
                     jQuery(frm.elements['groupby']).change(function() {
@@ -196,22 +194,20 @@
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
-                    
+                            /*
                     onclick:function(feature) {
                         console.log(feature);
                         return false;
-                    },
+                    },*/
                     onhover:function(id, name) {
-                        console.log(id);
                         self.highlight(id);
-                        //console.log(id);
                     }// */
                     });
                 }
             }
             this.grouping = grouping;
             this.showHide();
-
+            this.resetHighlightLayer();
             var color_by;
 
             switch (grouping) {
@@ -305,23 +301,43 @@
         //  - 
         ///Asset Save
         //  - storage.update
+        this.resetHighlightLayer = function() {
+            if (this.highlight_layer) {
+                this.highlight_layer.destroy();
+            }
+            this.highlight_layer = djangosherd.assetview.layer();
+            if (this.highlight_layer) {
+                this.highlight_layer.create('focus',{zIndex:900});
+            }
+        }
         
         this.highlight = function(ann_id) {
-            self.highlight_layer.removeAll();
+            //highlight on list
             if (self.highlighted_nodes) {
                 jQuery(self.highlighted_nodes).removeClass('highlight');
             }
-            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray();
-            djangosherd.storage.get({
-                        'id':ann_id,
-                        'type':'annotations'
-                    }, function(ann) {
-                        self.highlight_layer.add(ann.annotation,{id:ann.id,
-                                                                 color:'#ffffff',
-                                                                 pointerEvents:'none'
-                                                                });
-                    });
-        }
+            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray()
+
+            //recreate highlight layer on assetview
+            if (self.highlight_layer) {
+                self.highlight_layer.removeAll();
+            } else {
+                self.resetHighlightLayer();
+            }
+
+            if (self.highlight_layer) {
+                djangosherd.storage.get({
+                    'id':ann_id,
+                    'type':'annotations'
+                }, function(ann) {
+                    self.highlight_layer
+                        .add(ann.annotation,{id:ann.id,
+                                             color:'#ffffff',
+                                             pointerEvents:'none'
+                                            });
+                });
+            }//end if (self.highlight_layer)
+        }//end function highlight()
 
 
         this.decorateLink = function(li) {

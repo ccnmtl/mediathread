@@ -2,7 +2,11 @@
 var hs_controls = new Array();
 
 function cookie_name(el) {
-    name =  "hsstate_" + document.location + "#" + el.id;
+    var name = "hsstate_"
+    //across pages
+    if (/^global-/.test(el.id))
+        return (name+ "#" + el.id)
+    name +=  document.location + "#" + el.id;
     return name.replace(/\W/g,"_");
 }
 

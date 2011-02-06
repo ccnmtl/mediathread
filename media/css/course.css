@@ -1060,9 +1060,8 @@ margin: 1.5em 1em .5em 1em;
 
 }
 
-.intro-text {
+.intro-text p {
     max-width:500px;
-    font-size:14px;
 }
 
 
@@ -1129,24 +1128,22 @@ body.old-assetwindow #asset-details-annotations-list {
     overflow-y:auto;
 }
 
-#instructor-orientation {
+.intro-text {
 	margin: 10px 20px;
 	background-color: #dedede;
 	padding: 10px;
 	font-size: 95%;
 }
 
-#instructor-orientation h4 {
+.intro-text h4 {
 	margin-top: 10px;
 }
 
-#instructor-orientation ul li {
+.intro-text ul li {
 	margin-top: 3px;
 }
 
 #instructor-actions form {
 	display: inline;
-
-
 
 }

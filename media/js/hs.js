@@ -4,9 +4,11 @@ var hs_controls = new Array();
 function cookie_name(el) {
     var name = "hsstate_"
     //across pages
-    if (/^global-/.test(el.id))
-        return (name+ "#" + el.id)
-    name +=  document.location + "#" + el.id;
+    if (/^global-/.test(el.id)) {
+        name += "#" + el.id;
+    } else {
+        name +=  document.location + "#" + el.id;
+    }
     return name.replace(/\W/g,"_");
 }
 

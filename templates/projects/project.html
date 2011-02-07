@@ -101,18 +101,18 @@
 	  {% endif %}
 	  {% endwith %}
 
-          <div id="participant_update" style="display:none">Save the project to save the collaborator list.</div>
+          <div id="participant_update" style="display:none">Save the project to save the author list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
           <div id="participants_chosen">
             {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
             {{part.get_full_name|default:part.username}}{%endfor%}
           </div>
-          <a class="plist participants_toggle" href="#participant_list">Edit&nbsp;Collaborators</a>
+          <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
           <br />
           <div id="participant_list" class="hs-init-hide hs-hide"> 
             <a id="participants_close" class="control-close participants_toggle" href="#participant_list" >x</a>
 
-            <b>Select your collaborators</b>
+            <b>Select your authors</b>
             <p>{{projectform.participants.help_text }}</p>
 
             {{projectform.participants}} 

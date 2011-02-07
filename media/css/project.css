@@ -86,10 +86,17 @@ max-width:550px;
 
 width: 370px;
 height: 370px;
-background-color: #EDEDED;
+background-color: #dedede;
 border: 1px solid #ccc;
 float: left;
+
 }
+
+ .asset-view-small {
+
+background: url('../img/media-Bkgd.gif') no-repeat;
+}
+
 
 .annotation-links {
 

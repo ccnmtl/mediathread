@@ -10,7 +10,7 @@ class ProjectForm(forms.ModelForm):
                                         ))
 
     publish = forms.ChoiceField(choices=PUBLISH_OPTIONS,#from models
-                                label='Share with',
+                                label='Save as:',
                                 )
 
     parent =  forms.CharField(required=False,label='Response to',

@@ -19,6 +19,15 @@ PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
                    ('Assignment','Course Assignment'),
                    )
 
+SHORT_NAME = {
+    "PrivateEditorsAreOwners":'Private',
+    "InstructorShared":'Submitted',
+    "CourseProtected":'Class',
+    "PublicEditorsAreOwners":'World',
+    "Assignment":'Assignment',
+    "PrivateStudentAndFaculty":"with Instructors", 
+    }
+
 # Add keys from PUBLISH_OPTIONS if they should
 # be filtered out of the choices for non-faculty
 PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',
@@ -135,15 +144,15 @@ class Project(models.Model):
 
         col = self.collaboration()
         if col:
-            status = o.get(col._policy.policy_name, col._policy.policy_name)
+            status = SHORT_NAME.get(col._policy.policy_name, col._policy.policy_name)
             public_url = self.public_url(col)
             if public_url:
                 status += ' (<a href="%s">public url</a>)' % public_url
             return status
         elif self.submitted:
-            return u"submitted"
+            return u"Submitted"
         else:
-            return u"draft"
+            return u"Private"
 
     @classmethod
     def get_user_projects(cls,user,course):

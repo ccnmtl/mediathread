@@ -22,50 +22,37 @@
      <thead>
        <tr>
 	 <th>Title</th>
-	 <th>Authors</th>
-	 <th>Last Modified</th>
+	 <th class="DateTime">Last Modified</th>
 	 <th>Status</th>
 	 <th>Links</th>
 	 {% if editable %}
-	 <th class="NoSort">Actions</th>
+	 <th class="NoSort"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></th>
 	 {% endif %}
      </thead>
      <tbody>
 
   {% for assignment in assignments %}
-  <tr class="projectlist" id="assignment-{{assignment.pk}}">
+  <tr class="projectlist assignment-listitem" id="assignment-{{assignment.pk}}">
     <td>
       <h3>
 	<a href="{{assignment.get_readonly_url}}"
-	   class="asset_title type-project">
+	   class="asset_title type-assignment">
 	  {{assignment.title|default:"(Untitled)"}}
 	</a>
       </h3>
     </td>
     <td>
-      <span class="participants">
-        <span class="participants-full">{{assignment.attribution}}</span>
-        <span class="participants-short">{{assignment.attribution|truncatewords:4 }}</span>
-      </span>
+      <time datetime="{{assignment.modified|date:"c"}}">{{assignment.modified|date}}</time>
     </td>
     <td>
-      {{assignment.modified|date}}
+      Assignment
     </td>
     <td>
-      {{assignment.status|safe}}
-    </td>
-    <td>
-      <ul>
-	{% ifequal space_owner space_viewer %}
-	<li>
-	  <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
-	    <input type="hidden" name="title" />
-	    <input type="hidden" name="parent" value="{{assignment.id}}" />
-	    <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
-	  </form>
-	</li>
-	{% endifequal %}
-      </ul>
+      <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+        <input type="hidden" name="title" />
+        <input type="hidden" name="parent" value="{{assignment.id}}" />
+        <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+      </form>
     </td>
     {% if editable %}
     <td></td>
@@ -89,17 +76,14 @@
 	     >{{project.title|default:"(Untitled)"}}</a>
 	  {% endif %}
 	</h3>
-      </td>
-   
-      <td>
         <span class="participants">
           <span class="participants-short">{{project.attribution|truncatewords:4 }}</span>
           <span class="participants-full">{{project.attribution}}</span>
         </span>
       </td>
-
+   
       <td>
-	{{project.modified|date}}
+        <time datetime="{{project.modified|date:"c"}}">{{project.modified|date}}</time>
       </td>
 
       <td>

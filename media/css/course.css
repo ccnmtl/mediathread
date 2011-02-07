@@ -339,6 +339,22 @@ padding-right: 4px;
     display:none;
 }
 
+.asset_title.type-assignment {
+    /*place-holder for liz to make an icon*/
+    background-image: url(../img/icons/item_image.gif);
+}
+
+
+.participants .participants-full,
+.participants:hover .participants-short {
+    display:none;
+}
+
+.participants:hover .participants-full {
+    display:inline;
+}
+
+
 .asset_title.type-project
 {
 	background-image: url(../img/icons/item_project.gif);
@@ -790,6 +806,10 @@ background-color:#EDEDED;
 margin:0 1em;
 padding-bottom: .5em;
 
+}
+
+#project_col table tr.assignment-listitem {
+    background-color:#EDEDED;
 }
 
 #project-content

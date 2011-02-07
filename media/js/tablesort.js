@@ -229,12 +229,12 @@ function sortColumnWithHold(e) {
 function sortColumn(e) {
 	var tmp = e.target ? e.target : e.srcElement;
 	var tHeadParent = getParent(tmp, "thead");
-	var tbodyParent = getParent(tmp, "tbody");
-	var el = getParent(tmp, "th");
-
 	if (tHeadParent == null)
 		return;
 		
+	var tbodyParent = getParent(tmp, "tbody");
+	var el = getParent(tmp, "th");
+
         if (el != null && !/NoSort/.test(el.className)) {
 		var p = el.parentNode;
 		var i;
@@ -365,6 +365,12 @@ function getParent(el, pTagName) {
 var TableSortCasts = {
     "Number":function(cell){return Numeric(getInnerText(cell));},
     "Date":function(cell){return parseDate(getInnerText(cell));},
+    "DateTime":function(cell){
+        var timetag = cell.getElementsByTagName('time');
+        if (timetag.length) {
+            return (timetag[0].datetime || Date.parse(timetag[0].getAttribute('datetime').split('.')[0]));
+        }
+    },
     "CaseInsensitiveString":function(cell){return CaseInsensitiveString(getInnerText(cell));},
     "Default":function(cell){return String(getInnerText(cell));},
 }

@@ -96,7 +96,6 @@
  <a class="button" href=".">Save and continue editing</a>
 {% endif %}
 -->
-{% if is_space_owner or is_faculty %}
 
 {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
@@ -156,6 +155,7 @@
 
 {% endif %}{# end project.collaboration #}
 
+{% if is_space_owner or is_faculty %}
 {% if project.versions %}
 <h3>
   <a class="hs-control" href="#revision-history"></a>

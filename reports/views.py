@@ -62,6 +62,9 @@ def is_unanswered_assignment(assignment, user, request, expected_type):
 @allow_http("GET")
 @rendered_with('reports/class_assignment_report.html')
 def class_assignment_report(request, id):
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+
     assignment = get_object_or_404(Project, id=id)
     responses = assignment.responses(request)
     return {

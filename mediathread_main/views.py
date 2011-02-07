@@ -286,7 +286,7 @@ def your_records(request, user_name):
     project_type = ContentType.objects.get_for_model(Project)
     assignments = []
     maybe_assignments = Project.objects.filter(
-        c.faculty_filter, submitted=True)
+        c.faculty_filter)
     for assignment in maybe_assignments:
         if not assignment.visible(request):
             continue

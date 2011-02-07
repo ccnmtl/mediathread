@@ -68,11 +68,15 @@ def class_portal(request):
     assets = Asset.objects.filter(course=c)
     #instructor focus
     prof_feed = {'assets':[], #assets.filter(c.faculty_filter).order_by('-added'),
-                 'projects':Project.objects.filter(c.faculty_filter,
-                                                   submitted=True
-                                                   ).order_by('title'),
+                 'projects':[], # we'll add these directly below, to ensure security filters
                  'tags':Tag.objects.get_for_object(c)
                  }
+    prof_projects = Project.objects.filter(
+        c.faculty_filter).order_by('title')
+    for project in prof_projects:
+        if project.visible(request):
+            prof_feed['projects'].append(project)
+
     #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
     if prof_feed['assets'] or prof_feed['projects'] or prof_feed['tags']:
         prof_feed['show'] = True

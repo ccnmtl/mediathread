@@ -1,6 +1,6 @@
 {% load user_annotations tagging_tags smartif user_projects %}
 
-{% if not projects %}
+{% if not projects and not assignments %}
  <p class="para">
  {% if editable %}No projects yet.
  {% else %}No (viewable) projects yet.
@@ -17,7 +17,7 @@
    </form>
 {% endif %}
 
-{% if projects %}
+{% if projects or assignments %}
    <table class="project_list sortable" onclick="sortColumn(event)">
      <thead>
        <tr>

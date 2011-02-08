@@ -41,6 +41,12 @@ input.materialCitation:hover
 
 }
 
+#project-container {
+background-color: #ccc;
+margin: 0;
+padding: 0 5px;
+}
+
 .essay-options
 { 
   padding:1em;
@@ -50,15 +56,18 @@ input.materialCitation:hover
 .essay-space h2 input {
     padding:0 3px;
 }
-#essaybox {
-    margin-top:-4px;
-}
+
 .essay-space {
 left:0;
 position:absolute;
 margin-left:380px;
 max-width:550px;
 
+}
+
+.project-form-title {
+
+padding: 5px;
 }
 
 #materials .essay-space.published {
@@ -333,12 +342,23 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 
 #last-version-saved {
-    width:100%;
+
+   float: right;
+   padding: 3px;
+   margin: 5px 1px 1px 0;
 }
 
 #last-version-public {
     padding-left:10px;
 }
+
+#project_participants {
+    font-size: 90%;
+    max-width: 451px;
+    padding-top: 4px;
+    margin: 2px;
+}
+
 
 body.mceContentBody {
     /*overrides tinyMCE's default 10px which will not correspond

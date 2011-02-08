@@ -86,15 +86,17 @@ register.tag('num_courses', UserCourses.process_tag)
 from django.template.defaultfilters import timesince
 def timesince_approx(value, arg=None):
     return timesince(value, arg).split(',')[0]
-
 register.filter(timesince_approx)
 
 def assignment_responses(project, request):
     return project.responses(request)
-
 register.filter(assignment_responses)
 
 def discussions(project, request):
     return project.discussions(request)
-
 register.filter(discussions)
+
+def is_assignment(project, request):
+    return project.is_assignment(request)
+register.filter(is_assignment)
+

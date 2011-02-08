@@ -124,8 +124,9 @@
         this.highlight_layer = null;
 
         ////SETUP SOMEHOW!!!
-        this.current_asset_id = null;
-        this.global_annotation = {};
+        this.asset_id = null;
+        this.global_annotation = {};//unused
+        this.annotation_id = null;//unused
 
         //current_annotation
         //mock_mode -- from page state
@@ -154,8 +155,11 @@
                     
                 }
             })
-            ///TODO: where do we set this??
-            this.current_asset_id = config.asset_id; 
+            ///TODO: where do we set this??  atm, asset.html template
+            for (a in config) {
+                //asset_id, annotation_id
+                this[a] = config[a];
+            }
             return this;
         }
 
@@ -167,7 +171,17 @@
             else
                 self.layers[self.grouping].hide()
         }
-
+        this.clearAnnotation = function(ann_id) {
+            ///TODO: make this updateAnnotation(ann_id, obj)
+            if (!ann_id) {
+                if (this.annotation_id)
+                    ann_id = this.annotation_id;
+                else return;
+            }
+            for (a in this.layers) {
+                this.layers[a].remove(ann_id);
+            }
+        }
         ///Groupby('author')
         ///Groupby('tag')
         //  - get, group
@@ -177,7 +191,7 @@
             ///Do nothing if we can't or don't need to.
             if (this.grouping == grouping) 
                 return;
-            if (!this.current_asset_id) 
+            if (!this.asset_id) 
                 return;
             ///hide previous grouping so we can show the new one.
             if (this.grouping) {
@@ -190,18 +204,18 @@
                     //stub if it doesn't exist.
                     this.layers[grouping] = {
                         removeAll:function(){},
-                        add:function(){}
+                        add:function(){},
+                        remove:function(){}
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
-                            /*
-                    onclick:function(feature) {
-                        console.log(feature);
-                        return false;
-                    },*/
-                    onhover:function(id, name) {
-                        self.highlight(id);
-                    }// */
+                        //onclick:function(feature) {},
+                        onmouseenter:function(id, name) {
+                            self.highlight(id);
+                        },// */
+                        onmouseleave:function(id, name) {
+                            self.unhighlight();
+                        }  
                     });
                 }
             }
@@ -233,9 +247,9 @@
             
             djangosherd.storage.get(
                 {
-                    id:this.current_asset_id,
+                    id:this.asset_id,
                     type:'asset',
-                    url:MediaThread.urls['asset-json'](this.current_asset_id,/*annotations=*/true)
+                    url:MediaThread.urls['asset-json'](this.asset_id,/*annotations=*/true)
                 },
                 false,
                 function(asset_full) {
@@ -289,18 +303,6 @@
             );
         };
 
-        ///Annotation Copy
-        //  - get, clone, remove id, editable = true, replace
-
-        ///Annotation Save
-        //  - update list items
-        //  - replace with 'new' annotation
-        //
-        ///Annotation Open
-        //  - highlight on view
-        //  - 
-        ///Asset Save
-        //  - storage.update
         this.resetHighlightLayer = function() {
             if (this.highlight_layer) {
                 this.highlight_layer.destroy();
@@ -311,19 +313,21 @@
             }
         }
         
-        this.highlight = function(ann_id) {
-            //highlight on list
+        this.unhighlight = function() {
             if (self.highlighted_nodes) {
                 jQuery(self.highlighted_nodes).removeClass('highlight');
             }
-            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray()
-
-            //recreate highlight layer on assetview
             if (self.highlight_layer) {
                 self.highlight_layer.removeAll();
             } else {
                 self.resetHighlightLayer();
             }
+        }
+
+        this.highlight = function(ann_id) {
+            self.unhighlight();
+            //highlight on list
+            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray()
 
             if (self.highlight_layer) {
                 djangosherd.storage.get({
@@ -342,12 +346,29 @@
 
         this.decorateLink = function(li) {
             if (self.highlight_layer) {
-                jQuery(this).mouseenter(function(evt) {
+                jQuery(this)
+                .mouseenter(function(evt) {
                     self.highlight(jQuery(this).attr('data-id'));
-                });
+                })
+                .mouseleave(function(evt) {
+                    self.unhighlight();
+                })
             }
         }
         //decorateForm
+
+        ///Annotation Copy
+        //  - get, clone, remove id, editable = true, replace
+
+        ///Annotation Save
+        //  - update list items
+        //  - replace with 'new' annotation
+        //
+        ///Annotation Open
+        //  - highlight on view
+        //  - 
+        ///Asset Save
+        //  - storage.update
 
         
     })();

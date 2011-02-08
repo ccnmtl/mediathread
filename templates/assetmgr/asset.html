@@ -18,7 +18,10 @@
   <script type="text/javascript">
     DjangoSherd_Asset_Config();    
     AnnotationList.init({ 
-       asset_id:{{asset.id}}
+       "asset_id":{{asset.id}}
+       {% if annotation %}
+       ,"annotation_id":{{annotation.id}}
+       {% endif %}       
     });
   </script>
 

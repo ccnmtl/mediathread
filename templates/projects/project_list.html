@@ -48,11 +48,13 @@
       Assignment
     </td>
     <td>
+      {% ifequal space_owner space_viewer %}
       <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
         <input type="hidden" name="title" />
         <input type="hidden" name="parent" value="{{assignment.id}}" />
         <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
       </form>
+      {% endifequal %}
     </td>
     {% if editable %}
     <td></td>

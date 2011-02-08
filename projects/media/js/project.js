@@ -191,7 +191,7 @@ function saveProject(evt) {
         dataType: 'json',
         error: function(){alert('There was an error saving your project.');},
         success: function(json,textStatus,xhr){
-            project_modifed = false;
+            project_modified = false;
             jQuery('#last-version-prefix').html('Saved: ')
 
             jQuery('#last-version-link')

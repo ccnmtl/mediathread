@@ -95,7 +95,16 @@ float: left;
  .asset-view-small {
 
 background: url('../img/media-Bkgd.gif') no-repeat;
+width: 363px;
+height: 324px;
 }
+
+ .asset-view-small .asset-object {
+
+margin: 6px;
+}
+
+
 
 
 .annotation-links {

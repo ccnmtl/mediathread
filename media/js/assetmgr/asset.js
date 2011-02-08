@@ -194,14 +194,13 @@
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
-                            /*
-                    onclick:function(feature) {
-                        console.log(feature);
-                        return false;
-                    },*/
-                    onhover:function(id, name) {
-                        self.highlight(id);
-                    }// */
+                        //onclick:function(feature) {},
+                        onmouseenter:function(id, name) {
+                            self.highlight(id);
+                        },// */
+                        onmouseleave:function(id, name) {
+                            self.unhighlight();
+                        }  
                     });
                 }
             }
@@ -311,19 +310,21 @@
             }
         }
         
-        this.highlight = function(ann_id) {
-            //highlight on list
+        this.unhighlight = function() {
             if (self.highlighted_nodes) {
                 jQuery(self.highlighted_nodes).removeClass('highlight');
             }
-            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray()
-
-            //recreate highlight layer on assetview
             if (self.highlight_layer) {
                 self.highlight_layer.removeAll();
             } else {
                 self.resetHighlightLayer();
             }
+        }
+
+        this.highlight = function(ann_id) {
+            self.unhighlight();
+            //highlight on list
+            self.highlighted_nodes = jQuery('.annotation-listitem-'+ann_id).addClass('highlight').toArray()
 
             if (self.highlight_layer) {
                 djangosherd.storage.get({
@@ -342,9 +343,13 @@
 
         this.decorateLink = function(li) {
             if (self.highlight_layer) {
-                jQuery(this).mouseenter(function(evt) {
+                jQuery(this)
+                .mouseenter(function(evt) {
                     self.highlight(jQuery(this).attr('data-id'));
-                });
+                })
+                .mouseleave(function(evt) {
+                    self.unhighlight();
+                })
             }
         }
         //decorateForm

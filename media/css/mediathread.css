@@ -944,3 +944,5 @@ td.course-choice {
 td.manage-course {
     text-align:center;
 }
+
+.float-right {float: right;}

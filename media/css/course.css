@@ -680,11 +680,40 @@ font-size: 94%;
 
 }
 
+#annotations-organized {
+
+	background-color: #dedede;
+
+}
+
 #annotations-organized ul {
 
 	list-style-type: none;
 
 }
+
+.annotation-group h4 {
+
+    background-color: #CCCCCC;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 0 5px;
+    padding: 1px;
+
+}
+
+.color-box {
+
+	display: block;
+	height: 20px;
+	width: 20px;
+	border: 1px solid #333;
+	float: left;
+	margin-right: 5px;
+
+}
+
+
 
 #annotations-organized ul.annotation-group-sublist li {
     /*do not tighten this up to one background: property
@@ -1149,6 +1178,8 @@ table.project_list th {
 
 body.old-assetwindow #asset-details-annotations-list {
     max-height:400px;
+    margin: 5px;
+    border: 1px solid #ccc;
 }
 
 #asset-details-annotations-list {

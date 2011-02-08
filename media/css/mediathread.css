@@ -834,6 +834,7 @@ body.fluid #container
 body.fluid #header
 {
 	width: 100%;
+	min-width: 1000px;
 }
 
 
@@ -844,7 +845,7 @@ body.fluid #primarynav div.encase
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 800px;
+	min-width: 840px;
 }
 
 /* ---- Pagebody block elements ---------- */

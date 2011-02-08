@@ -105,7 +105,8 @@ float: left;
 
 background: url('../img/media-Bkgd.gif') no-repeat;
 width: 363px;
-height: 324px;
+min-height: 324px;
+padding-top: 3px;
 }
 
  .asset-view-small .asset-object {

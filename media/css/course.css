@@ -390,10 +390,17 @@ padding-right: 4px;
 
 .asset-view-big {
     /*so youtube 620px's can play on left*/
+    
 
 }
+
+.asset-view-big  .asset-object {
+
+    width:60%; 
+}
+
 .asset-object {
-    width:60%;
+    /* width:60%; */
   /*  min-width: 356px; */
     border:1px solid #ccc;
     background-color: #dedede;

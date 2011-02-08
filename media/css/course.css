@@ -689,6 +689,14 @@ font-size: 94%;
 #annotations-organized ul {
 
 	list-style-type: none;
+	margin: 4px 0 0 28px;
+
+}
+
+#annotation-group-sublist ul li {
+
+	padding: 2px;
+	margin-left: 20px;
 
 }
 
@@ -697,7 +705,7 @@ font-size: 94%;
     background-color: #CCCCCC;
     height: 22px;
     line-height: 22px;
-    margin: 0 0 5px;
+    margin: 5px 0 0;
     padding: 1px;
 
 }
@@ -729,6 +737,10 @@ font-size: 94%;
 
 #annotations-organized ul.annotation-group-sublist li.annotation-image {
 	background-image:url("../img/icons/item_clip.png"); 
+}
+
+#annotations-organized ul.annotation-group-sublist li.annotation-image.highlight {
+	background-color:white; 
 }
 
 .metadata-title {

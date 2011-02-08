@@ -29,12 +29,12 @@ formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
 
 class AnnotationForm(forms.ModelForm):
-    body = forms.CharField(label='My Clip Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
+    body = forms.CharField(label='Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
     range1 = forms.FloatField(widget=forms.widgets.HiddenInput,initial=0)
     range2 = forms.FloatField(widget=forms.widgets.HiddenInput,initial=0)
     annotation_data = forms.CharField(widget=forms.widgets.HiddenInput)
-    tags = forms.CharField(label="My Clip Tags", help_text="<span class='helptext'>Use commas between tags.</span>")
-    title = forms.CharField(label="My Clip Title")
+    tags = forms.CharField(label="Tag(s)", help_text="<span class='helptext'>Use commas between tags.</span>")
+    title = forms.CharField(label="Title")
     class Meta:
         model = SherdNote
         exclude = ('author', 'asset')

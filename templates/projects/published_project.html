@@ -32,7 +32,17 @@
 
 {% block content %}
   {{ block.super }}
-
+  {% with project.assignment as assignment %}
+  {% if assignment %}
+  <div>
+    <h2>Response to
+      <a href="{{assignment.get_readonly_url}}">
+	{{assignment.title}}
+      </a>
+    </h2>
+  </div>
+  {% endif %}
+  {% endwith %}
   <h1>{{project.title}}
   {% if version_number %}Version {{version_number}}{% endif %}
   {% if is_space_owner and project.id %}
@@ -41,20 +51,11 @@
   </a>
   {% endif %}
   </h1>
-  <h2>by <span id="participants_chosen">{{project.attribution}}</span>
-  </h2>
   
-  {% with project.assignment as assignment %}
-  {% if assignment %}
-  <div>
-    <h3>Response to
-      <a href="{{assignment.get_readonly_url}}">
-	{{assignment.title}}
-      </a>
-    </h3>
-  </div>
-  {% endif %}
-  {% endwith %}
+  <h5>by <span id="participants_chosen">{{project.attribution}}</span>
+  </h5>
+  
+
 
 
   <br />
@@ -101,14 +102,14 @@
   {#need to test it, because the default collaboration created won't have the right perms#}
   {% if not project.feedback_discussion %}
     {% if is_faculty and not project|is_assignment:request %}
-    <form action="{% url new-discussion %}" method="POST">
+    <form action="{% url new-discussion %}" method="POST" class="float-right">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
       <input type="hidden" name="inherit" value="true" />
       <input type="hidden" name="app_label" value="projects" />
       <input type="hidden" name="model" value="project" />
       <input type="hidden" name="obj_pk" value="{{project.pk}}" />
       <input type="hidden" name="comment_html" value="Project:{{project.title}}" />
-      <input type="submit" value="Create Feedback Discussion for Project" />
+      <input type="submit" value="Edit Instructor Feedback" />
     </form>
     {% endif %}
   {% endif %}

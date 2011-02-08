@@ -100,7 +100,7 @@
 {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
   {% if not project.feedback_discussion %}
-    {% if is_faculty %}
+    {% if is_faculty and not project|is_assignment:request %}
     <form action="{% url new-discussion %}" method="POST">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
       <input type="hidden" name="inherit" value="true" />

@@ -96,6 +96,12 @@ class Project(models.Model):
         project_type = ContentType.objects.get_for_model(Project)
         return self.viewable_children_of_type(request, project_type)
 
+    def is_assignment(self, request):
+        col = self.collaboration()
+        if not col:
+            return False
+        return col.permission_to("add_child", request)
+
     def assignment(self):
         """
         Returns the Project object that this Project is a response to,

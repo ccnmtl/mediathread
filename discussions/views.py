@@ -62,6 +62,7 @@ def show_discussion(request, root_comment):
     switcher = {
         'init':reverse('annotations-fragment', args=[space_viewer.username])
         }
+    target = None
     if root_comment.content_object._parent_id:
         target = root_comment.content_object._parent
         if 'project'==target.content_type.model:
@@ -70,6 +71,9 @@ def show_discussion(request, root_comment):
                 reverse('project-view', args=[target.object_pk]),
                 'json', #appended for json content (and avoiding cache poisoning webkit)
                 )
+        elif 'course'==target.content_type.model:
+            #so we don't show a pointer for global discussions
+            target = None
 
     return {
         'is_space_owner': True,
@@ -77,6 +81,7 @@ def show_discussion(request, root_comment):
         'space_owner': space_viewer, #for now
         'space_viewer': space_viewer,
         'root_comment': root_comment,
+        'target':target,
         'switcher':switcher,
         'page_in_edit_mode': True,
         #change this in settings.COMMENT_MAX_LENGTH

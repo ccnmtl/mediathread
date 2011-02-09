@@ -50,7 +50,7 @@ def is_unanswered_assignment(assignment, user, request, expected_type):
         if child.content_type != expected_type:
             # Ignore this child, it isn't a project
             continue
-        if child.content_object.author == user:
+        if getattr(child.content_object,'author',None) == user:
             # Aha! We've answered it already
             return False
 

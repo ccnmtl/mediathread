@@ -7,15 +7,6 @@
  {% endif %}
  </p>
 {% endif %}
-{% if editable %}
-
-
-   <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
-     <input type="hidden" name="title" />
-     <input class="columnbutton project-createnew-button" type="submit" value="Create a new project!"/>
-
-   </form>
-{% endif %}
 
 {% if projects or assignments %}
    <table class="project_list sortable" onclick="sortColumn(event)">

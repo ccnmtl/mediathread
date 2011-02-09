@@ -930,7 +930,7 @@ body.fluid #content
   color: #e6e6e6;
 }
 
-tr.course-choices {
+table.course-choices {
     padding:5px;
 }
 
@@ -942,5 +942,10 @@ td.course-choice {
 }
 
 td.manage-course {
+    text-align:center;
+}
+
+table.course-choices tr.course-choices-other-years td {
+    padding:10px;
     text-align:center;
 }

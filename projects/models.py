@@ -204,13 +204,15 @@ class Project(models.Model):
     
     def collaboration(self,request=None,sync_group=False):
         col = None
-        policy = 'PrivateEditorsAreOwners'
-        if request:
+        policy = None
+        if request and request.method == "POST":
             policy = request.POST.get('publish','PrivateEditorsAreOwners')
 
         try:
             col = Collaboration.get_associated_collab(self)
         except Collaboration.DoesNotExist:
+            if policy is None:
+                policy = "PrivateEditorsAreOwners"
             if request is not None:
                 col = Collaboration.objects.create(user=self.author,
                                                    title=self.title,
@@ -218,7 +220,10 @@ class Project(models.Model):
                                                    context=request.collaboration_context,
                                                    policy=policy,
                                                    )
-        if sync_group and col:
+        if col is None: # iff collab did not exist and request is None
+            return
+
+        if sync_group:
             part = self.participants.all()
             if len(part) > 1 or (col.group_id and col.group.user_set.count() > 1):
                 colgrp = col.have_group()
@@ -230,7 +235,8 @@ class Project(models.Model):
                         colgrp.user_set.add(p)
                 for oldp in already_grp:
                     colgrp.user_set.remove(oldp)
-            if request and (col.policy != policy or col.title != self.title):
+            if request and request.method == "POST" and \
+                    (col.policy != policy or col.title != self.title):
                 col.title = self.title
                 col.policy = policy
                 col.save()

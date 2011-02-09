@@ -113,21 +113,34 @@
     {% endif %}
   {% endif %}
 
-  {% if_permission to "add_child" with project.collaboration for request as can_add_child %}
-  {% if can_add_child %}
+  {% if project|is_assignment:request %}
+    {% if not user_responses %}
     <form class="block project-createnew" method="POST"
 	  action="{%url your-space-projects user%}">
       <input type="hidden" name="title" />
       <input type="hidden" name="parent" value="{{project.id}}" />
       <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
     </form>
+    {% else %}
+    <h3>
+      Your Response
+    </h3>
+    <ul>
+      {% for response in user_responses %}
+      <li>
+	<a href="{{response.get_readonly_url}}">
+	  {{response.title}}
+	</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
   {% endif %}
 
-  {% with project|assignment_responses:request as responses %}
-  {% if responses %}
+  {% if assignment_responses %}
     <h3>Responses</h3>
     <ul>
-      {% for response in responses %}
+      {% for response in assignment_responses %}
       <li>
         <a href="{{response.get_absolute_url}}">
           {{response.title}}
@@ -136,13 +149,11 @@
       {% endfor %}
     </ul>
   {% endif %}
-  {% endwith %}
 
-  {% with project|discussions:request as responses %}
-  {% if responses %}
+  {% if discussions %}
     <h3>Discussions</h3>
     <ul>
-      {% for response in responses %}
+      {% for response in discussions %}
       <li>
         <a href="/discussion/show/{{response.id}}">
           {{response.title}}
@@ -151,7 +162,6 @@
       {% endfor %}
     </ul>
   {% endif %}
-  {% endwith %}
 
 {% endif %}{# end project.collaboration #}
 

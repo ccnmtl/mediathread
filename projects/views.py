@@ -56,12 +56,25 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     
     if request.META.get('HTTP_ACCEPT','').find('json') >=0:
         return project_json(request, project)
+
+    if isinstance(project, dict):
+        assignment_responses = None
+        discussions = None
+        user_responses = None
+    else:
+        assignment_responses = project.responses(request)
+        discussions = project.discussions(request)
+        user_responses = project.responses_by(request, request.user)
+
     return {
         'is_space_owner': is_participant,
         'project': project,
         'is_preview': preview_num,
         'preview_num': preview_num,
         'is_faculty': course.is_faculty(request.user),
+        'assignment_responses': assignment_responses,
+        'discussions': discussions,
+        'user_responses': user_responses,
         #'space_owner':project.author, #was there for project_readonly_view()
         }
         
@@ -87,6 +100,8 @@ def project_version_preview(request, project_id, version_number, check_permissio
         'is_space_owner': project.is_participant(request.user),
         'project': project,
         'version_number': int(version_number),
+        'assignment_responses': project.responses(request),
+        'discussions': project.discussions(request),
         }
         
 def project_version_view(request, projectversion_id, check_permission=True):

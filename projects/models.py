@@ -76,8 +76,7 @@ class Project(models.Model):
                 'project_id': self.pk,
                 })
 
-
-    def viewable_children_of_type(self, request, type):
+    def subobjects(self, request, type):
         col = self.collaboration()
         if not col:
             return []
@@ -90,11 +89,17 @@ class Project(models.Model):
         
     def discussions(self, request):
         discussion_type = ContentType.objects.get_for_model(ThreadedComment)
-        return self.viewable_children_of_type(request, discussion_type)
+        return self.subobjects(request, discussion_type)
+
+    def responses_by(self, request, user):
+        responses = self.responses(request)
+        return [response for response in responses
+                if user
+                in response.content_object.participants.all()]
 
     def responses(self, request):
         project_type = ContentType.objects.get_for_model(Project)
-        return self.viewable_children_of_type(request, project_type)
+        return self.subobjects(request, project_type)
 
     def is_assignment(self, request):
         col = self.collaboration()

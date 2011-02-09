@@ -21,7 +21,7 @@
    <table class="project_list sortable" onclick="sortColumn(event)">
      <thead>
        <tr>
-	 <th>Title</th>
+	 <th class="project-titles">Title</th>
 	 <th class="DateTime">Last Modified</th>
 	 <th>Status</th>
 	 <th>Links</th>
@@ -78,10 +78,10 @@
 	     >{{project.title|default:"(Untitled)"}}</a>
 	  {% endif %}
 	</h3>
-        <span class="participants">
+        <div class="participants">Author(s):
           <span class="participants-short">{{project.attribution|truncatewords:4 }}</span>
           <span class="participants-full">{{project.attribution}}</span>
-        </span>
+        </div>
       </td>
    
       <td>

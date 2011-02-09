@@ -390,10 +390,17 @@ padding-right: 4px;
 
 .asset-view-big {
     /*so youtube 620px's can play on left*/
+    
 
 }
+
+.asset-view-big  .asset-object {
+
+    width:60%; 
+}
+
 .asset-object {
-    width:60%;
+    /* width:60%; */
   /*  min-width: 356px; */
     border:1px solid #ccc;
     background-color: #dedede;
@@ -673,11 +680,49 @@ font-size: 94%;
 
 }
 
+#annotations-organized {
+
+	background-color: #dedede;
+	padding-bottom: 1px;
+
+}
+
 #annotations-organized ul {
 
 	list-style-type: none;
+	margin: 4px 0 4px 28px;
 
 }
+
+#annotation-group-sublist ul li {
+
+	padding: 2px;
+	margin-left: 20px;
+
+}
+
+.annotation-group h4 {
+
+    background-color: #CCCCCC;
+    height: 22px;
+    line-height: 22px;
+    margin: 0;
+    padding: 1px;
+
+}
+
+.color-box {
+
+	display: block;
+	height: 20px;
+	width: 20px;
+	border: 1px solid #333;
+	float: left;
+	margin-right: 5px;
+
+}
+
+
 
 #annotations-organized ul.annotation-group-sublist li {
     /*do not tighten this up to one background: property
@@ -693,6 +738,10 @@ font-size: 94%;
 
 #annotations-organized ul.annotation-group-sublist li.annotation-image {
 	background-image:url("../img/icons/item_clip.png"); 
+}
+
+#annotations-organized ul.annotation-group-sublist li.annotation-image.highlight {
+	background-color:white; 
 }
 
 .metadata-title {
@@ -772,7 +821,7 @@ a.plist
 
 	background-image: none;
 	background-color: #dedede;
-	border: 1px solid #ccc;
+	border: 1px solid #999;
 	display: inline;
 	height: auto;
 	width: auto;
@@ -1112,6 +1161,30 @@ a.bookmarklet {
     
 }
 
+ul.submenu.course-report  {
+	list-style-type: none;
+		margin: 0;
+		height: 26px;
+}
+
+ul.submenu.course-report li {
+	display: inline;
+	float: left;
+	background-color: #ccc;
+	display: block;
+	padding: 5px;
+	margin-right: 5px;
+	border: 1px solid #999;
+
+}
+
+ul.submenu.course-report li.highlight {
+    background-color:#ccc;
+
+	border: 1px solid #999;
+
+}
+
 .highlight {
     background-color:#fff100;
 }
@@ -1140,8 +1213,25 @@ table.project_list th {
     white-space:nowrap;
 }
 
+table.project_list th.project-titles {
+    min-width: 300px;
+    width: 100%;
+}
+
+table.project_list td {
+	font-size: 80%;
+}
+
+table.project_list td .participants{
+	margin-left: 30px;
+}
+
+
+
 body.old-assetwindow #asset-details-annotations-list {
     max-height:400px;
+    margin: 5px;
+    border: 1px solid #ccc;
 }
 
 #asset-details-annotations-list {

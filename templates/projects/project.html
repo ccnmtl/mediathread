@@ -60,12 +60,32 @@
       </td>
       <td class="slider-cell">
   <div class="essay-space slider-column">
-    <form id="editproject" name="editproject" method="POST" action=".">
+  
 
     <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
-   
-      
-	<h2>Title: {{projectform.title}}</h2>
+    {% with project.assignment as assignment %}
+	  {% if assignment %}
+	  <div>
+	  <h4>Response to
+	    <a target="_blank" 
+	       href="{{assignment.get_readonly_url}}">
+	      {{assignment.title}}
+	    </a>
+	  </h4>
+	  </div>
+	  {% endif %}
+	  {% endwith %}
+	  <div id="project-container">
+        <form id="editproject" name="editproject" method="POST" action=".">
+	<p>	<div id="last-version-saved">
+          <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+          <span id="last-version-public">
+            {% if project.public_url %}
+            (<a href="{{project.public_url}}">public url</a>)
+            {% endif %}
+          </span>
+        </div><div class="project-form-title">Title: {{projectform.title}}</div>
+ </p>
 	<div id="essaybox" class="essaytextarea">
           <script type="text/javascript">
             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
@@ -88,18 +108,7 @@
 	
         <div id="project_participants">
 
-	  {% with project.assignment as assignment %}
-	  {% if assignment %}
-	  <div>
-	  <h3>Response to
-	    <a target="_blank" 
-	       href="{{assignment.get_readonly_url}}">
-	      {{assignment.title}}
-	    </a>
-	  </h3>
-	  </div>
-	  {% endif %}
-	  {% endwith %}
+	 
 
           <div id="participant_update" style="display:none">Save the project to save the author list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
@@ -118,19 +127,13 @@
             {{projectform.participants}} 
           </div>
         </div><!-- end id="project_participants" -->
+        
+      </div>
       
-        <div id="last-version-saved">
-          <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
-          <span id="last-version-public">
-            {% if project.public_url %}
-            (<a href="{{project.public_url}}">public url</a>)
-            {% endif %}
-          </span>
-        </div>
 	<div id="project-form-buttons"> 
-	  <input class="project-previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
-          <input class="project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-
+	       <input class="project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+<input class="project-previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+     
 	  <span class="project-dropdown">
 	    {{projectform.publish.label_tag}}    
             {{projectform.publish}}

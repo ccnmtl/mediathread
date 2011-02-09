@@ -1,38 +1,44 @@
 <a class="hs-control" href="#global-instructor-orientation"></a><b>QuickStart Guide:</b> Please read before beginning work with your class!
 <div id="global-instructor-orientation" class="intro-text hs-init-show hs-show">
 
-  <h4>Working in Mediathread</h4>
-  <p>Work within the Mediathread tool centers around <b>Items</b>, <b>Projects</b>, and <b>Discussions</b>:</p>
+  <p>Work in Mediathread centers around <b>Items</b>, <b>Projects</b>, and <b>Discussions</b>:</p>
 
 
-  <p><b>Items</b> are chunks of media including all or part of an original media source, as selected and annotated by any Mediathread user.</p>
+  <p><b>Items</b> are images or videos that have been saved and annotated in MediaThread.</p>
   <ul>
-    <li> In order to create Items, media sources must first be imported into Mediathread. </li>
-    <li>Most videos and images found on the internet may easily be imported for analysis in Mediathread.</li>
-    <li>To define media sources for your Course, you can either recommend external Collections or import a core group of Items for analysis.
-    </li>
-    <li>All Items are public and available to all users for analysis</li>
+    <li>Media sources must first be imported into MediaThread before they can be saved as Items.</li>
+    <li>Many videos and images posted online may be imported into MediaThread.</li>
+    <li>To prioritize media sources for your course, you can queue up supported collections or import a core group of Items for analysis.  See instructions in the Explore Collections tab.
+</li>
+    <li>All Items in MediaThread are available to all members of the class.</li>
     
   </ul>
   
-  <p><b>Projects</b> are written compositions with embedded Item "citations."</p>
+  <p><b>Projects</b> are written compositions with embedded Items.
+</p>
   <ul>
     <li>
-      Any Mediathread user can create a project -- either alone, or with collaborators.
+      Any MediaThread user can create a project and add collaborators.
     </li>
-    <li>Projects are private until "publishing," at which point they may be shared with others.</li>
-    <li>Upon "publishing," you can also flag any project as an "assignment" for your class, allowing additional administrative functionality and response tracking. Course members use their own Project to respond to your "assignment."
+    <li>A project may be saved as a draft, in which case it is visible only to its author(s).  It may also be published and made visible to the instructor, the whole class, or the world.</li>
+    <li>Instructors have another publishing option:  they may save a project as an "assignment" for the class, so responses can be tracked here, in the Instructor Dashboard. 
+    <li>
+Projects may be discussed by Instructors posting "Instructor Feedback".  Class members are alerted to Feedback posted on their Project(s).
+
+    </li>
+	<li>Any Project created by an instructor and made visible to the class, whether or not it is an assignment, will appear on the Class Home.</li>
   </ul>
   
   
-  <p><b>Discussions:</b> are a space for quick, real-time conversations about specific topic(s), asset(s) or projects(s). </p>
+  <p><b>Discussions</b> are conversations about specific topics.</p>
   <ul>
     <li>
-      Discussions are accessible to the whole class but can only be created by you.
-    </li>
+      Topic-level discussions are accessible to the whole class but can only be created by instructors here in the Instructor Dashboard.</li>
+    <li>
+Once created, topic-level Discussions appear on the Class Home page.</li>
   </ul>
-  
-  <h4>Creating Assignments and Organizing Your Class</h4>
+  <!--
+  <h4>Read tips for organizing your course in MediaThread:</h4>
 
   <p>
     Potentially useful student activities may include one or more of the following:
@@ -54,7 +60,7 @@
     <li>Since Items and Discussions cannot be formally grouped or flagged as "assignment," you may want to create and share a Project titled "Syllabus," "Assignments, " etc. for this purpose. 
     </li>
   </ul>
-
+-->
 </div><!-- end global-instructor-orientation -->
 
 {%if request.user.is_staff and courses %}
@@ -100,12 +106,10 @@
 
 
   <h4>Course Reports:</h4>
-  <ul class="submenu">
-    <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Student Responses to Assigned Projects</a></li>
+  <ul class="submenu course-report">
     <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity Index</a></li>
+    <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Student Responses to Assigned Projects</a></li>
     <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contribution Summary</a></li>
-    
-    
   </ul>
   
 </div><!-- end instructor-actions -->

@@ -87,7 +87,7 @@
         {% if target %}        
           <h2>Discussion of
               {{target.content_type.model}}:
-              <a href="{{target.get_absolute_url}}">
+              <a href="{{target.content_object.get_absolute_url}}">
                 <span id="discussion-subject-title">
                   {{target.title}}
                 </span>

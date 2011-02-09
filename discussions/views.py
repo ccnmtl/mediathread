@@ -63,8 +63,10 @@ def show_discussion(request, root_comment):
         'init':reverse('annotations-fragment', args=[space_viewer.username])
         }
     target = None
-    if root_comment.content_object._parent_id:
+    if root_comment.content_object._parent_id and \
+            root_comment.content_object._parent.object_pk:
         target = root_comment.content_object._parent
+
         if 'project'==target.content_type.model:
             switcher['init'] = reverse('annotations-fragment-none', args=['none'])
             switcher['project_json'] = '%s%s' % (

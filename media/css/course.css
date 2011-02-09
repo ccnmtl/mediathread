@@ -683,13 +683,14 @@ font-size: 94%;
 #annotations-organized {
 
 	background-color: #dedede;
+	padding-bottom: 1px;
 
 }
 
 #annotations-organized ul {
 
 	list-style-type: none;
-	margin: 4px 0 0 28px;
+	margin: 4px 0 4px 28px;
 
 }
 
@@ -705,7 +706,7 @@ font-size: 94%;
     background-color: #CCCCCC;
     height: 22px;
     line-height: 22px;
-    margin: 5px 0 0;
+    margin: 0;
     padding: 1px;
 
 }
@@ -1160,6 +1161,30 @@ a.bookmarklet {
     
 }
 
+ul.submenu.course-report  {
+	list-style-type: none;
+		margin: 0;
+		height: 26px;
+}
+
+ul.submenu.course-report li {
+	display: inline;
+	float: left;
+	background-color: #ccc;
+	display: block;
+	padding: 5px;
+	margin-right: 5px;
+	border: 1px solid #999;
+
+}
+
+ul.submenu.course-report li.highlight {
+    background-color:#ccc;
+
+	border: 1px solid #999;
+
+}
+
 .highlight {
     background-color:#fff100;
 }
@@ -1187,6 +1212,21 @@ table.project_list th {
     background-color: #CCC;
     white-space:nowrap;
 }
+
+table.project_list th.project-titles {
+    min-width: 300px;
+    width: 100%;
+}
+
+table.project_list td {
+	font-size: 80%;
+}
+
+table.project_list td .participants{
+	margin-left: 30px;
+}
+
+
 
 body.old-assetwindow #asset-details-annotations-list {
     max-height:400px;

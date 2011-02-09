@@ -267,6 +267,8 @@
                     DjangoSherd_Colors.reset(grouping);
                     for (var i=0;i<asset_full.annotations.length;i++) {
                         var ann = asset_full.annotations[i];
+                        ///TODO: WILL BREAK when we ajax this
+                        ann.active_annotation = (ann.id === self.annotation_id)
                         if (ann.annotation) {
                             var titles = color_by(ann);
                             for (var j=0;j<titles.length;j++) {

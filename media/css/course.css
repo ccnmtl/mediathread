@@ -740,8 +740,12 @@ font-size: 94%;
 	background-image:url("../img/icons/item_clip.png"); 
 }
 
-#annotations-organized ul.annotation-group-sublist li.annotation-image.highlight {
+#annotations-organized ul.annotation-group-sublist li.highlight {
 	background-color:white; 
+}
+
+#annotations-organized ul.annotation-group-sublist li.annotation-active {
+	border:1px solid black;
 }
 
 .metadata-title {

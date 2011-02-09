@@ -114,6 +114,11 @@
             var url_args = this.map(args,function(a){return this.get_object(a,context,this.context)},this);
             return MediaThread.urls[name].apply(this,url_args);
         }
+        Mustache.Renderer.prototype.filters_supported['default'] = function(name,context,args) {
+            var lookup = this.get_object(name,context,this.context);
+            if (lookup) return lookup
+            else return args[0];
+        }
     }//END MUSTACHE CODE
 
 
@@ -215,7 +220,8 @@
                         },// */
                         onmouseleave:function(id, name) {
                             self.unhighlight();
-                        }  
+                        },
+                        zIndex:300 //above highlight
                     });
                 }
             }
@@ -234,7 +240,8 @@
                     if (tags.length) {
                         return tags
                     } else {
-                        return ['None']
+                        //127 ensures that None is last
+                        return [String.fromCharCode(127)+'(None)']
                     }
                 }
                 break;
@@ -309,7 +316,7 @@
             }
             this.highlight_layer = djangosherd.assetview.layer();
             if (this.highlight_layer) {
-                this.highlight_layer.create('focus',{zIndex:900});
+                this.highlight_layer.create('focus',{zIndex:200});
             }
         }
         
@@ -336,8 +343,10 @@
                 }, function(ann) {
                     self.highlight_layer
                         .add(ann.annotation,{id:ann.id,
-                                             color:'#ffffff',
-                                             pointerEvents:'none'
+                                             color:'black',
+                                             bgcolor:'highlight',
+                                             pointerEvents:'none',
+                                             zIndex:1
                                             });
                 });
             }//end if (self.highlight_layer)

@@ -104,24 +104,10 @@
     {% endif %}
   {% endif %}
  
- </div>
  
-<div class="essay-space published">  
-      <div id="essaybox" class="essaytextarea">
-	{{project.body|safe}}
-      </div>  
-  </div>
-</div>
-<div class="essay-options" style="padding: 1em;">
-  <!--
-{% if is_preview %}
- <a class="button" href=".">Save and continue editing</a>
-{% endif %}
--->
-
-
-
-  {% if project|is_assignment:request %}
+ 
+ 
+   {% if project|is_assignment:request %}
     {% if not user_responses %}
     <form class="block project-createnew" method="POST"
 	  action="{%url your-space-projects user%}">
@@ -144,6 +130,26 @@
     </ul>
     {% endif %}
   {% endif %}
+ 
+ 
+ </div>
+ 
+<div class="essay-space published">  
+      <div id="essaybox" class="essaytextarea">
+	{{project.body|safe}}
+      </div>  
+  </div>
+</div>
+<div class="essay-options" style="padding: 1em;">
+  <!--
+{% if is_preview %}
+ <a class="button" href=".">Save and continue editing</a>
+{% endif %}
+-->
+
+
+
+
 
   {% if assignment_responses %}
     <h3>Responses</h3>

@@ -399,3 +399,8 @@ div.button-form {
 	height: 28px;
 	padding: 10px 0;
 }
+
+div.button-form form{
+
+	float: right;
+}

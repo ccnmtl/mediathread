@@ -127,7 +127,7 @@ background-color: #ededed;
  
  input.columnbutton {
  
- 	margin: 10px;
+ /*	margin: 10px;*/
  }
  
  #class_activity .panel-column
@@ -592,7 +592,7 @@ margin-right: 1em;
 }
 
 input.project-createnew-button {
-    margin:10px 0 15px 10px;
+  /*  margin:10px 0 15px 10px; */
 }
 
 .actions {

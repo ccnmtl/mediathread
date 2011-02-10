@@ -21,16 +21,16 @@ Home
 
     {%if faculty_feed.projects %}
       <h3>START HERE:</h3>
-      <ul>
+      <ul class="instructor-list">
 	{%for p in faculty_feed.projects %}
-	{% if_permission to "add_child" with p.collaboration for request as can_add_child %}
-	{% if can_add_child %}
-	<li class="assignment"><a href="{%url project-view p.id %}">{{p.title}}</a> (assignment)</li>
-	{% else %}
-	<li><a href="{%url project-view p.id %}">{{p.title}}</a></li>
-	{% endif %}
-
+        <li><a href="{%url project-view p.id %}">{{p.title}}</a></li>
 	{%endfor%}
+      </ul>
+      <h3>Assignments</h3>
+      <ul class="instructor-list">
+	{%for p in faculty_feed.assignments %}
+        <li class="assignment"><a href="{%url project-view p.id %}">{{p.title}}</a> (assignment)</li>
+        {%endfor%}
       </ul>
     {%endif%}
 

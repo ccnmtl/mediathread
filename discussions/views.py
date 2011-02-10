@@ -70,7 +70,7 @@ def show_discussion(request, root_comment):
         if 'project'==target.content_type.model:
             switcher['init'] = reverse('annotations-fragment-none', args=['none'])
             switcher['project_json'] = '%s%s' % (
-                reverse('project-view', args=[target.object_pk]),
+                target.content_object.get_absolute_url(),
                 'json', #appended for json content (and avoiding cache poisoning webkit)
                 )
         elif 'course'==target.content_type.model:

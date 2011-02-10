@@ -133,8 +133,7 @@ def view_project(request, project_id):
     if not project.collaboration(request).permission_to('edit',request):
         #LEGACY: try again for legacy projects
         if not project.collaboration(request, sync_group=True).permission_to('edit',request):
-            return HttpResponseRedirect(
-                reverse('project-view', args=[project_id]))
+            return HttpResponseRedirect(project.get_absolute_url())
 
     if request.method == "GET":
         if request.META.get('HTTP_ACCEPT','').find('json') >=0:
@@ -148,7 +147,6 @@ def view_project(request, project_id):
 
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project,data=request.POST)
-        redirect_to = '.'
         if projectform.is_valid():
             if "Preview" == request.POST.get('submit',None):
                 #doesn't send project.author, and other non-exposed fields
@@ -180,7 +178,7 @@ def view_project(request, project_id):
                          }, indent=2),
                                     mimetype='application/json')
 
-
+        redirect_to = '.'
         return HttpResponseRedirect(redirect_to)
 
 @rendered_with('projects/your_projects.html')
@@ -228,13 +226,13 @@ def your_projects(request, user_name):
                 parent = Project.objects.get(pk=parent)
             except Project.DoesNotExist:
                 parent = None
-                return HttpResponseRedirect(project.get_absolute_url())
+                return HttpResponseRedirect(project.get_workspace_url())
 
             parent_collab = parent.collaboration(request)
             if parent_collab.permission_to("add_child", request):
                 parent_collab.append_child(project)
                 
-        return HttpResponseRedirect(project.get_absolute_url())
+        return HttpResponseRedirect(project.get_workspace_url())
 
 def project_json(request,project):
     rand = ''.join([choice(letters) for i in range(5)])

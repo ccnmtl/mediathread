@@ -36,7 +36,7 @@
   {% if assignment %}
   <div>
     <h2>Response to
-      <a href="{{assignment.get_readonly_url}}">
+      <a href="{{assignment.get_absolute_url}}">
 	{{assignment.title}}
       </a>
     </h2>
@@ -129,7 +129,7 @@
     <ul>
       {% for response in user_responses %}
       <li>
-	<a href="{{response.get_readonly_url}}">
+	<a href="{{response.get_absolute_url}}">
 	  {{response.title}}
 	</a>
       </li>

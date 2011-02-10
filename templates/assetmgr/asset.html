@@ -37,7 +37,7 @@
 {%endif%}
   
 {% if mock %}
-<p>Create tags, notes or clips to add this item to Your Analysis.</p>
+<p>Add annotations to save this item to Your Analysis.</p>
 {% endif %}<!-- if mock-->
 
   <div id="workspace">
@@ -119,7 +119,7 @@
                     {% if request.user in request.course.members %}
                        <input type="submit" name="save-global-annotation" value="Save Asset"/>
                     {% else %}
-                       <b class="warning">Cannot save clips because you are not a member of this course.</b>
+                       <b class="warning">Cannot save because you are not a member of this course.</b>
                     {% endif %}
                     to My Items
                 </div>
@@ -147,12 +147,12 @@
         	       {% endfor %}
         	   {% endif %}<!--end if mock-->
                    {% if request.user in request.course.members %}
-                     <input type="submit" name="save-clip-annotation" value="Save Clip" />
+                     <input type="submit" name="save-clip-annotation" value="Save" />
                    {% else %}
                      <b class="warning">Cannot save clips because you are not a member of this course.</b>
                    {% endif %}
         	   {% if annotation %}
-                  <input type="button" value="New Clip" onclick="document.location='{% url asset-view asset.id %}'"/>	  
+                  <input type="button" value="New" onclick="document.location='{% url asset-view asset.id %}'"/>	  
         	   {% endif %}
         	   </form>
             </div> <!--id="Clip"-->
@@ -168,7 +168,7 @@
    </div> <!-- end "analysis" tab -->
 
    {% if not mock %}
-    <div class="tabbertab indexcard" title="Citations">
+    <div class="tabbertab indexcard" title="Class References/Use">
    
       <h2><a class="hs-control" href="#classtags"></a>Class Tags</h2>
 

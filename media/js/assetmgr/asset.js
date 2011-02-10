@@ -79,7 +79,7 @@
 		type:'button',
 		id:'copy-annotation',
 		onclick:'copyAnnotation()',
-		value:'Copy Clip'
+		value:'Copy'
 	    };
             for (a in copy_attrs) {
                 copy_btn.setAttribute(a,copy_attrs[a]);

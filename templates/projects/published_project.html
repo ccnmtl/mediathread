@@ -85,20 +85,10 @@
       </div>
     </div>
   </div>
-  <div class="essay-space published">   
-      <div id="essaybox" class="essaytextarea">
-	{{project.body|safe}}
-      </div>  
-  </div>
-
-<div class="essay-options" style="padding: 1em;">
-  <!--
-{% if is_preview %}
- <a class="button" href=".">Save and continue editing</a>
-{% endif %}
--->
-
-{% if project.collaboration %}
+  <div class="button-container"> 
+  <div class="button-form">
+  
+  {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
   {% if not project.feedback_discussion %}
     {% if is_faculty and not project|is_assignment:request %}
@@ -113,6 +103,23 @@
     </form>
     {% endif %}
   {% endif %}
+ 
+ </div>
+ 
+<div class="essay-space published">  
+      <div id="essaybox" class="essaytextarea">
+	{{project.body|safe}}
+      </div>  
+  </div>
+</div>
+<div class="essay-options" style="padding: 1em;">
+  <!--
+{% if is_preview %}
+ <a class="button" href=".">Save and continue editing</a>
+{% endif %}
+-->
+
+
 
   {% if project|is_assignment:request %}
     {% if not user_responses %}

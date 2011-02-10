@@ -368,8 +368,9 @@ class DiscussionIndex(models.Model):
         if self.comment and self.comment.threadedcomment:
             return '/discussion/show/%s#comment-%s' % (self.comment.threadedcomment.root_id, 
                                                        self.comment.id)
-        else:
+        elif self.collaboration.content_object:
             return self.collaboration.content_object.get_absolute_url()
+
     @classmethod
     def with_permission(cls, request,query):
         return [di for di in query if di.collaboration.permission_to('read',request) ]

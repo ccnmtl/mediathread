@@ -428,7 +428,7 @@ text-align:center;
       margin: 15px 5px 0px 5px;
 }
   #member_col, #filter_col, #project_col {  
-      margin-top:29px;
+ /*     margin-top:29px; */
 }
   #project_col {
   border: none;
@@ -1218,8 +1218,8 @@ table.project_list th {
 }
 
 table.project_list th.project-titles {
-    min-width: 300px;
-    width: 100%;
+    min-width: 200px;
+    max-width: 400px;
 }
 
 table.project_list td {

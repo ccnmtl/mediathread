@@ -386,21 +386,3 @@ div.mce_editorwindow {
     min-width:324px;
 }
 
-div.button-container {
-
-	width: 450px;
-	margin: -50px 0 0 15px;
-	float: left;
-}
-
-div.button-form {
-
-	display: block;
-	height: 28px;
-	padding: 10px 0;
-}
-
-div.button-form form{
-
-	float: right;
-}

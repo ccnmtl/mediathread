@@ -234,9 +234,13 @@
             case 'tag':
                 color_by = function(ann,cats) {
                     var tags = ann.metadata.tags.split(/\s*,\s*/);
-                    if (tags.length && !tags[0]) {
-                        tags.shift(); //remove empty front tag
-                    } 
+                    for (var i=0;i<tags.length;i++) {
+                        //remove empty front tag
+                        if (! /\w/.test(tags[i])) {
+                            tags.splice(i,1);
+                            --i;//set the counter back
+                        }
+                    }
                     if (tags.length) {
                         return tags
                     } else {

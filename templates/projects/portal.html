@@ -19,6 +19,17 @@ Home
     <h2>Instructor's Focus</h2>
     <div class="scroll">
 
+    {% if is_faculty and not display.instructor %}
+    <div class="intro-text">
+      <h3>Instructor controls this space</h3>
+      <p>
+        Projects, assignments, and discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
+        </p><p>     
+        To learn more and get started, visit the Instructor Dashboard
+      </p>
+    </div>
+    {% endif %}
+
     {%if faculty_feed.projects %}
       <h3>START HERE:</h3>
       <ul class="instructor-list">
@@ -59,22 +70,6 @@ Home
 	{% endfor %}
       </ul>
     {%endif%}
-    {% if is_faculty and not faculty_feed.projects %}
-    <div class="intro-text">
-      <h3>Instructor projects are posted here.</h3>
-      <p>
-        For students 'projects' are their assignment submissions. For you, an instructor, 
-        submitting a project posts it to the home page here.  Use this for
-        intro notes, sample assignments, assignment instructions--even to make a syllabus!
-        </p><p>     
-        If you do not create and submit any project, this pane will not be 
-        visible to students.
-        </p><p>     
-        We suggest that any assignment instructions should include direction
-        on what kinds of assets are acceptable.  In the past, without direction, students, have posted links to YouTube and other miscellaneous web resources when a particular archive was meant to be the focus.
-      </p>
-    </div>
-    {% endif %}
 
     </div>
 

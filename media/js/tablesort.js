@@ -371,7 +371,7 @@ var TableSortCasts = {
         }
     },
     "CaseInsensitiveString":function(cell){return CaseInsensitiveString(getInnerText(cell));},
-    "Default":function(cell){return String(getInnerText(cell));},
+    "Default":function(cell){return String(getInnerText(cell));}
 }
 
 if (window.jQuery) {

@@ -85,24 +85,14 @@
       </div>
     </div>
   </div>
-  <div class="essay-space published">   
-      <div id="essaybox" class="essaytextarea">
-	{{project.body|safe}}
-      </div>  
-  </div>
-
-<div class="essay-options" style="padding: 1em;">
-  <!--
-{% if is_preview %}
- <a class="button" href=".">Save and continue editing</a>
-{% endif %}
--->
-
-{% if project.collaboration %}
+  <div class="button-container"> 
+  <div class="button-form">
+  
+  {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
   {% if not project.feedback_discussion %}
     {% if is_faculty and not project|is_assignment:request %}
-    <form action="{% url new-discussion %}" method="POST" class="float-right">
+    <form action="{% url new-discussion %}" method="POST">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
       <input type="hidden" name="inherit" value="true" />
       <input type="hidden" name="app_label" value="projects" />
@@ -113,8 +103,11 @@
     </form>
     {% endif %}
   {% endif %}
-
-  {% if project|is_assignment:request %}
+ 
+ 
+ 
+ 
+   {% if project|is_assignment:request %}
     {% if not user_responses %}
     <form class="block project-createnew" method="POST"
 	  action="{%url your-space-projects user%}">
@@ -137,6 +130,26 @@
     </ul>
     {% endif %}
   {% endif %}
+ 
+ 
+ </div>
+ 
+<div class="essay-space published">  
+      <div id="essaybox" class="essaytextarea">
+	{{project.body|safe}}
+      </div>  
+  </div>
+</div>
+<div class="essay-options" style="padding: 1em;">
+  <!--
+{% if is_preview %}
+ <a class="button" href=".">Save and continue editing</a>
+{% endif %}
+-->
+
+
+
+
 
   {% if assignment_responses %}
     <h3>Responses</h3>

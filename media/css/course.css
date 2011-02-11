@@ -127,7 +127,7 @@ background-color: #ededed;
  
  input.columnbutton {
  
- 	margin: 10px;
+ /*	margin: 10px;*/
  }
  
  #class_activity .panel-column
@@ -428,7 +428,7 @@ text-align:center;
       margin: 15px 5px 0px 5px;
 }
   #member_col, #filter_col, #project_col {  
-      margin-top:29px;
+ /*     margin-top:29px; */
 }
   #project_col {
   border: none;
@@ -592,7 +592,7 @@ margin-right: 1em;
 }
 
 input.project-createnew-button {
-    margin:10px 0 15px 10px;
+  /*  margin:10px 0 15px 10px; */
 }
 
 .actions {
@@ -1218,8 +1218,8 @@ table.project_list th {
 }
 
 table.project_list th.project-titles {
-    min-width: 300px;
-    width: 100%;
+    min-width: 200px;
+    max-width: 400px;
 }
 
 table.project_list td {

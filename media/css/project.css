@@ -78,15 +78,15 @@ padding: 5px;
   /*NO PERCENT WIDTH HERE:
     this is also embedded within the asset-list space
     which should be close to 100% rather than the published context
-   */
+   
   width:450px;
-  max-width:550px;
-  height: 29em;
+  max-width:550px;*/
+  height: 28.5em;
   overflow: auto;
         position:relative;/*important companion to overflow:auto for IE7*/
-  margin-right: 2em;
+  margin-left: auto;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 0 10px 10px 10px;
 
   background-color:white;
  }
@@ -385,3 +385,4 @@ span.project-dropdown {
 div.mce_editorwindow {
     min-width:324px;
 }
+

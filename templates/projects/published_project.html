@@ -46,8 +46,9 @@
   <h1>{{project.title}}
   {% if version_number %}Version {{version_number}}{% endif %}
   {% if is_space_owner and project.id %}
-  <a href="{{project.get_workspace_url}}">
+  <a class="edit-pencil" href="{{project.get_workspace_url}}">
     <img src="/site_media/img/pencil.gif" alt="Edit Project" />
+    (edit)
   </a>
   {% endif %}
   </h1>

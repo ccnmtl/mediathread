@@ -55,9 +55,11 @@
                {{#>>annotation-listitem}}
                  <li class="annotation-listitem-{{id}} 
                             annotation-listitem annotation-{{asset.type}} 
+                            {{^annotation}}annotation-whole{{/annotation}}
                             {{#active_annotation?}}annotation-active{{/active_annotation?}}" 
                      data-id="{{id}}">
-                   <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title}}</a>
+                   <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title?default(-Untitled-)}}</a>
+                   {{^annotation}}(whole item){{/annotation}}
                  </li>
                {{/>>annotation-listitem}}
              {{/annotations}}

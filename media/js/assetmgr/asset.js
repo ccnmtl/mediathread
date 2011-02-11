@@ -210,7 +210,8 @@
                     this.layers[grouping] = {
                         removeAll:function(){},
                         add:function(){},
-                        remove:function(){}
+                        remove:function(){},
+                        show:function(){}, hide:function(){}
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
@@ -273,17 +274,19 @@
                         var ann = asset_full.annotations[i];
                         ///TODO: WILL BREAK when we ajax this
                         ann.active_annotation = (ann.id === self.annotation_id)
-                        if (ann.annotation) {
+                        if (ann.metadata) {
                             var titles = color_by(ann);
                             for (var j=0;j<titles.length;j++) {
                                 var title = titles[j];
                                 var color = DjangoSherd_Colors.get(title);
                                 /// add the annotation onto the layer in the right color
-                                self.layers[grouping].add(
-                                    ann.annotation,{'id':ann.id,
-                                                    'color':color
-                                                   }
-                                );
+                                if (ann.annotation) {
+                                    self.layers[grouping].add(
+                                        ann.annotation,{'id':ann.id,
+                                                        'color':color
+                                                       }
+                                    );
+                                }
                                 ///..and setup the category for the AnnotationList
                                 if (!cats[title]) {
                                     cats[title] = {'title':title,

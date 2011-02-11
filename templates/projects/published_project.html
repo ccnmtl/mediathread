@@ -102,6 +102,8 @@
       <input type="submit" value="Instructor Feedback" />
     </form>
     {% endif %}
+  {% else %}
+    <span class="project-feedback-link float-right"><a href="{% url discussion-view project.feedback_discussion.id %}">Instructor Feedback</a></span>
   {% endif %}
  
  
@@ -161,20 +163,20 @@
       {% endfor %}
     </ul>
   {% endif %}
-
-  {% if discussions %}
+  <!--{#  hiding discussions for now, until we have discussions that are not instructor feedback (taken care above) #}
+  x% if discussions %}
     <h3>Discussions</h3>
     <ul>
-      {% for response in discussions %}
+      x% for response in discussions %}
       <li>
-        <a href="/discussion/show/{{response.id}}">
-          {{response.title}}
+        <a href="{#% url discussion-view response.id %#}">
+          {#{response.title}#}
         </a>
       </li>
-      {% endfor %}
+      x% endfor %}
     </ul>
-  {% endif %}
-
+  x% endif %}
+  -->
 
 {% if is_space_owner or is_faculty %}
 {% if project.versions %}

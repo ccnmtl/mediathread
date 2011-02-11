@@ -216,6 +216,7 @@
                 } else {
                     this.layers[grouping].create(grouping,{
                         //onclick:function(feature) {},
+                        title:' ',//hide grouping title for the video view
                         onmouseenter:function(id, name) {
                             self.highlight(id);
                         },// */

@@ -117,17 +117,14 @@
     </form>
     {% else %}
     <h3>
-      Your Response
-    </h3>
-    <ul>
+      Your Response: 
       {% for response in user_responses %}
-      <li>
 	<a href="{{response.get_absolute_url}}">
 	  {{response.title}}
-	</a>
-      </li>
+	</a>{% if not forloop.last %},
+        {% endif %}
       {% endfor %}
-    </ul>
+    </h3>
     {% endif %}
   {% endif %}
  
@@ -159,6 +156,7 @@
         <a href="{{response.get_absolute_url}}">
           {{response.title}}
         </a>
+        by {{response.attribution}}
       </li>
       {% endfor %}
     </ul>

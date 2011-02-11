@@ -325,7 +325,7 @@
             }
             this.highlight_layer = djangosherd.assetview.layer();
             if (this.highlight_layer) {
-                this.highlight_layer.create('focus',{zIndex:200});
+                this.highlight_layer.create('focus',{zIndex:200,title:' '});
             }
         }
         

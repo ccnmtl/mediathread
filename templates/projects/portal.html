@@ -31,7 +31,7 @@ Home
       <h3>Assignments</h3>
       <ul class="instructor-list">
 	{%for project in faculty_feed.assignments %}
-        <li class="assignment"><a href="{{project.get_absolute_url}}">{{project.title}}</a> (assignment)</li>
+        <li class="assignment"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
         {%endfor%}
       </ul>
     {%endif%}

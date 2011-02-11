@@ -82,7 +82,7 @@ def class_portal(request):
                 prof_feed['projects'].append(project)
 
     #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
-    if prof_feed['assets'] or prof_feed['projects'] or prof_feed['tags']:
+    if prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags']:
         prof_feed['show'] = True
 
     class_feed =[]
@@ -143,7 +143,7 @@ def class_portal(request):
     #only top 10 tags
     tag_cloud = calculate_cloud(sorted(tags,lambda t,w:cmp(w.count,t.count))[:10])
 
-    display = {'instructor':(len(prof_feed['projects'])+len(prof_feed['assets'])),
+    display = {'instructor':prof_feed['show'],
                'course': (len(prof_feed['tags']) < 5 or
                           len(class_feed) >9 ),
                }

@@ -26,6 +26,8 @@ Home
         <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
 	{%endfor%}
       </ul>
+    {%endif%}
+    {%if faculty_feed.assignments %}
       <h3>Assignments</h3>
       <ul class="instructor-list">
 	{%for project in faculty_feed.assignments %}

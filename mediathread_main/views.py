@@ -75,7 +75,7 @@ def class_portal(request):
     prof_projects = Project.objects.filter(
         c.faculty_filter).order_by('title')
     for project in prof_projects:
-        if project.visible(request):
+        if project.class_visible():
             if project.is_assignment(request):
                 prof_feed['assignments'].append(project)
             else:

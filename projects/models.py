@@ -199,6 +199,11 @@ class Project(models.Model):
     def __unicode__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
+    def class_visible(self):
+        col = self.collaboration()
+        return self.submitted or \
+            (col and col._policy.policy_name != 'PrivateEditorsAreOwners')
+
     def visible(self,request):
         col = self.collaboration()
         if col:

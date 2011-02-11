@@ -93,8 +93,7 @@ class Project(models.Model):
     def responses_by(self, request, user):
         responses = self.responses(request)
         return [response for response in responses
-                if user
-                in response.content_object.participants.all()]
+                if response and user in response.content_object.participants.all()]
 
     def responses(self, request):
         project_type = ContentType.objects.get_for_model(Project)

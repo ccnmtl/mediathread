@@ -103,7 +103,9 @@
     </form>
     {% endif %}
   {% else %}
+    {% if is_space_owner or is_faculty %}
     <span class="project-feedback-link float-right"><a href="{% url discussion-view project.feedback_discussion.id %}">Instructor Feedback</a></span>
+    {% endif %}
   {% endif %}
  
  

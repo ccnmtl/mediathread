@@ -16,12 +16,18 @@ Home
   <div class="panel-light">
   {%if display.instructor or is_faculty %}
   <div class="panel-column">
-    <h2>Instructor's Focus</h2>
+    <h2>Instructor's Focus
+        {% if is_faculty %}
+        <a class="hs-control intro-open" href="#intro-instructor">?</a>
+        {% endif %}
+    </h2>
     <div class="scroll">
 
-    {% if is_faculty and not display.instructor %}
-    <div class="intro-text">
-      <h3>Instructor controls this space</h3>
+    {% if is_faculty %}
+    <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
+      <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
+        Instructor controls this space
+      </h3>
       <p>
         Projects, assignments, and discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
         </p><p>     
@@ -161,11 +167,12 @@ Home
   <div class="panel-column
 	      {%if not display.course %}panel-column-stump{%endif%}
 	      ">
-    <h2>Updates to My Items <a class="hs-control hs-nostyle" href="#intro-updates">?</a></h2>
+    <h2>Updates to My Items <a class="hs-control intro-open" href="#intro-updates">?</a></h2>
     <div class="scroll">
       <ul class="clumper">
         <li id="intro-updates" class="hs-init-{% if my_feed %}hide{% else %}show{% endif %}">
           <div class="intro-text">
+            <a class="hs-control control-close" href="#intro-updates">x</a>
             <p>
               MediaThread allows you to collect and annotate items available from <a href="{%url explore %}">Explore Collections</a>. 
               You can then easily embed your annotations into <a href="{% url your-space-records user %}">projects</a> and (if enabled by your instructor) discussions. 

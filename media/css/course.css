@@ -906,29 +906,6 @@ a.participants_toggle {
 
 #id_participants {*height: 15em;}
 
-body a.control-close {
-    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
-    display:block;
-  float:right;
-  /*IE7 with float:right makes the parent div width:100% and looks bad
-    so we float it left instead.  not perfect, but looks ok.
-   */
-    *float:left;
-  background-image:url(/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png);
-  margin-left:10px;
-    *margin-right:10px;
-    *margin-left:0px;
-  width:16px;
-  height:16px;
-  color:transparent;
-  /*for IE 6-8 not supporting transparent text:*/
-    overflow:hidden;
-    line-height:48px;
-}
-body a.control-close:hover {
-    background-image:url(/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx_red.png);
-}
- 
  .preview input#id_annotation-tags,  .preview input#id_annotation-body, .preview input#id_annotation-title {
  
  background-color: #ffffb3;
@@ -1136,7 +1113,6 @@ margin: 1.5em 1em .5em 1em;
 .intro-text p {
     max-width:500px;
 }
-
 
 .resize-height {
     height:350px;

@@ -36,7 +36,7 @@
   {% if assignment %}
   <div>
     <h2>Response to
-      <a href="{{assignment.get_readonly_url}}">
+      <a href="{{assignment.get_absolute_url}}">
 	{{assignment.title}}
       </a>
     </h2>
@@ -46,7 +46,7 @@
   <h1>{{project.title}}
   {% if version_number %}Version {{version_number}}{% endif %}
   {% if is_space_owner and project.id %}
-  <a href="{%url project-workspace project.id %}">
+  <a href="{{project.get_workspace_url}}">
     <img src="/site_media/img/pencil.gif" alt="Edit Project" />
   </a>
   {% endif %}
@@ -122,7 +122,7 @@
     <ul>
       {% for response in user_responses %}
       <li>
-	<a href="{{response.get_readonly_url}}">
+	<a href="{{response.get_absolute_url}}">
 	  {{response.title}}
 	</a>
       </li>

@@ -64,14 +64,13 @@ class Project(models.Model):
 
 
     @models.permalink
-    def get_absolute_url(self):
+    def get_workspace_url(self):
         return ('project-workspace', (), {
                 'project_id': self.pk,
                 })
 
-
     @models.permalink
-    def get_readonly_url(self):
+    def get_absolute_url(self):
         return ('project-view', (), {
                 'project_id': self.pk,
                 })

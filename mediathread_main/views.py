@@ -82,8 +82,8 @@ def class_portal(request):
                 prof_feed['projects'].append(project)
 
     #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
-    if prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags']:
-        prof_feed['show'] = True
+    prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
+
 
     class_feed =[]
     #class_feed=Clumper(SherdNote.objects.filter(asset__course=c,

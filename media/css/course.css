@@ -1199,11 +1199,13 @@ table.project_list th.project-titles {
 }
 
 table.project_list td {
-	font-size: 80%;
+	 vertical-align: top;
+
 }
 
 table.project_list td .participants{
 	margin-left: 30px;
+		width: 300px;
 }
 
 

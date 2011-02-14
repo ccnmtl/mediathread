@@ -123,7 +123,7 @@ body a.hs-control.control-close {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
     display:block;
   float:right;
-	background-image:url(../img/icons/meth_info_close_icon.png);
+	background-image:url(../img/icons/meth_close_icon.png);
 	background-repeat: no-repeat;
   margin: -9px;
   width:20px;
@@ -134,7 +134,7 @@ body a.hs-control.control-close {
     line-height:48px;
 }
 body a.control-close:hover {
-    background-image:url(../img/icons/meth_info_close_icon.png);
+    background-image:url(../img/icons/meth_close_icon_hover.png);
 }
  
 body a.intro-open,

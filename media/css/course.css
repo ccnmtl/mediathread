@@ -906,7 +906,7 @@ padding-bottom: .5em;
 #participants_chosen {
     display:inline-block;
     padding-bottom:10px;
-    width: 650px;
+    max-width: 650px;
     vertical-align: top;
 }
 #project_participants {

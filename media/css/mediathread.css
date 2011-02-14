@@ -152,6 +152,7 @@ body a.hs-control.intro-open {
   /*for IE 6-8 not supporting transparent text:*/
     overflow:hidden;
     line-height:48px;
+  background-repeat: no-repeat;
 }
 
 body a.intro-open-nofloat,

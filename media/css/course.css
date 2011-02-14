@@ -1263,10 +1263,12 @@ body.old-assetwindow #asset-details-annotations-list {
 }
 
 .intro-text {
-	margin: 10px 20px;
+    /*margin 20px on right-and left, squeezes homepage content over [x] */
+	margin: 10px;
 	background-color: #dedede;
 	padding: 10px;
 	font-size: 95%;
+        max-width:600px;
 }
 
 .intro-text h4 {

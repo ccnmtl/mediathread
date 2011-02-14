@@ -125,6 +125,14 @@ background-color: #ededed;
 
  }
  
+ .panel-column>table,  .panel-column>p, #reports-graph-link, #reports-graph
+{ 
+  
+margin: 1em;
+
+
+ }
+ 
  input.columnbutton {
  
  /*	margin: 10px;*/
@@ -258,11 +266,19 @@ text-align: center;
 	line-height: 150%;
 }
 
-.panel-column li#intro-updates {	
+.panel-column li#intro-updates{	
 	
 	font-size: 100%;
 	line-height: 120%;
 	margin-bottom: 0;
+
+}
+
+#reports-graph-help {	
+	
+	font-size: 100%;
+	line-height: 120%;
+	margin: 0 0 0 .5em;
 
 }
 
@@ -890,6 +906,8 @@ padding-bottom: .5em;
 #participants_chosen {
     display:inline-block;
     padding-bottom:10px;
+    width: 650px;
+    vertical-align: top;
 }
 #project_participants {
 	padding-top:8px;

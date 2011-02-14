@@ -31,7 +31,14 @@
 
 {% block content %}
   {{ block.super }}
-<h1>Analyzing {{asset.title|striptags|safe}}</h1> 
+<h1>
+  Analyzing 
+  {% if annotation %}<a href="{{asset.get_absolute_url}}">{% endif %} 
+
+  {{asset.title|striptags|safe}}
+
+  {% if annotation %}</a>{% endif %} 
+</h1> 
 {%if asset.html_source.url %}
   <a class="fullrecord_button" href="{{asset.html_source.url}}">View complete record in archive</a>
 {%endif%}

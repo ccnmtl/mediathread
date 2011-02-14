@@ -105,6 +105,9 @@
             'your-space':function(user_id) {
                 return '/yourspace/'+user_id+'/asset/';
             },
+            'asset-view':function(asset_id) {
+                return '/asset/'+asset_id+'/';
+            },
             'asset-json':function(asset_id, with_annotations) {
                 return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
             }
@@ -142,7 +145,7 @@
                 this[a] = config[a];
             }
             jQuery.ajax({
-                url:'/site_media/templates/annotations.mustache',
+                url:'/site_media/templates/annotations.mustache?nocache=v2',
                 dataType:'text',
                 success:function(text){
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);

@@ -60,6 +60,9 @@
                      data-id="{{id}}">
                    <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title?default(-Untitled-)}}</a>
                    {{^annotation}}(whole item){{/annotation}}
+                   {{#active_annotation?}}
+                        <a class="annotation-asset-link" href="{{asset-view?url(asset.id)}}">clear</a>
+                   {{/active_annotation?}} 
                  </li>
                {{/>>annotation-listitem}}
              {{/annotations}}

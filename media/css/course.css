@@ -773,6 +773,10 @@ font-size: 94%;
 	border:1px solid black;
 }
 
+#annotations-organized ul.annotation-group-sublist li.annotation-active a.annotation-asset-link {
+    float:right;
+}
+
 .metadata-title {
     text-transform: capitalize;
 }

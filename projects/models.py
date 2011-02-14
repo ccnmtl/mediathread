@@ -200,10 +200,13 @@ class Project(models.Model):
 
     def class_visible(self):
         col = self.collaboration()
-        return self.submitted or \
-            (col and col._policy.policy_name != 'PrivateEditorsAreOwners'
-             and col._policy.policy_name != 'InstructorShared')
-
+        if not col:
+            # legacy
+            return self.submitted
+    
+        return (col._policy.policy_name != 'PrivateEditorsAreOwners'
+                and col._policy.policy_name != 'InstructorShared')
+        
     def visible(self,request):
         col = self.collaboration()
         if col:

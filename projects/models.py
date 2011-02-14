@@ -12,12 +12,26 @@ from threadedcomments.models import ThreadedComment
 from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
-PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Draft (only collaborators)'),
-                   ('InstructorShared','Instructor Only'),
-                   ('CourseProtected','Course participants'),
-                   ('PublicEditorsAreOwners','World'),
+PUBLISH_OPTIONS = (('Assignment','Assignment for Class'),
+                   ('PrivateEditorsAreOwners','Private - Only Author(s) Can View'),
+                   ('InstructorShared','Submitted to Instructor'),
+                   ('CourseProtected','Published to Whole Class'),
+                   ('PublicEditorsAreOwners','Published to World (w/ Public Link)'),
                    )
 
+SHORT_NAME = {
+    "PrivateEditorsAreOwners":'Private',
+    "InstructorShared":'Submitted',
+    "CourseProtected":'Class',
+    "PublicEditorsAreOwners":'World',
+    "Assignment":'Assignment',
+    "PrivateStudentAndFaculty":"with Instructors", 
+    }
+
+# Add keys from PUBLISH_OPTIONS if they should
+# be filtered out of the choices for non-faculty
+PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',
+                                )
 class Project(models.Model):
 
     title = models.CharField(max_length=1024)
@@ -50,20 +64,72 @@ class Project(models.Model):
 
 
     @models.permalink
-    def get_absolute_url(self):
+    def get_workspace_url(self):
         return ('project-workspace', (), {
                 'project_id': self.pk,
                 })
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('project-view', (), {
+                'project_id': self.pk,
+                })
+
+    def subobjects(self, request, type):
+        col = self.collaboration()
+        if not col:
+            return []
+        children = col.children.filter(content_type=type)
+        viewable_children = []
+        for child in children:
+            if child.permission_to("read", request):
+                viewable_children.append(child.content_object)
+        return viewable_children
+        
+    def discussions(self, request):
+        discussion_type = ContentType.objects.get_for_model(ThreadedComment)
+        return self.subobjects(request, discussion_type)
+
+    def responses_by(self, request, user):
+        responses = self.responses(request)
+        return [response for response in responses
+                if response and user in response.content_object.participants.all()]
+
+    def responses(self, request):
+        project_type = ContentType.objects.get_for_model(Project)
+        return self.subobjects(request, project_type)
+
+    def is_assignment(self, request):
+        col = self.collaboration()
+        if not col:
+            return False
+        return col.permission_to("add_child", request)
+
+    def assignment(self):
+        """
+        Returns the Project object that this Project is a response to,
+        or None if this Project is not a response to any other.
+        """
+        # TODO: this doesn't check content types in any way.
+        # It assumes that obj->collab->parent->obj is-a Project.
+        col = self.collaboration()
+        if not col:
+            return
+        parent = col.get_parent()
+        if not parent:
+            return
+        return parent.content_object
 
     def feedback_discussion(self):
         "returns the ThreadedComment object for Professor feedback (assuming it's private)"
         col = self.collaboration()
+        if not col:
+            return
         comm_type = ContentType.objects.get_for_model(ThreadedComment)
-        if col:
-            feedback = col.children.filter(content_type = comm_type)
-            if feedback:
-                return feedback[0].content_object
+
+        feedback = col.children.filter(content_type=comm_type)
+        if feedback:
+            return feedback[0].content_object
             
 
     def save(self, *args, **kw):
@@ -87,15 +153,15 @@ class Project(models.Model):
 
         col = self.collaboration()
         if col:
-            status = o.get(col._policy.policy_name, col._policy.policy_name)
+            status = SHORT_NAME.get(col._policy.policy_name, col._policy.policy_name)
             public_url = self.public_url(col)
             if public_url:
                 status += ' (<a href="%s">public url</a>)' % public_url
             return status
         elif self.submitted:
-            return u"submitted"
+            return u"Submitted"
         else:
-            return u"draft"
+            return u"Private"
 
     @classmethod
     def get_user_projects(cls,user,course):
@@ -132,6 +198,15 @@ class Project(models.Model):
     def __unicode__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
+    def class_visible(self):
+        col = self.collaboration()
+        if not col:
+            # legacy
+            return self.submitted
+    
+        return (col._policy.policy_name != 'PrivateEditorsAreOwners'
+                and col._policy.policy_name != 'InstructorShared')
+        
     def visible(self,request):
         col = self.collaboration()
         if col:
@@ -141,13 +216,15 @@ class Project(models.Model):
     
     def collaboration(self,request=None,sync_group=False):
         col = None
-        policy = 'PrivateEditorsAreOwners'
-        if request:
+        policy = None
+        if request and request.method == "POST":
             policy = request.POST.get('publish','PrivateEditorsAreOwners')
 
         try:
             col = Collaboration.get_associated_collab(self)
         except Collaboration.DoesNotExist:
+            if policy is None:
+                policy = "PrivateEditorsAreOwners"
             if request is not None:
                 col = Collaboration.objects.create(user=self.author,
                                                    title=self.title,
@@ -155,7 +232,10 @@ class Project(models.Model):
                                                    context=request.collaboration_context,
                                                    policy=policy,
                                                    )
-        if sync_group and col:
+        if col is None: # iff collab did not exist and request is None
+            return
+
+        if sync_group:
             part = self.participants.all()
             if len(part) > 1 or (col.group_id and col.group.user_set.count() > 1):
                 colgrp = col.have_group()
@@ -167,11 +247,27 @@ class Project(models.Model):
                         colgrp.user_set.add(p)
                 for oldp in already_grp:
                     colgrp.user_set.remove(oldp)
-            if request and col.policy != policy:
+            if request and request.method == "POST" and \
+                    (col.policy != policy or col.title != self.title):
+                col.title = self.title
                 col.policy = policy
                 col.save()
 
         return col
+
+    def content_metrics(self):
+        "Do some rough heuristics on how much each author contributed"
+        last_content = ''
+        author_contributions = {}
+        for v in self.versions:
+            change = len(v.body) - len(last_content)
+            author_contributions.setdefault(v.author,[0,0])
+            if change > 0: #track adds
+                author_contributions[v.author][0] += change
+            elif change < 0: #track deletes
+                author_contributions[v.author][1] -= change
+            last_content = v.body
+        return author_contributions
 
     @property
     def dir(self):

@@ -17,28 +17,29 @@ Explore Collections
       
       {%if is_faculty%}
       <p>
-        <b>As an instructor,</b> you can control what appears on this page. To add archives or assets, go to the <a href="/save/">Save page</a>.  If you do not add any archives, students will see the list of assets you have collected in your My Analysis tab and will not be offered the Bookmarklet.
+        <b>As an instructor,</b> you can  <a href="/save/">add collections or assets</a> to this page.  If you do not add a collection, students will see the list of assets you have collected in MediaThread and will not be offered the Bookmarklet.
       </p>
       <p><b>Students will see:</b></p>
       {%endif%}
+      <p><!-- see below for duplicate text if there are no archives-->
+        Your instructor has listed sources on this page for use in research associated with this class.  
+        Items in these collections may be imported here with the MediaThread bookmarklet (see information below)
+      </p>
       <p>
-        Your instructor has designated the following collections 
-        for your use in research associated with this class.
-        Items from these sources may be:
+        In MediaThread you can:
       </p>
 
       <ul>
-        <li>imported into this analysis environment</li>
-        <li>saved to your "My Analysis" space</li>
-        <li>annotated and clipped</li>
-        <li>embedded in your assignments.</li>
+        <li>clip and annotate</li>
+        <li>save annotated items</li>
+        <li>embed saved annotations into projects and discussions</li>
       </ul>
     
-      <p>
 	<div class="import_class bookmarklet_import">
           <h3>Bookmarklet Import:</h3>
           <p>
-            For all archives, install and use our browser "bookmarklet" to import to and analyze assets in this environment.
+            First install a browser "bookmarklet", and then use it to import items from supported collections and analyze them in MediaThread.
+            
           </p>
            <h4>Bookmarklet Installation</h4>
           <div id="browser-instructions" class="browser-specific-instructions">
@@ -87,7 +88,7 @@ Explore Collections
             </script>
 
 <h4>Bookmarklet Use:</h4>
-<p>Click the bookmarklet link from any asset page of any supported site to import the item to this environment. You can then analyze the item and/or save it to your "My Analysis" space.</p>
+<p>Click the bookmarklet link when viewing an item in any supported collection to import the item to MediaThread. You can then analyze the item and/or save it to your "Items &amp; Project" space.</p>
          
           </div>
           <!--Confused? More Information here-->
@@ -131,19 +132,22 @@ Explore Collections
          </a>
          {% endif %}
 
-	 <p>
+	 <div>
            {# is description a list or string? #}
            {% if archive.metadata.description.lower %}           
              {{archive.metadata.description|urlize|linebreaks}}
            {% else %}
              {{archive.metadata.description.0|urlize|linebreaks}}
            {% endif %}
-	 </p>
+	 </div>
        </div>
     {%endfor%}
 </div>
 {%else %}{# archives or is_faculty #}
    {%if faculty_assets %}
+       <p><!-- see above for duplicate text if there are no archives-->
+         Your instructor has listed sources on this page for use in research associated with this class.  
+       </p>
        <div id="instructor-items" class="archive">
          
 	 <h2>Instructor's Collected Items</h2>

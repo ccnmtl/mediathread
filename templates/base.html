@@ -33,9 +33,15 @@
           if (!window.JSON) {
             document.write(lt+'script src="/site_media/js/sherdjs/lib/json2.js" type="text/javascript">'+lt+'/script>');          
           }
+          var MediaThread = new (function() {
+             this.templates = {};
+             {% if request.user.is_authenticated %}
+               this.current_user = {{request.user.id}};
+               this.user_full_name = '{{request.user.get_full_name|default:request.user.username|escapejs}}';
+             {% endif %}
+          })();
         </script>
 	{% block css %}{% endblock %}
-	{% block js %}{% endblock %}
 	{% block feeds %}{% endblock %}
 </head>
 {% course_role for request.user in course as role_in_course %}
@@ -61,7 +67,7 @@
 	<ul id="standardnav">
 			
 {% if request.user.is_authenticated %}
-<li>Welcome, <span id="logged_in_name" class="username">{{user.get_full_name|default:user}}!</span></li>
+<li>Welcome, <span id="logged_in_name" class="username">{{user.get_full_name|default:user}}</span>!</li>
 			<li><a href="/accounts/logout/">Log Out</a></li>
 		{%if user.is_staff %}
 			<li>
@@ -103,10 +109,15 @@
          {% if request.course %}
 			{% block primarynavtabs %}
 			<ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
-				<li class="{% active request 'Class Portal' %}"><a href="/">Home</a></li>
+			
+			    {% if is_course_faculty %}
+				<li class="{% active request 'Instructor' %}"><a href="{% url class-activity %}">Instructor Dashboard</a></li>
+                                {% endif %}
+				<li class="{% active request 'Class Portal' %}"><a href="/">Class Home</a></li>
 				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
                                 <li class="{% active request 'Analysis' %}"
-                                       ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Items & Projects</a></li>
+                                    ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Items & Projects</a></li>
+                            
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
 	  {% endif %}
@@ -163,6 +174,7 @@
 
 </div><!-- id="container" -->
 
+{% block js %}{% endblock %}
 <script type="text/javascript">
    var _gaq = _gaq || [];
    var _gaq_mediathread = 'UA-311226-18';

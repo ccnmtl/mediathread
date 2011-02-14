@@ -1,7 +1,7 @@
 {% load user_annotations tagging_tags helpful_tags %}
 <div id="asset_browse_col" class="asset-table slider-column">
     <div id="videoclipbox" class="asset-view-small" style="display:none;">
-      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="hideElement('videoclipbox');updateVerticalHeight(null,{'materials':0});return false;">x</a>
+      <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();updateVerticalHeight(null,{'materials':0});return false;">x</a>
       <div class="annotation-title"></div>
       <div class="asset-title"></div>
       <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
@@ -179,7 +179,8 @@
   </h2>
 
   {%if asset.sources.thumb %}
-  <img class="asset-thumb" src="{{asset.sources.thumb.url}}" />
+  <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+     href="{{asset.get_absolute_url}}"><img class="asset-thumb" src="{{asset.sources.thumb.url}}" /></a>
   {% endif %}
 
   <div id="record-{{asset.pk}}-metadata" class="record-metadata">

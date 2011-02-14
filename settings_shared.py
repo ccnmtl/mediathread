@@ -72,7 +72,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.markup',
     'sorl.thumbnail',
@@ -93,6 +93,7 @@ INSTALLED_APPS = (
     'djangohelpers',
     #mediathread local
     #'slider',
+    'reports',
     'mediathread_main',
 )
 
@@ -142,6 +143,8 @@ COURSEAFFILS_PATHS = ('/asset/',
                       '/comments/',
                       '/reports/',
                       '/discussion/',
+
+                      '/analysis/',
                       re.compile(r'^/$'),
                       )
 
@@ -152,6 +155,7 @@ COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']
 
 COMMENTS_ALLOW_PROFANITIES = True
 COMMENTS_APP = 'threadedcomments'
+COMMENT_MAX_LENGTH = None
 
 FORCE_LOWERCASE_TAGS = True
 

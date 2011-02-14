@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{%load user_annotations comments user_projects %}
+
+<title> {% block title %}
+Course Summary
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+<h1>Instructor Dashboard</h1>    
+
+{% include "reports/submenu.html" %}
+
+<!--<form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+  <input type="hidden" name="title" />
+  <input class="columnbutton project-createnew-button" type="submit" value="Create a new project or assignment"/>
+</form>-->
+
+<table>
+  <thead>
+    <tr>
+      <th>Assignment</th>
+      <th>Responses</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for assignment in assignments %}
+  <tr>
+    <td>
+      <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
+    </td>
+    <td>
+      <a href="{% url class-assignment-report assignment.id %}">
+	{{assignment|assignment_responses:request|length}} / {{num_students}}
+      </a>
+    </td>
+  </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

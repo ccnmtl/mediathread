@@ -1,0 +1,74 @@
+  <div id="asset-details-annotations" class="tab-box">
+    <div id="asset-details-annotations-actions">
+      <a class="annotation-actions-add" href="javascript:addAnnotation()">Add Annotation</a>
+      <a href="">Add Tag</a>
+      <a href="">Edit Your Item Note</a>
+    </div>
+
+    {{#>>annotation-current}}
+    <div id="asset-details-annotations-current">
+        {{#annotation}}
+          <form name="new-annotation-form" action="javascript:saveAnnotation()">
+
+          {{#editable?}}<!-- if editable -->
+            <label for="annotation-title">Title:</label>
+            <input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}" />
+            <label for="annotation-tags">Tags:</label>
+            <input type="text" id="id_annotation-tags" name="annotation-tags" value="{{metadata.tags}}"/>
+            <label for="annotation-body">Note:</label>
+            <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
+          {{/editable?}}
+
+          {{^editable}}<!-- if NOT editable -->
+            <h4>{{metadata.title}}</h4>
+            <div><b>Author:</b> <a href="{{your-space?url(metadata.author.id)}}">{{metadata.author_name}}</a></div>
+            <div><label for="">Tags:</label> {{metadata.tags}}</div>
+            <div><label for="">Note:</label> {{metadata.body?linebreaksbr}}</div>
+          {{/editable}}
+
+          {{#id?}}
+            <input type="hidden" name="annotation-id" value="{{id}}" />
+            <input type="button" onclick="" value="Copy" />
+          {{/id?}}
+          </form>
+
+        {{/annotation}}
+    </div>
+    {{/>>annotation-current}}
+    {{#>>annotations-organized}}
+   
+    <div id="annotations-organized"> <h2>Saved Annotations</h2>
+      <div class="annotation-list-controls">
+        <form name="annotation-list-filter">
+          <div class="float-right"><input type="checkbox" name="showall" />Show all on asset</div>Group by:
+          <select name="groupby"><option>author</option><option>tag</option></select>
+        </form>
+      </div></div>
+      {{#>>annotation-list}}
+      <ul id="asset-details-annotations-list">
+        {{#annotation_list}}
+        <li class="annotation-group">
+          {{#category}}
+           <h4><div class="color-box" style="background-color:{{color}}"></div>{{title}}</h4>
+           <ul class="annotation-group-sublist">
+             {{#annotations}}
+               {{#>>annotation-listitem}}
+                 <li class="annotation-listitem-{{id}} 
+                            annotation-listitem annotation-{{asset.type}} 
+                            {{^annotation}}annotation-whole{{/annotation}}
+                            {{#active_annotation?}}annotation-active{{/active_annotation?}}" 
+                     data-id="{{id}}">
+                   <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title?default(-Untitled-)}}</a>
+                   {{^annotation}}(whole item){{/annotation}}
+                 </li>
+               {{/>>annotation-listitem}}
+             {{/annotations}}
+           </ul>
+          {{/category}}
+        </li>
+        {{/annotation_list}}
+      </ul>
+      {{/>>annotation-list}}
+    </div>
+    {{/>>annotations-organized}}
+</div>

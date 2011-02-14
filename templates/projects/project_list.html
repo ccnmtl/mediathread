@@ -1,63 +1,111 @@
 {% load user_annotations tagging_tags smartif user_projects %}
 
-{% if not projects %}
+{% if not projects and not assignments %}
  <p class="para">
  {% if editable %}No projects yet.
  {% else %}No (viewable) projects yet.
  {% endif %}
  </p>
 {% endif %}
-{% if editable %}
 
+{% if projects or assignments %}
+   <table class="project_list sortable" onclick="sortColumn(event)">
+     <thead>
+       <tr>
+	 <th class="project-titles">Title</th>
+	 <th>Links</th>
+	 <th class="DateTime pre-sorted">
+           Saved at
+         </th>
+	 <th>Status</th>
+	 {% if editable %}
+	 <th class="NoSort"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></th>
+	 {% endif %}
+     </thead>
+     <tbody>
 
-   <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
-     <input type="hidden" name="title" />
-     <input class="columnbutton project-createnew-button" type="submit" value="Create a new project!"/>
-
-   </form>
-{% endif %}
+  {% for assignment in assignments %}
+  <tr class="projectlist assignment-listitem" id="assignment-{{assignment.pk}}">
+    <td>
+      <h3>
+	<a href="{{assignment.get_absolute_url}}"
+	   class="asset_title type-assignment">
+	  {{assignment.title|default:"(Untitled)"}}
+	</a>
+      </h3>
+    </td>
+    <td>
+      {% ifequal space_owner space_viewer %}
+      <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+        <input type="hidden" name="title" />
+        <input type="hidden" name="parent" value="{{assignment.id}}" />
+        <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+      </form>
+      {% endifequal %}
+    </td>
+    <td>
+      <time datetime="{{assignment.modified|date:"c"}}">{{assignment.modified|date}}</time>
+    </td>
+    <td class="status-cell">
+      Assignment
+    </td>
+    {% if editable %}
+    <td></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
 
   {% for project in projects %}
 
-  <div id="project-{{project.pk}}">
+  <tr class="projectlist" id="project-{{project.pk}}">
 
-    <div class="projectlist">
-      
-      <h3>
-	
-	{% if editable %}
-    
-	<div class="actions">
-	  <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
-	     href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
-	</div>
-	<a href="{%url project-workspace project.id %}"
-	   class="asset_title type-project"
-	   >{{project.title|default:"(Untitled)"}}</a>
-        {% else %}
-	<a href="{%url project-view project.id %}"
-	   class="asset_title type-project"
-	   >{{project.title|default:"(Untitled)"}}</a>
-	{% endif %}
-	
-      </h3>
-    
+      <td>
+	<h3>
+	  <a href="{{project.get_absolute_url}}"
+	     class="asset_title type-project"
+	     >{{project.title|default:"(Untitled)"}}</a>
+	</h3>
+        <div class="participants">Author(s):
+          <span class="participants-short">{{project.attribution|truncatewords:4 }}</span>
+          <span class="participants-full">{{project.attribution}}</span>
+        </div>
+      </td>
    
-      <div id="project-{{project.pk}}-metadata">
-	   <ul>
-	     <li>Authors: 
-	     <!--careful with whitespace here, since we want the comma to hug the previous
-		 name-->
-	     <span id="participants_chosen">{{project.attribution}}</span>
-	     </li>
-	     <li>Last modified: {{project.modified|date}}</li>
-             <li>Status: {{project.status|safe}}</li>
-             {% if project.feedback_discussion %}             
-	     <li><a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a></li>
-             {%endif%}
-	   </ul>
+      <td>
+	<ul>
+	{% if project.feedback_discussion %}
+	<li>
+	  <a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a>
+	</li>
+	{% endif %}
+	{% if project.collaboration.get_parent %}
+	<li>
+	  Response for <a href="{{project.collaboration.get_parent.content_object.get_absolute_url}}">{{project.collaboration.get_parent.title}}</a>
+	</li>
+	{% endif %}
+	</ul>
+      </td>
 
-	 </div><!-- id=project-pk-metadata -->
-       </div><!-- id=projectlist -->
-     </div><!-- id=project-pk -->
-     {% endfor %}<!--for project in projects -->
+      <td>
+        <time datetime="{{project.modified|date:"c"}}">{{project.modified|date}}</time>
+      </td>
+
+      <td class="status-cell">
+        {{project.status|safe}}
+      </td>
+
+      {% if editable %}
+      <td>
+        <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
+           href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+      </td>
+      {% endif %}
+
+    </div><!-- id=projectlist -->
+    
+
+  </tr><!-- id=project-pk -->
+  {% endfor %}<!--for project in projects -->
+     </tbody>
+   </table>
+{% endif %}

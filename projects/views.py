@@ -56,12 +56,25 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     
     if request.META.get('HTTP_ACCEPT','').find('json') >=0:
         return project_json(request, project)
+
+    if isinstance(project, dict):
+        assignment_responses = None
+        discussions = None
+        user_responses = None
+    else:
+        assignment_responses = project.responses(request)
+        discussions = project.discussions(request)
+        user_responses = project.responses_by(request, request.user)
+
     return {
         'is_space_owner': is_participant,
         'project': project,
         'is_preview': preview_num,
         'preview_num': preview_num,
         'is_faculty': course.is_faculty(request.user),
+        'assignment_responses': assignment_responses,
+        'discussions': discussions,
+        'user_responses': user_responses,
         #'space_owner':project.author, #was there for project_readonly_view()
         }
         
@@ -87,6 +100,8 @@ def project_version_preview(request, project_id, version_number, check_permissio
         'is_space_owner': project.is_participant(request.user),
         'project': project,
         'version_number': int(version_number),
+        'assignment_responses': project.responses(request),
+        'discussions': project.discussions(request),
         }
         
 def project_version_view(request, projectversion_id, check_permission=True):
@@ -103,6 +118,7 @@ def project_readonly_view(request, project_id, check_permission=True):
     course = request.collaboration_context.content_object
     project = get_object_or_404(Project, pk=project_id,
                                 course=course)
+
     if not project.visible(request):
         return HttpResponseForbidden("forbidden")
 
@@ -118,8 +134,7 @@ def view_project(request, project_id):
     if not project.collaboration(request).permission_to('edit',request):
         #LEGACY: try again for legacy projects
         if not project.collaboration(request, sync_group=True).permission_to('edit',request):
-            return HttpResponseRedirect(
-                reverse('project-view', args=[project_id]))
+            return HttpResponseRedirect(project.get_absolute_url())
 
     if request.method == "GET":
         if request.META.get('HTTP_ACCEPT','').find('json') >=0:
@@ -133,13 +148,13 @@ def view_project(request, project_id):
 
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project,data=request.POST)
-        redirect_to = '.'
         if projectform.is_valid():
             if "Preview" == request.POST.get('submit',None):
                 #doesn't send project.author, and other non-exposed fields
                 mock_project = projectform.cleaned_data.copy()
                 mock_project['attribution'] = projectform.instance.attribution(
                     mock_project['participants'])
+                mock_project['assignment'] = projectform.instance.assignment()
                 return project_preview(request, space_owner, mock_project, 
                                        is_participant=True, preview_num=request.GET.get('preview',1))
             
@@ -164,7 +179,7 @@ def view_project(request, project_id):
                          }, indent=2),
                                     mimetype='application/json')
 
-
+        redirect_to = '.'
         return HttpResponseRedirect(redirect_to)
 
 @rendered_with('projects/your_projects.html')
@@ -206,7 +221,19 @@ def your_projects(request, user_name):
 
         project.collaboration(request, sync_group=True)
 
-        return HttpResponseRedirect(project.get_absolute_url())
+        parent = request.POST.get("parent")
+        if parent is not None:
+            try:
+                parent = Project.objects.get(pk=parent)
+            except Project.DoesNotExist:
+                parent = None
+                return HttpResponseRedirect(project.get_workspace_url())
+
+            parent_collab = parent.collaboration(request)
+            if parent_collab.permission_to("add_child", request):
+                parent_collab.append_child(project)
+                
+        return HttpResponseRedirect(project.get_workspace_url())
 
 def project_json(request,project):
     rand = ''.join([choice(letters) for i in range(5)])
@@ -225,20 +252,9 @@ def project_json(request,project):
                             ) for ann in project.citations()
                            if ann.title != "Annotation Deleted"
                            ]),
-            'annotations':[
-            {'asset_key':'%s_%s' % (rand,ann.asset_id),
-             'id':ann.pk,
-             'range1':ann.range1,
-             'range2':ann.range2,
-             'annotation':ann.annotation(),
-             'metadata':{
-                    'title':ann.title,
-                    'author':{'id':ann.author_id,
-                              #'name':ann.author.get_full_name(),
-                              },
-                    },
-             } for ann in project.citations()
-            ],
+            'annotations':[ann.sherd_json(request, rand, ('title','author') )
+                           for ann in project.citations()
+                           ],
             'type':'project',
             }
     return HttpResponse(json.dumps(data, indent=2),

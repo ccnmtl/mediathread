@@ -17,10 +17,8 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
 
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
@@ -62,63 +60,80 @@
       </td>
       <td class="slider-cell">
   <div class="essay-space slider-column">
-    <form id="editproject" name="editproject" method="POST" action=".">
+  
 
     <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
-   
-      
-	<h2>Title: {{projectform.title}}</h2>
-	<div id="essaybox" class="essaytextarea">
-          <script type="text/javascript">
-            var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
-          </script>
-          <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-          <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
-          <textarea id="project-content" tabindex="0" name="body" 
-                    class="mceEditor"
-                    mce_editable="true">{{project.body|safe}}</textarea>
-	  {#{{projectform.body}}#}
-	  <div id="project-template" style="display:none;"></div>
-	  <script type="text/javascript">
-	    if ($("project-content").innerHTML == "") {
-	      if ($("project-template") != null) {
-	        $("project-content").innerHTML = $("project-template").innerHTML;
-	      }
-	    }
-	  </script>
-	</div><!-- end -->
-	
-        <div id="project_participants">
-          <div id="participant_update" style="display:none">Save the project to save the collaborator list.</div>
-          <b>{{projectform.participants.label_tag}}:</b>
-          <div id="participants_chosen">
-            {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-            {{part.get_full_name|default:part.username}}{%endfor%}
-          </div>
-          <a class="plist participants_toggle" href="#participant_list">Edit&nbsp;Collaborators</a>
-          <br />
-          <div id="participant_list" class="hs-init-hide hs-hide"> 
-            <a id="participants_close" class="control-close participants_toggle" href="#participant_list" >x</a>
-
-            <b>Select your collaborators</b>
-            <p>{{projectform.participants.help_text }}</p>
-
-            {{projectform.participants}} 
-          </div>
-        </div><!-- end id="project_participants" -->
-      
-        <div id="last-version-saved">
+    {% with project.assignment as assignment %}
+	  {% if assignment %}
+	  <div>
+	  <h4>Response to
+	    <a target="_blank" 
+	       href="{{assignment.get_absolute_url}}">
+	      {{assignment.title}}
+	    </a>
+	  </h4>
+	  </div>
+	  {% endif %}
+	  {% endwith %}
+	  <div id="project-container">
+        <form id="editproject" name="editproject" method="POST" action=".">
+	<p>	<div id="last-version-saved">
           <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
           <span id="last-version-public">
             {% if project.public_url %}
             (<a href="{{project.public_url}}">public url</a>)
             {% endif %}
           </span>
-        </div>
-	<div id="project-form-buttons"> 
-	  <input class="project-previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
-          <input class="project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+        </div><div class="project-form-title">Title: {{projectform.title}}</div>
+ </p>
+	<div id="essaybox" class="essaytextarea">
+          <script type="text/javascript">
+            var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+          </script>
+          <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+          <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
+          <textarea id="project-content" tabindex="0" name="body" 
+                    class="mceEditor"
+                    mce_editable="true">{{project.body|safe}}</textarea>
+	  {#{{projectform.body}}#}
+	  <div id="project-template" style="display:none;"></div>
+	  <script type="text/javascript">
+	    if (jQuery("#project-content").html() == "") {
+	      if (document.getElementById("project-template") != null) {
+	        jQuery("#project-content").html(jQuery("#project-template").html());
+	      }
+	    }
+	  </script>
+	</div><!-- end -->
+	
+        <div id="project_participants">
 
+	 
+
+          <div id="participant_update" style="display:none">Save the project to save the author list.</div>
+          <b>{{projectform.participants.label_tag}}:</b>
+          <div id="participants_chosen">
+            {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
+            {{part.get_full_name|default:part.username}}{%endfor%}
+          </div>
+          <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
+          <br />
+          <div id="participant_list" class="hs-init-hide hs-hide"> 
+            <a id="participants_close" class="control-close participants_toggle" href="#participant_list" >x</a>
+
+            <b>Select your authors</b>
+            <p>{{projectform.participants.help_text }}</p>
+
+            {{projectform.participants}} 
+          </div>
+        </div><!-- end id="project_participants" -->
+        
+      </div>
+      
+	<div id="project-form-buttons"> 
+	       <input class="project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+<input class="project-previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+     
 	  <span class="project-dropdown">
 	    {{projectform.publish.label_tag}}    
             {{projectform.publish}}

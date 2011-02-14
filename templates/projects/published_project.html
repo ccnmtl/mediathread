@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load smartif %}
+{% load smartif collaborations user_projects %}
 
 <title>{% block title %}
 {% if preview_num %}
@@ -19,8 +19,6 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
 
   <!--All the annotation javascript/css -->
@@ -34,17 +32,32 @@
 
 {% block content %}
   {{ block.super }}
-
+  {% with project.assignment as assignment %}
+  {% if assignment %}
+  <div>
+    <h2>Response to
+      <a href="{{assignment.get_absolute_url}}">
+	{{assignment.title}}
+      </a>
+    </h2>
+  </div>
+  {% endif %}
+  {% endwith %}
   <h1>{{project.title}}
   {% if version_number %}Version {{version_number}}{% endif %}
   {% if is_space_owner and project.id %}
-  <a href="{%url project-workspace project.id %}">
+  <a class="edit-pencil" href="{{project.get_workspace_url}}">
     <img src="/site_media/img/pencil.gif" alt="Edit Project" />
+    (edit)
   </a>
   {% endif %}
   </h1>
-  <h2>by <span id="participants_chosen">{{project.attribution}}</span>
-  </h2>
+  
+  <h5>by <span id="participants_chosen">{{project.attribution}}</span>
+  </h5>
+  
+
+
 
   <br />
   <div class="asset-view asset-view-small">
@@ -73,26 +86,13 @@
       </div>
     </div>
   </div>
-  <div class="essay-space published">   
-      <div id="essaybox" class="essaytextarea">
-	{{project.body|safe}}
-      </div>  
-  </div>
-
-<div class="essay-options" style="padding: 1em;">
-  <!--
-{% if is_preview %}
- <a class="button" href=".">Save and continue editing</a>
-{% endif %}
--->
-{% if is_space_owner or is_faculty %}
-
-{% if project.collaboration %}
+  <div class="button-container"> 
+  
+  <div class="button-form">
+  {% if project.collaboration %}
   {#need to test it, because the default collaboration created won't have the right perms#}
-  {% if project.feedback_discussion %}
-    <a href="{%url show_discussion project.feedback_discussion.pk %}">Feedback</a>
-  {% else %}
-    {% if is_faculty %}
+  {% if not project.feedback_discussion %}
+    {% if is_faculty and not project|is_assignment:request %}
     <form action="{% url new-discussion %}" method="POST">
       <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
       <input type="hidden" name="inherit" value="true" />
@@ -100,12 +100,88 @@
       <input type="hidden" name="model" value="project" />
       <input type="hidden" name="obj_pk" value="{{project.pk}}" />
       <input type="hidden" name="comment_html" value="Project:{{project.title}}" />
-      <input type="submit" value="Create Feedback Discussion for Project" />
+      <input type="submit" value="Instructor Feedback" />
     </form>
     {% endif %}
+  {% else %}
+    {% if is_space_owner or is_faculty %}
+    <span class="project-feedback-link float-right"><a href="{% url discussion-view project.feedback_discussion.id %}">Instructor Feedback</a></span>
+    {% endif %}
   {% endif %}
-{% endif %}{# end project.collaboration #}
+ 
+ 
+ 
+ 
+   {% if project|is_assignment:request %}
+    {% if not user_responses %}
+    <form class="block project-createnew" method="POST"
+	  action="{%url your-space-projects user%}">
+      <input type="hidden" name="title" />
+      <input type="hidden" name="parent" value="{{project.id}}" />
+      <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+    </form>
+    {% else %}
+    <h3>
+      Your Response: 
+      {% for response in user_responses %}
+	<a href="{{response.get_absolute_url}}">
+	  {{response.title}}
+	</a>{% if not forloop.last %},
+        {% endif %}
+      {% endfor %}
+    </h3>
+    {% endif %}
+  {% endif %}
+ 
+ 
+ {% endif %}{# end project.collaboration #}
+  </div><!-- ??class="button-form" -->
+<div class="essay-space published">  
+      <div id="essaybox" class="essaytextarea">
+	{{project.body|safe}}
+      </div>  
+  </div>
+</div>
+<div class="essay-options" style="padding: 1em;">
+  <!--
+{% if is_preview %}
+ <a class="button" href=".">Save and continue editing</a>
+{% endif %}
+-->
 
+
+
+
+
+  {% if assignment_responses %}
+    <h3>Responses</h3>
+    <ul>
+      {% for response in assignment_responses %}
+      <li>
+        <a href="{{response.get_absolute_url}}">
+          {{response.title}}
+        </a>
+        by {{response.attribution}}
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <!--{#  hiding discussions for now, until we have discussions that are not instructor feedback (taken care above) #}
+  x% if discussions %}
+    <h3>Discussions</h3>
+    <ul>
+      x% for response in discussions %}
+      <li>
+        <a href="{#% url discussion-view response.id %#}">
+          {#{response.title}#}
+        </a>
+      </li>
+      x% endfor %}
+    </ul>
+  x% endif %}
+  -->
+
+{% if is_space_owner or is_faculty %}
 {% if project.versions %}
 <h3>
   <a class="hs-control" href="#revision-history"></a>

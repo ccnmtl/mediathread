@@ -1,3 +1,4 @@
+var project_modified = false;
 function updateParticipantList() {
     var new_list = [];
     var participant_options = document.forms['editproject'].participants.options;
@@ -190,6 +191,7 @@ function saveProject(evt) {
         dataType: 'json',
         error: function(){alert('There was an error saving your project.');},
         success: function(json,textStatus,xhr){
+            project_modified = false;
             jQuery('#last-version-prefix').html('Saved: ')
 
             jQuery('#last-version-link')
@@ -220,6 +222,7 @@ jQuery(function (){/*onDOM Ready*/
     if (document.forms['editproject']) {
         jQuery(document.forms['editproject']).bind('submit',saveProject);
         jQuery('#asset_browse_col').parent().addClass('annotation-embedding');
+        project_warnOnUnload();
     }
     jQuery(window).resize(updateVerticalHeight);
 
@@ -234,3 +237,26 @@ jQuery(function (){/*onDOM Ready*/
     //initialize Assets Column with ajax
     AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
 });
+
+function project_warnOnUnload() {
+    tinyMCE.onAddEditor.add(function(manager, ed) {
+        ed.onChange.add(function(editor) {
+            project_modified = true;
+        }) 
+    });
+    var already_run = false; ///beforeunload seems to trigger twice in Chromium, at least
+    jQuery(window).bind('beforeunload',function(evt) {
+        if (project_modified && !already_run) {
+            already_run = true;
+            if (confirm('You have unsaved changes. Do you want to save before leaving?')) {
+                project_modified = false;
+                saveProject({
+                    target:document.forms['editproject'],
+                    preventDefault:function(){}
+                })
+            }
+        }
+    })
+    
+}
+

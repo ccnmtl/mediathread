@@ -7,8 +7,7 @@ from django.conf import settings
 from structuredcollaboration.policies import CollaborationPolicies,PublicEditorsAreOwners
 from django.utils.translation import ugettext_lazy as _
 
-User = get_model('auth','user')
-Group = get_model('auth','group')
+from django.contrib.auth.models import User,Group
 
 class CollaborationManager(models.Manager):
     def inc_order(self):
@@ -34,7 +33,7 @@ class Collaboration(models.Model):
     objects = CollaborationManager()
     user = models.ForeignKey(User,null=True, blank=True)
     group = models.ForeignKey(Group,null=True, blank=True)
-
+    
     title = models.CharField(max_length=1024,null=True,default=None)
     slug = models.SlugField(max_length=50,null=True,default=None, blank=True)
     
@@ -42,7 +41,7 @@ class Collaboration(models.Model):
     content_type   = models.ForeignKey(ContentType,
                                        related_name="collaboration_set_for_%(class)s",
                                        null=True, blank=True)
-    object_pk      = models.TextField(_('object ID'),null=True, blank=True)
+    object_pk      = models.CharField(_('object ID'),max_length=255,null=True, blank=True)
     content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
 
@@ -50,7 +49,6 @@ class Collaboration(models.Model):
     
     _parent = models.ForeignKey('self',related_name='children',null=True,default=None, blank=True)
 
-    #will eventually be used instead of _parent
     context = models.ForeignKey('self',related_name='context_children',null=True,default=None, blank=True)
 
     def save(self,*args,**kwargs):
@@ -77,7 +75,7 @@ class Collaboration(models.Model):
 
     class Meta:
         unique_together = (("content_type", "object_pk"),)
-        ordering = ['-_order']
+        ordering = ['title']
         
     def get_content_object_url(self):
         "Get a URL suitable for redirecting to the content object."
@@ -110,10 +108,12 @@ class Collaboration(models.Model):
         
 
     def append_child(self,object=None):
-        coll, created = Collaboration.objects.get_or_create(_parent=self,
-                                                            content_type=ContentType.objects.get_for_model(type(object)),
-                                                            object_pk=str(object.pk),
-                                                            )
+        coll, created = Collaboration.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(type(object)),
+            object_pk=str(object.pk),
+            )
+        coll._parent = self
+        coll.save()
         return coll
         
     def get_policy(self):

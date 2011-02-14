@@ -1,0 +1,117 @@
+{%if request.user.is_staff and courses %}
+   <div id="staff-switchcourse">
+     <form>
+       <label>Switch course (Staff Only):</label>
+       <select onchange="document.location=this.value;">
+         {% for c in courses %}
+         <option value="?set_course={{c.group.name|urlencode}}"
+                 {% ifequal c request.course %}selected="selected"{%endifequal%}
+           >{{c.title}}</option>
+           {% endfor %}
+         </select>
+       </form>
+     </div>
+{% endif %}
+<a class="hs-control intro-open-nofloat" href="#global-instructor-orientation">?</a><a class="hs-control hs-nostyle" href="#global-instructor-orientation">
+<b>QuickStart Guide:</b></a> 
+<div id="global-instructor-orientation" class="intro-text hs-init-show hs-show">
+<a class="hs-control control-close" href="#global-instructor-orientation">x</a>
+  <p>Work in Mediathread centers around <b>Items</b>, <b>Projects</b>, and <b>Discussions</b>:</p>
+
+
+  <p><b>Items</b> are images or videos that have been saved and annotated in MediaThread.</p>
+  <ul>
+    <li>Media sources must first be imported into MediaThread before they can be saved as Items.</li>
+    <li>Many videos and images posted online may be imported into MediaThread.</li>
+    <li>To prioritize media sources for your course, you can queue up supported collections or import a core group of Items for analysis.  See instructions in the Explore Collections tab.
+</li>
+    <li>All Items in MediaThread are available to all members of the class.</li>
+    
+  </ul>
+  
+  <p><b>Projects</b> are written compositions with embedded Items.
+</p>
+  <ul>
+    <li>
+      Any MediaThread user can create a project and add collaborators.
+    </li>
+    <li>A project may be saved as a private draft, in which case it is visible only to its author(s).  It may also be published and made visible to the instructor, the whole class, or the world.</li>
+    <li>Instructors have another publishing option:  they may save a project as an "assignment" for the class, so responses can be tracked here, in the Instructor Dashboard. 
+    <li>
+Projects may be discussed by Instructors posting "Instructor Feedback".  Class members are alerted to Feedback posted on their Project(s).
+
+    </li>
+	<li>Any Project created by an instructor and made visible to the class, whether or not it is an assignment, will appear on the Class Home.</li>
+  </ul>
+  
+  
+  <p><b>Discussions</b> are conversations about specific topics.</p>
+  <ul>
+    <li>
+      Topic-level discussions are accessible to the whole class but can only be created by instructors here in the Instructor Dashboard.</li>
+    <li>
+Once created, topic-level Discussions appear on the Class Home page.</li>
+  </ul>
+  <!--
+  <h4>Read tips for organizing your course in MediaThread:</h4>
+
+  <p>
+    Potentially useful student activities may include one or more of the following:
+  </p>
+  <ul>
+    <li>Finding and/or organizing source media for a shared respository or independent analysis.</li>
+    <li>Analyzing a single Item or multiple Items.</li>
+    <li>Participating in one or more Discussions.</li>
+    <li>Composing projects either independently or in response to your "assignments."</li>
+  </ul>
+
+  <p>
+  Because there is such a great variety of ways to use Mediathread in a Course, it's highly recommended that you document, contextualize and organize the activities you want students to do in an explicit way.</p>
+  <ul>
+    <li>Any project you share with the class will automatically appear on the Class Home page.
+    </li>
+    <li>Only Projects "published" as "assignment" are recognized by Mediathread as officially "assigned" class activities.  These will automatically be grouped and highlighted for your students.
+    </li>
+    <li>Since Items and Discussions cannot be formally grouped or flagged as "assignment," you may want to create and share a Project titled "Syllabus," "Assignments, " etc. for this purpose. 
+    </li>
+  </ul>
+-->
+</div><!-- end global-instructor-orientation -->
+
+
+<div id="instructor-actions">
+
+  <h3>Actions:</h3>
+
+  
+  <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+    <input type="hidden" name="title" />
+    <input class="columnbutton project-createnew-button" type="submit" value="Create or Assign Project"/>
+ 
+  </form>
+  <form class="block discussion-createnew"  action="/discussion/new/" method="POST">
+    <!--h4>Start a New Discussion</h4>
+        <label for="id_comment_html" >Enter Title:</label-->
+    <input type="hidden" name="comment_html" value="Discussion Title" />
+    <input type="hidden" name="app_label" value="courseaffils"/>
+    <input type="hidden" name="model" value="course"/>
+    <input type="hidden" name="obj_pk" value="{{course.id}}"/>
+    <input type="submit" value="Create New Discussion"/>
+  </form>
+  
+  <form class="block" method="GET" action="/save/">
+    <input class="columnbutton project-createnew-button" type="submit" value="+/- Course Collections"/>
+  </form> 
+
+
+
+  <h4>Course Reports:</h4>
+  <ul class="submenu course-report">
+    <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity Index</a></li>
+    <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Student Responses to Assigned Projects</a></li>
+    <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contribution Summary</a></li>
+  </ul>
+  
+</div><!-- end instructor-actions -->
+
+<br />

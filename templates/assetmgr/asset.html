@@ -8,20 +8,26 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
-
   <script type="text/javascript" src="/site_media/js/tabber.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
-  <script type="text/javascript">         DjangoSherd_Asset_Config();             </script>
-
+  <script type="text/javascript" src="/site_media/js/mustache/mustache.js"></script>
   <script type="text/javascript" src="/site_media/js/assetmgr/asset.js"></script>
+  <script type="text/javascript">
+    DjangoSherd_Asset_Config();    
+    AnnotationList.init({ 
+       "asset_id":{{asset.id}}
+       {% if annotation %}
+       ,"annotation_id":{{annotation.id}}
+       {% endif %}       
+    });
+  </script>
 
 {% endblock %}
 
-{% block extra_body_class %}{% if mock %}preview{% endif %}{% endblock %}
+{% block extra_body_class %}{% if mock %}preview{% endif %} old-assetwindow{% endblock %}
 
 {% block content %}
   {{ block.super }}
@@ -31,7 +37,7 @@
 {%endif%}
   
 {% if mock %}
-<p>Create tags, notes or clips to add this item to Your Analysis.</p>
+<p>Add annotations to save this item to Your Analysis.</p>
 {% endif %}<!-- if mock-->
 
   <div id="workspace">
@@ -67,10 +73,10 @@
     </div>
     
     {% if request.GET.c %}
-    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Analyze">
+    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Annotations">
     {% else %}
     <!-- temporarily put analysis tab as default until we can get metadata again -->
-    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Analyze">
+    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Annotations">
     {% endif %}<!--end request.GET.c -->
     
     {% if annotation and readonly %}
@@ -82,7 +88,6 @@
     <div id="ItemAnalysis" class="sub-control">
     
         <div class="clipform">
-              <!--  MOCHI -->
               <input type="radio" name="clipType" autocomplete="off" value="Whole" onclick="jQuery('#portion-asset-form').hide();jQuery('#whole-asset-form').show(); " />Whole
               <input type="radio" name="clipType" autocomplete="off" value="Portion" checked onclick="jQuery('#whole-asset-form').hide();jQuery('#portion-asset-form').show();" />Portion
         </div>
@@ -114,7 +119,7 @@
                     {% if request.user in request.course.members %}
                        <input type="submit" name="save-global-annotation" value="Save Asset"/>
                     {% else %}
-                       <b class="warning">Cannot save clips because you are not a member of this course.</b>
+                       <b class="warning">Cannot save because you are not a member of this course.</b>
                     {% endif %}
                     to My Items
                 </div>
@@ -142,12 +147,12 @@
         	       {% endfor %}
         	   {% endif %}<!--end if mock-->
                    {% if request.user in request.course.members %}
-                     <input type="submit" name="save-clip-annotation" value="Save Clip" />
+                     <input type="submit" name="save-clip-annotation" value="Save" />
                    {% else %}
                      <b class="warning">Cannot save clips because you are not a member of this course.</b>
                    {% endif %}
         	   {% if annotation %}
-                  <input type="button" value="New Clip" onclick="document.location='{% url asset-view asset.id %}'"/>	  
+                  <input type="button" value="New" onclick="document.location='{% url asset-view asset.id %}'"/>	  
         	   {% endif %}
         	   </form>
             </div> <!--id="Clip"-->
@@ -156,51 +161,14 @@
     </div>
     
       {% if not mock %}
-      <h2> <a class="hs-control" href="#annotations"></a>My Clips of This Item</h2>
-      <div id="annotations" class="sub-control">
-	<ul>
-	  {% load user_annotations %}
-	  {% get_annotations on asset by space_viewer filter 0 as annotations %}
-	  {% for ann in annotations %}
-	  {% if not ann.is_null %}
-	  <li
-	   {% ifequal ann annotation %}
-	    class="active-annotation"
-	   {% endifequal %}
-	   >
-	   <a href="{{ann.get_absolute_url}}"
-	    >
-	   {% if ann.title %}
-	   {{ann.title}}
-	   {% else %}
-	   Annotation
-	   {% endif %}
-	   </a>
-	 </li>
-	 {% endif %}
-	 {% endfor %}
-       </ul>
-     </div><!-- end "annotations"  -->
-
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      <div id="annotations-organized">
+        <!-- inserted with ajax now.  see media/templates/annotations.mustache -->
+      </div>
       {% endif %}<!--end if not mock -->
    </div> <!-- end "analysis" tab -->
 
    {% if not mock %}
-    <div class="tabbertab indexcard" title="Class Activity">
+    <div class="tabbertab indexcard" title="Class References">
    
       <h2><a class="hs-control" href="#classtags"></a>Class Tags</h2>
 
@@ -214,29 +182,9 @@
       </div>
  
       <br />
-     <h2> <a class="hs-control" href="#other_people_annotations"></a>Other People's  Clips of This Item</h2>
-     <div id="other_people_annotations" class="sub-control">
-	  <ul>
-            {% get_all_annotations on asset as annotations %}
-            {% for ann in annotations %}
-                {% if not ann.is_null%}
-                     {% ifnotequal ann.author space_viewer %}
-                          <li 
-			      {% ifequal ann annotation %}
-			      class="active-annotation" 
-			      {%endifequal%}
-			      >
-                            <a href="{{ann.get_absolute_url}}">{{ann.title}}</a> by <a href="{% url your-space-records ann.author.username %}">{{ann.author.get_full_name|default:ann.author}}</a>
-                          </li>
-		     {% endifnotequal %}
-                {% endif %}
-            {% endfor %}
-	  </ul>
-      </div><!--end id="other_people_annotations" -->
-      
 <br />
     
-      <h2><a class="hs-control" href="#discussion"></a>Class Discussions Referencing this Item</h2>
+      <h2><a class="hs-control" href="#discussion"></a>Project and Discussion References</h2>
       
          <div id="discussions" class="sub-control">
 	    {%if discussions%}

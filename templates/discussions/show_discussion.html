@@ -14,11 +14,13 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/mochikit/MochiKit/MochiKit.js"></script>
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/assetwindow.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce/tiny_mce.js"></script>
-  <script type="text/javascript" src="/site_media/js/vital3/tiny_mce_init3.js"></script>
+  <script type="text/javascript">
+    var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+  </script>
+
+  <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+  <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
   
   
   <!--All the annotation javascript/css -->
@@ -82,7 +84,23 @@
             <span class="capability can-manage">[can manage responses]</span>
           {% endif %}
         </div>
-	<h2>Discussion of <span id="discussion-subject-title">{%firstof root_comment.title root_comment.content_object.title %}</span></h2>
+        {% if target %}        
+          <h2>Discussion of
+              {{target.content_type.model}}:
+              <a href="{{target.content_object.get_absolute_url}}">
+                <span id="discussion-subject-title">
+                  {{target.title}}
+                </span>
+              </a>
+          </h2>
+        {% else %}
+          <h2>Discussion of 
+            <span id="discussion-subject-title">
+             {%firstof root_comment.title root_comment.content_object.title %}
+            </span>
+          </h2>
+          
+        {% endif %}
 	  <div id="threadedcomments" class="resize-height">
         {%get_comment_list for root_comment.content_object as comment_list%}
         {% for current_comment in comment_list|fill_tree|annotate_tree %}
@@ -113,7 +131,7 @@
                     {% endif %}
                   </span>
                
-               <span class="threaded_comment_author">{{current_comment.name}} </span>
+               <span class="threaded_comment_author">{{current_comment.name}}</span>
                   <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>
                   <span class="comment-date">
                     (

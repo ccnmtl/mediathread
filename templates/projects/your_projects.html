@@ -10,7 +10,6 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 {% endblock %}</title>
 
 {% block js %}
-<script type="text/javascript" src="/site_media/js/mochikit/packed/MochiKit/MochiKit.js"></script>
 <script type="text/javascript" src="/site_media/js/hs.js"></script>
 <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
 
@@ -36,7 +35,7 @@ My Projects
 
    <form class="block project-createnew" method="POST" action=".">
      <input type="hidden" name="title" />
-     <input class="project-createnew-button" type="submit" value="Create a new project!"/>
+     <input class="project-createnew-button" type="submit" value="Create New Project"/>
    </form>
 {% endif %}
 

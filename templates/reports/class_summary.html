@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{%load user_annotations comments %}
+
+<title> {% block title %}
+Course Summary
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+<script type="text/javascript" src="/site_media/js/protovis/protovis.min.js"></script>
+<script type="text/javascript" src="/site_media/js/reports.js"></script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+<h1>Instructor Dashboard</h1>    
+
+{% include "reports/submenu.html" %}
+
+<div class="panel">    
+  <div style="float:left;width:40%">
+  <div class="panel-column">
+    <h2>Student Contribution Summary</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Annotations</th>
+          <th>Comments</th>
+          <th>Projects</th>
+        <!--  <th>Project adds</th>
+          <th>Project dels</th>-->
+        </tr>
+      </thead>
+      <tbody id="reports-student-tbody">
+        {% for student in students %}
+        <tr data-username="{{student.username}}" class="user-{{student.username}}">
+          <td><a href="{%url your-space-records student.username %}">
+            {{student.get_full_name|default:student.username}}
+          </a></td>
+          <td>{{student.annotations}}</td>
+          <td>{{student.comments}}</td>
+          <td>{{student.projects}}</td>
+       <!--   <td>{{student.project_adds}}</td>
+          <td>{{student.project_deletes}}</td>-->
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
+  <div style="float:left;width:60%">
+  <div class="panel-column">
+    <h2>Experimental Graph Visualization</h2>
+    <p> This graph tries to visualize the different inter-connected objects in the class.
+            It's incredibly experimental--we'd like to link the dots to the objects, and filter, and many other things.  Suggestions are welcome.
+          </p>
+    
+    <div id="reports-graph-link">
+      <a class="hs-control" href="#reports-graph"></a> Show/Hide Graph
+      <a id="reports-graph-chosenlink" href=""></a>
+    </div>
+      <div id="reports-graph" class="hs-init-hide hs-hide">
+        <ul>
+          <li><a class="hs-control" href="#reports-graph-help"></a> <b>Details</b></li>
+          <li id="reports-graph-help" class="help hs-init-show hs-show">
+             <ul>
+              <li>Fastest in Google Chrome and Safari, still supported in Firefox and IE9</li>
+              <li>
+                <b>Squares</b> are projects,
+                <b>Circles</b> are assets, colored by their archive source,
+                <b>Diamonds</b> are chained comments in a discussion,
+                lighter lines are whole-asset citations (compared to an annotated portion), instructor projects have lighter borders
+              </li>
+              <li><b>Controls:</b> hover over an object for title/details, mouse-wheel zooms in/out, drag on whitespace to pan, drag a node to help the display algorithm.
+              </li>
+              <li>Click on a node for a link to the item above</li>
+              <li>Click on a user row on the left to highlight that user's contributions.</li>
+            </ul>
+          </li>
+        </ul>
+        <div id="reports-graph-visualization"></div>
+      </div>
+
+  </div> 
+  </div> 
+
+  <div class="visualclear"></div>
+  
+</div>
+
+{% endblock %}

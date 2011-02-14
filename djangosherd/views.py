@@ -29,12 +29,12 @@ formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
 
 class AnnotationForm(forms.ModelForm):
-    body = forms.CharField(label='My Clip Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
+    body = forms.CharField(label='Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
     range1 = forms.FloatField(widget=forms.widgets.HiddenInput,initial=0)
     range2 = forms.FloatField(widget=forms.widgets.HiddenInput,initial=0)
     annotation_data = forms.CharField(widget=forms.widgets.HiddenInput)
-    tags = forms.CharField(label="My Clip Tags", help_text="<span class='helptext'>Use commas between tags.</span>")
-    title = forms.CharField(label="My Clip Title")
+    tags = forms.CharField(label="Tag(s)", help_text="<span class='helptext'>Use commas between tags.</span>")
+    title = forms.CharField(label="Title")
     class Meta:
         model = SherdNote
         exclude = ('author', 'asset')
@@ -265,19 +265,7 @@ def annotation_json(request, annot_id):
     data = {'assets':dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request))]),
             #should correspond to same format in project.views.project_json
-            'annotations':[{
-                'asset_key':'%s_%s' % (rand,ann.asset_id),
-                'id':ann.pk,
-                'range1':ann.range1,
-                'range2':ann.range2,
-                'annotation':ann.annotation(),
-                'metadata':{
-                    'title':ann.title,
-                    'author':{'id':ann.author_id,
-                              #'name':ann.author.get_full_name(),
-                              },
-                    },
-                }],
+            'annotations':[ann.sherd_json(request, rand, ('title','author') )],
             'type':'annotation',
             }
                           

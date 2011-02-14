@@ -6,7 +6,7 @@ body
 	background-color: #fff;
 	font: normal 0.8em/120% 'lucida grande', arial, verdana, sans-serif;
 	color: #000;
-	min-width: 990px;
+	/*min-width: 990px;*/
 }
 
 /* ########## Standard elements ########## */
@@ -88,6 +88,8 @@ th
 {
 	border: 1px solid #ccc;
 	border-collapse: collapse;
+		padding: .1em .5em .1em .5em;
+		text-align: left;
 }
 
 td
@@ -95,6 +97,7 @@ td
 	border: 1px solid #ccc;
 	border-collapse: collapse;
 	padding: .1em .5em .1em .5em;
+	text-align: left;
 }
 
 ol, ul
@@ -110,6 +113,71 @@ ul.intro-text li {
     font-size:100%;
     list-style:disc;
 }
+
+.intro-text h3 {
+    margin-top:0px;
+}
+
+body a.control-close,
+body a.hs-control.control-close {
+    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
+    display:block;
+  float:right;
+	background-image:url(../img/icons/meth_close_icon.png);
+	background-repeat: no-repeat;
+  margin: -9px;
+  width:20px;
+  height:20px;
+  color:transparent;
+  /*for IE 6-8 not supporting transparent text:*/
+    overflow:hidden;
+    line-height:48px;
+}
+body a.control-close:hover {
+    background-image:url(../img/icons/meth_close_icon_hover.png);
+}
+ 
+body a.intro-open,
+body a.hs-control.intro-open {
+    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
+    float:right;
+  background-image:url(../img/icons/meth_info_icon.png);
+  
+  margin: -2px -6px;
+    *margin:-21px 3px 3px 3px;
+    *padding: 0px 1px 1px 0;
+  width:18px;
+  height:18px;
+  color:transparent;
+  /*for IE 6-8 not supporting transparent text:*/
+    overflow:hidden;
+    line-height:48px;
+  background-repeat: no-repeat;
+}
+
+body a.intro-open-nofloat,
+body a.hs-control.intro-open-nofloat {
+    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
+  background-image:url(../img/icons/meth_info_icon.png);
+  background-repeat: no-repeat;
+  margin-left:0px;
+    margin-right:5px;
+    *margin-left:0px;
+  width:20px;
+  height:20px;
+  color:transparent;
+  /*for IE 6-8 not supporting transparent text:*/
+    overflow:hidden;
+    line-height:48px;
+}
+
+body a.intro-open:hover,
+body a.hs-control.intro-open:hover,
+body a.intro-open-nofloat:hover,
+body a.hs-control.intro-open-nofloat:hover {
+    background-image:url(../img/icons/meth_info_icon_hover.png);
+}
+
 
 /*
 li
@@ -338,7 +406,7 @@ img, img a
 #primarynav ul
 {
 	float: left;
-	margin: 8px 10px 0 10px;
+	margin: 14px 10px 0 10px;
 	padding: 0;
 	border: 0;
 	list-style: none;
@@ -348,7 +416,7 @@ img, img a
 #primarynav #leftside ul
 {
   float: left;
-  margin-left:20px;
+ /* margin-left:20px;*/
 }
 
 #primarynav #rightside ul
@@ -360,8 +428,8 @@ img, img a
 {
 	display: block;
 	float: left;
-	margin: -7px 6px 0 6px;
-	line-height: 30px;
+	margin: -7px 3px 0 3px;
+	line-height: 24px;
 	text-align: center;
 	border: 1px solid #9d9d9d; 
 	border-bottom: none;
@@ -397,11 +465,11 @@ img, img a
 #primarynav a
 {
 	text-decoration: none;
-	text-align: center;
+	/*text-align: center;*/
 	display: block;
-	padding-right: 8px;
+	padding-right: 6px;
     color:white;
-  padding-left:8px;
+  padding-left:6px;
  
 }
 
@@ -464,7 +532,7 @@ img, img a
 #pagebody
 {
 	display: block;
-	width: 950px;
+	min-width: 950px;
 	min-width: 950px;
 	clear: both;
 	margin: 0;
@@ -834,6 +902,7 @@ body.fluid #container
 body.fluid #header
 {
 	width: 100%;
+	min-width: 950px;
 }
 
 
@@ -844,7 +913,7 @@ body.fluid #primarynav div.encase
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 800px;
+	min-width: 950px;
 }
 
 /* ---- Pagebody block elements ---------- */
@@ -918,19 +987,24 @@ body.fluid #content
 {
     z-index:9999;
 	float: left;
-	font-size: 1.8em;
-        line-height:1.8em;
+	font-size: 1.7em;
+        line-height:1.2em;
 	text-transform: capitalize;
-	margin-left: .5em;
-	margin-top: -26px;
-  white-space:nowrap;
+	margin-left: 5px;
+	padding: 0;
+	margin-top: -37px;
+  /*white-space:nowrap;*/
   font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
   font-style: italic;
   *font-style: none;/*IE doesn't anti-alias italics well*/
   color: #e6e6e6;
+  max-height: 65px;
+  overflow: hidden;
+  max-width: 264px;
+  
 }
 
-tr.course-choices {
+table.course-choices {
     padding:5px;
 }
 
@@ -943,4 +1017,44 @@ td.course-choice {
 
 td.manage-course {
     text-align:center;
+}
+
+
+table.course-choices tr.course-choices-other-years td {
+    padding:10px;
+    text-align:center;
+}
+
+.float-right {float: right;}
+
+div.button-container {
+
+	width: 450px;
+	margin: -50px 0 0 15px;
+	float: left;
+}
+
+div.button-form {
+
+	display: block;
+	height: 28px;
+	padding: 10px 0;
+}
+
+.inline,
+div.button-form.inline {
+
+	display: inline;
+
+
+}
+
+
+div.button-form form, div.button-form.inline form{
+
+	float: right;
+}
+div.button-form form, div.button-form.inline form.nofloat{
+
+	float: none;
 }

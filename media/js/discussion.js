@@ -47,6 +47,10 @@ jQuery(function discussion_init() {
             comment_form_space(evt_target).appendChild(frm);
             jQuery(frm).show();
             jQuery('#id_comment').focus();
+
+            ///makes it resizable--somewhat hacking tinyMCE.init()
+            tinyMCE.settings.theme_advanced_statusbar_location="bottom";
+
             tinyMCE.execCommand("mceAddControl", false, "id_comment");
             jQuery(evt_target).addClass('control-open');
         } else { //actually, CLOSE form
@@ -306,7 +310,7 @@ AjaxComment.prototype.create = function(obj,doc) {
         +          'class="comment-thread">'
         + '<div class="comment new-comment">'
         + ' <div class="threaded_comment_header">'
-        +    '<span class="threaded_comment_author">{{current_comment.name}} </span>'
+        +    '<span class="threaded_comment_author">{{current_comment.name}}</span>'
         +      '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>'
         + ' </div>'
         + '<div class="threaded_comment_title">{{current_comment.title}}</div>'
@@ -336,9 +340,11 @@ AjaxComment.prototype.create = function(obj,doc) {
 
 /** INIT **/    
     commenter = new AjaxComment(frm);
+  window.commenter = commenter;
     var threads = jQuery('li.comment-thread');
     var base_comment = commenter.components(threads.get(0));
     if (base_comment.edit_button
+        && base_comment.author.innerHTML == commenter.username
         && (base_comment.title.innerHTML == 'Discussion Title'
             || threads.length == 1))
     {

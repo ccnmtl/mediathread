@@ -12,6 +12,7 @@
 {%if settings.WIND_BASE %}
 <div style="padding-bottom: 5px">
     <form method="get" action="{{ wind_base }}login">
+      {% csrf_token %}
         <input type="hidden" name="service" value="{{ wind_service }}" />
         <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next|urlencode }}" />
         <h3>Columbia Users:</h3>
@@ -37,6 +38,7 @@
 </div>
 
 <form name="login_local" method="post" action=".">
+  {% csrf_token %}
     <table>
         <tr><td style="border: hidden"><label for="id_username">Username:</label></td><td style="border: hidden">{{ form.username }}</td></tr>
         <tr><td style="border: hidden"><label for="id_password">Password:</label></td><td style="border: hidden">{{ form.password }}</td></tr>

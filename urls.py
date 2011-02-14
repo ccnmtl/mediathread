@@ -42,10 +42,13 @@ urlpatterns = patterns('',
 
                        ### Course-URLS ###
                        (r'^$', mediathread_main.class_portal),
+
                        #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
 
                        url(r'^save/$', asset.add_view,
                            name="asset-save"),
+
+                       url(r'^analysis/$', mediathread_main.base_slide),
 
                        (r'^asset/',include('mediathread.assetmgr.urls')),
                        (r'^annotations/',include('mediathread.djangosherd.urls')),
@@ -57,12 +60,8 @@ urlpatterns = patterns('',
                        url(r'^explore/$','assetmgr.views.archive_explore',
                            name="explore"),
 
-                       url(r'^reports/class_summary/$','mediathread_main.views.class_summary',
-                           name="class-summary"),
-                       url(r'^reports/class_summary/graph.json$',
-                           'mediathread_main.views.class_summary_graph',
-                           name="class-summary-graph"),
 
+                       (r'^reports/',include('mediathread.reports.urls')),
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),
 

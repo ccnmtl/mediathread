@@ -1591,7 +1591,6 @@ h3.noteGrouping a:visited
 	padding-left:0px;
 	/*padding-right:35px;*/
 	height:7px;
-	border-bottom: 1px solid #999;
 	background-color: #e0e0e0;
 	margin: -1px auto;
 }
@@ -1617,7 +1616,45 @@ h3.noteGrouping a:visited
 	padding:0px;
 	margin:0px 0 0 -2px;
 	z-index:0;
-	background: #AAAAAA;
+	background: #777;
+}
+
+.clipStripLayer
+{
+    position:relative;
+    height: 14px;
+    padding: 0px;
+    margin: 0px 0 0 -2px;
+    z-index: 0;
+    background: #AAAAAA;
+    border-bottom: 1px solid #777;
+}
+
+.clipStripLayerTitle
+{
+    position: relative;
+    float: left;
+    border-bottom: 1px solid #777;
+    padding-left: 2px;
+    width: 95px;
+    height: 14px;
+    font-size: 85%;
+    text-align: right;
+}
+
+.annotationLayer
+{
+    background: #3333FF;
+    padding:0px;
+    margin:0px;
+    width:0px;
+    height:14px !important; 
+    z-index:1000;
+    position:absolute;
+    opacity:0.45;
+    -moz-opacity:0.45;
+    filter:alpha(opacity=45);
+    float: left;
 }
 
 

@@ -42,8 +42,8 @@ def active(request, pattern):
     yourspace_base = None
     if request.user.is_authenticated():
         yourspace_base = reverse('your-space', args=[request.user.username])
-    if pattern == "Class Portal":
-        if request.path == "/" or re.search('/class_summary',request.path):
+    if pattern == "Class Portal" or pattern == "Home":
+        if request.path == "/":
             return 'active'
 
     if pattern == "Explore":
@@ -51,6 +51,9 @@ def active(request, pattern):
             return 'active'
     if pattern == "Class Analysis":
         if request.path == '/asset/':
+            return 'active'
+    if pattern == "Instructor":
+        if request.path.startswith('/reports/'):
             return 'active'
 
     if pattern == "Analysis":
@@ -83,5 +86,17 @@ register.tag('num_courses', UserCourses.process_tag)
 from django.template.defaultfilters import timesince
 def timesince_approx(value, arg=None):
     return timesince(value, arg).split(',')[0]
-
 register.filter(timesince_approx)
+
+def assignment_responses(project, request):
+    return project.responses(request)
+register.filter(assignment_responses)
+
+def discussions(project, request):
+    return project.discussions(request)
+register.filter(discussions)
+
+def is_assignment(project, request):
+    return project.is_assignment(request)
+register.filter(is_assignment)
+

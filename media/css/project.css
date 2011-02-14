@@ -41,6 +41,12 @@ input.materialCitation:hover
 
 }
 
+#project-container {
+background-color: #ccc;
+margin: 0;
+padding: 0 5px;
+}
+
 .essay-options
 { 
   padding:1em;
@@ -50,9 +56,7 @@ input.materialCitation:hover
 .essay-space h2 input {
     padding:0 3px;
 }
-#essaybox {
-    margin-top:-4px;
-}
+
 .essay-space {
 left:0;
 position:absolute;
@@ -61,19 +65,28 @@ max-width:550px;
 
 }
 
+.project-form-title {
+
+padding: 5px;
+}
+
+#materials .essay-space.published {
+    width:auto;
+}
 .essay-space.published
 { 
   /*NO PERCENT WIDTH HERE:
     this is also embedded within the asset-list space
     which should be close to 100% rather than the published context
-   */
-  max-width:550px;
-  height: 29em;
+   
+  width:450px;
+  max-width:550px;*/
+  height: 28.5em;
   overflow: auto;
         position:relative;/*important companion to overflow:auto for IE7*/
-  margin-right: 2em;
+  margin-left: auto;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 0 10px 10px 10px;
 
   background-color:white;
  }
@@ -82,15 +95,36 @@ max-width:550px;
 
 width: 370px;
 height: 370px;
-background-color: #EDEDED;
+background-color: #dedede;
 border: 1px solid #ccc;
 float: left;
+
 }
+
+ .asset-view-small {
+
+background: url('../img/media-Bkgd.gif') no-repeat;
+width: 363px;
+min-height: 324px;
+padding-top: 3px;
+}
+
+ .asset-view-small .asset-object {
+
+margin: 6px;
+}
+
+
+
 
 .annotation-links {
 
 	
 
+}
+
+a.active-annotation.materialCitation {
+    background-color:#fff100;
 }
 
 .annotation-title.materialCitation {
@@ -166,6 +200,7 @@ form.threaded_comments_form ul li {
 .respond_to_comment_form_div .control-open {
     padding-right:20px;
     background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
+    font-weight:bold;
     
 }
 
@@ -276,6 +311,12 @@ li.comment-thread {
 
 }
 
+/*TinyMCE adds _tbl to the #id_comment id for the table where the editor is dynamically created. */
+table#id_comment_tbl {
+    clear:both;
+    margin-left:10px;
+}
+
 /*comment that someone has linked to
   This MUST be shown in some way, so it's clear what comment
   just created.
@@ -302,12 +343,23 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 
 #last-version-saved {
-    width:100%;
+
+   float: right;
+   padding: 3px;
+   margin: 5px 1px 1px 0;
 }
 
 #last-version-public {
     padding-left:10px;
 }
+
+#project_participants {
+    font-size: 90%;
+    max-width: 451px;
+    padding-top: 4px;
+    margin: 2px;
+}
+
 
 body.mceContentBody {
     /*overrides tinyMCE's default 10px which will not correspond
@@ -323,6 +375,7 @@ body.mceContentBody {
 
 span.project-dropdown {
     margin-right:10px;
+    *margin: -23px 45px 0 0;
 }
 
 input.project-savebutton,
@@ -332,4 +385,8 @@ span.project-dropdown {
 
 div.mce_editorwindow {
     min-width:324px;
+}
+
+a.edit-pencil {
+    text-decoration:none;
 }

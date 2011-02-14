@@ -1133,7 +1133,7 @@ margin: 1.5em 1em .5em 1em;
 ul.clumper {
     list-style:none;
     margin:0;
-
+    padding: 10px;
 }
 
 a.bookmarklet {

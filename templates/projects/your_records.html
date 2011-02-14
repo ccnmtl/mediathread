@@ -39,18 +39,18 @@ Class Analysis > {{space_owner.get_full_name|default:space_owner.username}}'s An
 
       <td class="slider-cell slider-active" id="slider-cell-reflection">
 
+
+        <h1 class="project-title inline">{{space_owner.get_full_name|default:space_owner.username}}'s Projects</h1>
 {% if editable %}
 
   <div class="button-form inline">
-   <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+   <form class="block project-createnew inline nofloat" method="POST" action="{%url your-space-projects user%}">
      <input type="hidden" name="title" />
      <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
 
    </form>
    </div>
 {% endif %}
-
-        <h1>{{space_owner.get_full_name|default:space_owner.username}}'s Projects</h1>
 
 
 

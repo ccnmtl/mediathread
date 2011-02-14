@@ -1035,6 +1035,12 @@ margin: 1em 2em;
 
 }
 
+#staff-switchcourse {
+    position:absolute;
+    right:10px;
+    top:80px;
+}
+
 #instructor-items {
 border:1px solid #CCCCCC;
 float:left;
@@ -1220,6 +1226,9 @@ table.project_list th {
     white-space:nowrap;
 }
 
+table.project_list td.status-cell {
+    font-size:90%;
+}
 table.project_list th.project-titles {
     min-width: 200px;
     max-width: 400px;
@@ -1238,8 +1247,7 @@ table.project_list td ul, table.project_list td ul li {
 }
 
 table.project_list td .participants{
-	margin-left: 30px;
-		width: 300px;
+    margin-left: 30px;
 }
 
 

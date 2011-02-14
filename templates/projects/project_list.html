@@ -13,11 +13,11 @@
      <thead>
        <tr>
 	 <th class="project-titles">Title</th>
+	 <th>Links</th>
 	 <th class="DateTime pre-sorted">
            Saved at
          </th>
 	 <th>Status</th>
-	 <th>Links</th>
 	 {% if editable %}
 	 <th class="NoSort"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></th>
 	 {% endif %}
@@ -35,12 +35,6 @@
       </h3>
     </td>
     <td>
-      <time datetime="{{assignment.modified|date:"c"}}">{{assignment.modified|date}}</time>
-    </td>
-    <td>
-      Assignment
-    </td>
-    <td>
       {% ifequal space_owner space_viewer %}
       <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
         <input type="hidden" name="title" />
@@ -48,6 +42,12 @@
         <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
       </form>
       {% endifequal %}
+    </td>
+    <td>
+      <time datetime="{{assignment.modified|date:"c"}}">{{assignment.modified|date}}</time>
+    </td>
+    <td class="status-cell">
+      Assignment
     </td>
     {% if editable %}
     <td></td>
@@ -72,14 +72,6 @@
       </td>
    
       <td>
-        <time datetime="{{project.modified|date:"c"}}">{{project.modified|date}}</time>
-      </td>
-
-      <td>
-        {{project.status|safe}}
-      </td>
-
-      <td>
 	<ul>
 	{% if project.feedback_discussion %}
 	<li>
@@ -94,12 +86,18 @@
 	</ul>
       </td>
 
+      <td>
+        <time datetime="{{project.modified|date:"c"}}">{{project.modified|date}}</time>
+      </td>
+
+      <td class="status-cell">
+        {{project.status|safe}}
+      </td>
+
       {% if editable %}
       <td>
-	<div class="actions">
-	  <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
-	     href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
-	</div>
+        <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
+           href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
       </td>
       {% endif %}
 

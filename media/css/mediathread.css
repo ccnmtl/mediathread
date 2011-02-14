@@ -531,8 +531,8 @@ img, img a
 #pagebody
 {
 	display: block;
-	min-width: 1150px;
-	min-width: 1150px;
+	min-width: 950px;
+	min-width: 950px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -757,9 +757,9 @@ img, img a
 #footer
 {
 	display: block;
-	width: 1150px;
+	width: 950px;
 		height: 33px;
-	min-width: 1150px;
+	min-width: 950px;
 	clear: both;
 	margin: 0;
 	padding: 6px 0 0 0;
@@ -901,7 +901,7 @@ body.fluid #container
 body.fluid #header
 {
 	width: 100%;
-	min-width: 1150px;
+	min-width: 950px;
 }
 
 
@@ -912,7 +912,7 @@ body.fluid #primarynav div.encase
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 1150px;
+	min-width: 950px;
 }
 
 /* ---- Pagebody block elements ---------- */
@@ -999,7 +999,7 @@ body.fluid #content
   color: #e6e6e6;
   max-height: 65px;
   overflow: hidden;
-  max-width: 464px;
+  max-width: 264px;
   
 }
 
@@ -1040,6 +1040,7 @@ div.button-form {
 	padding: 10px 0;
 }
 
+.inline,
 div.button-form.inline {
 
 	display: inline;
@@ -1047,7 +1048,12 @@ div.button-form.inline {
 
 }
 
+
 div.button-form form, div.button-form.inline form{
 
 	float: right;
+}
+div.button-form form, div.button-form.inline form.nofloat{
+
+	float: none;
 }

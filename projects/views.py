@@ -118,6 +118,7 @@ def project_readonly_view(request, project_id, check_permission=True):
     course = request.collaboration_context.content_object
     project = get_object_or_404(Project, pk=project_id,
                                 course=course)
+
     if not project.visible(request):
         return HttpResponseForbidden("forbidden")
 

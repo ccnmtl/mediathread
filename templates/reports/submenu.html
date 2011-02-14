@@ -1,3 +1,17 @@
+{%if request.user.is_staff and courses %}
+   <div id="staff-switchcourse">
+     <form>
+       <label>Switch course (Staff Only):</label>
+       <select onchange="document.location=this.value;">
+         {% for c in courses %}
+         <option value="?set_course={{c.group.name|urlencode}}"
+                 {% ifequal c request.course %}selected="selected"{%endifequal%}
+           >{{c.title}}</option>
+           {% endfor %}
+         </select>
+       </form>
+     </div>
+{% endif %}
 <a class="hs-control intro-open-nofloat" href="#global-instructor-orientation">?</a><a class="hs-control hs-nostyle" href="#global-instructor-orientation">
 <b>QuickStart Guide:</b></a> Please read before beginning work with your class!
 <div id="global-instructor-orientation" class="intro-text hs-init-show hs-show">
@@ -63,21 +77,6 @@ Once created, topic-level Discussions appear on the Class Home page.</li>
   </ul>
 -->
 </div><!-- end global-instructor-orientation -->
-
-{%if request.user.is_staff and courses %}
-   <div>
-     <form>
-       <label>Switch course (Staff Only):</label>
-       <select onchange="document.location=this.value;">
-         {% for c in courses %}
-         <option value="?set_course={{c.group.name|urlencode}}"
-                 {% ifequal c request.course %}selected="selected"{%endifequal%}
-           >{{c.title}}</option>
-           {% endfor %}
-         </select>
-       </form>
-     </div>
-{% endif %}
 
 
 <div id="instructor-actions">

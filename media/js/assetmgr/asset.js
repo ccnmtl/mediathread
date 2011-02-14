@@ -137,6 +137,10 @@
         //mock_mode -- from page state
         //storage
         this.init = function(config) {
+            for (a in config) {
+                //asset_id, annotation_id
+                this[a] = config[a];
+            }
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache',
                 dataType:'text',
@@ -160,11 +164,6 @@
                     
                 }
             })
-            ///TODO: where do we set this??  atm, asset.html template
-            for (a in config) {
-                //asset_id, annotation_id
-                this[a] = config[a];
-            }
             return this;
         }
 

@@ -375,6 +375,7 @@ body.mceContentBody {
 
 span.project-dropdown {
     margin-right:10px;
+    *margin: -23px 45px 0 0;
 }
 
 input.project-savebutton,

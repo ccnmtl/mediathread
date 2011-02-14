@@ -125,6 +125,14 @@ background-color: #ededed;
 
  }
  
+ .panel-column>table,  .panel-column>p, #reports-graph-link, #reports-graph
+{ 
+  
+margin: 1em;
+
+
+ }
+ 
  input.columnbutton {
  
  /*	margin: 10px;*/
@@ -257,6 +265,23 @@ text-align: center;
 	font-size: 85%;
 	line-height: 150%;
 }
+
+.panel-column li#intro-updates{	
+	
+	font-size: 100%;
+	line-height: 120%;
+	margin-bottom: 0;
+
+}
+
+#reports-graph-help {	
+	
+	font-size: 100%;
+	line-height: 120%;
+	margin: 0 0 0 .5em;
+
+}
+
 
 .tags li {
 
@@ -881,6 +906,8 @@ padding-bottom: .5em;
 #participants_chosen {
     display:inline-block;
     padding-bottom:10px;
+    max-width: 650px;
+    vertical-align: top;
 }
 #project_participants {
 	padding-top:8px;
@@ -1199,11 +1226,20 @@ table.project_list th.project-titles {
 }
 
 table.project_list td {
-	font-size: 80%;
+	 vertical-align: top;
+	 padding: 5px;
+
+}
+
+table.project_list td ul, table.project_list td ul li {
+	font-size: 100%;
+	margin: 0;
+
 }
 
 table.project_list td .participants{
 	margin-left: 30px;
+		width: 300px;
 }
 
 

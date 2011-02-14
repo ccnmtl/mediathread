@@ -120,35 +120,31 @@ body a.hs-control.control-close {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
     display:block;
   float:right;
-  /*IE7 with float:right makes the parent div width:100% and looks bad
-    so we float it left instead.  not perfect, but looks ok.
-   */
-    *float:left;
-  background-image:url(/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png);
-  margin-left:10px;
-    *margin-right:10px;
-    *margin-left:0px;
-  width:16px;
-  height:16px;
+	background-image:url(../img/icons/meth_info_close_icon.png);
+	background-repeat: no-repeat;
+  margin: -9px;
+  width:20px;
+  height:20px;
   color:transparent;
   /*for IE 6-8 not supporting transparent text:*/
     overflow:hidden;
     line-height:48px;
 }
 body a.control-close:hover {
-    background-image:url(/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx_red.png);
+    background-image:url(../img/icons/meth_info_close_icon.png);
 }
  
 body a.intro-open,
 body a.hs-control.intro-open {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
     float:right;
-  background-image:url(/site_media/img/icon_help.gif);
-  margin-left:0px;
-    margin-right:0px;
-    *margin-left:0px;
-  width:11px;
-  height:15px;
+  background-image:url(../img/icons/meth_info_icon.png);
+  
+  margin: -2px -6px;
+    *margin:-21px 3px 3px 3px;
+    *padding: 0px 1px 1px 0;
+  width:18px;
+  height:18px;
   color:transparent;
   /*for IE 6-8 not supporting transparent text:*/
     overflow:hidden;
@@ -158,16 +154,24 @@ body a.hs-control.intro-open {
 body a.intro-open-nofloat,
 body a.hs-control.intro-open-nofloat {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
-  background-image:url(/site_media/img/icon_help.gif);
+  background-image:url(../img/icons/meth_info_icon.png);
+  background-repeat: no-repeat;
   margin-left:0px;
     margin-right:5px;
     *margin-left:0px;
-  width:15px;
-  height:15px;
+  width:20px;
+  height:20px;
   color:transparent;
   /*for IE 6-8 not supporting transparent text:*/
     overflow:hidden;
     line-height:48px;
+}
+
+body a.intro-open:hover,
+body a.hs-control.intro-open:hover,
+body a.intro-open-nofloat:hover,
+body a.hs-control.intro-open-nofloat:hover {
+    background-image:url(../img/icons/meth_info_icon_hover.png);
 }
 
 

@@ -9,20 +9,25 @@
 
 {% block js %}
   <script type="text/javascript" src="/site_media/js/tabber.js"></script>
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js?v1"></script>
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
   <script type="text/javascript" src="/site_media/js/mustache/mustache.js"></script>
-  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js"></script>
+  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?v1"></script>
   <script type="text/javascript">
     DjangoSherd_Asset_Config();    
+    {% if not mock %}
     AnnotationList.init({ 
-       "asset_id":{{asset.id}}
+         "asset_id":{{asset.id}}
+       {% if global_annotation %}
+         ,"global_annotation_id":{{global_annotation.id}}
+       {% endif %}       
        {% if annotation %}
-       ,"annotation_id":{{annotation.id}}
+         ,"annotation_id":{{annotation.id}}
        {% endif %}       
     });
+    {% endif %}{# not mock #}    
   </script>
 
 {% endblock %}
@@ -95,8 +100,13 @@
     <div id="ItemAnalysis" class="sub-control">
     
         <div class="clipform">
-              <input type="radio" name="clipType" autocomplete="off" value="Whole" onclick="jQuery('#portion-asset-form').hide();jQuery('#whole-asset-form').show(); " />Whole
-              <input type="radio" name="clipType" autocomplete="off" value="Portion" checked onclick="jQuery('#whole-asset-form').hide();jQuery('#portion-asset-form').show();" />Portion
+          <form name="clip-type">
+              <input type="radio" name="clipType" autocomplete="off" value="Whole" 
+                     onclick="showWholeForm()" />Whole
+              <input type="radio" name="clipType" autocomplete="off" value="Portion" 
+                     checked="checked"
+                     onclick="showPortionForm()" />Portion
+          </form>
         </div>
         
         {% if annotation %}

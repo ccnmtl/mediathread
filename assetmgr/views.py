@@ -235,17 +235,7 @@ def container_view(request):
         'is_faculty':request.course.is_faculty(request.user),
         }
 
-
-@login_required
-@rendered_with('assetmgr/asset.html')
-def asset_workspace(request, asset_id):
-    asset = get_object_or_404(Asset, pk=asset_id,
-                              course=request.course)
-
-    user = request.user
-    if user.is_staff and request.GET.has_key('as'):
-        user = get_object_or_404(User,username=request.GET['as'])
-
+def asset_accoutrements(request, asset, user, annotation_form):
     global_annotation = asset.global_annotation(user, auto_create=False)
     if global_annotation:
         global_annotation_form = GlobalAnnotationForm(instance=global_annotation, prefix="annotation")
@@ -262,7 +252,7 @@ def asset_workspace(request, asset_id):
                 asset__course=request.course
                 ), counts=True))
 
-    comments = Comment.objects.for_model(asset)
+    comments = Comment and Comment.objects.for_model(asset) or None
 
     discussions = Clumper(DiscussionIndex.with_permission(
             request,
@@ -277,10 +267,25 @@ def asset_workspace(request, asset_id):
         'tags': tags,
         'space_viewer':user,
         'user_tags': user_tags,
-        'annotation_form': AnnotationForm(prefix="annotation"),
+        'annotation_form': annotation_form,
         'global_annotation_form': global_annotation_form,
         'discussions' : discussions
         }
+    
+
+
+@login_required
+@rendered_with('assetmgr/asset.html')
+def asset_workspace(request, asset_id):
+    asset = get_object_or_404(Asset, pk=asset_id,
+                              course=request.course)
+
+    user = request.user
+    if user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
+
+    return asset_accoutrements(request, asset, user, 
+                               AnnotationForm(prefix="annotation"))
 
 def asset_workspace_courselookup(asset_id=None):
     """lookup function corresponding to asset_workspace
@@ -350,47 +355,21 @@ def annotationview(request, asset_id, annot_id):
         request.GET = form
         return annotation_dispatcher(request, annot_id)
 
-    readonly = False
-    if annotation.author != request.user:
-        readonly = True
-        
     asset = annotation.asset
 
     global_annotation = asset.global_annotation(user, auto_create=False)
 
     if global_annotation == annotation:
         return HttpResponseRedirect(
-            reverse('asset-view', args=[asset_id]))
-    elif global_annotation:
-        global_annotation_form = GlobalAnnotationForm(instance=global_annotation, prefix="annotation")
-    else:
-        global_annotation_form = GlobalAnnotationForm(prefix="annotation")
+            '%s#whole-form' % reverse('asset-view', args=[asset_id]))
 
-    form = AnnotationForm(instance=annotation, prefix="annotation")
+    rv = asset_accoutrements(request, annotation.asset, user, 
+                             AnnotationForm(instance=annotation, prefix="annotation")
+                             )
+    rv['annotation'] = annotation
+    rv['readonly'] = (annotation.author != request.user)
 
-    tags = calculate_cloud(
-        Tag.objects.usage_for_queryset(
-            asset.sherdnote_set.all(), counts=True))
-    user_tags = calculate_cloud(
-        Tag.objects.usage_for_queryset(
-            user.sherdnote_set.filter(
-                asset__course=request.course),
-            counts=True))
-
-    comments = Comment and Comment.objects.for_model(asset) or None
-
-    return {
-        'annotation_form': form,
-        'asset': asset,
-        'comments': comments,
-        'annotation': annotation,
-        'global_annotation': global_annotation,
-        'global_annotation_form': global_annotation_form,
-        'tags': tags,
-        'space_viewer':user,
-        'user_tags': user_tags,
-        'readonly': readonly,
-        }
+    return rv
 
 @rendered_with('assetmgr/explore.html')
 def archive_explore(request):

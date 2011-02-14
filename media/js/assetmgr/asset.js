@@ -167,6 +167,9 @@
                     
                 }
             })
+            if (/#whole-form/.test(document.location.hash)) {
+                showWholeForm();
+            }
             return this;
         }
 
@@ -396,3 +399,19 @@
     
 
 })();
+
+function showWholeForm() {
+    jQuery('#portion-asset-form').hide();
+    jQuery('#whole-asset-form').show();
+    jQuery(document.forms['clip-type'].elements['clipType']).each(function() {
+        if (this.value == 'Whole') this.checked = true;
+    });
+}
+
+function showPortionForm() {
+    jQuery('#whole-asset-form').hide();
+    jQuery('#portion-asset-form').show();
+    jQuery(document.forms['clip-type'].elements['clipType']).each(function() {
+        if (this.value == 'Portion') this.checked = true;
+    });
+}

@@ -1209,6 +1209,13 @@ table.project_list th.project-titles {
 
 table.project_list td {
 	 vertical-align: top;
+	 padding: 5px;
+
+}
+
+table.project_list td ul, table.project_list td ul li {
+	font-size: 100%;
+	margin: 0;
 
 }
 

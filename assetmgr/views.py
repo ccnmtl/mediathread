@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
 
 from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
@@ -188,9 +189,16 @@ def add_asset(request):
             annotationcontainerview(request, asset.pk)
             transaction.commit()
 
-        if not request.is_ajax():
-            return HttpResponseRedirect(
-                reverse('asset-view', args=[asset.id]))
+        asset_url = reverse('asset-view', args=[asset.id])
+
+        #for bookmarklet mass-adding
+        if request.REQUEST.get('noui','').startswith('postMessage'):
+            return render_to_response('assetmgr/interface_iframe.html',
+                                      {'message': '%s|%s' % (request.build_absolute_uri(asset_url),
+                                                             request.REQUEST['noui']),
+                                       })
+        elif not request.is_ajax():
+            return HttpResponseRedirect(asset_url)
         else:
             return HttpResponse(serializers.serialize('json',asset),
                                 mimetype="application/json")

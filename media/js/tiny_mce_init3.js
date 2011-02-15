@@ -6,7 +6,7 @@ var tiny_mce_settings_for_vital = {
   editor_selector:"mceEditor",
   entity_encoding : "numeric",
 	    /*CUSTOM CCNMTL: added 'citation' and 'editorwindow' --see bottom for explicit loading from a location */
-    plugins:"searchreplace,table,-citation,inlinepopups,-editorwindow,xhtmlxtras",
+    plugins:"searchreplace,table,-citation,inlinepopups,-editorwindow,xhtmlxtras,paste",
 	    /* CUSTOM CCNMTL: visual is set to false, so anchor tags don't get messed up.  This is probably a bug
 	       to be reported to tinyMCE */
   visual:false,
@@ -29,6 +29,12 @@ var tiny_mce_settings_for_vital = {
   //save_callback : "plugin_regexrep_save",
   //setupcontent_regex : regexes,
   //save_regex : regexes,
+  paste_auto_cleanup_on_paste : true,
+  paste_create_paragraphs : true,
+  paste_create_linebreaks : true,
+  paste_use_dialog : false,
+  paste_convert_middot_lists : true,
+  paste_strip_class_attributes: 'mso',
   setup: function(inst) {
       ///tab and shift-tab indent/outdent for Brie
       ///http://tinymce.moxiecode.com/punbb/viewtopic.php?pid=44170#p44170

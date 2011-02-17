@@ -158,10 +158,14 @@
                     var frm = document.forms['annotation-list-filter'];
 
                     frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
+                    jQuery(frm.elements['groupby']).val(hs_DataRetrieve('annotation-list-filter__group')
+                                                        || 'author');
 
                     jQuery(frm.elements['showall']).change(self.showHide);
                     jQuery(frm.elements['groupby']).change(function() {
-                        self.GroupBy(jQuery(this).val());
+                        var val = jQuery(this).val();
+                        hs_DataStore('annotation-list-filter__group', val);
+                        self.GroupBy(val);
                     });
                     self.GroupBy(jQuery(frm.elements['groupby']).val());
                     

@@ -25,6 +25,7 @@ var tiny_mce_settings_for_vital = {
   theme_advanced_resize_horizontal : false,
   remove_linebreaks:true,
   convert_urls : false,
+  gecko_spellcheck:true,
   //setupcontent_callback : "plugin_regexrep_setup",
   //save_callback : "plugin_regexrep_save",
   //setupcontent_regex : regexes,

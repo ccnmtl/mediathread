@@ -103,22 +103,6 @@ EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "mediathread@example.com"
 PUBLIC_CONTACT_EMAIL = "mediathread@example.com"
 
-# TinyMCE settings
-
-TINYMCE_JS_URL = '/site_media/js/tiny_mce/tiny_mce.js'
-TINYMCE_JS_ROOT = 'media/js/tiny_mce'
-
-# if you set this to True, you may have to 
-# override TINYMCE_JS_ROOT with the full path on production
-TINYMCE_COMPRESSOR = False 
-TINYMCE_SPELLCHECKER = True
-
-TINYMCE_DEFAULT_CONFIG = {'cols': 80, 
-                          'rows': 30,
-                          'plugins':'table,spellchecker,paste,searchreplace',
-                          'theme' : 'simple',
-                          }
-
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

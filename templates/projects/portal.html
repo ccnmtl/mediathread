@@ -143,7 +143,11 @@ Home
   </div>
   {%endif%}
   <div id="class_activity">
-  <h2>Class Activities</h2>
+  <h2>Class Activities
+   {% if request.user.is_staff %}
+     <a class="float_right" href="{%url admin:courseaffils_course_change course_id %}">Staff link: Manage Course</a></span>
+   {% endif %}
+  </h2>
 
 
 <div class="panel-column panel-column-stump">

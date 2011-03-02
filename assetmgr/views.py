@@ -25,6 +25,7 @@ Source = models.get_model('assetmgr','source')
 SherdNote = models.get_model('djangosherd','sherdnote')
 DiscussionIndex = models.get_model('djangosherd','discussionindex')
 User = models.get_model('auth','user')
+from courseaffils.models import CourseAccess
 from djangosherd.views import AnnotationForm, GlobalAnnotationForm
 
 Comment = models.get_model('comments','comment')
@@ -40,7 +41,7 @@ from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
 
 
 
-OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course')
+OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course','secret')
 #NON_VIEW
 def good_asset_arg(key):
     #need support for some things like width,height,max_zoom
@@ -80,7 +81,7 @@ def sources_from_args(request,asset=None):
     return sources
 
 
-@login_required
+#@login_required #no login, so server2server interface is possible
 @allow_http("GET", "POST")
 def add_view(request):
     if request.method == "POST":
@@ -92,7 +93,7 @@ def add_view(request):
     if asset:
         return HttpResponseRedirect(
             reverse('asset-view', args=[asset.id]))
-    elif asset is None:
+    elif asset is None and request.user.is_authenticated():
         return mock_analysis_space(request)
     else: #asset is False with no good args
         #no arguments so /save space
@@ -142,10 +143,13 @@ def add_asset(request):
 
     # XXX TODO: the error case here should be 401/403, not 404
     user = request.user
-    if user.is_staff and request.REQUEST.has_key('as'):
-        user = get_object_or_404(User,username=request.REQUEST['as'])
+    if (user.is_staff or CourseAccess.allowed(request)) and request.REQUEST.has_key('as'):
+        as_user = request.REQUEST['as']
+        if as_user == 'faculty':
+            as_user = request.course.faculty[0].username
+        user = get_object_or_404(User,username=as_user)
 
-    if not request.course.is_true_member(user):
+    if not request.course or not request.course.is_true_member(user):
         extra = ''
         if user.is_staff:
             extra = 'Since you are staff, you can add yourself through <a href="%s">Manage Course</a> interface.' % reverse('admin:courseaffils_course_change', args=[request.course.id])

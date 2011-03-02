@@ -232,12 +232,30 @@
           <dt>realplayer</dt><dd></dd>
           <dt>video{_pseudo,_rtmp}</dt><dd></dd>
           <dt>mp4</dt><dd></dd>
+          <dt>mp4_pseudo</dt><dd></dd>
+          <dt>mp4_rtmp</dt><dd></dd>
+          <dt>flv</dt><dd></dd>
           <dt>flv_pseudo</dt><dd></dd>
+          <dt>flv_rtmp</dt><dd></dd>
           <dt>ogg</dt><dd></dd>
+          <dt>mp3</dt><dd></dd>
           <dt>image_fpx</dt><dd></dd>
+          <dt>youtube</dt><dd>An embeddable YouTube video link.  Should be of the form http://www.youtube.com/v/ul1DoaY6bRE?enablejsapi=1&fs=1</dd>
           <dt></dt><dd></dd>
-          <dt></dt><dd></dd>
-
+          
+        </dl>
+        <h3>Staff and Server arguments</h3>
+        <dl>
+          <dt>as</dt>
+          <dd>
+            The username of the class member that the asset should be added as. (Like the `su` command).  If this is the special word "faculty" then it will be added as the first faculty member added to the course.
+          </dd>
+          <dt>set_course</dt>
+          <dd>The group name of the course that the asset is to be added into.
+          </dd>          
+          <dt>secret</dt>
+          <dd>A secret for server-to-server communication, so authentication is not necessary.  This is set in <code>deploy_specific/settings.py</code> SERVER_ADMIN_SECRETKEYS as a dictionary with the key, the server, and the value the secret.
+          </dd>          
         </dl>
       </div>
       <div class="intro-text">

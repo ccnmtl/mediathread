@@ -119,9 +119,9 @@ ANONYMOUS_PATHS = ('/accounts/',
                    '/api/',
                    )
 
-COURSEAFFILS_PATHS = ('/asset/',
+NON_ANONYMOUS_PATHS = ('/asset/',
                       '/annotations/',
-                      '/save',
+                      
                       '/yourspace/',
                       '/project/',
                       '/explore/',
@@ -133,7 +133,8 @@ COURSEAFFILS_PATHS = ('/asset/',
                       re.compile(r'^/$'),
                       )
 
-NON_ANONYMOUS_PATHS = COURSEAFFILS_PATHS
+#save is an exception, for server2server api
+COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save',)
 
 COURSEAFFILS_EXEMPT_PATHS = ANONYMOUS_PATHS
 COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']

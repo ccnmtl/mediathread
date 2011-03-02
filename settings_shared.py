@@ -116,6 +116,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 ANONYMOUS_PATHS = ('/accounts/',
                    '/site_media/',
                    '/admin/',
+                   '/api/',
                    )
 
 COURSEAFFILS_PATHS = ('/asset/',

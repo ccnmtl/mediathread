@@ -38,6 +38,8 @@ urlpatterns = patterns('',
                            name='is_logged_in.js'),
                        url(r'^nocache/\w+/accounts/logged_in.js$', 'courseaffils.views.is_logged_in',
                            name='nocache-is_logged_in.js'),
+                       url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
+                           name='api-user-courses'),
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###

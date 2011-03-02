@@ -145,7 +145,12 @@ def add_asset(request):
     if user.is_staff and request.REQUEST.has_key('as'):
         user = get_object_or_404(User,username=request.REQUEST['as'])
 
-    in_course_or_404(user.username, request.course)
+    if not request.course.is_true_member(user):
+        extra = ''
+        if user.is_staff:
+            extra = 'Since you are staff, you can add yourself through <a href="%s">Manage Course</a> interface.' % reverse('admin:courseaffils_course_change', args=[request.course.id])
+        return HttpResponseForbidden("""You must be a member of the course to add assets.  
+                  This is to prevent unintentional participation.%s""" % extra)
 
     asset = None
 

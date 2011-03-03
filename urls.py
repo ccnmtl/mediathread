@@ -61,6 +61,8 @@ urlpatterns = patterns('',
 
                        url(r'^explore/$','assetmgr.views.archive_explore',
                            name="explore"),
+                       url(r'^explore/redirect/$','assetmgr.views.archive_redirect',
+                           name="archive_redirect"),
 
 
                        (r'^reports/',include('mediathread.reports.urls')),

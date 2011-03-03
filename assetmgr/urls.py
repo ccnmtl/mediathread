@@ -10,8 +10,9 @@ urlpatterns = patterns(
     url(r'^$', 'container_view',
         name='asset-container'),
 
-    url(r'^explore/?$', 'archive_explore',
-        name='asset-archiveexplore'),
+    #NOTE: explore and explore/redirect are re-referenced in ../urls.py
+    url(r'^explore/?$', 'archive_explore', name='asset-archiveexplore'),
+    url(r'^explore/redirect/?$', 'archive_redirect', name='asset-archiveredirect'),
 
     url(r'^json/(?P<asset_id>\d+)/$', 
         'asset_json', name="asset-json"),

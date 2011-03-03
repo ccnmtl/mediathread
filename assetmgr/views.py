@@ -410,6 +410,42 @@ def archive_explore(request):
         rv['bookmarklet_vars'] = {'flickr_apikey':settings.DJANGOSHERD_FLICKR_APIKEY }
     return rv
 
+def archive_redirect(request):
+    url = request.GET.get('url',None)
+    if not url:
+        url = reverse('asset-archiveexplore')
+    else:
+        try:
+            Source.objects.get(primary=True, label='archive', url=url, asset__course=request.course)
+        except Source.DoesNotExist:
+            return HttpResponseForbidden("You can only redirect to an archive url")
+        special = getattr(settings,'SERVER_ADMIN_SECRETKEYS',{})
+        for server in special.keys():
+            if url.startswith(server):
+                url = archive_specialauth(request,url,special[server])
+                continue
+        
+    return HttpResponseRedirect(url)
+
+        
+def archive_specialauth(request,url,key):
+    import hmac, hashlib, datetime
+    
+    nonce = '%smthc' % datetime.datetime.now().isoformat()
+    redirect_back = request.build_absolute_uri('/')
+    username = request.user.username
+    return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
+        url,
+        request.course.group.name,
+        username,
+        redirect_back,
+        nonce,
+        hmac.new(key,
+                 '%s:%s:%s' % (username,redirect_back,nonce),
+                 hashlib.sha1
+                 ).hexdigest()
+        )
+
 def asset_json(request, asset_id):
     asset = get_object_or_404(Asset,pk=asset_id)
     asset_key = 'x_%s' % asset.pk

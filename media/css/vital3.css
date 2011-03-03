@@ -1642,7 +1642,7 @@ h3.noteGrouping a:visited
     text-align: right;
 }
 
-.annotationLayer
+.clipStripLayer .annotationLayer
 {
     background: #3333FF;
     padding:0px;
@@ -1655,6 +1655,8 @@ h3.noteGrouping a:visited
     -moz-opacity:0.45;
     filter:alpha(opacity=45);
     float: left;
+    border-left:1px solid black;
+    border-right:1px solid white;
 }
 
 

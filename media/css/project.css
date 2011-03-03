@@ -70,6 +70,10 @@ max-width:550px;
 padding: 5px;
 }
 
+.project-form-title input#id_title {
+    width:250px;
+}
+
 #materials .essay-space.published {
     width:auto;
 }

@@ -46,3 +46,4 @@ class ProjectForm(forms.ModelForm):
         self.fields['body'].required = False
         self.fields['submit'].required = False
         self.fields['publish'].required = False
+        self.fields['title'].widget.attrs['maxlength'] = 80 #for structured collaboration

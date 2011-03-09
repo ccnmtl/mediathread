@@ -172,18 +172,22 @@ def add_asset(request):
         raise AssertionError("no arguments were supplied to make an asset")
 
     if asset is None:
-        asset = Asset(title=title[:1020], #max title length
+        try:
+            asset = Asset(title=title[:1020], #max title length
                       course=request.course,
                       author=user)
-        asset.save()
-        for source in sources_from_args(request, asset).values():
-            source.save()
-
-        transaction.commit()
-        if len(metadata):
-            asset.metadata_blob = simplejson.dumps(metadata)
             asset.save()
+            for source in sources_from_args(request, asset).values():
+                source.save()
+
             transaction.commit()
+            if len(metadata):
+                asset.metadata_blob = simplejson.dumps(metadata)
+                asset.save()
+                transaction.commit()
+        except:
+            transaction.rollback()
+            raise
 
     # if we got here from an attempt to annotate the mock asset
     # we'll save that annotation now that the asset exists

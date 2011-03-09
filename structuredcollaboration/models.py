@@ -63,7 +63,7 @@ class Collaboration(models.Model):
             if self.group_id:
                 return self.group
             else:
-                self.group = Group.objects.create(name='Collaboration %s: %s' % (self.pk, self.title))
+                self.group = Group.objects.create(name=unicode('Collaboration %s: %s' % (self.pk, self.title))[0:80])
                 self.save()
                 return self.group
 

@@ -237,7 +237,8 @@ class Project(models.Model):
 
         if sync_group:
             part = self.participants.all()
-            if len(part) > 1 or (col.group_id and col.group.user_set.count() > 1):
+            if len(part) > 1 or (col.group_id and col.group.user_set.count() > 1) \
+                    or (self.author not in part and len(part) > 0):
                 colgrp = col.have_group()
                 already_grp = set(colgrp.user_set.all())
                 for p in part:

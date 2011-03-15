@@ -82,6 +82,15 @@ class Annotation(models.Model):
 
     def sherd_json(self, request=None, asset_key='', metadata_keys=tuple() ):
         user_id = getattr(getattr(request,'user',None),'id',None)
+        metadata = {}
+        for m in metadata_keys:
+            if m=='author':
+                metadata[m] = {'id':getattr(self,'author_id',None)}
+            elif callable(m):
+                key,val = m(request, self, m)
+                metadata[key] = val
+            else:
+                metadata[m] = getattr(self,m,None)
         return {
             'asset_key':'%s_%s' % (asset_key,self.asset_id),
             'id':self.pk,
@@ -89,12 +98,7 @@ class Annotation(models.Model):
             'range2':self.range2,
             'annotation':self.annotation(),
             'editable':user_id == getattr(self,'author_id',-1),
-            'metadata':dict([
-                    (m,getattr(self,m,None))
-                    if m != 'author'
-                    else (m,{'id':getattr(self,'author_id',None)})
-                    for m in metadata_keys
-                    ])
+            'metadata':metadata,
             }
         
 
@@ -253,13 +257,6 @@ class SherdNote(Annotation):
     def content_object(self):
         """Support similar property as Comment model"""
         return self.asset
-
-    @property
-    def author_name(self):
-        if not self.author_id:
-            return None
-        else:
-            return self.author.get_full_name() or self.author.username
 
     def delete(self):
         Tag.objects.get_for_object(self).delete()

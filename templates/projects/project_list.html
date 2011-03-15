@@ -1,4 +1,4 @@
-{% load user_annotations tagging_tags smartif user_projects %}
+{% load user_annotations tagging_tags smartif user_projects coursetags %}
 
 {% if not projects and not assignments %}
  <p class="para">
@@ -66,8 +66,8 @@
 	     >{{project.title|default:"(Untitled)"}}</a>
 	</h3>
         <div class="participants">Author(s):
-          <span class="participants-short">{{project.attribution|truncatewords:4 }}</span>
-          <span class="participants-full">{{project.attribution}}</span>
+          <span class="participants-short">{% public_name for project.attribution_list truncate 2 %}</span>
+          <span class="participants-full">{% public_name for project.attribution_list %}</span>
         </div>
       </td>
    

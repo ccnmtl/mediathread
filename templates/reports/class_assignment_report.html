@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%load user_annotations comments user_projects %}
+{%load user_annotations comments user_projects coursetags %}
 
 <title> {% block title %}
 Course Summary
@@ -27,7 +27,7 @@ Course Summary
 {% for response in responses %}
   <tr>
     <td>
-      {{response.attribution}}
+      {% public_name for response.attribution_list %}
     </td>
     <td>
       <a href="{{response.get_absolute_url}}">{{response.title}}</a>

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif %}
+{% load smartif coursetags %}
 {% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
 {% block css %}
   {{ block.super }}
@@ -231,7 +231,7 @@
         {# {% if comments.10 %}  {% render_comment_form for asset %}{% endif %} #}
 	{% for comment in comments %}
 	<p>
-	  <strong>{{comment.user.get_full_name|default:comment.user}}</strong> at {{comment.submit_date|date}}
+	  <strong>{% public_name for comment.user %}</strong> at {{comment.submit_date|date}}
 	  <br/>
 	  {{comment.comment}}
 	</p>

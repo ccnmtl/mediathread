@@ -14,7 +14,7 @@
 	<!--[if IE 6]>
 	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css" media="screen" />
 	<![endif]-->
-    {% load cache user_projects courseaffils %}
+    {% load cache user_projects coursetags %}
     {% cache 500 heads course %}
        {% if course.settings.custom_headers %}
         {{course.settings.custom_headers|safe}}
@@ -51,7 +51,7 @@
 	<div id="page-header-mediathread"><a href="#"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" /></a></div>
 	<ul id="page-header-standardnav">
           {% if request.user.is_authenticated %}
-            <li>Welcome, <span id="logged_in_name" class="username">{{user.get_full_name|default:user}}!</span></li>
+            <li>Welcome, <span id="logged_in_name" class="username">{% public_name for user %}!</span></li>
             <li><a href="/accounts/logout/">Log Out</a></li>
             {%if user.is_staff %}
               <li>

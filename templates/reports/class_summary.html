@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%load user_annotations comments %}
+{%load user_annotations comments coursetags %}
 
 <title> {% block title %}
 Course Summary
@@ -36,7 +36,7 @@ Course Summary
         {% for student in students %}
         <tr data-username="{{student.username}}" class="user-{{student.username}}">
           <td><a href="{%url your-space-records student.username %}">
-            {{student.get_full_name|default:student.username}}
+            {%public_name for student %}
           </a></td>
           <td>{{student.annotations}}</td>
           <td>{{student.comments}}</td>

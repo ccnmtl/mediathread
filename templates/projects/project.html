@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load user_annotations tagging_tags smartif user_projects threadedcomments_tags %}
+{% load user_annotations tagging_tags smartif user_projects threadedcomments_tags coursetags %}
 
 <title> {% block title %}
 {% if is_space_owner %}
@@ -114,7 +114,7 @@
           <b>{{projectform.participants.label_tag}}:</b>
           <div id="participants_chosen">
             {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-            {{part.get_full_name|default:part.username}}{%endfor%}
+            {%public_name for part %}{%endfor%}
           </div>
           <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
           <br />

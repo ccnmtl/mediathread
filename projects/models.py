@@ -187,11 +187,14 @@ class Project(models.Model):
         """Support similar property as Comment model"""
         return self
 
+    def attribution_list(self):
+        participants = list(self.participants.all())
+        if self.author not in participants:
+            participants.insert(0,self.author)
+        return participants
+
     def attribution(self, participants=None):
-        if participants is None:
-            participants = list(self.participants.all())
-            if self.author not in participants:
-                participants.insert(0,self.author)
+        participants = self.attribution_list()
         return ', '.join([p.get_full_name() or p.username
                 for p in participants])
 

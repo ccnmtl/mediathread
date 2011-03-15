@@ -10,12 +10,12 @@ Class Analysis > Member Pages
 
 <h1>Member Pages</h1>
 
-{% load smartif %}
+{% load smartif coursetags %}
 <ul>
 {% for member in request.course.members %}
 <li>
   <h3><a href="{% url your-space-records member.username %}"
-	 >{{member.get_full_name|default:member.username}}</a>
+	 >{% public_name for member %}</a>
       {% if member in request.course.faculty %}
       (instructor)
       {% endif %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load smartif collaborations user_projects %}
+{% load smartif collaborations user_projects coursetags %}
 
 <title>{% block title %}
 {% if preview_num %}
@@ -53,7 +53,7 @@
   {% endif %}
   </h1>
   
-  <h5>by <span id="participants_chosen">{{project.attribution}}</span>
+  <h5>by <span id="participants_chosen">{% public_name for project.attribution_list %}</span>
   </h5>
   
 
@@ -161,7 +161,7 @@
         <a href="{{response.get_absolute_url}}">
           {{response.title}}
         </a>
-        by {{response.attribution}}
+        by {% public_name for response.attribution_list %}
       </li>
       {% endfor %}
     </ul>
@@ -209,7 +209,7 @@
     </a>
     {% endifnotequal %}
   </td><td>
-    {{v.modified|date}} by {{v.instance.author.get_full_name|default:v.instance.author.username }}
+    {{v.modified|date}} by {%public_name for v.instance.author %}
   </td>
   </tr>
   {% endfor %}

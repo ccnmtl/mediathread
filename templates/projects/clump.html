@@ -1,3 +1,4 @@
+{% load coursetags %}
 	<li>
 	  <div class="asset_title type-{{clump.type}}
                       {%ifequal clump.type "asset"%}
@@ -13,7 +14,7 @@
 	      {%if act.user%}
 	      by 
 	      <a href="{% url your-space-records act.user.username %}"
-		 >{{act.user.get_full_name|default:act.user.username}}</a>
+		 >{% public_name for act.user %}</a>
 	      {%endif%}
 	      {%if act.text %}
 	      :

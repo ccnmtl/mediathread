@@ -1,4 +1,4 @@
-{% load user_annotations tagging_tags helpful_tags %}
+{% load user_annotations tagging_tags helpful_tags coursetags %}
 <div id="asset_browse_col" class="asset-table slider-column">
     <div id="videoclipbox" class="asset-view-small" style="display:none;">
       <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();updateVerticalHeight(null,{'materials':0});return false;">x</a>
@@ -14,7 +14,7 @@
   <div class="filter-widget">
     <!--h2 class="switcher-extraneous-title">
       {%if space_owner %}
-         {{space_owner.get_full_name|default:space_owner.username}}'s Annotations
+         {% public_name for space_owner %}'s Annotations
       {% else %}
          Class Items
       {% endif %} 
@@ -28,7 +28,7 @@
             {% ifequal space_owner user %}
               My Saved Items
             {% else %}
-              {{space_owner.get_full_name|default:space_owner.username}}
+              {% public_name for space_owner %}
             {% endifequal %}   
           {% else %}
            All Class Items
@@ -64,7 +64,7 @@
             {%for m in request.course.members%}
             <li><a href="{%url your-space m.username%}"
                    data-ajax="{%url annotations-fragment m.username%}"
-                   >{{m.get_full_name|default:m.username}}</a></li>
+                   >{% public_name for m %}</a></li>
             {%endfor%}
           </ul>
         </li>
@@ -252,7 +252,7 @@
         </div><!-- class="actions" -->
 	<a {% if page_in_edit_mode %}target="_blank"{% endif %}
 	  class="materialCitationLink"
-	  title="Last modified on {{annotation.modified|date}} by {{annotation.author.get_full_name|default:annotation.author}}"
+	  title="Last modified on {{annotation.modified|date}} by {% public_name for annotation.author %}"
 	  href="{{annotation.get_absolute_url}}">{{annotation.title}}</a> 	    
 
 	<span class="annotation-timecode">{{annotation.range_as_timecode}}</span>

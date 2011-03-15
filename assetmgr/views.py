@@ -37,7 +37,7 @@ from assetmgr.lib import filter_by,get_active_filters
 
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
-from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
+from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT, get_public_name
 
 
 
@@ -462,8 +462,12 @@ def asset_json(request, asset_id):
             'asset_id': asset.pk,
             }]
     if request.GET.has_key('annotations'):
+        def author_name(request, annotation, key):
+            if not annotation.author_id:
+                return None
+            return 'author_name',get_public_name(annotation.author, request)
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            annotations.append( ann.sherd_json(request, 'x', ('title','author','tags','author_name','body') ) )
+            annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
             
     data = {'assets':dict( [(asset_key,
                              asset.sherd_json(request)

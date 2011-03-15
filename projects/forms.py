@@ -3,6 +3,8 @@ from django.db import models
 
 from projects.models import *
 
+from courseaffils.lib import get_public_name
+
 class ProjectForm(forms.ModelForm):
 
     submit = forms.ChoiceField(choices=(('Preview','Preview'),
@@ -23,7 +25,7 @@ class ProjectForm(forms.ModelForm):
     
     def __init__(self,request, *args, **kwargs):
         super(ProjectForm,self).__init__(*args,**kwargs)
-        self.fields['participants'].choices = [(u.id,u.get_full_name() or u.username) for u in request.course.user_set.all()]
+        self.fields['participants'].choices = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
         
         if not request.course.is_faculty(request.user):
             self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices

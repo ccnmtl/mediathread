@@ -82,7 +82,7 @@ class Project(models.Model):
         children = col.children.filter(content_type=type)
         viewable_children = []
         for child in children:
-            if child.permission_to("read", request):
+            if child.permission_to("read", request) and child.content_object:
                 viewable_children.append(child.content_object)
         return viewable_children
         

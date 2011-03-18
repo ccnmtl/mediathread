@@ -112,7 +112,7 @@
  
  
  
-   {% if project|is_assignment:request %}
+   {% if role_in_course != 'non-member' and project|is_assignment:request %}
     {% if not user_responses %}
     <form class="block project-createnew" method="POST"
 	  action="{%url your-space-projects user%}">

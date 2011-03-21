@@ -220,16 +220,23 @@ def add_asset(request):
         #any primary_labels as arguments
         raise AssertionError("something didn't work")
 
-
 @rendered_with('assetmgr/asset_container.html')
 def container_view(request):
-    "for all class assets view at /asset/ "
+    """for all class assets view at /asset/ 
+    OPTIMIZATION:  What we need:
+       asset: primary label, thumb.url
+              tags {name}
+       project: collaboration.get_parent, feedback_discussion
+                status (from collaboration)
+                attribution
+    """
     #extra() is case-insensitive order hack
     #http://scottbarnham.com/blog/2007/11/20/case-insensitive-ordering-with-django-and-postgresql/
+    archives = list(request.course.asset_set.archives())
     assets = [a for a in Asset.objects.filter(course=request.course).extra(
             select={'lower_title': 'lower(title)'}
             ).order_by('lower_title')
-              if a not in request.course.asset_set.archives()]
+              if a not in archives]
 
     from tagging.models import Tag
     all_tags = Tag.objects.usage_for_queryset(

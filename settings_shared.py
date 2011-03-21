@@ -55,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'courseaffils.middleware.CourseManagerMiddleware',
     'someutils.AuthRequirementMiddleware',
     'djangohelpers.middleware.HttpDeleteMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -81,13 +82,13 @@ INSTALLED_APPS = (
     'tagging',
     'smartif',
     'modelversions',
+    'debug_toolbar',
     #mediathread local
     'structuredcollaboration',
     'djangosherd',#strangely must precede assetmgr
     'assetmgr',
     'projects',
     'discussions',
-
     'django.contrib.comments',
     'threadedcomments',
     'djangohelpers',

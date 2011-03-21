@@ -152,7 +152,7 @@ def view_project(request, project_id):
             if "Preview" == request.POST.get('submit',None):
                 #doesn't send project.author, and other non-exposed fields
                 mock_project = projectform.cleaned_data.copy()
-                mock_project['attribution'] = get_public_name(mock_project['participants'], request)
+                mock_project['attribution_list'] = mock_project['participants']
                 mock_project['assignment'] = projectform.instance.assignment()
                 return project_preview(request, space_owner, mock_project, 
                                        is_participant=True, preview_num=request.GET.get('preview',1))

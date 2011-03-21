@@ -50,6 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
@@ -153,6 +154,15 @@ FLOWPLAYER_SWF_LOCATION = "http://releases.flowplayer.org/swf/flowplayer-3.2.2.s
 from courseaffils import policies
 DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
 
+#this gets around Django 1.2's stupidity for commenting
+#we're already checking that the request is from someone in the class
+def no_reject(request, reason):
+    request.csrf_processing_done = True
+    return None
+
+CSRF_FAILURE_VIEW = no_reject
+
+
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there
 try:
@@ -162,3 +172,4 @@ try:
 
 except ImportError:
     pass
+

@@ -104,7 +104,20 @@ class Asset(models.Model):
 
     @property
     def primary(self):
-        return Source.objects.get(asset=self,primary=True)
+        p = getattr(self,'_primary_cache',None)
+        if p:
+            return p
+        self._primary_cache = Source.objects.get(asset=self,primary=True)
+        return self._primary_cache
+
+    @property
+    def thumb_url(self):
+        if not hasattr(self,'_thumb_url'):
+            try:
+                self._thumb_url = Source.objects.get(asset=self,label='thumb').url
+            except Source.DoesNotExist:
+                self._thumb_url = None
+        return self._thumb_url
 
     def tags(self):
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())

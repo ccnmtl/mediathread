@@ -234,9 +234,19 @@ def container_view(request):
     #http://scottbarnham.com/blog/2007/11/20/case-insensitive-ordering-with-django-and-postgresql/
     archives = list(request.course.asset_set.archives())
     assets = [a for a in Asset.objects.filter(course=request.course).extra(
-            select={'lower_title': 'lower(title)'}
-            ).order_by('lower_title')
+            select={'lower_title': 'lower(assetmgr_asset.title)'}
+            ).select_related().order_by('lower_title')
               if a not in archives]
+
+    asset_ids = [a.id for a in assets]
+    thumbs = dict([(th.asset_id,th.url) for th in Source.objects.filter(label='thumb', asset__in=asset_ids)])
+    
+    primaries = dict([(p.asset_id,p) for p in Source.objects.filter(primary=True, asset__in=asset_ids)])
+    #import pdb;pdb.set_trace()
+    for a in assets:
+        a._primary_cache = primaries[a.id]
+        a._thumb_url = thumbs.get(a.id,None)
+
 
     from tagging.models import Tag
     all_tags = Tag.objects.usage_for_queryset(

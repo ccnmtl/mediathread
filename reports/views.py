@@ -240,9 +240,13 @@ def class_activity(request):
 
     my_feed=Clumper(
         SherdNote.objects.filter(asset__course=request.course).order_by('-added')[:40],
-        Project.objects.filter(course=request.course).order_by('-modified')[:40],
-        DiscussionIndex.objects.filter(
-            collaboration__context=request.collaboration_context).order_by('-modified')[:40],
+        Project.objects.filter(course=request.course,submitted=True).order_by('-modified')[:40],
+        DiscussionIndex.with_permission(request,
+                                        DiscussionIndex.objects
+                                        .filter(
+                collaboration__context=request.collaboration_context)
+                                        .order_by('-modified')[:40],
+                                        )
         )
 
     rv = {

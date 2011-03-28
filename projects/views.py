@@ -157,7 +157,7 @@ def view_project(request, project_id):
                 return project_preview(request, space_owner, mock_project, 
                                        is_participant=True, preview_num=request.GET.get('preview',1))
             
-            #legacy
+            #legacy and for optimizing queries
             projectform.instance.submitted = (request.POST.get('publish',None) != 'PrivateEditorsAreOwners')
             
             #this changes for version-tracking purposes

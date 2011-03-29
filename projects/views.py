@@ -25,7 +25,7 @@ ProjectVersion = get_model('projects','projectversion')
 User = get_model('auth','user')
 Group = get_model('auth','group')        
 
-from courseaffils.lib import in_course_or_404, get_public_name
+from courseaffils.lib import in_course_or_404, get_public_name, AUTO_COURSE_SELECT
 from projects.forms import ProjectForm
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
@@ -258,4 +258,13 @@ def project_json(request,project):
             }
     return HttpResponse(json.dumps(data, indent=2),
                         mimetype='application/json')
+
+
+def project_workspace_courselookup(project_id=None,**kw):
+    if project_id:
+        return Project.objects.get(pk=project_id).course
+
+AUTO_COURSE_SELECT[project_readonly_view] = project_workspace_courselookup
+AUTO_COURSE_SELECT[view_project] = project_workspace_courselookup
+
 

@@ -20,11 +20,11 @@ PUBLISH_OPTIONS = (('Assignment','Assignment for Class'),
                    )
 
 SHORT_NAME = {
+    "Assignment":'Assignment',
     "PrivateEditorsAreOwners":'Private',
     "InstructorShared":'Submitted',
     "CourseProtected":'Class',
     "PublicEditorsAreOwners":'World',
-    "Assignment":'Assignment',
     "PrivateStudentAndFaculty":"with Instructors", 
     }
 

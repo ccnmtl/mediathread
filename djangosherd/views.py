@@ -16,7 +16,7 @@ from djangohelpers.lib import rendered_with
 
 from assetmgr.lib import annotated_by,get_active_filters
 
-from courseaffils.lib import in_course_or_404
+from courseaffils.lib import in_course_or_404,in_course
 
 import simplejson
 import re
@@ -172,7 +172,8 @@ def annotations_collection_fragment(request,username=None):
           'page_in_edit_mode': request.GET.has_key('edit_mode'),
           }
     if username != 'none':
-        if username:
+        if username \
+                and (request.user.username != username or request.course.is_true_member(request.user)):
             rv['space_owner'] = in_course_or_404(username, request.course)
             #assets = annotated_by(Asset.objects.filter(course=request.course),
             #                      space_owner)

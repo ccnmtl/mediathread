@@ -27,10 +27,18 @@ class ProjectForm(forms.ModelForm):
         super(ProjectForm,self).__init__(*args,**kwargs)
         self.fields['participants'].choices = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
         
+        col = kwargs['instance'].collaboration()
+        if col:
+            pol = col._policy.policy_name
+            if pol not in dict(self.fields['publish'].choices):
+                self.fields['publish'].choices.append( (pol,pol) )
+            self.initial['publish'] = pol
+
         if not request.course.is_faculty(request.user):
             self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
                                               if choice[0] not in PUBLISH_OPTIONS_FACULTY_ONLY]
-
+            
+        
         #not restrictive enough -- people can add children to their own projects
         # is that a good idea?
         # necessary to add a discussion to it, but maybe that's a workaround
@@ -40,9 +48,7 @@ class ProjectForm(forms.ModelForm):
         #                                                              content_type = ContentType.objects.get_for_model(Project))
         #                                 if sc.permission_to('add_child',request)
         #                                 ]
-        col = kwargs['instance'].collaboration()
-        if col:
-            self.initial['publish'] = col._policy.policy_name
+            
 
         self.fields['participants'].required = False
         self.fields['body'].required = False

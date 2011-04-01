@@ -47,7 +47,8 @@ INSTALLATION
 3. Bootstrap uses virtualenv to build a contained library in ve/
   ./bootstrap.py
   NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
-
+  NOTE 2: if you get an error about egenix at the end,
+          read requirements/eggs/OTHER_EGENIX
 
 =====
 The rest of the instructions work like standard Django.  See:

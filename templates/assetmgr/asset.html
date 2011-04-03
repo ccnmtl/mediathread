@@ -84,12 +84,7 @@
       </div>
     </div>
     
-    {% if request.GET.c %}
-    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Annotations">
-    {% else %}
-    <!-- temporarily put analysis tab as default until we can get metadata again -->
-    <div id="stats" class="indexcard tabbertab tabbertabdefault" title="Annotations">
-    {% endif %}<!--end request.GET.c -->
+    <div id="asset-details-annotations" class="indexcard tabbertab tabbertabdefault" title="Annotations">
     
     {% if annotation and readonly %}
         <h2><a class="hs-control" href="#ItemAnalysis" id="disableform"></a>Item Analysis</h2>
@@ -153,7 +148,10 @@
                {% if annotation and not readonly %}
                    <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotation-form asset.pk annotation.pk %}{% endif %}">
                {% else %}
+                   <form name="clip-form" id="clip-form" method="POST" action="javascript:AnnotationList.saveAnnotation(this)">
+                   {% comment %}
         	       <form name="clip-form" id="clip-form" method="POST" action="{% if mock %}{% url asset-save %}{% else %}{% url annotations-container asset.pk %}{% endif %}">
+                   {% endcomment %}
                {% endif %}<!--end if annotation and not readonly-->
                   
                {{ annotation_form.as_p }}

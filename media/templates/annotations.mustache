@@ -1,15 +1,21 @@
-  <div id="asset-details-annotations" class="tab-box">
+<!-- States
+    - Viewing asset that is not yet saved (mock)
+    - Viewing asset, not editable by me
+    - Viewing asset, no annotations selected
+    - Viewing annotation, editable by me
+    - Viewing annotation, not editable by me
+-->
+
+{{#>>asset-annotations}}
+<div id="asset-details-annotations" class="tab-box">
     <div id="asset-details-annotations-actions">
-      <a class="annotation-actions-add" href="javascript:addAnnotation()">Add Annotation</a>
-      <a href="">Add Tag</a>
-      <a href="">Edit Your Item Note</a>
+        <a class="annotation-actions-add" href="javascript:AnnotationList.openAnnotationForm()">Add Annotation</a>
     </div>
 
     {{#>>annotation-current}}
     <div id="asset-details-annotations-current">
         {{#annotation}}
-          <form name="new-annotation-form" action="javascript:saveAnnotation()">
-
+          <form name="edit-annotation-form" action="javascript:AnnotationList.saveAnnotation(this)">
           {{#editable?}}<!-- if editable -->
             <label for="annotation-title">Title:</label>
             <input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}" />
@@ -28,13 +34,18 @@
 
           {{#id?}}
             <input type="hidden" name="annotation-id" value="{{id}}" />
-            <input type="button" onclick="" value="Copy" />
+            {{#editable?}}
+                <input type="submit" name="Save" value="save" />
+            {{/editable?}}
+            {{^editable}}
+                <input type="submit" name="Copy" value="copy" />
+            {{/editable}}
           {{/id?}}
           </form>
-
         {{/annotation}}
     </div>
     {{/>>annotation-current}}
+
     {{#>>annotations-organized}}
    
     <div id="annotations-organized"> <h2>Saved Annotations</h2>
@@ -75,3 +86,4 @@
     </div>
     {{/>>annotations-organized}}
 </div>
+{{/>>asset-annotations}}

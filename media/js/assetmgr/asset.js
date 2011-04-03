@@ -110,6 +110,14 @@
             },
             'asset-json':function(asset_id, with_annotations) {
                 return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
+            },
+            'create-annotation':function(asset_id) {
+                // a.k.a. server-side annotation-containers
+                return '/asset/'+asset_id+'/annotations/';
+            },
+            'edit-annotation':function(asset_id,annotation_id) {
+                // a.k.a server-side annotation-form
+                return '/asset/'+asset_id+'/annotations/'+annotation_id+'/';
             }
         }
 
@@ -150,25 +158,46 @@
                 success:function(text){
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);
                     
-                    Mustache.update('annotations-organized', {
-                        'annotation':null,
-                        'annotation_list':[]
-                    })
-                    //now that the form exists...
-                    var frm = document.forms['annotation-list-filter'];
-
-                    frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
-                    jQuery(frm.elements['groupby']).val(hs_DataRetrieve('annotation-list-filter__group')
-                                                        || 'author');
-
-                    jQuery(frm.elements['showall']).change(self.showHide);
-                    jQuery(frm.elements['groupby']).change(function() {
-                        var val = jQuery(this).val();
-                        hs_DataStore('annotation-list-filter__group', val);
-                        self.GroupBy(val);
-                    });
-                    self.GroupBy(jQuery(frm.elements['groupby']).val());
+                    if (self.asset_id) {
+                        djangosherd.storage.get({
+                                id:self.asset_id,
+                                type:'asset',
+                                url:MediaThread.urls['asset-json'](self.asset_id,/*annotations=*/true)
+                            },
+                            false,
+                            function(asset_full) {
+                                self.asset = asset_full;
+                                if (self.annotation_id) {
+                                    for (var i=0;i<asset_full.annotations.length;i++) {
+                                        var ann = asset_full.annotations[i];
+                                        if (ann.id === self.annotation_id) {
+                                            self.current_annotation = ann;
+                                        }
+                                    }
+                                }
                     
+                                Mustache.update('asset-annotations', {
+                                    'annotation': self.current_annotation,
+                                    'annotation_list':[],
+                                    'current_member': '',
+                                })
+                                
+                                //now that the form exists...
+                                var frm = document.forms['annotation-list-filter'];
+            
+                                frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
+                                jQuery(frm.elements['groupby']).val(hs_DataRetrieve('annotation-list-filter__group')
+                                                                    || 'author');
+            
+                                jQuery(frm.elements['showall']).change(self.showHide);
+                                jQuery(frm.elements['groupby']).change(function() {
+                                    var val = jQuery(this).val();
+                                    hs_DataStore('annotation-list-filter__group', val);
+                                    self.GroupBy(val);
+                                });
+                                self.GroupBy(jQuery(frm.elements['groupby']).val());
+                        });
+                    }
                 }
             })
             if (/#whole-form/.test(document.location.hash)) {
@@ -397,6 +426,32 @@
         //  - 
         ///Asset Save
         //  - storage.update
+        ///Annotation Save
+        //  - update list items
+        //  - replace with 'new' annotation
+        this.saveAnnotation = function() {
+            var frm = document.forms['edit-annotation-form'];
+
+            if (frm.elements['Copy']) {
+                // Add template...but with all the properties of this annotation.
+            } else if (frm.elements['Save']) {
+                jQuery.ajax({
+                    type: 'POST',
+                    url: MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id),
+                    data: jQuery(frm).serialize(),
+                    dataType: 'json',
+                    success: function(data, textStatus, jqXHR) {
+                        console.log(data);
+                        
+                        // @todo -- how to notify user his information is saved?
+                        
+                        // @todo -- djangosherd.storage.put()....doesn't seem to work?
+                        // do I need to write this function?
+                        
+                    }
+                });
+            }
+        }
 
         
     })();

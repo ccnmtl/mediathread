@@ -94,16 +94,20 @@ def create_annotation(request):
     #so it appears in the user's list
     asset.global_annotation(annotation.author, auto_create=True)
 
-    #new annotations should redirect 'back' to the asset
-    # at the endpoint of the last annotation
-    # so someone can create a new annotation ~lizday
-    url_fragment = ''
-    if annotation.range2:
-        url_fragment = '#start=%s' % str(annotation.range2)
-
-    redirect_to = request.GET.get('next',
-                                  annotation.asset.get_absolute_url() + url_fragment  )
-    return HttpResponseRedirect(redirect_to)
+    if request.is_ajax():
+        return HttpResponse(serializers.serialize('json',annotation),
+                                mimetype="application/json")
+    else:
+        #new annotations should redirect 'back' to the asset
+        # at the endpoint of the last annotation
+        # so someone can create a new annotation ~lizday
+        url_fragment = ''
+        if annotation.range2:
+            url_fragment = '#start=%s' % str(annotation.range2)
+    
+        redirect_to = request.GET.get('next',
+                                      annotation.asset.get_absolute_url() + url_fragment  )
+        return HttpResponseRedirect(redirect_to)
 
 @allow_http("POST", "DELETE")
 def annotation_dispatcher(request, annot_id):
@@ -135,6 +139,7 @@ def edit_annotation(request, annot_id):
     form = dict((key[len('annotation-'):], val) for key, val in request.POST.items()
                 if key.startswith('annotation-'))
 
+    ## @todo -- figure out how the clipform gets into the annotations.mustache form
     # don't let a global annotation turn into a clip, or v.v.
     if form.get('range1') or form.get('range2'):
         assert not annotation.is_null()

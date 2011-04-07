@@ -34,13 +34,13 @@
 
           {{#id?}}
             <input type="hidden" name="annotation-id" value="{{id}}" />
-            {{#editable?}}
-                <input type="submit" name="Save" value="save" />
-            {{/editable?}}
             {{^editable}}
                 <input type="submit" name="Copy" value="copy" />
             {{/editable}}
           {{/id?}}
+          {{#editable?}}
+              <input type="submit" name="Save" value="save" />
+          {{/editable?}}
           </form>
         {{/annotation}}
     </div>

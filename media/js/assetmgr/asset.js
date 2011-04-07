@@ -417,15 +417,23 @@
         ///Annotation Copy
         //  - get, clone, remove id, editable = true, replace
 
-        ///Annotation Save
-        //  - update list items
-        //  - replace with 'new' annotation
-        //
         ///Annotation Open
         //  - highlight on view
         //  - 
-        ///Asset Save
+        this.openAddAnnotationForm = function() {
+            
+            var context = { 'annotation': { 'editable': true } };
+            Mustache.update('annotation-current',
+                            context,
+                            { post:function(elt) {
+                                
+                            }});
+        }
+        
+        ///Asset Save -- ??? 
+        // - asset save when doesn't yet exist
         //  - storage.update
+        
         ///Annotation Save
         //  - update list items
         //  - replace with 'new' annotation

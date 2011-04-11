@@ -135,6 +135,8 @@
  
  
  {% endif %}{# end project.collaboration #}
+
+
   </div><!-- ??class="button-form" -->
 <div class="essay-space published">  
       <div id="essaybox" class="essaytextarea">
@@ -162,6 +164,7 @@
           {{response.title}}
         </a>
         by {% public_name for response.attribution_list %}
+
       </li>
       {% endfor %}
     </ul>
@@ -218,6 +221,18 @@
 </div>
 {% endif %}{# end project.versions #}
 {% endif %}{# end is_space_owner or is_faculty #}
+
+  {% if user.is_staff %}
+  <p>
+  staff links:
+  <a class="manage-asset" href="{%url admin:projects_project_change project.id %}">manage</a>
+     {% if project.collaboration %}  
+     <a class="manage-asset" href="{%url admin:structuredcollaboration_collaboration_change project.collaboration.id %}">policy</a>
+     {% endif %}
+  </p>
+  {% endif %}  
+
+
 </div>
 
 {% endblock %}

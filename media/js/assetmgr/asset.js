@@ -116,7 +116,7 @@
                 return '/asset/'+asset_id+'/annotations/';
             },
             'edit-annotation':function(asset_id,annotation_id) {
-                // a.k.a server-side annotation-form
+                // a.k.a server-side annotation-form assetmgr:views.py:annotationview
                 return '/asset/'+asset_id+'/annotations/'+annotation_id+'/';
             }
         }
@@ -166,7 +166,7 @@
                             },
                             false,
                             function(asset_full) {
-                                self.asset = asset_full;
+                                self.current_asset = asset_full;
                                 if (self.annotation_id) {
                                     for (var i=0;i<asset_full.annotations.length;i++) {
                                         var ann = asset_full.annotations[i];
@@ -176,11 +176,12 @@
                                     }
                                 }
                     
-                                Mustache.update('asset-annotations', {
-                                    'annotation': self.current_annotation,
-                                    'annotation_list':[],
-                                    'current_member': '',
-                                })
+                                var context = { 'annotation': self.current_annotation };
+                                Mustache.update('asset-annotations', context, { post:function(elt) {
+                                    if (self.current_annotation) {
+                                        // @todo -- push the clipform into the template ? 
+                                    }
+                                }});
                                 
                                 //now that the form exists...
                                 var frm = document.forms['annotation-list-filter'];
@@ -413,57 +414,78 @@
             }
         }
         //decorateForm
-
-        ///Annotation Copy
-        //  - get, clone, remove id, editable = true, replace
-
-        ///Annotation Open
-        //  - highlight on view
-        //  - 
+        
+        ///Annotation Add Form
+        //  - author == current_user
         this.openAddAnnotationForm = function() {
+            var context = { 'annotation': {   
+                'editable': true,
+                'metadata': {
+                  'author': { 'id': MediaThread.current_user },
+                  'author_name': MediaThread.user_full_name
+                },
+            }};
             
-            var context = { 'annotation': { 'editable': true } };
-            Mustache.update('annotation-current',
-                            context,
-                            { post:function(elt) {
-                                
-                            }});
+            Mustache.update('annotation-current', context);
         }
         
-        ///Asset Save -- ??? 
-        // - asset save when doesn't yet exist
-        //  - storage.update
+        ///Annotation Copy
+        // - new annotation with properties of current annotation minus id
+        this.copyAnnotation = function() {
+            // Add template...but with all the properties of this annotation.
+            var context = { 'annotation': {   
+                    'editable': true,
+                    'metadata': {
+                      'body': self.current_annotation.metadata.body,
+                      'tags': self.current_annotation.metadata.tags,
+                      'title': self.current_annotation.metadata.title,
+                      'author': { 'id': MediaThread.current_user },
+                      'author_name': MediaThread.user_full_name
+                    },
+                    'range1': self.current_annotation.range1,
+                    'range2': self.current_annotation.range2
+                }};
+            Mustache.update('annotation-current', context);
+        }
         
         ///Annotation Save
         //  - update list items
         //  - replace with 'new' annotation
         this.saveAnnotation = function() {
             var frm = document.forms['edit-annotation-form'];
-
-            if (frm.elements['Copy']) {
-                // Add template...but with all the properties of this annotation.
-            } else if (frm.elements['Save']) {
-                jQuery.ajax({
-                    type: 'POST',
-                    url: MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id),
-                    data: jQuery(frm).serialize(),
-                    dataType: 'json',
-                    success: function(data, textStatus, jqXHR) {
-                        console.log(data);
-                        
-                        // @todo -- how to notify user his information is saved?
-                        
-                        // @todo -- djangosherd.storage.put()....doesn't seem to work?
-                        // do I need to write this function?
-                        
-                    }
-                });
-            }
+            
+            var url = frm.elements['annotation_id'] ?
+                url = MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id) : 
+                url = MediaThread.urls['create-annotation'](this.asset_id); 
+                
+            jQuery.ajax({
+                type: 'POST',
+                url: url,
+                data: jQuery(frm).serialize(),
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    
+                    // @todo -- "saved" messaging
+                    
+                    // @todo -- update annotation list
+                    
+                    // @todo -- update djangosherd storage
+                    
+                    // @todo -- set self.asset_id, self.annotation_id, self.current_annotation
+                    
+                }
+            });
         }
-
+        
+        ///Annotation Cancel
+        //  - revert any outstanding changes. Close add form if open.
+        this.cancelAnnotation = function() {
+            var context = { 'annotation': self.current_annotation };
+            Mustache.update('annotation-current', context);
+        }
         
     })();
-    
 
 })();
 

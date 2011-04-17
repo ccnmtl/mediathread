@@ -179,7 +179,11 @@
                                 var context = { 'annotation': self.current_annotation };
                                 Mustache.update('asset-annotations', context, { post:function(elt) {
                                     if (self.current_annotation) {
-                                        // @todo -- push the clipform into the template ? 
+                                        // push the clipform into the template
+                                        // @todo verify this is all cool with Sky
+                                        djangosherd.assetview.clipform.html.push('clipform-display', {
+                                            asset : {}
+                                        });
                                     }
                                 }});
                                 
@@ -443,7 +447,8 @@
                       'author_name': MediaThread.user_full_name
                     },
                     'range1': self.current_annotation.range1,
-                    'range2': self.current_annotation.range2
+                    'range2': self.current_annotation.range2,
+                    'annotation_data': self.current_annotation.annotation_data
                 }};
             Mustache.update('annotation-current', context);
         }
@@ -456,7 +461,9 @@
             
             var url = frm.elements['annotation_id'] ?
                 url = MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id) : 
-                url = MediaThread.urls['create-annotation'](this.asset_id); 
+                url = MediaThread.urls['create-annotation'](this.asset_id);
+                
+   
                 
             jQuery.ajax({
                 type: 'POST',

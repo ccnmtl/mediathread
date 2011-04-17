@@ -96,6 +96,7 @@ class Annotation(models.Model):
             'id':self.pk,
             'range1':self.range1,
             'range2':self.range2,
+            'annotation_data':self.annotation_data,
             'annotation':self.annotation(),
             'editable':user_id == getattr(self,'author_id',-1),
             'metadata':metadata,

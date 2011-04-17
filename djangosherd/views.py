@@ -95,8 +95,9 @@ def create_annotation(request):
     asset.global_annotation(annotation.author, auto_create=True)
 
     if request.is_ajax():
-        return HttpResponse(serializers.serialize('json',annotation),
-                                mimetype="application/json")
+        data = serializers.serialize('json',annotation)
+        return HttpResponse(data, mimetype="application/json")
+        
     else:
         #new annotations should redirect 'back' to the asset
         # at the endpoint of the last annotation

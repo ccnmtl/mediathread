@@ -428,9 +428,15 @@
                   'author': { 'id': MediaThread.current_user },
                   'author_name': MediaThread.user_full_name
                 },
+                'range1': 0,
+                'range2': 0
             }};
             
             Mustache.update('annotation-current', context);
+            
+            djangosherd.assetview.clipform.html.push('clipform-display', {
+                asset : {}
+            });
         }
         
         ///Annotation Copy
@@ -457,13 +463,17 @@
         //  - update list items
         //  - replace with 'new' annotation
         this.saveAnnotation = function() {
+            // Push clipform state into local storage 
+            // @todo -- this is clearly not the right place for this. Discuss with Sky. 
+            // clipform > update > pushes to storage within .html. I think this is replaced by the new storage system?
+            var obj = djangosherd.assetview.clipform.getState();
+            djangosherd.assetview.clipform.storage.update(obj, true);
+            
             var frm = document.forms['edit-annotation-form'];
             
             var url = frm.elements['annotation_id'] ?
                 url = MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id) : 
                 url = MediaThread.urls['create-annotation'](this.asset_id);
-                
-   
                 
             jQuery.ajax({
                 type: 'POST',
@@ -471,16 +481,18 @@
                 data: jQuery(frm).serialize(),
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR) {
-                    console.log(data);
+                    // @todo -- storage is doing some wacky manipulation with the 'annotation-active' class. 
+                    // storage shouldn't be involved at the css level imho. fix that.
+                    djangosherd.storage.set({ id: data.annotation.id, type:'annotations' }, data.annotation, true);
+                    self.asset_id = data.asset.id;
+                    self.annotation_id = data.annotation.id;
+                    self.current_annotation = data.annotation;
+                    
+                    Mustache.update('annotation-current', data);
                     
                     // @todo -- "saved" messaging
                     
                     // @todo -- update annotation list
-                    
-                    // @todo -- update djangosherd storage
-                    
-                    // @todo -- set self.asset_id, self.annotation_id, self.current_annotation
-                    
                 }
             });
         }

@@ -40,7 +40,6 @@ from tagging.utils import calculate_cloud
 from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT, get_public_name
 
 
-
 OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course','secret')
 #NON_VIEW
 def good_asset_arg(key):
@@ -462,6 +461,7 @@ def asset_json(request, asset_id):
             'asset_id': asset.pk,
             }]
     if request.GET.has_key('annotations'):
+        # @todo: refactor this serialization into a common place.
         def author_name(request, annotation, key):
             if not annotation.author_id:
                 return None

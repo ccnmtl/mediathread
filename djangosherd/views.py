@@ -16,7 +16,7 @@ from djangohelpers.lib import rendered_with
 
 from assetmgr.lib import annotated_by,get_active_filters
 
-from courseaffils.lib import in_course_or_404,in_course
+from courseaffils.lib import in_course_or_404,in_course,get_public_name
 
 import simplejson
 import re
@@ -95,9 +95,15 @@ def create_annotation(request):
     asset.global_annotation(annotation.author, auto_create=True)
 
     if request.is_ajax():
-        data = serializers.serialize('json',annotation)
-        return HttpResponse(data, mimetype="application/json")
+        # @todo: refactor this serialization into a common place.
+        response = { 'asset': { 'id': asset.id }, 'annotation': {} }
+        def author_name(request, annotation, key):
+            if not annotation.author_id:
+                return None
+            return 'author_name',get_public_name(annotation.author, request)
         
+        response['annotation'] = annotation.sherd_json(request, 'x', ('title','author','tags',author_name,'body'))
+        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
     else:
         #new annotations should redirect 'back' to the asset
         # at the endpoint of the last annotation
@@ -156,11 +162,15 @@ def edit_annotation(request, annot_id):
     annotation.save()
 
     if request.is_ajax():
-        response = dict(title=annotation.title,
-                        tags=annotation.tags,
-                        body=annotation.body)
-        response = simplejson.dumps(response)
-        return HttpResponse(response, mimetype="application/json")
+        # @todo: refactor this serialization into a common place. 
+        response = { 'asset': { 'id': asset.id }, 'annotation': {} }
+        def author_name(request, annotation, key):
+            if not annotation.author_id:
+                return None
+            return 'author_name',get_public_name(annotation.author, request)
+        
+        response['annotation'] = annotation.sherd_json(request, 'x', ('title','author','tags',author_name,'body'))
+        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
     
     redirect_to = request.GET.get('next', '.')
     return HttpResponseRedirect(redirect_to)

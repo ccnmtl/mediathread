@@ -45,7 +45,7 @@
   {% endwith %}
   <h1>{{project.title}}
   {% if version_number %}Version {{version_number}}{% endif %}
-  {% if is_space_owner and project.id %}
+  {% if is_space_owner and project.id and not is_preview %}
   <a class="edit-pencil" href="{{project.get_workspace_url}}">
     <img src="/site_media/img/pencil.gif" alt="Edit Project" />
     (edit)
@@ -222,7 +222,7 @@
 {% endif %}{# end project.versions #}
 {% endif %}{# end is_space_owner or is_faculty #}
 
-  {% if user.is_staff %}
+  {% if user.is_staff and project.id %}
   <p>
   staff links:
   <a class="manage-asset" href="{%url admin:projects_project_change project.id %}">manage</a>

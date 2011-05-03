@@ -139,18 +139,21 @@
         this.grouping = null;
         this.highlight_layer = null;
 
-        ////SETUP SOMEHOW!!!
         this.asset_id = null;
-        this.global_annotation = {};//unused
-        this.annotation_id = null;//unused
+        this.annotation_id = null;
+        //this.global_annotation = {};//unused
+        
+        // populated objects
+        this.active_annotation = null;
+        this.active_asset = null;
 
-        //current_annotation
+        //active_annotation
         //mock_mode -- from page state
         //storage
         this.init = function(config) {
             for (a in config) {
-                //asset_id, annotation_id
-                this[a] = config[a];
+                // @todo -- where does this come from?
+                this[a] = config[a]; //asset_id, annotation_id
             }
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache?nocache=v2',
@@ -159,6 +162,8 @@
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);
                     
                     if (self.asset_id) {
+                        // Retrieve the full asset w/annotations from storage
+                        // Do I need the full asset?
                         djangosherd.storage.get({
                                 id:self.asset_id,
                                 type:'asset',
@@ -166,19 +171,13 @@
                             },
                             false,
                             function(asset_full) {
-                                self.current_asset = asset_full;
-                                if (self.annotation_id) {
-                                    for (var i=0;i<asset_full.annotations.length;i++) {
-                                        var ann = asset_full.annotations[i];
-                                        if (ann.id === self.annotation_id) {
-                                            self.current_annotation = ann;
-                                        }
-                                    }
-                                }
+                                self.active_asset = asset_full;
+                                self.setActiveAnnotation(self.annotation_id); 
                     
-                                var context = { 'annotation': self.current_annotation };
+                                // Update the annotation add/edit form with the active_annotation
+                                var context = { 'annotation': self.active_annotation };
                                 Mustache.update('asset-annotations', context, { post:function(elt) {
-                                    if (self.current_annotation) {
+                                    if (self.active_annotation) {
                                         // push the clipform into the template
                                         // @todo verify this is all cool with Sky
                                         djangosherd.assetview.clipform.html.push('clipform-display', {
@@ -187,31 +186,31 @@
                                     }
                                 }});
                                 
-                                //now that the form exists...
+                                // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                                 var frm = document.forms['annotation-list-filter'];
             
                                 frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
                                 jQuery(frm.elements['groupby']).val(hs_DataRetrieve('annotation-list-filter__group')
                                                                     || 'author');
             
-                                jQuery(frm.elements['showall']).change(self.showHide);
+                                jQuery(frm.elements['showall']).change(self.showHideAnnotations);
                                 jQuery(frm.elements['groupby']).change(function() {
                                     var val = jQuery(this).val();
                                     hs_DataStore('annotation-list-filter__group', val);
-                                    self.GroupBy(val);
+                                    self.groupBy(val);
                                 });
-                                self.GroupBy(jQuery(frm.elements['groupby']).val());
+                                self.groupBy(jQuery(frm.elements['groupby']).val());
                         });
                     }
                 }
-            })
+            });
             if (/#whole-form/.test(document.location.hash)) {
                 showWholeForm();
             }
             return this;
         }
 
-        this.showHide = function() {
+        this.showHideAnnotations = function() {
             var show = document.forms['annotation-list-filter'].elements['showall'].checked;
             hs_DataStore('annotation-list-filter__showall', show || '');
             if (show)
@@ -219,32 +218,22 @@
             else
                 self.layers[self.grouping].hide()
         }
-        this.clearAnnotation = function(ann_id) {
-            ///TODO: make this updateAnnotation(ann_id, obj)
-            if (!ann_id) {
-                if (this.annotation_id)
-                    ann_id = this.annotation_id;
-                else return;
-            }
-            for (a in this.layers) {
-                this.layers[a].remove(ann_id);
-            }
-        }
+        
         ///Groupby('author')
         ///Groupby('tag')
         //  - get, group
         //  - replace/hide-show Layer, group-by color
         //  - decorate
-        this.GroupBy = function(grouping) {
+        this.groupBy = function(grouping) {
             ///Do nothing if we can't or don't need to.
-            if (this.grouping == grouping) 
+            if (this.grouping == grouping || !this.asset_id) 
                 return;
-            if (!this.asset_id) 
-                return;
+
             ///hide previous grouping so we can show the new one.
             if (this.grouping) {
                 this.layers[this.grouping].hide();
             }
+            
             //show (and create) the new grouping
             if (!this.layers[grouping]) {
                 this.layers[grouping] = djangosherd.assetview.layer();
@@ -254,7 +243,8 @@
                         removeAll:function(){},
                         add:function(){},
                         remove:function(){},
-                        show:function(){}, hide:function(){}
+                        show:function(){}, 
+                        hide:function(){}
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
@@ -271,13 +261,12 @@
                 }
             }
             this.grouping = grouping;
-            this.showHide();
+            this.showHideAnnotations();
             this.resetHighlightLayer();
-            var color_by;
 
             switch (grouping) {
             case 'tag':
-                color_by = function(ann,cats) {
+                this.layers[grouping].color_by = function(ann) {
                     var tags = ann.metadata.tags.split(/\s*,\s*/);
                     for (var i=0;i<tags.length;i++) {
                         //remove empty front tag
@@ -295,74 +284,81 @@
                 }
                 break;
             case 'author':
-                color_by = function(ann,cats) {
+                this.layers[grouping].color_by = function(ann) {
                     return [ann.metadata.author_name];
                 }
                 break;
             }
-            
-            djangosherd.storage.get(
-                {
-                    id:this.asset_id,
-                    type:'asset',
-                    url:MediaThread.urls['asset-json'](this.asset_id,/*annotations=*/true)
-                },
-                false,
-                function(asset_full) {
-                    var context = {'annotation_list':[]};
-                    var cats = {};
-                    var user_listing = false;
-                    self.layers[grouping].removeAll();
-                    DjangoSherd_Colors.reset(grouping);
-                    for (var i=0;i<asset_full.annotations.length;i++) {
-                        var ann = asset_full.annotations[i];
-                        ///TODO: WILL BREAK when we ajax this
-                        ann.active_annotation = (ann.id === self.annotation_id)
-                        if (ann.metadata) {
-                            var titles = color_by(ann);
-                            for (var j=0;j<titles.length;j++) {
-                                var title = titles[j];
-                                var color = DjangoSherd_Colors.get(title);
-                                /// add the annotation onto the layer in the right color
-                                if (ann.annotation) {
-                                    self.layers[grouping].add(
-                                        ann.annotation,{'id':ann.id,
-                                                        'color':color
-                                                       }
-                                    );
-                                }
-                                ///..and setup the category for the AnnotationList
-                                if (!cats[title]) {
-                                    cats[title] = {'title':title,
-                                                   'color':color,
-                                                   'annotations':[]
-                                                  };
-                                    if (title && title == MediaThread.user_full_name) {
-                                        user_listing = title;
-                                    } else {
-                                        context.annotation_list.push(title);
-                                    }
-                                }
-                                cats[title].annotations.push(ann);
+
+            self.updateAnnotationList();
+        }
+        
+        this.updateAnnotationList = function() {
+            djangosherd.storage.get({
+                id:this.asset_id,
+                type:'asset',
+                url:MediaThread.urls['asset-json'](this.asset_id,/*annotations=*/true)
+            },
+            false,
+            function(asset_full) {
+                var grouping = self.grouping;
+                var context = {'annotation_list':[]};
+                var cats = {};
+                var user_listing = false;
+                self.active_asset = asset_full; // @todo -- necessary?
+                self.layers[grouping].removeAll();
+                DjangoSherd_Colors.reset(grouping);
+                for (var i=0;i<asset_full.annotations.length;i++) {
+                    var ann = asset_full.annotations[i];
+                    ///TODO: WILL BREAK when we ajax this
+                    ann.active_annotation = (ann.id === self.annotation_id)
+                    if (ann.metadata) {
+                        var titles = self.layers[grouping].color_by(ann);
+                        for (var j=0;j<titles.length;j++) {
+                            var title = titles[j];
+                            var color = DjangoSherd_Colors.get(title);
+                            /// add the annotation onto the layer in the right color
+                            if (ann.annotation) {
+                                self.layers[grouping].add(
+                                    ann.annotation,{'id':ann.id,
+                                                    'color':color
+                                                   }
+                                );
                             }
+                            ///..and setup the category for the AnnotationList
+                            if (!cats[title]) {
+                                cats[title] = {'title':title,
+                                               'color':color,
+                                               'annotations':[]
+                                              };
+                                if (title && title == MediaThread.user_full_name) {
+                                    user_listing = title;
+                                } else {
+                                    context.annotation_list.push(title);
+                                }
+                            }
+                            cats[title].annotations.push(ann);
                         }
                     }
-                    ///sort and build the annotation_list
-                    ///TODO: if by_author, then sort the owner to the top.
-                    context.annotation_list.sort();
-                    if (user_listing) {
-                        context.annotation_list.unshift(user_listing);
-                    }
-                    for (var i=0;i<context.annotation_list.length;i++) {
-                        context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
-                    }
-                    Mustache.update('annotation-list',context,{post:function(elt){
-                        jQuery('li.annotation-listitem',elt).each(self.decorateLink);
-                    }});
                 }
-            );
-        };
-
+                
+                ///sort and build the annotation_list
+                ///TODO: if by_author, then sort the owner to the top.
+                context.annotation_list.sort();
+                if (user_listing) {
+                    context.annotation_list.unshift(user_listing);
+                }
+                
+                for (var i=0;i<context.annotation_list.length;i++) {
+                    context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
+                }
+                
+                Mustache.update('annotation-list', context, { post:function(elt) {
+                    jQuery('li.annotation-listitem',elt).each(self.decorateLink);
+                }});
+            });
+        }
+        
         this.resetHighlightLayer = function() {
             if (this.highlight_layer) {
                 this.highlight_layer.destroy();
@@ -417,26 +413,46 @@
                 })
             }
         }
-        //decorateForm
+        //decorateForm 
+        
+        this.showAnnotation = function(annotation_id) {
+            self.setActiveAnnotation(annotation_id);
+            
+            var context = { 'annotation': self.active_annotation };
+            Mustache.update('annotation-current', context, { post:function(elt) {
+                if (self.active_annotation) {
+                    djangosherd.assetview.clipform.html.push('clipform-display', {
+                        asset : {}
+                    });
+
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                }
+            }});
+            
+            jQuery('.annotation-active').removeClass('annotation-active');
+            jQuery('.annotation-listitem-'+annotation_id).addClass('annotation-active');
+        }
         
         ///Annotation Add Form
         //  - author == current_user
-        this.openAddAnnotationForm = function() {
+        this.newAnnotation = function() {
             var context = { 'annotation': {   
                 'editable': true,
                 'metadata': {
                   'author': { 'id': MediaThread.current_user },
                   'author_name': MediaThread.user_full_name
                 },
-                'range1': 0,
-                'range2': 0
+                'range1': 0, // @todo -- null?
+                'range2': 0 // @todo -- null?
             }};
             
-            Mustache.update('annotation-current', context);
-            
-            djangosherd.assetview.clipform.html.push('clipform-display', {
-                asset : {}
-            });
+            Mustache.update('annotation-current', context, { post:function(elt) {
+                djangosherd.assetview.clipform.html.push('clipform-display', {
+                    asset : {}
+                });
+                
+                djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 });
+            }});
         }
         
         ///Annotation Copy
@@ -446,17 +462,26 @@
             var context = { 'annotation': {   
                     'editable': true,
                     'metadata': {
-                      'body': self.current_annotation.metadata.body,
-                      'tags': self.current_annotation.metadata.tags,
-                      'title': self.current_annotation.metadata.title,
+                      'body': self.active_annotation.metadata.body,
+                      'tags': self.active_annotation.metadata.tags,
+                      'title': self.active_annotation.metadata.title,
                       'author': { 'id': MediaThread.current_user },
                       'author_name': MediaThread.user_full_name
                     },
-                    'range1': self.current_annotation.range1,
-                    'range2': self.current_annotation.range2,
-                    'annotation_data': self.current_annotation.annotation_data
+                    'range1': self.active_annotation.range1,
+                    'range2': self.active_annotation.range2,
+                    'annotation_data': self.active_annotation.annotation_data
                 }};
-            Mustache.update('annotation-current', context);
+            
+            Mustache.update('annotation-current', context, { post:function(elt) {
+                if (self.active_annotation) {
+                    djangosherd.assetview.clipform.html.push('clipform-display', {
+                        asset : {}
+                    });
+
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                }
+            }});
         }
         
         ///Annotation Save
@@ -474,40 +499,59 @@
             var url = frm.elements['annotation_id'] ?
                 url = MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id) : 
                 url = MediaThread.urls['create-annotation'](this.asset_id);
-                
-            jQuery.ajax({
-                type: 'POST',
-                url: url,
-                data: jQuery(frm).serialize(),
-                dataType: 'json',
-                success: function(data, textStatus, jqXHR) {
-                    // @todo -- storage is doing some wacky manipulation with the 'annotation-active' class. 
-                    // storage shouldn't be involved at the css level imho. fix that.
-                    djangosherd.storage.set({ id: data.annotation.id, type:'annotations' }, data.annotation, true);
-                    self.asset_id = data.asset.id;
-                    self.annotation_id = data.annotation.id;
-                    self.current_annotation = data.annotation;
-                    
-                    Mustache.update('annotation-current', data);
-                    
-                    // @todo -- "saved" messaging
-                    
-                    // @todo -- update annotation list
-                }
-            });
+            
+            djangosherd.storage.set({ id: frm.elements['annotation_id'], 
+                                      type: 'annotations',
+                                      url: url,
+                                      data: jQuery(frm).serialize() },
+                                     function(data) {
+                                          self.asset_id = data.asset.id;
+                                          self.annotation_id = data.annotation.id;
+                                          self.active_annotation = data.annotation;
+                                          
+                                          Mustache.update('annotation-current', data);
+                                          
+                                          jQuery('.annotation-active').removeClass('annotation-active');
+                                          jQuery('.annotation-listitem-' + self.annotation_id).addClass('annotation-active');
+                                          
+                                          //@todo -- saved messaging. something that fades out?
+                                          
+                                          self.updateAnnotationList();
+                                     });
         }
         
         ///Annotation Cancel
         //  - revert any outstanding changes. Close add form if open.
         this.cancelAnnotation = function() {
-            var context = { 'annotation': self.current_annotation };
-            Mustache.update('annotation-current', context);
+            var context = { 'annotation': self.active_annotation };
+            Mustache.update('annotation-current', context, { post:function(elt) {
+                if (self.active_annotation) {
+                    
+                    djangosherd.assetview.clipform.html.push('clipform-display', {
+                        asset : {}
+                    });
+                    
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                }
+            }});
+        }
+        
+        this.setActiveAnnotation = function(annotation_id) {
+            self.annotation_id = annotation_id;
+            for (var i=0;i< self.active_asset.annotations.length;i++) {
+                var ann = self.active_asset.annotations[i];
+                if (ann.id === self.annotation_id) {
+                    self.active_annotation = ann;
+                }
+            }
         }
         
     })();
 
 })();
 
+
+// @todo -- is the whole/portion concept going away?
 function showWholeForm() {
     jQuery('#portion-asset-form').hide();
     jQuery('#whole-asset-form').show();

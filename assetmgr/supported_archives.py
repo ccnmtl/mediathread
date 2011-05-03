@@ -151,6 +151,22 @@ When you find an image you want to analyze in an ARTstor collection, click on it
                      },
             },
      },
+    {'title':'William Blake Archive',
+     'metadata':{'description':
+                     "A hypermedia archive of prints, paintings, and poems by William Blake (1757-1827) sponsored by the Library of Congress"
+                 },
+     'sources':{
+            'url':{'label':'url',
+                   'url':'http://www.blakearchive.org/blake/main.html',
+                   },
+            'archive':{'label':'archive',
+                       'url':'http://www.blakearchive.org/blake/main.html',
+                       },
+            'thumb':{'label':'thumb',
+                     'url':'http://www.blakearchive.org/blake/public/urizen.G.P5.detail.jpg',
+                     },
+            },
+     },
 
 ]
 

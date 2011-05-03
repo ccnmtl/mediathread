@@ -9,18 +9,21 @@
 {{#>>asset-annotations}}
 <div id="asset-details-annotations">
     <div id="asset-details-annotations-actions">
-        <a class="annotation-actions-add" href="javascript:AnnotationList.openAddAnnotationForm()">New Annotation</a>
+        <a class="annotation-actions-add" href="javascript:AnnotationList.newAnnotation()">New Annotation</a>
     </div>
     
     <br />
     
     <form name="edit-annotation-form">
     
-        <div id="clipform-display" name="clipform-display"></div>
+        
         
         {{#>>annotation-current}}
         <div id="asset-details-annotations-current">
+            <div id="clipform-display" name="clipform-display"></div>
+            
             <!-- Used by clipform. @todo figure out how this all fits in with the new storage system -->
+            <!-- For both videos and images. -->
             <div id="original-annotation" class="annotation-data" 
                  data-begin="{{range1}}" 
                  data-end="{{range2}}"
@@ -95,11 +98,8 @@
                             {{^annotation}}annotation-whole{{/annotation}}
                             {{#active_annotation?}}annotation-active{{/active_annotation?}}" 
                      data-id="{{id}}">
-                   <a class="{{#editable}}annotation-editable{{/editable}}" href="{{annotation-form?url(asset.id,id)}}">{{metadata.title?default(-Untitled-)}}</a>
+                   <a class="{{#editable}}annotation-editable{{/editable}}" href="javascript:AnnotationList.showAnnotation({{id}})">{{metadata.title?default(-Untitled-)}}</a>
                    {{^annotation}}(whole item){{/annotation}}
-                   {{#active_annotation?}}
-                        <a class="annotation-asset-link" href="{{asset-view?url(asset.id)}}">clear</a>
-                   {{/active_annotation?}} 
                  </li>
                {{/>>annotation-listitem}}
              {{/annotations}}

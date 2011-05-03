@@ -84,11 +84,6 @@
                 </div> <!-- end Info tab -->
     
                 <div class="indexcard tabbertab tabbertabdefault" title="Annotations">
-                    {% if annotation and readonly %}
-                        <h2><a class="hs-control" href="#ItemAnalysis" id="disableform"></a>Item Analysis</h2>
-                    {% else %}
-                        <h2><a class="hs-control" href="#ItemAnalysis"></a>Currently Analyzing</h2>
-                    {% endif %}
                     
                     <!--  @todo: resolve chicken/egg issue with clipform. its 1st setstate relies on this code snippet being here -->
                     <div id="asset-details-annotations">

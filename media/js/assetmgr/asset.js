@@ -424,7 +424,7 @@
                     djangosherd.assetview.clipform.html.push('clipform-display', {
                         asset : {}
                     });
-
+                    djangosherd.assetview.setState(self.active_annotation.annotation);
                     djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
                 }
             }});

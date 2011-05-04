@@ -22,7 +22,7 @@ requirements/src/uuid-1.30.tar.gz
 # packages is kind of broken since lib/python/site-packages has apparently been renamed
 # to dist-packages. so on my system i'm actually downloading and installing them locally
 # during bootstrap
-requirements/src/psycopg2-2.2.1.tar.gz
+requirements/src/psycopg2-2.4-no-mx.tar.gz
 #psycopg2
 
 #MySQLdb #this doesn't seem to work--just make sure it's in site-packages globally

@@ -23,12 +23,6 @@ ret = subprocess.call([os.path.join(vedir, 'bin', 'pip'), "install",
                        "--enable-site-packages",
                        "--index-url=''",
                        "--requirement",os.path.join(pwd,"requirements/apps.txt")])
-if ret: exit(ret)
 
-# do not want to try to install the egg on 2.5
-if sys.version.startswith("2.6"):
-    ret = subprocess.call([os.path.join(vedir,"bin/easy_install"),
-                           '-f',os.path.join(pwd,"requirements/eggs/"),
-                           'egenix-mx-base',
-                           ])
+
 exit(ret)

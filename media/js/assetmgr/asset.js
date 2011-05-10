@@ -183,6 +183,9 @@
                                         djangosherd.assetview.clipform.html.push('clipform-display', {
                                             asset : {}
                                         });
+                                        
+                                        djangosherd.assetview.setState(self.active_annotation.annotation);
+                                        djangosherd.assetview.clipform.setState({ 'mode': 'browse', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
                                     }
                                 }});
                                 
@@ -451,7 +454,8 @@
                     asset : {}
                 });
                 
-                djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 });
+                djangosherd.assetview.setState({});
+                djangosherd.assetview.clipform.setState({ 'mode': 'create', 'start': 0, 'end': 0 });
             }});
         }
         
@@ -479,7 +483,8 @@
                         asset : {}
                     });
 
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                    djangosherd.assetview.setState(self.active_annotation.annotation);
+                    djangosherd.assetview.clipform.setState({ 'mode': 'copy', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
                 }
             }});
         }
@@ -488,13 +493,15 @@
         //  - update list items
         //  - replace with 'new' annotation
         this.saveAnnotation = function() {
+            var frm = document.forms['edit-annotation-form'];
+
             // Push clipform state into local storage 
             // @todo -- this is clearly not the right place for this. Discuss with Sky. 
             // clipform > update > pushes to storage within .html. I think this is replaced by the new storage system?
             var obj = djangosherd.assetview.clipform.getState();
-            djangosherd.assetview.clipform.storage.update(obj, true);
+            if (obj.length > 0)
+                djangosherd.assetview.clipform.storage.update(obj, true);
             
-            var frm = document.forms['edit-annotation-form'];
             
             var url = frm.elements['annotation_id'] ?
                 url = MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id) : 
@@ -504,12 +511,21 @@
                                       type: 'annotations',
                                       url: url,
                                       data: jQuery(frm).serialize() },
-                                     function(data) {
+                                      function(data) {
                                           self.asset_id = data.asset.id;
                                           self.annotation_id = data.annotation.id;
                                           self.active_annotation = data.annotation;
                                           
-                                          Mustache.update('annotation-current', data);
+                                          Mustache.update('annotation-current', data, { post:function(elt) {
+                                              if (self.active_annotation) {
+                                                  djangosherd.assetview.clipform.html.push('clipform-display', {
+                                                      asset : {}
+                                                  });
+
+                                                  djangosherd.assetview.setState(self.active_annotation.annotation);
+                                                  djangosherd.assetview.clipform.setState({ 'mode': 'copy', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                                              }
+                                          }});
                                           
                                           jQuery('.annotation-active').removeClass('annotation-active');
                                           jQuery('.annotation-listitem-' + self.annotation_id).addClass('annotation-active');
@@ -531,7 +547,8 @@
                         asset : {}
                     });
                     
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                    djangosherd.assetview.setState(self.active_annotation.annotation);
+                    djangosherd.assetview.clipform.setState({ 'mode': 'browse', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
                 }
             }});
         }

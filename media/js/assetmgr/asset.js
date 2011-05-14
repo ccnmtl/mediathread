@@ -23,73 +23,6 @@
 */
 (function() {
     var global = this;
-    var FIELDS_TO_DISABLE = {
-	'annotation-title':true,
-	'annotation-tags':true,
-	'annotation-body':true,
-	'save-clip-annotation':true
-    }
-
-    var clip_form = null;
-    //enable form to 'copy' the annotation
-    global.copyAnnotation = function copyAnnotation() {
-	for (a in FIELDS_TO_DISABLE) {
-       if (clip_form.elements[a].type == 'textarea') {
-           clip_form.elements[a].readOnly = false; // IE
-           clip_form.elements[a].readonly = "";
-        } else {
-            clip_form.elements[a].disabled = false;
-        }
-	}
-	jQuery('#copy-annotation').remove();
-	jQuery('#disableform').attr('id','previously-disabled-form');
-    }
-
-    function validateNoteForm(evt) {
-	var form = this;//jQuery
-	var tag_field = form.elements['annotation-tags'];
-	if (tag_field) {//is this null?
-	    var tags = tag_field.value.split(',');
-	    for (var i=0;i<tags.length;i++) {
-		if (tags[i].length > 50) {
-		    alert('You are trying to add a tag with greater than the maximum 50 character-limit.  Be sure to separate your tags with commas.  Also, tags are best used as single words that you would tag other assets with.  Try using the Notes field for longer expressions.');
-		    evt.preventDefault();
-		    return;
-		}
-	    }
-	}
-    }
-
-    jQuery(function(){
-	///Clip form disabling
-	clip_form = document.forms['clip-form'];
-	if (document.getElementById('disableform')!=null) {
-	    var elts = clip_form.elements;
-	    for (a in FIELDS_TO_DISABLE) {
-	        if (elts[a].type == 'textarea') {
-	            elts[a].readOnly = true; // IE
-	            elts[a].readonly = "readonly";
-	        } else {
-	            elts[a].disabled = true;
-	        }
-	    }
-	    var copy_btn = document.createElement('input');
-
-            var copy_attrs = {
-		type:'button',
-		id:'copy-annotation',
-		onclick:'copyAnnotation()',
-		value:'Copy'
-	    };
-            for (a in copy_attrs) {
-                copy_btn.setAttribute(a,copy_attrs[a]);
-            }
-	    clip_form.appendChild(copy_btn);
-	}
-	///validate notes
-        jQuery(clip_form).bind('submit',validateNoteForm);
-        jQuery(document.forms['not-clip-form']).bind('submit',validateNoteForm);
-    });
 
     ///MUSTACHE CODE
     if (window.Mustache) {
@@ -133,61 +66,56 @@
     }//END MUSTACHE CODE
 
 
+    // setup url rewriting for HTML5 && HTML4 browsers
+    jQuery(window).bind("onpopstate", function(stateObj) {
+        if (stateObj.state) {
+            self._updateAnnotation(stateObj.annotation_id, "annotation-current");
+        }
+    });
+
+
     window.AnnotationList = new (function AnnotationListAbstract(){
         var self = this;
-        this.layers = {}; //should we really store layers here?
-        this.grouping = null;
-        this.highlight_layer = null;
-
-        this.asset_id = null;
-        this.annotation_id = null;
-        //this.global_annotation = {};//unused
         
-        // populated objects
-        this.active_annotation = null;
-        this.active_asset = null;
-
         //active_annotation
         //mock_mode -- from page state
         //storage
         this.init = function(config) {
-            for (a in config) {
-                // @todo -- where does this come from?
-                this[a] = config[a]; //asset_id, annotation_id
-            }
+            this.layers = {}; //should we really store layers here?
+            this.grouping = null;
+            this.highlight_layer = null;
+
+            this.active_annotation = null;
+            this.active_asset = null;
+            this.active_asset_annotations = null;
+            
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache?nocache=v2',
                 dataType:'text',
                 success:function(text){
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);
                     
-                    if (self.asset_id) {
+                    if (config.asset_id) {
                         // Retrieve the full asset w/annotations from storage
                         // Do I need the full asset?
                         djangosherd.storage.get({
-                                id:self.asset_id,
+                                id:config.asset_id,
                                 type:'asset',
-                                url:MediaThread.urls['asset-json'](self.asset_id,/*annotations=*/true)
+                                url:MediaThread.urls['asset-json'](config.asset_id,/*annotations=*/true)
                             },
                             false,
                             function(asset_full) {
-                                self.active_asset = asset_full;
-                                self.setActiveAnnotation(self.annotation_id); 
-                    
-                                // Update the annotation add/edit form with the active_annotation
-                                var context = { 'annotation': self.active_annotation };
-                                Mustache.update('asset-annotations', context, { post:function(elt) {
-                                    if (self.active_annotation) {
-                                        // push the clipform into the template
-                                        // @todo verify this is all cool with Sky
-                                        djangosherd.assetview.clipform.html.push('clipform-display', {
-                                            asset : {}
-                                        });
-                                        
-                                        djangosherd.assetview.setState(self.active_annotation.annotation);
-                                        djangosherd.assetview.clipform.setState({ 'mode': 'browse', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
-                                    }
-                                }});
+                                self.active_asset = asset_full.asset;
+                                self.active_asset_annotations = asset_full.annotations;
+                                var annotation_id = config.annotation_id;
+                                
+                                // parse out the annotation id in the hashtag (if it exists)
+                                // hashtags override a urls embedded annotation_id
+                                if (window.location.hash)
+                                    annotation_id = window.location.hash.split("=")[1];
+                                
+                                self._updateAnnotation(annotation_id, "asset-annotations");
+                                self._replaceHistory();
                                 
                                 // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                                 var frm = document.forms['annotation-list-filter'];
@@ -207,9 +135,33 @@
                     }
                 }
             });
-            if (/#whole-form/.test(document.location.hash)) {
-                showWholeForm();
-            }
+            
+
+            
+            jQuery(window).bind("hashchange", function() {
+                var asset_id = null;
+                var annotation_id = null;
+                
+                // parse out parameters on the command line
+                var params = window.location.pathname.split('/');
+                for (var i=0; i < params.length; i++) {
+                    var prev = i-1;
+                    if (prev > -1) {
+                        if (params[prev] == 'asset') {
+                            asset_id = params[i];
+                        } else if (params[prev] == 'annotations') {
+                            annotation_id = params[i];
+                        }
+                    }
+                }
+                
+                // parse out the annotation id in the hashtag (if it exists)
+                // hashtags override a urls embedded annotation_id
+                if (window.location.hash)
+                    annotation_id = window.location.hash.split("=")[1];
+
+                window.AnnotationList._updateAnnotation(annotation_id, "annotation-current");
+            });
             return this;
         }
 
@@ -229,7 +181,7 @@
         //  - decorate
         this.groupBy = function(grouping) {
             ///Do nothing if we can't or don't need to.
-            if (this.grouping == grouping || !this.asset_id) 
+            if (this.grouping == grouping || !self.active_asset.id) 
                 return;
 
             ///hide previous grouping so we can show the new one.
@@ -298,9 +250,9 @@
         
         this.updateAnnotationList = function() {
             djangosherd.storage.get({
-                id:this.asset_id,
+                id:self.active_asset.id,
                 type:'asset',
-                url:MediaThread.urls['asset-json'](this.asset_id,/*annotations=*/true)
+                url:MediaThread.urls['asset-json'](self.active_asset.id,/*annotations=*/true)
             },
             false,
             function(asset_full) {
@@ -308,13 +260,13 @@
                 var context = {'annotation_list':[]};
                 var cats = {};
                 var user_listing = false;
-                self.active_asset = asset_full; // @todo -- necessary?
                 self.layers[grouping].removeAll();
                 DjangoSherd_Colors.reset(grouping);
                 for (var i=0;i<asset_full.annotations.length;i++) {
                     var ann = asset_full.annotations[i];
                     ///TODO: WILL BREAK when we ajax this
-                    ann.active_annotation = (ann.id === self.annotation_id)
+                    if (self.active_annotation)
+                        ann.active_annotation = (ann.id === self.active_annotation.id)
                     if (ann.metadata) {
                         var titles = self.layers[grouping].color_by(ann);
                         for (var j=0;j<titles.length;j++) {
@@ -419,21 +371,8 @@
         //decorateForm 
         
         this.showAnnotation = function(annotation_id) {
-            self.setActiveAnnotation(annotation_id);
-            
-            var context = { 'annotation': self.active_annotation };
-            Mustache.update('annotation-current', context, { post:function(elt) {
-                if (self.active_annotation) {
-                    djangosherd.assetview.clipform.html.push('clipform-display', {
-                        asset : {}
-                    });
-                    djangosherd.assetview.setState(self.active_annotation.annotation);
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
-                }
-            }});
-            
-            jQuery('.annotation-active').removeClass('annotation-active');
-            jQuery('.annotation-listitem-'+annotation_id).addClass('annotation-active');
+            self._updateAnnotation(annotation_id, "annotation-current");
+            self._pushHistory();
         }
         
         ///Annotation Add Form
@@ -502,18 +441,27 @@
             if (obj.length > 0)
                 djangosherd.assetview.clipform.storage.update(obj, true);
             
+            // Validate the tag fields...should be in djangosherd?
+            var tag_field = frm.elements['annotation-tags'];
+            if (tag_field) {//is this null?
+                var tags = tag_field.value.split(',');
+                for (var i=0;i<tags.length;i++) {
+                    if (tags[i].length > 50) {
+                        alert('You are trying to add a tag with greater than the maximum 50 character-limit.  Be sure to separate your tags with commas.  Also, tags are best used as single words that you would tag other assets with.  Try using the Notes field for longer expressions.');
+                        return;
+                    }
+                }
+            }
             
             var url = frm.elements['annotation_id'] ?
-                url = MediaThread.urls['edit-annotation'](this.asset_id, this.annotation_id) : 
-                url = MediaThread.urls['create-annotation'](this.asset_id);
+                url = MediaThread.urls['edit-annotation'](self.active_asset.id, self.active_annotation.id) : 
+                url = MediaThread.urls['create-annotation'](self.active_asset.id);
             
             djangosherd.storage.set({ id: frm.elements['annotation_id'], 
                                       type: 'annotations',
                                       url: url,
                                       data: jQuery(frm).serialize() },
                                       function(data) {
-                                          self.asset_id = data.asset.id;
-                                          self.annotation_id = data.annotation.id;
                                           self.active_annotation = data.annotation;
                                           
                                           Mustache.update('annotation-current', data, { post:function(elt) {
@@ -524,63 +472,81 @@
 
                                                   djangosherd.assetview.setState(self.active_annotation.annotation);
                                                   djangosherd.assetview.clipform.setState({ 'mode': 'copy', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                                                  
+                                                  jQuery('.annotation-active').removeClass('annotation-active');
+                                                  jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
+                                                  
+                                                  //@todo -- saved messaging. something that fades out?
+                                                  
+                                                  self.updateAnnotationList();
                                               }
                                           }});
-                                          
-                                          jQuery('.annotation-active').removeClass('annotation-active');
-                                          jQuery('.annotation-listitem-' + self.annotation_id).addClass('annotation-active');
-                                          
-                                          //@todo -- saved messaging. something that fades out?
-                                          
-                                          self.updateAnnotationList();
                                      });
         }
         
-        ///Annotation Cancel
-        //  - revert any outstanding changes. Close add form if open.
-        this.cancelAnnotation = function() {
-            var context = { 'annotation': self.active_annotation };
-            Mustache.update('annotation-current', context, { post:function(elt) {
+        // Push annotation_ids on the stack as a user views them.
+        // If an annotation is missing (deleted?) -- revert to the asset view.
+        this._pushHistory = function() {
+            if (window.history.pushState) {
+                var currentState = { annotation_id : self.active_annotation.id, asset_id: self.active_asset.id }
                 if (self.active_annotation) {
-                    
-                    djangosherd.assetview.clipform.html.push('clipform-display', {
-                        asset : {}
-                    });
-                    
-                    djangosherd.assetview.setState(self.active_annotation.annotation);
-                    djangosherd.assetview.clipform.setState({ 'mode': 'browse', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                    window.history.pushState(currentState, self.active_annotation.title, "/asset/" + self.active_asset.id + "/annotations/" + self.active_annotation.id + "/");
+                } else {
+                    window.history.pushState(currentState, self.active_asset.title, "/asset/" + self.active_asset.id + "/");
                 }
-            }});
-        }
-        
-        this.setActiveAnnotation = function(annotation_id) {
-            self.annotation_id = annotation_id;
-            for (var i=0;i< self.active_asset.annotations.length;i++) {
-                var ann = self.active_asset.annotations[i];
-                if (ann.id === self.annotation_id) {
-                    self.active_annotation = ann;
-                }
+            } else if (self.active_annotation) {
+                window.location.hash = "annotationid=" + self.active_annotation.id;
+            } else {
+                window.location.hash = '';
             }
         }
         
+        // On an init -- replace the current history to ensure the information is on the stack
+        this._replaceHistory = function() {
+            if (window.history.replaceState) {
+                var currentState = { asset_id: self.active_asset.id };
+                if (self.active_annotation) {
+                    currentState["annotation_id"] = current_state.active_annotation.id;
+                    window.history.replaceState(currentState, self.active_annotation.title, "/asset/" + self.active_asset.id + "/annotations/" + self.active_annotation.id + "/");
+                } else {
+                    window.history.replaceState(currentState, self.active_asset.title, "/asset/" + self.active_asset.id + "/");
+                }
+            } else {
+                // @todo -- hashtag implementation
+            }
+        }
+        
+        this._updateAnnotation = function(annotation_id, template_label) {
+            self.active_annotation = null;
+            
+            if (annotation_id)
+                annotation_id = parseInt(annotation_id);
+            
+            for (var i=0;i< self.active_asset_annotations.length;i++) {
+                var ann = self.active_asset_annotations[i];
+                if (ann.id === annotation_id) {
+                    self.active_annotation = ann;
+                }
+            }
+            
+            var context = { 'annotation': self.active_annotation };
+            Mustache.update(template_label, context, { post:function(elt) {
+                djangosherd.assetview.clipform.html.push('clipform-display', { asset : {} });
+                
+                if (self.active_annotation) {
+                    djangosherd.assetview.setState(self.active_annotation.annotation);
+                    
+                    var mode = self.active_annotation.editable ? 'edit' : 'browse';
+                    djangosherd.assetview.clipform.setState({ 'mode': mode, 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+    
+                    jQuery('.annotation-active').removeClass('annotation-active');
+                    jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
+                } else {
+                    djangosherd.assetview.setState(null);
+                }
+            }});
+        }
+
     })();
 
 })();
-
-
-// @todo -- is the whole/portion concept going away?
-function showWholeForm() {
-    jQuery('#portion-asset-form').hide();
-    jQuery('#whole-asset-form').show();
-    jQuery(document.forms['clip-type'].elements['clipType']).each(function() {
-        if (this.value == 'Whole') this.checked = true;
-    });
-}
-
-function showPortionForm() {
-    jQuery('#whole-asset-form').hide();
-    jQuery('#portion-asset-form').show();
-    jQuery(document.forms['clip-type'].elements['clipType']).each(function() {
-        if (this.value == 'Portion') this.checked = true;
-    });
-}

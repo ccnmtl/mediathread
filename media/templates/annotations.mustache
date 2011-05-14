@@ -36,7 +36,6 @@
             </div>
             
             {{#annotation}}
-            
                 {{#editable?}}<!-- if editable -->
                     <label for="annotation-title">Title:</label>
                     <input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}" />
@@ -48,6 +47,9 @@
                     <input type="hidden" name="annotation-range1" value="{{range1}}" />
                     <input type="hidden" name="annotation-range2" value="{{range2}}" />
                     <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
+                    
+                    <input type="button" name="Save" value="save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
+                    <input type="button" name="Cancel" value="cancel" onclick="javascript:AnnotationList.showAnnotation({{id}})" />
                 {{/editable?}}
     
                 {{^editable}}<!-- if NOT editable -->
@@ -55,18 +57,12 @@
                     <div><b>Author:</b> <a href="{{your-space?url(metadata.author.id)}}">{{metadata.author_name}}</a></div>
                     <div><label for="">Tags:</label> {{metadata.tags}}</div>
                     <div><label for="">Note:</label> {{metadata.body}}</div>
+                    <input type="button" name="Copy" value="copy" onclick="javascript:AnnotationList.copyAnnotation(this)" />
                 {{/editable}}
     
                 {{#id?}} <!-- Editing existing annotation -->
                     <input type="hidden" name="annotation-id" value="{{id}}" />
-                    {{^editable}} <!-- Current user not authorized to edit this annotation -->
-                        <input type="button" name="Copy" value="copy" onclick="javascript:AnnotationList.copyAnnotation(this)" />
-                    {{/editable}}
                 {{/id?}}
-                {{#editable?}}
-                    <input type="button" name="Save" value="save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
-                    <input type="button" name="Cancel" value="cancel" onclick="javascript:AnnotationList.cancelAnnotation(this)" />
-                {{/editable?}}
             {{/annotation}}
         </div>
         {{/>>annotation-current}} 

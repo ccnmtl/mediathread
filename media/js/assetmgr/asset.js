@@ -65,15 +65,6 @@
         }
     }//END MUSTACHE CODE
 
-
-    // setup url rewriting for HTML5 && HTML4 browsers
-    jQuery(window).bind("onpopstate", function(stateObj) {
-        if (stateObj.state) {
-            self._updateAnnotation(stateObj.annotation_id, "annotation-current");
-        }
-    });
-
-
     window.AnnotationList = new (function AnnotationListAbstract(){
         var self = this;
         
@@ -97,7 +88,6 @@
                     
                     if (config.asset_id) {
                         // Retrieve the full asset w/annotations from storage
-                        // Do I need the full asset?
                         djangosherd.storage.get({
                                 id:config.asset_id,
                                 type:'asset',
@@ -115,7 +105,7 @@
                                     annotation_id = window.location.hash.split("=")[1];
                                 
                                 self._updateAnnotation(annotation_id, "asset-annotations");
-                                self._replaceHistory();
+                                self._addHistory(/*replace=*/true);
                                 
                                 // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                                 var frm = document.forms['annotation-list-filter'];
@@ -136,7 +126,12 @@
                 }
             });
             
-
+            // setup url rewriting for HTML5 && HTML4 browsers
+            jQuery(window).bind("popstate", function(event) {
+                if (event.originalEvent.state) {
+                    window.AnnotationList._updateAnnotation(event.originalEvent.state.annotation_id, "annotation-current");
+                }
+            });
             
             jQuery(window).bind("hashchange", function() {
                 var asset_id = null;
@@ -372,7 +367,7 @@
         
         this.showAnnotation = function(annotation_id) {
             self._updateAnnotation(annotation_id, "annotation-current");
-            self._pushHistory();
+            self._addHistory(/*replace=*/false);
         }
         
         ///Annotation Add Form
@@ -434,7 +429,7 @@
         this.saveAnnotation = function() {
             var frm = document.forms['edit-annotation-form'];
 
-            // Push clipform state into local storage 
+            // Push clipform state into local storage. (Only for video, image doesn't need this...)
             // @todo -- this is clearly not the right place for this. Discuss with Sky. 
             // clipform > update > pushes to storage within .html. I think this is replaced by the new storage system?
             var obj = djangosherd.assetview.clipform.getState();
@@ -453,70 +448,65 @@
                 }
             }
             
-            var url = frm.elements['annotation_id'] ?
-                url = MediaThread.urls['edit-annotation'](self.active_asset.id, self.active_annotation.id) : 
+            // Save the results up on the server
+            var url =  frm.elements['annotation-id'] ?
+                url = MediaThread.urls['edit-annotation'](self.active_asset.id, frm.elements['annotation-id'].value) : 
                 url = MediaThread.urls['create-annotation'](self.active_asset.id);
-            
-            djangosherd.storage.set({ id: frm.elements['annotation_id'], 
-                                      type: 'annotations',
-                                      url: url,
-                                      data: jQuery(frm).serialize() },
-                                      function(data) {
-                                          self.active_annotation = data.annotation;
-                                          
-                                          Mustache.update('annotation-current', data, { post:function(elt) {
-                                              if (self.active_annotation) {
-                                                  djangosherd.assetview.clipform.html.push('clipform-display', {
-                                                      asset : {}
-                                                  });
-
-                                                  djangosherd.assetview.setState(self.active_annotation.annotation);
-                                                  djangosherd.assetview.clipform.setState({ 'mode': 'copy', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
-                                                  
-                                                  jQuery('.annotation-active').removeClass('annotation-active');
-                                                  jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
-                                                  
-                                                  //@todo -- saved messaging. something that fades out?
-                                                  
-                                                  self.updateAnnotationList();
-                                              }
-                                          }});
-                                     });
-        }
-        
-        // Push annotation_ids on the stack as a user views them.
-        // If an annotation is missing (deleted?) -- revert to the asset view.
-        this._pushHistory = function() {
-            if (window.history.pushState) {
-                var currentState = { annotation_id : self.active_annotation.id, asset_id: self.active_asset.id }
-                if (self.active_annotation) {
-                    window.history.pushState(currentState, self.active_annotation.title, "/asset/" + self.active_asset.id + "/annotations/" + self.active_annotation.id + "/");
-                } else {
-                    window.history.pushState(currentState, self.active_asset.title, "/asset/" + self.active_asset.id + "/");
+                
+            jQuery.ajax({
+                type: 'POST',
+                url: url,
+                data: jQuery(frm).serialize(),
+                dataType: 'json',
+                success: function(json, textStatus, jqXHR) {
+                    // Repopulate the cache & refresh the annotation view
+                    // @todo -- if asset_json could be moved over to djangosherd:views.py, 
+                    // then create_annotation, edit_annotation could just return the full asset json
+                    // And eliminate this extra call.
+                    djangosherd.storage.get({
+                        id: json.asset.id,
+                        type:'asset',
+                        url:MediaThread.urls['asset-json'](json.asset.id,/*annotations=*/true)
+                    },
+                    false,
+                    function(asset_full) {
+                        self.active_asset = asset_full.asset;
+                        self.active_asset_annotations = asset_full.annotations;
+                        
+                        self._updateAnnotation(json.annotation.id, "annotation-current");
+                        self.updateAnnotationList();
+                        self._addHistory(/*replace=*/false);
+                    });
                 }
-            } else if (self.active_annotation) {
-                window.location.hash = "annotationid=" + self.active_annotation.id;
-            } else {
-                window.location.hash = '';
-            }
+            });
         }
         
-        // On an init -- replace the current history to ensure the information is on the stack
-        this._replaceHistory = function() {
-            if (window.history.replaceState) {
+        // Push annotation_ids on the history stack as a user views them.
+        // If an annotation is missing (deleted?) -- revert to the asset view.
+        // HTML 5.0 browsers: https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history
+        // < HTML 5.0 browsers: Hashtag implementation
+        this._addHistory = function(replace) {
+            if (window.history.pushState) {
+                var action = replace ? window.history.replaceState : window.history.pushState;
                 var currentState = { asset_id: self.active_asset.id };
                 if (self.active_annotation) {
-                    currentState["annotation_id"] = current_state.active_annotation.id;
-                    window.history.replaceState(currentState, self.active_annotation.title, "/asset/" + self.active_asset.id + "/annotations/" + self.active_annotation.id + "/");
+                    currentState["annotation_id"] = self.active_annotation.id;
+                    action.apply(window.history, [currentState, self.active_annotation.title, "/asset/" + self.active_asset.id + "/annotations/" + self.active_annotation.id + "/"]);
                 } else {
-                    window.history.replaceState(currentState, self.active_asset.title, "/asset/" + self.active_asset.id + "/");
+                    action.apply(window.history, [currentState, self.active_asset.title, "/asset/" + self.active_asset.id + "/"]);
                 }
-            } else {
-                // @todo -- hashtag implementation
+            } else if (!replace) {
+                // hashtag implementation. only needed for push
+                if (self.active_annotation) {
+                    window.location.hash = "annotationid=" + self.active_annotation.id;
+                } else {
+                    window.location.hash = '';
+                }
             }
         }
-        
+
         this._updateAnnotation = function(annotation_id, template_label) {
+            // Set the active annotation
             self.active_annotation = null;
             
             if (annotation_id)
@@ -529,17 +519,18 @@
                 }
             }
             
+            // Show the annotation in the view pane.
             var context = { 'annotation': self.active_annotation };
             Mustache.update(template_label, context, { post:function(elt) {
                 djangosherd.assetview.clipform.html.push('clipform-display', { asset : {} });
+                jQuery('.annotation-active').removeClass('annotation-active');
                 
                 if (self.active_annotation) {
                     djangosherd.assetview.setState(self.active_annotation.annotation);
                     
                     var mode = self.active_annotation.editable ? 'edit' : 'browse';
                     djangosherd.assetview.clipform.setState({ 'mode': mode, 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
-    
-                    jQuery('.annotation-active').removeClass('annotation-active');
+                    
                     jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
                 } else {
                     djangosherd.assetview.setState(null);

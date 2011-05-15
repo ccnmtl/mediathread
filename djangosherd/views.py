@@ -95,14 +95,7 @@ def create_annotation(request):
     asset.global_annotation(annotation.author, auto_create=True)
 
     if request.is_ajax():
-        # @todo: refactor this serialization into a common place.
-        response = { 'asset': { 'id': asset.id }, 'annotation': {} }
-        def author_name(request, annotation, key):
-            if not annotation.author_id:
-                return None
-            return 'author_name',get_public_name(annotation.author, request)
-        
-        response['annotation'] = annotation.sherd_json(request, 'x', ('title','author','tags',author_name,'body'))
+        response = { 'asset': { 'id': asset.id }, 'annotation': { 'id': annotation.id } }
         return HttpResponse(simplejson.dumps(response), mimetype="application/json")
     else:
         #new annotations should redirect 'back' to the asset
@@ -162,14 +155,7 @@ def edit_annotation(request, annot_id):
     annotation.save()
 
     if request.is_ajax():
-        # @todo: refactor this serialization into a common place. 
-        response = { 'asset': { 'id': asset.id }, 'annotation': {} }
-        def author_name(request, annotation, key):
-            if not annotation.author_id:
-                return None
-            return 'author_name',get_public_name(annotation.author, request)
-        
-        response['annotation'] = annotation.sherd_json(request, 'x', ('title','author','tags',author_name,'body'))
+        response = { 'asset': { 'id': annotation.asset_id }, 'annotation': { 'id': annotation.id } }
         return HttpResponse(simplejson.dumps(response), mimetype="application/json")
     
     redirect_to = request.GET.get('next', '.')

@@ -370,6 +370,11 @@
             self._addHistory(/*replace=*/false);
         }
         
+        this.cancelAnnotation = function(annotation_id) {
+            var id = self.active_annotation ? self.active_annotation.id : null;
+            self._updateAnnotation(id, "annotation-current");
+        }
+        
         ///Annotation Add Form
         //  - author == current_user
         this.newAnnotation = function() {
@@ -389,7 +394,7 @@
                 });
                 
                 djangosherd.assetview.setState({});
-                djangosherd.assetview.clipform.setState({ 'mode': 'create', 'start': 0, 'end': 0 });
+                djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
             }});
         }
         
@@ -418,7 +423,7 @@
                     });
 
                     djangosherd.assetview.setState(self.active_annotation.annotation);
-                    djangosherd.assetview.clipform.setState({ 'mode': 'copy', 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 }, { 'mode': 'copy' });
                 }
             }});
         }
@@ -529,10 +534,11 @@
                     djangosherd.assetview.setState(self.active_annotation.annotation);
                     
                     var mode = self.active_annotation.editable ? 'edit' : 'browse';
-                    djangosherd.assetview.clipform.setState({ 'mode': mode, 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 });
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 }, { 'mode': mode });
                     
                     jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
                 } else {
+                    djangosherd.assetview.clipform.setState({}, {});
                     djangosherd.assetview.setState(null);
                 }
             }});

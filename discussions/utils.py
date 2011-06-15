@@ -14,7 +14,7 @@ def get_discussions( arbitrary_object):
     coll = ContentType.objects.get_for_model(Collaboration)
     discussions = []
     for d in ThreadedComment.objects.filter(parent=None, content_type = coll):
-        if d.content_object._parent_id and \
+        if d.content_object and d.content_object._parent_id and \
                 arbitrary_object == d.content_object._parent.content_object:
             discussions.append(d)
     return discussions        

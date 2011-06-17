@@ -65,6 +65,7 @@
       {% endif %}
     </li>
     {% endfor %}
+    <li><a href="{%url admin:assetmgr_source_add %}?asset={{adminform.form.instance.id}}">[Add source]</a></li>
   </ul>
 {# ###################### END ASSET CHANGES  ############################## #}
 {% endblock %}

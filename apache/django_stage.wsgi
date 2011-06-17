@@ -1,7 +1,7 @@
 import os, sys, site
 
 # enable the virtualenv
-site.addsitedir('/usr/local/share/sandboxes/common/mediathread/mediathread/ve/lib/python2.5/site-packages')
+site.addsitedir('/usr/local/share/sandboxes/common/mediathread/mediathread/ve/lib/python2.6/site-packages')
 
 # paths we might need to pick up the project's settings
 sys.path.append('/usr/local/share/sandboxes/common/')

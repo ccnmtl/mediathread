@@ -113,7 +113,7 @@
                                     }
                                 }
                                 
-                                self._update(config.annotation_id, "asset-annotations", config.xywh);
+                                self._update(config, "asset-annotations");
                                 self._addHistory(/*replace=*/true);
                                 
                                 // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
@@ -138,7 +138,7 @@
             // setup url rewriting for HTML5 && HTML4 browsers
             jQuery(window).bind("popstate", function(event) {
                 if (event.originalEvent.state) {
-                    window.AnnotationList._update(event.originalEvent.state.annotation_id, "annotation-current");
+                    window.AnnotationList._update({ 'annotation_id': event.originalEvent.state.annotation_id }, "annotation-current");
                 }
             });
             
@@ -162,19 +162,20 @@
                 
                 // parse out the annotation id in the hashtag (if it exists)
                 // hashtags override a urls embedded annotation_id
+                var config = {};
                 if (window.location.hash) {
                     var annotation_query = djangosherd.assetview.queryformat.find(document.location.hash);
                     if (annotation_query.length) {
-                        xywh = annotation_query[0];
+                        config.xywh = annotation_query[0];
                     } else {
                         var annid = String(window.location.hash).match(/annotation_id=([.\d]+)/);
                         if (annid !== null) {
-                            annotation_id = Number(annid[1]);
+                            config.annotation_id = Number(annid[1]);
                         }
                     }
                 }
 
-                window.AnnotationList._update(annotation_id, "annotation-current", xywh);
+                window.AnnotationList._update(config, "annotation-current", xywh);
             });
             return this;
         }
@@ -385,13 +386,13 @@
         //decorateForm 
         
         this.showAnnotation = function(annotation_id) {
-            self._update(annotation_id, "annotation-current");
+            self._update( { 'annotation_id': annotation_id }, "annotation-current");
             self._addHistory(/*replace=*/false);
         }
         
-        this.cancelAnnotation = function(annotation_id) {
-            var id = self.active_annotation ? self.active_annotation.id : null;
-            self._update(id, "annotation-current");
+        this.cancelAnnotation = function() {
+            var annotation_id = self.active_annotation ? self.active_annotation.id : null;
+            self._update({ 'annotation_id' : annotation_id }, "annotation-current");
         }
         
         ///Annotation Add Form
@@ -403,8 +404,6 @@
                   'author': { 'id': MediaThread.current_user },
                   'author_name': MediaThread.user_full_name
                 },
-                'range1': 0, // @todo -- null?
-                'range2': 0 // @todo -- null?
             }};
             
             Mustache.update('annotation-current', context, { post:function(elt) {
@@ -454,6 +453,7 @@
             var frm = document.forms['edit-annotation-form'];
 
             // Push clipform or assetview state into "local storage", i.e. the form that is posted to the server.
+            // @todo -- Unsure if this is the best spot for this...
             var obj = djangosherd.assetview.clipform.getState();
             if (self._propertyCount(obj) > 0)
                 djangosherd.assetview.clipform.storage.update(obj, true);
@@ -498,8 +498,8 @@
                     function(asset_full) {
                         self.active_asset = asset_full.asset;
                         self.active_asset_annotations = asset_full.annotations;
-                        
-                        self._update(json.annotation.id, "annotation-current");
+                         
+                        self._update({ 'annotation_id': json.annotation.id }, "annotation-current");
                         self.updateAnnotationList();
                         self._addHistory(/*replace=*/false);
                     });
@@ -531,14 +531,14 @@
             }
         }
 
-        this._update = function(annotation_id, template_label, xywh) {
+        this._update = function(config, template_label) {
             // Set the active annotation
             self.active_annotation = null;
             self.xywh = null;
             
             var context = {};
-            if (annotation_id) {
-                annotation_id = parseInt(annotation_id);
+            if (config.annotation_id) {
+                var annotation_id = parseInt(config.annotation_id);
             
                 for (var i=0;i< self.active_asset_annotations.length;i++) {
                     var ann = self.active_asset_annotations[i];
@@ -549,8 +549,8 @@
                 }
                 if (self.active_annotation)
                     context.annotation = self.active_annotation;
-            } else if (xywh) {
-                self.xywh = xywh;
+            } else if (config.xywh) {
+                self.xywh = config.xywh;
                 context.annotation = {   
                     'editable': true,
                     'metadata': {

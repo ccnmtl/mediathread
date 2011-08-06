@@ -441,7 +441,7 @@
                     });
 
                     djangosherd.assetview.setState(self.active_annotation.annotation);
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 }, { 'mode': 'copy' });
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2, 'imageUrl':self.active_annotation.annotation.imageUrl }, { 'mode': 'copy' });
                 }
             }});
         }
@@ -568,7 +568,7 @@
                     djangosherd.assetview.setState(self.active_annotation.annotation);
                     
                     var mode = self.active_annotation.editable ? 'edit' : 'browse';
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2 }, { 'mode': mode });
+                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2, 'imageUrl': self.active_annotation.annotation.imageUrl }, { 'mode': mode });
                     
                     jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
                 } else if (self.xywh) {

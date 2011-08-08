@@ -1,6 +1,187 @@
 {% extends "base.html" %}
+{% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags  comments collaborations %}
+
+<title> {% block title %}
+{% if space_owner == user %}
+My Analysis > My Saved Items
+{% else %}
+Class Analysis > {% public_name for space_owner %}'s Analysis
+{% endif %}
+{% endblock %}</title>
+
+{% block js %}
+<script type="text/javascript" src="/site_media/js/hs.js"></script>
+<script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
+<script type="text/javascript" src="/site_media/js/tablesort.js"></script>
+  {% if EXPERIMENTAL %}
+  <script type="text/javascript" src="/site_media/js/slider.js"></script>
+  {% endif %}
+{% endblock %}
 
 {% block content %}
-    {{ block.super }}
-    <h1>Hey there</h1>
+
+  {{ block.super }}
+
+<div id="slider-parent">
+  <div class="slider-cell slider-edge">
+    <h2><span id="slider-edge-left"></span></h2>
+  </div>
+
+  <table id="slider-top" class="slider-top analysis-tab">
+    <tbody>
+    <tr>
+      <td class="slider-cell slider-active" id="slider-cell-instructor">
+<div class="panel">    
+  {%if display.instructor or is_faculty %}
+  <div class="panel-column">
+    <h2>Instructor's Focus
+        {% if is_faculty %}
+        <a class="hs-control intro-open" href="#intro-instructor">?</a>
+        {% endif %}
+    </h2>
+    <div class="scroll">
+
+    {% if is_faculty %}
+    <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
+      <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
+        Instructor controls this space
+      </h3>
+      <p>
+        Projects, assignments, and discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
+        </p><p>     
+        To learn more and get started, visit the Instructor Dashboard
+      </p>
+    </div>
+    {% endif %}
+
+    {%if faculty_feed.projects %}
+      <h3>START HERE:</h3>
+      <ul class="instructor-list">
+	{%for project in faculty_feed.projects %}
+        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+	{%endfor%}
+      </ul>
+    {%endif%}
+    {%if faculty_feed.assignments %}
+      <h3>Assignments</h3>
+      <ul class="instructor-list">
+	{%for project in faculty_feed.assignments %}
+        <li class="assignment"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+        {%endfor%}
+      </ul>
+    {%endif%}
+
+    {%if faculty_feed.assets %}
+     <h3>ITEMS OF INTEREST</h3>
+      <ul>
+	{%for a in faculty_feed.assets%}
+	<li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
+	{%endfor%}
+      </ul>
+    {%endif%}
+
+    {%if faculty_feed.tags %}
+      <h3>PRIORITY TAGS</h3>
+      <ul class="tags">
+	{% for tag in faculty_feed.tags %}
+	<li>
+	  <span class="size{{tag.font_size}}">
+	    <a href="{% url asset-container %}?tag={{tag.name}}">
+	      {{tag.name}} 
+	    </a>
+	  </span>
+	</li>
+	{% endfor %}
+      </ul>
+    {%endif%}
+
+    </div>
+
+
+  </div>
+  {%endif%}{#display.instructor#}
+
+
+
+{%if discussions or is_faculty %}
+ <!-- start discussion list -->
+  <div class="panel-column
+	      {%if not display.course %}panel-column-stump{%endif%}
+	      ">
+    <h2>Class Discussions</h2>
+    <div class="scroll">
+      <ul>
+	    {%for disc in discussions%}
+	        <li id="discussion-{{disc.id}}">
+                  <div class="actions">
+                    {% if is_faculty %}
+                      <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
+                         href="{% url discussion-view disc.id %}?delete">
+                      <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+                    {% endif %}
+
+                  </div>
+	          <div class="asset_title type-collaboration">
+	            <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+                    {% get_comment_count for disc.content_object as comment_count%}
+                    ({{comment_count}})
+	          </div>
+	        </li>
+	    {%endfor%}
+            {%if is_faculty %}
+    	 <li>
+            <form action="/discussion/new/" method="POST">
+              <!--h4>Start a New Discussion</h4>
+                        <label for="id_comment_html" >Enter Title:</label-->
+                        <input type="hidden" name="comment_html" value="Discussion Title" />
+                        <input type="hidden" name="app_label" value="courseaffils"/>
+                        <input type="hidden" name="model" value="course"/>
+                        <input type="hidden" name="obj_pk" value="{{course_id}}"/>
+                       <!-- <input type="submit" value="Create New Discussion"/>-->
+            </form>
+        </li>
+        {%endif%} <!--end is_faculty-->
+      </ul>
+    </div>
+ </div>
+ 
+ <!-- end discussion list -->
+ {%endif%} <!--end discussions or is_faculty-->
+        
+      </td>
+      <td class="slider-cell slider-active" id="slider-cell-asset_column">
+
+<div class="assets_wide_list" >
+ {% include "assetmgr/asset_table.html" %}
+</div>
+      </td>
+
+      <td class="slider-cell slider-active" id="slider-cell-reflection">
+
+
+        <h1 class="project-title inline">{% public_name for space_owner %}'s Projects</h1>
+{% if editable %}
+
+  <div class="button-form inline">
+   <form class="block project-createnew inline nofloat" method="POST" action="{%url your-space-projects user%}">
+     <input type="hidden" name="title" />
+     <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
+
+   </form>
+   </div>
+{% endif %}
+
+
+
+        
+
+        <div id="project_col" class="project-table panel-column panel-light">
+  
+          {% include "projects/project_list_notable.html" %}
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
 {% endblock %}

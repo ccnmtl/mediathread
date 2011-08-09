@@ -9,6 +9,9 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 {% endif %}
 {% endblock %}</title>
 
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="/site_media/css/home.css" />
+{% endblock %}
 {% block js %}
 <script type="text/javascript" src="/site_media/js/hs.js"></script>
 <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
@@ -22,23 +25,19 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
   {{ block.super }}
 
-<div id="slider-parent">
-  <div class="slider-cell slider-edge">
-    <h2><span id="slider-edge-left"></span></h2>
-  </div>
 
-  <table id="slider-top" class="slider-top analysis-tab">
+  <table id="home-columns">
     <tbody>
     <tr>
-      <td class="slider-cell slider-active" id="slider-cell-instructor">
-<div class="panel">    
+      <td class="" id="instructor">
+<div class="column-container">    
   {%if display.instructor or is_faculty %}
-  <div class="panel-column">
-    <h2>Instructor's Focus
+  
+    <h2>From Your Instructor
         {% if is_faculty %}
         <a class="hs-control intro-open" href="#intro-instructor">?</a>
         {% endif %}
-    </h2>
+    </h2><div class="column-contents">
     <div class="scroll">
 
     {% if is_faculty %}
@@ -55,7 +54,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
     {% endif %}
 
     {%if faculty_feed.projects %}
-      <h3>START HERE:</h3>
+      
       <ul class="instructor-list">
 	{%for project in faculty_feed.projects %}
         <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
@@ -105,9 +104,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
 {%if discussions or is_faculty %}
  <!-- start discussion list -->
-  <div class="panel-column
-	      {%if not display.course %}panel-column-stump{%endif%}
-	      ">
+  <div class="">
     <h2>Class Discussions</h2>
     <div class="scroll">
       <ul>
@@ -149,17 +146,20 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
  {%endif%} <!--end discussions or is_faculty-->
         
       </td>
-      <td class="slider-cell slider-active" id="slider-cell-asset_column">
+      <td class="column-container" id="classwork">
+<h2>Class Work: {% public_name for space_owner %}</h2>
+<table id="classwork-sub">
+<tr>
+<td>
+<div id="assets" >
+ <h3>Media & Clips</h3>
 
-<div class="assets_wide_list" >
  {% include "assetmgr/asset_table.html" %}
 </div>
       </td>
 
-      <td class="slider-cell slider-active" id="slider-cell-reflection">
+      <td class="" id="">
 
-
-        <h1 class="project-title inline">{% public_name for space_owner %}'s Projects</h1>
 {% if editable %}
 
   <div class="button-form inline">
@@ -175,13 +175,15 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
         
 
-        <div id="project_col" class="project-table panel-column panel-light">
-  
+        <div id="projects" class="">
+ <h3>Projects & Discussions</h3>
           {% include "projects/project_list_notable.html" %}
         </div>
+      </td>
+      </tr>
+      </table>
       </td>
     </tr>
   </tbody>
 </table>
-</div>
 {% endblock %}

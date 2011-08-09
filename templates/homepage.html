@@ -57,17 +57,30 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
     {%if faculty_feed.projects %}
       <h3>START HERE:</h3>
       <ul class="instructor-list">
-	{%for project in faculty_feed.projects %}
-        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+        {#not necessarily a project -- could be a discussion #}
+	{%for project in instructor_full_feed %}
+        {%if project.threadedcomment %}
+          {% with project as disc %}
+          <li id="discussion-{{disc.id}}" class="inst-item-discussion">
+            <div class="actions">
+              {% if is_faculty %}
+              <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
+                 href="{% url discussion-view disc.id %}?delete">
+              <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+              {% endif %}
+
+            </div>
+            <div class="asset_title type-collaboration">
+              <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+              {% get_comment_count for disc.content_object as comment_count%}
+              ({{comment_count}})
+            </div>
+          </li>
+          {%endwith%}
+        {%else%}
+        <li class="inst-item{%if project.is_assignment_cached%}-assignment{%endif%}"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+        {%endif%}
 	{%endfor%}
-      </ul>
-    {%endif%}
-    {%if faculty_feed.assignments %}
-      <h3>Assignments</h3>
-      <ul class="instructor-list">
-	{%for project in faculty_feed.assignments %}
-        <li class="assignment"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-        {%endfor%}
       </ul>
     {%endif%}
 
@@ -103,51 +116,6 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
 
 
-{%if discussions or is_faculty %}
- <!-- start discussion list -->
-  <div class="panel-column
-	      {%if not display.course %}panel-column-stump{%endif%}
-	      ">
-    <h2>Class Discussions</h2>
-    <div class="scroll">
-      <ul>
-	    {%for disc in discussions%}
-	        <li id="discussion-{{disc.id}}">
-                  <div class="actions">
-                    {% if is_faculty %}
-                      <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                         href="{% url discussion-view disc.id %}?delete">
-                      <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
-                    {% endif %}
-
-                  </div>
-	          <div class="asset_title type-collaboration">
-	            <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
-                    {% get_comment_count for disc.content_object as comment_count%}
-                    ({{comment_count}})
-	          </div>
-	        </li>
-	    {%endfor%}
-            {%if is_faculty %}
-    	 <li>
-            <form action="/discussion/new/" method="POST">
-              <!--h4>Start a New Discussion</h4>
-                        <label for="id_comment_html" >Enter Title:</label-->
-                        <input type="hidden" name="comment_html" value="Discussion Title" />
-                        <input type="hidden" name="app_label" value="courseaffils"/>
-                        <input type="hidden" name="model" value="course"/>
-                        <input type="hidden" name="obj_pk" value="{{course_id}}"/>
-                       <!-- <input type="submit" value="Create New Discussion"/>-->
-            </form>
-        </li>
-        {%endif%} <!--end is_faculty-->
-      </ul>
-    </div>
- </div>
- 
- <!-- end discussion list -->
- {%endif%} <!--end discussions or is_faculty-->
-        
       </td>
       <td class="slider-cell slider-active" id="slider-cell-asset_column">
 

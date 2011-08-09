@@ -287,8 +287,14 @@ def triple_homepage(request):
     prof_feed = get_prof_feed(c, request)
     discussions = get_discussions(c)
 
+    full_prof_list = []
+    for lis in (prof_feed['projects'], prof_feed['assignments'], discussions, ):
+        full_prof_list.extend(lis)
+    full_prof_list.sort(lambda a,b:cmp(a.title.lower(),b.title.lower()))
+
     user_records.update(
         {'faculty_feed':prof_feed,
+         'instructor_full_feed':full_prof_list,
          'is_faculty':c.is_faculty(user),         
          'display':{'instructor':prof_feed['show'],
                     'course': (len(prof_feed['tags']) < 5)

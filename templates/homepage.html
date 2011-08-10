@@ -37,8 +37,8 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
         {% if is_faculty %}
         <a class="hs-control intro-open" href="#intro-instructor">?</a>
         {% endif %}
-    </h2><div class="column-contents">
-    <div class="scroll">
+    </h2>
+    <div class="column-contents scroll">
 
     {% if is_faculty %}
     <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
@@ -121,13 +121,26 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 <td>
 <div id="assets" >
  <h3>Media & Clips</h3>
+ {% if editable %}
+
+  <div class="button-form inline">
+   <form class="block media-browse inline nofloat" method="POST" action="{%url your-space-projects user%}">
+     <input type="hidden" name="title" />
+     <input class="columnbutton media-browse-button" type="submit" value="Browse Media Sources"/>
+
+   </form>
+
+   </div>
+{% endif %}
 
  {% include "assetmgr/asset_table.html" %}
+
 </div>
       </td>
 
       <td class="" id="">
-
+ <div id="projects" class="">
+  <h3>Projects & Discussions</h3>
 {% if editable %}
 
   <div class="button-form inline">
@@ -136,6 +149,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
      <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
 
    </form>
+
    </div>
 {% endif %}
 
@@ -143,8 +157,8 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
         
 
-        <div id="projects" class="">
- <h3>Projects & Discussions</h3>
+       
+
           {% include "projects/project_list_notable.html" %}
         </div>
       </td>

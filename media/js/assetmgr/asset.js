@@ -399,7 +399,7 @@
         //  - author == current_user
         this.newAnnotation = function() {
             var context = { 'annotation': {   
-                'editable': true,
+                'editing': true,
                 'metadata': {
                   'author': { 'id': MediaThread.current_user },
                   'author_name': MediaThread.user_full_name
@@ -416,12 +416,18 @@
             }});
         }
         
+        ///Annotation Edit
+        // - new annotation with properties of current annotation minus id
+        this.editAnnotation = function() {
+            self._update( { 'annotation_id': self.active_annotation.id, 'editing': true }, "annotation-current");
+        }
+        
         ///Annotation Copy
         // - new annotation with properties of current annotation minus id
         this.copyAnnotation = function() {
             // Add template...but with all the properties of this annotation.
             var context = { 'annotation': {   
-                    'editable': true,
+                    'editing': true,
                     'metadata': {
                       'body': self.active_annotation.metadata.body,
                       'tags': self.active_annotation.metadata.tags,
@@ -549,10 +555,14 @@
                 }
                 if (self.active_annotation)
                     context.annotation = self.active_annotation;
+                if (config.editing)
+                    context.annotation.editing = config.editing;
+                else 
+                    context.annotation.editing = false;
             } else if (config.xywh) {
                 self.xywh = config.xywh;
                 context.annotation = {   
-                    'editable': true,
+                    'editing': true,
                     'metadata': {
                       'author': { 'id': MediaThread.current_user },
                       'author_name': MediaThread.user_full_name
@@ -567,7 +577,7 @@
                 if (self.active_annotation) {
                     djangosherd.assetview.setState(self.active_annotation.annotation);
                     
-                    var mode = self.active_annotation.editable ? 'edit' : 'browse';
+                    var mode = context.annotation.editing ? 'edit' : 'browse';
                     djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2, 'imageUrl': self.active_annotation.annotation.imageUrl }, { 'mode': mode });
                     
                     jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');

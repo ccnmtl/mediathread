@@ -145,7 +145,7 @@
  {%endif%}
  {% for asset in assets %}
  <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-  {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}
+  {#% get_global_annotation on asset by space_owner or space_viewer as gannotation %#}
   
 
   <h2 id="asset-item-{{asset.pk}}" class="asset_title asset-{{asset.primary.label}}">
@@ -163,7 +163,7 @@
     {% if page_in_edit_mode %}
 	  <span class="citationTemplate"><img 
 	      class="materialCitation" alt="" 
-	      src="/site_media/img/icons/insert_asset.png#annotation={{asset.get_absolute_url}}{% if gannotation %}annotations/{{gannotation.id}}/{% endif %}&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
+	      src="/site_media/img/icons/insert_asset.png#annotation={{asset.get_absolute_url}}&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
 	      width="24" height="15" border="0" 
 	      onclick="addMaterialCitation(event)" 
 	      title="{{asset.title}}" 
@@ -178,9 +178,9 @@
 	
   </h2>
 
-  {%if asset.sources.thumb %}
+  {%if asset.thumb_url %}
   <a {% if page_in_edit_mode %}target="_blank"{% endif %}
-     href="{{asset.get_absolute_url}}"><img class="asset-thumb" src="{{asset.sources.thumb.url}}" /></a>
+     href="{{asset.get_absolute_url}}"><img class="asset-thumb" src="{{asset.thumb_url}}" /></a>
   {% endif %}
 
   <div id="record-{{asset.pk}}-metadata" class="record-metadata">

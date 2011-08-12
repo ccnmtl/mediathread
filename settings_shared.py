@@ -82,7 +82,7 @@ INSTALLED_APPS = (
     'tagging',
     'smartif',
     'modelversions',
-    'debug_toolbar',
+    #'debug_toolbar',
     #mediathread local
     'structuredcollaboration',
     'djangosherd',#strangely must precede assetmgr

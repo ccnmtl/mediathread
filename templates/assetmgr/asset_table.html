@@ -208,21 +208,20 @@
                 {% endif %}
                 </li><!--asset tags-->
                 
-            {%else%}
+            {%else%}{%if not space_owner %}
                 {% with asset.tags as atags %}
-                {%if not space_owner and atags %}
-                    <p>
-                    <strong>Tags:</strong>
-                    {% for tag in atags %}
-                        {% replace_value of 'tag' with tag.name in request.GET as querystring %}
-                        <a href="{{querystring|qsify}}">
-                            {{tag.name}}
-                        </a>&nbsp;
-                    {% endfor %}
-                    </p>
-                {% endif %}  
-                {% endwith %}
-                      
+                    {% if atags %}
+                        <p>
+                        <strong>Tags:</strong>
+                        {% for tag in atags %}
+                            {% replace_value of 'tag' with tag in request.GET as querystring %}
+                            <a href="{{querystring|qsify}}">
+                                {{tag.name}}
+                            </a>&nbsp;
+                        {% endfor %}
+                        </p>
+                    {% endif %}  
+                {% endwith %}{% endif %}
             {% endif %}
             {% endwith %}
             

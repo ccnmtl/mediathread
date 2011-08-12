@@ -9,7 +9,7 @@ requirements/src/cdap-1.0.tar.gz
 requirements/src/httplib2-0.6.0.tar.gz
 requirements/src/restclient-0.9.9.tar.gz
 requirements/src/feedparser-4.1.tar.gz
-requirements/src/imageuploader-0.1.tar.gz
+#requirements/src/imageuploader-0.1.tar.gz
 requirements/src/Markdown-2.0.tar.gz
 # anders modified this to remove the stupid ez_setup requirement from setup.py
 requirements/src/pyenchant-1.5.1.tar.gz 
@@ -22,7 +22,8 @@ requirements/src/uuid-1.30.tar.gz
 # packages is kind of broken since lib/python/site-packages has apparently been renamed
 # to dist-packages. so on my system i'm actually downloading and installing them locally
 # during bootstrap
-psycopg2
+requirements/src/psycopg2-2.4-no-mx.tar.gz
+#psycopg2
 
 #MySQLdb #this doesn't seem to work--just make sure it's in site-packages globally
 

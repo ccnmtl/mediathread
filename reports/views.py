@@ -100,27 +100,25 @@ def class_summary(request):
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
         
-    stud_work = {}
-    for p in Project.objects.filter(course=request.course):
-        for stud_id, contribs in p.content_metrics().items():
-            stud_work.setdefault(stud_id,[0,0])
-            stud_work[stud_id][0] += contribs[0]
-            stud_work[stud_id][1] += contribs[1]
+    #stud_work = {}
+    #for p in Project.objects.filter(course=request.course):
+    #    for stud_id, contribs in p.content_metrics().items():
+    #        stud_work.setdefault(stud_id,[0,0])
+    #        stud_work[stud_id][0] += contribs[0]
+    #        stud_work[stud_id][1] += contribs[1]
 
 
     students = []
     for stud in users_in_course(request.course).order_by('last_name','first_name','username'):
-        students.append({
-                'id':stud.id,
-                'get_full_name':stud.get_full_name(),
-                'username':stud.username,
+        stud.__dict__.update({
                 'annotations':SherdNote.objects.filter(asset__course=request.course,
                                                        author=stud).count(),
-                'projects':Project.get_user_projects(stud,request.course).count(),
-                'project_adds':stud_work.get(stud.id,[0,0])[0],
-                'project_deletes':stud_work.get(stud.id,[0,0])[1],
+                'all_projects':Project.get_user_projects(stud,request.course).count(),
+                #'project_adds':stud_work.get(stud.id,[0,0])[0],
+                #'project_deletes':stud_work.get(stud.id,[0,0])[1],
                 'comments':DiscussionIndex.objects.filter(participant=stud,collaboration__context=request.collaboration_context).count()
-            })
+                })
+        students.append(stud)
         
         
 
@@ -242,9 +240,13 @@ def class_activity(request):
 
     my_feed=Clumper(
         SherdNote.objects.filter(asset__course=request.course).order_by('-added')[:40],
-        Project.objects.filter(course=request.course).order_by('-modified')[:40],
-        DiscussionIndex.objects.filter(
-            collaboration__context=request.collaboration_context).order_by('-modified')[:40],
+        Project.objects.filter(course=request.course,submitted=True).order_by('-modified')[:40],
+        DiscussionIndex.with_permission(request,
+                                        DiscussionIndex.objects
+                                        .filter(
+                collaboration__context=request.collaboration_context)
+                                        .order_by('-modified')[:40],
+                                        )
         )
 
     rv = {

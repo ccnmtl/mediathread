@@ -15,6 +15,9 @@ REQUIREMENTS
 Python 2.6 (or 2.5)
 Postgres (or MySQL)
 
+In Ubuntu (for postgres 8.4, but just change version numbers):
+$ sudo aptitude install postgres-8.4 postgresql-client-8.4 postgresql-server-dev-8.4 python-psycopg2 gcc python2.6 python-dev libc6-dev 
+
 
 INSTALLATION
 ------------
@@ -47,7 +50,6 @@ INSTALLATION
 3. Bootstrap uses virtualenv to build a contained library in ve/
   ./bootstrap.py
   NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
-
 
 =====
 The rest of the instructions work like standard Django.  See:

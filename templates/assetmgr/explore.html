@@ -125,10 +125,10 @@ Explore Collections
          </div>
          {% endif %}
      
-	 <a href="redirect/?url={{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
+	 <a href="redirect/?url={{archive.sources.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
          <br />
          {%if archive.sources.thumb%}
-           <a href="redirect/?url={{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+           <a href="redirect/?url={{archive.sources.archive.url|urlencode}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
          </a>
          {% endif %}
 

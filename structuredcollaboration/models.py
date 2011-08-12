@@ -25,7 +25,7 @@ class CollaborationPolicyRecord(models.Model):
         return self.policy_name
 
     def __eq__(self,other):
-        return self == other or self.policy_name == other
+        return self.policy_name is other or self is other
 
 DEFAULT_POLICY = getattr(settings,'DEFAULT_COLLABORATION_POLICY',PublicEditorsAreOwners())
 

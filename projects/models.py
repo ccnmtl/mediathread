@@ -20,11 +20,11 @@ PUBLISH_OPTIONS = (('Assignment','Assignment for Class'),
                    )
 
 SHORT_NAME = {
+    "Assignment":'Assignment',
     "PrivateEditorsAreOwners":'Private',
     "InstructorShared":'Submitted',
     "CourseProtected":'Class',
     "PublicEditorsAreOwners":'World',
-    "Assignment":'Assignment',
     "PrivateStudentAndFaculty":"with Instructors", 
     }
 
@@ -57,7 +57,11 @@ class Project(models.Model):
 
     body = models.TextField(blank=True)
 
+    #available to someone other than the authors 
+    # -- at least, the instructor, if not the whole class
     submitted = models.BooleanField(default=False)
+
+    #DEPRECATED: do not use this field
     feedback = models.TextField(blank=True, null=True)
 
     modified = models.DateTimeField('date modified', editable=False, auto_now=True)

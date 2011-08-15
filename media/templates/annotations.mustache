@@ -15,8 +15,6 @@
     <br />
     
     <form name="edit-annotation-form" onsubmit="return false;">
-    
-        
         
         {{#>>annotation-current}}
         <div id="asset-details-annotations-current">
@@ -36,7 +34,7 @@
             </div>
             
             {{#annotation}}
-                {{#editable?}}<!-- if editable -->
+                {{#editing?}}
                     <label for="annotation-title">Title:</label>
                     <input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}" />
                     <label for="annotation-tags">Tags:</label>
@@ -50,15 +48,22 @@
                     
                     <input type="button" name="Save" value="save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
                     <input type="button" name="Cancel" value="cancel" onclick="javascript:AnnotationList.cancelAnnotation()" />
-                {{/editable?}}
+                {{/editing?}}
     
-                {{^editable}}<!-- if NOT editable -->
+                {{^editing}}
                     <h4>{{metadata.title}}</h4>
                     <div><b>Author:</b> <a href="{{your-space?url(metadata.author.id)}}">{{metadata.author_name}}</a></div>
                     <div><label for="">Tags:</label> {{metadata.tags}}</div>
                     <div><label for="">Note:</label> {{metadata.body}}</div>
-                    <input type="button" name="Copy" value="copy" onclick="javascript:AnnotationList.copyAnnotation(this)" />
-                {{/editable}}
+                    
+                    {{#editable?}}
+                        <input type="button" name="Edit" value="Edit" onclick="javascript:AnnotationList.editAnnotation(this)" />
+                    {{/editable?}}
+                    
+                    {{^editable}}
+                        <input type="button" name="Copy" value="Copy" onclick="javascript:AnnotationList.copyAnnotation(this)" />
+                    {{/editable}}
+                {{/editing}}
     
                 {{#id?}} <!-- Editing existing annotation -->
                     <input type="hidden" name="annotation-id" value="{{id}}" />

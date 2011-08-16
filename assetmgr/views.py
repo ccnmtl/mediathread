@@ -416,7 +416,21 @@ def archive_explore(request):
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    rv = {"archives":c.asset_set.archives().order_by('title'),
+    archives = []
+    for a in c.asset_set.archives().order_by('title'):
+        archive = a.sources['archive']
+        thumb = a.sources.get('thumb',None)
+        description = a.metadata().get('description','')
+        archives.append({
+                "id":a.id,
+                "title":a.title,
+                "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
+                "archive":{"id":archive.id, "url":archive.url},
+                #is description a list or a string?
+                "metadata": (description if hasattr(description,'lower') else description[0]),
+                })
+
+    rv = {"archives":archives,
           "is_faculty":c.is_faculty(user),
           "space_viewer":user,
           }
@@ -435,8 +449,9 @@ def archive_redirect(request):
     if not url:
         url = reverse('asset-archiveexplore')
     else:
+        source = None
         try:
-            Source.objects.get(primary=True, label='archive', url=url, asset__course=request.course)
+            source = Source.objects.get(primary=True, label='archive', url=url, asset__course=request.course)
         except Source.DoesNotExist:
             return HttpResponseForbidden("You can only redirect to an archive url")
         special = getattr(settings,'SERVER_ADMIN_SECRETKEYS',{})
@@ -444,7 +459,8 @@ def archive_redirect(request):
             if url.startswith(server):
                 url = archive_specialauth(request,url,special[server])
                 continue
-        
+        if url == source.url:
+            return HttpResponseRedirect(source.url_processed(request))
     return HttpResponseRedirect(url)
 
         

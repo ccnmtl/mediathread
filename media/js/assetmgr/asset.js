@@ -79,7 +79,8 @@
             this.active_annotation = null;
             this.active_asset = null;
             this.active_asset_annotations = null;
-            
+            this.config = config;
+
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache?nocache=v2',
                 dataType:'text',
@@ -196,7 +197,7 @@
         //  - decorate
         this.groupBy = function(grouping) {
             ///Do nothing if we can't or don't need to.
-            if (this.grouping == grouping || !self.active_asset.id) 
+            if (this.grouping == grouping || !(self.active_asset && self.active_asset.id)) 
                 return;
 
             ///hide previous grouping so we can show the new one.
@@ -520,10 +521,10 @@
         this._addHistory = function(replace) {
             if (window.history.pushState) {
                 var action = replace ? window.history.replaceState : window.history.pushState;
-                var currentState = { asset_id: self.active_asset.id };
+                var currentState = { asset_id: ((self.active_asset)?self.active_asset.id:self.config.asset_id) };
                 if (self.active_annotation) {
                     currentState["annotation_id"] = self.active_annotation.id;
-                    action.apply(window.history, [currentState, self.active_annotation.title, "/asset/" + self.active_asset.id + "/annotations/" + self.active_annotation.id + "/"]);
+                    action.apply(window.history, [currentState, self.active_annotation.title, "/asset/" + currentState.asset_id + "/annotations/" + self.active_annotation.id + "/"]);
                 } else {
                     action.apply(window.history, [currentState, self.active_asset.title, "/asset/" + self.active_asset.id + "/"]);
                 }
@@ -575,10 +576,16 @@
                 jQuery('.annotation-active').removeClass('annotation-active');
                 
                 if (self.active_annotation) {
-                    djangosherd.assetview.setState(self.active_annotation.annotation);
+                    var aa = self.active_annotation;
+                    djangosherd.assetview.setState(aa.annotation);
                     
                     var mode = context.annotation.editing ? 'edit' : 'browse';
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2, 'imageUrl': self.active_annotation.annotation.imageUrl }, { 'mode': mode });
+                    djangosherd.assetview.clipform.setState({ 
+                        'start': aa.range1, 
+                        'end': aa.range2, 
+                        //for fsiviewer/artstor
+                        'imageUrl': ((aa.annotation)? aa.annotation.imageUrl : undefined)
+                    }, { 'mode': mode });
                     
                     jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
                 } else if (self.xywh) {

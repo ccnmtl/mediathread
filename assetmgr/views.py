@@ -501,8 +501,9 @@ def asset_json(request, asset_id):
             return 'author_name',get_public_name(annotation.author, request)
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
             annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
-            
-    data = {'asset': asset.sherd_json(request),
+
+    #we make assets plural here to be compatible with the project JSON structure
+    data = {'assets': {asset_key:asset.sherd_json(request)},
             'annotations':annotations,
             'type':'asset',
             }

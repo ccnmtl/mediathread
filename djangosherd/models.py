@@ -86,6 +86,8 @@ class Annotation(models.Model):
         for m in metadata_keys:
             if m=='author':
                 metadata[m] = {'id':getattr(self,'author_id',None)}
+            elif m=='tags':
+                metadata[m] = getattr(self,m,None).strip(",")
             elif callable(m):
                 key,val = m(request, self, m)
                 metadata[key] = val

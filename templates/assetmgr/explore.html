@@ -116,29 +116,24 @@ Explore Collections
          <div class="manage-archive">
            <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage Title/Description</a>
            edit:
-           <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.archive.id %}">link</a>
-           {%if archive.sources.thumb%}
-              <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.sources.thumb.id %}">thumb</a>           
+           <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.archive.id %}">link</a>
+           {%if archive.thumb%}
+              <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.thumb.id %}">thumb</a>           
               {% else %}
               <a class="manage-archive-link" href="{%url admin:assetmgr_source_add %}">thumb</a>                    
            {% endif %}           
          </div>
          {% endif %}
      
-	 <a href="redirect/?url={{archive.sources.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+	 <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
          <br />
-         {%if archive.sources.thumb%}
-           <a href="redirect/?url={{archive.sources.archive.url|urlencode}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+         {%if archive.thumb%}
+           <a href="redirect/?url={{archive.archive.url|urlencode}}"><img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
          </a>
          {% endif %}
 
 	 <div>
-           {# is description a list or string? #}
-           {% if archive.metadata.description.lower %}           
-             {{archive.metadata.description|urlize|linebreaks}}
-           {% else %}
-             {{archive.metadata.description.0|urlize|linebreaks}}
-           {% endif %}
+             {{archive.description|urlize|linebreaks}}
 	 </div>
        </div>
     {%endfor%}

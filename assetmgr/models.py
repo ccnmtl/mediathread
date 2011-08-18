@@ -2,6 +2,8 @@ import simplejson
 
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_init, post_save
+from django.core.cache import cache
 
 Tag = models.get_model('tagging','tag')
 User = models.get_model('auth','user')
@@ -104,10 +106,29 @@ class Asset(models.Model):
 
     @property
     def primary(self):
-        return Source.objects.get(asset=self,primary=True)
+        p = getattr(self,'_primary_cache',None)
+        if p:
+            return p
+        self._primary_cache = Source.objects.get(asset=self,primary=True)
+        return self._primary_cache
+
+    @property
+    def thumb_url(self):
+        if not hasattr(self,'_thumb_url'):
+            try:
+                self._thumb_url = Source.objects.get(asset=self,label='thumb').url
+            except Source.DoesNotExist:
+                self._thumb_url = None
+        return self._thumb_url
 
     def tags(self):
-        return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
+        key = "asset-tags-%s" % self.id
+        tags = cache.get(key)
+        if not tags:
+            tags = Tag.objects.usage_for_queryset(self.sherdnote_set.all())
+            cache.set(key, tags) # cache for an hour
+            
+        return tags
 
     def global_annotation(self, user, auto_create=True):
         SherdNote = models.get_model('djangosherd','sherdnote')
@@ -207,3 +228,11 @@ class Source(models.Model):
     def dir(self):
         return dir(self)
     
+def update_tags(sender, **kwargs):
+    instance = kwargs['instance']
+    key = "asset-tags-%s" % instance.id
+    cache.set(key, Tag.objects.usage_for_queryset(instance.sherdnote_set.all()))
+    
+post_save.connect(update_tags, sender=Asset)
+    
+        

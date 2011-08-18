@@ -1,0 +1,152 @@
+table#home-columns
+ {
+
+	padding: 0;
+	border: none;
+	height: 500px;
+	
+}
+
+table#home-columns td,
+table#classwork-sub td{
+	border: none;
+	border-collapse: collapse;
+	vertical-align: top;
+	padding: 5px;
+	
+}
+
+
+table#home-columns td#instructor {
+	width: 40%;
+	
+}
+
+table#home-columns td#classwork {
+	width: 60%;
+	
+}
+
+
+table#home-columns td#classwork {
+	width: 60%;
+	
+}
+
+table#home-columns td#instructor ul,
+table#home-columns td#classwork ul {
+	list-style: none;
+	
+}
+
+ul.instructor-list {
+
+	margin: 0 20px;
+}
+
+
+ul.instructor-list li {
+
+	margin: 5px 0 10px 0;
+	font-weight: normal;
+}
+
+table#home-columns td h2 {
+	background-color: #333333;
+	padding: 5px 12px;
+	text-transform: uppercase;
+	color: #ffffff;
+	font-weight: normal;
+	-moz-border-radius: 10px 10px 0 0;
+	border-radius: 10px 10px 0 0;
+	margin: 0;
+	
+}
+
+table#home-columns td#instructor h2 {
+	background-color: #006031;
+	padding: 5px 12px;
+	text-transform: uppercase;
+	color: #ffffff;
+	font-weight: normal;
+	-moz-border-radius: 10px 10px 0 0;
+	border-radius: 10px 10px 0 0;
+	margin: 0;
+	
+}
+
+div.column-contents,
+table#classwork-sub {
+	background-color: #ffffff;
+  -moz-box-shadow: 0px 5px 5px #ccc;
+  -webkit-box-shadow: 0px 5px 5px #ccc;
+  box-shadow: 0px 5px 5px #ccc;
+  	border: 1px solid #ccc;
+  		border-top: 0;
+ overflow: auto;
+
+
+}
+
+div.column-contents {
+
+	padding-top: 20px;
+
+}
+
+table#classwork-sub td{
+
+	padding: 20px;
+	width: 50%;
+
+	
+
+}
+
+
+table#classwork-sub div#assets,
+table#classwork-sub div#projects {
+
+	border: 2px solid green;
+	width: 100%;
+
+
+}
+
+table#classwork-sub td div#assets h3 {
+
+	background-color: yellow;
+	margin: 0;
+	padding: 5px;
+	
+
+}
+
+table#classwork-sub td div#projects h3 {
+
+	background-color: blue;
+	margin: 0;
+	padding: 5px;
+	
+
+}
+
+table#classwork-sub td div#assets div#asset_browse_col {
+
+	width: 100%;
+	float: none;
+	margin: 0;
+ overflow: auto;
+	
+
+}
+
+table#classwork-sub td div#projects div.projectlist ul {
+
+list-style-type: none;
+	
+
+}
+
+
+

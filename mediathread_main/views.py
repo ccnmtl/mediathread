@@ -53,6 +53,28 @@ def django_settings(request):
 
     return rv
 
+
+def get_prof_feed(course,request):
+    prof_feed = {'assets':[], #assets.filter(c.faculty_filter).order_by('-added'),
+                 'projects':[], # we'll add these directly below, to ensure security filters
+                 'assignments':[],
+                 'tags':Tag.objects.get_for_object(course)
+                 }
+    prof_projects = Project.objects.filter(
+        course.faculty_filter).order_by('title')
+    for project in prof_projects:
+        if project.class_visible():
+            if project.is_assignment(request):
+                prof_feed['assignments'].append(project)
+            else:
+                prof_feed['projects'].append(project)
+
+    #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
+    prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
+    return prof_feed
+
+
+
 @rendered_with('projects/portal.html')
 @allow_http("GET")
 def class_portal(request):
@@ -65,25 +87,8 @@ def class_portal(request):
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    assets = Asset.objects.filter(course=c)
     #instructor focus
-    prof_feed = {'assets':[], #assets.filter(c.faculty_filter).order_by('-added'),
-                 'projects':[], # we'll add these directly below, to ensure security filters
-                 'assignments':[],
-                 'tags':Tag.objects.get_for_object(c)
-                 }
-    prof_projects = Project.objects.filter(
-        c.faculty_filter).order_by('title')
-    for project in prof_projects:
-        if project.class_visible():
-            if project.is_assignment(request):
-                prof_feed['assignments'].append(project)
-            else:
-                prof_feed['projects'].append(project)
-
-    #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
-    prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
-
+    prof_feed = get_prof_feed(c,request)
 
     class_feed =[]
     #class_feed=Clumper(SherdNote.objects.filter(asset__course=c,
@@ -267,15 +272,52 @@ filter_by = {
     'modified': date_filter_for('modified'),
     }
 
+@rendered_with('homepage.html')
+def triple_homepage(request):
+    c = request.course
+
+    if not c:
+        return HttpResponseRedirect('/accounts/login/')
+
+    user = request.user
+    if user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
+
+    user_records = get_records(user, c, request)
+    prof_feed = get_prof_feed(c, request)
+    discussions = get_discussions(c)
+
+    full_prof_list = []
+    for lis in (prof_feed['projects'], prof_feed['assignments'], discussions, ):
+        full_prof_list.extend(lis)
+    full_prof_list.sort(lambda a,b:cmp(a.title.lower(),b.title.lower()))
+
+    user_records.update(
+        {'faculty_feed':prof_feed,
+         'instructor_full_feed':full_prof_list,
+         'is_faculty':c.is_faculty(user),         
+         'display':{'instructor':prof_feed['show'],
+                    'course': (len(prof_feed['tags']) < 5)
+                    },
+         'discussions' : discussions,
+         })
+    return user_records
+    
+
 @allow_http("GET")
 @rendered_with('projects/your_records.html')
 def your_records(request, user_name):
 
     c = request.course
     in_course_or_404(user_name, c)
-
-    today = datetime.date.today()
     user = get_object_or_404(User, username=user_name)
+
+    return get_records(user, c, request)
+
+
+def get_records(user, course, request):
+    c = course
+    today = datetime.date.today()
 
     editable = (user==request.user)
     assets = annotated_by(Asset.objects.filter(course=c),

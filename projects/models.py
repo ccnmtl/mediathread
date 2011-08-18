@@ -104,10 +104,13 @@ class Project(models.Model):
         return self.subobjects(request, project_type)
 
     def is_assignment(self, request):
+        if hasattr(self,'is_assignment_cached'):
+            return self.is_assignment_cached
         col = self.collaboration()
         if not col:
             return False
-        return col.permission_to("add_child", request)
+        self.is_assignment_cached = col.permission_to("add_child", request)
+        return self.is_assignment_cached
 
     def assignment(self):
         """

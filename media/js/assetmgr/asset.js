@@ -96,7 +96,12 @@
                             },
                             false,
                             function(asset_full) {
-                                self.active_asset = asset_full.asset;
+                                var theAsset;
+                                for (var key in asset_full.assets) {
+                                    theAsset = asset_full.assets[key];
+                                    break;
+                                }
+                                self.active_asset = theAsset;
                                 self.active_asset_annotations = asset_full.annotations;
                                 
                                 // window.location.hash
@@ -503,7 +508,12 @@
                     },
                     false,
                     function(asset_full) {
-                        self.active_asset = asset_full.asset;
+                        var theAsset;
+                        for (var key in asset_full.assets) {
+                            theAsset = asset_full.assets[key];
+                            break;
+                        }
+                        self.active_asset = theAsset;
                         self.active_asset_annotations = asset_full.annotations;
                          
                         self._update({ 'annotation_id': json.annotation.id }, "annotation-current");

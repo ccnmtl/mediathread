@@ -40,48 +40,46 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
     </h2>
     <div class="column-contents scroll">
 
-    {% if is_faculty %}
-    <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
-      <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
-        Instructor controls this space
-      </h3>
-      <p>
-        Projects, assignments, and discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
-        </p><p>     
-        To learn more and get started, visit the Instructor Dashboard
-      </p>
-    </div>
-    {% endif %}
+        {% if is_faculty %}
+        <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
+          <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
+            Instructor controls this space
+          </h3>
+          <p>
+            Projects, assignments, and discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
+            </p><p>     
+            To learn more and get started, visit the Instructor Dashboard
+          </p>
+        </div>
+        {% endif %}
 
-    {%if faculty_feed.projects %}
-      
-      <ul class="instructor-list">
-        {#not necessarily a project -- could be a discussion #}
-	{%for project in instructor_full_feed %}
-        {%if project.threadedcomment %}
-          {% with project as disc %}
-          <li id="discussion-{{disc.id}}" class="inst-item-discussion">
-            <div class="actions">
-              {% if is_faculty %}
-              <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                 href="{% url discussion-view disc.id %}?delete">
-              <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
-              {% endif %}
-
-            </div>
-            <div class="asset_title type-collaboration">
-              <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
-              {% get_comment_count for disc.content_object as comment_count%}
-              ({{comment_count}})
-            </div>
-          </li>
-          {%endwith%}
-        {%else%}
-        <li class="inst-item{%if project.is_assignment_cached%}-assignment{%endif%}"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+        {%if faculty_feed.projects %}
+            <ul class="instructor-list">
+                {#not necessarily a project -- could be a discussion #}
+            	{%for project in instructor_full_feed %}
+                    {%if project.threadedcomment %}
+                      {% with project as disc %}
+                        <li id="discussion-{{disc.id}}" class="inst-item discussion">
+                            <div class="actions">
+                              {% if is_faculty %}
+                              <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
+                                 href="{% url discussion-view disc.id %}?delete">
+                              <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+                              {% endif %}
+                            </div>
+                            <div class="asset_title type-collaboration">
+                              <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+                              {% get_comment_count for disc.content_object as comment_count%}
+                              ({{comment_count}})
+                            </div>
+                        </li>
+                      {%endwith%}
+                    {%else%}
+                        <li class="inst-item {%if project.is_assignment_cached%}assignment{%else%}project{%endif%}"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                    {%endif%}
+	           {%endfor%}
+            </ul>
         {%endif%}
-	{%endfor%}
-      </ul>
-    {%endif%}
 
     {%if faculty_feed.assets %}
      <h3>ITEMS OF INTEREST</h3>
@@ -141,25 +139,19 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
       <td class="" id="">
  <div id="projects" class="">
   <h3>Projects & Discussions</h3>
-{% if editable %}
-
-  <div class="button-form inline">
-   <form class="block project-createnew inline nofloat" method="POST" action="{%url your-space-projects user%}">
-     <input type="hidden" name="title" />
-     <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
-
-   </form>
-
-   </div>
-{% endif %}
-
-
-
+        {% if editable %}
         
+          <div class="button-form inline">
+           <form class="block project-createnew inline nofloat" method="POST" action="{%url your-space-projects user%}">
+             <input type="hidden" name="title" />
+             <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
+        
+           </form>
+        
+           </div>
+        {% endif %}
 
-       
-
-          {% include "projects/project_list_notable.html" %}
+        {% include "projects/project_list_notable.html" %}
         </div>
       </td>
       </tr>

@@ -112,17 +112,13 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
   {%endif%}{#display.instructor#}
 
       </td>
-      <td class="column-container" id="classwork">
-<h2>Class Work: {% public_name for space_owner %}</h2>
-<table id="classwork-sub">
-<tr>
-<td>
-<div id="assets" >
- <h3>Media & Clips</h3>
+      <td class="" id="media">
+<div class="column-container" >
+ <h2>
  {% if editable %}
 
   <div class="button-form inline">
-   <form class="block media-browse inline nofloat" method="POST" action="{%url your-space-projects user%}">
+   <form class="block media-browse hinline" method="POST" action="{%url your-space-projects user%}">
      <input type="hidden" name="title" />
      <input class="columnbutton media-browse-button" type="submit" value="Browse Media Sources"/>
 
@@ -130,34 +126,42 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
    </div>
 {% endif %}
+ Media & Clips
+ </h2>
+ <div class="column-contents scroll">
+ 
 
  {% include "assetmgr/new_asset_table.html" %}
 
 </div>
+    </div>
       </td>
 
-      <td class="" id="">
- <div id="projects" class="">
-  <h3>Projects & Discussions</h3>
-        {% if editable %}
+      <td class="" id="projects">
+ <div class="column-container">
+  <h2>
+  {% if editable %}
         
           <div class="button-form inline">
-           <form class="block project-createnew inline nofloat" method="POST" action="{%url your-space-projects user%}">
+           <form class="block project-createnew inline" method="POST" action="{%url your-space-projects user%}">
              <input type="hidden" name="title" />
              <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
         
            </form>
         
-           </div>
+       </div>
         {% endif %}
 
+  
+  Projects & Discussions: {% public_name for space_owner %}
+  </h2>
+      <div class="column-contents scroll">
+      
         {% include "projects/project_list_notable.html" %}
+        </div>
         </div>
       </td>
       </tr>
-      </table>
-      </td>
-    </tr>
   </tbody>
 </table>
 {% endblock %}

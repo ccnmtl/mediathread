@@ -257,8 +257,7 @@ def project_json(request,project):
                            ],
             'type':'project',
             }
-    json = json.dumps(data, indent=2)
-    return HttpResponse(json,
+    return HttpResponse(json.dumps(data, indent=2),
                         mimetype='application/json')
 
 

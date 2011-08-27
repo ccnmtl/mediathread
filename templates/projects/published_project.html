@@ -61,22 +61,6 @@
 
   <br />
   <div class="asset-view asset-view-small">
-    <div class="annotation-links">
-      {% for annotation in project.citations %}      
-      <div class="annotation annotation{{annotation.id}}">
-	<div class="annotation-title materialCitation"><h2>{{annotation.title}}</h2></div>
-	<div class="annotation-data" data-begin="{{annotation.range1}}" data-end="{{annotation.range2}}" data-annotation='{{annotation.annotation_data|default_if_none:"{}"|escape}}'></div>
-	<div class="asset-title">from <a href="{{annotation.asset.get_absolute_url}}">{{annotation.asset.title|escape}}</a></div>
-	<div class="asset-links">
-	  <ul>
-            {% with annotation.asset.source_set.all as assets_to_link %}
-              {% include "assetmgr/asset_links.html" %}
-            {% endwith %}
-	  </ul>
-	</div>
-      </div>
-      {% endfor %}
-    </div>
     <div id="videoclipbox" style="display:none;">
       <div class="annotation-title materialCitation"></div>
       <div class="asset-title"></div>

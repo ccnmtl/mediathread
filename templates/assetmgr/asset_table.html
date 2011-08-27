@@ -265,7 +265,7 @@
                                     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
                                       class="materialCitationLink"
                                       title="Last modified on {{annotation.modified|date}} by {% public_name for annotation.author %}"
-                                      href="{{annotation.get_absolute_url}}">{{annotation.title}}</a>         
+                                      href="{{annotation.get_absolute_url}}">{% if annotation.title %}{{annotation.title}}{% else %}-Untitled-{%endif%}</a>         
                                 
                                     <span class="annotation-timecode">{{annotation.range_as_timecode}}</span>
 

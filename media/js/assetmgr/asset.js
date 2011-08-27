@@ -65,6 +65,38 @@
         }
     }//END MUSTACHE CODE
 
+    window.AssetList = new (function AssetListAbstract() {
+        var self = this;
+                
+        this.init = function(config) {
+            this.config = config;
+
+            jQuery.ajax({
+                url:'/site_media/templates/assets.mustache?nocache=v2',
+                dataType:'text',
+                success:function(text) {
+                    MediaThread.templates['assets'] = Mustache.template('assets',text);
+                    
+                    // Retrieve the full asset w/annotations from storage
+                    djangosherd.storage.get({
+                            type:'asset',
+                            url:MediaThread.urls['your-space'](config.user_id,/*annotations=*/true)
+                        },
+                        false,
+                        function(asset_array) {
+                            self._update("assets")
+                        }
+                    );
+                }
+            });
+        }
+        
+        this._update = function(template_label) {
+            Mustache.update(template_label, {}, { post:function(elt) { /** post processing **/ } });
+        }
+        
+    })();
+
     window.AnnotationList = new (function AnnotationListAbstract(){
         var self = this;
         
@@ -399,6 +431,7 @@
         this.cancelAnnotation = function() {
             var annotation_id = self.active_annotation ? self.active_annotation.id : null;
             self._update({ 'annotation_id' : annotation_id }, "annotation-current");
+            jQuery("#annotations-organized").show();
         }
         
         ///Annotation Add Form
@@ -414,11 +447,13 @@
             
             Mustache.update('annotation-current', context, { post:function(elt) {
                 djangosherd.assetview.clipform.html.push('clipform-display', {
-                    asset : {}
+                    asset : {},
+                    extra : { 'tools' : 'clipform-tools' }
                 });
                 
                 djangosherd.assetview.setState({});
                 djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
+                jQuery("#annotations-organized").hide();
             }});
         }
         
@@ -426,6 +461,8 @@
         // - new annotation with properties of current annotation minus id
         this.editAnnotation = function() {
             self._update( { 'annotation_id': self.active_annotation.id, 'editing': true }, "annotation-current");
+            jQuery("#annotations-organized").hide();
+            return false;
         }
         
         ///Annotation Copy
@@ -449,13 +486,17 @@
             Mustache.update('annotation-current', context, { post:function(elt) {
                 if (self.active_annotation) {
                     djangosherd.assetview.clipform.html.push('clipform-display', {
-                        asset : {}
+                        asset : {},
+                        extra : { 'tools' : 'clipform-tools' }
                     });
 
                     djangosherd.assetview.setState(self.active_annotation.annotation);
-                    djangosherd.assetview.clipform.setState({ 'start': self.active_annotation.range1, 'end': self.active_annotation.range2, 'imageUrl':self.active_annotation.annotation.imageUrl }, { 'mode': 'copy' });
+                    djangosherd.assetview.clipform.setState(self.active_annotation.annotation, { 'mode': 'copy' });
+                    jQuery("#annotations-organized").hide();
                 }
             }});
+            
+            return false;
         }
         
         ///Annotation Save
@@ -519,6 +560,7 @@
                         self._update({ 'annotation_id': json.annotation.id }, "annotation-current");
                         self.updateAnnotationList();
                         self._addHistory(/*replace=*/false);
+                        jQuery("#annotations-organized").show();
                     });
                 }
             });
@@ -564,12 +606,10 @@
                         break;
                     }
                 }
-                if (self.active_annotation)
+                if (self.active_annotation) {
                     context.annotation = self.active_annotation;
-                if (config.editing)
                     context.annotation.editing = config.editing;
-                else 
-                    context.annotation.editing = false;
+                } 
             } else if (config.xywh) {
                 self.xywh = config.xywh;
                 context.annotation = {   
@@ -582,20 +622,17 @@
             }
             
             Mustache.update(template_label, context, { post:function(elt) {
-                djangosherd.assetview.clipform.html.push('clipform-display', { asset : {} });
+                djangosherd.assetview.clipform.html.push('clipform-display', { 
+                    asset : {},
+                    extra : { 'tools' : 'clipform-tools' } 
+                });
                 jQuery('.annotation-active').removeClass('annotation-active');
                 
                 if (self.active_annotation) {
-                    var aa = self.active_annotation;
-                    djangosherd.assetview.setState(aa.annotation);
+                    djangosherd.assetview.setState(self.active_annotation.annotation);
                     
-                    var mode = context.annotation.editing ? 'edit' : 'browse';
-                    djangosherd.assetview.clipform.setState({ 
-                        'start': aa.range1, 
-                        'end': aa.range2, 
-                        //for fsiviewer/artstor
-                        'imageUrl': ((aa.annotation)? aa.annotation.imageUrl : undefined)
-                    }, { 'mode': mode });
+                    djangosherd.assetview.clipform.setState(self.active_annotation.annotation, 
+                            { 'mode': context.annotation.editing ? 'edit' : 'browse' });
                     
                     jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
                 } else if (self.xywh) {

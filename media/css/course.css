@@ -449,17 +449,12 @@ text-align:center;
 }
 
 
-#asset-details-annotations form {
-      margin: 15px 5px 0px 5px;
-}
-  #member_col, #filter_col, #project_col {  
- /*     margin-top:29px; */
-}
-  #project_col {
+#project_col {
   border: none;
 }
-  #member_col p, #filter_col p, #project_col p {  
-      margin:7px;
+
+#member_col p, #filter_col p, #project_col p {  
+    margin:7px;
 }
 
   #filter_col {
@@ -691,18 +686,13 @@ width:340px;
 }
 
 #asset_details_col {
-
-float:right;
-margin:0 0 0 1em;
-width: 35%;
-font-size: 94%;
-
+    float:right;
+    margin:0 0 0 1em;
+    width: 35%;
+    font-size: 94%;
 }
 
 #asset_details_col .tabberlive .tabbertab {
-
-
-
 }
 
 #annotations-organized {
@@ -953,26 +943,20 @@ a.participants_toggle {
  line-height: 1.5em;
  }
 
-.helptext,
-.sherd-instructions {
-
-color:#666;
-display:block;
-font-size:80%;
-margin:0.4em 0 2em;
-text-align:left;
-
+.helptext {
+    color:#666;
+    display:block;
+    font-size:80%;
+    margin:0.4em 0 2em;
+    text-align:left;
 }
 
-p.helptext,
-p.sherd-instructions {
-
-color:#666;
-display:block;
-font-size:80%;
-margin:0.4em 0 2em .5em;
-text-align:left;
-
+p.helptext {
+    color:#666;
+    display:block;
+    font-size:80%;
+    margin:0.4em 0 2em .5em;
+    text-align:left;
 }
 
 #disableform 
@@ -1206,6 +1190,34 @@ ul.submenu.course-report li.highlight {
     background-color:#fff100;
 }
 
+.asset-annotator {
+    padding: 10px;
+    background-color: #dedede;
+    margin-bottom: 10px;
+}
+
+.sherd-instructions {
+    color:#666;
+    display:block;
+    margin:0.4em 0 2em;
+    text-align:left;
+}
+
+p.sherd-instructions {
+    color:#666;
+    display:block;
+    margin:0.4em 0 .5em .5em;
+    text-align:left;
+}
+
+.sherd-clipform {
+    padding: 5px 5px 5px 0px;
+}
+
+.sherd-clipform table {
+    border: none;
+}
+
 .sherd-clipform-play {
     text-align: center; 
     border-top: 2px solid #999; 
@@ -1214,7 +1226,7 @@ ul.submenu.course-report li.highlight {
 
 .sherd-clipform-editing input.timecode,
 .sherd-clipform-editing input.regButton {
-    width:6em;
+    width:6.5em;
 }
 
 .sherd-clipform-editing td {
@@ -1223,6 +1235,10 @@ ul.submenu.course-report li.highlight {
 
 .sherd-clipform-editing td.sherd-clipform-timecodestart {
     border-right: 1px dotted #999;
+}
+
+.sherd-clipform span {
+    font-weight: normal;
 }
 
 table.project_list th {
@@ -1266,13 +1282,25 @@ body.old-assetwindow #asset-details-annotations-list {
     overflow-y:auto;
 }
 
+#asset-details-annotations-current h3 {
+    margin: .5em 0 .5em;
+}
+
+#asset-details-annotations-current h2 {
+    margin-bottom: 0;
+}
+
+#asset-details-annotations-current {
+    margin-bottom: .5em;
+}
+
 .intro-text {
     /*margin 20px on right-and left, squeezes homepage content over [x] */
 	margin: 10px;
 	background-color: #dedede;
 	padding: 10px;
 	font-size: 95%;
-        max-width:600px;
+    max-width:600px;
 }
 
 .intro-text h4 {
@@ -1285,5 +1313,4 @@ body.old-assetwindow #asset-details-annotations-list {
 
 #instructor-actions form {
 	display: inline;
-
 }

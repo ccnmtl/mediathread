@@ -18,6 +18,9 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
+from random import choice
+from string import letters
+
 import simplejson as json
 import re
 
@@ -272,7 +275,7 @@ filter_by = {
     'modified': date_filter_for('modified'),
     }
 
-@rendered_with('homepage.html')
+@rendered_with('susan.homepage.html')
 def triple_homepage(request):
     c = request.course
 
@@ -311,6 +314,8 @@ def your_records(request, user_name):
     c = request.course
     in_course_or_404(user_name, c)
     user = get_object_or_404(User, username=user_name)
+    
+    foo = request.is_ajax()
 
     return get_records(user, c, request)
 
@@ -359,20 +364,34 @@ def get_records(user, course, request):
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
 
-    return {
-        'assets'        : assets,
-        'assignments'   : assignments,
-        'projects'      : projects,
-        'tags'          : tags,
-        'dates'         : (('today','today'),
-                           ('yesterday','yesterday'),
-                           ('lastweek','within the last week'),
-                           ),
-        'space_owner'   : user,
-        'space_viewer'  : space_viewer,
-        'editable'      : editable,
-        'active_filters': active_filters,
-        }
+    if request.is_ajax():
+        rand = ''.join([choice(letters) for i in range(5)])
+        
+        data = {
+                'assets':dict([('%s_%s' % (rand,asset.pk),
+                            asset.sherd_json(request)
+                            ) for asset in assets]),
+                'tags': tags }
+        
+        json = json.dumps(data, indent=2)
+        return HttpResponse(json,
+                        mimetype='application/json')
+        
+    else:
+        return {
+            'assets'        : assets,
+            'assignments'   : assignments,
+            'projects'      : projects,
+            'tags'          : tags,
+            'dates'         : (('today','today'),
+                               ('yesterday','yesterday'),
+                               ('lastweek','within the last week'),
+                               ),
+            'space_owner'   : user,
+            'space_viewer'  : space_viewer,
+            'editable'      : editable,
+            'active_filters': active_filters,
+            }
 
 
 @allow_http("GET")

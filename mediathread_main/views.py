@@ -3,6 +3,7 @@ from tagging.utils import calculate_cloud
 
 from assetmgr.lib import most_popular, annotated_by, get_active_filters
 
+from courseaffils.lib import get_public_name
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 from djangosherd.models import DiscussionIndex
@@ -21,7 +22,7 @@ from discussions.utils import get_discussions
 from random import choice
 from string import letters
 
-import simplejson as json
+from django.utils import simplejson as json
 import re
 
 from clumper import Clumper
@@ -275,7 +276,7 @@ filter_by = {
     'modified': date_filter_for('modified'),
     }
 
-@rendered_with('susan.homepage.html')
+@rendered_with('homepage.html')
 def triple_homepage(request):
     c = request.course
 
@@ -315,8 +316,6 @@ def your_records(request, user_name):
     in_course_or_404(user_name, c)
     user = get_object_or_404(User, username=user_name)
     
-    foo = request.is_ajax()
-
     return get_records(user, c, request)
 
 
@@ -363,30 +362,34 @@ def get_records(user, course, request):
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
+        
+    dates = (('today','today'),
+             ('yesterday','yesterday'),
+             ('lastweek','within the last week'),)    
 
     if request.is_ajax():
         rand = ''.join([choice(letters) for i in range(5)])
         
-        data = {
-                'assets':dict([('%s_%s' % (rand,asset.pk),
+        data = {'assets':dict([('%s_%s' % (rand,asset.pk),
                             asset.sherd_json(request)
                             ) for asset in assets]),
-                'tags': tags }
-        
-        json = json.dumps(data, indent=2)
-        return HttpResponse(json,
+                'tags': [ tag.name for tag in tags ],
+                'dates': dates,
+                'selected_owner' : { 'username': user.username, 'public_name': get_public_name(user, request) },
+                'active_filters': active_filters,
+                'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
+               }
+    
+        json_stream = json.dumps(data, indent=2)
+        return HttpResponse(json_stream,
                         mimetype='application/json')
-        
     else:
         return {
             'assets'        : assets,
             'assignments'   : assignments,
             'projects'      : projects,
             'tags'          : tags,
-            'dates'         : (('today','today'),
-                               ('yesterday','yesterday'),
-                               ('lastweek','within the last week'),
-                               ),
+            'dates'         : dates,
             'space_owner'   : user,
             'space_viewer'  : space_viewer,
             'editable'      : editable,

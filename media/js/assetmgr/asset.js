@@ -70,7 +70,8 @@
                 
         this.init = function(config) {
             this.config = config;
-
+            this.user = config.user;
+            
             jQuery.ajax({
                 url:'/site_media/templates/assets.mustache?nocache=v2',
                 dataType:'text',
@@ -80,11 +81,14 @@
                     // Retrieve the full asset w/annotations from storage
                     djangosherd.storage.get({
                             type:'asset',
-                            url:MediaThread.urls['your-space'](config.user_id,/*annotations=*/true)
+                            url:MediaThread.urls['your-space'](self.user.username,/*annotations=*/true)
                         },
                         false,
-                        function(asset_array) {
-                            self._update("assets")
+                        function(your_records) {
+                            var template_label = "assets";
+                            your_records.show_user_assets = your_records.selected_owner.username == self.user.username;
+                            your_records.user = self.user;
+                            Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
                         }
                     );
                 }
@@ -92,7 +96,7 @@
         }
         
         this._update = function(template_label) {
-            Mustache.update(template_label, {}, { post:function(elt) { /** post processing **/ } });
+            
         }
         
     })();

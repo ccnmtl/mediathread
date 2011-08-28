@@ -3,8 +3,6 @@ table#home-columns
 
 	padding: 0;
 	border: none;
-	height: 500px;
-	
 }
 
 table#home-columns td,
@@ -78,29 +76,22 @@ table#home-columns td#instructor h2 {
 div.column-contents,
 table#classwork-sub {
 	background-color: #ffffff;
-  -moz-box-shadow: 0px 5px 5px #ccc;
-  -webkit-box-shadow: 0px 5px 5px #ccc;
-  box-shadow: 0px 5px 5px #ccc;
+    -moz-box-shadow: 0px 5px 5px #ccc;
+    -webkit-box-shadow: 0px 5px 5px #ccc;
+    box-shadow: 0px 5px 5px #ccc;
   	border: 1px solid #ccc;
-  		border-top: 0;
- overflow: auto;
-
-
+    border-top: 0;
+    overflow: auto;
+    height: 95%;
 }
 
 div.column-contents {
-
-	padding-top: 20px;
-
+	padding-top: 10px;
 }
 
-table#classwork-sub td{
-
+table#classwork-sub td {
 	padding: 20px;
 	width: 50%;
-
-	
-
 }
 
 

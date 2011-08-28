@@ -11,14 +11,32 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
 {% block css %}
 	<link rel="stylesheet" type="text/css" href="/site_media/css/home.css" />
+    <link rel="stylesheet" type="text/css" href="/site_media/css/switcher.css" />
 {% endblock %}
+
 {% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-<script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
-<script type="text/javascript" src="/site_media/js/tablesort.js"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js"></script>
+  <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
+  <script type="text/javascript" src="/site_media/js/tablesort.js"></script>
+  <script type="text/javascript" src="/site_media/js/util.js"></script>
+  
   {% if EXPERIMENTAL %}
   <script type="text/javascript" src="/site_media/js/slider.js"></script>
   {% endif %}
+  
+  <!--All the annotation javascript/css -->
+  {% include "djangosherd/annotator_resources.html" %}
+    
+  <script type="text/javascript" src="/site_media/js/mustache/mustache.js"></script>
+  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?v1"></script>
+  <script type="text/javascript">
+    DjangoSherd_Asset_Config();    
+    {% if not mock %}
+        AssetList.init({
+            'user': { 'username': '{{request.user}}', 'name': '{% public_name for request.user %}' }
+        });
+    {% endif %}{# not mock #}    
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -126,13 +144,15 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
    </div>
 {% endif %}
- Media & Clips
+ Media & Selections
  </h2>
  <div class="column-contents scroll">
  
+    <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
 
- {% include "assetmgr/new_asset_table.html" %}
-
+   {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
+                
+     
 </div>
     </div>
       </td>
@@ -164,4 +184,11 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
       </tr>
   </tbody>
 </table>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        var visible = getVisibleContentHeight();
+        jQuery('.column-container').css('height', visible + "px");
+    });
+</script>
 {% endblock %}

@@ -9,7 +9,7 @@
 {% endif %}
 
 {% if projects or assignments %}
-<ul>
+<ul id="projects">
 
   {% for assignment in assignments %}
   <li class="projectlist assignment-listitem" id="assignment-{{assignment.pk}}">

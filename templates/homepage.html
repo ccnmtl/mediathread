@@ -61,13 +61,31 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
         {% if is_faculty %}
         <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
           <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
-            Instructor controls this space
+            Welcome to MediaThread
           </h3>
+          
+           <h4>
+        In MediaThread you can:
+      </h4>
+
+      <ul>
+        <li>Explore Sources and Collect Items for use in your Work</li>
+        <li>Save and annotate both Items and Selections</li>
+        <li>Embed Selections into your Work (i.e. projects and discussions)</li>
+      </ul>
+      
+         <h4>
+        Your Instructor controls this space:
+      </h4>
           <p>
-            Projects, assignments, and discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
+            Information, Sources, Items, Assignments, and Discussions that s/he publishes for the class will appear in this column.</p>
+          <!--
+          
+          <p>
+            Information (in the form of Projects), Sources, Items, Assignments, and Discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
             </p><p>     
             To learn more and get started, visit the Instructor Dashboard
-          </p>
+          </p>-->
         </div>
         {% endif %}
 
@@ -85,15 +103,23 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
                               <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
                               {% endif %}
                             </div>
-                            <div class="asset_title type-collaboration">
+                            
                               <a href="/discussion/show/{{disc.id}}" class="title">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
                               {% get_comment_count for disc.content_object as comment_count%}
                               ({{comment_count}})
-                            </div>
+                            
                         </li>
                       {%endwith%}
                     {%else%}
-                        <li class="inst-item {%if project.is_assignment_cached%}assignment{%else%}project{%endif%}"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                    <div class="actions">
+                              {% if is_faculty %}
+                              <a onclick=""
+                                 href="">
+                              <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove from List"  /></a>
+                              {% endif %}
+                            </div>
+                    <li class="inst-item {%if project.is_assignment_cached%}assignment{%else%}project{%endif%}"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                    
                     {%endif%}
 	           {%endfor%}
             </ul>
@@ -138,13 +164,13 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
   <div class="button-form inline">
    <form class="block media-browse hinline" method="POST" action="{%url your-space-projects user%}">
      <input type="hidden" name="title" />
-     <input class="columnbutton media-browse-button" type="submit" value="Browse Media Sources"/>
+     <input class="columnbutton media-browse-button" type="submit" value="Sources"/>
 
    </form>
 
    </div>
 {% endif %}
- Media & Selections
+Collections
  </h2>
  <div class="column-contents scroll">
  
@@ -173,7 +199,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
         {% endif %}
 
   
-  Projects & Discussions: {% public_name for space_owner %}
+  {% public_name for space_owner %}'s Work
   </h2>
       <div class="column-contents scroll">
       

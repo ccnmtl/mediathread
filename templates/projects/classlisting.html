@@ -24,7 +24,7 @@ Class Analysis > Member Pages
   {% load user_projects %}
   {% get_projects by member in request.course for request as projects %}
   {% if projects %}
-     <h4>Completed Projects</h4>
+     <h4>Published Compositions</h4>
      <ul>
        {% for project in projects %}
        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a>

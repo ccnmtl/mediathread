@@ -47,7 +47,7 @@
   {% if version_number %}Version {{version_number}}{% endif %}
   {% if is_space_owner and project.id and not is_preview %}
   <a class="edit-pencil" href="{{project.get_workspace_url}}">
-    <img src="/site_media/img/pencil.gif" alt="Edit Project" />
+    <img src="/site_media/img/pencil.gif" alt="Edit Composition" />
     (edit)
   </a>
   {% endif %}
@@ -83,7 +83,7 @@
       <input type="hidden" name="app_label" value="projects" />
       <input type="hidden" name="model" value="project" />
       <input type="hidden" name="obj_pk" value="{{project.pk}}" />
-      <input type="hidden" name="comment_html" value="Project:{{project.title}}" />
+      <input type="hidden" name="comment_html" value="Composition:{{project.title}}" />
       <input type="submit" value="Instructor Feedback" />
     </form>
     {% endif %}

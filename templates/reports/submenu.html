@@ -16,32 +16,30 @@
 <b>QuickStart Guide:</b></a> 
 <div id="global-instructor-orientation" class="intro-text hs-init-show hs-show">
 <a class="hs-control control-close" href="#global-instructor-orientation">x</a>
-  <p>Work in Mediathread centers around <b>Items</b>, <b>Projects</b>, and <b>Discussions</b>:</p>
+  <p>Work in Mediathread centers around <b>Items</b> and <b>Compositions</b>:</p>
 
 
-  <p><b>Items</b> are images or videos that have been saved and annotated in MediaThread.</p>
+  <p><b>Items</b> are images or videos that have been Collected in MediaThread from external Sources for analyis and use in Compositions.</p>
   <ul>
-    <li>Media sources must first be imported into MediaThread before they can be saved as Items.</li>
-    <li>Many videos and images posted online may be imported into MediaThread.</li>
-    <li>To prioritize media sources for your course, you can queue up supported collections or import a core group of Items for analysis.  See instructions in the Explore Collections tab.
+    <li>You can designate supported Sources for your course or, alternatively, import a core group of Items for analysis.  See instructions in the Browse Sources tab.
 </li>
     <li>All Items in MediaThread are available to all members of the class.</li>
     
   </ul>
   
-  <p><b>Projects</b> are written compositions with embedded Items.
+  <p><b>Compositions</b> may contain embedded Items or Selections from those Items.
 </p>
   <ul>
     <li>
-      Any MediaThread user can create a project and add collaborators.
+      Any MediaThread user can create a Composition and add collaborators.
     </li>
-    <li>A project may be saved as a private draft, in which case it is visible only to its author(s).  It may also be published and made visible to the instructor, the whole class, or the world.</li>
-    <li>Instructors have another publishing option:  they may save a project as an "assignment" for the class, so responses can be tracked here, in the Instructor Dashboard. 
+    <li>A Composition may be saved as a private draft, in which case it is visible only to its author(s).  It may also be published and made visible to the instructor, the whole class, or the world.</li>
+    <li>Instructors have another publishing option:  they may save a Composition as an "assignment" for the class, so responses can be tracked here, in the Instructor Dashboard. 
     <li>
-Projects may be discussed by Instructors posting "Instructor Feedback".  Class members are alerted to Feedback posted on their Project(s).
+Compositions may be discussed by Instructors by posting "Instructor Feedback".  Class members are alerted to Feedback posted on their Composition(s).
 
     </li>
-	<li>Any Project created by an instructor and made visible to the class, whether or not it is an assignment, will appear on the Class Home.</li>
+	<li>Any Composition created by an instructor and made visible to the class, whether or not it is an Assignment, will appear on the Course Home Page.</li>
   </ul>
   
   
@@ -62,7 +60,7 @@ Once created, topic-level Discussions appear on the Class Home page.</li>
     <li>Finding and/or organizing source media for a shared respository or independent analysis.</li>
     <li>Analyzing a single Item or multiple Items.</li>
     <li>Participating in one or more Discussions.</li>
-    <li>Composing projects either independently or in response to your "assignments."</li>
+    <li>Writing Composition either independently or in response to your "Assignments."</li>
   </ul>
 
   <p>
@@ -86,7 +84,7 @@ Once created, topic-level Discussions appear on the Class Home page.</li>
   
   <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
     <input type="hidden" name="title" />
-    <input class="columnbutton project-createnew-button" type="submit" value="Create or Assign Project"/>
+    <input class="columnbutton project-createnew-button" type="submit" value="Create or Assign Composition"/>
  
   </form>
   <form class="block discussion-createnew"  action="/discussion/new/" method="POST">
@@ -108,7 +106,7 @@ Once created, topic-level Discussions appear on the Class Home page.</li>
   <h4>Course Reports:</h4>
   <ul class="submenu course-report">
     <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity Index</a></li>
-    <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Student Responses to Assigned Projects</a></li>
+    <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Student Responses to Assigned Compositions</a></li>
     <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contribution Summary</a></li>
   </ul>
   

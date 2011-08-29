@@ -3,12 +3,12 @@
 
 <title> {% block title %}
 {% if is_space_owner %}
-    My Projects > 
-    {% if project.title %}{{project.title}}{% else %}New project{% endif %}
+    My Compositions > 
+    {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
 {% else %}
     Class Analysis > 
-    {{space_owner.username}}'s Projects > 
-    {% if project.title %}{{project.title}}{% else %}New project{% endif %}
+    {{space_owner.username}}'s Compositions > 
+    {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
 {% endif %}
 {% endblock %}</title>
 
@@ -110,7 +110,7 @@
 
 	 
 
-          <div id="participant_update" style="display:none">Save the project to save the author list.</div>
+          <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
           <div id="participants_chosen">
             {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}

@@ -69,9 +69,9 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
       </h4>
 
       <ul>
-        <li>Explore Sources and Collect Items for use in your Work</li>
-        <li>Save and annotate both Items and Selections</li>
-        <li>Embed Selections into your Work (i.e. projects and discussions)</li>
+        <li>Browse Sources and choose Items for analysis</li>
+        <li>Collect Items and annotate Selections</li>
+        <li>Embed Selections into your Compositions</li>
       </ul>
       
          <h4>
@@ -82,7 +82,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
           <!--
           
           <p>
-            Information (in the form of Projects), Sources, Items, Assignments, and Discussions that you create and publish to the class will appear here. If you do not publish projects to the class, this pane will not be visible to students.
+            Information (Compositions), Sources, Items, Assignments, and Discussions that you create and publish to the class will appear here. If you do not publish Compositions to the class, this pane will not be visible to students.
             </p><p>     
             To learn more and get started, visit the Instructor Dashboard
           </p>-->
@@ -164,7 +164,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
   <div class="button-form inline">
    <form class="block media-browse hinline" method="POST" action="{%url your-space-projects user%}">
      <input type="hidden" name="title" />
-     <input class="columnbutton media-browse-button" type="submit" value="Sources"/>
+     <input class="columnbutton media-browse-button" type="submit" value="Browse Sources"/>
 
    </form>
 
@@ -191,7 +191,7 @@ Collections
           <div class="button-form inline">
            <form class="block project-createnew inline" method="POST" action="{%url your-space-projects user%}">
              <input type="hidden" name="title" />
-             <input class="columnbutton project-createnew-button" type="submit" value="Create New Project"/>
+             <input class="columnbutton project-createnew-button" type="submit" value="Create Composition"/>
         
            </form>
         
@@ -199,7 +199,7 @@ Collections
         {% endif %}
 
   
-  {% public_name for space_owner %}'s Work
+  My Compositions
   </h2>
       <div class="column-contents scroll">
       

@@ -366,7 +366,7 @@ padding-right: 4px;
 
 .asset_title.type-assignment {
     /*place-holder for liz to make an icon*/
-    background-image: url(../img/icons/item_image.gif);
+    background-image: url(../img/icons/item_assignment.gif);
 }
 
 
@@ -871,6 +871,19 @@ a.hs-control.hs-control-show.plist.float
 {
 font-size: 100%;
 margin: 0;
+}
+
+ul#projects {
+list-style-type: none;
+margin: 0;
+padding: 0;
+
+}
+
+ul#projects li {
+padding: 10px;
+margin-bottom: 10px;
+
 }
 
 .projectlist {

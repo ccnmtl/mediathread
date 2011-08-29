@@ -47,6 +47,30 @@ ul.instructor-list li {
 
 	margin: 5px 0 10px 0;
 	font-weight: normal;
+	line-height: 17px;
+}
+
+ul.instructor-list li.inst-item {
+
+	padding: 0 0 0 20px;
+	background-position: top left;
+    background-repeat: no-repeat;
+}
+
+ul.instructor-list li.inst-item.project {
+
+    background-image: url("../img/icons/item_project.gif");
+
+}
+
+ul.instructor-list li.inst-item.discussion {
+
+ background-image: url("../img/icons/item_discussion.gif");
+}
+
+ul.instructor-list li.inst-item.assignment {
+
+ background-image: url("../img/icons/item_assignment.gif");
 }
 
 table#home-columns td h2 {

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Explore Collections
+Sources
 {% endblock %}
 
 {% block css %}
@@ -17,28 +17,19 @@ Explore Collections
       
       {%if is_faculty%}
       <p>
-        <b>As an instructor,</b> you can  <a href="/save/">add collections or assets</a> to this page.  If you do not add a collection, students will see the list of assets you have collected in MediaThread and will not be offered the Bookmarklet.
+        <b>As an instructor,</b> you can  <a href="/save/">add Items or Sources</a> to this page.  If you do not add any Sources, students will see the list of Items you have collected in MediaThread and will not be offered the Bookmarklet.
       </p>
       <p><b>Students will see:</b></p>
       {%endif%}
       <p><!-- see below for duplicate text if there are no archives-->
-        Your instructor has listed sources on this page for use in research associated with this class.  
-        Items in these collections may be imported here with the MediaThread bookmarklet (see information below)
+        Your instructor has listed Sources on this page for use in research associated with this class.  
+        Items from these Sources may be imported here using the MediaThread bookmarklet (see below)
       </p>
-      <p>
-        In MediaThread you can:
-      </p>
-
-      <ul>
-        <li>clip and annotate</li>
-        <li>save annotated items</li>
-        <li>embed saved annotations into projects and discussions</li>
-      </ul>
     
 	<div class="import_class bookmarklet_import">
           <h3>Bookmarklet Import:</h3>
           <p>
-            First install a browser "bookmarklet", and then use it to import items from supported collections and analyze them in MediaThread.
+            First install a browser "bookmarklet", and then use it to import Items from supported Sources and analyze them in MediaThread.
             
           </p>
            <h4>Bookmarklet Installation</h4>
@@ -88,7 +79,7 @@ Explore Collections
             </script>
 
 <h4>Bookmarklet Use:</h4>
-<p>Click the bookmarklet link when viewing an item in any supported collection to import the item to MediaThread. You can then analyze the item and/or save it to your "Items &amp; Project" space.</p>
+<p>Click the bookmarklet link when viewing an Item from any supported Source to import the Item to MediaThread. You can then analyze the Item and/or save it to your "Collections" space.</p>
          
           </div>
           <!--Confused? More Information here-->
@@ -109,7 +100,7 @@ Explore Collections
 
 
     <div id="external-archives" class="top-archive">
-    <h2>Collections</h2>
+    <h2>Sources</h2>
     {%for archive in archives %}
        <div id="archive-{{archive.id}}" class="archive">
          {% if space_viewer.is_staff %}

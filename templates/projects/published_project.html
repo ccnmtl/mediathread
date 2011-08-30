@@ -98,7 +98,7 @@
  
    {% if role_in_course != 'non-member' and project|is_assignment:request %}
     {% if not user_responses %}
-    <form class="block project-createnew" method="POST"
+    <form class="block project createnew" method="POST"
 	  action="{%url your-space-projects user%}">
       <input type="hidden" name="title" />
       <input type="hidden" name="parent" value="{{project.id}}" />

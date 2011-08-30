@@ -1,3 +1,22 @@
+h4.instructor,
+h4.collection,
+h4.composition {
+
+    margin-top: 15px;
+}
+
+h4.instructor,
+h4.collection,
+h4.composition {
+
+    color: #D08D22;
+}
+
+
+
+/*Home Page specific styles*/
+
+
 table#home-columns
  {
 

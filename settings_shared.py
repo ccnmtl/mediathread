@@ -130,6 +130,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                       '/comments/',
                       '/reports/',
                       '/discussion/',
+                      '/notifications/',
                       '/beta/',
 
                       '/analysis/',

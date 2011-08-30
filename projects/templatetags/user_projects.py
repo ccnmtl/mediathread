@@ -45,7 +45,9 @@ def active(request, pattern):
     if pattern == "Class Portal" or pattern == "Home":
         if request.path == "/":
             return 'active'
-
+    if pattern == "Notifications":
+        if request.path == "/notifications/": 
+            return 'active'    
     if pattern == "Explore":
         if request.path.startswith('/explore'):
             return 'active'

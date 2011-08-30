@@ -11,7 +11,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 
 {% block css %}
     {{ block.super }}
-	<link rel="stylesheet" type="text/css" href="/site_media/css/home.css" />
+	<link rel="stylesheet" type="text/css" href="/site_media/css/intermame.css" />
 {% endblock %}
 
 {% block js %}
@@ -63,18 +63,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
           <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
             Welcome to MediaThread
           </h3>
-          
-           <h4>
-        In MediaThread you can:
-      </h4>
-
-      <ul>
-        <li>Browse Sources and choose Items for analysis</li>
-        <li>Collect Items and annotate Selections</li>
-        <li>Embed Selections into your Compositions</li>
-      </ul>
-      
-         <h4>
+          <h4>
         Your Instructor controls this space:
       </h4>
           <p>
@@ -191,7 +180,7 @@ Collections
           <div class="button-form inline">
            <form class="block project-createnew inline" method="POST" action="{%url your-space-projects user%}">
              <input type="hidden" name="title" />
-             <input class="columnbutton project-createnew-button" type="submit" value="Create Composition"/>
+             <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
         
            </form>
         

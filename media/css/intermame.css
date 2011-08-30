@@ -13,8 +13,9 @@ font-weight: normal;
 }
 
 input {
-    border: 1px solid;
+    border: 1px solid #333333;
     background-repeat: repeat-x;
+
 
 }
 
@@ -187,6 +188,14 @@ list-style-type: none;
 input.media {
     background-image: url("../img/buttons/collections_button_bg.jpg");
     border-color: #c89345;
+
+}
+
+
+
+input.media.newselection-button {
+    float: right;
+    margin: 4px;
 }
 
 
@@ -196,4 +205,6 @@ input.project {
     background-image: url("../img/buttons/compositions_button_bg.jpg");
     border-color: #477794;
 }
+
+
 

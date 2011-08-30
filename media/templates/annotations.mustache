@@ -10,9 +10,7 @@
 <div id="asset-details-annotations">
     {{#>>annotation-current}}
         <div id="asset-details-annotations-current">
-            {{^annotation}}
-                <input type="button" onclick="javascript:AnnotationList.newAnnotation()" value="Create Selection"/>
-            {{/annotation}}
+            
         
             {{#annotation}}
                 <!-- Used by clipform. @todo figure out how this all fits in with the new storage system -->
@@ -30,7 +28,7 @@
     
                 <!-- Browse -->
                 {{^editing}}
-                    <input type="button" onclick="javascript:AnnotationList.newAnnotation()" value="Create Selection"/>
+                  <!--  <input class="media" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="New Selection"/>-->
                     <h2>Viewing Selection
                         <div class="actions">
                            <span id="clipform-tools"></span>
@@ -88,8 +86,8 @@
                         <input type="hidden" name="annotation-range2" value="{{range2}}" />
                         <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
                         
-                        <input type="button" name="Save" value="save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
-                        <input type="button" name="Cancel" value="cancel" onclick="javascript:AnnotationList.cancelAnnotation()" />
+                        <input class="media" type="button" name="Save" value="save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
+                        <input class="media secondary" type="button" name="Cancel" value="cancel" onclick="javascript:AnnotationList.cancelAnnotation()" />
                         
                         {{#id?}} <!-- Editing existing annotation -->
                         <input type="hidden" name="annotation-id" value="{{id}}" />
@@ -103,6 +101,10 @@
     {{^annotation-current}}
         <div id="clipform-display" name="clipform-display" style="display: none"></div>
     {{/annotation-current}}
+    
+    {{^annotation}}
+                <input class="media newselection-button" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="New Selection"/>
+            {{/annotation}}
     
     {{#>>annotations-organized}}
         <div id="annotations-organized"> 

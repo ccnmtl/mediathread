@@ -135,7 +135,7 @@ margin: 1em;
  
  input.columnbutton {
  
- /*	margin: 10px;*/
+    margin: -2px -5px 0px 3px;
  }
  
  #class_activity .panel-column

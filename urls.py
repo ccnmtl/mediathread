@@ -44,6 +44,8 @@ urlpatterns = patterns('',
 
                        ### Course-URLS ###
                        (r'^$', mediathread_main.class_portal),
+                       url(r'^notifications/$','mediathread_main.views.notifications',
+                           name="notifications"),
                        (r'^beta/newhome$', mediathread_main.triple_homepage),
 
                        #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),

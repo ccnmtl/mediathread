@@ -74,7 +74,92 @@ def get_prof_feed(course,request):
     prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
     return prof_feed
 
+@rendered_with('projects/notifications.html')
+@allow_http("GET")
+def notifications(request):
+    c = request.course
 
+    if not c:
+        return HttpResponseRedirect('/accounts/login/')
+
+    user = request.user
+    if user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
+
+    #instructor focus
+    prof_feed = get_prof_feed(c,request)
+
+    class_feed =[]
+
+    #personal feed
+    my_assets = {}
+    for n in SherdNote.objects.filter(author=user,asset__course=c):
+        my_assets[str(n.asset_id)] = 1
+    for comment in Comment.objects.filter(user=user):
+        if c == getattr(comment.content_object,'course',None):
+            my_assets[str(comment.object_pk)] = 1
+    my_discussions = [d.collaboration_id for d in DiscussionIndex.objects
+                      .filter(participant=user,
+                              collaboration__context=request.collaboration_context
+                              )]
+
+    my_feed=Clumper(Comment.objects
+                    .filter(content_type=ContentType.objects.get_for_model(Asset),
+                            object_pk__in = my_assets.keys())
+                    .order_by('-submit_date'), #so the newest ones show up
+                    SherdNote.objects.filter(asset__in=my_assets.keys(),
+                                             #no global annotations
+                                             #warning: if we include global annotations
+                                             #we need to stop it from autocreating one on-view
+                                             #of the asset somehow
+                                             range1__isnull=False
+                                             )
+                    .order_by('-added'),
+                    Project.objects
+                    .filter(Q(participants=user.pk)|Q(author=user.pk), course=c)
+                    .order_by('-modified'),
+                    DiscussionIndex.with_permission(request,
+                                                    DiscussionIndex.objects
+                                                    .filter(Q(Q(asset__in=my_assets.keys())
+                                                              |Q(collaboration__in=my_discussions)
+                                                              |Q(collaboration__user=request.user)
+                                                              |Q(collaboration__group__user=request.user),
+                                                              participant__isnull=False
+                                                              )
+                                                       )
+                                                       .order_by('-modified')
+                                                    ),
+                    )
+
+    tags = Tag.objects.usage_for_queryset(
+        SherdNote.objects.filter(asset__course=c),
+        counts=True)
+
+    #only top 10 tags
+    tag_cloud = calculate_cloud(sorted(tags,lambda t,w:cmp(w.count,t.count))[:10])
+
+    display = {'instructor':prof_feed['show'],
+               'course': (len(prof_feed['tags']) < 5 or
+                          len(class_feed) >9 ),
+               }
+         
+         
+    
+    discussions = get_discussions(c)
+       
+    #TODO: move this into a nice class method.
+    #coll = ContentType.objects.get_for_model(Collaboration)
+    #discussions = [d for d in ThreadedComment.objects.filter(parent=None, content_type = coll) if d.content_object.get_parent().content_object == c]
+    
+    return {
+        'is_faculty':c.is_faculty(user),
+        'faculty_feed':prof_feed,
+        'my_feed':my_feed,
+        'display':display,
+        'discussions' : discussions,
+        'course_id' : c.id,
+        'tag_cloud': tag_cloud,
+        }
 
 @rendered_with('projects/portal.html')
 @allow_http("GET")

@@ -64,7 +64,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
         Your Instructor controls this space:
       </h4>
           <p>
-            Information, Sources, Items, Assignments, and Discussions that s/he publishes for the class will appear in this column.</p>
+            Anything that s/he publishes for the class will appear in this column.</p>
           <!--
           
           <p>
@@ -76,12 +76,18 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
         {% endif %}
 
         {%if faculty_feed.projects %}
-            <ul class="instructor-list">
+        <ul class="instructor-list">
+        <h4 class="inst-header project">Information</h4>
+        <h4 class="inst-header assignment">Assignments</h4>
+        <h4 class="inst-header discussion">Discussions</h4>
+        
+        
+        
                 {#not necessarily a project -- could be a discussion #}
             	{%for project in instructor_full_feed %}
                     {%if project.threadedcomment %}
                       {% with project as disc %}
-                        <li id="discussion-{{disc.id}}" class="inst-item discussion">
+                        <li id="discussion-{{disc.id}}">
                             <div class="actions">
                               {% if is_faculty %}
                               <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
@@ -104,7 +110,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
                               <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove from List"  /></a>
                               {% endif %}
                             </div>
-                    <li class="inst-item {%if project.is_assignment_cached%}assignment{%else%}project{%endif%}"><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
                     
                     {%endif%}
 	           {%endfor%}

@@ -86,9 +86,6 @@ def notifications(request):
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    #instructor focus
-    prof_feed = get_prof_feed(c,request)
-
     class_feed =[]
 
     #personal feed
@@ -138,26 +135,8 @@ def notifications(request):
     #only top 10 tags
     tag_cloud = calculate_cloud(sorted(tags,lambda t,w:cmp(w.count,t.count))[:10])
 
-    display = {'instructor':prof_feed['show'],
-               'course': (len(prof_feed['tags']) < 5 or
-                          len(class_feed) >9 ),
-               }
-         
-         
-    
-    discussions = get_discussions(c)
-       
-    #TODO: move this into a nice class method.
-    #coll = ContentType.objects.get_for_model(Collaboration)
-    #discussions = [d for d in ThreadedComment.objects.filter(parent=None, content_type = coll) if d.content_object.get_parent().content_object == c]
-    
     return {
-        'is_faculty':c.is_faculty(user),
-        'faculty_feed':prof_feed,
         'my_feed':my_feed,
-        'display':display,
-        'discussions' : discussions,
-        'course_id' : c.id,
         'tag_cloud': tag_cloud,
         }
 

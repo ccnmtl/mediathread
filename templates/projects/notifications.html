@@ -2,7 +2,7 @@
 {% load user_annotations comments collaborations %}
 
 <title> {% block title %}
-Home
+Notifications
 {% endblock %}</title>
 
 {% block js %}
@@ -12,25 +12,7 @@ Home
 
 {% block content %}
     {{ block.super }}
-<div class="panel">    
-
-
-
-  {%if not display.course %}
-  <div class="panel-column">
-    <a href="{% url asset-container %}" class="float_right">View All</a>
-    <h2>Instructor Activity</h2>
-    <div class="scroll">
-    </div>
-  </div>
-  {%endif%}
-  <div id="class_activity">
-  <h2>Class Activities
-   {% if request.user.is_staff %}
-     <a class="float_right" href="{%url admin:courseaffils_course_change course_id %}">Staff link: Manage Course</a></span>
-   {% endif %}
-  </h2>
-
+<div class="panel">   
 
 <div class="panel-column panel-column-stump">
   

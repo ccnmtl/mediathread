@@ -43,10 +43,10 @@ urlpatterns = patterns('',
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###
-                       (r'^$', mediathread_main.class_portal),
+                       (r'^archive/home$', mediathread_main.class_portal),
                        url(r'^notifications/$','mediathread_main.views.notifications',
                            name="notifications"),
-                       (r'^beta/newhome$', mediathread_main.triple_homepage),
+                       (r'^$', mediathread_main.triple_homepage),
 
                        #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
 

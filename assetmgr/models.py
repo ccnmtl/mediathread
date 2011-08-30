@@ -20,7 +20,7 @@ def default_url_processor(source,request):
 url_processor = getattr(settings,'ASSET_URL_PROCESSOR',default_url_processor)
 
 class AssetManagerMixin(object):
-    def json(self, rand, request=None):
+    def json(self, request=None):
         rand = ''.join([choice(letters) for i in range(5)])
         
         return dict([('%s_%s' % (rand,asset.pk),

@@ -45,7 +45,7 @@
                 return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
             },
             'assets':function(username, with_annotations) {
-                return '/annotations/'+(username ? username+'/' : '/');
+                return '/annotations/'+(username ? username+'/' : '');
             },
             'create-annotation':function(asset_id) {
                 // a.k.a. server-side annotation-containers
@@ -69,7 +69,7 @@
         }
     }//END MUSTACHE CODE
 
-    window.AssetList = new (function AssetListAbstract() {
+    window.CollectionList = new (function CollectionListAbstract() {
         var self = this;
                 
         this.init = function(config) {
@@ -91,15 +91,9 @@
                         function(your_records) {
                             var template_label = "assets";
                             
-                            your_records.show_my_items = true;
-                            if (!your_records.space_owner) {
-                                your_records.selected_label = "All Class Members";
-                            } else if (your_records.space_owner.username == your_records.selected_viewer.username) {
-                                your_records.selected_label = "Me";
-                                your_records.show_my_items = false;
-                            } else {
-                                your_records.selected_label = your_records.space_owner.public_name
-                            }
+                            your_records.selected_label = self.getSelectedLabel(your_records);
+                            your_records.show_my_items = self.getShowMyItems(your_records);
+                            your_records.show_all_items = self.getShowAllItems(your_records);
                             
                             your_records.user = self.user;
                             Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
@@ -118,9 +112,32 @@
             function(the_assets) {
                 var template_label = "assets-by-owner";
                 
-                your_records.user = self.user;
-                Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
+                Mustache.update(template_label, your_records, { post:function(elt) { 
+                    /** post processing **/
+                    
+                    } 
+                });
             });
+            
+            return false;
+        }
+        
+        this.getSelectedLabel = function(json) {
+            if (!json.space_owner) {
+                return "&mdash; All Class Members &mdash;";
+            } else if (json.space_owner.username == json.space_viewer.username) {
+                return "&mdash; Me &mdash;";
+            } else {
+                return json.space_owner.public_name;
+            }
+        }
+        
+        this.getShowMyItems = function(json) {
+            return json.space_owner.username != json.space_viewer.username;
+        }
+        
+        this.getShowAllItems = function(json) {
+            return json.space_owner != null;
         }
     })();
 

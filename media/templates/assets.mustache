@@ -6,7 +6,7 @@
                 <a class="switcher-top closed">
                     <span class="down-arrow" tabindex="3"></span>
                     <span class="title" id="switcher-title">
-                        {{ selected_label }}
+                        {{{selected_label}}}
                     </span>
                 </a>
             </span>
@@ -16,23 +16,88 @@
                 <li>
                     <ul class="switcher-sub" id="switcher-extras">
                         <li class="choice_my_items" id="choice_my_items">
-                            <a href="" onclick="javascript:AssetList.selectOwner({{user.username}})">&mdash; Me &mdash;</a>
+                            <a href="" onclick="return CollectionList.selectOwner('{{user.username}}')">&mdash; Me &mdash;</a>
                         </li>
                     </ul>
                 </li>
                 {{/show_my_items?}}
                 <li>
                     <ul class="scroll switcher-sub">
+                        {{#show_all_items?}}
                         <li class="choice_all_items" id="choice_all_items">
-                            <a href="" onclick="javascript:AssetList.selectOwner(null)">&mdash; All Class Members &mdash;</a>
+                            <a href="" onclick="return CollectionList.selectOwner(null);">&mdash; All Class Members &mdash;</a>
                         </li>
+                        {{/show_all_items?}}
                         {{#owners}}                            
-                            <li><a href="" onclick="javascript:AssetList.selectOwner({{username}})">{{public_name}}</a></li>
+                            <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
                         {{/owners}}
                     </ul>
                 </li>
             </ul>
-        </div> <!-- end switcher -->
+        </div> <!-- end Class Member switcher -->
+        
+        {%if dates or tags %}
+    <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
+      <a class="switcher-top closed">
+        <span class="down-arrow" tabindex="4"></span>
+        <span class="title">
+      Filters<span 
+      {%if active_filters %}
+            class="filter-on">: ON</span>
+          {% else %}
+            class="filter-off">...</span>
+          {%endif%}
+        </span>
+      </a>
+      <ul class="switcher-options">
+        {%if active_filters %}
+        <li><ul class="switcher-sub switcher-active-filters">
+          <li><a class="remove" href="?">Clear All Filters</a></li>
+          {% for filter, value in active_filters.items %}
+          <li>
+            <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
+            {% ifequal filter "tag" %}
+              {{filter}}: {{value}}
+            {% else %}
+              {{filter}}: {{dates|dictify|getitem:value}}
+            {% endifequal %}
+
+            {% replace_value of filter with '' in request.GET as querystring %}
+          </li>
+          {% endfor %}
+
+        </ul></li>
+        {%endif%}
+        {%if dates %}
+        <li><h3>Date Modified</h3>
+          <p class="switcher-sub">
+              {% for date, label in dates %}
+                {% ifequal date request.GET.modified %}
+                   {{label}}
+                {% else %}
+                   {% replace_value of 'modified' with date in request.GET as querystring %}
+                   <a href="{{querystring|qsify}}">{{label}}</a>
+                {% endifequal %}
+              {% endfor %}
+          </p>
+        </li>
+        {%endif%}
+        <li><h3>Tags</h3>
+          <p class="switcher-sub">
+            {%if not tags %}No tags{%endif%}
+            {%for tag in tags %}
+            {% replace_value of 'tag' with tag in request.GET as querystring %}
+            <a href="{{querystring|qsify}}" class="size{{tag.font_size}}">{{tag}}</a>
+            {%endfor%}
+          </p>
+        </li>
+      </ul>
+    </div>
+    {%endif%}{#end dates or tags#}
+    <div class="visualclear"></div>
+        
+        
+        
     </div> <!-- end filter widget -->
     
     {{#>>assets-by-owner}}

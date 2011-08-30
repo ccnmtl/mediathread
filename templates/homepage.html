@@ -32,7 +32,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
   <script type="text/javascript">
     DjangoSherd_Asset_Config();    
     {% if not mock %}
-        AssetList.init({
+        CollectionList.init({
             'user': { 'username': '{{request.user}}', 'public_name': '{% public_name for request.user %}' }
         });
     {% endif %}{# not mock #}    

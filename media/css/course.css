@@ -1305,6 +1305,7 @@ body.old-assetwindow #asset-details-annotations-list {
 
 #asset-details-annotations-current {
     margin-bottom: .5em;
+    background-color: #fcfb97;
 }
 
 .intro-text {

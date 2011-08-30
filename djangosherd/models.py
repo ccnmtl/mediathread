@@ -5,6 +5,7 @@ import simplejson as json
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.query import QuerySet
 from django.db.models.loading import get_model
 
 from django.contrib.contenttypes import generic
@@ -29,7 +30,32 @@ ANN_TYPE_CHOICES = ((0,'null'),
                 (2,'coordinate'),
                 )
 
+class AnnotationManagerMixin(object):
+    def json(self, request=None):
+        rand = ''.join([choice(letters) for i in range(5)])
+    
+        data = { 'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+                            ann.asset.sherd_json(request)
+                            ) for ann in project.citations()
+                           if ann.title != "Annotation Deleted"
+                           ]),
+                  'annotations':[ann.sherd_json(request, rand, ('title','author') )
+                           for ann in project.citations()
+                           ],
+        }
+        return data
+
+class AnnotationManagerQuerySet(QuerySet, AnnotationManagerMixin):
+    pass
+
+class AnnotationManager(models.Manager, AnnotationManagerMixin):
+    def get_query_set(self):
+        return AnnotationManagerQuerySet(self.model, using=self._db)
+                          
+
 class Annotation(models.Model):
+    objects = AnnotationManager() #custom manager
+    
     #this would simplify is_null handling and also make it possible to give friendly range printing
     #server/template-side
     #wanted: type = models.SmallIntegerField(default=0,choices=ANN_TYPE_CHOICES)

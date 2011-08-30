@@ -35,14 +35,17 @@
             'annotation-form':function(asset_id,annotation_id) {
                 return '/asset/'+asset_id+'/annotations/'+annotation_id;
             },
-            'your-space':function(user_id) {
-                return '/yourspace/'+user_id+'/asset/';
+            'your-space':function(username) {
+                return '/yourspace/'+username+'/asset/';
             },
             'asset-view':function(asset_id) {
                 return '/asset/'+asset_id+'/';
             },
             'asset-json':function(asset_id, with_annotations) {
                 return '/asset/json/'+asset_id+(with_annotations ? '/?annotations=true' :'/');
+            },
+            'assets':function(username, with_annotations) {
+                return '/annotations/'+(username ? username+'/' : '/');
             },
             'create-annotation':function(asset_id) {
                 // a.k.a. server-side annotation-containers
@@ -51,7 +54,8 @@
             'edit-annotation':function(asset_id,annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview
                 return '/asset/'+asset_id+'/annotations/'+annotation_id+'/';
-            }
+            },
+            
         }
 
         Mustache.Renderer.prototype.filters_supported['url'] = function(name,context,args) {
@@ -86,7 +90,17 @@
                         false,
                         function(your_records) {
                             var template_label = "assets";
-                            your_records.show_user_assets = your_records.selected_owner.username == self.user.username;
+                            
+                            your_records.show_my_items = true;
+                            if (!your_records.space_owner) {
+                                your_records.selected_label = "All Class Members";
+                            } else if (your_records.space_owner.username == your_records.selected_viewer.username) {
+                                your_records.selected_label = "Me";
+                                your_records.show_my_items = false;
+                            } else {
+                                your_records.selected_label = your_records.space_owner.public_name
+                            }
+                            
                             your_records.user = self.user;
                             Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
                         }
@@ -95,10 +109,19 @@
             });
         }
         
-        this._update = function(template_label) {
-            
+        this.selectOwner = function(username) {
+            djangosherd.storage.get({
+                type:'asset',
+                url:MediaThread.urls['assets'](username)
+            },
+            false,
+            function(the_assets) {
+                var template_label = "assets-by-owner";
+                
+                your_records.user = self.user;
+                Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
+            });
         }
-        
     })();
 
     window.AnnotationList = new (function AnnotationListAbstract(){

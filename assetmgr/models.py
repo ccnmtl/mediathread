@@ -1,9 +1,13 @@
 import simplejson
 
 from django.db import models
+from django.db.models.query import QuerySet
 from django.conf import settings
 from django.db.models.signals import post_init, post_save
 from django.core.cache import cache
+
+from random import choice
+from string import letters
 
 Tag = models.get_model('tagging','tag')
 User = models.get_model('auth','user')
@@ -15,7 +19,21 @@ def default_url_processor(source,request):
 
 url_processor = getattr(settings,'ASSET_URL_PROCESSOR',default_url_processor)
 
-class AssetManager(models.Manager):
+class AssetManagerMixin(object):
+    def json(self, rand, request=None):
+        rand = ''.join([choice(letters) for i in range(5)])
+        
+        return dict([('%s_%s' % (rand,asset.pk),
+                            asset.sherd_json(request)
+                            ) for asset in self])
+
+class AssetManagerQuerySet(QuerySet, AssetManagerMixin):
+    pass
+
+class AssetManager(models.Manager, AssetManagerMixin):
+    def get_query_set(self):
+        return AssetManagerQuerySet(self.model, using=self._db)
+    
     def get_by_args(self, args, **constraints):
         "args typically is request.GET"
         criteria = Asset.good_args(args)
@@ -35,7 +53,7 @@ class AssetManager(models.Manager):
         return self.filter(source__primary=True,
                            source__label='archive'
                            )
-                           
+        
     @property
     def dir(self):
         return dir(self)

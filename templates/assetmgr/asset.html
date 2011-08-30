@@ -37,7 +37,6 @@
 {% block content %}
   {{ block.super }}
 <h1>
-  Analyzing 
   {% if annotation %}<a href="{{asset.get_absolute_url}}">{% endif %} 
 
   {{asset.title|striptags|safe}}
@@ -45,7 +44,7 @@
   {% if annotation %}</a>{% endif %} 
 </h1> 
 {%if asset.html_source.url %}
-  <a class="fullrecord_button" href="{{asset.html_source.url}}">View complete record in archive</a>
+  <a class="fullrecord_button" href="{{asset.html_source.url}}">Item source</a>
 {%endif%}
   
 {% if mock %}
@@ -70,7 +69,7 @@
                     </div> <!--  Replaced by Mustache :{ --> 
                 </div> <!-- end Annotations tab -->
                 
-                <div class="tabbertab" title="Info">
+                <div class="tabbertab" title="Item Details">
                     <div class="asset-info">
                         {% if asset.id and request.user.is_staff %}
                           <a href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>
@@ -98,7 +97,7 @@
                 </div> <!-- end Info tab -->
 
                 {% if not mock %}
-                    <div class="tabbertab indexcard" title="Class References">
+                    <div class="tabbertab indexcard" title="References">
                         <h2>Class Tags</h2>
 
                         <div id="classtags" class="sub-control">

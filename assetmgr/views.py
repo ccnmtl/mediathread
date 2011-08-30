@@ -16,6 +16,9 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.db import models
 
+from random import choice
+from string import letters
+
 import simplejson
 
 import re
@@ -262,15 +265,32 @@ def container_view(request):
                       if filter_by[fil](asset, filter_value)]
 
     active_filters = get_active_filters(request)
+    
+    dates = (('today','today'),
+             ('yesterday','yesterday'),
+             ('lastweek','within the last week'),)    
 
-    return {
-        'assets':assets,
-        'tags': all_tags,
-        'active_filters': active_filters,
-        'space_viewer':request.user,
-        'space_owner':None,
-        'is_faculty':request.course.is_faculty(request.user),
-        }
+    if request.is_ajax():
+        data = {'assets': assets.json(),
+                'tags': [ tag.name for tag in all_tags ],
+                'dates': dates,
+                'active_filters': active_filters,
+                'space_viewer': { 'username': request.user.username, 'public_name': get_public_name(request.user, request) },
+                'space_owner': None,
+                'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
+               }
+    
+        json_stream = simplejson.dumps(data, indent=2)
+        return HttpResponse(json_stream, mimetype='application/json')
+    else:
+        return {
+            'assets':assets,
+            'tags': all_tags,
+            'active_filters': active_filters,
+            'space_viewer':request.user,
+            'space_owner':None,
+            'is_faculty':request.course.is_faculty(request.user),
+            }
 
 def asset_accoutrements(request, asset, user, annotation_form):
     global_annotation = asset.global_annotation(user, auto_create=False)

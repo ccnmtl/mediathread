@@ -19,9 +19,6 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
-from random import choice
-from string import letters
-
 from django.utils import simplejson as json
 import re
 
@@ -311,7 +308,6 @@ def triple_homepage(request):
 @allow_http("GET")
 @rendered_with('projects/your_records.html')
 def your_records(request, user_name):
-
     c = request.course
     in_course_or_404(user_name, c)
     user = get_object_or_404(User, username=user_name)
@@ -329,23 +325,6 @@ def get_records(user, course, request):
                           include_archives=c.is_faculty(user)
                           )
 
-    projects = Project.get_user_projects(user, c).order_by('-modified')
-    if not editable:
-        projects = [p for p in projects if p.visible(request)]
-
-    project_type = ContentType.objects.get_for_model(Project)
-    assignments = []
-    maybe_assignments = Project.objects.filter(
-        c.faculty_filter)
-    for assignment in maybe_assignments:
-        if not assignment.visible(request):
-            continue
-        if assignment in projects:
-            continue
-        if is_unanswered_assignment(assignment, user, request, project_type):
-            assignments.append(assignment)
-            
-
     for fil in filter_by:
         filter_value = request.GET.get(fil)
         if filter_value:
@@ -358,6 +337,7 @@ def get_records(user, course, request):
             counts=True))
     
     active_filters = get_active_filters(request, filter_by)
+    
     #bad language, we should change this to user_of_assets or something
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
@@ -368,22 +348,37 @@ def get_records(user, course, request):
              ('lastweek','within the last week'),)    
 
     if request.is_ajax():
-        rand = ''.join([choice(letters) for i in range(5)])
-        
-        data = {'assets':dict([('%s_%s' % (rand,asset.pk),
-                            asset.sherd_json(request)
-                            ) for asset in assets]),
+        data = {'assets': assets.json(),
                 'tags': [ tag.name for tag in tags ],
                 'dates': dates,
-                'selected_owner' : { 'username': user.username, 'public_name': get_public_name(user, request) },
+                'space_viewer'  : { 'username': user.username, 'public_name': get_public_name(user, request) },
+                'editable'      : editable,
                 'active_filters': active_filters,
                 'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
                }
+        
+        if user:
+            data['space_owner'] = { 'username': user.username, 'public_name': get_public_name(user, request) }
     
         json_stream = json.dumps(data, indent=2)
-        return HttpResponse(json_stream,
-                        mimetype='application/json')
+        return HttpResponse(json_stream, mimetype='application/json')
     else:
+        projects = Project.get_user_projects(user, c).order_by('-modified')
+        if not editable:
+            projects = [p for p in projects if p.visible(request)]
+
+        project_type = ContentType.objects.get_for_model(Project)
+        assignments = []
+        maybe_assignments = Project.objects.filter(
+            c.faculty_filter)
+        for assignment in maybe_assignments:
+            if not assignment.visible(request):
+                continue
+            if assignment in projects:
+                continue
+            if is_unanswered_assignment(assignment, user, request, project_type):
+                assignments.append(assignment)
+        
         return {
             'assets'        : assets,
             'assignments'   : assignments,

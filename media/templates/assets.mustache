@@ -6,7 +6,7 @@
                 <a class="switcher-top closed">
                     <span class="down-arrow" tabindex="3"></span>
                     <span class="title" id="switcher-title">
-                        {{ selected_owner.public_name }}
+                        {{ selected_label }}
                     </span>
                 </a>
             </span>
@@ -16,15 +16,15 @@
                 <li>
                     <ul class="switcher-sub" id="switcher-extras">
                         <li class="choice_my_items" id="choice_my_items">
-                            <a href="" onclick="javascript:AssetList.selectOwner({{user.username}})">&mdash; My Items &mdash;</a>
+                            <a href="" onclick="javascript:AssetList.selectOwner({{user.username}})">&mdash; Me &mdash;</a>
                         </li>
                     </ul>
                 </li>
                 {{/show_my_items?}}
                 <li>
-                    <ul class="switcher-sub" id="switcher-extras">
+                    <ul class="scroll switcher-sub">
                         <li class="choice_all_items" id="choice_all_items">
-                            <a href="" onclick="javascript:AssetList.selectOwner(null)">&mdash; All Items &mdash;</a>
+                            <a href="" onclick="javascript:AssetList.selectOwner(null)">&mdash; All Class Members &mdash;</a>
                         </li>
                         {{#owners}}                            
                             <li><a href="" onclick="javascript:AssetList.selectOwner({{username}})">{{public_name}}</a></li>
@@ -34,5 +34,9 @@
             </ul>
         </div> <!-- end switcher -->
     </div> <!-- end filter widget -->
+    
+    {{#>>assets-by-owner}}
+    
+    {{/>>assets-by-owner}}    
 </div> <!-- end asset_table -->
 {{/>>assets}}

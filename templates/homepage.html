@@ -10,8 +10,8 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 {% endblock %}</title>
 
 {% block css %}
+    {{ block.super }}
 	<link rel="stylesheet" type="text/css" href="/site_media/css/home.css" />
-    <link rel="stylesheet" type="text/css" href="/site_media/css/switcher.css" />
 {% endblock %}
 
 {% block js %}
@@ -33,7 +33,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
     DjangoSherd_Asset_Config();    
     {% if not mock %}
         AssetList.init({
-            'user': { 'username': '{{request.user}}', 'name': '{% public_name for request.user %}' }
+            'user': { 'username': '{{request.user}}', 'public_name': '{% public_name for request.user %}' }
         });
     {% endif %}{# not mock #}    
   </script>

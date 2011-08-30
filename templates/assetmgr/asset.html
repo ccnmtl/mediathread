@@ -43,9 +43,6 @@
 
   {% if annotation %}</a>{% endif %} 
 </h1> 
-{%if asset.html_source.url %}
-  <a class="fullrecord_button" href="{{asset.html_source.url}}">Item source</a>
-{%endif%}
   
 {% if mock %}
 <p>Add annotations to save this item to Your Analysis.</p>
@@ -74,6 +71,14 @@
                         {% if asset.id and request.user.is_staff %}
                           <a href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>
                         {% endif %}
+                        
+                        {%if asset.html_source.url %}
+                            <dl>
+                                <dt><h2 class="metadata-title">Item Source</h2></dt>
+                                <dd id="metadata-html_source"><a href="{{asset.html_source.url}}">{{asset.html_source.url}}</a></dd>
+                            </dl>
+                        {%endif%}
+                        
                         {% for name, values in asset.metadata.items %}
                         <dl>
                           <dt><h2 class="metadata-title">{{name}}</h2></dt>

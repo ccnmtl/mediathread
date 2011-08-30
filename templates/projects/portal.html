@@ -150,28 +150,10 @@ Home
   </h2>
 
 
-<div class="panel-column panel-column-stump">
-  
-  <h2>Top Tags</h2>
-
-  <div class="scroll">
-    <ul class="tags">
-    {% for tag in tag_cloud %}
-    <li>
-      <span class="size{{tag.font_size}}">
-	<a href="{% url asset-container %}?tag={{tag.name}}">
-	  {{tag.name}}</a>
-      </span>
-    </li>
-    {% endfor %}
-    </ul>
-  </div>
-</div>
-
   <div class="panel-column
 	      {%if not display.course %}panel-column-stump{%endif%}
 	      ">
-    <h2>Updates to My Items <a class="hs-control intro-open" href="#intro-updates">?</a></h2>
+    <h2>Updates to My Collections & Compositions <a class="hs-control intro-open" href="#intro-updates">?</a></h2>
     <div class="scroll">
       <ul class="clumper">
         <li id="intro-updates" class="hs-init-{% if my_feed %}hide{% else %}show{% endif %}">

@@ -665,6 +665,8 @@
                 };
             }
             
+            context.showNewAnnotation = !context.annotation || (context.annotation && !context.annotation.editing);
+            
             Mustache.update(template_label, context, { post:function(elt) {
                 djangosherd.assetview.clipform.html.push('clipform-display', { 
                     asset : {},

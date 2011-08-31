@@ -1,5 +1,5 @@
 {{#>>assets}}
-<div id="asset_table">
+<div id="asset_table" class="asset-table">
     <div class="filter-widget">
         <div class="switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
@@ -10,8 +10,8 @@
                     </span>
                 </a>
             </span>
-            
-            <ul class="switcher-options">
+            foo
+            <ul class="switcher-options" style="right: -50px !important;">
                 {{#show_my_items?}}
                 <li>
                     <ul class="switcher-sub" id="switcher-extras">
@@ -36,68 +36,60 @@
             </ul>
         </div> <!-- end Class Member switcher -->
         
-        {%if dates or tags %}
-    <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
-      <a class="switcher-top closed">
-        <span class="down-arrow" tabindex="4"></span>
-        <span class="title">
-      Filters<span 
-      {%if active_filters %}
-            class="filter-on">: ON</span>
-          {% else %}
-            class="filter-off">...</span>
-          {%endif%}
-        </span>
-      </a>
-      <ul class="switcher-options">
-        {%if active_filters %}
-        <li><ul class="switcher-sub switcher-active-filters">
-          <li><a class="remove" href="?">Clear All Filters</a></li>
-          {% for filter, value in active_filters.items %}
-          <li>
-            <a class="remove" href="{{querystring|qsify}}">&nbsp;</a>
-            {% ifequal filter "tag" %}
-              {{filter}}: {{value}}
-            {% else %}
-              {{filter}}: {{dates|dictify|getitem:value}}
-            {% endifequal %}
-
-            {% replace_value of filter with '' in request.GET as querystring %}
-          </li>
-          {% endfor %}
-
-        </ul></li>
-        {%endif%}
-        {%if dates %}
-        <li><h3>Date Modified</h3>
-          <p class="switcher-sub">
-              {% for date, label in dates %}
-                {% ifequal date request.GET.modified %}
-                   {{label}}
-                {% else %}
-                   {% replace_value of 'modified' with date in request.GET as querystring %}
-                   <a href="{{querystring|qsify}}">{{label}}</a>
-                {% endifequal %}
-              {% endfor %}
-          </p>
-        </li>
-        {%endif%}
-        <li><h3>Tags</h3>
-          <p class="switcher-sub">
-            {%if not tags %}No tags{%endif%}
-            {%for tag in tags %}
-            {% replace_value of 'tag' with tag in request.GET as querystring %}
-            <a href="{{querystring|qsify}}" class="size{{tag.font_size}}">{{tag}}</a>
-            {%endfor%}
-          </p>
-        </li>
-      </ul>
-    </div>
-    {%endif%}{#end dates or tags#}
-    <div class="visualclear"></div>
+        <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
+            <a class="switcher-top closed">
+                <span class="down-arrow" tabindex="4"></span>
+                <span class="title">Filters<span 
+                    {{#active_filters?}}
+                        class="filter-on">: ON
+                    {{/active_filters?}}
+                    {{^active_filters}}
+                        class="filter-off">
+                    {{/active_filters}}
+                    </span>
+                </span>
+            </a>
+            <ul class="switcher-options">
+                {{#active_filters?}}
+                <li>
+                    <ul class="switcher-sub switcher-active-filters">
+                        <li><a class="remove" href="" onclick="CollectionList.clearFilter(null)">Clear All Filters</a></li>
+                        {{#active_filters}}  
+                        <li>
+                            <a class="remove" onclick="CollectionList.clearFilter('{{value}}')">&nbsp;</a>
+                            {{filter}}: {{display_value}}
+                        </li>
+                        {{/active_filters}}
+                    </ul>
+                </li>
+                {{/active_filters?}}
+                
+                {{#dates?}}
+                <li>
+                    <h3>Date Modified</h3>
+                    <p class="switcher-sub">
+                        {{#dates}}
+                            <a href="" onclick="CollectionList.filter('{{value}}')">{{label}}</a>
+                        {{/dates}}
+                    </p>
+                </li>
+                {{/dates?}}
         
+                <li>
+                    <h3>Tags</h3>
+                    <p class="switcher-sub">
+                        {{^tags}}
+                            No tags
+                        {{/tags}}
+                        {{#tags}}
+                            <a href="" onclick="CollectionList.filter('{{name}}')" >{{name}}</a>
+                        {{/tags}}
+                    </p>
+                </li>
+            </ul>
+        </div>
         
-        
+        <div class="visualclear"></div>
     </div> <!-- end filter widget -->
     
     {{#>>assets-by-owner}}

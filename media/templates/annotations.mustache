@@ -10,8 +10,6 @@
 <div id="asset-details-annotations">
     {{#>>annotation-current}}
         <div id="asset-details-annotations-current">
-            
-        
             {{#annotation}}
                 <!-- Used by clipform. @todo figure out how this all fits in with the new storage system -->
                 <!-- For both videos and images. -->
@@ -28,7 +26,6 @@
     
                 <!-- Browse -->
                 {{^editing}}
-                  <!--  <input class="media" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="New Selection"/>-->
                     <h2>Viewing Selection
                         <div class="actions">
                            <span id="clipform-tools"></span>
@@ -95,16 +92,15 @@
                     </form>
                 {{/editing?}}
             {{/annotation}}
-        </div>
-    {{/>>annotation-current}}
-    
-    {{^annotation-current}}
-        <div id="clipform-display" name="clipform-display" style="display: none"></div>
-    {{/annotation-current}}
-    
-    {{^annotation}}
+            
+            <!-- If no annotation or if annotation viewing (not adding/editing/copying) -->    
+            {{#showNewAnnotation?}}
                 <input class="media newselection-button" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="New Selection"/>
-            {{/annotation}}
+            {{/showNewAnnotation?}}
+        </div>
+        
+
+    {{/>>annotation-current}}
     
     {{#>>annotations-organized}}
         <div id="annotations-organized"> 

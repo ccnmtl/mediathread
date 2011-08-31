@@ -406,18 +406,14 @@ def get_records(user, course, request):
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
-        
-    dates = (('today','today'),
-             ('yesterday','yesterday'),
-             ('lastweek','within the last week'),)    
 
     if request.is_ajax():
         data = {'assets': assets.json(),
-                'tags': [ tag.name for tag in tags ],
-                'dates': dates,
+                'tags': [ { 'name': tag.name } for tag in tags ],
+                'dates': [ { 'label': 'today', 'value':'today'}, {'label': 'yesterday', 'value': 'yesterday' }, {'label': 'within the last week', 'value': 'lastweek'  }],
+                'active_filters': active_filters,
                 'space_viewer'  : { 'username': user.username, 'public_name': get_public_name(user, request) },
                 'editable'      : editable,
-                'active_filters': active_filters,
                 'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
                }
         
@@ -427,6 +423,10 @@ def get_records(user, course, request):
         json_stream = json.dumps(data, indent=2)
         return HttpResponse(json_stream, mimetype='application/json')
     else:
+        dates = (('today','today'),
+             ('yesterday','yesterday'),
+             ('lastweek','within the last week'),)    
+            
         projects = Project.get_user_projects(user, c).order_by('-modified')
         if not editable:
             projects = [p for p in projects if p.visible(request)]

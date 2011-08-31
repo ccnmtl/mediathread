@@ -57,8 +57,9 @@
                     <h2>{{#id?}}Editing Selection{{/id?}}{{^id}}Adding Selection{{/id}}
                         <div class="actions">
                             <span id="clipform-tools"></span>
-                            
+                            {{#showCancel?}}
                             <input type="image" id="btnCancel" src="/site_media/img/icons/meth_close_icon.png" alt="X" onclick="javascript:AnnotationList.cancelAnnotation()"/>
+                            {{/showCancel?}}
                        </div>
                     </h2>
                     
@@ -84,7 +85,10 @@
                         <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
                         
                         <input class="media" type="button" name="Save" value="save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
+                        
+                        {{#showCancel?}}
                         <input class="media secondary" type="button" name="Cancel" value="cancel" onclick="javascript:AnnotationList.cancelAnnotation()" />
+                        {{/showCancel?}}
                         
                         {{#id?}} <!-- Editing existing annotation -->
                         <input type="hidden" name="annotation-id" value="{{id}}" />

@@ -483,6 +483,7 @@
         this.newAnnotation = function() {
             var context = { 'annotation': {   
                 'editing': true,
+                'showCancel': true,
                 'metadata': {
                   'author': { 'id': MediaThread.current_user },
                   'author_name': MediaThread.user_full_name
@@ -505,7 +506,6 @@
         // - new annotation with properties of current annotation minus id
         this.editAnnotation = function() {
             self._update( { 'annotation_id': self.active_annotation.id, 'editing': true }, "annotation-current");
-            jQuery("#annotations-organized").hide();
             return false;
         }
         
@@ -515,6 +515,7 @@
             // Add template...but with all the properties of this annotation.
             var context = { 'annotation': {   
                     'editing': true,
+                    'showCancel': true,
                     'metadata': {
                       'body': self.active_annotation.metadata.body,
                       'tags': self.active_annotation.metadata.tags,
@@ -640,6 +641,7 @@
             self.xywh = null;
             
             var context = {};
+            
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id);
             
@@ -663,9 +665,20 @@
                       'author_name': MediaThread.user_full_name
                     },
                 };
+            } else if (self.active_asset_annotations.length <= 1) {
+                context.annotation = {   
+                    'editing': true,
+                    'metadata': {
+                      'author': { 'id': MediaThread.current_user },
+                      'author_name': MediaThread.user_full_name
+                    },
+                };
             }
             
             context.showNewAnnotation = !context.annotation || (context.annotation && !context.annotation.editing);
+            
+            if (context.annotation)
+                context.annotation.showCancel = self.active_asset_annotations.length > 1; 
             
             Mustache.update(template_label, context, { post:function(elt) {
                 djangosherd.assetview.clipform.html.push('clipform-display', { 
@@ -690,6 +703,13 @@
                     // /#default initialization. no annotation defined.
                     // don't need to set state on clipstrip/form as there is no state
                     djangosherd.assetview.setState();
+                    djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
+                }
+                
+                if (context.annotation && context.annotation.editing) {
+                    jQuery("#annotations-organized").hide();
+                } else {
+                    jQuery("#annotations-organized").show();
                 }
             }});
         }

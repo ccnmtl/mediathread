@@ -37,11 +37,25 @@ input {
 }
 
 #media .column-container {
-    width: 380px;
+    width: 370px;
+    margin: 5px 3px 5px 6px;
+}
+
+#media .column-container h2{
+    background-color: #a88448;
+    text-transform: capitalize;
+            font-size: 98%;
 }
 
 #projects .column-container {
-    width: 350px;
+    width: 340px;
+    margin: 5px 6px 5px 2px;
+}
+
+#projects .column-container h2{
+    background-color: #557691;
+        text-transform: capitalize;
+        font-size: 98%;
 }
 
 /*Home Page specific styles*/

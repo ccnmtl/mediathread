@@ -272,7 +272,7 @@
                                     {% with annotation.tags as annotation_tags %}
                                     
                                     {% if annotation.body or annotation_tags %}    
-                                        <div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper" >
+                                        <div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper meta" >
                                           {% if annotation_tags %}       
                                           <div class="annotation-metadata-tags annotation-metadata"><strong>Tags:</strong>
                                             {% for tag in annotation.tags_split %}

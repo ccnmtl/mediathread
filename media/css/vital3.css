@@ -2000,22 +2000,6 @@ input.titlefield
 
 
 */
-input.savebutton
-{
-	margin-bottom: 1px !important;
-	font-size: 11px;
-	cursor: pointer;
-	padding: 1px;
-	text-transform: capitalize;
-	font: normal 11px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif !important;
-	border: 1px solid #069;
-	background-color: #fff;
-}
-
-input.savebutton:hover
-{
-	background-color: #efefef;
-}
 
 .visualClear
 {

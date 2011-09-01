@@ -23,9 +23,11 @@ input {
     color: #333;
     line-height: 18px;
     font-weight: normal;
+    margin: 0 5px;
 }
 
-.meta label {
+.meta label,
+.metadata-label {
     font-weight: bold;
 }
 
@@ -243,9 +245,24 @@ input.media.newselection-button {
 
 /*Composition Styles*/
 
+ul#projects h3 {
+    margin: 0;
+    font-size: 1em;
+
+}
+
+ul#projects h3 .delete_icon,
+ul#projects h3 .edit_icon {
+    float: right;
+}
+
 input.project {
     background-image: url("../img/buttons/compositions_button_bg.jpg");
     border-color: #477794;
+}
+
+ul#projects .createnew-button {
+    margin: 5px;
 }
 
 

@@ -19,6 +19,7 @@
 	  {{assignment.title|default:"(Untitled)"}}
 	</a>
       </h3>
+         <div class="meta"> <time datetime="{{assignment.modified|date:"c"}}">{{assignment.modified|date}}</time></div>
       {% ifequal space_owner space_viewer %}
       <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
         <input type="hidden" name="title" />
@@ -27,7 +28,7 @@
       </form>
       {% endifequal %}
 
-      <time datetime="{{assignment.modified|date:"c"}}">{{assignment.modified|date}}</time>
+  
   </li>
   {% endfor %}
 
@@ -35,9 +36,16 @@
         <li class="projectlist" id="project-{{project.pk}}">
             
         	<h3>
+        	
+        	{% if editable %}
+                <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
+                    href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+            {% endif %}
+        	
         	  <a href="{{project.get_absolute_url}}"
         	     class="asset_title type-project"
         	     >{{project.title|default:"(Untitled)"}}</a>
+        	    
         	</h3>
             <ul>
     	       {% if project.feedback_discussion %}
@@ -51,7 +59,7 @@
                 	</li>
             	{% endif %}
             </ul>
-            <div>
+            <div class="meta">
               <span class="metadata-label">Author(s):</span>
               <span class="metadata-value">{% public_name for project.attribution_list truncate 2 %}</span>
               <span class="metadata-value">{% public_name for project.attribution_list %}</span>
@@ -66,10 +74,7 @@
               <br />  
             </div>
             
-            {% if editable %}
-                <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
-                    href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
-            {% endif %}
+            
                                 
     
             

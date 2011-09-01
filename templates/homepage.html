@@ -166,8 +166,25 @@ Collections
  </h2>
  <div class="column-contents scroll">
  
-    <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
+  <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
 
+ <!--PLACEHOLDER FOR DEFAULT CONTENT I.E. NO ITEMS yet
+ 
+ <div class="default-content">
+  
+  <h4>You have not yet collected any items</h4>
+  <ul>
+  <li>
+  To see what your instructor or classmates have collected, choose "All Class Items" from the dropdown above. 
+  </li>
+  <li>
+  To collect your own items, click "Browse Sources" above.  
+  </li>
+  </ul>
+  </div>
+  
+  -->
+  
    {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
                 
      
@@ -177,6 +194,7 @@ Collections
         <td class="" id="projects">
  <div class="column-container">
   <h2>
+  
   {% if editable %}
         
           <div class="button-form inline">
@@ -193,6 +211,29 @@ Collections
   Compositions
   </h2>
       <div class="column-contents scroll">
+      
+      <!--PLACEHOLDER FOR DEFAULT CONTENT I.E. NO PROJECTS yet
+ 
+ <div class="default-content">
+  
+  <h4>You have not yet created any compositions</h4>
+  <ul>
+  <li>
+  Explore compositions (projects, assignments and discussions) from your Instructor in the column to the left. 
+  </li>
+ <li>
+ <li>
+  To see what your classmates published projects, choose "All Class Items" from the dropdown above. 
+  </li>
+ </li>
+ 
+ <li>
+  To create a Composition, click "New Composition" above.  
+  </li>
+  </ul>
+  </div>
+  
+  -->
       
         {% include "projects/project_list_notable.html" %}
         </div>

@@ -57,47 +57,60 @@ table#home-columns td#classwork ul {
 	
 }
 
-ul.instructor-list {
+div#instructor-column {
 
-	margin: 0 20px;
-}
-
-
-ul.instructor-list li,
-ul.instructor-list h4{
-
-	margin: 5px 0 10px 0;
+	margin: 0px 10px 5px;
 	font-weight: normal;
 	line-height: 17px;
 }
 
-ul.instructor-list li.inst-item,
-ul.instructor-list h4.inst-header{
+div#instructor-column h4{
+
+	margin: 10px 0;
+	font-weight: normal;
+	line-height: 17px;
+}
+
+div#instructor-column h4.inst-header{
 
 	padding: 0 0 0 20px;
 	background-position: top left;
     background-repeat: no-repeat;
 }
 
-ul.instructor-list li.inst-item.project,
-ul.instructor-list h4.inst-header.project{
+div#instructor-column h4.inst-header.project{
 
     background-image: url("../img/icons/item_project.gif");
 
 }
 
-ul.instructor-list li.inst-item.discussion,
-ul.instructor-list h4.inst-header.discussion{
+div#instructor-column h4.inst-header.discussion{
 
  background-image: url("../img/icons/item_discussion.gif");
 }
 
-ul.instructor-list li.inst-item.assignment,
-ul.instructor-list h4.inst-header.assignment{
+div#instructor-column h4.inst-header.assignment{
 
  background-image: url("../img/icons/item_assignment.gif");
 }
 
+
+
+
+ul.instructor-list {
+
+	margin: 0 20px 0 40px;
+}
+
+
+
+
+ul.instructor-list li {
+
+	margin: 5px 0 10px 0;
+	font-weight: normal;
+	line-height: 17px;
+}
 
 
 

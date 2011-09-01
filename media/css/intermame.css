@@ -16,7 +16,17 @@ input {
     border: 1px solid #333333;
     background-repeat: repeat-x;
 
+}
 
+.meta {
+    font-size:90%;
+    color: #333;
+    line-height: 18px;
+    font-weight: normal;
+}
+
+.meta label {
+    font-weight: bold;
 }
 
 #instructor .column-container {
@@ -219,6 +229,12 @@ input.media.newselection-button {
     margin: 4px;
 }
 
+.actions input {
+
+    border: none;
+    margin: 0;
+    }
+
 
 /*Composition Styles*/
 
@@ -228,4 +244,9 @@ input.project {
 }
 
 
+/*Annotation Styles*/
 
+#annotation-body {
+    margin: 0 0 10px;
+    padding: 5px 15px 10px;
+}

@@ -617,7 +617,7 @@ input.project createnew-button {
 
 .actions {
 	float: right;
-margin:-2px -0.3em
+margin:-2px
 }
 
 .archive {
@@ -1295,6 +1295,7 @@ body.old-assetwindow #asset-details-annotations-list {
     overflow-y:auto;
 }
 
+
 #asset-details-annotations-current h3 {
     margin: .5em 0 .5em;
 }
@@ -1304,8 +1305,8 @@ body.old-assetwindow #asset-details-annotations-list {
 }
 
 #asset-details-annotations-current {
-    margin-bottom: .5em;
     background-color: #fcfb97;
+    
 }
 
 .intro-text {

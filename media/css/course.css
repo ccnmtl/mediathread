@@ -19,12 +19,16 @@
 .indexcard {
   display: block;
   border: 2px solid gray;
+
 }
   
   .indexcard input[type=text],
   .indexcard textarea
  {
     width: 95%;
+    padding: 2px 3px;
+      font-family: 'lucida grande',arial,verdana,sans-serif;
+      font-size: 90%;
   }
 
 #id_annotation-body { height: 65px;}
@@ -1206,7 +1210,7 @@ ul.submenu.course-report li.highlight {
 .asset-annotator {
     padding: 10px;
     background-color: #dedede;
-    margin-bottom: 10px;
+    margin: 10px;
 }
 
 .sherd-instructions {

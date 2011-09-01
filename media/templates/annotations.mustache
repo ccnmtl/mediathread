@@ -67,10 +67,11 @@
                     
                     <form name="edit-annotation-form" onsubmit="return false;">
                         <div class="asset-annotator">
-                            <img src="/site_media/img/icons/meth_info_icon.png" alt="Info" style="text-align: left; vertical-align: middle; margin-top: -3px;" /><b>Instructions</b>
-                            <div id="clipform-display"></div>
+                            <img src="/site_media/img/icons/meth_info_icon.png" alt="Info: &nbsp;" style="text-align: left; vertical-align: middle; margin: -3px 5px 0 0;" /><b>Instructions</b>
+                         
+                         <div id="clipform-display"></div>
                         </div>
-                    
+                        <div id="annotation-body">
                         <label for="annotation-title">Title:</label>
                         <input style="width: 75%" type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/>
                         <br /><br />
@@ -95,6 +96,7 @@
                         {{#id?}} <!-- Editing existing annotation -->
                         <input type="hidden" name="annotation-id" value="{{id}}" />
                         {{/id?}}
+                        </div>
                     </form>
                 {{/editing?}}
             {{/annotation}}

@@ -216,6 +216,11 @@ list-style-type: none;
 
 /*Collection Styles*/
 
+.indexcard input.media {
+    margin-top: 5px;
+
+}
+
 input.media {
     background-image: url("../img/buttons/collections_button_bg.jpg");
     border-color: #c89345;
@@ -246,7 +251,9 @@ input.project {
 
 /*Annotation Styles*/
 
-#annotation-body {
+#annotation-body,
+div#annotation-body,
+div>#annotation-body {
     margin: 0 0 10px;
     padding: 5px 15px 10px;
 }

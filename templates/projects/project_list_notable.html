@@ -33,15 +33,12 @@
 
     {% for project in projects %}
         <li class="projectlist" id="project-{{project.pk}}">
+            
         	<h3>
         	  <a href="{{project.get_absolute_url}}"
         	     class="asset_title type-project"
         	     >{{project.title|default:"(Untitled)"}}</a>
         	</h3>
-            <div class="participants">Author(s):
-              <span class="participants-short">{% public_name for project.attribution_list truncate 2 %}</span>
-              <span class="participants-full">{% public_name for project.attribution_list %}</span>
-            </div>
             <ul>
     	       {% if project.feedback_discussion %}
     	           <li>
@@ -54,17 +51,30 @@
                 	</li>
             	{% endif %}
             </ul>
-    
-            <time datetime="{{project.modified|date:"c"}}">{{project.modified|date}}</time>
-    
-            <p>
-            Status:{{project.status|safe}}
-            </p>
-    
+            <div>
+              <span class="metadata-label">Author(s):</span>
+              <span class="metadata-value">{% public_name for project.attribution_list truncate 2 %}</span>
+              <span class="metadata-value">{% public_name for project.attribution_list %}</span>
+              <br />
+              
+              <span class="metadata-label">Saved at:</span>
+              <span class="metadata-value"><time datetime="{{project.modified|date:"c"}}">{{project.modified|date}}</time></span>
+              <br />
+              
+              <span class="metadata-label">Status:</span>
+              <span class="metadata-value">{{project.status|safe}}</span>
+              <br />  
+            </div>
+            
             {% if editable %}
                 <a onclick="return ajaxDelete(this, 'project-{{project.pk}}');"
                     href="{%url project-workspace project.id %}?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
             {% endif %}
+                                
+    
+            
+    
+            
     
       </li><!-- id=project-pk -->
   {% endfor %}<!--for project in projects -->

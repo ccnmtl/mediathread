@@ -31,15 +31,12 @@
                            <span id="clipform-tools"></span>
                             
                            {{#editable?}}
-                               <input type="image" onclick="return AnnotationList.editAnnotation(this);" alt="Edit" src="/site_media/img/pencil.gif" />
-                               <!-- TODO: IMPLEMENT DELETE a href="/asset/{{assetid}}/annotations/{{id}}/?delete" onclick="return ajaxDelete(this, 'annotation-{{id}}')">
-                                   <img class="delete_icon" alt="Remove Annotation from My Analysis" src="/site_media/img/Trashcan.gif">
-                               </a-->
+                               <input type="image" title="Edit Selection" onclick="return AnnotationList.editAnnotation(this);" alt="Edit" src="/site_media/img/pencil.gif" />
                            {{/editable?}}
     
                            {{^editable}}
                                <a href="" onclick="return AnnotationList.copyAnnotation(this);">
-                                   <img alt="Copy Annotation" src="/site_media/img/selection_copy.gif">
+                                   <img title="Copy Selection" src="/site_media/img/selection_copy.gif">
                                </a>
                            {{/editable}}
                        </div>
@@ -60,7 +57,7 @@
                         <div class="actions">
                             <span id="clipform-tools"></span>
                             {{#showCancel?}}
-                            <input type="image" id="btnCancel" src="/site_media/img/icons/meth_close_icon.png" alt="X" onclick="javascript:AnnotationList.cancelAnnotation()"/>
+                            <input type="image" title="Cancel Changes" id="btnCancel" src="/site_media/img/icons/meth_close_icon.png" alt="X" onclick="javascript:AnnotationList.cancelAnnotation()"/>
                             {{/showCancel?}}
                        </div>
                     </h2>

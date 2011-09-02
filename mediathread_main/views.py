@@ -406,13 +406,13 @@ def get_records(user, course, request):
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
-
+    
     if request.is_ajax():
-        data = {'assets': assets.json(),
+        data = {'assets': [asset.sherd_json(request) for asset in assets],
                 'tags': [ { 'name': tag.name } for tag in tags ],
                 'dates': [ { 'label': 'today', 'value':'today'}, {'label': 'yesterday', 'value': 'yesterday' }, {'label': 'within the last week', 'value': 'lastweek'  }],
                 'active_filters': active_filters,
-                'space_viewer'  : { 'username': user.username, 'public_name': get_public_name(user, request) },
+                'space_viewer'  : { 'username': space_viewer.username, 'public_name': get_public_name(space_viewer, request), 'can_manage': (space_viewer.is_staff and not user) },
                 'editable'      : editable,
                 'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
                }

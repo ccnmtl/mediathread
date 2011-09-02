@@ -45,7 +45,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
     <tbody>
     <tr>
       <td class="" id="instructor">
-<div class="column-container">    
+<div class="column-container resize-height">    
   {%if display.instructor or is_faculty %}
   
     <h2>From Your Instructor
@@ -143,54 +143,11 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
 </div>
       </td>
       <td id="classwork">
-      <div class="column-container">
+      <div class="column-container resize-height">
       <h2>Class Work</h2>
       <table>
       <tbody>
       <tr>
-      <td class="" id="media">
-<div class="column-container" >
- <h2>
- {% if editable %}
-
-  <div class="button-form inline">
-   <form class="block media-browse hinline" method="POST" action="{%url explore%}">
-     <input type="hidden" name="title" />
-     <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
-
-   </form>
-
-   </div>
-{% endif %}
-Collections
- </h2>
- <div class="column-contents scroll">
- 
-  <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
-
- <!--PLACEHOLDER FOR DEFAULT CONTENT I.E. NO ITEMS yet
- 
- <div class="default-content">
-  
-  <h4>You have not yet collected any items</h4>
-  <ul>
-  <li>
-  To see what your instructor or classmates have collected, choose "All Class Items" from the dropdown above. 
-  </li>
-  <li>
-  To collect your own items, click "Browse Sources" above.  
-  </li>
-  </ul>
-  </div>
-  
-  -->
-  
-   {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
-                
-     
-</div>
-    </div>
-      </td>
         <td class="" id="projects">
  <div class="column-container">
   <h2>
@@ -239,6 +196,27 @@ Collections
         </div>
         </div>
       </td>
+      <td class="" id="media">
+<div class="column-container">
+ <h2>
+ {% if editable %}
+
+  <div class="button-form inline">
+   <form class="block media-browse hinline" method="POST" action="{%url explore%}">
+     <input type="hidden" name="title" />
+     <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+
+   </form>
+
+   </div>
+{% endif %}
+Collections
+ </h2>
+  <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
+  {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
+    </div>
+      </td>
+      
       </tr>
       </tbody>
       </table>
@@ -251,8 +229,9 @@ Collections
 <script type="text/javascript">
     jQuery(document).ready(function() {
         var visible = getVisibleContentHeight();
-        jQuery('.column-container').css('height', visible + "px");
-
+        jQuery('.resize-height').css('height', visible + "px");
+        jQuery('.resize-height').css('max-height', visible + "px");
+        
         jQuery(".inst-header").click(function() {
             jQuery(this).next().toggle();
         })

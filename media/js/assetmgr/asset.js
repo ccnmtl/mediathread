@@ -23,6 +23,12 @@
 */
 (function() {
     var global = this;
+    
+    _propertyCount = function(obj) {
+        var count = 0;
+        for (k in obj) if (obj.hasOwnProperty(k)) count++;
+        return count;
+    }
 
     ///MUSTACHE CODE
     if (window.Mustache) {
@@ -89,14 +95,7 @@
                         },
                         false,
                         function(your_records) {
-                            var template_label = "assets";
-                            
-                            your_records.selected_label = self.getSelectedLabel(your_records);
-                            your_records.show_my_items = self.getShowMyItems(your_records);
-                            your_records.show_all_items = self.getShowAllItems(your_records);
-                            
-                            your_records.user = self.user;
-                            Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
+                            self._updateAssets(your_records);
                         }
                     );
                 }
@@ -106,17 +105,11 @@
         this.selectOwner = function(username) {
             djangosherd.storage.get({
                 type:'asset',
-                url:MediaThread.urls['assets'](username)
+                url:MediaThread.urls['your-space'](username,/*annotations=*/true)
             },
             false,
-            function(the_assets) {
-                var template_label = "assets-by-owner";
-                
-                Mustache.update(template_label, your_records, { post:function(elt) { 
-                    /** post processing **/
-                    
-                    } 
-                });
+            function(your_records) {
+                self._updateAssets(your_records);
             });
             
             return false;
@@ -124,20 +117,35 @@
         
         this.getSelectedLabel = function(json) {
             if (!json.space_owner) {
-                return "&mdash; All Class Members &mdash;";
+                return "All Class Members";
             } else if (json.space_owner.username == json.space_viewer.username) {
-                return "&mdash; Me &mdash;";
+                return "Me";
             } else {
                 return json.space_owner.public_name;
             }
         }
         
-        this.getShowMyItems = function(json) {
-            return json.space_owner.username != json.space_viewer.username;
+        this.getShowingMyItems = function(json) {
+            return json.space_owner.username == json.space_viewer.username;
         }
         
-        this.getShowAllItems = function(json) {
-            return json.space_owner != null;
+        this.getShowingAllItems = function(json) {
+            return json.space_owner == null;
+        }
+        
+        this._updateAssets = function(your_records) {
+            var template_label = "assets";
+            
+            your_records.selected_label = self.getSelectedLabel(your_records);
+            your_records.showing_my_items = self.getShowingMyItems(your_records);
+            your_records.showing_all_items = self.getShowingAllItems(your_records);
+            
+            n = _propertyCount(your_records.active_filters);
+            if (n > 0)
+                your_records.active_filter_count = n;
+            
+            your_records.user = self.user;
+            Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
         }
     })();
 
@@ -553,11 +561,11 @@
             // Push clipform or assetview state into "local storage", i.e. the form that is posted to the server.
             // @todo -- Unsure if this is the best spot for this...
             var obj = djangosherd.assetview.clipform.getState();
-            if (self._propertyCount(obj) > 0)
+            if (_propertyCount(obj) > 0)
                 djangosherd.assetview.clipform.storage.update(obj, true);
             else
                 obj = djangosherd.assetview.getState();
-                if (self._propertyCount(obj) > 0)
+                if (_propertyCount(obj) > 0)
                     djangosherd.assetview.clipform.storage.update(obj, true);
             
             // Validate the tag fields...should be in djangosherd?
@@ -712,12 +720,6 @@
                     jQuery("#annotations-organized").show();
                 }
             }});
-        }
-        
-        this._propertyCount = function(obj) {
-            var count = 0;
-            for (k in obj) if (obj.hasOwnProperty(k)) count++;
-            return count;
         }
     })();
 

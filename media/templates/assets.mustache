@@ -11,7 +11,7 @@
                 </a>
             </span>
             <ul class="switcher-options" style="right: -50px !important;">
-                {{#show_my_items?}}
+                {{^showing_my_items}}
                 <li>
                     <ul class="switcher-sub" id="switcher-extras">
                         <li class="choice_my_items" id="choice_my_items">
@@ -19,14 +19,14 @@
                         </li>
                     </ul>
                 </li>
-                {{/show_my_items?}}
+                {{/showing_my_items}}
                 <li>
                     <ul class="scroll switcher-sub">
-                        {{#show_all_items?}}
+                        {{^showing_all_items}}
                         <li class="choice_all_items" id="choice_all_items">
                             <a href="" onclick="return CollectionList.selectOwner(null);">&mdash; All Class Members &mdash;</a>
                         </li>
-                        {{/show_all_items?}}
+                        {{/showing_all_items}}
                         {{#owners}}                            
                             <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
                         {{/owners}}
@@ -93,10 +93,29 @@
         <div class="visualclear"></div>
     </div> <!-- end filter widget -->
  
-    <div id="materials" class="resize-height">
-        {{#asset_array}}
+    <div class="column-contents scroll">
+    <div id="materials">
+        {{^assets}}
+            <div class="default-content">
+                {{#showing_my_items?}}
+                    <h4>You have not yet collected any items</h4>
+                    <ul>
+                        <li>
+                           To see what your instructor or classmates have collected, choose "All Class Items" from the dropdown above. 
+                        </li>
+                        <li>
+                           To collect your own items, click "Browse Sources" above.  
+                        </li>
+                    </ul>
+                {{/showing_my_items?}}
+                {{^showing_my_items}}
+                    <h4>This classmate has not collected any items.</h4>
+                {{/showing_my_items}}
+           </div>
+        {{/assets}} 
+        {{#assets}}
             <div id="record-{{id}}" class="record record-{{type}}">
-                <h2 id="asset-item-{{id}}" class="asset_title asset-{{type}}">
+                <h4 id="asset-item-{{id}}" class="asset_title asset-{{type}}">
     
                     <div class="actions">
                         {{#editable?}}
@@ -108,23 +127,10 @@
                     </div>
                     
                     <a class="asset-title-link"
-                        href="{{get_absolute_url}}">{{title?default(-Untitled-)}}</a>
-                </h2>
+                        href="{{local_url}}">{{title?default(-Untitled-)}}</a>
+                </h4>
             </div>
-        {{/asset_array}}
-        {{^asset_array}}
-            <div class="default-content">
-              <h4>You have not yet collected any items</h4>
-              <ul>
-                  <li>
-                  To see what your instructor or classmates have collected, choose "All Class Items" from the dropdown above. 
-                  </li>
-                  <li>
-                  To collect your own items, click "Browse Sources" above.  
-                  </li>
-              </ul>
-           </div>
-        {{/asset_array}} 
-    </div><!--  endmaterials -->    
-</div> <!-- end asset_table -->
+        {{/assets}}
+    </div></div>    
+</div>
 {{/>>assets}}

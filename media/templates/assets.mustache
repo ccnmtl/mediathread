@@ -10,7 +10,6 @@
                     </span>
                 </a>
             </span>
-            foo
             <ul class="switcher-options" style="right: -50px !important;">
                 {{#show_my_items?}}
                 <li>
@@ -39,30 +38,31 @@
         <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
             <a class="switcher-top closed">
                 <span class="down-arrow" tabindex="4"></span>
-                <span class="title">Filters<span 
-                    {{#active_filters?}}
-                        class="filter-on">: ON
-                    {{/active_filters?}}
-                    {{^active_filters}}
-                        class="filter-off">
-                    {{/active_filters}}
+                <span class="title">Filters 
+                    <span
+                        {{#active_filter_count?}}
+                            class="filter-on">: ON
+                        {{/active_filter_count?}}
+                        {{^active_filter_count}}
+                            class="filter-off">...
+                        {{/active_filter_count}}
                     </span>
                 </span>
             </a>
             <ul class="switcher-options">
-                {{#active_filters?}}
-                <li>
-                    <ul class="switcher-sub switcher-active-filters">
-                        <li><a class="remove" href="" onclick="CollectionList.clearFilter(null)">Clear All Filters</a></li>
-                        {{#active_filters}}  
-                        <li>
-                            <a class="remove" onclick="CollectionList.clearFilter('{{value}}')">&nbsp;</a>
-                            {{filter}}: {{display_value}}
-                        </li>
-                        {{/active_filters}}
-                    </ul>
-                </li>
-                {{/active_filters?}}
+                {{#active_filter_count?}}
+                    <li>
+                        <ul class="switcher-sub switcher-active-filters">
+                            {{#active_filters}}
+                            <li><a class="remove" href="" onclick="CollectionList.clearFilter(null)">Clear All Filters</a></li>
+                            <li>
+                                <a class="remove" onclick="CollectionList.clearFilter('{{value}}')">&nbsp;</a>
+                                {{filter}}: {{display_value}}
+                            </li>
+                            {{/active_filters}}
+                        </ul>
+                    </li>
+                {{/active_filter_count?}}
                 
                 {{#dates?}}
                 <li>
@@ -86,14 +86,45 @@
                         {{/tags}}
                     </p>
                 </li>
+                
             </ul>
         </div>
         
         <div class="visualclear"></div>
     </div> <!-- end filter widget -->
+ 
+    <div id="materials" class="resize-height">
+        {{#asset_array}}
+            <div id="record-{{id}}" class="record record-{{type}}">
+                <h2 id="asset-item-{{id}}" class="asset_title asset-{{type}}">
     
-    {{#>>assets-by-owner}}
-    
-    {{/>>assets-by-owner}}    
+                    <div class="actions">
+                        {{#editable?}}
+                            <a onclick="return ajaxDelete(this, 'record-{{id}}')"
+                                href="/yourspace/{{space_viewer.username}}/asset/{{id}}?delete">
+                            <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
+                        {{/editable?}}
+                        {{#space_viewer.can_manage?}}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{{/space_viewer.can_manage?}}
+                    </div>
+                    
+                    <a class="asset-title-link"
+                        href="{{get_absolute_url}}">{{title?default(-Untitled-)}}</a>
+                </h2>
+            </div>
+        {{/asset_array}}
+        {{^asset_array}}
+            <div class="default-content">
+              <h4>You have not yet collected any items</h4>
+              <ul>
+                  <li>
+                  To see what your instructor or classmates have collected, choose "All Class Items" from the dropdown above. 
+                  </li>
+                  <li>
+                  To collect your own items, click "Browse Sources" above.  
+                  </li>
+              </ul>
+           </div>
+        {{/asset_array}} 
+    </div><!--  endmaterials -->    
 </div> <!-- end asset_table -->
 {{/>>assets}}

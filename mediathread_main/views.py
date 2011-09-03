@@ -7,6 +7,7 @@ from courseaffils.lib import get_public_name
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 from djangosherd.models import DiscussionIndex
+from djangosherd.models import SherdNote
 
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
@@ -408,7 +409,14 @@ def get_records(user, course, request):
         space_viewer = get_object_or_404(User, username=request.GET['as'])
     
     if request.is_ajax():
-        data = {'assets': [asset.sherd_json(request) for asset in assets],
+        asset_json = []
+        for asset in assets:
+            the_json = asset.sherd_json(request)
+            gannotation, created = SherdNote.objects.global_annotation(asset, user or space_viewer, auto_create=False)
+            the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags','body') )
+            asset_json.append(the_json)
+
+        data = {'assets': asset_json,
                 'tags': [ { 'name': tag.name } for tag in tags ],
                 'dates': [ { 'label': 'today', 'value':'today'}, {'label': 'yesterday', 'value': 'yesterday' }, {'label': 'within the last week', 'value': 'lastweek'  }],
                 'active_filters': active_filters,

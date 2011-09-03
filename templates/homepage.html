@@ -149,7 +149,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
       <tbody>
       <tr>
         <td class="" id="projects">
- <div class="column-container">
+ <div class="column-container sub-column-container">
   <h2>
   
   {% if editable %}
@@ -197,24 +197,21 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
         </div>
       </td>
       <td class="" id="media">
-<div class="column-container">
- <h2>
- {% if editable %}
-
-  <div class="button-form inline">
-   <form class="block media-browse hinline" method="POST" action="{%url explore%}">
-     <input type="hidden" name="title" />
-     <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
-
-   </form>
-
-   </div>
-{% endif %}
-Collections
- </h2>
-  <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
-  {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
-    </div>
+        <div class="column-container sub-column-container">
+         <h2>
+             {% if editable %}
+                <div class="button-form inline">
+                    <form class="block media-browse hinline" method="POST" action="{%url explore%}">
+                        <input type="hidden" name="title" />
+                        <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+                    </form>
+                </div>
+             {% endif %}
+             Collections
+          </h2>
+          <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
+          {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
+          </div>
       </td>
       
       </tr>
@@ -230,7 +227,8 @@ Collections
     jQuery(document).ready(function() {
         var visible = getVisibleContentHeight();
         jQuery('.resize-height').css('height', visible + "px");
-        jQuery('.resize-height').css('max-height', visible + "px");
+        jQuery('.sub-column-container').css('height', (visible - 50) + "px");
+        
         
         jQuery(".inst-header").click(function() {
             jQuery(this).next().toggle();

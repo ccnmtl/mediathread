@@ -65,7 +65,7 @@ div a.switcher-top {
 
 div.collection-filter ul.switcher-options {  
     width:350px; /*width -2px for border */ 
-    right:0px;
+    right:-50px;
     left:auto;
     
 }

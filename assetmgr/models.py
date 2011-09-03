@@ -9,6 +9,10 @@ from django.core.cache import cache
 from random import choice
 from string import letters
 
+from courseaffils.lib import get_public_name
+
+from django.utils.html import strip_tags
+
 Tag = models.get_model('tagging','tag')
 User = models.get_model('auth','user')
 Group = models.get_model('auth','group')
@@ -183,17 +187,30 @@ class Asset(models.Model):
                 'height':s.height,
                 'primary':s.primary
                 }
+
+        annotations = []
+        if request.GET.has_key('annotations'):
+            # @todo: refactor this serialization into a common place.
+            def author_name(request, annotation, key):
+                if not annotation.author_id:
+                    return None
+                return 'author_name',get_public_name(annotation.author, request)
+            for ann in self.sherdnote_set.filter(range1__isnull=False):
+                annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
+                
         try:
             metadata = simplejson.loads(self.metadata_blob)
         except ValueError:
             metadata = None
         return {
             'sources':sources,
-            'type':self.primary.label,
-            'title':self.title, 
+            'primary_type':self.primary.label,
+            'title': strip_tags(self.title), 
             'metadata':metadata,
             'local_url':self.get_absolute_url(),
             'id':self.pk,
+            'annotations': annotations,
+            'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }
         
         

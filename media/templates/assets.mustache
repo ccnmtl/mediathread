@@ -54,11 +54,19 @@
                     <li>
                         <ul class="switcher-sub switcher-active-filters">
                             {{#active_filters}}
-                            <li><a class="remove" href="" onclick="CollectionList.clearFilter(null)">Clear All Filters</a></li>
-                            <li>
-                                <a class="remove" onclick="CollectionList.clearFilter('{{value}}')">&nbsp;</a>
-                                {{filter}}: {{display_value}}
-                            </li>
+                            <li><a class="remove" href="" onclick="return CollectionList.clearFilter(null)"><span class="metadata-label">Clear All Filters</span></a></li>
+                                {{#tag?}}
+                                    <li>
+                                        <a class="remove" onclick="return CollectionList.clearFilter('tag')">&nbsp;</a>
+                                        <span class="metadata-label">Tag</span>: <span class="metadata-value">{{tag}}</span>
+                                    </li>
+                                {{/tag?}}
+                                {{#modified?}}
+                                    <li>
+                                        <a class="remove" onclick="return CollectionList.clearFilter('modified')">&nbsp;</a>
+                                        <span class="metadata-label">Modified</span>: <span class="metadata-value">{{modified}}</span>
+                                    </li>
+                                {{/modified?}}
                             {{/active_filters}}
                         </ul>
                     </li>
@@ -69,7 +77,7 @@
                     <h3>Date Modified</h3>
                     <p class="switcher-sub">
                         {{#dates}}
-                            <a href="" onclick="CollectionList.filter('{{value}}')">{{label}}</a>
+                            <a href="" onclick="return CollectionList.filterByDate('{{value}}')">{{label}}</a>
                         {{/dates}}
                     </p>
                 </li>
@@ -82,7 +90,7 @@
                             No tags
                         {{/tags}}
                         {{#tags}}
-                            <a href="" onclick="CollectionList.filter('{{name}}')" >{{name}}</a>
+                            <a href="" onclick="return CollectionList.filterByTag('{{name}}')" >{{name}}</a>
                         {{/tags}}
                     </p>
                 </li>
@@ -91,10 +99,9 @@
         </div>
         
         <div class="visualclear"></div>
-    </div> <!-- end filter widget -->
+    </div> {{! end filter widget }}
  
-    <div class="column-contents scroll">
-    <div id="materials">
+    <div id="materials" class="column-contents scroll">
         {{^assets}}
             <div class="default-content">
                 {{#showing_my_items?}}
@@ -109,14 +116,13 @@
                     </ul>
                 {{/showing_my_items?}}
                 {{^showing_my_items}}
-                    <h4>This classmate has not collected any items.</h4>
+                    <h4>No items found</h4>
                 {{/showing_my_items}}
            </div>
         {{/assets}} 
         {{#assets}}
-            <div id="record-{{id}}" class="record record-{{type}}">
-                <h4 id="asset-item-{{id}}" class="asset_title asset-{{type}}">
-    
+            <div id="record-{{id}}" class="record record-{{primary_type}}">
+                <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                     <div class="actions">
                         {{#editable?}}
                             <a onclick="return ajaxDelete(this, 'record-{{id}}')"
@@ -126,11 +132,82 @@
                         {{#space_viewer.can_manage?}}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{{/space_viewer.can_manage?}}
                     </div>
                     
+                    {{#page_in_edit_mode?}}
+                        <span class="citationTemplate">
+                            <img class="materialCitation" alt="" 
+                                src="/site_media/img/icons/insert_asset.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
+                                width="24" height="15" border="0" 
+                                onclick="addMaterialCitation(event)" 
+                                title="{{title}}" 
+                                name="{{local_url}}"
+                                draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
+                            />
+                        </span>
+                    {{/page_in_edit_mode?}}
                     <a class="asset-title-link"
-                        href="{{local_url}}">{{title?default(-Untitled-)}}</a>
+                        {{#page_in_edit_mode?}}
+                            target="_blank"
+                        {{/page_in_edit_mode?}}
+                        href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
                 </h4>
-            </div>
+                
+                {{#thumb?}}
+                    <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" /></a>
+                {{/thumb?}}
+                
+                <div id="record-{{id}}-metadata" class="meta">
+                    <ul class="record-metadata-list">
+                        {{#global_annotation}}
+                            {{#metadata}}
+                                {{#tags?}}
+                                    <li class="annotation-global-tags">
+                                        <span class="metadata-label">Item Tags:</span>
+                                        <span class="metadata-value">
+                                            {{#tags}}
+                                                {{^page_in_edit_mode}}
+                                                    <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                {{/page_in_edit_mode}}
+                                                {{#page_in_edit_mode?}}
+                                                    {{name}}
+                                                {{/page_in_edit_mode?}}
+                                            {{/tags}}
+                                        </span>
+                                        {{#editable?}} 
+                                            <a href="/asset/{{id}}/"> <img src="/site_media/img/pencil.gif" class="edit_icon" alt="Edit Tags" /></a>
+                                        {{/editable?}}
+                                    </li>
+                                {{/tags?}} 
+                            
+                                {{#body?}}
+                                    <li class="annotation-global-body">
+                                        <span class="metadata-label">Note:</span> <span class="metadata-value">{{body}}</span> 
+                                        {{#editable?}}
+                                            <a href="/asset/{{id}}/"><img src="/site_media/img/pencil.gif" class="edit_icon" alt="Edit Note"/></a> 
+                                        {{/editable?}}
+                                    </li>
+                                {{/body?}}
+                            {{/metadata}}   
+                        {{/global_annotation}}
+                        {{^global_annotation}}
+                             {{^space_owner}} {{! All Class Items }}
+                                 {{#tags?}}    
+                                    <span class="metadata-label">Item Tags:</span>
+                                    <span class="metadata-value">
+                                        {{#tags}}
+                                            <a href="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                        {{/tags}}
+                                    </span>
+                                 {{/tags?}}
+                            {{/space_owner}}
+                        {{/global_annotation}}
+                        
+                        {{#annotations?}}
+                            
+                        {{/annotations?}}
+                    </ul> {{! class="record-metadata-list" }}                    
+                </div> {{! end record metadata }}     
+            </div> {{! end id="record-id" }} 
         {{/assets}}
-    </div></div>    
+    </div> {{! end id=materials, class="column-contents scroll" }}
 </div>
 {{/>>assets}}

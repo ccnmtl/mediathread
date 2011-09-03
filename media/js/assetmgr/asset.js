@@ -41,8 +41,8 @@
             'annotation-form':function(asset_id,annotation_id) {
                 return '/asset/'+asset_id+'/annotations/'+annotation_id;
             },
-            'your-space':function(username) {
-                return '/yourspace/'+username+'/asset/';
+            'your-space':function(username, tag, modified) {
+                return '/yourspace/'+username+'/asset/?annotations=true' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
             },
             'asset-view':function(asset_id) {
                 return '/asset/'+asset_id+'/';
@@ -91,7 +91,7 @@
                     // Retrieve the full asset w/annotations from storage
                     djangosherd.storage.get({
                             type:'asset',
-                            url:MediaThread.urls['your-space'](self.user.username,/*annotations=*/true)
+                            url:MediaThread.urls['your-space'](self.user.username)
                         },
                         false,
                         function(your_records) {
@@ -105,7 +105,56 @@
         this.selectOwner = function(username) {
             djangosherd.storage.get({
                 type:'asset',
-                url:MediaThread.urls['your-space'](username,/*annotations=*/true)
+                url:MediaThread.urls['your-space'](username)
+            },
+            false,
+            function(your_records) {
+                self._updateAssets(your_records);
+            });
+            
+            return false;
+        }
+        
+        this.clearFilter = function(filterName) {
+            var active_tag = null;
+            var active_modified = null;
+            
+            if (filterName == 'tag')
+                active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
+            else if (filterName == 'modified')
+                active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
+            
+            djangosherd.storage.get({
+                type:'asset',
+                url:MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified)
+            },
+            false,
+            function(your_records) {
+                self._updateAssets(your_records);
+            });
+            
+            return false;
+        }
+        
+        this.filterByDate = function(modified) {
+            var active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
+            djangosherd.storage.get({
+                type:'asset',
+                url:MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, modified)
+            },
+            false,
+            function(your_records) {
+                self._updateAssets(your_records);
+            });
+            
+            return false;
+        }
+        
+        this.filterByTag = function(tag) {
+            var active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
+            djangosherd.storage.get({
+                type:'asset',
+                url:MediaThread.urls['your-space'](self.current_records.space_owner.username,tag, active_modified)
             },
             false,
             function(your_records) {
@@ -135,6 +184,8 @@
         
         this._updateAssets = function(your_records) {
             var template_label = "assets";
+            
+            self.current_records = your_records;
             
             your_records.selected_label = self.getSelectedLabel(your_records);
             your_records.showing_my_items = self.getShowingMyItems(your_records);

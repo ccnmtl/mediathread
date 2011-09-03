@@ -141,7 +141,7 @@
     {% for asset in assets %}
         
         <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-        {#% get_global_annotation on asset by space_owner or space_viewer as gannotation %#}
+        {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}
     
         <h2 id="asset-item-{{asset.pk}}" class="asset_title asset-{{asset.primary.label}}">
     

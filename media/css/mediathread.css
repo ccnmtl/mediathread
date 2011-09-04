@@ -533,8 +533,7 @@ img, img a
 #pagebody
 {
 	display: block;
-	min-width: 950px;
-	min-width: 950px;
+	min-width: 1085px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -759,9 +758,9 @@ img, img a
 #footer
 {
 	display: block;
-	width: 950px;
+	width: 1085px;
 		height: 33px;
-	min-width: 950px;
+	min-width: 1085px;
 	clear: both;
 	margin: 0;
 	padding: 6px 0 0 0;
@@ -903,7 +902,7 @@ body.fluid #container
 body.fluid #header
 {
 	width: 100%;
-	min-width: 950px;
+	min-width: 1085px;
 }
 
 
@@ -914,7 +913,7 @@ body.fluid #primarynav div.encase
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 950px;
+	min-width: 1085px;
 }
 
 /* ---- Pagebody block elements ---------- */

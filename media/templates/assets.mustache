@@ -125,8 +125,7 @@
                 <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                     <div class="actions">
                         {{#editable?}}
-                            <a onclick="return ajaxDelete(this, 'record-{{id}}')"
-                                href="/yourspace/{{space_viewer.username}}/asset/{{id}}?delete">
+                            <a onclick="return CollectionList.deleteAsset({{id}})">
                             <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
                         {{/editable?}}
                         {{#space_viewer.can_manage?}}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{{/space_viewer.can_manage?}}

@@ -113,7 +113,7 @@ class Annotation(models.Model):
             if m=='author':
                 metadata[m] = {'id':getattr(self,'author_id',None)}
             elif m=='tags':
-                metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ] 
+                metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ]
             elif callable(m):
                 key,val = m(request, self, m)
                 metadata[key] = val
@@ -128,6 +128,8 @@ class Annotation(models.Model):
             'annotation':self.annotation(),
             'editable':user_id == getattr(self,'author_id',-1),
             'metadata':metadata,
+            'url': self.get_absolute_url(),
+            'is_null': self.is_null()
             }
         
 

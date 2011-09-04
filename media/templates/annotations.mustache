@@ -45,7 +45,7 @@
                         <h3>{{metadata.title?default(-Untitled-)}} <span id="clipform-display" name="clipform-display"></span></h3>
                         <div class="meta">
                         <div><label for="">Author:</label> <a href="{{your-space?url(metadata.author.id)}}">{{metadata.author_name}}</a></div>
-                        {{#metadata.tags?}}<div><label for="">Tags:</label> {{metadata.tags}}</div>{{/metadata.tags?}}
+                        {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}, {{/metadata.tags}}</div>{{/metadata.tags?}}
                         {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                         <br /><br />
 
                         <label for="annotation-tags">Tags:</label> 
-                        <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{metadata.tags}}"/>
+                        <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{#metadata.tags}}{{name}}, {{/metadata.tags}}"/>
                         <br /><br />
                         
                         <label for="annotation-body">Note:</label>

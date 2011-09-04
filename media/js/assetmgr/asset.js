@@ -44,6 +44,9 @@
             'your-space':function(username, tag, modified) {
                 return '/yourspace/'+username+'/asset/?annotations=true' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
             },
+            'your-space-delete':function(username, asset_id, annotation_id) {
+                return '/yourspace/'+username+'/asset/'+asset_id+ (annotation_id ? '/annotation/' + annotation_id : '') + '/?delete';
+            },
             'asset-view':function(asset_id) {
                 return '/asset/'+asset_id+'/';
             },
@@ -113,6 +116,17 @@
             });
             
             return false;
+        }
+        
+        this.deleteAsset = function(asset_id) {
+            var url = MediaThread.urls['your-space-delete'](self.current_records.space_viewer.username, asset_id);
+            return ajaxDelete(null, 'record-' + asset_id, { 'href': url });
+        }
+        
+        this.deleteAnnotation = function(annotation_id) {
+            var asset_id = "TODO: LOOK UP ASSET ID SOMEWHERE";
+            var url = MediaThread.urls['your-space-delete'](self.current_records.space_viewer.username, asset_id, annotation_id);
+            return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
         }
         
         this.clearFilter = function(filterName) {
@@ -196,6 +210,7 @@
                 your_records.active_filter_count = n;
             
             your_records.user = self.user;
+            
             Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
         }
     })();
@@ -378,16 +393,11 @@
             switch (grouping) {
             case 'tag':
                 this.layers[grouping].color_by = function(ann) {
-                    var tags = ann.metadata.tags.split(/\s*,\s*/);
-                    for (var i=0;i<tags.length;i++) {
-                        //remove empty front tag
-                        if (! /\w/.test(tags[i])) {
-                            tags.splice(i,1);
-                            --i;//set the counter back
-                        }
-                    }
-                    if (tags.length) {
-                        return tags
+                    if (ann.metadata.tags.length) {
+                        var tags = [];
+                        for (var k=0; k < ann.metadata.tags.length; k++)
+                            tags.push(ann.metadata.tags[k].name);
+                        return tags;
                     } else {
                         //127 ensures that None is last
                         return [String.fromCharCode(127)+'(None)']

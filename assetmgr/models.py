@@ -197,6 +197,8 @@ class Asset(models.Model):
                 return 'author_name',get_public_name(annotation.author, request)
             for ann in self.sherdnote_set.filter(range1__isnull=False):
                 annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
+
+        user_id = getattr(getattr(request,'user',None),'id',None)
                 
         try:
             metadata = simplejson.loads(self.metadata_blob)
@@ -210,6 +212,7 @@ class Asset(models.Model):
             'local_url':self.get_absolute_url(),
             'id':self.pk,
             'annotations': annotations,
+            'editable':user_id == getattr(self,'author_id',-1),
             'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }
         

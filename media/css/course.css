@@ -791,6 +791,7 @@ dd {
 
 .record {
     clear:both;
+    background-color: #ededed;
 }
 
 .record p {margin: .5em .5em 1.5em .5em;}

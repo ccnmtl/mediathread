@@ -48,7 +48,7 @@
                 return '/yourspace/all/asset/?' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
             },
             'asset-delete':function(username, asset_id) {
-                return '/yourspace/'+username+'/asset/'+asset_id+ (annotation_id ? '/annotation/' + annotation_id : '') + '/?delete';
+                return '/yourspace/'+username+'/asset/'+asset_id+ '/?delete';
             },
             'annotation-delete':function(asset_id, annotation_id) {
                 return '/asset/'+asset_id+'/annotations/'+annotation_id+'/?delete';

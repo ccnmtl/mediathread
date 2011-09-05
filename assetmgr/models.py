@@ -177,7 +177,7 @@ class Asset(models.Model):
         return dir(self)
 
     request = None
-    def sherd_json(self,request=None,user=None):
+    def sherd_json(self,request=None):
         sources = {}
         for s in self.source_set.all():
             sources[s.label] = {
@@ -187,16 +187,6 @@ class Asset(models.Model):
                 'height':s.height,
                 'primary':s.primary
                 }
-
-        annotations = []
-        if request.GET.has_key('annotations'):
-            # @todo: refactor this serialization into a common place.
-            def author_name(request, annotation, key):
-                if not annotation.author_id:
-                    return None
-                return 'author_name',get_public_name(annotation.author, request)
-            for ann in self.sherdnote_set.filter(range1__isnull=False,author=user):
-                annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body','modified', 'timecode') ) )
 
         user_id = getattr(getattr(request,'user',None),'id',None)
                 
@@ -211,7 +201,6 @@ class Asset(models.Model):
             'metadata':metadata,
             'local_url':self.get_absolute_url(),
             'id':self.pk,
-            'annotations': annotations,
             'editable':user_id == getattr(self,'author_id',-1),
             'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }

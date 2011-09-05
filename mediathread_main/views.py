@@ -436,7 +436,7 @@ def get_records(user, course, request):
     if request.is_ajax():
         asset_json = []
         for asset in assets:
-            the_json = asset.sherd_json(request)
+            the_json = asset.sherd_json(request, user)
             gannotation, created = SherdNote.objects.global_annotation(asset, user or space_viewer, auto_create=False)
             if gannotation:
                 the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags','body') )

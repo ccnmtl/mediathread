@@ -193,7 +193,7 @@
                                     <span class="metadata-label">Selection Tags:</span>
                                     <span class="metadata-value">
                                         {{#tags}}
-                                            <a onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                            <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
                                         {{/tags}}
                                     </span>
                                  {{/tags?}}
@@ -207,10 +207,10 @@
                                         {{^is_null}}
                                             <li id="annotation-{{id}}">
                                                 {{#metadata.body?}}
-                                                    <a class="hs-control" href="#annotation-body-{{id}}"></a>
+                                                    <a class="selector selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('selector-open selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
                                                 {{/metadata.body?}}
                                                 {{^metadata.body}}{{#metadata.tags?}}
-                                                    <a class="hs-control" href="#annotation-body-{{id}}"></a>
+                                                    <a class="selector selector-closed" href="" onclick="jQuery(this).toggleClass('selector-open selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
                                                 {{/metadata.tags?}}{{/metadata.body}}
                                                     
                                                 {{! TODO if annotation.body or annotation.tags. open an hs-control here }} 
@@ -237,23 +237,24 @@
                                                   title="Full Annotation Details"
                                                   href="{{url}}">{{{metadata.title?default(-Untitled-)}}}</a>         
                                             
-                                                <span class="annotation-timecode">{{metadata.timecode}}</span>
+                                                {{#metadata}}
+                                                    {{#timecode?}}
+                                                        <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
+                                                    {{/timecode?}}
+                                                {{/metadata}}
+
             
-                                                {{! TODO if annotation.body or annotation_tags }}    
-                                                <div id="annotation-body-{{id}}" class="hs-init-hide annotation-metadata-wrapper">
+                                                <div id="annotation-body-{{id}}" class="meta" style="display: none">
                                                     {{#metadata}}
-                                                        {{#author_name?}}
-                                                            <span class="metadata-label">Author:</span><span class="metadata-value">{{metadata.author_name}}</span>
-                                                        {{/author_name?}}
                                                         {{#modified?}}
-                                                            <span class="metadata-label">Last Modified:</span><span class="metadata-value">{{metadata.modified}}</span>
-                                                        {{/modified}}
+                                                            <div><span class="metadata-label">Last Modified:</span> <span class="metadata-value">{{modified}}</span></div>
+                                                        {{/modified?}}
                                                         {{#tags?}}       
-                                                            <div class="annotation-metadata-tags annotation-metadata"><span class="metadata-label">Tags:</span>
+                                                            <div><span class="metadata-label">Tags:</span>
                                                                 <span class="metadata-value">
                                                                 {{#tags}}
                                                                     {{^page_in_edit_mode}}
-                                                                        <a href="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                        <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
                                                                     {{/page_in_edit_mode}}
                                                                     {{#page_in_edit_mode?}}
                                                                         {{name}}
@@ -263,14 +264,12 @@
                                                             </div>
                                                         {{/tags?}}
                                                         {{#body?}}
-                                                            <div class="annotation-metadata-body annotation-metadata"><span class="metadata-label">Note:</span>
+                                                            <div><span class="metadata-label">Note:</span>
                                                                 <span class="metadata-value">{{body}}</span> 
                                                             </div>
                                                         {{/body?}}
                                                     {{/metadata}}
                                                 </div>
-                                                
-                                                {{! TODO annotation.body or annotation.tags  }}
                                                 
                                                 {{! TODO Crazy Overloading section to support thumbnails }}
                                             </li>

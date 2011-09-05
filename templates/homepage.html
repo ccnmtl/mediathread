@@ -10,7 +10,6 @@
 </title>
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
   <script type="text/javascript" src="/site_media/js/tablesort.js"></script>
   <script type="text/javascript" src="/site_media/js/util.js"></script>
@@ -194,13 +193,20 @@
 </table>
 
 <script type="text/javascript">
-    jQuery(document).ready(function() {
+    function resizeHomepage() {
         var visible = getVisibleContentHeight();
-
         jQuery('#instructor .column-container').css('height', visible + "px");
         jQuery('#classwork').css('height', visible + "px");
         jQuery('#classwork .projects-column-container').css('height', (visible - 45) + "px");
         jQuery('#classwork .media-column-container').css('height', (visible - 35) + "px");
+    }
+    
+    jQuery(document).ready(function() {
+        resizeHomepage();
+
+        jQuery(window).resize(function () {  
+            resizeHomepage();
+        });
         
         jQuery(".inst-header").click(function() {
             jQuery(this).next().toggle();

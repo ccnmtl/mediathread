@@ -27,6 +27,10 @@ input {
     margin: 0 5px;
 }
 
+.record-metadata {
+    padding: 0 .5em 4px 105px;
+}
+
 .meta label,
 .metadata-label {
     font-weight: bold;
@@ -335,5 +339,24 @@ div>#annotation-body {
 }
 
 html.busy, html.busy * {  
-  cursor: wait !important;  
-}  
+  cursor: wait;  
+}
+
+.selector {
+    display: block;
+    height: 15px;
+    width: 14px;
+    float: left;
+    text-decoration: none;
+    margin-right: 5px; 
+}
+
+.selector-open
+{
+    background-image: url(../img/down_arrow.png);
+}
+
+.selector-closed
+{
+    background-image: url(../img/right_arrow.png);
+}

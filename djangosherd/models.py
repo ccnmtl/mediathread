@@ -96,6 +96,8 @@ class Annotation(models.Model):
 
     def range_as_timecode(self):
         tc_range = ""
+        if self.range1 == 0 and self.range2 == 0:
+            return tc_range
         if self.range1 is not None:
             tc_range += self.secondsToCode(self.range1)
         if self.range2 is not None \
@@ -114,6 +116,10 @@ class Annotation(models.Model):
                 metadata[m] = {'id':getattr(self,'author_id',None)}
             elif m=='tags':
                 metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ]
+            elif m=='modified':
+                metadata[m] = self.modified.strftime("%m/%d/%y %I:%M %p")
+            elif m=='timecode':
+                metadata[m] = self.range_as_timecode()
             elif callable(m):
                 key,val = m(request, self, m)
                 metadata[key] = val

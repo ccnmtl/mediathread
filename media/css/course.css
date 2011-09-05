@@ -364,7 +364,7 @@ padding-right: 4px;
 	background-image: url(../img/icons/item_image.gif);
 }
 
-.record-image .annotation-timecode {
+.record-image .annotation-timecode, .record-image_fpx .annotation-timecode {
     display:none;
 }
 
@@ -830,15 +830,13 @@ a.hs-control.hs-nostyle.hs-control-hide
     background-image:none;
 }
 
-a.hs-control.hs-control-show
+a.hs-control.hs-control-show,
 {
-
 	background-image: url(../img/down_arrow.png);
 }
 
 a.hs-control.hs-control-hide
 {
-
 	background-image: url(../img/right_arrow.png);
 }
 

@@ -379,27 +379,52 @@ def your_records(request, user_name):
     
     return get_records(user, c, request)
 
-
+@allow_http("GET")
+def all_records(request):
+    c = request.course
+    in_course_or_404(request.user.username, c)
+    
+    return get_records('all', c, request);
+    
 def get_records(user, course, request):
     c = course
     today = datetime.date.today()
 
     editable = (user==request.user)
-    assets = annotated_by(Asset.objects.filter(course=c),
+    
+    if user == 'all':
+        archives = list(course.asset_set.archives())
+        assets = [a for a in Asset.objects.filter(course=course).extra(
+            select={'lower_title': 'lower(assetmgr_asset.title)'}
+            ).select_related().order_by('lower_title')
+              if a not in archives]
+        user = None
+    else:
+        assets = annotated_by(Asset.objects.filter(course=c),
                           user,
                           include_archives=c.is_faculty(user)
                           )
 
+    
+    if user:
+        tags = calculate_cloud(Tag.objects.usage_for_queryset(
+                user.sherdnote_set.filter(
+                    asset__course=c),
+                counts=True))
+    else:
+        all_tags = Tag.objects.usage_for_queryset(
+            SherdNote.objects.filter(
+                asset__course=course),
+            counts=True)
+        all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
+        tags = calculate_cloud(all_tags)
+        
+    
     for fil in filter_by:
         filter_value = request.GET.get(fil)
         if filter_value:
             assets = [asset for asset in assets
                       if filter_by[fil](asset, filter_value, user)]
-
-    tags = calculate_cloud(Tag.objects.usage_for_queryset(
-            user.sherdnote_set.filter(
-                asset__course=c),
-            counts=True))
     
     active_filters = get_active_filters(request, filter_by)
     
@@ -413,12 +438,12 @@ def get_records(user, course, request):
         for asset in assets:
             the_json = asset.sherd_json(request)
             gannotation, created = SherdNote.objects.global_annotation(asset, user or space_viewer, auto_create=False)
-            the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags','body') )
+            if gannotation:
+                the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags','body') )
             asset_json.append(the_json)
 
         data = {'assets': asset_json,
                 'tags': [ { 'name': tag.name } for tag in tags ],
-                'dates': [ { 'label': 'today', 'value':'today'}, {'label': 'yesterday', 'value': 'yesterday' }, {'label': 'within the last week', 'value': 'lastweek'  }],
                 'active_filters': active_filters,
                 'space_viewer'  : { 'username': space_viewer.username, 'public_name': get_public_name(space_viewer, request), 'can_manage': (space_viewer.is_staff and not user) },
                 'editable'      : editable,

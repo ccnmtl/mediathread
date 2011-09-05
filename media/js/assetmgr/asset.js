@@ -44,8 +44,14 @@
             'your-space':function(username, tag, modified) {
                 return '/yourspace/'+username+'/asset/?annotations=true' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
             },
-            'your-space-delete':function(username, asset_id, annotation_id) {
+            'all-space':function(tag, modified) {
+                return '/yourspace/all/asset/?' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
+            },
+            'asset-delete':function(username, asset_id) {
                 return '/yourspace/'+username+'/asset/'+asset_id+ (annotation_id ? '/annotation/' + annotation_id : '') + '/?delete';
+            },
+            'annotation-delete':function(asset_id, annotation_id) {
+                return '/asset/'+asset_id+'/annotations/'+annotation_id+'/?delete';
             },
             'asset-view':function(asset_id) {
                 return '/asset/'+asset_id+'/';
@@ -104,35 +110,35 @@
                 }
             });
         }
-        
+
         this.selectOwner = function(username) {
             djangosherd.storage.get({
                 type:'asset',
-                url:MediaThread.urls['your-space'](username)
+                url: username ? MediaThread.urls['your-space'](username) : MediaThread.urls['all-space']()
             },
             false,
-            function(your_records) {
-                self._updateAssets(your_records);
+            function(the_records) {
+                self._updateAssets(the_records);
             });
             
             return false;
         }
         
         this.deleteAsset = function(asset_id) {
-            var url = MediaThread.urls['your-space-delete'](self.current_records.space_viewer.username, asset_id);
+            var url = MediaThread.urls['asset-delete'](self.current_records.space_viewer.username, asset_id);
             return ajaxDelete(null, 'record-' + asset_id, { 'href': url });
         }
         
         this.deleteAnnotation = function(annotation_id) {
-            var asset_id = "TODO: LOOK UP ASSET ID SOMEWHERE";
-            var url = MediaThread.urls['your-space-delete'](self.current_records.space_viewer.username, asset_id, annotation_id);
+            var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
+            var url = MediaThread.urls['annotation-delete'](asset_id, annotation_id);
             return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
         }
         
         this.clearFilter = function(filterName) {
             var active_tag = null;
             var active_modified = null;
-            
+                
             if (filterName == 'tag')
                 active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
             else if (filterName == 'modified')
@@ -140,7 +146,7 @@
             
             djangosherd.storage.get({
                 type:'asset',
-                url:MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified)
+                url: self.getSpaceUrl(active_tag, active_modified)
             },
             false,
             function(your_records) {
@@ -154,7 +160,7 @@
             var active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
             djangosherd.storage.get({
                 type:'asset',
-                url:MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, modified)
+                url:self.getSpaceUrl(active_tag, modified)
             },
             false,
             function(your_records) {
@@ -168,7 +174,7 @@
             var active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
             djangosherd.storage.get({
                 type:'asset',
-                url:MediaThread.urls['your-space'](self.current_records.space_owner.username,tag, active_modified)
+                url:self.getSpaceUrl(tag, active_modified)
             },
             false,
             function(your_records) {
@@ -177,23 +183,16 @@
             
             return false;
         }
-        
-        this.getSelectedLabel = function(json) {
-            if (!json.space_owner) {
-                return "All Class Members";
-            } else if (json.space_owner.username == json.space_viewer.username) {
-                return "Me";
-            } else {
-                return json.space_owner.public_name;
-            }
-        }
-        
-        this.getShowingMyItems = function(json) {
-            return json.space_owner.username == json.space_viewer.username;
-        }
-        
+
         this.getShowingAllItems = function(json) {
-            return json.space_owner == null;
+            return !json.hasOwnProperty('space_owner'); 
+        }
+        
+        this.getSpaceUrl = function(active_tag, active_modified) {
+           if (self.getShowingAllItems(self.current_records))
+                return MediaThread.urls['all-space'](active_tag, active_modified)
+           else
+                return MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified)
         }
         
         this._updateAssets = function(your_records) {
@@ -201,9 +200,15 @@
             
             self.current_records = your_records;
             
-            your_records.selected_label = self.getSelectedLabel(your_records);
-            your_records.showing_my_items = self.getShowingMyItems(your_records);
-            your_records.showing_all_items = self.getShowingAllItems(your_records);
+            if (self.getShowingAllItems(your_records)) {
+                your_records.selected_label = "All Class Members";
+                your_records.showing_all_items = true;
+            } else if (your_records.space_owner.username == your_records.space_viewer.username) {
+                your_records.selected_label = "Me";
+                your_records.showing_my_items = true;
+            } else {
+                your_records.selected_label = your_records.space_owner.public_name;
+            }
             
             n = _propertyCount(your_records.active_filters);
             if (n > 0)

@@ -80,17 +80,22 @@ table#home-columns
 
 	padding: 0;
 	border: none;
+	margin: 0;
 }
 
-table#home-columns td,
-table#classwork-sub td{
+table#home-columns td {
 	border: none;
 	border-collapse: collapse;
 	vertical-align: top;
 	padding: 5px;
-	
 }
 
+table#classwork-sub td {
+    border: none;
+    border-collapse: collapse;
+    vertical-align: top;
+    padding: 0px;
+}
 
 table#home-columns td#instructor ul,
 table#home-columns td#classwork ul {
@@ -136,6 +141,27 @@ div#instructor-column h4.inst-header.assignment{
 }
 
 
+div#materials
+{
+    background-color: #EDEDED;
+    padding-top: 3px;
+}
+
+div#materials h4 {
+    background-color: #6F6F6F;
+    color: #DEDEDE;
+    font-weight: normal;
+    margin: 0 0 0.5em;
+    padding: 0.3em 0.5em;
+    text-align: left;
+}
+
+div#materials h4 a
+{
+    color: #fff;
+    padding-right: 4px;
+    padding-left: 15px;
+}
 
 
 ul.instructor-list {
@@ -193,6 +219,10 @@ table#classwork-sub {
 
 div.column-contents {
 	padding-top: 10px;
+}
+
+td#media div.column-contents {
+    padding-top: 0px;
 }
 
 table#classwork-sub td {
@@ -303,3 +333,7 @@ div>#annotation-body {
     margin: 0 0 10px;
     padding: 5px 15px 10px;
 }
+
+html.busy, html.busy * {  
+  cursor: wait !important;  
+}  

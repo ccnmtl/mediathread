@@ -11,6 +11,10 @@ urlpatterns = patterns(
     url(r'^portal$',
         'class_portal',
         name='class-portal'),
+                           
+    url(r'^all/asset/$',
+        'all_records',
+        name='all-records'),
     
     url(r'^(?P<user_name>\w[^/]*)/$',
         'your_space',
@@ -22,12 +26,8 @@ urlpatterns = patterns(
         name='my-asset-notes'
         ),
 
-
     url(r'^(?P<user_name>\w[^/]*)/asset/$',
         'your_records',
         name='your-space-records'),
 
-
-
-    )
-
+)                       

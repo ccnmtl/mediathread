@@ -18,5 +18,5 @@ function getVisibleContentHeight() {
         viewportheight = document.getElementsByTagName('body')[0].clientHeight
     }
     
-    return viewportheight - (50 + document.getElementById("primarynav").clientHeight + document.getElementById("header").clientHeight); 
+    return viewportheight - (10 + document.getElementById("primarynav").clientHeight + document.getElementById("header").clientHeight); 
 }

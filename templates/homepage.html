@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 {% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags  comments collaborations %}
 
-<title> {% block title %}
-{% if space_owner == user %}
-My Analysis > My Saved Items
-{% else %}
-Class Analysis > {% public_name for space_owner %}'s Analysis
-{% endif %}
-{% endblock %}</title>
-
-
+<title>
+    {% block title %}
+        {% if space_owner == user %}
+            Home
+        {% endif %}
+    {% endblock %}
+</title>
 
 {% block js %}
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
@@ -45,7 +43,7 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
     <tbody>
     <tr>
       <td class="" id="instructor">
-<div class="column-container resize-height">    
+<div class="column-container">    
   {%if display.instructor or is_faculty %}
   
     <h2>From Your Instructor
@@ -141,98 +139,78 @@ Class Analysis > {% public_name for space_owner %}'s Analysis
   </div>
   {%endif%}{#display.instructor#}
 </div>
-      </td>
-      <td id="classwork">
-      <div class="column-container resize-height">
-      <h2>Class Work</h2>
-      <table>
-      <tbody>
-      <tr>
-        <td class="" id="projects">
- <div class="column-container sub-column-container">
-  <h2>
-  
-  {% if editable %}
-        
-          <div class="button-form inline">
-           <form class="block project-createnew inline" method="POST" action="{%url your-space-projects user%}">
-             <input type="hidden" name="title" />
-             <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
-        
-           </form>
-        
-       </div>
-        {% endif %}
+            </td>
+            <td id="classwork">
+                <div class="column-container parent-column-container">
+                    <h2>Class Work</h2>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td id="projects">
+                                    <div class="column-container projects-column-container" style="padding-bottom: 8px;">
+                                        <h2>
+                                            {% if editable %}
+                                                <div class="button-form inline">
+                                                    <form class="block project-createnew inline" method="POST" action="{%url your-space-projects user%}">
+                                                        <input type="hidden" name="title" />
+                                                        <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
+                                                    </form>
+                                                </div>
+                                            {% endif %}
 
-  
-  Compositions
-  </h2>
-      <div class="column-contents scroll">
-      
-      <!--PLACEHOLDER FOR DEFAULT CONTENT I.E. NO PROJECTS yet
- 
- <div class="default-content">
-  
-  <h4>You have not yet created any compositions</h4>
-  <ul>
-  <li>
-  Explore compositions (projects, assignments and discussions) from your Instructor in the column to the left. 
-  </li>
- <li>
- <li>
-  To see what your classmates published projects, choose "All Class Items" from the dropdown above. 
-  </li>
- </li>
- 
- <li>
-  To create a Composition, click "New Composition" above.  
-  </li>
-  </ul>
-  </div>
-  
-  -->
-      
-        {% include "projects/project_list_notable.html" %}
-        </div>
-        </div>
-      </td>
-      <td class="" id="media">
-        <div class="column-container sub-column-container">
-         <h2>
-             {% if editable %}
-                <div class="button-form inline">
-                    <form class="block media-browse hinline" method="POST" action="{%url explore%}">
-                        <input type="hidden" name="title" />
-                        <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
-                    </form>
+                                            Compositions
+                                        </h2>
+                                        <div class="column-contents scroll">
+                                            {% include "projects/project_list_notable.html" %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="" id="media" >
+                                    <div class="column-container media-column-container">
+                                        <h2>
+                                            {% if editable %}
+                                                <div class="button-form inline">
+                                                    <form class="block media-browse hinline" method="POST" action="{%url explore%}">
+                                                        <input type="hidden" name="title" />
+                                                        <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+                                                    </form>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            Collections
+                                        </h2>
+                                        <div class="column-contents scroll">
+                                            <div id="asset_table" class="asset-table"></div><!--  Replaced by Mustache :{ -->
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-             {% endif %}
-             Collections
-          </h2>
-          <div id="asset_table"></div><!--  Replaced by Mustache :{ -->
-          {% comment %} {% include "assetmgr/new_asset_table.html" %} {% endcomment %}
-          </div>
-      </td>
-      
-      </tr>
-      </tbody>
-      </table>
-      </div>
-      </td>
+            </td>
         </tr>
-  </tbody>
+    </tbody>
 </table>
 
 <script type="text/javascript">
     jQuery(document).ready(function() {
         var visible = getVisibleContentHeight();
-        jQuery('.resize-height').css('height', visible + "px");
-        jQuery('.sub-column-container').css('height', (visible - 50) + "px");
-        
+
+        jQuery('#instructor .column-container').css('height', visible + "px");
+        jQuery('#classwork').css('height', visible + "px");
+        jQuery('#classwork .projects-column-container').css('height', (visible - 45) + "px");
+        jQuery('#classwork .media-column-container').css('height', (visible - 35) + "px");
         
         jQuery(".inst-header").click(function() {
             jQuery(this).next().toggle();
         })
+
+        jQuery("html").bind("ajaxStart", function(){  
+           jQuery(this).addClass('busy');  
+        }).bind("ajaxStop", function(){  
+           jQuery(this).removeClass('busy');  
+        });  
     });
 </script>
 {% endblock %}

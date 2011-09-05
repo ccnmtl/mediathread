@@ -1,6 +1,6 @@
 {% load user_annotations tagging_tags helpful_tags coursetags %}
 
-<div id="asset_browse_col" class="asset-table slider-column">
+<div id="asset_browse_col" class="asset-table slider-column" data-ajax="{%url annotations-fragment space_viewer.username%}">
     <div id="videoclipbox" class="asset-view-small" style="display:none;">
       <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();updateVerticalHeight(null,{'materials':0});return false;">x</a>
       <div class="annotation-title"></div>
@@ -10,7 +10,6 @@
     <div id="clipstrip-display" class="clipstrip-display"></div>    
       </div>
     </div>
-  
 
   <div class="filter-widget">
     <div class="switcher collection-chooser" tabindex="1">
@@ -259,14 +258,14 @@
                                     <a {% if page_in_edit_mode %}target="_blank"{% endif %}
                                       class="materialCitationLink"
                                       title="Last modified on {{annotation.modified|date}} by {% public_name for annotation.author %}"
-                                      href="{{annotation.get_absolute_url}}">{{annotation.title}}</a>         
+                                      href="{{annotation.get_absolute_url}}">{% if annotation.title %}{{annotation.title}}{% else %}-Untitled-{%endif%}</a>         
                                 
                                     <span class="annotation-timecode">{{annotation.range_as_timecode}}</span>
 
                                     {% with annotation.tags as annotation_tags %}
                                     
                                     {% if annotation.body or annotation_tags %}    
-                                        <div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper" >
+                                        <div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper meta" >
                                           {% if annotation_tags %}       
                                           <div class="annotation-metadata-tags annotation-metadata"><strong>Tags:</strong>
                                             {% for tag in annotation.tags_split %}

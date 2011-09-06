@@ -3,14 +3,15 @@ from django.contrib import admin
 from django.conf import settings
 import os.path
 
-admin.autodiscover()
-
 from projects import views as project
 from assetmgr import views as asset
 from mediathread_main import views as mediathread_main
 
 import structuredcollaboration.urls
 #import slider.urls
+
+admin.autodiscover()
+
 
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),"media","bookmarklets")

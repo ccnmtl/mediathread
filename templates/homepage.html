@@ -156,14 +156,12 @@
                                 <td class="" id="media" >
                                     <div class="column-container media-column-container">
                                         <h2>
-                                            {% if editable %}
-                                                <div class="button-form inline">
-                                                    <form class="block media-browse hinline" method="POST" action="{%url explore%}">
-                                                        <input type="hidden" name="title" />
-                                                        <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
-                                                    </form>
-                                                </div>
-                                            {% endif %}
+                                            <div class="button-form inline">
+                                                <form class="block media-browse hinline" method="POST" action="{%url explore%}">
+                                                    <input type="hidden" name="title" />
+                                                    <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+                                                </form>
+                                            </div>
                                             
                                             Collections
                                         </h2>

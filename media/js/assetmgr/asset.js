@@ -646,6 +646,11 @@
                 }
             }
             
+            if (frm.elements['annotation-title'].value == '') {
+                alert('Please specify a selection title');
+                return;
+            }
+            
             // Save the results up on the server
             var url =  frm.elements['annotation-id'] ?
                 url = MediaThread.urls['edit-annotation'](self.active_asset.id, frm.elements['annotation-id'].value) : 

@@ -188,8 +188,6 @@ class Asset(models.Model):
                 'primary':s.primary
                 }
 
-        user_id = getattr(getattr(request,'user',None),'id',None)
-                
         try:
             metadata = json.loads(self.metadata_blob)
         except ValueError:
@@ -201,7 +199,6 @@ class Asset(models.Model):
             'metadata':metadata,
             'local_url':self.get_absolute_url(),
             'id':self.pk,
-            'editable':user_id == getattr(self,'author_id',-1),
             'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }
         

@@ -441,6 +441,8 @@ def get_records(user, course, request):
             if gannotation:
                 the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags','body') )
                 
+            the_json['editable'] = editable
+                
             annotations = []
             if request.GET.has_key('annotations'):
                 # @todo: refactor this serialization into a common place.

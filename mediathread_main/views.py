@@ -7,7 +7,6 @@ from courseaffils.lib import get_public_name
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 from djangosherd.models import DiscussionIndex
-from djangosherd.models import SherdNote
 
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http

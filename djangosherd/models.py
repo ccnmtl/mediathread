@@ -5,7 +5,6 @@ import simplejson
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.query import QuerySet
 from django.db.models.loading import get_model
 
 from django.contrib.contenttypes import generic

@@ -1,13 +1,9 @@
 import simplejson
 
 from django.db import models
-from django.db.models.query import QuerySet
 from django.conf import settings
 from django.db.models.signals import post_init, post_save
 from django.core.cache import cache
-
-from random import choice
-from string import letters
 
 from courseaffils.lib import get_public_name
 

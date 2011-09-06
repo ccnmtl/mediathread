@@ -83,7 +83,7 @@
                             <h4 class="inst-header discussion">Discussions</h4>
                             <ul class="instructor-list">
                                 {%for disc in discussions%}
-                                    <li>
+                                    <li id="discussion-{{disc.id}}">
                                         <div class="actions">
                                             {% if is_faculty %}
                                                 <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"

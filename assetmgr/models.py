@@ -1,4 +1,4 @@
-import simplejson
+from django.utils import simplejson as json
 
 from django.db import models
 from django.db.models.query import QuerySet
@@ -104,7 +104,7 @@ class Asset(models.Model):
     def metadata(self):
         if self.metadata_blob:
             try:
-                return simplejson.loads(str(self.metadata_blob))
+                return json.loads(str(self.metadata_blob))
             except: #presumably json decoding, but let's quiet everything
                 return {}
         return {}
@@ -191,7 +191,7 @@ class Asset(models.Model):
         user_id = getattr(getattr(request,'user',None),'id',None)
                 
         try:
-            metadata = simplejson.loads(self.metadata_blob)
+            metadata = json.loads(self.metadata_blob)
         except ValueError:
             metadata = None
         return {

@@ -1,6 +1,5 @@
 import datetime
 import re
-import simplejson as json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -11,6 +10,7 @@ from django.db.models.loading import get_model
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
+from django.utils import simplejson as json
 
 from tagging.models import Tag, TaggedItem
 from tagging.fields import TagField

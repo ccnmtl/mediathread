@@ -10,6 +10,7 @@
 </title>
 
 {% block js %}
+  <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
   <script type="text/javascript" src="/site_media/js/tablesort.js"></script>
   <script type="text/javascript" src="/site_media/js/util.js"></script>
@@ -34,111 +35,99 @@
 {% endblock %}
 
 {% block content %}
+    {{ block.super }}
 
-  {{ block.super }}
-
-
-  <table id="home-columns">
+    <table id="home-columns">
     <tbody>
     <tr>
-      <td class="" id="instructor">
-<div class="column-container">    
-  {%if display.instructor or is_faculty %}
-  
-    <h2>From Your Instructor
-        {% if is_faculty %}
-        <a class="hs-control intro-open" href="#intro-instructor">?</a>
-        {% endif %}
-    </h2>
-    <div class="column-contents scroll">
-
-        {% if is_faculty %}
-        <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
-          <h3><a class="hs-control control-close" href="#intro-instructor">x</a>
-            Welcome to MediaThread
-          </h3>
-          <h4>
-        Your Instructor controls this space:
-      </h4>
-          <p>
-            Anything that s/he publishes for the class will appear in this column.</p>
-          <!--
-          
-          <p>
-            Information (Compositions), Sources, Items, Assignments, and Discussions that you create and publish to the class will appear here. If you do not publish Compositions to the class, this pane will not be visible to students.
-            </p><p>     
-            To learn more and get started, visit the Instructor Dashboard
-          </p>-->
-        </div>
-        {% endif %}
-
-        <div id="instructor-column">
-            {%if faculty_feed.projects %}
-                <h4 class="inst-header project">Information</h4>
-                <ul class="instructor-list">
-                    {%for project in faculty_feed.projects %}
-                        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                    {%endfor%}
-                </ul>
-            {%endif%}
+        <td class="" id="instructor">
+            <div class="column-container">    
+                <h2>From Your Instructor
+                    <a class="hs-control intro-open" href="#intro-instructor">?</a>
+                </h2>
+                <div class="column-contents scroll">
+                    <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
+                        <h3><a class="hs-control control-close" href="#intro-instructor">x</a>Welcome to MediaThread</h3>
+                        {% if is_faculty %}
+                            <p>
+                                Information (Compositions), Sources, Items, Assignments, and Discussions that you create and publish to the class will appear here. If you do not publish Compositions to the class, this pane will not be visible to students.
+                            </p>
+                            <p>     
+                                To learn more and get started, visit the Instructor Dashboard
+                            </p>
+                        {% else %}
+                            <p>Your Instructor controls this space.</p>
+                            <p>Anything that s/he publishes for the class will appear in this column.</p>
+                        {% endif %}
+                    </div>
+                    <div id="instructor-column">
+                        {%if faculty_feed.projects %}
+                            <h4 class="inst-header project">Information</h4>
+                            <ul class="instructor-list">
+                                {%for project in faculty_feed.projects %}
+                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                                {%endfor%}
+                            </ul>
+                        {%endif%}
+                        
+                        {%if faculty_feed.assignments %}
+                            <h4 class="inst-header assignment">Assignments</h4>
+                            <ul class="instructor-list">
+                                {%for project in faculty_feed.assignments %}
+                                <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                                {%endfor%}
+                            </ul>
+                        {%endif%}
+                    
+                        {% if discussions %}
+                            <h4 class="inst-header discussion">Discussions</h4>
+                            <ul class="instructor-list">
+                                {%for disc in discussions%}
+                                    <li>
+                                        <div class="actions">
+                                            {% if is_faculty %}
+                                                <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
+                                                    href="{% url discussion-view disc.id %}?delete">
+                                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+                                            {% endif %}
+                                        </div>
+                                        <a href="/discussion/show/{{disc.id}}">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+                                        {% get_comment_count for disc.content_object as comment_count%}
+                                        ({{comment_count}})
+                                    </li>
+                                {%endfor%}
+                            </ul>
+                        {% endif %}
+                       
+                       {%if faculty_feed.assets %}
+                           <h4 class="inst-header">Items of Interest</h4>
+                           <ul>
+                               {%for a in faculty_feed.assets%}
+                               <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
+                               {%endfor%}
+                           </ul>
+                       {%endif%}
             
-            {%if faculty_feed.assignments %}
-                <h4 class="inst-header assignment">Assignments</h4>
-                <ul class="instructor-list">
-                    {%for project in faculty_feed.assignments %}
-                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                    {%endfor%}
-                </ul>
-            {%endif%}
+                       {%if faculty_feed.tags %}
+                            <h4 class="inst-header">Priority Tags</h4>
+                            <ul class="tags">
+                                {% for tag in faculty_feed.tags %}
+                                <li>
+                                  <span class="size{{tag.font_size}}">
+                                    <a href="{% url asset-container %}?tag={{tag.name}}">
+                                      {{tag.name}} 
+                                    </a>
+                                  </span>
+                                </li>
+                                {% endfor %}
+                          </ul>
+                      {%endif%}
+                     </div>
+                </div>
+            </div>
+        </td>
         
-            {% if discussions %}
-                <h4 class="inst-header discussion">Discussions</h4>
-                <ul class="instructor-list">
-                    {%for disc in discussions%}
-                        <li>
-                            <div class="actions">
-                                {% if is_faculty %}
-                                    <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                                        href="{% url discussion-view disc.id %}?delete">
-                                    <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
-                                {% endif %}
-                            </div>
-                            <a href="/discussion/show/{{disc.id}}">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
-                            {% get_comment_count for disc.content_object as comment_count%}
-                            ({{comment_count}})
-                        </li>
-                    {%endfor%}
-                </ul>
-            {% endif %}
-           
-           {%if faculty_feed.assets %}
-               <h4 class="inst-header">Items of Interest</h4>
-               <ul>
-                   {%for a in faculty_feed.assets%}
-                   <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
-                   {%endfor%}
-               </ul>
-           {%endif%}
-
-           {%if faculty_feed.tags %}
-                <h4 class="inst-header">Priority Tags</h4>
-                <ul class="tags">
-                    {% for tag in faculty_feed.tags %}
-                    <li>
-                      <span class="size{{tag.font_size}}">
-                        <a href="{% url asset-container %}?tag={{tag.name}}">
-                          {{tag.name}} 
-                        </a>
-                      </span>
-                    </li>
-                    {% endfor %}
-              </ul>
-          {%endif%}
-    </div>
-  </div>
-  {%endif%}{#display.instructor#}
-</div>
-            </td>
+        
             <td id="classwork">
                 <div class="column-container parent-column-container">
                     <h2>Class Work</h2>

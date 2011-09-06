@@ -134,6 +134,24 @@
                     <table>
                         <tbody>
                             <tr>
+                                <td class="" id="media" >
+                                    <div class="column-container media-column-container">
+                                        <h2>
+                                            <div class="button-form inline">
+                                                <form class="block media-browse hinline" method="POST" action="{%url explore%}">
+                                                    <input type="hidden" name="title" />
+                                                    <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+                                                </form>
+                                            </div>
+                                            
+                                            Collections
+                                        </h2>
+                                        <div class="column-contents scroll">
+                                            <div id="asset_table" class="asset-table"></div><!--  Replaced by Mustache :{ -->
+                                        </div>
+                                    </div>
+                                </td>
+                                
                                 <td id="projects">
                                     <div class="column-container projects-column-container" style="padding-bottom: 8px;">
                                         <h2>
@@ -150,23 +168,6 @@
                                         </h2>
                                         <div class="column-contents scroll">
                                             {% include "projects/project_list_notable.html" %}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="" id="media" >
-                                    <div class="column-container media-column-container">
-                                        <h2>
-                                            <div class="button-form inline">
-                                                <form class="block media-browse hinline" method="POST" action="{%url explore%}">
-                                                    <input type="hidden" name="title" />
-                                                    <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
-                                                </form>
-                                            </div>
-                                            
-                                            Collections
-                                        </h2>
-                                        <div class="column-contents scroll">
-                                            <div id="asset_table" class="asset-table"></div><!--  Replaced by Mustache :{ -->
                                         </div>
                                     </div>
                                 </td>

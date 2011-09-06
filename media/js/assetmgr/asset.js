@@ -29,6 +29,17 @@
         for (k in obj) if (obj.hasOwnProperty(k)) count++;
         return count;
     }
+    
+    _resizeHomepage = function() {
+        var visible = getVisibleContentHeight();
+        jQuery('#instructor .column-container').css('height', visible + "px");
+        jQuery('#classwork').css('height', visible + "px");
+        
+        var filterWidget = document.getElementById("filter-widget").clientHeight;
+        jQuery('#classwork .projects-column-container').css('height', (visible - filterWidget - 53) + "px");
+        jQuery('#classwork .media-column-container').css('height', (visible - filterWidget - 41) + "px");
+    }
+
 
     ///MUSTACHE CODE
     if (window.Mustache) {
@@ -92,23 +103,22 @@
             this.user = config.user;
             
             jQuery.ajax({
-                url:'/site_media/templates/assets.mustache?nocache=v2',
+                url:'/site_media/templates/classwork.mustache?nocache=v2',
                 dataType:'text',
                 success:function(text) {
-                    MediaThread.templates['assets'] = Mustache.template('assets',text);
-                    
-                    // Retrieve the full asset w/annotations from storage
-                    djangosherd.storage.get({
-                            type:'asset',
-                            url:MediaThread.urls['your-space'](self.user.username)
-                        },
-                        false,
-                        function(your_records) {
-                            self._updateAssets(your_records);
-                        }
-                    );
-                }
-            });
+                    MediaThread.templates['classwork'] = Mustache.template('classwork',text);
+                        // Retrieve the full asset w/annotations from storage
+                        djangosherd.storage.get({
+                                type:'asset',
+                                url:MediaThread.urls['your-space'](self.user.username)
+                            },
+                            false,
+                            function(your_records) {
+                                self._updateAssets(your_records);
+                            }
+                        );
+                    }
+                });
         }
 
         this.selectOwner = function(username) {
@@ -196,8 +206,6 @@
         }
         
         this._updateAssets = function(your_records) {
-            var template_label = "assets";
-            
             self.current_records = your_records;
             
             if (self.getShowingAllItems(your_records)) {
@@ -216,7 +224,11 @@
             
             your_records.user = self.user;
             
-            Mustache.update(template_label, your_records, { post:function(elt) { /** post processing **/ } });
+            Mustache.update("classwork_table", your_records, { post:function(elt) { 
+                /** post processing **/
+                _resizeHomepage();
+                } 
+            });
         }
     })();
 

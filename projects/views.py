@@ -14,7 +14,7 @@ from tagging.utils import calculate_cloud
 from assetmgr.lib import annotated_by
 from assetmgr.views import filter_by, get_active_filters
 
-import simplejson as json
+import simplejson
 from random import choice
 from string import letters
 
@@ -169,7 +169,7 @@ def view_project(request, project_id):
 
             if request.META.get('HTTP_ACCEPT','').find('json') >=0:
                 v_num = projectform.instance.get_latest_version()
-                return HttpResponse(json.dumps(
+                return HttpResponse(simplejson.dumps(
                         {'status':'success',
                          'revision':{
                                 'id':v_num,
@@ -257,7 +257,7 @@ def project_json(request,project):
                            ],
             'type':'project',
             }
-    return HttpResponse(json.dumps(data, indent=2),
+    return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')
 
 

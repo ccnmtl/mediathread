@@ -347,8 +347,16 @@ def triple_homepage(request):
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
+        
+    #bad language, we should change this to user_of_assets or something
+    space_viewer = request.user 
+    if request.GET.has_key('as') and request.user.is_staff:
+        space_viewer = get_object_or_404(User, username=request.GET['as'])    
 
-    user_records = get_records(user, c, request)
+    user_records = {
+       'space_viewer': space_viewer,
+       'space_owner' : user
+    }
     prof_feed = get_prof_feed(c, request)
     discussions = get_discussions(c)
 
@@ -391,26 +399,20 @@ def get_records(user, course, request):
 
     editable = (user==request.user)
     
+    #bad language, we should change this to user_of_assets or something
+    space_viewer = request.user 
+    if request.GET.has_key('as') and request.user.is_staff:
+        space_viewer = get_object_or_404(User, username=request.GET['as'])
+    
+    assignments = []
     if user == 'all':
         archives = list(course.asset_set.archives())
-        assets = [a for a in Asset.objects.filter(course=course).extra(
+        assets = [a for a in Asset.objects.filter(course=c).extra(
             select={'lower_title': 'lower(assetmgr_asset.title)'}
             ).select_related().order_by('lower_title')
               if a not in archives]
         user = None
-    else:
-        assets = annotated_by(Asset.objects.filter(course=c),
-                          user,
-                          include_archives=c.is_faculty(user)
-                          )
-
-    
-    if user:
-        tags = calculate_cloud(Tag.objects.usage_for_queryset(
-                user.sherdnote_set.filter(
-                    asset__course=c),
-                counts=True))
-    else:
+        
         all_tags = Tag.objects.usage_for_queryset(
             SherdNote.objects.filter(
                 asset__course=course),
@@ -418,6 +420,40 @@ def get_records(user, course, request):
         all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
         tags = calculate_cloud(all_tags)
         
+        projects = [p for p in Project.objects.filter(course=c,
+                                                  submitted=True).order_by('title')
+                if p.visible(request)]
+        
+        
+    else:
+        assets = annotated_by(Asset.objects.filter(course=c),
+                          user,
+                          include_archives=c.is_faculty(user)
+                          )
+        
+        tags = calculate_cloud(Tag.objects.usage_for_queryset(
+        user.sherdnote_set.filter(
+            asset__course=c),
+        counts=True))
+                
+        projects = Project.get_user_projects(user, c).order_by('-modified')
+        if not editable:
+            projects = [p for p in projects if p.visible(request)]
+
+        project_type = ContentType.objects.get_for_model(Project)
+        assignments = []
+        maybe_assignments = Project.objects.filter(
+            c.faculty_filter)
+        for assignment in maybe_assignments:
+            if not assignment.visible(request):
+                continue
+            if assignment in projects:
+                continue
+            if is_unanswered_assignment(assignment, user, request, project_type):
+                assignments.append(assignment)
+        
+        if user.id == space_viewer.id:
+            responder =  space_viewer.username
     
     for fil in filter_by:
         filter_value = request.GET.get(fil)
@@ -427,10 +463,7 @@ def get_records(user, course, request):
     
     active_filters = get_active_filters(request, filter_by)
     
-    #bad language, we should change this to user_of_assets or something
-    space_viewer = request.user 
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])
+
     
     if request.is_ajax():
         asset_json = []
@@ -454,13 +487,44 @@ def get_records(user, course, request):
                 the_json['annotations'] = annotations
                 
             asset_json.append(the_json)
-
+            
+        project_json = []
+        for p in projects:
+            the_json = {}
+            the_json['id'] = p.id
+            the_json['title'] = p.title
+            the_json['url'] = p.get_absolute_url()
+            
+            participants = p.attribution_list()
+            the_json['short_authors'] = [ {'name': get_public_name(u, request) } for u in participants[0:2]]
+            the_json['long_authors'] = [ {'name': get_public_name(u, request) } for u in participants]
+            the_json['modified'] = p.modified.strftime("%m/%d/%y %I:%M %p")
+            the_json['status'] = p.status()
+            the_json['editable'] = editable
+            
+            feedback = p.feedback_discussion()
+            if feedback:
+                the_json['feedback'] = feedback.id
+            
+            collaboration = p.collaboration()
+            if collaboration:
+                collaboration_parent = collaboration.get_parent()
+                if collaboration_parent:
+                    the_json['collaboration'] = {}
+                    the_json['collaboration']['title'] = collaboration_parent.title
+                    the_json['collaboration']['url'] = collaboration_parent.content_object.get_absolute_url()
+            
+            project_json.append(the_json)
+    
         data = {'assets': asset_json,
+                'assignments' : [ {'id': a.id, 'responder': responder, 'url': a.get_absolute_url(), 'title': a.title, 'modified': a.modified.strftime("%m/%d/%y %I:%M %p")} for a in assignments],
+                'projects' : project_json,
                 'tags': [ { 'name': tag.name } for tag in tags ],
                 'active_filters': active_filters,
                 'space_viewer'  : { 'username': space_viewer.username, 'public_name': get_public_name(space_viewer, request), 'can_manage': (space_viewer.is_staff and not user) },
-                'editable'      : editable,
+                'editable' : editable,
                 'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
+                'compositions' : len(projects) > 0 or len(assignments) > 0
                }
         
         if user:
@@ -473,21 +537,6 @@ def get_records(user, course, request):
              ('yesterday','yesterday'),
              ('lastweek','within the last week'),)    
             
-        projects = Project.get_user_projects(user, c).order_by('-modified')
-        if not editable:
-            projects = [p for p in projects if p.visible(request)]
-
-        project_type = ContentType.objects.get_for_model(Project)
-        assignments = []
-        maybe_assignments = Project.objects.filter(
-            c.faculty_filter)
-        for assignment in maybe_assignments:
-            if not assignment.visible(request):
-                continue
-            if assignment in projects:
-                continue
-            if is_unanswered_assignment(assignment, user, request, project_type):
-                assignments.append(assignment)
         
         return {
             'assets'        : assets,

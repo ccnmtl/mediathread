@@ -130,50 +130,7 @@
         
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <h2>Class Work</h2>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td class="" id="media" >
-                                    <div class="column-container media-column-container">
-                                        <h2>
-                                            <div class="button-form inline">
-                                                <form class="block media-browse hinline" method="POST" action="{%url explore%}">
-                                                    <input type="hidden" name="title" />
-                                                    <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
-                                                </form>
-                                            </div>
-                                            
-                                            Collections
-                                        </h2>
-                                        <div class="column-contents scroll">
-                                            <div id="asset_table" class="asset-table"></div><!--  Replaced by Mustache :{ -->
-                                        </div>
-                                    </div>
-                                </td>
-                                
-                                <td id="projects">
-                                    <div class="column-container projects-column-container" style="padding-bottom: 8px;">
-                                        <h2>
-                                            {% if editable %}
-                                                <div class="button-form inline">
-                                                    <form class="block project-createnew inline" method="POST" action="{%url your-space-projects user%}">
-                                                        <input type="hidden" name="title" />
-                                                        <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
-                                                    </form>
-                                                </div>
-                                            {% endif %}
-
-                                            Compositions
-                                        </h2>
-                                        <div class="column-contents scroll">
-                                            {% include "projects/project_list_notable.html" %}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="classwork_table"></img></div>
                 </div>
             </td>
         </tr>
@@ -181,19 +138,9 @@
 </table>
 
 <script type="text/javascript">
-    function resizeHomepage() {
-        var visible = getVisibleContentHeight();
-        jQuery('#instructor .column-container').css('height', visible + "px");
-        jQuery('#classwork').css('height', visible + "px");
-        jQuery('#classwork .projects-column-container').css('height', (visible - 45) + "px");
-        jQuery('#classwork .media-column-container').css('height', (visible - 35) + "px");
-    }
-    
     jQuery(document).ready(function() {
-        resizeHomepage();
-
         jQuery(window).resize(function () {  
-            resizeHomepage();
+            _resizeHomepage();
         });
         
         jQuery(".inst-header").click(function() {
@@ -204,7 +151,11 @@
            jQuery(this).addClass('busy');  
         }).bind("ajaxStop", function(){  
            jQuery(this).removeClass('busy');  
-        });  
+        });
+
+        var visible = getVisibleContentHeight();
+        jQuery('#instructor .column-container').css('height', visible + "px");
+        jQuery('#classwork').css('height', visible + "px");
     });
 </script>
 {% endblock %}

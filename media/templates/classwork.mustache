@@ -1,0 +1,435 @@
+{{#>>classwork_table}}
+<div id="classwork_table">
+<h2>Class Work</h2>
+<table>
+    <tbody>
+        <tr>
+            <div id="filter-widget" class="filter-widget">
+                <div class="switcher collection-chooser" tabindex="1">
+                    <span class="switcher-prefix">Owner: </span>
+                        <a class="switcher-top closed">
+                            <span class="down-arrow" tabindex="3"></span>
+                            <span class="title" id="switcher-title">
+                                {{{selected_label}}}
+                            </span>
+                        </a>
+                    </span>
+                    <ul class="switcher-options">
+                        {{^showing_my_items}}
+                        <li>
+                            <ul class="switcher-sub" id="switcher-extras">
+                                <li class="choice_my_items" id="choice_my_items">
+                                    <a href="" onclick="return CollectionList.selectOwner('{{user.username}}')">&mdash; Me &mdash;</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {{/showing_my_items}}
+                        <li>
+                            <ul class="scroll switcher-sub">
+                                {{^showing_all_items}}
+                                <li class="choice_all_items" id="choice_all_items">
+                                    <a href="" onclick="return CollectionList.selectOwner();">&mdash; All Class Members &mdash;</a>
+                                </li>
+                                {{/showing_all_items}}
+                                {{#owners}}                            
+                                    <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
+                                {{/owners}}
+                            </ul>
+                        </li>
+                    </ul>
+                </div> {{!  end Class Member switcher  }}
+                
+                <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
+                    <a class="switcher-top closed">
+                        <span class="down-arrow" tabindex="4"></span>
+                        <span class="title">Filters 
+                            <span
+                                {{#active_filter_count?}}
+                                    class="filter-on">: ON
+                                {{/active_filter_count?}}
+                                {{^active_filter_count}}
+                                    class="filter-off">...
+                                {{/active_filter_count}}
+                            </span>
+                        </span>
+                    </a>
+                    <ul class="switcher-options">
+                        {{#active_filter_count?}}
+                            <li>
+                                <ul class="switcher-sub switcher-active-filters">
+                                    {{#active_filters}}
+                                    <li><a class="remove" href="" onclick="return CollectionList.clearFilter(null)"><span class="metadata-label">Clear All Filters</span></a></li>
+                                        {{#tag?}}
+                                            <li>
+                                                <a class="remove" onclick="return CollectionList.clearFilter('tag')">&nbsp;</a>
+                                                <span class="metadata-label">Tag</span>: <span class="metadata-value">{{tag}}</span>
+                                            </li>
+                                        {{/tag?}}
+                                        {{#modified?}}
+                                            <li>
+                                                <a class="remove" onclick="return CollectionList.clearFilter('modified')">&nbsp;</a>
+                                                <span class="metadata-label">Modified</span>: <span class="metadata-value">{{modified}}</span>
+                                            </li>
+                                        {{/modified?}}
+                                    {{/active_filters}}
+                                </ul>
+                            </li>
+                        {{/active_filter_count?}}
+                        
+                        {{^showing_all_items}}
+                        <li>
+                            <h3>Date Modified</h3>
+                            <p class="switcher-sub">
+                                <a href="" onclick="return CollectionList.filterByDate('today')">today</a>
+                                <a href="" onclick="return CollectionList.filterByDate('yesterday')">yesterday</a>
+                                <a href="" onclick="return CollectionList.filterByDate('lastweek')">within the last week</a>
+                            </p>
+                        </li>
+                        {{/showing_all_items}}
+                
+                        <li>
+                            <h3>Tags</h3>
+                            <p class="switcher-sub">
+                                {{^tags}}
+                                    No tags
+                                {{/tags}}
+                                {{#tags}}
+                                    <a href="" onclick="return CollectionList.filterByTag('{{name}}')" >{{name}}</a>
+                                {{/tags}}
+                            </p>
+                        </li>
+                        
+                    </ul>
+                </div>
+                
+                <div class="visualclear"></div>
+            </div> {{! end filter widget }}
+        </tr>
+        <tr>
+            <td id="projects">
+                <div class="column-container projects-column-container" style="padding-bottom: 8px;">
+                    <h2>
+                        {{#showing_my_items?}}
+                            <div class="button-form inline">
+                                <form class="block project-createnew inline" method="POST" action="/project/{{space_viewer.username}}/project/">
+                                    <input type="hidden" name="title" />
+                                    <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
+                                </form>
+                            </div>
+                        {{/showing_my_items?}}
+
+                        Compositions
+                    </h2>
+                    <div class="column-contents scroll">
+                        {{#>>projects}}
+                        <div id="project_table">
+                        
+                            {{^compositions}}
+                                <div class="default-content">
+                                    {{#editable?}}
+                                        <h4>You have not yet created any compositions</h4>
+                                        <ul>
+                                            <li>
+                                                Explore compositions (projects, assignments and discussions) from your Instructor in the column to the left. 
+                                            </li>
+                                            <li>
+                                                To see what your classmates published projects, choose "All Class Items" from the dropdown above. 
+                                            </li>
+                                            <li>
+                                                To create a Composition, click "New Composition" above.  
+                                            </li>
+                                        </ul>
+                                    {{/editable?}}
+                                    {{^editable}}
+                                        No (viewable) Compositions yet.
+                                    {{/editable}}
+                                </div>
+                            {{/compositions}}
+                            
+                            {{#compositions?}}
+                            
+                                {{#showing_all_items?}}
+                                    <h4>Published Compositions</h4>
+                                {{/showing_all_items?}}
+                        
+                                <ul id="projects">
+                                    {{#assignments}}
+                                        <li class="projectlist assignment-listitem" id="assignment-{{id}}">
+                                            <h3>
+                                                <a href="{{url}}"
+                                                   class="asset_title type-assignment">
+                                                  {{{title?default(-Untitled-)}}}
+                                                </a>
+                                            </h3>
+                                            <div class="meta">{{modified}}</div>
+                                            {{#responder?}}
+                                                <form class="block project-createnew" method="POST" action="/project/{{responder}}/project/">
+                                                    <input type="hidden" name="title" />
+                                                    <input type="hidden" name="parent" value="{{id}}" />
+                                                    <input class="columnbutton project createnew-button" type="submit" value="Respond"/>
+                                                </form>
+                                            {{/responder?}}
+                                        </li>
+                                    {{/assignments}}
+                                
+                                    {{#projects}}
+                                        <li class="projectlist" id="project-{{id}}">
+                                            <h3>
+                                                {{#editable?}}
+                                                    <a onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                        href="/project/workspace/{{id}}/?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+                                                {{/editable?}}
+                                    
+                                                <a href="{{url}}" class="asset_title type-project">
+                                                    {{{title?default(-Untitled-)}}}
+                                                </a>
+                                        
+                                            </h3>
+                                            <ul>
+                                                {{#feedback?}}
+                                                   <li>
+                                                       <a href="/discussion/show/{{feedback}}">Instructor Feedback</a>
+                                                   </li>
+                                                {{/feedback?}}
+                                                {{#collaboration?}}
+                                                    <li>
+                                                      Response for <a href="{{collaboration.url}}">{{collaboration.title}}</a>
+                                                    </li>
+                                                {{/collaboration?}}
+                                            </ul>
+                                            <div class="meta">
+                                              <div class="participants">
+                                                  <span class="metadata-label">Author(s):</span>
+                                                  <span class="metadata-value participants-short">{{#short_authors}}{{name}}, {{/short_authors}}</span>
+                                                  <div class="metadata-value participants-full">{{#long_authors}}{{name}}, {{/long_authors}}</div>
+                                              </div>
+                                              
+                                              <span class="metadata-label">Saved at:</span>
+                                              <span class="metadata-value">{{modified}}</span>
+                                              <br />
+                                              
+                                              <span class="metadata-label">Status:</span>
+                                              <span class="metadata-value">{{{status}}}</span>
+                                              <br />  
+                                            </div>
+                                        </li>
+                                    {{/projects}}
+                                </ul>    
+                            {{/compositions?}}
+                        
+                        </div>
+                        {{/>>projects}}
+                    </div>
+                </div>
+            </td>
+        
+            <td class="" id="media" >
+                <div class="column-container media-column-container">
+                    <h2>
+                        <div class="button-form inline">
+                            <form class="block media-browse hinline" method="POST" action="/explore/">
+                                <input type="hidden" name="title" />
+                                <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+                            </form>
+                        </div>
+                        
+                        Collections
+                    </h2>
+                    <div class="column-contents scroll">
+                        {{#>>assets}}
+                        <div id="asset_table" class="asset-table">
+                         
+                            <div id="materials" class="column-contents">
+                                {{^assets}}
+                                    <div class="default-content">
+                                        {{#showing_my_items?}}
+                                            {{^active_filter_count}}
+                                                <h4>You have not yet collected any items</h4>
+                                                <ul>
+                                                    <li>
+                                                       To see what your instructor or classmates have collected, choose "All Class Members" from the dropdown above. 
+                                                    </li>
+                                                    <li>
+                                                       To collect your own items, click "Browse Sources" above.  
+                                                    </li>
+                                                </ul>
+                                            {{/active_filter_count}}
+                                            {{#active_filter_count}}
+                                                <h4>No Items</h4>
+                                            {{/active_filter_count}}
+                                        {{/showing_my_items?}}
+                                        {{^showing_my_items}}
+                                            <h4>No items found</h4>
+                                        {{/showing_my_items}}
+                                   </div>
+                                {{/assets}} 
+                                {{#assets}}
+                                    <div id="record-{{id}}" class="record record-{{primary_type}}">
+                                        <input type="hidden" class="record" value="{{id}}" name="record-id" />
+                                        <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
+                                            <div class="actions">
+                                                {{#editable?}}
+                                                    <a onclick="return CollectionList.deleteAsset({{id}})">
+                                                    <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
+                                                {{/editable?}}
+                                                {{#space_viewer.can_manage?}}<a class="manage-asset" href="">Manage</a>{{/space_viewer.can_manage?}}
+                                            </div>
+                                            
+                                            {{#page_in_edit_mode?}}
+                                                <span class="citationTemplate">
+                                                    <img class="materialCitation" alt="" 
+                                                        src="/site_media/img/icons/insert_asset.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
+                                                        width="24" height="15" border="0" 
+                                                        onclick="addMaterialCitation(event)" 
+                                                        title="{{title}}" 
+                                                        name="{{local_url}}"
+                                                        draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
+                                                    />
+                                                </span>
+                                            {{/page_in_edit_mode?}}
+                                            <a class="asset-title-link"
+                                                {{#page_in_edit_mode?}}
+                                                    target="_blank"
+                                                {{/page_in_edit_mode?}}
+                                                href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
+                                        </h4>
+                                        
+                                        {{#thumb?}}
+                                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" /></a>
+                                        {{/thumb?}}
+                                        
+                                        <div id="record-{{id}}-metadata" class="record-metadata">
+                                            <ul class="record-metadata-list">
+                                                {{#global_annotation}}
+                                                    {{#metadata}}
+                                                        {{#tags?}}
+                                                            <li class="annotation-global-tags">
+                                                                <span class="metadata-label">Item Tags:</span>
+                                                                <span class="metadata-value">
+                                                                    {{#tags}}
+                                                                        {{^page_in_edit_mode}}
+                                                                            <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                        {{/page_in_edit_mode}}
+                                                                        {{#page_in_edit_mode?}}
+                                                                            {{name}}
+                                                                        {{/page_in_edit_mode?}}
+                                                                    {{/tags}}
+                                                                </span>
+                                                            </li>
+                                                        {{/tags?}} 
+                                                    
+                                                        {{#body?}}
+                                                            <li class="annotation-global-body">
+                                                                <span class="metadata-label">Note:</span> <span class="metadata-value">{{body}}</span> 
+                                                            </li>
+                                                        {{/body?}}
+                                                    {{/metadata}}   
+                                                {{/global_annotation}}
+                                                {{^global_annotation}}
+                                                     {{^space_owner}} {{! All Class Items. Is this really necessary? }}
+                                                         {{#tags?}}    
+                                                            <span class="metadata-label">Selection Tags:</span>
+                                                            <span class="metadata-value">
+                                                                {{#tags}}
+                                                                    <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                {{/tags}}
+                                                            </span>
+                                                         {{/tags?}}
+                                                    {{/space_owner}}
+                                                {{/global_annotation}}
+                                                
+                                                {{#annotations?}}
+                                                    <li>
+                                                        <ul class="asset-clips">
+                                                            {{#annotations}}
+                                                                {{^is_null}}
+                                                                    <li id="annotation-{{id}}">
+                                                                        {{#metadata.body?}}
+                                                                            <a class="selector selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('selector-open selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
+                                                                        {{/metadata.body?}}
+                                                                        {{^metadata.body}}{{#metadata.tags?}}
+                                                                            <a class="selector selector-closed" href="" onclick="jQuery(this).toggleClass('selector-open selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
+                                                                        {{/metadata.tags?}}{{/metadata.body}}
+                                                                            
+                                                                        {{! TODO if annotation.body or annotation.tags. open an hs-control here }} 
+                                                                        
+                                                                        <div class="actions">
+                                                                            {{#page_in_edit_mode?}}
+                                                                              <span class="citationTemplate">
+                                                                                  <img class="materialCitation" alt="" 
+                                                                                    src="/site_media/img/icons/insert_clip.png#annotation={{url}}&title={{metadata.title}}&type={{assets.primary_type}}&range1={{range1}}" 
+                                                                                  width="24" height="15" border="0" 
+                                                                                  onclick="addMaterialCitation(event)" 
+                                                                                  title="{{metadata.title}}" 
+                                                                                  name="{{url}}"
+                                                                                  draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
+                                                                                  /></span>
+                                                                            {{/page_in_edit_mode?}}
+                                                                            {{#editable?}}
+                                                                                <a onclick="return CollectionList.deleteAnnotation('{{id}}')">
+                                                                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+                                                                            {{/editable?}}
+                                                                        </div>{{!  class="actions"  }}
+                                                                        <a {{#page_in_edit_mode?}}target="_blank"{{/page_in_edit_mode?}}
+                                                                          class="materialCitationLink"
+                                                                          title="Full Annotation Details"
+                                                                          href="{{url}}">{{{metadata.title?default(-Untitled-)}}}</a>         
+                                                                    
+                                                                        {{#metadata}}
+                                                                            {{#timecode?}}
+                                                                                <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
+                                                                            {{/timecode?}}
+                                                                        {{/metadata}}
+                        
+                                    
+                                                                        <div id="annotation-body-{{id}}" class="meta" style="display: none">
+                                                                            {{#metadata}}
+                                                                                {{#modified?}}
+                                                                                    <div><span class="metadata-label">Last Modified:</span> <span class="metadata-value">{{modified}}</span></div>
+                                                                                {{/modified?}}
+                                                                                {{#tags?}}       
+                                                                                    <div><span class="metadata-label">Tags:</span>
+                                                                                        <span class="metadata-value">
+                                                                                        {{#tags}}
+                                                                                            {{^page_in_edit_mode}}
+                                                                                                <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                                            {{/page_in_edit_mode}}
+                                                                                            {{#page_in_edit_mode?}}
+                                                                                                {{name}}
+                                                                                            {{/page_in_edit_mode?}}
+                                                                                        {{/tags}}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                {{/tags?}}
+                                                                                {{#body?}}
+                                                                                    <div><span class="metadata-label">Note:</span>
+                                                                                        <span class="metadata-value">{{body}}</span> 
+                                                                                    </div>
+                                                                                {{/body?}}
+                                                                            {{/metadata}}
+                                                                        </div>
+                                                                        
+                                                                        {{! TODO Crazy Overloading section to support thumbnails }}
+                                                                    </li>
+                                                                {{/is_null}}
+                                                            {{/annotations}}
+                                                        </ul>{{! class="asset-clips" }}
+                                                    </li>
+                                                {{/annotations?}}
+                                            </ul> {{! class="record-metadata-list" }}
+                                        </div> {{! end record metadata }}
+                                        <div class="visualclear"></div>     
+                                    </div> {{! end id="record-id" }} 
+                                {{/assets}}
+                            </div> {{! end id=materials, class="column-contents scroll" }}
+                        </div>
+                        {{/>>assets}}
+                    </div>
+                </div>
+            </td>
+            
+        </tr>
+    </tbody>
+</table>
+</div>
+{{/>>classwork_table}}

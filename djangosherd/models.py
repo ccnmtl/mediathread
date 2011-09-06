@@ -113,7 +113,7 @@ class Annotation(models.Model):
         metadata = {}
         for m in metadata_keys:
             if m=='author':
-                metadata[m] = {'id':getattr(self,'author_id',None)}
+                metadata[m] = {'id':getattr(self,'author_id',None), 'username': self.author.username }
             elif m=='tags':
                 metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ]
             elif m=='modified':

@@ -496,6 +496,7 @@ def asset_json(request, asset_id):
             'id':'asset-%s' % asset.pk,
             'asset_id': asset.pk,
             }]
+    
     if request.GET.has_key('annotations'):
         # @todo: refactor this serialization into a common place.
         def author_name(request, annotation, key):

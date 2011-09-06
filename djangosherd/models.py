@@ -31,7 +31,7 @@ ANN_TYPE_CHOICES = ((0,'null'),
                 )
 
 class AnnotationManagerMixin(object):
-    def json(self, request=None):
+    def render_to_json(self, request=None):
         rand = ''.join([choice(letters) for i in range(5)])
     
         data = { 'assets':dict([('%s_%s' % (rand,ann.asset.pk),

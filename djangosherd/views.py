@@ -263,7 +263,7 @@ def tags_json(request):
 
 def annotation_json(request, annot_id):
     ann = get_object_or_404(SherdNote,pk=annot_id)
-    data = ann.json()
+    data = ann.render_to_json()
     data['type'] ='annotation'
 
     return HttpResponse(simplejson.dumps(data, indent=2),

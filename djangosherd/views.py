@@ -263,8 +263,19 @@ def tags_json(request):
 
 def annotation_json(request, annot_id):
     ann = get_object_or_404(SherdNote,pk=annot_id)
-    data = ann.render_to_json()
-    data['type'] ='annotation'
+    
+    rand = ''.join([choice(letters) for i in range(5)])
+
+    data = { 'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+                        ann.asset.sherd_json(request)
+                        ) for ann in project.citations()
+                       if ann.title != "Annotation Deleted"
+                       ]),
+              'annotations':[ann.sherd_json(request, rand, ('title','author') )
+                       for ann in project.citations()
+                       ],
+              'type': 'annotation'
+    }
 
     return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')

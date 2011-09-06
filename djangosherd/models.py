@@ -1,5 +1,6 @@
 import datetime
 import re
+import simplejson
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -10,7 +11,6 @@ from django.db.models.loading import get_model
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from django.utils import simplejson as json
 
 from tagging.models import Tag, TaggedItem
 from tagging.fields import TagField
@@ -30,32 +30,7 @@ ANN_TYPE_CHOICES = ((0,'null'),
                 (2,'coordinate'),
                 )
 
-class AnnotationManagerMixin(object):
-    def render_to_json(self, request=None):
-        rand = ''.join([choice(letters) for i in range(5)])
-    
-        data = { 'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                            ann.asset.sherd_json(request)
-                            ) for ann in project.citations()
-                           if ann.title != "Annotation Deleted"
-                           ]),
-                  'annotations':[ann.sherd_json(request, rand, ('title','author') )
-                           for ann in project.citations()
-                           ],
-        }
-        return data
-
-class AnnotationManagerQuerySet(QuerySet, AnnotationManagerMixin):
-    pass
-
-class AnnotationManager(models.Manager, AnnotationManagerMixin):
-    def get_query_set(self):
-        return AnnotationManagerQuerySet(self.model, using=self._db)
-                          
-
-class Annotation(models.Model):
-    objects = AnnotationManager() #custom manager
-    
+class Annotation(models.Model):    
     #this would simplify is_null handling and also make it possible to give friendly range printing
     #server/template-side
     #wanted: type = models.SmallIntegerField(default=0,choices=ANN_TYPE_CHOICES)
@@ -65,7 +40,7 @@ class Annotation(models.Model):
 
     def annotation(self):
         if self.annotation_data:
-            return json.loads(self.annotation_data)
+            return simplejson.loads(self.annotation_data)
         else:
             return None
 

@@ -20,7 +20,7 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
-from django.utils import simplejson as json
+import simplejson
 import re
 
 from clumper import Clumper
@@ -467,7 +467,7 @@ def get_records(user, course, request):
         if user:
             data['space_owner'] = { 'username': user.username, 'public_name': get_public_name(user, request) }
     
-        json_stream = json.dumps(data, indent=2)
+        json_stream = simplejson.dumps(data, indent=2)
         return HttpResponse(json_stream, mimetype='application/json')
     else:
         dates = (('today','today'),

@@ -1,4 +1,4 @@
-from django.utils import simplejson as json
+import simplejson
 
 from django.db import models
 from django.db.models.query import QuerySet
@@ -23,21 +23,7 @@ def default_url_processor(source,request):
 
 url_processor = getattr(settings,'ASSET_URL_PROCESSOR',default_url_processor)
 
-class AssetManagerMixin(object):
-    def render_to_json(self, request=None):
-        rand = ''.join([choice(letters) for i in range(5)])
-        
-        return dict([('%s_%s' % (rand,asset.pk),
-                            asset.sherd_json(request)
-                            ) for asset in self])
-
-class AssetManagerQuerySet(QuerySet, AssetManagerMixin):
-    pass
-
-class AssetManager(models.Manager, AssetManagerMixin):
-    def get_query_set(self):
-        return AssetManagerQuerySet(self.model, using=self._db)
-    
+class AssetManager(models.Manager):
     def get_by_args(self, args, **constraints):
         "args typically is request.GET"
         criteria = Asset.good_args(args)
@@ -104,7 +90,7 @@ class Asset(models.Model):
     def metadata(self):
         if self.metadata_blob:
             try:
-                return json.loads(str(self.metadata_blob))
+                return simplejson.loads(str(self.metadata_blob))
             except: #presumably json decoding, but let's quiet everything
                 return {}
         return {}
@@ -189,7 +175,7 @@ class Asset(models.Model):
                 }
 
         try:
-            metadata = json.loads(self.metadata_blob)
+            metadata = simplejson.loads(self.metadata_blob)
         except ValueError:
             metadata = None
         return {

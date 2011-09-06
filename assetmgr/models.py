@@ -5,8 +5,6 @@ from django.conf import settings
 from django.db.models.signals import post_init, post_save
 from django.core.cache import cache
 
-from courseaffils.lib import get_public_name
-
 from django.utils.html import strip_tags
 
 Tag = models.get_model('tagging','tag')

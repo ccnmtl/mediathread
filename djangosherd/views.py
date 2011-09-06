@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 
-from djangosherd.models import SherdNote
+from djangosherd.models import Asset, SherdNote
 from djangosherd.models import NULL_FIELDS
 from tagging.models import Tag
 from tagging.utils import calculate_cloud

@@ -14,7 +14,7 @@
                             </span>
                         </a>
                     </span>
-                    <ul class="switcher-options">
+                    <ul class="switcher-options" style="left: -51px">
                         {{^showing_my_items}}
                         <li>
                             <ul class="switcher-sub" id="switcher-extras">
@@ -39,10 +39,10 @@
                     </ul>
                 </div> {{!  end Class Member switcher  }}
                 
-                <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
+                <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 130px">
                     <a class="switcher-top closed">
                         <span class="down-arrow" tabindex="4"></span>
-                        <span class="title">Filters 
+                        <span class="title">Collection Filters 
                             <span
                                 {{#active_filter_count?}}
                                     class="filter-on">: ON
@@ -53,7 +53,7 @@
                             </span>
                         </span>
                     </a>
-                    <ul class="switcher-options">
+                    <ul class="switcher-options" style="right: -51px">
                         {{#active_filter_count?}}
                             <li>
                                 <ul class="switcher-sub switcher-active-filters">

@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 
 from djangosherd.models import Asset, SherdNote
 from djangosherd.models import NULL_FIELDS
+
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 
@@ -261,25 +262,19 @@ def tags_json(request):
             rv, 
             indent=2), mimetype='application/json')
 
+
 def annotation_json(request, annot_id):
     ann = get_object_or_404(SherdNote,pk=annot_id)
-    
     rand = ''.join([choice(letters) for i in range(5)])
-
-    data = { 'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                        ann.asset.sherd_json(request)
-                        ) for ann in project.citations()
-                       if ann.title != "Annotation Deleted"
-                       ]),
-              'annotations':[ann.sherd_json(request, rand, ('title','author') )
-                       for ann in project.citations()
-                       ],
-              'type': 'annotation'
-    }
-
-    return HttpResponse(simplejson.dumps(data, indent=2),
-                        mimetype='application/json')
-
+  
+    data = {'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+                              ann.asset.sherd_json(request))]),
+              #should correspond to same format in project.views.project_json
+              'annotations':[ann.sherd_json(request, rand, ('title','author') )],
+              'type':'annotation',
+            }
+                            
+    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
 
 def final_cut_pro_xml(request, annot_id):
     "support for http://developer.apple.com/mac/library/documentation/AppleApplications/Reference/FinalCutPro_XML/Topics/Topics.html"

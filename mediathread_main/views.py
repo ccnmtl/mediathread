@@ -345,7 +345,11 @@ def triple_homepage(request):
         return HttpResponseRedirect('/accounts/login/')
 
     user = request.user
-    if user.is_staff and request.GET.has_key('as'):
+    if request.GET.has_key('username'):
+        user_name = request.GET['username']
+        in_course_or_404(user_name, c)
+        user = get_object_or_404(User, username=user_name)
+    elif user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
         
     #bad language, we should change this to user_of_assets or something
@@ -405,6 +409,8 @@ def get_records(user, course, request):
         space_viewer = get_object_or_404(User, username=request.GET['as'])
     
     assignments = []
+    responder = None
+    
     if user == 'all':
         archives = list(course.asset_set.archives())
         assets = [a for a in Asset.objects.filter(course=c).extra(

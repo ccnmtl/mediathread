@@ -19,7 +19,7 @@
                         <li>
                             <ul class="switcher-sub" id="switcher-extras">
                                 <li class="choice_my_items" id="choice_my_items">
-                                    <a href="" onclick="return CollectionList.selectOwner('{{user.username}}')">&mdash; Me &mdash;</a>
+                                    <a href="" onclick="return CollectionList.selectOwner('{{space_viewer.username}}')">&mdash; Me &mdash;</a>
                                 </li>
                             </ul>
                         </li>
@@ -109,14 +109,12 @@
             <td id="projects">
                 <div class="column-container projects-column-container" style="padding-bottom: 8px;">
                     <h2>
-                        {{#showing_my_items?}}
-                            <div class="button-form inline">
-                                <form class="block project-createnew inline" method="POST" action="/project/{{space_viewer.username}}/project/">
-                                    <input type="hidden" name="title" />
-                                    <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
-                                </form>
-                            </div>
-                        {{/showing_my_items?}}
+                        <div class="button-form inline">
+                            <form class="block project-createnew inline" method="POST" action="/project/{{space_viewer.username}}/project/">
+                                <input type="hidden" name="title" />
+                                <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
+                            </form>
+                        </div>
 
                         Compositions
                     </h2>

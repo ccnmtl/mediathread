@@ -28,7 +28,7 @@
     DjangoSherd_Asset_Config();    
     {% if not mock %}
         CollectionList.init({
-            'user': { 'username': '{{request.user}}', 'public_name': '{% public_name for request.user %}' }
+            'space_owner': '{{space_owner.username}}'
         });
     {% endif %}{# not mock #}    
   </script>

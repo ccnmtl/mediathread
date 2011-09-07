@@ -52,6 +52,9 @@
             'annotation-form':function(asset_id,annotation_id) {
                 return '/asset/'+asset_id+'/annotations/'+annotation_id;
             },
+            'home-space':function(username) {
+                return '/?username='+username;
+            },
             'your-space':function(username, tag, modified) {
                 return '/yourspace/'+username+'/asset/?annotations=true' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
             },
@@ -100,7 +103,7 @@
                 
         this.init = function(config) {
             this.config = config;
-            this.user = config.user;
+            
             
             jQuery.ajax({
                 url:'/site_media/templates/classwork.mustache?nocache=v2',
@@ -110,7 +113,7 @@
                         // Retrieve the full asset w/annotations from storage
                         djangosherd.storage.get({
                                 type:'asset',
-                                url:MediaThread.urls['your-space'](self.user.username)
+                                url:MediaThread.urls['your-space'](config.space_owner)
                             },
                             false,
                             function(your_records) {
@@ -221,8 +224,6 @@
             n = _propertyCount(your_records.active_filters);
             if (n > 0)
                 your_records.active_filter_count = n;
-            
-            your_records.user = self.user;
             
             Mustache.update("classwork_table", your_records, { post:function(elt) { 
                 /** post processing **/

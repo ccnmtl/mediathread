@@ -830,7 +830,7 @@ a.hs-control.hs-nostyle.hs-control-hide
     background-image:none;
 }
 
-a.hs-control.hs-control-show,
+a.hs-control.hs-control-show
 {
 	background-image: url(../img/down_arrow.png);
 }

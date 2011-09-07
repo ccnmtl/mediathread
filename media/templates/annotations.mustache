@@ -75,7 +75,7 @@
 
                         <label for="annotation-tags">Tags:</label> 
                         <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{#metadata.tags}}{{name}}, {{/metadata.tags}}"/>
-                        <br /><br />
+                        <span class="helptext">Use commas between tags.</span>
                         
                         <label for="annotation-body">Note:</label>
                         <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>

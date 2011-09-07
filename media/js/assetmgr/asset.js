@@ -35,9 +35,8 @@
         jQuery('#instructor .column-container').css('height', visible + "px");
         jQuery('#classwork').css('height', visible + "px");
         
-        var filterWidget = document.getElementById("filter-widget").clientHeight;
-        jQuery('#classwork .projects-column-container').css('height', (visible - filterWidget - 53) + "px");
-        jQuery('#classwork .media-column-container').css('height', (visible - filterWidget - 41) + "px");
+        jQuery('#classwork .projects-column-container').css('height', (visible - 87) + "px");
+        jQuery('#classwork .media-column-container').css('height', (visible - 77) + "px");
     }
 
 
@@ -83,8 +82,7 @@
             'edit-annotation':function(asset_id,annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview
                 return '/asset/'+asset_id+'/annotations/'+annotation_id+'/';
-            },
-            
+            }
         }
 
         Mustache.Renderer.prototype.filters_supported['url'] = function(name,context,args) {
@@ -574,7 +572,7 @@
                 'metadata': {
                   'author': { 'id': MediaThread.current_user },
                   'author_name': MediaThread.user_full_name
-                },
+                }
             }};
             
             Mustache.update('annotation-current', context, { post:function(elt) {
@@ -755,7 +753,7 @@
                     'metadata': {
                       'author': { 'id': MediaThread.current_user },
                       'author_name': MediaThread.user_full_name
-                    },
+                    }
                 };
             } else if (self.active_asset_annotations.length <= 1) {
                 context.annotation = {   
@@ -763,7 +761,7 @@
                     'metadata': {
                       'author': { 'id': MediaThread.current_user },
                       'author_name': MediaThread.user_full_name
-                    },
+                    }
                 };
             }
             

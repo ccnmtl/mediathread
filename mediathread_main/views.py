@@ -530,7 +530,8 @@ def get_records(user, course, request):
                 'space_viewer'  : { 'username': space_viewer.username, 'public_name': get_public_name(space_viewer, request), 'can_manage': (space_viewer.is_staff and not user) },
                 'editable' : editable,
                 'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
-                'compositions' : len(projects) > 0 or len(assignments) > 0
+                'compositions' : len(projects) > 0 or len(assignments) > 0,
+                'is_faculty': c.is_faculty(space_viewer),    
                }
         
         if user:

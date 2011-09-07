@@ -123,20 +123,29 @@
                         <div id="project_table">
                         
                             {{^compositions}}
-                                <div class="default-content">
+                                <div class="default-content intro-text">
                                     {{#editable?}}
-                                        <h4>You have not yet created any compositions</h4>
-                                        <ul>
-                                            <li>
-                                                Explore compositions (projects, assignments and discussions) from your Instructor in the column to the left. 
-                                            </li>
-                                            <li>
-                                                To see what your classmates published projects, choose "All Class Items" from the dropdown above. 
-                                            </li>
-                                            <li>
-                                                To create a Composition, click "New Composition" above.  
-                                            </li>
-                                        </ul>
+                                        {{#is_faculty?}}
+                                            <h4>Create Assignments</h4>
+                                            
+                                            Compositions by any member of the class that are saved at the "Publish to Whole Class" level will appear here.<br />
+                                            
+                                            You can create assignments, offer information and start class discussions from the <a href="/reports/class_activity/">Instructor Dashboard</a>.  
+                                        {{/is_faculty?}}
+                                        {{^is_faculty}}    
+                                            <h4>You have not yet created any compositions</h4>
+                                            <ul>
+                                                <li>
+                                                    Explore compositions (projects, assignments and discussions) from your Instructor in the column to the left. 
+                                                </li>
+                                                <li>
+                                                    To see what your classmates published projects, choose "All Class Members" from the dropdown above. 
+                                                </li>
+                                                <li>
+                                                    To create a Composition, click "New Composition" above.  
+                                                </li>
+                                            </ul>
+                                        {{/is_faculty}}
                                     {{/editable?}}
                                     {{^editable}}
                                         No (viewable) Compositions yet.
@@ -247,18 +256,27 @@
                          
                             <div id="materials" class="column-contents">
                                 {{^assets}}
-                                    <div class="default-content">
+                                    <div class="default-content intro-text">
                                         {{#showing_my_items?}}
                                             {{^active_filter_count}}
-                                                <h4>You have not yet collected any items</h4>
-                                                <ul>
-                                                    <li>
-                                                       To see what your instructor or classmates have collected, choose "All Class Members" from the dropdown above. 
-                                                    </li>
-                                                    <li>
-                                                       To collect your own items, click "Browse Sources" above.  
-                                                    </li>
-                                                </ul>
+                                                {{#is_faculty?}}
+                                                    <h4>Import media items</h4>
+                                                    
+                                                    Items saved in MediaThread by any member of the class will appear here. These items are imported into MediaThread from sources listed when a user clicks the "Browse Sources" button above.
+
+                                                    Instructors can add sources to this list. For more information, visit the <a href="/reports/class_activity/">Instructor Dashboard.</a>
+                                                {{/is_faculty?}}
+                                                {{^is_faculty}}    
+                                                    <h4>You have not yet collected any items</h4>
+                                                    <ul>
+                                                        <li>
+                                                           To collect your items, click "Browse Sources" above.  
+                                                        </li>
+                                                        <li>
+                                                           To see what your instructor or classmates have collected, choose "All Class Members" from the Owner dropdown above. 
+                                                        </li>
+                                                    </ul>
+                                                {{/is_faculty}}
                                             {{/active_filter_count}}
                                             {{#active_filter_count}}
                                                 <h4>No Items</h4>

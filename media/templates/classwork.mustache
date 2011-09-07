@@ -39,7 +39,7 @@
                     </ul>
                 </div> {{!  end Class Member switcher  }}
                 
-                <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 130px">
+                <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
                     <a class="switcher-top closed">
                         <span class="down-arrow" tabindex="4"></span>
                         <span class="title">Collection Filters 
@@ -155,7 +155,7 @@
                                         <li class="projectlist assignment-listitem" id="assignment-{{id}}">
                                             <h3>
                                                 <a href="{{url}}"
-                                                   class="asset_title type-assignment">
+                                                   class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
                                                   {{{title?default(-Untitled-)}}}
                                                 </a>
                                             </h3>
@@ -182,11 +182,11 @@
                                         <li class="projectlist" id="project-{{id}}">
                                             <h3>
                                                 {{#editable?}}
-                                                    <a onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                    <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
                                                         href="/project/workspace/{{id}}/?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
                                                 {{/editable?}}
                                     
-                                                <a href="{{url}}" class="asset_title type-project">
+                                                <a href="{{url}}" class="asset_title type-project" title='View "{{{title?default(-Untitled-)}}}"'>
                                                     {{{title?default(-Untitled-)}}}
                                                 </a>
                                         
@@ -275,7 +275,7 @@
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                                             <div class="actions">
                                                 {{#editable?}}
-                                                    <a onclick="return CollectionList.deleteAsset({{id}})">
+                                                    <a href="" title="Remove item from your collection" onclick="return CollectionList.deleteAsset({{id}})">
                                                     <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
                                                 {{/editable?}}
                                                 {{#space_viewer.can_manage?}}<a class="manage-asset" href="">Manage</a>{{/space_viewer.can_manage?}}
@@ -314,7 +314,7 @@
                                                                 <span class="metadata-value">
                                                                     {{#tags}}
                                                                         {{^page_in_edit_mode}}
-                                                                            <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                            <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
                                                                         {{/page_in_edit_mode}}
                                                                         {{#page_in_edit_mode?}}
                                                                             {{name}}
@@ -337,7 +337,7 @@
                                                             <span class="metadata-label">Selection Tags:</span>
                                                             <span class="metadata-value">
                                                                 {{#tags}}
-                                                                    <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                    <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
                                                                 {{/tags}}
                                                             </span>
                                                          {{/tags?}}
@@ -372,7 +372,7 @@
                                                                                   /></span>
                                                                             {{/page_in_edit_mode?}}
                                                                             {{#editable?}}
-                                                                                <a onclick="return CollectionList.deleteAnnotation('{{id}}')">
+                                                                                <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
                                                                                 <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
                                                                             {{/editable?}}
                                                                         </div>{{!  class="actions"  }}
@@ -398,7 +398,7 @@
                                                                                         <span class="metadata-value">
                                                                                         {{#tags}}
                                                                                             {{^page_in_edit_mode}}
-                                                                                                <a href="" onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                                                <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
                                                                                             {{/page_in_edit_mode}}
                                                                                             {{#page_in_edit_mode?}}
                                                                                                 {{name}}

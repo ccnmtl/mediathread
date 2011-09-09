@@ -126,24 +126,15 @@
                                 <div class="default-content intro-text">
                                     {{#editable?}}
                                         {{#is_faculty?}}
-                                            <h4>Create Assignments</h4>
+                                            <h4>Review class compositions</h4>
                                             
-                                            Compositions by any member of the class that are saved at the "Publish to Whole Class" level will appear here.<br />
-                                            
-                                            You can create assignments, offer information and start class discussions from the <a href="/reports/class_activity/">Instructor Dashboard</a>.  
+                                            <p>Compositions saved at the "Publish to Whole Class" level will appear here.</p>
                                         {{/is_faculty?}}
                                         {{^is_faculty}}    
                                             <h4>You have not yet created any compositions</h4>
                                             <ul>
-                                                <li>
-                                                    Explore compositions (projects, assignments and discussions) from your Instructor in the column to the left. 
-                                                </li>
-                                                <li>
-                                                    To see what your classmates published projects, choose "All Class Members" from the dropdown above. 
-                                                </li>
-                                                <li>
-                                                    To create a Composition, click "New Composition" above.  
-                                                </li>
+                                                <li>To create a Composition, click "New Composition" above.</li>
+                                                <li>To view Compositions shared by classmates, select "All Class Members" from the dropdown above.</li>
                                             </ul>
                                         {{/is_faculty}}
                                     {{/editable?}}
@@ -260,21 +251,17 @@
                                         {{#showing_my_items?}}
                                             {{^active_filter_count}}
                                                 {{#is_faculty?}}
-                                                    <h4>Import media items</h4>
+                                                    <h5>Import media items</h5>
                                                     
-                                                    Items saved in MediaThread by any member of the class will appear here. These items are imported into MediaThread from sources listed when a user clicks the "Browse Sources" button above.
+                                                    <p>Items saved in MediaThread appear here. To collect items, click the "Browse Sources" button above.</p>
 
-                                                    Instructors can add sources to this list. For more information, visit the <a href="/reports/class_activity/">Instructor Dashboard.</a>
+                                                    <p>Instructors can add sources to the "Browse Sources" list. For more information, visit the <a href="/reports/class_activity">Instructor Dashboard</a>.</p>
                                                 {{/is_faculty?}}
                                                 {{^is_faculty}}    
-                                                    <h4>You have not yet collected any items</h4>
+                                                    <h5>You have not yet collected any items</h5>
                                                     <ul>
-                                                        <li>
-                                                           To collect your items, click "Browse Sources" above.  
-                                                        </li>
-                                                        <li>
-                                                           To see what your instructor or classmates have collected, choose "All Class Members" from the Owner dropdown above. 
-                                                        </li>
+                                                        <li>To collect items, click "Browse Sources" above.</li>
+                                                        <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
                                                     </ul>
                                                 {{/is_faculty}}
                                             {{/active_filter_count}}

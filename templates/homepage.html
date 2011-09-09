@@ -49,12 +49,13 @@
                     <div id="intro-instructor" class="intro-text hs-init-{% if not display.instructor %}hide{% else %}show{% endif %}">
                         <h3><a class="hs-control control-close" href="#intro-instructor">x</a>Welcome to MediaThread</h3>
                         {% if is_faculty %}
-                            <p>
-                                Information (Compositions), Sources, Items, Assignments, and Discussions that you create and publish to the class will appear here. If you do not publish Compositions to the class, this pane will not be visible to students.
-                            </p>
-                            <p>     
-                                To learn more and get started, visit the <a href="/reports/class_activity/">Instructor Dashboard</a>
-                            </p>
+                            <p>Instructors are able to post to this space:</p>
+                            <ul>
+                                <li>Information for the class</li>
+                                <li>Assignments</li>
+                                <li>Discussion topics</li>
+                            </ul>
+                            <p>To learn more and get started, visit the <a href="/reports/class_activity/">Instructor Dashboard</a>.</p>
                         {% else %}
                             <p>Your Instructor controls this space.</p>
                             <p>Anything that s/he publishes for the class will appear in this column.</p>

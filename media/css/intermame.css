@@ -1,3 +1,11 @@
+div#activity{
+
+    position: relative;
+    background-color: #red;
+    top: 0;
+    left:  150px;
+}
+
 h4.instructor,
 h4.collection,
 h4.composition {
@@ -221,6 +229,12 @@ table#classwork-sub {
     height: 95%;
 }
 
+div#classwork_table table {
+    border: 1px solid #ccc;
+    border-collapse: separate;
+
+}
+
 div.column-contents {
 	padding-top: 10px;
 }
@@ -259,6 +273,13 @@ table#classwork-sub td div#projects h3 {
 	margin: 0;
 	padding: 5px;
 	
+
+}
+
+#project_table h4 {
+    margin: 0 0 5px 0;
+    padding: 5px 12px;
+    font-size: 98%;
 
 }
 

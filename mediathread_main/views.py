@@ -518,7 +518,8 @@ def get_records(user, course, request):
                 if collaboration_parent:
                     the_json['collaboration'] = {}
                     the_json['collaboration']['title'] = collaboration_parent.title
-                    the_json['collaboration']['url'] = collaboration_parent.content_object.get_absolute_url()
+                    if collaboration_parent.content_object:
+                        the_json['collaboration']['url'] = collaboration_parent.content_object.get_absolute_url()
             
             project_json.append(the_json)
     

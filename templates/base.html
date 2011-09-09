@@ -116,9 +116,9 @@
                                 {% endif %}
 				<li class="{% active request 'Class Portal' %}"><a href="/">Home</a></li>
 				<li class="{% active request 'Notifications' %}"><a href="/notifications/">Notifications</a></li>
-                <li class="{% active request 'Analysis' %}">
+                <!-- li class="{% active request 'Analysis' %}">
                     <a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Collections & Compositions</a>
-                </li>
+                </li-->
                             
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}

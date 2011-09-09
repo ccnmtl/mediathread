@@ -1,3 +1,11 @@
+div#activity{
+
+    position: relative;
+    background-color: #red;
+    top: 0;
+    left:  150px;
+}
+
 h4.instructor,
 h4.collection,
 h4.composition {

@@ -84,6 +84,29 @@ h2.collections-column {
         font-size: 98%;
 }
 
+.default-content {
+
+}
+
+.default-content h4,
+#project_table .default-content h4,
+#materials .default-content h4 {
+    background-color: dedede;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    font-weight:: bold;
+}
+
+
+table#home-columns td#instructor .default-content ul, 
+table#home-columns td#classwork .default-content ul
+{
+    list-style-type: disc;
+}
+
+
+
 /*Home Page specific styles*/
 
 

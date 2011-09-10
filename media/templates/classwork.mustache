@@ -139,7 +139,7 @@
                                         {{/is_faculty}}
                                     {{/editable?}}
                                     {{^editable}}
-                                        <h4>No (viewable) Compositions yet.</h4>
+                                        <h4>No (viewable) compositions yet.</h4>
                                     {{/editable}}
                                 </div>
                             {{/compositions}}
@@ -196,15 +196,15 @@
                                                 {{#collaboration?}}
                                                     <span class="metadata-label">
                                                       Response for:</span> 
-                                                      <span class="metadata-value"<a href="{{collaboration.url}}">{{collaboration.title}}</a>
+                                                      <span class="metadata-value"><a href="{{collaboration.url}}">{{collaboration.title}}</a>
                                                     </span>
                                                 {{/collaboration?}}
                                                 {{#feedback?}}
                                                    
-                                                      <span class="metadata-label"> <a href="/discussion/show/{{feedback}}">Instructor Feedback</a></span>
+                                                <div><span class="metadata-label"> <a href="/discussion/show/{{feedback}}">Instructor Feedback</a></span></div>
                                                    
                                                 {{/feedback?}}
-                                            <br /><br />
+                                                <br />
                                             
                                               <div class="participants">
                                                   <span class="metadata-label">Author(s):</span>
@@ -248,7 +248,11 @@
                         {{#>>assets}}
                         <div id="asset_table" class="asset-table">
                          
+<<<<<<< HEAD
                             <div id="materials">
+=======
+                            
+>>>>>>> 3c84f42f6ef0402aa0b362ab5505423a2d35e0d5
                                 {{^assets}}
                                    
                                         {{#showing_my_items?}}
@@ -278,6 +282,7 @@
                                    </div>
                                 {{/assets}} 
                                 {{#assets}}
+                                    <div id="materials" class="column-contents">
                                     <div id="record-{{id}}" class="record record-{{primary_type}}">
                                         <input type="hidden" class="record" value="{{id}}" name="record-id" />
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
@@ -433,9 +438,10 @@
                                             </ul> {{! class="record-metadata-list" }}
                                         </div> {{! end record metadata }}
                                         <div class="visualclear"></div>     
-                                    </div> {{! end id="record-id" }} 
+                                    </div> {{! end id="record-id" }}
+                                    </div> {{! end id=materials, class="column-contents scroll" }} 
                                 {{/assets}}
-                            </div> {{! end id=materials, class="column-contents scroll" }}
+                            
                         </div>
                         {{/>>assets}}
                     </div>

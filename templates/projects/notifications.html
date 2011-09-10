@@ -28,12 +28,12 @@ Recent Activity
             <a class="hs-control control-close" href="#intro-updates">x</a>
             <p>
               MediaThread allows you to Collect Items and Annotate Selections available from <a href="{%url explore %}">Browse Sources</a>. 
-              You can then easily embed your Selections into <a href="{% url your-space-records user %}">Compositions.</a>
+              You can then easily embed your Selections into <a href="/?username={{user.username}}">Compositions.</a>
             </p>
             <p>This space will display updates to: </p>
             <ul class="intro-text">
-              <li><a href="{% url your-space-records user %}">Your Collections</a>: new Selections by you or your classmates from Items you have Collected. </li>
-              <li><a href="{% url your-space-records user %}">Compositions</a>: Edits by you or one of your collaborators, if any. References in Compositions to Items you have Collected.</li>
+              <li><a href="/?username={{user}}">Your Collections</a>: new Selections by you or your classmates from Items you have Collected. </li>
+              <li><a href="/?username={{user}}">Compositions</a>: Edits by you or one of your collaborators, if any. References in Compositions to Items you have Collected.</li>
             </ul>
           </div>
         </li>

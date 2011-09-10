@@ -40,6 +40,7 @@
     <table id="home-columns">
     <tbody>
     <tr>
+        {%if display.instructor or is_faculty %}
         <td class="" id="instructor">
             <div class="column-container">    
                 <h2>From Your Instructor
@@ -127,7 +128,7 @@
                 </div>
             </div>
         </td>
-        
+        {% endif %}
         
             <td id="classwork">
                 <div class="column-container parent-column-container">

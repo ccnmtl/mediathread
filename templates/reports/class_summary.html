@@ -35,7 +35,7 @@ Course Summary
       <tbody id="reports-student-tbody">
         {% for student in students %}
         <tr data-username="{{student.username}}" class="user-{{student.username}}">
-          <td><a href="{%url your-space-records student.username %}">
+          <td><a href="/?username={{student.username}}">
             {%public_name for student %}
           </a></td>
           <td>{{student.annotations}}</td>

@@ -2,8 +2,8 @@
 
 {% if not projects and not assignments %}
  <p class="para">
- {% if editable %}No projects yet.
- {% else %}No (viewable) projects yet.
+ {% if editable %}No Compositions yet.
+ {% else %}No (viewable) Compositions yet.
  {% endif %}
  </p>
 {% endif %}
@@ -36,10 +36,10 @@
     </td>
     <td>
       {% ifequal space_owner space_viewer %}
-      <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+      <form class="block project createnew" method="POST" action="{%url your-space-projects user%}">
         <input type="hidden" name="title" />
         <input type="hidden" name="parent" value="{{assignment.id}}" />
-        <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+        <input class="columnbutton project createnew-button" type="submit" value="Respond"/>
       </form>
       {% endifequal %}
     </td>

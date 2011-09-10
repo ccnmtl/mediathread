@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 
 from djangosherd.models import Asset, SherdNote
 from djangosherd.models import NULL_FIELDS
+
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 
@@ -16,7 +17,7 @@ from djangohelpers.lib import rendered_with
 
 from assetmgr.lib import annotated_by,get_active_filters
 
-from courseaffils.lib import in_course_or_404,in_course
+from courseaffils.lib import in_course_or_404,in_course,get_public_name
 
 import simplejson
 import re
@@ -94,16 +95,20 @@ def create_annotation(request):
     #so it appears in the user's list
     asset.global_annotation(annotation.author, auto_create=True)
 
-    #new annotations should redirect 'back' to the asset
-    # at the endpoint of the last annotation
-    # so someone can create a new annotation ~lizday
-    url_fragment = ''
-    if annotation.range2:
-        url_fragment = '#start=%s' % str(annotation.range2)
-
-    redirect_to = request.GET.get('next',
-                                  annotation.asset.get_absolute_url() + url_fragment  )
-    return HttpResponseRedirect(redirect_to)
+    if request.is_ajax():
+        response = { 'asset': { 'id': asset.id }, 'annotation': { 'id': annotation.id } }
+        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
+    else:
+        #new annotations should redirect 'back' to the asset
+        # at the endpoint of the last annotation
+        # so someone can create a new annotation ~lizday
+        url_fragment = ''
+        if annotation.range2:
+            url_fragment = '#start=%s' % str(annotation.range2)
+    
+        redirect_to = request.GET.get('next',
+                                      annotation.asset.get_absolute_url() + url_fragment  )
+        return HttpResponseRedirect(redirect_to)
 
 @allow_http("POST", "DELETE")
 def annotation_dispatcher(request, annot_id):
@@ -135,6 +140,7 @@ def edit_annotation(request, annot_id):
     form = dict((key[len('annotation-'):], val) for key, val in request.POST.items()
                 if key.startswith('annotation-'))
 
+    ## @todo -- figure out how the clipform gets into the annotations.mustache form
     # don't let a global annotation turn into a clip, or v.v.
     if form.get('range1') or form.get('range2'):
         assert not annotation.is_null()
@@ -150,14 +156,11 @@ def edit_annotation(request, annot_id):
     annotation.save()
 
     if request.is_ajax():
-        response = dict(title=annotation.title,
-                        tags=annotation.tags,
-                        body=annotation.body)
-        response = simplejson.dumps(response)
-        return HttpResponse(response, mimetype="application/json")
-    
-    redirect_to = request.GET.get('next', '.')
-    return HttpResponseRedirect(redirect_to)
+        response = { 'asset': { 'id': annotation.asset_id }, 'annotation': { 'id': annotation.id } }
+        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
+    else:
+        redirect_to = request.GET.get('next', '.')
+        return HttpResponseRedirect(redirect_to)
 
 @login_required
 @rendered_with('assetmgr/asset_table.html')
@@ -259,20 +262,19 @@ def tags_json(request):
             rv, 
             indent=2), mimetype='application/json')
 
+
 def annotation_json(request, annot_id):
     ann = get_object_or_404(SherdNote,pk=annot_id)
     rand = ''.join([choice(letters) for i in range(5)])
-
+  
     data = {'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                            ann.asset.sherd_json(request))]),
-            #should correspond to same format in project.views.project_json
-            'annotations':[ann.sherd_json(request, rand, ('title','author') )],
-            'type':'annotation',
+                              ann.asset.sherd_json(request))]),
+              #should correspond to same format in project.views.project_json
+              'annotations':[ann.sherd_json(request, rand, ('title','author') )],
+              'type':'annotation',
             }
-                          
-    return HttpResponse(simplejson.dumps(data, indent=2),
-                        mimetype='application/json')
-
+                            
+    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
 
 def final_cut_pro_xml(request, annot_id):
     "support for http://developer.apple.com/mac/library/documentation/AppleApplications/Reference/FinalCutPro_XML/Topics/Topics.html"

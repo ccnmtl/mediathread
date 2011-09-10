@@ -3,14 +3,15 @@ from django.contrib import admin
 from django.conf import settings
 import os.path
 
-admin.autodiscover()
-
 from projects import views as project
 from assetmgr import views as asset
 from mediathread_main import views as mediathread_main
 
 import structuredcollaboration.urls
 #import slider.urls
+
+admin.autodiscover()
+
 
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),"media","bookmarklets")
@@ -43,7 +44,10 @@ urlpatterns = patterns('',
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###
-                       (r'^$', mediathread_main.class_portal),
+                       (r'^archive/home$', mediathread_main.class_portal),
+                       url(r'^notifications/$','mediathread_main.views.notifications',
+                           name="notifications"),
+                       (r'^$', mediathread_main.triple_homepage),
 
                        #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
 

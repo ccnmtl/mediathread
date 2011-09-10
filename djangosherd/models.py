@@ -1,6 +1,6 @@
 import datetime
 import re
-import simplejson as json
+import simplejson
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -29,7 +29,7 @@ ANN_TYPE_CHOICES = ((0,'null'),
                 (2,'coordinate'),
                 )
 
-class Annotation(models.Model):
+class Annotation(models.Model):    
     #this would simplify is_null handling and also make it possible to give friendly range printing
     #server/template-side
     #wanted: type = models.SmallIntegerField(default=0,choices=ANN_TYPE_CHOICES)
@@ -39,7 +39,7 @@ class Annotation(models.Model):
 
     def annotation(self):
         if self.annotation_data:
-            return json.loads(self.annotation_data)
+            return simplejson.loads(self.annotation_data)
         else:
             return None
 
@@ -70,6 +70,8 @@ class Annotation(models.Model):
 
     def range_as_timecode(self):
         tc_range = ""
+        if self.range1 == 0 and self.range2 == 0:
+            return tc_range
         if self.range1 is not None:
             tc_range += self.secondsToCode(self.range1)
         if self.range2 is not None \
@@ -85,7 +87,13 @@ class Annotation(models.Model):
         metadata = {}
         for m in metadata_keys:
             if m=='author':
-                metadata[m] = {'id':getattr(self,'author_id',None)}
+                metadata[m] = {'id':getattr(self,'author_id',None), 'username': self.author.username }
+            elif m=='tags':
+                metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ]
+            elif m=='modified':
+                metadata[m] = self.modified.strftime("%m/%d/%y %I:%M %p")
+            elif m=='timecode':
+                metadata[m] = self.range_as_timecode()
             elif callable(m):
                 key,val = m(request, self, m)
                 metadata[key] = val
@@ -96,9 +104,12 @@ class Annotation(models.Model):
             'id':self.pk,
             'range1':self.range1,
             'range2':self.range2,
+            'annotation_data':self.annotation_data,
             'annotation':self.annotation(),
             'editable':user_id == getattr(self,'author_id',-1),
             'metadata':metadata,
+            'url': self.get_absolute_url(),
+            'is_null': self.is_null()
             }
         
 

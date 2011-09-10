@@ -47,7 +47,7 @@
   {% if version_number %}Version {{version_number}}{% endif %}
   {% if is_space_owner and project.id and not is_preview %}
   <a class="edit-pencil" href="{{project.get_workspace_url}}">
-    <img src="/site_media/img/pencil.gif" alt="Edit Project" />
+    <img src="/site_media/img/pencil.gif" alt="Edit Composition" />
     (edit)
   </a>
   {% endif %}
@@ -61,22 +61,6 @@
 
   <br />
   <div class="asset-view asset-view-small">
-    <div class="annotation-links">
-      {% for annotation in project.citations %}      
-      <div class="annotation annotation{{annotation.id}}">
-	<div class="annotation-title materialCitation"><h2>{{annotation.title}}</h2></div>
-	<div class="annotation-data" data-begin="{{annotation.range1}}" data-end="{{annotation.range2}}" data-annotation='{{annotation.annotation_data|default_if_none:"{}"|escape}}'></div>
-	<div class="asset-title">from <a href="{{annotation.asset.get_absolute_url}}">{{annotation.asset.title|escape}}</a></div>
-	<div class="asset-links">
-	  <ul>
-            {% with annotation.asset.source_set.all as assets_to_link %}
-              {% include "assetmgr/asset_links.html" %}
-            {% endwith %}
-	  </ul>
-	</div>
-      </div>
-      {% endfor %}
-    </div>
     <div id="videoclipbox" style="display:none;">
       <div class="annotation-title materialCitation"></div>
       <div class="asset-title"></div>
@@ -99,7 +83,7 @@
       <input type="hidden" name="app_label" value="projects" />
       <input type="hidden" name="model" value="project" />
       <input type="hidden" name="obj_pk" value="{{project.pk}}" />
-      <input type="hidden" name="comment_html" value="Project:{{project.title}}" />
+      <input type="hidden" name="comment_html" value="Composition:{{project.title}}" />
       <input type="submit" value="Instructor Feedback" />
     </form>
     {% endif %}
@@ -114,11 +98,11 @@
  
    {% if role_in_course != 'non-member' and project|is_assignment:request %}
     {% if not user_responses %}
-    <form class="block project-createnew" method="POST"
+    <form class="block project createnew" method="POST"
 	  action="{%url your-space-projects user%}">
       <input type="hidden" name="title" />
       <input type="hidden" name="parent" value="{{project.id}}" />
-      <input class="columnbutton project-createnew-button" type="submit" value="Respond"/>
+      <input class="columnbutton project createnew-button" type="submit" value="Respond"/>
     </form>
     {% else %}
     <h3>

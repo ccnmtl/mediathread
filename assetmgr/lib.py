@@ -1,5 +1,3 @@
-import simplejson
-
 from urlparse import urlsplit
 import urllib2
 

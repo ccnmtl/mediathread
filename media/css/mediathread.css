@@ -23,6 +23,7 @@ h1
 {
 	margin: 0 0 0.7em 0;
 	font-size: 120%;
+	font-weight: normal;
 	
 }
 
@@ -123,7 +124,7 @@ body a.hs-control.control-close {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
     display:block;
   float:right;
-	background-image:url(../img/icons/meth_close_icon.png);
+	background-image:url('../img/icons/meth_close_icon.png');
 	background-repeat: no-repeat;
   margin: -9px;
   width:20px;
@@ -134,14 +135,14 @@ body a.hs-control.control-close {
     line-height:48px;
 }
 body a.control-close:hover {
-    background-image:url(../img/icons/meth_close_icon_hover.png);
+    background-image:url('../img/icons/meth_close_icon_hover.png');
 }
  
 body a.intro-open,
 body a.hs-control.intro-open {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
     float:right;
-  background-image:url(../img/icons/meth_info_icon.png);
+  background-image:url('../img/icons/meth_info_icon.png');
   
   margin: -2px -6px;
     *margin:-21px 3px 3px 3px;
@@ -158,7 +159,7 @@ body a.hs-control.intro-open {
 body a.intro-open-nofloat,
 body a.hs-control.intro-open-nofloat {
     /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
-  background-image:url(../img/icons/meth_info_icon.png);
+  background-image:url('../img/icons/meth_info_icon.png');
   background-repeat: no-repeat;
   margin-left:0px;
     margin-right:5px;
@@ -175,7 +176,7 @@ body a.intro-open:hover,
 body a.hs-control.intro-open:hover,
 body a.intro-open-nofloat:hover,
 body a.hs-control.intro-open-nofloat:hover {
-    background-image:url(../img/icons/meth_info_icon_hover.png);
+    background-image:url('../img/icons/meth_info_icon_hover.png');
 }
 
 
@@ -260,8 +261,8 @@ img, img a
     background: #444; /* for non-css3 browsers */
 
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#000000'); /* for IE */
-	background: -webkit-gradient(linear, left top, left bottom, from(#656565), to(#333)); /* for webkit browsers */
-	background: -moz-linear-gradient(top,  #656565,  #333); /* for firefox 3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc)); /* for webkit browsers */
+	background: -moz-linear-gradient(top,  #fff,  #ccc); /* for firefox 3.6+ */
 
 }
 
@@ -406,7 +407,7 @@ img, img a
 #primarynav ul
 {
 	float: left;
-	margin: 14px 10px 0 10px;
+	margin: 0 9px;
 	padding: 0;
 	border: 0;
 	list-style: none;
@@ -428,16 +429,16 @@ img, img a
 {
 	display: block;
 	float: left;
-	margin: -7px 3px 0 3px;
-	line-height: 24px;
+	margin: 0px 4px;
+	line-height: 22px;
 	text-align: center;
 	border: 1px solid #9d9d9d; 
-	border-bottom: none;
-	-moz-border-radius-topleft: 10px;
-	-moz-border-radius-topright: 10px;
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    background-color: #6f6f6f;
+    background-color: #ddd;
+}
+
+#primarynav li a
+{
+	color: #666;
 }
 
 #primarynav li.active
@@ -453,6 +454,43 @@ img, img a
 {
 	background-color: #fff;
 	color: #660000;
+    	border: 1px solid #9d9d9d; 
+	margin: -1px;
+}
+
+#primarynav li.instructor
+{
+	display: block;
+	float: left;
+	margin: -2px 4px 0;
+	line-height: 33px;
+	text-align: center;
+	border: 1px solid #9d9d9d; 
+    background-color: #6f6f6f;
+    -moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+	border-bottom: none;
+}
+
+#primarynav li.active.instructor
+{
+	background-color: #fff;
+    color: #333;
+}
+
+#primarynav li.instructor a
+{
+
+	color: #fff;
+
+}
+
+#primarynav li.instructor a:hover
+{
+background-color: #fff;
+	color: #660000;
 	-moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
     -webkit-border-top-left-radius: 10px;
@@ -461,6 +499,20 @@ img, img a
 	border-bottom: none;
 	margin: -1px;
 }
+
+
+#primarynav li.activity
+{
+	
+}
+
+#primarynav li.home a
+{
+	padding-left: 27px;
+	background-image: url('../img/icons/meth_home_icon.png');
+	background-repeat: no-repeat;
+}
+
 
 #primarynav a
 {
@@ -532,8 +584,7 @@ img, img a
 #pagebody
 {
 	display: block;
-	min-width: 950px;
-	min-width: 950px;
+	min-width: 1085px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -758,9 +809,9 @@ img, img a
 #footer
 {
 	display: block;
-	width: 950px;
+	width: 1085px;
 		height: 33px;
-	min-width: 950px;
+	min-width: 1085px;
 	clear: both;
 	margin: 0;
 	padding: 6px 0 0 0;
@@ -902,7 +953,7 @@ body.fluid #container
 body.fluid #header
 {
 	width: 100%;
-	min-width: 950px;
+	min-width: 1085px;
 }
 
 
@@ -913,7 +964,7 @@ body.fluid #primarynav div.encase
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 950px;
+	min-width: 1085px;
 }
 
 /* ---- Pagebody block elements ---------- */
@@ -978,7 +1029,7 @@ body.fluid #content
 
 .one_column.fluid #squish
 {
-	margin: 0 0 1em 10px;
+	margin: 0 0 .25em 10px;
 	padding: 0;
 	border: 0;
 }
@@ -997,10 +1048,16 @@ body.fluid #content
   font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
   font-style: italic;
   *font-style: none;/*IE doesn't anti-alias italics well*/
-  color: #e6e6e6;
+  color: #333;
   max-height: 65px;
   overflow: hidden;
   max-width: 264px;
+  
+}
+
+#course_title a
+{
+  color: #333;
   
 }
 

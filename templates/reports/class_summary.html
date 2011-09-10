@@ -27,15 +27,15 @@ Course Summary
           <th>Name</th>
           <th>Annotations</th>
           <th>Comments</th>
-          <th>Projects</th>
-        <!--  <th>Project adds</th>
-          <th>Project dels</th>-->
+          <th>Compositions</th>
+        <!--  <th>Composition adds</th>
+          <th>Composition dels</th>-->
         </tr>
       </thead>
       <tbody id="reports-student-tbody">
         {% for student in students %}
         <tr data-username="{{student.username}}" class="user-{{student.username}}">
-          <td><a href="{%url your-space-records student.username %}">
+          <td><a href="/?username={{student.username}}">
             {%public_name for student %}
           </a></td>
           <td>{{student.annotations}}</td>
@@ -67,10 +67,10 @@ Course Summary
              <ul>
               <li>Fastest in Google Chrome and Safari, still supported in Firefox and IE9</li>
               <li>
-                <b>Squares</b> are projects,
-                <b>Circles</b> are assets, colored by their archive source,
-                <b>Diamonds</b> are chained comments in a discussion,
-                lighter lines are whole-asset citations (compared to an annotated portion), instructor projects have lighter borders
+                <b>Squares</b> are Compositions,
+                <b>Circles</b> are Items, colored by their Source,
+                <b>Diamonds</b> are chained comments in a Discussion,
+                lighter lines are Item-level anotations (compared to an annotated Selection), instructor Compositions have lighter borders
               </li>
               <li><b>Controls:</b> hover over an object for title/details, mouse-wheel zooms in/out, drag on whitespace to pan, drag a node to help the display algorithm.
               </li>

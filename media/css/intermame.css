@@ -1,0 +1,409 @@
+div#activity{
+
+    position: relative;
+    background-color: #red;
+    top: 0;
+    left:  150px;
+}
+
+h4.instructor,
+h4.collection,
+h4.composition {
+
+    margin-top: 15px;
+}
+
+h4.instructor,
+h4.collection,
+h4.composition {
+
+font-weight: normal;
+}
+
+input {
+    border: 1px solid #333333;
+    background-repeat: repeat-x;
+
+}
+
+.meta,
+.record-metadata {
+    font-size:90%;
+    color: #333;
+    line-height: 18px;
+    font-weight: normal;
+    margin: 0 5px;
+}
+
+.record-metadata {
+    padding: 0 .5em 4px 105px;
+}
+
+.meta label,
+.metadata-label {
+    font-weight: bold;
+}
+
+#instructor .column-container {
+    width: 300px;
+}
+
+#media .column-container {
+    width: 370px;
+    margin: 5px 3px 5px 6px;
+}
+
+#media .column-container h2
+ {
+    background-color: #a88448;
+    text-transform: capitalize;
+            font-size: 98%;
+}
+
+h2.collections-column {
+	padding: 5px 12px;
+	color: #ffffff;
+    background-color: #a88448;
+    text-transform: capitalize;
+            font-size: 98%;
+            	font-weight: normal;
+	-moz-border-radius: 10px 10px 0 0;
+	border-radius: 10px 10px 0 0;
+	margin: 0;
+}
+
+
+#projects .column-container {
+    width: 340px;
+    margin: 5px 6px 5px 2px;
+}
+
+#projects .column-container h2{
+    background-color: #557691;
+        text-transform: capitalize;
+        font-size: 98%;
+}
+
+.default-content {
+
+}
+
+.default-content h4,
+#project_table .default-content h4,
+#materials .default-content h4 {
+    background-color: dedede;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    font-weight:: bold;
+}
+
+
+table#home-columns td#instructor .default-content ul, 
+table#home-columns td#classwork .default-content ul
+{
+    list-style-type: disc;
+}
+
+
+
+/*Home Page specific styles*/
+
+
+table#home-columns
+ {
+
+	padding: 0;
+	border: none;
+	margin: 0;
+}
+
+table#home-columns td {
+	border: none;
+	border-collapse: collapse;
+	vertical-align: top;
+	padding: 5px;
+}
+
+table#classwork-sub td {
+    border: none;
+    border-collapse: collapse;
+    vertical-align: top;
+    padding: 0px;
+}
+
+table#home-columns td#instructor ul,
+table#home-columns td#classwork ul {
+	list-style: none;
+	
+}
+
+div#instructor-column {
+
+	margin: 0px 10px 5px;
+	font-weight: normal;
+	line-height: 17px;
+}
+
+div#instructor-column h4{
+
+	margin: 10px 0;
+	font-weight: normal;
+	line-height: 17px;
+}
+
+div#instructor-column h4.inst-header{
+
+	padding: 0 0 0 20px;
+	background-position: top left;
+    background-repeat: no-repeat;
+}
+
+div#instructor-column h4.inst-header.project{
+
+    background-image: url("../img/icons/item_project.gif");
+
+}
+
+div#instructor-column h4.inst-header.discussion{
+
+ background-image: url("../img/icons/item_discussion.gif");
+}
+
+div#instructor-column h4.inst-header.assignment{
+
+ background-image: url("../img/icons/item_assignment.gif");
+}
+
+
+div#materials
+{
+
+}
+
+div#materials h4 {
+    background-color: #6F6F6F;
+    color: #DEDEDE;
+    font-weight: normal;
+    margin: 0 0 0.5em;
+    padding: 0.3em 0.5em;
+    text-align: left;
+}
+
+div#materials h4 a
+{
+    color: #fff;
+    padding-right: 4px;
+    padding-left: 15px;
+}
+
+
+ul.instructor-list {
+
+	margin: 0 20px 0 40px;
+}
+
+
+
+
+ul.instructor-list li {
+
+	margin: 5px 0 10px 0;
+	font-weight: normal;
+	line-height: 17px;
+}
+
+
+
+table#home-columns td h2 {
+	background-color: #333333;
+	padding: 5px 12px;
+	text-transform: uppercase;
+	color: #ffffff;
+	font-weight: normal;
+	-moz-border-radius: 10px 10px 0 0;
+	border-radius: 10px 10px 0 0;
+	margin: 0;
+	
+}
+
+table#home-columns td#instructor h2 {
+	background-color: #006031;
+	padding: 5px 12px;
+	text-transform: uppercase;
+	color: #ffffff;
+	font-weight: normal;
+	-moz-border-radius: 10px 10px 0 0;
+	border-radius: 10px 10px 0 0;
+	margin: 0;
+	
+}
+
+div.column-contents,
+table#classwork-sub {
+	background-color: #ffffff;
+    -moz-box-shadow: 0px 5px 5px #ccc;
+    -webkit-box-shadow: 0px 5px 5px #ccc;
+    box-shadow: 0px 5px 5px #ccc;
+  	border: 1px solid #ccc;
+    border-top: 0;
+    overflow: auto;
+    height: 95%;
+}
+
+div#classwork_table table {
+    border: 1px solid #ccc;
+    border-collapse: separate;
+
+}
+
+div.column-contents {
+	padding-top: 10px;
+}
+
+td#media div.column-contents {
+    padding-top: 0px;
+}
+
+table#classwork-sub td {
+	padding: 20px;
+	width: 50%;
+}
+
+
+table#classwork-sub div#assets,
+table#classwork-sub div#projects {
+
+	border: 2px solid green;
+	width: 100%;
+
+
+}
+
+table#classwork-sub td div#assets h3 {
+
+	background-color: yellow;
+	margin: 0;
+	padding: 5px;
+	
+
+}
+
+table#classwork-sub td div#projects h3 {
+
+	background-color: blue;
+	margin: 0;
+	padding: 5px;
+	
+
+}
+
+#project_table h4 {
+    margin: 0 0 5px 0;
+    padding: 5px 12px;
+    font-size: 98%;
+
+}
+
+table#classwork-sub td div#assets div#asset_browse_col {
+
+	width: 100%;
+	float: none;
+	margin: 0;
+ overflow: auto;
+	
+
+}
+
+table#classwork-sub td div#projects div.projectlist ul {
+
+list-style-type: none;
+	
+
+}
+
+/*Collection Styles*/
+
+.indexcard input.media {
+    margin-top: 5px;
+
+}
+
+input.media {
+    background-image: url("../img/buttons/collections_button_bg.jpg");
+    border-color: #c89345;
+
+}
+
+
+
+input.media.newselection-button {
+    float: right;
+    margin: 4px;
+}
+
+.actions input {
+
+    border: none;
+    margin: 0;
+    }
+
+ul.record-metadata-list {
+	list-style-type: none;
+	margin:0 0 0 10px;
+ }
+ 
+/*Composition Styles*/
+
+ul#projects h3 {
+    margin: 0;
+    font-size: 1em;
+
+}
+
+ul#projects h3 .delete_icon,
+ul#projects h3 .edit_icon {
+    float: right;
+}
+
+input.project {
+    background-image: url("../img/buttons/compositions_button_bg.jpg");
+    border-color: #477794;
+}
+
+ul#projects .createnew-button {
+    margin: 5px;
+}
+
+
+/*Annotation Styles*/
+
+#annotation-body,
+div#annotation-body,
+div>#annotation-body {
+    margin: 0 0 10px;
+    padding: 5px 15px 10px;
+}
+
+html.busy, html.busy * {  
+  cursor: wait;  
+}
+
+.selector {
+    display: block;
+    height: 15px;
+    width: 14px;
+    float: left;
+    text-decoration: none;
+    margin-right: 5px; 
+}
+
+.selector-open
+{
+    background-image: url(../img/down_arrow.png);
+}
+
+.selector-closed
+{
+    background-image: url(../img/right_arrow.png);
+}

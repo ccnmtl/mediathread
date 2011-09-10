@@ -6,19 +6,21 @@
       <div class="asset-title"></div>
       <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
         <div class="asset-display"></div>
-	<div id="clipstrip-display" class="clipstrip-display"></div>    
+    <div id="clipstrip-display" class="clipstrip-display"></div>    
       </div>
     </div>
   
-
+ <h2 class="collections-column">
+    <div class="button-form inline">
+        <form class="block media-browse hinline" method="POST" action="{%url explore%}">
+            <input type="hidden" name="title" />
+            <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+        </form>
+    </div>
+     Collections
+    </h2>
   <div class="filter-widget">
-    <!--h2 class="switcher-extraneous-title">
-      {%if space_owner %}
-         {% public_name for space_owner %}'s Annotations
-      {% else %}
-         Class Items
-      {% endif %} 
-    </h2-->
+   
     <div class="switcher collection-chooser" tabindex="1">
     <span class="switcher-prefix">View: </span>
       <a class="switcher-top closed">
@@ -75,8 +77,8 @@
       <a class="switcher-top closed">
         <span class="down-arrow" tabindex="4"></span>
         <span class="title">
-	  Filters<span 
-	  {%if active_filters %}
+      Filters<span 
+      {%if active_filters %}
             class="filter-on">: ON</span>
           {% else %}
             class="filter-off">...</span>
@@ -132,185 +134,195 @@
   </div> 
 
 
-
 <div id="materials" class="resize-height">
- {% if not assets %}
- <p class="para">
-   No items. 
-   {% ifequal space_owner user %}
-   <br />
-   Add items from the sources listed in <a href="{% url explore %}">Explore Collections</a>
-   {% endifequal %}
- </p>
- {%endif%}
- {% for asset in assets %}
- <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
-  {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}
-  
-
-  <h2 id="asset-item-{{asset.pk}}" class="asset_title asset-{{asset.primary.label}}">
-    <div class="actions">
-    {% if editable %}
-      <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"
-	 href="{% url my-asset-notes space_viewer.username asset.pk %}?delete">
-       <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Asset and Clips from My Analysis"  /></a>
-    {% endif %}
-      {%if space_viewer.is_staff and not space_owner %}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{%endif%}
-    </div>
-   
-    <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
+    {% if not assets %}
+        <p class="para">
+            No items. 
+           {% ifequal space_owner user %}
+           <br />
+           Add items from the resources listed in <a href="{% url explore %}">Browse Sources</a>
+           {% endifequal %}
+        </p>
+    {%endif%}
+ 
     
-    {% if page_in_edit_mode %}
-	  <span class="citationTemplate"><img 
-	      class="materialCitation" alt="" 
-	      src="/site_media/img/icons/insert_asset.png#annotation={{asset.get_absolute_url}}{% if gannotation %}annotations/{{gannotation.id}}/{% endif %}&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
-	      width="24" height="15" border="0" 
-	      onclick="addMaterialCitation(event)" 
-	      title="{{asset.title}}" 
-	      name="{{asset.get_absolute_url}}"
-	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
-	      /></span>
-	{% endif %}
-    <a {% if page_in_edit_mode %}target="_blank"{% endif %}
-       class="asset-title-link"
-       href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
-
-	
-  </h2>
-
-  {%if asset.sources.thumb %}
-  <a {% if page_in_edit_mode %}target="_blank"{% endif %}
-     href="{{asset.get_absolute_url}}"><img class="asset-thumb" src="{{asset.sources.thumb.url}}" /></a>
-  {% endif %}
-
-  <div id="record-{{asset.pk}}-metadata" class="record-metadata">
-    <ul class="record-metadata-list">
-      <!--li><strong>Date added:</strong> {{asset.added|date}}</li-->
-     <!-- <li>Last modified: {{asset.modified|date}}</li>-->
-     {%if gannotation and gannotation.tags_split %}
-      <li class="annotation-global-tags"><strong>My Tags:</strong>
-       {% for tag in gannotation.tags_split %}
-        {% if not page_in_edit_mode %}
-         {% replace_value of 'tag' with tag.name in request.GET as querystring %}
-          <a href="{{querystring|qsify}}">{{tag}}</a>&nbsp;
-         {% else %}
-          {{tag}}
-         {% endif %}
-       {% endfor %}
-       {% if editable %} 
-	 <a href="/asset/{{asset.pk}}/">  <img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Tags"  /></a>
-       {% endif %}
-      </li><!--asset tags-->
-      {%else%}
-        {%if not space_owner and asset.tags %}
-           <p>
-           <strong>Tags:</strong>
-           {% for tag in asset.tags %}
-             {% replace_value of 'tag' with tag.name in request.GET as querystring %}
-             <a href="{{querystring|qsify}}">
-                {{tag.name}}
-             </a>&nbsp;
-           {% endfor %}</p>
-        {% endif %}        
-      {% endif %}
-      {% if gannotation.body %} 
-      <li class="annotation-global-body">
-	<strong>Note:</strong> {{gannotation.body}} 
-	{% if editable %}  <a href="/asset/{{asset.pk}}/"><img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Note"  /></a> {% endif %}
-      </li><!--asset tags-->
-      {% endif %}
-
-
-      {% get_annotations on asset by space_owner filter active_filters as annotations %}
-
-    {% if annotations.1 %}
-    <li>
-    <ul class="asset-clips">
-    {% for annotation in annotations %}
-      {% if not annotation.is_null %}
-      <li id="annotation-{{annotation.pk}}">
-	{%if annotation.body or annotation.tags %}
-	<a class="hs-control" href="#annotation-body-{{annotation.pk}}"></a>
-	{%endif%}
+    {% for asset in assets %}
+        
+        <div id="record-{{asset.pk}}" class="record record-{{asset.primary.label}}">
+        {% get_global_annotation on asset by space_owner or space_viewer as gannotation %}
+    
+        <h2 id="asset-item-{{asset.pk}}" class="asset_title asset-{{asset.primary.label}}">
+    
         <div class="actions">
-	{% if page_in_edit_mode %}
-	  <span class="citationTemplate"><img 
-	      class="materialCitation" alt="" 
-	      src="/site_media/img/icons/insert_clip.png#annotation={{annotation.get_absolute_url}}&title={{annotation.title}}&type={{asset.primary.label}}&range1={{annotation.range1}}" 
-	      width="24" height="15" border="0" 
-	      onclick="addMaterialCitation(event)" 
-	      title="{{annotation.title}}" 
-	      name="{{annotation.get_absolute_url}}"
-	      draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
-	      /></span>
-	{% endif %}
-        {% if editable %}
-          <a onclick="return ajaxDelete(this, 'annotation-{{annotation.pk}}')"
-             href="{% url annotation-form asset.pk annotation.pk %}?delete">
-            <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+            {% if editable %}
+                <a onclick="return ajaxDelete(this, 'record-{{asset.pk}}')"
+                    href="{% url my-asset-notes space_viewer.username asset.pk %}?delete">
+                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Asset and Clips from My Analysis"  /></a>
+            {% endif %}
+            {%if space_viewer.is_staff and not space_owner %}<a class="manage-asset" href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>{%endif%}
+        </div>
+   
+        <!--a class="hs-control" href="#record-{{asset.pk}}-metadata"></a-->
+    
+        {% if page_in_edit_mode %}
+            <span class="citationTemplate"><img 
+                class="materialCitation" alt="" 
+              src="/site_media/img/icons/insert_asset.png#annotation={{asset.get_absolute_url}}&title={{asset.title}}&type={{asset.primary.label}}&range1=0" 
+              width="24" height="15" border="0" 
+              onclick="addMaterialCitation(event)" 
+              title="Add item to the composition" 
+              name="{{asset.get_absolute_url}}"
+              draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
+              /></span>
         {% endif %}
-        </div><!-- class="actions" -->
-	<a {% if page_in_edit_mode %}target="_blank"{% endif %}
-	  class="materialCitationLink"
-	  title="Last modified on {{annotation.modified|date}} by {% public_name for annotation.author %}"
-	  href="{{annotation.get_absolute_url}}">{{annotation.title}}</a> 	    
+        <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+            class="asset-title-link"
+            href="{{asset.get_absolute_url}}">{{asset.title|striptags|safe|default:"(Untitled)"}}</a>
+            
+        </h2>
 
-	<span class="annotation-timecode">{{annotation.range_as_timecode}}</span>
+        {% with asset.thumb_url as thumb_url %}
+        {%if thumb_url %}
+            <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+                href="{{asset.get_absolute_url}}"><img class="asset-thumb" src="{{thumb_url}}" /></a>
+        {% endif %}
+        {% endwith %}
 
+        <div id="record-{{asset.pk}}-metadata" class="record-metadata">
+            <ul class="record-metadata-list">
+            <!--li><strong>Date added:</strong> {{asset.added|date}}</li-->
+            <!-- <li>Last modified: {{asset.modified|date}}</li>-->
+            
+            {% with gannotation.tags_split as gannotation_tags %}
+            {%if gannotation and gannotation_tags %}
+                <li class="annotation-global-tags"><strong>My Tags:</strong>
+                {% for tag in gannotation_tags %}
+                    {% if not page_in_edit_mode %}
+                        {% replace_value of 'tag' with tag.name in request.GET as querystring %}
+                        <a href="{{querystring|qsify}}">{{tag}}</a>&nbsp;
+                    {% else %}
+                        {{tag}}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if editable %} 
+                    <a href="/asset/{{asset.pk}}/">  <img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Tags"  /></a>
+                {% endif %}
+                </li><!--asset tags-->
+                
+            {%else%}{%if not space_owner %}
+                {% with asset.tags as atags %}
+                    {% if atags %}
+                        <p>
+                        <strong>Tags:</strong>
+                        {% for tag in atags %}
+                            {% replace_value of 'tag' with tag in request.GET as querystring %}
+                            <a href="{{querystring|qsify}}">
+                                {{tag.name}}
+                            </a>&nbsp;
+                        {% endfor %}
+                        </p>
+                    {% endif %}  
+                {% endwith %}{% endif %}
+            {% endif %}
+            {% endwith %}
+            
+            
+            {% if gannotation.body %} 
+                <li class="annotation-global-body">
+                <strong>Note:</strong> {{gannotation.body}} 
+                {% if editable %}  <a href="/asset/{{asset.pk}}/"><img src="/site_media/img/pencil.gif"  class="edit_icon" alt="Edit Note"  /></a> {% endif %}
+                </li>
+            {% endif %}
 
-	{%if annotation.body or annotation.tags %}	
-	<div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper" >
-	  {% if annotation.tags %} 	  
-	  <div class="annotation-metadata-tags annotation-metadata"><strong>Tags:</strong>
-	    {% for tag in annotation.tags_split %}
-	      {% if not page_in_edit_mode %}
-	        {% replace_value of 'tag' with tag in request.GET as querystring %}
-	        <a href="{{querystring|qsify}}">{{tag}}</a>&nbsp;
-              {% else %}
-                  {{tag}}
-	      {% endif %}
-	    {% endfor %}
-	  </div>
-	  {% endif %}<!-- annotation.tags-->
-	  {% if annotation.body %} 
-	  <div class="annotation-metadata-body annotation-metadata"><strong>Note:</strong>
-	    {{annotation.body}} 
-	  </div>
-	  {% endif %}<!--annotation.body -->
-	</div>
-	{% endif %}<!-- annotation.body or annotation.tags -->
-	    <!--Crazy overloading of this table cell to include all metadata!!!-->
-	    <!--currently only used for creating thumbnails (which we could do
-		from the json instead.
-	    -->
-	    <div class="annotation-links">
-	      <div class="annotation annotation{{annotation.id}}">
-		<div class="annotation-title materialCitation"><h2>{{annotation.title}}</h2></div>
-		<div class="annotation-data" data-begin="{{annotation.range1}}" data-end="{{annotation.range2}}" data-annotation='{{annotation.annotation_data|default_if_none:"{}"|escape}}'></div>
-		<div class="asset-title">from <a href="{{annotation.asset.get_absolute_url}}">{{annotation.asset.title|escape}}</a></div>
-		<div class="asset-links">
-		  <ul>
-                    {% with annotation.asset.source_set.all as assets_to_link %}
-                      {% include "assetmgr/asset_links.html" %}
-                    {% endwith %}
-		  </ul>
-		</div>
-	      </div>
-	    </div><!--end class="annotation-links" -->
+            {% get_annotations on asset by space_owner filter active_filters as annotations %}
 
-      </li>
-      {% endif %}
-    {% endfor %}
-    </ul><!--class="asset-clips"-->
-    </li>
-    {% endif %}<!--if annotations.1-->
+            {% if annotations.1 %}
+                <li>
+                    <ul class="asset-clips">
+                        {% for annotation in annotations %}
+                            {% if not annotation.is_null %}
+                                <li id="annotation-{{annotation.pk}}">
+                                    {%if annotation.body or annotation.tags %}
+                                        <a class="hs-control" href="#annotation-body-{{annotation.pk}}"></a>
+                                    {%endif%}
+                                    <div class="actions">
+                                        {% if page_in_edit_mode %}
+                                          <span class="citationTemplate"><img 
+                                              class="materialCitation" alt="" 
+                                              src="/site_media/img/icons/insert_clip.png#annotation={{annotation.get_absolute_url}}&title={{annotation.title}}&type={{asset.primary.label}}&range1={{annotation.range1}}" 
+                                              width="24" height="15" border="0" 
+                                              onclick="addMaterialCitation(event)" 
+                                              title="Add selection to the composition" 
+                                              name="{{annotation.get_absolute_url}}"
+                                              draggable="true" ondragstart='event.dataTransfer.setData("Text", (event.target||event.srcElement).src);'
+                                              /></span>
+                                        {% endif %}
+                                        {% if editable %}
+                                            <a onclick="return ajaxDelete(this, 'annotation-{{annotation.pk}}')"
+                                                href="{% url annotation-form asset.pk annotation.pk %}?delete">
+                                            <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+                                        {% endif %}
+                                    </div><!-- class="actions" -->
+                                    <a {% if page_in_edit_mode %}target="_blank"{% endif %}
+                                      class="materialCitationLink"
+                                      title="Last modified on {{annotation.modified|date}} by {% public_name for annotation.author %}"
+                                      href="{{annotation.get_absolute_url}}">{% if annotation.title %}{{annotation.title}}{% else %}-Untitled-{%endif%}</a>         
+                                
+                                    <span class="annotation-timecode">{{annotation.range_as_timecode}}</span>
 
-      
-</ul><!-- class="record-metadata-list" -->
-
-  </div>
-  <div class="visualclear"></div>
+                                    {% with annotation.tags as annotation_tags %}
+                                    
+                                    {% if annotation.body or annotation_tags %}    
+                                        <div id="annotation-body-{{annotation.pk}}" class="hs-init-hide annotation-metadata-wrapper meta" >
+                                          {% if annotation_tags %}       
+                                          <div class="annotation-metadata-tags annotation-metadata"><strong>Tags:</strong>
+                                            {% for tag in annotation.tags_split %}
+                                              {% if not page_in_edit_mode %}
+                                                {% replace_value of 'tag' with tag in request.GET as querystring %}
+                                                <a href="{{querystring|qsify}}">{{tag}}</a>&nbsp;
+                                                  {% else %}
+                                                      {{tag}}
+                                              {% endif %}
+                                            {% endfor %}
+                                          </div>
+                                          {% endif %}<!-- annotation.tags-->
+                                          {% if annotation.body %} 
+                                          <div class="annotation-metadata-body annotation-metadata"><strong>Note:</strong>
+                                            {{annotation.body}} 
+                                          </div>
+                                          {% endif %}<!--annotation.body -->
+                                        </div>
+                                    {% endif %}<!-- annotation.body or annotation.tags -->
+                                    {% endwith %}
+                                    <!--Crazy overloading of this table cell to include all metadata!!!-->
+                                    <!--currently only used for creating thumbnails (which we could do
+                                    from the json instead.
+                                    -->
+                                    <div class="annotation-links">
+                                    <div class="annotation annotation{{annotation.id}}">
+                                    <div class="annotation-title materialCitation"><h2>{{annotation.title}}</h2></div>
+                                    <div class="annotation-data" data-begin="{{annotation.range1}}" data-end="{{annotation.range2}}" data-annotation='{{annotation.annotation_data|default_if_none:"{}"|escape}}'></div>
+                                    <div class="asset-title">from <a href="{{annotation.asset.get_absolute_url}}">{{annotation.asset.title|escape}}</a></div>
+                                    <div class="asset-links">
+                                        <ul>
+                                            {% with annotation.asset.source_set.all as assets_to_link %}
+                                              {% include "assetmgr/asset_links.html" %}
+                                            {% endwith %}
+                                        </ul>
+                                    </div></div></div><!--end class="annotation-links" -->
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul><!--class="asset-clips"-->
+                </li>
+            {% endif %}<!--if annotations.1-->
+            
+        </ul><!-- class="record-metadata-list" -->
+    </div>
+    <div class="visualclear"></div>
  </div>
 {% endfor %}
 
-</div>
+
+</div><!--  endmaterials -->

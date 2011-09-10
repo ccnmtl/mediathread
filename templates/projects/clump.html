@@ -13,7 +13,7 @@
 	      {{act.action}}
 	      {%if act.user%}
 	      by 
-	      <a href="{% url your-space-records act.user.username %}"
+	      <a href="/?username={{act.user.username}}"
 		 >{% public_name for act.user %}</a>
 	      {%endif%}
 	      {%if act.text %}

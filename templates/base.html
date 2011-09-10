@@ -3,9 +3,10 @@
 {% with request.collaboration_context.content_object as course %}
 <head><!-- {{controller_name}} :: {{template_name}} -->
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>{% block title %}{% endblock %} | Mediathread</title>
+	<title>Mediathread | {{course.title}} > {% block title %}{% endblock %}</title>
 
 	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css" />
+	<link rel="stylesheet" type="text/css" href="/site_media/css/intermame.css" />
 
 	<link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
 
@@ -111,13 +112,12 @@
 			<ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
 			
 			    {% if is_course_faculty %}
-				<li class="{% active request 'Instructor' %}"><a href="{% url class-activity %}">Instructor Dashboard</a></li>
-                                {% endif %}
-				<li class="{% active request 'Class Portal' %}"><a href="/">Class Home</a></li>
-				<li class="{% active request 'Explore' %}"><a href="/explore">Explore Collections</a></li>
-                                <li class="{% active request 'Analysis' %}"
-                                    ><a href="{% ifequal role_in_course "non-member" %}{% url asset-container %}{%else%}{% url your-space-records user %}{% endifequal %}">Items & Projects</a></li>
-                            
+				<li class="{% active request 'Instructor' %} instructor"><a href="{% url class-activity %}">Instructor Dashboard</a></li>
+                {% endif %}
+
+				<li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>
+				<li class="{% active request 'Notifications' %} activity"><a href="/notifications/">Recent Activity</a></li>
+
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
 	  {% endif %}

@@ -1,6 +1,7 @@
 .filter-widget {
     background-color: #ccc;
     padding: 2px;
+    padding-top: 4px;
     /*margin-bottom here causes a firefox bug to push down the top instead
       so put the margin-bottom on div.switcher
      */
@@ -46,6 +47,8 @@ span.switcher-prefix {
     float:left;
     line-height:20px;
     padding-right:4px;
+    padding-top: 1px;
+    padding-left: 4px;
 }
 
 body.role-non-member li.choice_my_items {

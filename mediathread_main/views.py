@@ -3,6 +3,7 @@ from tagging.utils import calculate_cloud
 
 from assetmgr.lib import most_popular, annotated_by, get_active_filters
 
+from courseaffils.lib import get_public_name
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 from djangosherd.models import DiscussionIndex
@@ -18,7 +19,7 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
-import simplejson as json
+import simplejson
 import re
 
 from clumper import Clumper
@@ -53,6 +54,92 @@ def django_settings(request):
 
     return rv
 
+
+def get_prof_feed(course,request):
+    prof_feed = {'assets':[], #assets.filter(c.faculty_filter).order_by('-added'),
+                 'projects':[], # we'll add these directly below, to ensure security filters
+                 'assignments':[],
+                 'tags':Tag.objects.get_for_object(course)
+                 }
+    prof_projects = Project.objects.filter(
+        course.faculty_filter).order_by('title')
+    for project in prof_projects:
+        if project.class_visible():
+            if project.is_assignment(request):
+                prof_feed['assignments'].append(project)
+            else:
+                prof_feed['projects'].append(project)
+
+    #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
+    prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
+    return prof_feed
+
+@rendered_with('projects/notifications.html')
+@allow_http("GET")
+def notifications(request):
+    c = request.course
+
+    if not c:
+        return HttpResponseRedirect('/accounts/login/')
+
+    user = request.user
+    if user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
+
+    class_feed =[]
+
+    #personal feed
+    my_assets = {}
+    for n in SherdNote.objects.filter(author=user,asset__course=c):
+        my_assets[str(n.asset_id)] = 1
+    for comment in Comment.objects.filter(user=user):
+        if c == getattr(comment.content_object,'course',None):
+            my_assets[str(comment.object_pk)] = 1
+    my_discussions = [d.collaboration_id for d in DiscussionIndex.objects
+                      .filter(participant=user,
+                              collaboration__context=request.collaboration_context
+                              )]
+
+    my_feed=Clumper(Comment.objects
+                    .filter(content_type=ContentType.objects.get_for_model(Asset),
+                            object_pk__in = my_assets.keys())
+                    .order_by('-submit_date'), #so the newest ones show up
+                    SherdNote.objects.filter(asset__in=my_assets.keys(),
+                                             #no global annotations
+                                             #warning: if we include global annotations
+                                             #we need to stop it from autocreating one on-view
+                                             #of the asset somehow
+                                             range1__isnull=False
+                                             )
+                    .order_by('-added'),
+                    Project.objects
+                    .filter(Q(participants=user.pk)|Q(author=user.pk), course=c)
+                    .order_by('-modified'),
+                    DiscussionIndex.with_permission(request,
+                                                    DiscussionIndex.objects
+                                                    .filter(Q(Q(asset__in=my_assets.keys())
+                                                              |Q(collaboration__in=my_discussions)
+                                                              |Q(collaboration__user=request.user)
+                                                              |Q(collaboration__group__user=request.user),
+                                                              participant__isnull=False
+                                                              )
+                                                       )
+                                                       .order_by('-modified')
+                                                    ),
+                    )
+
+    tags = Tag.objects.usage_for_queryset(
+        SherdNote.objects.filter(asset__course=c),
+        counts=True)
+
+    #only top 10 tags
+    tag_cloud = calculate_cloud(sorted(tags,lambda t,w:cmp(w.count,t.count))[:10])
+
+    return {
+        'my_feed':my_feed,
+        'tag_cloud': tag_cloud,
+        }
+
 @rendered_with('projects/portal.html')
 @allow_http("GET")
 def class_portal(request):
@@ -65,25 +152,8 @@ def class_portal(request):
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    assets = Asset.objects.filter(course=c)
     #instructor focus
-    prof_feed = {'assets':[], #assets.filter(c.faculty_filter).order_by('-added'),
-                 'projects':[], # we'll add these directly below, to ensure security filters
-                 'assignments':[],
-                 'tags':Tag.objects.get_for_object(c)
-                 }
-    prof_projects = Project.objects.filter(
-        c.faculty_filter).order_by('title')
-    for project in prof_projects:
-        if project.class_visible():
-            if project.is_assignment(request):
-                prof_feed['assignments'].append(project)
-            else:
-                prof_feed['projects'].append(project)
-
-    #prof_feed['tag_cloud'] = calculate_cloud(prof_feed['tags'])
-    prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
-
+    prof_feed = get_prof_feed(c,request)
 
     class_feed =[]
     #class_feed=Clumper(SherdNote.objects.filter(asset__course=c,
@@ -267,70 +337,226 @@ filter_by = {
     'modified': date_filter_for('modified'),
     }
 
+@rendered_with('homepage.html')
+def triple_homepage(request):
+    c = request.course
+
+    if not c:
+        return HttpResponseRedirect('/accounts/login/')
+
+    user = request.user
+    if request.GET.has_key('username'):
+        user_name = request.GET['username']
+        in_course_or_404(user_name, c)
+        user = get_object_or_404(User, username=user_name)
+    elif user.is_staff and request.GET.has_key('as'):
+        user = get_object_or_404(User,username=request.GET['as'])
+        
+    #bad language, we should change this to user_of_assets or something
+    space_viewer = request.user 
+    if request.GET.has_key('as') and request.user.is_staff:
+        space_viewer = get_object_or_404(User, username=request.GET['as'])    
+
+    user_records = {
+       'space_viewer': space_viewer,
+       'space_owner' : user
+    }
+    prof_feed = get_prof_feed(c, request)
+    discussions = get_discussions(c)
+
+    full_prof_list = []
+    for lis in (prof_feed['projects'], prof_feed['assignments'], discussions, ):
+        full_prof_list.extend(lis)
+    full_prof_list.sort(lambda a,b:cmp(a.title.lower(),b.title.lower()))
+
+    user_records.update(
+        {'faculty_feed':prof_feed,
+         'instructor_full_feed':full_prof_list,
+         'is_faculty':c.is_faculty(user),         
+         'display':{'instructor':prof_feed['show'],
+                    'course': (len(prof_feed['tags']) < 5)
+                    },
+         'discussions' : discussions,
+         })
+    return user_records
+    
+
 @allow_http("GET")
 @rendered_with('projects/your_records.html')
 def your_records(request, user_name):
-
     c = request.course
     in_course_or_404(user_name, c)
-
-    today = datetime.date.today()
     user = get_object_or_404(User, username=user_name)
+    
+    return get_records(user, c, request)
+
+@allow_http("GET")
+def all_records(request):
+    c = request.course
+    in_course_or_404(request.user.username, c)
+    
+    return get_records('all', c, request);
+    
+def get_records(user, course, request):
+    c = course
+    today = datetime.date.today()
 
     editable = (user==request.user)
-    assets = annotated_by(Asset.objects.filter(course=c),
+    
+    #bad language, we should change this to user_of_assets or something
+    space_viewer = request.user 
+    if request.GET.has_key('as') and request.user.is_staff:
+        space_viewer = get_object_or_404(User, username=request.GET['as'])
+    
+    assignments = []
+    responder = None
+    
+    if user == 'all':
+        archives = list(course.asset_set.archives())
+        assets = [a for a in Asset.objects.filter(course=c).extra(
+            select={'lower_title': 'lower(assetmgr_asset.title)'}
+            ).select_related().order_by('lower_title')
+              if a not in archives]
+        user = None
+        
+        all_tags = Tag.objects.usage_for_queryset(
+            SherdNote.objects.filter(
+                asset__course=course),
+            counts=True)
+        all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
+        tags = calculate_cloud(all_tags)
+        
+        projects = [p for p in Project.objects.filter(course=c,
+                                                  submitted=True).order_by('title')
+                if p.visible(request)]
+        
+        
+    else:
+        assets = annotated_by(Asset.objects.filter(course=c),
                           user,
                           include_archives=c.is_faculty(user)
                           )
+        
+        tags = calculate_cloud(Tag.objects.usage_for_queryset(
+        user.sherdnote_set.filter(
+            asset__course=c),
+        counts=True))
+                
+        projects = Project.get_user_projects(user, c).order_by('-modified')
+        if not editable:
+            projects = [p for p in projects if p.visible(request)]
 
-    projects = Project.get_user_projects(user, c).order_by('-modified')
-    if not editable:
-        projects = [p for p in projects if p.visible(request)]
-
-    project_type = ContentType.objects.get_for_model(Project)
-    assignments = []
-    maybe_assignments = Project.objects.filter(
-        c.faculty_filter)
-    for assignment in maybe_assignments:
-        if not assignment.visible(request):
-            continue
-        if assignment in projects:
-            continue
-        if is_unanswered_assignment(assignment, user, request, project_type):
-            assignments.append(assignment)
-            
-
+        project_type = ContentType.objects.get_for_model(Project)
+        assignments = []
+        maybe_assignments = Project.objects.filter(
+            c.faculty_filter)
+        for assignment in maybe_assignments:
+            if not assignment.visible(request):
+                continue
+            if assignment in projects:
+                continue
+            if is_unanswered_assignment(assignment, user, request, project_type):
+                assignments.append(assignment)
+        
+        if user.id == space_viewer.id:
+            responder =  space_viewer.username
+    
     for fil in filter_by:
         filter_value = request.GET.get(fil)
         if filter_value:
             assets = [asset for asset in assets
                       if filter_by[fil](asset, filter_value, user)]
-
-    tags = calculate_cloud(Tag.objects.usage_for_queryset(
-            user.sherdnote_set.filter(
-                asset__course=c),
-            counts=True))
     
     active_filters = get_active_filters(request, filter_by)
-    #bad language, we should change this to user_of_assets or something
-    space_viewer = request.user 
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])
+    
 
-    return {
-        'assets'        : assets,
-        'assignments'   : assignments,
-        'projects'      : projects,
-        'tags'          : tags,
-        'dates'         : (('today','today'),
-                           ('yesterday','yesterday'),
-                           ('lastweek','within the last week'),
-                           ),
-        'space_owner'   : user,
-        'space_viewer'  : space_viewer,
-        'editable'      : editable,
-        'active_filters': active_filters,
-        }
+    
+    if request.is_ajax():
+        asset_json = []
+        for asset in assets:
+            the_json = asset.sherd_json(request)
+            gannotation, created = SherdNote.objects.global_annotation(asset, user or space_viewer, auto_create=False)
+            if gannotation:
+                the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags','body') )
+                
+            the_json['editable'] = editable
+                
+            annotations = []
+            if request.GET.has_key('annotations'):
+                # @todo: refactor this serialization into a common place.
+                def author_name(request, annotation, key):
+                    if not annotation.author_id:
+                        return None
+                    return 'author_name',get_public_name(annotation.author, request)
+                for ann in asset.sherdnote_set.filter(range1__isnull=False,author=user):
+                    annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body','modified', 'timecode') ) )
+                the_json['annotations'] = annotations
+                
+            asset_json.append(the_json)
+            
+        project_json = []
+        for p in projects:
+            the_json = {}
+            the_json['id'] = p.id
+            the_json['title'] = p.title
+            the_json['url'] = p.get_absolute_url()
+            
+            participants = p.attribution_list()
+            the_json['short_authors'] = [ {'name': get_public_name(u, request) } for u in participants[0:2]]
+            the_json['long_authors'] = [ {'name': get_public_name(u, request) } for u in participants]
+            the_json['modified'] = p.modified.strftime("%m/%d/%y %I:%M %p")
+            the_json['status'] = p.status()
+            the_json['editable'] = editable
+            
+            feedback = p.feedback_discussion()
+            if feedback:
+                the_json['feedback'] = feedback.id
+            
+            collaboration = p.collaboration()
+            if collaboration:
+                collaboration_parent = collaboration.get_parent()
+                if collaboration_parent:
+                    the_json['collaboration'] = {}
+                    the_json['collaboration']['title'] = collaboration_parent.title
+                    if collaboration_parent.content_object:
+                        the_json['collaboration']['url'] = collaboration_parent.content_object.get_absolute_url()
+            
+            project_json.append(the_json)
+    
+        data = {'assets': asset_json,
+                'assignments' : [ {'id': a.id, 'responder': responder, 'url': a.get_absolute_url(), 'title': a.title, 'modified': a.modified.strftime("%m/%d/%y %I:%M %p")} for a in assignments],
+                'projects' : project_json,
+                'tags': [ { 'name': tag.name } for tag in tags ],
+                'active_filters': active_filters,
+                'space_viewer'  : { 'username': space_viewer.username, 'public_name': get_public_name(space_viewer, request), 'can_manage': (space_viewer.is_staff and not user) },
+                'editable' : editable,
+                'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
+                'compositions' : len(projects) > 0 or len(assignments) > 0,
+                'is_faculty': c.is_faculty(space_viewer),    
+               }
+        
+        if user:
+            data['space_owner'] = { 'username': user.username, 'public_name': get_public_name(user, request) }
+    
+        json_stream = simplejson.dumps(data, indent=2)
+        return HttpResponse(json_stream, mimetype='application/json')
+    else:
+        dates = (('today','today'),
+             ('yesterday','yesterday'),
+             ('lastweek','within the last week'),)    
+            
+        
+        return {
+            'assets'        : assets,
+            'assignments'   : assignments,
+            'projects'      : projects,
+            'tags'          : tags,
+            'dates'         : dates,
+            'space_owner'   : user,
+            'space_viewer'  : space_viewer,
+            'editable'      : editable,
+            'active_filters': active_filters,
+            }
 
 
 @allow_http("GET")

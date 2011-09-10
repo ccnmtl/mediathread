@@ -135,7 +135,7 @@ Then click the Analyze w/Mediathread bookmarklet in your browser to bring the vi
 INSTRUCTIONS
 You do not need to log in to ARTstor to bring images into Mediathread. 
 
-When you find an image you want to analyze in an ARTstor collection, click on its title (underneath its thumbnail).  A pop-up window will display the image's metadata.  At this point, click on the Analyze w/Mediathread bookmarklet in your main browser window.  The image will then load in Mediathread.
+When you find an image you want to analyze in an ARTstor collection list, click once on its thumbnail so it has a colored outline.  Then click on the Analyze w/Mediathread bookmarklet in your main browser window.  The image will then load in Mediathread.
 """,
                  'required':['flash'],
                  },

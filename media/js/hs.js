@@ -83,7 +83,12 @@ function hs_lookForCookie() {
 }
 
 function hs_getTarget(a) {
-    return jQuery(a.href.substr(a.href.indexOf('#'))).get(0);
+    var elt = jQuery(a.href.substr(a.href.indexOf('#')));
+    if (elt.length) {
+        return elt.get(0);
+    } else {
+        throw Error('hs.js: target id: ' + a.href + ' not found');
+    }
 }
 
 function hs_toggle() {

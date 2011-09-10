@@ -3,9 +3,9 @@
 
 <title> {% block title %}
 {% if space_owner == user %}
-My Analysis > Projects
+My Compositions
 {% else %}
-Class Analysis > {% public_name for space_owner %}'s Analysis > Projects
+Class Compositions
 {% endif %}
 {% endblock %}</title>
 
@@ -21,21 +21,21 @@ Class Analysis > {% public_name for space_owner %}'s Analysis > Projects
 
 
 <h1>{% if space_owner == user %}
-My Projects
+My Compositions
 {% else %}
-{% public_name for space_owner %}'s Analysis > Projects
+{% public_name for space_owner %}'s Compositions
 {% endif %}</h1><br />
 
 {% if not projects %}
- {% if editable %}No projects yet. <br /><br />
- {% else %}No (viewable) projects yet.
+ {% if editable %}No Compositions yet. <br /><br />
+ {% else %}No (viewable) Compositions yet.
  {% endif %}
 {% endif %}
 {% if editable %}
 
    <form class="block project-createnew" method="POST" action=".">
      <input type="hidden" name="title" />
-     <input class="project-createnew-button" type="submit" value="Create New Project"/>
+     <input class="project createnew-button" type="submit" value="New Composition"/>
    </form>
 {% endif %}
 
@@ -71,7 +71,7 @@ My Projects
 	   {% endifequal %}
 	   >
 	   <ul>
-	     <li>Project Collaborators: 
+	     <li>Collaborators: 
 	     <!--careful with whitespace here, since we want the comma to hug the previous
 		 name-->
 	     <span id="participants_chosen">{%public_name for project.attribution_list %}</span>

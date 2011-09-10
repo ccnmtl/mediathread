@@ -430,7 +430,7 @@ def archive_explore(request):
                 "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
                 "archive":{"id":archive.id, "url":archive.url},
                 #is description a list or a string?
-                "metadata": (description if hasattr(description,'lower') else description[0]),
+                "metadata": (description[0] if hasattr(description,'append') else description),
                 })
 
     rv = {"archives":archives,

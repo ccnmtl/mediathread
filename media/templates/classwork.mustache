@@ -247,7 +247,7 @@
                         {{#>>assets}}
                         <div id="asset_table" class="asset-table">
                          
-                            <div id="materials" class="column-contents">
+                            
                                 {{^assets}}
                                     <div class="default-content intro-text">
                                         {{#showing_my_items?}}
@@ -277,6 +277,7 @@
                                    </div>
                                 {{/assets}} 
                                 {{#assets}}
+                                    <div id="materials" class="column-contents">
                                     <div id="record-{{id}}" class="record record-{{primary_type}}">
                                         <input type="hidden" class="record" value="{{id}}" name="record-id" />
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
@@ -432,9 +433,10 @@
                                             </ul> {{! class="record-metadata-list" }}
                                         </div> {{! end record metadata }}
                                         <div class="visualclear"></div>     
-                                    </div> {{! end id="record-id" }} 
+                                    </div> {{! end id="record-id" }}
+                                    </div> {{! end id=materials, class="column-contents scroll" }} 
                                 {{/assets}}
-                            </div> {{! end id=materials, class="column-contents scroll" }}
+                            
                         </div>
                         {{/>>assets}}
                     </div>

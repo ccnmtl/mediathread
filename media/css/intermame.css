@@ -178,8 +178,7 @@ div#instructor-column h4.inst-header.assignment{
 
 div#materials
 {
-    background-color: #EDEDED;
-    padding-top: 3px;
+
 }
 
 div#materials h4 {
@@ -349,7 +348,11 @@ input.media.newselection-button {
     margin: 0;
     }
 
-
+ul.record-metadata-list {
+	list-style-type: none;
+	margin:0 0 0 10px;
+ }
+ 
 /*Composition Styles*/
 
 ul#projects h3 {

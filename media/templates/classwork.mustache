@@ -244,37 +244,36 @@
                         Collections
                     </h2>
                     <div class="column-contents scroll">
-                     <div class="default-content intro-text">
                         {{#>>assets}}
                         <div id="asset_table" class="asset-table">
-                                {{^assets}}
-                                   
-                                        {{#showing_my_items?}}
-                                            {{^active_filter_count}}
-                                                {{#is_faculty?}}
-                                                    <h5>Import media items</h5>
-                                                    
-                                                    <p>Items saved in MediaThread appear here. To collect items, click the "Browse Sources" button above.</p>
+                            {{^assets}}
+                                <div class="default-content intro-text">
+                                    {{#showing_my_items?}}
+                                        {{^active_filter_count}}
+                                            {{#is_faculty?}}
+                                                <h5>Import media items</h5>
+                                                
+                                                <p>Items saved in MediaThread appear here. To collect items, click the "Browse Sources" button above.</p>
 
-                                                    <p>Instructors can add sources to the "Browse Sources" list. For more information, visit the <a href="/reports/class_activity">Instructor Dashboard</a>.</p>
-                                                {{/is_faculty?}}
-                                                {{^is_faculty}}    
-                                                    <h5>You have not yet collected any items</h5>
-                                                    <ul>
-                                                        <li>To collect items, click "Browse Sources" above.</li>
-                                                        <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
-                                                    </ul>
-                                                {{/is_faculty}}
-                                            {{/active_filter_count}}
-                                            {{#active_filter_count}}
-                                                <h5>No Items</h5>
-                                            {{/active_filter_count}}
-                                        {{/showing_my_items?}}
-                                        {{^showing_my_items}}
-                                            <h4>No items found</h4>
-                                        {{/showing_my_items}}
-                                   </div>
-                                {{/assets}} 
+                                                <p>Instructors can add sources to the "Browse Sources" list. For more information, visit the <a href="/reports/class_activity">Instructor Dashboard</a>.</p>
+                                            {{/is_faculty?}}
+                                            {{^is_faculty}}    
+                                                <h5>You have not yet collected any items</h5>
+                                                <ul>
+                                                    <li>To collect items, click "Browse Sources" above.</li>
+                                                    <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
+                                                </ul>
+                                            {{/is_faculty}}
+                                        {{/active_filter_count}}
+                                        {{#active_filter_count}}
+                                            <h5>No Items</h5>
+                                        {{/active_filter_count}}
+                                    {{/showing_my_items?}}
+                                    {{^showing_my_items}}
+                                        <h4>No items found</h4>
+                                    {{/showing_my_items}}
+                               </div>
+                            {{/assets}} 
                                 {{#assets}}
                                     <div id="materials" class="column-contents">
                                     <div id="record-{{id}}" class="record record-{{primary_type}}">

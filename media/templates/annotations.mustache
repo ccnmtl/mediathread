@@ -43,7 +43,7 @@
                     <div id="annotation-body">
                         <h3>{{metadata.title?default(-Untitled-)}}</h3>
                         <div class="meta">
-                        <span id="clipform-display" name="clipform-display"></span><span id="clipform-tools"></span>
+                        <span id="clipform-display" name="clipform-display"></span>
                         <div><label for="">Author:</label> <a href="{{home-space?url(metadata.author.username)}}">{{metadata.author_name}}</a></div>
                         {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}, {{/metadata.tags}}</div>{{/metadata.tags?}}
                         {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
@@ -74,7 +74,7 @@
 
                         <label for="annotation-tags">Tags:</label> 
                         <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{#metadata.tags}}{{name}}, {{/metadata.tags}}"/>
-                        <span class="helptext">Use commas between tags.</span>
+                                                    <span class="helptext">Use commas to separate tags. For multi-word tags, use underscores.<br />Example: tag_one, tag2, tagthree</span>
                         
                         <label for="annotation-body">Note:</label>
                         <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>

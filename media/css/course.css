@@ -1236,7 +1236,7 @@ p.sherd-instructions {
 .sherd-clipform-play {
     text-align: center; 
     border-top: 2px solid #999; 
-    padding: 10px 0px
+    padding: 10px 0px 0px 0px;
 }
 
 .sherd-clipform-editing input.timecode,

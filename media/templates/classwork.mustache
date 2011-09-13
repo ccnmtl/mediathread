@@ -1,110 +1,110 @@
 {{#>>classwork_table}}
 <div id="classwork_table">
 <h2>Class Work</h2>
-<table>
-    <tbody>
-        <tr>
-            <div id="filter-widget" class="filter-widget">
-                <div class="switcher collection-chooser" tabindex="1">
-                    <span class="switcher-prefix">Owner: </span>
-                        <a class="switcher-top closed">
-                            <span class="down-arrow" tabindex="3"></span>
-                            <span class="title" id="switcher-title">
-                                {{{selected_label}}}
-                            </span>
-                        </a>
+        
+    <div id="filter-widget" class="filter-widget">
+        <div class="switcher collection-chooser" tabindex="1">
+            <span class="switcher-prefix">Owner: </span>
+                <a class="switcher-top closed">
+                    <span class="down-arrow" tabindex="3"></span>
+                    <span class="title" id="switcher-title">
+                        {{{selected_label}}}
                     </span>
-                    <ul class="switcher-options" style="left: -51px">
-                        {{^showing_my_items}}
-                        <li>
-                            <ul class="switcher-sub" id="switcher-extras">
-                                <li class="choice_my_items" id="choice_my_items">
-                                    <a href="" onclick="return CollectionList.selectOwner('{{space_viewer.username}}')">&mdash; Me &mdash;</a>
-                                </li>
-                            </ul>
-                        </li>
-                        {{/showing_my_items}}
-                        <li>
-                            <ul class="scroll switcher-sub">
-                                {{^showing_all_items}}
-                                <li class="choice_all_items" id="choice_all_items">
-                                    <a href="" onclick="return CollectionList.selectOwner();">&mdash; All Class Members &mdash;</a>
-                                </li>
-                                {{/showing_all_items}}
-                                {{#owners}}                            
-                                    <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
-                                {{/owners}}
-                            </ul>
+                </a>
+            </span>
+            <ul class="switcher-options" style="left: -51px">
+                {{^showing_my_items}}
+                <li>
+                    <ul class="switcher-sub" id="switcher-extras">
+                        <li class="choice_my_items" id="choice_my_items">
+                            <a href="" onclick="return CollectionList.selectOwner('{{space_viewer.username}}')">&mdash; Me &mdash;</a>
                         </li>
                     </ul>
-                </div> {{!  end Class Member switcher  }}
-                
-                <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
-                    <a class="switcher-top closed">
-                        <span class="down-arrow" tabindex="4"></span>
-                        <span class="title">Collection Filters 
-                            <span
-                                {{#active_filter_count?}}
-                                    class="filter-on">: ON
-                                {{/active_filter_count?}}
-                                {{^active_filter_count}}
-                                    class="filter-off">...
-                                {{/active_filter_count}}
-                            </span>
-                        </span>
-                    </a>
-                    <ul class="switcher-options" style="right: -51px">
-                        {{#active_filter_count?}}
-                            <li>
-                                <ul class="switcher-sub switcher-active-filters">
-                                    {{#active_filters}}
-                                    <li><a class="remove" href="" onclick="return CollectionList.clearFilter(null)"><span class="metadata-label">Clear All Filters</span></a></li>
-                                        {{#tag?}}
-                                            <li>
-                                                <a class="remove" onclick="return CollectionList.clearFilter('tag')">&nbsp;</a>
-                                                <span class="metadata-label">Tag</span>: <span class="metadata-value">{{tag}}</span>
-                                            </li>
-                                        {{/tag?}}
-                                        {{#modified?}}
-                                            <li>
-                                                <a class="remove" onclick="return CollectionList.clearFilter('modified')">&nbsp;</a>
-                                                <span class="metadata-label">Modified</span>: <span class="metadata-value">{{modified}}</span>
-                                            </li>
-                                        {{/modified?}}
-                                    {{/active_filters}}
-                                </ul>
-                            </li>
-                        {{/active_filter_count?}}
-                        
+                </li>
+                {{/showing_my_items}}
+                <li>
+                    <ul class="scroll switcher-sub">
                         {{^showing_all_items}}
-                        <li>
-                            <h3>Date Modified</h3>
-                            <p class="switcher-sub">
-                                <a href="" onclick="return CollectionList.filterByDate('today')">today</a>
-                                <a href="" onclick="return CollectionList.filterByDate('yesterday')">yesterday</a>
-                                <a href="" onclick="return CollectionList.filterByDate('lastweek')">within the last week</a>
-                            </p>
+                        <li class="choice_all_items" id="choice_all_items">
+                            <a href="" onclick="return CollectionList.selectOwner();">&mdash; All Class Members &mdash;</a>
                         </li>
                         {{/showing_all_items}}
-                
-                        <li>
-                            <h3>Tags</h3>
-                            <p class="switcher-sub">
-                                {{^tags}}
-                                    No tags
-                                {{/tags}}
-                                {{#tags}}
-                                    <a href="" onclick="return CollectionList.filterByTag('{{name}}')" >{{name}}</a>
-                                {{/tags}}
-                            </p>
-                        </li>
-                        
+                        {{#owners}}                            
+                            <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
+                        {{/owners}}
                     </ul>
-                </div>
+                </li>
+            </ul>
+        </div> {{!  end Class Member switcher  }}
+        
+        <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
+            <a class="switcher-top closed">
+                <span class="down-arrow" tabindex="4"></span>
+                <span class="title">Collection Filters 
+                    <span
+                        {{#active_filter_count?}}
+                            class="filter-on">: ON
+                        {{/active_filter_count?}}
+                        {{^active_filter_count}}
+                            class="filter-off">...
+                        {{/active_filter_count}}
+                    </span>
+                </span>
+            </a>
+            <ul class="switcher-options" style="right: -51px">
+                {{#active_filter_count?}}
+                    <li>
+                        <ul class="switcher-sub switcher-active-filters">
+                            {{#active_filters}}
+                            <li><a class="remove" href="" onclick="return CollectionList.clearFilter(null)"><span class="metadata-label">Clear All Filters</span></a></li>
+                                {{#tag?}}
+                                    <li>
+                                        <a class="remove" onclick="return CollectionList.clearFilter('tag')">&nbsp;</a>
+                                        <span class="metadata-label">Tag</span>: <span class="metadata-value">{{tag}}</span>
+                                    </li>
+                                {{/tag?}}
+                                {{#modified?}}
+                                    <li>
+                                        <a class="remove" onclick="return CollectionList.clearFilter('modified')">&nbsp;</a>
+                                        <span class="metadata-label">Modified</span>: <span class="metadata-value">{{modified}}</span>
+                                    </li>
+                                {{/modified?}}
+                            {{/active_filters}}
+                        </ul>
+                    </li>
+                {{/active_filter_count?}}
                 
-                <div class="visualclear"></div>
-            </div> {{! end filter widget }}
-        </tr>
+                {{^showing_all_items}}
+                <li>
+                    <h3>Date Modified</h3>
+                    <p class="switcher-sub">
+                        <a href="" onclick="return CollectionList.filterByDate('today')">today</a>
+                        <a href="" onclick="return CollectionList.filterByDate('yesterday')">yesterday</a>
+                        <a href="" onclick="return CollectionList.filterByDate('lastweek')">within the last week</a>
+                    </p>
+                </li>
+                {{/showing_all_items}}
+        
+                <li>
+                    <h3>Tags</h3>
+                    <p class="switcher-sub">
+                        {{^tags}}
+                            No tags
+                        {{/tags}}
+                        {{#tags}}
+                            <a href="" onclick="return CollectionList.filterByTag('{{name}}')" >{{name}}</a>
+                        {{/tags}}
+                    </p>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="visualclear"></div>
+    </div> {{! end filter widget }}
+    
+    <table>
+    <tbody>
         <tr>
             <td id="projects">
                 <div class="column-container projects-column-container" style="padding-bottom: 8px;">

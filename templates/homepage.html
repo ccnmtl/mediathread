@@ -28,7 +28,7 @@
     DjangoSherd_Asset_Config();    
     {% if not mock %}
         CollectionList.init({
-            'space_owner': '{{space_owner.username}}'
+            'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}'
         });
     {% endif %}{# not mock #}    
   </script>

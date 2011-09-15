@@ -100,9 +100,6 @@
         var self = this;
                 
         this.init = function(config) {
-            this.config = config;
-            
-            
             jQuery.ajax({
                 url:'/site_media/templates/classwork.mustache?nocache=v2',
                 dataType:'text',
@@ -111,7 +108,7 @@
                         // Retrieve the full asset w/annotations from storage
                         djangosherd.storage.get({
                                 type:'asset',
-                                url:MediaThread.urls['your-space'](config.space_owner)
+                                url: config.space_owner ? MediaThread.urls['your-space'](config.space_owner) : MediaThread.urls['all-space']()
                             },
                             false,
                             function(your_records) {

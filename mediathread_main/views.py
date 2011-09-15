@@ -393,7 +393,9 @@ def your_records(request, user_name):
 @allow_http("GET")
 def all_records(request):
     c = request.course
-    in_course_or_404(request.user.username, c)
+    
+    if not request.user.is_staff:
+        in_course_or_404(request.user.username, c)
     
     return get_records('all', c, request);
     

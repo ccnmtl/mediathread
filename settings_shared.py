@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     #'slider',
     'reports',
     'mediathread_main',
+    'sentry.client'
 )
 
 THUMBNAIL_SUBDIR = "thumbs"

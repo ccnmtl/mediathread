@@ -10,3 +10,7 @@ requirements/src/typogrify-1.0.tar.gz
 #requirements/src/djangohelpers-0.1.tar.gz
 #requirements/src/django_courseaffils-0.2.tar.gz
 requirements/src/djangohelpers-0.3dev.tar.gz
+requirements/src/django-indexer-0.2.1.tar.gz
+requirements/src/django-templatetag-sugar-0.1.tar.gz
+requirements/src/django-paging-0.2.2.tar.gz
+requirements/src/django-sentry-1.5.4.tar.gz

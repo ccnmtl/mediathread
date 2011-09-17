@@ -214,6 +214,12 @@ function saveProject(evt) {
             } else {
                 jQuery('#last-version-public').html('');
             }
+            
+            
+            if (jQuery("#participant_list").is(':visible'))
+                updateParticipantList();
+            
+            jQuery("#participant_update").hide();
         }
     });
 }

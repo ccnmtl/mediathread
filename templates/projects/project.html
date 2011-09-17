@@ -107,21 +107,13 @@
 	</div><!-- end -->
 	
         <div id="project_participants">
-
-	 
-
           <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
           <b>{{projectform.participants.label_tag}}:</b>
-          <div id="participants_chosen">
-            {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-            {%public_name for part %}{%endfor%}
-          </div>
+          <div id="participants_chosen" style="padding-bottom: 2px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
           <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
           <br />
           <div id="participant_list" class="hs-init-hide hs-hide"> 
-            <a id="participants_close" class="control-close participants_toggle" href="#participant_list" >x</a>
-
-            <b>Select your authors</b>
+            <b>Select authors:</b>
             <p>{{projectform.participants.help_text }}</p>
 
             {{projectform.participants}} 
@@ -130,9 +122,9 @@
         
       </div>
       
-	<div id="project-form-buttons"> 
-	       <input class="project savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-<input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+    <div id="project-form-buttons"> 
+        <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+        <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
      
 	  <span class="project-dropdown">
 	    {{projectform.publish.label_tag}}    

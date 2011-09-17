@@ -242,6 +242,8 @@ jQuery(function (){/*onDOM Ready*/
 
     //initialize Assets Column with ajax
     AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
+    
+
 });
 
 function project_warnOnUnload() {
@@ -250,17 +252,9 @@ function project_warnOnUnload() {
             project_modified = true;
         }) 
     });
-    var already_run = false; ///beforeunload seems to trigger twice in Chromium, at least
     jQuery(window).bind('beforeunload',function(evt) {
-        if (project_modified && !already_run) {
-            already_run = true;
-            if (confirm('You have unsaved changes. Do you want to save before leaving?')) {
-                project_modified = false;
-                saveProject({
-                    target:document.forms['editproject'],
-                    preventDefault:function(){}
-                })
-            }
+        if (project_modified) {
+            return "Changes to your project have not been saved.";
         }
     })
     

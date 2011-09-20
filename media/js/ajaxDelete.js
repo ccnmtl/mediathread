@@ -18,6 +18,7 @@
                 success:function (responseText, textStatus, xhr) {
                     if( xhr.status == 200 ) {
                         jQuery(dom).hide("fade");
+                        jQuery(dom).remove();
                     } else alert("Error: "+textStatus);
                 },
                 error:function(xhr) {

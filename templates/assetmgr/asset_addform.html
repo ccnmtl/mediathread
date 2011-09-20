@@ -37,7 +37,7 @@
            {%for lbl,src in archive.sources.items %}
              <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
            {%endfor%}
-           <input type="submit" value="Add to Class" />
+           <input type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
          </form>
       </li>
       {%endfor%}

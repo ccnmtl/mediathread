@@ -187,11 +187,12 @@ function saveProject(evt) {
     
     // select all participants so they will be picked up when the form is serialized
     jQuery("select[name=participants] option").attr("selected","selected");  
+    var data = jQuery(frm).serializeArray();
     
     jQuery.ajax({
         type: 'POST',
         url: frm.action,
-        data: jQuery(frm).serializeArray(),
+        data: data,
         dataType: 'json',
         error: function(){alert('There was an error saving your project.');},
         success: function(json,textStatus,xhr){
@@ -227,7 +228,7 @@ function saveProject(evt) {
     });
 }
 
-jQuery(function (){/*onDOM Ready*/
+function project_init() {
     if (document.forms['editproject']) {
         jQuery(document.forms['editproject']).bind('submit',saveProject);
         jQuery('#asset_browse_col').parent().addClass('annotation-embedding');
@@ -245,7 +246,7 @@ jQuery(function (){/*onDOM Ready*/
 
     //initialize Assets Column with ajax
     AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
-});
+}
 
 function project_warnOnUnload() {
     tinyMCE.onAddEditor.add(function(manager, ed) {

@@ -14,33 +14,33 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <script type="text/javascript">
     var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
   </script>
-
   <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
   <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
   
-  
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
+  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
+  <script type="text/javascript">
+   jQuery(document).ready(function() {     
+        DjangoSherd_Project_Config({
+            {% if switcher.project_json %}
+            project_json:"{{switcher.project_json}}",
+            {% endif %}
+            open_from_hash:true
+        });
 
-  <script type="text/javascript">        
-    DjangoSherd_Project_Config({
-        {% if switcher.project_json %}
-        project_json:"{{switcher.project_json}}",
-        {% endif %}
-        open_from_hash:true
+        project_init();
     });   
   </script>
   <!--END for showing Annotations -->
-  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
   <script type="text/javascript" src="/site_media/js/discussion.js"></script>
   {% if EXPERIMENTAL %}
   <script type="text/javascript" src="/site_media/js/slider.js"></script>
   {% endif %}
-  
+  <script type="text/javascript" src="/site_media/js/hs.js"></script>
 {% endblock %}
 
 {% block content %}

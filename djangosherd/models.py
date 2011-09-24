@@ -274,10 +274,13 @@ class SherdNote(Annotation):
         return Annotation.delete(self)
 
     def get_absolute_url(self):
-        if self.is_null():
-            return self.asset.get_absolute_url()
-        return reverse('annotation-form', None, 
-                       (self.asset.pk, self.pk))
+        try:
+            if self.is_null():
+                return self.asset.get_absolute_url()
+            return reverse('annotation-form', None, 
+                           (self.asset.pk, self.pk))
+        except:
+            return ''
 
     def save(self, *args, **kw):
         """
@@ -419,13 +422,17 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
         sherds = [ NoNote(), ]
 
     for ann in sherds:
-        di,c = DiscussionIndex.objects.get_or_create(
-            participant=participant,
-            collaboration = collaboration,
-            asset=ann.asset,
-            )
-        di.comment = comment
-        di.save()
+        try:
+            di,c = DiscussionIndex.objects.get_or_create(
+                participant=participant,
+                collaboration = collaboration,
+                asset=ann.asset,
+                )
+            di.comment = comment
+            di.save()
+        except:
+            # some things may be deleted. pass
+            pass
 
 
 post_save.connect(commentNproject_indexer)

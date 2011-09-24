@@ -13,26 +13,30 @@
 {% endblock %}</title>
 
 {% block css %}
-    <link rel="stylesheet" href="/site_media/css/project.css" /> 
+    <link rel="stylesheet" href="/site_media/css/project.css" />
     <script type="text/javascript" src="/jsi18n"></script>
     {{ projectform.media }}
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
-  <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
-  
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
-
-  <script type="text/javascript">        
-    DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json'});           
-  </script>
   <!--END for showing Annotations -->
 
   <script type="text/javascript" src="/site_media/js/project/project.js"></script>
-  <!--script type="text/javascript" src="/site_media/js/project/editor.js"></script-->
+  <script type="text/javascript" src="/site_media/js/hs.js"></script>
+  <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
 
+  <script type="text/javascript">
+     jQuery(document).ready(function () {
+          setTimeout(function() {
+              // delay this for half a second until the rest of the page is loaded.
+              DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json'});
+              
+              project_init();
+          }, 500);
+     });
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -126,7 +130,7 @@
         <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
      
 	  <span class="project-dropdown">
-	    {{projectform.publish.label_tag}}    
+	        {{projectform.publish.label_tag}}    
             {{projectform.publish}}
 	  </span>
         </div>

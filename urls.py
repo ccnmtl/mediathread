@@ -29,8 +29,9 @@ urlpatterns = patterns('',
                        logout_page,
                        auth_urls,#see above
 
-
+                
                        (r'^admin/', admin.site.urls),
+                       (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),
                        url(r'^bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve', {'document_root': bookmarklet_root}, name='analyze-bookmarklet'),
                        ## one for cache defeating

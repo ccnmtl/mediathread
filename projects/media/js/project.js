@@ -1,21 +1,21 @@
 var project_modified = false;
 function updateParticipantList() {
-    var new_list = [];
-    var participant_options = document.forms['editproject'].participants.options;
-    for (var i=0;i<participant_options.length;i++) {
-	if (participant_options[i].selected) {
-	    new_list.push(participant_options[i].innerHTML);
-	}
+    if (jQuery("#participant_list").is(":visible")) {
+        var new_list = [];
+        var opts = document.forms['editproject'].participants.options;
+        for (var i = opts.length - 1; i >= 0; i--) {
+            new_list.push(opts[i].innerHTML);
+        }
+    
+        var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'');
+        var new_list_str = new_list.join(', ');
+        if (old_list != new_list_str) {
+            jQuery("#participants_chosen").html(new_list_str);
+            jQuery("#participant_update").show();
+            project_modified = true;
+        }
     }
-
-    jQuery("#participant_list").toggle(); 
-
-    var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'');
-    var new_list_str = new_list.join(', ');
-    if (old_list != new_list_str) {
-        jQuery('#participants_chosen').text(new_list_str);
-        jQuery("#participant_update").show(); 
-    }
+    jQuery("#participant_list").toggle();
     updateVerticalHeight();
 }
 
@@ -184,6 +184,10 @@ function saveProject(evt) {
     }
     //else
     evt.preventDefault();
+    
+    // select all participants so they will be picked up when the form is serialized
+    jQuery("select[name=participants] option").attr("selected","selected");  
+    
     jQuery.ajax({
         type: 'POST',
         url: frm.action,
@@ -191,7 +195,6 @@ function saveProject(evt) {
         dataType: 'json',
         error: function(){alert('There was an error saving your project.');},
         success: function(json,textStatus,xhr){
-            project_modified = false;
             jQuery('#last-version-prefix').html('Saved: ')
 
             jQuery('#last-version-link')
@@ -215,11 +218,11 @@ function saveProject(evt) {
                 jQuery('#last-version-public').html('');
             }
             
-            
-            if (jQuery("#participant_list").is(':visible'))
+            if (jQuery("#participant_list").is(":visible"))
                 updateParticipantList();
-            
+                
             jQuery("#participant_update").hide();
+            project_modified = false;
         }
     });
 }
@@ -242,8 +245,6 @@ jQuery(function (){/*onDOM Ready*/
 
     //initialize Assets Column with ajax
     AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
-    
-
 });
 
 function project_warnOnUnload() {

@@ -1,8 +1,7 @@
 from django import forms
 from django.db import models
-
+from django.contrib.admin import widgets
 from projects.models import *
-
 from courseaffils.lib import get_public_name
 
 class ProjectForm(forms.ModelForm):
@@ -18,14 +17,17 @@ class ProjectForm(forms.ModelForm):
     parent =  forms.CharField(required=False,label='Response to',
                               #choices=[(1,1)],
                               )
-
     class Meta:
         model = Project
         fields = ('title','body','participants','submit','publish')
-    
+
     def __init__(self,request, *args, **kwargs):
         super(ProjectForm,self).__init__(*args,**kwargs)
-        self.fields['participants'].choices = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
+        self.fields['participants'].widget = widgets.FilteredSelectMultiple("participants",False) 
+        
+        lst = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
+        self.fields['participants'].choices = sorted(lst, key=lambda participant: participant[1])   # sort by name
+        
         
         col = kwargs['instance'].collaboration()
         if col:

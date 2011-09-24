@@ -193,23 +193,19 @@
                                             </h3>
                                            <div class="meta">
                                                 
-                                                {{#collaboration?}}
+                                               {{#collaboration?}}
                                                     <span class="metadata-label">
                                                       Response for:</span> 
                                                       <span class="metadata-value"><a href="{{collaboration.url}}">{{collaboration.title}}</a>
                                                     </span>
-                                                {{/collaboration?}}
-                                                {{#feedback?}}
-                                                   
-                                                <div><span class="metadata-label"> <a href="/discussion/show/{{feedback}}">Instructor Feedback</a></span></div>
-                                                   
-                                                {{/feedback?}}
-                                                <br />
+                                               {{/collaboration?}}
+                                               {{#feedback?}}
+                                                  <div><span class="metadata-label"> <a href="/discussion/show/{{feedback}}">Instructor Feedback</a></span></div><br />
+                                               {{/feedback?}}
                                             
-                                              <div class="participants">
+                                              <div>
                                                   <span class="metadata-label">Author(s):</span>
-                                                  <span class="metadata-value participants-short">{{#short_authors}}{{name}}, {{/short_authors}}</span>
-                                                  <div class="metadata-value participants-full">{{#long_authors}}{{name}}, {{/long_authors}}</div>
+                                                  <span class="metadata-value">{{#authors}}{{name}}, {{/authors}}</span>
                                               </div>
                                               
                                               <span class="metadata-label">Saved at:</span>

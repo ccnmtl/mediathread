@@ -373,17 +373,6 @@ padding-right: 4px;
     background-image: url(../img/icons/item_assignment.gif);
 }
 
-
-.participants .participants-full,
-.participants:hover .participants-short {
-    display:none;
-}
-
-.participants:hover .participants-full {
-    display:inline;
-}
-
-
 .asset_title.type-project
 {
 	background-image: url(../img/icons/item_project.gif);

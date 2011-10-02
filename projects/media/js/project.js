@@ -1,16 +1,27 @@
 var project_modified = false;
+function updateParticipantsChosen() {
+    var opts = document.forms['editproject'].participants.options;
+    var participant_list = ""; 
+    for (var i = 0; i < opts.length; i++) {
+        if (participant_list.length > 0)
+            participant_list += ", ";
+        participant_list +=  opts[i].innerHTML;
+    }
+    jQuery("#participants_chosen").html(participant_list);
+}
+
 function updateParticipantList() {
     if (jQuery("#participant_list").is(":visible")) {
-        var new_list = [];
         var opts = document.forms['editproject'].participants.options;
-        for (var i = opts.length - 1; i >= 0; i--) {
-            new_list.push(opts[i].innerHTML);
+        var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
+        
+        var matches = old_list.length == opts.length;
+        for (var i = 0; i < opts.length && matches; i++) {
+            matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
         }
-    
-        var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'');
-        var new_list_str = new_list.join(', ');
-        if (old_list != new_list_str) {
-            jQuery("#participants_chosen").html(new_list_str);
+        
+        if (!matches) {
+            updateParticipantsChosen();
             jQuery("#participant_update").show();
             project_modified = true;
         }
@@ -219,9 +230,8 @@ function saveProject(evt) {
                 jQuery('#last-version-public').html('');
             }
             
-            if (jQuery("#participant_list").is(":visible"))
-                updateParticipantList();
-                
+            updateParticipantsChosen();
+            jQuery("#participant_list").hide();
             jQuery("#participant_update").hide();
             project_modified = false;
         }

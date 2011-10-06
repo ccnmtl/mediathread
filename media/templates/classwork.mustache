@@ -192,6 +192,9 @@
                                         
                                             </h3>
                                            <div class="meta">
+                                               {{#feedback?}}
+                                                  <div><span class="metadata-label"> <a href="/discussion/show/{{feedback}}">Read Instructor Feedback</a></span></div>
+                                               {{/feedback?}}
                                                 
                                                {{#collaboration?}}
                                                     <span class="metadata-label">
@@ -199,9 +202,6 @@
                                                       <span class="metadata-value"><a href="{{collaboration.url}}">{{collaboration.title}}</a>
                                                     </span>
                                                {{/collaboration?}}
-                                               {{#feedback?}}
-                                                  <div><span class="metadata-label"> <a href="/discussion/show/{{feedback}}">Instructor Feedback</a></span></div><br />
-                                               {{/feedback?}}
                                             
                                               <div>
                                                   <span class="metadata-label">Author(s):</span>

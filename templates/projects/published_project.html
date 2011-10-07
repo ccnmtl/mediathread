@@ -24,8 +24,8 @@
   {% include "djangosherd/annotator_resources.html" %}
  
   <script type="text/javascript">        
-    DjangoSherd_Project_Config({open_from_hash: false, project_json:'./json'});           
-     {% if user.is_staff %}var is_staff = true;{% endif %}
+    DjangoSherd_Project_Config({open_from_hash: false, project_json:'./json', presentation: 'medium'});           
+    {% if user.is_staff %}var is_staff = true;{% endif %}
   </script>
 {% endblock %}
 
@@ -41,22 +41,18 @@
             </a>
         {% endif %}
     </h1>
-  
+    <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
     {% with project.assignment as assignment %}
     {% if assignment %}
-        <div>
-            <h2>Response to
+            <h6 style="margin: .2em 0 1em">Response to
               <a href="{{assignment.get_absolute_url}}">
             {{assignment.title}}
               </a>
-            </h2>
-        </div>
+            </h6>
     {% endif %}
     {% endwith %}
-  
-    <h5>by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
     
-    <div class="button-form">
+    <div class="button-form" style="padding: 0px 0px">
         {% if project.collaboration %}
             {#need to test it, because the default collaboration created won't have the right perms#}
             {% if not project.feedback_discussion %}
@@ -102,8 +98,8 @@
         {% endif %}{# end project.collaboration #}
     </div><!-- ??class="button-form" -->
     
-    <div style="width: 1024px">
-        <div style="float: left; width: 30%; margin-right: 10px; height: 370px;"> 
+    <div style="width: 100%;">
+        <div class="essay-space-container"> 
             <div class="essay-space published">  
                 <div id="essaybox" class="essaytextarea">
     	           {{project.body|safe}}
@@ -111,11 +107,12 @@
             </div>
         </div><!--  End Button Container -->
         
-        <div class="asset-view asset-view-small">
+           
+        <div class="asset-view-published">
             <div id="videoclipbox" style="display: none">
-                <div class="annotation-title materialCitation"></div>
-                <div class="asset-title"></div>
-                <div class="asset-object"><!-- width changes here too if video size changes -->
+                <div class="annotation-title publishedCitation" style="margin-left: 8px; margin-top: 5px;"></div>
+                <div class="asset-title" style="margin-left: 5px; margin-bottom: 8px; min-height: 20px;"></div>
+                <div class="asset-object" style="border: none; background-color: #ededed;"><!-- width changes here too if video size changes -->
                     <div id="videoclip" class="asset-display"></div>
                     <div id="clipstrip-display" class="clipstrip-display"></div>    
                 </div>

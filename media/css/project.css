@@ -77,6 +77,12 @@ padding: 5px;
 #materials .essay-space.published {
     width:auto;
 }
+
+.essay-space-container {
+    float: left; 
+    width: 42%;
+}
+
 .essay-space.published
 { 
   /*NO PERCENT WIDTH HERE:
@@ -85,15 +91,23 @@ padding: 5px;
    
   width:450px;
   max-width:550px;*/
-  height: 28.5em;
+  height: 442px;
   overflow: auto;
-        position:relative;/*important companion to overflow:auto for IE7*/
-  margin-left: auto;
+  position:relative;/*important companion to overflow:auto for IE7*/
+  margin-left: 5px;
   border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
-
   background-color:white;
- }
+}
+ 
+.asset-view-published {
+    background: url('../img/media-Bkgd.gif') no-repeat center center;
+    padding-top: 3px;
+    background-color: #ededed;
+    float: left;
+    width: 58%;
+    height: 450px;
+}
  
  .asset-view {
 
@@ -106,20 +120,17 @@ float: left;
 }
 
  .asset-view-small {
-
-background: url('../img/media-Bkgd.gif') no-repeat;
-width: 363px;
-min-height: 324px;
-padding-top: 3px;
-}
-
- .asset-view-small .asset-object {
-
-margin: 6px;
+    background: url('../img/media-Bkgd.gif') no-repeat;
+    width: 363px;
+    min-height: 324px;
+    padding-top: 3px;
 }
 
 
 
+.asset-view-small .asset-object {
+    margin: 6px;
+}
 
 .annotation-links {
 

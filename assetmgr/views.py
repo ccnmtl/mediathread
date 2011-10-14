@@ -19,9 +19,9 @@ from django.db import models
 from random import choice
 from string import letters
 
-import simplejson
-
 import re
+import simplejson
+import urllib
 
 Asset = models.get_model('assetmgr','asset')
 Source = models.get_model('assetmgr','source')
@@ -471,13 +471,13 @@ def archive_specialauth(request,url,key):
     import hmac, hashlib, datetime
     
     nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = request.build_absolute_uri('/')
+    redirect_back = "%s?msg=%s" % (request.build_absolute_uri('/'), "Your video file submission is being processed. You will receive an e-mail when it is ready.")
     username = request.user.username
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
         url,
         request.course.group.name,
         username,
-        redirect_back,
+        urllib.quote(redirect_back),
         nonce,
         hmac.new(key,
                  '%s:%s:%s' % (username,redirect_back,nonce),

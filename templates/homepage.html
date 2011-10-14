@@ -158,6 +158,10 @@
         var visible = getVisibleContentHeight();
         jQuery('#instructor .column-container').css('height', visible + "px");
         jQuery('#classwork').css('height', visible + "px");
+
+        var msg = "{{ msg }}";
+        if (msg)
+            confirm(msg);
     });
 </script>
 {% endblock %}

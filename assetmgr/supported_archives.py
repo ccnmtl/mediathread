@@ -167,7 +167,23 @@ When you find an image you want to analyze in an ARTstor collection list, click 
                      },
             },
      },
-
+     {'title':'Vimeo',
+     'metadata':{'description':
+                 "Vimeo is a respectful community of creative people who are passionate about sharing the videos they make.",
+                 'required':['flash'],
+                 },
+     'sources':{
+            'url':{'label':'url',
+                   'url':'http://www.vimeo.com/',
+                   },
+            'archive':{'label':'archive',
+                       'url':'http://www.vimeo.com/',
+                       },
+            'thumb':{'label':'thumb',
+                     'url':'/site_media/img/vimeo_logo.png',
+                     },
+            },
+     }
 ]
 
 template =     {'title':'',

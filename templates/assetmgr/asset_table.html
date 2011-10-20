@@ -23,7 +23,7 @@
    
     <div class="switcher collection-chooser" tabindex="1">
     <span class="switcher-prefix">View: </span>
-      <a class="switcher-top closed">
+      <a class="switcher-top closed" onclick="switcher(this);">
         <span class="down-arrow" tabindex="3"></span>
         <span class="title" id="switcher-title">
           {%if space_owner %}
@@ -74,7 +74,7 @@
     </div>
     {%if dates or tags %}
     <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2">
-      <a class="switcher-top closed">
+      <a class="switcher-top closed" onclick="switcher(this);">
         <span class="down-arrow" tabindex="4"></span>
         <span class="title">
       Filters<span 

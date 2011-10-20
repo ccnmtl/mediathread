@@ -24,7 +24,6 @@
     z-index:9999;/*IE z-index bug workaround*/
     margin-bottom:8px;
     outline:none;
-
 }
 
 div.collection-filter {
@@ -55,8 +54,7 @@ body.role-non-member li.choice_my_items {
     display:none;
 }
 
-div.collection-chooser a.switcher-top,
-div.collection-chooser:focus a.switcher-top {
+div.collection-chooser a.switcher-top
     font-size: 80%;
     font-weight:normal;
 }
@@ -164,7 +162,6 @@ div.collection-chooser ul.switcher-options {
 }
 
 
-.switcher:focus ul.switcher-options,
 .switcher ul.switcher-options:hover,
 .switcher.open ul.switcher-options { 
     display:block;
@@ -236,11 +233,9 @@ div.collection-chooser ul.switcher-options {
 
 }
 
-.switcher a.open,
-.switcher:focus a.closed
+.switcher a.open
  {
     /*firefox*/
-    pointer-events:none;
     border-style: solid solid none; 
     
     border-color: rgb(204, 204, 204) rgb(204, 204, 204) -moz-use-text-color; 
@@ -309,14 +304,4 @@ span.down-arrow {
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous;
-    pointer-events:none;
-}
-
-span.down-arrow:focus {
-    outline:none;
-}
-
-.switcher:focus span.down-arrow {
-    width:100%;
-    pointer-events:auto;
 }

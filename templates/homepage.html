@@ -12,9 +12,7 @@
 {% block js %}
   <script type="text/javascript" src="/site_media/js/hs.js"></script>
   <script type="text/javascript" src="/site_media/js/ajaxDelete.js"></script>
-  <script type="text/javascript" src="/site_media/js/tablesort.js"></script>
-  <script type="text/javascript" src="/site_media/js/util.js"></script>
-  
+  <script type="text/javascript" src="/site_media/js/tablesort.js"></script>  
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
     
@@ -144,12 +142,6 @@
         jQuery(".inst-header").click(function() {
             jQuery(this).next().toggle();
         })
-
-        jQuery("html").bind("ajaxStart", function(){  
-           jQuery(this).addClass('busy');  
-        }).bind("ajaxStop", function(){  
-           jQuery(this).removeClass('busy');  
-        });
 
         var visible = getVisibleContentHeight();
         jQuery('#instructor .column-container').css('height', visible + "px");

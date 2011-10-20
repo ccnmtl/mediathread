@@ -20,3 +20,8 @@ function getVisibleContentHeight() {
     
     return viewportheight - (10 + document.getElementById("primarynav").clientHeight + document.getElementById("header").clientHeight); 
 }
+
+function switcher(a) {
+    jQuery(a).toggleClass('closed open');
+    jQuery(a).parent().children('ul.switcher-options').toggle();
+}

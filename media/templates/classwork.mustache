@@ -5,7 +5,7 @@
     <div id="filter-widget" class="filter-widget">
         <div class="switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
-                <a class="switcher-top closed">
+                <a class="switcher-top closed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="3"></span>
                     <span class="title" id="switcher-title">
                         {{{selected_label}}}
@@ -38,7 +38,7 @@
         </div> {{!  end Class Member switcher  }}
         
         <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
-            <a class="switcher-top closed">
+            <a class="switcher-top closed" onclick="switcher(this);>
                 <span class="down-arrow" tabindex="4"></span>
                 <span class="title">Collection Filters 
                     <span

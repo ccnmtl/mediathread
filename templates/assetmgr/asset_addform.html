@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Save Page
-{% endblock %}
+{% block title %}Save Page{% endblock %}
 
 {% block content %}
     {{ block.super }}
@@ -10,16 +9,19 @@
   <p>
   This 'Save Page' allows you to add resources listed in "Browse Sources".
   </p>
+  {% if is_staff %}
   <ul>
     <li><a href="#archives">Add supported collections</a></li>
     <li><a href="#custom_archive">Add your own collection</a></li>
     <li><a href="#specific">Add single media assets</a></li>
     <li><a href="#advanced">Advanced Documentation</a></li>
   </ul>
+  {% endif %}
 </div>
-    <h1 id="archives">Supported Collections</h1>
-    <ul class="archive-gallery">
-      {%for archive in supported_archives %}
+
+<h1 id="archives">Supported Collections</h1>
+<ul class="archive-gallery">
+    {% for archive in supported_archives %}
       <li class="archive archive-across">
         <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
         <br />
@@ -43,7 +45,7 @@
       {%endfor%}
     </ul>
     <br style="clear:both" />
-    
+{% if is_staff %}    
       <h2 id="custom_archive">Add your own Collection</h2>
       <p>
         You may want to copy the links from above (including the thumbnail URL) and just change the description or link to a sub-section of the site.
@@ -278,5 +280,5 @@
           experimentalStatus();
         </script>
       </div>
-
+{% endif %}
 {% endblock %}

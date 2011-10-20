@@ -132,6 +132,7 @@ def asset_addform(request):
     return {
         'asset_request':request.GET,
         'supported_archives':all,
+        'is_staff': request.user.is_staff
         }
 
 @transaction.commit_manually

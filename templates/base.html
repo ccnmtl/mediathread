@@ -7,23 +7,26 @@
 
 	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css" />
 	<link rel="stylesheet" type="text/css" href="/site_media/css/intermame.css" />
-
-	<link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
-
+    <link rel="stylesheet" type="text/css" href="/site_media/css/shield.css" />
 	<link rel="stylesheet" href="/site_media/css/mediathread.css" media="screen" />
 	<link rel="stylesheet" href="/site_media/css/print.css" media="print" />
-	<!--[if IE 6]>
-	<link rel="stylesheet" href="/site_media/css/main_ie6_1col.css" media="screen" />
-	<![endif]-->
-    {% load cache user_projects coursetags %}
+    
+    <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
+    
+	{% load cache user_projects coursetags %}
     {% cache 500 heads course %}
        {% if course.settings.custom_headers %}
         {{course.settings.custom_headers|safe}}
        {% endif %}
     {% endcache %}
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
-        <script type="text/javascript">
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    
+    <script src="/site_media/js/browserdetect.js" type="text/javascript" language="javascript"></script>
+    <script src="/site_media/js/shield.js" type="text/javascript" language="javascript"></script>
+    
+    <script type="text/javascript">
           var lt = String.fromCharCode(60);
           if (window.jQuery) {
             jQuery.noConflict();
@@ -41,12 +44,13 @@
                this.user_full_name = "{%public_name for request.user %}";
              {% endif %}
           })();
-        </script>
+    </script>
 	{% block css %}{% endblock %}
 	{% block feeds %}{% endblock %}
 </head>
 {% course_role for request.user in course as role_in_course %}
 <body class="one_column {% block widthtype %}fluid{% endblock %} role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
+
 {% comment %}
 ###### FOR WIDTH TYPE--
    fixed : fixed width, doesn't change with browser resize
@@ -56,45 +60,39 @@
 {% endcomment %}
 
 <div id="container">
-
-
-{% block masthead %}
-	<!-- ###### Site banner ###### -->
-	<div id="header">
-		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
-		{% block standardnav %}
-	
-	<div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" /></a></div>
-	<ul id="standardnav">
-			
-{% if request.user.is_authenticated %}
-<li>Welcome, <span id="logged_in_name" class="username">{% public_name for user %}</span>!</li>
-			<li><a href="/accounts/logout/">Log Out</a></li>
-		{%if user.is_staff %}
-			<li>
-			  <a href="/admin/">ADMIN</a>
-			</li>
-		{%endif%}
-  {% num_courses for user as user_courses %}
-  {% if user_courses.1 or user.is_staff %}
-			<li><a href="/?unset_course">Switch Course</a></li>
-  {% endif %}
-{% else %}
-			<li><a href="/accounts/login/">Log In</a></li>
-{% endif %}
-
-<li><a href="/help/">Help</a></li>
-		</ul>
-		{% endblock %}
-		
-	</div><!-- id="header" -->
-{% endblock %}
-
-
-
-	<!-- ###### Don't touch this ###### -->
-	<div class="visualclear"></div>
-	
+    {% block masthead %}
+    	<!-- ###### Site banner ###### -->
+    	<div id="header">
+    		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
+    		{% block standardnav %}
+        	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" /></a></div>
+        	   <ul id="standardnav">
+                    {% if request.user.is_authenticated %}
+                        <li>Welcome, <span id="logged_in_name" class="username">{% public_name for user %}</span>!</li>
+            			<li><a href="/accounts/logout/">Log Out</a></li>
+            		    {%if user.is_staff %}
+                			<li>
+                			  <a href="/admin/">ADMIN</a>
+                			</li>
+            		    {%endif%}
+                        {% num_courses for user as user_courses %}
+                        {% if user_courses.1 or user.is_staff %}
+                            <li><a href="/?unset_course">Switch Course</a></li>
+                        {% endif %}
+                    {% else %}
+        			    <li><a href="/accounts/login/">Log In</a></li>
+                    {% endif %}
+        
+                    <li><a href="/help/">Help</a></li>
+                </ul>
+    		{% endblock %}
+    		
+    	</div><!-- id="header" -->
+    {% endblock %}
+        
+    <!-- ###### Don't touch this ###### -->
+    <div class="visualclear"></div>
+    	
 
 {% block primarynav %}
 	<!-- ###### Primary navigation ###### -->
@@ -133,6 +131,7 @@
 
 	<!-- ###### Page: Sidebars and Content ###### -->
 	<div id="pagebody">
+        <div id="shieldbox"></div>
 
 
 		<!-- ###### Page Content ###### -->
@@ -177,6 +176,9 @@
 
 {% block js %}{% endblock %}
 <script type="text/javascript">
+   /* Select from list: Chrome, Firefox, Safari, MSIE */
+   shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 7 });
+
    var _gaq = _gaq || [];
    var _gaq_mediathread = 'UA-311226-18';
   _gaq.push(['_setAccount', _gaq_mediathread]);

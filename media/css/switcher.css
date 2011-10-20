@@ -54,7 +54,7 @@ body.role-non-member li.choice_my_items {
     display:none;
 }
 
-div.collection-chooser a.switcher-top
+div.collection-chooser a.switcher-top {
     font-size: 80%;
     font-weight:normal;
 }
@@ -233,8 +233,7 @@ div.collection-chooser ul.switcher-options {
 
 }
 
-.switcher a.open
- {
+.switcher a.open {
     /*firefox*/
     border-style: solid solid none; 
     

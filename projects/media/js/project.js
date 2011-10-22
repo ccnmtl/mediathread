@@ -110,6 +110,9 @@ var AssetList = new (function () {
         self.switcherTitle(project.title);
         jQuery('#choice_my_items').show();
         jQuery('#switcher-collection-filter').hide();
+        jQuery(".switcher-top").removeClass("open");
+        jQuery(".switcher-top").addClass("closed");
+        jQuery("ul.switcher-options").hide();
     }
     this.decorators = {
         project:function(evt) {

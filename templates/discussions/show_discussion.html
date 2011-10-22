@@ -29,10 +29,9 @@
             {% if switcher.project_json %}
             project_json:"{{switcher.project_json}}",
             {% endif %}
-            open_from_hash:true
+            open_from_hash:true,
+            callback: project_init
         });
-
-        project_init();
     });   
   </script>
   <!--END for showing Annotations -->

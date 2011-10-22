@@ -264,11 +264,11 @@ function project_warnOnUnload() {
             project_modified = true;
         }) 
     });
+    
     jQuery(window).bind('beforeunload',function(evt) {
         if (project_modified) {
             return "Changes to your project have not been saved.";
         }
     })
-    
 }
 

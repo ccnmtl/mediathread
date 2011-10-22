@@ -31,9 +31,7 @@
      jQuery(document).ready(function () {
           setTimeout(function() {
               // delay this for half a second until the rest of the page is loaded.
-              DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json'});
-              
-              project_init();
+              DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json', callback: project_init});
           }, 500);
      });
   </script>

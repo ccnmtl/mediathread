@@ -22,7 +22,7 @@
   
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
-  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
+  <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
   <script type="text/javascript">
    jQuery(document).ready(function() {     
         DjangoSherd_Project_Config({
@@ -35,11 +35,11 @@
     });   
   </script>
   <!--END for showing Annotations -->
-  <script type="text/javascript" src="/site_media/js/discussion.js"></script>
+  <script type="text/javascript" src="/site_media/js/discussion.js?version={{settings.REVISION}}"></script>
   {% if EXPERIMENTAL %}
-  <script type="text/javascript" src="/site_media/js/slider.js"></script>
+  <script type="text/javascript" src="/site_media/js/slider.js?version={{settings.REVISION}}"></script>
   {% endif %}
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
 {% endblock %}
 
 {% block content %}

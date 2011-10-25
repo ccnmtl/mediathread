@@ -466,7 +466,6 @@ img, img a
 	line-height: 33px;
 	text-align: center;
 	border: 1px solid #9d9d9d; 
-    background-color: #6f6f6f;
     -moz-border-radius-topleft: 10px;
 	-moz-border-radius-topright: 10px;
     -webkit-border-top-left-radius: 10px;
@@ -483,7 +482,7 @@ img, img a
 #primarynav li.instructor a
 {
 
-	color: #fff;
+	color: #666;
 
 }
 

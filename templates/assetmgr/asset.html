@@ -9,12 +9,12 @@
 
 {% block js %}
   <script type="text/javascript" src="/site_media/js/tabber.js"></script>
-  <script type="text/javascript" src="/site_media/js/hs.js?v1"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
-  <script type="text/javascript" src="/site_media/js/mustache/mustache.js"></script>
-  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?v1"></script>
+  <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
+  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
   <script type="text/javascript">
     DjangoSherd_Asset_Config();    
     {% if not mock %}

@@ -103,6 +103,7 @@
             jQuery.ajax({
                 url:'/site_media/templates/classwork.mustache?nocache=v2',
                 dataType:'text',
+                cache: false, // Chrome && Internet Explorer has aggressive caching policies.
                 success:function(text) {
                     MediaThread.templates['classwork'] = Mustache.template('classwork',text);
                         // Retrieve the full asset w/annotations from storage
@@ -247,6 +248,7 @@
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache?nocache=v2',
                 dataType:'text',
+                cache: false, // Chrome && Internet Explorer has aggressive caching policies.
                 success:function(text){
                     MediaThread.templates['annotations'] = Mustache.template('annotations',text);
                     
@@ -669,6 +671,7 @@
                 url: url,
                 data: jQuery(frm).serialize(),
                 dataType: 'json',
+                cache: false, // Chrome && Internet Explorer has aggressive caching policies.
                 success: function(json, textStatus, jqXHR) {
                     // Repopulate the cache & refresh the annotation view
                     // @todo -- if asset_json could be moved over to djangosherd:views.py, 

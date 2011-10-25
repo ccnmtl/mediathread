@@ -20,11 +20,11 @@
 
 {% block js %}
   <!--All the annotation javascript/css -->
-  {% include "djangosherd/annotator_resources.html" %}
+    {% include "djangosherd/annotator_resources.html" %}
   <!--END for showing Annotations -->
 
-  <script type="text/javascript" src="/site_media/js/project/project.js"></script>
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
+  <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
   <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
 
   <script type="text/javascript">

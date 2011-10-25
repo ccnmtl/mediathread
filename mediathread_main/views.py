@@ -44,6 +44,7 @@ def django_settings(request):
     whitelist = ['PUBLIC_CONTACT_EMAIL',
                  'FLOWPLAYER_SWF_LOCATION',
                  'DEBUG',
+                 'REVISION'
                  ]
 
     rv = {'settings':dict([(k,getattr(settings,k,None)) for k in whitelist]),

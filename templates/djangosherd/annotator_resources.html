@@ -51,7 +51,6 @@
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/vimeo.js"></script>
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/kaltura.js"></script>
   
-  
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipform.js"></script>
   <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipstrip.js"></script>
 
@@ -61,8 +60,8 @@
   <script src="/site_media/js/sherdjs/src/image/annotators/fsiviewer.js"></script>
 
   {% else %}
-  <script type="text/javascript" src="/site_media/js/sherdjs/sherdjs_min.js"></script>
+  <script type="text/javascript" src="/site_media/js/sherdjs/sherdjs_min.js?version={{settings.REVISION}}" ></script>
   {% endif %}
 
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/configs/djangosherd.js"></script>
+  <script type="text/javascript" src="/site_media/js/sherdjs/src/configs/djangosherd.js?version={{settings.REVISION}}"></script>
 

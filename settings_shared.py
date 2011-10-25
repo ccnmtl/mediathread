@@ -13,6 +13,8 @@ ADMINS = (
     ('admin', 'mediathread@example.com'),
 )
 
+REVISION = 1 # introducting a script version to provide cache busting
+
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql_psycopg2' # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.

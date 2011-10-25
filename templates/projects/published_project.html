@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/hs.js"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
 
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}

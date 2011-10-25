@@ -138,6 +138,7 @@ var AssetList = new (function () {
         jQuery.ajax({
             url:asset_url+extra+'edit_mode=true',
             dataType:'html',
+            cache: false, // Chrome && Internet Explorer has aggressive caching policies.
             success:function(html) {
                 jQuery('#asset_browse_col').replaceWith(html);
                 var new_assets = jQuery('#asset_browse_col').get(0);

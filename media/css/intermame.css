@@ -23,6 +23,15 @@ font-weight: normal;
 input {
     border: 1px solid #333333;
     background-repeat: repeat-x;
+    text-transform: capitalize;
+
+}
+
+input.videoplay{
+    padding: 1px 2px 1px 20px;
+    background-image:url("../img/selection_play.gif");
+    background-repeat: no-repeat;
+    border: none;
 
 }
 

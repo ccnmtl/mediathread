@@ -244,6 +244,12 @@
             this.active_asset = null;
             this.active_asset_annotations = null;
             this.config = config;
+            
+            jQuery("#edit-item-form").submit(function() {
+                return self.saveItem();
+            });
+            
+            window.onbeforeunload = config.level == "item" ? this.saveItemPrompt : null;
 
             jQuery.ajax({
                 url:'/site_media/templates/annotations.mustache?nocache=v2',
@@ -626,6 +632,28 @@
             }});
             
             return false;
+        }
+        
+        ///Item Save
+        this.saveItem = function() {
+            var frm = document.forms['edit-item-form'];
+            if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
+                alert("Please specify tags and notes before saving.");
+                frm.elements['annotation-tags'].focus();
+                return false;
+            } else {
+                return true;
+            }
+        }
+        
+        ///Item Save Prompt
+        this.saveItemPrompt = function() {
+            var frm = document.forms['edit-item-form'];
+            if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
+                // @todo -- switch selected tab back to Item
+                frm.elements['annotation-tags'].focus();
+                return "Save tags and notes to place this item in your collection";
+            }
         }
         
         ///Annotation Save

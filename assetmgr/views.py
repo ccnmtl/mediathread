@@ -206,13 +206,17 @@ def add_asset(request):
             transaction.commit()
 
         asset_url = reverse('asset-view', args=[asset.id])
+        
+        source = request.POST.get('asset-source', "")
+        if source == 'bookmarklet':
+            asset_url += "?level=item"
 
         #for bookmarklet mass-adding
         if request.REQUEST.get('noui','').startswith('postMessage'):
             return render_to_response('assetmgr/interface_iframe.html',
                                       {'message': '%s|%s' % (request.build_absolute_uri(asset_url),
                                                              request.REQUEST['noui']),
-                                       })
+                                      })
         elif not request.is_ajax():
             return HttpResponseRedirect(asset_url)
         else:
@@ -320,7 +324,7 @@ def asset_accoutrements(request, asset, user, annotation_form):
 def asset_workspace(request, asset_id):
     asset = get_object_or_404(Asset, pk=asset_id,
                               course=request.course)
-
+    
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])

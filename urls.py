@@ -52,8 +52,7 @@ urlpatterns = patterns('',
 
                        #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
 
-                       url(r'^save/$', asset.add_view,
-                           name="asset-save"),
+                       url(r'^save/$', asset.add_view,name="asset-save"),
 
                        url(r'^analysis/$', mediathread_main.base_slide),
 

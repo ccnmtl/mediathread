@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://kang.ccnmtl.columbia.edu:13086" />
+<title>YouTube</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">YouTube</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/accounts/login/?next=/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_username</td>
+	<td>selenium_student_one</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=id_password</td>
+	<td>FReRu4re</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=form[name=&quot;login_local&quot;] &gt; input[type=&quot;submit&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Mediathread | CCNMTL Internal Automated QA &gt; Home</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=You Tube</td>
+	<td>You Tube</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=You Tube</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>id=participants_chosen</td>
+	<td>selenium_instructor</td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>link=edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=The Muppets: PÃ¶pcÃ¸rn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>window.djangosherd.assetview.settings.youtube.view.media.state()</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>window.djangosherd.assetview.settings.youtube.view.media.time() &lt; 10</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=The Muppets: Pöpcørn</td>
+	<td>The Muppets: Pöpcørn</td>
+</tr>
+<tr>
+	<td>assertElementNotPresent</td>
+	<td>css=h2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Popcorn Shrimp Gets His Revenge</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>window.djangosherd.assetview.settings.youtube.view.media.time() &gt; 178</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>window.djangosherd.assetview.settings.youtube.view.media.state()</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Popcorn Shrimp Gets His Revenge</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=The Muppets: Pöpcørn</td>
+	<td>The Muppets: Pöpcørn</td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

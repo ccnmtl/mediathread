@@ -1879,18 +1879,6 @@ input.jstimecode
 	vertical-align: top;
 }
 
-.cliptimeboxtable
-{
-	margin: auto;
-	padding: 0;
-  /*	border: 1px solid #999;
-	border-top: 1px solid #fff;
-	background-color: #efefef;*/
-}
-.cliptimeboxtable td
-{ 
-  border:0px;
- }
 #clipcontrols
 { 
   text-align:left;

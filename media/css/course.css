@@ -1201,27 +1201,26 @@ ul.submenu.course-report li.highlight {
 }
 
 .asset-annotator {
-    padding: 10px;
-    background-color: #dedede;
-    margin: 10px;
+    margin: 10px 10px 0 10px;
 }
 
 .sherd-instructions {
-    color:#666;
+    color: black;
     display:block;
-    margin:0.4em 0 2em;
     text-align:left;
+    padding: 10px;
+    background-color: #dedede;
 }
 
 p.sherd-instructions {
-    color:#666;
     display:block;
-    margin:0.4em 0 .5em .5em;
+    margin: 0 0 .5em 0em;
+    padding: 0 0 .7em .7em;
     text-align:left;
 }
 
 .sherd-clipform {
-    padding: 5px 5px 5px 0px;
+    padding: 0 0 0 0;
 }
 
 .sherd-clipform table {
@@ -1240,7 +1239,9 @@ p.sherd-instructions {
 }
 
 .sherd-clipform-editing td {
-    padding:2px;
+    padding:5px;
+    background-color: #FCFB97;
+    border: 0px;
 }
 
 .sherd-clipform-editing td.sherd-clipform-timecodestart {

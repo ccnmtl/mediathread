@@ -642,6 +642,7 @@
                 frm.elements['annotation-tags'].focus();
                 return false;
             } else {
+                window.onbeforeunload = null;
                 return true;
             }
         }
@@ -724,6 +725,7 @@
                         self.updateAnnotationList();
                         self._addHistory(/*replace=*/false);
                         jQuery("#annotations-organized").show();
+                        window.onbeforeunload = null;
                     });
                 }
             });

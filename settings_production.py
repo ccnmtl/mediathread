@@ -19,3 +19,9 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 WIND_SERVICE = "cnmtl_full_p"
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
+

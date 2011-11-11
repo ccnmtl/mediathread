@@ -118,8 +118,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # users. we need to allow anonymous access to the login
 # page, and to static resources.
 
-ANONYMOUS_PATHS = ('/accounts/',
-                   '/site_media/',
+ANONYMOUS_PATHS = ('/site_media/',
+                   '/accounts/',
                    '/admin/',
                    '/api/',
                    )
@@ -135,6 +135,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                       '/discussion/',
                       '/notifications/',
                       '/archive/',
+                      '/assignment/',
 
                       '/analysis/',
                       re.compile(r'^/$'),

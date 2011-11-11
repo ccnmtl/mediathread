@@ -8,6 +8,7 @@ from assetmgr import views as asset
 from mediathread_main import views as mediathread_main
 
 import structuredcollaboration.urls
+import projects.assignment_urls
 #import slider.urls
 
 admin.autodiscover()
@@ -54,14 +55,13 @@ urlpatterns = patterns('',
 
                        url(r'^save/$', asset.add_view,name="asset-save"),
 
-                       url(r'^analysis/$', mediathread_main.base_slide),
-
                        (r'^asset/',include('mediathread.assetmgr.urls')),
                        (r'^annotations/',include('mediathread.djangosherd.urls')),
                        (r'^yourspace/',include('mediathread.mediathread_main.urls')),
                        
                        #redundant, but for published projects/legacy
                        (r'^project/',include('mediathread.projects.urls')),
+                       (r'^assignment/',include('mediathread.projects.assignment_urls')),
 
                        url(r'^explore/$','assetmgr.views.archive_explore',
                            name="explore"),

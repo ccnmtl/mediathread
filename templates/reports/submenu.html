@@ -80,12 +80,18 @@ Once created, topic-level Discussions appear on the Class Home page.</li>
 
   <h3>Actions:</h3>
 
+    <form class="block project-createnew" method="POST" action="{%url assignment-editor%}">
+        <input type="hidden" name="title" />
+        <input class="columnbutton project createassignment-button" type="submit" value="Create Assignment"/>
+    </form>
   
-  <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
-    <input type="hidden" name="title" />
-    <input class="columnbutton project createnew-button" type="submit" value="Create or Assign Composition"/>
- 
-  </form>
+    <form class="block project-createnew" method="POST" action="{%url your-space-projects user%}">
+        <input type="hidden" name="title" />
+        &nbsp;
+        <input class="columnbutton project createnew-button" type="submit" value="Create Composition"/>
+    </form>
+  
+    &nbsp;
   <form class="block discussion-createnew"  action="/discussion/new/" method="POST">
     <!--h4>Start a New Discussion</h4>
         <label for="id_comment_html" >Enter Title:</label-->

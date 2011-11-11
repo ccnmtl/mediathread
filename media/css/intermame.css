@@ -23,6 +23,15 @@ font-weight: normal;
 input {
     border: 1px solid #333333;
     background-repeat: repeat-x;
+    text-transform: capitalize;
+
+}
+
+input.videoplay{
+    padding: 1px 2px 1px 20px;
+    background-image:url("../img/selection_play.gif");
+    background-repeat: no-repeat;
+    border: none;
 
 }
 
@@ -406,4 +415,42 @@ html.busy, html.busy * {
 .selector-closed
 {
     background-image: url(../img/right_arrow.png);
+}
+
+
+/*Instructor Dashboard*/
+
+#quickstart {
+    padding: 10px;
+    margin: 0 10px 30px 0;
+    border: 1px solid #ccc;
+
+}
+
+#instructor-actions {
+    width: 200px;
+    float: left;
+    background-color: #dedede;
+    margin-right: 35px;
+    padding: 10px;
+
+}
+
+#instructor-actions input.columnbutton,
+#instructor-actions input.project{
+
+    margin: 5px 0;
+    width: 200px;
+
+}
+
+#instructor-reports {
+margin-left: 269px;
+
+}
+
+#instructor-actions h3,
+#instructor-reports h3{
+    margin: 0 0 10px;
+
 }

@@ -653,7 +653,7 @@
             if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
                 // @todo -- switch selected tab back to Item
                 frm.elements['annotation-tags'].focus();
-                return "Save tags and notes to place this item in your collection";
+                return "Save tags and notes to place this item in your collection.";
             }
         }
         

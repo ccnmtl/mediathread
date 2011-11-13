@@ -4,6 +4,11 @@
 
 {% block content %}
     {{ block.super }}
+    
+{% if msg %}
+    <div><img src="/site_media/img/icons/meth_info_icon.png"></img><b>Success</b></div>
+    {{msg}}
+{% endif %}
 
 <div class="intro-text">
   <p>

@@ -132,7 +132,8 @@ def asset_addform(request):
     return {
         'asset_request':request.GET,
         'supported_archives':all,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
+        'msg':request.GET.get('msg', '')
         }
 
 @transaction.commit_manually
@@ -217,11 +218,15 @@ def add_asset(request):
                                       {'message': '%s|%s' % (request.build_absolute_uri(asset_url),
                                                              request.REQUEST['noui']),
                                       })
-        elif not request.is_ajax():
-            return HttpResponseRedirect(asset_url)
-        else:
+        elif request.is_ajax():
             return HttpResponse(serializers.serialize('json',asset),
                                 mimetype="application/json")
+            
+        elif "archive" == asset.primary.label:
+            url = "%s?msg=The %s source has been added to the class." % (reverse('asset-save'), asset.title)
+            return HttpResponseRedirect(url)
+        else:
+            return HttpResponseRedirect(asset_url)
     else:
         #we'll make it here if someone doesn't submit
         #any primary_labels as arguments

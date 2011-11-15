@@ -12,10 +12,11 @@ Browse Sources
 
     {{ block.super }}
 
-    {% if msg %}
+    {% if newsrc %}
         <div>
         <div><img src="/site_media/img/icons/meth_info_icon.png"></img><b>Success</b></div>
-        {{msg}}
+        The {{newsrc}} source has been added to your course collection.<br />
+        All class sources are listed on the right.
         </div>
         <br />
     {% endif %}

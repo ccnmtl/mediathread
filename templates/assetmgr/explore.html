@@ -11,6 +11,16 @@ Browse Sources
 {% block content %}
 
     {{ block.super }}
+
+    {% if msg %}
+        <div>
+        <div><img src="/site_media/img/icons/meth_info_icon.png"></img><b>Success</b></div>
+        {{msg}}
+        </div>
+        <br />
+    {% endif %}
+    
+    
 {%if archives or is_faculty %}
     <div id="import_instructions" class="top-archive">
       <h2>Instructions</h2>

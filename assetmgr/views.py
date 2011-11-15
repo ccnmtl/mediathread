@@ -133,7 +133,6 @@ def asset_addform(request):
         'asset_request':request.GET,
         'supported_archives':all,
         'is_staff': request.user.is_staff,
-        'msg':request.GET.get('msg', '')
         }
 
 @transaction.commit_manually
@@ -223,7 +222,7 @@ def add_asset(request):
                                 mimetype="application/json")
             
         elif "archive" == asset.primary.label:
-            url = "%s?msg=The %s source has been added to the class." % (reverse('asset-save'), asset.title)
+            url = "%s?msg=The %s source has been added to the class." % (reverse('explore'), asset.title)
             return HttpResponseRedirect(url)
         else:
             return HttpResponseRedirect(asset_url)
@@ -446,6 +445,7 @@ def archive_explore(request):
     rv = {"archives":archives,
           "is_faculty":c.is_faculty(user),
           "space_viewer":user,
+          'msg':request.GET.get('msg', '')
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')

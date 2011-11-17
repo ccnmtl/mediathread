@@ -120,8 +120,10 @@ ul.intro-text li {
 }
 
 body a.control-close,
-body a.hs-control.control-close {
-    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
+body a.hs-control.control-close 
+
+{
+
     display:block;
   float:right;
 	background-image:url('../img/icons/meth_close_icon.png');
@@ -134,6 +136,7 @@ body a.hs-control.control-close {
     overflow:hidden;
     line-height:48px;
 }
+
 body a.control-close:hover {
     background-image:url('../img/icons/meth_close_icon_hover.png');
 }

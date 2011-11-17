@@ -1307,6 +1307,71 @@ body.old-assetwindow #asset-details-annotations-list {
     
 }
 
+/*Toggling inline help text*/
+
+
+div.help.showhide
+{
+    float: left;
+    margin: 5px;
+    width: 97%;
+}
+
+div.help.showhide .helptoggle 
+{
+
+    float: right;
+    display: block;
+    width: 26px;
+    
+}
+
+div.help.showhide .helptoggle.on 
+{
+
+    background-color: #DEDEDE;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+}
+
+.helptoggle a.togglebutton 
+{
+
+    display:block;
+    background-image:url('../img/icons/meth_info_icon.png');
+    background-repeat: no-repeat;
+    width:20px;
+    height:20px;
+    color:transparent;
+    /*for IE 6-8 not supporting transparent text:*/
+    overflow:hidden;
+    line-height:48px;
+    margin: 2px;
+}
+
+.helptoggle a.togglebutton:hover 
+{
+	background-image:url('../img/icons/meth_info_icon_hover.png');
+}
+
+div.help.showhide .helpblock {
+    /*margin 20px on right-and left, squeezes homepage content over [x] */
+	margin: 20px 0px 10px;
+	background-color: #dedede;
+	padding: 1px 10px;
+	font-size: 95%;
+    max-width:600px;
+
+}
+
+
+
+
 .intro-text {
     /*margin 20px on right-and left, squeezes homepage content over [x] */
 	margin: 10px;

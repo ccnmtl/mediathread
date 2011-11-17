@@ -36,8 +36,9 @@
     <tr>
         {%if display.instructor or is_faculty %}
         <td class="" id="instructor">
+
             <div class="column-container">    
-                <h2>From Your Instructor
+                <h2>{% with "help_instructor" as help_id %}{% include "help.html" %}{% endwith %}From Your Instructor
                     <a class="hs-control intro-open" href="#intro-instructor">?</a>
                 </h2>
                 <div class="column-contents scroll">

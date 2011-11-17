@@ -8,7 +8,6 @@ from assetmgr import views as asset
 from mediathread_main import views as mediathread_main
 
 import structuredcollaboration.urls
-import projects.assignment_urls
 #import slider.urls
 
 admin.autodiscover()
@@ -61,8 +60,7 @@ urlpatterns = patterns('',
                        
                        #redundant, but for published projects/legacy
                        (r'^project/',include('mediathread.projects.urls')),
-                       (r'^assignment/',include('mediathread.projects.assignment_urls')),
-
+                       
                        url(r'^explore/$','assetmgr.views.archive_explore',
                            name="explore"),
                        url(r'^explore/redirect/$','assetmgr.views.archive_redirect',

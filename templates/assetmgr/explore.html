@@ -11,6 +11,17 @@ Browse Sources
 {% block content %}
 
     {{ block.super }}
+
+    {% if newsrc %}
+        <div>
+        <div><img src="/site_media/img/icons/meth_info_icon.png"></img><b>Success</b></div>
+        The {{newsrc}} source has been added to your course collection.<br />
+        All class sources are listed on the right.
+        </div>
+        <br />
+    {% endif %}
+    
+    
 {%if archives or is_faculty %}
     <div id="import_instructions" class="top-archive">
       <h2>Instructions</h2>

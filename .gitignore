@@ -8,3 +8,4 @@ deploy_specific
 local_settings.py
 .project
 .pydevproject
+start_server.sh

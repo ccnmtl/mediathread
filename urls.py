@@ -66,6 +66,7 @@ urlpatterns = patterns('',
                        url(r'^explore/redirect/$','assetmgr.views.archive_redirect',
                            name="archive_redirect"),
 
+                       (r'^quickstart', 'django.views.generic.simple.direct_to_template',{'template':'flatpages/quickstart.html'}),
 
                        (r'^reports/',include('mediathread.reports.urls')),
                        #threaded discussion:

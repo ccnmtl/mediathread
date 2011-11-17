@@ -267,13 +267,3 @@ def project_workspace_courselookup(project_id=None,**kw):
 
 AUTO_COURSE_SELECT[project_readonly_view] = project_workspace_courselookup
 AUTO_COURSE_SELECT[view_project] = project_workspace_courselookup
-
-@allow_http("GET","POST")
-@rendered_with('projects/assignmenteditor.html')
-def assignment_editor(request):
-    """FACULTY ONLY reporting of entire class activity """
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-    
-    rv = {}
-    return rv

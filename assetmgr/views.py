@@ -132,7 +132,7 @@ def asset_addform(request):
     return {
         'asset_request':request.GET,
         'supported_archives':all,
-        'is_staff': request.user.is_staff
+        'is_staff': request.user.is_staff,
         }
 
 @transaction.commit_manually
@@ -217,11 +217,15 @@ def add_asset(request):
                                       {'message': '%s|%s' % (request.build_absolute_uri(asset_url),
                                                              request.REQUEST['noui']),
                                       })
-        elif not request.is_ajax():
-            return HttpResponseRedirect(asset_url)
-        else:
+        elif request.is_ajax():
             return HttpResponse(serializers.serialize('json',asset),
                                 mimetype="application/json")
+            
+        elif "archive" == asset.primary.label:
+            url = "%s?newsrc=%s" % (reverse('explore'), asset.title)
+            return HttpResponseRedirect(url)
+        else:
+            return HttpResponseRedirect(asset_url)
     else:
         #we'll make it here if someone doesn't submit
         #any primary_labels as arguments
@@ -441,6 +445,7 @@ def archive_explore(request):
     rv = {"archives":archives,
           "is_faculty":c.is_faculty(user),
           "space_viewer":user,
+          'newsrc':request.GET.get('newsrc', '')
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')

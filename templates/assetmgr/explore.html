@@ -4,6 +4,20 @@
 Browse Sources
 {% endblock %}
 
+{% block js %}
+    {{ block.super }}
+      
+    {% if newsrc %}
+        <script type="text/javascript"> 
+            jQuery(document).ready(function() {
+                var msg = "The {{newsrc}} source has been added to your course collection.";
+                alert(msg);
+            });
+        </script>
+    {% endif %}
+    
+{% endblock %}
+
 {% block css %}
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 {% endblock %}
@@ -11,16 +25,6 @@ Browse Sources
 {% block content %}
 
     {{ block.super }}
-
-    {% if newsrc %}
-        <div>
-        <div><img src="/site_media/img/icons/meth_info_icon.png"></img><b>Success</b></div>
-        The {{newsrc}} source has been added to your course collection.<br />
-        All class sources are listed on the right.
-        </div>
-        <br />
-    {% endif %}
-    
     
 {%if archives or is_faculty %}
     <div id="import_instructions" class="top-archive">

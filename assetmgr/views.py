@@ -182,6 +182,9 @@ def add_asset(request):
             asset.save()
             for source in sources_from_args(request, asset).values():
                 source.save()
+            if "tag" in metadata:
+                for t in metadata["tag"]:
+                    asset.save_tag(user, t)
 
             transaction.commit()
             if len(metadata):
@@ -209,7 +212,7 @@ def add_asset(request):
         
         source = request.POST.get('asset-source', "")
         if source == 'bookmarklet':
-            asset_url += "?level=item"
+            asset_url += "?importing=1"
 
         #for bookmarklet mass-adding
         if request.REQUEST.get('noui','').startswith('postMessage'):
@@ -481,7 +484,7 @@ def archive_specialauth(request,url,key):
     import hmac, hashlib, datetime
     
     nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = "%s?msg=%s" % (request.build_absolute_uri('/'), "Your video file submission is being processed. You will receive an e-mail when it is ready.")
+    redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
     username = request.user.username
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
         url,

@@ -438,7 +438,7 @@ def archive_explore(request):
         archive = a.sources['archive']
         thumb = a.sources.get('thumb',None)
         description = a.metadata().get('description','')
-        uploader = int(a.metadata().get('upload', 0))
+        uploader = a.metadata().get('upload', 0)
         
         archive_context = {
             "id":a.id,
@@ -449,7 +449,7 @@ def archive_explore(request):
             "metadata": (description[0] if hasattr(description,'append') else description),
         }
         
-        if uploader:
+        if (uploader[0] if hasattr(uploader,'append') else uploader):
             upload_archive = archive_context
         else:
             archives.append(archive_context)

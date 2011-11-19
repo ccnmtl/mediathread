@@ -36,6 +36,7 @@
            {% include "assetmgr/pretender_select.html" %}
            <input type="hidden" name="title" value="{{archive.title}}" />
            <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}" />
+           <input type="hidden" name="metadata-upload" value="{{archive.metadata.upload}}" />
            {%for lbl,src in archive.sources.items %}
              <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
            {%endfor%}

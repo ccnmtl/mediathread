@@ -1,0 +1,28 @@
+<div id="instructor-actions">
+
+  <h3>Actions:</h3>
+
+  
+  <form class="project-createnew" method="POST" action="{%url your-space-projects user%}">
+    <input type="hidden" name="title" />
+    <input class="columnbutton project createnew-button" type="submit" value="Create or Assign Composition"/>
+ 
+  </form>
+  <form class="discussion-createnew"  action="/discussion/new/" method="POST">
+    <!--h4>Start a New Discussion</h4>
+        <label for="id_comment_html" >Enter Title:</label-->
+    <input type="hidden" name="comment_html" value="Discussion Title" />
+    <input type="hidden" name="app_label" value="courseaffils"/>
+    <input type="hidden" name="model" value="course"/>
+    <input type="hidden" name="obj_pk" value="{{course.id}}"/>
+    <input class="project" type="submit" value="New Discussion"/>
+  </form>
+  
+  <form  method="GET" action="/save/">
+    <input class="columnbutton project createnew-button" type="submit" value="+/- Course Collections"/>
+  </form>
+  
+  <form  method="GET" action="/settings">
+    <input class="columnbutton project createnew-button" type="submit" value="Change Course Settings"/>
+  </form>
+</div>

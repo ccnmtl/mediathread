@@ -566,3 +566,28 @@ def get_records(user, course, request):
 @rendered_with('slide.html')
 def base_slide(request):
     return {}
+
+@allow_http("GET", "POST")
+@rendered_with('instructor/course_settings.html')
+def course_settings(request):
+    permission_levels = ['administrator',
+                         'instructor',
+                         'student'
+                        ]
+    context = { 'permission_levels': permission_levels }
+    
+    key = "upload_permission"
+    
+    if request.method == "GET":
+        details = request.course.details()
+        if key in details and details[key].value in permission_levels:
+            context[key] = details[key].value
+        else:
+            context[key] = "administrator"
+    else:
+        upload_permission = request.POST.get(key)
+        request.course.add_detail(key, upload_permission)
+        context['upload_permission_updated'] = True
+        context[key] = upload_permission
+            
+    return context

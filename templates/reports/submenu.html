@@ -1,5 +1,4 @@
 {%if request.user.is_staff and courses %}
-
 <div id="quickstart">
    <div id="staff-switchcourse">
      <form>
@@ -12,7 +11,7 @@
            {% endfor %}
          </select>
        </form>
-     </div>
+</div>
 {% endif %}
 <a class="hs-control intro-open-nofloat" href="#global-instructor-orientation">?</a><a class="hs-control hs-nostyle" href="#global-instructor-orientation">
 <b>QuickStart Guide:</b></a> 
@@ -79,34 +78,8 @@ Once created, topic-level Discussions appear on the Class Home page.</li>
 </div>
 
 
-<div id="instructor-actions">
+{% include "instructor/instructor_actions.html" %}
 
-  <h3>Actions:</h3>
-
-  
-  <form class="project-createnew" method="POST" action="{%url your-space-projects user%}">
-    <input type="hidden" name="title" />
-    <input class="columnbutton project createnew-button" type="submit" value="Create or Assign Composition"/>
- 
-  </form>
-  <form class="discussion-createnew"  action="/discussion/new/" method="POST">
-    <!--h4>Start a New Discussion</h4>
-        <label for="id_comment_html" >Enter Title:</label-->
-    <input type="hidden" name="comment_html" value="Discussion Title" />
-    <input type="hidden" name="app_label" value="courseaffils"/>
-    <input type="hidden" name="model" value="course"/>
-    <input type="hidden" name="obj_pk" value="{{course.id}}"/>
-    <input class="project" type="submit" value="New Discussion"/>
-  </form>
-  
-  <form  method="GET" action="/save/">
-    <input class="columnbutton project createnew-button" type="submit" value="+/- Course Collections"/>
-  </form> 
-
-
-
-<!-- end instructor-actions -->
-</div>
 <div id="instructor-reports">
 
   <h4>Course Reports:</h4>

@@ -50,10 +50,10 @@ urlpatterns = patterns('',
                            name="notifications"),
                        (r'^$', mediathread_main.triple_homepage),
 
-                       #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
-
                        url(r'^save/$', asset.add_view,name="asset-save"),
-
+                       
+                       url(r'^settings$', mediathread_main.course_settings,name="course-settings"),
+                       
                        (r'^asset/',include('mediathread.assetmgr.urls')),
                        (r'^annotations/',include('mediathread.djangosherd.urls')),
                        (r'^yourspace/',include('mediathread.mediathread_main.urls')),
@@ -71,9 +71,9 @@ urlpatterns = patterns('',
                        (r'^reports/',include('mediathread.reports.urls')),
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),
+                       
+                       
 
-                       #(r'', include(slider.urls)),
- 
                        ### Public Access ###
                        (r'', include(structuredcollaboration.urls)), #import at root
                        

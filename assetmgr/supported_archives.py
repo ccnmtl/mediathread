@@ -183,7 +183,24 @@ When you find an image you want to analyze in an ARTstor collection list, click 
                      'url':'/site_media/img/vimeo_logo.png',
                      },
             },
-     }
+     },
+     {'title':'Mediathread Video Upload',
+      'metadata':{'description':
+                     "Allow instructors and students to upload their own source material.",
+                  'upload': "1",
+                 },
+      'sources':{
+            'url':{'label':'url',
+                   'url':'http://wardenclyffe.ccnmtl.columbia.edu/mediathread/',
+                   },
+            'archive':{'label':'archive',
+                       'url':'http://wardenclyffe.ccnmtl.columbia.edu/mediathread/',
+                       },
+            'thumb':{'label':'thumb',
+                     'url':'http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg',
+                     },
+            },
+     },  
 ]
 
 template =     {'title':'',

@@ -19,11 +19,13 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
+import course_details
 import simplejson
 import re
 
 from clumper import Clumper
 from django.conf import settings
+
 
 from courseaffils.lib import users_in_course
 from reports.views import is_unanswered_assignment
@@ -570,24 +572,16 @@ def base_slide(request):
 @allow_http("GET", "POST")
 @rendered_with('instructor/course_settings.html')
 def course_settings(request):
-    permission_levels = ['administrator',
-                         'instructor',
-                         'student'
-                        ]
-    context = { 'permission_levels': permission_levels }
+    context = { 'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS }
     
-    key = "upload_permission"
+    key = course_details.UPLOAD_PERMISSION_KEY 
     
     if request.method == "GET":
-        details = request.course.details()
-        if key in details and details[key].value in permission_levels:
-            context[key] = details[key].value
-        else:
-            context[key] = "administrator"
+        context[key] = int(request.course.get_detail(key, course_details.UPLOAD_PERMISSION_DEFAULT))
     else:
         upload_permission = request.POST.get(key)
         request.course.add_detail(key, upload_permission)
         context['upload_permission_updated'] = True
-        context[key] = upload_permission
+        context[key] = int(upload_permission)
             
     return context

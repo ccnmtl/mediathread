@@ -28,138 +28,127 @@ Browse Sources
     
 {%if archives or is_faculty %}
     <div id="import_instructions" class="top-archive">
-      <h2>Instructions</h2>
+        <h2>Instructions</h2>
       
-      {%if is_faculty%}
-      <p>
-        <b>As an instructor,</b> you can  <a href="/save/">add Items or Sources</a> to this page.  If you do not add any Sources, students will see the list of Items you have collected in MediaThread and will not be offered the Bookmarklet.
-      </p>
-      <p><b>Students will see:</b></p>
-      {%endif%}
-      <p><!-- see below for duplicate text if there are no archives-->
-        Your instructor has listed Sources on this page for use in research associated with this class.  
-        Items from these Sources may be imported here using the MediaThread bookmarklet (see below)
-      </p>
+        {%if is_faculty%}
+            <p>
+                <b>As an instructor,</b> you can  <a href="/save/">add Items or Sources</a> to this page.  If you do not add any Sources, students will see the list of Items you have collected in MediaThread and will not be offered the Bookmarklet.
+            </p>
+            <p><b>Students will see:</b></p>
+        {% endif %}
+        <p><!-- see below for duplicate text if there are no archives-->
+            Your instructor has listed Sources on this page for use in research associated with this class.  
+            Items from these Sources may be imported here using the MediaThread bookmarklet (see below)
+        </p>
     
-	<div class="import_class bookmarklet_import">
-          <h3>Bookmarklet Import:</h3>
-          <p>
-            First install a browser "bookmarklet", and then use it to import Items from supported Sources and analyze them in MediaThread.
-            
-          </p>
-           <h4>Bookmarklet Installation</h4>
-          <div id="browser-instructions" class="browser-specific-instructions">
-            <ol id="firefox" class="browser-instruction"><h5>Firefox:</h5>
-              
-              <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
-              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-            </ol>
-            <ol id="ie" class="browser-instruction">
-              <h5> Internet Explorer:</h5>
-              <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li><br />
-              <li>and choose <b>Add to Favorites</b></li>
-            </ol>
-            
-            
-            <ol id="safari" class="browser-instruction">
-              <h5>Safari:</h5>
-              <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
-              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-            </ol>
-            
-            <ol id="chrome" class="browser-instruction">
-              <h5>Google Chrome:</h5>
-              <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
-              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-              {% if EXPERIMENTAL %}
-              <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome MediaThread Extension</a></li>
-              {% endif %}
-            </ol>
-            <script type="text/javascript">
-              var u = navigator.userAgent;
-              var i = $('browser-instructions');
-              if (/Chrome/.test(u)) {
-                 $('.browser-instruction').hide();
-                 $('#chrome').show();
-              } else if (/Safari/.test(u)) {
-                 $('.browser-instruction').hide();
-                 $('#safari').show();
-              } else if (/MSIE/.test(u)) {
-                 $('.browser-instruction').hide();
-                 $('#ie').show();
-              } else if (/Gecko/.test(u)) {
-                 $('.browser-instruction').hide();
-                 $('#firefox').show();
-              } 
-            </script>
+        <div class="import_class bookmarklet_import">
+            <h3>Bookmarklet Import:</h3>
+            <p>
+                First install a browser "bookmarklet", and then use it to import Items from supported Sources and analyze them in MediaThread.
+            </p>
+            <h4>Bookmarklet Installation</h4>
+            <div id="browser-instructions" class="browser-specific-instructions">
+                <ol id="firefox" class="browser-instruction"><h5>Firefox:</h5>
+                  <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
+                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                </ol>
+                <ol id="ie" class="browser-instruction">
+                  <h5> Internet Explorer:</h5>
+                  <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li><br />
+                  <li>and choose <b>Add to Favorites</b></li>
+                </ol>
+                <ol id="safari" class="browser-instruction">
+                  <h5>Safari:</h5>
+                  <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                </ol>
+                <ol id="chrome" class="browser-instruction">
+                  <h5>Google Chrome:</h5>
+                  <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                  {% if EXPERIMENTAL %}
+                  <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome MediaThread Extension</a></li>
+                  {% endif %}
+                </ol>
+                <script type="text/javascript">
+                    var u = navigator.userAgent;
+                    var i = $('browser-instructions');
+                    if (/Chrome/.test(u)) {
+                        $('.browser-instruction').hide();
+                        $('#chrome').show();
+                    } else if (/Safari/.test(u)) {
+                        $('.browser-instruction').hide();
+                        $('#safari').show();
+                    } else if (/MSIE/.test(u)) {
+                        $('.browser-instruction').hide();
+                        $('#ie').show();
+                    } else if (/Gecko/.test(u)) {
+                        $('.browser-instruction').hide();
+                        $('#firefox').show();
+                    } 
+                </script>
 
-<h4>Bookmarklet Use:</h4>
-<p>Click the bookmarklet link when viewing an Item from any supported Source to import the Item to MediaThread. You can then analyze the Item and/or save it to your "Collections" space.</p>
-         
-          </div>
-          <!--Confused? More Information here-->
+                <h4>Bookmarklet Use:</h4>
+                <p>Click the bookmarklet link when viewing an Item from any supported Source to import the Item to MediaThread. You can then analyze the Item and/or save it to your "Collections" space.</p>
+            </div>
 	
-          <h4>What are Bookmarklets?</h4>
-          <p>A bookmarklet is a tiny program (a JavaScript application) contained 
-             in a bookmark which can be saved and used the same way you use normal bookmarks. 
-             Bookmarklets run on the web page your browser is currently pointed at.
-          </p>
-          <p>For more information see the <a href="http://en.wikipedia.org/wiki/Bookmarklet">Bookmarklet Wikipedia article</a>
-          </p>
-	
-
+            <h4>What are Bookmarklets?</h4>
+            <p>A bookmarklet is a tiny program (a JavaScript application) contained 
+                 in a bookmark which can be saved and used the same way you use normal bookmarks. 
+                 Bookmarklets run on the web page your browser is currently pointed at.
+            </p>
+            <p>For more information see the <a href="http://en.wikipedia.org/wiki/Bookmarklet">Bookmarklet Wikipedia article</a></p>
         </div>
     </div>
-
-
-
-
-    <div id="external-archives" class="top-archive">
-    <h2>Sources</h2>
-    {%for archive in archives %}
-       <div id="archive-{{archive.id}}" class="archive">
-         {% if space_viewer.is_staff %}
-         <div class="manage-archive">
-           <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage Title/Description</a>
-           edit:
-           <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.archive.id %}">link</a>
-           {%if archive.thumb%}
-              <a class="manage-archive-link" href="{%url admin:assetmgr_source_change archive.thumb.id %}">thumb</a>           
-              {% else %}
-              <a class="manage-archive-link" href="{%url admin:assetmgr_source_add %}">thumb</a>                    
-           {% endif %}           
-         </div>
-         {% endif %}
-     
-	 <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
-         <br />
-         {%if archive.thumb%}
-           <a href="redirect/?url={{archive.archive.url|urlencode}}"><img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-         </a>
-         {% endif %}
-
-	 <div>
-             {{archive.metadata|urlize|linebreaks}}
-	 </div>
-       </div>
-    {%endfor%}
-</div>
-{%else %}{# archives or is_faculty #}
-   {%if faculty_assets %}
-       <p><!-- see above for duplicate text if there are no archives-->
-         Your instructor has listed sources on this page for use in research associated with this class.  
-       </p>
-       <div id="instructor-items" class="archive">
+    
+    {% if upload_archive %}
+        {% if can_upload %}
+            <div id="uploader" class="top-archive">
+                <h2>Video Upload</h2>
+                <div id="archive-{{upload_archive.id}}" class="archive">
+                    {% if space_viewer.is_staff %}
+                        <div class="manage-archive">
+                            <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change upload_archive.id %}">Manage</a>
+                        </div>
+                    {% endif %}
          
-	 <h2>Instructor's Collected Items</h2>
-	 <ol>
-	   {% for a in faculty_assets %}
-	   <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
-	   {%endfor%}
-	 </ol>
-       
-       </div>
-   {%endif%}
+                    <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="archive-link">{{upload_archive.title}}</a>
+                    <br />
+                    {% if upload_archive.thumb %}
+                       <a href="redirect/?url={{upload_archive.archive.url|urlencode}}"><img src="{{upload_archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                       </a>
+                    {% endif %}
+                    <div>
+                        {{upload_archive.metadata|urlize|linebreaks}}
+                    </div>
+                </div>       
+            </div>
+        {% endif %}
+    {% endif %}
+        
+    <div id="external-archives" class="top-archive">
+        <h2>Sources</h2>
+        {% for archive in archives %}
+            <div id="archive-{{archive.id}}" class="archive">
+                {% if space_viewer.is_staff %}
+                    <div class="manage-archive">
+                        <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+                    </div>
+                {% endif %}
+     
+                <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                <br />
+                {% if archive.thumb %}
+                   <a href="redirect/?url={{archive.archive.url|urlencode}}"><img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                   </a>
+                {% endif %}
+                <div>
+                    {{archive.metadata|urlize|linebreaks}}
+                </div>
+            </div>
+        {%endfor%}
+    </div>
+
 {%endif%}
 
 {% endblock %}

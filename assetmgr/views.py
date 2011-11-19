@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
 from structuredcollaboration.models import Collaboration
 from mediathread_main.clumper import Clumper
+from mediathread_main import course_details
 
 from django.conf import settings
 
@@ -432,23 +433,34 @@ def archive_explore(request):
         user = get_object_or_404(User,username=request.GET['as'])
 
     archives = []
+    upload_archive = None
     for a in c.asset_set.archives().order_by('title'):
         archive = a.sources['archive']
         thumb = a.sources.get('thumb',None)
         description = a.metadata().get('description','')
-        archives.append({
-                "id":a.id,
-                "title":a.title,
-                "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
-                "archive":{"id":archive.id, "url":archive.url},
-                #is description a list or a string?
-                "metadata": (description[0] if hasattr(description,'append') else description),
-                })
-
+        uploader = int(a.metadata().get('upload', 0))
+        
+        archive_context = {
+            "id":a.id,
+            "title":a.title,
+            "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
+            "archive":{"id":archive.id, "url":archive.url},
+            #is description a list or a string?
+            "metadata": (description[0] if hasattr(description,'append') else description),
+        }
+        
+        if uploader:
+            upload_archive = archive_context
+        else:
+            archives.append(archive_context)
+        
     rv = {"archives":archives,
+          "upload_archive": upload_archive,
           "is_faculty":c.is_faculty(user),
           "space_viewer":user,
-          'newsrc':request.GET.get('newsrc', '')
+          'newsrc':request.GET.get('newsrc', ''),
+          'can_upload': course_details.can_upload(request.user, request.course),
+          'upload_service': getattr(settings,'UPLOAD_SERVICE',None)
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
@@ -458,6 +470,8 @@ def archive_explore(request):
         # MUST only contain string values for now!! 
         # (see templates/assetmgr/bookmarklet.js to see why or fix)
         rv['bookmarklet_vars'] = {'flickr_apikey':settings.DJANGOSHERD_FLICKR_APIKEY }
+        
+    
     return rv
 
 def archive_redirect(request):

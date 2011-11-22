@@ -235,59 +235,6 @@ def add_asset(request):
         #any primary_labels as arguments
         raise AssertionError("something didn't work")
 
-@rendered_with('assetmgr/asset_container.html')
-def container_view(request):
-    """for all class assets view at /asset/ 
-    OPTIMIZATION:  What we need:
-       asset: primary label, thumb.url
-              tags {name}
-       project: collaboration.get_parent, feedback_discussion
-                status (from collaboration)
-                attribution
-    """
-    #extra() is case-insensitive order hack
-    #http://scottbarnham.com/blog/2007/11/20/case-insensitive-ordering-with-django-and-postgresql/
-    archives = list(request.course.asset_set.archives())
-    assets = [a for a in Asset.objects.filter(course=request.course).extra(
-            select={'lower_title': 'lower(assetmgr_asset.title)'}
-            ).select_related().order_by('lower_title')
-              if a not in archives]
-
-    asset_ids = [a.id for a in assets]
-    thumbs = dict([(th.asset_id,th.url) for th in Source.objects.filter(label='thumb', asset__in=asset_ids)])
-    
-    primaries = dict([(p.asset_id,p) for p in Source.objects.filter(primary=True, asset__in=asset_ids)])
-    #import pdb;pdb.set_trace()
-    for a in assets:
-        a._primary_cache = primaries[a.id]
-        a._thumb_url = thumbs.get(a.id,None)
-
-
-    from tagging.models import Tag
-    all_tags = Tag.objects.usage_for_queryset(
-        SherdNote.objects.filter(
-            asset__course=request.course),
-        counts=True)
-    all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
-    all_tags = calculate_cloud(all_tags)
-
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value)]
-
-    active_filters = get_active_filters(request)
-
-    return {
-        'assets':assets,
-        'tags': all_tags,
-        'active_filters': active_filters,
-        'space_viewer':request.user,
-        'space_owner':None,
-        'is_faculty':request.course.is_faculty(request.user),
-        }
-
 def asset_accoutrements(request, asset, user, annotation_form):
     global_annotation = asset.global_annotation(user, auto_create=False)
     if global_annotation:
@@ -389,39 +336,50 @@ def annotationcontainerview(request, asset_id):
 @rendered_with('assetmgr/asset.html')
 @allow_http("GET", "POST", "DELETE")
 def annotationview(request, asset_id, annot_id):
-    annotation = get_object_or_404(SherdNote,
-                                   pk=annot_id, asset=asset_id,
-                                   asset__course=request.course)
 
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    if request.method in ("DELETE", "POST"):
-        if request.method == "DELETE":
-            redirect_to = reverse('asset-view', args=[asset_id])
-        elif request.method == "POST":
-            redirect_to = '.'
-
-        form = request.GET.copy()
-        form['next'] = redirect_to
-        request.GET = form
-        return annotation_dispatcher(request, annot_id)
-
-    asset = annotation.asset
-
-    global_annotation = asset.global_annotation(user, auto_create=False)
-
-    if global_annotation == annotation:
-        return HttpResponseRedirect(
-            '%s#whole-form' % reverse('asset-view', args=[asset_id]))
-
-    rv = asset_accoutrements(request, annotation.asset, user, 
-                             AnnotationForm(instance=annotation, prefix="annotation")
-                             )
-    rv['annotation'] = annotation
-    rv['readonly'] = (annotation.author != request.user)
-
+    try:
+        annotation = SherdNote.objects.get(pk=annot_id, 
+                                       asset=asset_id,
+                                       asset__course=request.course)
+    
+        if request.method in ("DELETE", "POST"):
+            if request.method == "DELETE":
+                redirect_to = reverse('asset-view', args=[asset_id])
+            elif request.method == "POST":
+                redirect_to = '.'
+    
+            form = request.GET.copy()
+            form['next'] = redirect_to
+            request.GET = form
+            return annotation_dispatcher(request, annot_id)
+    
+        asset = annotation.asset
+    
+        global_annotation = asset.global_annotation(user, auto_create=False)
+    
+        if global_annotation == annotation:
+            return HttpResponseRedirect(
+                '%s#whole-form' % reverse('asset-view', args=[asset_id]))
+    
+        rv = asset_accoutrements(request, annotation.asset, user, 
+                                 AnnotationForm(instance=annotation, prefix="annotation")
+                                 )
+        rv['annotation'] = annotation
+        rv['readonly'] = (annotation.author != request.user)
+    except SherdNote.DoesNotExist:
+        annotation = get_object_or_404(SherdNote,
+                                       pk=annot_id, 
+                                       asset=asset_id)
+        
+        # the user is logged into the wrong class?
+        rv = {}
+        rv['switch_to'] = annotation.asset.course
+        rv['switch_from'] = request.course  
+        
     return rv
 
 @rendered_with('assetmgr/explore.html')

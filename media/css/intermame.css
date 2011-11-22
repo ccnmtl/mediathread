@@ -270,7 +270,7 @@ div.column-contents {
 	padding-top: 10px;
 }
 
-td#media div.column-contents {
+#media div.column-contents {
     padding-top: 0px;
 }
 
@@ -398,7 +398,7 @@ html.busy, html.busy * {
   cursor: wait;  
 }
 
-.selector {
+.metadata-selector {
     display: block;
     height: 15px;
     width: 14px;
@@ -407,12 +407,12 @@ html.busy, html.busy * {
     margin-right: 5px; 
 }
 
-.selector-open
+.metadata-selector-open
 {
     background-image: url(../img/down_arrow.png);
 }
 
-.selector-closed
+.metadata-selector-closed
 {
     background-image: url(../img/right_arrow.png);
 }

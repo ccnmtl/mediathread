@@ -1,105 +1,33 @@
-img.materialCitation {
-    cursor:pointer;
-    display:none;
+a.active-annotation.materialCitation {
+    background-color:#fff100;
+}
+
+a.edit-pencil {
+    text-decoration:none;
+}
+
+
+.active-annotation {
+    background-color: none;
+    padding: 0;
 }
 
 .annotation-embedding img.materialCitation {
     display:block;
 }
 
-input.materialCitation {
-	background: #fff url('../img/icons/item_video.png') left no-repeat;
-	margin: 2px 0px 2px 4px;
-	padding: 1px;
-	border: 0;
-	padding-left: 14px;
-	font-size:12px;
-	color: #660000;
-	cursor:pointer;
-	display:inline;
-	width:auto;
-	overflow:visible; /* IE 5-6 hack */
-	text-decoration: underline;
-	font: normal 12px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
+.asset-view-small .asset-object {
+    margin: 6px;
 }
 
-input.materialCitation:hover
-{
-	background-color: #efefef;
+.asset-view {
+    width: 370px;
+    height: 370px;
+    background-color: #dedede;
+    border: 1px solid #ccc;
+    float: left;
 }
 
-
-#materials {
-
-
-	border: 1px solid #ccc;
-	min-height: 350px;
-	height: 350px;
-	overflow: auto;
-        position:relative;/*important companion to overflow:auto for IE7*/
-	background-color: #ededed;
-
-}
-
-#project-container {
-background-color: #ccc;
-margin: 0;
-padding: 0 5px;
-}
-
-.essay-options
-{ 
-  padding:1em;
-  clear:both;
- }
-
-.essay-space h2 input {
-    padding:0 3px;
-}
-
-.essay-space {
-left:0;
-position:absolute;
-margin-left:380px;
-max-width:550px;
-
-}
-
-.project-form-title {
-
-padding: 5px;
-}
-
-.project-form-title input#id_title {
-    width:250px;
-}
-
-#materials .essay-space.published {
-    width:auto;
-}
-
-.essay-space-container {
-    float: left; 
-    width: 42%;
-}
-
-.essay-space.published
-{ 
-  /*NO PERCENT WIDTH HERE:
-    this is also embedded within the asset-list space
-    which should be close to 100% rather than the published context
-   
-  width:450px;
-  max-width:550px;*/
-  height: 442px;
-  overflow: auto;
-  position:relative;/*important companion to overflow:auto for IE7*/
-  margin-left: 5px;
-  border: 1px solid #ccc;
-  padding: 0 10px 10px 10px;
-  background-color:white;
-}
- 
 .asset-view-published {
     background: url('../img/media-Bkgd.gif') no-repeat center center;
     padding-top: 3px;
@@ -108,74 +36,163 @@ padding: 5px;
     width: 58%;
     height: 450px;
 }
- 
- .asset-view {
 
-width: 370px;
-height: 370px;
-background-color: #dedede;
-border: 1px solid #ccc;
-float: left;
-
-}
-
- .asset-view-small {
+.asset-view-small {
     background: url('../img/media-Bkgd.gif') no-repeat;
     width: 363px;
     min-height: 324px;
     padding-top: 3px;
 }
 
-
-
-.asset-view-small .asset-object {
-    margin: 6px;
-}
-
-.annotation-links {
-
-	
-
-}
-
-a.active-annotation.materialCitation {
-    background-color:#fff100;
+.asset-title {
+    margin-left: 10px;
 }
 
 .annotation-title.materialCitation {
-
-	background-image: url('../img/icons/item_video.gif') left no-repeat;
-	border: 0;
-	color: #660000;
-	width:auto;
-	overflow:visible; /* IE 5-6 hack */
-
-
+    background-image: url('../img/icons/item_video.gif') left no-repeat;
+    border: 0;
+    color: #660000;
+    width:auto;
+    overflow:visible; /* IE 5-6 hack */
 }
 
 .annotation-title.materialCitation h2 {
-	background: #969696 url('../img/icons/item_video.gif') 5px 3px no-repeat;
-	color:#DEDEDE;
-	font-weight:normal;
-	margin:0 0 0.5em;
-	padding:0.2em 0.5em .2em 1.8em;
-	text-align:left;
+    background: #969696 url('../img/icons/item_video.gif') 5px 3px no-repeat;
+    color:#DEDEDE;
+    font-weight:normal;
+    margin:0 0 0.5em;
+    padding:0.2em 0.5em .2em 1.8em;
+    text-align:left;
 }
-
-.active-annotation {
-	background-color: none;
-	padding: 0;
-	
-	}
-	
-.asset-title {margin-left: 10px;}
 
 .capabilities {
     display:none;
     position:absolute;
     left:0px;
     top:-1.5em;
+}
 
+.editing {
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
+.essay-options
+{ 
+    padding:1em;
+    clear:both;
+}
+
+.essay-space-container {
+    float: left; 
+    width: 42%;
+}
+
+.essay-space
+{ 
+  height: 442px;
+  overflow: auto;
+  position:relative;/*important companion to overflow:auto for IE7*/
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  padding: 0 10px 10px 10px;
+  background-color:white;
+  max-width:550px;
+}
+
+.essay-space h2 input {
+    padding:0 3px;
+}
+
+#essay-space-materials {
+    float: left;
+    width: 40%;
+    margin-left: 20px;
+}
+
+img.materialCitation {
+    cursor:pointer;
+    float:right;
+    margin-top:1px;
+}
+
+input.materialCitation {
+    background: #fff url('../img/icons/item_video.gif') left no-repeat;
+    margin: 2px 0px 2px 4px;
+    padding: 1px;
+    border: 0;
+    padding-left: 14px;
+    font-size:12px;
+    color: #369;
+    cursor:pointer;
+    display:inline;
+    width:auto;
+    overflow:visible; /* IE 5-6 hack */
+    text-decoration: underline;
+    font: normal 12px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
+}
+
+input.materialCitation:hover
+{
+    background-color: #efefef;
+}
+
+#last-version-public {
+    padding-left:10px;
+}
+
+#last-version-saved {
+
+   float: right;
+   padding: 3px;
+   margin: 5px 1px 1px 0;
+}
+
+
+body.mceContentBody {
+    /*overrides tinyMCE's default 10px which will not correspond
+      to styled as published (and 10px is too small for the image-annotation
+      icon)
+     */
+    font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
+}
+
+#project-container {
+    background-color: #ccc;
+    margin: 0;
+    padding: 0 5px;
+}
+
+#project-content {
+    width: 100%;
+}
+
+.project-form-title input#id_title {
+    width:250px;
+    font-size: 100%;
+    padding-left: 5px;
+}
+
+
+#project-form-buttons {
+    margin-top:5px;
+}
+
+#project_participants {
+    font-size: 90%;
+    max-width: 451px;
+    padding-top: 4px;
+    margin: 2px;
+}
+
+span.project-dropdown {
+    margin-right:10px;
+    *margin: -23px 45px 0 0;
+}
+
+input.project-savebutton,
+span.project-dropdown {
+    float:right;
 }
 
 
@@ -236,11 +253,7 @@ form.threaded_comments_form ul li {
 .threaded_comment_text {
     margin-bottom:10px;
 }
-/*
-div.respond_to_comment_form_div ul{
-    display:none;
-}
-*/
+
 
 .invisible { display: none; }
 
@@ -357,56 +370,7 @@ li.comment-thread:target > .comment .threaded_comment_header {
 /* ---- End threaded comments ---------- */
 
 
-#last-version-saved {
-
-   float: right;
-   padding: 3px;
-   margin: 5px 1px 1px 0;
-}
-
-#last-version-public {
-    padding-left:10px;
-}
-
-#project_participants {
-    font-size: 90%;
-    max-width: 451px;
-    padding-top: 4px;
-    margin: 2px;
-}
-
-
-body.mceContentBody {
-    /*overrides tinyMCE's default 10px which will not correspond
-      to styled as published (and 10px is too small for the image-annotation
-      icon)
-     */
-    font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
-}
-
-#project-form-buttons {
-    margin-top:5px;
-}
-
-span.project-dropdown {
-    margin-right:10px;
-    *margin: -23px 45px 0 0;
-}
-
-input.project-savebutton,
-span.project-dropdown {
-    float:right;
-}
-
-div.mce_editorwindow {
-    min-width:324px;
-}
-
-a.edit-pencil {
-    text-decoration:none;
-}
-
-/*css for admin widgets*/
+/* ---- Participant Selector Widget ------------ */
 
 /*for FilteredSelectMultiple*/
 .selector {

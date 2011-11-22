@@ -6,9 +6,6 @@ media_root = os.path.join(os.path.dirname(__file__),"media")
 
 urlpatterns = patterns(
     'assetmgr.views',
-    # urls available from /asset/
-    url(r'^$', 'container_view',
-        name='asset-container'),
 
     #NOTE: explore and explore/redirect are re-referenced in ../urls.py
     url(r'^explore/?$', 'archive_explore', name='asset-archiveexplore'),
@@ -23,6 +20,7 @@ urlpatterns = patterns(
     url(r'^(?P<asset_id>\d+)/annotations/$',
         'annotationcontainerview',
         name="annotations-container"),
+                       
     url(r'^(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
         'annotationview',
         name="annotation-form"),

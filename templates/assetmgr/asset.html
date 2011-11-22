@@ -17,27 +17,27 @@
   <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
   <script type="text/javascript">
     jQuery(document).ready(function() {
-        DjangoSherd_Asset_Config();    
-        {% if not mock %}
-            AnnotationList.init({ 
-                 "asset_id":{{asset.id}}
-               {% if global_annotation %}
-                 ,"global_annotation_id":{{global_annotation.id}}
-               {% endif %}       
-               {% if annotation %}
-                 ,"annotation_id":{{annotation.id}}
-               {% endif %}
-               ,"level": "{{request.GET.level}}" 
-            });
-        {% endif %}
-        
-        var importing = {% ifequal request.GET.importing '1' %} true {% else %}false {% endifequal %};
-        if (importing) {
-            setTimeout(function() {
-                msg = "Item import complete, but you're not done yet!\n\nAdd tags, notes and selections to save this item to your collection.";
-                alert(msg);
-            }, 1000);
-        }
+            DjangoSherd_Asset_Config();    
+            {% if not mock %}
+                AnnotationList.init({ 
+                     "asset_id":{{asset.id}}
+                   {% if global_annotation %}
+                     ,"global_annotation_id":{{global_annotation.id}}
+                   {% endif %}       
+                   {% if annotation %}
+                     ,"annotation_id":{{annotation.id}}
+                   {% endif %}
+                   ,"level": "{{request.GET.level}}" 
+                });
+            {% endif %}
+            
+            var importing = {% ifequal request.GET.importing '1' %} true {% else %}false {% endifequal %};
+            if (importing) {
+                setTimeout(function() {
+                    msg = "Item import complete, but you're not done yet!\n\nAdd tags, notes and selections to save this item to your collection.";
+                    alert(msg);
+                }, 1000);
+            }
     });
  
   </script>
@@ -135,10 +135,10 @@
 
                         <div id="classtags" class="sub-control">
                             {% for tag in tags %}
-                            <span class="size{{tag.font_size}}">
-                              <a href="{% url asset-container %}?tag={{tag.name}}">
-                              {{tag.name}} ({{tag.count}})</a>
-                            </span>&nbsp;
+                                <span class="size{{tag.font_size}}">
+                                  <a href="/?tag={{tag.name}}&view=all">
+                                  {{tag.name}} ({{tag.count}})</a>
+                                </span>&nbsp;
                             {% endfor %}
                         </div><!-- end id="classtags" -->
                         <br /><br />

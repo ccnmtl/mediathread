@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
+{% block title %}Asset Not Found{% endblock %}
+
+{% block content %}
+
+<div id="content">
+    <h2>Oops!</h2>
+    
+    You are attempting to view an asset from {{asset_course.name}} while logged into {{request_course.name}}.
+    <br />
+    Would you like to login to {{asset_course.name}} now?
+    <br />
+    <a href="">Yes, Switch My Course</a>
+    <br />
+    <a href="">No, go to Mediathread homepage.</a> 
+
+</div>
+
+{% endblock %}

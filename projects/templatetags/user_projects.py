@@ -41,7 +41,7 @@ def active(request, pattern):
 
     yourspace_base = None
     if request.user.is_authenticated():
-        yourspace_base = reverse('your-space', args=[request.user.username])
+        yourspace_base = '/yourspace/%s/' % (request.user.username)
     if pattern == "Class Portal" or pattern == "Home":
         if request.path == "/":
             return 'active'

@@ -1,0 +1,34 @@
+{############### OBSCURED: NOT USED ###############}
+{% extends "base.html" %}
+<title> {% block title %}Course Roster{% endblock %}</title>
+
+
+{% block content %}
+  {{ block.super }}
+
+<h1>Course Roster</h1>
+
+{% load smartif coursetags %}
+
+<ul>
+    {% for member in request.course.members %}
+        {% if member in request.course.faculty %}
+            <li>
+                <h3><a href="/?username={{member.username}}">{% public_name for member %}</a>(instructor)</h3>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+<ul>
+    {% for member in request.course.members %}
+        {% if member not in request.course.faculty %}
+            <li>
+                <h3><a href="/?username={{member.username}}">{% public_name for member %}</a></h3>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

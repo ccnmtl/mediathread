@@ -10,22 +10,53 @@
 </title>
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/tablesort.js?version={{settings.REVISION}}"></script>  
-  <!--All the annotation javascript/css -->
-  {% include "djangosherd/annotator_resources.html" %}
+    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/tablesort.js?version={{settings.REVISION}}"></script>
+      
+    <!--All the annotation javascript/css -->
+    {% include "djangosherd/annotator_resources.html" %}
     
-  <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript">
-    DjangoSherd_Asset_Config();    
-    {% if not mock %}
-        CollectionList.init({
-            'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}'
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+
+    <script type="text/javascript">
+        resizeHomepage = function() {
+            var visible = getVisibleContentHeight();
+            jQuery('#instructor .column-container').css('height', visible + "px");
+            jQuery('#classwork').css('height', visible + "px");
+            
+            jQuery('#classwork .projects-column-container').css('height', (visible - 87) + "px");
+            jQuery('#classwork .media-column-container').css('height', (visible - 77) + "px");
+        }
+    
+        jQuery(document).ready(function() {
+            DjangoSherd_Asset_Config();    
+            CollectionList.init({
+                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
+                'template': 'classwork',
+                'template_label': 'classwork_table',
+                'view_callback': resizeHomepage
+            });
+            
+            jQuery(window).resize(function () {  
+                resizeHomepage();
+            });
+            
+            jQuery(".inst-header").click(function() {
+                jQuery(this).next().toggle();
+            })
+    
+            var visible = getVisibleContentHeight();
+            jQuery('#instructor .column-container').css('height', visible + "px");
+            jQuery('#classwork').css('height', visible + "px");
+    
+            {% ifequal msg "upload" %}
+                var msg = "Your video file submission is being processed.\nYou will receive an e-mail when it is ready."
+                alert(msg);
+            {% endifequal %}
         });
-    {% endif %}{# not mock #}    
-  </script>
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -94,30 +125,6 @@
                                 {%endfor%}
                             </ul>
                         {% endif %}
-                       
-                       {%if faculty_feed.assets %}
-                           <h4 class="inst-header">Items of Interest</h4>
-                           <ul>
-                               {%for a in faculty_feed.assets%}
-                               <li><a href="{{a.get_absolute_url}}">{{a.title}}</a></li>
-                               {%endfor%}
-                           </ul>
-                       {%endif%}
-            
-                       {%if faculty_feed.tags %}
-                            <h4 class="inst-header">Priority Tags</h4>
-                            <ul class="tags">
-                                {% for tag in faculty_feed.tags %}
-                                <li>
-                                  <span class="size{{tag.font_size}}">
-                                    <a href="{% url asset-container %}?tag={{tag.name}}">
-                                      {{tag.name}} 
-                                    </a>
-                                  </span>
-                                </li>
-                                {% endfor %}
-                          </ul>
-                      {%endif%}
                      </div>
                 </div>
             </div>
@@ -126,30 +133,11 @@
         
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <div id="classwork_table"></img></div>
+                    <div id="classwork_table"></div>
                 </div>
             </td>
         </tr>
     </tbody>
 </table>
 
-<script type="text/javascript">
-    jQuery(document).ready(function() {
-        jQuery(window).resize(function () {  
-            _resizeHomepage();
-        });
-        
-        jQuery(".inst-header").click(function() {
-            jQuery(this).next().toggle();
-        })
-
-        var visible = getVisibleContentHeight();
-        jQuery('#instructor .column-container').css('height', visible + "px");
-        jQuery('#classwork').css('height', visible + "px");
-
-        var msg = "{{ msg }}";
-        if (msg)
-            alert(msg);
-    });
-</script>
 {% endblock %}

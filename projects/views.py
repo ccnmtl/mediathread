@@ -144,7 +144,7 @@ def view_project(request, project_id):
     if request.method == "DELETE":
         project.delete()
         return HttpResponseRedirect(
-            reverse('your-space-records', args=[request.user.username]))
+            reverse('your-records', args=[request.user.username]))
 
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project,data=request.POST)

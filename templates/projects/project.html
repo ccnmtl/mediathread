@@ -19,127 +19,125 @@
 {% endblock %}
 
 {% block js %}
-  <!--All the annotation javascript/css -->
+    <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
-  <!--END for showing Annotations -->
 
-  <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
 
-  <script type="text/javascript">
-     jQuery(document).ready(function () {
-          setTimeout(function() {
-              // delay this for half a second until the rest of the page is loaded.
-              DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json', callback: project_init});
-          }, 500);
-     });
+    <script type="text/javascript">
+        function resizeProjectPage() {
+            var visible = getVisibleContentHeight();
+            jQuery('#essay-space-materials').css('height', visible + "px");
+            jQuery('div.editing').css('height', (visible - 56) + "px");
+            jQuery('div.scroll').css('height', (visible - 85) + "px");
+        }
+        
+        function postProcessingProject() {
+            resizeProjectPage();
+
+            var new_assets = jQuery('#asset_table').get(0);
+           
+            if (tinyMCE.activeEditor) {
+                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                jQuery(new_assets.parentNode).addClass('annotation-embedding');
+            }
+
+            DjangoSherd_createThumbs(new_assets);
+        }
+      
+        jQuery(document).ready(function () {
+            setTimeout(function() {
+                // delay this for half a second until the rest of the page is loaded.
+                DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json', callback: project_init});
+    
+                CollectionList.init({
+                  'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
+                  'template': 'collection',
+                  'template_label': 'collection_table',
+                  'view_callback': postProcessingProject
+                  });
+              
+                jQuery(window).resize(function () {  
+                    resizeProjectPage();
+                });
+    
+                var visible = getVisibleContentHeight();
+                jQuery('#essay-space-materials').css('height', visible + "px");
+            }, 500);
+        });
   </script>
 {% endblock %}
 
 {% block content %}
-  {{ block.super }}
-  
-<div id="slider-parent">
-  <div class="slider-cell slider-edge">
-    <h2><span id="slider-left-edge"></span></h2>
-  </div>
-  <div class="slider-cell slider-edge slider-edge-right">
-    <h2><span id="slider-right-edge"></span></h2>
-  </div>
+    {{ block.super }}
+    
+    <div>            
+        <div class="essay-space-container editing">
+                        
+            <form id="editproject" name="editproject" method="POST" action=".">
+                <div id="last-version-saved">
+                    <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+                    <span id="last-version-public">
+                    {% if project.public_url %}
+                        (<a href="{{project.public_url}}">public url</a>)
+                    {% endif %}
+                    </span>
+                </div>
+                <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
+                
+                <h5><b>by</b>
+                    <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
+                </h5>
+                {% with project.assignment as assignment %}
+                {% if assignment %}
+                    <div>
+                        <h6>Response to
+                            <a target="_blank" 
+                               href="{{assignment.get_absolute_url}}">
+                              {{assignment.title}}
+                            </a>
+                        </h6>
+                    </div>
+                {% endif %}
+                {% endwith %}
+                
+                <div>
+                    <script type="text/javascript">
+                        var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+                    </script>
+                    <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+                    <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
+                    <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true">{{project.body|safe}}</textarea>
+                </div>
 
-  <table id="slider-top" class="slider-top">
-    <tbody>
-    <tr>
-      <td class="slider-cell slider-empty" id="slider-cell-asset_details"></td>
-      <td class="slider-cell slider-empty" id="slider-cell-asset_large"></td>
-      <td class="slider-cell">
-        <div id="asset_browse_col" class="asset-table"
-             data-ajax="{%url annotations-fragment space_viewer.username%}"
-             >
-          {# added into ajax #}
-          {#% include "assetmgr/asset_table.html" %#}
-          Loading Saved Items...
-        </div>
-      </td>
-      <td class="slider-cell">
-  <div class="essay-space slider-column">
-  
-
-    <!-- IMPORTANT!!! yui-skin-sam is necessary for YUI editor -->
-    {% with project.assignment as assignment %}
-	  {% if assignment %}
-	  <div>
-	  <h4>Response to
-	    <a target="_blank" 
-	       href="{{assignment.get_absolute_url}}">
-	      {{assignment.title}}
-	    </a>
-	  </h4>
-	  </div>
-	  {% endif %}
-	  {% endwith %}
-	  <div id="project-container">
-        <form id="editproject" name="editproject" method="POST" action=".">
-	<p>	<div id="last-version-saved">
-          <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
-          <span id="last-version-public">
-            {% if project.public_url %}
-            (<a href="{{project.public_url}}">public url</a>)
-            {% endif %}
-          </span>
-        </div><div class="project-form-title">Title: {{projectform.title}}</div>
- </p>
-	<div id="essaybox" class="essaytextarea">
-          <script type="text/javascript">
-            var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
-          </script>
-          <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-          <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
-          <textarea id="project-content" tabindex="0" name="body" 
-                    class="mceEditor"
-                    mce_editable="true">{{project.body|safe}}</textarea>
-	  {#{{projectform.body}}#}
-	  <div id="project-template" style="display:none;"></div>
-	  <script type="text/javascript">
-	    if (jQuery("#project-content").html() == "") {
-	      if (document.getElementById("project-template") != null) {
-	        jQuery("#project-content").html(jQuery("#project-template").html());
-	      }
-	    }
-	  </script>
-	</div><!-- end -->
-	
-        <div id="project_participants">
-          <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
-          <b>{{projectform.participants.label_tag}}:</b>
-          <div id="participants_chosen" style="padding-bottom: 2px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
-          <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
-          <br />
-          <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
-            <div>{{projectform.participants}}</div> 
-          </div>
-        </div><!-- end id="project_participants" -->
+                <div id="project_participants">
+                    <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
+                    <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
+                    <br />
+                    <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
+                        <div>{{projectform.participants}}</div> 
+                    </div>
+                </div><!-- end id="project_participants" -->
         
-      </div>
-      
-    <div id="project-form-buttons"> 
-        <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-        <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
-     
-	  <span class="project-dropdown">
-	        {{projectform.publish.label_tag}}    
-            {{projectform.publish}}
-	  </span>
+                <div id="project-form-buttons"> 
+                    <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+                    <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+             
+                    <span class="project-dropdown">
+                            {{projectform.publish.label_tag}}    
+                            {{projectform.publish}}
+                    </span>
+                </div>
+            </form>
         </div>
-   
-    </form>
+    
+        <div id="essay-space-materials">
+            <div id="collection_table"></div>
+        </div>
 
-
-  </div><!-- end class="essay-space" -->
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+    </div>
 {% endblock %}

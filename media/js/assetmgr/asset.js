@@ -1,26 +1,3 @@
-/*
-  function error(req) {  };
-  function styleRelated(req) {
-    res = req.responseText;
-    
-  };
-  function foo(hrefs) {
-    return A({'href':hrefs[0]}, IMG({'src':hrefs[1]}));
-  };
-  function parseRelated() {
-    var related_links = eval($("metadata-related").innerHTML);
-    var img_links = [];
-    for( var i = 0; i < related_links.length; ++i ) {
-      var link = related_links[i];
-      var uid = link.substr(link.search("wgbh:"));
-      var img_link = "http://openvaultresearch.wgbh.org:8080/fedora/get/"+uid+"/sdef:THUMBNAIL/get"
-      img_links[img_links.length] = [link, img_link];
-    };
-    var div = DIV(null, map(foo, img_links));
-    replaceChildNodes($("metadata-related"), div);
-  };
-  addLoadEvent(parseRelated);
-*/
 (function() {
     var global = this;
     
@@ -29,16 +6,6 @@
         for (k in obj) if (obj.hasOwnProperty(k)) count++;
         return count;
     }
-    
-    _resizeHomepage = function() {
-        var visible = getVisibleContentHeight();
-        jQuery('#instructor .column-container').css('height', visible + "px");
-        jQuery('#classwork').css('height', visible + "px");
-        
-        jQuery('#classwork .projects-column-container').css('height', (visible - 87) + "px");
-        jQuery('#classwork .media-column-container').css('height', (visible - 77) + "px");
-    }
-
 
     ///MUSTACHE CODE
     if (window.Mustache) {
@@ -100,22 +67,29 @@
         var self = this;
                 
         this.init = function(config) {
+            self.template_label = config.template_label;
+            self.view_callback = config.view_callback;
+            
             jQuery.ajax({
-                url:'/site_media/templates/classwork.mustache?nocache=v2',
+                url:'/site_media/templates/' + config.template + '.mustache?nocache=v2',
                 dataType:'text',
                 cache: false, // Chrome && Internet Explorer has aggressive caching policies.
                 success:function(text) {
-                    MediaThread.templates['classwork'] = Mustache.template('classwork',text);
-                        // Retrieve the full asset w/annotations from storage
-                        djangosherd.storage.get({
-                                type:'asset',
-                                url: config.space_owner ? MediaThread.urls['your-space'](config.space_owner) : MediaThread.urls['all-space']()
-                            },
-                            false,
-                            function(your_records) {
-                                self._updateAssets(your_records);
-                            }
-                        );
+                    MediaThread.templates[config.template] = Mustache.template(config.template,text);
+                    // Retrieve the full asset w/annotations from storage
+                    if (config.view == 'all' || !config.space_owner) {
+                        url = MediaThread.urls['all-space'](config.tag)
+                    } else {
+                        url = MediaThread.urls['your-space'](config.space_owner, config.tag)
+                    }  
+                    djangosherd.storage.get({
+                            type:'asset',
+                            url: url
+                        },
+                        false,
+                        function(your_records) {
+                            self._updateAssets(your_records);
+                        });
                     }
                 });
         }
@@ -221,9 +195,8 @@
             if (n > 0)
                 your_records.active_filter_count = n;
             
-            Mustache.update("classwork_table", your_records, { post:function(elt) { 
-                /** post processing **/
-                _resizeHomepage();
+            Mustache.update(self.template_label, your_records, { post:function(elt) { 
+                    if (self.view_callback) self.view_callback();
                 } 
             });
         }

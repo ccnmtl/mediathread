@@ -242,10 +242,16 @@ function saveProject(evt) {
     });
 }
 
+function resizeProjectPage() {
+    var visible = getVisibleContentHeight();
+    jQuery('#collection').css('height', visible + "px");
+  
+    jQuery('#collection .media-column-container').css('height', (visible - 77) + "px");
+}
+
 function project_init() {
     if (document.forms['editproject']) {
         jQuery(document.forms['editproject']).bind('submit',saveProject);
-        jQuery('#asset_browse_col').parent().addClass('annotation-embedding');
         project_warnOnUnload();
     }
     jQuery(window).resize(updateVerticalHeight);
@@ -259,7 +265,7 @@ function project_init() {
     jQuery('a.participants_toggle').click(updateParticipantList);
 
     //initialize Assets Column with ajax
-    AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
+    //AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
 }
 
 function project_warnOnUnload() {

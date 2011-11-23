@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
 from structuredcollaboration.models import Collaboration
 from mediathread_main.clumper import Clumper
+from mediathread_main import course_details
 
 from django.conf import settings
 
@@ -182,6 +183,9 @@ def add_asset(request):
             asset.save()
             for source in sources_from_args(request, asset).values():
                 source.save()
+            if "tag" in metadata:
+                for t in metadata["tag"]:
+                    asset.save_tag(user, t)
 
             transaction.commit()
             if len(metadata):
@@ -209,7 +213,7 @@ def add_asset(request):
         
         source = request.POST.get('asset-source', "")
         if source == 'bookmarklet':
-            asset_url += "?level=item"
+            asset_url += "?importing=1"
 
         #for bookmarklet mass-adding
         if request.REQUEST.get('noui','').startswith('postMessage'):
@@ -230,59 +234,6 @@ def add_asset(request):
         #we'll make it here if someone doesn't submit
         #any primary_labels as arguments
         raise AssertionError("something didn't work")
-
-@rendered_with('assetmgr/asset_container.html')
-def container_view(request):
-    """for all class assets view at /asset/ 
-    OPTIMIZATION:  What we need:
-       asset: primary label, thumb.url
-              tags {name}
-       project: collaboration.get_parent, feedback_discussion
-                status (from collaboration)
-                attribution
-    """
-    #extra() is case-insensitive order hack
-    #http://scottbarnham.com/blog/2007/11/20/case-insensitive-ordering-with-django-and-postgresql/
-    archives = list(request.course.asset_set.archives())
-    assets = [a for a in Asset.objects.filter(course=request.course).extra(
-            select={'lower_title': 'lower(assetmgr_asset.title)'}
-            ).select_related().order_by('lower_title')
-              if a not in archives]
-
-    asset_ids = [a.id for a in assets]
-    thumbs = dict([(th.asset_id,th.url) for th in Source.objects.filter(label='thumb', asset__in=asset_ids)])
-    
-    primaries = dict([(p.asset_id,p) for p in Source.objects.filter(primary=True, asset__in=asset_ids)])
-    #import pdb;pdb.set_trace()
-    for a in assets:
-        a._primary_cache = primaries[a.id]
-        a._thumb_url = thumbs.get(a.id,None)
-
-
-    from tagging.models import Tag
-    all_tags = Tag.objects.usage_for_queryset(
-        SherdNote.objects.filter(
-            asset__course=request.course),
-        counts=True)
-    all_tags.sort(lambda a,b:cmp(a.name.lower(),b.name.lower()))
-    all_tags = calculate_cloud(all_tags)
-
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value)]
-
-    active_filters = get_active_filters(request)
-
-    return {
-        'assets':assets,
-        'tags': all_tags,
-        'active_filters': active_filters,
-        'space_viewer':request.user,
-        'space_owner':None,
-        'is_faculty':request.course.is_faculty(request.user),
-        }
 
 def asset_accoutrements(request, asset, user, annotation_form):
     global_annotation = asset.global_annotation(user, auto_create=False)
@@ -385,39 +336,50 @@ def annotationcontainerview(request, asset_id):
 @rendered_with('assetmgr/asset.html')
 @allow_http("GET", "POST", "DELETE")
 def annotationview(request, asset_id, annot_id):
-    annotation = get_object_or_404(SherdNote,
-                                   pk=annot_id, asset=asset_id,
-                                   asset__course=request.course)
 
     user = request.user
     if user.is_staff and request.GET.has_key('as'):
         user = get_object_or_404(User,username=request.GET['as'])
 
-    if request.method in ("DELETE", "POST"):
-        if request.method == "DELETE":
-            redirect_to = reverse('asset-view', args=[asset_id])
-        elif request.method == "POST":
-            redirect_to = '.'
-
-        form = request.GET.copy()
-        form['next'] = redirect_to
-        request.GET = form
-        return annotation_dispatcher(request, annot_id)
-
-    asset = annotation.asset
-
-    global_annotation = asset.global_annotation(user, auto_create=False)
-
-    if global_annotation == annotation:
-        return HttpResponseRedirect(
-            '%s#whole-form' % reverse('asset-view', args=[asset_id]))
-
-    rv = asset_accoutrements(request, annotation.asset, user, 
-                             AnnotationForm(instance=annotation, prefix="annotation")
-                             )
-    rv['annotation'] = annotation
-    rv['readonly'] = (annotation.author != request.user)
-
+    try:
+        annotation = SherdNote.objects.get(pk=annot_id, 
+                                       asset=asset_id,
+                                       asset__course=request.course)
+    
+        if request.method in ("DELETE", "POST"):
+            if request.method == "DELETE":
+                redirect_to = reverse('asset-view', args=[asset_id])
+            elif request.method == "POST":
+                redirect_to = '.'
+    
+            form = request.GET.copy()
+            form['next'] = redirect_to
+            request.GET = form
+            return annotation_dispatcher(request, annot_id)
+    
+        asset = annotation.asset
+    
+        global_annotation = asset.global_annotation(user, auto_create=False)
+    
+        if global_annotation == annotation:
+            return HttpResponseRedirect(
+                '%s#whole-form' % reverse('asset-view', args=[asset_id]))
+    
+        rv = asset_accoutrements(request, annotation.asset, user, 
+                                 AnnotationForm(instance=annotation, prefix="annotation")
+                                 )
+        rv['annotation'] = annotation
+        rv['readonly'] = (annotation.author != request.user)
+    except SherdNote.DoesNotExist:
+        annotation = get_object_or_404(SherdNote,
+                                       pk=annot_id, 
+                                       asset=asset_id)
+        
+        # the user is logged into the wrong class?
+        rv = {}
+        rv['switch_to'] = annotation.asset.course
+        rv['switch_from'] = request.course  
+        
     return rv
 
 @rendered_with('assetmgr/explore.html')
@@ -429,23 +391,34 @@ def archive_explore(request):
         user = get_object_or_404(User,username=request.GET['as'])
 
     archives = []
+    upload_archive = None
     for a in c.asset_set.archives().order_by('title'):
         archive = a.sources['archive']
         thumb = a.sources.get('thumb',None)
         description = a.metadata().get('description','')
-        archives.append({
-                "id":a.id,
-                "title":a.title,
-                "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
-                "archive":{"id":archive.id, "url":archive.url},
-                #is description a list or a string?
-                "metadata": (description[0] if hasattr(description,'append') else description),
-                })
-
+        uploader = a.metadata().get('upload', 0)
+        
+        archive_context = {
+            "id":a.id,
+            "title":a.title,
+            "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
+            "archive":{"id":archive.id, "url":archive.url},
+            #is description a list or a string?
+            "metadata": (description[0] if hasattr(description,'append') else description),
+        }
+        
+        if (uploader[0] if hasattr(uploader,'append') else uploader):
+            upload_archive = archive_context
+        else:
+            archives.append(archive_context)
+        
     rv = {"archives":archives,
+          "upload_archive": upload_archive,
           "is_faculty":c.is_faculty(user),
           "space_viewer":user,
-          'newsrc':request.GET.get('newsrc', '')
+          'newsrc':request.GET.get('newsrc', ''),
+          'can_upload': course_details.can_upload(request.user, request.course),
+          'upload_service': getattr(settings,'UPLOAD_SERVICE',None)
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
@@ -455,6 +428,8 @@ def archive_explore(request):
         # MUST only contain string values for now!! 
         # (see templates/assetmgr/bookmarklet.js to see why or fix)
         rv['bookmarklet_vars'] = {'flickr_apikey':settings.DJANGOSHERD_FLICKR_APIKEY }
+        
+    
     return rv
 
 def archive_redirect(request):
@@ -481,7 +456,7 @@ def archive_specialauth(request,url,key):
     import hmac, hashlib, datetime
     
     nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = "%s?msg=%s" % (request.build_absolute_uri('/'), "Your video file submission is being processed. You will receive an e-mail when it is ready.")
+    redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
     username = request.user.username
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
         url,

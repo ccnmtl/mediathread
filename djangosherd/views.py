@@ -251,7 +251,7 @@ def tags_json(request):
             if not t in tags:
                 tags[t] = len(rv['nodes'])
                 rv['nodes'].append({'group':1,
-                                    'href':"%s?tag=%s" % (reverse('asset-container'),t),
+                                    'href':"/?tag=%s" % (t),
                                     })
             rv['links'].append({'source':tags[t],
                                 'target':assets[ann.asset_id],

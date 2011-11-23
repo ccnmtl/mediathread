@@ -45,19 +45,16 @@ urlpatterns = patterns('',
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###
-                       (r'^archive/home$', mediathread_main.class_portal),
-                       url(r'^notifications/$','mediathread_main.views.notifications',
-                           name="notifications"),
                        (r'^$', mediathread_main.triple_homepage),
-
-                       #(r'^$','django.views.generic.simple.direct_to_template',{'template':'homepage.html'}),
-
+                       url(r'^listing/$','mediathread_main.views.class_listing', name="class-listing"),
+                       url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
                        url(r'^save/$', asset.add_view,name="asset-save"),
-
+                       url(r'^settings$', mediathread_main.course_settings,name="course-settings"),
+                       
                        (r'^asset/',include('mediathread.assetmgr.urls')),
                        (r'^annotations/',include('mediathread.djangosherd.urls')),
                        (r'^yourspace/',include('mediathread.mediathread_main.urls')),
-                       
+                    
                        #redundant, but for published projects/legacy
                        (r'^project/',include('mediathread.projects.urls')),
                        
@@ -72,8 +69,6 @@ urlpatterns = patterns('',
                        #threaded discussion:
                        (r'^discussion/',include('mediathread.discussions.urls')),
 
-                       #(r'', include(slider.urls)),
- 
                        ### Public Access ###
                        (r'', include(structuredcollaboration.urls)), #import at root
                        

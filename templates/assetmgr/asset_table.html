@@ -14,7 +14,7 @@
     <div class="button-form inline">
         <form class="block media-browse hinline" method="POST" action="{%url explore%}">
             <input type="hidden" name="title" />
-            <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+            <input class="columnbutton media browse-button" type="submit" value="Source Media "/>
         </form>
     </div>
      Collections
@@ -140,7 +140,7 @@
             No items. 
            {% ifequal space_owner user %}
            <br />
-           Add items from the resources listed in <a href="{% url explore %}">Browse Sources</a>
+           Add items from the resources listed in <a href="{% url explore %}">Source Media </a>
            {% endifequal %}
         </p>
     {%endif%}

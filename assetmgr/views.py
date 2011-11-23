@@ -5,6 +5,7 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
@@ -42,6 +43,24 @@ from assetmgr.lib import filter_by,get_active_filters
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT, get_public_name
+
+#@login_required #no login, so server2server interface is possible
+@allow_http("GET", "POST")
+def add_view(request):
+    if request.method == "POST":
+        return add_asset(request)
+
+    asset = Asset.objects.get_by_args(request.GET,
+                                      asset__course=request.course)
+
+    if asset:
+        return HttpResponseRedirect(
+            reverse('asset-view', args=[asset.id]))
+    elif asset is None and request.user.is_authenticated():
+        return mock_analysis_space(request)
+    else: #asset is False with no good args
+        #no arguments so /save space
+        return add_source_to_course(request)
 
 
 OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course','secret')
@@ -83,25 +102,6 @@ def sources_from_args(request,asset=None):
             break
     return sources
 
-
-#@login_required #no login, so server2server interface is possible
-@allow_http("GET", "POST")
-def add_view(request):
-    if request.method == "POST":
-        return add_asset(request)
-
-    asset = Asset.objects.get_by_args(request.GET,
-                                      asset__course=request.course)
-
-    if asset:
-        return HttpResponseRedirect(
-            reverse('asset-view', args=[asset.id]))
-    elif asset is None and request.user.is_authenticated():
-        return mock_analysis_space(request)
-    else: #asset is False with no good args
-        #no arguments so /save space
-        return asset_addform(request)
-
 @rendered_with('assetmgr/asset.html')
 def mock_analysis_space(request):
 
@@ -127,14 +127,6 @@ def mock_analysis_space(request):
         'global_annotation_form': GlobalAnnotationForm(prefix="annotation"),
         }
 
-@rendered_with('assetmgr/asset_addform.html')
-def asset_addform(request):
-    from supported_archives import all 
-    return {
-        'asset_request':request.GET,
-        'supported_archives':all,
-        'is_staff': request.user.is_staff,
-        }
 
 @transaction.commit_manually
 def add_asset(request):
@@ -234,6 +226,7 @@ def add_asset(request):
         #we'll make it here if someone doesn't submit
         #any primary_labels as arguments
         raise AssertionError("something didn't work")
+    
 
 def asset_accoutrements(request, asset, user, annotation_form):
     global_annotation = asset.global_annotation(user, auto_create=False)
@@ -275,17 +268,30 @@ def asset_accoutrements(request, asset, user, annotation_form):
 
 
 @login_required
-@rendered_with('assetmgr/asset.html')
 def asset_workspace(request, asset_id):
-    asset = get_object_or_404(Asset, pk=asset_id,
-                              course=request.course)
+    try:
+        asset = Asset.objects.get(pk=asset_id, course=request.course)
     
-    user = request.user
-    if user.is_staff and request.GET.has_key('as'):
-        user = get_object_or_404(User,username=request.GET['as'])
+        user = request.user
+        if user.is_staff and request.GET.has_key('as'):
+            user = get_object_or_404(User,username=request.GET['as'])
 
-    return asset_accoutrements(request, asset, user, 
+        rv = asset_accoutrements(request, asset, user, 
                                AnnotationForm(prefix="annotation"))
+    
+        return render_to_response('assetmgr/asset.html', rv, context_instance=RequestContext(request))
+    except Asset.DoesNotExist:
+        asset = Asset.objects.get(pk=asset_id)
+        
+        # the user is logged into the wrong class?
+        rv = {}
+        rv['switch_to'] = asset.course
+        rv['switch_from'] = request.course
+        rv['redirect'] = reverse('asset-view', args=[asset_id])
+        return render_to_response('assetmgr/asset_not_found.html', rv, context_instance=RequestContext(request))
+    
+    raise Http404()   
+
 
 def asset_workspace_courselookup(asset_id=None):
     """lookup function corresponding to asset_workspace
@@ -307,33 +313,6 @@ from djangosherd.views import annotation_dispatcher
 from djangosherd.views import AnnotationForm
 from djangosherd.views import GlobalAnnotationForm
 
-@login_required
-@allow_http("POST")
-def annotationcontainerview(request, asset_id):
-    """
-    delegate to djangosherd view and redirect back to asset workspace
-
-    but first, stuff a range into the request (until sky's frontend
-    comes in) and get the annotation context from the url
-    """
-
-    asset = get_object_or_404(Asset, pk=asset_id,
-                              course=request.course)
-
-    form = request.POST.copy()
-    form['annotation-context_pk'] = asset_id
-    request.POST = form
-
-    form = request.GET.copy()
-    form['annotation-next'] = reverse('asset-view', args=[asset_id])
-    request.GET = form
-
-    response = create_annotation(request)
-
-    return response
-
-
-@rendered_with('assetmgr/asset.html')
 @allow_http("GET", "POST", "DELETE")
 def annotationview(request, asset_id, annot_id):
 
@@ -370,6 +349,9 @@ def annotationview(request, asset_id, annot_id):
                                  )
         rv['annotation'] = annotation
         rv['readonly'] = (annotation.author != request.user)
+        
+        return render_to_response('assetmgr/asset.html', rv, context_instance=RequestContext(request))
+
     except SherdNote.DoesNotExist:
         annotation = get_object_or_404(SherdNote,
                                        pk=annot_id, 
@@ -378,12 +360,22 @@ def annotationview(request, asset_id, annot_id):
         # the user is logged into the wrong class?
         rv = {}
         rv['switch_to'] = annotation.asset.course
-        rv['switch_from'] = request.course  
+        rv['switch_from'] = request.course
+        rv['redirect'] = reverse('annotation-form', args=[asset_id, annot_id])
         
-    return rv
+        return render_to_response('assetmgr/asset_not_found.html', rv, context_instance=RequestContext(request))
 
-@rendered_with('assetmgr/explore.html')
-def archive_explore(request):
+@rendered_with('assetmgr/add_source_to_course.html')
+def add_source_to_course(request):
+    from supported_archives import all 
+    return {
+        'asset_request':request.GET,
+        'supported_archives':all,
+        'is_staff': request.user.is_staff,
+        }
+
+@rendered_with('assetmgr/browse_sources.html')
+def browse_sources(request):
     c = request.course
 
     user = request.user
@@ -432,10 +424,10 @@ def archive_explore(request):
     
     return rv
 
-def archive_redirect(request):
+def source_redirect(request):
     url = request.GET.get('url',None)
     if not url:
-        url = reverse('asset-archiveexplore')
+        url = reverse('browse-sources')
     else:
         source = None
         try:
@@ -445,14 +437,14 @@ def archive_redirect(request):
         special = getattr(settings,'SERVER_ADMIN_SECRETKEYS',{})
         for server in special.keys():
             if url.startswith(server):
-                url = archive_specialauth(request,url,special[server])
+                url = source_specialauth(request,url,special[server])
                 continue
         if url == source.url:
             return HttpResponseRedirect(source.url_processed(request))
     return HttpResponseRedirect(url)
 
         
-def archive_specialauth(request,url,key):
+def source_specialauth(request,url,key):
     import hmac, hashlib, datetime
     
     nonce = '%smthc' % datetime.datetime.now().isoformat()
@@ -489,7 +481,7 @@ def asset_json(request, asset_id):
                 return None
             return 'author_name',get_public_name(annotation.author, request)
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
+            annotations.append(ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
 
     #we make assets plural here to be compatible with the project JSON structure
     data = {'assets': {asset_key:asset.sherd_json(request)},

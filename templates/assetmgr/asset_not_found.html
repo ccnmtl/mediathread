@@ -1,20 +1,18 @@
 {% extends "base.html" %}
-{% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
 {% block title %}Asset Not Found{% endblock %}
 
 {% block content %}
-
-<div id="content">
-    <h2>Oops!</h2>
-    
-    You are attempting to view an asset from {{asset_course.name}} while logged into {{request_course.name}}.
-    <br />
-    Would you like to login to {{asset_course.name}} now?
-    <br />
-    <a href="">Yes, Switch My Course</a>
-    <br />
-    <a href="">No, go to Mediathread homepage.</a> 
-
-</div>
+    <div id="content">
+        <h1>Oops!</h1>
+        <br />
+        You are attempting to view an item from <b>{{switch_to.title}}</b> while logged into <b>{{switch_from.title}}</b>.
+        <br /><br />
+        What would you like to do?
+        <br /><br />
+        <a href="/?set_course={{switch_to.group.name|urlencode}}&next={{redirect}}">Login to {{switch_to.title}}</a>
+        <br /><br />
+        <a href="/">Continue working in {{switch_from.title}}</a>
+        <br /><br /> 
+    </div>
 
 {% endblock %}

@@ -58,10 +58,10 @@ urlpatterns = patterns('',
                        #redundant, but for published projects/legacy
                        (r'^project/',include('mediathread.projects.urls')),
                        
-                       url(r'^explore/$','assetmgr.views.archive_explore',
+                       url(r'^explore/$','assetmgr.views.browse_sources',
                            name="explore"),
-                       url(r'^explore/redirect/$','assetmgr.views.archive_redirect',
-                           name="archive_redirect"),
+                       url(r'^explore/redirect/$','assetmgr.views.source_redirect',
+                           name="source_redirect"),
 
                        (r'^quickstart', 'django.views.generic.simple.direct_to_template',{'template':'flatpages/quickstart.html'}),
 

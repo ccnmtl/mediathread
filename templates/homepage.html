@@ -38,8 +38,8 @@
         <td class="" id="instructor">
 
             <div class="column-container">    
-                 {% with "help_instructor" as help_id %}{% include "help.html" %}{% endwith %}
-               <h2>From Your Instructor </h2>
+               
+               <h2>From Your Instructor {% with "help_instructor" as help_id %}{% include "help.html" %}{% endwith %}</h2>
                   <div class="column-contents scroll">
              
                     <!--this is content for instructor column help toggle

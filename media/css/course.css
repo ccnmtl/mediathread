@@ -1313,8 +1313,8 @@ body.old-assetwindow #asset-details-annotations-list {
 div.help.showhide
 {
     float: left;
-    margin: 5px;
-    width: 97%;
+    margin: -15px 5px 0 -5px;
+
 }
 
 div.help.showhide .helptoggle 
@@ -1323,6 +1323,7 @@ div.help.showhide .helptoggle
     float: right;
     display: block;
     width: 26px;
+
     
 }
 
@@ -1366,6 +1367,7 @@ div.help.showhide .helpblock {
 	padding: 1px 10px;
 	font-size: 95%;
     max-width:600px;
+    text-transform: none;
 
 }
 

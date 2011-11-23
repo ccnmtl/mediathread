@@ -55,6 +55,7 @@ input.videoplay{
 
 #instructor .column-container {
     width: 300px;
+    margin-top: 14px;
 }
 
 #media .column-container {
@@ -238,13 +239,14 @@ table#home-columns td h2 {
 
 table#home-columns td#instructor h2 {
 	background-color: #006031;
-	padding: 5px 12px;
+	height: 14px;
+	float: right;
 	text-transform: uppercase;
 	color: #ffffff;
 	font-weight: normal;
 	-moz-border-radius: 10px 10px 0 0;
 	border-radius: 10px 10px 0 0;
-	margin: 0;
+	margin: -14px 0 0 0;
 	
 }
 
@@ -258,6 +260,7 @@ table#classwork-sub {
     border-top: 0;
     overflow: auto;
     height: 95%;
+    min-width: 300px;
 }
 
 div#classwork_table table {

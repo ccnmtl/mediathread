@@ -15,13 +15,7 @@
 
 {% include "instructor/instructor_actions.html" %}
 
-<div class="panel">    
-  <div style="float:left;width:35%">
-  </div>
-  <div style="float:left;width:65%">
-  <div class="panel-column">
-    <h2>Course Settings</h2>
-    
+
     {% if upload_permission_updated %}
         <div>Changes Saved</div>
     {% endif %}
@@ -37,11 +31,6 @@
         <input type="submit" value="submit"></input>
     </form>
 
-  </div> 
-  </div> 
 
-  <div class="visualclear"></div>
-  
-</div>
 
 {% endblock %}

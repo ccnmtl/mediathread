@@ -453,6 +453,11 @@ margin-left: 269px;
 
 }
 
+#report-dataspace {
+    border: 1px solid red;
+    display: block;
+}
+
 #instructor-actions h3,
 #instructor-reports h3{
     margin: 0 0 10px;

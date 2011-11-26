@@ -13,14 +13,12 @@ Course Summary
 
 {% block content %}
     {{ block.super }}
-<h1>Instructor Dashboard</h1>    
+<h1>Instructor Dashboard <a class="hs-control intro-open-nofloat" href="#global-instructor-orientation">?</a><a class="hs-control hs-nostyle" href="#global-instructor-orientation">
+</h1>    
 
 {% include "reports/submenu.html" %}
 
-<div class="panel">    
-  <div style="float:left;width:40%">
-  <div class="panel-column">
-    <h2>Student Contribution Summary</h2>
+
     <table>
       <thead>
         <tr>
@@ -82,11 +80,6 @@ Course Summary
         <div id="reports-graph-visualization"></div>
       </div>
 
-  </div> 
-  </div> 
 
-  <div class="visualclear"></div>
-  
-</div>
 
 {% endblock %}

@@ -10,17 +10,12 @@
 
 {% block content %}
     {{ block.super }}
-<h1>Instructor Dashboard</h1>    
+<h1>Instructor Dashboard <a class="hs-control intro-open-nofloat" href="#global-instructor-orientation">?</a><a class="hs-control hs-nostyle" href="#global-instructor-orientation">
+</h1>    
 
 {% include "instructor/instructor_actions.html" %}
 
-<div class="panel">    
-  <div style="float:left;width:35%">
-  </div>
-  <div style="float:left;width:65%">
-  <div class="panel-column">
-    <h2>Course Settings</h2>
-    
+
     {% if upload_permission_updated %}
         <div>Changes Saved</div>
     {% endif %}
@@ -36,11 +31,6 @@
         <input type="submit" value="submit"></input>
     </form>
 
-  </div> 
-  </div> 
 
-  <div class="visualclear"></div>
-  
-</div>
 
 {% endblock %}

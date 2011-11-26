@@ -1,11 +1,30 @@
-<div id="instructor-actions">
 
+  <h3>Course Information:</h3>
+    <form  method="GET" action="/listing">
+    <input class="columnbutton project createnew-button" type="submit" value="Roster"/>
+  </form>
+
+  <form  method="GET" action="/settings">
+    <input class="columnbutton project createnew-button" type="submit" value="Course Settings"/>
+  </form>
+  
+    <form  method="GET" action="/#">
+    <input class="columnbutton  project createnew-button" type="submit" value="Your Collections & Compositions"/>
+  </form>
+  
+  <br />
+  <br />
   <h3>Actions:</h3>
-
+  
+    <form  method="GET" action="/save/">
+    <input class="columnbutton project createnew-button" type="submit" value="Manage Media Sources"/>
+  </form>
+  
+  
   
   <form class="project-createnew" method="POST" action="{%url your-space-projects user%}">
     <input type="hidden" name="title" />
-    <input class="columnbutton project createnew-button" type="submit" value="Create or Assign Composition"/>
+    <input class="columnbutton project createnew-button" type="submit" value="Create Composition or Assignment"/>
  
   </form>
   <form class="discussion-createnew"  action="/discussion/new/" method="POST">
@@ -15,18 +34,8 @@
     <input type="hidden" name="app_label" value="courseaffils"/>
     <input type="hidden" name="model" value="course"/>
     <input type="hidden" name="obj_pk" value="{{course.id}}"/>
-    <input class="project" type="submit" value="New Discussion"/>
+    <input class="project" type="submit" value="Create Discussion"/>
   </form>
   
-  <form  method="GET" action="/save/">
-    <input class="columnbutton project createnew-button" type="submit" value="+/- Course Collections"/>
-  </form>
-  
-  <form  method="GET" action="/settings">
-    <input class="columnbutton project createnew-button" type="submit" value="Change Course Settings"/>
-  </form>
-  
-  <form  method="GET" action="/listing">
-    <input class="columnbutton project createnew-button" type="submit" value="View Course Roster"/>
-  </form>
-</div>
+
+

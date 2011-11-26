@@ -198,7 +198,7 @@ def add_asset(request):
             annotationview(request, asset.pk, global_annotation.pk)
             transaction.commit()
         elif request.POST.has_key('save-clip-annotation'):
-            annotationcontainerview(request, asset.pk)
+            create_annotations_container(request, asset.pk)
             transaction.commit()
 
         asset_url = reverse('asset-view', args=[asset.id])
@@ -312,6 +312,31 @@ from djangosherd.views import edit_annotation
 from djangosherd.views import annotation_dispatcher
 from djangosherd.views import AnnotationForm
 from djangosherd.views import GlobalAnnotationForm
+
+@login_required
+@allow_http("POST")
+def create_annotations_container(request, asset_id):
+    """
+    delegate to djangosherd view and redirect back to asset workspace
+
+    but first, stuff a range into the request (until sky's frontend
+    comes in) and get the annotation context from the url
+    """
+    asset = get_object_or_404(Asset, pk=asset_id,
+                              course=request.course)
+
+    form = request.POST.copy()
+    form['annotation-context_pk'] = asset_id
+    request.POST = form
+
+    form = request.GET.copy()
+    form['annotation-next'] = reverse('asset-view', args=[asset_id])
+    request.GET = form
+
+    response = create_annotation(request)
+
+    return response
+
 
 @allow_http("GET", "POST", "DELETE")
 def annotationview(request, asset_id, annot_id):
@@ -481,7 +506,7 @@ def asset_json(request, asset_id):
                 return None
             return 'author_name',get_public_name(annotation.author, request)
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            annotations.append(ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
+            annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
 
     #we make assets plural here to be compatible with the project JSON structure
     data = {'assets': {asset_key:asset.sherd_json(request)},

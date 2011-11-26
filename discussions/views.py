@@ -59,23 +59,10 @@ def show_discussion(request, root_comment):
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
         root_comment.content_object.save()
 
-    switcher = {
-        'init':reverse('annotations-fragment', args=[space_viewer.username])
-        }
     target = None
     if root_comment.content_object._parent_id and \
             root_comment.content_object._parent.object_pk:
         target = root_comment.content_object._parent
-
-        if 'project'==target.content_type.model:
-            switcher['init'] = reverse('annotations-fragment-none', args=['none'])
-            switcher['project_json'] = '%s%s' % (
-                target.content_object.get_absolute_url(),
-                'json', #appended for json content (and avoiding cache poisoning webkit)
-                )
-        elif 'course'==target.content_type.model:
-            #so we don't show a pointer for global discussions
-            target = None
 
     return {
         'is_space_owner': True,
@@ -83,11 +70,8 @@ def show_discussion(request, root_comment):
         'space_owner': space_viewer, #for now
         'space_viewer': space_viewer,
         'root_comment': root_comment,
-        'target':target,
-        'switcher':switcher,
-        'page_in_edit_mode': True,
-        #change this in settings.COMMENT_MAX_LENGTH
-        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH,
+        'target':target,        
+        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
         }
         
 @allow_http("POST")

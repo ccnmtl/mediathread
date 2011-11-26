@@ -3,15 +3,7 @@ from django.contrib import admin
 from django.conf import settings
 import os.path
 
-from projects import views as project
-from assetmgr import views as asset
-from mediathread_main import views as mediathread_main
-
-import structuredcollaboration.urls
-#import slider.urls
-
 admin.autodiscover()
-
 
 site_media_root = os.path.join(os.path.dirname(__file__),"media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),"media","bookmarklets")
@@ -45,23 +37,22 @@ urlpatterns = patterns('',
                        (r'^uploads/(?P<path>.*)$','django.views.static.serve',{'document_root' : settings.MEDIA_ROOT}),
 
                        ### Course-URLS ###
-                       (r'^$', mediathread_main.triple_homepage),
+                       (r'^$', 'mediathread_main.views.triple_homepage'),
                        url(r'^listing/$','mediathread_main.views.class_listing', name="class-listing"),
                        url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
-                       url(r'^save/$', asset.add_view,name="asset-save"),
-                       url(r'^settings$', mediathread_main.course_settings,name="course-settings"),
+                       url(r'^settings$', 'mediathread_main.views.course_settings', name="course-settings"),
                        
-                       (r'^asset/',include('mediathread.assetmgr.urls')),
-                       (r'^annotations/',include('mediathread.djangosherd.urls')),
-                       (r'^yourspace/',include('mediathread.mediathread_main.urls')),
+                       (r'^asset/', include('mediathread.assetmgr.urls')),
+                       url(r'^save/$', 'assetmgr.views.add_view', name="asset-save"),
+                       
+                       (r'^annotations/', include('mediathread.djangosherd.urls')),
+                       (r'^yourspace/', include('mediathread.mediathread_main.urls')),
                     
                        #redundant, but for published projects/legacy
                        (r'^project/',include('mediathread.projects.urls')),
                        
-                       url(r'^explore/$','assetmgr.views.browse_sources',
-                           name="explore"),
-                       url(r'^explore/redirect/$','assetmgr.views.source_redirect',
-                           name="source_redirect"),
+                       url(r'^explore/$','assetmgr.views.browse_sources', name="explore"),
+                       url(r'^explore/redirect/$','assetmgr.views.source_redirect', name="source_redirect"),
 
                        (r'^quickstart', 'django.views.generic.simple.direct_to_template',{'template':'flatpages/quickstart.html'}),
 
@@ -70,6 +61,6 @@ urlpatterns = patterns('',
                        (r'^discussion/',include('mediathread.discussions.urls')),
 
                        ### Public Access ###
-                       (r'', include(structuredcollaboration.urls)), #import at root
+                       (r'', include('structuredcollaboration.urls')), #import at root
                        
 )

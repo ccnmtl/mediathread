@@ -23,7 +23,33 @@
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
   <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
+  <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
+  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+  
   <script type="text/javascript">
+
+  function resizeDiscussionPage() {
+      var visible = getVisibleContentHeight();
+      jQuery('#discussion-space-materials').css('height', visible + "px");
+      jQuery('div.scroll').css('height', (visible - 85) + "px");
+      
+      jQuery('#threadedcomments').css('height', (visible - 40) + "px");
+  }
+
+  function postProcessingDiscussion() {
+      resizeDiscussionPage();
+
+      var new_assets = jQuery('#asset_table').get(0);
+     
+      if (tinyMCE.activeEditor) {
+          tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+          jQuery(new_assets.parentNode).addClass('annotation-embedding');
+      }
+
+      DjangoSherd_createThumbs(new_assets);
+  }
+
+  
    jQuery(document).ready(function() {     
         DjangoSherd_Project_Config({
             {% if switcher.project_json %}
@@ -32,6 +58,19 @@
             open_from_hash:true,
             callback: project_init
         });
+
+        CollectionList.init({
+            'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
+            'template': 'collection',
+            'template_label': 'collection_table',
+            'view_callback': postProcessingDiscussion
+            });
+        
+          //jQuery(window).resize(function () {  
+          //    resizeDiscussionPage();
+          //});
+
+          //resizeDiscussionPage();
     });   
   </script>
   <!--END for showing Annotations -->
@@ -43,38 +82,7 @@
 {% endblock %}
 
 {% block content %}
-{{ block.super }}
-<div id="slider-parent">
-  <div class="slider-cell slider-edge">
-    <h2><span id="slider-edge-left"></span></h2>
-  </div>
-
-  <div class="slider-cell slider-edge slider-edge-right">
-    <h2><span id="slider-edge-right"></span></h2>
-  </div>
-
-  <table id="slider-top" class="slider-top">
-    <tbody>
-    <tr>
-      <td class="slider-cell slider-empty" id="slider-cell-asset_details"></td>
-      <td class="slider-cell slider-empty" id="slider-cell-asset_large"><div
-             class="discussion-asset-large">
-	<div id="asset-display" class="asset-display"></div>
-	<div id="clipstrip-display"></div>
-      </div>
-      </td>
-      <td class="slider-cell slider-active" 
-          id="slider-cell-asset_column"><div 
-             id="asset_browse_col" class="asset-table"
-             data-ajax="{{switcher.init}}"
-             >
-          {# added into ajax #}
-          {#% include "assetmgr/asset_table.html" %#}
-        </div>
-      </td>
-      <td class="slider-cell slider-active" 
-          id="slider-cell-reflection"><div 
-         class="essay-space slider-column">
+    {{ block.super }}
         <div class="capabilities">
           {% if edit_comment_permission %}
             <span class="capability can-edit">[can edit posts]</span>
@@ -98,107 +106,108 @@
              {%firstof root_comment.title root_comment.content_object.title %}
             </span>
           </h2>
-          
         {% endif %}
-	  <div id="threadedcomments" class="resize-height">
-        {%get_comment_list for root_comment.content_object as comment_list%}
-        {% for current_comment in comment_list|fill_tree|annotate_tree %}
-            <!-- starting comment: >{{ current_comment.id }}-->
-            {% ifchanged current_comment.parent_id %}
-            {% else %}
-                </li>
-            {% endifchanged %}
-            {% if not current_comment.open and not current_comment.close %}
-                </li>
-            {% endif %}
-            {% if current_comment.open %}
-                <ul class="comment-thread">
-            {% endif %}
-            <li id="comment-{{current_comment.id}}"
-                class="comment-thread {% if current_comment.last %}last{% endif %}"
-                >
-              <div class="comment">
-                <div class="threaded_comment_header">
-                <span class="comment-actions">
-                    {% if space_viewer.is_staff %}
-                      <a class="comment-manage" 
-                         href="{%url admin:threadedcomments_threadedcomment_change current_comment.id %}">Manage</a>
-                      {% ifequal current_comment root_comment%}
-                      <a class="comment-manage"
-                         href="{%url admin:structuredcollaboration_collaboration_change root_comment.content_object.id %}">Title/Access</a>
-                      {% endifequal %}
-                    {% endif %}
-                  </span>
-               
-               <span class="threaded_comment_author">{{current_comment.name}}</span>
-                  <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>
-                  <span class="comment-date">
-                    (
-                    {%ifequal current_comment.submit_date.now.date current_comment.submit_date.date %}
-                    {{current_comment.submit_date|timesince_approx}} ago, {{current_comment.submit_date|date:"g:ma"}}
-                    {%else %}                    
-                    {{current_comment.submit_date|date:"D M d Y, g:ma"}}
-                    {%endifequal%}
-                  )</span>
-                 
-                </div>
-                <!-- ( #{{current_comment.id}}): -->
-                <div class="threaded_comment_title">{{current_comment.title}}</div>
-                <div class="threaded_comment_text">{{current_comment.comment|safe}}</div>
-                <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
-                  <span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the reply form">
-                    Respond<!-- to comment {{ current_comment.id }}: -->
-                    </span>
-                    {% if current_comment.user == space_viewer or edit_comment_permission %}
-                       <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>
-                    {% endif %}
-                    <div class="comment_form_space"></div>
-                </div>
-              </div><br /><br />
-              {% if current_comment.added_path %} <span class="new-comment">ADDED</span> {% endif %}
-              {% for close in current_comment.close %}
-            </li>
-                </ul>
-            {% endfor %}
-            
-        {% endfor %}        
-
-        {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
-        <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{COMMENT_MAX_LENGTH}}">
-          <input type="hidden" id="comment-edit-id" name="edit-id" />
-          <ul>
-            <li><!-- instead of current_comment_form.as_ul since that has all the field labels of fields we don't care about -->
-              {% for field in current_comment_form %}
-                {% if field.is_hidden %}
-                  {{ field }}
+    
+    <div> <!--  container for discussion on left, collection on right -->
+        <div id="threadedcomments">
+            {%get_comment_list for root_comment.content_object as comment_list%}
+            {% for current_comment in comment_list|fill_tree|annotate_tree %}
+                <!-- starting comment: >{{ current_comment.id }}-->
+                {% ifchanged current_comment.parent_id %}
                 {% else %}
-                  {#SWITCH#}
-                  {% ifequal field.name "comment" %}
-                    {{ field }}
-                     {% else %}
-                  {% ifequal field.name "title" %}
-                    <span class="formtitle"><label for="title">Title:</label> {{ field }}</span>
-                    {% else %}
-                  {% ifequal field.name "email" %}
-                     <input type="hidden" name="email" value="{{field.value|default:'null@example.com'}}" />
-                  {% else %}
-                      <input type="hidden" name="{{field.html_name}}" value="{{field.value}}" />
-                  {% endifequal %}{% endifequal %}{% endifequal %}
+                    </li>
+                {% endifchanged %}
+                {% if not current_comment.open and not current_comment.close %}
+                    </li>
                 {% endif %}
-              {% endfor %}
-            </li>
-            <li><input class="project" id="comment-form-submit" type="submit" value="Save Comment" /></li>
-          </ul>
-        </form>
-        
-   </div>
+                {% if current_comment.open %}
+                    <ul class="comment-thread">
+                {% endif %}
+                <li id="comment-{{current_comment.id}}"
+                    class="comment-thread {% if current_comment.last %}last{% endif %}"
+                    >
+                  <div class="comment">
+                    <div class="threaded_comment_header">
+                    <span class="comment-actions">
+                        {% if space_viewer.is_staff %}
+                          <a class="comment-manage" 
+                             href="{%url admin:threadedcomments_threadedcomment_change current_comment.id %}">Manage</a>
+                          {% ifequal current_comment root_comment%}
+                          <a class="comment-manage"
+                             href="{%url admin:structuredcollaboration_collaboration_change root_comment.content_object.id %}">Title/Access</a>
+                          {% endifequal %}
+                        {% endif %}
+                      </span>
+                   
+                   <span class="threaded_comment_author">{{current_comment.name}}</span>
+                      <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>
+                      <span class="comment-date">
+                        (
+                        {%ifequal current_comment.submit_date.now.date current_comment.submit_date.date %}
+                        {{current_comment.submit_date|timesince_approx}} ago, {{current_comment.submit_date|date:"g:ma"}}
+                        {%else %}                    
+                        {{current_comment.submit_date|date:"D M d Y, g:ma"}}
+                        {%endifequal%}
+                      )</span>
+                     
+                    </div>
+                    <!-- ( #{{current_comment.id}}): -->
+                    <div class="threaded_comment_title">{{current_comment.title}}</div>
+                    <div class="threaded_comment_text">{{current_comment.comment|safe}}</div>
+                    <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
+                      <span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the reply form">
+                        Respond<!-- to comment {{ current_comment.id }}: -->
+                        </span>
+                        {% if current_comment.user == space_viewer or edit_comment_permission %}
+                           <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>
+                        {% endif %}
+                        <div class="comment_form_space"></div>
+                    </div>
+                  </div><br /><br />
+                  {% if current_comment.added_path %} <span class="new-comment">ADDED</span> {% endif %}
+                  {% for close in current_comment.close %}
+                </li>
+                    </ul>
+                {% endfor %}
+                
+            {% endfor %}        
+    
+            {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
+            <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{COMMENT_MAX_LENGTH}}">
+              <input type="hidden" id="comment-edit-id" name="edit-id" />
+              <ul>
+                <li><!-- instead of current_comment_form.as_ul since that has all the field labels of fields we don't care about -->
+                  {% for field in current_comment_form %}
+                    {% if field.is_hidden %}
+                      {{ field }}
+                    {% else %}
+                      {#SWITCH#}
+                      {% ifequal field.name "comment" %}
+                        {{ field }}
+                         {% else %}
+                      {% ifequal field.name "title" %}
+                        <span class="formtitle"><label for="title">Title:</label> {{ field }}</span>
+                        {% else %}
+                      {% ifequal field.name "email" %}
+                         <input type="hidden" name="email" value="{{field.value|default:'null@example.com'}}" />
+                      {% else %}
+                          <input type="hidden" name="{{field.html_name}}" value="{{field.value}}" />
+                      {% endifequal %}{% endifequal %}{% endifequal %}
+                    {% endif %}
+                  {% endfor %}
+                </li>
+                <li><input class="project" id="comment-form-submit" type="submit" value="Save Comment" /></li>
+              </ul>
+            </form>
+            
+        </div> <!--  end threaded comments -->
+    
+    
+        <div id="discussion-space-materials">
+            <div id="collection_table"></div>
+        </div>    
+                
+    </div> <!--  end container -->
 
-
-                    
-      </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
-</div> <!-- id="slider-parent" -->
+            
 {% endblock %}

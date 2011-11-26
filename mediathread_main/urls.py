@@ -3,7 +3,7 @@ from django.conf import settings
 
 urlpatterns = patterns(
     'mediathread_main.views',
-    #urls prefix at root AND 'yourspace/' 
+    # urls prefix 'yourspace/' 
                            
     url(r'^all/asset/$',
         'all_records',

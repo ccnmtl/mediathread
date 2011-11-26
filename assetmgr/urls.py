@@ -12,6 +12,10 @@ urlpatterns = patterns(
 
     url(r'^(?P<asset_id>\d+)/$', 
         'asset_workspace', name="asset-view"),
+
+    url(r'^(?P<asset_id>\d+)/annotations/$',
+        'create_annotations_container',
+        name="create-annotations-container"),
                        
     url(r'^(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
         'annotationview',

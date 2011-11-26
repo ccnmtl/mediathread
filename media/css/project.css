@@ -210,7 +210,16 @@ div.comment {
     border: 1px solid #ccc;
     padding: 0px 5px 0 0px;
     margin-top:16px;
+    float: left;
+    width: 42%;
 }
+
+#discussion-space-materials {
+    float: left;
+    width: 40%;
+    margin-left: 20px;
+}
+
 
 form.threaded_comments_form ul li {
  background: #AAA;

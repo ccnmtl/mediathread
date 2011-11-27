@@ -1233,9 +1233,12 @@ p.sherd-instructions {
     padding: 10px 0px 0px 0px;
 }
 
-.sherd-clipform-editing input.timecode,
-.sherd-clipform-editing input.regButton {
+.sherd-clipform-editing input.timecode {
     width:6.5em;
+}
+
+.sherd-clipform-editing input.regButton {
+    width:8em;
 }
 
 .sherd-clipform-editing td {

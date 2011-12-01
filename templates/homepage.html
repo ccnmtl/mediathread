@@ -70,24 +70,10 @@
 
             <div class="column-container">    
                
-               <h2>From Your Instructor {% with "help_instructor" as help_id %}{% include "help.html" %}{% endwith %}</h2>
+               <h2>From Your Instructor {% with "help_instructor" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
                   <div class="column-contents scroll">
-             
-                    <!--this is content for instructor column help toggle
-                     <h3><a class="hs-control control-close" href="#intro-instructor">x</a>Welcome to MediaThread</h3>
-                        {% if is_faculty %}
-                            <p>Instructors are able to post to this space:</p>
-                            <ul>
-                                <li>Information for the class</li>
-                                <li>Assignments</li>
-                                <li>Discussion topics</li>
-                            </ul>
-                            <p>To learn more and get started, visit the <a href="/reports/class_activity/">Instructor Dashboard</a>.</p>
-                        {% else %}
-                            <p>Your Instructor controls this space.</p>
-                            <p>Anything that s/he publishes for the class will appear in this column.</p>
-                        {% endif %}-->
-                  <div id="instructor-column">
+                    {% with "help_instructor" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
+                               <div id="instructor-column">
                         {%if faculty_feed.projects %}
                             <h4 class="inst-header project">Information</h4>
                             <ul class="instructor-list">

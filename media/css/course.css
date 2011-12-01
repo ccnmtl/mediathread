@@ -1313,24 +1313,19 @@ body.old-assetwindow #asset-details-annotations-list {
 /*Toggling inline help text*/
 
 
-div.help.showhide
-{
-    float: left;
-    margin: -15px 5px 0 -5px;
-
-}
-
-div.help.showhide .helptoggle 
+.helptoggle 
 {
 
-    float: right;
     display: block;
-    width: 26px;
-
+    float: right;
+    height: 18px;
+    margin: -3px 5px;
+    padding: 4px 0 0 4px;
+    width: 19px;
     
 }
 
-div.help.showhide .helptoggle.on 
+.helptoggle.on 
 {
 
     background-color: #DEDEDE;
@@ -1340,6 +1335,7 @@ div.help.showhide .helptoggle.on
     -moz-border-radius-topright: 5px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    border-bottom: 3px solid #DEDEDE;
 
 }
 
@@ -1350,12 +1346,11 @@ div.help.showhide .helptoggle.on
     background-image:url('../img/icons/meth_info_icon.png');
     background-repeat: no-repeat;
     width:20px;
-    height:20px;
+    height:18px;
     color:transparent;
     /*for IE 6-8 not supporting transparent text:*/
     overflow:hidden;
-    line-height:48px;
-    margin: 2px;
+    margin: -2px;
 }
 
 .helptoggle a.togglebutton:hover 
@@ -1363,14 +1358,26 @@ div.help.showhide .helptoggle.on
 	background-image:url('../img/icons/meth_info_icon_hover.png');
 }
 
-div.help.showhide .helpblock {
-    /*margin 20px on right-and left, squeezes homepage content over [x] */
-	margin: 20px 0px 10px;
+.helpblock {
+	margin: -7px 3px 20px 4px;
 	background-color: #dedede;
-	padding: 1px 10px;
+	padding: 15px;
 	font-size: 95%;
     max-width:600px;
     text-transform: none;
+
+}
+
+.helpblock h3 {
+	margin: 0 0 10px 0;
+
+}
+
+.helpblock ul,
+table#home-columns td#instructor .helpblock ul, 
+table#home-columns td#classwork .helpblock ul 
+{
+    list-style: disc;
 
 }
 

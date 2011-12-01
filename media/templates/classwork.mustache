@@ -116,38 +116,28 @@
                             </form>
                         </div>
 
-                        Compositions
+                        Compositions 
                     </h2>
                     <div class="column-contents scroll">
                         {{#>>projects}}
                         <div id="project_table">
                         
                             {{^compositions}}
-                                <div class="default-content intro-text">
-                                    {{#editable?}}
-                                        {{#is_faculty?}}
-                                            <h4>Review class compositions</h4>
+                                <div id="help_homepage_compositions_section" class="helpblock">
+
+                                            <h3>Available compositions appear here:</h3>
                                             
-                                            <p>Compositions saved at the "Publish to Whole Class" level will appear here.</p>
-                                        {{/is_faculty?}}
-                                        {{^is_faculty}}    
-                                            <h4>You have not yet created any compositions</h4>
                                             <ul>
-                                                <li>To create a Composition, click "New Composition" above.</li>
-                                                <li>To view Compositions shared by classmates, select "All Class Members" from the dropdown above.</li>
-                                            </ul>
-                                        {{/is_faculty}}
-                                    {{/editable?}}
-                                    {{^editable}}
-                                        <h4>No (viewable) compositions yet.</h4>
-                                    {{/editable}}
+                                            <li>To create your own Composition, click "New Composition" in the upper right of this box.</li>
+                                            <li>To access others' published compositions, select a name in the "Owner" menu above.</li>
+
+
                                 </div>
                             {{/compositions}}
                             
                             {{#compositions?}}
                             
                                 {{#showing_all_items?}}
-                                    <h4>Published Compositions</h4>
                                 {{/showing_all_items?}}
                         
                                 <ul id="projects">
@@ -233,7 +223,7 @@
                         <div class="button-form inline">
                             <form class="block media-browse hinline" method="POST" action="/explore/">
                                 <input type="hidden" name="title" />
-                                <input class="columnbutton media browse-button" type="submit" value="Browse Sources"/>
+                                <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
                             </form>
                         </div>
                         
@@ -243,20 +233,20 @@
                         {{#>>assets}}
                         <div id="asset_table" class="asset-table">
                             {{^assets}}
-                                <div class="default-content intro-text">
+                                <div id="help_homepage_collections_section" class="helpblock">
                                     {{#showing_my_items?}}
                                         {{^active_filter_count}}
                                             {{#is_faculty?}}
-                                                <h5>Import media items</h5>
+                                                <h3>Media Items appear here:</h3>
                                                 
-                                                <p>Items saved in MediaThread appear here. To collect items, click the "Browse Sources" button above.</p>
+                                                <p>To collect items, click the "Source Media" button above.</p>
 
-                                                <p>Instructors can add sources to the "Browse Sources" list. For more information, visit the <a href="/reports/class_activity">Instructor Dashboard</a>.</p>
+                                                <p>Instructors can add sources to the "Source Media" page. For more information, visit the <a href="/reports/class_activity">Instructor Dashboard</a>.</p>
                                             {{/is_faculty?}}
                                             {{^is_faculty}}    
                                                 <h5>You have not yet collected any items</h5>
                                                 <ul>
-                                                    <li>To collect items, click "Browse Sources" above.</li>
+                                                    <li>To collect items, click "Source Media" above.</li>
                                                     <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
                                                 </ul>
                                             {{/is_faculty}}

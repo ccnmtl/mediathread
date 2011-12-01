@@ -1381,6 +1381,14 @@ table#home-columns td#classwork .helpblock ul
 
 }
 
+.helpblock ul li,
+table#home-columns td#instructor .helpblock ul li, 
+table#home-columns td#classwork .helpblock ul li
+{
+    margin-bottom: 5px;
+
+}
+
 
 
 

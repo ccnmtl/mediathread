@@ -640,10 +640,10 @@ input.addtoclass {
 	
 .archive h2, .tabberlive .tabbertab h2 {
 
-margin: 0 0 1em 0;
+margin: 0 0 10px 0;
 font-size: 110%;
 background-color: #6f6f6f;
-padding: .2em .5em .2em .5em;
+padding: 5px 10px 4px;
 color: #dedede;
 font-weight: normal;
 text-align: left;
@@ -1373,7 +1373,6 @@ body.old-assetwindow #asset-details-annotations-list {
 	background-color: #dedede;
 	padding: 15px;
 	font-size: 95%;
-    max-width:600px;
     text-transform: none;
 
 }

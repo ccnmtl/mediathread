@@ -1,0 +1,52 @@
+      <div class="">
+        <h1 id="advanced">Advanced Documentation on How Assets are Saved</h1>    
+
+        <p>
+          Mediathread does not store any assets directly, but instead embeds them from the site
+          they originally came from.  This has advantages and disadvantages.
+        </p>
+        <h2>Currently supported <a href="/save">/save</a>? query arguments</h2>
+        <p>If the browser does a GET url, the asset will not automatically save until they visit the page again.  The advantage of a GET request is that it survives through login and course-selection.  A POST request will automatically create the asset.  The advantage of using POST is that it can accept much larger data, so POSTs with metadata (e.g. with long descriptions) should make sure the user is logged in, and then POST.</p>
+        <dl>
+          <dt>url</dt><dd>The URL the asset can be viewed at on the originating site.  This is used to link back to the site.</dd>
+          <dt>title</dt><dd>The human-readable title of the asset</dd>
+
+          <dt>archive</dt><dd>The URL to the top-level archive the asset is from.  This will generally be the homepage for the <b>url</b> argument.</dd>
+          <dt>metadata-*</dt><dd>Besides "title" all other metadata can be conveyed by a general-purpose metadata-&gt;name&lt; argument.  So if you wanted to specify author, you would add an argument <code>metadata-author=Mark+Twain</code>.  Note that some browsers have maximum URL lengths, so it's unwise to include a whole description in a metadata argument.  These values will appear in the summary section of the asset.</dd>
+
+          <dt>thumb</dt><dd>A URL to a thumbnail representing the image/video resource.  Generally, this should be an image that fits within 100 pixels x 100 pixels.  (but will be displayed shrunken if you provide a larger image--though that will increase page load-time)</dd>
+          <dt>image</dt><dd>A URL to a simple image.  If you do not provide other supported image links which can query parts of a large image efficiently, then the larger the image, the longer the page will take to load.  However, this should be acceptable for any image that's 1000 pixels x 1000 pixels or less.</dd>
+          <dt>*-metadata</dt>
+          <dd>
+            A string to specify the width,height and optionally mime-type of a url.  For example "thumb-metadata=w100h20" means the image available at the "thumb=" url is 100 pixels wide and 20 pixels high.
+          </dd>
+          <dt>quicktime</dt><dd></dd>
+          <dt>realplayer</dt><dd></dd>
+          <dt>video{_pseudo,_rtmp}</dt><dd></dd>
+          <dt>mp4</dt><dd></dd>
+          <dt>mp4_pseudo</dt><dd></dd>
+          <dt>mp4_rtmp</dt><dd></dd>
+          <dt>flv</dt><dd></dd>
+          <dt>flv_pseudo</dt><dd></dd>
+          <dt>flv_rtmp</dt><dd></dd>
+          <dt>ogg</dt><dd></dd>
+          <dt>mp3</dt><dd></dd>
+          <dt>image_fpx</dt><dd></dd>
+          <dt>youtube</dt><dd>An embeddable YouTube video link.  Should be of the form http://www.youtube.com/v/ul1DoaY6bRE?enablejsapi=1&fs=1</dd>
+          <dt></dt><dd></dd>
+          
+        </dl>
+        <h3>Staff and Server arguments</h3>
+        <dl>
+          <dt>as</dt>
+          <dd>
+            The username of the class member that the asset should be added as. (Like the `su` command).  If this is the special word "faculty" then it will be added as the first faculty member added to the course.
+          </dd>
+          <dt>set_course</dt>
+          <dd>The group name of the course that the asset is to be added into.
+          </dd>          
+          <dt>secret</dt>
+          <dd>A secret for server-to-server communication, so authentication is not necessary.  This is set in <code>deploy_specific/settings.py</code> SERVER_ADMIN_SECRETKEYS as a dictionary with the key, the server, and the value the secret.
+          </dd>          
+        </dl>
+      </div>

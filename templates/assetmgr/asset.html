@@ -34,7 +34,7 @@
             var importing = {% ifequal request.GET.importing '1' %} true {% else %}false {% endifequal %};
             if (importing) {
                 setTimeout(function() {
-                    msg = "Item import complete, but you're not done yet!\n\nAdd tags, notes and selections to save this item to your collection.";
+                    msg = "You're almost done!\n\nTo save this item to your collection, add a tag, note or selection, then click 'Save' .";
                     alert(msg);
                 }, 1000);
             }

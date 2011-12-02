@@ -377,7 +377,8 @@ ul#projects h3 .edit_icon {
     float: right;
 }
 
-input.project {
+input.project,
+a.project {
     background-image: url("../img/buttons/compositions_button_bg.jpg");
     border-color: #477794;
 }
@@ -426,11 +427,12 @@ html.busy, html.busy * {
     padding: 10px;
     margin: 10px 10px 30px 0;
     border: 1px solid #ccc;
+    min-height: 24em;
 
 
 }
 
-#instructor-actions {
+#instructor-nav {
     width: 200px;
     float: left;
     background-color: #dedede;
@@ -439,11 +441,13 @@ html.busy, html.busy * {
 
 }
 
-#instructor-actions input.columnbutton,
-#instructor-actions input.project{
+#instructor-nav a{
 
     margin: 5px 0;
     width: 200px;
+    background-repeat: repeat-x;
+    border: 1px solid #477794;
+    text-transform: capitalize;
 
 }
 
@@ -453,11 +457,10 @@ margin-left: 269px;
 }
 
 #dashboard-module-body {
-    border: 1px solid red;
     display: block;
 }
 
-#instructor-actions h3,
+#instructor-nav h3,
 #dashboard-module h3{
     margin: 0 0 10px;
 

@@ -29,30 +29,17 @@
     <h1>Instructor Dashboard</h1>    
 
     <div id="dashboard-container">
-        <div id="instructor-actions">
-              <h3>Reports:</h3>
-              <div><a href="/reports/class_assignments/">Assignment Responses</a></div>
-              <div><a href="/reports/class_activity/">Class Activity</a></div>
-              <div><a href="/reports/class_summary/">Class Summary</a></div>
+        <div id="instructor-nav">
+           
+              <h3>Actions:</h3>
               
-              <br /><br />
-                                  
-              <h3>Course Information:</h3>
-            
-              <form  method="GET" action="/settings">
-                <input class="columnbutton project createnew-button" type="submit" value="Course Settings"/>
-              </form>
               
               <form  method="GET" action="/">
                 <input class="columnbutton  project createnew-button" type="submit" value="Your Collections & Compositions"/>
               </form>
               
-              <br />
-              <br />
-              <h3>Actions:</h3>
-              
                 <form  method="GET" action="/save/">
-                <input class="columnbutton project createnew-button" type="submit" value="Manage Media Sources"/>
+                <input class="columnbutton project createnew-button" type="submit" value="Manage Media / Sources"/>
               </form>
               
               
@@ -69,6 +56,19 @@
                 <input type="hidden" name="obj_pk" value="{{course.id}}"/>
                 <input class="project" type="submit" value="Create Discussion"/>
               </form>
+                            <br /><br />
+                 <h3>Reports:</h3>
+              <div><a href="/reports/class_assignments/">Assignment Responses</a></div>
+              <div><a href="/reports/class_activity/">Class Activity</a></div>
+              <div><a href="/reports/class_summary/">Class Summary</a></div>
+              
+
+                                  
+              
+              
+              <br />
+              <br />
+              
         </div>
         
         

@@ -137,7 +137,8 @@ margin: 1em;
 
  }
  
- input.columnbutton {
+ input.columnbutton, 
+ a.columnbutton {
  
     margin: -2px -5px 0px 3px;
  }

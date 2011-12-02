@@ -1,0 +1,47 @@
+    <div id="{{help_content}}" class="">
+                {% if is_faculty %}
+                  <h3>Instructors can post here:</h3>
+                        <ul>
+                            <li>Information for the class</li>
+                            <li>Assignments</li>
+                            <li>Discussion topics</li>
+                        </ul>
+                        <p>Get Started: <a href="/reports/class_activity/">Instructor Dashboard</a></p>
+               {% else %}
+                    <h3>Your Instructor controls this space.</h3>
+                        <p>Anything that s/he publishes for the class will appear in this column.</p>
+               {% endif %}
+    </div>
+    
+{%comment%}
+
+<!--id="help_homepage_instructor_section"-->
+               
+               {% if is_faculty %}
+                 <h3>Instructors can post here:</h3>
+                        <ul>
+                            <li>Information for the class</li>
+                            <li>Assignments</li>
+                            <li>Discussion topics</li>
+                        </ul>
+                        <p>Get Started: <a href="/reports/class_activity/">Instructor Dashboard</a></p>
+                {% else %}
+                 <h3>Your Instructor controls this space.</h3>
+                        <p>Anything that s/he publishes for the class will appear in this column.</p>
+                {% endif %}
+
+
+<!--id="help_homepage_compositions_section"-->
+
+                 <h3>Available compositions appear here:</h3>
+                    
+                        <ul>
+                        <li>To create your own Composition, click "New Composition" in the upper right of this box.</li>
+                        <li>To access others' published compositions, select a name in the "Owner" menu above.</li>
+
+<!--id="help_item_selection_image"-->
+
+	         '   <h3>Instructions:</h3>
+	                    <p>Choose a drawing tool, located on the upper, right-hand side of the image. The polygon tool works by clicking on the points of the polygon and then double-clicking the last point.</p>
+
+{%endcomment%}

@@ -14,8 +14,10 @@
 
 <ul id="wardenclyffe" class="archive-gallery">
 <li class="archive">
-<h2>Upload Media {% with "help_wardenclyffe" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
 
+
+<h2><!--<a class="metadata-selector metadata-selector-closed" href="#wardenclyffe_content">--></a>Upload Media {% with "help_wardenclyffe" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
+<!--<div id="wardenclyffe_content" class="hs-init-hide hs-hide">--><div>
 {% with "help_wardenclyffe" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
 Placeholder for Wardenclyffe uploader
 
@@ -35,6 +37,7 @@ Placeholder for Wardenclyffe uploader
         <br /><br />
         <input type="submit" value="submit"></input>
     </form>
+</div>
 </li>
 </ul>
 
@@ -114,6 +117,7 @@ Placeholder for Wardenclyffe uploader
 
 </li>
 </ul>
+
 {% if is_staff %} 
 <ul id="individual_uploads" class="archive-gallery">
 <li class="archive">
@@ -275,3 +279,6 @@ Placeholder for Wardenclyffe uploader
       <br class="visualclear" />
 {% endif %}
 {% endblock %}
+
+
+      <a class="hs-control" href="#reports-graph"></a>

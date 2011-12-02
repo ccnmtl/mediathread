@@ -142,14 +142,6 @@ def notifications(request):
         'tag_cloud': tag_cloud,
         }
 
-@allow_http("GET")
-@rendered_with('instructor/classlisting.html')
-def class_listing(request):
-    
-    students = users_in_course(request.course).order_by('username')
-    
-    return { 'students': students }
-
 def date_filter_for(attr):
 
     def date_filter(asset, date_range, user):

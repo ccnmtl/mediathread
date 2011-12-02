@@ -38,7 +38,6 @@ urlpatterns = patterns('',
 
                        ### Course-URLS ###
                        (r'^$', 'mediathread_main.views.triple_homepage'),
-                       url(r'^listing/$','mediathread_main.views.class_listing', name="class-listing"),
                        url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
                        url(r'^settings$', 'mediathread_main.views.course_settings', name="course-settings"),
                        

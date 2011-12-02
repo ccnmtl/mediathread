@@ -1,16 +1,7 @@
-{% extends "base.html" %}
+{% extends "reports/base_reports.html" %}
 {%load user_annotations comments user_projects coursetags %}
 
-<title> {% block title %}
-Course Summary
-{% endblock %}</title>
-
-{% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-{% endblock %}
-
-{% block content %}
-    {{ block.super }}
+{% block dashboard_module %}
 <h1>Assignment Report: {{assignment.title}}</h1>    
 
 <table>

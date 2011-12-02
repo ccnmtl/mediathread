@@ -1,21 +1,10 @@
-{% extends "base.html" %}
+{% extends "instructor/base_dashboard.html" %}
 {%load user_annotations comments %}
 
-<title> {% block title %}Course Settings{% endblock %}</title>
+{% block dashboard_module %}
 
-{% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-<script type="text/javascript" src="/site_media/js/reports.js"></script>
-{% endblock %}
-
-{% block content %}
-    {{ block.super }}
-<h1>Instructor Dashboard <a class="hs-control intro-open-nofloat" href="#global-instructor-orientation">?</a><a class="hs-control hs-nostyle" href="#global-instructor-orientation">
-</h1>    
-
-{% include "instructor/instructor_actions.html" %}
-
-
+    <h1>Upload Permission Settings</h1>
+    
     {% if upload_permission_updated %}
         <div>Changes Saved</div>
     {% endif %}

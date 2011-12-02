@@ -1,21 +1,9 @@
-{% extends "base.html" %}
+{% extends "reports/base_reports.html" %}
+
 {%load user_annotations comments user_projects %}
 
-<title> {% block title %}
-Course Summary
-{% endblock %}</title>
 
-{% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-{% endblock %}
-
-{% block content %}
-
-
-<!--<form class="block project createnew" method="POST" action="{%url your-space-projects user%}">
-  <input type="hidden" name="title" />
-  <input class="columnbutton project createnew-button" type="submit" value="New Composition/Assignment"/>
-</form>-->
+{% block dashboard_module %}
 
 <table>
   <thead>

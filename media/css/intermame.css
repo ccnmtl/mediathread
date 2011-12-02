@@ -447,18 +447,18 @@ html.busy, html.busy * {
 
 }
 
-#instructor-reports {
+#dashboard-module {
 margin-left: 269px;
 
 }
 
-#report-dataspace {
+#dashboard-module-body {
     border: 1px solid red;
     display: block;
 }
 
 #instructor-actions h3,
-#instructor-reports h3{
+#dashboard-module h3{
     margin: 0 0 10px;
 
 }

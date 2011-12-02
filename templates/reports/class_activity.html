@@ -1,24 +1,10 @@
-{% extends "base.html" %}
+{% extends "reports/base_reports.html" %}
 {%load user_annotations comments %}
 
-<title> {% block title %}
-Course Summary
-{% endblock %}</title>
-
-{% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-<script type="text/javascript" src="/site_media/js/reports.js"></script>
-{% endblock %}
-
-{% block content %}
-
-
+{% block dashboard_module %}
       <ul class="clumper">
     	{%for clump in my_feed%}
             {%include "instructor/clump.html" %}
     	{%endfor%}
       </ul>
-
-
-
 {% endblock %}

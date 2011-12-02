@@ -1,19 +1,8 @@
-{% extends "base.html" %}
+{% extends "reports/base_reports.html" %}
+
 {%load user_annotations comments coursetags %}
 
-<title> {% block title %}
-Course Summary
-{% endblock %}</title>
-
-{% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-<script type="text/javascript" src="/site_media/js/protovis/protovis.min.js"></script>
-<script type="text/javascript" src="/site_media/js/reports.js"></script>
-{% endblock %}
-
-{% block content %}
-
-
+{% block dashboard_module %}
     <table>
       <thead>
         <tr>
@@ -21,8 +10,6 @@ Course Summary
           <th>Annotations</th>
           <th>Comments</th>
           <th>Compositions</th>
-        <!--  <th>Composition adds</th>
-          <th>Composition dels</th>-->
         </tr>
       </thead>
       <tbody id="reports-student-tbody">
@@ -74,7 +61,5 @@ Course Summary
         </ul>
         <div id="reports-graph-visualization"></div>
       </div>
-
-
 
 {% endblock %}

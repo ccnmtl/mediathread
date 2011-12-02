@@ -1,0 +1,10 @@
+{% extends "instructor/base_dashboard.html" %}
+
+{% block dashboard_module_header %}
+    <h3>Reports:</h3>
+    <ul class="submenu course-report">
+        <li class="{%ifequal submenu "activity"%}highlight{%endifequal%}"><a href="{%url class-activity %}">Class Activity</a></li>
+        <li class="{%ifequal submenu "assignments"%}highlight{%endifequal%}"><a href="{%url class-assignments %}">Assignment Responses</a></li>
+        <li class="{%ifequal submenu "summary"%}highlight{%endifequal%}"><a href="{%url class-summary %}">Student Contribution Summary</a></li>
+    </ul>
+{% endblock %}

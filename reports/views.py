@@ -60,7 +60,7 @@ def is_unanswered_assignment(assignment, user, request, expected_type):
 
 
 @allow_http("GET")
-@rendered_with('reports/class_assignment_report.html')
+@rendered_with('dashboard/class_assignment_report.html')
 def class_assignment_report(request, id):
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
@@ -73,7 +73,7 @@ def class_assignment_report(request, id):
         }
 
 @allow_http("GET")
-@rendered_with('reports/class_assignments.html')
+@rendered_with('dashboard/class_assignments.html')
 def class_assignments(request):
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
@@ -94,7 +94,7 @@ def class_assignments(request):
         }
 
 @allow_http("GET")
-@rendered_with('reports/class_summary.html')
+@rendered_with('dashboard/class_summary.html')
 def class_summary(request):
     """FACULTY ONLY reporting of entire class activity """
     if not request.course.is_faculty(request.user):
@@ -232,7 +232,7 @@ def class_summary_graph(request):
 
 
 @allow_http("GET")
-@rendered_with('reports/class_activity.html')
+@rendered_with('dashboard/class_activity.html')
 def class_activity(request):
     """FACULTY ONLY reporting of entire class activity """
     if not request.course.is_faculty(request.user):

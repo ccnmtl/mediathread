@@ -1,10 +1,10 @@
-{% extends "reports/base_reports.html" %}
+{% extends "dashboard/base_reports.html" %}
 {%load user_annotations comments %}
 
 {% block dashboard_module %}
       <ul class="clumper">
     	{%for clump in my_feed%}
-            {%include "instructor/clump.html" %}
+            {%include "dashboard/clump.html" %}
     	{%endfor%}
       </ul>
 {% endblock %}

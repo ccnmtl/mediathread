@@ -390,7 +390,7 @@ def annotationview(request, asset_id, annot_id):
         
         return render_to_response('assetmgr/asset_not_found.html', rv, context_instance=RequestContext(request))
 
-@rendered_with('instructor/class_addsource.html')
+@rendered_with('dashboard/class_addsource.html')
 def add_source_to_course(request):
     from supported_archives import all 
     return {

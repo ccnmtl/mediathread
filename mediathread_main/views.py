@@ -76,7 +76,7 @@ def get_prof_feed(course,request):
     prof_feed['show'] = (prof_feed['assets'] or prof_feed['projects'] or prof_feed['assignments'] or prof_feed['tags'])
     return prof_feed
 
-@rendered_with('instructor/notifications.html')
+@rendered_with('dashboard/notifications.html')
 @allow_http("GET")
 def notifications(request):
     c = request.course
@@ -406,7 +406,7 @@ def get_records(user, course, request):
 
 
 @allow_http("GET", "POST")
-@rendered_with('instructor/course_settings.html')
+@rendered_with('dashboard/course_settings.html')
 def course_settings(request):
     # Instructor Dashboard view 
     context = { 'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS }

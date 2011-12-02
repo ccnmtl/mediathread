@@ -112,7 +112,7 @@
 			<ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
 			
 			    {% if is_course_faculty %}
-				<li class="{% active request 'Instructor' %} instructor"><a href="{% url class-activity %}">Instructor Dashboard</a></li>
+				<li class="{% active request 'Instructor' %} instructor"><a href="{% url class-assignments %}">Instructor Dashboard</a></li>
                 {% endif %}
 
 				<li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>

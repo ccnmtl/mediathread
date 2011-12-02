@@ -5,7 +5,30 @@
 
 {% block js %}
 <script type="text/javascript" src="/site_media/js/reports.js"></script>
+
+    <script type="text/javascript">
+        resizeHomepage = function() {
+            var visible = getVisibleContentHeight();
+          jQuery('#dashboard-module-body .scroll').css('height', (visible - 87) + "px");
+        }
+    
+        jQuery(document).ready(function() {
+            DjangoSherd_Asset_Config();    
+
+            
+            jQuery(window).resize(function () {  
+                resizeHomepage();
+            });
+            
+
+        });
+    </script>
 {% endblock %}
+
+
+
+
+
 
 {% block content %}
     {{ block.super }}
@@ -34,35 +57,38 @@
 
 
                  <h3>Reports:</h3>
-              <div><a href="/reports/class_assignments/">Assignment Responses</a></div>
-              <div><a href="/reports/class_activity/">Class Activity</a></div>
-              <div><a href="/reports/class_summary/">Class Summary</a></div>
+              <a href="/reports/class_assignments/">Assignment Responses</a>
+              <a href="/reports/class_activity/">Class Activity</a>
+              <a href="/reports/class_summary/">Class Summary</a>
                                      <br /><br />     
               <h3>Actions:</h3>
               
+              <a href="/save/">Manage Media / Sources</a>
               
-              <form  method="GET" action="/">
-                <input class="columnbutton  project createnew-button" type="submit" value="Your Collections & Compositions"/>
-              </form>
-              
-                <form  method="GET" action="/save/">
-                <input class="columnbutton project createnew-button" type="submit" value="Manage Media / Sources"/>
-              </form>
-              
-              
-              
+              <!--<a href="/project/new/">Create Composition or Assignment</a>-->
               <form class="project-createnew" method="POST" action="{%url your-space-projects user%}">
                 <input type="hidden" name="title" />
-                <input class="columnbutton project createnew-button" type="submit" value="Create Composition or Assignment"/>
-              </form>
+                <input type="submit" value="Create Composition or Assignment"/>
+              </form> 
               
+              <!--<a href="/discussion/new/">Create Discussion</a>-->
               <form class="discussion-createnew"  action="/discussion/new/" method="POST">
                 <input type="hidden" name="comment_html" value="Discussion Title" />
                 <input type="hidden" name="app_label" value="courseaffils"/>
                 <input type="hidden" name="model" value="course"/>
                 <input type="hidden" name="obj_pk" value="{{course.id}}"/>
-                <input class="project" type="submit" value="Create Discussion"/>
+                <input type="submit" value="Create Discussion"/>
               </form>
+              
+              
+              <a href="/">View Collections & Compositions</a>
+              
+              
+              
+        
+  
+              
+ 
                                   
               
               

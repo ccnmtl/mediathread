@@ -441,13 +441,37 @@ html.busy, html.busy * {
 
 }
 
-#instructor-nav a{
+#instructor-nav input, #instructor-nav input a
+{
 
-    margin: 5px 0;
-    width: 200px;
+    text-align: left;
+    margin: 4px 0;
+    width: 202px;
     background-repeat: repeat-x;
     border: 1px solid #477794;
     text-transform: capitalize;
+    display: block;
+    padding: 0 2px;
+    text-decoration: none;
+    color: #000;
+        background-image: url("../img/buttons/compositions_button_bg.jpg");
+        font-size: 85%;
+
+}
+
+#instructor-nav a{
+
+    margin: 4px 0;
+    width: 190px;
+    background-repeat: repeat-x;
+    border: 1px solid #477794;
+    text-transform: capitalize;
+    display: block;
+    padding: 0 5px;
+    text-decoration: none;
+    color: #000;
+        background-image: url("../img/buttons/compositions_button_bg.jpg");
+        font-size: 85%;
 
 }
 

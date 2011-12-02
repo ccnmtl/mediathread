@@ -1162,6 +1162,12 @@ ul.clumper {
     padding: 10px;
 }
 
+ul.clumper li {
+    border-bottom: 1px solid #DEDEDE;
+    margin: 0 0 10px;
+    padding-bottom: 12px;
+}
+
 a.bookmarklet {
     display:block;
     margin-top:8px;

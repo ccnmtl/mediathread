@@ -637,6 +637,12 @@ margin:-2px
 input.addtoclass {
     float:right;
 }
+
+table#summary_columns, table#summary_columns tr td.mainsection {
+    vertical-align: top;
+    border: none;
+    text-align: left;
+}
 	
 .archive h2, .tabberlive .tabbertab h2 {
 

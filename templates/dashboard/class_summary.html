@@ -10,6 +10,10 @@
 
 {% block dashboard_module %}
     <h1>Report: Student Contribution Summary</h1>    
+<table id="summary_columns">
+<tr>
+
+<td class="mainsection">
     <table>
       <thead>
         <tr>
@@ -34,8 +38,10 @@
         {% endfor %}
       </tbody>
     </table>
-    
- <div style="float:left;width:60%">
+</td>
+
+<td class="mainsection">
+ <div>
   <div class="panel-column">
     <h2>Experimental Graph Visualization</h2>
     <p> This graph tries to visualize the different inter-connected objects in the class.
@@ -69,5 +75,14 @@
       </div>
       </div>
       </div>
+</td>
+
+</tr>
+</table>
+
+
+
+    
+
       
  {% endblock %}

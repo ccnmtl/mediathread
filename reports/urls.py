@@ -20,6 +20,5 @@ urlpatterns = patterns(
     
     url(r'^class_activity/$','reports.views.class_activity',
         name="class-activity"),
-    
     )
 

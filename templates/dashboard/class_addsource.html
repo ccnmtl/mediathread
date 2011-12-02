@@ -3,49 +3,42 @@
 {% block title %}Manage Media Sources{% endblock %}
 
 {% block dashboard_module %}
-    
-<div class="intro-text">
-  <p>
-  This 'Save Page' allows you to add resources listed in "Source Media ".
-  </p>
-  {% if is_staff %}
-  <ul>
-    <li><a href="#archives">Add supported collections</a></li>
-    <li><a href="#custom_archive">Add your own collection</a></li>
-    <li><a href="#specific">Add single media assets</a></li>
-    <li><a href="#advanced">Advanced Documentation</a></li>
-  </ul>
-  {% endif %}
-</div>
 
-<h1 id="archives">Supported Collections</h1>
+<h2>Manage Media /Sources </h2>
+    
+  <p>
+  This page allows you to manage the resources listed on the "Source Media " page. To import individual items, use the Mediathread Bookmarklet.
+  </p>
+  <br />
+
+
 <ul class="archive-gallery">
-    {% for archive in supported_archives %}
-      <li class="archive archive-across">
-        <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
-        <br />
-         {%if archive.sources.thumb%}
-           <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
-         </a>
-         {% endif %}
-         <span>
-           {{archive.metadata.description|urlize|linebreaks}}
-         </span>
-         <form action="{% url asset-save %}" method="POST">
-           {% include "assetmgr/pretender_select.html" %}
-           <input type="hidden" name="title" value="{{archive.title}}" />
-           <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}" />
-           <input type="hidden" name="metadata-upload" value="{{archive.metadata.upload}}" />
-           {%for lbl,src in archive.sources.items %}
-             <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
-           {%endfor%}
-           <input type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
-         </form>
-      </li>
-      {%endfor%}
-    </ul>
-    <br style="clear:both" />
-{% if is_staff %}    
+<li class="archive">
+<h2>Upload Media</h2>
+Placeholder for Wardenclyffe uploader
+
+    <h4>Upload Permission Settings</h4>
+    
+    {% if upload_permission_updated %}
+        <div>Changes Saved</div>
+    {% endif %}
+    
+    <form action="/settings" method="POST">
+        <label for="upload_permission">Upload Permissions:</label><br />
+        <select name="upload_permission">
+            {% for level in permission_levels %}
+                <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
+            {% endfor %}
+        </select>
+        <br /><br />
+        <input type="submit" value="submit"></input>
+    </form>
+</li>
+</ul>
+
+{% if is_staff %} 
+<ul class="archive-gallery">
+<li class="archive">
       <h2 id="custom_archive">Add your own Collection</h2>
       <p>
         You may want to copy the links from above (including the thumbnail URL) and just change the description or link to a sub-section of the site.
@@ -77,9 +70,50 @@
         <br/>
 	<input type="submit" value="Add Source to Class" />
       </form>
+</li>
+</ul>
+{% endif %}
 
-      <h1 id="specific">Specific Internet Resources</h1>
+<ul class="archive-gallery">
+<li class="archive">
+<h2 id="archives">Add/Remove Supported Collections</h2>
 
+<ul class="archive-gallery">
+    {% for archive in supported_archives %}
+             <form action="{% url asset-save %}" method="POST">
+             
+      <li class="archive">
+                 <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
+        <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
+        <br />
+         {%if archive.sources.thumb%}
+           <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+         </a>
+         {% endif %}
+         <span>
+           {{archive.metadata.description|urlize|linebreaks}}
+         </span>
+
+           {% include "assetmgr/pretender_select.html" %}
+           <input type="hidden" name="title" value="{{archive.title}}" />
+           <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}" />
+           <input type="hidden" name="metadata-upload" value="{{archive.metadata.upload}}" />
+           {%for lbl,src in archive.sources.items %}
+             <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
+           {%endfor%}
+
+         </form>
+      </li>
+      {%endfor%}
+    </ul>
+
+</li>
+</ul>
+
+<ul class="archive-gallery">
+<li class="archive">
+     <h2 id="specific">Specific Internet Resources</h2>
+{% if is_staff %}    
       <h2>Local Quicktime Streaming Video</h2>
       <form action="{% url asset-save %}" method="POST">
         {% include "assetmgr/pretender_select.html" %}
@@ -207,9 +241,10 @@
 	<br/>
 	<input type="submit" />
       </form>
-
+</li>
+</ul>
             
-      <div class="intro-text">
+      <div class="">
         <h1 id="advanced">Advanced Documentation on How Assets are Saved</h1>    
 
         <p>

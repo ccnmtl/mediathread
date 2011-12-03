@@ -17,6 +17,9 @@ if hasattr(settings,'WIND_BASE'):
     logout_page = (r'^accounts/logout/$','djangowind.views.logout', {'next_page': redirect_after_logout})
 
 urlpatterns = patterns('',
+                       (r'^crossdomain.xml$', 'django.views.static.serve', {'document_root': os.path.abspath(os.path.dirname(__file__))
+, 'path': 'crossdomain.xml'}),
+
                        (r'^comments/', include('django.contrib.comments.urls')),
                        logout_page,
                        auth_urls,#see above

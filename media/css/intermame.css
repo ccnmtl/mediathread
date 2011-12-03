@@ -489,3 +489,125 @@ margin-left: 269px;
     margin: 0 0 10px;
 
 }
+
+
+#clipStrip
+{
+	padding-left:0px;
+	/*padding-right:35px;*/
+	height:7px;
+	background-color: #e0e0e0;
+	margin: -1px auto;
+}
+#clipStripLabel
+{
+	margin:0;
+	padding:1px;
+	width:33px;
+	float:left;
+	position:relative;
+}
+#clipStripTitle
+{
+	text-align:center;
+	float:right;
+	width:180px;
+}
+
+#clipStripTrack
+{
+	position:relative;
+	height:7px;
+	padding:0px;
+	margin:0px 0 0 -2px;
+	z-index:0;
+	background: #777;
+}
+
+.clipStripLayer
+{
+    position:relative;
+    height: 14px;
+    padding: 0px;
+    margin: 0px 0 0 -2px;
+    z-index: 0;
+    background: #AAAAAA;
+    border-bottom: 1px solid #777;
+}
+
+.clipStripLayerTitle
+{
+    position: relative;
+    float: left;
+    border-bottom: 1px solid #777;
+    padding-left: 2px;
+    width: 95px;
+    height: 14px;
+    font-size: 85%;
+    text-align: right;
+}
+
+.clipStripLayer .annotationLayer
+{
+    background: #3333FF;
+    padding:0px;
+    margin:0px;
+    width:0px;
+    height:14px !important; 
+    z-index:1000;
+    position:absolute;
+    opacity:0.45;
+    -moz-opacity:0.45;
+    filter:alpha(opacity=45);
+    float: left;
+    border-left:1px solid black;
+    border-right:1px solid white;
+}
+
+
+.clipSlider,.noteStrip
+{
+	top:0px;
+	width:0px;
+	height:7px;
+	padding:0 0 0 7px;
+	margin:0;
+	position:absolute;
+	background:url('/site_media/img/vital3/bookendleft.gif') top left no-repeat ;
+	z-index:0;
+}
+
+.clipStripRange {
+	top:0px;
+	background:#CCE6EF;
+	padding:0px;
+	margin:0px;
+	width:0px;
+	height:7px !important; 
+	z-index:0;
+	position:relative;
+}
+
+.noteStripEnd {
+	top:0px;
+	margin:0;
+	width:0px;
+	height:7px;
+	padding:0 6px 0 0;
+	background:url('/site_media/img/vital3/bookendright.gif') top right no-repeat;
+	position:absolute;
+	z-index:0;
+	
+}
+
+.noteSelected
+{
+	top:0;
+	width:5px;
+	height:7px;
+	opacity:0.8;
+	padding:0;
+	margin:0px;
+	position:absolute;
+	background-color:#0000ff;
+}

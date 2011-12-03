@@ -175,7 +175,6 @@ class Asset(models.Model):
             'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }
         
-        
 class Source(models.Model):
     asset = models.ForeignKey(Asset)
 
@@ -214,6 +213,9 @@ class Source(models.Model):
 
     def is_image(self):
         return (self.label=='poster' or self.media_type.startswith('image/'))
+    
+    def is_archive(self):
+        return self.label=='archive'
 
     request = None
     def url_processed(self,request=None):

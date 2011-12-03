@@ -136,8 +136,8 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                       '/notifications/',
                       '/archive/',
                       '/assignment/',
-                      '/listing/',
-
+                      '/dashboard/',
+                      
                       '/analysis/',
                       re.compile(r'^/$'),
                       )

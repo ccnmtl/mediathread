@@ -1,6 +1,23 @@
 {% extends "dashboard/base_dashboard.html" %}
-
+{% load assetlinks %}
 {% block title %}Manage Media Sources{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    
+    <script type="text/javascript"> 
+        jQuery(document).ready(function() {
+            {% if newsrc %}
+               var msg = "{{newsrc}} has been enabled.";
+               alert(msg);
+            {% else %}{% if changes_saved %}
+               var msg = "Your changes have been saved.";
+               alert(msg);
+            {% endif %}{% endif %}
+        });
+    </script>
+    
+{% endblock %}
 
 {% block dashboard_module %}
 
@@ -19,66 +36,46 @@
 <h2><!--<a class="metadata-selector metadata-selector-closed" href="#wardenclyffe_content">--></a>Upload Media {% with "help_wardenclyffe" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
 <!--<div id="wardenclyffe_content" class="hs-init-hide hs-hide">--><div>
 {% with "help_wardenclyffe" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
-Placeholder for Wardenclyffe uploader
 
-    <h4>Upload Permission Settings</h4>
+    {% if upload_enabled %}
+        <h4>Upload Permission Settings</h4>
     
-    {% if upload_permission_updated %}
-        <div>Changes Saved</div>
-    {% endif %}
+        <form action="{% url class-add-source %}" method="POST">
+            <select name="upload_permission">
+                {% for level in permission_levels %}
+                    <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
+                {% endfor %}
+            </select>
+            <br /><br />
+            <input type="submit" value="submit"></input>
+        </form>
+    {% else %}
+        <form action="{% url asset-save %}" method="POST">
+            <li class="archive">
+                <input class="addtoclass" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
+                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/" class="archive-link">Mediathread Video Upload</a>
+                <br>
+                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/"><img src="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg" alt="thumbnail image" class="archive-link">
+                </a>
+             
+                <span>
+                   <p>Upload your own source material.</p>
+                </span>
     
-    <form action="/settings" method="POST">
-        <label for="upload_permission">Upload Permissions:</label><br />
-        <select name="upload_permission">
-            {% for level in permission_levels %}
-                <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
-            {% endfor %}
-        </select>
-        <br /><br />
-        <input type="submit" value="submit"></input>
-    </form>
+                <input type="hidden" name="title" value="Mediathread Video Upload">
+                <input type="hidden" name="metadata-description" value="Upload your own source material.">
+                <input type="hidden" name="metadata-upload" value="1">
+                <input type="hidden" name="url" value="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
+                <input type="hidden" name="archive" value="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
+                <input type="hidden" name="thumb" value="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg">
+                <input type="hidden" name="redirect-url" value="{% url class-add-source %}">
+            </li>
+         </form>
+     {% endif %}
+
 </div>
 </li>
 </ul>
-
-{% if is_staff %} 
-<ul id="custom_collection" class="archive-gallery">
-<li class="archive">
-      <h2 id="custom_archive">Add your own Collection {% with "help_add_custom_collection" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
-      {% with "help_add_custom_collection" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
-      <p>
-        You may want to copy the links from above (including the thumbnail URL) and just change the description or link to a sub-section of the site.
-      </p>
-      <form action="{% url asset-save %}" method="POST">
-        {% include "assetmgr/pretender_select.html" %}
-
-	Collection Title: <input type="text" name="title" value="" />
-	<br/>
-	Collection URL: <input type="text" name="archive" value="" />
-	<br/>
-	Collection URL (yes, again): <input type="text" name="url" value="" />
-	<br/>
-	Description:
-	<textarea cols="55" rows="5" 
-		  name="metadata-description"
-		  ></textarea>
-	<br/>
-	Thumb URL: <input type="text" name="thumb" value="" />
-	<br/>
-        Required Plugin
-	<select name="metadata-required">
-          <option value="">--None--</option>
-          <option value="flash">Flash</option>
-          <option value="quicktime">Quicktime</option>
-          <option value="realplayer">RealPlayer</option>
-          <option value="ogg">Ogg videotag support</option>
-        </select>
-        <br/>
-	<input type="submit" value="Add Source to Class" />
-      </form>
-</li>
-</ul>
-{% endif %}
 
 <ul id="supported_collections" class="archive-gallery">
 <li class="archive">
@@ -86,21 +83,26 @@ Placeholder for Wardenclyffe uploader
 
 <ul class="archive-gallery">
 {% with "help_supported_collections" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
-
     {% for archive in supported_archives %}
-             <form action="{% url asset-save %}" method="POST">
-             
-      <li class="archive">
-                 <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
-        <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
-        <br />
-         {%if archive.sources.thumb%}
-           <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
-         </a>
-         {% endif %}
-         <span>
-           {{archive.metadata.description|urlize|linebreaks}}
-         </span>
+        <form action="{% url asset-save %}" method="POST">
+            <li class="archive">
+            {% ifincourse archive course %}
+                <input class="addtoclass" type="submit" value="Added" id="{{archive.title|slugify}}" disabled="disabled" />
+            {% else %}
+                <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
+            {% endifincourse %}
+            
+            
+            <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
+            <br />
+            {%if archive.sources.thumb%}
+                <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                </a>
+            {% endif %}
+
+            <span>
+                {{archive.metadata.description|urlize|linebreaks}}
+            </span>
 
            {% include "assetmgr/pretender_select.html" %}
            <input type="hidden" name="title" value="{{archive.title}}" />
@@ -109,7 +111,6 @@ Placeholder for Wardenclyffe uploader
            {%for lbl,src in archive.sources.items %}
              <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
            {%endfor%}
-
          </form>
       </li>
       {%endfor%}
@@ -119,6 +120,45 @@ Placeholder for Wardenclyffe uploader
 </ul>
 
 {% if is_staff %} 
+
+<ul id="custom_collection" class="archive-gallery">
+<li class="archive">
+      <h2 id="custom_archive">Add your own Collection {% with "help_add_custom_collection" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
+      {% with "help_add_custom_collection" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
+      <p>
+        Instructions
+      </p>
+      <form action="{% url asset-save %}" method="POST">
+        {% include "assetmgr/pretender_select.html" %}
+
+    Collection Title: <input type="text" name="title" value="" />
+    <br/>
+    Collection URL: <input type="text" name="archive" value="" />
+    <br/>
+    Collection URL (yes, again): <input type="text" name="url" value="" />
+    <br/>
+    Description:
+    <textarea cols="55" rows="5" 
+          name="metadata-description"
+          ></textarea>
+    <br/>
+    Thumb URL: <input type="text" name="thumb" value="" />
+    <br/>
+        Required Plugin
+    <select name="metadata-required">
+          <option value="">--None--</option>
+          <option value="flash">Flash</option>
+          <option value="quicktime">Quicktime</option>
+          <option value="realplayer">RealPlayer</option>
+          <option value="ogg">Ogg videotag support</option>
+        </select>
+        <br/>
+    <input type="submit" value="Add Source to Class" />
+      </form>
+</li>
+</ul>
+
+
 <ul id="individual_uploads" class="archive-gallery">
 <li class="archive">
      <h2 id="specific">Specific Internet Resources</h2>

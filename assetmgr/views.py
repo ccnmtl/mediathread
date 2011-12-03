@@ -21,6 +21,7 @@ from django.db import models
 from random import choice
 from string import letters
 
+import operator
 import re
 import simplejson
 import urllib
@@ -54,14 +55,11 @@ def add_view(request):
                                       asset__course=request.course)
 
     if asset:
-        return HttpResponseRedirect(
-            reverse('asset-view', args=[asset.id]))
+        return HttpResponseRedirect(reverse('asset-view', args=[asset.id]))
     elif asset is None and request.user.is_authenticated():
         return mock_analysis_space(request)
-    else: #asset is False with no good args
-        #no arguments so /save space
-        return add_source_to_course(request)
 
+    raise Http404()
 
 OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course','secret')
 #NON_VIEW
@@ -218,7 +216,8 @@ def add_asset(request):
                                 mimetype="application/json")
             
         elif "archive" == asset.primary.label:
-            url = "%s?newsrc=%s" % (reverse('explore'), asset.title)
+            redirect_url = request.POST.get('redirect-url', reverse('explore'))
+            url = "%s?newsrc=%s" % (redirect_url, asset.title)
             return HttpResponseRedirect(url)
         else:
             return HttpResponseRedirect(asset_url)
@@ -390,15 +389,6 @@ def annotationview(request, asset_id, annot_id):
         
         return render_to_response('assetmgr/asset_not_found.html', rv, context_instance=RequestContext(request))
 
-@rendered_with('dashboard/class_addsource.html')
-def add_source_to_course(request):
-    from supported_archives import all 
-    return {
-        'asset_request':request.GET,
-        'supported_archives':all,
-        'is_staff': request.user.is_staff,
-        }
-
 @rendered_with('assetmgr/browse_sources.html')
 def browse_sources(request):
     c = request.course
@@ -428,6 +418,8 @@ def browse_sources(request):
             upload_archive = archive_context
         else:
             archives.append(archive_context)
+        
+    archives.sort(key=operator.itemgetter('title'))
         
     rv = {"archives":archives,
           "upload_archive": upload_archive,

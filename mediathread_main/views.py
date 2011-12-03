@@ -404,21 +404,44 @@ def get_records(user, course, request):
     json_stream = simplejson.dumps(data, indent=2)
     return HttpResponse(json_stream, mimetype='application/json')
 
-
 @allow_http("GET", "POST")
-@rendered_with('dashboard/course_settings.html')
-def course_settings(request):
-    # Instructor Dashboard view 
-    context = { 'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS }
+@rendered_with('dashboard/class_addsource.html')
+def class_addsource(request):
+    from assetmgr.supported_archives import all 
+    import operator
     
-    key = course_details.UPLOAD_PERMISSION_KEY 
+    key = course_details.UPLOAD_PERMISSION_KEY
+    all.sort(key=operator.itemgetter('title'))
     
+    c = request.course
+    user = request.user
+    if not request.course.is_faculty(user):
+        return HttpResponseForbidden("forbidden")
+    
+    upload_enabled = False
+    for a in c.asset_set.archives().order_by('title'):
+        attribute = a.metadata().get('upload', 0)
+        value = attribute[0] if hasattr(attribute,'append') else attribute
+        if int(value) == 1:
+            upload_enabled = True
+            break
+        
+    context = {
+            'asset_request': request.GET,
+            'course': c,
+            'supported_archives': all,   # sort by title
+            'is_staff': request.user.is_staff,
+            'newsrc' : request.GET.get('newsrc', ''),
+            'upload_enabled': upload_enabled,
+            'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
+        }
+
     if request.method == "GET":
-        context[key] = int(request.course.get_detail(key, course_details.UPLOAD_PERMISSION_DEFAULT))
+        context[key] = int(c.get_detail(key, course_details.UPLOAD_PERMISSION_DEFAULT))    
     else:
         upload_permission = request.POST.get(key)
         request.course.add_detail(key, upload_permission)
-        context['upload_permission_updated'] = True
+        context['changes_saved'] = True
         context[key] = int(upload_permission)
             
     return context

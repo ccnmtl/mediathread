@@ -42,7 +42,8 @@ urlpatterns = patterns('',
                        ### Course-URLS ###
                        (r'^$', 'mediathread_main.views.triple_homepage'),
                        url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
-                       url(r'^settings$', 'mediathread_main.views.course_settings', name="course-settings"),
+                       url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource', name="class-add-source"),
+                       
                        
                        (r'^asset/', include('mediathread.assetmgr.urls')),
                        url(r'^save/$', 'assetmgr.views.add_view', name="asset-save"),

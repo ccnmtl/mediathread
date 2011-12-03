@@ -157,6 +157,16 @@ body.mceContentBody {
     font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }
 
+.mceContentBodyCursor {
+    width:10px;
+    background-color:red;
+    position:absolute;
+    padding: none;
+    margin: none;
+    font:1em/100% 'lucida grande',arial,verdana,sans-serif;
+    font-weight: bold;
+}
+
 #project-container {
     background-color: #ccc;
     margin: 0;

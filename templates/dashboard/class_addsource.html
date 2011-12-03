@@ -8,7 +8,7 @@
     <script type="text/javascript"> 
         jQuery(document).ready(function() {
             {% if newsrc %}
-               var msg = "{{newsrc}} has been enabled.";
+               var msg = "{{newsrc|escapejs}} has been enabled.";
                alert(msg);
             {% else %}{% if changes_saved %}
                var msg = "Your changes have been saved.";
@@ -137,9 +137,7 @@
                 Collection URL (yes, again): <input type="text" name="url" value="" />
                 <br/>
                 Description:
-                <textarea cols="55" rows="5" 
-                      name="metadata-description"
-                      ></textarea>
+                <textarea cols="55" rows="5" name="metadata-description"></textarea>
                 <br/>
                 Thumb URL: <input type="text" name="thumb" value="" />
                 <br/>

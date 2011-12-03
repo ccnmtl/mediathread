@@ -23,8 +23,6 @@ font-weight: normal;
 input {
     border: 1px solid #333333;
     background-repeat: repeat-x;
-    text-transform: capitalize;
-
 }
 
 input.videoplay{

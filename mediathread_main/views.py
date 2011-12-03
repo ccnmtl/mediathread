@@ -422,7 +422,7 @@ def class_addsource(request):
     for a in c.asset_set.archives().order_by('title'):
         attribute = a.metadata().get('upload', 0)
         value = attribute[0] if hasattr(attribute,'append') else attribute
-        if int(value) == 1:
+        if value and int(value) == 1:
             upload_enabled = True
             break
         

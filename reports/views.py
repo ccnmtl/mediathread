@@ -12,8 +12,9 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponseForbidden
 from django.db.models import get_model,Q
 
-import simplejson as json
 import re
+import simplejson as json
+
 
 from mediathread_main.clumper import Clumper
 
@@ -88,7 +89,7 @@ def class_assignments(request):
             
     num_students = users_in_course(request.course).count()
     return {
-        'assignments': assignments,
+        'assignments': sorted(assignments, key=lambda assignment: assignment.title),
         'num_students': num_students,
         'submenu':'assignments',
         }

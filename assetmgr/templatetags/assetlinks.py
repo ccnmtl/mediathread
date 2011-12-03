@@ -1,15 +1,12 @@
 from assetmgr.models import Asset,Source
 from django import template
 
-#from djangohelpers.templatetags import Node
-
 def source_url(source,request):
         return source.url_processed(request)
 
 register = template.Library()
 register.filter(source_url)
 
-register = template.Library()
 
 class InCourseNode(template.Node):
     def __init__(self, archive_key, course_key, nodelist_true, nodelist_false=None):

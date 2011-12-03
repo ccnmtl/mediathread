@@ -30,3 +30,12 @@ function switcher(a) {
     jQuery(a).toggleClass('closed open');
     jQuery(a).parent().children('ul.switcher-options').toggle();
 }
+
+function toggleHelp(a, parent, help_content_id) {
+    console.log(a);
+    console.log(parent);
+    console.log(help_content_id);
+    
+    jQuery(parent).toggleClass('on off');
+    jQuery("#" + help_content_id).toggleClass('on off');
+}

@@ -61,19 +61,20 @@
 
 {% block content %}
     {{ block.super }}
-
+    
     <table id="home-columns">
     <tbody>
     <tr>
         {%if display.instructor or is_faculty %}
         <td class="" id="instructor">
 
+            {% with "help_homepage_instructor_column" as help_id %}
+            {% with "off" as default_help_state %}
             <div class="column-container">    
-               
-               <h2>From Your Instructor {% with "help_instructor" as help_id %}{% include "help_button.html" %}{% endwith %}</h2>
+               <h2>From Your Instructor {% include "help/help_button.html" %}</h2>
                   <div class="column-contents scroll">
-                    {% with "help_instructor" as help_id %}{% include "help_contentarea.html" %}{% endwith %}
-                               <div id="instructor-column">
+                    {% include "help/help_contentarea.html" %}
+                    <div id="instructor-column">
                         {%if faculty_feed.projects %}
                             <h4 class="inst-header project">Information</h4>
                             <ul class="instructor-list">
@@ -114,6 +115,7 @@
                      </div>
                 </div>
             </div>
+            {% endwith %}{% endwith %}
         </td>
         {% endif %}
         

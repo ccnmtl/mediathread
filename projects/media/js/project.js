@@ -61,6 +61,7 @@ function updateVerticalHeight(evt,offsets) {
     }
 }
 
+/**
 var AssetList = new (function () {
     var self= this;
     this.collections = [];
@@ -142,9 +143,9 @@ var AssetList = new (function () {
             success:function(html) {
                 jQuery('#asset_browse_col').replaceWith(html);
                 var new_assets = jQuery('#asset_browse_col').get(0);
-                /***
-                 All the stateful crap we have to update upon reload of an annotation list
-                 ***/
+                
+                // All the stateful crap we have to update upon reload of an annotation list
+
                 ///ASSETS UPDATE
                 //length of list
                 updateVerticalHeight();
@@ -190,6 +191,7 @@ var AssetList = new (function () {
         });
     }
 })()
+**/
 
 function saveProject(evt) {
     tinyMCE.triggerSave();
@@ -261,11 +263,9 @@ function project_init() {
             updateVerticalHeight();
         }) 
     });
+
     //PROJECT PARTICIPANT UPDATES
     jQuery('a.participants_toggle').click(updateParticipantList);
-
-    //initialize Assets Column with ajax
-    //AssetList.swapAssetColumn(jQuery('#asset_browse_col').attr('data-ajax') || '/annotations/all/' , /*init=*/true);
 }
 
 function project_warnOnUnload() {

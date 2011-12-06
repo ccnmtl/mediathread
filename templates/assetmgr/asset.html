@@ -28,7 +28,12 @@
        {% endif %}
        ,"level": "{{request.GET.level}}" 
     });
-    {% endif %}{# not mock #}    
+    {% endif %}{# not mock #}   
+
+    {% ifequal request.GET.level 'item' %}
+       var msg = "You\'re not done yet!\n\nSave tags and notes to place this item in your collection.";
+       alert(msg);
+    {% endifequal %} 
   </script>
 
 {% endblock %}
@@ -53,14 +58,8 @@
     <div class="asset-view asset-view-big">
         <div id="asset_details_col"> <!-- right column -->
             <div class="tabber">
-                 <div class="indexcard tabbertab {% ifequal request.GET.level 'item' %}tabbertabdefault{% endifequal %}" title="Item">
+                 <div class="indexcard tabbertab" title="Item">
                     <h2>My Item Details</h2>
-                         {% ifequal request.GET.level 'item' %}
-                             <div class="sherd-instructions">
-                                <img src="/site_media/img/icons/meth_info_icon.png" alt="Info: &nbsp;" style="text-align: left; vertical-align: middle; margin: -3px 5px 0 0;" /><b>Import Complete &mdash; But, you're not done yet!</b>
-                                <p>Save tags and notes to place this item in your collection.</p>
-                             </div>
-                         {% endifequal %}
                          <form class="tabber_form" name="edit-item-form" id="edit-item-form" method="POST" 
                             action="{% if not global_annotation %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
 
@@ -84,7 +83,7 @@
                             {% endif %}
                         </form>
                 </div>
-                <div class="indexcard tabbertab {% ifnotequal request.GET.level 'item' %}tabbertabdefault{%endifnotequal%}" title="Selections">
+                <div class="indexcard tabbertab tabbertabdefault" title="Selections">
                     <!--  @todo: resolve chicken/egg issue with clipform. its 1st setstate relies on this code snippet being here -->
                     <div id="asset-details-annotations"></div> <!--  Replaced by Mustache :{ --> 
                 </div> <!-- end Annotations tab -->

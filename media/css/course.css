@@ -1091,7 +1091,8 @@ text-align: left;
     padding: 0.2em 1.5em .3em 1.5em;
     text-transform: uppercase;
     text-decoration: none;
-    margin-left: 4em;
+    display: none;
+
 }
 
 .revision-selected {

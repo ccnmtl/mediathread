@@ -29,11 +29,6 @@
        ,"level": "{{request.GET.level}}" 
     });
     {% endif %}{# not mock #}   
-
-    {% ifequal request.GET.level 'item' %}
-       var msg = "You\'re not done yet!\n\nSave tags and notes to place this item in your collection.";
-       alert(msg);
-    {% endifequal %} 
   </script>
 
 {% endblock %}

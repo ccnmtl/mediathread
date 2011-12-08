@@ -2,13 +2,13 @@
 <!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">
 
 <cross-domain-policy>
-    <site-control permitted-cross-domain-policies="master-only"/>
-    <allow-access-from domain="localhost"/>
-    <allow-access-from domain="127.0.0.1"/>
-    <allow-access-from domain="*.ccnmtl.columbia.edu"/>
-    <allow-access-from domain="*.youtube.com"/>
-    <allow-access-from domain="*.vimeo.com"/>
-    <allow-access-from domain="*.kaltura.com"/>
+    <allow-access-from domain="localhost" secure="false" />
+    <allow-access-from domain="*.kaltura.com.edgesuite.net" />
+    <allow-access-from domain="127.0.0.1" secure="false" />
+    <allow-access-from domain="*.ccnmtl.columbia.edu" secure="false" />
+    <allow-access-from domain="*.youtube.com" secure="false" />
+    <allow-access-from domain="*.vimeo.com" secure="false" />
+    <allow-access-from domain="*.kaltura.com" secure="false" />
 
     <allow-http-request-headers-from domain="127.0.0.1" headers="*"/>
     <allow-http-request-headers-from domain="localhost" headers="*"/>
@@ -16,5 +16,6 @@
     <allow-http-request-headers-from domain="*.youtube.com" headers="*"/>
     <allow-http-request-headers-from domain="*.vimeo.com" headers="*"/>
     <allow-http-request-headers-from domain="*.kaltura.com" headers="*"/>
+    <allow-http-request-headers-from domain="*.kaltura.com.edgesuite.net" headers="*" />
 </cross-domain-policy>
 

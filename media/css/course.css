@@ -1378,6 +1378,11 @@ body.old-assetwindow #asset-details-annotations-list {
 	background-image:url('../img/icons/meth_info_icon_hover.png');
 }
 
+.helptoggle a.togglebutton.open 
+{
+	background-image:url('../img/icons/meth_info_icon_close.png');
+}
+
 .helpblock {
 	margin: -7px 3px 20px 4px;
 	background-color: #dedede;

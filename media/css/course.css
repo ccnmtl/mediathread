@@ -1091,7 +1091,8 @@ text-align: left;
     padding: 0.2em 1.5em .3em 1.5em;
     text-transform: uppercase;
     text-decoration: none;
-    margin-left: 4em;
+    display: none;
+
 }
 
 .revision-selected {
@@ -1375,6 +1376,11 @@ body.old-assetwindow #asset-details-annotations-list {
 .helptoggle a.togglebutton:hover 
 {
 	background-image:url('../img/icons/meth_info_icon_hover.png');
+}
+
+.helptoggle a.togglebutton.open 
+{
+	background-image:url('../img/icons/meth_info_icon_close.png');
 }
 
 .helpblock {

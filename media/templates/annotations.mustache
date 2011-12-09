@@ -54,12 +54,18 @@
                 <!-- Add, Edit, Copy -->
                 {{#editing?}}
                     <h2>{{#id?}}Editing Selection{{/id?}}{{^id}}Adding Selection{{/id}}
-<!--{% with "help_item_selection" as help_id %}{% include "help_button.html" %}{% endwith %}--></h2>
+                        <div class="actions">
+                            {{#showCancel?}}
+                            <input type="image" title="Cancel Changes" id="btnCancel" src="/site_media/img/icons/meth_close_icon.png" alt="X" onclick="javascript:AnnotationList.cancelAnnotation()"/>
+                            {{/showCancel?}}
+                       </div>
                     </h2>
                     
                     <form name="edit-annotation-form" onsubmit="return false;">
                         <div class="asset-annotator">
-                   
+                            <div class="sherd-instructions">
+                            <img src="/site_media/img/icons/meth_info_icon.png" alt="Info: &nbsp;" style="text-align: left; vertical-align: middle; margin: -3px 5px 0 0;" /><b>Instructions</b>
+                            </div>
                          
                             <div id="clipform-display"></div>
                         </div>

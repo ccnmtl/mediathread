@@ -26,7 +26,7 @@ input {
 }
 
 input.videoplay{
-    padding: 2px 2px 4px 20px;
+    padding: 2px 2px 4px 22px;
     background-image:url("../img/selection_play.gif");
     background-repeat: no-repeat;
     border: none;

@@ -45,16 +45,10 @@
           tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
           jQuery(new_assets.parentNode).addClass('annotation-embedding');
       }
-
-      DjangoSherd_createThumbs(new_assets);
   }
-
   
    jQuery(document).ready(function() {     
         DjangoSherd_Project_Config({
-            {% if switcher.project_json %}
-            project_json:"{{switcher.project_json}}",
-            {% endif %}
             open_from_hash:true,
             callback: project_init
         });
@@ -63,8 +57,9 @@
             'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
             'template': 'collection',
             'template_label': 'collection_table',
-            'view_callback': postProcessingDiscussion
-            });
+            'view_callback': postProcessingDiscussion,
+            'create_annotation_thumbs': true
+         });
         
           //jQuery(window).resize(function () {  
           //    resizeDiscussionPage();
@@ -83,15 +78,18 @@
 
 {% block content %}
     {{ block.super }}
-        <div class="capabilities">
-          {% if edit_comment_permission %}
-            <span class="capability can-edit">[can edit posts]</span>
-          {% endif %}
-          {% if space_viewer.is_staff %}
-            <span class="capability can-manage">[can manage responses]</span>
-          {% endif %}
+         <!--  Where the media is shown. Displays as an overlay next to the clip -->
+         <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute;">
+              <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();updateVerticalHeight(null,{'materials':0});return false;">x</a>
+              <div class="annotation-title"></div>
+              <div class="asset-title"></div>
+              <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
+                <div class="asset-display"></div>
+                <div id="clipstrip-display" class="clipstrip-display"></div>    
+              </div>
         </div>
-        {% if target %}        
+        
+        {% if target %}       
           <h2>Discussion of
               {{target.content_type.model}}:
               <a href="{{target.content_object.get_absolute_url}}">

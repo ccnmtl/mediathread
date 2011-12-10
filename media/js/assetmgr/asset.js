@@ -69,6 +69,7 @@
         this.init = function(config) {
             self.template_label = config.template_label;
             self.view_callback = config.view_callback;
+            self.create_annotation_thumbs = config.create_annotation_thumbs;
             
             jQuery.ajax({
                 url:'/site_media/templates/' + config.template + '.mustache?nocache=v2',
@@ -178,6 +179,40 @@
                 return MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified)
         }
         
+        this.createThumbs = function(assets) {
+            for (var i = 0; i < assets.length; i++) {
+                var asset = assets[i];
+                DjangoSherd_adaptAsset(asset); //in-place
+                if (asset.thumbable) {
+                    for (var j = 0; j < asset.annotations.length; j++) {
+                        ann = asset.annotations[j];
+                        
+                        var view;
+                        switch(asset.type) {
+                        case 'image':
+                            view = new Sherd.Image.OpenLayers();
+                            break;
+                        case 'fsiviewer':
+                            view = new Sherd.Image.FSIViewer();
+                            break;
+                        }
+                        djangosherd.thumbs.push(view);
+                        var obj_div = document.createElement('div');
+                        obj_div.setAttribute('class','thumb');
+        
+                        var target_div = document.getElementById("annotation-thumb-" + ann.id);
+                        target_div.appendChild(obj_div);
+                        // should probably be in .view
+                        asset.presentation = 'thumb';
+
+                        ann.asset = asset;
+                        view.html.push(obj_div, ann);
+                        view.setState(ann.annotation);
+                    }
+                }
+            }
+        }
+        
         this._updateAssets = function(your_records) {
             self.current_records = your_records;
             
@@ -195,8 +230,12 @@
             if (n > 0)
                 your_records.active_filter_count = n;
             
-            Mustache.update(self.template_label, your_records, { post:function(elt) { 
-                    if (self.view_callback) self.view_callback();
+            Mustache.update(self.template_label, your_records, { post:function(elt) {
+                    if (self.create_annotation_thumbs)
+                        self.createThumbs(your_records.assets);
+                    
+                    if (self.view_callback) 
+                        self.view_callback();
                 } 
             });
         }

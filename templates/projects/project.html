@@ -45,8 +45,6 @@
                 tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
                 jQuery(new_assets.parentNode).addClass('annotation-embedding');
             }
-
-            DjangoSherd_createThumbs(new_assets);
         }
       
         jQuery(document).ready(function () {
@@ -58,7 +56,8 @@
                   'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
                   'template': 'collection',
                   'template_label': 'collection_table',
-                  'view_callback': postProcessingProject
+                  'view_callback': postProcessingProject,
+                  'create_annotation_thumbs': true
                   });
               
                 jQuery(window).resize(function () {  

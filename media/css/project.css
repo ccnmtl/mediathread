@@ -65,13 +65,6 @@ a.edit-pencil {
     text-align:left;
 }
 
-.capabilities {
-    display:none;
-    position:absolute;
-    left:0px;
-    top:-1.5em;
-}
-
 .editing {
     border: 1px solid #ccc;
     padding: 20px;

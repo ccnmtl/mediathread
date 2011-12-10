@@ -68,10 +68,11 @@ div.collection-filter ul.switcher-options {
     width:350px; /*width -2px for border */ 
     right:0px;
     left:auto;
-    
+      
 }
 div.collection-chooser ul.switcher-options {  
-    width:233px; /*width -2px for border plus whatever the switcher-prefix adds */ 
+    width:233px; /*width -2px for border plus whatever the switcher-prefix adds */
+     
 }
 
 .switcher ul.switcher-options h3 {
@@ -124,17 +125,19 @@ div.collection-chooser ul.switcher-options {
 }
 .switcher ul.switcher-options .switcher-sub li {
     line-height:20px
+    
 }
 .switcher ul.switcher-options .switcher-sub {
     background-color: #f7f7f7;
     -moz-border-radius: 5px; 
     border-radius: 5px; 
     padding:5px 5px;
+    
 }
 .switcher ul.switcher-options ul.scroll {
     max-height:300px;
     overflow-y:auto;
-    
+    list-style: none;  
 }
 
 .switcher ul.switcher-options a {

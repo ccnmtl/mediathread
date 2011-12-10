@@ -27,38 +27,6 @@ function updateParticipantList() {
         }
     }
     jQuery("#participant_list").toggle();
-    updateVerticalHeight();
-}
-
-var resize_offsets = {};
-function updateVerticalHeight(evt,offsets) {
-    ///350 is sadly a magical number with assumptions about header/footer
-    ///ideally we'd measure those things at startup.
-    ///probably worth doing once we have a different style or two
-    if (typeof offsets == 'object') {
-        for (a in offsets) {
-            resize_offsets[a] = offsets[a];
-        }
-    }
-    var pixels_free = jQuery(window).height()-220;
-    jQuery('.resize-height').each(function() {
-        var offset = pixels_free;
-        if (this.id && this.id in resize_offsets) {
-            offset -= resize_offsets[this.id];
-        }
-        this.style.height = offset +'px';
-    });
-    var project_editor = tinyMCE.get('project-content');
-    if (project_editor) {
-        var container = project_editor.getContainer();
-        if (container != null) {
-            pixels_free -= jQuery('#participants_chosen').height()*2 || 0;
-            project_editor.theme.resizeTo(
-                parseInt(container.style.width,10)||container.offsetWidth||500,
-                pixels_free-100
-            );
-        }
-    }
 }
 
 function saveProject(evt) {
@@ -110,30 +78,6 @@ function saveProject(evt) {
             project_modified = false;
         }
     });
-}
-
-function resizeProjectPage() {
-    var visible = getVisibleContentHeight();
-    jQuery('#collection').css('height', visible + "px");
-  
-    jQuery('#collection .media-column-container').css('height', (visible - 77) + "px");
-}
-
-function project_init() {
-    if (document.forms['editproject']) {
-        jQuery(document.forms['editproject']).bind('submit',saveProject);
-        project_warnOnUnload();
-    }
-    jQuery(window).resize(updateVerticalHeight);
-
-    tinyMCE.onAddEditor.add(function(manager, ed) {
-        ed.onInit.add(function(editor) {
-            updateVerticalHeight();
-        }) 
-    });
-
-    //PROJECT PARTICIPANT UPDATES
-    jQuery('a.participants_toggle').click(updateParticipantList);
 }
 
 function project_warnOnUnload() {

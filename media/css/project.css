@@ -81,6 +81,18 @@ a.edit-pencil {
     width: 42%;
 }
 
+.essay-space-feedback
+{ 
+  height: 89%;
+  overflow: auto;
+  position:relative;/*important companion to overflow:auto for IE7*/
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  padding: 0 10px 10px 10px;
+  background-color:white;
+  max-width:550px;
+}
+
 .essay-space
 { 
   height: 442px;
@@ -101,6 +113,21 @@ a.edit-pencil {
     float: left;
     width: 40%;
     margin-left: 20px;
+}
+
+#discussion-space-materials h2,
+#essay-space-materials h2 {
+    background-color: #a88448;
+    text-transform: capitalize;
+    font-size: 98%;
+    padding: 5px 12px;
+    text-transform: capitalize;
+    font-size: 98%;
+    font-weight: normal;
+    -moz-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+    color: white
 }
 
 img.materialCitation {
@@ -160,6 +187,10 @@ body.mceContentBody {
     font-weight: bold;
 }
 
+div.mce_editorwindow {
+    min-width: 324px;
+}
+
 #project-container {
     background-color: #ccc;
     margin: 0;
@@ -201,20 +232,11 @@ span.project-dropdown {
 
 /* ---- Threaded comments ---------- */
 
-div.comment {
-
-	padding: 5px;
-
-
-}
-
 #threadedcomments {
     overflow-y:auto;
-    border: 1px solid #ccc;
     padding: 0px 5px 0 0px;
-    margin-top:16px;
     float: left;
-    width: 42%;
+    width: 40%;
 }
 
 #discussion-space-materials {
@@ -241,6 +263,10 @@ form.threaded_comments_form ul li {
     text-decoration:none;
 }
 
+.comment_form_space ul {
+    margin: 0 0 0 0;
+}
+
 .respond_to_comment_form_div .control-open {
     padding-right:20px;
     background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
@@ -262,9 +288,6 @@ form.threaded_comments_form ul li {
 	font-size: 80%;
 }
 
-.threaded_comment_text {
-    margin-bottom:10px;
-}
 
 
 .invisible { display: none; }
@@ -352,6 +375,11 @@ li.comment-thread {
 }
 
 /*TinyMCE adds _tbl to the #id_comment id for the table where the editor is dynamically created. */
+
+#id_comment {
+    width: 96%;
+}
+
 table#id_comment_tbl {
     clear:both;
     margin-left:10px;
@@ -370,8 +398,6 @@ li.comment-thread:target > .comment .threaded_comment_header {
 }
 
 .threaded_comment_header {
-    margin: -5px -10px 5px -5px;
-    padding: 1px 2px 1px 5px;
     background-color:#CCCCCC;
 }
 

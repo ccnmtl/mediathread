@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-{% load user_annotations tagging_tags smartif user_projects threadedcomments_tags %}
+{% load collaborations user_annotations tagging_tags smartif user_projects threadedcomments_tags coursetags %}
 
-<title> 
-  {% block title %}
-  Discussion of {{root_comment.content_object.title}}
-  {% endblock %}
-</title>
+{% block title %}
+Discussion of {{root_comment.content_object.title}}
+{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" href="/site_media/css/project.css" />  
@@ -21,66 +19,43 @@
   <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
   
   <!--All the annotation javascript/css -->
-  {% include "djangosherd/annotator_resources.html" %}
-  <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
-  
-  <script type="text/javascript">
+    {% include "djangosherd/annotator_resources.html" %}
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/discussion.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+    
+    <script type="text/javascript">
+        function resizeDiscussionPage() {
+            var visible = getVisibleContentHeight();
+            jQuery('#discussion-space-materials').css('height', visible + "px");
+            jQuery('div.scroll').css('height', (visible - 85) + "px");
+            jQuery('#threadedcomments').css('height', (visible - 40) + "px");
+        }
 
-  function resizeDiscussionPage() {
-      var visible = getVisibleContentHeight();
-      jQuery('#discussion-space-materials').css('height', visible + "px");
-      jQuery('div.scroll').css('height', (visible - 85) + "px");
-      
-      jQuery('#threadedcomments').css('height', (visible - 40) + "px");
-  }
-
-  function postProcessingDiscussion() {
-      resizeDiscussionPage();
-
-      var new_assets = jQuery('#asset_table').get(0);
-     
-      if (tinyMCE.activeEditor) {
-          tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
-          jQuery(new_assets.parentNode).addClass('annotation-embedding');
-      }
-  }
-  
-   jQuery(document).ready(function() {     
-        DjangoSherd_Project_Config({
-            open_from_hash:true,
-            callback: project_init
-        });
-
-        CollectionList.init({
-            'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
-            'template': 'collection',
-            'template_label': 'collection_table',
-            'view_callback': postProcessingDiscussion,
-            'create_annotation_thumbs': true
-         });
-        
-          //jQuery(window).resize(function () {  
-          //    resizeDiscussionPage();
-          //});
-
-          //resizeDiscussionPage();
-    });   
-  </script>
-  <!--END for showing Annotations -->
-  <script type="text/javascript" src="/site_media/js/discussion.js?version={{settings.REVISION}}"></script>
-  {% if EXPERIMENTAL %}
-  <script type="text/javascript" src="/site_media/js/slider.js?version={{settings.REVISION}}"></script>
-  {% endif %}
-  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+        jQuery(document).ready(function() {     
+            DjangoSherd_Project_Config({ open_from_hash:true });
+    
+            CollectionList.init({
+                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
+                'template': 'collection',
+                'template_label': 'collection_table',
+                'view_callback': resizeDiscussionPage,
+                'create_annotation_thumbs': true
+             });
+            
+             jQuery(window).resize(function () {  
+                 resizeDiscussionPage();
+             });
+        });   
+    </script>
 {% endblock %}
 
 {% block content %}
     {{ block.super }}
          <!--  Where the media is shown. Displays as an overlay next to the clip -->
-         <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute;">
-              <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();updateVerticalHeight(null,{'materials':0});return false;">x</a>
+         <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute; z-index: 1000;">
+              <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();return false;">x</a>
               <div class="annotation-title"></div>
               <div class="asset-title"></div>
               <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
@@ -89,24 +64,42 @@
               </div>
         </div>
         
-        {% if target %}       
-          <h2>Discussion of
-              {{target.content_type.model}}:
-              <a href="{{target.content_object.get_absolute_url}}">
-                <span id="discussion-subject-title">
-                  {{target.title}}
-                </span>
-              </a>
-          </h2>
+        {% ifequal target.content_type.model "project" %}       
+            <h2>Instructor Feedback for 
+                {{target.content_type.model}}:
+                <a href="{{target.content_object.get_absolute_url}}">
+                    <span id="discussion-subject-title">{{target.title}}</span>
+                </a>
+            </h2>
+          
+            {% with target.content_object as project %}
+            
+            <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
+            {% with project.assignment as assignment %}
+            {% if assignment %}
+                    <h6 style="margin: .2em 0 1em">Response to
+                      <a href="{{assignment.get_absolute_url}}">
+                    {{assignment.title}}
+                      </a>
+                    </h6>
+            {% endif %}
+            {% endwith %}
+            {% endwith %} 
         {% else %}
-          <h2>Discussion of 
-            <span id="discussion-subject-title">
-             {%firstof root_comment.title root_comment.content_object.title %}
+          <h2><span id="discussion-subject-title">
+             {%firstof root_comment.title root_comment.content_object.title %} Discussion
             </span>
           </h2>
-        {% endif %}
+        {% endifequal %}
     
-    <div> <!--  container for discussion on left, collection on right -->
+    <div> <!--  container for project on left, discussion in middle, collection on right -->
+        {% ifequal target.content_type.model "project" %}
+            <div id="essay-space-container" class="essay-space-container"> 
+                <div class="essay-space">  
+                   {{target.content_object.body|safe}}
+                </div>
+            </div>
+        {% endifequal %}
         <div id="threadedcomments">
             {%get_comment_list for root_comment.content_object as comment_list%}
             {% for current_comment in comment_list|fill_tree|annotate_tree %}
@@ -202,7 +195,16 @@
     
     
         <div id="discussion-space-materials">
-            <div id="collection_table"></div>
+            <h2>
+                <div class="button-form inline">
+                    <form class="block media-browse hinline" method="POST" action="/explore/">
+                        <input type="hidden" name="title" />
+                        <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
+                    </form>
+                </div>
+                Collections
+            </h2>        
+            <div id="collection_table"></div> <!--  replaced by mustache -->
         </div>    
                 
     </div> <!--  end container -->

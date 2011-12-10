@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags  comments collaborations %}
 
-<title>
-    {% block title %}
-        {% if space_owner == user %}
-            Home
-        {% endif %}
-    {% endblock %}
-</title>
+{% block title %}
+    {% if space_owner == user %}
+        Home
+    {% endif %}
+{% endblock %}
+
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>

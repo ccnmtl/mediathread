@@ -61,8 +61,7 @@ input.videoplay{
     margin: 5px 3px 5px 6px;
 }
 
-#media .column-container h2
- {
+#media .column-container h2 {
     background-color: #a88448;
     text-transform: capitalize;
             font-size: 98%;
@@ -79,7 +78,6 @@ h2.collections-column {
 	border-radius: 10px 10px 0 0;
 	margin: 0;
 }
-
 
 #projects .column-container {
     width: 340px;

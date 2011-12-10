@@ -106,14 +106,6 @@ jQuery(function discussion_init() {
         });
     });
 
-    if (window.djangosherd) {
-        djangosherd.onOpenCitation = function(id,ann_obj,options,targets) {
-            if (targets.top == 'videoclipbox') {
-                updateVerticalHeight(null,{'materials':260});
-            }
-        }
-    }
-
 function AjaxComment(form) {
     this.form = form;
     this.username = jQuery('#logged_in_name').text();
@@ -352,24 +344,3 @@ AjaxComment.prototype.create = function(obj,doc) {
                   jQuery('input[name=title]').get(0));
     }
 });
-
-if (window.AssetList) {
-    ///OVERRIDE to include project link, as well
-    var collaboratorLinks = AssetList.projectLinks;
-    AssetList.projectLinks = function(project) {
-        var links = collaboratorLinks(project);
-        links.unshift({type:'project',
-                       href:project.url,
-                       ajax:'/project/'+project.id+'/json',
-                       title:project.title
-                      });
-        return links;
-    }
-    AssetList.onInit = function() {
-        var proj = djangosherd.storage.lastProject();
-        if (proj) {
-            AssetList.replaceWithProject(proj);
-        }
-    }
-
-}

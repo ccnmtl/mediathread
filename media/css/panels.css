@@ -1,0 +1,96 @@
+.sliding-panel-container {
+
+}
+
+.sliding-panel {
+    float: left;
+    margin-right: 10px;
+}
+
+.sliding-panel-content {
+    border: 1px solid #ccc;
+}
+
+.sliding-panel h2 {
+    padding: 5px 12px;
+    text-transform: capitalize;
+    font-size: 98%;
+    font-weight: normal;
+    -moz-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+}
+
+.sliding-panel-closed {
+   width: 25px;
+   height: 100%;
+}
+
+.sliding-panel-closed h2 {
+    display: none;
+}
+
+.sliding-panel-closed .sliding-panel-content {
+    display: none;
+}
+
+.sliding-panel-open {
+    background-image:url('../img/icons/meth_close_icon.png');
+    background-repeat: no-repeat;
+}
+
+.sliding-panel-scroll {
+    overflow-y: auto;
+}
+
+/*******************************/
+/** Application Content Types **/
+/*******************************/
+
+/** Collection **/
+
+.panel-collection h2 {
+    color: #ffffff;
+    background-color: #a88448;
+}
+
+div.sliding-panel.panel-collection.sliding-panel-open  {
+    width: 30%;
+}
+
+div.sliding-panel.panel-collection.sliding-panel-closed  {
+    background-color: #a88448;
+}
+
+/** Feedback **/
+
+.panel-feedback h2 {
+    color: #ffffff;
+    background-color: #0000ff;
+}
+
+div.sliding-panel.panel-feedback.sliding-panel-open  {
+    width: 42%;
+}
+
+div.sliding-panel.panel-feedback.sliding-panel-closed  {
+    background-color: #0000ff;
+}
+
+
+/** Published Composition **/
+
+.panel-published-composition h2 {
+    color: #ffffff;
+    background-color: #00ff00;
+}
+
+div.sliding-panel.panel-published-composition.sliding-panel-open  {
+    width: 42%;
+}
+
+div.sliding-panel.panel-published-composition.sliding-panel-closed  {
+    background-color: #00ff00;
+}
+
+

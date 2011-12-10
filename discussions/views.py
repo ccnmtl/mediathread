@@ -10,6 +10,8 @@ from structuredcollaboration.views import delete_collaboration
 
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.core.urlresolvers import reverse,resolve
 from django.contrib.contenttypes.models import ContentType
 from threadedcomments import ThreadedComment
@@ -19,27 +21,13 @@ from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 from django.http import HttpResponseRedirect
 
-
-from assetmgr.lib import most_popular,annotated_by
-
-Asset = get_model('assetmgr','asset')
-
-
 def show(request, discussion_id):
     """Show a threadedcomments discussion of an arbitrary object.
     discussion_id is the pk of the root comment."""
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
     return show_discussion(request, root_comment)
 
-
-def show_collaboration(request, collab_id):
-    collab_type = ContentType.objects.get_for_model(Collaboration)
-    root_comment = get_object_or_404(ThreadedComment, 
-                                     object_pk=collab_id, content_type = collab_type)
-    return show_discussion(request, root_comment)
-
 @allow_http("GET","DELETE")
-@rendered_with('discussions/show_discussion.html')
 def show_discussion(request, root_comment):
     space_viewer = request.user
     if space_viewer.is_staff and request.GET.has_key('as'):
@@ -64,7 +52,7 @@ def show_discussion(request, root_comment):
             root_comment.content_object._parent.object_pk:
         target = root_comment.content_object._parent
 
-    return {
+    rv = {
         'is_space_owner': True,
         'edit_comment_permission': my_course.is_faculty(space_viewer),
         'space_owner': space_viewer, #for now
@@ -73,6 +61,11 @@ def show_discussion(request, root_comment):
         'target':target,        
         'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
         }
+    
+    if target.content_type.model == "project":
+        return render_to_response('discussions/feedback.html', rv, context_instance=RequestContext(request))
+    else:    
+        return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))
         
 @allow_http("POST")
 def new(request):

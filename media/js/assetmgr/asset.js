@@ -183,7 +183,7 @@
             for (var i = 0; i < assets.length; i++) {
                 var asset = assets[i];
                 DjangoSherd_adaptAsset(asset); //in-place
-                if (asset.thumbable) {
+                if (asset.thumbable && asset.annotations) {
                     for (var j = 0; j < asset.annotations.length; j++) {
                         ann = asset.annotations[j];
                         
@@ -231,7 +231,7 @@
                 your_records.active_filter_count = n;
             
             Mustache.update(self.template_label, your_records, { post:function(elt) {
-                    if (self.create_annotation_thumbs)
+                    if (self.create_annotation_thumbs) 
                         self.createThumbs(your_records.assets);
                     
                     if (self.view_callback) 

@@ -33,24 +33,30 @@
             var visible = getVisibleContentHeight();
             jQuery('#essay-space-materials').css('height', visible + "px");
             jQuery('div.editing').css('height', (visible - 56) + "px");
-            jQuery('div.scroll').css('height', (visible - 85) + "px");
+            jQuery('div.scroll').css('height', (visible - 77) + "px");
         }
         
         function postProcessingProject() {
             resizeProjectPage();
 
-            var new_assets = jQuery('#asset_table').get(0);
-           
             if (tinyMCE.activeEditor) {
+                var new_assets = jQuery('#asset_table').get(0);
+                
                 tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
                 jQuery(new_assets.parentNode).addClass('annotation-embedding');
             }
+
+            jQuery(document.forms['editproject']).bind('submit',saveProject);
+            project_warnOnUnload();
+
+            //PROJECT PARTICIPANT UPDATES
+            jQuery('a.participants_toggle').click(updateParticipantList);
         }
       
         jQuery(document).ready(function () {
             setTimeout(function() {
                 // delay this for half a second until the rest of the page is loaded.
-                DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json', callback: project_init});
+                DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json', callback: resizeProjectPage });
     
                 CollectionList.init({
                   'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
@@ -88,9 +94,6 @@
                 </div>
                 <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
                 
-                <h5><b>by</b>
-                    <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
-                </h5>
                 {% with project.assignment as assignment %}
                 {% if assignment %}
                     <div>
@@ -103,6 +106,11 @@
                     </div>
                 {% endif %}
                 {% endwith %}
+                
+                <h6><b>by</b>
+                    <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
+                </h6>
+                
                 
                 <div>
                     <script type="text/javascript">
@@ -135,6 +143,15 @@
         </div>
     
         <div id="essay-space-materials">
+            <h2>
+                <div class="button-form inline">
+                    <form class="block media-browse hinline" method="POST" action="/explore/">
+                        <input type="hidden" name="title" />
+                        <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
+                    </form>
+                </div>
+                Collections
+            </h2>
             <div id="collection_table"></div>
         </div>
 

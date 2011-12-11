@@ -7,6 +7,12 @@
     margin-right: 10px;
 }
 
+.sliding-panel-tab {
+    width: 25px;
+    height: 100%;
+    float: left;
+}
+
 .sliding-panel-content {
     border: 1px solid #ccc;
 }
@@ -22,21 +28,13 @@
 }
 
 .sliding-panel-closed {
-   width: 25px;
-   height: 100%;
-}
-
-.sliding-panel-closed h2 {
-    display: none;
-}
-
-.sliding-panel-closed .sliding-panel-content {
     display: none;
 }
 
 .sliding-panel-open {
     background-image:url('../img/icons/meth_close_icon.png');
     background-repeat: no-repeat;
+    /* widths are defined by the individual panels styles */
 }
 
 .sliding-panel-scroll {
@@ -54,12 +52,12 @@
     background-color: #a88448;
 }
 
-div.sliding-panel.panel-collection.sliding-panel-open  {
-    width: 30%;
+div.sliding-panel-tab.panel-collection {
+    background-color: #a88448;
 }
 
-div.sliding-panel.panel-collection.sliding-panel-closed  {
-    background-color: #a88448;
+div.sliding-panel.panel-collection.sliding-panel-open  {
+    width: 30%;
 }
 
 /** Feedback **/
@@ -73,15 +71,22 @@ div.sliding-panel.panel-feedback.sliding-panel-open  {
     width: 42%;
 }
 
-div.sliding-panel.panel-feedback.sliding-panel-closed  {
+div.sliding-panel-tab.panel-feedback {
     background-color: #0000ff;
 }
 
 
 /** Published Composition **/
+.panel-published-composition {
+    
+}
 
 .panel-published-composition h2 {
     color: #ffffff;
+    background-color: #00ff00;
+}
+
+div.sliding-panel-tab.panel-published-composition {
     background-color: #00ff00;
 }
 
@@ -89,8 +94,5 @@ div.sliding-panel.panel-published-composition.sliding-panel-open  {
     width: 42%;
 }
 
-div.sliding-panel.panel-published-composition.sliding-panel-closed  {
-    background-color: #00ff00;
-}
 
 

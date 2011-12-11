@@ -84,10 +84,12 @@ Instructor Feedback for {{root_comment.content_object.title}}
     <h2>Instructor Feedback</h2>
   
     <div class="sliding-panel-container"> <!--  container for project on left, discussion in middle, collection on right -->
+        <div class="sliding-panel-tab panel-published-composition"></div>
         <div class="sliding-panel panel-published-composition sliding-panel-open">
             <h2><a href="{{target.content_object.get_absolute_url}}">
             <span id="discussion-subject-title">{{project.title}} Composition</span>
-        </a></h2>
+            </a></h2>
+            
             <div class="sliding-panel-content">
                 <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
                 {% with project.assignment as assignment %}
@@ -105,6 +107,7 @@ Instructor Feedback for {{root_comment.content_object.title}}
             </div>
         </div>
         
+        <div class="sliding-panel-tab panel-feedback"></div>
         <div class="sliding-panel panel-feedback sliding-panel-open">
             <h2>Feedback / Discussion</h2>
             <div class="sliding-panel-content sliding-panel-scroll">
@@ -201,7 +204,7 @@ Instructor Feedback for {{root_comment.content_object.title}}
             </div>        
         </div> <!--  end threaded comments -->
     
-    
+        <div class="sliding-panel-tab panel-collection"></div>
         <div class="sliding-panel panel-collection sliding-panel-closed">
             <h2>
                 <div class="button-form inline">

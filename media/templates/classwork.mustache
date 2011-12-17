@@ -156,13 +156,6 @@
                                                 <span class="metadata-value">Assignment</span>
                                                 <br />  
                                             </div>
-                                            {{#responder?}}
-                                                <form class="block project-createnew" method="POST" action="/project/{{responder}}/project/">
-                                                    <input type="hidden" name="title" />
-                                                    <input type="hidden" name="parent" value="{{id}}" />
-                                                    <input class="columnbutton project createnew-button" type="submit" value="Respond to Assignment"/>
-                                                </form>
-                                            {{/responder?}}
                                         </li>
                                     {{/assignments}}
                                 

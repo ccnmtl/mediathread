@@ -30,7 +30,9 @@
 {% block content %}
     {{ block.super }}
     
-    <h1>{{project.title}}
+    <div {% if project|is_assignment:request %} class="assignment-project" {% endif%}>
+    
+    <h1>{% if project|is_assignment:request %}Assignment: {%endif%}{{project.title}}
         {% if version_number %}Version {{version_number}}{% endif %}
         {% if is_space_owner and project.id and not is_preview %}
             <a class="edit-pencil" href="{{project.get_workspace_url}}">
@@ -79,7 +81,7 @@
                       action="{%url your-space-projects user%}">
                       <input type="hidden" name="title" />
                       <input type="hidden" name="parent" value="{{project.id}}" />
-                      <input class="columnbutton project createnew-button" type="submit" value="Respond to Assignment"/>
+                      <input class="columnbutton project createnew-button" type="submit" value="Create Composition Response"/>
                     </form>
                 {% else %}
                     <h3>
@@ -105,6 +107,7 @@
 
         <div class="asset-view-published">
             <div id="videoclipbox" style="display: none">
+                <div class="create-selection" style="float: right"></div>
                 <div class="annotation-title publishedCitation" style="margin-left: 8px; margin-top: 5px;"></div>
                 <div class="asset-title" style="margin-left: 5px; margin-bottom: 8px; min-height: 20px;"></div>
                 <div class="asset-object" style="border: none; background-color: #ededed;"><!-- width changes here too if video size changes -->
@@ -112,10 +115,7 @@
                     <div id="clipstrip-display" class="clipstrip-display"></div>    
                 </div>
                 
-                <div id="asset-details-annotations"></div> <!--  Replaced by Mustache :{ -->
             </div>
-            
-             
         </div>
     </div>
     
@@ -180,5 +180,7 @@
                  {% endif %}
             </p>
         {% endif %}  
+    </div>
+    
     </div>
 {% endblock %}

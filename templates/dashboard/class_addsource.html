@@ -22,7 +22,7 @@
 {% block dashboard_module %}
 
 
-<h2>Manage Media /Sources </h2>
+<h2>Manage Media Sources </h2>
     
   <p>
   This page allows you to manage the resources listed on the "Source Media " page. To import individual items, use the Mediathread Bookmarklet.
@@ -33,7 +33,7 @@
 {% with "off" as default_help_state %}
 <ul id="wardenclyffe" class="archive-gallery">
 <li class="archive">
-    <h2></a>Upload Media {% include "help/help_button.html" %}</h2>
+    <h2></a>Mediathread Video Uploader {% include "help/help_button.html" %}</h2>
     {% include "help/help_contentarea.html" %}
 
     {% if upload_enabled %}
@@ -52,7 +52,7 @@
         <form action="{% url asset-save %}" method="POST">
             <li class="archive">
                 <input class="addtoclass" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
-                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/" class="archive-link">Mediathread Video Upload</a>
+                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/" class="archive-link">Mediathread Video Uploader</a>
                 <br>
                 <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/"><img src="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg" alt="thumbnail image" class="archive-link">
                 </a>
@@ -79,7 +79,7 @@
 {% with "off" as default_help_state %}
 <ul id="supported_collections" class="archive-gallery">
     <li class="archive">
-        <h2 id="archives">Add/Remove Supported Collections {% include "help/help_button.html" %}</h2>
+        <h2 id="archives">Add<!--/Remove--> Supported Collections {% include "help/help_button.html" %}</h2>
     
         <ul class="archive-gallery">
             {% include "help/help_contentarea.html" %}
@@ -124,7 +124,7 @@
     {% with "off" as default_help_state %}
     <ul id="custom_collection" class="archive-gallery">
         <li class="archive">
-            <h2 id="custom_archive">Add your own Collection {% include "help/help_button.html" %}</h2>
+            <h2 id="custom_archive">Add Your Own Collection {% include "help/help_button.html" %}</h2>
             {% include "help/help_contentarea.html" %}
             <p>Instructions</p>
             <form action="{% url asset-save %}" method="POST">

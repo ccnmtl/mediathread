@@ -6,6 +6,8 @@
 {% block dashboard_module %}
     <h1>Report: Assignment Responses</h1>    
 
+{% if assignments %}
+
 <table>
   <thead>
     <tr>
@@ -28,5 +30,10 @@
 {% endfor %}
   </tbody>
 </table>
+{% else %}
+
+todo: help text
+
+{% endif %}
 
 {% endblock %}

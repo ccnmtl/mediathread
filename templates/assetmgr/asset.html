@@ -30,14 +30,6 @@
                    ,"level": "{{request.GET.level}}" 
                 });
             {% endif %}
-            
-            var importing = {% ifequal request.GET.importing '1' %} true {% else %}false {% endifequal %};
-            if (importing) {
-                setTimeout(function() {
-                    msg = "You're almost done!\n\nTo save this item to your collection, add a tag, note or selection, then click 'Save' .";
-                    alert(msg);
-                }, 1000);
-            }
     });
  
   </script>
@@ -55,10 +47,6 @@
 
   </a> 
 </h1> 
-  
-{% if mock %}
-<p>Add annotations to save this item to Your Analysis.</p>
-{% endif %}<!-- if mock-->
 
 <div id="workspace">
     <div class="asset-view asset-view-big">

@@ -665,7 +665,7 @@
             if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
                 // @todo -- switch selected tab back to Item
                 frm.elements['annotation-tags'].focus();
-                return "Save tags and notes to place this item in your collection.";
+                return "Add tags and notes to place this item in your collection.";
             }
         }
         
@@ -797,7 +797,7 @@
                       'author_name': MediaThread.user_full_name
                     }
                 };
-            } else if (self.active_asset_annotations.length <= 1) {
+            } else if (!self.active_asset_annotations.length || self.active_asset_annotations.length <= 1) {
                 context.annotation = {   
                     'editing': true,
                     'metadata': {

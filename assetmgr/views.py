@@ -203,7 +203,7 @@ def add_asset(request):
         
         source = request.POST.get('asset-source', "")
         if source == 'bookmarklet':
-            asset_url += "?importing=1"
+            asset_url += "?level=item"
 
         #for bookmarklet mass-adding
         if request.REQUEST.get('noui','').startswith('postMessage'):

@@ -66,19 +66,19 @@
                 </ol>
                 <script type="text/javascript">
                     var u = navigator.userAgent;
-                    var i = $('browser-instructions');
+                    var i = jQuery('browser-instructions');
                     if (/Chrome/.test(u)) {
-                        $('.browser-instruction').hide();
-                        $('#chrome').show();
+                        jQuery('.browser-instruction').hide();
+                        jQuery('#chrome').show();
                     } else if (/Safari/.test(u)) {
-                        $('.browser-instruction').hide();
-                        $('#safari').show();
+                        jQuery('.browser-instruction').hide();
+                        jQuery('#safari').show();
                     } else if (/MSIE/.test(u)) {
-                        $('.browser-instruction').hide();
-                        $('#ie').show();
+                        jQuery('.browser-instruction').hide();
+                        jQuery('#ie').show();
                     } else if (/Gecko/.test(u)) {
-                        $('.browser-instruction').hide();
-                        $('#firefox').show();
+                        jQuery('.browser-instruction').hide();
+                        jQuery('#firefox').show();
                     } 
                 </script>
 
@@ -120,6 +120,7 @@
         {% endif %}
     {% endif %}
         
+    {% if archives %}
     <div id="external-archives" class="top-archive">
         <h2>Sources</h2>
         {% for archive in archives %}
@@ -142,6 +143,7 @@
             </div>
         {%endfor%}
     </div>
+   {% endif %}
 
 {%endif%}
 

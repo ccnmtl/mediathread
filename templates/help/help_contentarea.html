@@ -1,10 +1,9 @@
 <div id={{help_id}} class="helpblock {{default_help_state}}">
     <div class="help_content">
 
+
+      <!--  SITE HOME PAGE, LEFT COLUMN (INSTRUCTOR ONLY) -->
         {% ifequal help_id "help_homepage_instructor_column" %}
-            <!--  INSTRUCTOR HOMEPAGE -- LEFT COLUMN -->
-            
-            {% if is_faculty %}
               <h3>Instructors can post here:</h3>
                     <ul>
                         <li>Information for the class</li>
@@ -12,38 +11,23 @@
                         <li>Discussion topics</li>
                     </ul>
                     <p>Get Started: <a href="/reports/class_assignments/">Instructor Dashboard</a></p>
-           {% else %}
-                <h3>Your Instructor controls this space.</h3>
-                    <p>Anything that s/he publishes for the class will appear in this column.</p>
-           {% endif %}
-        
-        
-        {% else %}{% ifequal help_id "help_video_upload" %}
-        
-            <!--  INSTRUCTOR DASHBOARD -- MANAGE MEDIA SOURCE -- UPLOAD -->
-            todo: Video Upload Instructions
-            
-        {% else %}{% ifequal help_id "help_supported_collections" %}
-        
-            <!--  INSTRUCTOR DASHBOARD -- MANAGE MEDIA SOURCE -- SUPPORTED COLLECTIONS -->
-            todo: Supported Collections Instructions    
-            
-        {% else %}{% ifequal help_id "help_add_custom_collection" %}
-            <!--  INSTRUCTOR DASHBOARD -- MANAGE MEDIA SOURCE -- ADD CUSTOM COLLECTIONS -->
-            todo: Add Custom Collection Instructions
-        
-        {% else %}{% ifequal help_id "help_homepage_compositions" %}
-            <!--id="help_homepage_compositions_section"-->
-            <h3>Available compositions appear here:</h3>
-            <ul>
-            <li>To create your own Composition, click "New Composition" in the upper right of this box.</li>
-            <li>To access others' published compositions, select a name in the "Owner" menu above.</li>
-        
-        {% else %}{% ifequal help_id "help_itemdetail_selection_image" %}
-            <h3>Instructions:</h3>
-            <p>Choose a drawing tool, located on the upper, right-hand side of the image. The polygon tool works by clicking on the points of the polygon and then double-clicking the last point.</p>
-            
-        {% endifequal %}{% endifequal %}{% endifequal %}{% endifequal %}{% endifequal %}{% endifequal %}
+      {% endifequal %}
+      
+      
+      <!--  INSTRUCTOR DASHBIARD NAV, ACTIONS -->
+              {% ifequal help_id "help_dashboard_nav_actions" %}
+                    
+                    These buttons help you designate media sources for your MediaThread course as well as publish assignments, discussion topics, or model compositions to the home page.
+                    
+                   
+      {% endifequal %}
+      
+            <!--  INSTRUCTOR DASHBIARD NAV, REPORTS -->
+              {% ifequal help_id "help_dashboard_nav_reports" %}
+                    
+                    These reports list responses to your published assignments (if any), and provide views of student posting activity.
+                   
+      {% endifequal %}
             
     </div>
 </div>

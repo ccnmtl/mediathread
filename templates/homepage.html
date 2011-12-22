@@ -70,9 +70,9 @@
             {% with "help_homepage_instructor_column" as help_id %}
             {% with "off" as default_help_state %}
             <div class="column-container">    
-               <h2>From Your Instructor {% include "help/help_button.html" %}</h2>
+               <h2>From Your Instructor  {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
                   <div class="column-contents scroll">
-                    {% include "help/help_contentarea.html" %}
+                     {% if is_faculty %}{% include "help/help_contentarea.html" %} {% endif %}
                     <div id="instructor-column">
                         {%if faculty_feed.projects %}
                             <h4 class="inst-header project">Information</h4>

@@ -423,7 +423,7 @@ html.busy, html.busy * {
     padding: 10px;
     margin: 10px 10px 30px 0;
     border: 1px solid #ccc;
-    min-height: 24em;
+    min-height: 45em;
 
 
 }
@@ -431,7 +431,7 @@ html.busy, html.busy * {
 #instructor-nav {
     width: 200px;
     float: left;
-    background-color: #dedede;
+    background-color: #999;
     margin-right: 35px;
     padding: 10px;
 
@@ -482,7 +482,7 @@ margin-left: 269px;
 
 #instructor-nav h3,
 #dashboard-module h3{
-    margin: 0 0 10px;
+    margin: 0 0 13px;
 
 }
 
@@ -606,3 +606,118 @@ margin-left: 269px;
 	position:absolute;
 	background-color:#0000ff;
 }
+
+/*Toggling inline help text*/
+
+
+.helptoggle 
+{
+
+    display: block;
+    float: right;
+    height: 18px;
+    margin: -3px 5px;
+    padding: 4px 0 0 4px;
+    width: 19px;
+    
+}
+
+.helptoggle.on 
+{
+
+    background-color: #DEDEDE;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 3px solid #DEDEDE;
+
+}
+
+#instructor-nav .helptoggle a, .helptoggle a.togglebutton 
+{
+
+    display:block;
+    background-image:url('../img/icons/meth_info_icon.png');
+    background-repeat: no-repeat;
+    width:20px;
+    height:18px;
+    color:transparent;
+    /*for IE 6-8 not supporting transparent text:*/
+    overflow:hidden;
+    margin: -2px;
+    border: none;
+}
+
+.helptoggle a.togglebutton:hover, #instructor-nav .helptoggle a.togglebutton:hover 
+{
+	background-image:url('../img/icons/meth_info_icon_hover.png');
+}
+
+, .helptoggle a.togglebutton.open , #instructor-nav .helptoggle a.togglebutton.open 
+{
+	background-image:url('../img/icons/meth_info_icon_close.png');
+}
+
+.helpblock {
+	margin: -7px 3px 20px 4px;
+	background-color: #dedede;
+	padding: 15px;
+	font-size: 95%;
+    text-transform: none;
+
+}
+
+.helpblock h3 {
+	margin: 0 0 10px 0;
+
+}
+
+.helpblock ul,
+table#home-columns td#instructor .helpblock ul, 
+table#home-columns td#classwork .helpblock ul 
+{
+    list-style: disc;
+
+}
+
+.helpblock ul li,
+table#home-columns td#instructor .helpblock ul li, 
+table#home-columns td#classwork .helpblock ul li
+{
+    margin-bottom: 5px;
+
+}
+
+.helpblock.on {
+    display: block;
+}
+
+.helpblock.off {
+    display: none;
+}
+
+
+.intro-text {
+    /*margin 20px on right-and left, squeezes homepage content over [x] */
+	margin: 10px;
+	background-color: #dedede;
+	padding: 10px;
+	font-size: 95%;
+    max-width:600px;
+}
+
+.intro-text h4 {
+	margin-top: 10px;
+}
+
+.intro-text ul li {
+	margin-top: 3px;
+}
+
+#instructor-actions form {
+	display: inline;
+}
+

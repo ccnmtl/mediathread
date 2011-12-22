@@ -99,6 +99,6 @@ def discussions(project, request):
 register.filter(discussions)
 
 def is_assignment(project, request):
-    return project.is_assignment(request)
+    return (isinstance(project, Project) and project.is_assignment(request)) or (isinstance(project, dict) and project['publish'] == 'Assignment')
 register.filter(is_assignment)
 

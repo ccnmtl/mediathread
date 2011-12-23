@@ -1,6 +1,10 @@
 @import url("./switcher.css");
 @import url("./slider.css");
 
+ul li {
+margin: 0 0 5px 0;
+}
+
 .heading {
   display: block;
   padding: 1em;
@@ -644,10 +648,11 @@ margin:-2px
     background-color: #eacc90;
     width: 30%;
 
+
 }
 
 #external-archives {
-width: 60%;
+
 
 }
 
@@ -1124,6 +1129,25 @@ text-align: left;
     background-color:#ededed;
 }
 
+#importing-overview,
+#uploading-overview {
+    border: 1px solid #ccc;
+    float: left;
+    margin: 1em;
+
+}
+
+#importing-overview
+ {
+    width: 69%;
+
+}
+
+#uploading-overview {
+    width: 25%;
+
+}
+
 #import_instructions {
 
 border:1px solid #CCCCCC;
@@ -1142,11 +1166,11 @@ min-width: 335px;
 
 #import_instructions .import_class {
 
-	margin: 1em;
+	margin: 0 10px 0 30px;
 	background-color: #eee;
-	padding-bottom: 1em;
 	float: right;
-	width: 50%;
+	padding-bottom: 1em;
+
 
 }
 

@@ -18,15 +18,39 @@
 
 {% block content %}
 <h1>Source Media</h1>
+
+        {%if is_faculty%}
+           
+                <h4>Instructor:</h4>
+                <p>You can add suggested Media Sources to this page, as well as allow students to upload their own videos here, both through the <a href="/save/">Instructor Dashboard</a>.  If you do not add any Sources, students will see only the Bookmarklet instructions.
+            </p>
+            
+        {% endif %}
     {{ block.super }}
     
 {%if archives or is_faculty %}
-    <div id="import_instructions" class="top-archive">
-        <h2>Instructions</h2>
-      
-           <div class="import_class bookmarklet_import">
-            <h3>Bookmarklet Installation:</h3>
 
+
+
+    <div id="import_instructions" class="top-archive">
+     
+    <h2>Instructions</h2>
+    
+  
+    
+    
+    <h4>On this page, your instructor has recommended Media Sources for use in this class.</h4>  
+                 
+           <div id="importing-overview">
+       
+            <h2>Importing from Media Sources</h2>
+            
+                   <div class="import_class bookmarklet_instructions">
+            {% with "help_bookmarklet" as help_id %}
+            {% with "off" as default_help_state %}
+            <h4>Bookmarklet Installation <!--{% include "help/help_button.html" %}--></h4>
+          {% include "help/help_contentarea.html" %}
+            
             <div id="browser-instructions" class="browser-specific-instructions">
                 <ol id="firefox" class="browser-instruction"><h5>Firefox:</h5>
                   <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
@@ -69,51 +93,36 @@
                 </script>
 
             </div>
+            {% endwith %}{% endwith %}
         </div>
-      
-        {%if is_faculty%}
-            <p>
-                <b>As an instructor,</b> you can <a href="/save/">add suggested Media Sources</a> to this page, as well as allow students to upload their own videos here, both through the Instructor Dashboard.  If you do not add any Sources, students will see the list of Items you have collected in MediaThread and will not be offered the Bookmarklet.
-            </p>
-            <p><b>Students will see:</b></p>
-        {% endif %}
-        <!-- see below for duplicate text if there are no archives-->
-           <h4>What is this page?</h4>
-           <p>On this page, your instructor has recommended Media Sources for use in this class.  
-            Items from these Sources may be imported for analysis using the MediaThread Bookmarklet.</p>
-        
+        <h4>The Mediathread Bookmarklet</h4>
+            <ul>
+             <li>To import items for analysis from Media Sources, install and utilize the Mediathread Bookmarklet.</li><li>The Mediathread Bookmarklet is a button you add to your browser's Bookmarks Toolbar to allow you to easily import items for analysis in Mediathread.</li><li>Once installed, clicking the Bookmarklet allows you to import media from any web page containing Mediathread-friendly items.</li> 
+            </ul>
             
-           <h4>What is the Mediathread Bookmarklet?</h4>
-           <p>The Mediathread Bookmarklet is a button you add to your browser's Bookmarks Toolbar to allow you to easily import items for analysis in Mediathread.
-           <p>Before you can import items, you <i>must</i> install the Bookmarklet by following the instructions in the gray box to the right. </p>
-           </p>
-           
-           <h4>Bookmarklet Use</h4>
-           
-           <p>Once installed, clicking the Bookmarklet allows you to import media from any web page containing Mediathread-friendly items.
-           </p>
-           
-    
-   
-    </div>
-    
-        {% if upload_archive %}
-        {% if can_upload %}
-            <div id="uploader" class="top-archive">
-                <h2>Mediathread Video Uploader</h2>
-                  <p>Your instructor has also enabled you to upload your own video for analysis is Mediathread. The Uploader does not require the Mediathread Bookmarklet.</p>
+            
+            </div>
+            {% if can_upload %}
+            <div id="uploading-overview">
                   
-                  
+              
+             <h2>Uploading Video</h2>
+            
+                   <h4>The Mediathread Video Uploader</h4>    
+           <p>To upload your own video for analysis, use the Mediathread Video Uploader.</p>
+            {% if upload_archive %}
+        
+            <div id="uploader">
                 
+                  
            <!--     <div id="archive-{{upload_archive.id}}" class="archive">
                     {% if space_viewer.is_staff %}
                         <div class="manage-archive">
                             <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change upload_archive.id %}">Manage</a>
                         </div>
                     {% endif %}-->
-         <p>
-                    <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="archive-link">{{upload_archive.title}}</a>
-                    </p>
+                   <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="archive-link">{{upload_archive.title}}</a>
+                  
                <!--     {% if upload_archive.thumb %}
                        <a href="redirect/?url={{upload_archive.archive.url|urlencode}}"><img src="{{upload_archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
                        </a>
@@ -124,7 +133,21 @@
                 </div>    -->   
             </div>
         {% endif %}
+
+                  
+                  
+                
+            
+     
+   
     {% endif %}
+
+        <!-- see below for duplicate text if there are no archives-->
+
+   </div>
+    </div>
+    
+ 
     
 
         

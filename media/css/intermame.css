@@ -721,3 +721,14 @@ table#home-columns td#classwork .helpblock ul li
 	display: inline;
 }
 
+
+/*Assignment Specific styles */
+
+.assignment-project {
+    background-color: green;
+}
+
+.assignment-project h1{
+ background-image: url("../img/icons/item_assignment.gif");
+
+}

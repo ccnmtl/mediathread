@@ -619,10 +619,37 @@ margin:-2px
    margin: 0 1em 1em 1em;
    background-color: #ededed;
    border: 1px solid #ccc;
-   width:94%;
+   width:300px;
+   height: 150px;
+   max-height: 150px;
+   overflow-y: auto;
+   overflow-x: hidden;
    padding: 5px;
    }
 
+#dashboard-module-body .archive {
+
+   float:left;
+   margin: 0 1em 1em 1em;
+   background-color: #ededed;
+   border: 1px solid #ccc;
+   width: 95%;
+   padding: 5px;
+   height: auto;
+   max-height: none;
+   }
+
+
+#uploader, #wardenclyffe {
+    background-color: #eacc90;
+    width: 30%;
+
+}
+
+#external-archives {
+width: 60%;
+
+}
 
 .archive-gallery {
     list-style-type:none;
@@ -1020,8 +1047,6 @@ margin:0 1em;
 overflow-x:hidden;
 overflow-y:auto;
 text-align:left;
-width:55%;
-
 
 }
 
@@ -1102,12 +1127,9 @@ text-align: left;
 #import_instructions {
 
 border:1px solid #CCCCCC;
-float:left;
-margin:0 1em;
-overflow-x:hidden;
-overflow-y:auto;
+margin: 1em;
 text-align:left;
-width:30%;
+width:auto;
 min-width: 335px;
 
 }
@@ -1123,6 +1145,8 @@ min-width: 335px;
 	margin: 1em;
 	background-color: #eee;
 	padding-bottom: 1em;
+	float: right;
+	width: 50%;
 
 }
 

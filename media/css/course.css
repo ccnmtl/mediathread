@@ -1,6 +1,10 @@
 @import url("./switcher.css");
 @import url("./slider.css");
 
+ul li {
+margin: 0 0 5px 0;
+}
+
 .heading {
   display: block;
   padding: 1em;
@@ -619,10 +623,38 @@ margin:-2px
    margin: 0 1em 1em 1em;
    background-color: #ededed;
    border: 1px solid #ccc;
-   width:94%;
+   width:300px;
+   height: 150px;
+   max-height: 150px;
+   overflow-y: auto;
+   overflow-x: hidden;
    padding: 5px;
    }
 
+#dashboard-module-body .archive {
+
+   float:left;
+   margin: 0 1em 1em 1em;
+   background-color: #ededed;
+   border: 1px solid #ccc;
+   width: 95%;
+   padding: 5px;
+   height: auto;
+   max-height: none;
+   }
+
+
+#uploader, #wardenclyffe {
+    background-color: #eacc90;
+    width: 30%;
+
+
+}
+
+#external-archives {
+
+
+}
 
 .archive-gallery {
     list-style-type:none;
@@ -1020,8 +1052,6 @@ margin:0 1em;
 overflow-x:hidden;
 overflow-y:auto;
 text-align:left;
-width:55%;
-
 
 }
 
@@ -1099,15 +1129,31 @@ text-align: left;
     background-color:#ededed;
 }
 
+#importing-overview,
+#uploading-overview {
+    border: 1px solid #ccc;
+    float: left;
+    margin: 1em;
+
+}
+
+#importing-overview
+ {
+    width: 69%;
+
+}
+
+#uploading-overview {
+    width: 25%;
+
+}
+
 #import_instructions {
 
 border:1px solid #CCCCCC;
-float:left;
-margin:0 1em;
-overflow-x:hidden;
-overflow-y:auto;
+margin: 1em;
 text-align:left;
-width:30%;
+width:auto;
 min-width: 335px;
 
 }
@@ -1120,9 +1166,11 @@ min-width: 335px;
 
 #import_instructions .import_class {
 
-	margin: 1em;
+	margin: 0 10px 0 30px;
 	background-color: #eee;
+	float: right;
 	padding-bottom: 1em;
+
 
 }
 

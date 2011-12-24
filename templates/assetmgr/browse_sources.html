@@ -17,30 +17,40 @@
 {% endblock %}
 
 {% block content %}
+<h1>Source Media</h1>
 
+        {%if is_faculty%}
+           
+                <h4>Instructor:</h4>
+                <p>You can add suggested Media Sources to this page, as well as allow students to upload their own videos here, both through the <a href="/save/">Instructor Dashboard</a>.  If you do not add any Sources, students will see only the Bookmarklet instructions.
+            </p>
+            
+        {% endif %}
     {{ block.super }}
     
 {%if archives or is_faculty %}
+
+
+
     <div id="import_instructions" class="top-archive">
-        <h2>Instructions</h2>
-      
-        {%if is_faculty%}
-            <p>
-                <b>As an instructor,</b> you can  <a href="/save/">add Items or Sources</a> to this page.  If you do not add any Sources, students will see the list of Items you have collected in MediaThread and will not be offered the Bookmarklet.
-            </p>
-            <p><b>Students will see:</b></p>
-        {% endif %}
-        <p><!-- see below for duplicate text if there are no archives-->
-            Your instructor has listed Sources on this page for use in research associated with this class.  
-            Items from these Sources may be imported here using the MediaThread bookmarklet (see below)
-        </p>
+     
+    <h2>Instructions</h2>
     
-        <div class="import_class bookmarklet_import">
-            <h3>Bookmarklet Import:</h3>
-            <p>
-                First install a browser "bookmarklet", and then use it to import Items from supported Sources and analyze them in MediaThread.
-            </p>
-            <h4>Bookmarklet Installation</h4>
+  
+    
+    
+    <h4>On this page, your instructor has recommended Media Sources for use in this class.</h4>  
+                 
+           <div id="importing-overview">
+       
+            <h2>Importing from Media Sources</h2>
+            
+                   <div class="import_class bookmarklet_instructions">
+            {% with "help_bookmarklet" as help_id %}
+            {% with "off" as default_help_state %}
+            <h4>Bookmarklet Installation <!--{% include "help/help_button.html" %}--></h4>
+          {% include "help/help_contentarea.html" %}
+            
             <div id="browser-instructions" class="browser-specific-instructions">
                 <ol id="firefox" class="browser-instruction"><h5>Firefox:</h5>
                   <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
@@ -82,43 +92,64 @@
                     } 
                 </script>
 
-                <h4>Bookmarklet Use:</h4>
-                <p>Click the bookmarklet link when viewing an Item from any supported Source to import the Item to MediaThread. You can then analyze the Item and/or save it to your "Collections" space.</p>
             </div>
-	
-            <h4>What are Bookmarklets?</h4>
-            <p>A bookmarklet is a tiny program (a JavaScript application) contained 
-                 in a bookmark which can be saved and used the same way you use normal bookmarks. 
-                 Bookmarklets run on the web page your browser is currently pointed at.
-            </p>
-            <p>For more information see the <a href="http://en.wikipedia.org/wiki/Bookmarklet">Bookmarklet Wikipedia article</a></p>
+            {% endwith %}{% endwith %}
         </div>
-    </div>
-    
-    {% if upload_archive %}
-        {% if can_upload %}
-            <div id="uploader" class="top-archive">
-                <h2>Video Upload</h2>
-                <div id="archive-{{upload_archive.id}}" class="archive">
+        <h4>The Mediathread Bookmarklet</h4>
+            <ul>
+             <li>To import items for analysis from Media Sources, install and utilize the Mediathread Bookmarklet.</li><li>The Mediathread Bookmarklet is a button you add to your browser's Bookmarks Toolbar to allow you to easily import items for analysis in Mediathread.</li><li>Once installed, clicking the Bookmarklet allows you to import media from any web page containing Mediathread-friendly items.</li> 
+            </ul>
+            
+            
+            </div>
+            {% if can_upload %}
+            <div id="uploading-overview">
+                  
+              
+             <h2>Uploading Video</h2>
+            
+                   <h4>The Mediathread Video Uploader</h4>    
+           <p>To upload your own video for analysis, use the Mediathread Video Uploader.</p>
+            {% if upload_archive %}
+        
+            <div id="uploader">
+                
+                  
+           <!--     <div id="archive-{{upload_archive.id}}" class="archive">
                     {% if space_viewer.is_staff %}
                         <div class="manage-archive">
                             <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change upload_archive.id %}">Manage</a>
                         </div>
-                    {% endif %}
-         
-                    <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="archive-link">{{upload_archive.title}}</a>
-                    <br />
-                    {% if upload_archive.thumb %}
+                    {% endif %}-->
+                   <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="archive-link">{{upload_archive.title}}</a>
+                  
+               <!--     {% if upload_archive.thumb %}
                        <a href="redirect/?url={{upload_archive.archive.url|urlencode}}"><img src="{{upload_archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
                        </a>
                     {% endif %}
                     <div>
                         {{upload_archive.metadata|urlize|linebreaks}}
                     </div>
-                </div>       
+                </div>    -->   
             </div>
         {% endif %}
+
+                  
+                  
+                
+            
+     
+   
     {% endif %}
+
+        <!-- see below for duplicate text if there are no archives-->
+
+   </div>
+    </div>
+    
+ 
+    
+
         
     {% if archives %}
     <div id="external-archives" class="top-archive">

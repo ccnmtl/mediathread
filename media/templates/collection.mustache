@@ -4,7 +4,10 @@
         <div id="filter-widget" class="filter-widget">
             {{#>>switcher_collection_chooser}}
             <div id="switcher_collection_chooser" class="switcher collection-chooser" tabindex="1">
-                <span class="switcher-prefix">Owner: </span>
+                <span class="switcher-prefix">
+                    {{#enable_project_selection?}}Title: {{/enable_project_selection?}}
+                    {{^enable_project_selection}}Owner: {{/enable_project_selection}} 
+                </span>
                 <a class="switcher-top closed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="3"></span>
                     <span class="title" id="switcher-title">{{{selected_label}}}</span>

@@ -116,6 +116,7 @@
                 
                 jQuery("#project_view").hide();
                 jQuery("#asset_table").show();
+                jQuery("#switcher-collection-filter").show();
             });
             
             return false;
@@ -131,6 +132,7 @@
             // hide assets, show project
             jQuery("#asset_table").hide();
             jQuery("#project_view").show();
+            jQuery("#switcher-collection-filter").hide();
             
             return false;
         }

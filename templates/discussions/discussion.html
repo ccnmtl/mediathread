@@ -29,6 +29,13 @@ Discussion of {{root_comment.content_object.title}}
     <script type="text/javascript">
         function resizeDiscussionPage() {
             var visible = getVisibleContentHeight();
+            var additional = 0;
+            {% ifequal target.content_type.model "project" %}
+                visible -= 50;
+                jQuery('#id_comment_ifr').css('height', (visible - 150) + "px");
+                jQuery('#id_comment_tbl').css('width', "97%");
+            {% endifequal %}
+
             jQuery('#discussion-space-materials').css('height', visible + "px");
             jQuery('div.scroll').css('height', (visible - 85) + "px");
             jQuery('#threadedcomments').css('height', (visible - 20) + "px");
@@ -39,7 +46,12 @@ Discussion of {{root_comment.content_object.title}}
                 'open_from_hash':true, 
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
                 'view_callback': resizeDiscussionPage,
-                'enable_project_selection': false
+                {% ifequal target.content_type.model "project" %}
+                   'enable_project_selection': true,
+                   'project_id': {{target.content_object.id}}
+                {% else %}
+                   'enable_project_selection': false
+                {% endifequal %}
             }); 
             
             jQuery(window).resize(function () {  

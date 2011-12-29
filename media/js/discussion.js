@@ -331,16 +331,7 @@ AjaxComment.prototype.create = function(obj,doc) {
 
 
 /** INIT **/    
-    commenter = new AjaxComment(frm);
+  commenter = new AjaxComment(frm);
   window.commenter = commenter;
-    var threads = jQuery('li.comment-thread');
-    var base_comment = commenter.components(threads.get(0));
-    if (base_comment.edit_button
-        && base_comment.author.innerHTML == commenter.username
-        && (base_comment.title.innerHTML == 'Discussion Title'
-            || threads.length == 1))
-    {
-        open_edit({target:base_comment.edit_button}, 
-                  jQuery('input[name=title]').get(0));
-    }
+
 });

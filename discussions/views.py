@@ -62,10 +62,7 @@ def show_discussion(request, root_comment):
         'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
         }
     
-    if target.content_type.model == "project":
-        return render_to_response('discussions/feedback.html', rv, context_instance=RequestContext(request))
-    else:    
-        return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))
+    return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))
         
 @allow_http("POST")
 def new(request):

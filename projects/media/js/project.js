@@ -56,8 +56,6 @@
                 
                 tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
                 jQuery(new_assets.parentNode).addClass('annotation-embedding');
-
-                jQuery('#project-content_tbl').css('width', "100%");
             }
             
             jQuery(document.forms['editproject']).bind('submit', self.saveProject);

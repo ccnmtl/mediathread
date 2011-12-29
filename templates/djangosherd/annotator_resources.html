@@ -1,66 +1,37 @@
-  <script type="text/javascript" src="/site_media/js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js"></script>
-  
-  <!---JUST IMAGE-->
-  <link rel="stylesheet" type="text/css" href="/site_media/js/sherdjs/lib/openlayers/openlayers/theme/default/style.css" />
-  <style type="text/css">
-    img.olImageLoadError { 
-       /*override to fix bug where olImageLoadError style lingers past the image load*/
-       opacity:1.0; 
-       /*IE: so we don't see stupid broken-image icons*/
-       *display:none; 
-    }
-    div.olControlDrawFeatureSquareItemInactive {
-       background-image:url(/site_media/js/sherdjs/media/images/square_tool.png);
-       background-repeat: no-repeat;
-       height:23px;
-       width:25px;
-    }
-    
-    div.olControlDrawFeatureSquareItemActive {
-       background-image:url(/site_media/js/sherdjs/media/images/square_tool.png);
-       background-repeat: no-repeat;
-       background-position: 0px -23px;
-       height:23px;
-       width:25px;
-    }
-  </style>
-  <script src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
-  <!--script src="/site_media/js/sherdjs/lib/openlayers/openlayers/lib/OpenLayers.js"></script-->
-  <script type="text/javascript">
+<script type="text/javascript" src="/site_media/js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js"></script>
+<script type="text/javascript" src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
+
+<script type="text/javascript">
     OpenLayers.ImgPath = '/site_media/js/sherdjs/lib/openlayers/openlayers/img/';
     OpenLayers._getScriptLocation = function() {
        return "/site_media/js/sherdjs/lib/openlayers/openlayers/";
     }
     flowplayer.swf_location = '{{settings.FLOWPLAYER_SWF_LOCATION}}';
-  </script>
+</script>
 
-  {% if settings.DEBUG %}
-  <script type="text/javascript">
-    if (window.console)
-      console.log('DEBUG annotator_resources.html');
-  </script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/base.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/assets.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/video.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/quicktime.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/realplayer.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/videotag.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/youtube.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/flowplayer.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/vimeo.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/kaltura.js"></script>
-  
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipform.js"></script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipstrip.js"></script>
+{% if settings.DEBUG %}
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/base.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/assets.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/video.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/quicktime.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/realplayer.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/videotag.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/youtube.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/flowplayer.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/vimeo.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/kaltura.js"></script>
+    
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipform.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipstrip.js"></script>
+    
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/image/views/openlayers.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/image/annotators/openlayers.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/image/views/fsiviewer.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/src/image/annotators/fsiviewer.js"></script>
 
-  <script src="/site_media/js/sherdjs/src/image/views/openlayers.js"></script>
-  <script src="/site_media/js/sherdjs/src/image/annotators/openlayers.js"></script>
-  <script src="/site_media/js/sherdjs/src/image/views/fsiviewer.js"></script>
-  <script src="/site_media/js/sherdjs/src/image/annotators/fsiviewer.js"></script>
+{% else %}
+    <script type="text/javascript" src="/site_media/js/sherdjs/sherdjs_min.js?version={{settings.REVISION}}" ></script>
+{% endif %}
 
-  {% else %}
-  <script type="text/javascript" src="/site_media/js/sherdjs/sherdjs_min.js?version={{settings.REVISION}}" ></script>
-  {% endif %}
-
-  <script type="text/javascript" src="/site_media/js/sherdjs/src/configs/djangosherd.js?version={{settings.REVISION}}"></script>
+<script type="text/javascript" src="/site_media/js/sherdjs/src/configs/djangosherd.js?version={{settings.REVISION}}"></script>
 

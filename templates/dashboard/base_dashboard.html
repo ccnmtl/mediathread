@@ -49,13 +49,13 @@
               {% include "help/help_contentarea.html" %}
               <a href="/dashboard/addsource/">Manage Media Sources</a>
               
-              <form class="project-createnew" method="POST" action="{%url your-space-projects user%}">
+              <form class="project-createnew" method="post" action="{%url your-space-projects user%}">
                 <input type="hidden" name="title" />
                 <input type="submit" value="Create Composition or Assignment"/>
               </form> 
               
               <!--<a href="/discussion/new/">Create Discussion</a>-->
-              <form class="discussion-createnew"  action="/discussion/new/" method="POST">
+              <form class="discussion-createnew"  action="/discussion/new/" method="post">
                 <input type="hidden" name="comment_html" value="Discussion Title" />
                 <input type="hidden" name="app_label" value="courseaffils"/>
                 <input type="hidden" name="model" value="course"/>
@@ -64,7 +64,7 @@
               </form>
               
               
-              <a href="/">View Collections & Compositions</a>
+              <a href="/">View Collections &amp; Compositions</a>
               <br />
               <br />
         {% endwith %}{% endwith %}

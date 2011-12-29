@@ -6,9 +6,13 @@ Discussion of {{root_comment.content_object.title}}
 {% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" href="/site_media/css/project.css" />  
-  <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />  
-  <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css" />  
+    {{ block.super }}
+    <link rel="stylesheet" href="/site_media/css/project.css" />  
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />  
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css" />
+  
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}

@@ -1,4 +1,4 @@
-<div id={{help_id}} class="helpblock {{default_help_state}}">
+<div id="{{help_id}}" class="helpblock {{default_help_state}}">
     <div class="help_content">
 
 
@@ -27,7 +27,7 @@
                     
                     These reports list responses to your published assignments (if any), and provide views of student posting activity.
                    
-      {% endifequal %}
+        {% endifequal %}
       
       
                   <!--  SOURCE MEDIA PAGE, BOOKMARKLET BOX -->
@@ -37,7 +37,69 @@
            
            <br /><br />Once installed, clicking the Bookmarklet allows you to import media from any web page containing Mediathread-friendly items.
            
-      {% endifequal %}
+        {% endifequal %}
+      
+        {% ifequal help_id "help_browse_sources" %}
+            <div id="import_instructions" class="top-archive">
+                <div id="instructions-body">
+                    <div class="import_class bookmarklet_instructions">
+                        <div id="browser-instructions" class="browser-specific-instructions">
+                            <ol id="firefox" class="browser-instruction"><h5>Firefox:</h5>
+                              <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
+                              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                            </ol>
+                            <ol id="ie" class="browser-instruction">
+                              <h5> Internet Explorer:</h5>
+                              <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li><br />
+                              <li>and choose <b>Add to Favorites</b></li>
+                            </ol>
+                            <ol id="safari" class="browser-instruction">
+                              <h5>Safari:</h5>
+                              <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+                              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                            </ol>
+                            <ol id="chrome" class="browser-instruction">
+                              <h5>Google Chrome:</h5>
+                              <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+                              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                              {% if EXPERIMENTAL %}
+                              <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome MediaThread Extension</a></li>
+                              {% endif %}
+                            </ol>
+                            <script type="text/javascript">
+                                var u = navigator.userAgent;
+                                var i = jQuery('browser-instructions');
+                                if (/Chrome/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#chrome').show();
+                                } else if (/Safari/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#safari').show();
+                                } else if (/MSIE/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#ie').show();
+                                } else if (/Gecko/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#firefox').show();
+                                } 
+                            </script>
+                        </div>
+                    </div>
+                    <ol>
+                        <li>
+                            <h5>Install the Mediathread Bookmarklet</h5>
+                            <p>The Mediathread Bookmarklet is a button you add to your browser's Bookmarks Toolbar to allow you to easily import items for analysis in Mediathread.</p>
+                        </li>
+                        <li>
+                            <h5>Click the Bookmarklet to Import Media</h5>
+                            <p>Once installed, clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</p>
+                        </li>
+                    </ol>         
+                </div>     
+            </div>
+        
+            <div class="visualclear"></div>
+        {% endifequal %}
       
          
             

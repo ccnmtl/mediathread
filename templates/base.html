@@ -67,7 +67,7 @@
     	<div id="header">
     		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
     		{% block standardnav %}
-        	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" /></a></div>
+        	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
         	   <ul id="standardnav">
                     {% if request.user.is_authenticated %}
                         <li>Welcome, <span id="logged_in_name" class="username">{% public_name for user %}</span>!</li>
@@ -157,7 +157,7 @@
 	{% block footer %}
 	<!-- ###### Footer ###### -->
 	<div id="footer">
-	<p class="printonly"><br /><img src="/site_media/img/logo_ccnmtl_sidebar.gif" class="printonly" /></p>
+	<p class="printonly"><br /><img src="/site_media/img/logo_ccnmtl_sidebar.gif" class="printonly" alt="ccnmtl sidebar"/></p>
 	<ul id="footernav"><li><a href="/about/">About</a></li>
 			<!--<li><a href="/partners/">Partners</a></li>-->
                            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
@@ -165,7 +165,7 @@
                            {% endif %}
 			</ul>
 			
-			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning" alt="Produced by the Columbia Center for New Media Teaching and Learning"></a></h4>
+			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a></h4> 
 			</div><!-- id="footer" -->
 {% endblock %}
 	</div><!-- id="pagebody" -->

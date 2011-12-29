@@ -7,13 +7,19 @@
     {% endif %}
 {% endblock %}
 
+{% block css %}
+    {{ block.super }}
+    
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/tablesort.js?version={{settings.REVISION}}"></script>
       
-    <!--All the annotation javascript/css -->
+    <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
     
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>

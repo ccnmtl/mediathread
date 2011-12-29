@@ -13,9 +13,13 @@
 {% endblock %}
 
 {% block css %}
+    {{ block.super }}
     <link rel="stylesheet" href="/site_media/css/project.css" />
     <script type="text/javascript" src="/jsi18n"></script>
     {{ projectform.media }}
+
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}

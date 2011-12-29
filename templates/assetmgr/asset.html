@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load smartif coursetags %}
 {% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
-{% block css %}
-  {{ block.super }}
-  <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
 
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}
@@ -54,7 +56,7 @@
             <div class="tabber">
                  <div class="indexcard tabbertab" title="Item">
                     <h2>My Item Details</h2>
-                         <form class="tabber_form" name="edit-item-form" id="edit-item-form" method="POST" 
+                         <form class="tabber_form" name="edit-item-form" id="edit-item-form" method="post" 
                             action="{% if not global_annotation %}{% url asset-save %}{% else %}{% url annotation-form asset.pk global_annotation.pk %}{% endif %}">
 
                             {{ global_annotation_form.as_p }}
@@ -88,30 +90,30 @@
                         {% endif %}
                         
                         {%if asset.html_source.url %}
+                            <h2 class="metadata-title">Item Source</h2>
                             <dl>
-                                <dt><h2 class="metadata-title">Item Source</h2></dt>
                                 <dd id="metadata-html_source"><a href="{{asset.html_source.url}}">{{asset.html_source.url}}</a></dd>
                             </dl>
                         {%endif%}
                         
                         {% for name, values in asset.metadata.items %}
-                        <dl>
-                          <dt><h2 class="metadata-title">{{name}}</h2></dt>
-                              {# is values a list or string? #}
-                              {% if not values.lower %}
-                                {% for v in values %}
-                                <dd id="metadata-{{name}}">
-                                  {% if "http" in v %}
-                                    <a href="{{v}}">{{v}}</a>
-                                  {% else %}
-                                    {{v}}
-                                  {% endif %}
-                                </dd>
-                                {% endfor %}
-                              {% else %}
-                          <dd id="metadata-{{name}}">{{values}}</dd>
-                              {% endif %}
-                        </dl>
+                            <h2 class="metadata-title">{{name}}</h2>
+                            <dl>
+                                {# is values a list or string? #}
+                                {% if not values.lower %}
+                                    {% for v in values %}
+                                        <dd id="metadata-{{name}}">
+                                        {% if "http" in v %}
+                                            <a href="{{v}}">{{v}}</a>
+                                        {% else %}
+                                            {{v}}
+                                        {% endif %}
+                                        </dd>
+                                    {% endfor %}
+                                {% else %}
+                                    <dd id="metadata-{{name}}">{{values}}</dd></dl>
+                                {% endif %}
+                            </dl>                                
                         {% endfor %}
                     </div>
                 </div> <!-- end Info tab -->

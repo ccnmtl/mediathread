@@ -520,7 +520,7 @@ div.project-table
 .hs-init-hide {display:none;}
 
 .asset-table .asset-clips .citationTemplate {
-  float:left;
+  float:right;
 }
 
   #filter_col h3 {
@@ -1120,7 +1120,6 @@ text-align: left;
 #import_instructions,
 #external-archives {
     border: 1px solid #ccc;
-    float: left;
     margin: 1em;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
@@ -1130,6 +1129,14 @@ text-align: left;
     border-top-right-radius: 10px;
     width: 980px;
 
+}
+
+
+#import_instructions {
+    width: 940px;
+}
+
+#import_instructions h2 {
 }
 
 #import_instructions p {

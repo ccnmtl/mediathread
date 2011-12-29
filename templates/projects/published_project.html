@@ -12,8 +12,12 @@
 {% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" href="/site_media/css/project.css" />
-  <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />  
+    {{ block.super }}
+    <link rel="stylesheet" href="/site_media/css/project.css" />
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />
+    
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}  
 {% endblock %}
 
 {% block js %}
@@ -62,7 +66,7 @@
             {#need to test it, because the default collaboration created won't have the right perms#}
             {% if not project.feedback_discussion %}
                 {% if is_faculty and not project|is_assignment:request %}
-                <form action="{% url new-discussion %}" method="POST">
+                <form action="{% url new-discussion %}" method="post">
                   <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
                   <input type="hidden" name="inherit" value="true" />
                   <input type="hidden" name="app_label" value="projects" />
@@ -82,7 +86,7 @@
 
             {% if role_in_course != 'non-member' and project|is_assignment:request %}
                 {% if not user_responses %}
-                    <form class="block project createnew" method="POST"
+                    <form class="block project createnew" method="post"
                       action="{%url your-space-projects user%}">
                       <input type="hidden" name="title" />
                       <input type="hidden" name="parent" value="{{project.id}}" />

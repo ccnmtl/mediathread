@@ -188,7 +188,7 @@
                                 />
                             </span>
                         {{#thumb?}}
-                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="whole item thumbnail" /></a>
+                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Whole Item" /></a>
                         {{/thumb?}}
                         
                         
@@ -282,8 +282,7 @@
                                                                 <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
                                                             {{/timecode?}}
                                                         {{/metadata}}
-                                                    </div>
-                                                                 <div class="visualclear"></div>
+                                                    
                                                         <div id="annotation-body-{{id}}" class="meta" style="display: none">
                                                             {{#metadata}}
                                                                 {{#modified?}}
@@ -305,7 +304,8 @@
                                                                 {{/body?}}
                                                             {{/metadata}}
                                                         </div>
-                                                        
+                                                        </div>
+                                                                 <div class="visualclear"></div>
                                                      
                                                     </li>
                                                     

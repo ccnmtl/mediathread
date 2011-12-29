@@ -26,6 +26,8 @@
             </p>
             
         {% endif %}
+        
+            <h4>On this page, your instructor has recommended Media Sources for use in this class.</h4>  
     {{ block.super }}
     
 {%if archives or is_faculty %}
@@ -34,18 +36,15 @@
 
     <div id="import_instructions" class="top-archive">
      
-    <h2>Instructions</h2>
+    <h2>
+    <!--
+    <a class="metadata-selector metadata-selector-open" href="#instructions-body" onclick="jQuery(this).toggleClass('metadata-selector-closed metadata-selector-open'); jQuery('#instructions-body').toggle(); return false;"></a>-->
     
-  
+    Instructions</h2>
     
+    <div id="instructions-body">
     
-    <h4>On this page, your instructor has recommended Media Sources for use in this class.</h4>  
-                 
-           <div id="importing-overview">
-       
-            <h2>Importing from Media Sources</h2>
-            
-                   <div class="import_class bookmarklet_instructions">
+            <div class="import_class bookmarklet_instructions">
             {% with "help_bookmarklet" as help_id %}
             {% with "off" as default_help_state %}
             <h4>Bookmarklet Installation <!--{% include "help/help_button.html" %}--></h4>
@@ -95,55 +94,15 @@
             </div>
             {% endwith %}{% endwith %}
         </div>
-        <h4>The Mediathread Bookmarklet</h4>
-            <ul>
-             <li>To import items for analysis from Media Sources, install and utilize the Mediathread Bookmarklet.</li><li>The Mediathread Bookmarklet is a button you add to your browser's Bookmarks Toolbar to allow you to easily import items for analysis in Mediathread.</li><li>Once installed, clicking the Bookmarklet allows you to import media from any web page containing Mediathread-friendly items.</li> 
-            </ul>
-            
-            
-            </div>
-            {% if can_upload %}
-            <div id="uploading-overview">
-                  
-              
-             <h2>Uploading Video</h2>
-            
-                   <h4>The Mediathread Video Uploader</h4>    
-           <p>To upload your own video for analysis, use the Mediathread Video Uploader.</p>
-            {% if upload_archive %}
         
-            <div id="uploader">
-                
-                  
-           <!--     <div id="archive-{{upload_archive.id}}" class="archive">
-                    {% if space_viewer.is_staff %}
-                        <div class="manage-archive">
-                            <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change upload_archive.id %}">Manage</a>
-                        </div>
-                    {% endif %}-->
-                   <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="archive-link">{{upload_archive.title}}</a>
-                  
-               <!--     {% if upload_archive.thumb %}
-                       <a href="redirect/?url={{upload_archive.archive.url|urlencode}}"><img src="{{upload_archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                       </a>
-                    {% endif %}
-                    <div>
-                        {{upload_archive.metadata|urlize|linebreaks}}
-                    </div>
-                </div>    -->   
-            </div>
-        {% endif %}
-
-                  
-                  
-                
-            
-     
-   
-    {% endif %}
-
-        <!-- see below for duplicate text if there are no archives-->
-
+            <ol><h5><li>Install the Mediathread Bookmarklet</h5>
+            <p>The Mediathread Bookmarklet is a button you add to your browser's Bookmarks Toolbar to allow you to easily import items for analysis in Mediathread.</p></li>
+            <h5><li>Click the Bookmarklet to Import Media</h5>
+            <p>Once installed, clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</p>
+            </li>
+            </ol>         
+     </div>     
+          
    </div>
     </div>
     
@@ -151,11 +110,30 @@
     
 
         
-    {% if archives %}
+    
     <div id="external-archives" class="top-archive">
-        <h2>Sources</h2>
+        <h2>Media Sources</h2>
+        
+          {% if can_upload %}
+           
+           <div id="upload_container">
+            {% if upload_archive %}
+            <div id="uploader">
+            <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="columnbutton media browse-button">{{upload_archive.title}}</a>
+            </div>
+            {% endif %}
+
+            <h2>Upload Video</h2>            
+            <p>To upload your own video for analysis, use the Mediathread Video Uploader.</p>
+            
+            </div>
+         {% endif %}
+         
+        {% if archives %}
+        <div id="archive_container" class="column-container media-column-container">  
+        <h2>Instructor Recommendations</h2>
         {% for archive in archives %}
-            <div id="archive-{{archive.id}}" class="archive">
+         <div id="archive-{{archive.id}}" class="archive">
                 {% if space_viewer.is_staff %}
                     <div class="manage-archive">
                         <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
@@ -173,8 +151,9 @@
                 </div>
             </div>
         {%endfor%}
-    </div>
-   {% endif %}
+        <br class="visualclear" />
+        </div>
+         {% endif %}
 
 {%endif%}
 

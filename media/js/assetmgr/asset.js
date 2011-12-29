@@ -49,6 +49,9 @@
             'edit-annotation':function(asset_id,annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview
                 return '/asset/'+asset_id+'/annotations/'+annotation_id+'/';
+            },
+            'project':function(project_id) {
+                return '/project/workspace/' + project_id + '/json';
             }
         }
 
@@ -70,6 +73,10 @@
             self.template_label = config.template_label;
             self.view_callback = config.view_callback;
             self.create_annotation_thumbs = config.create_annotation_thumbs;
+            self.project_id = config.project_id;
+
+            self.switcher_context = {}
+            self.switcher_context.enable_project_selection = config.enable_project_selection;
             
             jQuery.ajax({
                 url:'/site_media/templates/' + config.template + '.mustache?nocache=v2',
@@ -77,6 +84,7 @@
                 cache: false, // Chrome && Internet Explorer has aggressive caching policies.
                 success:function(text) {
                     MediaThread.templates[config.template] = Mustache.template(config.template,text);
+                    
                     // Retrieve the full asset w/annotations from storage
                     if (config.view == 'all' || !config.space_owner) {
                         url = MediaThread.urls['all-space'](config.tag)
@@ -88,11 +96,13 @@
                             url: url
                         },
                         false,
-                        function(your_records) {
-                            self._updateAssets(your_records);
+                        function(the_records) {
+                            self.updateAssets(the_records);
                         });
                     }
                 });
+            
+            return this;
         }
 
         this.selectOwner = function(username) {
@@ -102,8 +112,25 @@
             },
             false,
             function(the_records) {
-                self._updateAssets(the_records);
+                self.updateAssets(the_records);
+                
+                jQuery("#project_view").hide();
+                jQuery("#asset_table").show();
             });
+            
+            return false;
+        }
+        
+        this.selectProject = function(username) {
+            // update selected label & switcher choices
+            self.switcher_context.selected_label = self.current_project.project.title;
+            self.switcher_context.showing_all_items = false;
+            self.switcher_context.showing_my_items = false;
+            self.updateSwitcher();
+            
+            // hide assets, show project
+            jQuery("#asset_table").hide();
+            jQuery("#project_view").show();
             
             return false;
         }
@@ -133,8 +160,8 @@
                 url: self.getSpaceUrl(active_tag, active_modified)
             },
             false,
-            function(your_records) {
-                self._updateAssets(your_records);
+            function(the_records) {
+                self.updateAssets(the_records);
             });
             
             return false;
@@ -147,8 +174,8 @@
                 url:self.getSpaceUrl(active_tag, modified)
             },
             false,
-            function(your_records) {
-                self._updateAssets(your_records);
+            function(the_records) {
+                self.updateAssets(the_records);
             });
             
             return false;
@@ -161,8 +188,8 @@
                 url:self.getSpaceUrl(tag, active_modified)
             },
             false,
-            function(your_records) {
-                self._updateAssets(your_records);
+            function(the_records) {
+                self.updateAssets(the_records);
             });
             
             return false;
@@ -180,6 +207,7 @@
         }
         
         this.createThumbs = function(assets) {
+            djangosherd.thumbs = [];
             for (var i = 0; i < assets.length; i++) {
                 var asset = assets[i];
                 DjangoSherd_adaptAsset(asset); //in-place
@@ -213,31 +241,75 @@
             }
         }
         
-        this._updateAssets = function(your_records) {
-            self.current_records = your_records;
+        this.updateProject = function() {
+            var url = MediaThread.urls['project'](self.project_id);
             
-            if (self.getShowingAllItems(your_records)) {
-                your_records.selected_label = "All Class Members";
-                your_records.showing_all_items = true;
-            } else if (your_records.space_owner.username == your_records.space_viewer.username) {
-                your_records.selected_label = "Me";
-                your_records.showing_my_items = true;
+            // retrieve project json
+            djangosherd.storage.get({
+                type:'project',
+                url: url
+            }, 
+            false,
+            function(the_project) {
+                self.current_project = the_project;
+                self.switcher_context.project = the_project.project;
+                
+                if (self.switcher_context.enable_project_selection) {
+                    // push the body of the project into a div
+                    Mustache.update("project_view", the_project, { post:function(elt) {
+                        DjangoSherd_decorate_citations(document.getElementById('project_view'), {});
+                        
+                        self.selectProject();
+                    }});
+                } else {
+                    self.updateSwitcher();
+                }
+            });
+        }
+        
+        this.updateSwitcher = function() {
+            self.switcher_context.display_switcher_extras = self.enable_project_selection || !self.switcher_context.showing_my_items || (self.current_project && self.current_project.project.participants.length > 1);
+            Mustache.update("switcher_collection_chooser", self.switcher_context);
+        }
+        
+        this.updateAssets = function(the_records) {
+            self.switcher_context.owners = the_records.owners;
+            self.switcher_context.space_viewer = the_records.space_viewer;
+            
+            if (self.getShowingAllItems(the_records)) {
+                self.switcher_context.selected_label = "All Class Members";
+                self.switcher_context.showing_all_items = true;
+                self.switcher_context.showing_my_items = false;
+                the_records.showing_all_items = true;
+            } else if (the_records.space_owner.username == the_records.space_viewer.username) {
+                self.switcher_context.selected_label = "Me";
+                self.switcher_context.showing_my_items = true;
+                self.switcher_context.showing_all_items = false;
+                the_records.showing_my_items = true;
             } else {
-                your_records.selected_label = your_records.space_owner.public_name;
+                self.switcher_context.showing_my_items = false;
+                self.switcher_context.showing_all_items = false;
+                self.switcher_context.selected_label = the_records.space_owner.public_name;
             }
             
-            n = _propertyCount(your_records.active_filters);
-            if (n > 0)
-                your_records.active_filter_count = n;
+            self.current_records = the_records;
             
-            Mustache.update(self.template_label, your_records, { post:function(elt) {
-                    if (self.create_annotation_thumbs) 
-                        self.createThumbs(your_records.assets);
-                    
-                    if (self.view_callback) 
-                        self.view_callback();
-                } 
-            });
+            n = _propertyCount(the_records.active_filters);
+            if (n > 0)
+                the_records.active_filter_count = n;
+            
+            Mustache.update(self.template_label, the_records, { post:function(elt) {
+                if (self.create_annotation_thumbs)
+                    self.createThumbs(the_records.assets);
+                
+                if (self.project_id && !self.current_project) 
+                    self.updateProject();
+                else
+                    self.updateSwitcher();
+                
+                if (self.view_callback) 
+                    self.view_callback();
+            }});
         }
     })();
 

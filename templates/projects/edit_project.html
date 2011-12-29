@@ -29,50 +29,27 @@
     <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
 
     <script type="text/javascript">
-        function resizeProjectPage() {
+        function resizeEditProjectPage() {
             var visible = getVisibleContentHeight();
             jQuery('#essay-space-materials').css('height', visible + "px");
+            jQuery('#project-content_tbl').css('height', (visible - 200) + "px");
             jQuery('div.editing').css('height', (visible - 56) + "px");
             jQuery('div.scroll').css('height', (visible - 77) + "px");
         }
-        
-        function postProcessingProject() {
-            resizeProjectPage();
-
-            if (tinyMCE.activeEditor) {
-                var new_assets = jQuery('#asset_table').get(0);
-                
-                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
-                jQuery(new_assets.parentNode).addClass('annotation-embedding');
-            }
-
-            jQuery(document.forms['editproject']).bind('submit',saveProject);
-            project_warnOnUnload();
-
-            //PROJECT PARTICIPANT UPDATES
-            jQuery('a.participants_toggle').click(updateParticipantList);
-        }
       
         jQuery(document).ready(function () {
-            setTimeout(function() {
-                // delay this for half a second until the rest of the page is loaded.
-                DjangoSherd_Project_Config({open_from_hash:false, project_json:'./json', callback: resizeProjectPage });
-    
-                CollectionList.init({
-                  'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
-                  'template': 'collection',
-                  'template_label': 'collection_table',
-                  'view_callback': postProcessingProject,
-                  'create_annotation_thumbs': true
-                  });
-              
-                jQuery(window).resize(function () {  
-                    resizeProjectPage();
-                });
-    
-                var visible = getVisibleContentHeight();
-                jQuery('#essay-space-materials').css('height', visible + "px");
-            }, 500);
+            ProjectView.initEditing({
+                'open_from_hash':false, 
+                'project_json':'./json', 
+                'project_id': '{{project.id}}',
+                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
+                'view_callback': resizeEditProjectPage,
+                'enable_project_selection': false
+            }); 
+
+            jQuery(window).resize(function () {  
+                resizeEditProjectPage();
+            });
         });
   </script>
 {% endblock %}
@@ -118,7 +95,7 @@
                     </script>
                     <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
                     <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
-                    <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true">{{project.body|safe}}</textarea>
+                    <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
                 </div>
 
                 <div id="project_participants">

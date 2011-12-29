@@ -2,39 +2,53 @@
 <div id="collection_table">
     <div id="media" >
         <div id="filter-widget" class="filter-widget">
-            <div class="switcher collection-chooser" tabindex="1">
+            {{#>>switcher_collection_chooser}}
+            <div id="switcher_collection_chooser" class="switcher collection-chooser" tabindex="1">
                 <span class="switcher-prefix">Owner: </span>
-                    <a class="switcher-top closed" onclick="switcher(this);">
-                        <span class="down-arrow" tabindex="3"></span>
-                        <span class="title" id="switcher-title">
-                            {{{selected_label}}}
-                        </span>
-                    </a>
-                </span>
+                <a class="switcher-top closed" onclick="switcher(this);">
+                    <span class="down-arrow" tabindex="3"></span>
+                    <span class="title" id="switcher-title">{{{selected_label}}}</span>
+                </a>
+                
                 <ul class="switcher-options" style="left: -51px">
-                    {{^showing_my_items}}
-                    <li>
-                        <ul class="switcher-sub" id="switcher-extras">
-                            <li class="choice_my_items" id="choice_my_items">
-                                <a href="" onclick="return CollectionList.selectOwner('{{space_viewer.username}}')">&mdash; Me &mdash;</a>
+                    <div id="switcher-extras-container">
+                        {{#display_switcher_extras?}}
+                            <li style="padding-top:10px;">
+                                <ul class="switcher-sub">
+                                    {{^showing_my_items}}
+                                        <li class="choice_my_items" id="choice_my_items">
+                                            <a href="" onclick="return CollectionList.selectOwner('{{space_viewer.username}}')">&mdash; Me &mdash;</a>
+                                        </li>
+                                    {{/showing_my_items}}
+                                    
+                                    {{#enable_project_selection?}}
+                                        <li><a href="" onclick="return CollectionList.selectProject()">{{project.title}}</a></li>
+                                    {{/enable_project_selection?}}
+                                    
+                                    {{#project.participants}}
+                                        {{^is_viewer}}
+                                            <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
+                                        {{/is_viewer}}   
+                                    {{/project.participants}}
+                                </ul>
                             </li>
-                        </ul>
-                    </li>
-                    {{/showing_my_items}}
+                        {{/display_switcher_extras?}}
+                    </div>
                     <li>
                         <ul class="scroll switcher-sub">
                             {{^showing_all_items}}
-                            <li class="choice_all_items" id="choice_all_items">
-                                <a href="" onclick="return CollectionList.selectOwner();">&mdash; All Class Members &mdash;</a>
-                            </li>
-                            {{/showing_all_items}}
+                                <li class="choice_all_items" id="choice_all_items">
+                                    <a href="" onclick="return CollectionList.selectOwner();">&mdash; All Class Members &mdash;</a>
+                                </li>
+                            {{/showing_all_items}}                        
                             {{#owners}}                            
                                 <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
                             {{/owners}}
                         </ul>
                     </li>
                 </ul>
-            </div> {{!  end Class Member switcher  }}
+            </div>
+            {{/>>switcher_collection_chooser}}
             
             <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
                 <a class="switcher-top closed" onclick="switcher(this);">
@@ -104,6 +118,22 @@
 
             
         <div class="column-contents scroll">
+            {{#>>project_view}}
+                <div id="project_view" class="project-view" style="display: none">
+                     <!--  Where the media is shown. Displays as an overlay next to the clip -->
+                     <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute; z-index: 1000;">
+                          <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide(); return false;">x</a>
+                          <div class="annotation-title"></div>
+                          <div class="asset-title"></div>
+                          <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
+                            <div class="asset-display"></div>
+                            <div id="clipstrip-display" class="clipstrip-display"></div>    
+                          </div>
+                    </div>
+                
+                    {{{project.body}}}
+                </div>
+            {{/>>project_view}}
             {{#>>assets}}
             <div id="asset_table" class="asset-table">
                 {{^assets}}
@@ -263,9 +293,9 @@
                     </div> {{! end id="record-id" }}
                     </div> {{! end id=materials, class="column-contents scroll" }} 
                 {{/assets}}
-        </div>
+                  
+            </div>
         {{/>>assets}}
     </div>
-    
 </div>
 {{/>>collection_table}}

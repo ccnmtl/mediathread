@@ -2,14 +2,14 @@
 
 {% load smartif collaborations user_projects coursetags %}
 
-<title>{% block title %}
-{% if preview_num %}
-   Preview {{preview_num}} of
-{% endif %}
+{% block title %}
+    {% if preview_num %}
+       Preview {{preview_num}} of
+    {% endif %}
 
-  {{project.title|default:"New project"}}
-  {% if version_number %}Version {{version_number}}{% endif %}
-{% endblock %}</title>
+    {{project.title|default:"New project"}}
+    {% if version_number %}Version {{version_number}}{% endif %}
+{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" href="/site_media/css/project.css" />
@@ -17,14 +17,19 @@
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
 
-  <!--All the annotation javascript/css -->
-  {% include "djangosherd/annotator_resources.html" %}
+    <!--All the annotation javascript/css -->
+    {% include "djangosherd/annotator_resources.html" %}
+  
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
  
-  <script type="text/javascript">        
-      DjangoSherd_Project_Config({open_from_hash: false, project_json:'./json', presentation: 'medium'});           
-  </script>
+    <script type="text/javascript">    
+        ProjectView.initReadOnly({
+            presentation: 'medium',
+            project_id: '{{project.id}}'
+        });     
+    </script>
 {% endblock %}
 
 {% block content %}

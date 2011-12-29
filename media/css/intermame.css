@@ -732,3 +732,7 @@ table#home-columns td#classwork .helpblock ul li
  background-image: url("../img/icons/item_assignment.gif");
 
 }
+
+.project-view {
+    padding: 5px;
+}

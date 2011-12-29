@@ -37,31 +37,18 @@ Instructor Feedback for {{root_comment.content_object.title}}
             jQuery('div.scroll').css('height', (visible - 65) + "px");
         }
 
-        function postProcessingFeedback() {
-            if (tinyMCE.activeEditor) {
-                var new_assets = jQuery('#asset_table').get(0);
-                
-                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
-                jQuery(new_assets.parentNode).addClass('annotation-embedding');
-            }
-
-            resizeFeedbackPage();
-        }
-
-        jQuery(document).ready(function() {     
-            DjangoSherd_Project_Config({ open_from_hash:true });
-    
-            CollectionList.init({
+        jQuery(document).ready(function() { 
+            ProjectView.initEditing({
+                'open_from_hash':true, 
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
-                'template': 'collection',
-                'template_label': 'collection_table',
-                'view_callback': postProcessingFeedback,
-                'create_annotation_thumbs': true
-             });
+                'view_callback': resizeFeedbackPage,
+                'project_id': '{{project.id}}',
+                'enable_project_selection': true
+            }); 
             
-             jQuery(window).resize(function () {  
-                 resizeFeedbackPage();
-             });
+            jQuery(window).resize(function () {  
+                resizeFeedbackPage();
+            });
         });   
     </script>
 {% endblock %}

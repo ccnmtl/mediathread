@@ -32,7 +32,7 @@ from djangohelpers.lib import allow_http
 
 
 ### VIEWS ###
-@rendered_with('projects/project.html')
+@rendered_with('projects/edit_project.html')
 def project_workspace(request, user, project):
     space_viewer = request.user
     if request.GET.has_key('as') and request.user.is_staff:
@@ -46,7 +46,7 @@ def project_workspace(request, user, project):
         'project': project,
         'projectform': projectform,
         'page_in_edit_mode': True,
-        }
+    }
 
 @rendered_with('projects/published_project.html')
 def project_preview(request, user, project, is_participant=None, preview_num=0):
@@ -236,12 +236,19 @@ def your_projects(request, user_name):
         return HttpResponseRedirect(project.get_workspace_url())
 
 def project_json(request,project):
+        #bad language, we should change this to user_of_assets or something
+    space_viewer = request.user 
+    if request.GET.has_key('as') and request.user.is_staff:
+        space_viewer = get_object_or_404(User, username=request.GET['as'])
+        
     rand = ''.join([choice(letters) for i in range(5)])
 
     data = {'project':{'title':project.title,
                        'body':project.body,
                        'participants':[{'name':p.get_full_name(),
                                         'username':p.username,
+                                        'public_name': get_public_name(p, request),
+                                        'is_viewer': space_viewer.username == p.username,  
                                         } for p in project.participants.all()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
@@ -257,9 +264,7 @@ def project_json(request,project):
                            ],
             'type':'project',
             }
-    return HttpResponse(simplejson.dumps(data, indent=2),
-                        mimetype='application/json')
-
+    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
 
 def project_workspace_courselookup(project_id=None,**kw):
     if project_id:

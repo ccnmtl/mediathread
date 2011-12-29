@@ -23,24 +23,24 @@
 {% with "on" as default_help_state %}
                  
     <div id="external-archives" class="top-archive">
-        <h2>Media Sources {% include "help/help_button.html" %}</h2>
+        <h2>Source Media {% include "help/help_button.html" %}</h2>
         {% include "help/help_contentarea.html" %}
         
                     
           {% if can_upload %}
-           
+           {% if upload_archive %}
            <div id="upload_container">
-            {% if upload_archive %}
+            
+            <h2>Upload Video</h2>            
+            
             <div id="uploader">
             <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="columnbutton media browse-button">{{upload_archive.title}}</a>
             </div>
-            {% endif %}
-
-            <h2>Upload Video</h2>            
+            
             <p>To upload your own video for analysis, use the Mediathread Video Uploader.</p>
             
             </div>
-         {% endif %}
+         {% endif %}{% endif %}
          
         {% if archives %}
         <div id="archive_container" class="column-container media-column-container">  

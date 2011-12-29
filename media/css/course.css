@@ -628,7 +628,7 @@ margin:-2px
    max-height: 150px;
    overflow-y: auto;
    overflow-x: hidden;
-   padding: 5px;
+   padding: 10px 5px 5px;
    }
 
 #dashboard-module-body .archive {
@@ -638,7 +638,7 @@ margin:-2px
    background-color: #ededed;
    border: 1px solid #ccc;
    width: 95%;
-   padding: 5px;
+   padding: 10px 5px 5px;
    height: auto;
    max-height: none;
    }
@@ -677,12 +677,11 @@ text-align: left;
 
 .archive a.archive-link {
     font-weight:bold;
-    line-height:150%;
     text-decoration:none;
-    padding:10px 10px;
+    margin: 15px 5px;
 }
 .archive img.archive-link {
-    float:left;
+    float: right;
     margin:10px;
     max-width:100px;
     max-height:75px;
@@ -692,7 +691,7 @@ div.archive p {
     font-size: 85%;
     text-align: left;
     line-height: 150%;
-    margin:0 10px 1em 10px;
+    margin: 10px 10px 1em 10px;
 }
 div.archive p.archive-button {
     clear:both;
@@ -1117,7 +1116,7 @@ text-align: left;
     background-color:#ededed;
 }
 
-#import_instructions,
+
 #external-archives {
     border: 1px solid #ccc;
     margin: 1em;
@@ -1129,14 +1128,41 @@ text-align: left;
     border-top-right-radius: 10px;
     width: 980px;
 
+
 }
+
+#external-archives h2 {
+    text-transform: uppercase;
+    background-color: #666;
+
+}
+
 
 
 #import_instructions {
     width: 940px;
+    border: none;
+    margin: 0;
+    padding: 10px;
+    
 }
 
-#import_instructions h2 {
+
+
+
+
+#import_instructions h3 {
+
+    font-size: 130%;
+    margin: 0px 0 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+#import_instructions h4 {
+
+    font-size: 115%;
+ 
 }
 
 #import_instructions p {
@@ -1147,46 +1173,31 @@ text-align: left;
 
 #import_instructions .import_class {
 
-	margin: 0 10px 20px 30px;
+	margin: 0 10px 20px 35px;
 	background-color: #eee;
 	float: right;
 	padding-bottom: 1em;
+	border: 1px solid #ccc;
 
 
 }
 
-#import_instructions .import_class h3 {
+#import_instructions .import_class h4 {
 
-margin: 0 0 .5em 0;
-background-color: #6f6f6f;
+margin: 0 0 1.4em 0;
+background-color: #9a9a9a;
 padding: .2em .5em .2em .5em;
 color: #dedede;
-font-weight: normal;
+font-weight: bold;
 text-align: left;
 
-}
-
-#import_instructions h4 {
-
-margin: 1.5em 1em .5em 1em;
-
 
 }
 
 
 
+#archive_container,
 #upload_container {
-    width: 920px;
-    margin: 20px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    background-color: #A88448;
-    padding: 5px 0px;
-    color: #333;
-}
-
-#archive_container {
     border: 1px solid #ccc;
     width: 920px;
     margin: 20px;
@@ -1206,7 +1217,7 @@ margin: 1.5em 1em .5em 1em;
    height: 14px;
    font-size: .9em;
    text-align: center;
-   margin: 10px 20px;
+   margin: 2px 20px;
 
 }
 
@@ -1227,6 +1238,8 @@ margin: 1.5em 1em .5em 1em;
     -moz-border-radius-topright: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    color: #fff;
+    text-transform: capitalize;
 }
 
 

@@ -177,9 +177,9 @@
                             
                             <a class="asset-title-link" target="_blank" href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
                         </h4>
-<div class="item-level-info">
+                        <div class="item-level-info">
                           <span class="citationTemplate">
-                                <img class="materialCitation" alt="" 
+                                <img class="materialCitation" alt="insert" 
                                     src="/site_media/img/icons/insert_asset.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
                                     width="24" height="15" border="0" 
                                     onclick="addMaterialCitation(event)" 
@@ -190,6 +190,10 @@
                         {{#thumb?}}
                             <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Whole Item" /></a>
                         {{/thumb?}}
+                        
+                        {{^thumb}}
+                            Whole Item
+                        {{/thumb}}
                         
                         
                          {{#global_annotation}}
@@ -231,8 +235,8 @@
                         
                         
                         
-</div>
-<br class="visualclear" />
+                        </div>
+                        <br class="visualclear" />
                         <div id="record-{{id}}-metadata" class="record-metadata">
 
                                
@@ -256,7 +260,7 @@
                                                             
                                                 
                                                 <li id="annotation-{{id}}">
-                                             <div id="annotation-thumb-{{id}}"></div>
+                                                 <div id="annotation-thumb-{{id}}"></div>
 
                                                     <div class="metadata-container">
                                                     
@@ -305,7 +309,7 @@
                                                             {{/metadata}}
                                                         </div>
                                                         </div>
-                                                                 <div class="visualclear"></div>
+                                                      <div class="visualclear"></div>
                                                      
                                                     </li>
                                                     
@@ -320,7 +324,7 @@
 
 
 
-<br class="visualclear" />
+                    <br class="visualclear" />
 
     
                     </div> {{! end id="record-id" }}

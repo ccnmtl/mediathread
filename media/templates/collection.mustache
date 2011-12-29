@@ -171,8 +171,14 @@
                     <div id="materials" class="column-contents">
                     <div id="record-{{id}}" class="record record-{{primary_type}}">
                         <input type="hidden" class="record" value="{{id}}" name="record-id" />
-                        <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
-                            <span class="citationTemplate">
+                      
+                            <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
+                           
+                            
+                            <a class="asset-title-link" target="_blank" href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
+                        </h4>
+<div class="item-level-info">
+                          <span class="citationTemplate">
                                 <img class="materialCitation" alt="" 
                                     src="/site_media/img/icons/insert_asset.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
                                     width="24" height="15" border="0" 
@@ -181,21 +187,17 @@
                                     name="{{local_url}}"'
                                 />
                             </span>
-                            
-                            <a class="asset-title-link" target="_blank" href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
-                        </h4>
-                        
                         {{#thumb?}}
-                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" /></a>
+                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="whole item thumbnail" /></a>
                         {{/thumb?}}
                         
-                        <div id="record-{{id}}-metadata" class="record-metadata">
-                            <ul class="record-metadata-list">
-                                {{#global_annotation}}
+                        
+                         {{#global_annotation}}
                                     {{#metadata}}
                                         {{#tags?}}
+                                            <ul class="record-metadata-list">
                                             <li class="annotation-global-tags">
-                                                <span class="metadata-label">Item Tags:</span>
+                                            <span class="metadata-label">Item Tags:</span>
                                                 <span class="metadata-value">
                                                     {{#tags}}
                                                         {{name}}
@@ -211,6 +213,7 @@
                                         {{/body?}}
                                     {{/metadata}}   
                                 {{/global_annotation}}
+                                </ul>
                                 {{^global_annotation}}
                                      {{^space_owner}} {{! All Class Items. Is this really necessary? }}
                                          {{#tags?}}    
@@ -223,13 +226,37 @@
                                          {{/tags?}}
                                     {{/space_owner}}
                                 {{/global_annotation}}
+                        
+                        
+                        
+</div>
+<br class="visualclear" />
+                        <div id="record-{{id}}-metadata" class="record-metadata">
+
+                               
                                 
                                 {{#annotations?}}
-                                    <li>
+                                    
                                         <ul class="asset-clips">
-                                            {{#annotations}}
+                                            {{#annotations}} 
                                                 {{^is_null}}
-                                                    <li id="annotation-{{id}}">
+                                                
+                                                 <span class="citationTemplate">
+                                                       <img class="materialCitation" alt="" 
+                                                                    src="/site_media/img/icons/insert_clip.png#annotation={{url}}&title={{metadata.title}}&type={{assets.primary_type}}&range1={{range1}}" 
+                                                                  width="24" height="15" border="0" 
+                                                                  onclick="addMaterialCitation(event)" 
+                                                                  title="{{metadata.title}}" 
+                                                                  name="{{url}}"'
+                                                                  /></span>
+                                                
+                                                <div class="annotation-container">
+                                                            
+                                                
+                                                <li id="annotation-{{id}}">
+                                          
+                                                    
+                                                    
                                                         {{#metadata.body?}}
                                                             <a class="metadata-selector metadata-selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
                                                         {{/metadata.body?}}
@@ -240,14 +267,7 @@
                                                         {{! TODO if annotation.body or annotation.tags. open an hs-control here }} 
                                                         
                                                         <div class="actions">
-                                                              <span class="citationTemplate">
-                                                                  <img class="materialCitation" alt="" 
-                                                                    src="/site_media/img/icons/insert_clip.png#annotation={{url}}&title={{metadata.title}}&type={{assets.primary_type}}&range1={{range1}}" 
-                                                                  width="24" height="15" border="0" 
-                                                                  onclick="addMaterialCitation(event)" 
-                                                                  title="{{metadata.title}}" 
-                                                                  name="{{url}}"'
-                                                                  /></span>
+                                                             
                                                         </div>{{!  class="actions"  }}
                                                         <a target="_blank"
                                                           class="materialCitationLink"
@@ -285,14 +305,21 @@
                                                         
                                                         <div id="annotation-thumb-{{id}}"></div>
                                                     </li>
+                                                    
+                                                    </div>
                                                 {{/is_null}}
                                             {{/annotations}}
                                         </ul>{{! class="asset-clips" }}
-                                    </li>
+                                    
                                 {{/annotations?}}
-                            </ul> {{! class="record-metadata-list" }}
+                             
                         </div> {{! end record metadata }}
-                        <div class="visualclear"></div>     
+
+
+
+<br class="visualclear" />
+
+    
                     </div> {{! end id="record-id" }}
                     </div> {{! end id=materials, class="column-contents scroll" }} 
                 {{/assets}}

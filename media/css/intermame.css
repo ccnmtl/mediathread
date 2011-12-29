@@ -43,7 +43,7 @@ input.videoplay{
 }
 
 .record-metadata {
-    padding: 0 .5em 4px 105px;
+    padding: 0 .5em 4px 0px;
 }
 
 .meta label,
@@ -184,6 +184,7 @@ div#instructor-column h4.inst-header.assignment{
 
 div#materials
 {
+    margin: 5px 5px 10px;
 
 }
 
@@ -358,6 +359,8 @@ input.media.newselection-button {
 ul.record-metadata-list {
 	list-style-type: none;
 	margin:0 0 0 10px;
+	border: 1px solid green;
+	float: left;
  }
  
 /*Composition Styles*/

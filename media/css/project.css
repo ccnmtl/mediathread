@@ -132,8 +132,8 @@ a.edit-pencil {
 
 img.materialCitation {
     cursor:pointer;
-    float:right;
-    margin-top:1px;
+    float:left;
+    margin:1px 0 0 5px;
 }
 
 input.materialCitation {
@@ -543,4 +543,15 @@ font-weight:normal;
 }
 .selector h2 {
 margin-bottom:0; /*override dojo style*/
+}
+
+.annotation-container {
+
+    padding-left: 35px;
+}
+
+.item-level-info {
+
+    display: block;
+    width: auto;
 }

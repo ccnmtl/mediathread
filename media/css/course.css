@@ -620,10 +620,10 @@ margin:-2px
 .archive {
 
    float:left;
-   margin: 0 1em 1em 1em;
+   margin: 10px 10px;
    background-color: #ededed;
    border: 1px solid #ccc;
-   width:300px;
+   width:274px;
    height: 150px;
    max-height: 150px;
    overflow-y: auto;
@@ -643,18 +643,6 @@ margin:-2px
    max-height: none;
    }
 
-
-#uploader, #wardenclyffe {
-    background-color: #eacc90;
-    width: 30%;
-
-
-}
-
-#external-archives {
-
-
-}
 
 .archive-gallery {
     list-style-type:none;
@@ -1059,7 +1047,7 @@ text-align:left;
 
 margin: 0 0 .5em 0;
 background-color: #6f6f6f;
-padding: .2em .5em .2em .5em;
+padding: 5px 12px;
 color: #dedede;
 font-weight: normal;
 text-align: left;
@@ -1129,32 +1117,18 @@ text-align: left;
     background-color:#ededed;
 }
 
-#importing-overview,
-#uploading-overview {
+#import_instructions,
+#external-archives {
     border: 1px solid #ccc;
     float: left;
     margin: 1em;
-
-}
-
-#importing-overview
- {
-    width: 69%;
-
-}
-
-#uploading-overview {
-    width: 25%;
-
-}
-
-#import_instructions {
-
-border:1px solid #CCCCCC;
-margin: 1em;
-text-align:left;
-width:auto;
-min-width: 335px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 980px;
 
 }
 
@@ -1166,7 +1140,7 @@ min-width: 335px;
 
 #import_instructions .import_class {
 
-	margin: 0 10px 0 30px;
+	margin: 0 10px 20px 30px;
 	background-color: #eee;
 	float: right;
 	padding-bottom: 1em;
@@ -1192,13 +1166,62 @@ margin: 1.5em 1em .5em 1em;
 
 }
 
-.browser-specific-instructions {
+
+
+#upload_container {
+    width: 920px;
+    margin: 20px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #A88448;
+    padding: 5px 0px;
+    color: #333;
+}
+
+#archive_container {
+    border: 1px solid #ccc;
+    width: 920px;
+    margin: 20px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+
+#uploader {
+
+   background-image: url("../img/buttons/collections_button_bg.jpg");
+   border: 1px solid #C89345;
+   float: right;
+   padding: 2px 5px;
+   width: 195px;
+   height: 14px;
+   font-size: .9em;
+   text-align: center;
+   margin: 10px 20px;
 
 }
 
-.browser-specific-instructions ol {
+#uploader a {
+
+    text-decoration: none;
+    color: #000;
+    white-space: nowrap;
 
 }
+
+#archive_container h2,
+#upload_container h2 {
+    background-color: #A88448;
+        -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
 
 .intro-text p {
     max-width:500px;
@@ -1377,4 +1400,6 @@ body.old-assetwindow #asset-details-annotations-list {
     background-color: #fcfb97;
     
 }
+
+
 

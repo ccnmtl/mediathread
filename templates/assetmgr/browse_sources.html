@@ -36,9 +36,14 @@
 
     <div id="import_instructions" class="top-archive">
      
-    <h2>Instructions</h2>
+    <h2>
+    <!--
+    <a class="metadata-selector metadata-selector-open" href="#instructions-body" onclick="jQuery(this).toggleClass('metadata-selector-closed metadata-selector-open'); jQuery('#instructions-body').toggle(); return false;"></a>-->
     
-              
+    Instructions</h2>
+    
+    <div id="instructions-body">
+    
             <div class="import_class bookmarklet_instructions">
             {% with "help_bookmarklet" as help_id %}
             {% with "off" as default_help_state %}
@@ -96,11 +101,8 @@
             <p>Once installed, clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</p>
             </li>
             </ol>         
+     </div>     
           
-          
-
-        <!-- see below for duplicate text if there are no archives-->
-
    </div>
     </div>
     

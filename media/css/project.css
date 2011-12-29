@@ -560,7 +560,7 @@ margin-bottom:0; /*override dojo style*/
     display: block;
     float: left;
     margin-left: 5px;
-    clear: right;
+    min-width: 230px;
 
 }
 

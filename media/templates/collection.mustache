@@ -194,8 +194,9 @@
                         
                          {{#global_annotation}}
                                     {{#metadata}}
+                                    <ul class="record-metadata-list">
                                         {{#tags?}}
-                                            <ul class="record-metadata-list">
+                                            
                                             <li class="annotation-global-tags">
                                             <span class="metadata-label">Item Tags:</span>
                                                 <span class="metadata-value">
@@ -208,12 +209,13 @@
                                     
                                         {{#body?}}
                                             <li class="annotation-global-body">
-                                                <span class="metadata-label">Note:</span> <span class="metadata-value">{{body}}</span> 
+                                                <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{body}}</span> 
                                             </li>
                                         {{/body?}}
+                                          </ul>
                                     {{/metadata}}   
                                 {{/global_annotation}}
-                                </ul>
+                              
                                 {{^global_annotation}}
                                      {{^space_owner}} {{! All Class Items. Is this really necessary? }}
                                          {{#tags?}}    
@@ -254,8 +256,9 @@
                                                             
                                                 
                                                 <li id="annotation-{{id}}">
-                                          
-                                                    
+                                             <div id="annotation-thumb-{{id}}"></div>
+
+                                                    <div class="metadata-container">
                                                     
                                                         {{#metadata.body?}}
                                                             <a class="metadata-selector metadata-selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
@@ -279,8 +282,8 @@
                                                                 <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
                                                             {{/timecode?}}
                                                         {{/metadata}}
-        
-                    
+                                                    </div>
+                                                                 <div class="visualclear"></div>
                                                         <div id="annotation-body-{{id}}" class="meta" style="display: none">
                                                             {{#metadata}}
                                                                 {{#modified?}}
@@ -303,7 +306,7 @@
                                                             {{/metadata}}
                                                         </div>
                                                         
-                                                        <div id="annotation-thumb-{{id}}"></div>
+                                                     
                                                     </li>
                                                     
                                                     </div>

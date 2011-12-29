@@ -228,7 +228,7 @@
                         }
                         djangosherd.thumbs.push(view);
                         var obj_div = document.createElement('div');
-                        obj_div.setAttribute('class','thumb');
+                        obj_div.setAttribute('class','annotation-thumb');
         
                         var target_div = document.getElementById("annotation-thumb-" + ann.id);
                         target_div.appendChild(obj_div);

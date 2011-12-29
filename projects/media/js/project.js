@@ -1,96 +1,171 @@
-var project_modified = false;
-function updateParticipantsChosen() {
-    var opts = document.forms['editproject'].participants.options;
-    var participant_list = ""; 
-    for (var i = 0; i < opts.length; i++) {
-        if (participant_list.length > 0)
-            participant_list += ", ";
-        participant_list +=  opts[i].innerHTML;
-    }
-    jQuery("#participants_chosen").html(participant_list);
-}
-
-function updateParticipantList() {
-    if (jQuery("#participant_list").is(":visible")) {
-        var opts = document.forms['editproject'].participants.options;
-        var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
+(function() {
+    window.ProjectView = new (function ProjectViewAbstract() {
+        var self = this;
+        var project_modified = false;
+        var options = null;
         
-        var matches = old_list.length == opts.length;
-        for (var i = 0; i < opts.length && matches; i++) {
-            matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
+        this.commonInitialize = function(options) {
+            self.options = options;
+            djangosherd.storage = new DjangoSherd_Storage();
+            djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
         }
         
-        if (!matches) {
-            updateParticipantsChosen();
-            jQuery("#participant_update").show();
-            project_modified = true;
+        this.commonPostInitialize = function() {
+            var citationOptions = {};
+            if (self.options.presentation)
+                citationOptions.presentation = self.options.presentation;
+            
+            DjangoSherd_decorate_citations(document, citationOptions);
+            
+            if (self.options.view_callback)
+                self.options.view_callback();
         }
-    }
-    jQuery("#participant_list").toggle();
-}
+        
+        this.initReadOnly = function(options) {
+            self.commonInitialize(options);
+            self.commonPostInitialize();
+        }
+        
+        this.initEditing = function(options) {
+            self.commonInitialize(options);
 
-function saveProject(evt) {
-    tinyMCE.triggerSave();
-    var frm = evt.target;
-    if (/preview/.test(frm.target)) {
-        return;
-    }
-    //else
-    evt.preventDefault();
-    
-    // select all participants so they will be picked up when the form is serialized
-    jQuery("select[name=participants] option").attr("selected","selected");  
-    var data = jQuery(frm).serializeArray();
-    
-    jQuery.ajax({
-        type: 'POST',
-        url: frm.action,
-        data: data,
-        dataType: 'json',
-        error: function(){alert('There was an error saving your project.');},
-        success: function(json,textStatus,xhr){
-            jQuery('#last-version-prefix').html('Saved: ')
-
-            jQuery('#last-version-link')
-            .html('Revision '+json.revision.id)
-            .attr('href',json.revision.url);
-
-            jQuery('#last-version-saved')
-            .show()
-            .colorBlend([{
-                param:'background-color',
-                strobe:false,
-                colorList:['#fff100','#ffffff'],
-                cycles:1
-            }]);
-
-            if (json.revision.public_url) {
-                jQuery('#last-version-public').html('(<a href="'
-                                                    +json.revision.public_url
-                                                    +'">public url</a>)');
-            } else {
-                jQuery('#last-version-public').html('');
+            // ???? used by whom?
+            if (options.open_from_hash) {
+                // project feedback & discussion
+                var annotation_to_open = String(document.location.hash).match(/annotation=annotation(\d+)/);
+                if (annotation_to_open != null) {
+                    openCitation('/annotations/'+annotation_to_open[1] + '/', { autoplay:false});
+                }
             }
             
-            updateParticipantsChosen();
-            jQuery("#participant_list").hide();
-            jQuery("#participant_update").hide();
-            project_modified = false;
+            self.collection_list = CollectionList.init({
+              'space_owner': options.space_owner,
+              'template': 'collection',
+              'template_label': 'collection_table',
+              'create_annotation_thumbs': true,
+              'view_callback': self.postInitializeEditing,
+              'project_id': options.project_id,
+              'enable_project_selection': options.enable_project_selection
+            });
         }
-    });
-}
+            
+        
+        this.postInitializeEditing = function() {
+            if (tinyMCE.activeEditor) {
+                var new_assets = jQuery('#asset_table').get(0);
+                
+                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                jQuery(new_assets.parentNode).addClass('annotation-embedding');
 
-function project_warnOnUnload() {
-    tinyMCE.onAddEditor.add(function(manager, ed) {
-        ed.onChange.add(function(editor) {
-            project_modified = true;
-        }) 
-    });
-    
-    jQuery(window).bind('beforeunload',function(evt) {
-        if (project_modified) {
-            return "Changes to your project have not been saved.";
+                jQuery('#project-content_tbl').css('width', "100%");
+            }
+            
+            jQuery(document.forms['editproject']).bind('submit', self.saveProject);
+            
+            // WARN ON UNLOAD
+            tinyMCE.onAddEditor.add(function(manager, ed) {
+                ed.onChange.add(function(editor) {
+                    self.project_modified = true;
+                }) 
+            });
+            
+            jQuery(window).bind('beforeunload',function(evt) {
+                if (self.project_modified) {
+                    return "Changes to your project have not been saved.";
+                }
+            });
+
+            //PROJECT PARTICIPANT UPDATES
+            jQuery('a.participants_toggle').click(self.updateParticipantList);
+
+            self.commonPostInitialize();
         }
-    })
-}
+        
+        self.updateParticipantsChosen = function() {
+            var opts = document.forms['editproject'].participants.options;
+            var participant_list = ""; 
+            for (var i = 0; i < opts.length; i++) {
+                if (participant_list.length > 0)
+                    participant_list += ", ";
+                participant_list +=  opts[i].innerHTML;
+            }
+            jQuery("#participants_chosen").html(participant_list);
+        }
+
+        self.updateParticipantList = function() {
+            if (jQuery("#participant_list").is(":visible")) {
+                var opts = document.forms['editproject'].participants.options;
+                var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
+                
+                var matches = old_list.length == opts.length;
+                for (var i = 0; i < opts.length && matches; i++) {
+                    matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
+                }
+                
+                if (!matches) {
+                    updateParticipantsChosen();
+                    jQuery("#participant_update").show();
+                    self.project_modified = true;
+                }
+            }
+            jQuery("#participant_list").toggle();
+        }
+
+        self.saveProject = function(evt) {
+            tinyMCE.triggerSave();
+            var frm = evt.target;
+            if (/preview/.test(frm.target)) {
+                return;
+            }
+            //else
+            evt.preventDefault();
+            
+            // select all participants so they will be picked up when the form is serialized
+            jQuery("select[name=participants] option").attr("selected","selected");  
+            var data = jQuery(frm).serializeArray();
+            
+            jQuery.ajax({
+                type: 'POST',
+                url: frm.action,
+                data: data,
+                dataType: 'json',
+                error: function(){alert('There was an error saving your project.');},
+                success: function(json,textStatus,xhr){
+                    jQuery('#last-version-prefix').html('Saved: ')
+
+                    jQuery('#last-version-link')
+                    .html('Revision '+json.revision.id)
+                    .attr('href',json.revision.url);
+
+                    jQuery('#last-version-saved')
+                    .show()
+                    .colorBlend([{
+                        param:'background-color',
+                        strobe:false,
+                        colorList:['#fff100','#ffffff'],
+                        cycles:1
+                    }]);
+
+                    if (json.revision.public_url) {
+                        jQuery('#last-version-public').html('(<a href="'
+                                                            +json.revision.public_url
+                                                            +'">public url</a>)');
+                    } else {
+                        jQuery('#last-version-public').html('');
+                    }
+                    
+                    self.updateParticipantsChosen();
+                    jQuery("#participant_list").hide();
+                    jQuery("#participant_update").hide();
+                    self.project_modified = false;
+                    
+                    if (self.collection_list)
+                        self.collection_list.updateProject(); 
+                }
+            });
+        }
+    })();
+
+})();
+
 

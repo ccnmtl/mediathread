@@ -68,7 +68,6 @@ div.collection-filter ul.switcher-options {
     width:350px; /*width -2px for border */ 
     right:0px;
     left:auto;
-      
 }
 div.collection-chooser ul.switcher-options {  
     width:233px; /*width -2px for border plus whatever the switcher-prefix adds */
@@ -103,6 +102,9 @@ div.collection-chooser ul.switcher-options {
 
     -moz-border-radius-topleft: 10px; 
     border-top-left-radius: 10px 10px; 
+    
+    list-style: none;
+    
 }
 .switcher ul.switcher-options ul {
     margin:0;
@@ -122,6 +124,7 @@ div.collection-chooser ul.switcher-options {
     max-height:350px;
     overflow-y:auto;
 
+
 }
 .switcher ul.switcher-options .switcher-sub li {
     line-height:20px
@@ -132,8 +135,9 @@ div.collection-chooser ul.switcher-options {
     -moz-border-radius: 5px; 
     border-radius: 5px; 
     padding:5px 5px;
-    
+    list-style: none;
 }
+
 .switcher ul.switcher-options ul.scroll {
     max-height:300px;
     overflow-y:auto;

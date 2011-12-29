@@ -294,10 +294,8 @@ def get_records(user, course, request):
         tags = calculate_cloud(all_tags)
         
         projects = [p for p in Project.objects.filter(course=c,
-                                                  submitted=True).order_by('title')
-                if p.visible(request)]
-        
-        
+                                                      submitted=True).order_by('title')
+                                                      if p.visible(request)]
     else:
         assets = annotated_by(Asset.objects.filter(course=c),
                           user,

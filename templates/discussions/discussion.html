@@ -21,6 +21,7 @@ Discussion of {{root_comment.content_object.title}}
   <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/discussion.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
@@ -30,23 +31,20 @@ Discussion of {{root_comment.content_object.title}}
             var visible = getVisibleContentHeight();
             jQuery('#discussion-space-materials').css('height', visible + "px");
             jQuery('div.scroll').css('height', (visible - 85) + "px");
-            jQuery('#threadedcomments').css('height', (visible - 40) + "px");
+            jQuery('#threadedcomments').css('height', (visible - 20) + "px");
         }
 
-        jQuery(document).ready(function() {     
-            DjangoSherd_Project_Config({ open_from_hash:true });
-    
-            CollectionList.init({
+        jQuery(document).ready(function() { 
+            ProjectView.initEditing({
+                'open_from_hash':true, 
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
-                'template': 'collection',
-                'template_label': 'collection_table',
                 'view_callback': resizeDiscussionPage,
-                'create_annotation_thumbs': true
-             });
+                'enable_project_selection': false
+            }); 
             
-             jQuery(window).resize(function () {  
+            jQuery(window).resize(function () {  
                  resizeDiscussionPage();
-             });
+            });
         });   
     </script>
 {% endblock %}
@@ -92,14 +90,7 @@ Discussion of {{root_comment.content_object.title}}
           </h2>
         {% endifequal %}
     
-    <div> <!--  container for project on left, discussion in middle, collection on right -->
-        {% ifequal target.content_type.model "project" %}
-            <div id="essay-space-container" class="essay-space-container"> 
-                <div class="essay-space">  
-                   {{target.content_object.body|safe}}
-                </div>
-            </div>
-        {% endifequal %}
+    <div>
         <div id="threadedcomments">
             {%get_comment_list for root_comment.content_object as comment_list%}
             {% for current_comment in comment_list|fill_tree|annotate_tree %}

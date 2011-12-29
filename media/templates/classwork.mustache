@@ -3,15 +3,14 @@
 <h2>Class Work</h2>
         
     <div id="filter-widget" class="filter-widget">
-        <div class="switcher collection-chooser" tabindex="1">
+        {{#>>switcher_collection_chooser}}
+        <div id="switcher_collection_chooser" class="switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
-                <a class="switcher-top closed" onclick="switcher(this);">
-                    <span class="down-arrow" tabindex="3"></span>
-                    <span class="title" id="switcher-title">
-                        {{{selected_label}}}
-                    </span>
-                </a>
-            </span>
+            <a class="switcher-top closed" onclick="switcher(this);">
+                <span class="down-arrow" tabindex="3"></span>
+                <span class="title" id="switcher-title">{{{selected_label}}}</span>
+            </a>
+            
             <ul class="switcher-options" style="left: -51px">
                 {{^showing_my_items}}
                 <li>
@@ -35,7 +34,8 @@
                     </ul>
                 </li>
             </ul>
-        </div> {{!  end Class Member switcher  }}
+        </div>
+        {{/>>switcher_collection_chooser}}
         
         <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
             <a class="switcher-top closed" onclick="switcher(this);">
@@ -134,10 +134,6 @@
                             {{/compositions}}
                             
                             {{#compositions?}}
-                            
-                                {{#showing_all_items?}}
-                                {{/showing_all_items?}}
-                        
                                 <ul id="projects">
                                     {{#assignments}}
                                         <li class="projectlist assignment-listitem" id="assignment-{{id}}">

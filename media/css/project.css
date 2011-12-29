@@ -31,9 +31,10 @@ a.edit-pencil {
 .asset-view-published {
     background: url('../img/media-Bkgd.gif') no-repeat center center;
     padding-top: 3px;
+    margin-left: 5px;
     background-color: #ededed;
     float: left;
-    width: 58%;
+    width: 57%;
     height: 450px;
 }
 
@@ -102,7 +103,6 @@ a.edit-pencil {
   border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
   background-color:white;
-  max-width:550px;
 }
 
 .essay-space h2 input {
@@ -236,12 +236,13 @@ span.project-dropdown {
     overflow-y:auto;
     padding: 0px 5px 0 0px;
     float: left;
-    width: 40%;
+    width: 50%;
+    border:1px solid #CCCCCC;
 }
 
 #discussion-space-materials {
     float: left;
-    width: 40%;
+    width: 30%;
     margin-left: 20px;
 }
 
@@ -399,6 +400,13 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 .threaded_comment_header {
     background-color:#CCCCCC;
+    padding: 1px 2px 1px 5px;
+    width: 100%;
+}
+
+.threaded_comment_text {
+    padding: 1px 2px 1px 5px;
+    width: 100%;
 }
 
 .comment-actions {

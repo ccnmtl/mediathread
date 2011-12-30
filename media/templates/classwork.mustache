@@ -263,14 +263,22 @@
                                                 href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
                                         </h4>
                                         
+                                         <div class="item-level-info">
+                                        
                                         {{#thumb?}}
-                                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" /></a>
+                                        <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Whole Item" /></a>
                                         {{/thumb?}}
                                         
+                                        {{^thumb}}
+                                        Whole Item
+                                        {{/thumb}}
+                                       
+                                      
                                         <div id="record-{{id}}-metadata" class="record-metadata">
-                                            <ul class="record-metadata-list">
+                                            
                                                 {{#global_annotation}}
                                                     {{#metadata}}
+                                                    <ul class="record-metadata-list">
                                                         {{#tags?}}
                                                             <li class="annotation-global-tags">
                                                                 <span class="metadata-label">Item Tags:</span>
@@ -287,6 +295,7 @@
                                                                 <span class="metadata-label">Note:</span> <span class="metadata-value">{{body}}</span> 
                                                             </li>
                                                         {{/body?}}
+                                                        </ul>
                                                     {{/metadata}}   
                                                 {{/global_annotation}}
                                                 {{^global_annotation}}
@@ -301,8 +310,10 @@
                                                          {{/tags?}}
                                                     {{/space_owner}}
                                                 {{/global_annotation}}
-                                                
-                                                {{#annotations?}}
+                                              </div>
+                                              <br class="visualclear" />
+                                              
+                                              {{#annotations?}}
                                                     <li>
                                                         <ul class="asset-clips">
                                                             {{#annotations}}

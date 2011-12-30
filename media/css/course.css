@@ -632,17 +632,77 @@ margin:-2px
    padding: 10px 5px 5px;
    }
 
-#dashboard-module-body .archive {
+#dashboard-module-body .archive-container,
+#dashboard-module-body .upload-container {
 
    float:left;
-   margin: 0 1em 1em 1em;
-   background-color: #ededed;
    border: 1px solid #ccc;
+   margin: 0 1em 1em 1em;
    width: 95%;
-   padding: 10px 5px 5px;
+   padding: 0px 5px 5px;
    height: auto;
    max-height: none;
+   -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
    }
+   
+   #dashboard-module-body .upload-container {
+
+    background-color: #ece8df;
+   }
+   
+   #dashboard-module-body .archive-container ul {
+
+  margin: 0;
+   }
+   
+   
+   #dashboard-module-body .archive {
+
+   border: 1px solid #ccc;
+   margin: 10px 10px;
+   width: 95%;
+   height: auto;
+   max-height: none;
+   background-color: #dedede; 
+   padding: 10px 5px 5px;
+   
+   }
+   
+      #dashboard-module-body .archive h3 {
+
+   font-size: 100%;
+   
+   }
+   
+   
+
+#dashboard-module-body .archive-container h2,
+#dashboard-module-body .upload-container h2 {
+
+    
+    margin: 0 -5px 8px;
+       -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+background-color: #A88448;
+padding: 5px 12px;
+color: #fff;
+font-weight: normal;
+text-align: left;
+
+}
+
+
+   
+   
 
 
 .archive-gallery {
@@ -1060,7 +1120,7 @@ text-align:left;
 margin: 0 0 .5em 0;
 background-color: #6f6f6f;
 padding: 5px 12px;
-color: #dedede;
+color: #fff;
 font-weight: normal;
 text-align: left;
 }
@@ -1130,7 +1190,8 @@ text-align: left;
 }
 
 
-#external-archives {
+#external-archives
+ {
     border: 1px solid #ccc;
     margin: 1em;
     -webkit-border-top-left-radius: 10px;
@@ -1217,6 +1278,10 @@ text-align: left;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+}
+
+#upload_container {
+background-color: #ece8df;
 }
 
 

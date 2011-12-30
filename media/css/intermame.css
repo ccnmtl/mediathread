@@ -728,11 +728,16 @@ table#home-columns td#classwork .helpblock ul li
 /*Assignment Specific styles */
 
 .assignment-project {
-    background-color: green;
+    background-color: #dae7e0;
+    padding: 5px;
+    width: 98%;
 }
 
 .assignment-project h1{
  background-image: url("../img/icons/item_assignment.gif");
+ background-repeat: no-repeat;
+ padding: 2px 0  0 20px;
+ height: 20px;
 
 }
 

@@ -374,8 +374,9 @@ padding-right: 4px;
 }
 
 .asset_title.type-assignment {
-    /*place-holder for liz to make an icon*/
+    
     background-image: url(../img/icons/item_assignment.gif);
+    background-color: #dae7e0;
 }
 
 .asset_title.type-project
@@ -913,6 +914,11 @@ padding-bottom: .5em;
 
 }
 
+.assignment-listitem  {
+background-color: #dae7e0; 
+
+}
+
 #project_col table tr.assignment-listitem {
     background-color:#EDEDED;
 }
@@ -1221,7 +1227,23 @@ text-align: left;
 
 }
 
-#uploader a {
+
+.create-selection {
+
+   background-image: url("../img/buttons/collections_button_bg.jpg");
+   border: 1px solid #C89345;
+   float: right;
+   padding: 0px 5px 3px;
+   width: 90px;
+   height: 14px;
+   font-size: .9em;
+   text-align: center;
+   margin: 0px 10px;
+
+}
+
+#uploader a,
+.create-selection a {
 
     text-decoration: none;
     color: #000;

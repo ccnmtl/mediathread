@@ -186,6 +186,9 @@ div#materials
 {
     margin: 5px 5px 10px;
     overflow-x: hidden;
+    box-shadow: none;
+    border: none;
+    background-color: #ECE8DF;
 
 }
 

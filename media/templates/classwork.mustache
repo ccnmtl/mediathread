@@ -266,16 +266,15 @@
                                          <div class="item-level-info">
                                         
                                         {{#thumb?}}
-                                        <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Whole Item" /></a>
+                                        <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
                                         {{/thumb?}}
                                         
                                         {{^thumb}}
-                                        Whole Item
+                                        <a href="{{local_url}}"><img class="asset-thumb" src="site_media/img/unavailable.png" alt="Item Thumbnail" /></a>
                                         {{/thumb}}
                                        
                                       
-                                        <div id="record-{{id}}-metadata" class="record-metadata">
-                                            
+                                      
                                                 {{#global_annotation}}
                                                     {{#metadata}}
                                                     <ul class="record-metadata-list">
@@ -312,13 +311,17 @@
                                                 {{/global_annotation}}
                                               </div>
                                               <br class="visualclear" />
-                                              
+                                              <div id="record-{{id}}-metadata" class="record-metadata">
+                                            
                                               {{#annotations?}}
-                                                    <li>
+                                                    
                                                         <ul class="asset-clips">
                                                             {{#annotations}}
                                                                 {{^is_null}}
-                                                                    <li id="annotation-{{id}}">
+                                                                   
+                                                                   <div class="annotation-container">
+                                                                   
+                                                                   <li id="annotation-{{id}}">
                                                                         {{#metadata.body?}}
                                                                             <a class="metadata-selector metadata-selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
                                                                         {{/metadata.body?}}

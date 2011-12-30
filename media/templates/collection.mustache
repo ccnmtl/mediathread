@@ -186,15 +186,13 @@
                                     title="{{title}}" 
                                     name="{{local_url}}"'
                                 />
-                            </span>
-                        {{#thumb?}}
-                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Whole Item" /></a>
-                        {{/thumb?}}
-                        
-                        {{^thumb}}
-                            Whole Item
-                        {{/thumb}}
-                        
+                                    {{#thumb?}}
+                                    <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
+                                    {{/thumb?}}
+                                    
+                                    {{^thumb}}
+                                    <a href="{{local_url}}"><img class="asset-thumb" src="site_media/img/unavailable.png" alt="Item Thumbnail" /></a>
+                                    {{/thumb}}
                         
                          {{#global_annotation}}
                                     {{#metadata}}

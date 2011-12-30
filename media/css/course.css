@@ -520,7 +520,7 @@ div.project-table
 .hs-init-hide {display:none;}
 
 .asset-table .asset-clips .citationTemplate {
-  float:right;
+  float:left;
 }
 
   #filter_col h3 {

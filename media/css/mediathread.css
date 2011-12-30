@@ -374,13 +374,19 @@ img, img a
 	font-size: 0.9em;
 }
 
-#standardnav a, #footernav a
+#standardnav a
 {
 	text-decoration: none;
 	color: #dedede;
 }
 
-#standardnav a:hover, #footernav a:hover
+#footernav a
+{
+	text-decoration: none;
+	color: #333;
+}
+
+#standardnav a:hover
 {
 	color: #e5da14;
 	text-decoration: none;
@@ -773,14 +779,14 @@ img, img a
 #footer
 {
 	display: block;
-	width: 1085px;
+	width: 100%;
 		height: 33px;
 	min-width: 1085px;
 	clear: both;
 	margin: 0;
 	padding: 6px 0 0 0;
 	border: 0;
-	background-color: #444;
+	background-color: #cdcdcd;
 }
 
 /* ########## MT-preserved style definitions ########## */
@@ -937,12 +943,7 @@ body.fluid #pagebody
 	width: 100%;
 }
 
-/* ---- Footer block elements ---------- */
-body.fluid #footer
-{
-	width: 100%;
-	background-color: #444;
-}
+
 
 /* ---- Content block elements ---------- */
 body.fluid #content

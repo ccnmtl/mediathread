@@ -53,7 +53,7 @@
     <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
     {% with project.assignment as assignment %}
     {% if assignment %}
-            <h6 style="margin: .2em 0 1em">Response to
+            <h6 class="assignment-project">Response for
               <a href="{{assignment.get_absolute_url}}">
             {{assignment.title}}
               </a>

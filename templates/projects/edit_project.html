@@ -78,14 +78,14 @@
                 
                 {% with project.assignment as assignment %}
                 {% if assignment %}
-                    <div>
-                        <h6>Response to
+                    
+                        <h6 class="assignment-project">Response for
                             <a target="_blank" 
                                href="{{assignment.get_absolute_url}}">
                               {{assignment.title}}
                             </a>
                         </h6>
-                    </div>
+
                 {% endif %}
                 {% endwith %}
                 

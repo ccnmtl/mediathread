@@ -919,6 +919,13 @@ background-color: #dae7e0;
 
 }
 
+.assignment-listitem.response  {
+background-color: #cde0d6; 
+padding: 1px 4px;
+margin: 4px -4px 0px;
+
+}
+
 #project_col table tr.assignment-listitem {
     background-color:#EDEDED;
 }

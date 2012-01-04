@@ -1,12 +1,12 @@
 {% if default_help_state %}
     <div id="{{help_id}}" class="helpblock on">
 {% else %}
-        <div id="{{help_id}}" class="helpblock off">
+    <div id="{{help_id}}" class="helpblock off">
 {% endif %}
 
     <div class="help_content">
 
-   <!-- SWITCH COURSE PAGE (STAFF ONLY) -->
+<!-- SWITCH COURSE PAGE (STAFF ONLY) -->
         {% ifequal help_id "help_choose_course" %}
             {% if user.is_staff %}
             <h3>Mediathread Demo (Staff only)</h3>
@@ -27,11 +27,11 @@
               anonymizeStatus();
             </script>
 
-{% endif %}
+      {% endif %}
       {% endifequal %}
 
 
-      <!--  SITE HOME PAGE, LEFT COLUMN (INSTRUCTOR ONLY) -->
+<!--  SITE HOME PAGE, LEFT COLUMN (INSTRUCTOR ONLY) -->
         {% ifequal help_id "help_homepage_instructor_column" %}
               <h3>Instructors can post here:</h3>
                     <ul>
@@ -42,24 +42,54 @@
                     <p>Get Started: <a href="/reports/class_assignments/">Instructor Dashboard</a></p>
       {% endifequal %}
       
+
+<!--  SITE HOME PAGE, CLASS WORK -->
+        {% ifequal help_id "help_homepage_classwork_filters" %}
+              Here you can access your saved compositions and your collection of items saved in Mediathread. To filter items by date saved or by tag, use the "Collection Filters" directly below this black bar. You can also access compositions and collections saved by others by designating another student or whole class in the "Owner" dropdown menu.
+      {% endifequal %}
       
-      <!--  INSTRUCTOR DASHBOARD NAV, ACTIONS -->
+      
+<!--  INSTRUCTOR DASHBOARD NAV, ACTIONS -->
               {% ifequal help_id "help_dashboard_nav_actions" %}
                     
-                    These buttons help you designate media sources for your MediaThread course as well as publish assignments, discussion topics, or model compositions to the home page.
+                    These buttons help you designate media sources for your Mediathread course as well as publish assignments, discussion topics, or model compositions to the home page.
                     
                    
       {% endifequal %}
       
-            <!--  INSTRUCTOR DASHBIARD NAV, REPORTS -->
+<!--  INSTRUCTOR DASHBOARD NAV, REPORTS -->
               {% ifequal help_id "help_dashboard_nav_reports" %}
                     
                     These reports list responses to your published assignments (if any), and provide views of student posting activity.
                    
         {% endifequal %}
+        
+        
+<!--  INSTRUCTOR DASHBOARD/MANAGE SOURCES/UPLOAD -->
+        {% ifequal help_id "help_video_upload" %}
+                    
+                    In addition to support for importing items from outside supported collections (see Add/Remove Supported Collections below), Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off. You may enable it for just yourself, or enable it for all members of your class. 
+                   
+        {% endifequal %}
+ 
+ 
+<!--  INSTRUCTOR DASHBOARD/MANAGE SOURCES/SUPPORTED ARCHIVES -->
+        {% ifequal help_id "help_supported_collections" %}
+                    
+                    Below is a list of digital sources whose items may be analyzed and saved in Mediathread (using the Mediathread bookmarklet). To select a source for your Mediathread class, click the "Add to Class" button. To add a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source". 
+                   
+        {% endifequal %}
+        
+        
+<!--  INSTRUCTOR DASHBOARD/MANAGE SOURCES/CUSTOM ARCHIVE -->
+        {% ifequal help_id "help_add_custom_collection" %}
+                    
+                    Feel free to experiment with the Mediathread bookmarklet to see if it imports items from an 'unsupported' website; if it does, you may add this source to your class here. To request bookmarklet compatibility with an unsupported source, please email <a href="mailto:ccnmtl-mediathread@columbia.edu">ccnmtl-mediathread@columbia.edu</a>. To upload individual items to Mediathread, use the Mediathread Uploader at the top of this page.
+                   
+        {% endifequal %}
+ 
       
-      
-                  <!--  SOURCE MEDIA PAGE, BOOKMARKLET BOX -->
+<!--  SOURCE MEDIA PAGE, BOOKMARKLET BOX -->
       
         {% ifequal help_id "help_browse_sources" %}
             <div id="import_instructions">
@@ -93,7 +123,7 @@
                               <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
                               <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
                               {% if EXPERIMENTAL %}
-                              <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome MediaThread Extension</a></li>
+                              <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
                               {% endif %}
                             </ol>
                             </div>

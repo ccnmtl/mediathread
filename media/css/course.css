@@ -669,7 +669,7 @@ margin:-2px
    height: auto;
    max-height: none;
    background-color: #dedede; 
-   padding: 10px 5px 5px;
+   padding: 10px 10px 5px;
    
    }
    
@@ -739,7 +739,7 @@ text-align: left;
 .archive a.archive-link {
     font-weight:bold;
     text-decoration:none;
-    margin: 15px 5px;
+    margin: 15px 0px;
 }
 .archive img.archive-link {
     float: right;

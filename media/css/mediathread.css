@@ -457,11 +457,13 @@ img, img a
 	
 }
 #primarynav ul.non-member:after {
-    content:"\0000a0\0000a0\0000a0\0000a0\0000a0You are not a class member.";
-    margin-left: 15px;
-    margin-top: 15px;
-    background-image:url('../img/icons/meth_info_icon.png');
-    background-repeat: no-repeat;
+    content:"You are not a class member!";
+    margin-left: 25px;
+    /*background-image:url('../img/icons/meth_info_icon.png');*/
+    /*background-repeat: no-repeat;*/
+    background-color: #8C3B2E;
+    color: #fff;
+    padding: 3px 8px;
 }
 #primarynav li a:hover
 {

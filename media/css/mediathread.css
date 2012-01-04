@@ -43,19 +43,13 @@ body
 
 /* ---- Primary navigation block elements ---------- */
 
-body #primarynav,
-body #primarynav div.encase
+#primarynav
 {
+
 	width: auto;
 	left: 5px;
 	right: 5px;
 	min-width: 1085px;
-}
-
-
-#primarynav
-{
-	width: 100%;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -68,7 +62,11 @@ body #primarynav div.encase
 
 #primarynav div.encase
 {
-  margin-top:-10px;
+	width: auto;
+	left: 5px;
+	right: 5px;
+	min-width: 1085px;
+	margin-top:-10px;
 	height: 37px;
 
 }
@@ -86,13 +84,29 @@ body #primarynav div.encase
 #primarynav #leftside ul
 {
   float: left;
- /* margin-left:20px;*/
+
 }
 
 #primarynav #rightside ul
 {
 	float: right;
 }
+
+#primarynav a
+{
+	text-decoration: none;
+	/*text-align: center;*/
+	display: block;
+	padding-right: 6px;
+    padding-left:6px;
+ 
+}
+
+#primarynav a:hover
+{
+	text-decoration: none;
+}
+
 
 #primarynav li
 {
@@ -110,6 +124,14 @@ body #primarynav div.encase
 	color: #666;
 }
 
+#primarynav li a:hover
+{
+	background-color: #fff;
+	color: #660000;
+	border: 1px solid #9d9d9d; 
+	margin: -1px;
+}
+
 #primarynav li.active
 {
     background-color: #fff;
@@ -125,18 +147,6 @@ body #primarynav div.encase
     color: #fff;
     padding: 3px 8px;
 }
-#primarynav li a:hover
-{
-	background-color: #fff;
-	color: #660000;
-    	border: 1px solid #9d9d9d; 
-	margin: -1px;
-}
-
-#primarynav li.activity
-{
-	
-}
 
 #primarynav li.home a
 {
@@ -145,22 +155,6 @@ body #primarynav div.encase
 	background-repeat: no-repeat;
 }
 
-
-#primarynav a
-{
-	text-decoration: none;
-	/*text-align: center;*/
-	display: block;
-	padding-right: 6px;
-    color:white;
-  padding-left:6px;
- 
-}
-
-#primarynav a:hover
-{
-	text-decoration: none;
-}
 
 #primarynav #usernav li
 {
@@ -184,14 +178,10 @@ body #primarynav div.encase
 #primarynav li.active a 
 {
 
-  color:black;
+    color:black;
 	text-decoration: none;
 	text-align: center;
 }
-#primarynav li.active a:hover
-{ 
-
- }
 
 
 #usernav
@@ -213,6 +203,7 @@ body #primarynav div.encase
 }
 
  /* ---- Pagebody block elements ---------- */
+ 
 #pagebody
 {
 	display: block;
@@ -227,10 +218,34 @@ body #primarynav div.encase
 
 
 /* ---- Content block elements ---------- */
-body #content
+
+#content
 {
-	margin: 0 -205px;
-	width: 100%;
+	float: none;
+	margin: 0;
+	padding: 1em 0 0;
+	border: 0;
+}
+
+
+
+.one_column #squish
+{
+	margin: 0 0 .25em 10px;
+
+}
+
+#squish
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+
+.pageheader
+{
+	margin-top: 0;
 }
 
 
@@ -756,52 +771,7 @@ img, img a
 	display: none;
 }
 
-/* ---- Content block elements ---------- */
-#content
-{
-	display: block;
-	float: left;
-	margin: 0;
-	padding: 1em 0 0;
-	border: 0;
-	width: 498px;
-}
 
-#squish
-{
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
-.three_columns #content
-{
-	display: block;
-}
-
-.two_columns_left #content,
-.two_columns_right #content
-{
-	display: block;
-	width: 699px;
-}
-
-.two_columns_right #squish
-{
-	margin: 0 0 0 10px;
-}
-
-.one_column #content
-{
-	display: block;
-	float: none;
-	width: 900px;
-}
-
-.pageheader
-{
-	margin-top: 0;
-}
 
 /* ---- Footer block elements ---------- */
 #footer
@@ -938,56 +908,7 @@ ul.tabbernav li.tabberactive a:hover
 
 
 
-/* ########## Blocks style definitions ########## */
 
-
-
-.three_columns #squish
-{
-	margin: 0 210px;
-}
-
-.two_columns_left #content,
-.two_columns_right #content
-{
-	display: block;
-	width: 100%;
-}
-
-.two_columns_left #content
-{
-	margin-right: 0;
-}
-
-.two_columns_left #squish
-{
-	margin: 0 0 0 210px;
-}
-
-.two_columns_right #content
-{
-	margin-left: 0;
-}
-
-.two_columns_right #squish
-{
-	margin: 0 210px 0 10px;
-}
-
-.one_column #content
-{
-	display: block;
-	float: none;
-	width: 100%;
-	margin: 0;
-}
-
-.one_column #squish
-{
-	margin: 0 0 .25em 10px;
-	padding: 0;
-	border: 0;
-}
 
 #course_title
 {

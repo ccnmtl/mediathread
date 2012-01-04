@@ -108,6 +108,22 @@ ol, ul
 	font-size: 100%;
 }
 
+a
+{
+	color: #8c3b2e;
+}
+
+a:hover
+{
+	color: #666;
+}
+
+a:visited
+{
+	color: #660000;
+}
+
+
 /* ---- block elements ---------- */
 
 #container
@@ -351,90 +367,6 @@ ul.intro-text li {
     margin-top:0px;
 }
 
-body a.control-close,
-body a.hs-control.control-close 
-
-{
-
-    display:block;
-  float:right;
-	background-image:url('../img/icons/meth_close_icon.png');
-	background-repeat: no-repeat;
-  margin: -9px;
-  width:20px;
-  height:20px;
-  color:transparent;
-  /*for IE 6-8 not supporting transparent text:*/
-    overflow:hidden;
-    line-height:48px;
-}
-
-body a.control-close:hover {
-    background-image:url('../img/icons/meth_close_icon_hover.png');
-}
- 
-body a.intro-open,
-body a.hs-control.intro-open {
-    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
-    float:right;
-  background-image:url('../img/icons/meth_info_icon.png');
-  
-  margin: -2px -6px;
-    *margin:-21px 3px 3px 3px;
-    *padding: 0px 1px 1px 0;
-  width:18px;
-  height:18px;
-  color:transparent;
-  /*for IE 6-8 not supporting transparent text:*/
-    overflow:hidden;
-    line-height:48px;
-  background-repeat: no-repeat;
-}
-
-body a.intro-open-nofloat,
-body a.hs-control.intro-open-nofloat {
-    /*stolen from sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css:a.mce_editorwindow_closebtn*/
-  background-image:url('../img/icons/meth_info_icon.png');
-  background-repeat: no-repeat;
-  margin-left:0px;
-    margin-right:5px;
-    *margin-left:0px;
-  width:20px;
-  height:20px;
-  color:transparent;
-  /*for IE 6-8 not supporting transparent text:*/
-    overflow:hidden;
-    line-height:48px;
-}
-
-body a.intro-open:hover,
-body a.hs-control.intro-open:hover,
-body a.intro-open-nofloat:hover,
-body a.hs-control.intro-open-nofloat:hover {
-    background-image:url('../img/icons/meth_info_icon_hover.png');
-}
-
-
-/*
-li
-{
-}
-*/
-
-a
-{
-	color: #8c3b2e;
-}
-
-a:hover
-{
-	color: #666;
-}
-
-a:visited
-{
-	color: #660000;
-}
 
 img, img a
 {

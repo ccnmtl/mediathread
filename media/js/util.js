@@ -32,11 +32,6 @@ function switcher(a) {
 }
 
 function toggleHelp(a, user, parent, help_content_id) {
-    console.log(a);
-    console.log(user);
-    console.log(parent);
-    console.log(help_content_id);
-    
     jQuery(parent).toggleClass('on off');
     jQuery("#" + help_content_id).toggleClass('on off');
     

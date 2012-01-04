@@ -1,3 +1,5 @@
+/* ########## Standard elements ########## */
+
 body
 {
 	margin: 0;
@@ -7,6 +9,103 @@ body
 	font: normal 0.8em/120% 'lucida grande', arial, verdana, sans-serif;
 	color: #000;
 	/*min-width: 990px;*/
+}
+
+
+h1, h2, h3, h4, h5, h6
+{
+	margin: 0 0 0.7em 0;
+	padding: 0;
+	border: 0;
+	font-weight: bold;
+}
+
+h1
+{
+	font-size: 120%;
+	font-weight: normal;
+	
+}
+
+h2
+{
+	font-size: 115%;
+}
+
+h3
+{
+	margin: 1.4em 0 0.7em 0;
+	font-size: 110%;
+}
+
+h4
+{
+	margin: 1.2em 0 0.7em 0;
+	font-size: 105%;
+
+}
+
+h5
+{
+	margin: 1em 0 0.7em 0;
+	font-size: 100%;
+}
+
+h6
+{
+	font-size: 100%;
+		font-style: italic;
+}
+
+p
+{
+	display: block;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+}
+
+blockquote
+{
+	display: block;
+	margin: 0 4em 0.7em 4em;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+}
+
+table
+{
+	margin: 0 0 0.7em 0;
+	padding: 0;
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	font-size: 100%;
+}
+
+th
+{
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+		padding: .1em .5em .1em .5em;
+		text-align: left;
+}
+
+td
+{
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	padding: .1em .5em .1em .5em;
+	text-align: left;
+}
+
+ol, ul
+{
+	display: block;
+	margin: 0 4em 0.7em 4em;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
 }
 
 /* ---- block elements ---------- */
@@ -227,17 +326,9 @@ body
 	border: 0;
 }
 
-
-
-.one_column #squish
-{
-	margin: 0 0 .25em 10px;
-
-}
-
 #squish
 {
-	margin: 0;
+	margin: 0 0 .25em 10px;
 	padding: 0;
 	border: 0;
 }
@@ -249,103 +340,7 @@ body
 }
 
 
-/* ########## Standard elements ########## */
 
-h1, h2, h3, h4, h5, h6
-{
-	margin: 0 0 0.7em 0;
-	padding: 0;
-	border: 0;
-	font-weight: bold;
-}
-
-h1
-{
-	font-size: 120%;
-	font-weight: normal;
-	
-}
-
-h2
-{
-	font-size: 115%;
-}
-
-h3
-{
-	margin: 1.4em 0 0.7em 0;
-	font-size: 110%;
-}
-
-h4
-{
-	margin: 1.2em 0 0.7em 0;
-	font-size: 105%;
-
-}
-
-h5
-{
-	margin: 1em 0 0.7em 0;
-	font-size: 100%;
-}
-
-h6
-{
-	font-size: 100%;
-		font-style: italic;
-}
-
-p
-{
-	display: block;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-}
-
-blockquote
-{
-	display: block;
-	margin: 0 4em 0.7em 4em;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-}
-
-table
-{
-	margin: 0 0 0.7em 0;
-	padding: 0;
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-	font-size: 100%;
-}
-
-th
-{
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-		padding: .1em .5em .1em .5em;
-		text-align: left;
-}
-
-td
-{
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-	padding: .1em .5em .1em .5em;
-	text-align: left;
-}
-
-ol, ul
-{
-	display: block;
-	margin: 0 4em 0.7em 4em;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-}
 
 ul.intro-text li {
     font-size:100%;

@@ -362,8 +362,10 @@ input.media.newselection-button {
 
 ul.record-metadata-list {
 	list-style-type: none;
-	margin:0 0 0 10px;
-	float: left;
+	margin:0 0 0 140px;
+	max-width: 465px;
+	padding: 0 5px;
+	
  }
  
 /*Composition Styles*/
@@ -390,7 +392,7 @@ ul#projects .createnew-button {
 }
 
 
-/*Annotation Styles*/
+/*Selection Styles*/
 
 #annotation-body,
 div#annotation-body,
@@ -453,11 +455,12 @@ html.busy, html.busy * {
     border: 1px solid #477794;
     text-transform: capitalize;
     display: block;
-    padding: 0 2px;
+    padding: 0px 5px 1px 5px;
     text-decoration: none;
     color: #000;
         background-image: url("../img/buttons/compositions_button_bg.jpg");
         font-size: 85%;
+        height: 17px;
 
 }
 
@@ -469,7 +472,7 @@ html.busy, html.busy * {
     border: 1px solid #477794;
     text-transform: capitalize;
     display: block;
-    padding: 0 5px;
+    padding: 0px 5px;
     text-decoration: none;
     color: #000;
         background-image: url("../img/buttons/compositions_button_bg.jpg");

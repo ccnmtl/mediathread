@@ -19,6 +19,13 @@
 {% block content %}
 {{ block.super }}
 
+{% if is_faculty %}
+
+<h3>Instructor:</h3>
+<p>This page lists sources of videos and/or images that you designate for class analysis. <br />You can add sources to this page via the  <a href="/dashboard/addsource/">Manage Media Sources</a> page in the <a href="{% url dashboard-home %}">Instructor Dashboard</a>.
+
+{% endif %}
+
 {% with "help_browse_sources" as help_id %}
 {% with show_help as default_help_state %}
                  

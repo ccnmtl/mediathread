@@ -559,8 +559,11 @@ margin-bottom:0; /*override dojo style*/
 .metadata-container {
     display: block;
     float: left;
-    margin-left: 5px;
+    margin-left: 8px;
     min-width: 230px;
+    max-width: 65%;
+    border: 1px solid yellow;
+
 
 }
 

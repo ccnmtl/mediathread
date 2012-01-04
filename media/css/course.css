@@ -1191,7 +1191,8 @@ text-align: left;
 
 
 #external-archives,
-#course-list
+#course-list,
+#updates
  {
     border: 1px solid #ccc;
     margin: 1em;
@@ -1318,9 +1319,16 @@ background-color: #ece8df;
 }
 
 #external-archives h2,
-#course-list h2 {
-    text-transform: uppercase;
+#course-list h2,
+#updates h2 {
+
     background-color: #666;
+
+}
+
+#external-archives h2 {
+    text-transform: uppercase;
+
 
 }
 

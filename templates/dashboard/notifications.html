@@ -12,31 +12,19 @@ Recent Activity
 
 {% block content %}
     {{ block.super }}
-<div class="panelicious">   
-
-  
-
+    
+      {% with "help_notifications" as help_id %}
+      {% with help_homepage_instructor_column as default_help_state %}
+            
 
   <div id ="updates" class="panel-column top-archive
 	      {%if not display.course %}panel-column-stump{%endif%}
 	      ">
-    <h2>Updates to My Collections & Compositions <a class="hs-control intro-open" href="#intro-updates">?</a></h2>
+    <h2>Updates to My Collections & Compositions {% include "help/help_button.html" %}</h2>
     <div class="scroll">
+      {% include "help/help_contentarea.html" %}
       <ul class="clumper">
-        <li id="intro-updates" class="hs-init-{% if my_feed %}hide{% else %}show{% endif %}">
-          <div class="intro-text">
-            <a class="hs-control control-close" href="#intro-updates">x</a>
-            <p>
-              MediaThread allows you to Collect Items and Annotate Selections available from <a href="{%url explore %}">Source Media </a>. 
-              You can then easily embed your Selections into <a href="/?username={{user.username}}">Compositions.</a>
-            </p>
-            <p>This space will display updates to: </p>
-            <ul class="intro-text">
-              <li><a href="/?username={{user}}">Your Collections</a>: new Selections by you or your classmates from Items you have Collected. </li>
-              <li><a href="/?username={{user}}">Compositions</a>: Edits by you or one of your collaborators, if any. References in Compositions to Items you have Collected.</li>
-            </ul>
-          </div>
-        </li>
+
 	{%for clump in my_feed%}
             {%include "projects/clump.html" %}
 	{%endfor%}
@@ -46,11 +34,6 @@ Recent Activity
 
  <div class="visualclear"></div>
 
-
-
- 
-
-</div>
-
+ {% endwith %}{% endwith %}
 
 {% endblock %}

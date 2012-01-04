@@ -787,10 +787,10 @@ ul.tabbernav li.tabberactive a:hover
 
 
 
-/* ########## FOR FLUID WIDTH CSS ############### */
+
 /* ########## Blocks style definitions ########## */
 
-body.fluid #container
+body #container
 {
 	margin: 0 5px;
 	width: auto;
@@ -798,72 +798,72 @@ body.fluid #container
 }
 
 /* ---- Header block elements ---------- */
-body.fluid #header
+body #header
 {
 	width: 100%;
 }
 
 
 /* ---- Delta block elements ---------- */
-body.fluid #primarynav,
-body.fluid #primarynav div.encase
+body #primarynav,
+body #primarynav div.encase
 {
 	width: 100%;
 }
 
 /* ---- Pagebody block elements ---------- */
-body.fluid #pagebody
+body #pagebody
 {
 	width: 100%;
 }
 
 /* ---- Footer block elements ---------- */
-body.fluid #footer
+body #footer
 {
 	width: 100%;
 	background-color: #ddd;
 }
 
 /* ---- Content block elements ---------- */
-body.fluid #content
+body #content
 {
 	margin: 0 -205px;
 	width: 100%;
 }
 
-.three_columns.fluid #squish
+.three_columns #squish
 {
 	margin: 0 210px;
 }
 
-.two_columns_left.fluid #content,
-.two_columns_right.fluid #content
+.two_columns_left #content,
+.two_columns_right #content
 {
 	display: block;
 	width: 100%;
 }
 
-.two_columns_left.fluid #content
+.two_columns_left #content
 {
 	margin-right: 0;
 }
 
-.two_columns_left.fluid #squish
+.two_columns_left #squish
 {
 	margin: 0 0 0 210px;
 }
 
-.two_columns_right.fluid #content
+.two_columns_right #content
 {
 	margin-left: 0;
 }
 
-.two_columns_right.fluid #squish
+.two_columns_right #squish
 {
 	margin: 0 210px 0 10px;
 }
 
-.one_column.fluid #content
+.one_column #content
 {
 	display: block;
 	float: none;
@@ -871,7 +871,7 @@ body.fluid #content
 	margin: 0;
 }
 
-.one_column.fluid #squish
+.one_column #squish
 {
 	margin: 0;
 	padding: 0;

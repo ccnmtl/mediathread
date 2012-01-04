@@ -51,15 +51,7 @@
 	{% block feeds %}{% endblock %}
 </head>
 {% course_role for request.user in course as role_in_course %}
-<body class="one_column {% block widthtype %}fluid{% endblock %} role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
-
-{% comment %}
-###### FOR WIDTH TYPE--
-   fixed : fixed width, doesn't change with browser resize
-   fluid : variable width, changes with browser resize
-   You can move this to base template if you don't want to deal with it
-   all time in flatpages templates
-{% endcomment %}
+<body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
 
 <div id="container">
     {% block masthead %}

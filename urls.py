@@ -43,7 +43,7 @@ urlpatterns = patterns('',
                        (r'^$', 'mediathread_main.views.triple_homepage'),
                        url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
                        url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource', name="class-add-source"),
-                       url(r'^dashboard/$', 'django.views.generic.simple.direct_to_template',{'template':'dashboard/dashboard_home.html'}, name="dashboard-home"),
+                       url(r'^dashboard/$', 'mediathread_main.views.dashboard', name="dashboard-home"),
                        
                        (r'^asset/', include('mediathread.assetmgr.urls')),
                        url(r'^save/$', 'assetmgr.views.add_view', name="asset-save"),

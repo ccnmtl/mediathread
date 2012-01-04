@@ -1,4 +1,9 @@
-<div id="{{help_id}}" class="helpblock {{default_help_state}}">
+{% if default_help_state %}
+    <div id="{{help_id}}" class="helpblock on">
+{% else %}
+        <div id="{{help_id}}" class="helpblock off">
+{% endif %}
+
     <div class="help_content">
 
 

@@ -1,1 +1,9 @@
-<span class="helptoggle {{default_help_state}}"><a class="togglebutton" onclick="return toggleHelp(this, this.parentNode, '{{help_id}}');"></a></span>
+{% if default_help_state %}
+<span class="helptoggle on">
+{% else %}
+<span class="helptoggle off">
+{% endif %}
+
+    <a class="togglebutton" onclick="return toggleHelp(this, '{{space_viewer.username}}', this.parentNode, '{{help_id}}');"></a>
+
+</span>

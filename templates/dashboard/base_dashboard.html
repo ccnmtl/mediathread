@@ -44,7 +44,7 @@
     <div id="dashboard-container">
         <div id="instructor-nav">
               {% with "help_dashboard_nav_actions" as help_id %}
-              {% with "off" as default_help_state %}        
+              {% with help_dashboard_nav_actions as default_help_state %}        
               <h3>Actions:{% include "help/help_button.html" %}</h3>
               {% include "help/help_contentarea.html" %}
               <a href="/dashboard/addsource/">Manage Media Sources</a>
@@ -71,7 +71,7 @@
         
         
                {% with "help_dashboard_nav_reports" as help_id %}
-              {% with "off" as default_help_state %}   
+              {% with help_dashboard_nav_reports as default_help_state %}   
               <h3>Reports:{% include "help/help_button.html" %}</h3>
               {% include "help/help_contentarea.html" %}
               <a href="/reports/class_assignments/">Assignment Responses</a>

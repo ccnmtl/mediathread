@@ -18,6 +18,8 @@ import datetime
 from django.db.models import get_model,Q
 from discussions.utils import get_discussions
 
+from mediathread_main.models import UserSetting
+
 import course_details
 import simplejson
 import re
@@ -216,7 +218,8 @@ def triple_homepage(request):
 
     user_records = {
        'space_viewer': space_viewer,
-       'space_owner' : user
+       'space_owner' : user,
+       "help_homepage_instructor_column": UserSetting.get_setting(user, "help_homepage_instructor_column", True)
     }
     prof_feed = get_prof_feed(c, request)
     discussions = get_discussions(c)
@@ -403,6 +406,17 @@ def get_records(user, course, request):
     return HttpResponse(json_stream, mimetype='application/json')
 
 @allow_http("GET", "POST")
+@rendered_with('dashboard/dashboard_home.html')
+def dashboard(request):
+    user = request.user
+    
+    return { 
+       "space_viewer": request.user,
+       "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", True),
+       "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", True)      
+    }
+
+@allow_http("GET", "POST")
 @rendered_with('dashboard/class_addsource.html')
 def class_addsource(request):
     from assetmgr.supported_archives import all 
@@ -443,3 +457,17 @@ def class_addsource(request):
         context[key] = int(upload_permission)
             
     return context
+
+@allow_http("POST")
+def set_user_setting(request, user_name):
+    if not request.is_ajax():
+        raise Http404()
+    
+    user = get_object_or_404(User, username=user_name)
+    name = request.POST.get("name")
+    value = request.POST.get("value")
+    
+    UserSetting.set_setting(user, name, value)
+    
+    json_stream = simplejson.dumps({ 'success': True })
+    return HttpResponse(json_stream, mimetype='application/json')

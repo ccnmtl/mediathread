@@ -12,6 +12,7 @@ from threadedcomments import ThreadedComment
 from structuredcollaboration.models import Collaboration
 from mediathread_main.clumper import Clumper
 from mediathread_main import course_details
+from mediathread_main.models import UserSetting
 
 from django.conf import settings
 
@@ -411,7 +412,7 @@ def browse_sources(request):
             "thumb":(None if not thumb else {"id":thumb.id, "url":thumb.url}),
             "archive":{"id":archive.id, "url":archive.url},
             #is description a list or a string?
-            "metadata": (description[0] if hasattr(description,'append') else description),
+            "metadata": (description[0] if hasattr(description,'append') else description)
         }
         
         if (uploader[0] if hasattr(uploader,'append') else uploader):
@@ -427,7 +428,8 @@ def browse_sources(request):
           "space_viewer":user,
           'newsrc':request.GET.get('newsrc', ''),
           'can_upload': course_details.can_upload(request.user, request.course),
-          'upload_service': getattr(settings,'UPLOAD_SERVICE',None)
+          'upload_service': getattr(settings,'UPLOAD_SERVICE',None),
+          "show_help": UserSetting.get_setting(user, "help_browse_sources", True)
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')

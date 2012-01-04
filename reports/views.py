@@ -100,14 +100,6 @@ def class_summary(request):
     """FACULTY ONLY reporting of entire class activity """
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
-        
-    #stud_work = {}
-    #for p in Project.objects.filter(course=request.course):
-    #    for stud_id, contribs in p.content_metrics().items():
-    #        stud_work.setdefault(stud_id,[0,0])
-    #        stud_work[stud_id][0] += contribs[0]
-    #        stud_work[stud_id][1] += contribs[1]
-
 
     students = []
     for stud in users_in_course(request.course).order_by('last_name','first_name','username'):

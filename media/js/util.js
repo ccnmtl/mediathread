@@ -31,11 +31,16 @@ function switcher(a) {
     jQuery(a).parent().children('ul.switcher-options').toggle();
 }
 
-function toggleHelp(a, parent, help_content_id) {
+function toggleHelp(a, user, parent, help_content_id) {
     console.log(a);
+    console.log(user);
     console.log(parent);
     console.log(help_content_id);
     
     jQuery(parent).toggleClass('on off');
     jQuery("#" + help_content_id).toggleClass('on off');
+    
+    var user_setting = jQuery(parent).hasClass('on') ? 'True' : 'False';
+        
+    jQuery.post('/yourspace/' + user + '/setting/', { name: help_content_id, value: user_setting });
 }

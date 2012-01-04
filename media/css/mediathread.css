@@ -1024,8 +1024,21 @@ body.fluid #content
   
 }
 
+#coursefilter {
+    float: right;
+    width: 325px;
+    background-color: #dedede;
+    padding: 8px 10px;
+    display: block;
+    margin: 5px 10px 10px;
+
+}
+
+
 table.course-choices {
     padding:5px;
+    margin-left: 10px;
+    width: 960px;
 }
 
 td.course-choice {

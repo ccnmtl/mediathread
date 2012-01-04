@@ -1190,7 +1190,8 @@ text-align: left;
 }
 
 
-#external-archives
+#external-archives,
+#course-list
  {
     border: 1px solid #ccc;
     margin: 1em;
@@ -1204,13 +1205,6 @@ text-align: left;
 
 
 }
-
-#external-archives h2 {
-    text-transform: uppercase;
-    background-color: #666;
-
-}
-
 
 
 #import_instructions {
@@ -1323,8 +1317,16 @@ background-color: #ece8df;
 
 }
 
+#external-archives h2,
+#course-list h2 {
+    text-transform: uppercase;
+    background-color: #666;
+
+}
+
 #archive_container h2,
-#upload_container h2 {
+#upload_container h2
+{
     background-color: #A88448;
         -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;

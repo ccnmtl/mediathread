@@ -30,7 +30,7 @@
   <br />
 
 {% with "help_video_upload" as help_id %}
-{% with "off" as default_help_state %}
+{% with help_video_upload as default_help_state %}
 <ul id="wardenclyffe" class="archive-gallery">
 <li class="upload-container">
     <h2></a>Mediathread Video Uploader {% include "help/help_button.html" %}</h2>
@@ -76,7 +76,7 @@
 {% endwith %}{% endwith %}
 
 {% with "help_supported_collections" as help_id %}
-{% with "off" as default_help_state %}
+{% with help_supported_collections as default_help_state %}
 <ul id="supported_collections" class="archive-gallery">
     <li class="archive-container">
         <h2 id="archives">Add<!--/Remove--> Supported Collections {% include "help/help_button.html" %}</h2>

@@ -19,15 +19,8 @@
 {% block content %}
 {{ block.super }}
 
-{% if is_faculty %}
-
-<h3>Instructor:</h3>
-<p>This page lists sources of videos and/or images that you designate for class analysis. <br />You can add sources to this page via the  <a href="/dashboard/addsource/">Manage Media Sources</a> page in the <a href="{% url dashboard-home %}">Instructor Dashboard</a>.
-
-{% endif %}
-
 {% with "help_browse_sources" as help_id %}
-{% with show_help as default_help_state %}
+{% with help_browse_sources as default_help_state %}
                  
     <div id="external-archives" class="top-archive">
         <h2>Source Media {% include "help/help_button.html" %}</h2>
@@ -50,30 +43,37 @@
          {% endif %}{% endif %}
          
         {% if archives %}
-        <div id="archive_container" class="column-container media-column-container">  
-        <h2>Instructor Recommendations</h2>
-        {% for archive in archives %}
-         <div id="archive-{{archive.id}}" class="archive">
-                {% if space_viewer.is_staff %}
-                    <div class="manage-archive">
-                        <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+            <div id="archive_container" class="column-container media-column-container">  
+                <h2>Instructor Recommendations</h2>
+                {% for archive in archives %}
+                    <div id="archive-{{archive.id}}" class="archive">
+                        {% if space_viewer.is_staff %}
+                            <div class="manage-archive">
+                                <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+                            </div>
+                        {% endif %}
+                
+                        <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                        <br />
+                        {% if archive.thumb %}
+                           <a href="redirect/?url={{archive.archive.url|urlencode}}"><img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                           </a>
+                        {% endif %}
+                        <div>
+                            {{archive.metadata|urlize|linebreaks}}
+                        </div>
                     </div>
-                {% endif %}
-     
-                <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
-                <br />
-                {% if archive.thumb %}
-                   <a href="redirect/?url={{archive.archive.url|urlencode}}"><img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                   </a>
-                {% endif %}
-                <div>
-                    {{archive.metadata|urlize|linebreaks}}
-                </div>
+                {%endfor%}
+                <br class="visualclear" />
             </div>
-        {%endfor%}
-        <br class="visualclear" />
-        </div>
-         {% endif %}
+        {% else %}
+            <div id="archive_container" class="column-container media-column-container">  
+                <h2>Instructor Recommendations</h2>
+                {% if is_faculty %}
+                    <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="/dashboard/addsource/">Manage Media Sources</a> page in the <a href="{% url dashboard-home %}">Instructor Dashboard</a>.
+                {% endif %}
+            </div>                
+        {% endif %}
 
 {% endwith %}
 {% endwith %}

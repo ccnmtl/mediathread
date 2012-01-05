@@ -429,7 +429,9 @@ def browse_sources(request):
           'newsrc':request.GET.get('newsrc', ''),
           'can_upload': course_details.can_upload(request.user, request.course),
           'upload_service': getattr(settings,'UPLOAD_SERVICE',None),
-          "show_help": UserSetting.get_setting(user, "help_browse_sources", True)
+          "help_browse_sources": UserSetting.get_setting(user, "help_browse_sources", True),
+          "help_no_sources": UserSetting.get_setting(user, "help_no_sources", True)
+          
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')

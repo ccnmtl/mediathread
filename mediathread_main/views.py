@@ -142,7 +142,9 @@ def notifications(request):
     return {
         'my_feed':my_feed,
         'tag_cloud': tag_cloud,
-        }
+        'space_viewer': user,
+        "help_notifications": UserSetting.get_setting(user, "help_notifications", False)
+    }
 
 def date_filter_for(attr):
 
@@ -442,10 +444,15 @@ def class_addsource(request):
             'asset_request': request.GET,
             'course': c,
             'supported_archives': all,   # sort by title
+            'space_viewer': request.user,
             'is_staff': request.user.is_staff,
             'newsrc' : request.GET.get('newsrc', ''),
             'upload_enabled': upload_enabled,
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
+            'help_video_upload': UserSetting.get_setting(user, "help_video_upload", True),
+            'help_supported_collections': UserSetting.get_setting(user, "help_supported_collections", True),
+            'help_dashboard_nav_actions': UserSetting.get_setting(user, "help_dashboard_nav_actions", True),
+            'help_dashboard_nav_reports': UserSetting.get_setting(user, "help_dashboard_nav_reports", True)
         }
 
     if request.method == "GET":

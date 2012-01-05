@@ -55,7 +55,7 @@ def active(request, pattern):
         if request.path == '/asset/':
             return 'active'
     if pattern == "Instructor":
-        if request.path.startswith('/reports/'):
+        if request.path.startswith('/reports/') or request.path.startswith('/dashboard'):
             return 'active'
 
     if pattern == "Analysis":

@@ -270,12 +270,6 @@
                                         {{#thumb?}}
                                         <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
                                         {{/thumb?}}
-                                        
-                                        {{^thumb}}
-                                        <a href="{{local_url}}"><img class="asset-thumb" src="/site_media/img/unavailable.png" alt="Item Thumbnail" /></a>
-                                        {{/thumb}}
-                                       
-                                      
                                       
                                                 {{#global_annotation}}
                                                     {{#metadata}}
@@ -324,15 +318,6 @@
                                                                    <div class="annotation-container">
                                                                    
                                                                    <li id="annotation-{{id}}">
-                                                                        {{#metadata.body?}}
-                                                                            <a class="metadata-selector metadata-selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
-                                                                        {{/metadata.body?}}
-                                                                        {{^metadata.body}}{{#metadata.tags?}}
-                                                                            <a class="metadata-selector metadata-selector-closed" href="" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
-                                                                        {{/metadata.tags?}}{{/metadata.body}}
-                                                                            
-                                                                        {{! TODO if annotation.body or annotation.tags. open an hs-control here }} 
-                                                                        
                                                                         <div class="actions">
                                                                             {{#editable?}}
                                                                                 <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
@@ -351,11 +336,8 @@
                                                                         {{/metadata}}
                         
                                     
-                                                                        <div id="annotation-body-{{id}}" class="meta" style="display: none">
+                                                                        <div id="annotation-body-{{id}}" class="meta">
                                                                             {{#metadata}}
-                                                                                {{#modified?}}
-                                                                                    <div><span class="metadata-label">Last Modified:</span> <span class="metadata-value">{{modified}}</span></div>
-                                                                                {{/modified?}}
                                                                                 {{#tags?}}       
                                                                                     <div><span class="metadata-label">Tags:</span>
                                                                                         <span class="metadata-value">

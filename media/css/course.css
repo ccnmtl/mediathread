@@ -358,7 +358,9 @@ padding-right: 4px;
 .asset_title.asset-ogg,
 .asset_title.asset-video_pseudo,
 .asset_title.asset-video_rtmp,
-.asset_title.asset-video
+.asset_title.asset-video,
+.asset_title.asset-vimeo,
+.asset_title.asset-kaltura        
 {
 	background-image: url(../img/icons/item_video.gif);
 }
@@ -367,6 +369,39 @@ padding-right: 4px;
 .asset_title.asset-image_fpx
 {
 	background-image: url(../img/icons/item_image.gif);
+}
+
+.asset-insert-flv,
+.asset-insert-flv_pseudo,
+.asset-insert-flv_rtmp,
+.asset-insert-mp4,
+.asset-insert-mp4_pseudo,
+.asset-insert-mp4_rtmp,
+.asset-insert-youtube,
+.asset-insert-quicktime,
+.asset-insert-realplayer,
+.asset-insert-ogg,
+.asset-insert-video_pseudo,
+.asset-insert-video_rtmp,
+.asset-insert-video,
+.asset-insert-kaltura,
+.asset-insert-vimeo
+{
+    background-image: url(../img/icons/item_video.gif);
+    border: 1px black solid;
+    height: 20px;
+    width: 20px;
+    float: left;
+}
+
+.asset-insert-image,
+.asset-insert-image_fpx
+{
+    background-image: url(../img/icons/item_image.gif);
+    border: 1px black solid;
+    height: 20px;
+    width: 20px;
+    float: left;
 }
 
 .record-image .annotation-timecode, .record-image_fpx .annotation-timecode {

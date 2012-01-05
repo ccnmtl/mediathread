@@ -125,7 +125,6 @@
                 <div id="project_view" class="project-view" style="display: none">
                      <!--  Where the media is shown. Displays as an overlay next to the clip -->
                      <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute; z-index: 1000;">
-                          <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide(); return false;">x</a>
                           <div class="annotation-title"></div>
                           <div class="asset-title"></div>
                           <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
@@ -172,28 +171,17 @@
                     <div id="record-{{id}}" class="record record-{{primary_type}}">
                         <input type="hidden" class="record" value="{{id}}" name="record-id" />
                       
-                            <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
-                           
-                            
-                            <a class="asset-title-link" target="_blank" href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
-                        </h4>
+                            <h4 id="asset-item-{{id}}" class="asset_title">
+                                <div class="materialCitation asset-insert-{{primary_type}}" alt="insert" onclick=""></div>
+                                <a class="asset-title-link" target="_blank" href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
+                            </h4>
                         <div class="item-level-info">
                             <span class="citationTemplate">
-                                <img class="materialCitation" alt="insert" 
-                                    src="/site_media/img/icons/insert_asset.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
-                                    width="24" height="15" border="0" 
-                                    onclick="addMaterialCitation(event)" 
-                                    title="Add item to the composition" 
-                                    name="{{local_url}}"/>
                                 
                                 {{#thumb?}}
                                 <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
                                 {{/thumb?}}
                                 
-                                {{^thumb}}
-                                <a href="{{local_url}}"><img class="asset-thumb" src="/site_media/img/unavailable.png" alt="Item Thumbnail" /></a>
-                                {{/thumb}}
-                        
                                 {{#global_annotation}}
                                     {{#metadata}}
                                     <ul class="record-metadata-list">
@@ -260,16 +248,6 @@
                                                  <div id="annotation-thumb-{{id}}"></div>
 
                                                     <div class="metadata-container">
-                                                    
-                                                        {{#metadata.body?}}
-                                                            <a class="metadata-selector metadata-selector-closed" href="#annotation-body-{{id}}" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
-                                                        {{/metadata.body?}}
-                                                        {{^metadata.body}}{{#metadata.tags?}}
-                                                            <a class="metadata-selector metadata-selector-closed" href="" onclick="jQuery(this).toggleClass('metadata-selector-open metadata-selector-closed'); jQuery('#annotation-body-{{id}}').toggle(); return false;"></a>
-                                                        {{/metadata.tags?}}{{/metadata.body}}
-                                                            
-                                                        {{! TODO if annotation.body or annotation.tags. open an hs-control here }} 
-                                                        
                                                         <div class="actions">
                                                              
                                                         </div>{{!  class="actions"  }}
@@ -284,11 +262,8 @@
                                                             {{/timecode?}}
                                                         {{/metadata}}
                                                     
-                                                        <div id="annotation-body-{{id}}" class="meta" style="display: none">
+                                                        <div id="annotation-body-{{id}}" class="meta">
                                                             {{#metadata}}
-                                                                {{#modified?}}
-                                                                    <div><span class="metadata-label">Last Modified:</span> <span class="metadata-value">{{modified}}</span></div>
-                                                                {{/modified?}}
                                                                 {{#tags?}}       
                                                                     <div><span class="metadata-label">Tags:</span>
                                                                         <span class="metadata-value">

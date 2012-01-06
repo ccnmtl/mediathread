@@ -545,10 +545,6 @@ font-weight:normal;
 margin-bottom:0; /*override dojo style*/
 }
 
-.annotation-container {
-
-    padding-left: 35px;
-}
 
 .item-level-info {
 
@@ -562,7 +558,7 @@ margin-bottom:0; /*override dojo style*/
     margin-left: 8px;
     min-width: 230px;
     max-width: 65%;
-    border: 1px solid yellow;
+
 
 
 }

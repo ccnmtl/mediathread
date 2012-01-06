@@ -233,17 +233,18 @@
                                             {{#annotations}} 
                                                 {{^is_null}}
                                                 
-                                                 <span class="citationTemplate">
+                                                 
+                                                
+                                                 <div class="annotation-container">
+                                                            
+                                                <span class="citationTemplate">
                                                        <img class="materialCitation" alt="" 
                                                                     src="/site_media/img/icons/insert_clip.png#annotation={{url}}&title={{metadata.title}}&type={{assets.primary_type}}&range1={{range1}}" 
                                                                   width="24" height="15" border="0" 
                                                                   onclick="addMaterialCitation(event)" 
                                                                   title="Add selection to the composition" 
                                                                   name="{{url}}"/></span>
-                                                
-                                                 <div class="annotation-container">
-                                                            
-                                                
+                                                                  
                                                 <li id="annotation-{{id}}">
                                                  <div id="annotation-thumb-{{id}}"></div>
 

@@ -387,20 +387,18 @@ padding-right: 4px;
 .asset-insert-kaltura,
 .asset-insert-vimeo
 {
-    background-image: url(../img/icons/item_video.gif);
-    border: 1px black solid;
-    height: 20px;
-    width: 20px;
+    background-image: url(../img/icons/insert_item_video.png);
+    height: 18px;
+    width: 24px;
     float: left;
 }
 
 .asset-insert-image,
 .asset-insert-image_fpx
 {
-    background-image: url(../img/icons/item_image.gif);
-    border: 1px black solid;
-    height: 20px;
-    width: 20px;
+    background-image: url(../img/icons/insert_item_image.png);
+    height: 18px;
+    width: 24px;
     float: left;
 }
 

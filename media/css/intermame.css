@@ -208,6 +208,12 @@ div#materials h4 a
     padding-left: 15px;
 }
 
+div#materials h4 a.asset-title-link.insert
+{
+
+    padding-left: 5px;
+}
+
 
 ul.instructor-list {
 
@@ -362,8 +368,7 @@ input.media.newselection-button {
 
 ul.record-metadata-list {
 	list-style-type: none;
-	margin:0 0 0 140px;
-	max-width: 465px;
+	margin:0;
 	padding: 0 5px;
 	
  }

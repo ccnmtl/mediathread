@@ -165,6 +165,7 @@ class Asset(models.Model):
             metadata = simplejson.loads(self.metadata_blob)
         except ValueError:
             metadata = None
+            
         return {
             'sources':sources,
             'primary_type':self.primary.label,
@@ -172,6 +173,7 @@ class Asset(models.Model):
             'metadata':metadata,
             'local_url':self.get_absolute_url(),
             'id':self.pk,
+            'media_type_label': 'image' if self.primary.is_image() else 'video',
             'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }
         
@@ -212,7 +214,7 @@ class Source(models.Model):
         return u'[%s] %s' % (self.label, unicode(asset))
 
     def is_image(self):
-        return (self.label=='poster' or self.media_type.startswith('image/'))
+        return (self.label=='poster' or self.label == "image" or self.label == "image_fpx"  or (self.media_type and self.media_type.startswith('image/')))
     
     def is_archive(self):
         return self.label=='archive'

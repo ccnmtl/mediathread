@@ -13,27 +13,25 @@ Recent Activity
 {% block content %}
     {{ block.super }}
     
-      {% with "help_notifications" as help_id %}
-      {% with help_homepage_instructor_column as default_help_state %}
-            
+    {% with "help_notifications" as help_id %}
+    {% with help_notifications as default_help_state %}
 
-  <div id ="updates" class="panel-column top-archive
-	      {%if not display.course %}panel-column-stump{%endif%}
-	      ">
-    <h2>Updates to My Collections & Compositions {% include "help/help_button.html" %}</h2>
-    <div class="scroll">
-      {% include "help/help_contentarea.html" %}
-      <ul class="clumper">
+    <div id ="updates" class="panel-column top-archive {%if not display.course %}panel-column-stump{%endif%}">
+        <h2>Updates to My Collections & Compositions {% include "help/help_button.html" %}</h2>
+        
+        <div class="scroll">
+            {% include "help/help_contentarea.html" %}
+            <ul class="clumper">
+        
+            	{%for clump in my_feed%}
+                        {%include "projects/clump.html" %}
+            	{%endfor%}
+            </ul>
+        </div>
+    </div> 
 
-	{%for clump in my_feed%}
-            {%include "projects/clump.html" %}
-	{%endfor%}
-      </ul>
-    </div>
- </div> 
+    <div class="visualclear"></div>
 
- <div class="visualclear"></div>
-
- {% endwith %}{% endwith %}
+    {% endwith %}{% endwith %}
 
 {% endblock %}

@@ -6,50 +6,47 @@
 
     <div class="help_content">
 
-<!-- SWITCH COURSE PAGE (STAFF ONLY) -->
-        {% ifequal help_id "help_choose_course" %}
-            {% if user.is_staff %}
+{% comment %}SWITCH COURSE PAGE (STAFF ONLY) {% endcomment %}
+    {% ifequal help_id "help_choose_course" %}
+        {% if user.is_staff %}
             <h3>Mediathread Demo (Staff only)</h3>
-            <p>To demo a class you can (mostly) anonymize the class, by setting this cookie:
-            </p>
+            <p>To demo a class you can (mostly) anonymize the class, by setting this cookie:</p>
             <ul>
-              <li>
-                <span id="anonymize_status"></span>
-                <a href="#anonymize" onclick="document.cookie='ANONYMIZE=on; path=/';anonymizeStatus();">Enable</a>
-                <a href="#anonymize" onclick="document.cookie='ANONYMIZE=OFF; expires='+new Date().toGMTString()+'; path=/';anonymizeStatus();">Disable</a>
-              </li>
+                <li>
+                    <span id="anonymize_status"></span>
+                    <a href="#anonymize" onclick="document.cookie='ANONYMIZE=on; path=/';anonymizeStatus();">Enable</a>
+                    <a href="#anonymize" onclick="document.cookie='ANONYMIZE=OFF; expires='+new Date().toGMTString()+'; path=/';anonymizeStatus();">Disable</a>
+                </li>
             </ul>
             <script type="text/javascript">
-              function anonymizeStatus() {
-              document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: '
-              + ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
-              }
-              anonymizeStatus();
+                function anonymizeStatus() {
+                    document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: '
+                        + ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
+                }
+                anonymizeStatus();
             </script>
+        {% endif %}
+    {% endifequal %}
 
-      {% endif %}
-      {% endifequal %}
 
+{% comment %} SITE HOME PAGE, LEFT COLUMN (INSTRUCTOR ONLY) {% endcomment %}
+    {% ifequal help_id "help_homepage_instructor_column" %}
+        <h3>Instructors can post here:</h3>
+        <ul>
+            <li>Information for the class</li>
+            <li>Assignments</li>
+            <li>Discussion topics</li>
+        </ul>
+        <p>Get Started: <a href="{% url dashboard-home %}">Instructor Dashboard</a></p>
+    {% endifequal %}
 
-<!--  SITE HOME PAGE, LEFT COLUMN (INSTRUCTOR ONLY) -->
-        {% ifequal help_id "help_homepage_instructor_column" %}
-              <h3>Instructors can post here:</h3>
-                    <ul>
-                        <li>Information for the class</li>
-                        <li>Assignments</li>
-                        <li>Discussion topics</li>
-                    </ul>
-                    <p>Get Started: <a href="{% url dashboard-home %}">Instructor Dashboard</a></p>
-      {% endifequal %}
+{% comment %}  SITE HOME PAGE, RIGHT COLUMN CLASSWORK {% endcomment %}      
+    {% ifequal help_id "help_homepage_classwork_column" %}  
+         Here you can access your saved compositions and your collection of items saved in MediaThread. To filter items by date saved or by tag, use the "Collection Filters" directly below this black bar. You can also access compositions and collections saved by your students by designating another student or whole class in the "Owner" dropdown menu.
+    {% endifequal %}  
+   
       
-
-<!--  SITE HOME PAGE, CLASS WORK -->
-        {% ifequal help_id "help_homepage_classwork_filters" %}
-              Here you can access your saved compositions and your collection of items saved in Mediathread. To filter items by date saved or by tag, use the "Collection Filters" directly below this black bar. You can also access compositions and collections saved by others by designating another student or whole class in the "Owner" dropdown menu.
-      {% endifequal %}
-      
-      
-<!--  INSTRUCTOR DASHBOARD NAV, ACTIONS -->
+{% comment %} INSTRUCTOR DASHBOARD NAV, ACTIONS {% endcomment %}
               {% ifequal help_id "help_dashboard_nav_actions" %}
                     
                     These buttons help you designate media sources for your Mediathread course as well as publish assignments, discussion topics, or model compositions to the home page.
@@ -57,7 +54,7 @@
                    
       {% endifequal %}
       
-<!--  INSTRUCTOR DASHBOARD NAV, REPORTS -->
+{% comment %} INSTRUCTOR DASHBOARD NAV, REPORTS {% endcomment %}
               {% ifequal help_id "help_dashboard_nav_reports" %}
                     
                     These reports list responses to your published assignments (if any), and provide views of student posting activity.
@@ -65,7 +62,7 @@
         {% endifequal %}
         
         
-<!--  INSTRUCTOR DASHBOARD/MANAGE SOURCES/UPLOAD -->
+{% comment %} INSTRUCTOR DASHBOARD/MANAGE SOURCES/UPLOAD {% endcomment %}
         {% ifequal help_id "help_video_upload" %}
                     
                     In addition to support for importing items from outside supported collections (see Add/Remove Supported Collections below), Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off. You may enable it for just yourself, or enable it for all members of your class. 
@@ -73,7 +70,7 @@
         {% endifequal %}
  
  
-<!--  INSTRUCTOR DASHBOARD/MANAGE SOURCES/SUPPORTED ARCHIVES -->
+{% comment %} INSTRUCTOR DASHBOARD/MANAGE SOURCES/SUPPORTED ARCHIVES {% endcomment %}
         {% ifequal help_id "help_supported_collections" %}
                     
                     Below is a list of digital sources whose items may be analyzed and saved in Mediathread (using the Mediathread bookmarklet). To select a source for your Mediathread class, click the "Add to Class" button. To add a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source". 
@@ -81,14 +78,14 @@
         {% endifequal %}
         
         
-<!--  INSTRUCTOR DASHBOARD/MANAGE SOURCES/CUSTOM ARCHIVE -->
+{% comment %} INSTRUCTOR DASHBOARD/MANAGE SOURCES/CUSTOM ARCHIVE {% endcomment %}
         {% ifequal help_id "help_add_custom_collection" %}
                     
                     Feel free to experiment with the Mediathread bookmarklet to see if it imports items from an 'unsupported' website; if it does, you may add this source to your class here. To request bookmarklet compatibility with an unsupported source, please email <a href="mailto:ccnmtl-mediathread@columbia.edu">ccnmtl-mediathread@columbia.edu</a>. To upload individual items to Mediathread, use the Mediathread Uploader at the top of this page.
                    
         {% endifequal %}
         
-<!--  NOTIFICATIONS -->
+{% comment %} NOTIFICATIONS {% endcomment %}
         {% ifequal help_id "help_notifications" %}
             This space helps you track updates to items, compositions, and discussions that you have worked on in Mediathread.
             
@@ -106,7 +103,7 @@
         {% endifequal %}
 
         
-<!--  SOURCE MEDIA PAGE, BOOKMARKLET BOX -->
+{% comment %} SOURCE MEDIA PAGE, BOOKMARKLET BOX {% endcomment %}
         {% ifequal help_id "help_browse_sources" %}
             <div id="import_instructions">
              <div class="import_class bookmarklet_instructions">

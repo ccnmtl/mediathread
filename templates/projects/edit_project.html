@@ -37,9 +37,11 @@
         function resizeEditProjectPage() {
             var visible = getVisibleContentHeight();
             jQuery('#essay-space-materials').css('height', visible + "px");
-            jQuery('#project-content_tbl').css('height', (visible - 200) + "px");
-            jQuery('div.editing').css('height', (visible - 56) + "px");
             jQuery('div.scroll').css('height', (visible - 77) + "px");
+            jQuery('div.editing').css('height', (visible - 56) + "px");
+            
+            visible -= jQuery("#project_participants").innerHeight();
+            jQuery('#project-content_tbl').css('height', (visible - 200) + "px");
             jQuery('#project-content_tbl').css('width', "100%");
         }
       

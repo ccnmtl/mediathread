@@ -107,6 +107,7 @@
                 }
             }
             jQuery("#participant_list").toggle();
+            jQuery(window).trigger('resize');
         }
 
         self.saveProject = function(evt) {
@@ -159,6 +160,8 @@
                     
                     if (self.collection_list)
                         self.collection_list.updateProject(); 
+                    
+                    jQuery(window).trigger('resize');
                 }
             });
         }

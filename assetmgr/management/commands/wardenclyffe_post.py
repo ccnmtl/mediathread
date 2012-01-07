@@ -11,11 +11,12 @@ class Command(BaseCommand):
           'set_course' : 'tlc.cunix.local:columbia.edu',
           'as' : 'sld2131',
           'secret' : 'mediathread_secret',
-          'title' : "foo",
+          'title' : "A Test Video",
           "metadata-wardenclyffe-id" : str(4321),
           "metadata-tag": "upload",
-          'mp4': "http://e.f.g/id",
-          "mp4-metadata": "200%200%200"
+          'mp4': "http://h.i.j/kl",
+          "mp4-metadata": "200%200%200",
+          "thumb": "http://ccnmtl.columbia.edu/broadcast/posters/vidthumb_480x360.jpg"
         }
         
         resp,content = POST(mediathread_base + "/save/", params=params,async=False,resp=True)

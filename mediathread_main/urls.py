@@ -16,5 +16,11 @@ urlpatterns = patterns(
     url(r'^(?P<user_name>\w[^/]*)/setting/$',
         'set_user_setting',
         name='set-user-setting'),
+                       
+    url(r'^(?P<user_name>\w[^/]*)/asset/(?P<asset_id>\d+)/$',
+        'remove_record',
+        name='my-asset-notes'
+        ),
+
 
 )                       

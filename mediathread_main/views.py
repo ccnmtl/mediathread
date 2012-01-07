@@ -145,6 +145,30 @@ def notifications(request):
         'space_viewer': user,
         "help_notifications": UserSetting.get_setting(user, "help_notifications", False)
     }
+    
+def remove_record(request, user_name, asset_id):
+    if not request.is_ajax():
+        raise Http404()
+    
+    in_course_or_404(user_name, request.course)
+
+    asset = get_object_or_404(Asset, pk=asset_id,
+                              course=request.course)
+    user = get_object_or_404(User, username=user_name)
+
+    if user != request.user:
+        return HttpResponseForbidden("forbidden")
+
+    annotations = asset.sherdnote_set.filter(author=user)
+
+    context = {}
+    if request.method == "DELETE":
+        annotations.delete()
+        { 'delete': True }
+    
+
+    json_stream = simplejson.dumps(context)
+    return HttpResponse(json_stream, mimetype='application/json')
 
 def date_filter_for(attr):
 

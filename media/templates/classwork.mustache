@@ -249,17 +249,16 @@
                                     {{/showing_my_items}}
                                </div>
                             {{/assets}} 
-                                {{#assets}}
-                                    <div id="materials" class="column-contents">
-                                    <div id="record-{{id}}" class="record record-{{primary_type}}">
-                                        <input type="hidden" class="record" value="{{id}}" name="record-id" />
+                            {{#assets}}
+                                <div id="materials" class="column-contents">
+                                <div id="record-{{id}}" class="record record-{{primary_type}}">
+                                    <input type="hidden" class="record" value="{{id}}" name="record-id" />
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                                             <div class="actions">
                                                 {{#editable?}}
                                                     <a href="" title="Remove item from your collection" onclick="return CollectionList.deleteAsset({{id}})">
                                                     <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
                                                 {{/editable?}}
-                                                {{#space_viewer.can_manage?}}<a class="manage-asset" href="">Manage</a>{{/space_viewer.can_manage?}}
                                             </div>
                                             <a class="asset-title-link"
                                                 href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>

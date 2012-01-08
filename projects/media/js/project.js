@@ -28,6 +28,13 @@
         
         this.initEditing = function(options) {
             self.commonInitialize(options);
+            
+            // WARN ON UNLOAD
+            tinyMCE.onAddEditor.add(function(manager, ed) {
+                ed.onChange.add(function(editor) {
+                    self.project_modified = true;
+                }) 
+            });
 
             // ???? used by whom?
             if (options.open_from_hash) {
@@ -60,17 +67,21 @@
             
             jQuery(document.forms['editproject']).bind('submit', self.saveProject);
             
-            // WARN ON UNLOAD
-            tinyMCE.onAddEditor.add(function(manager, ed) {
-                ed.onChange.add(function(editor) {
-                    self.project_modified = true;
-                }) 
-            });
-            
             jQuery(window).bind('beforeunload',function(evt) {
                 if (self.project_modified) {
                     return "Changes to your project have not been saved.";
+                } else {
+                    var title = jQuery("#id_title:visible");
+                    if (title.length > 0) {
+                        var value = title.val();
+                        if (!value || value.length < 1) {
+                            return "Please specify a project title.";
+                        } else if (value == "Untitled") {
+                            return 'Please update your "Untitled" project title.';
+                        }
+                    }
                 }
+                
             });
 
             //PROJECT PARTICIPANT UPDATES
@@ -114,8 +125,21 @@
             tinyMCE.triggerSave();
             var frm = evt.target;
             if (/preview/.test(frm.target)) {
-                return;
+                return true;
             }
+            
+            var title = jQuery("#id_title:visible");
+            var value = title.val();
+            if (!value || value.length < 1) {
+                alert("Please specify a project title.");
+                title.focus();
+                return false;
+            } else if (value == "Untitled") {
+                alert('Please update your "Untitled" project title.');
+                title.focus();
+                return false;
+            }
+            
             //else
             evt.preventDefault();
             

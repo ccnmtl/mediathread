@@ -203,6 +203,8 @@ AjaxComment.prototype.oncomplete = function(responseText, textStatus, xhr) {
             ///4. hide form
             hide_comment_form();
             document.location = '#comment-'+res.comment_id;
+            ///5. no save warning
+            window.ProjectView.project_modified = false;
         }
     } else {
         self.onfail(xhr, textStatus, res.error);

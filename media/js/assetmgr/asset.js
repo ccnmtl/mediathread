@@ -737,8 +737,6 @@
         this.saveItemPrompt = function() {
             var frm = document.forms['edit-item-form'];
             if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
-                // @todo -- switch selected tab back to Item
-                frm.elements['annotation-tags'].focus();
                 return "Add tags and notes to place this item in your collection.";
             }
         }

@@ -101,7 +101,7 @@
                 }
                 
                 if (!matches) {
-                    updateParticipantsChosen();
+                    self.updateParticipantsChosen();
                     jQuery("#participant_update").show();
                     self.project_modified = true;
                 }

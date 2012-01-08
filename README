@@ -47,9 +47,75 @@ INSTALLATION
          This is where we add custom settings for our deployment that will not
          be included in the open-sourced distribution
 
+
+
 3. Bootstrap uses virtualenv to build a contained library in ve/
   ./bootstrap.py
   NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
+
+
+# GT comment 1
+# It has been a little while since I installed mediathread, but according to my notes I had also to install
+# the wsgiref package, which did not seem to be included -- so I did the following
+
+[root@mediathread wsgiref-0.1.2]# pwd
+/root
+[root@mediathread ~]# wget http://pypi.python.org/packages/source/w/wsgiref/wsgiref-0.1.2.zip#md5=29b146e6ebd0f9fb119fe321f7bcf6cb
+ 
+[root@mediathread ~]# unzip wsgiref-0.1.2.zip 
+ 
+[root@mediathread ~]# cd wsgiref-0.1.2
+ 
+[root@mediathread wsgiref-0.1.2]# python setup.py install
+
+
+# GT comment 2
+According to my notes, I had to uncomment a line from settings_shared.py -- my notes say: uncommented 'sites' application from settings_shared.py, since I know it causes database errors if it's missing when the db is built
+ 
+[root@mediathread mediathread]# pwd
+/var/www/mediathread/mediathread
+[root@mediathread mediathread]# vi settings_shared.py 
+ 
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    #'django.contrib.sites',
+ 
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+
+
+# GT comment 3
+We're using mysql and saw an error related to this when running bootstrap.py:
+
+Failed to install index for threadedcomments.ThreadedComment model: (1170, "BLOB/TEXT column 'tree_path' used in key specification without a key length")
+ 
+More discussion here:
+ 
+https://code.djangoproject.com/ticket/2495
+http://drupal.org/node/146296
+ 
+But it appears that syncdb adjusted things so that the index on tree_path uses a limit of 255:
+ 
+mysql> show create table threadedcomments_comment;
+ 
+( `comment_ptr_id` int(11) NOT NULL,
+  `title` longtext NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `last_child_id` int(11) DEFAULT NULL,
+  `tree_path` longtext NOT NULL,
+  PRIMARY KEY (`comment_ptr_id`),
+  KEY `threadedcomments_comment_tree_path` (`tree_path`(255)),
+  KEY `threadedcomments_comment_63f17a16` (`parent_id`),
+  KEY `threadedcomments_comment_ffd563a7` (`last_child_id`)
+)
+
+
+
 
 =====
 The rest of the instructions work like standard Django.  See:

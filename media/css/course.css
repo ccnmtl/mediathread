@@ -514,28 +514,6 @@ div.project-table
   background-color: #ededed;
 }
   
-.asset-table ul {
-	list-style: none;
-	margin:0 0 0 10px;
- }
-  
-.asset-table ul li {
-	margin-bottom: .25em;
- }
-.asset-table ul.asset-clips 
-{ 
-  margin:1em 0 0 1em;
-  margin-left:0;
- }
-.asset-table ul.asset-clips li 
-{  
-    background-color:#f7f7f7;
-  /*border-top:1px solid #6f6f6f;*/
-  padding:2px 5px 3px;
-  border-radius:2px;
-  -moz-border-radius:2px;
-  -webkit-border-radius:2px;
-} 
 .asset-table h3.asset-clips-label
 { 
   margin-top:0.7em;
@@ -910,13 +888,13 @@ dd {
 .record img.asset-thumb {
   border:1px solid #999999;
 float:left;
-margin:-1px 5px 5px;
+margin: 0 8px 0 0;
     max-width:100px;
     max-height:100px;
 }
 
 .record-metadata {
-  padding: 0 1.5em 4px 105px;
+  padding: 0;
 }
 
 a.hs-control

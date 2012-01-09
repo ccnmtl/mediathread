@@ -232,73 +232,86 @@
                                         {{/space_owner}}
                                     {{/global_annotation}}
                                 </td>
-                                <td class="item-trash"></td>
                             </tr>
                         </table>
-
-                        <div id="record-{{id}}-metadata" class="record-metadata">
-                            {{#annotations?}}
-                                <ul class="asset-clips">
-                                    {{#annotations}} 
-                                        {{^is_null}}
-                                            <div class="annotation-container">
-                                                <li id="annotation-{{id}}">
-                                                    <span class="citationTemplate">
-                                                        <img class="materialCitation" alt="" 
-                                                            src="/site_media/img/icons/insert_clip.png#annotation={{url}}&title={{metadata.title}}&type={{assets.primary_type}}&range1={{range1}}" 
-                                                            width="24" height="15" border="0" 
-                                                            onclick="addMaterialCitation(event)" 
-                                                            title="Add selection to the composition" 
-                                                            name="{{url}}"/>
-                                                    </span>
-                                                    
-                                                    <div id="annotation-thumb-{{id}}"></div>
-
-                                                    <div class="metadata-container">
-                                                        {{#editable?}}
-                                                            <div class="actions">
-                                                                <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
-                                                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
-                                                            </div>
-                                                        {{/editable?}}
-                                                
-                                                        <a target="_blank"
-                                                          class="materialCitationLink"
-                                                          title="Full Annotation Details"
-                                                          href="{{url}}">{{{metadata.title?default(-Untitled-)}}}</a>         
-                                            
-                                                        {{#metadata}}
-                                                            {{#timecode?}}
-                                                                <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
-                                                            {{/timecode?}}
-                                                        {{/metadata}}
-                                            
-                                                        <div id="annotation-body-{{id}}" class="meta">
-                                                            {{#metadata}}
-                                                                {{#tags?}}       
-                                                                    <div><span class="metadata-label">Tags:</span>
-                                                                        <span class="metadata-value">
-                                                                        {{#tags}}
-                                                                            <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
-                                                                        {{/tags}}
-                                                                        </span>
-                                                                    </div>
-                                                                {{/tags?}}
-                                                                {{#body?}}
-                                                                    <div>
-                                                                        <span class="metadata-label">Note:</span>
-                                                                        <span class="metadata-value">{{body}}</span> 
-                                                                    </div>
-                                                                {{/body?}}
-                                                            {{/metadata}}
-                                                        </div>
-                                                    </div>
-                                                    <div class="visualclear"></div>
-                                                </li>
-                                            </div>
+               
+               
+               
+            <div id="record-{{id}}-metadata" class="record-metadata">
+            {{#annotations?}}
+            <div class="asset-clips">
+            {{#annotations}} 
+            {{^is_null}}
+            <div id="annotation-{{id}}">
+                        <table class="selection-level-info">
+                            <tr>
+                                <td class="selection-inserter">
+                                <span class="citationTemplate">
+                                <img class="materialCitation" alt="" 
+                                src="/site_media/img/icons/insert_clip.png#annotation={{url}}&title={{metadata.title}}&type={{assets.primary_type}}&range1={{range1}}" 
+                                width="24" height="15" border="0" 
+                                onclick="addMaterialCitation(event)" 
+                                title="Add selection to the composition" 
+                                name="{{url}}"/>
+                                </span>
+                                </td>
+                                
+                                <td class="selection-thumb">
+                                <div id="annotation-thumb-{{id}}"></div>
+                                </td>
+                                <td class="selection-meta">
+                                <div class="metadata-container">
+                                
+                                <a target="_blank"
+                                class="materialCitationLink"
+                                title="Full Annotation Details"
+                                href="{{url}}">{{{metadata.title?default(-Untitled-)}}}</a>         
+                                
+                                {{#metadata}}
+                                {{#timecode?}}
+                                <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
+                                {{/timecode?}}
+                                {{/metadata}}
+                                
+                                <div id="annotation-body-{{id}}" class="meta">
+                                {{#metadata}}
+                                {{#tags?}}       
+                                <div><span class="metadata-label">Tags:</span>
+                                <span class="metadata-value">
+                                {{#tags}}
+                                    <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                {{/tags}}
+                                </span>
+                                </div>
+                                {{/tags?}}
+                                {{#body?}}
+                                <div>
+                                <span class="metadata-label">Note:</span>
+                                <span class="metadata-value">{{body}}</span> 
+                                </div>
+                                {{/body?}}
+                                {{/metadata}}
+                                </div>
+                                </div>
+                                </td>
+                                
+                                {{#editable?}}
+                                <td class="selection-trash">
+                                
+                                <div class="actions">
+                                <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
+                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+                                </div>
+                                
+                                </td>
+                                {{/editable?}}
+                                
+                            </tr>
+                        </table>
+                                             </div>
                                         {{/is_null}}
                                     {{/annotations}}
-                                    </ul>{{! class="asset-clips" }}
+                                    </div>{{! class="asset-clips" }}
                                     
                                 {{/annotations?}}
                              

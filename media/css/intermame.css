@@ -269,11 +269,6 @@ table#classwork-sub {
     min-width: 300px;
 }
 
-div#classwork_table table {
-    border: 1px solid #ccc;
-    border-collapse: separate;
-
-}
 
 div.column-contents {
 	padding-top: 10px;
@@ -339,6 +334,76 @@ list-style-type: none;
 	
 
 }
+
+table.item-level-info {
+
+    border: none;
+    width: 95%;
+    margin: 0 5px;
+    border-collapse: collapse;
+}
+
+table.item-level-info td {
+
+    vertical-align: top;
+    padding: 0px;
+    width: 0;
+
+}
+
+table.item-level-info td.item-meta {
+
+    width: 100%;
+}
+
+.metadata-container {
+    display: block;
+    float: left;
+    margin-left: 8px;
+    width: 93%;
+}
+
+.annotation-thumb {
+    float: left;
+}
+
+table.selection-level-info {
+
+    border: none;
+    width: 100%;
+    margin: 5px 0 2px 5px;
+    border-collapse: collapse;
+    background-color:#f7f7f7;
+}
+
+table.selection-level-info td {
+
+    border: none;
+    vertical-align: top;
+    padding: 5px 0px;
+    width: 0;
+
+}
+
+table.selection-level-info td.selection-inserter {
+
+    width: 25px;
+    padding-right: 3px;
+}
+
+table.selection-level-info td.selection-meta {
+
+    width: 100%;
+
+}
+
+table.selection-level-info td.selection-trash {
+
+    width: 19px;
+    padding-right: 3px;
+
+}
+
 
 /*Collection Styles*/
 

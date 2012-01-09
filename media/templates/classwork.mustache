@@ -262,12 +262,14 @@
                                                 href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
                                         </h4>
                                         
-                                         <div class="item-level-info">
-                                        
+                                         <table class="item-level-info">
+                                            <tr>
+                                            <td class="item-thumb">
                                         {{#thumb?}}
                                         <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
                                         {{/thumb?}}
-                                      
+                                      </td>
+                                <td class="item-meta">
                                                 {{#global_annotation}}
                                                     {{#metadata}}
                                                     <ul class="record-metadata-list">
@@ -302,7 +304,9 @@
                                                          {{/tags?}}
                                                     {{/space_owner}}
                                                 {{/global_annotation}}
-                                              </div>
+                                                </td>
+                            </tr>
+                                              </table>
                                               <br class="visualclear" />
                                               <div id="record-{{id}}-metadata" class="record-metadata">
                                             

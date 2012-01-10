@@ -1298,7 +1298,7 @@ background-color: #ece8df;
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
-   padding: 2px 5px;
+   padding: 2px 5px 0 0;
    width: 195px;
    height: 14px;
    font-size: 12px;
@@ -1310,7 +1310,7 @@ background-color: #ece8df;
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
-   padding: 2px 5px;
+   padding: 2px 5px 0 0;
    width: 125px;
    height: 14px;
    font-size: 12px;
@@ -1338,6 +1338,8 @@ background-color: #ece8df;
     text-decoration: none;
     color: #000;
     white-space: nowrap;
+    display: block;
+    text-transform: capitalize;
 
 }
 

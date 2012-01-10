@@ -24,7 +24,11 @@
 {% with help_browse_sources as default_help_state %}
                  
     <div id="external-archives" class="top-archive">
-        <h2>Source Media {% include "help/help_button.html" %}</h2>
+        <h2>Source Media {% include "help/help_button.html" %}{% if is_faculty %}
+                        <div id="managesources">
+                            <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
+                        </div>
+                    {% endif %}</h2>
         {% include "help/help_contentarea.html" %}
         
                     
@@ -46,11 +50,7 @@
         {% if archives %}
             <div id="archive_container" class="column-container media-column-container">  
                 <h2>Instructor Recommendations
-                    {% if is_faculty %}
-                        <div id="managesources">
-                            <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
-                        </div>
-                    {% endif %}
+                    
                 </h2>
                 {% for archive in archives %}
                     <div id="archive-{{archive.id}}" class="archive">

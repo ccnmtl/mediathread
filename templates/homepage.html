@@ -57,11 +57,6 @@
             var visible = getVisibleContentHeight();
             jQuery('#instructor .column-container').css('height', visible + "px");
             jQuery('#classwork').css('height', visible + "px");
-    
-            {% ifequal msg "upload" %}
-                var msg = "Your video file submission is being processed.\nYou will receive an e-mail when it is ready."
-                alert(msg);
-            {% endifequal %}
         });
     </script>
 {% endblock %}

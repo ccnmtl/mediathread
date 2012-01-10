@@ -305,68 +305,74 @@
                                                     {{/space_owner}}
                                                 {{/global_annotation}}
                                                 </td>
-                            </tr>
+                                             </tr>
                                               </table>
-                                              <br class="visualclear" />
-                                              <div id="record-{{id}}-metadata" class="record-metadata">
-                                            
-                                              {{#annotations?}}
-                                                    
-                                                        <ul class="asset-clips">
-                                                            {{#annotations}}
-                                                                {{^is_null}}
-                                                                   
-                                                                   <div class="annotation-container">
-                                                                   
-                                                                   <li id="annotation-{{id}}">
-                                                                        <div class="actions">
-                                                                            {{#editable?}}
-                                                                                <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
-                                                                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
-                                                                            {{/editable?}}
-                                                                        </div>{{!  class="actions"  }}
-                                                                        <a 
-                                                                          class="materialCitationLink"
-                                                                          title="Full Annotation Details"
-                                                                          href="{{url}}">{{{metadata.title?default(-Untitled-)}}}</a>         
-                                                                    
-                                                                        {{#metadata}}
-                                                                            {{#timecode?}}
-                                                                                <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
-                                                                            {{/timecode?}}
-                                                                        {{/metadata}}
-                        
-                                    
-                                                                        <div id="annotation-body-{{id}}" class="meta">
-                                                                            {{#metadata}}
-                                                                                {{#tags?}}       
-                                                                                    <div><span class="metadata-label">Tags:</span>
-                                                                                        <span class="metadata-value">
-                                                                                        {{#tags}}
-                                                                                            <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
-                                                                                        {{/tags}}
-                                                                                        </span>
-                                                                                    </div>
-                                                                                {{/tags?}}
-                                                                                {{#body?}}
-                                                                                    <div><span class="metadata-label">Note:</span>
-                                                                                        <span class="metadata-value">{{body}}</span> 
-                                                                                    </div>
-                                                                                {{/body?}}
-                                                                            {{/metadata}}
-                                                                        </div>
-                                                                        
-                                                                        {{! TODO Crazy Overloading section to support thumbnails }}
-                                                                    </li>
-                                                                {{/is_null}}
-                                                            {{/annotations}}
-                                                        </ul>{{! class="asset-clips" }}
-                                                    </li>
-                                                {{/annotations?}}
-                                            </ul> {{! class="record-metadata-list" }}
-                                        </div> {{! end record metadata }}
-                                        <div class="visualclear"></div>     
-                                    </div> {{! end id="record-id" }}
+                                              
+                                              
+                <div id="record-{{id}}-metadata" class="record-metadata">
+                {{#annotations?}}
+                <div class="asset-clips">
+                {{#annotations}}
+                {{^is_null}}
+                <div id="annotation-{{id}}">
+                        <table class="selection-level-info">
+                            <tr>
+                            {{! Too Crazy Overloading section to support thumbnails }}
+                            <td class="selection-meta">
+                                <div class="metadata-container">
+                                <a 
+                                class="materialCitationLink"
+                                title="Full Annotation Details"
+                                href="{{url}}">{{{metadata.title?default(-Untitled-)}}}</a>         
+                                
+                                {{#metadata}}
+                                {{#timecode?}}
+                                <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
+                                {{/timecode?}}
+                                {{/metadata}}
+                                
+                                
+                                <div id="annotation-body-{{id}}" class="meta">
+                                {{#metadata}}
+                                {{#tags?}}       
+                                <div><span class="metadata-label">Tags:</span>
+                                <span class="metadata-value">
+                                {{#tags}}
+                                <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                {{/tags}}
+                                </span>
+                                </div>
+                                {{/tags?}}
+                                {{#body?}}
+                                <div><span class="metadata-label">Note:</span>
+                                <span class="metadata-value">{{body}}</span> 
+                                </div>
+                                {{/body?}}
+                                {{/metadata}}
+                                </div>
+                                </div>
+                                </td>
+                              {{#editable?}}
+                                <td class="selection-trash">
+                                <div class="actions">
+                                <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
+                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+                                </div>
+                                </td>
+                                {{/editable?}}
+                                </tr>
+                            
+                            </table>
+               
+                
+                
+                </div>
+                {{/is_null}}
+                {{/annotations}}
+                </div>{{! class="asset-clips" }}
+                {{/annotations?}}
+                </div> {{! end record metadata }}
+                                </div> {{! end id="record-id" }}
                                     </div> {{! end id=materials, class="column-contents scroll" }} 
                                 {{/assets}}
                             

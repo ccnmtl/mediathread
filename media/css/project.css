@@ -136,6 +136,10 @@ img.materialCitation {
     margin:1px 0 0 5px;
 }
 
+h4 img.materialCitation {
+    margin: 0 3px 0px -1px;
+}
+
 input.materialCitation {
     background: #fff url('../img/icons/item_video.gif') left no-repeat;
     margin: 2px 0px 2px 4px;

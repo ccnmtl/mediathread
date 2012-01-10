@@ -363,12 +363,14 @@ padding-right: 4px;
 .asset_title.asset-kaltura        
 {
 	background-image: url(../img/icons/item_video.gif);
+	background-position: 5px 2px;
 }
 
 .asset_title.asset-image,
 .asset_title.asset-image_fpx
 {
 	background-image: url(../img/icons/item_image.gif);
+	background-position: 5px 2px;
 }
 
 .asset-insert-flv,
@@ -391,6 +393,7 @@ padding-right: 4px;
     height: 18px;
     width: 24px;
     float: left;
+    
 }
 
 .asset-insert-image,

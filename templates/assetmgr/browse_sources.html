@@ -4,15 +4,16 @@
 
 {% block js %}
     {{ block.super }}
-      
-    {% if newsrc %}
+    
+        
+    {% ifequal msg "upload" %}
         <script type="text/javascript"> 
             jQuery(document).ready(function() {
-                var msg = "The {{newsrc|escapejs}} source has been added to your course collection.";
+                var msg = "Your video file submission is being processed.\nYou will receive an e-mail when it is ready."
                 alert(msg);
             });
         </script>
-    {% endif %}
+    {% endifequal %}
     
 {% endblock %}
 
@@ -44,7 +45,13 @@
          
         {% if archives %}
             <div id="archive_container" class="column-container media-column-container">  
-                <h2>Instructor Recommendations</h2>
+                <h2>Instructor Recommendations
+                    {% if is_faculty %}
+                        <div id="managesources">
+                            <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Media Sources</a>
+                        </div>
+                    {% endif %}
+                </h2>
                 {% for archive in archives %}
                     <div id="archive-{{archive.id}}" class="archive">
                         {% if space_viewer.is_staff %}

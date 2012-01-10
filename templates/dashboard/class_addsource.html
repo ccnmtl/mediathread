@@ -8,7 +8,7 @@
     <script type="text/javascript"> 
         jQuery(document).ready(function() {
             {% if newsrc %}
-               var msg = "{{newsrc|escapejs}} has been enabled.";
+               var msg = "{{newsrc|escapejs}} has been enabled for your class.";
                alert(msg);
             {% else %}{% if changes_saved %}
                var msg = "Your changes have been saved.";

@@ -217,7 +217,7 @@ def add_asset(request):
                                 mimetype="application/json")
             
         elif "archive" == asset.primary.label:
-            redirect_url = request.POST.get('redirect-url', reverse('explore'))
+            redirect_url = request.POST.get('redirect-url', reverse('class-add-source'))
             url = "%s?newsrc=%s" % (redirect_url, asset.title)
             return HttpResponseRedirect(url)
         else:
@@ -430,8 +430,8 @@ def browse_sources(request):
           'can_upload': course_details.can_upload(request.user, request.course),
           'upload_service': getattr(settings,'UPLOAD_SERVICE',None),
           "help_browse_sources": UserSetting.get_setting(user, "help_browse_sources", True),
-          "help_no_sources": UserSetting.get_setting(user, "help_no_sources", True)
-          
+          "help_no_sources": UserSetting.get_setting(user, "help_no_sources", True),
+          'msg': request.GET.get('msg', '')
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
@@ -469,7 +469,7 @@ def source_specialauth(request,url,key):
     import hmac, hashlib, datetime
     
     nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
+    redirect_back = "%s?msg=upload" % (request.build_absolute_uri(reverse('explore')))
     username = request.user.username
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
         url,

@@ -205,7 +205,9 @@ div#materials h4 a
 {
     color: #fff;
     padding-right: 4px;
-    padding-left: 15px;
+    padding-left: 25px;
+    display: block;
+
 }
 
 div#materials h4 a.asset-title-link.insert

@@ -48,7 +48,7 @@
                 <h2>Instructor Recommendations
                     {% if is_faculty %}
                         <div id="managesources">
-                            <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Media Sources</a>
+                            <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
                         </div>
                     {% endif %}
                 </h2>
@@ -77,7 +77,7 @@
             <div id="archive_container" class="column-container media-column-container">  
                 <h2>Instructor Recommendations</h2>
                 {% if is_faculty %}
-                    <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="/dashboard/addsource/">Manage Media Sources</a> page in the <a href="{% url dashboard-home %}">Instructor Dashboard</a>.
+                    <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="{% url class-add-source %}">Manage Sources</a> page in the <a href="{% url dashboard-home %}">Instructor Dashboard</a>.
                 {% endif %}
             </div>                
         {% endif %}

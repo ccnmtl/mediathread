@@ -318,9 +318,6 @@
     window.AnnotationList = new (function AnnotationListAbstract(){
         var self = this;
         
-        //active_annotation
-        //mock_mode -- from page state
-        //storage
         this.init = function(config) {
             this.layers = {}; //should we really store layers here?
             this.grouping = null;
@@ -914,6 +911,11 @@
                     jQuery("#annotations-organized").hide();
                 } else {
                     jQuery("#annotations-organized").show();
+                }
+                
+                if (self.config.edit_state == "new") {
+                    self.config.edit_state = "";
+                    return self.newAnnotation();
                 }
             }});
         }

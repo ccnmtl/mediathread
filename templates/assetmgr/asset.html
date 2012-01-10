@@ -23,13 +23,14 @@
             {% if not mock %}
                 AnnotationList.init({ 
                      "asset_id":{{asset.id}}
+                     ,"level": "{{request.GET.level}}"
+                     ,"edit_state": "{{request.GET.edit_state}}"
                    {% if global_annotation %}
                      ,"global_annotation_id":{{global_annotation.id}}
                    {% endif %}       
                    {% if annotation %}
                      ,"annotation_id":{{annotation.id}}
                    {% endif %}
-                   ,"level": "{{request.GET.level}}" 
                 });
             {% endif %}
     });

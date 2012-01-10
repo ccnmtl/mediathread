@@ -1298,7 +1298,7 @@ background-color: #ece8df;
    padding: 2px 5px;
    width: 195px;
    height: 14px;
-   font-size: .9em;
+   font-size: 12px;
    text-align: center;
    margin: 2px 20px;
 }
@@ -1307,12 +1307,12 @@ background-color: #ece8df;
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
-   padding: 0px 5px 2px;
-   width: 195px;
+   padding: 2px 5px;
+   width: 125px;
    height: 14px;
-   font-size: .9em;
+   font-size: 12px;
    text-align: center;
-   margin: 0px 10px;
+   margin: -2px 0px;
 }
 
 

@@ -34,6 +34,7 @@ function switcher(a) {
 function toggleHelp(a, user, parent, help_content_id) {
     jQuery(parent).toggleClass('on off');
     jQuery("#" + help_content_id).toggleClass('on off');
+    jQuery(a).toggleClass('open');
     
     var user_setting = jQuery(parent).hasClass('on') ? 'True' : 'False';
         

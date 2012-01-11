@@ -143,7 +143,7 @@ def notifications(request):
         'my_feed':my_feed,
         'tag_cloud': tag_cloud,
         'space_viewer': user,
-        "help_notifications": UserSetting.get_setting(user, "help_notifications", False)
+        "help_notifications": UserSetting.get_setting(user, "help_notifications", True)
     }
     
 def remove_record(request, user_name, asset_id):

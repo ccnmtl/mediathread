@@ -187,7 +187,7 @@ When you find an image you want to analyze in an ARTstor collection list, click 
 ]
 
 template =     {'title':'',
-     'metadata':{'description':
+                'metadata':{'description':
                      ""
                  },
      'sources':{

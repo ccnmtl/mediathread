@@ -41,6 +41,7 @@ User = get_model('auth','user')
 #for portal
 Comment = get_model('comments','comment')
 ContentType = get_model('contenttypes','contenttype')
+SupportedSource = get_model('assetmgr', 'supportedsource')
         
 #returns important setting information for all web pages.
 def django_settings(request):
@@ -447,11 +448,9 @@ def dashboard(request):
 @allow_http("GET", "POST")
 @rendered_with('dashboard/class_addsource.html')
 def class_addsource(request):
-    from assetmgr.supported_archives import all 
     import operator
     
     key = course_details.UPLOAD_PERMISSION_KEY
-    all.sort(key=operator.itemgetter('title'))
     
     c = request.course
     user = request.user
@@ -469,7 +468,7 @@ def class_addsource(request):
     context = {
             'asset_request': request.GET,
             'course': c,
-            'supported_archives': all,   # sort by title
+            'supported_archives': SupportedSource.objects.all().order_by("title"),   # sort by title
             'space_viewer': request.user,
             'is_staff': request.user.is_staff,
             'newsrc' : request.GET.get('newsrc', ''),

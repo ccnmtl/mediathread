@@ -92,24 +92,25 @@
                             <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
                         {% endifincourse %}
                     
-                        <a href="{{archive.sources.archive.url}}" class="archive-link">{{archive.title}}</a>
+                        <a href="{{archive.archive_url}}" class="archive-link">{{archive.title}}</a>
                         <br />
-                        {%if archive.sources.thumb%}
-                            <a href="{{archive.sources.archive.url}}"><img src="{{archive.sources.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                        {% if archive.thumb_url %}
+                            <a href="{{archive.archive_url}}"><img src="{{archive.thumb_url}}" alt="thumbnail image" class="archive-link" />
                             </a>
                         {% endif %}
         
                         <span>
-                            {{archive.metadata.description|urlize|linebreaks}}
+                            {{archive.description|safe|urlize|linebreaks}}
                         </span>
         
                        {% include "assetmgr/pretender_select.html" %}
+                       
                        <input type="hidden" name="title" value="{{archive.title}}" />
-                       <input type="hidden" name="metadata-description" value="{{archive.metadata.description}}" />
-                       <input type="hidden" name="metadata-upload" value="{{archive.metadata.upload}}" />
-                       {%for lbl,src in archive.sources.items %}
-                         <input type="hidden" name="{{src.label}}" value="{{src.url}}" />
-                      {%endfor%}
+                       <input type="hidden" name="url" value="{{archive.archive_url}}" />
+                       <input type="hidden" name="archive" value="{{archive.archive_url}}" />
+                       <input type="hidden" name="thumb" value="{{archive.thumb_url}}" />
+                       <input type="hidden" name="metadata-description" value="{{archive.description}}" />
+                       <input type="hidden" name="metadata-upload" value="0">
                     </form>
                 </li>
             {%endfor%}

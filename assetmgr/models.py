@@ -229,3 +229,12 @@ class Source(models.Model):
     def dir(self):
         return dir(self)    
         
+class SupportedSource(models.Model):
+    title = models.CharField(max_length=1024)
+    archive_url = models.CharField(max_length=1024)
+    thumb_url = models.CharField(max_length=1024)
+    description = models.TextField()
+    
+    def __unicode__(self):
+        return self.title
+

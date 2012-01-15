@@ -1,4 +1,4 @@
-from models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, SupportedSource
 from django.contrib import admin
 
 class AssetAdmin(admin.ModelAdmin):
@@ -11,4 +11,5 @@ class AssetAdmin(admin.ModelAdmin):
 
 admin.site.register(Asset,AssetAdmin)
 admin.site.register(Source)
+admin.site.register(SupportedSource)
 

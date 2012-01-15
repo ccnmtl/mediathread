@@ -20,7 +20,7 @@ class InCourseNode(template.Node):
         a = context[self.archive_key]
         c = context[self.course_key]
         
-        lst = Asset.objects.filter(title=a["title"], course=c)
+        lst = Asset.objects.filter(title=a.title, course=c)
         for asset in lst:
             if asset.primary and asset.primary.is_archive():
                 return self.nodelist_true.render(context)

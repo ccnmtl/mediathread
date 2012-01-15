@@ -379,8 +379,10 @@ def get_records(user, course, request):
                 if not annotation.author_id:
                     return None
                 return 'author_name',get_public_name(annotation.author, request)
+            def primary_type(request, annotation, key):
+                return "primary_type",asset.primary.label
             for ann in asset.sherdnote_set.filter(range1__isnull=False,author=user):
-                annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body','modified', 'timecode') ) )
+                annotations.append(ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body','modified', 'timecode',primary_type) ))
             the_json['annotations'] = annotations
             
         asset_json.append(the_json)

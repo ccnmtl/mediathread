@@ -122,6 +122,7 @@ ANONYMOUS_PATHS = ('/site_media/',
                    '/accounts/',
                    '/admin/',
                    '/api/',
+                   '/help/'
                    )
 
 NON_ANONYMOUS_PATHS = ('/asset/',
@@ -143,7 +144,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                       )
 
 #save is an exception, for server2server api
-COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save','/settings','/help/')
+COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save','/settings')
 
 COURSEAFFILS_EXEMPT_PATHS = ANONYMOUS_PATHS
 COURSEAFFIL_AUTO_MAP_GROUPS = ['demo']

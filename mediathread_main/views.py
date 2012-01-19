@@ -490,6 +490,35 @@ def class_addsource(request):
             
     return context
 
+@allow_http("GET", "POST")
+@rendered_with('dashboard/class_settings.html')
+def class_settings(request):
+    import operator
+    
+    c = request.course
+    user = request.user
+    if not request.course.is_faculty(user):
+        return HttpResponseForbidden("forbidden")
+    
+    context = {
+            'asset_request': request.GET,
+            'course': c,
+            'space_viewer': request.user,
+            'is_staff': request.user.is_staff,
+            'help_public_compositions': UserSetting.get_setting(user, "help_public_compositions", True),
+    }
+    
+    key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
+    context[course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY] = int(c.get_detail(key, course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
+    
+    if request.method == "POST":
+        value = int(request.POST.get(key))
+        request.course.add_detail(key, value)
+        context['changes_saved'] = True
+        context[key] = value
+            
+    return context
+
 @allow_http("POST")
 def set_user_setting(request, user_name):
     if not request.is_ajax():

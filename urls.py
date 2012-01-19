@@ -43,6 +43,7 @@ urlpatterns = patterns('',
                        (r'^$', 'mediathread_main.views.triple_homepage'),
                        url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
                        url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource', name="class-add-source"),
+                       url(r'^dashboard/settings/', 'mediathread_main.views.class_settings', name="class-settings"),
                        url(r'^dashboard/$', 'mediathread_main.views.dashboard', name="dashboard-home"),
                        
                        (r'^asset/', include('mediathread.assetmgr.urls')),

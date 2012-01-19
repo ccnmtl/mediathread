@@ -18,3 +18,11 @@ def can_upload(user, course):
         return True
     elif value == UPLOAD_PERMISSION_STUDENT:
         return True 
+
+ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
+ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
+
+def allow_public_compositions(course):
+    value = int(course.get_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY, ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
+    b = bool(value)
+    return b

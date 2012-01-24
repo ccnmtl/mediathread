@@ -76,7 +76,6 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.markup',
     'sorl.thumbnail',
@@ -85,8 +84,6 @@ INSTALLED_APPS = (
     'tagging',
     'smartif',
     'modelversions',
-    #'debug_toolbar',
-    #mediathread local
     'structuredcollaboration',
     'djangosherd',#strangely must precede assetmgr
     'assetmgr',
@@ -95,8 +92,6 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'threadedcomments',
     'djangohelpers',
-    #mediathread local
-    #'slider',
     'reports',
     'mediathread_main',
     'sentry.client'

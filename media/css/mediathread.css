@@ -935,12 +935,14 @@ div.button-form form, div.button-form.inline form.nofloat{
 
 table#assignment-container {
     margin: 0;
-    width: 100%;
+    width: 99%;
     border: none;
 }
 
 table#assignment-container tr, table#assignment-container tr td {
     border: none;
+    margin: 0;
+    padding: 0;
 }
 
 table#assignment-container tr td.panhandle {
@@ -956,6 +958,8 @@ table#assignment-container tr td.panhandle {
     vertical-align: top;
 
 
+
+
 }
 
 table#assignment-container tr td.panhandle div.label {
@@ -966,7 +970,6 @@ table#assignment-container tr td.panhandle div.label {
 	-o-transform: rotate(90deg);
 	white-space:nowrap;
 	display:block;
-	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
 	font-size:12px;
 	font-weight:normal;
 	text-transform: uppercase;
@@ -981,6 +984,30 @@ table#assignment-container tr td.panel {
     border: 1px solid #8f8f8f;
 }
 
+table#assignment-container tr td.pantab {
+    vertical-align: top;
+    text-align: left;
+   width: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    height: 100%;
+}
+
+table#assignment-container tr td.pantab div.widget {
+    width: 15px;
+    height: 19px;
+    border-radius: 0px 5px 5px 0px; 
+    -moz-border-radius: 0px 5px 5px 0px; 
+    -webkit-border-radius: 0px 5px 5px 0px;
+    background-image:url('../img/panels/closer_bg.png');
+    background-repeat: no-repeat;
+    border-left: 1px solid #ccc;
+    background-position: left center;
+    margin: 0;
+    
+
+}
+
 table#assignment-container tr td.panel.closed {
     display: none;
 }
@@ -989,7 +1016,8 @@ table#assignment-container tr td.panel.open {
     display: table-cell;
 }
 
-table#assignment-container tr td.panhandle.instructor {
+table#assignment-container tr td.panhandle.instructor,
+table#assignment-container tr td.pantab div.widget.instructor {
     background-color: #006031;
 }
 
@@ -999,7 +1027,8 @@ table#assignment-container tr td.panel.fixed.instructor {
     width: 330px;
 }
 
-table#assignment-container tr td.panhandle.composition {
+table#assignment-container tr td.panhandle.composition,
+table#assignment-container tr td.pantab div.widget.composition {
     background-color: #557691;
 }
 
@@ -1007,7 +1036,8 @@ table#assignment-container tr td.panel.fluid.composition {
     min-width: 330px;
 }
 
-table#assignment-container tr td.panhandle.collection {
+table#assignment-container tr td.panhandle.collection,
+table#assignment-container tr td.pantab div.widget.collection {
     background-color: #A88448;
 }
 

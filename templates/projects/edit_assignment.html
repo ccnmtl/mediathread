@@ -71,7 +71,7 @@
     
     <table id="assignment-container" class="panel">
         <tr>
-            <td class="panhandle instructor"></td>
+            <td class="panhandle instructor"><div class="label">Assignment</div></td>
             <td class="panel fixed instructor closed">
                 {% with project.assignment as assignment %}
                 <div class="assignment-project">
@@ -87,8 +87,8 @@
                     </div>
                 {% endwith %}
             </td>
-                        
-            <td class="panhandle composition"></td>
+            <td class="pantab"></td>           
+            <td class="panhandle composition"><div class="label">Composition</div></td>
             <td class="panel fluid composition open">
                     <form id="editproject" name="editproject" method="POST" action=".">
                         <div id="last-version-saved">
@@ -148,8 +148,9 @@
                     </form>
             
             </td>
+            <td class="pantab"></td>
             
-            <td class="panhandle collection"></td>
+            <td class="panhandle collection"><div class="label">Collections</div></td>
             <td class="panel fixed collection open">
                  <div id="collection-materials">
                     <h2>
@@ -165,6 +166,7 @@
                 </div>
             </td>
             <td/>
+                 <td class="pantab"></td>
         </tr>
     </table>
 {% endblock %}

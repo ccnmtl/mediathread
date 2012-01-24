@@ -15,7 +15,6 @@
 {% block css %}
     {{ block.super }}
     <link rel="stylesheet" href="/site_media/css/project.css" />
-    <link rel="stylesheet" href="/site_media/css/panel.css" />
     <script type="text/javascript" src="/jsi18n"></script>
     {{ projectform.media }}
 
@@ -72,8 +71,8 @@
     
     <table id="assignment-container" class="panel">
         <tr>
-            <td class="panhandle assignment"></td>
-            <td class="panel fixed assignment closed">
+            <td class="panhandle instructor"></td>
+            <td class="panel fixed instructor closed">
                 {% with project.assignment as assignment %}
                 <div class="assignment-project">
                     <h1>{{assignment.title}}

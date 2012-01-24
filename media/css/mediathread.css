@@ -933,73 +933,62 @@ div.button-form form, div.button-form.inline form.nofloat{
 
 /*SLIDING ASSIGNMENT TABLE*/
 
-table#assignment-container tr td {
-    border: 1px solid blue;
+table#assignment-container {
+    margin: 0;
+    width: 100%;
+    border: none;
+}
+
+table#assignment-container tr, table#assignment-container tr td {
+    border: none;
 }
 
 table#assignment-container tr td.panhandle {
-
+    width: 26px;
+    min-width: 26px;
+    padding: 0px;
+    border: none;
 }
 
 table#assignment-container tr td.panel {
-
+    vertical-align: top;
+    text-align: left;
+    padding: 0px;
+    border: none;
 }
 
+table#assignment-container tr td.panel.closed {
+    display: none;
+}
 
-table#assignment-container tr td#instructor-panhandle {
-
+table#assignment-container tr td.panel.open {
+    display: block;
 }
 
 table#assignment-container tr td.panhandle.instructor {
-
+    background-color: #006031;
 }
 
-table#assignment-container tr td#instructor-panel {
-
+table#assignment-container tr td.panel.fixed.instructor {
+    min-width: 330px;
+    max-width: 330px;
+    width: 330px;
 }
 
-table#assignment-container tr td.panel.instructor {
-
+table#assignment-container tr td.panhandle.composition {
+    background-color: #557691;
 }
 
-
-table#assignment-container tr td#response-panhandle {
-
+table#assignment-container tr td.panel.fluid.composition {
+    min-width: 330px;
 }
 
-table#assignment-container tr td.panhandle.project {
-
+table#assignment-container tr td.panhandle.collection {
+    background-color: #A88448;
 }
 
-table#assignment-container tr td#response-panel {
-
-}
-
-table#assignment-container tr td.panel.project {
-
-}
-
-
-table#assignment-container tr td#collections-panhandle {
-
-}
-
-table#assignment-container tr td.panhandle.collections {
-
-}
-
-table#assignment-container tr td#collections-panel {
-
-}
-
-table#assignment-container tr td.panel.collections {
-
-}
-
-table#assignment-container tr td#media-panel {
-
-}
-
-table#assignment-container tr td.panel.item {
-
+table#assignment-container tr td.panel.fixed.collection {
+    min-width: 330px;
+    max-width: 330px;
+    width: 330px;
 }

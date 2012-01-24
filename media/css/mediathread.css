@@ -929,3 +929,77 @@ div.button-form form, div.button-form.inline form.nofloat{
 
 	float: none;
 }
+
+
+/*SLIDING ASSIGNMENT TABLE*/
+
+table#assignment-container tr td {
+    border: 1px solid blue;
+}
+
+table#assignment-container tr td.panhandle {
+
+}
+
+table#assignment-container tr td.panel {
+
+}
+
+
+table#assignment-container tr td#instructor-panhandle {
+
+}
+
+table#assignment-container tr td.panhandle.instructor {
+
+}
+
+table#assignment-container tr td#instructor-panel {
+
+}
+
+table#assignment-container tr td.panel.instructor {
+
+}
+
+
+table#assignment-container tr td#response-panhandle {
+
+}
+
+table#assignment-container tr td.panhandle.project {
+
+}
+
+table#assignment-container tr td#response-panel {
+
+}
+
+table#assignment-container tr td.panel.project {
+
+}
+
+
+table#assignment-container tr td#collections-panhandle {
+
+}
+
+table#assignment-container tr td.panhandle.collections {
+
+}
+
+table#assignment-container tr td#collections-panel {
+
+}
+
+table#assignment-container tr td.panel.collections {
+
+}
+
+table#assignment-container tr td#media-panel {
+
+}
+
+table#assignment-container tr td.panel.item {
+
+}

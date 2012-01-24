@@ -10,13 +10,16 @@
             jQuery(".panhandle").click(function(event) {
                 self.onClickPanhandle(this, event);
             });
+            
+            // figure out which panels get shown/hidden
+            // config should contain the rules
+            // panels ordered by show/hide behavior?
         }
         
         this.onClickPanhandle = function(element, event) {
             // Open the panhandle's panel
             var panel = jQuery(element).nextAll(".panel");
-            jQuery(panel[0]).toggleClass("open");
-            jQuery(panel[0]).children().css("display: none");
+            jQuery(panel[0]).toggleClass("open closed");
             
             var screenWidth = jQuery(window).width();
             console.log("The screen is: " + screenWidth);

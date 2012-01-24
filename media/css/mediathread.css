@@ -946,6 +946,7 @@ table#assignment-container tr, table#assignment-container tr td {
 table#assignment-container tr td.panhandle {
     width: 26px;
     min-width: 26px;
+    max-width: 26px;
     padding: 0px;
     border: none;
 }
@@ -962,7 +963,7 @@ table#assignment-container tr td.panel.closed {
 }
 
 table#assignment-container tr td.panel.open {
-    display: block;
+    display: table-cell;
 }
 
 table#assignment-container tr td.panhandle.instructor {

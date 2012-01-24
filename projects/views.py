@@ -4,7 +4,8 @@ from django.http import HttpResponseForbidden
 from django.http import HttpResponse
 
 from django.shortcuts import get_object_or_404
-
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 from django.db.models import get_model
 
@@ -32,14 +33,13 @@ from djangohelpers.lib import allow_http
 
 
 ### VIEWS ###
-@rendered_with('projects/edit_project.html')
 def project_workspace(request, user, project):
     space_viewer = request.user
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
 
     projectform = ProjectForm(request, instance=project)
-    return {
+    context = {
         'is_space_owner': project.is_participant(user),
         'space_owner': user,
         'space_viewer': space_viewer,
@@ -47,6 +47,12 @@ def project_workspace(request, user, project):
         'projectform': projectform,
         'page_in_edit_mode': True,
     }
+    
+    if project.assignment():
+        # this project is an assignment response
+        return render_to_response('projects/edit_assignment.html', context, context_instance=RequestContext(request))
+    else:
+        return render_to_response('projects/edit_project.html', context, context_instance=RequestContext(request))
 
 @rendered_with('projects/published_project.html')
 def project_preview(request, user, project, is_participant=None, preview_num=0):

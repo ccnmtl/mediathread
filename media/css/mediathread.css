@@ -947,15 +947,38 @@ table#assignment-container tr td.panhandle {
     width: 26px;
     min-width: 26px;
     max-width: 26px;
-    padding: 0px;
+    height: 100%;
+    padding: 20px 0;
     border: none;
+    border-radius: 10px 0px 0px 10px; 
+    -moz-border-radius: 10px 0px 0px 10px; 
+    -webkit-border-radius: 10px 0px 0px 10px; 
+    vertical-align: top;
+
+
+}
+
+table#assignment-container tr td.panhandle div.label {
+    color: #fff;
+	writing-mode:tb-rl;
+	-webkit-transform:rotate(90deg);
+	-moz-transform:rotate(90deg);
+	-o-transform: rotate(90deg);
+	white-space:nowrap;
+	display:block;
+	font-family: ‘Trebuchet MS’, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:normal;
+	text-transform: uppercase;
+	
+
 }
 
 table#assignment-container tr td.panel {
     vertical-align: top;
     text-align: left;
-    padding: 0px;
-    border: none;
+    padding: 10px;
+    border: 1px solid #8f8f8f;
 }
 
 table#assignment-container tr td.panel.closed {

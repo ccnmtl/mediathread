@@ -945,7 +945,8 @@ table#assignment-container tr, table#assignment-container tr td {
     padding: 0;
 }
 
-table#assignment-container tr td.panhandle-topleft-container {
+table#assignment-container tr td.panhandle-topleft-container,
+table#assignment-container tr td.panhandle-bottomleft-container {
 
     width: 26px;
     min-width: 26px;
@@ -953,7 +954,19 @@ table#assignment-container tr td.panhandle-topleft-container {
     height: 26px;
     padding: 0;
     border: 0; 
-    background-color: pink;
+
+
+}
+
+table#assignment-container tr td.panhandle-left-container {
+
+    width: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+
 
 }
 
@@ -965,11 +978,37 @@ table#assignment-container tr td.panhandle-topleft-container div.panhandle-tople
     height: 100%;
     padding: 20px 0;
     border: 1px solid #ccc;
-    border-radius: 10px 0px 0px 10px; 
-    -moz-border-radius: 10px 0px 0px 10px; 
-    -webkit-border-radius: 10px 0px 0px 10px; 
+    border-radius: 10px 0px 0px 0px; 
+    -moz-border-radius: 10px 0px 0px 0px; 
+    -webkit-border-radius: 10px 0px 0px 0px; 
     vertical-align: top;
-    background-color: red;
+    background-color: #fff;
+
+}
+
+table#assignment-container tr td.panhandle-topleft-container div.panhandle-left {
+
+    width: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    border-left: 1px solid #ccc;
+    background-color: #fff;
+
+}
+
+table#assignment-container tr td.panhandle-bottomleft-container div.panhandle-bottomleft {
+
+    width: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    height: 100%;
+    padding: 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 0px 0px 0px 10px; 
+    -moz-border-radius: 0px 0px 0px 10px; 
+    -webkit-border-radius: 0px 0px 0px 10px; 
+    vertical-align: top;
+    background-color: #fff;
 
 }
 

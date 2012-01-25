@@ -69,7 +69,7 @@
 {% block content %}
     {{ block.super }}
     
-<table id="assignment-container">
+<table id="sliding-content-container">
         
        <tr id="table-content">
     
@@ -85,10 +85,23 @@
         
         
         <td id="assignment-panel" class="panel-container">
-        <div class="panel"></div>
+            <div class="panel">
+            <table id="assignment-subcontainer">
+                <tr>
+                    <td id="assignment-body"></td>
+                    
+                    <td id="assignment-media-pantab">
+                    <div class="pantab assignment media"></div>
+                    </td>
+                    
+                    <td id="assignment-media"></td>
+                
+                </tr>
+            </table>
+            </div>
         </td>
         
-        <td id="assignment-paneltab" class="pantab-container">
+        <td id="assignment-pantab" class="pantab-container">
         <div class="pantab assignment"></div>
         </td>
         
@@ -104,10 +117,25 @@
         </td>
         
         <td id="composition-panel" class="panel-container">
-        <div class="panel"></div>
+            <div class="panel">
+            
+            <table id="composition-subcontainer">
+                <tr>
+                    <td id="composition-body"></td>
+                    
+                    <td id="collections-pantab">
+                    <div class="pantab collections"></div>
+                    </td>
+                    
+                    <td id="collections-container"></td>
+
+                </tr>
+            </table>
+            
+            </div>
         </td>
         
-        <td id="composition-paneltab" class="pantab-container">
+        <td id="composition-pantab" class="pantab-container">
         <div class="pantab composition"></div>
         </td>
         

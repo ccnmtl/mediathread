@@ -88,13 +88,31 @@
             <div class="panel">
             <table id="assignment-subcontainer">
                 <tr>
-                    <td id="assignment-body"></td>
+                    <td id="assignment-body">
+                        <div id="assignment-body-container">
+                            {% with project.assignment as assignment %}
+                            <div class="assignment-project">
+                            <h1>{{assignment.title}}
+                            {% if version_number %}Version {{version_number}}{% endif %}
+                            </h1>
+                            <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for assignment.attribution_list %}</span></h5>
+                            </div>
+                            
+                            
+                            <div class="essay-space">  
+                            {{assignment.body|safe}}
+                            </div>
+                            {% endwith %}
+                        </div>
+                    </td>
                     
-                    <td id="assignment-media-pantab">
+                  <!--  <td id="assignment-media-pantab">
                     <div class="pantab assignment media"></div>
                     </td>
                     
-                    <td id="assignment-media"></td>
+                    <td id="assignment-media">
+                    <div id="assignment-media-container">Media shows here</div>
+                    </td>-->
                 
                 </tr>
             </table>
@@ -121,13 +139,85 @@
             
             <table id="composition-subcontainer">
                 <tr>
-                    <td id="composition-body"></td>
+                    <td id="composition-body">
+                         <div id="composition-body-container">
+                            <form id="editproject" name="editproject" method="POST" action=".">
+                        <div id="last-version-saved">
+                            <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+                            <span id="last-version-public">
+                            {% if project.public_url %}
+                                (<a href="{{project.public_url}}">public url</a>)
+                            {% endif %}
+                            </span>
+                        </div>
+                        <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
+                        
+                        {% with project.assignment as assignment %}
+                        {% if assignment %}
+                                <h6 class="assignment-project">Response for
+                                    <a target="_blank" 
+                                       href="{{assignment.get_absolute_url}}">
+                                      {{assignment.title}}
+                                    </a>
+                                </h6>
+        
+                        {% endif %}
+                        {% endwith %}
+                        
+                        <h6><b>by</b>
+                            <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
+                        </h6>
+                        
+                        
+                        <div>
+                            <script type="text/javascript">
+                                var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+                            </script>
+                            <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+                            <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
+                            <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
+                        </div>
+        
+                        <div id="project_participants">
+                            <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
+                            <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
+                            <br />
+                            <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
+                                <div>{{projectform.participants}}</div> 
+                            </div>
+                        </div><!-- end id="project_participants" -->
+                
+                        <div id="project-form-buttons"> 
+                            <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+                            <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+                     
+                            <span class="project-dropdown">
+                                    {{projectform.publish.label_tag}}    
+                                    {{projectform.publish}}
+                            </span>
+                        </div>
+                    </form>
+                         </div>
+                    </td>
                     
                     <td id="collections-pantab">
                     <div class="pantab collections"></div>
                     </td>
                     
-                    <td id="collections-container"></td>
+                    <td id="collection-container">
+                    <div id="collection-materials">
+                        <h2>
+                            <div class="button-form inline">
+                                <form class="block media-browse hinline" method="POST" action="/explore/">
+                                    <input type="hidden" name="title" />
+                                    <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
+                                </form>
+                            </div>
+                            Collections
+                        </h2>
+                        <div id="collection_table"></div>
+                    </div>
+                    </td>
 
                 </tr>
             </table>

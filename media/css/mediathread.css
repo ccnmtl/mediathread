@@ -933,21 +933,21 @@ div.button-form form, div.button-form.inline form.nofloat{
 
 /*SLIDING ASSIGNMENT TABLE*/
 
-table#assignment-container {
+table#sliding-content-container {
     margin: 0;
     width: 99%;
     border: none;
     min-height: 200px;
 }
 
-table#assignment-container tr, table#assignment-container tr td {
+table#sliding-content-container tr, table#sliding-content-container tr td {
     border: none;
     margin: 0;
     padding: 0;
     vertical-align: top;
 }
 
-table#assignment-container tr td.panhandle-left-container {
+table#sliding-content-container tr td.panhandle-left-container {
 
     width: 15px;
     min-width: 15px;
@@ -955,7 +955,7 @@ table#assignment-container tr td.panhandle-left-container {
 }
 
 
-table#assignment-container tr td.panhandle-left-container div.panhandle-left {
+table#sliding-content-container tr td.panhandle-left-container div.panhandle-left {
 
     width: 15px;
     height: 100%;
@@ -971,28 +971,28 @@ table#assignment-container tr td.panhandle-left-container div.panhandle-left {
 
 }
 
-table#assignment-container tr td.panhandle-stripe {
+table#sliding-content-container tr td.panhandle-stripe {
 
     width: 17px;
-    padding-top: 5px;
+    padding-top: 7px;
 
 }
 
-table#assignment-container tr td.panhandle-stripe.assignment {
+table#sliding-content-container tr td.panhandle-stripe.assignment {
 
     background-color: green;
     
 
 }
 
-table#assignment-container tr td.panhandle-stripe.composition {
+table#sliding-content-container tr td.panhandle-stripe.composition {
 
     background-color: blue;
 
 }
 
 
-table#assignment-container tr td.panhandle-stripe div.label {
+table#sliding-content-container tr td.panhandle-stripe div.label {
     color: #fff;
 	writing-mode:tb-rl;
 	-webkit-transform:rotate(90deg);
@@ -1009,20 +1009,20 @@ table#assignment-container tr td.panhandle-stripe div.label {
 
 }
 
-table#assignment-container tr td.panel-container {
+table#sliding-content-container tr td.panel-container {
 
 }
 
-table#assignment-container tr td.panel-container div.panel {
+table#sliding-content-container tr td.panel-container div.panel {
 
     border: 1px solid #ccc;
     margin: 0;
-    padding: 10px;
+    padding: 10px 0 10px 10px;
     border-left: none;
     min-height: 180px;
 }
 
-table#assignment-container tr td.pantab-container {
+table#sliding-content-container tr td.pantab-container {
     vertical-align: top;
     text-align: left;
     width: 20px;
@@ -1031,7 +1031,7 @@ table#assignment-container tr td.pantab-container {
     height: 100%;
 }
 
-table#assignment-container tr td.pantab-container div.pantab {
+div.pantab {
     width: 15px;
     height: 19px;
     border-radius: 0px 5px 5px 0px; 
@@ -1048,57 +1048,126 @@ table#assignment-container tr td.pantab-container div.pantab {
 
 }
 
-table#assignment-container tr td.pantab div.widget.closed {
+div.pantab div.widget.closed {
 
     background-image:url('../img/panels/opener_bg.png');
 }
 
-table#assignment-container tr td.pantab-container div.pantab.assignment {
+div.pantab.assignment {
     background-color: green;
 
 }
 
-table#assignment-container tr td.pantab-container div.pantab.composition {
+div.pantab.composition {
     background-color: blue;
 
 }
 
 
+div.pantab.collections,
+div.pantab.assignment.media {
+    width: 15px;
+    height: 19px;
+    border-radius: 5px 0px 0px 5px; 
+    -moz-border-radius: 5px 0px 0px 5px; 
+    -webkit-border-radius: 5px 0px 0px 5px;
+    background-image:url('../img/panels/closer_bg.png');
+    background-repeat: no-repeat;
+    border: 1px solid #ccc;
+    border-right: none;
+    background-position: left center;
+    margin: 0;
+    float: right;
+    
+}
 
-table#assignment-container tr td.panel.closed {
+div.pantab.collections {
+    background-color: yellow;
+    
+}
+
+
+div.pantab.assignment.media {
+    background-color: #666;
+    
+}
+
+table#assignment-subcontainer,
+table#composition-subcontainer {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border: none;
+    min-height: 200px;
+}
+
+
+table#assignment-subcontainer tr td,
+table#composition-subcontainer tr td {
+    margin: 0;
+    padding: 0;
+    border: none;
+
+}
+
+td#assignment-body {
+    background-color: green;
+    min-width: 300px;
+}
+
+td#composition-body {
+    background-color: #dedede;
+    width: 100%;
+}
+
+td#assignment-media {
+    background-color: #dedede;
+    width: 100%;
+}
+
+td#collections-container {
+    background-color: yellow;
+    min-width: 300px;
+}
+
+
+
+table#sliding-content-container tr td.panel.closed {
     display: none;
 }
 
-table#assignment-container tr td.panel.open {
+table#sliding-content-container tr td.panel.open {
     display: table-cell;
 }
 
-table#assignment-container tr td.panhandle.instructor,
-table#assignment-container tr td.pantab div.widget.instructor {
+
+
+table#sliding-content-container tr td.panhandle.instructor,
+table#sliding-content-container tr td.pantab div.widget.instructor {
     background-color: #006031;
 }
 
-table#assignment-container tr td.panel.fixed.instructor {
+table#sliding-content-container tr td.panel.fixed.instructor {
     min-width: 330px;
     max-width: 330px;
     width: 330px;
 }
 
-table#assignment-container tr td.panhandle.composition,
-table#assignment-container tr td.pantab div.widget.composition {
+table#sliding-content-container tr td.panhandle.composition,
+table#sliding-content-container tr td.pantab div.widget.composition {
     background-color: #557691;
 }
 
-table#assignment-container tr td.panel.fluid.composition {
+table#sliding-content-container tr td.panel.fluid.composition {
     min-width: 330px;
 }
 
-table#assignment-container tr td.panhandle.collection,
-table#assignment-container tr td.pantab div.widget.collection {
+table#sliding-content-container tr td.panhandle.collection,
+table#sliding-content-container tr td.pantab div.widget.collection {
     background-color: #A88448;
 }
 
-table#assignment-container tr td.panel.fixed.collection {
+table#sliding-content-container tr td.panel.fixed.collection {
     min-width: 380px;
     max-width: 380px;
     width: 380px;

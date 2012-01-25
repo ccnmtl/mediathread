@@ -937,7 +937,7 @@ table#sliding-content-container {
     margin: 0;
     width: 99%;
     border: none;
-    min-height: 200px;
+    max-width: 1085px;
 }
 
 table#sliding-content-container tr, table#sliding-content-container tr td {
@@ -959,7 +959,7 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
 
     width: 15px;
     height: 100%;
-    min-height: 200px;
+    min-height: 600px;
     border: 1px solid #ccc;
     border-radius: 10px 0px 0px 10px; 
     -moz-border-radius: 10px 0px 0px 10px; 
@@ -1067,7 +1067,7 @@ div.pantab.composition {
 div.pantab.collections,
 div.pantab.assignment.media {
     width: 15px;
-    height: 19px;
+    height: 15px;
     border-radius: 5px 0px 0px 5px; 
     -moz-border-radius: 5px 0px 0px 5px; 
     -webkit-border-radius: 5px 0px 0px 5px;
@@ -1082,14 +1082,22 @@ div.pantab.assignment.media {
 }
 
 div.pantab.collections {
-    background-color: yellow;
+    background-color: #A88448;
+    margin-top: 73px;
     
 }
 
 
 div.pantab.assignment.media {
+
+    border: 1px solid #ccc;
+    margin-top: 70px;
     background-color: #666;
     
+}
+
+td#assignment-panel {
+    background-color: #DAE7E0;
 }
 
 table#assignment-subcontainer,
@@ -1110,27 +1118,56 @@ table#composition-subcontainer tr td {
 
 }
 
-td#assignment-body {
-    background-color: green;
-    min-width: 300px;
+table#assignment-subcontainer tr td#assignment-body {
+
+    min-width: 380px;
 }
 
-td#composition-body {
+#assignment-body-container {
+    padding: 0 5px 10px 0;
+    margin-right: 10px;
+    
+}
+
+#assignment-media-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 70px;
     background-color: #dedede;
+    
+}
+
+table#composition-subcontainer tr td#composition-body {
+
     width: 100%;
+    min-width: 510px;
+}
+
+#composition-body-container {
+    padding: 5px 10px 10px 5px;
+    margin-right: 10px;
+    
 }
 
 td#assignment-media {
-    background-color: #dedede;
     width: 100%;
 }
 
-td#collections-container {
-    background-color: yellow;
-    min-width: 300px;
+td#collection-container {
+
+    min-width: 380px;
 }
 
+td#collection-container div#collection-materials {
+    margin-top: 65px;
+}
 
+td#collection-container div#collection-materials h2 {
+
+    border-radius: 10px 0 0 0;
+    -moz-border-radius: 10px 0 0 0; 
+    -webkit-border-radius: 10px 0 0 0;
+}
 
 table#sliding-content-container tr td.panel.closed {
     display: none;

@@ -70,51 +70,7 @@
     {{ block.super }}
     
 <table id="assignment-container">
- 
- 
-<!--BEGIN TOP ROW--> 
-
-       <tr id="top-borders">
-            <!--BEGIN ASSIGNMENT PANEL-->   
-            
-                <td id="assignment-panhandle-topleft" class="panhandle-topleft-container">
-                <div class="panhandle-topleft assignment"></div>
-                </td>
-                
-                <td id="assignment-panhandle-stripetop" class="panhandle-stripetop assignment">
-                </td>
-                
-                <td id="assignment-panel-topborder">
-                </td>
-                
-                <td id="assignment-paneltab">
-                </td>
-                
-            <!--END ASSIGNMENT PANEL-->  
-            <!--BEGIN COMPOSITION PANEL-->
-            
-                <td id="composition-panhandle-topleft" class="panhandle-topleft-container">
-                <div class="panhandle-topleft composition"></div>
-                </td>
-                
-                <td id="composition-panhandle-stripetop" class="panhandle-stripetop composition">
-                </td>
-                
-                <td id="composition-panel-topborder">
-                </td>
-                
-                <td id="composition-paneltab">
-                </td>
-                
-            
-            <!--END COMPOSITION PANEL-->
-       </tr>
-       
-
-<!--END TOP ROW-->   
-<!--BEGIN CONTENT ROW-->
-       
-       
+        
        <tr id="table-content">
     
     <!--BEGIN ASSIGNMENT PANEL-->   
@@ -128,10 +84,12 @@
         </td>
         
         
-        <td id="assignment-panel">
+        <td id="assignment-panel" class="panel-container">
+        <div class="panel"></div>
         </td>
         
-        <td id="assignment-paneltab-spacer">
+        <td id="assignment-paneltab" class="pantab-container">
+        <div class="pantab assignment"></div>
         </td>
         
     <!--END ASSIGNMENT PANEL-->  
@@ -145,10 +103,12 @@
         <div id="composition-panhandle-label" class="label">Composition</div>
         </td>
         
-        <td id="composition-panel">
+        <td id="composition-panel" class="panel-container">
+        <div class="panel"></div>
         </td>
         
-        <td id="composition-paneltab-spacer">
+        <td id="composition-paneltab" class="pantab-container">
+        <div class="pantab composition"></div>
         </td>
         
     
@@ -156,47 +116,6 @@
     
         </tr>
 
-<!--END CONTENT ROW-->   
-<!--BEGIN BOTTOM ROW-->
-
-       <tr id="bottom-borders">
-          <!--BEGIN ASSIGNMENT PANEL-->   
-    
-        <td id="assignment-panhandle-bottomleft" class="panhandle-bottomleft-container">
-        <div class="panhandle-bottomleft assignment"></div>
-        </td>
-        
-        <td id="assignment-panhandle-stripebottom" class="panhandle-stripebottom assignment">
-        </td>
-        
-        <td id="assignment-panel-bottomborder">
-        </td>
-        
-        <td id="assignment-paneltab-spacer">
-        </td>
-        
-    <!--END ASSIGNMENT PANEL-->  
-    <!--BEGIN COMPOSITION PANEL-->
-    
-        <td id="composition-panhandle-bottomleft" class="panhandle-bottomleft-container">
-        <div class="panhandle-bottomleft composition"></div>
-        </td>
-        
-        <td id="composition-panhandle-stripebottom" class="panhandle-stripebottom composition">
-        </td>
-        
-        <td id="composition-panel-bottomborder">
-        </td>
-        
-        <td id="composition-paneltab-spacer">
-        </td>
-        
-    
-    <!--END COMPOSITION PANEL-->
-       
-       </tr>
-   
-<!--END BOTTOM ROW-->
 
 </table>
     

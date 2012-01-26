@@ -37,9 +37,13 @@
     <script type="text/javascript">
         function resizeEditProjectPage() {
             var visible = getVisibleContentHeight();
-            jQuery('#essay-space-materials').css('height', visible + "px");
-            jQuery('div.scroll').css('height', (visible - 77) + "px");
-            jQuery('div.editing').css('height', (visible - 56) + "px");
+            jQuery("#sliding-content-container").css('height', visible + "px");
+            jQuery('#collection-materials').css('height', (visible - 100 ) + "px");
+            jQuery('td.panhandle-left-container').css('height', visible + "px");
+            jQuery('td.panhandle-stripe').css('height', visible + "px");
+            
+            jQuery('div.scroll').css('height', (visible - 177) + "px");
+            jQuery('div.editing').css('height', (visible - 75) + "px");
             
             visible -= jQuery("#project_participants").innerHeight();
             jQuery('#project-content_tbl').css('height', (visible - 150) + "px");
@@ -80,11 +84,10 @@
         </td>
         
         <td id="assignment-panhandle-stripe" class="panhandle-stripe assignment">
-        <div id="assignment-panhandle-label" class="label">Assignment</div>
+            <div id="assignment-panhandle-label" class="label">Assignment</div>
         </td>
-        
-        
-        <td id="assignment-panel" class="panel-container">
+
+        <td id="assignment-panel" class="panel-container closed">
             <div class="panel">
             <table id="assignment-subcontainer">
                 <tr>
@@ -120,7 +123,7 @@
         </td>
         
         <td id="assignment-pantab" class="pantab-container">
-        <div class="pantab assignment"></div>
+            <div class="pantab assignment closed"></div>
         </td>
         
     <!--END ASSIGNMENT PANEL-->  
@@ -134,7 +137,7 @@
         <div id="composition-panhandle-label" class="label">Composition</div>
         </td>
         
-        <td id="composition-panel" class="panel-container">
+        <td id="composition-panel" class="panel-container fluid open composition">
             <div class="panel">
             
             <table id="composition-subcontainer">
@@ -200,11 +203,11 @@
                          </div>
                     </td>
                     
-                    <td id="collections-pantab">
-                    <div class="pantab collections"></div>
+                     <td id="collection-pantab" class="nested-pantab-container">
+                        <div class="pantab collection open"></div>
                     </td>
                     
-                    <td id="collection-container">
+                    <td id="collection-container" class="panel-container open">
                     <div id="collection-materials">
                         <h2>
                             <div class="button-form inline">
@@ -218,6 +221,7 @@
                         <div id="collection_table"></div>
                     </div>
                     </td>
+                    
 
                 </tr>
             </table>
@@ -226,12 +230,13 @@
         </td>
         
         <td id="composition-pantab" class="pantab-container">
-        <div class="pantab composition"></div>
+        <div class="pantab composition open"></div>
         </td>
         
     
     <!--END COMPOSITION PANEL-->
     
+        <td/>
         </tr>
 
 

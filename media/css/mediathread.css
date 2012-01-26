@@ -945,10 +945,11 @@ table#sliding-content-container tr, table#sliding-content-container tr td {
     margin: 0;
     padding: 0;
     vertical-align: top;
+    display: table-cell;
+    height: 100%;
 }
 
 table#sliding-content-container tr td.panhandle-left-container {
-
     width: 15px;
     min-width: 15px;
     max-width: 15px;
@@ -972,7 +973,8 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
 }
 
 table#sliding-content-container tr td.panhandle-stripe {
-
+    max-width: 17px;
+    min-width: 17px;
     width: 17px;
     padding-top: 7px;
 
@@ -1022,13 +1024,16 @@ table#sliding-content-container tr td.panel-container div.panel {
     min-height: 180px;
 }
 
-table#sliding-content-container tr td.pantab-container {
+table#sliding-content-container tr td.pantab-container,
+table#sliding-content-container tr td.nested-pantab-container {
     vertical-align: top;
     text-align: left;
     width: 20px;
     min-width: 20px;
     max-width: 20px;
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 div.pantab {
@@ -1048,8 +1053,15 @@ div.pantab {
 
 }
 
-div.pantab div.widget.closed {
+div.pantab.assignment.open,
+div.pantab.composition.open,
+div.pantab.collection.open {
+    background-image:url('../img/panels/closer_bg.png');
+}
 
+div.pantab.assignment.closed,
+div.pantab.composition.closed,
+div.pantab.collection.closed {
     background-image:url('../img/panels/opener_bg.png');
 }
 
@@ -1064,7 +1076,7 @@ div.pantab.composition {
 }
 
 
-div.pantab.collections,
+div.pantab.collection,
 div.pantab.assignment.media {
     width: 15px;
     height: 15px;
@@ -1081,7 +1093,7 @@ div.pantab.assignment.media {
     
 }
 
-div.pantab.collections {
+div.pantab.collection {
     background-color: #A88448;
     margin-top: 73px;
     
@@ -1154,8 +1166,8 @@ td#assignment-media {
 }
 
 td#collection-container {
-
     min-width: 380px;
+    float: none;
 }
 
 td#collection-container div#collection-materials {
@@ -1169,15 +1181,13 @@ td#collection-container div#collection-materials h2 {
     -webkit-border-radius: 10px 0 0 0;
 }
 
-table#sliding-content-container tr td.panel.closed {
+table#sliding-content-container tr td.panel-container.closed {
     display: none;
 }
 
-table#sliding-content-container tr td.panel.open {
+table#sliding-content-container tr td.panel-container.open {
     display: table-cell;
 }
-
-
 
 table#sliding-content-container tr td.panhandle.instructor,
 table#sliding-content-container tr td.pantab div.widget.instructor {
@@ -1195,8 +1205,9 @@ table#sliding-content-container tr td.pantab div.widget.composition {
     background-color: #557691;
 }
 
-table#sliding-content-container tr td.panel.fluid.composition {
+table#sliding-content-container tr td.panel-container.fluid.composition {
     min-width: 330px;
+    width: 100%;
 }
 
 table#sliding-content-container tr td.panhandle.collection,

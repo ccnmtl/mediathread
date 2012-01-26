@@ -977,7 +977,7 @@ table#sliding-content-container tr td.panhandle-stripe {
 }
 
 table#sliding-content-container tr td.panhandle-stripe.assignment {
-    background-color: green;
+    background-color: #175d35;
 }
 
 
@@ -986,7 +986,7 @@ table#assignment-subcontainer tr td.panhandle-stripe.media {
 }
 
 table#sliding-content-container tr td.panhandle-stripe.composition {
-    background-color: blue;
+    background-color: #3a84bf;
 }
 
 table#composition-subcontainer tr td.panhandle-stripe.collection {
@@ -1040,7 +1040,7 @@ div.pantab {
     border-radius: 0px 5px 5px 0px; 
     -moz-border-radius: 0px 5px 5px 0px; 
     -webkit-border-radius: 0px 5px 5px 0px;
-    background-image:url('../img/panels/closer_bg.png');
+    background-image:url('../img/panels/panel_closer.png');
     background-repeat: no-repeat;
     border: 1px solid #ccc;
     border-left: none;
@@ -1053,16 +1053,16 @@ div.pantab {
 
 div.pantab div.widget.closed {
 
-    background-image:url('../img/panels/opener_bg.png');
+    background-image:url('../img/panels/panel_opener_bg.png');
 }
 
 div.pantab.assignment {
-    background-color: green;
+    background-color: #175d35;
 
 }
 
 div.pantab.composition {
-    background-color: blue;
+    background-color: #3a84bf;
 
 }
 

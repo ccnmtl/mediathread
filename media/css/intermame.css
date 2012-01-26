@@ -796,6 +796,10 @@ table#home-columns td#classwork .helpblock ul li
     display: none;
 }
 
+.helpblock#help_homepage_classwork_column {
+    margin: 0;
+    width: 720px;
+}
 
 .intro-text {
     /*margin 20px on right-and left, squeezes homepage content over [x] */

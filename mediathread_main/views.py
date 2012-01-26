@@ -247,7 +247,8 @@ def triple_homepage(request):
     user_records = {
        'space_viewer': space_viewer,
        'space_owner' : user,
-       "help_homepage_instructor_column": UserSetting.get_setting(user, "help_homepage_instructor_column", True)
+       "help_homepage_instructor_column": UserSetting.get_setting(user, "help_homepage_instructor_column", True),
+       "help_homepage_classwork_column":  UserSetting.get_setting(user, "help_homepage_classwork_column", True)
     }
     prof_feed = get_prof_feed(c, request)
     discussions = get_discussions(c)

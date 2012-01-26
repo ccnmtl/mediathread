@@ -145,28 +145,31 @@
         <td id="composition-panel" class="panel-container fluid open composition">
             <div class="panel">
             
-            <table id="composition-subcontainer">
-                <tr>
-                    <td id="composition-body">
-                         <div id="composition-body-container">
-                            <form id="editproject" name="editproject" method="POST" action=".">
-                        <div id="last-version-saved">
+       <table id="composition-subcontainer">
+          <form id="editproject" name="editproject" method="POST" action=".">
+                {% with project.assignment as assignment %}
+                    <tr>
+                        <td colspan="4" id="composition-meta">        
+                            <div id="last-version-saved">
                             <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
                             <span id="last-version-public">
                             {% if project.public_url %}
-                                (<a href="{{project.public_url}}">public url</a>)
+                            (<a href="{{project.public_url}}">public url</a>)
                             {% endif %}
                             </span>
-                        </div>
-                        <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
-                        
-                        
-                        <h6><b>by</b>
+                            </div>
+                            <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
+                            
+                            <h6><b>by</b>
                             <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
-                        </h6>
-                        
-                        
-                        <div>
+                            </h6>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                    <td id="composition-body">
+                                                    <div>
                             <script type="text/javascript">
                                 var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
                             </script>
@@ -193,16 +196,10 @@
                                     {{projectform.publish}}
                             </span>
                         </div>
-                    </form>
-                         </div>
+                      
                     </td>
-                    
-                     <td id="collection-pantab" class="nested-pantab-container">
-                        <div class="pantab collection open"></div>
-                    </td>
-                    
                     <td id="collection-container" class="panel-container open">
-                    <div id="collection-materials">
+                       <div id="collection-materials">
                         <h2>
                             <div class="button-form inline">
                                 <form class="block media-browse hinline" method="POST" action="/explore/">
@@ -215,11 +212,17 @@
                         <div id="collection_table"></div>
                     </div>
                     </td>
+                    <td id="composition-collection-panhandle-stripe" class="panhandle-stripe collection">
+                    <div id="composition-collection-panhandle-label" class="label">Add Selection</div>
+                    </td>
+                    <td id="composition-collection-pantab" class="pantab-container">
+                        <div class="pantab collection"></div>
+                    </td>
+                    </tr>
                     
-
-                </tr>
-            </table>
-            
+                {% endwith %}
+             </form>
+    </table>   
             </div>
         </td>
         

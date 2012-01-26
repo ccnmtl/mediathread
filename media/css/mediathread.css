@@ -980,12 +980,17 @@ table#sliding-content-container tr td.panhandle-stripe.assignment {
     background-color: green;
 }
 
+
+table#assignment-subcontainer tr td.panhandle-stripe.media {
+    background-color: #666;
+}
+
 table#sliding-content-container tr td.panhandle-stripe.composition {
     background-color: blue;
 }
 
-table#assignment-subcontainer tr td.panhandle-stripe.media {
-    background-color: #666;
+table#composition-subcontainer tr td.panhandle-stripe.collection {
+    background-color: #A88448;
 }
 
 
@@ -1061,11 +1066,10 @@ div.pantab.composition {
 
 }
 
-div.pantab.collections {
+div.pantab.collection {
     background-color: #A88448;
     
 }
-
 
 div.pantab.assignment.media {
 
@@ -1117,6 +1121,8 @@ table#composition-subcontainer tr td#composition-body {
 
     width: 100%;
     min-width: 510px;
+    padding: 10px;
+    background-color: #dedede;
 }
 
 #composition-body-container {
@@ -1137,15 +1143,22 @@ td#collection-container {
 }
 
 td#collection-container div#collection-materials {
-    margin-top: 65px;
+
 }
 
 td#collection-container div#collection-materials h2 {
 
-    border-radius: 10px 0 0 0;
-    -moz-border-radius: 10px 0 0 0; 
-    -webkit-border-radius: 10px 0 0 0;
+    border-radius: 0;
+    -moz-border-radius: 0; 
+    -webkit-border-radius: 0;
 }
+
+td#collection-container div#collection-materials h2 input.browse-button {
+
+    float: right;
+}
+
+
 
 table#sliding-content-container tr td.panel.closed {
     display: none;

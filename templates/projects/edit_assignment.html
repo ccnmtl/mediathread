@@ -48,7 +48,7 @@
             visible -= jQuery("#project_participants").innerHeight();
             jQuery('#project-content_tbl').css('height', (visible - 150) + "px");
             jQuery('#project-content_ifr').css('height', (visible - 150) + "px");
-            //jQuery('#project-content_tbl').css('width', "100%");
+            jQuery('#project-content_tbl').css('width', "100%");
         }
       
         jQuery(document).ready(function () {
@@ -73,171 +73,163 @@
 {% block content %}
     {{ block.super }}
     
-<table id="sliding-content-container">
-        
-       <tr id="table-content">
+    <table id="sliding-content-container">
+        <tr id="table-content">
     
-    <!--BEGIN ASSIGNMENT PANEL-->   
-    
-        <td id="assignment-panhandle-left" class="panhandle-left-container">
-        <div class="panhandle-left assignment"></div>
-        </td>
-        
-        <td id="assignment-panhandle-stripe" class="panhandle-stripe assignment">
-            <div id="assignment-panhandle-label" class="label">Assignment</div>
-        </td>
-
-        <td id="assignment-panel" class="panel-container closed">
-            <div class="panel">
-                <table id="assignment-subcontainer">
-                {% with project.assignment as assignment %}
-                    <tr>
-                        <td colspan="4" id="assignment-meta">        
-                            <div class="assignment-project">
-                            <h1>{{assignment.title}}
-                            {% if version_number %}Version {{version_number}}{% endif %}
-                            </h1>
-                            <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for assignment.attribution_list %}</span></h5>
-                            </div>    
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                    <td id="assignment-body">
-                            <div class="essay-space">  
-                            {{assignment.body|safe}}
-                            </div>
-                    </td>
-                    <td id="assignment-media">
-                        <div id="assignment-media-container">Media shows here</div>
-                    </td>
-                    <td id="assignment-media-panhandle-stripe" class="panhandle-stripe media">
-                    <div id="assignment-media-panhandle-label" class="label">View Selection</div>
-                    </td>
-                    <td id="assignment-media-pantab" class="pantab-container">
-                        <div class="pantab assignment media"></div>
-                    </td>
-                    </tr>
-                    
-                    <tr>
-                    <td colspan="4" id="assignment-response-data"></td>
-                    </tr>
-                {% endwith %}
-                </table>
-            </div>
-        </td>
-        
-        <td id="assignment-pantab" class="pantab-container">
-            <div class="pantab assignment closed"></div>
-        </td>
-        
-    <!--END ASSIGNMENT PANEL-->  
-    <!--BEGIN COMPOSITION PANEL-->
-    
-        <td id="composition-panhandle-left" class="panhandle-left-container">
-        <div class="panhandle-left composition"></div>
-        </td>
-        
-        <td id="composition-panhandle-stripe" class="panhandle-stripe composition">
-        <div id="composition-panhandle-label" class="label">Composition</div>
-        </td>
-        
-        <td id="composition-panel" class="panel-container fluid open composition">
-            <div class="panel">
+            <!--BEGIN ASSIGNMENT PANEL-->   
+            <td id="assignment-panhandle-left" class="panhandle-left-container">
+                <div class="panhandle-left assignment"></div>
+            </td>
             
-       <table id="composition-subcontainer">
-          <form id="editproject" name="editproject" method="POST" action=".">
-                {% with project.assignment as assignment %}
-                    <tr>
-                        <td colspan="4" id="composition-meta">        
-                            <div id="last-version-saved">
-                            <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
-                            <span id="last-version-public">
-                            {% if project.public_url %}
-                            (<a href="{{project.public_url}}">public url</a>)
-                            {% endif %}
-                            </span>
-                            </div>
-                            <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
-                            
-                            <h6><b>by</b>
-                            <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
-                            </h6>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                    <td id="composition-body">
-                                                    <div>
-                            <script type="text/javascript">
-                                var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
-                            </script>
-                            <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-                            <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
-                            <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
-                        </div>
+            <td id="assignment-panhandle-stripe" class="panhandle-stripe assignment">
+                <div id="assignment-panhandle-label" class="label">Assignment</div>
+            </td>
+    
+            <td id="assignment-panel" class="panel-container closed">
+                <div class="panel">
+                    <table id="assignment-subcontainer" class="panel-subcontainer">
+                        {% with project.assignment as assignment %}
+                        <tr>
+                            <td colspan="4" id="assignment-meta">        
+                                <div class="assignment-project">
+                                <h1>{{assignment.title}}
+                                {% if version_number %}Version {{version_number}}{% endif %}
+                                </h1>
+                                <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for assignment.attribution_list %}</span></h5>
+                                </div>    
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="assignment-body">
+                                <div class="essay-space">  
+                                    {{assignment.body|safe}}
+                                </div>
+                            </td>
+                            <td id="assignment-media" class="panel-container closed">
+                                <div id="assignment-media-container"></div>
+                            </td>
+                            <td id="assignment-media-panhandle-stripe" class="panhandle-stripe media">
+                                <div id="assignment-media-panhandle-label" class="label">View Selection</div>
+                            </td>
+                            <td id="assignment-media-pantab" class="pantab-container">
+                                <div class="pantab assignment media closed"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" id="assignment-response-data"></td>
+                        </tr>
+                        {% endwith %}
+                    </table>
+                </div>
+            </td>
+            
+            <td id="assignment-pantab" class="pantab-container">
+                <div class="pantab assignment closed"></div>
+            </td>
+            
+            <!--END ASSIGNMENT PANEL-->
+              
+            <!--BEGIN COMPOSITION PANEL-->
         
-                        <div id="project_participants">
-                            <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
-                            <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
-                            <br />
-                            <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
-                                <div>{{projectform.participants}}</div> 
-                            </div>
-                        </div><!-- end id="project_participants" -->
-                
-                        <div id="project-form-buttons"> 
-                            <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-                            <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
-                     
-                            <span class="project-dropdown">
-                                    {{projectform.publish.label_tag}}    
-                                    {{projectform.publish}}
-                            </span>
-                        </div>
+            <td id="composition-panhandle-left" class="panhandle-left-container">
+                <div class="panhandle-left composition"></div>
+            </td>
+            
+            <td id="composition-panhandle-stripe" class="panhandle-stripe composition">
+                <div id="composition-panhandle-label" class="label">Composition</div>
+            </td>
+            
+            <td id="composition-panel" class="panel-container fluid open composition">
+                <div class="panel">
+                    <form id="editproject" name="editproject" method="POST" action=".">
+                        {% with project.assignment as assignment %}
                       
-                    </td>
-                    <td id="collection-container" class="panel-container open">
-                       <div id="collection-materials">
-                        <h2>
-                            <div class="button-form inline">
-                                <form class="block media-browse hinline" method="POST" action="/explore/">
-                                    <input type="hidden" name="title" />
-                                    <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
-                                </form>
-                            </div>
-                            Collections
-                        </h2>
-                        <div id="collection_table"></div>
-                    </div>
-                    </td>
-                    <td id="composition-collection-panhandle-stripe" class="panhandle-stripe collection">
-                    <div id="composition-collection-panhandle-label" class="label">Add Selection</div>
-                    </td>
-                    <td id="composition-collection-pantab" class="pantab-container">
-                        <div class="pantab collection"></div>
-                    </td>
-                    </tr>
+                        <table id="composition-subcontainer" class="panel-subcontainer">
+                            <tr>
+                                <td colspan="4">        
+                                    <div id="last-version-saved">
+                                    <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+                                    <span id="last-version-public">
+                                    {% if project.public_url %}
+                                    (<a href="{{project.public_url}}">public url</a>)
+                                    {% endif %}
+                                    </span>
+                                    </div>
+                                    <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
+                                    
+                                    <h6><b>by</b>
+                                    <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
+                                    </h6>
+                                    
+                                </td>
+                            </tr>
+                                
+                            <tr>
+                                <td id="composition-body">
+                                    <div>
+                                        <script type="text/javascript">
+                                            var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+                                        </script>
+                                        <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+                                        <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
+                                        <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
+                                    </div>
                     
-                {% endwith %}
-             </form>
-    </table>   
-            </div>
-        </td>
+                                    <div id="project_participants">
+                                        <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
+                                        <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
+                                        <br />
+                                        <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
+                                            <div>{{projectform.participants}}</div> 
+                                        </div>
+                                    </div><!-- end id="project_participants" -->
+                            
+                                    <div id="project-form-buttons"> 
+                                        <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+                                        <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+                                 
+                                        <span class="project-dropdown">
+                                                {{projectform.publish.label_tag}}    
+                                                {{projectform.publish}}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td id="collection-container" class="panel-container open">
+                                    <div id="collection-materials">
+                                        <h2>
+                                            <div class="button-form inline">
+                                                <form class="block media-browse hinline" method="POST" action="/explore/">
+                                                    <input type="hidden" name="title" />
+                                                    <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
+                                                </form>
+                                            </div>
+                                            Collections
+                                        </h2>
+                                        <div id="collection_table"></div>
+                                    </div>
+                                </td>
+                                <td id="composition-collection-panhandle-stripe" class="panhandle-stripe collection">
+                                    <div id="composition-collection-panhandle-label" class="label">Add Selection</div>
+                                </td>
+                                <td id="composition-collection-pantab" class="pantab-container">
+                                    <div class="pantab collection open"></div>
+                                </td>
+                                <td class="filler"></td>
+                            </tr>
+                        </table>
+                        {% endwith %}
+                    </form>   
+                </div>
+            </td>
+            
+            <td id="composition-pantab" class="pantab-container">
+                <div class="pantab composition open"></div>
+            </td>
+            <!--END COMPOSITION PANEL-->
         
-        <td id="composition-pantab" class="pantab-container">
-        <div class="pantab composition open"></div>
-        </td>
-        
-    
-    <!--END COMPOSITION PANEL-->
-    
-        <td/>
+            <td class="filler"></td>
         </tr>
-
-
-</table>
+    </table>
     
     
 

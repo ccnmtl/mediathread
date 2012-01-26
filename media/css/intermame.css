@@ -753,7 +753,7 @@ margin-left: 269px;
 	background-image:url('../img/icons/meth_info_icon_hover.png');
 }
 
-, .helptoggle a.togglebutton.open , #instructor-nav .helptoggle a.togglebutton.open 
+.helptoggle a.togglebutton.open , #instructor-nav .helptoggle a.togglebutton.open 
 {
 	background-image:url('../img/icons/meth_info_icon_close.png');
 }
@@ -796,6 +796,10 @@ table#home-columns td#classwork .helpblock ul li
     display: none;
 }
 
+.helpblock#help_homepage_classwork_column {
+    margin: 0;
+    width: 720px;
+}
 
 .intro-text {
     /*margin 20px on right-and left, squeezes homepage content over [x] */

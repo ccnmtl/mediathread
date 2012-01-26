@@ -31,7 +31,7 @@ function switcher(a) {
     jQuery(a).parent().children('ul.switcher-options').toggle();
 }
 
-function toggleHelp(a, user, parent, help_content_id) {
+function toggleHelp(a, user, parent, help_content_id, callback) {
     jQuery(parent).toggleClass('on off');
     jQuery("#" + help_content_id).toggleClass('on off');
     jQuery(a).toggleClass('open');
@@ -39,4 +39,7 @@ function toggleHelp(a, user, parent, help_content_id) {
     var user_setting = jQuery(parent).hasClass('on') ? 'True' : 'False';
         
     jQuery.post('/yourspace/' + user + '/setting/', { name: help_content_id, value: user_setting });
+    
+    if (callback)
+        callback();
 }

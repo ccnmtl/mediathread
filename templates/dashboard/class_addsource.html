@@ -118,7 +118,6 @@
 </ul>
 {% endwith %}{% endwith %}
 
-{% if is_staff %} 
 
     {% with "help_add_custom_collection" as help_id %}
     {% with "off" as default_help_state %}
@@ -155,6 +154,8 @@
         </li>
     </ul>
     {% endwith %}{% endwith %}
+
+{% if is_staff %} 
 
 <ul id="individual_uploads" class="archive-gallery">
 <li class="archive-container">

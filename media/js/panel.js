@@ -7,8 +7,16 @@
                 self.onResize();
             });
             
-            jQuery(".panhandle").click(function(event) {
-                self.onClickPanhandle(this, event);
+            jQuery(".panhandle-stripe").click(function(event) {
+                self.onClickPanelLeftHandle(this, event);
+            });
+            
+            jQuery(".pantab-container").click(function(event) {
+                self.onClickPanelRightHandle(this, event);
+            });
+            
+            jQuery(".nested-pantab-container").click(function(event) {
+                self.onClickNestedPanelLeftHandle(this, event);
             });
             
             // figure out which panels get shown/hidden
@@ -16,31 +24,55 @@
             // panels ordered by show/hide behavior?
         }
         
-        this.onClickPanhandle = function(element, event) {
+        this.onClickPanelLeftHandle = function(element, event) {
             // Open the panhandle's panel
-            var panel = jQuery(element).nextAll(".panel");
+            var panel = jQuery(element).nextAll("td.panel-container");
             jQuery(panel[0]).toggleClass("open closed");
+            
+            var panelTabContainer = jQuery(panel).nextAll("td.pantab-container");
+            var panelTab = jQuery(panelTabContainer[0]).children("div.pantab");
+            jQuery(panelTab[0]).toggleClass("open closed");
             
             var screenWidth = jQuery(window).width();
             console.log("The screen is: " + screenWidth);
+            jQuery("table.panel").css("width", screenWidth);
             
             // Figure out if any other panels need to be closed
             // Add up widths on all the fixed panels + min-width on fluid panels
-            var width = 0;
-            var panels = jQuery(".fixed");
-            for (var i = 0; i < panels.length; i++) {
-                width += parseInt(jQuery(panels[i]).css("width").replace('px', ''));
-            }
+            //var width = 0;
+            //var panels = jQuery(".fixed");
+            //for (var i = 0; i < panels.length; i++) {
+            //    width += parseInt(jQuery(panels[i]).css("width").replace('px', ''));
+            //}
             
-            panels = jQuery(".fluid");
-            for (i = 0; i < panels.length; i++) {
-                width += parseInt(jQuery(panels[i]).css("min-width").replace('px', ''));
-            }
+            //panels = jQuery(".fluid");
+            //for (i = 0; i < panels.length; i++) {
+            //    width += parseInt(jQuery(panels[i]).css("min-width").replace('px', ''));
+            //}
             
-            if (width > screenWidth) {
+            //if (width > screenWidth) {
                 // Something needs to close...
-            }
+            //}
         }
+        
+        this.onClickPanelRightHandle = function(element, event) {
+            // Open the panhandle's panel
+            var panel = jQuery(element).prevAll("td.panel-container");
+            jQuery(panel[0]).toggleClass("open closed");
+            
+            var panelTab = jQuery(element).children("div.pantab");
+            jQuery(panelTab[0]).toggleClass("open closed");
+        }
+        
+        this.onClickNestedPanelLeftHandle = function(element, event) {
+            // Open the panhandle's panel
+            var panel = jQuery(element).nextAll("td.panel-container");
+            jQuery(panel[0]).toggleClass("open closed");
+            
+            var panelTab = jQuery(element).children("div.pantab");
+            jQuery(panelTab[0]).toggleClass("open closed");
+        }
+            
         
         this.onResize = function() {
         }

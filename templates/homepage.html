@@ -30,9 +30,14 @@
             var visible = getVisibleContentHeight();
             jQuery('#instructor .column-container').css('height', visible + "px");
             jQuery('#classwork').css('height', visible + "px");
+
+            var helpOffset = 0;
+            var helpBlock = jQuery("#help_homepage_classwork_column");
+            if (jQuery(helpBlock).hasClass("on"))
+                helpOffset += jQuery(helpBlock).outerHeight();
             
-            jQuery('#classwork .projects-column-container').css('height', (visible - 87) + "px");
-            jQuery('#classwork .media-column-container').css('height', (visible - 77) + "px");
+            jQuery('#classwork .projects-column-container').css('height', (visible - 87 - helpOffset) + "px");
+            jQuery('#classwork .media-column-container').css('height', (visible - 77 - helpOffset) + "px");
         }
     
         jQuery(document).ready(function() {
@@ -122,13 +127,15 @@
         
             {% with "help_homepage_classwork_column" as help_id %}
             {% with help_homepage_classwork_column as default_help_state %}
+            {% with "resizeHomepage" as callback %}
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <h2>Class Work</h2>
+                    <h2>Class Work {% include "help/help_button.html" %}</h2>
+                    {% include "help/help_contentarea.html" %}
                     <div id="classwork_table"></div>
                 </div>
             </td>
-            {% endwith %}{% endwith %}
+            {% endwith %}{% endwith %}{% endwith %}
         </tr>
     </tbody>
 </table>

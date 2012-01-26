@@ -933,7 +933,7 @@ div.button-form form, div.button-form.inline form.nofloat{
 
 /*SLIDING ASSIGNMENT TABLE*/
 
-table#sliding-content-container {
+table#sliding-content-container, table#sliding-content-container tr {
     margin: 0;
     width: 99%;
     border: none;
@@ -945,13 +945,11 @@ table#sliding-content-container tr, table#sliding-content-container tr td {
     margin: 0;
     padding: 0;
     vertical-align: top;
+    height: 100%;
 }
 
 table#sliding-content-container tr td.panhandle-left-container {
-
     width: 15px;
-    min-width: 15px;
-    max-width: 15px;
 }
 
 
@@ -1025,13 +1023,12 @@ table#sliding-content-container tr td.panel-container div.panel {
     min-height: 180px;
 }
 
+
 table#sliding-content-container tr td.pantab-container {
     vertical-align: top;
     text-align: left;
     width: 20px;
-    min-width: 20px;
-    max-width: 20px;
-    height: 100%;
+    padding-right: 10px;
 }
 
 div.pantab {
@@ -1047,13 +1044,18 @@ div.pantab {
     background-position: left center;
     margin: 0;
     float: left;
-    
-
 }
 
-div.pantab div.widget.closed {
+div.pantab.assignment.open,
+div.pantab.composition.open,
+div.pantab.collection.open {
+    background-image:url('../img/panels/closer_bg.png');
+}
 
-    background-image:url('../img/panels/panel_opener_bg.png');
+div.pantab.assignment.closed,
+div.pantab.composition.closed,
+div.pantab.collection.closed {
+     background-image:url('../img/panels/opener_bg.png');
 }
 
 div.pantab.assignment {
@@ -1082,8 +1084,7 @@ td#assignment-panel {
     background-color: #DAE7E0;
 }
 
-table#assignment-subcontainer,
-table#composition-subcontainer {
+table.panel-subcontainer {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -1092,23 +1093,25 @@ table#composition-subcontainer {
 }
 
 
-table#assignment-subcontainer tr td,
-table#composition-subcontainer tr td {
+table.panel-subcontainer tr td,
+table.panel-subcontainer tr td {
     margin: 0;
     padding: 0;
     border: none;
+}
 
+table#sliding-content-container tr td.filler,
+table.panel-subcontainer tr td.filler {
+    width: 2000px;
 }
 
 table#assignment-subcontainer tr td#assignment-body {
-
     min-width: 380px;
 }
 
 #assignment-body-container {
     padding: 0 5px 10px 0;
     margin-right: 10px;
-    
 }
 
 #assignment-media-container {
@@ -1117,96 +1120,42 @@ table#assignment-subcontainer tr td#assignment-body {
     border-bottom: 1px solid #ccc;
 }
 
-table#composition-subcontainer tr td#composition-body {
-
+td#assignment-media {
     width: 100%;
-    min-width: 510px;
+    background-color: #dedede;
+}
+
+table#composition-subcontainer tr td#composition-body {
+    width: 75%;
     padding: 10px;
     background-color: #dedede;
 }
 
-#composition-body-container {
-    padding: 5px 10px 10px 5px;
-    margin-right: 10px;
-    
-}
-
-td#assignment-media {
-    width: 100%;
-    background-color: #dedede;
-    
-}
 
 td#collection-container {
-
     min-width: 380px;
 }
 
-td#collection-container div#collection-materials {
-
-}
-
 td#collection-container div#collection-materials h2 {
-
     border-radius: 0;
     -moz-border-radius: 0; 
     -webkit-border-radius: 0;
 }
 
 td#collection-container div#collection-materials h2 input.browse-button {
-
     float: right;
 }
 
-
-
-table#sliding-content-container tr td.panel.closed {
+table#sliding-content-container tr td.panel-container.closed {
     display: none;
 }
 
-table#sliding-content-container tr td.panel.open {
+table#sliding-content-container tr td.panel-container.open {
     display: table-cell;
 }
 
 
-
-table#sliding-content-container tr td.panhandle.instructor,
-table#sliding-content-container tr td.pantab div.widget.instructor {
-    background-color: #006031;
-}
-
-table#sliding-content-container tr td.panel.fixed.instructor {
+table#sliding-content-container tr td.panel-container.fluid.composition {
     min-width: 330px;
-    max-width: 330px;
-    width: 330px;
-}
-
-table#sliding-content-container tr td.panhandle.composition,
-table#sliding-content-container tr td.pantab div.widget.composition {
-    background-color: #557691;
-}
-
-table#sliding-content-container tr td.panel.fluid.composition {
-    min-width: 330px;
-}
-
-table#sliding-content-container tr td.panhandle.collection,
-table#sliding-content-container tr td.pantab div.widget.collection {
-    background-color: #A88448;
-}
-
-table#sliding-content-container tr td.panel.fixed.collection {
-    min-width: 380px;
-    max-width: 380px;
-    width: 380px;
-}
-
-#composition-container {
-    border: 1px solid red;
-    margin-right: 400px;
-}
-
-#collection-container {
-    border: 1px solid red;
-   float: right;
+    width: 100%;
 }

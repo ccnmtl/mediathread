@@ -14,10 +14,7 @@
             jQuery(".pantab-container").click(function(event) {
                 self.onClickPanelRightHandle(this, event);
             });
-            
-            jQuery(".nested-pantab-container").click(function(event) {
-                self.onClickNestedPanelLeftHandle(this, event);
-            });
+
             
             // figure out which panels get shown/hidden
             // config should contain the rules
@@ -56,23 +53,13 @@
         }
         
         this.onClickPanelRightHandle = function(element, event) {
-            // Open the panhandle's panel
+            // Open/close this panhandle's panel
             var panel = jQuery(element).prevAll("td.panel-container");
             jQuery(panel[0]).toggleClass("open closed");
             
             var panelTab = jQuery(element).children("div.pantab");
             jQuery(panelTab[0]).toggleClass("open closed");
         }
-        
-        this.onClickNestedPanelLeftHandle = function(element, event) {
-            // Open the panhandle's panel
-            var panel = jQuery(element).nextAll("td.panel-container");
-            jQuery(panel[0]).toggleClass("open closed");
-            
-            var panelTab = jQuery(element).children("div.pantab");
-            jQuery(panelTab[0]).toggleClass("open closed");
-        }
-            
         
         this.onResize = function() {
         }

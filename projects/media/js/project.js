@@ -30,6 +30,7 @@
             self.commonInitialize(options);
             
             // WARN ON UNLOAD
+            
             tinyMCE.onAddEditor.add(function(manager, ed) {
                 ed.onChange.add(function(editor) {
                     self.project_modified = true;

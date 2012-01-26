@@ -89,36 +89,41 @@
 
         <td id="assignment-panel" class="panel-container closed">
             <div class="panel">
-            <table id="assignment-subcontainer">
-                <tr>
-                    <td id="assignment-body">
-                        <div id="assignment-body-container">
-                            {% with project.assignment as assignment %}
+                <table id="assignment-subcontainer">
+                {% with project.assignment as assignment %}
+                    <tr>
+                        <td colspan="4" id="assignment-meta">        
                             <div class="assignment-project">
                             <h1>{{assignment.title}}
                             {% if version_number %}Version {{version_number}}{% endif %}
                             </h1>
                             <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for assignment.attribution_list %}</span></h5>
-                            </div>
-                            
-                            
+                            </div>    
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                    <td id="assignment-body">
                             <div class="essay-space">  
                             {{assignment.body|safe}}
                             </div>
-                            {% endwith %}
-                        </div>
                     </td>
-                    
-                    <td id="assignment-media-pantab">
-                    <div class="pantab assignment media"></div>
-                    </td>
-                    
                     <td id="assignment-media">
-                    <div id="assignment-media-container">Media shows here</div>
+                        <div id="assignment-media-container">Media shows here</div>
                     </td>
-                
-                </tr>
-            </table>
+                    <td id="assignment-media-panhandle-stripe" class="panhandle-stripe media">
+                    <div id="assignment-media-panhandle-label" class="label">View Selection</div>
+                    </td>
+                    <td id="assignment-media-pantab" class="pantab-container">
+                        <div class="pantab assignment media"></div>
+                    </td>
+                    </tr>
+                    
+                    <tr>
+                    <td colspan="4" id="assignment-response-data"></td>
+                    </tr>
+                {% endwith %}
+                </table>
             </div>
         </td>
         
@@ -155,17 +160,6 @@
                         </div>
                         <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
                         
-                        {% with project.assignment as assignment %}
-                        {% if assignment %}
-                                <h6 class="assignment-project">Response for
-                                    <a target="_blank" 
-                                       href="{{assignment.get_absolute_url}}">
-                                      {{assignment.title}}
-                                    </a>
-                                </h6>
-        
-                        {% endif %}
-                        {% endwith %}
                         
                         <h6><b>by</b>
                             <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>

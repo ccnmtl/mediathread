@@ -39,6 +39,19 @@
 {% block content %}
     {{ block.super }}
     
+       <table id="sliding-content-container">
+        
+       <tr id="table-content">
+             <td id="assignment-panhandle-left" class="panhandle-left-container">
+            <div class="panhandle-left assignment"></div>
+            </td>
+            
+            <td id="assignment-panhandle-stripe" class="panhandle-stripe assignment">
+            <div id="assignment-panhandle-label" class="label">Assignment</div>
+            </td>
+    
+            <td id="assignment-panel" class="panel-container">
+    
     <div {% if project|is_assignment:request %} class="assignment-project" {% endif%}>
     
     <h1>{% if project|is_assignment:request %}Assignment: {%endif%}{{project.title}}
@@ -61,6 +74,7 @@
     {% endif %}
     {% endwith %}
     
+ 
     <div class="button-form" style="padding: 0px 0px">
         {% if project.collaboration %}
             {#need to test it, because the default collaboration created won't have the right perms#}
@@ -127,7 +141,9 @@
             </div>
         </div>
     </div>
-    
+    </td>
+    </tr>
+    </table>
     
     <div class="essay-options" style="padding: 1em;">
         {% if assignment_responses %}

@@ -30,12 +30,7 @@ a.edit-pencil {
 
 .asset-view-published {
     background: url('../img/media-Bkgd.gif') no-repeat center center;
-    padding-top: 3px;
-    margin-left: 5px;
-    background-color: #ededed;
-    float: left;
-    width: 57%;
-    height: 450px;
+    height: 100%;
 }
 
 .asset-view-small {

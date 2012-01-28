@@ -54,7 +54,6 @@ def project_workspace(request, user, project):
     else:
         return render_to_response('projects/edit_project.html', context, context_instance=RequestContext(request))
 
-@rendered_with('projects/published_project.html')
 def project_preview(request, user, project, is_participant=None, preview_num=0):
     if is_participant is None:
         is_participant = project.is_participant(user) 
@@ -72,7 +71,7 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
         discussions = project.discussions(request)
         user_responses = project.responses_by(request, request.user)
 
-    return {
+    context = {
         'is_space_owner': is_participant,
         'project': project,
         'is_preview': preview_num,
@@ -84,7 +83,11 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
         #'space_owner':project.author, #was there for project_readonly_view()
         }
         
-        
+    if project.is_assignment(request):
+        # this project is an assignment response
+        return render_to_response('projects/published_assignment.html', context, context_instance=RequestContext(request))
+    else:
+        return render_to_response('projects/published_project.html', context, context_instance=RequestContext(request))
 
 @rendered_with('projects/published_project.html')
 def project_version_preview(request, project_id, version_number, check_permission=True):

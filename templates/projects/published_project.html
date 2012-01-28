@@ -110,7 +110,7 @@
                     <h3>
                       Your Response: 
                       {% for response in user_responses %}
-                    <a href="{{response.get_absolute_url}}">
+                    <a href="{{response.get_workspace_url}}">
                       {{response.title}}
                     </a>{% if not forloop.last %},
                         {% endif %}

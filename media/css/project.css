@@ -96,10 +96,10 @@ a.edit-pencil {
 
 .essay-space
 { 
-  height: 442px;
+  /*height: 442px;*/
+  height: 100%;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
-  margin-left: 5px;
   border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
   background-color:white;
@@ -167,10 +167,8 @@ input.materialCitation:hover
 }
 
 #last-version-saved {
-
    float: right;
-   padding: 3px;
-   margin: 5px 1px 1px 0;
+   margin: 0px 5px 0px 0;
 }
 
 
@@ -204,6 +202,7 @@ div.mce_editorwindow {
 
 #project-content {
     width: 100%;
+    border: 1px solid #ccc;
 }
 
 .project-form-title input#id_title {
@@ -214,19 +213,21 @@ div.mce_editorwindow {
 
 
 #project-form-buttons {
-    margin-top:5px;
-}
-
-#project_participants {
-    font-size: 90%;
-    max-width: 451px;
-    padding-top: 4px;
-    margin: 2px;
+    border: 1px solid #ccc;
+    background-color: #ccc;
+    padding: 2px 5px 2px 2px;
+    width: 100%;
 }
 
 span.project-dropdown {
     margin-right:10px;
     *margin: -23px 45px 0 0;
+    color: black;
+    font-size: 85%;
+}
+
+input.project-savebutton {
+    margin-right: 10px;
 }
 
 input.project-savebutton,

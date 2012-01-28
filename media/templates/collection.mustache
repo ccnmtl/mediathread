@@ -8,7 +8,7 @@
                     {{#enable_project_selection?}}Title: {{/enable_project_selection?}}
                     {{^enable_project_selection}}Owner: {{/enable_project_selection}} 
                 </span>
-                <a class="switcher-top closed" onclick="switcher(this);">
+                <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="3"></span>
                     <span class="title" id="switcher-title">{{{selected_label}}}</span>
                 </a>
@@ -54,7 +54,7 @@
             {{/>>switcher_collection_chooser}}
             
             <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
-                <a class="switcher-top closed" onclick="switcher(this);">
+                <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="4"></span>
                     <span class="title">Collection Filters 
                         <span
@@ -120,7 +120,7 @@
         </div> {{! end filter widget }}
 
             
-        <div class="column-contents scroll">
+        <div class="scroll">
             {{#>>project_view}}
                 <div id="project_view" class="project-view" style="display: none">
                      <!--  Where the media is shown. Displays as an overlay next to the clip -->

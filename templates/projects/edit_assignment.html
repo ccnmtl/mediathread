@@ -37,17 +37,19 @@
     <script type="text/javascript">
         function resizeEditProjectPage() {
             var visible = getVisibleContentHeight();
+
+            // Resize the outer table. This takes care of the panhandles & panhandle stripes
             jQuery("#sliding-content-container").css('height', visible + "px");
-            jQuery('#collection-materials').css('height', (visible - 100 ) + "px");
-            jQuery('td.panhandle-left-container').css('height', visible + "px");
-            jQuery('td.panhandle-stripe').css('height', visible + "px");
-            
-            jQuery('div.scroll').css('height', (visible - 177) + "px");
-            jQuery('div.editing').css('height', (visible - 75) + "px");
-            
-            visible -= jQuery("#project_participants").innerHeight();
-            jQuery('#project-content_tbl').css('height', (visible - 150) + "px");
-            jQuery('#project-content_ifr').css('height', (visible - 150) + "px");
+
+            // Resize inner elements
+            // tinyMCE project editing window
+            jQuery('#project-content_tbl').css('height', (visible - 100) + "px");
+
+            // scrolling media window
+            jQuery('div.scroll').css('height', (visible - 133) + "px");
+
+            // Reset width to 100% via javascript. TinyMCE doesn't resize properly 
+            // if this isn't completed AFTER instantiation
             jQuery('#project-content_tbl').css('width', "100%");
         }
       
@@ -92,14 +94,12 @@
                         <tr>
                             <td colspan="4" id="assignment-meta">        
                                 <div class="assignment-project">
-                                <h1>{{assignment.title}}
-                                {% if version_number %}Version {{version_number}}{% endif %}
-                                </h1>
-                                <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for assignment.attribution_list %}</span></h5>
+                                <h1>{{assignment.title}}</h1>
+                                <h5>by <span id="participants_chosen">{% public_name for project.assignment.attribution_list %}</span></h5>
                                 </div>    
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="fluid">
                             <td id="assignment-body">
                                 <div class="essay-space">  
                                     {{assignment.body|safe}}
@@ -157,15 +157,32 @@
                                     </div>
                                     <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
                                     
-                                    <h6><b>by</b>
-                                    <div id="participants_chosen" style="padding-bottom: 3px; vertical-align: middle">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</div>
-                                    </h6>
-                                    
+                                    <h5>
+                                        by <span id="participants_chosen">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</span>
+                                        <span id="project_participants">
+                                            <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
+                                            <input class="project participants_toggle" type="submit" name="participants" value="+/-"/>
+                                            <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
+                                                <div>{{projectform.participants}}</div> 
+                                            </div>
+                                        </span><!-- end id="project_participants" -->
+                                    </h5>
                                 </td>
                             </tr>
                                 
-                            <tr>
+                            <tr class="fluid">
                                 <td id="composition-body">
+                                    <div id="project-form-buttons"> 
+                                        <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
+                                 
+                                        
+                                        <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+                                        <span class="project-dropdown">
+                                                {{projectform.publish.label_tag}}    
+                                                {{projectform.publish}}
+                                        </span>
+                                        
+                                    </div>
                                     <div>
                                         <script type="text/javascript">
                                             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
@@ -175,33 +192,14 @@
                                         <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
                                     </div>
                     
-                                    <div id="project_participants">
-                                        <div id="participant_update" style="display:none">Save the Composition to save the author list.</div>
-                                        <a class="plist participants_toggle" href="#participant_list">+/-&nbsp;Author(s)</a>
-                                        <br />
-                                        <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
-                                            <div>{{projectform.participants}}</div> 
-                                        </div>
-                                    </div><!-- end id="project_participants" -->
-                            
-                                    <div id="project-form-buttons"> 
-                                        <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-                                        <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
-                                 
-                                        <span class="project-dropdown">
-                                                {{projectform.publish.label_tag}}    
-                                                {{projectform.publish}}
-                                        </span>
-                                    </div>
+
+
                                 </td>
                                 <td id="collection-container" class="panel-container open">
                                     <div id="collection-materials">
                                         <h2>
                                             <div class="button-form inline">
-                                                <form class="block media-browse hinline" method="POST" action="/explore/">
-                                                    <input type="hidden" name="title" />
-                                                    <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
-                                                </form>
+                                                <a class="columnbutton media browse-button" href="/explore">Source Media</a>
                                             </div>
                                             Collections
                                         </h2>

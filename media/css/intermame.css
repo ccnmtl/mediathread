@@ -417,10 +417,7 @@ table.selection-level-info td.selection-trash {
 input.media {
     background-image: url("../img/buttons/collections_button_bg.jpg");
     border-color: #c89345;
-
 }
-
-
 
 input.media.newselection-button {
     float: right;
@@ -827,7 +824,6 @@ table#home-columns td#classwork .helpblock ul li
 
 .assignment-project {
     background-color: #dae7e0;
-    padding: 5px;
     width: 98%;
 }
 

@@ -64,9 +64,8 @@
         this.onResize = function() {
         }
         
-        this.openSubPanel = function(id) {
-            var element = jQuery("#"+id+".panel-container");
-            if (!element.hasClass("open")) {
+        this.openSubPanel = function(element) {
+            if (element && !element.hasClass("open")) {
                 jQuery(element).toggleClass("open closed");
                 
                 var container = jQuery(element).nextAll("td.pantab-container");

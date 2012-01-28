@@ -977,25 +977,6 @@ table#sliding-content-container tr td.panhandle-stripe {
     height: 100%;
 }
 
-div.panhandle-left.assignment,
-table#sliding-content-container tr td.panhandle-stripe.assignment {
-    background-color: #175d35 !important;
-}
-
-table#assignment-subcontainer tr td.panhandle-stripe.media {
-    background-color: #666;
-}
-
-div.panhandle-left.composition,
-table#sliding-content-container tr td.panhandle-stripe.composition {
-    background-color: #3a84bf !important;
-}
-
-table#composition-subcontainer tr td.panhandle-stripe.collection {
-    background-color: #A88448;
-}
-
-
 table#sliding-content-container tr td.panhandle-stripe div.label {
     color: #fff;
 	writing-mode:tb-rl;
@@ -1011,11 +992,6 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 	width: 17px;
 	
 
-}
-
-
-table#sliding-content-container tr td.panel-container {
-    
 }
 
 table#sliding-content-container tr td.panel-container div.panel {
@@ -1054,45 +1030,18 @@ div.pantab {
 
 div.pantab.assignment.open,
 div.pantab.composition.open,
-div.pantab.collection.open {
+div.pantab.collection.open,
+div.pantab.media.open {
     background-image:url('../img/panels/closer_bg.png');
 }
 
 div.pantab.assignment.closed,
 div.pantab.composition.closed,
-div.pantab.collection.closed {
+div.pantab.collection.closed,
+div.pantab.media.closed {
      background-image:url('../img/panels/opener_bg.png');
 }
 
-div.pantab.assignment {
-    background-color: #175d35;
-
-}
-
-div.pantab.composition {
-    background-color: #3a84bf;
-
-}
-
-div.pantab.collection {
-    background-color: #A88448;
-    
-}
-
-div.pantab.assignment.media {
-
-
-    background-color: #666;
-    
-}
-
-td#assignment-panel {
-    background-color: #DAE7E0;
-}
-
-td#composition-panel {
-    background-color: #f0f5fa;
-}
 
 table.panel-subcontainer {
     margin: 0;
@@ -1118,16 +1067,33 @@ table.panel-subcontainer tr td {
     border: none;
 }
 
-table#sliding-content-container tr td.filler,
-table.panel-subcontainer tr td.filler {
+td.filler {
     width: 2000px;
 }
 
-table#assignment-subcontainer tr td#assignment-body {
+td.panel-container.collection {
     min-width: 380px;
 }
 
-table#assignment-subcontainer tr td#assignment-media {
+td.panel-container.assignment {
+    background-color: #DAE7E0;
+}
+
+td.panel-container.composition {
+    background-color: #f0f5fa;
+    min-width: 330px;
+    width: 100%;
+}
+
+td.panel-container.closed {
+    display: none;
+}
+
+td.panel-container.open {
+    display: table-cell;
+}
+
+td.panel-container.media {
     width: 100%;
     height: 100%;
     background-color: #ededed;
@@ -1137,22 +1103,43 @@ table#assignment-subcontainer tr td#assignment-media {
     max-width: 1000px;
 }
 
-table#composition-subcontainer tr td#composition-body {
-    width: 100%;
-}
-
-
-td#collection-container {
+td.panel-content.fixed {
     min-width: 380px;
 }
 
-td#collection-container div#collection-materials h2 {
+td.panel-content.fluid {
+    width: 100%;
+}
+
+div.pantab.assignment,
+div.panhandle-left.assignment,
+td.panhandle-stripe.assignment {
+    background-color: #175d35 !important;
+}
+
+div.pantab.media,
+td.panhandle-stripe.media {
+    background-color: #666;
+}
+
+div.pantab.composition,
+div.panhandle-left.composition,
+td.panhandle-stripe.composition {
+    background-color: #3a84bf !important;
+}
+
+div.pantab.collection,
+td.panhandle-stripe.collection {
+    background-color: #A88448;
+}
+
+div#collection-materials h2 {
     border-radius: 0;
     -moz-border-radius: 0; 
     -webkit-border-radius: 0;
 }
 
-td#collection-container div#collection-materials h2 a.browse-button {
+div#collection-materials h2 a.browse-button {
     float: right;
     width: 75px;
     background-repeat: repeat-x;
@@ -1165,21 +1152,4 @@ td#collection-container div#collection-materials h2 a.browse-button {
     background-image: url("../img/buttons/collections_button_bg.jpg");
     font-size: 85%;
     border-image: initial;
-}
-
-table#sliding-content-container tr td.panel-container.closed {
-    display: none;
-}
-
-table#sliding-content-container tr td.panel-container.open {
-    display: table-cell;
-}
-
-table#sliding-content-container tr td.panel-container.fluid.media {
-    
-}
-
-table#sliding-content-container tr td.panel-container.fluid.composition {
-    min-width: 330px;
-    width: 100%;
 }

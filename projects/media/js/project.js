@@ -11,7 +11,8 @@
         }
         
         this.onDisplayMedia = function() {   
-            PanelManager.openSubPanel("assignment-media");
+            element = jQuery("td.panel-container.media");
+            PanelManager.openSubPanel(element);
         }
         
         this.commonPostInitialize = function() {

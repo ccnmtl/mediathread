@@ -64,6 +64,18 @@
         this.onResize = function() {
         }
         
+        this.openSubPanel = function(id) {
+            var element = jQuery("#"+id+".panel-container");
+            if (!element.hasClass("open")) {
+                jQuery(element).toggleClass("open closed");
+                
+                var container = jQuery(element).nextAll("td.pantab-container");
+                var panelTab = jQuery(container[0]).children("div.pantab");
+                jQuery(panelTab[0]).toggleClass("open closed");
+                
+                self.adjustElements();
+            }
+        }
         
     })();
 })();

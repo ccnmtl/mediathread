@@ -10,15 +10,22 @@
             djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
         }
         
+        this.onDisplayMedia = function() {   
+            PanelManager.openSubPanel("assignment-media");
+        }
+        
         this.commonPostInitialize = function() {
             var citationOptions = {};
             if (self.options.presentation)
                 citationOptions.presentation = self.options.presentation;
             
+            citationOptions.callback = this.onDisplayMedia;
+            
             DjangoSherd_decorate_citations(document, citationOptions);
             
             if (self.options.view_callback)
                 self.options.view_callback();
+            
         }
         
         this.initReadOnly = function(options) {

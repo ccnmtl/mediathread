@@ -395,7 +395,7 @@ def get_records(user, course, request):
         the_json = {}
         the_json['id'] = p.id
         the_json['title'] = p.title
-        the_json['url'] = p.get_absolute_url()
+        the_json['url'] = p.get_workspace_url()
         
         participants = p.attribution_list()
         the_json['authors'] = [ {'name': get_public_name(u, request) } for u in participants]

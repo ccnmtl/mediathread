@@ -22,12 +22,12 @@ function getVisibleContentHeight() {
 }
 
 function switcher(a) {
-    if (jQuery(a).hasClass("closed")) {
+    if (jQuery(a).hasClass("menuclosed")) {
         // we're going to open. make sure everyone else is CLOSED
-        jQuery(".open").toggleClass("open closed");
+        jQuery(".menuopen").toggleClass("menuopen menuclosed");
         jQuery("ul.switcher-options").hide();
     }
-    jQuery(a).toggleClass('closed open');
+    jQuery(a).toggleClass('menuclosed menuopen');
     jQuery(a).parent().children('ul.switcher-options').toggle();
 }
 

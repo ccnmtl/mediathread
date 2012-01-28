@@ -174,7 +174,7 @@ div.collection-chooser ul.switcher-options {
     display:block;
 }
 
-.switcher a.closed {
+.switcher a.menuclosed {
     /*firefox*/
     border: 1px solid rgb(204, 204, 204); 
     padding: 0px 3px 3px 8px; 
@@ -240,7 +240,7 @@ div.collection-chooser ul.switcher-options {
 
 }
 
-.switcher a.open {
+.switcher a.menuopen {
     /*firefox*/
     border-style: solid solid none; 
     

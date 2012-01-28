@@ -4,7 +4,7 @@
         {{#>>switcher_collection_chooser}}
         <div id="switcher_collection_chooser" class="switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
-            <a class="switcher-top closed" onclick="switcher(this);">
+            <a class="switcher-top menuclosed" onclick="switcher(this);">
                 <span class="down-arrow" tabindex="3"></span>
                 <span class="title" id="switcher-title">{{{selected_label}}}</span>
             </a>
@@ -36,7 +36,7 @@
         {{/>>switcher_collection_chooser}}
         
         <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
-            <a class="switcher-top closed" onclick="switcher(this);">
+            <a class="switcher-top menuclosed" onclick="switcher(this);">
                 <span class="down-arrow" tabindex="4"></span>
                 <span class="title">Collection Filters 
                     <span
@@ -209,7 +209,6 @@
                     <h2>
                         <div class="button-form inline">
                             <form class="block media-browse hinline" method="POST" action="/explore/">
-                                <input type="hidden" name="title" />
                                 <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
                             </form>
                         </div>

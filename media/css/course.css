@@ -1023,12 +1023,9 @@ margin: 4px -4px 0px;
 
 #participants_chosen {
     display:inline-block;
-    padding-bottom:10px;
+    padding-bottom:3px;
     max-width: 650px;
-    vertical-align: top;
-}
-#project_participants {
-	padding-top:8px;
+    margin: .1em 0 .1em;
 }
 
 a.participants_toggle {

@@ -26,7 +26,6 @@
             
             if (self.options.view_callback)
                 self.options.view_callback();
-            
         }
         
         this.initReadOnly = function(options) {

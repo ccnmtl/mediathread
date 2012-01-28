@@ -1077,6 +1077,8 @@ td.panel-container.collection {
 
 td.panel-container.assignment {
     background-color: #DAE7E0;
+    width: 100%;
+    min-width: 330px;
 }
 
 td.panel-container.composition {

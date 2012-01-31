@@ -46,7 +46,7 @@
             // if this isn't completed AFTER instantiation
             jQuery('#project-content_tbl').css('width', "100%");
             
-            // scrolling media window
+            // scrolling media (collections) window
             jQuery('div.scroll').css('height', (visible - 133) + "px");
         }
       
@@ -103,6 +103,7 @@
                                         {{assignment.body|safe}}
                                     </div>
                                 </td>
+                                
                                 <td class="panel-container closed media">
                                     <div class="asset-view-published">
                                         <div id="videoclipbox" style="display: none">
@@ -197,9 +198,6 @@
                                         <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
                                         <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
                                     </div>
-                    
-
-
                                 </td>
                                 <td class="panel-container collection open">
                                     <div id="collection-materials">

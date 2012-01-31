@@ -71,8 +71,6 @@
                 var container = jQuery(element).nextAll("td.pantab-container");
                 var panelTab = jQuery(container[0]).children("div.pantab");
                 jQuery(panelTab[0]).toggleClass("open closed");
-                
-                self.adjustElements();
             }
         }
         

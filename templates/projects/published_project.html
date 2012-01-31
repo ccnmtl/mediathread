@@ -31,7 +31,6 @@
  
     <script type="text/javascript">    
         function resizePublishedProjectPage() {
-            console.log('resizePublishedProjectPage');
             var visible = getVisibleContentHeight();
     
             // Resize the outer table. This takes care of the panhandles & panhandle stripes
@@ -67,7 +66,7 @@
                 </td>
                 
                 <td class="panhandle-stripe assignment">
-                    <div class="label">Assignment</div>
+                    <div class="label">View Assignment</div>
                 </td>
         
                 <td class="panel-container closed assignment">
@@ -129,7 +128,7 @@
             </td>
         
             <td class="panhandle-stripe {{project_type}}">
-                <div class="label">{% if project|is_assignment:request %}Assignment{%else%}Composition{%endif%}</div>
+                <div class="label">View {% if project|is_assignment:request %}Assignment{%else%}Composition{%endif%}</div>
             </td>
                 
             <td class="panel-container {{project_type}}">

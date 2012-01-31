@@ -192,7 +192,7 @@
                 <div class="label">View {% if project|is_assignment:request %}Assignment{%else%}Composition{%endif%}</div>
             </td>
                 
-            <td class="panel-container {{project_type}}">
+            <td class="panel-container {{project_type}} open">
                 <div class="panel">
                     <table class="panel-subcontainer">
                         <tr>
@@ -294,7 +294,6 @@
                             <td class="pantab-container media">
                                 <div class="pantab media closed"></div>
                             </td>
-                            {% endwith %}
                         </tr>
                         <tr>
                             <td colspan="4">
@@ -356,13 +355,18 @@
                                 </div>                                
                             </td>
                         </tr>
-                        
                     </table>
                 </div>
             </td>
+        
+            <td class="pantab-container">
+                <div class="pantab {{project_type}} open"></div>
+            </td>
+            {% endwith %}
+            <!--  END COMPOSITION PANE -->
+            
+            <td class="filler"></td>                          
+            
         </tr>
     </table>
-
-    
-    
 {% endblock %}

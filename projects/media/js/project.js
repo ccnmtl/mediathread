@@ -10,11 +10,6 @@
             djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
         }
         
-        this.onDisplayMedia = function() {   
-            element = jQuery("td.panel-container.media");
-            PanelManager.openSubPanel(element);
-        }
-        
         this.commonPostInitialize = function() {
             var citationOptions = {};
             if (self.options.presentation)
@@ -93,12 +88,17 @@
             });
 
             //PROJECT PARTICIPANT UPDATES
-            jQuery('a.participants_toggle').click(self.updateParticipantList);
+            jQuery('input.participants_toggle').click(self.updateParticipantList);
 
             self.commonPostInitialize();
         }
         
-        self.updateParticipantsChosen = function() {
+        this.onDisplayMedia = function() {   
+            element = jQuery("td.panel-container.media");
+            PanelManager.openSubPanel(element);
+        }
+
+        this.updateParticipantsChosen = function() {
             var opts = document.forms['editproject'].participants.options;
             var participant_list = ""; 
             for (var i = 0; i < opts.length; i++) {
@@ -109,7 +109,7 @@
             jQuery("#participants_chosen").html(participant_list);
         }
 
-        self.updateParticipantList = function() {
+        this.updateParticipantList = function() {
             if (jQuery("#participant_list").is(":visible")) {
                 var opts = document.forms['editproject'].participants.options;
                 var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
@@ -127,9 +127,10 @@
             }
             jQuery("#participant_list").toggle();
             jQuery(window).trigger('resize');
+            return false;
         }
 
-        self.saveProject = function(evt) {
+        this.saveProject = function(evt) {
             tinyMCE.triggerSave();
             var frm = evt.target;
             if (/preview/.test(frm.target)) {

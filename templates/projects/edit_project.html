@@ -29,7 +29,6 @@
     <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={{settings.REVISION}}"></script>
     <script type="text/javascript" src="/site_media/js/panel.js?version={{settings.REVISION}}"></script>
@@ -167,9 +166,9 @@
                                     <h5>
                                         by <span id="participants_chosen">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</span>
                                         <span id="project_participants">
-                                            <div id="participant_update" style="display:none">Save the project to save the author list.</div>
-                                            <input class="project participants_toggle" type="submit" name="participants" value="+/-"/>
-                                            <div id="participant_list" class="hs-init-hide hs-hide" style="height: 150px; margin-bottom: 5px;"> 
+                                            <input class="project participants_toggle" type="submit" name="participants_toggle" value="+/-"/>
+                                            <span id="participant_update" style="display:none">Save the project to save the author list.</span>
+                                            <div id="participant_list" style="display: none"> 
                                                 <div>{{projectform.participants}}</div> 
                                             </div>
                                         </span><!-- end id="project_participants" -->

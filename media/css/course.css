@@ -1045,6 +1045,9 @@ a.participants_toggle {
 	border: 1px solid #ccc;
     margin-bottom:1em;
     padding: 5px;
+    width: 440px;
+    height: 150px; 
+    margin-bottom: 5px; 
 }
 
 #id_participants {*height: 15em;}

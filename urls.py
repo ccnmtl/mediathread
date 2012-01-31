@@ -20,7 +20,7 @@ urlpatterns = patterns('',
                        (r'^crossdomain.xml$', 'django.views.static.serve', {'document_root': os.path.abspath(os.path.dirname(__file__))
 , 'path': 'crossdomain.xml'}),
                        (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
-                        {'document_root': os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),'show_indexes': True}),
+                           {'document_root': os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),'show_indexes': True}),
 
                        (r'^comments/', include('django.contrib.comments.urls')),
                        logout_page,

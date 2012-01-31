@@ -68,7 +68,7 @@ a.edit-pencil {
 
 .essay-options
 { 
-    padding:1em;
+    padding-top:.1em;
     clear:both;
 }
 
@@ -91,7 +91,6 @@ a.edit-pencil {
 
 .essay-space
 { 
-  /*height: 442px;*/
   height: 100%;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
@@ -163,7 +162,6 @@ input.materialCitation:hover
 
 #last-version-saved {
    float: right;
-   margin: 0px 5px 0px 0;
 }
 
 

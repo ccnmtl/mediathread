@@ -108,6 +108,67 @@
                                     <div class="pantab media closed"></div>
                                 </td>
                             </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="essay-options">
+                                        {% if assignment_responses %}
+                                            <h3>
+                                                <a class="hs-control" href="assignment-response-list"></a>
+                                                Responses
+                                            </h3>
+                                            <div id="assignment-response-list">
+                                                <ul>
+                                                    {% for response in assignment_responses %}
+                                                        <li>
+                                                            <a href="{{response.get_absolute_url}}">{{response.title}}</a>
+                                                            by {% public_name for response.attribution_list %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endif %}
+
+                                        {% if is_space_owner or is_faculty %}
+                                            {% if assignment.versions %}
+                                                <h3>
+                                                  <a class="hs-control" href="#assignment-revision-history"></a>
+                                                  Revision History
+                                                </h3>
+                                                <div  id="assignment-revision-history" {%if not version_number%}class="hs-init-hide"{%endif%} >
+                                                    <table>
+                                                      <thead>
+                                                        <tr>
+                                                          <th>Revision</th><th>Modified</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                      {% for v in assignment.versions reversed %}
+                                                      <tr
+                                                          {% ifequal v.version_number version_number %}
+                                                          class="revision-selected"
+                                                          {% endifequal %}
+                                                       ><td>
+                                                        {% ifnotequal v.version_number version_number%}
+                                                        <a href="{%url project_version_preview v.versioned_id v.version_number %}">
+                                                        {% endifnotequal %}
+                                                        Revision {{v.version_number}}
+                                                        {% ifnotequal v.version_number version_number%}
+                                                        </a>
+                                                        {% endifnotequal %}
+                                                      </td><td>
+                                                        {{v.modified|date}} by {%public_name for v.instance.author %}
+                                                      </td>
+                                                      </tr>
+                                                      {% endfor %}
+                                                      </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endif %}{# end project.versions #}
+                                        {% endif %}{# end is_space_owner or is_faculty #}
+                                    </div>                                
+                                </td>
+                            </tr>
+                            
                             {% endwith %}
                         </table>
                     </div>
@@ -194,7 +255,7 @@
                                                     <h3>
                                                       Your Response: 
                                                       {% for response in user_responses %}
-                                                    <a href="{{response.get_workspace_url}}">
+                                                    <a href="{{response.get_absolute_url}}">
                                                       {{response.title}}
                                                     </a>{% if not forloop.last %},
                                                         {% endif %}
@@ -235,6 +296,67 @@
                             </td>
                             {% endwith %}
                         </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="essay-options">
+                                    {% if assignment_responses %}
+                                        <h3>
+                                        <a class="hs-control" href="#response-list"></a>
+                                        Responses
+                                        </h3>
+                                        <div id="response-list" class="hs-init-hide">
+                                        <ul>
+                                            {% for response in assignment_responses %}
+                                                <li>
+                                                    <a href="{{response.get_absolute_url}}">{{response.title}}</a>
+                                                    by {% public_name for response.attribution_list %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if is_space_owner or is_faculty %}
+                                        {% if project.versions %}
+                                            <h3>
+                                              <a class="hs-control" href="#project-revision-history"></a>
+                                              Revision History
+                                            </h3>
+                                            <div  id="project-revision-history" {%if not version_number%}class="hs-init-hide"{%endif%} >
+                                                <table>
+                                                  <thead>
+                                                    <tr>
+                                                      <th>Revision</th><th>Modified</th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                  {% for v in project.versions reversed %}
+                                                  <tr
+                                                      {% ifequal v.version_number version_number %}
+                                                      class="revision-selected"
+                                                      {% endifequal %}
+                                                   ><td>
+                                                    {% ifnotequal v.version_number version_number%}
+                                                    <a href="{%url project_version_preview v.versioned_id v.version_number %}">
+                                                    {% endifnotequal %}
+                                                    Revision {{v.version_number}}
+                                                    {% ifnotequal v.version_number version_number%}
+                                                    </a>
+                                                    {% endifnotequal %}
+                                                  </td><td>
+                                                    {{v.modified|date}} by {%public_name for v.instance.author %}
+                                                  </td>
+                                                  </tr>
+                                                  {% endfor %}
+                                                  </tbody>
+                                                </table>
+                                            </div>
+                                        {% endif %}{# end project.versions #}
+                                    {% endif %}{# end is_space_owner or is_faculty #}
+                                </div>                                
+                            </td>
+                        </tr>
+                        
                     </table>
                 </div>
             </td>
@@ -242,68 +364,5 @@
     </table>
 
     
-    <div class="essay-options" style="padding: 1em;">
-        {% if assignment_responses %}
-            <h3>Responses</h3>
-            <ul>
-                {% for response in assignment_responses %}
-                    <li>
-                        <a href="{{response.get_absolute_url}}">{{response.title}}</a>
-                        by {% public_name for response.attribution_list %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        {% if is_space_owner or is_faculty %}
-            {% if project.versions %}
-                <h3>
-                  <a class="hs-control" href="#revision-history"></a>
-                  Revision History
-                </h3>
-                <div  id="revision-history" {%if not version_number%}class="hs-init-hide"{%endif%} >
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Revision</th><th>Modified</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {% for v in project.versions reversed %}
-                      <tr
-                          {% ifequal v.version_number version_number %}
-                          class="revision-selected"
-                          {% endifequal %}
-                       ><td>
-                        {% ifnotequal v.version_number version_number%}
-                        <a href="{%url project_version_preview v.versioned_id v.version_number %}">
-                        {% endifnotequal %}
-                        Revision {{v.version_number}}
-                        {% ifnotequal v.version_number version_number%}
-                        </a>
-                        {% endifnotequal %}
-                      </td><td>
-                        {{v.modified|date}} by {%public_name for v.instance.author %}
-                      </td>
-                      </tr>
-                      {% endfor %}
-                      </tbody>
-                    </table>
-                </div>
-            {% endif %}{# end project.versions #}
-        {% endif %}{# end is_space_owner or is_faculty #}
-
-        {% if user.is_staff and project.id %}
-            <p>
-                staff links:
-                <a class="manage-asset" href="{%url admin:projects_project_change project.id %}">manage</a>
-                 {% if project.collaboration %}  
-                 <a class="manage-asset" href="{%url admin:structuredcollaboration_collaboration_change project.collaboration.id %}">policy</a>
-                 {% endif %}
-            </p>
-        {% endif %}  
-    </div>
-    
-    </div>
     
 {% endblock %}

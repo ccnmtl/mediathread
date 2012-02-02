@@ -99,8 +99,8 @@
             self.commonPostInitialize();
         }
         
-        this.onDisplayMedia = function() {   
-            element = jQuery("td.panel-container.media");
+        this.onDisplayMedia = function(obj) {   
+            var element = jQuery(obj.target).parents("td.panel-container.media")[0];
             PanelManager.openSubPanel(element);
         }
 

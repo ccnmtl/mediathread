@@ -48,7 +48,7 @@
         }
         
         this.openSubPanel = function(element) {
-            if (element && !element.hasClass("open")) {
+            if (element && !jQuery(element).hasClass("open")) {
                 jQuery(element).toggleClass("open closed");
                 
                 var container = jQuery(element).nextAll("td.pantab-container");

@@ -3,21 +3,29 @@
         var self = this;
         var project_modified = false;
         var options = null;
+        var citationViews = [];
         
         this.commonInitialize = function(options) {
             self.options = options;
+            
+            // Create an assetview.
+            // @todo - We have two assetviews on this page. The singleton nature in the 
+            // core architecture means the two views are really sharing the underlying code.
+            // Consider how to resolve this contention. (It's a big change in the core.)
+            
+            // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
             djangosherd.storage = new DjangoSherd_Storage();
             djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
         }
         
         this.commonPostInitialize = function() {
-            var citationOptions = {};
-            if (self.options.presentation)
-                citationOptions.presentation = self.options.presentation;
-            
-            citationOptions.callback = this.onDisplayMedia;
-            
-            DjangoSherd_decorate_citations(document, citationOptions);
+            for (var i = 0; i < self.options.targets.length; i++) {
+                var cv = new CitationView();
+                cv.init({ 'default_target': self.options.targets[i].default_target,
+                          'callback': self.onDisplayMedia,
+                          'presentation': self.options.presentation });
+                cv.decorateLinks(self.options.targets[i].parent);
+            }
             
             if (self.options.view_callback)
                 self.options.view_callback();
@@ -32,7 +40,6 @@
             self.commonInitialize(options);
             
             // WARN ON UNLOAD
-            
             tinyMCE.onAddEditor.add(function(manager, ed) {
                 ed.onChange.add(function(editor) {
                     self.project_modified = true;
@@ -58,7 +65,6 @@
               'enable_project_selection': options.enable_project_selection
             });
         }
-            
         
         this.postInitializeEditing = function() {
             if (tinyMCE.activeEditor) {

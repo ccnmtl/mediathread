@@ -990,8 +990,6 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 	text-transform: uppercase;
 	padding: 1px 0 3px;
 	width: 17px;
-	
-
 }
 
 table#sliding-content-container tr td.panel-container div.panel {
@@ -1020,7 +1018,6 @@ div.pantab {
     border-radius: 0px 5px 5px 0px; 
     -moz-border-radius: 0px 5px 5px 0px; 
     -webkit-border-radius: 0px 5px 5px 0px;
-    background-image:url('../img/panels/panel_closer.png');
     background-repeat: no-repeat;
     border-left: none;
     background-position: left center;
@@ -1028,17 +1025,11 @@ div.pantab {
     float: left;
 }
 
-div.pantab.assignment.open,
-div.pantab.composition.open,
-div.pantab.collection.open,
-div.pantab.media.open {
+div.pantab.open {
     background-image:url('../img/panels/closer_bg.png');
 }
 
-div.pantab.assignment.closed,
-div.pantab.composition.closed,
-div.pantab.collection.closed,
-div.pantab.media.closed {
+div.pantab.closed {
      background-image:url('../img/panels/opener_bg.png');
 }
 
@@ -1087,6 +1078,15 @@ td.panel-container.composition {
     width: 100%;
 }
 
+td.panel-container.discussion {
+    width: 100%;
+    height: 100%;
+    background-color: #ededed;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    min-width: 330px;
+}
+
 td.panel-container.closed {
     display: none;
 }
@@ -1107,6 +1107,7 @@ td.panel-container.media {
 
 td.panel-content.fixed {
     min-width: 380px;
+    width: 100%;
 }
 
 td.panel-content.fluid {
@@ -1133,6 +1134,12 @@ td.panhandle-stripe.composition {
 div.pantab.collection,
 td.panhandle-stripe.collection {
     background-color: #A88448;
+}
+
+div.pantab.discussion,
+div.panhandle-left.discussion,
+td.panhandle-stripe.discussion {
+    background-color: #000 !important;
 }
 
 div#collection-materials h2 {

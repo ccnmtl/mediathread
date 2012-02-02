@@ -33,23 +33,6 @@
             var screenWidth = jQuery(window).width();
             console.log("The screen is: " + screenWidth);
             jQuery("table.panel").css("width", screenWidth);
-            
-            // Figure out if any other panels need to be closed
-            // Add up widths on all the fixed panels + min-width on fluid panels
-            //var width = 0;
-            //var panels = jQuery(".fixed");
-            //for (var i = 0; i < panels.length; i++) {
-            //    width += parseInt(jQuery(panels[i]).css("width").replace('px', ''));
-            //}
-            
-            //panels = jQuery(".fluid");
-            //for (i = 0; i < panels.length; i++) {
-            //    width += parseInt(jQuery(panels[i]).css("min-width").replace('px', ''));
-            //}
-            
-            //if (width > screenWidth) {
-                // Something needs to close...
-            //}
         }
         
         this.onClickPanelRightHandle = function(element, event) {

@@ -99,9 +99,11 @@
             self.commonPostInitialize();
         }
         
-        this.onDisplayMedia = function(obj) {   
-            var element = jQuery(obj.target).parents("td.panel-container.media")[0];
-            PanelManager.openSubPanel(element);
+        this.onDisplayMedia = function(obj) {
+            var a = jQuery(obj.target).parents("td.panel-container.media");
+            if (a && a.length) {
+                PanelManager.openSubPanel(a[0]);
+            }
         }
 
         this.updateParticipantsChosen = function() {

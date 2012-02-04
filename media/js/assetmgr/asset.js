@@ -259,7 +259,9 @@
                 if (self.switcher_context.enable_project_selection) {
                     // push the body of the project into a div
                     Mustache.update("project_view", the_project, { post:function(elt) {
-                        DjangoSherd_decorate_citations(document.getElementById('project_view'), {});
+                        var cv = new CitationView();
+                        cv.init({});
+                        cv.decorateLinks('project_view');
                         
                         self.selectProject();
                     }});

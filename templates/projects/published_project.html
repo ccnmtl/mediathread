@@ -219,30 +219,50 @@
                                         {% endif %}
                                     </h1>
                                     <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
-                                    <div class="button-form" style="padding: 0px 0px">
-                                        {% if project.collaboration %}
+                                    {% if project.collaboration %}
+                                        <div class="button-form" style="padding: 0px 0px">
                                             {% if role_in_course != 'non-member' and project|is_assignment:request %}
                                                 {% if not user_responses %}
-                                                    <form class="block project createnew" method="post"
-                                                      action="{%url your-space-projects user%}">
-                                                      <input type="hidden" name="title" />
-                                                      <input type="hidden" name="parent" value="{{project.id}}" />
-                                                      <input class="columnbutton project createnew-button" type="submit" value="Create Assignment Response"/>
-                                                    </form>
+                                                    {% if not is_faculty %}
+                                                            <form class="block project createnew" method="post"
+                                                              action="{%url your-space-projects user%}">
+                                                              <input type="hidden" name="title" />
+                                                              <input type="hidden" name="parent" value="{{project.id}}" />
+                                                              <input class="columnbutton project createnew-button" type="submit" value="Create Assignment Response"/>
+                                                            </form>
+                                                    {% endif %}
                                                 {% else %}
                                                     <h3>
                                                       Your Response: 
                                                       {% for response in user_responses %}
-                                                    <a href="{{response.get_absolute_url}}">
-                                                      {{response.title}}
-                                                    </a>{% if not forloop.last %},
-                                                        {% endif %}
+                                                        <a href="{{response.get_absolute_url}}">{{response.title}}</a>{% if not forloop.last %},{% endif %}
                                                       {% endfor %}
                                                     </h3>
                                                 {% endif %}
+                                            {% else %}
+                                                {#need to test it, because the default collaboration created won't have the right perms#}
+                                                {% if not project.feedback_discussion %}
+                                                    {% if is_faculty and not project|is_assignment:request %}
+                                                        <form action="{% url new-discussion %}" method="post">
+                                                           <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                                                           <input type="hidden" name="inherit" value="true" />
+                                                           <input type="hidden" name="app_label" value="projects" />
+                                                           <input type="hidden" name="model" value="project" />
+                                                           <input type="hidden" name="obj_pk" value="{{project.pk}}" />
+                                                           <input type="hidden" name="comment_html" value="Composition:{{project.title}}" />
+                                                           <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
+                                                        </form>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if is_space_owner or is_faculty %}
+                                                    <form action="{% url discussion-view project.feedback_discussion.id %}" method="GET">
+                                                        <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
+                                                    </form>            
+                                                    {% endif %}
+                                                {% endif %}
                                             {% endif %}
-                                        {% endif %}{# end project.collaboration #}
-                                    </div><!-- ??class="button-form" -->
+                                        </div>
+                                    {% endif %}{# end project.collaboration #}
                                 </div>
                             </td>
                         </tr>
@@ -342,6 +362,8 @@
             {% endwith %}
             <!--  END COMPOSITION PANE -->
             
+            {% comment %}
+            {% if project.assignment %}
             {% if is_faculty or project.feedback_discussion %}
                 <!--BEGIN FEEDBACK OR DISCUSSION PANEL--> 
                 <td class="panhandle-left-container">
@@ -390,29 +412,7 @@
                     <div class="pantab discussion closed"></div>
                 </td>
                 <!--  END FEEDBACK OR DISCUSSION PANE -->
-            {% endif %}
-                        
-            {% comment %}
-                {#need to test it, because the default collaboration created won't have the right perms#}
-                {% if not project.feedback_discussion %}
-                    {% if is_faculty and not project|is_assignment:request %}
-                        <form action="{% url new-discussion %}" method="post">
-                           <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
-                           <input type="hidden" name="inherit" value="true" />
-                           <input type="hidden" name="app_label" value="projects" />
-                           <input type="hidden" name="model" value="project" />
-                           <input type="hidden" name="obj_pk" value="{{project.pk}}" />
-                           <input type="hidden" name="comment_html" value="Composition:{{project.title}}" />
-                           <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
-                        </form>
-                    {% endif %}
-                {% else %}
-                    {% if is_space_owner or is_faculty %}
-                    <form action="{% url discussion-view project.feedback_discussion.id %}" method="GET">
-                        <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
-                    </form>            
-                    {% endif %}
-                {% endif %}
+            {% endif %}{% endif %}
             {% endcomment %}
             
             <td class="filler"></td>                          

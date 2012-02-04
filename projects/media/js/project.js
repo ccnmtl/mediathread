@@ -153,12 +153,20 @@
                 jQuery("#composition-materials-panhandle-label").html("Add Selection");
                 jQuery("#preview-button").attr("value", "Preview");
                 
-                // Kill the html
+                // Kill the asset view
                 self.citations["composition-essay-space"].unload();
+                
+                jQuery("#save-button").show();
+                jQuery("#id_publish").show();
+                jQuery("label[for='id_publish']").html("Status");
             } else {
                 // Preview View
                 tinyMCE.activeEditor.hide();
                 jQuery("#project-content").hide();
+                jQuery("#save-button").hide();
+                jQuery("#id_publish").hide();
+                var selected = jQuery("#id_publish option:selected").text();
+                jQuery("label[for='id_publish']").html(selected);
                 
                 // Get updated text into the preview space
                 // Decorate any new links
@@ -168,6 +176,8 @@
                 jQuery("#composition-essay-space").show();
                 jQuery("#composition-materials-panhandle-label").html("View Selection");
                 jQuery("#preview-button").attr("value", "Edit");
+                
+                
                 
             }
             

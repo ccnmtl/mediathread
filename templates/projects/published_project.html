@@ -35,8 +35,6 @@
     <script type="text/javascript">    
         function resizePublishedProjectPage() {
             var visible = getVisibleContentHeight();
-            console.log("resizePublishedProjectPage: visible " + visible);
-            
     
             // Resize the outer table. This takes care of the panhandles & panhandle stripes
             jQuery("#sliding-content-container").css('height', visible + "px");
@@ -47,9 +45,11 @@
             ProjectView.initReadOnly({
                 presentation: 'medium',
                 view_callback: resizePublishedProjectPage,
+                open_from_hash: false, 
+                project_json: './json',
                 targets: [ { 'parent': 'assignment-essay-space', 'default_target': 'assignment-videoclipbox' }, 
                            { 'parent': 'composition-essay-space', 'default_target': 'composition-videoclipbox'} ]    
-            }); 
+            });
 
             PanelManager.init();
     

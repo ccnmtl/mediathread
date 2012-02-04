@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif coursetags %}
+{% load smartif coursetags revision %}
 {% block title %}"{{asset.title|striptags|safe}}"{% endblock %}
 
 {% block css %}
@@ -11,12 +11,12 @@
 
 {% block js %}
   <script type="text/javascript" src="/site_media/js/tabber.js"></script>
-  <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+  <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
   <!--All the annotation javascript/css -->
   {% include "djangosherd/annotator_resources.html" %}
 
-  <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+  <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+  <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
   <script type="text/javascript">
     jQuery(document).ready(function() {
             DjangoSherd_Asset_Config();    

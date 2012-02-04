@@ -3,7 +3,6 @@
         var self = this;
         var project_modified = false;
         var options = null;
-        var citationViews = [];
         
         this.commonInitialize = function(options) {
             self.options = options;
@@ -24,12 +23,15 @@
         }
         
         this.commonPostInitialize = function() {
+            self.citations = {};
+            
             for (var i = 0; i < self.options.targets.length; i++) {
                 var cv = new CitationView();
                 cv.init({ 'default_target': self.options.targets[i].default_target,
                           'callback': self.onDisplayMedia,
                           'presentation': self.options.presentation });
                 cv.decorateLinks(self.options.targets[i].parent);
+                self.citations[self.options.targets[i].parent] = cv;
             }
             
             if (self.options.view_callback)
@@ -140,6 +142,42 @@
             }
             jQuery("#participant_list").toggle();
             jQuery(window).trigger('resize');
+            return false;
+        }
+        
+        this.preview = function(evt) {
+            if (jQuery("#composition-essay-space:visible").length) {
+                // Edit View
+                jQuery("#composition-essay-space").hide();
+                tinyMCE.activeEditor.show();
+                jQuery("#composition-materials-panhandle-label").html("Add Selection");
+                jQuery("#preview-button").attr("value", "Preview");
+                
+                // Kill the html
+                self.citations["composition-essay-space"].unload();
+            } else {
+                // Preview View
+                tinyMCE.activeEditor.hide();
+                jQuery("#project-content").hide();
+                
+                // Get updated text into the preview space
+                // Decorate any new links
+                jQuery("#composition-essay-space").html(tinyMCE.activeEditor.getContent());
+                self.citations["composition-essay-space"].decorateLinks();
+
+                jQuery("#composition-essay-space").show();
+                jQuery("#composition-materials-panhandle-label").html("View Selection");
+                jQuery("#preview-button").attr("value", "Edit");
+                
+            }
+            
+            jQuery("#composition-materials").toggleClass("media collection");
+            jQuery("#composition-materials-panhandle").toggleClass("media collection");
+            jQuery("#composition-materials-pantab").toggleClass("media collection");
+            jQuery("#collection-materials").toggle();
+            jQuery("#composition-asset-view-published").toggle();
+            
+            
             return false;
         }
 

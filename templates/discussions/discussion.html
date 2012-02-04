@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load collaborations user_annotations tagging_tags smartif user_projects threadedcomments_tags coursetags %}
+{% load collaborations user_annotations tagging_tags smartif user_projects threadedcomments_tags coursetags revision %}
 
 {% block title %}
 Discussion of {{root_comment.content_object.title}}
@@ -24,11 +24,11 @@ Discussion of {{root_comment.content_object.title}}
   
   <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/discussion.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/discussion.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
     
     <script type="text/javascript">
         function resizeDiscussionPage() {

@@ -1,19 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load cache user_projects coursetags revision %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 {% with request.collaboration_context.content_object as course %}
 <head><!-- {{controller_name}} :: {{template_name}} -->
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>{% block title %}{% endblock %} Mediathread {{course.title}} > </title>
 
-	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css?version={{settings.REVISION}}" />
-	<link rel="stylesheet" type="text/css" href="/site_media/css/intermame.css?version={{settings.REVISION}}" />
+	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css?version={%revision%}" />
+	<link rel="stylesheet" type="text/css" href="/site_media/css/intermame.css?version={%revision%}" />
     <link rel="stylesheet" type="text/css" href="/site_media/css/shield.css" />
-	<link rel="stylesheet" href="/site_media/css/mediathread.css?version={{settings.REVISION}}" media="screen" />
-	<link rel="stylesheet" href="/site_media/css/print.css?version={{settings.REVISION}}" media="print" />
+	<link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
     
     <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
     
-	{% load cache user_projects coursetags %}
     {% cache 500 heads course %}
        {% if course.settings.custom_headers %}
         {{course.settings.custom_headers|safe}}
@@ -29,7 +29,7 @@
     <script src="/site_media/js/browserdetect.js" type="text/javascript" language="javascript"></script>
     <script src="/site_media/js/shield.js" type="text/javascript" language="javascript"></script>
     
-    <script type="text/javascript" src="/site_media/js/util.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/util.js?version={%revision%}"></script>
     
     <script type="text/javascript">
         var lt = String.fromCharCode(60);

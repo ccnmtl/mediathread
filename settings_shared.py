@@ -174,12 +174,4 @@ try:
 except ImportError:
     pass
 
-try:
-    from release_id import LAST_GIT_HEAD
-    REVISION = LAST_GIT_HEAD
-except ImportError:
-    import random
-    REVISION = str(random.randint(0,320000))
-    pass
-
 

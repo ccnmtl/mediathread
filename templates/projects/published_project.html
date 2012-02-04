@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load smartif collaborations user_projects coursetags %}
+{% load smartif collaborations user_projects coursetags revision %}
 
 {% block title %}
     {% if preview_num %}
@@ -21,15 +21,15 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/panel.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
     
     <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
   
-    <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
     
  
     <script type="text/javascript">    

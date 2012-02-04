@@ -14,7 +14,8 @@
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" href="/site_media/css/project.css" />
+    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
     <script type="text/javascript" src="/jsi18n"></script>
     {{ projectform.media }}
 
@@ -42,6 +43,7 @@
 
             // tinyMCE project editing window
             jQuery('#project-content_tbl').css('height', (visible - 100) + "px");
+            jQuery('#composition-essay-space').css('height', (visible - 112) + "px");
             // Reset width to 100% via javascript. TinyMCE doesn't resize properly 
             // if this isn't completed AFTER instantiation
             jQuery('#project-content_tbl').css('width', "100%");
@@ -59,7 +61,9 @@
                 'view_callback': resizeEditProjectPage,
                 'enable_project_selection': false,
                 'presentation': 'small',
-                'targets': [ { 'parent': 'assignment-essay-space', 'default_target': 'assignment-videoclipbox' } ]    
+                'targets': [ { 'parent': 'assignment-essay-space', 'default_target': 'assignment-videoclipbox' },
+                             { 'parent': 'composition-essay-space', 'default_target': 'composition-videoclipbox' }
+                           ]    
             }); 
 
             PanelManager.init();
@@ -181,8 +185,7 @@
                             <tr class="fluid">
                                 <td class="panel-content fluid">
                                     <div id="project-form-buttons"> 
-                                        <input class="project previewbutton" type="submit" name="submit" value="Preview" onclick="this.form.target='mediathreadpreview';this.form.action='?preview='+(window.preview_num = ++window.preview_num || 1);"/>
-                                 
+                                        <input id="preview-button" class="project previewbutton" type="submit" name="submit" value="Preview" onclick="return ProjectView.preview()" />
                                         
                                         <input class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
                                         <span class="project-dropdown">
@@ -198,9 +201,12 @@
                                         <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
                                         <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
                                         <textarea id="project-content" tabindex="0" name="body" class="mceEditor" mce_editable="true" style="height: 100%">{{project.body|safe}}</textarea>
+                                        <div id="composition-essay-space" class="essay-space" style="display: none;">  
+                                            {{project.body|safe}}
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="panel-container collection open">
+                                <td id="composition-materials" class="panel-container collection open">
                                     <div id="collection-materials">
                                         <h2>
                                             <div class="button-form inline">
@@ -210,12 +216,23 @@
                                         </h2>
                                         <div id="collection_table"></div>
                                     </div>
+                                    <div id="composition-asset-view-published" class="asset-view-published" style="display: none">
+                                        <div id="composition-videoclipbox" class="videoclipbox" style="display: none;">
+                                            {% if project|is_assignment:request %}<div class="create-selection" style="float: right"></div>{% endif %}
+                                            <div class="annotation-title publishedCitation" style="margin-left: 8px; margin-top: 5px;"></div>
+                                            <div class="asset-title" style="margin-left: 5px; margin-bottom: 8px; min-height: 20px;"></div>
+                                            <div class="asset-object" style="border: none; background-color: #ededed;"><!-- width changes here too if video size changes -->
+                                                <div class="asset-display"></div>
+                                                <div class="clipstrip-display"></div>    
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="panhandle-stripe collection">
-                                    <div class="label">Add Selection</div>
+                                <td id="composition-materials-panhandle" class="panhandle-stripe collection">
+                                    <div id="composition-materials-panhandle-label" class="label">Add Selection</div>
                                 </td>
                                 <td class="pantab-container">
-                                    <div class="pantab collection open"></div>
+                                    <div id="composition-materials-pantab" class="pantab collection open"></div>
                                 </td>
                                 <td class="filler"></td>
                             </tr>

@@ -184,7 +184,7 @@ class SherdNoteManager(models.Manager):
                 try:
                     # get the global annotation for this asset
                     asset = Asset.objects.get(pk=asset_id)
-                    note = asset.global_annotation(user, False)
+                    note = asset.global_annotation(user, True)
                 except Asset.DoesNotExist:
                      #title is NON-STANDARD to Annotation base
                     note = self.model(id=0,
@@ -411,6 +411,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
     participant = None
     comment = None
     collaboration = None
+    author = None
     if (hasattr(instance,'comment') and
         hasattr(instance,'user') and
         isinstance(getattr(instance,'content_object',None) , Collaboration)
@@ -418,12 +419,14 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
         
         
         participant=instance.user
+        author = instance.user
         comment = instance
         collaboration = instance.content_object
         sherdsource = instance.comment
     elif hasattr(instance,'author') and hasattr(instance,'body') \
             and callable(getattr(instance,'collaboration',None)):
         participant = None #not setting author, since get_or_create will break then
+        author = instance.author
         collaboration = instance.collaboration()
         if collaboration is None:
             return
@@ -431,7 +434,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
     else:
         return #not comment, not project
     
-    sherds = SherdNote.objects.references_in_string(sherdsource, participant)
+    sherds = SherdNote.objects.references_in_string(sherdsource, author)
     if not sherds:
         class NoNote:
             asset = None

@@ -81,7 +81,7 @@
                     return "Changes to your project have not been saved.";
                 } else {
                     var title = jQuery("#id_title:visible");
-                    if (title.length > 0) {
+                    if (title && title.length > 0) {
                         var value = title.val();
                         if (!value || value.length < 1) {
                             return "Please specify a project title.";

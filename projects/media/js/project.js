@@ -16,6 +16,11 @@
             // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
             djangosherd.storage = new DjangoSherd_Storage();
             djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
+            
+            if (options.project_json) {
+                // Locally cache all assets & annotations associated with the project
+                djangosherd.storage.get({type:'project',id:'xxx',url:options.project_json});
+            }
         }
         
         this.commonPostInitialize = function() {

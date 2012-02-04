@@ -188,7 +188,7 @@ class Project(models.Model):
         citation references to sherdnotes
         """
         SherdNote = models.get_model('djangosherd','SherdNote')
-        return SherdNote.objects.references_in_string(self.body)
+        return SherdNote.objects.references_in_string(self.body, self.author)
             
     @property
     def content_object(self):

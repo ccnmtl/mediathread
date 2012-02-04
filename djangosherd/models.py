@@ -155,7 +155,7 @@ class SherdNoteManager(models.Manager):
                                            content_type=me).values_list('object_id',flat=True)
         return qs.filter(id__in = titems)
     
-    def references_in_string(self,text):
+    def references_in_string(self,text,user):
         """
         citation references to sherdnotes
         in the future this might be a db call,
@@ -176,6 +176,22 @@ class SherdNoteManager(models.Manager):
                                   asset_id=int(ann[1]),
                                   )
             rv.append(note)
+        
+        if user:    
+            regex_string = r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/[^a]'
+            for asset in re.findall(regex_string, text):
+                asset_id = int(asset[1])
+                try:
+                    # get the global annotation for this asset
+                    asset = Asset.objects.get(pk=asset_id)
+                    note = asset.global_annotation(user, False)
+                except Asset.DoesNotExist:
+                     #title is NON-STANDARD to Annotation base
+                    note = self.model(id=0,
+                                      title="Asset Deleted",
+                                      asset_id=asset_id)
+                rv.append(note)
+
         return rv
 
 class SherdNote(Annotation):
@@ -415,7 +431,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
     else:
         return #not comment, not project
     
-    sherds = SherdNote.objects.references_in_string(sherdsource)
+    sherds = SherdNote.objects.references_in_string(sherdsource, participant)
     if not sherds:
         class NoNote:
             asset = None

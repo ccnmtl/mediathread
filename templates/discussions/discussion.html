@@ -50,6 +50,7 @@ Discussion of {{root_comment.content_object.title}}
                 'open_from_hash':true, 
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
                 'view_callback': resizeDiscussionPage,
+                'targets': [ { 'parent': 'threadedcomments', 'default_target': '' } ], 
                 {% ifequal target.content_type.model "project" %}
                    'enable_project_selection': true,
                    'project_id': {{target.content_object.id}}

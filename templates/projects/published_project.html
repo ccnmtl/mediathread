@@ -83,7 +83,7 @@
                                 <td colspan="4">        
                                     <div class="assignment-project">
                                     <h1>{{assignment.title}}
-                                        {% if is_space_owner and assignment.id and not is_preview %}
+                                        {% if is_assignment_owner and assignment.id and not is_preview %}
                                             <a class="edit-pencil" href="{{assignment.get_workspace_url}}">
                                                 (edit)
                                             </a>
@@ -102,7 +102,7 @@
                                 <td class="panel-container media medium closed">
                                     <div class="asset-view-published medium">
                                         <div id="assignment-videoclipbox" class="videoclipbox" style="display: none;">
-                                            {% if project|is_assignment:request %}<div class="create-selection" style="float: right"></div>{% endif %}
+                                            <div class="create-selection" style="float: right"></div>
                                             <div class="annotation-title publishedCitation" style="margin-left: 8px; margin-top: 5px;"></div>
                                             <div class="asset-title" style="margin-left: 5px; margin-bottom: 8px; min-height: 20px;"></div>
                                             <div class="asset-object" style="border: none; background-color: #ededed;"><!-- width changes here too if video size changes -->

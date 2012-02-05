@@ -152,6 +152,7 @@
                 tinyMCE.activeEditor.show();
                 jQuery("#composition-materials-panhandle-label").html("Add Selection");
                 jQuery("#preview-button").attr("value", "Preview");
+                jQuery("#composition-asset-view-published").hide();
                 
                 // Kill the asset view
                 self.citations["composition-essay-space"].unload();
@@ -159,6 +160,7 @@
                 jQuery("#save-button").show();
                 jQuery("#id_publish").show();
                 jQuery("label[for='id_publish']").html("Status");
+                jQuery("#collection-materials").show();
             } else {
                 // Preview View
                 tinyMCE.activeEditor.hide();
@@ -167,6 +169,7 @@
                 jQuery("#id_publish").hide();
                 var selected = jQuery("#id_publish option:selected").text();
                 jQuery("label[for='id_publish']").html(selected);
+                jQuery("#collection-materials").hide();
                 
                 // Get updated text into the preview space
                 // Decorate any new links
@@ -176,17 +179,12 @@
                 jQuery("#composition-essay-space").show();
                 jQuery("#composition-materials-panhandle-label").html("View Selection");
                 jQuery("#preview-button").attr("value", "Edit");
-                
-                
-                
+                jQuery("#composition-asset-view-published").show();
             }
             
             jQuery("#composition-materials").toggleClass("media collection");
             jQuery("#composition-materials-panhandle").toggleClass("media collection");
             jQuery("#composition-materials-pantab").toggleClass("media collection");
-            jQuery("#collection-materials").toggle();
-            jQuery("#composition-asset-view-published").toggle();
-            
             
             return false;
         }

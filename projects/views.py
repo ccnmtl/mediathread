@@ -58,6 +58,8 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     if request.META.get('HTTP_ACCEPT','').find('json') >=0:
         return project_json(request, project)
 
+    is_assignment_owner = False
+    
     if isinstance(project, dict):
         assignment_responses = None
         discussions = None
@@ -67,8 +69,12 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
         discussions = project.discussions(request)
         user_responses = project.responses_by(request, request.user)
 
+        if project.assignment():
+            is_assignment_owner = project.assignment().is_participant(user)
+        
     return {
         'is_space_owner': is_participant,
+        'is_assignment_owner': is_assignment_owner,
         'project': project,
         'is_preview': preview_num,
         'preview_num': preview_num,

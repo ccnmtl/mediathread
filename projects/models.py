@@ -98,7 +98,7 @@ class Project(models.Model):
     def responses_by(self, request, user):
         responses = self.responses(request)
         return [response for response in responses
-                if response and user in response.content_object.participants.all()]
+                if response and (user in response.content_object.participants.all() or user == response.content_object.author)]
 
     def responses(self, request):
         project_type = ContentType.objects.get_for_model(Project)

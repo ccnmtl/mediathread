@@ -1132,23 +1132,39 @@ td.panel-container.open {
 }
 
 td.panel-container.media {
-    width: 100%;
     height: 100%;
     background-color: #ededed;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
-    min-width: 450px;
-    max-width: 1000px;
 }
 
+.medium {
+    width: 540px !important;
+}
+
+.small {
+    width: 350px !important;
+}
+
+
 td.panel-content.fixed {
-    min-width: 380px;
-    width: 100%;
+    width: 380px;
 }
 
 td.panel-content.fluid {
     width: 100%;
 }
+
+td.panel-content.fluid.composition {
+    min-width: 390px;
+    max-width: 600px;
+}
+
+td.panel-content.fluid.assignment {
+    min-width: 380px;
+    max-width: 600px;    
+}
+    
 
 div.pantab.assignment,
 div.panhandle-left.assignment,

@@ -1008,6 +1008,55 @@ table#sliding-content-container tr, table#sliding-content-container tr td {
     vertical-align: top;
 }
 
+table#sliding-content-container h5 {
+    margin-left: 20px;
+    
+}
+
+#composition-text {
+    margin-left: 20px;
+}
+
+
+table#sliding-content-container tr#title_bar td h1{
+
+    margin: 0px;
+    padding: 4px 10px;
+    background: #3a84bf; /* Old browsers */
+    background: -moz-linear-gradient(top,  #3a84bf 0%, #99cce9 100%, #f0f9ff 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3a84bf), color-stop(100%,#99cce9), color-stop(100%,#f0f9ff)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #3a84bf 0%,#99cce9 100%,#f0f9ff 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #3a84bf 0%,#99cce9 100%,#f0f9ff 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #3a84bf 0%,#99cce9 100%,#f0f9ff 100%); /* IE10+ */
+    background: linear-gradient(top,  #3a84bf 0%,#99cce9 100%,#f0f9ff 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3a84bf', endColorstr='#f0f9ff',GradientType=0 ); /* IE6-9 */
+
+}
+
+
+#title_bar input#id_title {
+    width:60%;
+    max-width: 365px;
+    font-size: 100%;
+    padding-left: 5px;
+}
+
+
+
+span.project-dropdown {
+    margin-right:5px;
+    *margin: -23px 45px 0 0;
+    color: black;
+    font-size: 85%;
+}
+
+input.project-previewbutton,
+input.project-savebutton {
+    margin-right: 5px;
+    float: right;
+}
+
+
 table#sliding-content-container tr td.panhandle-left-container {
     width: 10px;
     height: 100%;
@@ -1051,8 +1100,9 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 table#sliding-content-container tr td.panel-container div.panel {
     border: 1px solid #ccc;
     margin: 0;
-    padding: 10px 0 8px 10px;
+    padding: 0px;
     border-left: none;
+    border-top: none;
     min-height: 180px;
     height: 100%;
 }
@@ -1107,6 +1157,7 @@ table.panel-subcontainer tbody {
 table.panel-subcontainer tr.fluid {
     height: 100%;
 }
+
 
 table.panel-subcontainer tr td {
     margin: 0;
@@ -1198,9 +1249,13 @@ td.panhandle-stripe.media {
 }
 
 div.pantab.composition,
-div.panhandle-left.composition,
 td.panhandle-stripe.composition {
     background-color: #3a84bf !important;
+}
+
+div.panhandle-left.composition,
+{
+    background-color: #F0F5FA !important;
 }
 
 div.pantab.collection,

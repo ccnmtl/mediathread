@@ -160,9 +160,6 @@ input.materialCitation:hover
     padding-left:10px;
 }
 
-#last-version-saved {
-   float: right;
-}
 
 
 body.mceContentBody {
@@ -196,36 +193,6 @@ div.mce_editorwindow {
 #project-content {
     width: 100%;
     border: 1px solid #ccc;
-}
-
-.project-form-title input#id_title {
-    width:60%;
-    max-width: 365px;
-    font-size: 100%;
-    padding-left: 5px;
-}
-
-
-#project-form-buttons {
-    border: 1px solid #ccc;
-    background-color: #ccc;
-    padding: 2px 5px 2px 2px;
-}
-
-span.project-dropdown {
-    margin-right:5px;
-    *margin: -23px 45px 0 0;
-    color: black;
-    font-size: 85%;
-}
-
-input.project-savebutton {
-    margin-right: 5px;
-}
-
-input.project-savebutton,
-span.project-dropdown {
-    float:right;
 }
 
 

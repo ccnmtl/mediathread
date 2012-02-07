@@ -93,7 +93,7 @@
                                     </div>  
                                 </td>
                             </tr>
-                            <tr class="fluid">
+                            <tr>
                                 <td class="panel-content fluid assignment">
                                     <div id="assignment-essay-space" class="essay-space">  
                                         {{assignment.body|safe}}
@@ -208,7 +208,7 @@
                 <div class="panel">
                     <table class="panel-subcontainer">
                         <tr>
-                            <td colspan="4" class="meta {{project_type}}">        
+                            <td colspan="5" class="meta {{project_type}}">        
                                 <div class="{{project_type}}-project">
     
                                     <h1>{% if project|is_assignment:request %}Assignment: {%endif%}{{project.title}}
@@ -233,17 +233,17 @@
                                                             </form>
                                                     {% endif %}
                                                 {% else %}
-                                                    <h3>
+                                                    <h5 style="margin: .2em 0 .2em">
                                                       Your Response: 
                                                       {% for response in user_responses %}
                                                         <a href="{{response.get_absolute_url}}">{{response.title}}</a>{% if not forloop.last %},{% endif %}
                                                       {% endfor %}
-                                                    </h3>
+                                                    </h5>
                                                 {% endif %}
                                             {% else %}
                                                 {#need to test it, because the default collaboration created won't have the right perms#}
                                                 {% if not project.feedback_discussion %}
-                                                    {% if is_faculty and not project|is_assignment:request %}
+                                                    {% if is_faculty and not project|is_assignment:request and project.assignment %}
                                                         <form action="{% url new-discussion %}" method="post">
                                                            <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
                                                            <input type="hidden" name="inherit" value="true" />
@@ -256,9 +256,11 @@
                                                     {% endif %}
                                                 {% else %}
                                                     {% if is_space_owner or is_faculty %}
-                                                    <form action="{% url discussion-view project.feedback_discussion.id %}" method="GET">
-                                                        <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
-                                                    </form>            
+                                                    {% if project.assignment %}
+                                                        <form action="{% url discussion-view project.feedback_discussion.id %}" method="GET">
+                                                            <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
+                                                        </form>
+                                                    {% endif %}            
                                                     {% endif %}
                                                 {% endif %}
                                             {% endif %}
@@ -295,7 +297,7 @@
                             <td class="filler"></td>
                         </tr>
                         <tr>
-                            <td colspan="4">
+                            <td colspan="5">
                                 <div class="essay-options">
                                     {% if assignment_responses %}
                                         <h3>
@@ -383,7 +385,7 @@
                 <td class="panel-container closed discussion fixed">
                     <div class="panel">
                         <table>
-                            <tr class="fluid">
+                            <tr>
                                 <td class="panel-content fixed">
                                     DISCUSSION GOES HERE
                                 </td>

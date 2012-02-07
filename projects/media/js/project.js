@@ -28,7 +28,7 @@
             for (var i = 0; i < self.options.targets.length; i++) {
                 var cv = new CitationView();
                 cv.init({ 'default_target': self.options.targets[i].default_target,
-                          'callback': self.onDisplayMedia,
+                          'onPrepareCitation': self.onPrepareCitation,
                           'presentation': self.options.presentation });
                 cv.decorateLinks(self.options.targets[i].parent);
                 self.citations[self.options.targets[i].parent] = cv;
@@ -106,8 +106,8 @@
             self.commonPostInitialize();
         }
         
-        this.onDisplayMedia = function(obj) {
-            var a = jQuery(obj.target).parents("td.panel-container.media");
+        this.onPrepareCitation = function(target) {
+            var a = jQuery(target).parents("td.panel-container.media");
             if (a && a.length) {
                 PanelManager.openSubPanel(a[0]);
             }

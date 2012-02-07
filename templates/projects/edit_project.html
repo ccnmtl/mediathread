@@ -160,15 +160,29 @@
                     <form name="editproject" method="POST" action=".">
                         <table class="panel-subcontainer {{project_type}}">
                             <tr>
-                                <td colspan="4">        
-                                    <div id="last-version-saved">
-                                    <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
-                                    <span id="last-version-public">
-                                    {% if project.public_url %}
-                                    (<a href="{{project.public_url}}">public url</a>)
-                                    {% endif %}
-                                    </span>
+                                <td colspan="5">      
+                                   <div id="project-form-buttons"> 
+                                        <input id="preview-button" class="project previewbutton" type="submit" name="submit" value="Preview" onclick="return ProjectView.preview()" />
+                                        
+                                        <span id="last-version-saved">
+                                            <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
+                                            <span id="last-version-public">
+                                            {% if project.public_url %}
+                                                (<a href="{{project.public_url}}">public url</a>)
+                                            {% endif %}
+                                            </span>
+                                        </span>
+                                        
+                                        <input id="save-button" class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
+                                        <span class="project-dropdown">
+                                                {{projectform.publish.label_tag}}    
+                                                {{projectform.publish}}
+                                        </span>
                                     </div>
+                                 </td>
+                            </tr>
+                            <tr>                                      
+                                <td>       
                                     <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
                                     
                                     <h5>
@@ -186,16 +200,6 @@
                                 
                             <tr class="fluid">
                                 <td class="panel-content fluid composition">
-                                    <div id="project-form-buttons"> 
-                                        <input id="preview-button" class="project previewbutton" type="submit" name="submit" value="Preview" onclick="return ProjectView.preview()" />
-                                        
-                                        <input id="save-button" class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-                                        <span class="project-dropdown">
-                                                {{projectform.publish.label_tag}}    
-                                                {{projectform.publish}}
-                                        </span>
-                                        
-                                    </div>
                                     <div>
                                         <script type="text/javascript">
                                             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};

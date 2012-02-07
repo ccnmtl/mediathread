@@ -1176,13 +1176,14 @@ td.panel-content.fluid {
 }
 
 td.panel-content.fluid.composition {
-    min-width: 390px;
-    max-width: 600px;
+    min-width: 330px;
+    max-width: 500px;
 }
 
-td.panel-content.fluid.assignment {
-    min-width: 380px;
-    max-width: 600px;    
+td.panel-content.fixed.assignment {
+    min-width: 330px;
+    max-width: 330px;
+    width: 330px !important;
 }
     
 

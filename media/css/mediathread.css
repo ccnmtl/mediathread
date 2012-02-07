@@ -147,7 +147,7 @@ a:visited
 	padding: 0;
 	border: 0;
 	width: 100%;
-	min-width: 1085px;
+	min-width: 1024px;
     background: #444; /* for non-css3 browsers */
 
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#ffffff'); /* for IE */
@@ -164,7 +164,7 @@ a:visited
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 1085px;
+	min-width: 1024px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -180,7 +180,7 @@ a:visited
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 1085px;
+	min-width: 1024px;
 	margin-top:-10px;
 	height: 37px;
 
@@ -323,7 +323,7 @@ a:visited
 {
 	display: block;
 	width: 100%;
-	min-width: 1085px;
+	min-width: 1024px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -711,7 +711,7 @@ img, img a
 	display: block;
 	width: 100%;
 		height: 33px;
-	min-width: 1085px;
+	min-width: 1024px;
 	clear: both;
 	margin: 0;
 	padding: 6px 0 0 0;
@@ -998,7 +998,7 @@ table#sliding-content-container, table#sliding-content-container tr {
     margin: 0;
     width: 99%;
     border: none;
-    max-width: 1085px;
+    min-width: 1024px;
 }
 
 table#sliding-content-container tr, table#sliding-content-container tr td {
@@ -1234,3 +1234,228 @@ div#collection-materials h2 a.browse-button {
     font-size: 85%;
     border-image: initial;
 }
+
+/** Shield Box **/
+.warningmessage
+{
+    padding: 10px;
+    border: 1px solid #ff9933;
+    background-color: #feefda;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    font: normal 12px/130% helvetica, arial, sans-serif;
+    color: #000;
+}
+
+#shieldbox .browsers
+{
+    margin-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+#shieldbox .alert
+{
+    margin: 0 20px 0 0;
+    border: 0;
+    padding: 0;
+    display: block;
+    float: left;
+}
+
+#shieldbox .alert .icon
+{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: block;
+    width: 50px;
+    height: 65px;
+    float: left;
+    background: url('../img/icons_app.png') 0px -433px no-repeat;
+}
+
+#shieldbox .alert .content
+{
+    width: 400px;
+    margin: 0 0 0 10px;
+    border: 0;
+    padding: 0;
+    display: block;
+    float: left;
+}
+
+#shieldbox .alert .content .title
+{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#shieldbox .alert .content .comment
+{
+    margin: 5px 0 0 0;
+    border: 0;
+    padding: 0;
+    display: block;
+}
+
+#shieldbox #minreqversion
+{
+    font-weight: bold;
+}
+
+#shieldbox .solution
+{
+    width: 400px;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: block;
+    float: left;
+}
+
+#shieldbox .browser
+{
+    margin: 0 5px 0 0;
+    border: 0;
+    padding: 0;
+    display: none;
+    float: left;
+}
+
+#shieldbox .isrequired
+{
+    display: block;
+}
+
+#shieldbox .browser .icon
+{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: block;
+    width: 60px;
+    height: 55px;
+/*
+    float: left;
+*/
+}
+
+#shieldbox .browser .content
+{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: block;
+/*
+    float: left;
+*/
+}
+
+#shieldbox .browser .content .title
+{
+    width: 56px;
+    height: 22px;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    display: block;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 11px;
+    padding: 2px;
+    border: 1px solid #f3ca90;
+    background-color: #fdf8f1;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#shieldbox .browser .content .title:hover
+{
+    background-color: #e2edfd;
+    border: 1px solid #92beff;
+}
+
+#shieldbox .browser .content .title a
+{
+    margin: 0;
+    border: 0;
+    display: block;
+    color: #000;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#shieldbox .browser .content .title a:hover
+{
+    color: #000;
+    text-decoration: none;
+}
+
+#shieldbox #chrome .icon
+{
+    background: url('../img/icons_app.png') 5px 0 no-repeat;
+}
+
+#shieldbox #firefox .icon
+{
+    background: url('../img/icons_app.png') 5px -60px no-repeat;
+}
+
+#shieldbox #safari .icon
+{
+    background: url('../img/icons_app.png') 5px -122px no-repeat;
+}
+
+#shieldbox #msie .icon
+{
+    background: url('../img/icons_app.png') 5px -183px no-repeat;
+}
+
+#shieldbox #flash .icon
+{
+    background: url('../img/icons_app.png') 5px -243px no-repeat;
+}
+
+#shieldbox #quicktime .icon
+{
+    background: url('../img/icons_app.png') 5px -303px no-repeat;
+}
+
+#shieldbox #acrobat .icon
+{
+    background: url('../img/icons_app.png') 5px -363px no-repeat;
+}
+
+#shieldbox .nosupport_close
+{
+    float: right;
+    font-family: courier new;
+    font-weight: bold;
+}
+
+#shieldbox .nosupport_close img
+{
+    border: 0;
+}
+
+#shieldbox .nosupport_close a
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: block;
+    height: 16px;
+    width: 16px;
+    background: url('../img/icons_app.png') -18px -506px no-repeat;
+}
+
+

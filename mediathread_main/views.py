@@ -523,10 +523,13 @@ def class_settings(request):
             # Check any existing projects -- if they are world publishable, turn this feature OFF
             projects = Project.objects.filter(course=c)
             for p in projects:
-                col = Collaboration.get_associated_collab(p)
-                if col._policy.policy_name == 'PublicEditorsAreOwners':
-                    col.policy = 'CourseProtected'
-                    col.save()
+                try:
+                    col = Collaboration.get_associated_collab(p)
+                    if col._policy.policy_name == 'PublicEditorsAreOwners':
+                        col.policy = 'CourseProtected'
+                        col.save()
+                except:
+                    pass
                 
     return context
 

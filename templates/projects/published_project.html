@@ -243,7 +243,7 @@
                                             {% else %}
                                                 {#need to test it, because the default collaboration created won't have the right perms#}
                                                 {% if not project.feedback_discussion %}
-                                                    {% if is_faculty and not project|is_assignment:request %}
+                                                    {% if is_faculty and not project|is_assignment:request and project.assignment %}
                                                         <form action="{% url new-discussion %}" method="post">
                                                            <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
                                                            <input type="hidden" name="inherit" value="true" />
@@ -256,9 +256,11 @@
                                                     {% endif %}
                                                 {% else %}
                                                     {% if is_space_owner or is_faculty %}
-                                                    <form action="{% url discussion-view project.feedback_discussion.id %}" method="GET">
-                                                        <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
-                                                    </form>            
+                                                    {% if project.assignment %}
+                                                        <form action="{% url discussion-view project.feedback_discussion.id %}" method="GET">
+                                                            <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
+                                                        </form>
+                                                    {% endif %}            
                                                     {% endif %}
                                                 {% endif %}
                                             {% endif %}

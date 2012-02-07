@@ -159,12 +159,10 @@
                 <div class="panel">
                     <form name="editproject" method="POST" action=".">
                         <table class="panel-subcontainer {{project_type}}">
-                            <tr>
+                         <tr id="title_bar">
                                 <td colspan="5">      
-                                   <div id="project-form-buttons"> 
-                                        <input id="preview-button" class="project previewbutton" type="submit" name="submit" value="Preview" onclick="return ProjectView.preview()" />
-                                        
-                                        <span id="last-version-saved">
+                                   <h1>Title: {{projectform.title}}
+                                       <span id="last-version-saved">
                                             <span id="last-version-prefix"></span><a id="last-version-link" href="{%url project_version_preview project.id project.get_latest_version %}" target="mediathread_lastproject{{project.id}}">Revision {{project.get_latest_version}}</a>
                                             <span id="last-version-public">
                                             {% if project.public_url %}
@@ -173,17 +171,21 @@
                                             </span>
                                         </span>
                                         
+                                        
                                         <input id="save-button" class="project project-savebutton" type="submit" name="submit" value="Save" onclick="this.form.target='_self';"/>
-                                        <span class="project-dropdown">
+                                   <!-- will now appear only on click of save button--><!--    <span class="project-dropdown">
                                                 {{projectform.publish.label_tag}}    
                                                 {{projectform.publish}}
-                                        </span>
-                                    </div>
+                                        </span>-->
+                                        <input id="preview-button" class="project project-previewbutton" type="submit" name="submit" value="Preview" onclick="return ProjectView.preview()" />
+                                        
+                                        
+                                      </h1>
                                  </td>
                             </tr>
                             <tr>                                      
                                 <td>       
-                                    <div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>
+                                    <!--<div class="project-form-title"><h1>Title: {{projectform.title}}</h1></div>-->
                                     
                                     <h5>
                                         by <span id="participants_chosen">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</span>
@@ -197,10 +199,13 @@
                                     </h5>
                                 </td>
                             </tr>
+                            
+                           
+                            
                                 
                             <tr class="fluid">
                                 <td class="panel-content fluid composition">
-                                    <div>
+                                    <div id="composition-text">
                                         <script type="text/javascript">
                                             var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
                                         </script>

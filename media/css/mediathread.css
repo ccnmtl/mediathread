@@ -8,7 +8,9 @@ body
 	background-color: #fff;
 	font: normal 0.8em/120% 'lucida grande', arial, verdana, sans-serif;
 	color: #000;
-	/*min-width: 990px;*/
+    width: 100% auto;
+    min-width: 1008px;
+    overflow: auto;
 }
 
 
@@ -147,7 +149,6 @@ a:visited
 	padding: 0;
 	border: 0;
 	width: 100%;
-	min-width: 1024px;
     background: #444; /* for non-css3 browsers */
 
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#ffffff'); /* for IE */
@@ -164,7 +165,6 @@ a:visited
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 1024px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -180,7 +180,6 @@ a:visited
 	width: auto;
 	left: 5px;
 	right: 5px;
-	min-width: 1024px;
 	margin-top:-10px;
 	height: 37px;
 
@@ -323,7 +322,6 @@ a:visited
 {
 	display: block;
 	width: 100%;
-	min-width: 1024px;
 	clear: both;
 	margin: 0;
 	padding: 0;
@@ -711,9 +709,8 @@ img, img a
 	display: block;
 	width: 100%;
 		height: 33px;
-	min-width: 1024px;
 	clear: both;
-	margin: 0;
+	margin: 10px 0 0 0;
 	padding: 6px 0 0 0;
 	border: 0;
 	background-color: #cdcdcd;
@@ -998,7 +995,6 @@ table#sliding-content-container, table#sliding-content-container tr {
     margin: 0;
     width: 99%;
     border: none;
-    min-width: 1024px;
 }
 
 table#sliding-content-container tr, table#sliding-content-container tr td {
@@ -1069,10 +1065,11 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
     border-radius: 10px 0px 0px 10px; 
     -moz-border-radius: 10px 0px 0px 10px; 
     -webkit-border-radius: 10px 0px 0px 10px; 
-    -moz-box-shadow: -1px 0px 6px #ccc;
-    -webkit-box-shadow: -1px 0px 6px #ccc;
-    box-shadow: -1px 0px 6px #ccc;
+    -moz-box-shadow: -1px 0px 6px #333;
+    -webkit-box-shadow: -1px 0px 6px #333;
+    box-shadow: -1px 0px 6px #333;
     background-color: #fff;
+    border: 1px solid #ccc;
 
 }
 
@@ -1080,6 +1077,9 @@ table#sliding-content-container tr td.panhandle-stripe {
     width: 17px;
     padding-top: 7px;
     height: 100%;
+    -moz-box-shadow: 0px 0px 6px #333;
+    -webkit-box-shadow: 0px 0px 6px #333;
+    box-shadow: 0px 0px 6px #333;
 }
 
 table#sliding-content-container tr td.panhandle-stripe div.label {
@@ -1097,14 +1097,24 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 	width: 17px;
 }
 
+table#sliding-content-container tr td.panel-container {
+    border: 1px solid #ccc;
+    -moz-box-shadow: -1px 0px 6px #333;
+    -webkit-box-shadow: -1px 0px 6px #333;
+    box-shadow: -1px 0px 6px #333;
+
+}
+
+
+
 table#sliding-content-container tr td.panel-container div.panel {
     border: 1px solid #ccc;
     margin: 0;
     padding: 0px;
-    border-left: none;
-    border-top: none;
+    border: none;
     min-height: 180px;
     height: 100%;
+
 }
 
 table#sliding-content-container tr td.panel-container div.panel form {
@@ -1141,9 +1151,8 @@ div.pantab.closed {
 
 
 table.panel-subcontainer {
-    margin: 0;
+    margin: 1em;
     padding: 0;
-    width: 100%;
     height: 100%;
     border: none;
     min-height: 200px;
@@ -1239,7 +1248,6 @@ td.panel-content.fixed.assignment {
     
 
 div.pantab.assignment,
-div.panhandle-left.assignment,
 td.panhandle-stripe.assignment {
     background-color: #175d35 !important;
 }
@@ -1254,9 +1262,17 @@ td.panhandle-stripe.composition {
     background-color: #3a84bf !important;
 }
 
+div.panhandle-left.assignment {
+    background-color: #DAE7E0 !important;
+}
+
 div.panhandle-left.composition,
 {
     background-color: #F0F5FA !important;
+}
+
+div.panhandle-left.discussion {
+    background-color: #ededed !important;
 }
 
 div.pantab.collection,
@@ -1265,7 +1281,6 @@ td.panhandle-stripe.collection {
 }
 
 div.pantab.discussion,
-div.panhandle-left.discussion,
 td.panhandle-stripe.discussion {
     background-color: #000 !important;
 }

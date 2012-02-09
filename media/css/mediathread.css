@@ -991,10 +991,14 @@ div.button-form form, div.button-form.inline form.nofloat{
 
 /*SLIDING ASSIGNMENT TABLE*/
 
+
+
 table#sliding-content-container, table#sliding-content-container tr {
     margin: 0;
     width: 99%;
     border: none;
+    border-collapse: collapse;
+
 }
 
 table#sliding-content-container tr, table#sliding-content-container tr td {
@@ -1002,6 +1006,7 @@ table#sliding-content-container tr, table#sliding-content-container tr td {
     margin: 0;
     padding: 0;
     vertical-align: top;
+    border-collapse: collapse;
 }
 
 table#sliding-content-container h5 {
@@ -1056,6 +1061,10 @@ input.project-savebutton {
 table#sliding-content-container tr td.panhandle-left-container {
     width: 10px;
     height: 100%;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+
 }
 
 table#sliding-content-container tr td.panhandle-left-container div.panhandle-left {
@@ -1065,11 +1074,11 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
     border-radius: 10px 0px 0px 10px; 
     -moz-border-radius: 10px 0px 0px 10px; 
     -webkit-border-radius: 10px 0px 0px 10px; 
-    -moz-box-shadow: -1px 0px 6px #333;
-    -webkit-box-shadow: -1px 0px 6px #333;
-    box-shadow: -1px 0px 6px #333;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #999;
+    box-shadow: 0px -1px 0 0 #999; 
+    -moz-box-shadow:    0px -1px 0 0 #999;
+  -webkit-box-shadow: 0px -1px 0 0 #999;
 
 }
 
@@ -1077,9 +1086,9 @@ table#sliding-content-container tr td.panhandle-stripe {
     width: 17px;
     padding-top: 7px;
     height: 100%;
-    -moz-box-shadow: 0px 0px 6px #333;
-    -webkit-box-shadow: 0px 0px 6px #333;
-    box-shadow: 0px 0px 6px #333;
+    border-top: 1px solid #999;
+    border-bottom: 1px solid #999;
+
 }
 
 table#sliding-content-container tr td.panhandle-stripe div.label {
@@ -1098,17 +1107,15 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 }
 
 table#sliding-content-container tr td.panel-container {
-    border: 1px solid #ccc;
-    -moz-box-shadow: -1px 0px 6px #333;
-    -webkit-box-shadow: -1px 0px 6px #333;
-    box-shadow: -1px 0px 6px #333;
+    border: 1px solid #999;
+    border-left: none;
 
 }
 
 
 
 table#sliding-content-container tr td.panel-container div.panel {
-    border: 1px solid #ccc;
+
     margin: 0;
     padding: 0px;
     border: none;
@@ -1126,6 +1133,7 @@ table#sliding-content-container tr td.pantab-container {
     text-align: left;
     width: 20px;
     padding-right: 10px;
+
 }
 
 div.pantab {
@@ -1211,11 +1219,11 @@ td.panel-container.open {
     display: table-cell;
 }
 
-td.panel-container.media {
+td.panel-container.media,
+table#sliding-content-container tr td.panel-container.media {
     height: 100%;
     background-color: #ededed;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border: 1px solid #ccc;
 }
 
 .medium {
@@ -1235,12 +1243,16 @@ td.panel-content.fluid {
     width: 100%;
 }
 
-td.panel-content.fluid.composition {
+td.panel-content.fluid.composition,
+table#sliding-content-container tr td.panel-content.fluid.composition {
     min-width: 330px;
     max-width: 500px;
+    border: 1px solid #CCCCCC;
+    background-color: #fff;
 }
 
-td.panel-content.fixed.assignment {
+td.panel-content.fixed.assignment,
+table#sliding-content-container tr td.panel-content.fixed.assignment {
     min-width: 330px;
     max-width: 330px;
     width: 330px !important;

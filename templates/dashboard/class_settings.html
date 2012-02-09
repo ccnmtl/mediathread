@@ -28,9 +28,9 @@
             {% include "help/help_contentarea.html" %}
         
             <form action="{% url class-settings %}" method="POST">
-                <h4>Enabled</h4>
-                <input type="radio" name="allow_public_compositions" value="1" {% if allow_public_compositions %}checked{% endif %}>True</input>
-                <input type="radio" name="allow_public_compositions" value="0" {% if not allow_public_compositions %}checked{% endif %}>False</input>
+                <h4>"Publish to the World" Enabled</h4>
+                <input type="radio" name="allow_public_compositions" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
+                <input type="radio" name="allow_public_compositions" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
                 <br /><br />
                 <input type="submit" value="submit"></input>
             </form>

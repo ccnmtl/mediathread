@@ -117,7 +117,8 @@ a.edit-pencil {
     margin-left: 20px;
 }
 
-#project-revision-history table tr td {
+#project-revision-history table tr td,
+#assignment-revision-history  table tr td {
     padding: 2px 8px;
     border: 1px solid #ccc;
 

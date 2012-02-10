@@ -1236,7 +1236,9 @@ td.panel-content.fluid {
 }
 
 td.panel-content.fluid.composition,
-table#sliding-content-container tr td.panel-content.fluid.composition {
+table#sliding-content-container tr td.panel-content.fluid.composition,
+td.panel-content.fluid.assignment,
+table#sliding-content-container tr td.panel-content.fluid.assignment {
     min-width: 330px;
     max-width: 500px;
     border: 1px solid #CCCCCC;

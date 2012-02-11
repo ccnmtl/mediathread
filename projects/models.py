@@ -31,6 +31,7 @@ SHORT_NAME = {
 # Add keys from PUBLISH_OPTIONS if they should
 # be filtered out of the choices for non-faculty
 PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',)
+PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',)
 
 class Project(models.Model):
 
@@ -187,7 +188,7 @@ class Project(models.Model):
         citation references to sherdnotes
         """
         SherdNote = models.get_model('djangosherd','SherdNote')
-        return SherdNote.objects.references_in_string(self.body)
+        return SherdNote.objects.references_in_string(self.body, self.author)
             
     @property
     def content_object(self):

@@ -1,0 +1,42 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load assetlinks %}
+{% block title %}Manage Settings{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    
+    <script type="text/javascript"> 
+        jQuery(document).ready(function() {
+            {% if changes_saved %}
+               var msg = "Your changes have been saved.";
+               alert(msg);
+            {% endif %}
+        });
+    </script>
+    
+{% endblock %}
+
+{% block dashboard_module %}
+
+    <h2>Manage Settings</h2>
+    
+    {% with "help_public_compositions" as help_id %}
+    {% with help_public_compositions as default_help_state %}
+    <ul class="archive-gallery">
+        <li class="archive-container">
+            <h2>Public Compositions {% include "help/help_button.html" %}</h2>
+            {% include "help/help_contentarea.html" %}
+        
+            <form action="{% url class-settings %}" method="POST">
+                <h4>"Publish to the World" Enabled</h4>
+                <input type="radio" name="allow_public_compositions" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
+                <input type="radio" name="allow_public_compositions" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
+                <br /><br />
+                <input type="submit" value="submit"></input>
+            </form>
+            
+        </li>
+    </ul>
+    {% endwith %}{% endwith %}
+
+{% endblock %}

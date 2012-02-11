@@ -31,7 +31,9 @@
     <script type="text/javascript">    
         ProjectView.initReadOnly({
             presentation: 'medium',
-            project_id: '{{project.id}}'
+            project_id: '{{project.id}}',
+            open_from_hash: false, 
+            project_json:'./json'
         });     
     </script>
 {% endblock %}

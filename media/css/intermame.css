@@ -111,6 +111,10 @@ table#home-columns td#classwork .default-content ul
     list-style-type: disc;
 }
 
+table#home-columns td#classwork {
+    width: 720px;
+}
+
 
 
 /*Home Page specific styles*/
@@ -753,9 +757,13 @@ margin-left: 269px;
 	background-image:url('../img/icons/meth_info_icon_hover.png');
 }
 
-, .helptoggle a.togglebutton.open , #instructor-nav .helptoggle a.togglebutton.open 
+.helptoggle a.togglebutton.open , #instructor-nav .helptoggle a.togglebutton.open 
 {
 	background-image:url('../img/icons/meth_info_icon_close.png');
+}
+
+table#home-columns td#classwork .helptoggle {
+    height: 20px;
 }
 
 .helpblock {
@@ -796,6 +804,20 @@ table#home-columns td#classwork .helpblock ul li
     display: none;
 }
 
+.helpblock#help_homepage_classwork_column {
+    margin: 0;
+    width: 750px;
+    background-color: white;
+    border: 1px solid #dedede;
+    padding: 0px;
+}
+
+#help_homepage_classwork_column div.help_content{
+    background-color: #dedede;
+    margin: 2px 4px 4px 4px;
+    padding: 10px;
+    width: 722px;
+}
 
 .intro-text {
     /*margin 20px on right-and left, squeezes homepage content over [x] */

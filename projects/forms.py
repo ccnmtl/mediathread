@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.admin import widgets
 from projects.models import *
 from courseaffils.lib import get_public_name
+from mediathread_main import course_details
 
 class ProjectForm(forms.ModelForm):
 
@@ -35,10 +36,14 @@ class ProjectForm(forms.ModelForm):
             if pol not in dict(self.fields['publish'].choices):
                 self.fields['publish'].choices.append( (pol,pol) )
             self.initial['publish'] = pol
-
+        
         if not request.course.is_faculty(request.user):
             self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
                                               if choice[0] not in PUBLISH_OPTIONS_FACULTY_ONLY]
+
+        if not course_details.allow_public_compositions(request.course):
+            self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
+                                              if choice[0] not in PUBLISH_OPTIONS_PUBLIC]
             
         
         #not restrictive enough -- people can add children to their own projects

@@ -762,6 +762,10 @@ margin-left: 269px;
 	background-image:url('../img/icons/meth_info_icon_close.png');
 }
 
+table#home-columns td#classwork .helptoggle {
+    height: 20px;
+}
+
 .helpblock {
 	margin: -7px 3px 20px 4px;
 	background-color: #dedede;
@@ -802,7 +806,17 @@ table#home-columns td#classwork .helpblock ul li
 
 .helpblock#help_homepage_classwork_column {
     margin: 0;
-    width: 720px;
+    width: 750px;
+    background-color: white;
+    border: 1px solid #dedede;
+    padding: 0px;
+}
+
+#help_homepage_classwork_column div.help_content{
+    background-color: #dedede;
+    margin: 2px 4px 4px 4px;
+    padding: 10px;
+    width: 722px;
 }
 
 .intro-text {

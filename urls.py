@@ -19,6 +19,8 @@ if hasattr(settings,'WIND_BASE'):
 urlpatterns = patterns('',
                        (r'^crossdomain.xml$', 'django.views.static.serve', {'document_root': os.path.abspath(os.path.dirname(__file__))
 , 'path': 'crossdomain.xml'}),
+                       (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
+                           {'document_root': os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),'show_indexes': True}),
 
                        (r'^comments/', include('django.contrib.comments.urls')),
                        logout_page,
@@ -43,6 +45,7 @@ urlpatterns = patterns('',
                        (r'^$', 'mediathread_main.views.triple_homepage'),
                        url(r'^notifications/$','mediathread_main.views.notifications', name="notifications"),
                        url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource', name="class-add-source"),
+                       url(r'^dashboard/settings/', 'mediathread_main.views.class_settings', name="class-settings"),
                        url(r'^dashboard/$', 'mediathread_main.views.dashboard', name="dashboard-home"),
                        
                        (r'^asset/', include('mediathread.assetmgr.urls')),

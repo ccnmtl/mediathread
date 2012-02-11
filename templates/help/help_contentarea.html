@@ -42,7 +42,7 @@
 
 {% comment %}  SITE HOME PAGE, RIGHT COLUMN CLASSWORK {% endcomment %}      
     {% ifequal help_id "help_homepage_classwork_column" %}  
-         Here you can access your saved compositions and your collection of items saved in Mediathread. To filter items by date saved or by tag, use the "Collection Filters" directly below this black bar. You can also access compositions and collections saved by your students by designating another student or whole class in the "Owner" dropdown menu.
+Here you can access your compositions and your collection of items saved in Mediathread. You can also access compositions and items saved by others in the class; to do so, select an individual person or "All Class Members" in the "Owner" dropdown menu, directly below this message. To filter items by date saved or by tag, use the "Collection Filters" dropdown menu.
     {% endifequal %}  
    
       
@@ -66,7 +66,11 @@
     {% ifequal help_id "help_video_upload" %}
         Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off. You may enable it for just yourself, or enable it for all members of your class.
     {% endifequal %}
- 
+
+{% comment %} INSTRUCTOR DASHBOARD/MANAGE SETTINGS/PUBLIC COMPOSITIONS {% endcomment %}
+    {% ifequal help_id "help_public_compositions" %}
+        The "Publish to the world" feature allows authors to publish compositions at a public level, via a link that does not require logging into Mediathread.
+    {% endifequal %} 
  
 {% comment %} INSTRUCTOR DASHBOARD/MANAGE SOURCES/SUPPORTED ARCHIVES {% endcomment %}
     {% ifequal help_id "help_supported_collections" %}

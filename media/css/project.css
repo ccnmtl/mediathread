@@ -29,8 +29,10 @@ a.edit-pencil {
 }
 
 .asset-view-published {
-    background: url('../img/media-Bkgd.gif') no-repeat center center;
+    background: url('../img/media-Bkgd.gif') no-repeat right top;
     height: 100%;
+    min-height: 300px;
+
 }
 
 .asset-view-small {
@@ -68,8 +70,19 @@ a.edit-pencil {
 
 .essay-options
 { 
-    padding-top:.1em;
+    margin: 2em 0 2em;
     clear:both;
+
+}
+
+.essay-options h3
+{ 
+    margin: 0 0 1em 0;
+
+}
+
+#response-list {
+    margin-bottom: 1em;
 }
 
 .essay-space-feedback
@@ -86,10 +99,10 @@ a.edit-pencil {
 
 .essay-space
 { 
-  height: 100%;
+/*  height: 100%;*/
+  min-height: 300px;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
-  border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
   background-color:white;
 }
@@ -102,6 +115,13 @@ a.edit-pencil {
     float: left;
     width: 40%;
     margin-left: 20px;
+}
+
+#project-revision-history table tr td,
+#assignment-revision-history  table tr td {
+    padding: 2px 8px;
+    border: 1px solid #ccc;
+
 }
 
 #discussion-space-materials h2,

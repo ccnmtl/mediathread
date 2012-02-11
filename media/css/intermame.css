@@ -775,18 +775,18 @@ margin-left: 269px;
 
 .helpblock ul,
 table#home-columns td#instructor .helpblock ul, 
-table#home-columns td#classwork .helpblock ul 
-{
+table#home-columns td#classwork .helpblock ul {
     list-style: disc;
-
 }
 
 .helpblock ul li,
 table#home-columns td#instructor .helpblock ul li, 
-table#home-columns td#classwork .helpblock ul li
-{
+table#home-columns td#classwork .helpblock ul li {
     margin-bottom: 5px;
+}
 
+table#home-columns td#classwork .helptoggle {
+    height: 20px;
 }
 
 .helpblock.on {
@@ -799,7 +799,17 @@ table#home-columns td#classwork .helpblock ul li
 
 .helpblock#help_homepage_classwork_column {
     margin: 0;
-    width: 720px;
+    width: 750px;
+    background-color: white;
+    border: 1px solid #dedede;
+    padding: 0px;
+}
+
+#help_homepage_classwork_column div.help_content{
+    background-color: #dedede;
+    margin: 2px 4px 4px 4px;
+    padding: 10px;
+    width: 722px;
 }
 
 .intro-text {

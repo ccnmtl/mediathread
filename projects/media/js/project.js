@@ -49,7 +49,7 @@
             // WARN ON UNLOAD
             tinyMCE.onAddEditor.add(function(manager, ed) {
                 ed.onChange.add(function(editor) {
-                    self.project_modified = true;
+                    self.setDirty(true);
                 }) 
             });
 
@@ -112,7 +112,18 @@
                 PanelManager.openSubPanel(a[0]);
             }
         }
-
+        
+        this.setDirty = function(is_dirty) {
+            if (is_dirty) {
+                self.project_modified = true;
+                jQuery("#save-button").removeAttr('disabled');
+            } else {
+                self.project_modified = false;
+                jQuery("#save-button").attr('disabled', 'disabled');
+                
+            }
+        }
+        
         this.updateParticipantsChosen = function() {
             var opts = document.forms['editproject'].participants.options;
             var participant_list = ""; 
@@ -124,7 +135,7 @@
             jQuery("#participants_chosen").html(participant_list);
         }
 
-        this.updateParticipantList = function() {
+        this.updateParticipantList = function(evt) {
             if (jQuery("#participant_list").is(":visible")) {
                 var opts = document.forms['editproject'].participants.options;
                 var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
@@ -136,16 +147,29 @@
                 
                 if (!matches) {
                     self.updateParticipantsChosen();
-                    jQuery("#participant_update").show();
-                    self.project_modified = true;
+                    self.setDirty(true);
                 }
+                jQuery("#participant_list").hide();
+            } else {
+                tinyMCE.activeEditor.plugins.editorwindow._closeWindow()
+                
+                // position the participant_list & show
+                var pos = jQuery(evt.srcElement).offset();
+                var element = jQuery("#participant_list")[0];
+                element.style.top = (pos.top + jQuery(evt.srcElement).height() + 7) + "px";
+                element.style.left = pos.left + "px";
+                jQuery(element).show();
             }
-            jQuery("#participant_list").toggle();
+            
             jQuery(window).trigger('resize');
             return false;
         }
         
         this.preview = function(evt) {
+            // Unload any citations
+            for (var i = 0; i < self.citations.length; i++)
+                self.citations[i].unload();
+            
             if (jQuery("#composition-essay-space:visible").length) {
                 // Edit View
                 jQuery("#composition-essay-space").hide();
@@ -157,15 +181,15 @@
                 // Kill the asset view
                 self.citations["composition-essay-space"].unload();
                 
-                jQuery("#save-button").show();
                 jQuery("#id_publish").show();
                 jQuery("label[for='id_publish']").html("Status");
                 jQuery("#collection-materials").show();
             } else {
                 // Preview View
                 tinyMCE.activeEditor.hide();
+                tinyMCE.activeEditor.plugins.editorwindow._closeWindow()
+                
                 jQuery("#project-content").hide();
-                jQuery("#save-button").hide();
                 jQuery("#id_publish").hide();
                 var selected = jQuery("#id_publish option:selected").text();
                 jQuery("label[for='id_publish']").html(selected);
@@ -189,7 +213,17 @@
             return false;
         }
 
+        this.saveProjectPrompt = function(evt) {
+            if (jQuery("#participant_list:visible").length) {
+                var pos = jQuery(evt.srcElement).offset();
+            } else {
+                
+            }
+        }
+        
         this.saveProject = function(evt) {
+            evt.preventDefault();
+            
             tinyMCE.triggerSave();
             var frm = evt.target;
             if (/preview/.test(frm.target)) {
@@ -208,8 +242,6 @@
                 return false;
             }
             
-            //else
-            evt.preventDefault();
             
             // select all participants so they will be picked up when the form is serialized
             jQuery("select[name=participants] option").attr("selected","selected");  
@@ -222,25 +254,12 @@
                 dataType: 'json',
                 error: function(){alert('There was an error saving your project.');},
                 success: function(json,textStatus,xhr){
-                    jQuery('#last-version-prefix').html('Saved: ')
-
-                    jQuery('#last-version-link')
-                    .html('Revision '+json.revision.id)
-                    .attr('href',json.revision.url);
-
-                    jQuery('#last-version-saved')
-                    .show()
-                    .colorBlend([{
-                        param:'background-color',
-                        strobe:false,
-                        colorList:['#fff100','#ffffff'],
-                        cycles:1
-                    }]);
+                    jQuery('#last-version-link').attr('href',json.revision.url);
 
                     if (json.revision.public_url) {
-                        jQuery('#last-version-public').html('(<a href="'
+                        jQuery('#last-version-public').html('<a href="'
                                                             +json.revision.public_url
-                                                            +'">public url</a>)');
+                                                            +'">Public Url</a>');
                     } else {
                         jQuery('#last-version-public').html('');
                     }
@@ -248,11 +267,11 @@
                     self.updateParticipantsChosen();
                     jQuery("#participant_list").hide();
                     jQuery("#participant_update").hide();
-                    self.project_modified = false;
                     
                     if (self.collection_list)
                         self.collection_list.updateProject(); 
                     
+                    self.setDirty(false);
                     jQuery(window).trigger('resize');
                 }
             });

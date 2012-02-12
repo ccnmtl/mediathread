@@ -29,7 +29,7 @@ a.edit-pencil {
 }
 
 .asset-view-published {
-    background: url('../img/media-Bkgd.gif') no-repeat right top;
+    background: url('../img/media-Bkgd.gif') no-repeat center top;
     height: 100%;
     min-height: 300px;
 
@@ -171,11 +171,9 @@ input.materialCitation:hover
     background-color: #efefef;
 }
 
-#last-version-public {
-    padding-left:10px;
+#save-publish-status {
+    font-size: 100%;
 }
-
-
 
 body.mceContentBody {
     /*overrides tinyMCE's default 10px which will not correspond
@@ -401,12 +399,12 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 /*for FilteredSelectMultiple*/
 .selector {
-width: 450px;
+width: 410px;
 float: left;
 }
 
 .selector select {
-width: 205px;
+width: 185px;
 height: 8em;
 }
 
@@ -416,7 +414,7 @@ height: 8em;
 
 .selector-available, .selector-chosen {
 float: left;
-width: 205px;
+width: 185px;
 text-align: center;
 margin-bottom: 5px;
 }
@@ -450,11 +448,11 @@ text-align: left;
 }
 
 .selector .selector-chosen .selector-filter {
-padding: 4px 5px;
+padding: 4px 2px;
 }
 
 .selector .selector-available input {
-width: 170px;
+width: 130px;
 }
 
 .selector ul.selector-chooser {

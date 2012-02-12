@@ -1,6 +1,3 @@
-@import url("./course.css");
-@import url("./intermame.css");
-
 /* ########## Standard elements ########## */
 
 body
@@ -380,7 +377,6 @@ img, img a
 
 .scroll {
     overflow: auto;
-    border: 1px solid #ccc;
 }
 
 /* ########## Globally useful definitions ########## */
@@ -990,13 +986,19 @@ div.button-form form, div.button-form.inline form.nofloat{
 }
 
 
-/*SLIDING ASSIGNMENT TABLE*/
+/* SLIDING CONTENT */
 
+.medium {
+    width: 480px !important;
+}
 
+.small {
+    width: 350px !important;
+}
 
 table#sliding-content-container, table#sliding-content-container tr {
     margin: 0;
-    width: 99%;
+    width: 100%;
     border: none;
     border-collapse: collapse;
 
@@ -1010,46 +1012,12 @@ table#sliding-content-container tr, table#sliding-content-container tr td {
     border-collapse: collapse;
 }
 
-table#sliding-content-container tr#title_bar td h1{
-
-    margin: 0px;
-    padding: 4px 10px;
-    background: rgb(205,205,205); /* Old browsers */
-    background: -moz-linear-gradient(top,  rgba(205,205,205,1) 0%, rgba(171,171,171,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,205,205,1)), color-stop(100%,rgba(171,171,171,1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* IE10+ */
-    background: linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdcdcd', endColorstr='#ababab',GradientType=0 ); /* IE6-9 */
-
-
-
-}
-
-
-#title_bar input#id_title {
-    width:60%;
-    max-width: 365px;
-    font-size: 100%;
-    padding-left: 5px;
-}
-
-
-
 span.project-dropdown {
     margin-right:5px;
     *margin: -23px 45px 0 0;
     color: black;
-    font-size: 85%;
+    font-size: 80%;
 }
-
-input.project-previewbutton,
-input.project-savebutton {
-    margin-right: 5px;
-    float: right;
-}
-
 
 table#sliding-content-container tr td.panhandle-left-container {
     width: 10px;
@@ -1071,8 +1039,7 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
     border: 1px solid #999;
     box-shadow: 0px -1px 0 0 #999; 
     -moz-box-shadow:    0px -1px 0 0 #999;
-  -webkit-box-shadow: 0px -1px 0 0 #999;
-
+    -webkit-box-shadow: 0px -1px 0 0 #999;
 }
 
 table#sliding-content-container tr td.panhandle-stripe {
@@ -1122,7 +1089,6 @@ table#sliding-content-container tr td.pantab-container {
     text-align: left;
     width: 20px;
     padding-right: 10px;
-
 }
 
 div.pantab {
@@ -1171,6 +1137,37 @@ table.panel-subcontainer tr td {
     border: none;
 }
 
+table.panel-subcontainer tr td div.panel-subcontainer-title {
+    float: left;
+    min-width: 100px;
+    max-width: 350px;
+    width: 100%;
+}
+
+table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
+        background: rgb(205,205,205); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(205,205,205,1) 0%, rgba(171,171,171,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,205,205,1)), color-stop(100%,rgba(171,171,171,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* IE10+ */
+    background: linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdcdcd', endColorstr='#ababab',GradientType=0 ); /* IE6-9 */
+    
+    }
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
+    margin: 0px 0px 0px 5px;
+    padding: 4px 5px 4px 0px;
+    height: 24px;
+    float: right;
+    width: 420px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
+    width: 65px;
+}
+
 td.filler {
     width: 2000px;
 }
@@ -1215,15 +1212,6 @@ table#sliding-content-container tr td.panel-container.media {
     border: 1px solid #ccc;
 }
 
-.medium {
-    width: 540px !important;
-}
-
-.small {
-    width: 350px !important;
-}
-
-
 td.panel-content.fixed {
     width: 380px;
 }
@@ -1241,14 +1229,6 @@ table#sliding-content-container tr td.panel-content.fluid.assignment {
     border: 1px solid #CCCCCC;
     background-color: #fff;
 }
-
-td.panel-content.fixed.assignment,
-table#sliding-content-container tr td.panel-content.fixed.assignment {
-    min-width: 330px;
-    max-width: 330px;
-    width: 330px !important;
-}
-    
 
 div.pantab.assignment,
 td.panhandle-stripe.assignment {
@@ -1307,6 +1287,43 @@ div#collection-materials h2 a.browse-button {
     font-size: 85%;
     border-image: initial;
 }
+
+/* Composition Toolbar Particulars */
+table.panel-subcontainer tr td input#id_title {
+    width: 100%;
+    font-size: 120%;
+    padding: 5px;
+    margin: 5px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-previewbutton {
+    float: right;
+    margin-left: 5px;    
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton {
+    float: right;
+    margin-left: 5px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
+    float: right;
+    margin-left: 25px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibility {
+    float: right;
+    width: 190px;
+    font-size: 80%;
+    text-align: right;
+    margin-left: 0px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibility input.project-visibilitybutton {
+    float: right;
+    margin-left: 8px;
+}
+
 
 /** Shield Box **/
 .warningmessage
@@ -3015,18 +3032,13 @@ margin: 4px -4px 0px;
 }
 
 #participants_chosen {
-    display:inline-block;
     padding-bottom:3px;
     max-width: 650px;
-    margin: .1em 0 .1em;
+    margin: 0 0 .1em;
 }
 
-a.participants_toggle {
-    /*when authors list is multiple lines, we need a bottom margin
-      to avoid collision with  #last-version-saved
-     */
-    display:inline-block;
-    margin-bottom:6px;
+input.participants_toggle {
+    margin: 0px 10px 5px 0px;
 }
 
 #participant_update {
@@ -3035,12 +3047,14 @@ a.participants_toggle {
 }
 #participant_list {
     background-color: #dedede;
-    border: 1px solid #ccc;
+    border: 1px solid #477794;
     margin-bottom:1em;
-    padding: 5px;
-    width: 440px;
+    padding: 10px 10px 10px 10px;
+    width: 400px;
     height: 150px; 
-    margin-bottom: 5px; 
+    margin-bottom: 5px;
+    z-index: 10000;
+    position: absolute; 
 }
 
 #id_participants {*height: 15em;}
@@ -4082,7 +4096,6 @@ html.busy, html.busy * {
 }
 
 #instructor-nav a {
-
     margin: 4px 0;
     width: 190px;
     background-repeat: repeat-x;
@@ -4092,9 +4105,8 @@ html.busy, html.busy * {
     padding: 0px 5px;
     text-decoration: none;
     color: #000;
-        background-image: url("../img/buttons/compositions_button_bg.jpg");
-        font-size: 85%;
-
+    background-image: url("../img/buttons/compositions_button_bg.jpg");
+    font-size: 85%;
 }
 
 #course-list a.project {
@@ -4248,4 +4260,3 @@ margin-left: 269px;
     position:absolute;
     background-color:#0000ff;
 }
-

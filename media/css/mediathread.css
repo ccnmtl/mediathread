@@ -1067,7 +1067,6 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 }
 
 table#sliding-content-container tr td.panel-container {
-    border: 1px solid #999;
     border-left: none;
 }
 
@@ -1140,12 +1139,12 @@ table.panel-subcontainer tr td {
 table.panel-subcontainer tr td div.panel-subcontainer-title {
     float: left;
     min-width: 100px;
-    max-width: 350px;
+    max-width: 310px;
     width: 100%;
 }
 
 table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
-        background: rgb(205,205,205); /* Old browsers */
+   background: rgb(205,205,205); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(205,205,205,1) 0%, rgba(171,171,171,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,205,205,1)), color-stop(100%,rgba(171,171,171,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -1157,7 +1156,7 @@ table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
     }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
-    margin: 0px 0px 0px 5px;
+    margin: 5px 0px 0px 5px;
     padding: 4px 5px 4px 0px;
     height: 24px;
     float: right;
@@ -1180,12 +1179,14 @@ td.panel-container.assignment {
     background-color: #DAE7E0;
     width: 100%;
     min-width: 330px;
+    border: 1px solid #999 !important;
 }
 
 td.panel-container.composition {
     background-color: #f0f5fa;
     min-width: 330px;
     width: 100%;
+    border: 1px solid #999 !important;
 }
 
 td.panel-container.discussion {
@@ -1226,7 +1227,6 @@ td.panel-content.fluid.assignment,
 table#sliding-content-container tr td.panel-content.fluid.assignment {
     min-width: 330px;
     max-width: 500px;
-    border: 1px solid #CCCCCC;
     background-color: #fff;
 }
 

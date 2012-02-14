@@ -97,11 +97,11 @@
                         }
                     }
                 }
-                
             });
 
             //PROJECT PARTICIPANT UPDATES
-            jQuery('input.participants_toggle').click(self.updateParticipantList);
+            jQuery('input#participants_toggle').click(self.updateParticipantList);
+            jQuery('select#id_publish').change(self.setDirty(true));
 
             self.commonPostInitialize();
         }
@@ -116,12 +116,31 @@
         this.setDirty = function(is_dirty) {
             if (is_dirty) {
                 self.project_modified = true;
-                jQuery("#save-button").removeAttr('disabled');
             } else {
                 self.project_modified = false;
-                jQuery("#save-button").attr('disabled', 'disabled');
-                
             }
+        }
+        
+        this.htmlEncode = function(value) {
+            return jQuery('<div/>').text(value).html();
+        }
+
+        this.htmlDecode = function(value) {
+            return jQuery('<div/>').html(value).text();
+        }
+        
+        this.saveOptions = function(evt) {
+            if (jQuery("#save-publish-status").is(":visible")) {
+                jQuery("#save-publish-status").hide();
+            } else {
+                var pos = jQuery(evt.srcElement).offset();
+                var element = jQuery("#save-publish-status")[0];
+                element.style.top = (pos.top + jQuery(evt.srcElement).height() + 7) + "px";
+                var right = (pos.left + jQuery(evt.srcElement).width()) - jQuery(element).width() - 8;
+                element.style.left = right + "px";
+                jQuery(element).show();
+            }
+            return false;
         }
         
         this.updateParticipantsChosen = function() {
@@ -257,22 +276,26 @@
                     jQuery('#last-version-link').attr('href',json.revision.url);
 
                     if (json.revision.public_url) {
-                        jQuery('#last-version-public').html('<a href="'
-                                                            +json.revision.public_url
-                                                            +'">Public Url</a>');
+                        jQuery('#last-version-public').attr("href", json.revision.public_url);
+                        jQuery('#last-version-public').show();
                     } else {
-                        jQuery('#last-version-public').html('');
+                        jQuery('#last-version-public').attr("href", "");
+                        jQuery('#last-version-public').hide();
                     }
+                    
+                    jQuery('#project-visibility').html(json.revision.visibility);
                     
                     self.updateParticipantsChosen();
                     jQuery("#participant_list").hide();
                     jQuery("#participant_update").hide();
+                    jQuery("#save-publish-status").hide();
                     
                     if (self.collection_list)
                         self.collection_list.updateProject(); 
                     
                     self.setDirty(false);
                     jQuery(window).trigger('resize');
+                    self.revision = json.revision;
                 }
             });
         }

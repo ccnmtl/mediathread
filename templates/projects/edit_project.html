@@ -163,36 +163,30 @@
                                         {{projectform.title}}
                                     </div>
                                     <div class="panel-subcontainer-toolbar">      
-                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save" disabled="disabled" onclick="this.form.target='_self';"/>
+                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish &darr;" onclick="return ProjectView.saveOptions(evt)"/>
+                                        <div id="save-publish-status" style="display: none">
+                                            {{projectform.publish.label_tag}}<br />    
+                                            {{projectform.publish}}<br /><br />
+                                            <input value="Save" style="float: right" type="submit" onclick="this.form.target='_self';"></input>
+                                        </div>                                       
                                         
                                         <input id="preview-button" class="project project-previewbutton" type="submit" value="Preview" onclick="return ProjectView.preview()" />
                                         
-                                        <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" onclick="return ProjectView.revisions()" />
+                                        <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" disabled="disabled" />
                                         
-                                        <div class="project-visibility">
-                                            <input id="visibility-button" class="project project-visibilitybutton" type="submit" value="Visibility &darr;" onclick="return ProjectView.visibility()" />
-                                            <div>Published To The World
-                                            <span id="last-version-public">
-                                                {% if project.public_url %}
-                                                    <a href="{{project.public_url}}">(permalink)</a>
-                                                {% endif %}
-                                            </span>        
-                                            {% comment %}
-                                            <span id="save-publish-status">
-                                                    <span class="project-dropdown">
-                                                            {{projectform.publish.label_tag}}    
-                                                            {{projectform.publish}}
-                                                    </span>
-                                            </span>
-                                            {% endcomment %} 
-                                            </div>                                       
+                                        <div class="project-visibility" style="vertical-align: middle";>
+                                                <b>Visibility</b>:<br />
+                                                <span id="project-visibility">{{project.visibility}}</span>
+                                                
+                                                    <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
+                                                
                                         </div>
                                     </div>   
                                 </td>
                             </tr>
                             <tr>                                      
                                 <td colspan="5" style="padding-top: 5px">
-                                    <input class="project participants_toggle" type="submit" value="+/- Author &darr;" style="float: left"/>
+                                    <input id="participants_toggle" class="project participants_toggle" type="submit" value="+/- Author &darr;" style="float: left"/>
                                     <h5 style="margin-top: 0px">by <span id="participants_chosen">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</span>
                                         <span id="project_participants">
                                             <div id="participant_list" style="display: none"> 
@@ -246,7 +240,6 @@
                                 <td class="pantab-container">
                                     <div id="composition-materials-pantab" class="pantab collection open"></div>
                                 </td>
-                                <td class="filler"></td>
                             </tr>
                         </table>
                     </form>   

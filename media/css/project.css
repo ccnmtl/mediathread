@@ -171,10 +171,6 @@ input.materialCitation:hover
     background-color: #efefef;
 }
 
-#save-publish-status {
-    font-size: 100%;
-}
-
 body.mceContentBody {
     /*overrides tinyMCE's default 10px which will not correspond
       to styled as published (and 10px is too small for the image-annotation

@@ -12,7 +12,7 @@ class ProjectForm(forms.ModelForm):
                                         ))
 
     publish = forms.ChoiceField(choices=PUBLISH_OPTIONS,#from models
-                                label='Status:',
+                                label='Visibility:',
                                 )
 
     parent =  forms.CharField(required=False,label='Response to',

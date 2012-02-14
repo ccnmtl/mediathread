@@ -1012,20 +1012,9 @@ table#sliding-content-container tr, table#sliding-content-container tr td {
     border-collapse: collapse;
 }
 
-span.project-dropdown {
-    margin-right:5px;
-    *margin: -23px 45px 0 0;
-    color: black;
-    font-size: 80%;
-}
-
 table#sliding-content-container tr td.panhandle-left-container {
     width: 10px;
     height: 100%;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-
 }
 
 table#sliding-content-container tr td.panhandle-left-container div.panhandle-left {
@@ -1037,9 +1026,6 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
     -webkit-border-radius: 10px 0px 0px 10px; 
     background-color: #fff;
     border: 1px solid #999;
-    box-shadow: 0px -1px 0 0 #999; 
-    -moz-box-shadow:    0px -1px 0 0 #999;
-    -webkit-box-shadow: 0px -1px 0 0 #999;
 }
 
 table#sliding-content-container tr td.panhandle-stripe {
@@ -1160,7 +1146,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
     padding: 4px 5px 4px 0px;
     height: 24px;
     float: right;
-    width: 420px;
+    width: 430px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
@@ -1304,19 +1290,20 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-prev
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton {
     float: right;
     margin-left: 5px;
+    width: 100px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
     float: right;
-    margin-left: 25px;
+    margin-left: 15px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibility {
     float: right;
-    width: 190px;
+    width: 170px;
     font-size: 80%;
-    text-align: right;
     margin-left: 0px;
+    margin-top: -3px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibility input.project-visibilitybutton {
@@ -3058,6 +3045,21 @@ input.participants_toggle {
 }
 
 #id_participants {*height: 15em;}
+
+#save-publish-status {
+    background-color: #dedede;
+    border: 1px solid #477794;
+    margin-bottom:1em;
+    padding: 10px 10px 10px 10px;
+    width: 215px;
+    height: 75px; 
+    margin-bottom: 5px;
+    z-index: 10000;
+    position: absolute;
+    color: black;
+    font-size: 80%;
+    text-align: left;
+}
 
  .preview input#id_annotation-tags,  .preview input#id_annotation-body, .preview input#id_annotation-title {
  

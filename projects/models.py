@@ -16,15 +16,15 @@ PUBLISH_OPTIONS = (('Assignment','Assignment for Class'),
                    ('PrivateEditorsAreOwners','Private - Only Author(s) Can View'),
                    ('InstructorShared','Submitted to Instructor'),
                    ('CourseProtected','Published to Whole Class'),
-                   ('PublicEditorsAreOwners','Published to World (w/ Public Link)'),
+                   ('PublicEditorsAreOwners','Published to World'),
                    )
 
 SHORT_NAME = {
     "Assignment":'Assignment',
     "PrivateEditorsAreOwners":'Private',
-    "InstructorShared":'Submitted',
-    "CourseProtected":'Class',
-    "PublicEditorsAreOwners":'World',
+    "InstructorShared":'Submitted to Instructor',
+    "CourseProtected":'Published to Class',
+    "PublicEditorsAreOwners":'Published to World',
     "PrivateStudentAndFaculty":"with Instructors", 
     }
 
@@ -151,7 +151,20 @@ class Project(models.Model):
             col = self.collaboration()
         if col and col._policy.policy_name=='PublicEditorsAreOwners':
             return col.get_absolute_url()
-        
+      
+    def visibility(self):  
+        """
+        The project's status, one of "draft submitted complete".split()
+        """
+        o = dict(PUBLISH_OPTIONS)
+
+        col = self.collaboration()
+        if col:
+            return o.get(col._policy.policy_name, col._policy.policy_name)
+        elif self.submitted:
+            return u"Submitted"
+        else:
+            return u"Private"
 
     def status(self):
         """

@@ -433,7 +433,7 @@ html.busy, html.busy * {
 #standardnav
 {
     display: block;
-  float: right;
+    float: right;
     margin: 0;
     margin-right: -1px;
     padding: 3px 10px 3px 3px;
@@ -459,7 +459,7 @@ html.busy, html.busy * {
 {
     display: block;
     float: left;
-    margin: 0 0.5em 0 0.9em;
+    margin: 0.2em 0.5em 0 0.9em;
     padding:  0 0 0 0.5em;
     border: 0;
     font-size: 0.9em;
@@ -486,6 +486,23 @@ html.busy, html.busy * {
 #standardnav li.settings {
     margin: 0;
     padding: 0 0 0 .3em;
+}
+
+
+#standardnav_settings_menu {
+    list-style: none;
+    background-color: #6f6f6f;
+    color: #fff;
+    position: absolute;
+    width: 110px;
+    padding: 10px;
+    margin-left: -.65em;
+    z-index: 1000;
+}
+
+#standardnav_settings_menu a {
+    display: block;
+    padding: 2px 0;
 }
 
 /* ---- Footer block elements ---------- */

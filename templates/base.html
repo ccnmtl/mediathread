@@ -54,33 +54,38 @@
 {% course_role for request.user in course as role_in_course %}
 <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
 
-<!--  Menu -->
-<div id="settings_menu" style="display:none">
-    <a href="/accounts/logout/">Log Out</a><br />
-    {%if user.is_staff %}
-          <a href="/admin/">ADMIN</a><br />
-    {%endif%}
-    
-    {% num_courses for user as user_courses %}
-    
-    {% if user_courses > 1 or user.is_staff %}
-        <a href="/?unset_course">Switch Course</a><br />
-    {% endif %}
-</div>
-
-
 <div id="container">
     {% block masthead %}
     	<!-- ###### Site banner ###### -->
     	<div id="header">
     		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
     		{% block standardnav %}
-        	    <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
+        	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
         	   <ul id="standardnav">
                     {% if request.user.is_authenticated %}
-                        <li class="settings"><img src="/site_media/img/settings.png" style="height: 18px;"></img></li>
-                        <li class="settings" style="margin-top: 2px;"><span id="logged_in_name" class="username">{% public_name for user %}</span></li>
-                        <li class="settings" style="margin-top: 2px;"><a href="#" onclick='jQuery("#settings_menu").dialog({ "draggable": false, "resizable": false, "modal": true });'><img src="/site_media/img/down_arrow_gray.png" /></a>
+                        <li class="settings" onclick="jQuery('#standardnav_settings_menu').toggle();">
+                            <img src="/site_media/img/settings.png" style="height: 18px;"></img>
+                            <!-- Settings Menu -->
+                            <div id="standardnav_settings_menu" style="display: none">
+                                {%if user.is_staff %}
+                                    <a href="/admin/">Admin</a>
+                                {%endif%}
+                                
+                                {% num_courses for user as user_courses %}
+                                
+                                {% if user_courses > 1 or user.is_staff %}
+                                    <a href="/?unset_course">Switch Course</a>
+                                {% endif %}
+                                <a href="/accounts/logout/">Log Out</a>
+                            </div>
+                        </li>
+                        <li class="settings" style="margin-top: 2px;">
+                            <span id="logged_in_name" class="username">{% public_name for user %}</span>
+                        </li>
+                        <li class="settings" style="margin-top: 2px;">
+                            <a href="#" onclick='jQuery("#standardnav_settings_menu").toggle();'>
+                                <img src="/site_media/img/down_arrow_gray.png" />
+                            </a>
                         </li>
                     {% else %}
         			    <li><a href="/accounts/login/">Log In</a></li>
@@ -90,7 +95,9 @@
                 </ul>
     		{% endblock %}
     		
+                
     	</div><!-- id="header" -->
+        
     {% endblock %}
         
     <!-- ###### Don't touch this ###### -->
@@ -164,6 +171,7 @@
                            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
                            <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact</a></li>
                            {% endif %}
+                           <li><a href="/help/">Help</a></li>
 			</ul>
 			
 			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a></h4> 

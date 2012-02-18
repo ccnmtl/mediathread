@@ -16,9 +16,10 @@
     {{ block.super }}
     <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
     <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+    
     <script type="text/javascript" src="/jsi18n"></script>
     {{ projectform.media }}
-
+    
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
@@ -33,6 +34,9 @@
     <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
+    
+
+    
     
     <script type="text/javascript">
         function resizeEditProjectPage() {
@@ -53,6 +57,14 @@
         }
       
         jQuery(document).ready(function () {
+            jQuery("div#collection_table").ajaxStart(function(){
+                jQuery(this).addClass("ajaxLoading");
+            });
+            
+            jQuery("div#collection_table").ajaxStop(function(){
+                jQuery(this).removeClass("ajaxLoading");
+            });
+            
             ProjectView.initEditing({
                 'open_from_hash':false, 
                 'project_json':'./json', 
@@ -95,13 +107,34 @@
                         <table class="panel-subcontainer">
                             {% with project.assignment as assignment %}
                             <tr>
-                                <td colspan="4">        
-                                    <div class="assignment-project">
-                                    <h1>{{assignment.title}}</h1>
-                                    <h5>by <span>{% public_name for project.assignment.attribution_list %}</span></h5>
-                                    </div>    
+                                <td colspan="4" class="panel-subcontainer-toolbar-column">
+                                    <div class="panel-subcontainer-title assignment-project">
+                                        <h1>{{assignment.title}}</h1>
+                                    </div>
+                                    <div class="panel-subcontainer-toolbar">
+                                        {%comment%}
+                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish" />
+                                        
+                                        <input id="preview-button" class="project project-previewbutton" type="submit" value="Preview" onclick="return ProjectView.preview()" />
+                                        
+                                        <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" disabled="disabled" />
+                                        
+                                        <div class="project-visibility" style="vertical-align: middle";>
+                                                <b>Visibility</b>:<br />
+                                                <span id="project-visibility">{{project.visibility}}</span>
+                                                <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
+                                        </div>
+                                        {%endcomment%}
+                                    </div>   
                                 </td>
                             </tr>
+                            
+                            <tr>                                      
+                                <td colspan="4" style="padding-top: 5px">
+                                    <h5 style="margin-top: 0px;">by <span>{% public_name for project.assignment.attribution_list %}</span></h5>
+                                </td>
+                            </tr>
+                            
                             <tr>
                                 <td class="panel-content fluid assignment">
                                     <div id="assignment-essay-space" class="essay-space">  
@@ -162,13 +195,8 @@
                                     <div class="panel-subcontainer-title">
                                         {{projectform.title}}
                                     </div>
-                                    <div class="panel-subcontainer-toolbar">      
-                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish &darr;" onclick="return ProjectView.saveOptions(evt)"/>
-                                        <div id="save-publish-status" style="display: none">
-                                            {{projectform.publish.label_tag}}<br />    
-                                            {{projectform.publish}}<br /><br />
-                                            <input value="Save" style="float: right" type="submit" onclick="this.form.target='_self';"></input>
-                                        </div>                                       
+                                    <div class="panel-subcontainer-toolbar">
+                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish" />
                                         
                                         <input id="preview-button" class="project project-previewbutton" type="submit" value="Preview" onclick="return ProjectView.preview()" />
                                         
@@ -177,22 +205,15 @@
                                         <div class="project-visibility" style="vertical-align: middle";>
                                                 <b>Visibility</b>:<br />
                                                 <span id="project-visibility">{{project.visibility}}</span>
-                                                
-                                                    <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
-                                                
+                                                <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
                                         </div>
                                     </div>   
                                 </td>
                             </tr>
                             <tr>                                      
                                 <td colspan="5" style="padding-top: 5px">
-                                    <input id="participants_toggle" class="project participants_toggle" type="submit" value="+/- Author &darr;" style="float: left"/>
+                                    <input id="participants_toggle" class="project participants_toggle" type="submit" value="+/- Author" style="float: left"/>
                                     <h5 style="margin-top: 0px">by <span id="participants_chosen">{%for part in project.participants.all %}{%if not forloop.first%}, {%endif%}{%public_name for part %}{%endfor%}</span>
-                                        <span id="project_participants">
-                                            <div id="participant_list" style="display: none"> 
-                                                <div>{{projectform.participants}}</div> 
-                                            </div>
-                                        </span><!-- end id="project_participants" -->
                                     </h5>
                                 </td>
                             </tr>
@@ -256,6 +277,19 @@
         </tr>
     </table>
     
+    <!--  Dialogs -->
+    <div id="save-publish-status" style="display: none" title="Save Changes">
+        <form name="editvisibility">
+            <div>{{projectform.publish.label_tag}}</div>    
+            <div>{{projectform.publish}}</div>
+        </form>
+    </div>  
+    
+    <div id="participant_list" style="display: none" title="Select Author(s)">
+        <form name="editparticipants"> 
+            <div>{{projectform.participants}}</div>
+        </form> 
+    </div>
     
 
 {% endblock %}

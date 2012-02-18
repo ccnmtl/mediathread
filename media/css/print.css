@@ -67,15 +67,6 @@ p
 	font-size: 100%;
 }
 
-blockquote
-{
-	display: block;
-	margin: 0 4em 0.7em 4em;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-}
-
 table
 {
 	margin: 0 0 0.7em 0;
@@ -127,7 +118,7 @@ a:visited
 	color: #900;
 }
 
-img, img a
+img
 {
 	border: 0;
 }
@@ -135,8 +126,6 @@ img, img a
 /* ########## Blocks style definitions ########## */
 
 #primarynav,
-#sidebar_left,
-#sidebar_right,
 #standardnav
 {
 	display: none !important;
@@ -176,11 +165,6 @@ img, img a
 	padding: 0;
 	border: 0;
 	background: transparent url('../img/logo_project.png') left center no-repeat;
-}
-
-.visualhide
-{
-	display: none !important;
 }
 
 #header #logo_ccnmtl

@@ -81,8 +81,6 @@
                 jQuery(new_assets.parentNode).addClass('annotation-embedding');
             }
             
-            jQuery(document.forms['editproject']).bind('submit', self.saveProject);
-            
             jQuery(window).bind('beforeunload',function(evt) {
                 if (self.project_modified) {
                     return "Changes to your project have not been saved.";
@@ -100,9 +98,9 @@
             });
 
             //PROJECT PARTICIPANT UPDATES
-            jQuery('input#participants_toggle').click(self.updateParticipantList);
-            jQuery('select#id_publish').change(self.setDirty(true));
-
+            jQuery('input#participants_toggle').click(self.showParticipantList);
+            jQuery('input#save-button').click(self.showSaveOptions);
+            
             self.commonPostInitialize();
         }
         
@@ -113,9 +111,12 @@
             }
         }
         
-        this.setDirty = function(is_dirty) {
+        this.setDirty = function(is_dirty, animate) {
             if (is_dirty) {
                 self.project_modified = true;
+                if (animate) {
+                    jQuery("#save-button").effect("bounce", {}, 750);
+                }
             } else {
                 self.project_modified = false;
             }
@@ -129,22 +130,8 @@
             return jQuery('<div/>').html(value).text();
         }
         
-        this.saveOptions = function(evt) {
-            if (jQuery("#save-publish-status").is(":visible")) {
-                jQuery("#save-publish-status").hide();
-            } else {
-                var pos = jQuery(evt.srcElement).offset();
-                var element = jQuery("#save-publish-status")[0];
-                element.style.top = (pos.top + jQuery(evt.srcElement).height() + 7) + "px";
-                var right = (pos.left + jQuery(evt.srcElement).width()) - jQuery(element).width() - 8;
-                element.style.left = right + "px";
-                jQuery(element).show();
-            }
-            return false;
-        }
-        
         this.updateParticipantsChosen = function() {
-            var opts = document.forms['editproject'].participants.options;
+            var opts = jQuery("select[name='participants'] option");
             var participant_list = ""; 
             for (var i = 0; i < opts.length; i++) {
                 if (participant_list.length > 0)
@@ -153,34 +140,42 @@
             }
             jQuery("#participants_chosen").html(participant_list);
         }
+        
+        this.showParticipantList = function() {
+            tinyMCE.activeEditor.plugins.editorwindow._closeWindow()
+            
+            var element = jQuery("#participant_list")[0];
+            jQuery(element).dialog({
+                buttons: [{ text: "Ok",
+                            click: function() { self._save = true; jQuery(this).dialog("close"); }},
+                          { text: "Cancel",
+                            click: function() { jQuery(this).dialog("close"); }}
+                      ],
+                "beforeClose": function(event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
+                "draggable": false, 
+                "resizable": false, 
+                "modal": true, 
+                "width": 425, 
+                "height": 245});
+            
+            return false;
+        }
 
         this.updateParticipantList = function(evt) {
-            if (jQuery("#participant_list").is(":visible")) {
-                var opts = document.forms['editproject'].participants.options;
-                var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
-                
-                var matches = old_list.length == opts.length;
-                for (var i = 0; i < opts.length && matches; i++) {
-                    matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
-                }
-                
-                if (!matches) {
-                    self.updateParticipantsChosen();
-                    self.setDirty(true);
-                }
-                jQuery("#participant_list").hide();
-            } else {
-                tinyMCE.activeEditor.plugins.editorwindow._closeWindow()
-                
-                // position the participant_list & show
-                var pos = jQuery(evt.srcElement).offset();
-                var element = jQuery("#participant_list")[0];
-                element.style.top = (pos.top + jQuery(evt.srcElement).height() + 7) + "px";
-                element.style.left = pos.left + "px";
-                jQuery(element).show();
+            console.log('updateParticipantList');
+            var opts = jQuery("select[name='participants'] option");
+            var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
+            
+            var matches = old_list.length == opts.length;
+            for (var i = 0; i < opts.length && matches; i++) {
+                matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
             }
             
-            jQuery(window).trigger('resize');
+            if (!matches) {
+                self.updateParticipantsChosen();
+                self.setDirty(true, true);
+            }
+            
             return false;
         }
         
@@ -231,20 +226,29 @@
             
             return false;
         }
-
-        this.saveProjectPrompt = function(evt) {
-            if (jQuery("#participant_list:visible").length) {
-                var pos = jQuery(evt.srcElement).offset();
-            } else {
-                
-            }
+        
+        this.showSaveOptions = function(evt) {
+            var element = jQuery("#save-publish-status")[0];
+            
+            jQuery(element).dialog({
+                buttons: [{ text: "Save",
+                            click: function() { self._save = true; jQuery(this).dialog("close"); }},
+                          { text: "Cancel",
+                            click: function() { jQuery(this).dialog("close"); }}
+                      ],
+                "beforeClose": function(event, ui) { if (self._save) { self.saveProject(event); } self._save = false; return true; },
+                "draggable": false, 
+                "resizable": false, 
+                "modal": true, 
+                "width": 250, 
+                "height": 145});
+            
+            return false;
         }
         
         this.saveProject = function(evt) {
-            evt.preventDefault();
-            
             tinyMCE.triggerSave();
-            var frm = evt.target;
+            var frm = document.forms['editproject'];
             if (/preview/.test(frm.target)) {
                 return true;
             }
@@ -263,17 +267,24 @@
             
             
             // select all participants so they will be picked up when the form is serialized
-            jQuery("select[name=participants] option").attr("selected","selected");  
+            jQuery("select[name=participants] option").attr("selected","selected");
             var data = jQuery(frm).serializeArray();
+            data = data.concat(jQuery(document.forms['editvisibility']).serializeArray());
+            data = data.concat(jQuery(document.forms['editparticipants']).serializeArray());
+            
+            jQuery("#save-button").attr("disabled", "disabled");
             
             jQuery.ajax({
                 type: 'POST',
                 url: frm.action,
                 data: data,
                 dataType: 'json',
-                error: function(){alert('There was an error saving your project.');},
+                error: function(){
+                    jQuery("#save-button").removeAttr("disabled");
+                    alert('There was an error saving your project.');
+                },
                 success: function(json,textStatus,xhr){
-                    jQuery('#last-version-link').attr('href',json.revision.url);
+                    //jQuery('#last-version-link').attr('href',json.revision.url);
 
                     if (json.revision.public_url) {
                         jQuery('#last-version-public').attr("href", json.revision.public_url);
@@ -287,17 +298,21 @@
                     
                     self.updateParticipantsChosen();
                     jQuery("#participant_list").hide();
-                    jQuery("#participant_update").hide();
                     jQuery("#save-publish-status").hide();
                     
                     if (self.collection_list)
                         self.collection_list.updateProject(); 
                     
                     self.setDirty(false);
-                    jQuery(window).trigger('resize');
                     self.revision = json.revision;
+                    
+                    jQuery("#save-button").removeAttr("disabled");
+                    jQuery("#save-button").attr("value", "Saved");
+                    jQuery("#save-button").effect("bounce", { times:3  }, 1000, function() { jQuery("#save-button").attr("value", "Save & Publish")});
                 }
             });
+            
+            return true;
         }
     })();
 

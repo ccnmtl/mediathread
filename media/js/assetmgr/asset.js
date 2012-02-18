@@ -302,17 +302,21 @@
             if (n > 0)
                 the_records.active_filter_count = n;
             
-            Mustache.update(self.template_label, the_records, { post:function(elt) {
-                if (self.create_annotation_thumbs)
-                    self.createThumbs(the_records.assets);
-                
-                if (self.project_id && !self.current_project) 
-                    self.updateProject();
-                else
-                    self.updateSwitcher();
-                
-                if (self.view_callback) 
-                    self.view_callback();
+            Mustache.update(self.template_label, the_records, { 
+                pre:function(elt) { jQuery(elt).hide(); },
+                post:function(elt) {
+                    if (self.create_annotation_thumbs)
+                        self.createThumbs(the_records.assets);
+                    
+                    if (self.project_id && !self.current_project) 
+                        self.updateProject();
+                    else
+                        self.updateSwitcher();
+                    
+                    jQuery(elt).fadeIn("slow");
+                    
+                    if (self.view_callback) 
+                        self.view_callback();
             }});
         }
     })();
@@ -580,8 +584,11 @@
                     context.annotation_list[i] = {'category':cats[context.annotation_list[i]]};
                 }
                 
-                Mustache.update('annotation-list', context, { post:function(elt) {
-                    jQuery('li.annotation-listitem',elt).each(self.decorateLink);
+                Mustache.update('annotation-list', context, {
+                    pre:function(elt) { jQuery(elt).hide(); },
+                    post:function(elt) {
+                        jQuery(elt).fadeIn("slow");
+                        jQuery('li.annotation-listitem',elt).each(self.decorateLink);
                 }});
             });
         }
@@ -883,42 +890,47 @@
             if (context.annotation)
                 context.annotation.showCancel = self.active_asset_annotations.length > 1; 
             
-            Mustache.update(template_label, context, { post:function(elt) {
-                djangosherd.assetview.clipform.html.push('clipform-display', { 
-                    asset : {},
-                    extra : { 'tools' : 'clipform-tools' } 
-                });
-                jQuery('.annotation-active').removeClass('annotation-active');
-                
-                if (self.active_annotation) {
-                    djangosherd.assetview.setState(self.active_annotation.annotation);
+            Mustache.update(template_label, context, {
+                pre:function(elt) { jQuery(elt).hide(); },
+                post:function(elt) {
                     
-                    djangosherd.assetview.clipform.setState(self.active_annotation.annotation, 
-                            { 'mode': context.annotation.editing ? 'edit' : 'browse' });
+                    djangosherd.assetview.clipform.html.push('clipform-display', { 
+                        asset : {},
+                        extra : { 'tools' : 'clipform-tools' } 
+                    });
+                    jQuery('.annotation-active').removeClass('annotation-active');
                     
-                    jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
-                } else if (self.xywh) {
-                    djangosherd.assetview.setState(self.xywh);
+                    if (self.active_annotation) {
+                        djangosherd.assetview.setState(self.active_annotation.annotation);
+                        
+                        djangosherd.assetview.clipform.setState(self.active_annotation.annotation, 
+                                { 'mode': context.annotation.editing ? 'edit' : 'browse' });
+                        
+                        jQuery('.annotation-listitem-' + self.active_annotation.id).addClass('annotation-active');
+                    } else if (self.xywh) {
+                        djangosherd.assetview.setState(self.xywh);
+                        
+                        if (djangosherd.assetview.clipform)
+                            djangosherd.assetview.clipform.setState(self.xywh, {'mode': 'create' });
+                    } else {
+                        // /#default initialization. no annotation defined.
+                        // don't need to set state on clipstrip/form as there is no state
+                        djangosherd.assetview.setState();
+                        djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
+                    }
                     
-                    if (djangosherd.assetview.clipform)
-                        djangosherd.assetview.clipform.setState(self.xywh, {'mode': 'create' });
-                } else {
-                    // /#default initialization. no annotation defined.
-                    // don't need to set state on clipstrip/form as there is no state
-                    djangosherd.assetview.setState();
-                    djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
-                }
-                
-                if (context.annotation && context.annotation.editing) {
-                    jQuery("#annotations-organized").hide();
-                } else {
-                    jQuery("#annotations-organized").show();
-                }
-                
-                if (self.config.edit_state == "new") {
-                    self.config.edit_state = "";
-                    return self.newAnnotation();
-                }
+                    if (context.annotation && context.annotation.editing) {
+                        jQuery("#annotations-organized").hide();
+                    } else {
+                        jQuery("#annotations-organized").show();
+                    }
+                    
+                    jQuery(elt).fadeIn("slow");
+                    
+                    if (self.config.edit_state == "new") {
+                        self.config.edit_state = "";
+                        return self.newAnnotation();
+                    }
             }});
         }
     })();

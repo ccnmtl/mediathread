@@ -41,6 +41,14 @@
         }
     
         jQuery(document).ready(function() {
+            jQuery("div#classwork_table").ajaxStart(function(){
+                jQuery(this).addClass("ajaxLoading");
+            });
+            
+            jQuery("div#classwork_table").ajaxStop(function(){
+                jQuery(this).removeClass("ajaxLoading");
+            });
+            
             DjangoSherd_Asset_Config();    
             CollectionList.init({
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
@@ -130,7 +138,7 @@
             {% with "resizeHomepage" as callback %}
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <h2>Class Work {% include "help/help_button.html" %}</h2>
+                    <h2>Analysis {% include "help/help_button.html" %}</h2>
                     {% include "help/help_contentarea.html" %}
                     <div id="classwork_table"></div>
                 </div>

@@ -6,9 +6,9 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>{% block title %}{% endblock %} Mediathread {{course.title}} > </title>
 
-	<link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/jquery-ui-1.8.17.custom.css" media="screen" />
 	<link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
-    
+    <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
     <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
     
     {% cache 500 heads course %}
@@ -19,8 +19,8 @@
     
     {% block css %}{% endblock %}
     
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/site_media/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="/site_media/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>
     
     <script src="/site_media/js/browserdetect.js" type="text/javascript" language="javascript"></script>
@@ -41,11 +41,33 @@
                 this.user_full_name = "{%public_name for request.user %}";
             {% endif %}
         })();
+
+        //Bind to the ui-widget-overlay and watch for when it is clicked
+        jQuery('.ui-widget-overlay').live("click", function() {
+           //Close the dialog
+           jQuery("#settings_menu").dialog("close");
+        });   
+        
     </script>
 	{% block feeds %}{% endblock %}
 </head>
 {% course_role for request.user in course as role_in_course %}
 <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
+
+<!--  Menu -->
+<div id="settings_menu" style="display:none">
+    <a href="/accounts/logout/">Log Out</a><br />
+    {%if user.is_staff %}
+          <a href="/admin/">ADMIN</a><br />
+    {%endif%}
+    
+    {% num_courses for user as user_courses %}
+    
+    {% if user_courses > 1 or user.is_staff %}
+        <a href="/?unset_course">Switch Course</a><br />
+    {% endif %}
+</div>
+
 
 <div id="container">
     {% block masthead %}
@@ -53,20 +75,13 @@
     	<div id="header">
     		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
     		{% block standardnav %}
-        	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
+        	    <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
         	   <ul id="standardnav">
                     {% if request.user.is_authenticated %}
-                        <li>Welcome, <span id="logged_in_name" class="username">{% public_name for user %}</span>!</li>
-            			<li><a href="/accounts/logout/">Log Out</a></li>
-            		    {%if user.is_staff %}
-                			<li>
-                			  <a href="/admin/">ADMIN</a>
-                			</li>
-            		    {%endif%}
-                        {% num_courses for user as user_courses %}
-                        {% if user_courses > 1 or user.is_staff %}
-                            <li><a href="/?unset_course">Switch Course</a></li>
-                        {% endif %}
+                        <li class="settings"><img src="/site_media/img/settings.png" style="height: 18px;"></img></li>
+                        <li class="settings" style="margin-top: 2px;"><span id="logged_in_name" class="username">{% public_name for user %}</span></li>
+                        <li class="settings" style="margin-top: 2px;"><a href="#" onclick='jQuery("#settings_menu").dialog({ "draggable": false, "resizable": false, "modal": true });'><img src="/site_media/img/down_arrow_gray.png" /></a>
+                        </li>
                     {% else %}
         			    <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}

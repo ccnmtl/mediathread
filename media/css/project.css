@@ -46,6 +46,7 @@ a.edit-pencil {
     margin-left: 10px;
 }
 
+/** Needed?
 .annotation-title.materialCitation {
     background-image: url('../img/icons/item_video.gif') left no-repeat;
     border: 0;
@@ -67,6 +68,7 @@ a.edit-pencil {
     border: 1px solid #ccc;
     padding: 20px;
 }
+**/
 
 .essay-options
 { 
@@ -85,17 +87,19 @@ a.edit-pencil {
     margin-bottom: 1em;
 }
 
+/** Needed?
 .essay-space-feedback
 { 
   height: 89%;
   overflow: auto;
-  position:relative;/*important companion to overflow:auto for IE7*/
+  position:relative
   margin-left: 5px;
   border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
   background-color:white;
   max-width:550px;
 }
+**/
 
 .essay-space
 { 
@@ -150,32 +154,11 @@ h4 img.materialCitation {
     margin: 0 0px 0px 4px;
 }
 
-input.materialCitation {
-    background: #fff url('../img/icons/item_video.gif') left no-repeat;
-    margin: 2px 0px 2px 4px;
-    padding: 1px;
-    border: 0;
-    padding-left: 14px;
-    font-size:12px;
-    color: #369;
-    cursor:pointer;
-    display:inline;
-    width:auto;
-    overflow:visible; /* IE 5-6 hack */
-    text-decoration: underline;
-    font: normal 12px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
-}
-
-input.materialCitation:hover
-{
-    background-color: #efefef;
-}
-
 body.mceContentBody {
-    /*overrides tinyMCE's default 10px which will not correspond
+    /**overrides tinyMCE's default 10px which will not correspond
       to styled as published (and 10px is too small for the image-annotation
       icon)
-     */
+    **/
     font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }
 
@@ -189,14 +172,9 @@ body.mceContentBody {
     font-weight: bold;
 }
 
+
 div.mce_editorwindow {
     min-width: 324px;
-}
-
-#project-container {
-    background-color: #ccc;
-    margin: 0;
-    padding: 0 5px;
 }
 
 #project-content {
@@ -250,23 +228,11 @@ form.threaded_comments_form ul li {
     
 }
 
-.comment-manage, .comment_actions a.comment-manage {
-	
-	color:#992222;
-	cursor:pointer;
-	padding:1px 3px;
-	text-decoration:underline;
-	font-size: 90%;
-}
 
 .comment-date {
 
 	font-size: 80%;
 }
-
-
-
-.invisible { display: none; }
 
 
 /***
@@ -404,7 +370,7 @@ width: 185px;
 height: 8em;
 }
 
-.selector img, .selector img a {
+.selector img {
     vertical-align: middle;
 }
 
@@ -518,6 +484,14 @@ font-weight:normal;
 }
 .selector h2 {
 margin-bottom:0; /*override dojo style*/
+}
+
+#save-publish-status {
+    margin-top: 10px;
+}
+
+label[for=id_publish] {
+    margin-bottom: 5px;
 }
 
 

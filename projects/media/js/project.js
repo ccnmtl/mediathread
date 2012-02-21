@@ -1,14 +1,15 @@
 (function() {
+    
     window.ProjectView = new (function ProjectViewAbstract() {
         var self = this;
-        var project_modified = false;
-        var options = null;
         
-        this.commonInitialize = function(options) {
+        this.init = function(options, panels) {
             self.options = options;
+            self.project_types = [ 'assignment', 'composition' ];
+            self.project_modified = false;
             
             // Create an assetview.
-            // @todo - We have two assetviews on this page. The singleton nature in the 
+            // @todo - We have potentially more than 1 assetview on this page. The singleton nature in the 
             // core architecture means the two views are really sharing the underlying code.
             // Consider how to resolve this contention. (It's a big change in the core.)
             
@@ -16,44 +17,11 @@
             djangosherd.storage = new DjangoSherd_Storage();
             djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
             
-            if (options.project_json) {
-                // Locally cache all assets & annotations associated with the project
-                djangosherd.storage.get({type:'project',id:'xxx',url:options.project_json});
-            }
-        }
-        
-        this.commonPostInitialize = function() {
-            self.citations = {};
+            // Stash the project data in storage
+            for (var i = 0; i < panels.length; i++)
+                djangosherd.storage.json_update(panels[i].context);
             
-            for (var i = 0; i < self.options.targets.length; i++) {
-                var cv = new CitationView();
-                cv.init({ 'default_target': self.options.targets[i].default_target,
-                          'onPrepareCitation': self.onPrepareCitation,
-                          'presentation': self.options.presentation });
-                cv.decorateLinks(self.options.targets[i].parent);
-                self.citations[self.options.targets[i].parent] = cv;
-            }
-            
-            if (self.options.view_callback)
-                self.options.view_callback();
-        }
-        
-        this.initReadOnly = function(options) {
-            self.commonInitialize(options);
-            self.commonPostInitialize();
-        }
-        
-        this.initEditing = function(options) {
-            self.commonInitialize(options);
-            
-            // WARN ON UNLOAD
-            tinyMCE.onAddEditor.add(function(manager, ed) {
-                ed.onChange.add(function(editor) {
-                    self.setDirty(true);
-                }) 
-            });
-
-            // ???? used by whom?
+            /** // ???? used by whom?
             if (options.open_from_hash) {
                 // project feedback & discussion
                 var annotation_to_open = String(document.location.hash).match(/annotation=annotation(\d+)/);
@@ -61,25 +29,14 @@
                     openCitation('/annotations/'+annotation_to_open[1] + '/', { autoplay:false});
                 }
             }
+            **/
             
-            self.collection_list = CollectionList.init({
-              'space_owner': options.space_owner,
-              'template': 'collection',
-              'template_label': 'collection_table',
-              'create_annotation_thumbs': true,
-              'view_callback': self.postInitializeEditing,
-              'project_id': options.project_id,
-              'enable_project_selection': options.enable_project_selection
+            // WARN ON UNLOAD
+            tinyMCE.onAddEditor.add(function(manager, ed) {
+                ed.onChange.add(function(editor) {
+                    self.setDirty(true);
+                }) 
             });
-        }
-        
-        this.postInitializeEditing = function() {
-            if (tinyMCE.activeEditor) {
-                var new_assets = jQuery('#asset_table').get(0);
-                
-                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
-                jQuery(new_assets.parentNode).addClass('annotation-embedding');
-            }
             
             jQuery(window).bind('beforeunload',function(evt) {
                 if (self.project_modified) {
@@ -96,14 +53,45 @@
                     }
                 }
             });
-
-            //PROJECT PARTICIPANT UPDATES
-            jQuery('input#participants_toggle').click(self.showParticipantList);
-            jQuery('input#save-button').click(self.showSaveOptions);
             
-            self.commonPostInitialize();
+            // Decorate any active editing windows -- are there more than 1?
+            if (tinyMCE.activeEditor) {
+                var new_assets = jQuery('#asset_table').get(0);
+                
+                tinyMCE.activeEditor.plugins.citation.decorateCitationAdders(new_assets);
+                jQuery(new_assets.parentNode).addClass('annotation-embedding');
+            }
+
+            // Decorate any essay windows -- definitely can be more than 1
+            self.citations = {};
+            
+            for (var i = 0; i < self.project_types.length; i++) {
+                var project_type = self.project_types[i];
+                var projectEssayId = project_type + "-essay-space";
+                var projectEssay = document.getElementById(projectEssayId);
+                
+                if (projectEssay) {
+                    var presentation = "small";
+                    if (jQuery("#"+ project_type + "-asset-view-published").hasClass("medium"))
+                        presentation = "medium";
+                    
+                    var cv = new CitationView();
+                    cv.init({ 'default_target': project_type + "-videoclipbox",
+                              'onPrepareCitation': self.onPrepareCitation,
+                              'presentation': presentation });
+                    cv.decorateLinks(projectEssayId);
+                    self.citations[projectEssayId] = cv;
+                }
+            }
+                
+            // Could there be more than 1? This could get heavy if there are...
+            self.collection_list = CollectionList.init({
+              'template': 'collection',
+              'template_label': 'collection_table',
+              'create_annotation_thumbs': true
+            });
         }
-        
+
         this.onPrepareCitation = function(target) {
             var a = jQuery(target).parents("td.panel-container.media");
             if (a && a.length) {
@@ -184,45 +172,47 @@
             for (var i = 0; i < self.citations.length; i++)
                 self.citations[i].unload();
             
-            if (jQuery("#composition-essay-space:visible").length) {
+            // What's the project type we're previewing?
+            var project_type = null;
+            for (var i = 0; i < self.project_types.length; i++) {
+                if (jQuery(evt.srcElement).hasClass(self.project_types[i]))
+                    project_type = self.project_types[i];
+            }
+            
+            if (jQuery("#" + project_type + "-essay-space:visible").length) {
                 // Edit View
-                jQuery("#composition-essay-space").hide();
+                jQuery("#" + project_type + "-essay-space").hide();
                 tinyMCE.activeEditor.show();
-                jQuery("#composition-materials-panhandle-label").html("Add Selection");
-                jQuery("#preview-button").attr("value", "Preview");
-                jQuery("#composition-asset-view-published").hide();
+                jQuery("#" + project_type + "-materials-panhandle-label").html("Add Selection");
+                jQuery("#" + project_type + "-preview-button").attr("value", "Preview");
+                jQuery("#" + project_type + "-asset-view-published").hide();
                 
                 // Kill the asset view
-                self.citations["composition-essay-space"].unload();
+                self.citations[project_type + "-essay-space"].unload();
                 
-                jQuery("#id_publish").show();
-                jQuery("label[for='id_publish']").html("Status");
-                jQuery("#collection-materials").show();
+                jQuery("#" + project_type + "-collection-materials").show();
             } else {
                 // Preview View
                 tinyMCE.activeEditor.hide();
                 tinyMCE.activeEditor.plugins.editorwindow._closeWindow()
                 
-                jQuery("#project-content").hide();
-                jQuery("#id_publish").hide();
-                var selected = jQuery("#id_publish option:selected").text();
-                jQuery("label[for='id_publish']").html(selected);
-                jQuery("#collection-materials").hide();
+                jQuery("#" + project_type + "-project-content").hide();
+                jQuery("#" + project_type + "-collection-materials").hide();
                 
                 // Get updated text into the preview space
                 // Decorate any new links
-                jQuery("#composition-essay-space").html(tinyMCE.activeEditor.getContent());
-                self.citations["composition-essay-space"].decorateLinks();
+                jQuery("#" + project_type + "-essay-space").html(tinyMCE.activeEditor.getContent());
+                self.citations[project_type + "-essay-space"].decorateLinks();
 
-                jQuery("#composition-essay-space").show();
-                jQuery("#composition-materials-panhandle-label").html("View Selection");
-                jQuery("#preview-button").attr("value", "Edit");
-                jQuery("#composition-asset-view-published").show();
+                jQuery("#" + project_type + "-essay-space").show();
+                jQuery("#" + project_type + "-materials-panhandle-label").html("View Selection");
+                jQuery("#" + project_type + "-preview-button").attr("value", "Edit");
+                jQuery("#" + project_type + "-asset-view-published").show();
             }
             
-            jQuery("#composition-materials").toggleClass("media collection");
-            jQuery("#composition-materials-panhandle").toggleClass("media collection");
-            jQuery("#composition-materials-pantab").toggleClass("media collection");
+            jQuery("#" + project_type + "-materials").toggleClass("media collection");
+            jQuery("#" + project_type + "-materials-panhandle").toggleClass("media collection");
+            jQuery("#" + project_type + "-materials-pantab").toggleClass("media collection");
             
             return false;
         }

@@ -28,8 +28,11 @@
     <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
 
-    <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
+    
     <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
@@ -89,7 +92,7 @@
 
 {% block content %}
     {{ block.super }}
-    
+    DEPRECATED EDIT VIEW
     <table id="sliding-content-container">
         <tr>
             {% if project.assignment %}
@@ -112,20 +115,23 @@
                                         <h1>{{assignment.title}}</h1>
                                     </div>
                                     <div class="panel-subcontainer-toolbar">
-                                        {%comment%}
-                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish" />
-                                        
-                                        <input id="preview-button" class="project project-previewbutton" type="submit" value="Preview" onclick="return ProjectView.preview()" />
-                                        
-                                        <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" disabled="disabled" />
-                                        
-                                        <div class="project-visibility" style="vertical-align: middle";>
-                                                <b>Visibility</b>:<br />
-                                                <span id="project-visibility">{{project.visibility}}</span>
-                                                <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
-                                        </div>
-                                        {%endcomment%}
-                                    </div>   
+                                    
+                                        {% if project.collaboration %}
+                                            {% if role_in_course != 'non-member' and project|is_assignment:request %}
+                                                {% if not user_responses %}
+                                                    {% if not is_faculty %}
+                                                            <form class="block project createnew" method="post"
+                                                              action="{%url your-space-projects user%}">
+                                                              <input type="hidden" name="title" />
+                                                              <input type="hidden" name="parent" value="{{project.id}}" />
+                                                              <input class="project createnew-button" type="submit" value="Create Assignment Response"/>
+                                                            </form>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                       {% endif %}    
+                                                
+                                    </div>
                                 </td>
                             </tr>
                             
@@ -193,20 +199,28 @@
                             <tr>
                                 <td colspan="5" class="panel-subcontainer-toolbar-column">
                                     <div class="panel-subcontainer-title">
-                                        {{projectform.title}}
+                                        <div>{{projectform.title}}</div>
                                     </div>
                                     <div class="panel-subcontainer-toolbar">
-                                        <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish" />
-                                        
-                                        <input id="preview-button" class="project project-previewbutton" type="submit" value="Preview" onclick="return ProjectView.preview()" />
-                                        
-                                        <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" disabled="disabled" />
-                                        
-                                        <div class="project-visibility" style="vertical-align: middle";>
-                                                <b>Visibility</b>:<br />
-                                                <span id="project-visibility">{{project.visibility}}</span>
-                                                <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
+                                        <div class="project-visibility">
+                                            <span id="project-visibility">{{project.visibility}}</span>
+                                            <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
                                         </div>
+                                        <div>
+                                        {% if is_space_owner %}
+                                            
+                                            <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish" />
+                                        
+                                            <input id="preview-button" class="project project-previewbutton" type="submit" value="Preview" onclick="return ProjectView.preview()" />
+                                        
+                                            <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" disabled="disabled" />
+                                        {% else %}
+                                        
+                                        {% endif %}
+                                        </div>
+                                                                                
+                                        
+                                        
                                     </div>   
                                 </td>
                             </tr>

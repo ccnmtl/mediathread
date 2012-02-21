@@ -103,7 +103,7 @@ class Project(models.Model):
     def responses(self, request):
         project_type = ContentType.objects.get_for_model(Project)
         return self.subobjects(request, project_type)
-
+    
     def is_assignment(self, request):
         if hasattr(self,'is_assignment_cached'):
             return self.is_assignment_cached
@@ -237,6 +237,12 @@ class Project(models.Model):
             return col.permission_to('read',request)
         else:
             return self.submitted
+        
+    def can_edit(self, request):
+        return self.collaboration(request).permission_to('edit',request) or self.collaboration(request, sync_group=True).permission_to('edit',request)
+    
+    def can_read(self, request):
+        return self.collaboration(request).permission_to('read',request) or self.collaboration(request, sync_group=True).permission_to('read',request)
     
     def collaboration(self,request=None,sync_group=False):
         col = None

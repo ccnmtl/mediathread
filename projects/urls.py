@@ -30,7 +30,7 @@ urlpatterns = patterns(
         'your_projects',
         name='your-space-projects',
         ),
-
-
-    )
-
+                       
+    url(r'^panel/(?P<project_id>\d+)/$', 
+        'project_panel_view', name="project-panel-view")
+)

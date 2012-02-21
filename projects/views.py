@@ -26,7 +26,7 @@ ProjectVersion = get_model('projects','projectversion')
 User = get_model('auth','user')
 Group = get_model('auth','group')        
 
-from courseaffils.lib import in_course_or_404, get_public_name, AUTO_COURSE_SELECT
+from courseaffils.lib import in_course_or_404, in_course, get_public_name, AUTO_COURSE_SELECT
 from projects.forms import ProjectForm
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
@@ -56,7 +56,7 @@ def project_preview(request, user, project, is_participant=None, preview_num=0):
     course = request.collaboration_context.content_object
     
     if request.META.get('HTTP_ACCEPT','').find('json') >=0:
-        return project_json(request, project)
+        return project_json_response(request, project)
 
     is_assignment_owner = False
     
@@ -100,7 +100,7 @@ def project_version_preview(request, project_id, version_number, check_permissio
                                 )
     project = version.instance()
     if request.META.get('HTTP_ACCEPT','').find('json') >=0:
-        return project_json(request, project)
+        return project_json_response(request, project)
     return {
         'is_space_owner': project.is_participant(request.user),
         'project': project,
@@ -129,6 +129,9 @@ def project_readonly_view(request, project_id, check_permission=True):
 
     return project_preview(request, request.user, project)
 
+def project_workspace_courselookup(project_id=None,**kw):
+    if project_id:
+        return Project.objects.get(pk=project_id).course
 
 @allow_http("GET", "POST", "DELETE")
 def view_project(request, project_id):
@@ -143,7 +146,7 @@ def view_project(request, project_id):
 
     if request.method == "GET":
         if request.META.get('HTTP_ACCEPT','').find('json') >=0:
-            return project_json(request, project)
+            return project_json_response(request, project)
         return project_workspace(request, space_owner, project)
 
     if request.method == "DELETE":
@@ -241,14 +244,92 @@ def your_projects(request, user_name):
                 
         return HttpResponseRedirect(project.get_workspace_url())
 
-def project_json(request,project):
-        #bad language, we should change this to user_of_assets or something
+def project_json_response(request,project):
+    data = project_json(request, project)
+    HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
+    
+@allow_http("GET")
+def project_panel_view(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    
+    if not project.can_read(request):
+        return HttpResponseForbidden("forbidden")
+    
+    course = request.course
+    is_faculty = course.is_faculty(request.user)
+    viewer = request.user
+    if request.GET.has_key('as') and request.user.is_staff:
+        viewer = get_object_or_404(User, username=request.GET['as'])
+    
+    data = {}
+    
+    if not request.is_ajax():
+        space_viewer = request.user 
+        if request.GET.has_key('as') and request.user.is_staff:
+            space_viewer = get_object_or_404(User, username=request.GET['as'])
+
+        projectform = ProjectForm(request, instance=project)
+        data['projectform'] = projectform
+        data['project'] = project
+        return render_to_response('projects/project.html', data, context_instance=RequestContext(request))
+    else:
+        panels = []
+    
+        # Project Parent (assignment) if exists
+        assignment = project.assignment()
+        if assignment:
+            assignment_context = project_json(request, assignment)
+            assignment_context['can_edit'] = assignment.can_edit(request)
+            assignment_context['editing'] = False # Never editing by default
+            assignment_context['create_assignment_response'] = False # obviously, we already have a response
+            assignment_context['create_instructor_feedback'] = False
+            assignment_context['create_selection'] = True
+            panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': assignment_context, 'template': 'project' }
+            panels.append(panel)
+        
+        # Requested project, either assignment or composition
+        is_assignment = project.is_assignment(request)
+        project_context = project_json(request, project)
+        project_context['editing'] = project.can_edit(request) # Always editing if it's allowed.
+        project_context['can_edit'] = project.can_edit(request)
+        project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
+            not project.responses_by(request, request.user)
+        project_context['create_instructor_feedback'] = is_faculty and not is_assignment and \
+            project.assignment() and not project.feedback_discussion()  
+        
+        panel = { 'panel_state': 'open', 'panel_state_label': 'Edit', 'context': project_context, 'template': 'project' }
+        panels.append(panel)
+        
+        # Assignment response for requester if one exists
+        if is_assignment:
+            responses = project.responses_by(request, request.user)
+            if len(responses) > 0:
+                response = responses[0]
+                response_context = project_json(request, response)
+                response_context['editing'] = False # Never editing by default
+                response_context['can_edit'] = response.can_edit(request)
+                response_context['create_assignment_response'] = False
+                response_context['create_instructor_feedback'] = False  
+                
+                panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': response_context, 'template': 'project' }
+                panels.append(panel)
+            
+        data['panels'] = panels
+        
+        # 3rd pane is the instructor feedback, if it exists
+        # TODO
+            
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
+    
+    
+def project_json(request, project):
+    #bad language, we should change this to user_of_assets or something
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
         space_viewer = get_object_or_404(User, username=request.GET['as'])
         
     rand = ''.join([choice(letters) for i in range(5)])
-
+    
     data = {'project':{'title':project.title,
                        'body':project.body,
                        'participants':[{'name':p.get_full_name(),
@@ -258,23 +339,26 @@ def project_json(request,project):
                                         } for p in project.participants.all()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
+                       'public_url':project.public_url(),
+                       'visibility': project.visibility(),
                        'username':request.user.username,
+                       'type': 'assignment' if project.is_assignment(request) else 'composition', 
                        },
             'assets':dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)
                             ) for ann in project.citations()
-                           if ann.title != "Annotation Deleted"
+                           if ann.title and ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted'
                            ]),
             'annotations':[ann.sherd_json(request, rand, ('title','author') )
                            for ann in project.citations()
                            ],
+            'responses': [ { 'url': r.get_absolute_url(),
+                             'title': r.title,
+                             'attribution_list': [ get_public_name(p, request) for p in r.attribution_list()],
+                           } for r in project.responses(request)],
             'type':'project',
             }
-    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
-
-def project_workspace_courselookup(project_id=None,**kw):
-    if project_id:
-        return Project.objects.get(pk=project_id).course
+    return data
 
 AUTO_COURSE_SELECT[project_readonly_view] = project_workspace_courselookup
 AUTO_COURSE_SELECT[view_project] = project_workspace_courselookup

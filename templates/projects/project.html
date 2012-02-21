@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load smartif collaborations user_projects coursetags revision %}
+
+{% block title %}
+    {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+    
+    <script type="text/javascript" src="/jsi18n"></script>
+    {{ projectform.media }}
+    
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript/css -->
+    {% include "djangosherd/annotator_resources.html" %}
+
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    
+    <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
+    
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
+    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
+        
+    <script type="text/javascript">
+        function resizeProjectPage() {
+            var visible = getVisibleContentHeight();
+
+            // Resize the outer table. This takes care of the panhandles & panhandle stripes
+            jQuery("#sliding-content-container").css('height', visible + "px");
+
+            // tinyMCE project editing window
+            jQuery('#project-content_tbl').css('height', (visible - 100) + "px");
+            jQuery('#composition-essay-space').css('height', (visible - 112) + "px");
+            // Reset width to 100% via javascript. TinyMCE doesn't resize properly 
+            // if this isn't completed AFTER instantiation
+            jQuery('#project-content_tbl').css('width', "100%");
+            
+            // scrolling media (collections) window
+            jQuery('div.scroll').css('height', (visible - 133) + "px");
+        }
+      
+        jQuery(document).ready(function () {
+            PanelManager.init({ 
+                'container': 'sliding-content-container',
+                'url': MediaThread.urls['project']({{project.id}}),
+                'chain': ProjectView.init
+            });
+        });
+  </script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    
+    <table id="sliding-content-container" class="ajaxLoading">
+        <tr id="sliding-content-row">
+            
+        </tr>
+    </table>
+        
+    <!--  Dialogs -->
+    <div id="save-publish-status" style="display: none" title="Save Changes">
+        <form name="editvisibility">
+            <div>{{projectform.publish.label_tag}}</div>    
+            <div>{{projectform.publish}}</div>
+        </form>
+    </div>  
+    
+    <div id="participant_list" style="display: none" title="Select Author(s)">
+        <form name="editparticipants"> 
+            <div>{{projectform.participants}}</div>
+        </form> 
+    </div>
+{% endblock %}    

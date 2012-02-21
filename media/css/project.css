@@ -115,7 +115,9 @@ a.edit-pencil {
     padding:0 3px;
 }
 
-#essay-space-materials {
+#essay-space-materials,
+#composition-essay-space-materials,
+#assignment-essay-space-materials {
     float: left;
     width: 40%;
     margin-left: 20px;
@@ -130,7 +132,9 @@ a.edit-pencil {
 
 #discussion-space-materials h2,
 #essay-space-materials h2,
-#collection-materials h2 {
+#collection-materials h2,
+#composition-collection-materials h2,
+#assignment-collection-materials h2 {
     background-color: #a88448;
     text-transform: capitalize;
     font-size: 98%;

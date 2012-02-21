@@ -283,6 +283,7 @@ a:visited
     padding: 0;
     border: 0;
     background-color: #fff;
+    min-height: 500px;
 }
 
 
@@ -648,7 +649,6 @@ table#sliding-content-container, table#sliding-content-container tr {
     width: 100%;
     border: none;
     border-collapse: collapse;
-
 }
 
 table#sliding-content-container tr, table#sliding-content-container tr td {
@@ -769,13 +769,6 @@ table.panel-subcontainer tr td {
     border: none;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-title {
-    float: left;
-    min-width: 100px;
-    max-width: 330px;
-    width: 100%;
-}
-
 table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
    background: rgb(205,205,205); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(205,205,205,1) 0%, rgba(171,171,171,1) 100%); /* FF3.6+ */
@@ -785,15 +778,42 @@ table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
     background: -ms-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* IE10+ */
     background: linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdcdcd', endColorstr='#ababab',GradientType=0 ); /* IE6-9 */
-    
-    }
+}
+
+
+table.panel-subcontainer tr td div.panel-subcontainer-title {
+    float: left;
+    min-width: 100px;
+    max-width: 330px;
+    width: 100%;
+    min-height: 40px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-title.assignment h1 {
+    background-image: url("../img/icons/item_assignment.gif");
+    background-repeat: no-repeat;
+    padding: 2px 0  0 20px;
+    height: 20px;
+    width: 100%;
+    margin: 5px;
+}
+
+
+
+
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
-    margin: 5px 0px 0px 5px;
-    padding: 4px 5px 4px 0px;
-    height: 24px;
+    margin: 2px 0px 0px 5px;
+    padding: 2px 5px 4px 0px;
+    height: 40px;
     float: right;
-    width: 430px;
+    width: 330px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibility {
+    text-align: right;
+    font-size: 80%;
+    margin: 0px 0 3px 3px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
@@ -896,13 +916,17 @@ td.panhandle-stripe.discussion {
     background-color: #000 !important;
 }
 
-div#collection-materials h2 {
+div#collection-materials h2,
+div#composition-collection-materials h2,
+div#assignment-collection-materials h2 {
     border-radius: 0;
     -moz-border-radius: 0; 
     -webkit-border-radius: 0;
 }
 
-div#collection-materials h2 a.browse-button {
+div#collection-materials h2 a.browse-button,
+div#composition-collection-materials h2 a.browse-button,
+div#assignment-collection-materials h2 a.browse-button {
     float: right;
     width: 75px;
     background-repeat: repeat-x;
@@ -941,12 +965,9 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revi
     margin-left: 15px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibility {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {
     float: right;
-    width: 170px;
-    font-size: 80%;
-    margin-left: 0px;
-    margin-top: -3px;
+    width: 170px;    
 }
 
 
@@ -1300,14 +1321,6 @@ table#home-columns td#classwork .helptoggle {
 }
 
 /*Assignment Specific styles */
-
-.assignment-project h1{
- background-image: url("../img/icons/item_assignment.gif");
- background-repeat: no-repeat;
- padding: 2px 0  0 20px;
- height: 20px;
-
-}
 
 .project-view {
     padding: 5px;
@@ -2631,7 +2644,9 @@ input.videoplay{
 
 .default-content h4,
 #project_table .default-content h4,
-#materials .default-content h4 {
+#materials .default-content h4,
+#composition-materials .default-content h4,
+#assignment-materials .default-content h4 {
     background-color: dedede;
     color: #000;
     margin: 0;
@@ -2714,7 +2729,9 @@ div#instructor-column h4.inst-header.assignment{
 }
 
 
-div#materials
+div#materials,
+div#composition-materials,
+div#assignment-materials
 {
     margin: 5px 5px 10px;
     overflow-x: hidden;
@@ -2724,7 +2741,9 @@ div#materials
 
 }
 
-div#materials h4 {
+div#materials h4,
+div#composition-materials h4,
+div#assignment-materials h4 {
     background-color: #6F6F6F;
     color: #DEDEDE;
     font-weight: normal;
@@ -2733,7 +2752,9 @@ div#materials h4 {
     text-align: left;
 }
 
-div#materials h4 a
+div#materials h4 a,
+div#composition-materials h4 a,
+div#assignment-materials h4 a
 {
     color: #fff;
     padding-right: 4px;
@@ -2742,7 +2763,9 @@ div#materials h4 a
 
 }
 
-div#materials h4 a.asset-title-link.insert
+div#materials h4 a.asset-title-link.insert,
+div#composition-materials h4 a.asset-title-link.insert,
+div#assignment-materials h4 a.asset-title-link.insert
 {
 
     padding-left: 5px;

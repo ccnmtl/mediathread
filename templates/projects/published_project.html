@@ -62,7 +62,7 @@
 
 {% block content %}
     {{ block.super }}
-         
+    DEPRECATED PUBLISHED VIEW 
     <table id="sliding-content-container">
         <tr>
             {% if project.assignment %}
@@ -207,11 +207,77 @@
             <td class="panel-container {{project_type}} open">
                 <div class="panel">
                     <table class="panel-subcontainer">
+                            <tr>
+                                <td colspan="4" class="panel-subcontainer-toolbar-column">
+                                    <div class="panel-subcontainer-title assignment-project">
+                                        <h1>{{project.title}}</h1>
+                                    </div>
+                                    <div class="panel-subcontainer-toolbar">
+                                        {% if is_space_owner %}
+                                            <input id="save-button" class="project project-savebutton" type="submit" value="Save &amp; Publish" />
+                                        
+                                            <input id="preview-button" class="project project-previewbutton" type="submit" value="{% if is_preview %}Edit{%else%}Preview{%endif%}" onclick="return ProjectView.preview()" />
+                                            
+                                            <input id="revision-button" class="project project-revisionbutton" type="submit" name="submit" value="Revisions" disabled="disabled" />
+                                            
+                                            
+                                        {% endif %}
+                                        
+                                        
+                                        {% if project.collaboration %}
+                                            {% if role_in_course != 'non-member' and project|is_assignment:request %}
+                                                {% if not user_responses %}
+                                                    {% if not is_faculty %}
+                                                            <form class="block project createnew" method="post"
+                                                              action="{%url your-space-projects user%}">
+                                                              <input type="hidden" name="title" />
+                                                              <input type="hidden" name="parent" value="{{project.id}}" />
+                                                              <input class="project createnew-button" type="submit" value="Create Assignment Response"/>
+                                                            </form>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <h5 style="margin: .2em 0 .2em">
+                                                      Your Response: 
+                                                      {% for response in user_responses %}
+                                                        <a href="{{response.get_absolute_url}}">{{response.title}}</a>{% if not forloop.last %},{% endif %}
+                                                      {% endfor %}
+                                                    </h5>
+                                                {% endif %}
+                                            {% else %}
+                                                {#need to test it, because the default collaboration created won't have the right perms#}
+                                                {% if not project.feedback_discussion %}
+                                                    {% if is_faculty and not project|is_assignment:request and project.assignment %}
+                                                        <form action="{% url new-discussion %}" method="post">
+                                                           <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                                                           <input type="hidden" name="inherit" value="true" />
+                                                           <input type="hidden" name="app_label" value="projects" />
+                                                           <input type="hidden" name="model" value="project" />
+                                                           <input type="hidden" name="obj_pk" value="{{project.pk}}" />
+                                                           <input type="hidden" name="comment_html" value="Composition:{{project.title}}" />
+                                                           <input class="columnbutton project createnew-button" type="submit" value="Instructor Feedback" />
+                                                        </form>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        
+                                    {% endif %}{# end project.collaboration #}
+                                        
+                                        {% if is_space_owner %}
+                                            <div class="project-visibility" style="vertical-align: middle";>
+                                                    <b>Visibility</b>:<br />
+                                                    <span id="project-visibility">{{project.visibility}}</span>
+                                                    <a id="last-version-public" style="display: {% if project.public_url %}inline{%else%}none{% endif %}" href="{% if project.public_url %}{{project.public_url}}{% endif %}">(permalink)</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        
                         <tr>
                             <td colspan="5" class="meta {{project_type}}">        
                                 <div class="{{project_type}}-project">
-    
-                                    <h1>{% if project|is_assignment:request %}Assignment: {%endif%}{{project.title}}
+                
+                                    <h1>{{project.title}}
                                         {% if version_number %}Version {{version_number}}{% endif %}
                                         {% if is_space_owner and project.id and not is_preview %}
                                             <a class="edit-pencil" href="{{project.get_workspace_url}}">

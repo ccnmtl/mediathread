@@ -336,7 +336,7 @@ def project_json(request, project):
                                         'username':p.username,
                                         'public_name': get_public_name(p, request),
                                         'is_viewer': space_viewer.username == p.username,  
-                                        } for p in project.participants.all()],
+                                        } for p in project.attribution_list()],
                        'id':project.pk,
                        'url':project.get_absolute_url(),
                        'public_url':project.public_url(),

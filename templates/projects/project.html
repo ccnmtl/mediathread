@@ -24,9 +24,9 @@
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
     
-    <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/project/projectpanel.js?version={%revision%}"></script>
     
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
@@ -39,11 +39,9 @@
             jQuery("#sliding-content-container").css('height', visible + "px");
 
             // tinyMCE project editing window
-            jQuery('#project-content_tbl').css('height', (visible - 100) + "px");
+            jQuery('#composition-project-content_tbl').css('height', (visible - 100) + "px");
             jQuery('#composition-essay-space').css('height', (visible - 112) + "px");
-            // Reset width to 100% via javascript. TinyMCE doesn't resize properly 
-            // if this isn't completed AFTER instantiation
-            jQuery('#project-content_tbl').css('width', "100%");
+            
             
             // scrolling media (collections) window
             jQuery('div.scroll').css('height', (visible - 133) + "px");
@@ -52,8 +50,11 @@
         jQuery(document).ready(function () {
             PanelManager.init({ 
                 'container': 'sliding-content-container',
-                'url': MediaThread.urls['project']({{project.id}}),
-                'chain': ProjectView.init
+                'url': MediaThread.urls['project']({{project.id}})
+            });
+
+            jQuery(window).resize(function () {  
+                resizeProjectPage();
             });
         });
   </script>
@@ -64,18 +65,11 @@
     
     <table id="sliding-content-container" class="ajaxLoading">
         <tr id="sliding-content-row">
-            
+            <td id="sliding-content-last-column" class="filler"></td>
         </tr>
     </table>
         
     <!--  Dialogs -->
-    <div id="save-publish-status" style="display: none" title="Save Changes">
-        <form name="editvisibility">
-            <div>{{projectform.publish.label_tag}}</div>    
-            <div>{{projectform.publish}}</div>
-        </form>
-    </div>  
-    
     <div id="participant_list" style="display: none" title="Select Author(s)">
         <form name="editparticipants"> 
             <div>{{projectform.participants}}</div>

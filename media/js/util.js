@@ -1,3 +1,10 @@
+function _propertyCount (obj) {
+    var count = 0;
+    for (k in obj) if (obj.hasOwnProperty(k)) count++;
+    return count;
+}
+
+
 function getVisibleContentHeight() {
     var viewportwidth;
     var viewportheight;

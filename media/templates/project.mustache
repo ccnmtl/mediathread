@@ -6,16 +6,16 @@
         <div class="label">{{panel_state_label}} {{context.project.type}}</div>
     </td>
 
-    <td class="panel-container {{panel_state}} {{context.project.type}}">
+    <td id="{{context.project.id}}-panel-container" class="panel-container {{panel_state}} {{context.project.type}}">
         <div class="panel">
-            <form name="editproject" method="POST" action=".">
+            <form name="editproject" method="POST" action="/project/workspace/{{context.project.id}}/">
                 <table class="panel-subcontainer">
                     <tr>
                         <td colspan="4" class="panel-subcontainer-toolbar-column">
                             <div class="panel-subcontainer-title {{context.project.type}}">
                                 {{#context.can_edit?}}
-                                    <input id="id_title" type="text" name="title" value="{{context.project.title}}" maxlength="80"
-                                        style="display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
+                                    <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
+                                        class="project-title" style="display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 {{/context.can_edit?}}
                                 <h1 style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
                                     {{context.project.title}}
@@ -24,8 +24,8 @@
                             <div class="panel-subcontainer-toolbar">
                                 {{#context.project.visibility?}}
                                     <div class="project-visibility">
-                                        <span id="project-visibility">{{context.project.visibility}}</span>
-                                         <a id="last-version-public" 
+                                        <span>{{context.project.visibility}}</span>
+                                         <a class="last-version-public" 
                                             style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
                                          </a>
                                     </div>
@@ -33,31 +33,42 @@
                                 
                                 <div>
                                     {{#context.can_edit?}}
-                                        <input id="save-button" class="{{context.project.type}} project project-savebutton" 
-                                            type="submit" value="Save &amp; Publish" onclick="return ProjectView.showSaveOptions(evt);" />
+                                        <input class="{{context.project.type}} project project-savebutton" 
+                                            type="submit" value="Save &amp; Publish" />
+                                            
+                                            <div class="save-publish-status" style="display: none" title="Save Changes">
+                                                <div><label>Visibility</label></div>    
+                                                <div>
+                                                    <select name="publish">
+                                                        <option value="PrivateEditorsAreOwners" selected="selected">Private - Only Author(s) Can View</option>
+                                                        <option value="InstructorShared">Submitted to Instructor</option>
+                                                        <option value="CourseProtected">Published to Whole Class</option>
+                                                        <option value="PublicEditorsAreOwners">Published to World</option>
+                                                    </select>
+                                                </div> 
+                                            </div>  
                                     
-                                        <input id="{{context.project.type}}-preview-button" class="{{context.project.type}} project project-previewbutton" 
-                                            type="submit" value="{{#context.editing?}}Preview{{/context.editing?}}{{^context.editing}}Edit{{/context.editing}}" 
-                                            onclick="return ProjectView.preview(evt);"/>
+                                        <input class="{{context.project.type}} project project-previewbutton" 
+                                            type="submit" value="{{#context.editing?}}Preview{{/context.editing?}}{{^context.editing}}Edit{{/context.editing}}" />
                                     
-                                        <input id="revision-button" class="{{context.project.type}} project project-revisionbutton" 
-                                            type="submit" name="submit" value="Revisions" disabled="disabled" onclick="return ProjectView.showRevisions(evt);" />
+                                        <input class="{{context.project.type}} project project-revisionbutton" 
+                                            type="submit" name="submit" value="Revisions" disabled="disabled" />
                                     {{/context.can_edit?}}
                                     
                                     {{#context.create_assignment_response?}}
-                                        <input id="create-new-response" class="{{context.project.type}} project" 
-                                            type="submit" value="Create Assignment Response" onclick="return ProjectView.createAssignmentResponse(evt);">
+                                        <input class="{{context.project.type}} project create-assignment-response" 
+                                            type="submit" value="Create Assignment Response">
                                     {{/context.create_assignment_response?}}
                                     
                                     {{#context.create_instructor_feedback?}}
-                                        <input id="create-instructor-feedback" class="{{context.project.type}} project" 
-                                            type="submit" value="Instructor Feedback" onclick="return ProjectView.createInstructorFeedback(evt);"/>
+                                        <input class="{{context.project.type}} project create-instructor-feedback" 
+                                            type="submit" value="Instructor Feedback"/>
                                     {{/context.create_instructor_feedback?}}
                                     
                                     {{#context.project.responses?}}
                                         {{! todo }}
-                                        <input id="show-assignment-responses" class="project" 
-                                            type="submit" value="Responses" onclick="return ProjectView.showResponses(evt);"/>
+                                        <input class="project show-responses" 
+                                            type="submit" value="Responses"/>
                                     {{/context.project.responses?}}
                                 </div>     
                             </div>
@@ -67,74 +78,100 @@
                     <tr>                                      
                         <td colspan="5" style="padding-top: 5px">
                             {{#context.can_edit?}}
-                                <input id="participants_toggle" class="project participants_toggle" type="submit" value="+/- Author" 
-                                    style="float: left; display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}" onclick="return ProjectView.showParticipantList(evt);" />
+                                <input class="project participants_toggle" type="submit" value="+/- Author" 
+                                    style="float: left; display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}" />
                             {{/context.can_edit?}}
-                            <h5 style="margin-top: 0px">by <span id="participants_chosen">
+                            <h5 style="margin-top: 0px">by <span class="participants_chosen">
                                 {{#context.project.participants}}
                                     {{public_name}}
                                 {{/context.project.participants}}
                                 </span>
                             </h5>
+                            
+                            <div>
+                                <script type="text/javascript">
+                                    addEvent(window, "load", function(e) {SelectFilter.init("id_" + {{context.project.id}} + "_participants", "participants", 0, "/media/"); });
+                                </script>
+
+                                <select multiple="multiple" class="filtered" name="participants" id="id_" + {{context.project.id}} + "_participants">
+                                    <option value="8">Jonah Bossewitch</option>
+                                </select>
+                                        <a href='javascript: (function(){ SelectBox.move_all("id_" + {{context.project.id}} + "_participants_from", "id_" + {{context.project.id}} + "_participants_to"); })()' class="selector-chooseall">Choose all</a>
+                                    </div>
+                                    <ul class="selector-chooser">
+                                        <li>
+                                            <a href='javascript: (function(){ SelectBox.move("id_" + {{context.project.id}} + "_participants_from","id_" + {{context.project.id}} + "_participants_to");})()' class="selector-add">Add</a>
+                                        </li>
+                                        <li>
+                                            <a href='javascript: (function(){ SelectBox.move("id_" + {{context.project.id}} + "_participants_to","id_" + {{context.project.id}} + "_participants_from");})()' class="selector-remove">Remove</a>
+                                        </li>
+                                    </ul>
+                                    <div class="selector-chosen">
+                                        <h2>Chosen participants</h2>
+                                        <p class="selector-filter">Select your choice(s) and click <img src="/media/img/admin/selector-add.gif" alt="Add"></p>
+                                        <select id="id_" + {{context.project.id}} + "_participants_to" multiple="multiple" size="0" name="participants" class="filtered">
+                                        </select>
+                                        <a href='javascript: (function() { SelectBox.move_all("id_" + {{context.project.id}} + "_participants_to", "id_" + {{context.project.id}} + "_participants_from");})()' class="selector-clearall">Clear all</a>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     
                     <tr>
                         <td class="panel-content fluid {{context.project.type}}">
-                            <div id="{{context.project.type}}-text">
+                            <div>
                                 {{#context.can_edit?}}
                                     <script type="text/javascript">
                                         var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
                                     </script>
                                     <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
                                     <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
-                                    <textarea id="{{context.project.type}}-project-content" tabindex="0" name="body" 
-                                        class="mceEditor" mce_editable="true" 
-                                        style="height: 100%; display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
+                                    <textarea id="{{context.project.id}}-project-content" tabindex="0" name="body" 
+                                        class="mceEditor project-content" mce_editable="true" 
+                                        style="height: 100%; display: none">
                                         {{{context.project.body}}}
                                     </textarea>
                                 {{/context.can_edit?}}
-                                <div id="{{context.project.type}}-essay-space" 
-                                    class="essay-space" 
+                                <div id="{{context.project.id}}-essay-space" class="essay-space medium" 
                                     style="display:{{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">  
                                     {{{context.project.body}}}
                                 </div>
                             </div>
                         </td>
                         {{! Media Display Window and or a Collections box }}
-                        <td id="{{context.project.type}}-materials" class="panel-container collection medium {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}closed{{/context.editing}}">
+                        <td class="panel-container medium {{#context.editing?}}open collection{{/context.editing?}} {{^context.editing}}closed media{{/context.editing}}">
                             {{#context.can_edit}}
-                            <div id="{{context.project.type}}-collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
+                            <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 <h2>
                                     <div class="button-form inline">
                                         <a class="columnbutton media browse-button" href="/explore">Source Media</a>
                                     </div>
                                     Collections
                                 </h2>
-                                <div id="collection_table"></div>
+                                <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                             </div>
                             {{/context.can_edit}}
-                            <div id="{{context.project.type}}-asset-view-published" 
-                                class="asset-view-published medium" 
+                            <div class="asset-view-published medium" 
                                 style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
                                 
-                                <div id="{{context.project.type}}-videoclipbox" class="videoclipbox" style="display: none;">
+                                <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                                     {{#context.project.create_selection?}}<div class="create-selection" style="float: right"></div>{{/context.project.create_selection?}}
                                     <div class="annotation-title publishedCitation" style="margin-left: 8px; margin-top: 5px;"></div>
                                     <div class="asset-title" style="margin-left: 5px; margin-bottom: 8px; min-height: 20px;"></div>
-                                    <div class="asset-object" style="border: none; background-color: #ededed;"><!-- width changes here too if video size changes -->
+                                    <div class="asset-object" style="border: none; background-color: #ededed;"></div><!-- width changes here too if video size changes -->
                                         <div class="asset-display"></div>
-                                        <div class="clipstrip-display"></div>    
-                                    </div>
+                                        <div class="clipstrip-display"></div>
+                                    </div>    
                                 </div>
                                 
                             </div>
                         </td>
-                        <td id="{{context.project.type}}-materials-panhandle" class="panhandle-stripe collection">
-                            <div id="{{context.project.type}}-materials-panhandle-label" class="label">{{#context.editing?}}Add{{/context.editing?}}{{^context.editing}}View{{/context.editing}} Selection</div>
+                        <td class="panhandle-stripe collection">
+                            <div class="label">{{#context.editing?}}Add{{/context.editing?}}{{^context.editing}}View{{/context.editing}} Selection</div>
                         </td>
                         <td class="pantab-container">
-                            <div id="{{context.project.type}}-materials-pantab" class="pantab collection {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}closed{{/context.editing}}"></div>
+                            <div class="pantab collection {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}closed{{/context.editing}}"></div>
                         </td>
                     </tr>
                 </table>
@@ -145,6 +182,4 @@
     <td class="pantab-container">
         <div class="pantab {{context.project.type}} {{panel_state}}"></div>
     </td>
-    
-    <td class="filler"></td>
     

@@ -133,8 +133,7 @@ a.edit-pencil {
 #discussion-space-materials h2,
 #essay-space-materials h2,
 #collection-materials h2,
-#composition-collection-materials h2,
-#assignment-collection-materials h2 {
+.collection-materials h2 {
     background-color: #a88448;
     text-transform: capitalize;
     font-size: 98%;
@@ -181,11 +180,32 @@ div.mce_editorwindow {
     min-width: 324px;
 }
 
-#project-content {
+.project-content
+{ 
     width: 100%;
     border: 1px solid #ccc;
 }
+ 
+.project_participants_chosen {
+    padding-bottom: 0px;
+    vertical-align: none;
+}
 
+#participants_chosen {
+    padding-bottom:3px;
+    max-width: 650px;
+    margin: 0 0 .1em;
+}
+
+input.participants_toggle {
+    margin: 0px 10px 5px 0px;
+}
+
+#id_participants {*height: 15em;}
+
+div.save-publish-status {
+    text-align: left;
+}
 
 /* ---- Threaded comments ---------- */
 

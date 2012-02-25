@@ -917,16 +917,14 @@ td.panhandle-stripe.discussion {
 }
 
 div#collection-materials h2,
-div#composition-collection-materials h2,
-div#assignment-collection-materials h2 {
+div.collection-materials h2 {
     border-radius: 0;
     -moz-border-radius: 0; 
     -webkit-border-radius: 0;
 }
 
 div#collection-materials h2 a.browse-button,
-div#composition-collection-materials h2 a.browse-button,
-div#assignment-collection-materials h2 a.browse-button {
+div.collection-materials h2 a.browse-button {
     float: right;
     width: 75px;
     background-repeat: repeat-x;
@@ -941,8 +939,8 @@ div#assignment-collection-materials h2 a.browse-button {
     border-image: initial;
 }
 
-/* Composition Toolbar Particulars */
-table.panel-subcontainer tr td input#id_title {
+/* Project Toolbar Particulars */
+table.panel-subcontainer tr td input.project-title {
     width: 100%;
     font-size: 120%;
     padding: 5px;
@@ -2235,29 +2233,6 @@ padding: 1px 4px;
 margin: 4px -4px 0px;
 
 }
-
-#project-content
-{ 
-  height:300px;
-  width:420px;
- }
- 
-.project_participants_chosen {
-    padding-bottom: 0px;
-    vertical-align: none;
-}
-
-#participants_chosen {
-    padding-bottom:3px;
-    max-width: 650px;
-    margin: 0 0 .1em;
-}
-
-input.participants_toggle {
-    margin: 0px 10px 5px 0px;
-}
-
-#id_participants {*height: 15em;}
  
  a.remove { 
  padding: 3px 3px 3px 20px;
@@ -2935,7 +2910,8 @@ ul.record-metadata-list {
  }
 
 div#classwork_table,
-div#collection_table {
+div#collection_table,
+div.collection_table {
     min-height: 300px;
 }
  

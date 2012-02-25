@@ -2,8 +2,21 @@
     window.PanelManager = new (function PanelManagerAbstract(){
         var self = this;
       
-        this.init = function(options) {
+        this.init = function(options, panels) {
             self.options = options;
+            self.panelViews = [];
+            
+            // Create an assetview.
+            // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the 
+            // core architecture means the two views are really sharing the underlying code.
+            // Consider how to resolve this contention. (It's a big change in the core.)
+            
+            // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
+            if (!djangosherd.assetview)
+                djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
+            
+            if (!djangosherd.storage)
+                djangosherd.storage = new DjangoSherd_Storage();
             
             jQuery.ajax({
                 url: options.url,
@@ -27,7 +40,7 @@
                 jQuery.ajax({
                     url:'/site_media/templates/' + self.panels[idx].template + '.mustache?nocache=v3',
                     dataType:'text',
-                    cache: false, // Chrome && Internet Explorer has aggressive caching policies.
+                    cache: false, // Chrome && Internet Explorer have aggressive caching policies.
                     success:function(text) {
                         MediaThread.templates[self.panels[idx].template] = Mustache.template(self.panels[idx].template,text);
                         self.loadTemplates(++idx);
@@ -38,16 +51,27 @@
         this.loadContent = function() {
             for (var i = 0; i < self.panels.length; i++) {
                 var panel = self.panels[i];
-                jQuery("#" + self.options.container + " tr:first").hide().append(Mustache.tmpl(panel.template, panel)).show("slow");
+                 
+                // Add these new columns to the table, before the last column
+                // The last column is reserved for a placeholder td that eats space
+                // and makes the sliding UI work nicely
+                jQuery("#" + self.options.container + " tr:first td:last")
+                    .before(Mustache.tmpl(panel.template, panel))
+                    .show("slow", function() {
+                        // Instantiate the panel's handler
+                        if (self.panels[i].context.type == "project") {
+                            self.panelViews.push(new ProjectPanelHandler(self.panels[i]));
+                        } else if (self.panels[i].context.type == "asset") {
+                        } else if (self.panels[i].context.type == "annotation") {
+                        } else if (self.panels[i].context.type == "discussion") {
+                    }
+                });
             }
             
             // enable open/close controls
             jQuery(".pantab-container").click(function(event) {
                 self.slidePanel(this, event);
             });
-            
-            if (self.options.chain)
-                self.options.chain(self.options, self.panels);
         }
         
         this.slidePanel = function(pantab_container, event) {
@@ -112,3 +136,4 @@
         
     })();
 })();
+

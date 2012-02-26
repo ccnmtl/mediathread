@@ -795,11 +795,17 @@ table.panel-subcontainer tr td div.panel-subcontainer-title.assignment h1 {
     padding: 2px 0  0 20px;
     height: 20px;
     width: 100%;
-    margin: 5px;
+    margin: 8px;
 }
 
-
-
+table.panel-subcontainer tr td div.panel-subcontainer-title.composition h1 {
+    background-image: url("../img/icons/item_project.gif");
+    background-repeat: no-repeat;
+    padding: 2px 0  0 20px;
+    height: 20px;
+    width: 100%;
+    margin: 8px;
+}
 
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
@@ -814,10 +820,6 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar div.project-visibi
     text-align: right;
     font-size: 80%;
     margin: 0px 0 3px 3px;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
-    width: 65px;
 }
 
 td.filler {
@@ -944,7 +946,23 @@ table.panel-subcontainer tr td input.project-title {
     width: 100%;
     font-size: 120%;
     padding: 5px;
-    margin: 5px;
+    margin: 8px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
+    width: 68px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-assignment-response {
+    float: right;
+    margin-left: 5px;    
+    width: 175px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-instructor-feedback {
+    float: right;
+    margin-left: 5px;    
+    width: 175px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-previewbutton {
@@ -960,7 +978,12 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-save
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
     float: right;
-    margin-left: 15px;
+    margin-left: 5px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-responsesbutton {
+    float: right;
+    margin-left: 5px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {

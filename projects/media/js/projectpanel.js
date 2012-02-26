@@ -9,14 +9,10 @@ var ProjectPanelHandler = function(panel) {
     self.project_type = panel.context.project.project_type;
     self.essaySpace = jQuery(self.parentContainer).find(".essay-space")[0];
     
-    var presentation = "medium";
-    if (jQuery(self.essaySpace).hasClass("small"))
-        presentation = "small";
-            
     self.citationView = new CitationView();
     self.citationView.init({ 'default_target': panel.context.project.id + "-videoclipbox",
               'onPrepareCitation': self.onPrepareCitation,
-              'presentation': presentation });
+              'presentation': "medium" });
     self.citationView.decorateLinks(self.essaySpace.id);
     
     // hook up behaviors
@@ -26,8 +22,6 @@ var ProjectPanelHandler = function(panel) {
     
     //self._bind(self.parentContainer, "input.project-revisionbutton", "click", function() { self.showRevisions });
     //self._bind(self.parentContainer, "input.project-responsesbutton", "click", function() { self.showResponses });
-    
-    //SelectFilter.init("id_participants", "participants", 0, "/media/"); }
     
     // Wait for tinymce to sort itself out & add a beforeUnload event
     setTimeout(function() { self.postInitialize(); }, 1000);
@@ -56,6 +50,8 @@ ProjectPanelHandler.prototype.postInitialize = function() {
           'template_label': "collection_table",
           'create_annotation_thumbs': true,
         });
+        
+        jQuery(self.parentContainer).find(".participants_toggle").removeAttr("disabled");
     }
 }
 
@@ -92,6 +88,8 @@ ProjectPanelHandler.prototype.showParticipantList = function(evt) {
 }
 
 ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
+    var self = this;
+    
     // Compare the participants label with the results from the new list
     var opts = jQuery(self.parentContainer).find("select[name='participants'] option");
     var old_list = jQuery(self.parentContainer).find('.participants_chosen')
@@ -107,7 +105,7 @@ ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
     }
     
     if (!matches) {
-        self.updateParticipantsChosen();
+        self.updateParticipantsLabel();
         self.setDirty(true, true);
     }
     
@@ -115,6 +113,8 @@ ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
 }
 
 ProjectPanelHandler.prototype.updateParticipantsLabel = function() {
+    var self = this;
+    
     var opts = jQuery(self.parentContainer).find("select[name='participants'] option");
     var participant_list = ""; 
     for (var i = 0; i < opts.length; i++) {
@@ -142,11 +142,15 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         jQuery(self.parentContainer).find("td.panhandle-stripe div.label").html("Add Selection");
         jQuery(self.parentContainer).find("input.project-previewbutton").attr("value", "Preview");
         jQuery(self.parentContainer).find("div.asset-view-published").hide();
+        jQuery(self.parentContainer).find("h1.project-title").hide();
         
         // Kill the asset view
         self.citationView.unload();
         
         jQuery(self.parentContainer).find("div.collection-materials").show();
+        jQuery(self.parentContainer).find("input.project-title").show();
+        jQuery(self.parentContainer).find("input.participants_toggle").show();
+        
         self.tinyMCE.show();
     } else {
         // Preview View
@@ -155,6 +159,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         
         jQuery(self.parentContainer).find("textarea.mceEditor").hide();
         jQuery(self.parentContainer).find("div.collection-materials").hide();
+        jQuery(self.parentContainer).find("input.project-title").hide();
+        jQuery(self.parentContainer).find("input.participants_toggle").hide();
         
         // Get updated text into the preview space - decorate any new links
         jQuery(self.essaySpace).html(self.tinyMCE.getContent());
@@ -164,6 +170,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         jQuery(self.parentContainer).find("td.panhandle-stripe div.label").html("View Selection");
         jQuery(self.parentContainer).find("input.project-previewbutton").attr("value", "Edit");
         jQuery(self.parentContainer).find("div.asset-view-published").show();
+        jQuery(self.parentContainer).find("h1.project-title").show();
     }
     
     jQuery(self.parentContainer).find("td.panel-container").toggleClass("media collection");
@@ -205,7 +212,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
 ProjectPanelHandler.prototype.saveProject = function(frm) {
     var self = this;
     
-    self.tinyMCE.triggerSave();
+    tinyMCE.triggerSave();
     
     if (/preview/.test(frm.target)) {
         return true;
@@ -241,24 +248,25 @@ ProjectPanelHandler.prototype.saveProject = function(frm) {
             alert('There was an error saving your project.');
         },
         success: function(json,textStatus,xhr){
-            jQuery('#last-version-link').attr('href',json.revision.url);
+            //jQuery('#last-version-link').attr('href',json.revision.url);
 
+            var lastVersionPublic = jQuery(self.parentContainer).find(".last-version-public").get(0);
             if (json.revision.public_url) {
-                jQuery('#last-version-public').attr("href", json.revision.public_url);
-                jQuery('#last-version-public').show();
+                jQuery(lastVersionPublic).attr("href", json.revision.public_url);
+                jQuery(lastVersionPublic).show();
             } else {
-                jQuery('#last-version-public').attr("href", "");
-                jQuery('#last-version-public').hide();
+                jQuery(lastVersionPublic).attr("href", "");
+                jQuery(lastVersionPublic).hide();
             }
             
-            jQuery('#project-visibility').html(json.revision.visibility);
+            jQuery(self.parentContainer).find('.project-visibility-description').html(json.revision.visibility);
             
-            self.updateParticipantsLabel();
+            //self.updateParticipantsLabel();
             //jQuery("#participant_list").hide();
             //jQuery("#save-publish-status").hide();
             
-            if (self.collection_list)
-                self.collection_list.updateProject(); 
+            //if (self.collection_list)
+            //    self.collection_list.updateProject(); 
             
             self.setDirty(false);
             self.revision = json.revision;

@@ -70,15 +70,23 @@ class Project(models.Model):
 
     @models.permalink
     def get_workspace_url(self):
-        return ('project-workspace', (), {
+        #return ('project-workspace', (), {
+        #        'project_id': self.pk,
+        #        })
+        return ('project-panel-view', (), {
                 'project_id': self.pk,
                 })
 
+
     @models.permalink
     def get_absolute_url(self):
-        return ('project-view', (), {
+        #return ('project-view', (), {
+        #        'project_id': self.pk,
+        #        })
+        return ('project-panel-view', (), {
                 'project_id': self.pk,
                 })
+
 
     def subobjects(self, request, type):
         col = self.collaboration()

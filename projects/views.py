@@ -257,19 +257,10 @@ def project_panel_view(request, project_id):
     
     course = request.course
     is_faculty = course.is_faculty(request.user)
-    viewer = request.user
-    if request.GET.has_key('as') and request.user.is_staff:
-        viewer = get_object_or_404(User, username=request.GET['as'])
     
     data = {}
     
     if not request.is_ajax():
-        space_viewer = request.user 
-        if request.GET.has_key('as') and request.user.is_staff:
-            space_viewer = get_object_or_404(User, username=request.GET['as'])
-
-        projectform = ProjectForm(request, instance=project)
-        data['projectform'] = projectform
         data['project'] = project
         return render_to_response('projects/project.html', data, context_instance=RequestContext(request))
     else:
@@ -278,24 +269,38 @@ def project_panel_view(request, project_id):
         # Project Parent (assignment) if exists
         assignment = project.assignment()
         if assignment:
+            can_edit = assignment.can_edit(request)
             assignment_context = project_json(request, assignment)
-            assignment_context['can_edit'] = assignment.can_edit(request)
+            assignment_context['can_edit'] = can_edit
             assignment_context['editing'] = False # Never editing by default
             assignment_context['create_assignment_response'] = False # obviously, we already have a response
             assignment_context['create_instructor_feedback'] = False
             assignment_context['create_selection'] = True
             panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': assignment_context, 'template': 'project' }
+            if can_edit:
+                projectform = ProjectForm(request, instance=assignment)
+                assignment_context['form'] = { 'participants': projectform['participants'].__unicode__(), 'publish': projectform['publish'].__unicode__() }
+
             panels.append(panel)
-        
+                    
         # Requested project, either assignment or composition
         is_assignment = project.is_assignment(request)
+        can_edit = project.can_edit(request)
         project_context = project_json(request, project)
-        project_context['editing'] = project.can_edit(request) # Always editing if it's allowed.
-        project_context['can_edit'] = project.can_edit(request)
+        project_context['editing'] = can_edit # Always editing if it's allowed.
+        project_context['can_edit'] = can_edit
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
             not project.responses_by(request, request.user)
         project_context['create_instructor_feedback'] = is_faculty and not is_assignment and \
             project.assignment() and not project.feedback_discussion()  
+        
+        if can_edit:
+            projectform = ProjectForm(request, instance=project)
+            p = projectform['participants']
+            s = p.__str__()
+            u = p.__unicode__()
+            t = '%s' % p
+            project_context['form'] = { 'participants': projectform['participants'].__unicode__(), 'publish': projectform['publish'].__unicode__() }
         
         panel = { 'panel_state': 'open', 'panel_state_label': 'Edit', 'context': project_context, 'template': 'project' }
         panels.append(panel)
@@ -304,12 +309,17 @@ def project_panel_view(request, project_id):
         if is_assignment:
             responses = project.responses_by(request, request.user)
             if len(responses) > 0:
+                can_edit = response.can_edit(request)
                 response = responses[0]
                 response_context = project_json(request, response)
                 response_context['editing'] = False # Never editing by default
-                response_context['can_edit'] = response.can_edit(request)
+                response_context['can_edit'] = can_edit
                 response_context['create_assignment_response'] = False
                 response_context['create_instructor_feedback'] = False  
+                
+                if can_edit:
+                    projectform = ProjectForm(request, instance=response)
+                    response_context['form'] = { 'participants': projectform['participants'].__unicode__(), 'publish': projectform['publish'].__unicode__() }
                 
                 panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': response_context, 'template': 'project' }
                 panels.append(panel)

@@ -17,14 +17,15 @@
                                     <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
                                         class="project-title" style="display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 {{/context.can_edit?}}
-                                <h1 style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
+                                <h1 class="project-title" 
+                                    style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
                                     {{context.project.title}}
                                 </h1>
                             </div>
                             <div class="panel-subcontainer-toolbar">
                                 {{#context.project.visibility?}}
                                     <div class="project-visibility">
-                                        <span>{{context.project.visibility}}</span>
+                                        <span class="project-visibility-description">{{context.project.visibility}}</span>
                                          <a class="last-version-public" 
                                             style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
                                          </a>
@@ -39,12 +40,7 @@
                                             <div class="save-publish-status" style="display: none" title="Save Changes">
                                                 <div><label>Visibility</label></div>    
                                                 <div>
-                                                    <select name="publish">
-                                                        <option value="PrivateEditorsAreOwners" selected="selected">Private - Only Author(s) Can View</option>
-                                                        <option value="InstructorShared">Submitted to Instructor</option>
-                                                        <option value="CourseProtected">Published to Whole Class</option>
-                                                        <option value="PublicEditorsAreOwners">Published to World</option>
-                                                    </select>
+                                                    {{{context.form.publish}}}
                                                 </div> 
                                             </div>  
                                     
@@ -53,23 +49,23 @@
                                     
                                         <input class="{{context.project.type}} project project-revisionbutton" 
                                             type="submit" name="submit" value="Revisions" disabled="disabled" />
+                                            
+                                        {{#context.responses?}}
+                                            <input class="project project-responsesbutton" type="submit" value="Responses" disabled="disabled"/>
+                                        {{/context.responses?}}
                                     {{/context.can_edit?}}
                                     
                                     {{#context.create_assignment_response?}}
-                                        <input class="{{context.project.type}} project create-assignment-response" 
+                                        <input class="{{context.project.type}} project project-create-assignment-response" 
                                             type="submit" value="Create Assignment Response">
                                     {{/context.create_assignment_response?}}
                                     
                                     {{#context.create_instructor_feedback?}}
-                                        <input class="{{context.project.type}} project create-instructor-feedback" 
-                                            type="submit" value="Instructor Feedback"/>
+                                        <input class="{{context.project.type}} project project-create-instructor-feedback" 
+                                            type="submit" value="Create Instructor Feedback"/>
                                     {{/context.create_instructor_feedback?}}
                                     
-                                    {{#context.project.responses?}}
-                                        {{! todo }}
-                                        <input class="project show-responses" 
-                                            type="submit" value="Responses"/>
-                                    {{/context.project.responses?}}
+
                                 </div>     
                             </div>
                         </td>
@@ -79,7 +75,11 @@
                         <td colspan="5" style="padding-top: 5px">
                             {{#context.can_edit?}}
                                 <input class="project participants_toggle" type="submit" value="+/- Author" 
-                                    style="float: left; display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}" />
+                                    disabled="disabled" style="float: left; display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}" />
+                                    
+                                <div class="participant_list" style="display: none" title="Update Authors">
+                                    <div>{{{context.form.participants}}}</div>
+                                </div>
                             {{/context.can_edit?}}
                             <h5 style="margin-top: 0px">by <span class="participants_chosen">
                                 {{#context.project.participants}}
@@ -88,33 +88,7 @@
                                 </span>
                             </h5>
                             
-                            <div>
-                                <script type="text/javascript">
-                                    addEvent(window, "load", function(e) {SelectFilter.init("id_" + {{context.project.id}} + "_participants", "participants", 0, "/media/"); });
-                                </script>
 
-                                <select multiple="multiple" class="filtered" name="participants" id="id_" + {{context.project.id}} + "_participants">
-                                    <option value="8">Jonah Bossewitch</option>
-                                </select>
-                                        <a href='javascript: (function(){ SelectBox.move_all("id_" + {{context.project.id}} + "_participants_from", "id_" + {{context.project.id}} + "_participants_to"); })()' class="selector-chooseall">Choose all</a>
-                                    </div>
-                                    <ul class="selector-chooser">
-                                        <li>
-                                            <a href='javascript: (function(){ SelectBox.move("id_" + {{context.project.id}} + "_participants_from","id_" + {{context.project.id}} + "_participants_to");})()' class="selector-add">Add</a>
-                                        </li>
-                                        <li>
-                                            <a href='javascript: (function(){ SelectBox.move("id_" + {{context.project.id}} + "_participants_to","id_" + {{context.project.id}} + "_participants_from");})()' class="selector-remove">Remove</a>
-                                        </li>
-                                    </ul>
-                                    <div class="selector-chosen">
-                                        <h2>Chosen participants</h2>
-                                        <p class="selector-filter">Select your choice(s) and click <img src="/media/img/admin/selector-add.gif" alt="Add"></p>
-                                        <select id="id_" + {{context.project.id}} + "_participants_to" multiple="multiple" size="0" name="participants" class="filtered">
-                                        </select>
-                                        <a href='javascript: (function() { SelectBox.move_all("id_" + {{context.project.id}} + "_participants_to", "id_" + {{context.project.id}} + "_participants_from");})()' class="selector-clearall">Clear all</a>
-                                    </div>
-                                </div>
-                            </div>
                         </td>
                     </tr>
                     
@@ -133,7 +107,7 @@
                                         {{{context.project.body}}}
                                     </textarea>
                                 {{/context.can_edit?}}
-                                <div id="{{context.project.id}}-essay-space" class="essay-space medium" 
+                                <div id="{{context.project.id}}-essay-space" class="essay-space" 
                                     style="display:{{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">  
                                     {{{context.project.body}}}
                                 </div>

@@ -14,11 +14,11 @@
             self.switcher_context.enable_project_selection = config.enable_project_selection;
             
             // add some flair to the collection table
-            jQuery("div#" + config.template_label).ajaxStart(function(){
+            jQuery(".collection_table").ajaxStart(function(){
                 jQuery(this).addClass("ajaxLoading");
             });
             
-            jQuery("div#" + config.template_label).ajaxStop(function(){
+            jQuery(".collection_table").ajaxStop(function(){
                 jQuery(this).removeClass("ajaxLoading");
             });
 

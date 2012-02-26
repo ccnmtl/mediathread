@@ -29,7 +29,6 @@ class ProjectForm(forms.ModelForm):
         lst = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
         self.fields['participants'].choices = sorted(lst, key=lambda participant: participant[1])   # sort by name
         
-        
         col = kwargs['instance'].collaboration()
         if col:
             pol = col._policy.policy_name

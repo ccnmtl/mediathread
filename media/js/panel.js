@@ -1,5 +1,17 @@
 (function() {
-    window.PanelManager = new (function PanelManagerAbstract(){
+    
+    window.PanelFactory = new (function PanelFactoryAbstract() {
+        this.create = function(type, json) {
+            // Instantiate the panel's handler
+            var handler = null;
+            if (type == "project")
+                handler = new ProjectPanelHandler(json);
+            
+            return handler;
+        }
+    })();
+    
+    window.PanelManager = new (function PanelManagerAbstract() {
         var self = this;
       
         this.init = function(options, panels) {
@@ -58,14 +70,9 @@
                 jQuery("#" + self.options.container + " tr:first td:last")
                     .before(Mustache.tmpl(panel.template, panel))
                     .show("slow", function() {
-                        // Instantiate the panel's handler
-                        if (self.panels[i].context.type == "project") {
-                            self.panelViews.push(new ProjectPanelHandler(self.panels[i]));
-                        } else if (self.panels[i].context.type == "asset") {
-                        } else if (self.panels[i].context.type == "annotation") {
-                        } else if (self.panels[i].context.type == "discussion") {
-                    }
-                });
+                        var handler = PanelFactory.create(self.panels[i].context.type, self.panels[i]);
+                        self.panelViews.push(handler);
+                    });
             }
             
             // enable open/close controls

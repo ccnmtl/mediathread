@@ -17,7 +17,8 @@ class CollaborationPolicy:
     Base Collaboration Policy
     """
     def permission_to(self,collaboration,permission,request):
-        return getattr(self, permission, lambda c,r:False)(collaboration,request)
+        rv = getattr(self, permission, lambda c,r:False)(collaboration,request)
+        return rv
     
     #def manage(self,collaboration,request):
     #def read(self,collaboration,request):
@@ -62,10 +63,17 @@ class PublicEditorsAreOwners(CollaborationPolicy,BasePublicPolicy):
     def edit(self,collaboration,request):
         user = request.user
         if user.is_authenticated():
-            return (user==collaboration.user or \
-                    (collaboration.group_id and \
-                     collaboration.group.user_set.filter(pk=user.pk)
-                     ))
+            if user == collaboration.user:
+                return True
+            if collaboration.group_id:
+                qs = collaboration.group.user_set.filter(pk=user.pk)
+                return len(qs) > 0;
+        return False
+    
+#            return (user==collaboration.user or \
+#                    (collaboration.group_id and \
+#                     collaboration.group.user_set.filter(pk=user.pk)
+#                     ))
 
     manage = edit
     delete = edit

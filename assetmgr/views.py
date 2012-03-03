@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 

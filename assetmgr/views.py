@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -135,7 +136,7 @@ def add_asset(request):
     But also thumb={url}&stream={url}&...
     Other groups to pay attention to are MediaMatrix (seems subset of delicious: url=)
     """
-
+    
     # XXX TODO: the error case here should be 401/403, not 404
     user = request.user
     if (user.is_staff or CourseAccess.allowed(request)) and request.REQUEST.has_key('as'):
@@ -165,6 +166,8 @@ def add_asset(request):
 
     if asset is False:
         raise AssertionError("no arguments were supplied to make an asset")
+    
+    
 
     if asset is None:
         try:
@@ -186,6 +189,10 @@ def add_asset(request):
         except:
             transaction.rollback()
             raise
+    else:
+        transaction.commit()
+
+    
 
     # if we got here from an attempt to annotate the mock asset
     # we'll save that annotation now that the asset exists
@@ -205,7 +212,7 @@ def add_asset(request):
         source = request.POST.get('asset-source', "")
         if source == 'bookmarklet':
             asset_url += "?level=item"
-
+    
         #for bookmarklet mass-adding
         if request.REQUEST.get('noui','').startswith('postMessage'):
             return render_to_response('assetmgr/interface_iframe.html',

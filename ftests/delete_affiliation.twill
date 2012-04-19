@@ -1,5 +1,0 @@
-go ${base_url}/admin/projects/useraffiliation/
-follow "<User ${user}> in <${course}>"
-follow Delete
-submit
-find "&lt;User ${user}&gt; in &lt;${course}&gt;&quot; was deleted successfully."

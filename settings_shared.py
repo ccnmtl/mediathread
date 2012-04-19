@@ -54,7 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'someutils.AuthRequirementMiddleware',
+    'mediathread_main.middleware.AuthRequirementMiddleware',
     'djangohelpers.middleware.HttpDeleteMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )

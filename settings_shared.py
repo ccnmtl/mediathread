@@ -13,7 +13,7 @@ ADMINS = (
     ('admin', 'mediathread@example.com'),
 )
 
-REVISION = 6 # introducing a script version to provide cache busting
+REVISION = 7 # introducing a script version to provide cache busting
 
 MANAGERS = ADMINS
 

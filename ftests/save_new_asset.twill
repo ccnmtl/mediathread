@@ -1,6 +1,0 @@
-go ${base_url}/save?${params}
-url ${base_url}/save/
-find '<body class="one_column fluid preview">'
-fv not-clip-form save-global-annotation click
-submit
-url ${base_url}/asset/${pk}/

@@ -186,7 +186,7 @@ class Source(models.Model):
 
     #should this support URI fragments?
     #file:/// for local files?
-    url = models.CharField(max_length=1024)
+    url = models.CharField(max_length=4096)
 
     #only one Source per asset should have primary=True
     #This should help indicate what 'kind' of thing

@@ -92,7 +92,9 @@ INSTALLED_APPS = (
     'djangohelpers',
     'reports',
     'mediathread_main',
-    'sentry.client'
+    'sentry.client',
+    'south',
+    'lettuce.django'
 )
 
 THUMBNAIL_SUBDIR = "thumbs"

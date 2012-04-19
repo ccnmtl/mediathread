@@ -4,12 +4,6 @@
 [submodule "django_courseaffils"]
 	path = django_courseaffils
 	url = git://github.com/ccnmtl/django_courseaffils.git
-[submodule "django-modelversions"]
-	path = django-modelversions
-	url = git://github.com/ccnmtl/django-modelversions.git
-[submodule "django-threadedcomments"]
-	path = django-threadedcomments
-	url = git://github.com/ccnmtl/django-threadedcomments.git
 [submodule "media/js/protovis"]
 	path = media/js/protovis
 	url = git://github.com/mbostock/protovis.git

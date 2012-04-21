@@ -10,3 +10,4 @@ local_settings.py
 .pydevproject
 start_server.sh
 .settings
+lettuce.db

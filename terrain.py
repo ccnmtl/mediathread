@@ -17,7 +17,10 @@ except:
 
 @before.harvest
 def setup_database(variables):
-    os.remove('lettuce.db')
+    try:
+        os.remove('lettuce.db')
+    except:
+        pass #database doesn't exist yet. that's ok.
     os.system("echo 'create table test(idx integer primary key);' | sqlite3 lettuce.db")
     os.system('./manage.py syncdb --settings=settings_test --noinput')
     os.system('./manage.py migrate --settings=settings_test --noinput')

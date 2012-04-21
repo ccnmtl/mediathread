@@ -166,6 +166,11 @@ def no_reject(request, reason):
 
 CSRF_FAILURE_VIEW = no_reject
 
+LETTUCE_APPS = (
+    'mediathread_main',
+)
+
+
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there
 try:

@@ -1,25 +1,26 @@
-(function() {
+(function () {
     
-    window.ProjectView = new (function ProjectViewAbstract() {
+    window.ProjectView = (function ProjectViewAbstract() {
         var self = this;
         
-        this.init = function(options, panels) {
+        this.init = function (options, panels) {
             self.options = options;
             self.project_types = [ 'assignment', 'composition' ];
             self.project_modified = false;
             
             // Create an assetview.
-            // @todo - We have potentially more than 1 assetview on this page. The singleton nature in the 
+            // @todo - We have potentially more than 1 assetview on this page. The singleton nature in the
             // core architecture means the two views are really sharing the underlying code.
             // Consider how to resolve this contention. (It's a big change in the core.)
             
             // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
             djangosherd.storage = new DjangoSherd_Storage();
-            djangosherd.assetview = new Sherd.GenericAssetView({ clipform:false, clipstrip: true});
+            djangosherd.assetview = new Sherd.GenericAssetView({ clipform: false, clipstrip: true});
             
             // Stash the project data in storage
-            for (var i = 0; i < panels.length; i++)
+            for (var i = 0; i < panels.length; i++) {
                 djangosherd.storage.json_update(panels[i].context);
+            }
             
             /** // ???? used by whom?
             if (options.open_from_hash) {
@@ -32,13 +33,13 @@
             **/
             
             // WARN ON UNLOAD
-            tinyMCE.onAddEditor.add(function(manager, ed) {
-                ed.onChange.add(function(editor) {
+            tinyMCE.onAddEditor.add(function (manager, ed) {
+                ed.onChange.add(function (editor) {
                     self.setDirty(true);
-                }) 
+                });
             });
             
-            jQuery(window).bind('beforeunload',function(evt) {
+            jQuery(window).bind('beforeunload', function (evt) {
                 if (self.project_modified) {
                     return "Changes to your project have not been saved.";
                 } else {
@@ -47,7 +48,7 @@
                         var value = title.val();
                         if (!value || value.length < 1) {
                             return "Please specify a project title.";
-                        } else if (value == "Untitled") {
+                        } else if (value === "Untitled") {
                             return 'Please update your "Untitled" project title.';
                         }
                     }
@@ -65,15 +66,16 @@
             // Decorate any essay windows -- definitely can be more than 1
             self.citations = {};
             
-            for (var i = 0; i < self.project_types.length; i++) {
-                var project_type = self.project_types[i];
+            for (var j = 0; j < self.project_types.length; j++) {
+                var project_type = self.project_types[j];
                 var projectEssayId = project_type + "-essay-space";
                 var projectEssay = document.getElementById(projectEssayId);
                 
                 if (projectEssay) {
                     var presentation = "small";
-                    if (jQuery("#"+ project_type + "-asset-view-published").hasClass("medium"))
+                    if (jQuery("#" + project_type + "-asset-view-published").hasClass("medium")) {
                         presentation = "medium";
+                    }
                     
                     var cv = new CitationView();
                     cv.init({ 'default_target': project_type + "-videoclipbox",
@@ -86,20 +88,20 @@
                 
             // Could there be more than 1? This could get heavy if there are...
             self.collection_list = CollectionList.init({
-              'template': 'collection',
-              'template_label': 'collection_table',
-              'create_annotation_thumbs': true
+                'template': 'collection',
+                'template_label': 'collection_table',
+                'create_annotation_thumbs': true
             });
-        }
+        };
 
-        this.onPrepareCitation = function(target) {
+        this.onPrepareCitation = function (target) {
             var a = jQuery(target).parents("td.panel-container.media");
             if (a && a.length) {
                 PanelManager.openSubPanel(a[0]);
             }
-        }
+        };
         
-        this.setDirty = function(is_dirty, animate) {
+        this.setDirty = function (is_dirty, animate) {
             if (is_dirty) {
                 self.project_modified = true;
                 if (animate) {
@@ -108,38 +110,39 @@
             } else {
                 self.project_modified = false;
             }
-        }
+        };
         
-        this.htmlEncode = function(value) {
+        this.htmlEncode = function (value) {
             return jQuery('<div/>').text(value).html();
-        }
+        };
 
-        this.htmlDecode = function(value) {
+        this.htmlDecode = function (value) {
             return jQuery('<div/>').html(value).text();
-        }
+        };
         
-        this.updateParticipantsChosen = function() {
+        this.updateParticipantsChosen = function () {
             var opts = jQuery("select[name='participants'] option");
-            var participant_list = ""; 
+            var participant_list = "";
             for (var i = 0; i < opts.length; i++) {
-                if (participant_list.length > 0)
+                if (participant_list.length > 0) {
                     participant_list += ", ";
+                }
                 participant_list +=  opts[i].innerHTML;
             }
             jQuery("#participants_chosen").html(participant_list);
-        }
+        };
         
-        this.showParticipantList = function() {
-            tinyMCE.activeEditor.plugins.editorwindow._closeWindow()
+        this.showParticipantList = function () {
+            tinyMCE.activeEditor.plugins.editorwindow._closeWindow();
             
             var element = jQuery("#participant_list")[0];
             jQuery(element).dialog({
                 buttons: [{ text: "Ok",
-                            click: function() { self._save = true; jQuery(this).dialog("close"); }},
+                            click: function () { self._save = true; jQuery(this).dialog("close"); }},
                           { text: "Cancel",
-                            click: function() { jQuery(this).dialog("close"); }}
+                            click: function () { jQuery(this).dialog("close"); }}
                       ],
-                "beforeClose": function(event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
+                "beforeClose": function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
                 "draggable": false, 
                 "resizable": false, 
                 "modal": true, 
@@ -147,9 +150,9 @@
                 "height": 245});
             
             return false;
-        }
+        };
 
-        this.updateParticipantList = function(evt) {
+        this.updateParticipantList = function (evt) {
             console.log('updateParticipantList');
             var opts = jQuery("select[name='participants'] option");
             var old_list = jQuery('#participants_chosen').text().replace(/^\s*/,'').replace(/\s*$/,'').replace(/,\s+/g, ',').split(',');
@@ -165,9 +168,9 @@
             }
             
             return false;
-        }
+        };
         
-        this.preview = function(evt) {
+        this.preview = function (evt) {
             // Unload any citations
             for (var i = 0; i < self.citations.length; i++)
                 self.citations[i].unload();
@@ -215,18 +218,18 @@
             jQuery("#" + project_type + "-materials-pantab").toggleClass("media collection");
             
             return false;
-        }
+        };
         
-        this.showSaveOptions = function(evt) {
+        this.showSaveOptions = function (evt) {
             var element = jQuery("#save-publish-status")[0];
             
             jQuery(element).dialog({
                 buttons: [{ text: "Save",
-                            click: function() { self._save = true; jQuery(this).dialog("close"); }},
+                            click: function () { self._save = true; jQuery(this).dialog("close"); }},
                           { text: "Cancel",
-                            click: function() { jQuery(this).dialog("close"); }}
+                            click: function () { jQuery(this).dialog("close"); }}
                       ],
-                "beforeClose": function(event, ui) { if (self._save) { self.saveProject(event); } self._save = false; return true; },
+                "beforeClose": function (event, ui) { if (self._save) { self.saveProject(event); } self._save = false; return true; },
                 "draggable": false, 
                 "resizable": false, 
                 "modal": true, 
@@ -234,9 +237,9 @@
                 "height": 145});
             
             return false;
-        }
+        };
         
-        this.saveProject = function(evt) {
+        this.saveProject = function (evt) {
             tinyMCE.triggerSave();
             var frm = document.forms['editproject'];
             if (/preview/.test(frm.target)) {
@@ -269,11 +272,11 @@
                 url: frm.action,
                 data: data,
                 dataType: 'json',
-                error: function(){
+                error: function () {
                     jQuery("#save-button").removeAttr("disabled");
                     alert('There was an error saving your project.');
                 },
-                success: function(json,textStatus,xhr){
+                success: function (json, textStatus, xhr) {
                     //jQuery('#last-version-link').attr('href',json.revision.url);
 
                     if (json.revision.public_url) {
@@ -289,23 +292,23 @@
                     self.updateParticipantsChosen();
                     jQuery("#participant_list").hide();
                     jQuery("#save-publish-status").hide();
-                    
-                    if (self.collection_list)
-                        self.collection_list.updateProject(); 
+                     
+                    if (self.collection_list) {
+                        self.collection_list.updateProject();
+                    }
                     
                     self.setDirty(false);
                     self.revision = json.revision;
                     
                     jQuery("#save-button").removeAttr("disabled");
                     jQuery("#save-button").attr("value", "Saved");
-                    jQuery("#save-button").effect("bounce", { times:3  }, 1000, function() { jQuery("#save-button").attr("value", "Save & Publish")});
+                    jQuery("#save-button").effect("bounce", { times: 3  }, 1000, function () { jQuery("#save-button").attr("value", "Save & Publish"); });
                 }
             });
             
             return true;
         }
     })();
-
 })();
 
 

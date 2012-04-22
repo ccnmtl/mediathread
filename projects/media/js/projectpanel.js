@@ -1,4 +1,4 @@
-var ProjectPanelHandler = function(panel) {
+var ProjectPanelHandler = function (panel) {
     djangosherd.storage.json_update(panel.context);
     
     var self = this;
@@ -16,90 +16,91 @@ var ProjectPanelHandler = function(panel) {
     self.citationView.decorateLinks(self.essaySpace.id);
     
     // hook up behaviors
-    self._bind(self.parentContainer, "input.project-savebutton", "click", function(evt) { return self.showSaveOptions(evt); });
-    self._bind(self.parentContainer, "input.project-previewbutton", "click", function(evt) { return self.preview(evt); } );
-    self._bind(self.parentContainer, "input.participants_toggle", "click", function(evt) { return self.showParticipantList(evt); });
+    self._bind(self.parentContainer, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
+    self._bind(self.parentContainer, "input.project-previewbutton", "click", function (evt) { return self.preview(evt); });
+    self._bind(self.parentContainer, "input.participants_toggle", "click", function (evt) { return self.showParticipantList(evt); });
     
-    //self._bind(self.parentContainer, "input.project-revisionbutton", "click", function() { self.showRevisions });
-    //self._bind(self.parentContainer, "input.project-responsesbutton", "click", function() { self.showResponses });
+    //self._bind(self.parentContainer, "input.project-revisionbutton", "click", function () { self.showRevisions });
+    //self._bind(self.parentContainer, "input.project-responsesbutton", "click", function () { self.showResponses });
     
     // Wait for tinymce to sort itself out & add a beforeUnload event
-    setTimeout(function() { self.postInitialize(); }, 1000);
+    setTimeout(function () { self.postInitialize(); }, 1000);
 };
 
-ProjectPanelHandler.prototype.postInitialize = function() {
+ProjectPanelHandler.prototype.postInitialize = function () {
     var self = this;
     
     var editors = jQuery(self.parentContainer).find("textarea.mceEditor");
     if (editors.length) {
         self.tinyMCE = tinyMCE.get(editors[0].id);
         self.tinyMCE.show();
-        self.tinyMCE.onChange.add(function(editor) { self.setDirty(true); } );
+        self.tinyMCE.onChange.add(function (editor) { self.setDirty(true); });
         
-        // Reset width to 100% via javascript. TinyMCE doesn't resize properly 
+        // Reset width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
         jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
         
-        jQuery(window).bind('beforeunload', function() { self.beforeUnload });
+        jQuery(window).bind('beforeunload', function () { self.beforeUnload(); });
         
         // There should only be one per view.
         // Could get hairy once discussion is added to the mix.
         self.collection_list = CollectionList.init({
-          'parent': self.parentContainer,
-          'template': 'collection',
-          'template_label': "collection_table",
-          'create_annotation_thumbs': true,
+            'parent': self.parentContainer,
+            'template': 'collection',
+            'template_label': "collection_table",
+            'create_annotation_thumbs': true,
         });
         
         jQuery(self.parentContainer).find(".participants_toggle").removeAttr("disabled");
     }
-}
+};
 
-ProjectPanelHandler.prototype.onPrepareCitation = function(target) {
+ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
     var a = jQuery(target).parents("td.panel-container.media");
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);
     }
-}
+};
 
-ProjectPanelHandler.prototype.showParticipantList = function(evt) {
+ProjectPanelHandler.prototype.showParticipantList = function (evt) {
     var self = this;
     var frm = evt.srcElement.form;
     
     // close any outstanding citation windows
-    self.tinyMCE.plugins.editorwindow._closeWindow()
+    self.tinyMCE.plugins.editorwindow._closeWindow();
     
     var element = jQuery(self.parentContainer).find(".participant_list")[0];
     jQuery(element).dialog({
         buttons: [{ text: "Ok",
-                    click: function() { self._save = true; jQuery(this).dialog("close"); }},
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
                   { text: "Cancel",
-                    click: function() { jQuery(this).dialog("close"); }}
+                    click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function(event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
-        "draggable": false, 
-        "resizable": false, 
-        "modal": true, 
-        "width": 425, 
-        "height": 245});
+        "beforeClose": function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
+        "draggable": false,
+        "resizable": false,
+        "modal": true,
+        "width": 425,
+        "height": 245
+    });
     
     jQuery(element).parent().appendTo(frm);
     return false;
-}
+};
 
-ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
+ProjectPanelHandler.prototype.updateParticipantList = function (evt) {
     var self = this;
     
     // Compare the participants label with the results from the new list
     var opts = jQuery(self.parentContainer).find("select[name='participants'] option");
     var old_list = jQuery(self.parentContainer).find('.participants_chosen')
         .text()
-        .replace(/^\s*/,'')
-        .replace(/\s*$/,'')
+        .replace(/^\s*/, '')
+        .replace(/\s*$/, '')
         .replace(/,\s+/g, ',')
         .split(',');
     
-    var matches = old_list.length == opts.length;
+    var matches = old_list.length === opts.length;
     for (var i = 0; i < opts.length && matches; i++) {
         matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
     }
@@ -110,23 +111,24 @@ ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
     }
     
     return false;
-}
+};
 
-ProjectPanelHandler.prototype.updateParticipantsLabel = function() {
+ProjectPanelHandler.prototype.updateParticipantsLabel = function () {
     var self = this;
     
     var opts = jQuery(self.parentContainer).find("select[name='participants'] option");
-    var participant_list = ""; 
+    var participant_list = "";
     for (var i = 0; i < opts.length; i++) {
-        if (participant_list.length > 0)
+        if (participant_list.length > 0) {
             participant_list += ", ";
+        }
         participant_list +=  opts[i].innerHTML;
     }
     jQuery(self.parentContainer).find('.participants_chosen').html(participant_list);
-}
+};
 
 
-ProjectPanelHandler.prototype.preview = function(evt) {
+ProjectPanelHandler.prototype.preview = function (evt) {
     var self = this;
     
     // Unload any citations
@@ -155,7 +157,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
     } else {
         // Preview View
         self.tinyMCE.hide();
-        self.tinyMCE.plugins.editorwindow._closeWindow()
+        self.tinyMCE.plugins.editorwindow._closeWindow();
         
         jQuery(self.parentContainer).find("textarea.mceEditor").hide();
         jQuery(self.parentContainer).find("div.collection-materials").hide();
@@ -177,10 +179,10 @@ ProjectPanelHandler.prototype.preview = function(evt) {
     jQuery(self.parentContainer).find("td.panhandle-stripe").toggleClass("media collection");
     jQuery(self.parentContainer).find("div.pantab").toggleClass("media collection");
     return false;
-}
+};
 
 
-ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
+ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     var self = this;
     
     var frm = evt.srcElement.form;
@@ -188,28 +190,30 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
         
     jQuery(element).dialog({
         buttons: [{ text: "Save",
-                    click: function() { self._save = true; jQuery(this).dialog("close"); }},
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
                   { text: "Cancel",
-                    click: function() { jQuery(this).dialog("close"); }}
+                    click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function(event, ui) { 
-            if (self._save)
-                self.saveProject(frm); 
+        "beforeClose": function (event, ui) {
+            if (self._save) {
+                self.saveProject(frm);
+            }
 
-            self._save = false; 
-            return true; 
-         },
-        "draggable": false, 
-        "resizable": false, 
-        "modal": true, 
-        "width": 250, 
-        "height": 145});
+            self._save = false;
+            return true;
+        },
+        "draggable": false,
+        "resizable": false,
+        "modal": true,
+        "width": 250,
+        "height": 145
+    });
     
     jQuery(element).parent().appendTo(frm);
     return false;
-}
+};
 
-ProjectPanelHandler.prototype.saveProject = function(frm) {
+ProjectPanelHandler.prototype.saveProject = function (frm) {
     var self = this;
     
     tinyMCE.triggerSave();
@@ -224,18 +228,18 @@ ProjectPanelHandler.prototype.saveProject = function(frm) {
         alert("Please specify a project title.");
         title.focus();
         return false;
-    } else if (value == "Untitled") {
+    } else if (value === "Untitled") {
         alert('Please update your "Untitled" project title.');
         title.focus();
         return false;
     }
     
     // select all participants so they will be picked up when the form is serialized
-    jQuery(self.parentContainer).find("select[name='participants'] option").attr("selected","selected");
+    jQuery(self.parentContainer).find("select[name='participants'] option").attr("selected", "selected");
     var data = jQuery(frm).serializeArray();
-    data = data.concat(jQuery(document.forms['editparticipants']).serializeArray());
+    data = data.concat(jQuery(document.forms.editparticipants).serializeArray());
     
-    var saveButton = jQuery(self.parentContainer).find(".project-savebutton").get(0); 
+    var saveButton = jQuery(self.parentContainer).find(".project-savebutton").get(0);
     jQuery(saveButton).attr("disabled", "disabled");
     
     jQuery.ajax({
@@ -243,11 +247,11 @@ ProjectPanelHandler.prototype.saveProject = function(frm) {
         url: frm.action,
         data: data,
         dataType: 'json',
-        error: function(){
+        error: function () {
             jQuery(saveButton).removeAttr("disabled");
             alert('There was an error saving your project.');
         },
-        success: function(json,textStatus,xhr){
+        success: function (json, textStatus, xhr) {
             //jQuery('#last-version-link').attr('href',json.revision.url);
 
             var lastVersionPublic = jQuery(self.parentContainer).find(".last-version-public").get(0);
@@ -266,21 +270,21 @@ ProjectPanelHandler.prototype.saveProject = function(frm) {
             //jQuery("#save-publish-status").hide();
             
             //if (self.collection_list)
-            //    self.collection_list.updateProject(); 
+            //    self.collection_list.updateProject();
             
             self.setDirty(false);
             self.revision = json.revision;
             
             jQuery(saveButton).removeAttr("disabled")
                 .attr("value", "Saved")
-                .effect("bounce", { times:3  }, 1000, function() { jQuery(saveButton).attr("value", "Save & Publish")});
+                .effect("bounce", { times: 3  }, 1000, function () { jQuery(saveButton).attr("value", "Save & Publish"); });
         }
     });
     
     return true;
-}
+};
 
-ProjectPanelHandler.prototype.setDirty = function(is_dirty, animate) {
+ProjectPanelHandler.prototype.setDirty = function (is_dirty, animate) {
     var self = this;
     if (is_dirty) {
         self.project_modified = true;
@@ -290,9 +294,9 @@ ProjectPanelHandler.prototype.setDirty = function(is_dirty, animate) {
     } else {
         self.project_modified = false;
     }
-}
+};
 
-ProjectPanelHandler.prototype.beforeUnload = function() {
+ProjectPanelHandler.prototype.beforeUnload = function () {
     var self = this;
     
     if (self.projectModified) {
@@ -303,14 +307,14 @@ ProjectPanelHandler.prototype.beforeUnload = function() {
             var value = title[0].val();
             if (!value || value.length < 1) {
                 return "Please specify a project title.";
-            } else if (value == "Untitled") {
+            } else if (value === "Untitled") {
                 return 'Please update your "Untitled" project title.';
             }
         }
     }
-}
+};
 
-ProjectPanelHandler.prototype._bind = function(parent, elementSelector, event, handler) {
+ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, handler) {
     var elements = jQuery(parent).find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).bind(event, handler);
@@ -318,7 +322,7 @@ ProjectPanelHandler.prototype._bind = function(parent, elementSelector, event, h
     } else {
         return false;
     }
-}
+};
 
 
 

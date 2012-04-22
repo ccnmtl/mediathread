@@ -10,7 +10,7 @@
         <div class="panel">
             <form name="editproject" method="POST" action="/project/workspace/{{context.project.id}}/">
                 <table class="panel-subcontainer">
-                    <tr>
+                    <tr class="project-toolbar-row">
                         <td colspan="4" class="panel-subcontainer-toolbar-column">
                             <div class="panel-subcontainer-title {{context.project.type}}">
                                 {{#context.can_edit?}}
@@ -71,7 +71,7 @@
                         </td>
                     </tr>
     
-                    <tr>                                      
+                    <tr class="project-participant-row">                                      
                         <td colspan="5" style="padding-top: 5px">
                             {{#context.can_edit?}}
                                 <input class="project participants_toggle" type="submit" value="+/- Author" 
@@ -92,7 +92,7 @@
                         </td>
                     </tr>
                     
-                    <tr>
+                    <tr class="project-content-row">
                         <td class="panel-content fluid {{context.project.type}}">
                             <div>
                                 {{#context.can_edit?}}

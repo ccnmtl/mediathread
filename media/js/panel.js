@@ -1,11 +1,11 @@
 (function () {
 
     window.PanelFactory = new (function PanelFactoryAbstract() {
-        this.create = function (type, json) {
+        this.create = function (el, parent, type, json) {
             // Instantiate the panel's handler
             var handler = null;
             if (type === "project") {
-                handler = new ProjectPanelHandler(json);
+                handler = new ProjectPanelHandler(el, parent, json);
             }
             
             return handler;
@@ -18,6 +18,7 @@
         this.init = function (options, panels) {
             self.options = options;
             self.panelViews = [];
+            self.el = jQuery("#" + options.container);
             
             // Create an assetview.
             // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the
@@ -42,6 +43,15 @@
                     self.loadTemplates(0);
                 }
             });
+            
+            jQuery(window).resize(function () {
+                self.resize();
+            });
+        };
+        
+        this.resize = function () {
+            var visible = getVisibleContentHeight();
+            jQuery(self.el).css('height', visible + "px");
         };
         
         this.loadTemplates = function (idx) {
@@ -72,12 +82,13 @@
                 // Add these new columns to the table, before the last column
                 // The last column is reserved for a placeholder td that eats space
                 // and makes the sliding UI work nicely
-                jQuery("#" + self.options.container + " tr:first td:last")
-                    .before(Mustache.tmpl(panel.template, panel))
-                    .show("slow", function () {
-                        var handler = PanelFactory.create(self.panels[i].context.type, self.panels[i]);
-                        self.panelViews.push(handler);
-                    });
+                var lastCell = jQuery("#" + self.options.container + " tr:first td:last");
+                lastCell.before(Mustache.tmpl(panel.template, panel));
+                
+                var newCell = jQuery(lastCell).prev().prev()[0];
+                var handler = PanelFactory.create(newCell, self.el, self.panels[i].context.type, self.panels[i]);
+                jQuery(newCell).show("slow");
+                self.panelViews.push(handler);
             }
             
             // enable open/close controls
@@ -116,7 +127,7 @@
             if (jQuery(panel).hasClass("open")) {
                 // Is there enough room? Does anything need to be closed?
                 var screenWidth = jQuery(window).width();
-                var tableWidth = jQuery("#" + self.options.container).width();
+                var tableWidth = jQuery(self.el).width();
                 
                 if (tableWidth > screenWidth) {
                     var parent = panel;
@@ -126,7 +137,7 @@
                         parent = parents[0];
                     }
 
-                    var a = jQuery("#" + self.options.container).find("td.panel-container.open");
+                    var a = jQuery(self.el).find("td.panel-container.open");
                     for (var i = a.length - 1; i >= 0 && tableWidth > screenWidth; i--) {
                         var p = a[i];
                         if (panel !== p && parent !== p) {
@@ -137,7 +148,7 @@
                             var panelTab = jQuery(container[0]).children("div.pantab");
                             jQuery(panelTab[0]).toggleClass("open closed");
                             
-                            tableWidth = jQuery("#" + self.options.container).width();
+                            tableWidth = jQuery(self.el).width();
                         }
                     }
                     

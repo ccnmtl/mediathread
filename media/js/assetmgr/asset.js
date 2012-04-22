@@ -1,9 +1,9 @@
-(function() {
+(function () {
 
-    window.AnnotationList = new (function AnnotationListAbstract(){
+    window.AnnotationList = new (function AnnotationListAbstract() {
         var self = this;
-        
-        this.init = function(config) {
+       
+        this.init = function (config) {
             this.layers = {}; //should we really store layers here?
             this.grouping = null;
             this.highlight_layer = null;
@@ -13,32 +13,34 @@
             this.active_asset_annotations = null;
             this.config = config;
             
-            jQuery("#edit-item-form").submit(function() {
+            jQuery("#edit-item-form").submit(function () {
                 return self.saveItem();
             });
             
-            window.onbeforeunload = config.level == "item" ? this.saveItemPrompt : null;
+            window.onbeforeunload = config.level === "item" ? this.saveItemPrompt : null;
 
             jQuery.ajax({
-                url:'/site_media/templates/annotations.mustache?nocache=v2',
-                dataType:'text',
+                url: '/site_media/templates/annotations.mustache?nocache=v2',
+                dataType: 'text',
                 cache: false, // Chrome && Internet Explorer has aggressive caching policies.
-                success:function(text){
-                    MediaThread.templates['annotations'] = Mustache.template('annotations',text);
+                success: function (text) {
+                    MediaThread.templates.annotations = Mustache.template('annotations', text);
                     
                     if (config.asset_id) {
                         // Retrieve the full asset w/annotations from storage
                         djangosherd.storage.get({
-                                id:config.asset_id,
-                                type:'asset',
-                                url:MediaThread.urls['asset-json'](config.asset_id,/*annotations=*/true)
+                                id: config.asset_id,
+                                type: 'asset',
+                                url: MediaThread.urls['asset-json'](config.asset_id, /*annotations=*/true)
                             },
                             false,
-                            function(asset_full) {
+                            function (asset_full) {
                                 var theAsset;
                                 for (var key in asset_full.assets) {
-                                    theAsset = asset_full.assets[key];
-                                    break;
+                                    if (asset_full.assets.hasOwnProperty(key)) {
+                                        theAsset = asset_full.assets[key];
+                                        break;
+                                    }
                                 }
                                 self.active_asset = theAsset;
                                 self.active_asset_annotations = asset_full.annotations;
@@ -64,17 +66,17 @@
                                 // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                                 var frm = document.forms['annotation-list-filter'];
             
-                                frm.elements['showall'].checked = hs_DataRetrieve('annotation-list-filter__showall');
-                                jQuery(frm.elements['groupby']).val(hs_DataRetrieve('annotation-list-filter__group')
-                                                                    || 'author');
+                                frm.elements.showall.checked = hs_DataRetrieve('annotation-list-filter__showall');
+                                jQuery(frm.elements.groupby).val(
+                                        hs_DataRetrieve('annotation-list-filter__group') || 'author');
             
-                                jQuery(frm.elements['showall']).change(self.showHideAnnotations);
-                                jQuery(frm.elements['groupby']).change(function() {
+                                jQuery(frm.elements.showall).change(self.showHideAnnotations);
+                                jQuery(frm.elements.groupby).change(function () {
                                     var val = jQuery(this).val();
                                     hs_DataStore('annotation-list-filter__group', val);
                                     self.groupBy(val);
                                 });
-                                self.groupBy(jQuery(frm.elements['groupby']).val());
+                                self.groupBy(jQuery(frm.elements.groupby).val());
                         });
                     }
                 }
@@ -87,7 +89,7 @@
                 }
             });
             
-            jQuery(window).bind("hashchange", function() {
+            jQuery(window).bind("hashchange", function () {
                 var asset_id = null;
                 var annotation_id = null;
                 var xywh = null;
@@ -97,9 +99,9 @@
                 for (var i=0; i < params.length; i++) {
                     var prev = i-1;
                     if (prev > -1) {
-                        if (params[prev] == 'asset') {
+                        if (params[prev] === 'asset') {
                             asset_id = params[i];
-                        } else if (params[prev] == 'annotations') {
+                        } else if (params[prev] === 'annotations') {
                             annotation_id = params[i];
                         }
                     }
@@ -125,7 +127,7 @@
             return this;
         }
 
-        this.showHideAnnotations = function() {
+        this.showHideAnnotations = function () {
             var show = document.forms['annotation-list-filter'].elements['showall'].checked;
             hs_DataStore('annotation-list-filter__showall', show || '');
             if (show)
@@ -141,7 +143,7 @@
         //  - decorate
         this.groupBy = function(grouping) {
             ///Do nothing if we can't or don't need to.
-            if (this.grouping == grouping || !(self.active_asset && self.active_asset.id)) 
+            if (this.grouping === grouping || !(self.active_asset && self.active_asset.id)) 
                 return;
 
             ///hide previous grouping so we can show the new one.
@@ -155,11 +157,11 @@
                 if (!this.layers[grouping]) {
                     //stub if it doesn't exist.
                     this.layers[grouping] = {
-                        removeAll:function(){},
-                        add:function(){},
-                        remove:function(){},
-                        show:function(){}, 
-                        hide:function(){}
+                        removeAll:function (){},
+                        add:function (){},
+                        remove:function (){},
+                        show:function (){}, 
+                        hide:function (){}
                     }
                 } else {
                     this.layers[grouping].create(grouping,{
@@ -203,7 +205,7 @@
             self.updateAnnotationList();
         }
         
-        this.updateAnnotationList = function() {
+        this.updateAnnotationList = function () {
             djangosherd.storage.get({
                 id:self.active_asset.id,
                 type:'asset',
@@ -241,7 +243,7 @@
                                                'color':color,
                                                'annotations':[]
                                               };
-                                if (title && title == MediaThread.user_full_name) {
+                                if (title && title === MediaThread.user_full_name) {
                                     user_listing = title;
                                 } else {
                                     context.annotation_list.push(title);
@@ -272,7 +274,7 @@
             });
         }
         
-        this.resetHighlightLayer = function() {
+        this.resetHighlightLayer = function () {
             if (this.highlight_layer) {
                 this.highlight_layer.destroy();
             }
@@ -282,7 +284,7 @@
             }
         }
         
-        this.unhighlight = function() {
+        this.unhighlight = function () {
             if (self.highlighted_nodes) {
                 jQuery(self.highlighted_nodes).removeClass('highlight');
             }
@@ -333,15 +335,15 @@
             self._addHistory(/*replace=*/false);
         }
         
-        this.cancelAnnotation = function() {
+        this.cancelAnnotation = function () {
             var annotation_id = self.active_annotation ? self.active_annotation.id : null;
             self._update({ 'annotation_id' : annotation_id }, "annotation-current");
             jQuery("#annotations-organized").show();
         }
         
         ///Annotation Add Form
-        //  - author == current_user
-        this.newAnnotation = function() {
+        //  - author === current_user
+        this.newAnnotation = function () {
             var context = { 'annotation': {   
                 'editing': true,
                 'showCancel': true,
@@ -365,14 +367,14 @@
         
         ///Annotation Edit
         // - new annotation with properties of current annotation minus id
-        this.editAnnotation = function() {
+        this.editAnnotation = function () {
             self._update( { 'annotation_id': self.active_annotation.id, 'editing': true }, "annotation-current");
             return false;
         }
         
         ///Annotation Copy
         // - new annotation with properties of current annotation minus id
-        this.copyAnnotation = function() {
+        this.copyAnnotation = function () {
             // Add template...but with all the properties of this annotation.
             var context = { 'annotation': {   
                     'editing': true,
@@ -406,9 +408,9 @@
         }
         
         ///Item Save
-        this.saveItem = function() {
+        this.saveItem = function () {
             var frm = document.forms['edit-item-form'];
-            if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
+            if (frm.elements['annotation-tags'].value === "" && frm.elements['annotation-body'].value == "") {
                 alert("Please specify tags and notes before saving.");
                 frm.elements['annotation-tags'].focus();
                 return false;
@@ -419,7 +421,7 @@
         }
         
         ///Item Save Prompt
-        this.saveItemPrompt = function() {
+        this.saveItemPrompt = function () {
             var frm = document.forms['edit-item-form'];
             if (frm.elements['annotation-tags'].value == "" && frm.elements['annotation-body'].value == "") {
                 return "Add tags and notes to place this item in your collection.";
@@ -429,7 +431,7 @@
         ///Annotation Save
         //  - update list items
         //  - replace with 'new' annotation
-        this.saveAnnotation = function() {
+        this.saveAnnotation = function () {
             var frm = document.forms['edit-annotation-form'];
 
             // Push clipform or assetview state into "local storage", i.e. the form that is posted to the server.

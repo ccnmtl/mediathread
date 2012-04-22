@@ -46,7 +46,6 @@
             jQuery('#composition-project-content_tbl').css('height', (visible - 100) + "px");
             jQuery('#composition-essay-space').css('height', (visible - 112) + "px");
             
-            
             // scrolling media (collections) window
             jQuery('div.scroll').css('height', (visible - 133) + "px");
         }
@@ -57,14 +56,9 @@
                 'url': MediaThread.urls['project']({{project.id}})
             });
 
-            jQuery(window).resize(function () {  
-                resizeProjectPage();
-            });
-
             jQuery("table#sliding-content-container").ajaxStop(function(){
                 jQuery(this).removeClass("ajaxLoading");
             });
-            
         });
   </script>
 {% endblock %}

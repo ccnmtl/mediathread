@@ -644,6 +644,10 @@ div.button-form form, div.button-form.inline form{
     width: 350px !important;
 }
 
+table#sliding-content-container {
+    height: 685px; /* initial. resize occurs immediately */
+}
+
 table#sliding-content-container, table#sliding-content-container tr {
     margin: 0;
     width: 100%;
@@ -678,10 +682,8 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
 table#sliding-content-container tr td.panhandle-stripe {
     width: 17px;
     padding-top: 7px;
-    height: 100%;
     border-top: 1px solid #999;
     border-bottom: 1px solid #999;
-
 }
 
 table#sliding-content-container tr td.panhandle-stripe div.label {
@@ -748,7 +750,7 @@ div.pantab.closed {
 table.panel-subcontainer {
     margin: 1em;
     padding: 0;
-    height: 100%;
+    height: 97%;
     border: none;
     min-height: 200px;
     vertical-align: top;
@@ -767,6 +769,18 @@ table.panel-subcontainer tr td {
     margin: 0;
     padding: 0;
     border: none;
+}
+
+tr.project-toolbar-row {
+    height: 50px;
+}
+
+tr.project-participant-row {
+    height: 30px;
+}
+
+tr.project-content-row {
+    height: 500px;
 }
 
 table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
@@ -831,14 +845,14 @@ td.panel-container.collection {
 }
 
 td.panel-container.assignment {
-    background-color: #DAE7E0;
+    background-color: #DAE7E0 !important;
     width: 100%;
     min-width: 330px;
     border: 1px solid #999 !important;
 }
 
 td.panel-container.composition {
-    background-color: #f0f5fa;
+    background-color: #f0f5fa !important;
     min-width: 330px;
     width: 100%;
     border: 1px solid #999 !important;

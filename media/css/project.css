@@ -109,6 +109,7 @@ a.edit-pencil {
   position:relative;/*important companion to overflow:auto for IE7*/
   padding: 0 10px 10px 10px;
   background-color:white;
+  border: 1px solid #ccc;
 }
 
 .essay-space h2 input {
@@ -180,8 +181,12 @@ div.mce_editorwindow {
     min-width: 324px;
 }
 
-.project-content
-{ 
+.defaultSkin table.mceLayout {
+    border-top: 1px solid #CCC !important;
+    border-bottom: 1px solid #CCC !important;
+}
+
+.project-content { 
     width: 100%;
     border: 1px solid #ccc;
 }

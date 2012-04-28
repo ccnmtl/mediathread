@@ -47,11 +47,36 @@
                                         <input class="{{context.project.type}} project project-previewbutton" 
                                             type="submit" value="{{#context.editing?}}Preview{{/context.editing?}}{{^context.editing}}Edit{{/context.editing}}" />
                                     
-                                        <input class="{{context.project.type}} project project-revisionbutton" 
-                                            type="submit" name="submit" value="Revisions" disabled="disabled" />
+                                        {{#context.revisions?}}
+                                            <input class="{{context.project.type}} project project-revisionbutton" 
+                                                type="button" value="Revisions" />
+                                            
+                                                <div class="revision-list" style="display: none" title="Revisions">
+                                                    <div>Select a revision, then click "Revert". A version of your current work will be saved automatically.</div>    
+                                                    <select multiple="multiple">
+                                                        {{#context.revisions}}
+                                                            <option value="{{versioned_id}}">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
+                                                        {{/context.revisions}}
+                                                    </select> 
+                                                </div>  
+                                        {{/context.revisions?}}
                                             
                                         {{#context.responses?}}
-                                            <input class="project project-responsesbutton" type="submit" value="Responses" disabled="disabled"/>
+                                            <input class="project project-responsesbutton" type="button" value="Responses"/>
+                                                <div class="response-list" style="display: none" title="Responses">
+                                                    <div>Select a student's response, then click "View".</div>
+                                                    <select multiple="multiple">
+                                                        {{#context.responses}}
+                                                            <option value="{{url}}">
+                                                                {{#attribution_list}}
+                                                                    {{ name }}, 
+                                                                {{/attribution_list}}
+                                                                &mdash;
+                                                                {{ title }} &nbsp;
+                                                            </option>
+                                                        {{/context.responses}}
+                                                    </select> 
+                                                </div>  
                                         {{/context.responses?}}
                                     {{/context.can_edit?}}
                                     

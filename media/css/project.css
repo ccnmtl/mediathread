@@ -385,6 +385,20 @@ li.comment-thread:target > .comment .threaded_comment_header {
 }
 /* ---- End threaded comments ---------- */
 
+/* Revision dialog */
+.revision-list, .response-list {
+    text-align: left;
+}
+
+.revision-list div, .response-list div {
+    padding: 5px;
+}
+
+.revision-list select, .response-list select {
+    height: 75%;
+    width: 99%;
+}
+
 
 /* ---- Participant Selector Widget ------------ */
 

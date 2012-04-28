@@ -36,8 +36,6 @@ from djangohelpers.lib import allow_http
 @rendered_with('projects/edit_project.html')
 def project_workspace(request, user, project):
     space_viewer = request.user
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])
 
     projectform = ProjectForm(request, instance=project)
     return {
@@ -255,10 +253,9 @@ def project_panel_view(request, project_id):
     if not project.can_read(request):
         return HttpResponseForbidden("forbidden")
     
+    data = { 'space_owner' : request.user.username }
     course = request.course
     is_faculty = course.is_faculty(request.user)
-    
-    data = {}
     
     if not request.is_ajax():
         data['project'] = project
@@ -270,7 +267,7 @@ def project_panel_view(request, project_id):
         assignment = project.assignment()
         if assignment:
             can_edit = assignment.can_edit(request)
-            assignment_context = project_json(request, assignment)
+            assignment_context = project_json(request, course, is_faculty, assignment)
             assignment_context['can_edit'] = can_edit
             assignment_context['editing'] = False # Never editing by default
             assignment_context['create_assignment_response'] = False # obviously, we already have a response
@@ -286,7 +283,7 @@ def project_panel_view(request, project_id):
         # Requested project, either assignment or composition
         is_assignment = project.is_assignment(request)
         can_edit = project.can_edit(request)
-        project_context = project_json(request, project)
+        project_context = project_json(request, course, is_faculty, project)
         project_context['editing'] = can_edit # Always editing if it's allowed.
         project_context['can_edit'] = can_edit
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
@@ -294,6 +291,7 @@ def project_panel_view(request, project_id):
         project_context['create_instructor_feedback'] = is_faculty and not is_assignment and \
             project.assignment() and not project.feedback_discussion()  
         
+        panel_state_label = "View"        
         if can_edit:
             projectform = ProjectForm(request, instance=project)
             p = projectform['participants']
@@ -301,17 +299,18 @@ def project_panel_view(request, project_id):
             u = p.__unicode__()
             t = '%s' % p
             project_context['form'] = { 'participants': projectform['participants'].__unicode__(), 'publish': projectform['publish'].__unicode__() }
+            panel_state_label = "Edit"
         
-        panel = { 'panel_state': 'open', 'panel_state_label': 'Edit', 'context': project_context, 'template': 'project' }
+        panel = { 'panel_state': 'open', 'panel_state_label': panel_state_label, 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
         # Assignment response for requester if one exists
         if is_assignment:
             responses = project.responses_by(request, request.user)
             if len(responses) > 0:
-                can_edit = response.can_edit(request)
                 response = responses[0]
-                response_context = project_json(request, response)
+                can_edit = response.can_edit(request)
+                response_context = project_json(request, course, is_faculty, response)
                 response_context['editing'] = False # Never editing by default
                 response_context['can_edit'] = can_edit
                 response_context['create_assignment_response'] = False
@@ -332,11 +331,9 @@ def project_panel_view(request, project_id):
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
     
-def project_json(request, project):
+def project_json(request, course, is_faculty, project):
     #bad language, we should change this to user_of_assets or something
     space_viewer = request.user 
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])
         
     rand = ''.join([choice(letters) for i in range(5)])
     
@@ -364,11 +361,22 @@ def project_json(request, project):
                            ],
             'responses': [ { 'url': r.get_absolute_url(),
                              'title': r.title,
-                             'attribution_list': [ get_public_name(p, request) for p in r.attribution_list()],
+                             'attribution_list': [ { 'name': get_public_name(p, request) } for p in r.attribution_list() ],
                            } for r in project.responses(request)],
             'type':'project',
             }
+    
+    if project.is_participant(request.user):
+        data['revisions'] = [{ 'version_number': v.version_number,
+                               'versioned_id': v.versioned_id,
+                               'author': get_public_name(v.instance().author, request),
+                               'modified': v.modified.strftime("%m/%d/%y %I:%M %p") }
+                              for v in project.versions
+                            ]
+        data['revisions'].reverse()
+        
     return data
+
 
 AUTO_COURSE_SELECT[project_readonly_view] = project_workspace_courselookup
 AUTO_COURSE_SELECT[view_project] = project_workspace_courselookup

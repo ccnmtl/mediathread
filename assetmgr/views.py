@@ -175,8 +175,10 @@ def add_asset(request):
                       course=request.course,
                       author=user)
             asset.save()
-            for source in sources_from_args(request, asset).values():
-                source.save()
+            for source in sources_from_args(request, asset).values(): 
+                if len(source.url) <= 4096:
+                    source.save()
+                    
             if "tag" in metadata:
                 for t in metadata["tag"]:
                     asset.save_tag(user, t)

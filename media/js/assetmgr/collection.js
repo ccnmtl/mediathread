@@ -59,7 +59,7 @@
             var visible = getVisibleContentHeight();
             
             // scrolling media (collections) window
-            jQuery(self.parent).find('div.scroll').css('height', (visible - 150) + "px");
+            jQuery(self.parent).find('div.scroll').css('height', (visible - 165) + "px");
         };
 
         this.selectOwner = function (username) {

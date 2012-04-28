@@ -8,6 +8,6 @@ register = template.Library()
 @register.simple_tag
 def revision():
     if settings.DEBUG:
-        return 1 #str(random.randint(0,320000))
+        return str(random.randint(0,320000)) # 1
     else:
         return LAST_GIT_HEAD

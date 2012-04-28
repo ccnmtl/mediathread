@@ -231,21 +231,10 @@ def triple_homepage(request):
     if not c:
         return HttpResponseRedirect('/accounts/login/')
 
-    user = request.user
-    if request.GET.has_key('username'):
-        user_name = request.GET['username']
-        in_course_or_404(user_name, c)
-        user = get_object_or_404(User, username=user_name)
-    elif user.is_staff and request.GET.has_key('as'):
-        user = get_object_or_404(User, username=request.GET['as'])
-        
-    #bad language, we should change this to user_of_assets or something
-    space_viewer = request.user 
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])   
+    user = request.user        
 
     user_records = {
-       'space_viewer': space_viewer,
+       'space_viewer': user,
        'space_owner' : user,
        "help_homepage_instructor_column": UserSetting.get_setting(user, "help_homepage_instructor_column", True),
        "help_homepage_classwork_column":  UserSetting.get_setting(user, "help_homepage_classwork_column", True)

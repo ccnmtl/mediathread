@@ -1,11 +1,12 @@
-var ProjectPanelHandler = function (el, parent, panel) {
-    djangosherd.storage.json_update(panel.context);
-
+var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     var self = this;
     self.el = el;
     self.panel = panel;
     self.projectModified = false;
     self.parentContainer = parent;
+    self.space_owner = space_owner;
+    
+    djangosherd.storage.json_update(panel.context);
     
     self.project_type = panel.context.project.project_type;
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
@@ -23,8 +24,8 @@ var ProjectPanelHandler = function (el, parent, panel) {
     self._bind(self.el, "input.project-previewbutton", "click", function (evt) { return self.preview(evt); });
     self._bind(self.el, "input.participants_toggle", "click", function (evt) { return self.showParticipantList(evt); });
     
-    //self._bind(self.el, "input.project-revisionbutton", "click", function () { self.showRevisions });
-    //self._bind(self.el, "input.project-responsesbutton", "click", function () { self.showResponses });
+    self._bind(self.el, "input.project-revisionbutton", "click", function (evt) { self.showRevisions(evt); });
+    self._bind(self.el, "input.project-responsesbutton", "click", function (evt) { self.showResponses(evt); });
     
     jQuery(window).resize(function () {
         self.resize();
@@ -33,6 +34,10 @@ var ProjectPanelHandler = function (el, parent, panel) {
     jQuery('body').bind('tinymce_init_instance', function (event, param1, param2) {
         self.postInitialize();
     });
+    
+    
+    
+    self.resize(self.panel.context.editing);
 };
 
 ProjectPanelHandler.prototype.postInitialize = function () {
@@ -55,23 +60,36 @@ ProjectPanelHandler.prototype.postInitialize = function () {
             'template': 'collection',
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
+            'space_owner': self.space_owner
         });
         
         jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
+        
+        self.resize(self.panel.context.editing);
     }
 };
 
-ProjectPanelHandler.prototype.resize = function () {
+ProjectPanelHandler.prototype.resize = function (editing) {
     var self = this;
     var visible = getVisibleContentHeight();
+    visible -= jQuery(self.el).find(".project-toolbar-row").height();
+    visible -= jQuery(self.el).find(".project-participant-row").height();
+    visible -= 35; // padding
+    
     if (self.tinyMCE) {
+        var editorHeight = visible - 15;
         // tinyMCE project editing window. Make sure we only resize ourself.
-        jQuery(self.el).find("table.mceLayout").css('height', (visible - 117) + "px");
-        jQuery(self.el).find("iframe").css('height', (visible - 117) + "px");
-        self.tinyMCE.show();
+        jQuery(self.el).find("table.mceLayout").css('height', (editorHeight) + "px");
+        jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
+        
+        if (editing) {
+            self.tinyMCE.show();
+        }
     }
-    jQuery(self.el).find("div.essay-space").css('height', (visible - 114) + "px");
-    jQuery(self.el).find('tr.project-content-row').css('height', (visible - 200) + "px");
+    
+    jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
+    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
+    jQuery(self.el).find('div.panel').css('height', (visible - 200) + "px");
 };
 
 ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
@@ -96,6 +114,58 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
                     click: function () { jQuery(this).dialog("close"); }}
               ],
         "beforeClose": function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
+        "draggable": false,
+        "resizable": false,
+        "modal": true,
+        "width": 425,
+        "height": 245
+    });
+    
+    jQuery(element).parent().appendTo(frm);
+    return false;
+};
+
+ProjectPanelHandler.prototype.showRevisions = function (evt) {
+    var self = this;
+    var frm = evt.srcElement.form;
+    
+    // close any outstanding citation windows
+    self.tinyMCE.plugins.editorwindow._closeWindow();
+    
+    var element = jQuery(self.el).find(".revision-list")[0];
+    jQuery(element).dialog({
+        buttons: [{ text: "Revert",
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
+                  { text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }}
+              ],
+        "beforeClose": function (event, ui) { if (self._save) { var foo = 1;/* Update content here */ } self._save = false; return true; },
+        "draggable": false,
+        "resizable": false,
+        "modal": true,
+        "width": 425,
+        "height": 245
+    });
+    
+    jQuery(element).parent().appendTo(frm);
+    return false;
+};
+
+ProjectPanelHandler.prototype.showResponses = function (evt) {
+    var self = this;
+    var frm = evt.srcElement.form;
+    
+    // close any outstanding citation windows
+    self.tinyMCE.plugins.editorwindow._closeWindow();
+    
+    var element = jQuery(self.el).find(".response-list")[0];
+    jQuery(element).dialog({
+        buttons: [{ text: "View",
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
+                  { text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }}
+              ],
+        "beforeClose": function (event, ui) { if (self._save) { var foo = 1;/* Update content here */ } self._save = false; return true; },
         "draggable": false,
         "resizable": false,
         "modal": true,
@@ -197,6 +267,9 @@ ProjectPanelHandler.prototype.preview = function (evt) {
     jQuery(self.el).find("td.panel-container").toggleClass("media collection");
     jQuery(self.el).find("td.panhandle-stripe").toggleClass("media collection");
     jQuery(self.el).find("div.pantab").toggleClass("media collection");
+    
+    jQuery("body").trigger("resize");
+    
     return false;
 };
 
@@ -323,7 +396,7 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
     } else {
         var title = jQuery(self.el).find("input[name=title]");
         if (title && title.length > 0) {
-            var value = title[0].val();
+            var value = jQuery(title[0]).val();
             if (!value || value.length < 1) {
                 return "Please specify a project title.";
             } else if (value === "Untitled") {

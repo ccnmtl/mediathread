@@ -671,7 +671,6 @@ table#sliding-content-container tr td.panhandle-left-container {
 table#sliding-content-container tr td.panhandle-left-container div.panhandle-left {
     width: 10px;
     height: 100%;
-    min-height: 600px;
     border-radius: 10px 0px 0px 10px; 
     -moz-border-radius: 10px 0px 0px 10px; 
     -webkit-border-radius: 10px 0px 0px 10px; 

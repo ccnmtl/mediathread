@@ -1,11 +1,11 @@
 (function () {
 
     window.PanelFactory = new (function PanelFactoryAbstract() {
-        this.create = function (el, parent, type, json) {
+        this.create = function (el, parent, type, panels, space_owner) {
             // Instantiate the panel's handler
             var handler = null;
             if (type === "project") {
-                handler = new ProjectPanelHandler(el, parent, json);
+                handler = new ProjectPanelHandler(el, parent, panels, space_owner);
             }
             
             return handler;
@@ -18,7 +18,7 @@
         this.init = function (options, panels) {
             self.options = options;
             self.panelViews = [];
-            self.el = jQuery("#" + options.container);
+            self.el = jQuery("#" + options.container)[0];
             
             // Create an assetview.
             // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the
@@ -40,6 +40,7 @@
                 cache: false, // Chrome && Internet Explorer has aggressive caching policies.
                 success: function (json) {
                     self.panels = json.panels;
+                    self.space_owner = json.space_owner;
                     self.loadTemplates(0);
                 }
             });
@@ -52,6 +53,7 @@
         this.resize = function () {
             var visible = getVisibleContentHeight();
             jQuery(self.el).css('height', visible + "px");
+            
         };
         
         this.loadTemplates = function (idx) {
@@ -86,8 +88,7 @@
                 lastCell.before(Mustache.tmpl(panel.template, panel));
                 
                 var newCell = jQuery(lastCell).prev().prev()[0];
-                var handler = PanelFactory.create(newCell, self.el, self.panels[i].context.type, self.panels[i]);
-                jQuery(newCell).show("slow");
+                var handler = PanelFactory.create(newCell, self.el, self.panels[i].context.type, self.panels[i], self.space_owner);
                 self.panelViews.push(handler);
             }
             

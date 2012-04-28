@@ -28,7 +28,6 @@ var tiny_mce_settings = {
         gecko_spellcheck: true,
         init_instance_callback: function () {
             // broadcast initialized message using the textarea
-            console.log("init instance");
             jQuery('body').trigger('tinymce_init_instance', ['Custom', 'Event']);
         },
         //setupcontent_callback : "plugin_regexrep_setup",

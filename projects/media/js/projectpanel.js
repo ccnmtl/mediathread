@@ -101,7 +101,8 @@ ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
 
 ProjectPanelHandler.prototype.showParticipantList = function (evt) {
     var self = this;
-    var frm = evt.srcElement.form;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var frm = srcElement.form;
     
     // close any outstanding citation windows
     self.tinyMCE.plugins.editorwindow._closeWindow();
@@ -127,7 +128,8 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
 
 ProjectPanelHandler.prototype.showRevisions = function (evt) {
     var self = this;
-    var frm = evt.srcElement.form;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var frm = srcElement.form;
     
     // close any outstanding citation windows
     self.tinyMCE.plugins.editorwindow._closeWindow();
@@ -153,7 +155,8 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
 
 ProjectPanelHandler.prototype.showResponses = function (evt) {
     var self = this;
-    var frm = evt.srcElement.form;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var frm = srcElement.form;
     
     // close any outstanding citation windows
     self.tinyMCE.plugins.editorwindow._closeWindow();
@@ -276,8 +279,8 @@ ProjectPanelHandler.prototype.preview = function (evt) {
 
 ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     var self = this;
-    
-    var frm = evt.srcElement.form;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var frm = srcElement.form;
     var element = jQuery(frm).find("div.save-publish-status")[0];
         
     jQuery(element).dialog({

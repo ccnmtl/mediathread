@@ -375,35 +375,35 @@ def project_json(request, course, is_faculty, project):
         
     rand = ''.join([choice(letters) for i in range(5)])
     
-    data = {'project':{'title':project.title,
-                       'body':project.body,
-                       'participants':[{'name':p.get_full_name(),
-                                        'username':p.username,
-                                        'public_name': get_public_name(p, request),
-                                        'is_viewer': space_viewer.username == p.username,  
-                                        } for p in project.attribution_list()],
-                       'id':project.pk,
-                       'url':project.get_absolute_url(),
-                       'public_url':project.public_url(),
-                       'visibility': project.visibility(),
-                       'username':request.user.username,
-                       'type': 'assignment' if project.is_assignment(request) else 'composition', 
+    data = { 'project': { 'title': project.title,
+                          'body': project.body,
+                          'participants': [{ 'name': p.get_full_name(),
+                                             'username': p.username,
+                                             'public_name': get_public_name(p, request),
+                                             'is_viewer': space_viewer.username == p.username,  
+                                            } for p in project.attribution_list()],
+                          'id': project.pk,
+                          'url': project.get_absolute_url(),
+                          'public_url': project.public_url(),
+                          'visibility': project.visibility(),
+                          'username': request.user.username,
+                          'type': 'assignment' if project.is_assignment(request) else 'composition', 
                        },
-            'assets':dict([('%s_%s' % (rand,ann.asset.pk),
+            'assets': dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)
                             ) for ann in project.citations()
                            if ann.title and ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted'
                            ]),
-            'annotations':[ann.sherd_json(request, rand, ('title','author') )
-                           for ann in project.citations()
+            'annotations': [ ann.sherd_json(request, rand, ('title','author')) 
+                                for ann in project.citations()
                            ],
             'responses': [ { 'url': r.get_absolute_url(),
                              'title': r.title,
                              'attribution_list': [ { 'name': get_public_name(p, request) } for p in r.attribution_list() ],
                            } for r in project.responses(request)],
-            'type':'project',
+            'type': 'project',
             'can_edit': can_edit
-            }
+    }
     
     if project.is_participant(request.user):
         data['revisions'] = [{ 'version_number': v.version_number,

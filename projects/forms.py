@@ -20,14 +20,14 @@ class ProjectForm(forms.ModelForm):
                               )
     class Meta:
         model = Project
-        fields = ('title','body','participants','submit','publish')
+        fields = ('title', 'body', 'participants', 'submit', 'publish')
 
-    def __init__(self,request, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super(ProjectForm,self).__init__(*args,**kwargs)
-        self.fields['participants'].widget = widgets.FilteredSelectMultiple("participants",False) 
         
         lst = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
-        self.fields['participants'].choices = sorted(lst, key=lambda participant: participant[1])   # sort by name
+        self.fields['participants'].choices = sorted(lst, key=lambda participant: participant[1])
+        self.fields['participants'].widget.attrs = { 'id': "id_participants_%s" % self.instance.id }
         
         col = kwargs['instance'].collaboration()
         if col:

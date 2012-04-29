@@ -8,6 +8,12 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     djangosherd.storage.json_update(panel.context);
     
+    if (panel.context.can_edit) {
+        var select = jQuery(self.el).find("select[name='participants']")[0];
+        jQuery(select).addClass("selectfilter");
+        SelectFilter.init("id_participants_" + panel.context.project.id, "participants", 0, "/media/");
+    }
+    
     self.project_type = panel.context.project.project_type;
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
     

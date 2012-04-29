@@ -16,7 +16,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 import datetime
 from django.db.models import get_model, Q
-from discussions.utils import get_discussions
+from discussions.utils import get_discussions, get_course_discussions
 
 from mediathread_main.models import UserSetting
 
@@ -240,21 +240,22 @@ def triple_homepage(request):
        "help_homepage_classwork_column":  UserSetting.get_setting(user, "help_homepage_classwork_column", True)
     }
     prof_feed = get_prof_feed(c, request)
-    discussions = get_discussions(c)
+    discussions = get_course_discussions(c)
 
     full_prof_list = []
     for lis in (prof_feed['projects'], prof_feed['assignments'], discussions,):
         full_prof_list.extend(lis)
     full_prof_list.sort(lambda a, b:cmp(a.title.lower(), b.title.lower()))
     
-    user_records.update(
-        {'faculty_feed':prof_feed,
-         'instructor_full_feed':full_prof_list,
-         'is_faculty':c.is_faculty(user),
-         'display':{'instructor':prof_feed['show'],
-                    'course': (len(prof_feed['tags']) < 5)
-                    },
-         'discussions' : discussions,
+    user_records.update({
+        'faculty_feed': prof_feed,
+        'instructor_full_feed': full_prof_list,
+        'is_faculty': c.is_faculty(user),
+        'display': {
+           'instructor': prof_feed['show'],
+           'course': (len(prof_feed['tags']) < 5)
+         },
+         'discussions': discussions,
          'msg': request.GET.get('msg', ''),
          'tag': request.GET.get('tag', ''),
          'view': request.GET.get('view', '')

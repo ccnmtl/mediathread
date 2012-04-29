@@ -1,5 +1,6 @@
 var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     var self = this;
+    
     self.el = el;
     self.panel = panel;
     self.projectModified = false;
@@ -60,7 +61,9 @@ ProjectPanelHandler.prototype.postInitialize = function () {
         // if this isn't completed AFTER instantiation
         jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
         
-        jQuery(window).bind('beforeunload', function () { self.beforeUnload(); });
+        jQuery(window).bind('beforeunload', function () {
+            return self.beforeUnload();
+        });
         
         // There should only be one per view.
         // Could get hairy once discussion is added to the mix.
@@ -422,12 +425,12 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
 ProjectPanelHandler.prototype.setDirty = function (is_dirty, animate) {
     var self = this;
     if (is_dirty) {
-        self.project_modified = true;
+        self.projectModified = true;
         if (animate) {
             jQuery(self.el).find("input.project-savebutton").effect("bounce", {}, 750);
         }
     } else {
-        self.project_modified = false;
+        self.projectModified = false;
     }
 };
 

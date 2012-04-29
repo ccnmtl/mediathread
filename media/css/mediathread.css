@@ -820,6 +820,14 @@ table.panel-subcontainer tr td div.panel-subcontainer-title.composition h1 {
     margin: 8px;
 }
 
+table.panel-subcontainer tr td div.panel-subcontainer-title.discussion h1 {
+    background-image: url("../img/icons/item_discussion.gif");
+    background-repeat: no-repeat;
+    padding: 2px 0  0 20px;
+    height: 20px;
+    width: 100%;
+    margin: 8px;
+}
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
     margin: 2px 0px 0px 5px;
@@ -1870,8 +1878,6 @@ div.panel-column-stump {
 {
     background-image: url(../img/icons/item_discussion.png);
 }
-
-
 
 .asset_title a.title {
 

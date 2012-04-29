@@ -42,19 +42,7 @@ class ProjectForm(forms.ModelForm):
 
         if not course_details.allow_public_compositions(request.course):
             self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
-                                              if choice[0] not in PUBLISH_OPTIONS_PUBLIC]
-            
-        
-        #not restrictive enough -- people can add children to their own projects
-        # is that a good idea?
-        # necessary to add a discussion to it, but maybe that's a workaround
-        # how about we just have people 'create' a project from the assignment page for now.
-        #self.fields['parent'].choices = [(sc.id,sc.title) for sc in 
-        #                                 Collaboration.objects.filter(context=request.collaboration_context,
-        #                                                              content_type = ContentType.objects.get_for_model(Project))
-        #                                 if sc.permission_to('add_child',request)
-        #                                 ]
-            
+                                              if choice[0] not in PUBLISH_OPTIONS_PUBLIC]   
 
         self.fields['participants'].required = False
         self.fields['body'].required = False

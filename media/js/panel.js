@@ -6,6 +6,8 @@
             var handler = null;
             if (type === "project") {
                 handler = new ProjectPanelHandler(el, parent, panels, space_owner);
+            } else if (type === "discussion") {
+                handler = new DiscussionPanelHandler(el, parent, panels, space_owner);
             }
             
             return handler;
@@ -19,6 +21,11 @@
             self.options = options;
             self.panelViews = [];
             self.el = jQuery("#" + options.container)[0];
+
+            jQuery(self.el).ajaxStop(function () {
+                jQuery(this).removeClass("ajaxLoading");
+            });
+
             
             // Create an assetview.
             // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the
@@ -80,22 +87,32 @@
         this.loadContent = function () {
             for (var i = 0; i < self.panels.length; i++) {
                 var panel = self.panels[i];
+                if (!panel.hasOwnProperty("loaded")) {
                  
-                // Add these new columns to the table, before the last column
-                // The last column is reserved for a placeholder td that eats space
-                // and makes the sliding UI work nicely
-                var lastCell = jQuery("#" + self.options.container + " tr:first td:last");
-                lastCell.before(Mustache.tmpl(panel.template, panel));
+                    // Add these new columns to the table, before the last column
+                    // The last column is reserved for a placeholder td that eats space
+                    // and makes the sliding UI work nicely
+                    var lastCell = jQuery("#" + self.options.container + " tr:first td:last");
+                    lastCell.before(Mustache.tmpl(panel.template, panel));
+                    
+                    var newCell = jQuery(lastCell).prev().prev()[0];
+                    var handler = PanelFactory.create(newCell, self.el, self.panels[i].context.type, self.panels[i], self.space_owner);
+                    self.panelViews.push(handler);
                 
-                var newCell = jQuery(lastCell).prev().prev()[0];
-                var handler = PanelFactory.create(newCell, self.el, self.panels[i].context.type, self.panels[i], self.space_owner);
-                self.panelViews.push(handler);
+                    // enable open/close controls
+                    jQuery(newCell).find(".pantab-container").click(function (event) {
+                        self.slidePanel(this, event);
+                    });
+                    
+                    jQuery(newCell).next(".pantab-container").click(function (event) {
+                        self.slidePanel(this, event);
+                    });
+                    
+                    // @todo -- update history to reflect this new view 
+                    
+                    panel.loaded = true;
+                }
             }
-            
-            // enable open/close controls
-            jQuery(".pantab-container").click(function (event) {
-                self.slidePanel(this, event);
-            });
         };
         
         this.slidePanel = function (pantab_container, event) {
@@ -107,6 +124,7 @@
             jQuery(panelTab[0]).toggleClass("open closed");
             
             self.verifyLayout(panel[0]);
+            jQuery(window).trigger("resize");
         };
         
         this.openSubPanel = function (subpanel) {
@@ -118,6 +136,7 @@
                 jQuery(panelTab[0]).toggleClass("open closed");
                 
                 self.verifyLayout(subpanel);
+                jQuery(window).trigger("resize");
             }
         };
         
@@ -157,6 +176,19 @@
                     // Code should break on panel != parent, then start closing from the right, rather than from the left.
                 }
             }
+        };
+        
+        this.newPanel = function (options) {
+            jQuery.ajax({
+                type: 'POST',
+                url: options.url,
+                dataType: 'json',
+                data: options.params,
+                success: function (json) {
+                    var length = self.panels.push(json);
+                    self.loadTemplates(length - 1);
+                }
+            });
         };
         
     })();

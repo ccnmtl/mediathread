@@ -82,14 +82,13 @@
                                     
                                     {{#context.create_assignment_response?}}
                                         <input class="{{context.project.type}} project project-create-assignment-response" 
-                                            type="submit" value="Create Assignment Response">
+                                            type="button" value="Create Assignment Response">
                                     {{/context.create_assignment_response?}}
                                     
                                     {{#context.create_instructor_feedback?}}
                                         <input class="{{context.project.type}} project project-create-instructor-feedback" 
-                                            type="submit" value="Create Instructor Feedback"/>
+                                            type="button" value="Create Instructor Feedback"/>
                                     {{/context.create_instructor_feedback?}}
-                                    
 
                                 </div>     
                             </div>
@@ -128,7 +127,7 @@
                                     <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
                                     <textarea id="{{context.project.id}}-project-content" tabindex="0" name="body" 
                                         class="mceEditor project-content" mce_editable="true" 
-                                        style="height: 100%; display: none">
+                                        style="display: none">
                                         {{{context.project.body}}}
                                     </textarea>
                                 {{/context.can_edit?}}
@@ -163,7 +162,6 @@
                                         <div class="clipstrip-display"></div>
                                     </div>    
                                 </div>
-                                
                             </div>
                         </td>
                         <td class="panhandle-stripe collection">

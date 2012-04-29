@@ -9,6 +9,8 @@ from django.contrib.comments.managers import CommentManager
 from django.core import urlresolvers
 from django.conf import settings
 
+from courseaffils.models import Course
+
 ThreadedComment = get_model('threadedcomments', 'threadedcomment')
 Collaboration = get_model('structuredcollaboration', 'collaboration')
 ContentType = get_model('contenttypes','contenttype')
@@ -26,12 +28,12 @@ def get_discussions(arbitrary_object):
     return discussions  
 
 def get_course_discussions(course):
-    parent = Collaboration.objects.get(object_pk=course.id)
-    colls = Collaboration.objects.filter(_parent=parent)
-    discussions = []
-    for c in colls:
-        discussions.append(c.content_object)
-    return discussions
+    content_type = ContentType.objects.get_for_model(Course)
+    parent = Collaboration.objects.get(object_pk=course.id, content_type=content_type)
+    
+    content_type = ContentType.objects.get_for_model(ThreadedComment)
+    colls = Collaboration.objects.filter(_parent=parent, content_type=content_type, object_pk__isnull=False)
+    return [c.content_object for c in colls]
         
 def threaded_comment_json(comment):
     data = { 

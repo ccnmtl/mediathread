@@ -120,10 +120,6 @@
                         <td class="panel-content fluid {{context.project.type}}">
                             <div>
                                 {{#context.can_edit?}}
-                                    <script type="text/javascript">
-                                        var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
-                                    </script>
-                                    <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
                                     <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
                                     <textarea id="{{context.project.id}}-project-content" tabindex="0" name="body" 
                                         class="mceEditor project-content" mce_editable="true" 

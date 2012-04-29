@@ -267,7 +267,7 @@
                 }
                 
                 for (var k = 0; k < context.annotation_list.length; k++) {
-                    context.annotation_list[i] = { 'category': cats[context.annotation_list[k]] };
+                    context.annotation_list[k] = { 'category': cats[context.annotation_list[k]] };
                 }
                 
                 Mustache.update('annotation-list', context, {

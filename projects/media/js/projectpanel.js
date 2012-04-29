@@ -27,6 +27,9 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self._bind(self.el, "input.project-revisionbutton", "click", function (evt) { self.showRevisions(evt); });
     self._bind(self.el, "input.project-responsesbutton", "click", function (evt) { self.showResponses(evt); });
     
+    self._bind(self.el, "input.project-create-assignment-response", "click", function (evt) { self.createAssignmentResponse(evt); });
+    self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
+    
     jQuery(window).resize(function () {
         self.resize();
     });
@@ -35,13 +38,12 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         self.postInitialize();
     });
     
-    
-    
-    self.resize(self.panel.context.editing);
+    self.resize();
 };
 
 ProjectPanelHandler.prototype.postInitialize = function () {
     var self = this;
+    
     var editors = jQuery(self.el).find("textarea.mceEditor");
     if (!self.tinyMCE && editors.length > 0) {
         self.tinyMCE = tinyMCE.get(editors[0].id);
@@ -63,13 +65,15 @@ ProjectPanelHandler.prototype.postInitialize = function () {
             'space_owner': self.space_owner
         });
         
-        jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
+        self.resize();
+        self.tinyMCE.show();
+        self.tinyMCE.focus();
         
-        self.resize(self.panel.context.editing);
+        jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
     }
 };
 
-ProjectPanelHandler.prototype.resize = function (editing) {
+ProjectPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
     visible -= jQuery(self.el).find(".project-toolbar-row").height();
@@ -81,10 +85,6 @@ ProjectPanelHandler.prototype.resize = function (editing) {
         // tinyMCE project editing window. Make sure we only resize ourself.
         jQuery(self.el).find("table.mceLayout").css('height', (editorHeight) + "px");
         jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
-        
-        if (editing) {
-            self.tinyMCE.show();
-        }
     }
     
     jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
@@ -97,6 +97,37 @@ ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);
     }
+};
+
+ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
+    var self = this;
+    
+    PanelManager.newPanel({
+        'url': MediaThread.urls['project-panel-create'](),
+        'params': { parent: self.panel.context.project.id }
+    });
+    
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    jQuery(srcElement).remove();
+};
+
+ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
+    var self = this;
+
+    PanelManager.newPanel({
+        'url': MediaThread.urls['discussion-panel-create'](),
+        'params': {
+            'publish': 'PrivateStudentAndFaculty',
+            'inherit': 'true',
+            'app_label': 'projects',
+            'model': 'project',
+            'obj_pk': self.panel.context.project.id,
+            'comment_html': self.panel.context.project.type + ": " + jQuery(self.el).find("input.project-title").val()
+        }
+    });
+    
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    jQuery(srcElement).remove();
 };
 
 ProjectPanelHandler.prototype.showParticipantList = function (evt) {
@@ -271,7 +302,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
     jQuery(self.el).find("td.panhandle-stripe").toggleClass("media collection");
     jQuery(self.el).find("div.pantab").toggleClass("media collection");
     
-    jQuery("body").trigger("resize");
+    jQuery(window).trigger("resize");
     
     return false;
 };
@@ -279,6 +310,11 @@ ProjectPanelHandler.prototype.preview = function (evt) {
 
 ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     var self = this;
+    
+    if (!self._validTitle()) {
+        return false;
+    }
+    
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var frm = srcElement.form;
     var element = jQuery(frm).find("div.save-publish-status")[0];
@@ -317,15 +353,7 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
         return true;
     }
     
-    var title = jQuery(self.el).find("input.project-title");
-    var value = title.val();
-    if (!value || value.length < 1) {
-        alert("Please specify a project title.");
-        title.focus();
-        return false;
-    } else if (value === "Untitled") {
-        alert('Please update your "Untitled" project title.');
-        title.focus();
+    if (!self._validTitle()) {
         return false;
     }
     
@@ -359,13 +387,6 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             }
             
             jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);
-            
-            //self.updateParticipantsLabel();
-            //jQuery("#participant_list").hide();
-            //jQuery("#save-publish-status").hide();
-            
-            //if (self.collection_list)
-            //    self.collection_list.updateProject();
             
             self.setDirty(false);
             self.revision = json.revision;
@@ -416,6 +437,24 @@ ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, 
         return true;
     } else {
         return false;
+    }
+};
+
+ProjectPanelHandler.prototype._validTitle = function () {
+    var self = this;
+    
+    var title = jQuery(self.el).find("input.project-title");
+    var value = title.val();
+    if (!value || value.length < 1) {
+        alert("Please specify a project title.");
+        title.focus();
+        return false;
+    } else if (value === "Untitled") {
+        alert('Please update your "Untitled" project title.');
+        title.focus();
+        return false;
+    } else {
+        return true;
     }
 };
 

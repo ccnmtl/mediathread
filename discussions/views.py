@@ -8,7 +8,7 @@ from datetime import datetime
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
 
-from django.http import HttpResponseForbidden, HttpResponseServerError
+from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -19,7 +19,10 @@ from django.contrib.comments.models import COMMENT_MAX_LENGTH
 
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
-from django.http import HttpResponseRedirect
+
+from discussions.utils import threaded_comment_json
+
+import simplejson
 
 def show(request, discussion_id):
     """Show a threadedcomments discussion of an arbitrary object.
@@ -122,11 +125,17 @@ def new(request):
 
     disc_sc.content_object = new_threaded_comment
     disc_sc.save()
-
-    return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     
-
-
+    if not request.is_ajax():
+        return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
+    else:
+        data = { 'panel_state': 'open', 
+                 'panel_state_label': "Feedback",
+                 'template': 'discussion',
+                 'context': threaded_comment_json(new_threaded_comment)
+               }
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')   
+    
 @allow_http("POST")    
 @rendered_with('comments/posted.html')
 def comment_change(request, comment_id, next=None):

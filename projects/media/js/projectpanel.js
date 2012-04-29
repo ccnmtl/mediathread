@@ -17,15 +17,15 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.project_type = panel.context.project.project_type;
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
     
-    self.citationView = new CitationView();
-    self.citationView.init({
-        'default_target': panel.context.project.id + "-videoclipbox",
-        'onPrepareCitation': self.onPrepareCitation,
-        'presentation': "medium"
-    });
-    self.citationView.decorateLinks(self.essaySpace.id);
-    
     // hook up behaviors
+    jQuery(window).bind('tinymce_init_instance', function (event, param1, param2) {
+        self.postInitialize();
+    });
+    
+    jQuery(window).resize(function () {
+        self.resize();
+    });
+    
     self._bind(self.el, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
     self._bind(self.el, "input.project-previewbutton", "click", function (evt) { return self.preview(evt); });
     self._bind(self.el, "input.participants_toggle", "click", function (evt) { return self.showParticipantList(evt); });
@@ -36,18 +36,19 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self._bind(self.el, "input.project-create-assignment-response", "click", function (evt) { self.createAssignmentResponse(evt); });
     self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
     
-    jQuery(window).resize(function () {
-        self.resize();
+    self.citationView = new CitationView();
+    self.citationView.init({
+        'default_target': panel.context.project.id + "-videoclipbox",
+        'onPrepareCitation': self.onPrepareCitation,
+        'presentation': "medium"
     });
-    
-    jQuery('body').bind('tinymce_init_instance', function (event, param1, param2) {
-        self.postInitialize();
-    });
-    
+    self.citationView.decorateLinks(self.essaySpace.id);
+
     self.resize();
 };
 
 ProjectPanelHandler.prototype.postInitialize = function () {
+    console.log('postInitialize');
     var self = this;
     
     var editors = jQuery(self.el).find("textarea.mceEditor");
@@ -72,8 +73,11 @@ ProjectPanelHandler.prototype.postInitialize = function () {
         });
         
         self.resize();
-        self.tinyMCE.show();
-        self.tinyMCE.focus();
+        
+        if (self.panel.context.editing) {
+            self.tinyMCE.show();
+            self.tinyMCE.focus();
+        }
         
         jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
     }
@@ -142,7 +146,9 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
     var frm = srcElement.form;
     
     // close any outstanding citation windows
-    self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinyMCE) {
+        self.tinyMCE.plugins.editorwindow._closeWindow();
+    }
     
     var element = jQuery(self.el).find(".participant_list")[0];
     jQuery(element).dialog({
@@ -169,7 +175,9 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
     var frm = srcElement.form;
     
     // close any outstanding citation windows
-    self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinyMCE) {
+        self.tinyMCE.plugins.editorwindow._closeWindow();
+    }
     
     var element = jQuery(self.el).find(".revision-list")[0];
     jQuery(element).dialog({
@@ -196,7 +204,9 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
     var frm = srcElement.form;
     
     // close any outstanding citation windows
-    self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinyMCE) {
+        self.tinyMCE.plugins.editorwindow._closeWindow();
+    }
     
     var element = jQuery(self.el).find(".response-list")[0];
     jQuery(element).dialog({
@@ -263,7 +273,10 @@ ProjectPanelHandler.prototype.preview = function (evt) {
     // Unload any citations
     // Close any tinymce windows
     self.citationView.unload();
-    self.tinyMCE.plugins.editorwindow._closeWindow();
+    
+    if (self.tinyMCE) {
+        self.tinyMCE.plugins.editorwindow._closeWindow();
+    }
     
     // What's the project type we're previewing?
     if (jQuery(self.essaySpace).is(":visible")) {

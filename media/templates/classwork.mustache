@@ -108,7 +108,7 @@
                 <div class="column-container projects-column-container" style="padding-bottom: 8px;">
                     <h2>
                         <div class="button-form inline">
-                            <form class="block project-createnew inline" method="POST" action="/project/{{space_viewer.username}}/project/">
+                            <form class="block project-createnew inline" method="POST" action="/project/create/">
                                 <input type="hidden" name="title" />
                                 <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
                             </form>
@@ -158,7 +158,8 @@
                                             <h3>
                                                 {{#editable?}}
                                                     <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
-                                                        href="/project/workspace/{{id}}/?delete"><img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete"  /></a>
+                                                        href="/project/delete/{{id}}"><img src="/site_media/img/Trashcan.gif" 
+                                                        class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
                                     
                                                 <a href="{{url}}" class="asset_title type-project" title='View "{{{title?default(-Untitled-)}}}"'>

@@ -44,14 +44,14 @@
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview
                 return '/asset/' + asset_id + '/annotations/' + annotation_id + '/';
             },
-            'project-workspace': function (project_id) {
-                return '/project/workspace/' + project_id + '/json';
+            'project-view': function (project_id) {
+                return '/project/view/' + project_id + '/';
             },
-            'project-panel-view': function (project_id) {
-                return '/project/panel/' + project_id + '/';
+            'project-readonly': function (project_id, version) {
+                return '/project/view/' + project_id + '/version/' + version + '/';
             },
-            'project-panel-create': function () {
-                return '/project/panel/create/';
+            'project-create': function () {
+                return '/project/create/';
             },
             'discussion-panel-create': function () {
                 return '/discussion/new/';

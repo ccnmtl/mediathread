@@ -67,26 +67,15 @@ class Project(models.Model):
 
     modified = models.DateTimeField('date modified', editable=False, auto_now=True)
 
-
-    @models.permalink
-    def get_workspace_url(self):
-        #return ('project-workspace', (), {
-        #        'project_id': self.pk,
-        #        })
-        return ('project-panel-view', (), {
-                'project_id': self.pk,
-                })
-
-
     @models.permalink
     def get_absolute_url(self):
-        #return ('project-view', (), {
-        #        'project_id': self.pk,
-        #        })
-        return ('project-panel-view', (), {
-                'project_id': self.pk,
-                })
-
+        return ('project-workspace', (), { 'project_id': self.pk })
+    
+    def public_url(self,col=None):
+        if col is None:
+            col = self.collaboration()
+        if col and col._policy.policy_name == 'PublicEditorsAreOwners':
+            return col.get_absolute_url()
 
     def subobjects(self, request, type):
         col = self.collaboration()
@@ -154,12 +143,6 @@ class Project(models.Model):
         self.collaboration(sync_group=True)
 
 
-    def public_url(self,col=None):
-        if col is None:
-            col = self.collaboration()
-        if col and col._policy.policy_name=='PublicEditorsAreOwners':
-            return col.get_absolute_url()
-      
     def visibility(self):  
         """
         The project's status, one of "draft submitted complete".split()
@@ -307,9 +290,5 @@ class Project(models.Model):
                 author_contributions[v.author][1] -= change
             last_content = v.body
         return author_contributions
-
-    @property
-    def dir(self):
-        return dir(self)
                
 ProjectVersion = version_model(Project)

@@ -8,7 +8,7 @@
 
     <td id="{{context.project.id}}-panel-container" class="panel-container {{panel_state}} {{context.project.type}}">
         <div class="panel">
-            <form name="editproject" method="POST" action="/project/workspace/{{context.project.id}}/">
+            <form name="editproject" method="POST" action="/project/save/{{context.project.id}}/">
                 <table class="panel-subcontainer">
                     <tr class="project-toolbar-row">
                         <td colspan="4" class="panel-subcontainer-toolbar-column">
@@ -26,9 +26,11 @@
                                 {{#context.project.visibility?}}
                                     <div class="project-visibility">
                                         <span class="project-visibility-description">{{context.project.visibility}}</span>
-                                         <a class="last-version-public" 
+                                        <a class="last-version-public" 
                                             style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
-                                         </a>
+                                        </a>
+                                        | 
+                                        <span class="project-current-version">Version {{context.project.current_version}}</span>
                                     </div>
                                 {{/context.project.visibility?}}
                                 
@@ -52,10 +54,10 @@
                                                 type="button" value="Revisions" />
                                             
                                                 <div class="revision-list" style="display: none" title="Revisions">
-                                                    <div>Select a revision, then click "Revert". A version of your current work will be saved automatically.</div>    
-                                                    <select multiple="multiple">
+                                                    <div>Select a revision, then click "View".</div>    
+                                                    <select name="revisions" multiple="multiple">
                                                         {{#context.revisions}}
-                                                            <option value="{{versioned_id}}">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
+                                                            <option value="/project/view/{{versioned_id}}/version/{{version_number}}/">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
                                                         {{/context.revisions}}
                                                     </select> 
                                                 </div>  
@@ -65,7 +67,7 @@
                                             <input class="project project-responsesbutton" type="button" value="Responses"/>
                                                 <div class="response-list" style="display: none" title="Responses">
                                                     <div>Select a student's response, then click "View".</div>
-                                                    <select multiple="multiple">
+                                                    <select name="responses" multiple="multiple">
                                                         {{#context.responses}}
                                                             <option value="{{url}}">
                                                                 {{#attribution_list}}

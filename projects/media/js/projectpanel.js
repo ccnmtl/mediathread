@@ -37,6 +37,8 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self._bind(self.el, "input.project-create-assignment-response", "click", function (evt) { self.createAssignmentResponse(evt); });
     self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
     
+    self._bind(self.el, "input.project-title", 'change', function (evt) { self.projectModified = true; });
+    
     self.citationView = new CitationView();
     self.citationView.init({
         'default_target': panel.context.project.id + "-videoclipbox",
@@ -49,7 +51,6 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
 };
 
 ProjectPanelHandler.prototype.postInitialize = function () {
-    console.log('postInitialize');
     var self = this;
     
     var editors = jQuery(self.el).find("textarea.mceEditor");
@@ -116,7 +117,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     var self = this;
     
     PanelManager.newPanel({
-        'url': MediaThread.urls['project-panel-create'](),
+        'url': MediaThread.urls['project-create'](),
         'params': { parent: self.panel.context.project.id }
     });
     
@@ -184,12 +185,20 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
     
     var element = jQuery(self.el).find(".revision-list")[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Revert",
+        buttons: [{ text: "View",
                     click: function () { self._save = true; jQuery(this).dialog("close"); }},
                   { text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function (event, ui) { if (self._save) { var foo = 1;/* Update content here */ } self._save = false; return true; },
+        "beforeClose": function (event, ui) {
+            if (self._save) {
+                var opts = jQuery(self.el).find("select[name='revisions'] option:selected");
+                var val = jQuery(opts[0]).val();
+                window.open(val, 'mediathread_project' + self.panel.context.project.id);
+            }
+            self._save = false;
+            return true;
+        },
         "draggable": false,
         "resizable": false,
         "modal": true,
@@ -218,7 +227,15 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
                   { text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function (event, ui) { if (self._save) { var foo = 1;/* Update content here */ } self._save = false; return true; },
+        "beforeClose": function (event, ui) {
+            if (self._save) {
+                var opts = jQuery(self.el).find("select[name='responses'] option:selected");
+                var val = jQuery(opts[0]).val();
+                window.location = val;
+            }
+            self._save = false;
+            return true;
+        },
         "draggable": false,
         "resizable": false,
         "modal": true,
@@ -397,8 +414,8 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             alert('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {
-            //jQuery('#last-version-link').attr('href',json.revision.url);
-
+            jQuery(self.el).find(".project-current-version").html("Version " + json.revision.id);
+            
             var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
             if (json.revision.public_url) {
                 jQuery(lastVersionPublic).attr("href", json.revision.public_url);

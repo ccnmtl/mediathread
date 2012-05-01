@@ -291,7 +291,7 @@ def get_records(user, course, request):
     today = datetime.date.today()
 
     editable = (user == request.user)
-    
+     
     #bad language, we should change this to user_of_assets or something
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:

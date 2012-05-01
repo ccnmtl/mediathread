@@ -39,6 +39,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     self._bind(self.el, "input.project-title", 'change', function (evt) { self.projectModified = true; });
     
+    // Setup the media display window.
     self.citationView = new CitationView();
     self.citationView.init({
         'default_target': panel.context.project.id + "-videoclipbox",

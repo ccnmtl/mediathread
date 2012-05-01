@@ -47,7 +47,7 @@ def project_create(request):
     if not request.is_ajax():
         return HttpResponseRedirect(project.get_absolute_url())
     else: 
-        project_context = project_json(request, request.course, is_faculty, project, project.can_edit(request))    
+        project_context = project_json(request, project, project.can_edit(request))    
         project_context['editing'] = True
         
         data = { 'panel_state': 'open', 
@@ -138,19 +138,15 @@ def project_workspace(request, project_id):
         # Project Parent (assignment) if exists
         assignment = project.assignment()
         if assignment:
-            assignment_context = project_json(request, course, is_faculty, assignment, assignment.can_edit(request))
-            assignment_context['editing'] = False # Never editing by default
-            assignment_context['create_assignment_response'] = False # obviously, we already have a response
-            assignment_context['create_instructor_feedback'] = False
+            assignment_context = project_json(request, assignment, assignment.can_edit(request))
             assignment_context['create_selection'] = True
             panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': assignment_context, 'template': 'project' }
-
             panels.append(panel)
                     
         # Requested project, either assignment or composition
         is_assignment = project.is_assignment(request)
         can_edit = project.can_edit(request)
-        project_context = project_json(request, course, is_faculty, project, can_edit)
+        project_context = project_json(request, project, can_edit)
         project_context['editing'] = can_edit # Always editing if it's allowed.
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
             not project.responses_by(request, request.user)
@@ -166,10 +162,7 @@ def project_workspace(request, project_id):
             responses = project.responses_by(request, request.user)
             if len(responses) > 0:
                 response = responses[0]
-                response_context = project_json(request, course, is_faculty, response, response.can_edit(request))
-                response_context['editing'] = False # Never editing by default
-                response_context['create_assignment_response'] = False
-                response_context['create_instructor_feedback'] = False  
+                response_context = project_json(request, response, response.can_edit(request))
                 
                 panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': response_context, 'template': 'project' }
                 panels.append(panel)
@@ -225,9 +218,7 @@ def project_view_readonly(request, project_id, version_number=None):
             
         # Requested project, either assignment or composition
         is_assignment = project.is_assignment(request)
-        project_context = project_json(request, course, is_faculty, project, False)
-        project_context['project']['current_version'] = version_number
-        project_context['editing'] = False
+        project_context = project_json(request, project, False, version_number)
         panel = { 'panel_state': 'open', 'panel_state_label': "Version View", 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
@@ -235,11 +226,7 @@ def project_view_readonly(request, project_id, version_number=None):
         
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')  
     
-def project_json(request, course, is_faculty, project, can_edit):
-    
-    #bad language, we should change this to user_of_assets or something
-    space_viewer = request.user 
-        
+def project_json(request, project, can_edit, version_number=None):
     rand = ''.join([choice(letters) for i in range(5)])
     
     versions = project.versions.order_by('-change_time')
@@ -249,7 +236,7 @@ def project_json(request, course, is_faculty, project, can_edit):
                           'participants': [{ 'name': p.get_full_name(),
                                              'username': p.username,
                                              'public_name': get_public_name(p, request),
-                                             'is_viewer': space_viewer.username == p.username,  
+                                             'is_viewer': request.user.username == p.username,  
                                             } for p in project.attribution_list()],
                           'id': project.pk,
                           'url': project.get_absolute_url(),
@@ -257,7 +244,7 @@ def project_json(request, course, is_faculty, project, can_edit):
                           'visibility': project.visibility(),
                           'username': request.user.username,
                           'type': 'assignment' if project.is_assignment(request) else 'composition',
-                          'current_version': versions[0].version_number
+                          'current_version': version_number if version_number else versions[0].version_number 
                        },
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)

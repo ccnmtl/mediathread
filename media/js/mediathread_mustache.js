@@ -55,6 +55,12 @@
             },
             'discussion-panel-create': function () {
                 return '/discussion/new/';
+            },
+            'edit-comment': function (comment_id) {
+                return '/discussion/comment/' + comment_id;
+            },
+            'create-comment': function () {
+                return '/comments/post/';
             }
         };
 

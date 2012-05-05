@@ -19,8 +19,8 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
     
     // hook up behaviors
-    jQuery(window).bind('tinymce_init_instance', function (event, param1, param2) {
-        self.postInitialize(param1);
+    jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
+        self.postInitialize(instance);
     });
     
     jQuery(window).resize(function () {
@@ -51,43 +51,38 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.resize();
 };
 
-ProjectPanelHandler.prototype.postInitialize = function (tinymce_instance_id) {
+ProjectPanelHandler.prototype.postInitialize = function (instance) {
     var self = this;
     
-    if (tinymce_instance_id === self.panel.context.project.id + "-project-content") {
+    if (instance && instance.id === self.panel.context.project.id + "-project-content") {
     
-        var editors = jQuery(self.el).find("textarea.mceEditor");
-        if (!self.tinyMCE && editors.length > 0) {
-            self.tinyMCE = tinyMCE.get(editors[0].id);
-            self.tinyMCE.onChange.add(function (editor) { self.setDirty(true); });
-            
-            // Reset width to 100% via javascript. TinyMCE doesn't resize properly
-            // if this isn't completed AFTER instantiation
-            jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
-            
-            jQuery(window).bind('beforeunload', function () {
-                return self.beforeUnload();
-            });
-            
-            // There should only be one per view.
-            // Could get hairy once discussion is added to the mix.
-            self.collection_list = new CollectionList({
-                'parent': self.el,
-                'template': 'collection',
-                'template_label': "collection_table",
-                'create_annotation_thumbs': true,
-                'space_owner': self.space_owner
-            });
-            
-            self.resize();
-            
-            if (self.panel.context.editing) {
-                self.tinyMCE.show();
-                self.tinyMCE.focus();
-            }
-            
-            jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
+        self.tinyMCE = instance;
+        self.tinyMCE.onChange.add(function (editor) { self.setDirty(true); });
+        
+        // Reset width to 100% via javascript. TinyMCE doesn't resize properly
+        // if this isn't completed AFTER instantiation
+        jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
+        
+        jQuery(window).bind('beforeunload', function () {
+            return self.beforeUnload();
+        });
+        
+        self.collection_list = new CollectionList({
+            'parent': self.el,
+            'template': 'collection',
+            'template_label': "collection_table",
+            'create_annotation_thumbs': true,
+            'space_owner': self.space_owner
+        });
+        
+        self.resize();
+        
+        if (self.panel.context.editing) {
+            self.tinyMCE.show();
+            self.tinyMCE.focus();
         }
+        
+        jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
     }
 };
 
@@ -303,9 +298,8 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
     
-    // What's the project type we're previewing?
     if (jQuery(self.essaySpace).is(":visible")) {
-        // Edit View
+        // Switch to Edit View
         jQuery(self.essaySpace).hide();
         
         jQuery(self.el).find("td.panhandle-stripe div.label").html("Add Selection");
@@ -322,9 +316,11 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         
         self.tinyMCE.show();
     } else {
-        // Preview View
+        // Switch to Preview View
         self.tinyMCE.hide();
         self.tinyMCE.plugins.editorwindow._closeWindow();
+        
+        jQuery(self.el).find("h1.project-title").html(jQuery(self.el).find("input.project-title").val());
         
         jQuery(self.el).find("textarea.mceEditor").hide();
         jQuery(self.el).find("div.collection-materials").hide();

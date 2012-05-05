@@ -17,25 +17,20 @@
                     </td>
                 </tr>
                 <tr class="project-participant-row">
-                    <td colspan="5" style="padding-top: 5px">
-                        <h3>{{#context.editing?}}Write{{/context.editing?}} {{^context.editing}}Read{{/context.editing}} Feedback</h3>
-                    </td>
+                    <td colspan="5" style="padding-top: 5px">&nbsp;</td>
                 </tr>
                         
                 <tr class="discussion-content-row">
                     <td class="panel-content fluid discussion">
                         <div class="threadedcomments-container">
-                            <form id="comment-form" method="POST" action="/comments/post/" 
-                                class="threaded_comments_form" data-maxlength="{{COMMENT_MAX_LENGTH}}">
-                                
-                                <div>
-                                    <form method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{context.discussion.max_length}}">
-                                    <table>
-                                        {{{context.form}}}
-                                    </table>
-                                    <input class="project" id="comment-form-submit" type="submit" value="Save Feedback" /></li>
-                                    </form>
-                                </div>
+                            <form style="display: none" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{context.discussion.max_length}}">
+                                <h3 style="display: none">Respond</h3>
+                                <input type="hidden" id="comment-edit-id" name="edit-id" />
+                                <table class="threaded_comments_form_table">
+                                    {{{context.form}}}
+                                </table>
+                                <input class="project" id="comment-form-submit" type="submit" value="Save" /></li>
+                                <input class="project cancel" style="display: none" type="button" value="Cancel" /></li>
                             </form>
                         </div>
                     </td>
@@ -55,7 +50,7 @@
                         <div class="asset-view-published medium" 
                             style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
                             
-                            <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                            <div id="{{context.discussion.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                                 {{#context.project.create_selection?}}<div class="create-selection" style="float: right"></div>{{/context.project.create_selection?}}
                                 <div class="annotation-title publishedCitation" style="margin-left: 8px; margin-top: 5px;"></div>
                                 <div class="asset-title" style="margin-left: 5px; margin-bottom: 8px; min-height: 20px;"></div>

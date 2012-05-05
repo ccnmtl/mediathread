@@ -229,11 +229,6 @@ div.save-publish-status {
 }
 
 
-form.threaded_comments_form ul li {
- background: #AAA;
- list-style-type: none;
-}
-
 .comment_action {
     background-color:#EEEEEE;
     border:1px solid #CCCCCC;
@@ -250,17 +245,39 @@ form.threaded_comments_form ul li {
     margin: 0 0 0 0;
 }
 
+.respond_to_comment_form_div {
+    float: right;
+    margin-right: 5px;
+    margin-top: 2px;
+}
+
 .respond_to_comment_form_div .control-open {
     padding-right:20px;
     background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
     font-weight:bold;
-    
 }
-
 
 .comment-date {
 
 	font-size: 80%;
+}
+
+div.threadedcomments-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+form.threaded_comments_form.response {
+    margin: 10px;
+}
+
+form.threaded_comments_form ul li {
+    background: #AAA;
+    list-style-type: none;
+}
+
+form.threaded_comments_form table.threaded_comments_form_table {
+    width: 100%;
 }
 
 form.threaded_comments_form table, 
@@ -279,14 +296,18 @@ form.threaded_comments_form table tr td input[name="honeypot"]
     display:none;
 }
 
+form.threaded_comments_form input[type="submit"],
+form.threaded_comments_form input[type="button"] {
+    float: right;
+    margin-right: 5px;
+}
+
 .threaded_comment_title {
     display:none;
 }
 
 ul.comment-thread {
     margin: 0px; /*no left indent on first comment*/
-
-
 }
 
 
@@ -326,38 +347,19 @@ li > ul.comment-thread div.comment {
 
 }
 
-li > ul.comment-thread div.comment.new-comment {
-
-	padding-bottom: 33px;
-
-}
-
-
-
 li.comment-thread {
     list-style:none;
     padding-bottom: 4px;
-
-
 }
 
 /*TinyMCE adds _tbl to the #id_comment id for the table where the editor is dynamically created. */
-
-#id_comment {
-    width: 96%;
-}
-
-table#id_comment_tbl {
-    clear:both;
-    margin-left:10px;
-}
 
 /*comment that someone has linked to
   This MUST be shown in some way, so it's clear what comment
   just created.
 */
 li.comment-thread:target > .comment {
-    border:2px solid black;
+    border: 1px solid black;
 }
 
 li.comment-thread:target > .comment .threaded_comment_header {
@@ -366,8 +368,14 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 .threaded_comment_header {
     background-color:#CCCCCC;
-    padding: 1px 2px 1px 5px;
+    padding: 2px 0px 4px 0px;
     width: 100%;
+    height: 25px;
+}
+
+.threaded_comment_author {
+    padding-top: 4px;
+    padding-left: 5px;
 }
 
 .threaded_comment_text {

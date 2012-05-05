@@ -20,7 +20,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     // hook up behaviors
     jQuery(window).bind('tinymce_init_instance', function (event, param1, param2) {
-        self.postInitialize();
+        self.postInitialize(param1);
     });
     
     jQuery(window).resize(function () {
@@ -51,40 +51,43 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.resize();
 };
 
-ProjectPanelHandler.prototype.postInitialize = function () {
+ProjectPanelHandler.prototype.postInitialize = function (tinymce_instance_id) {
     var self = this;
     
-    var editors = jQuery(self.el).find("textarea.mceEditor");
-    if (!self.tinyMCE && editors.length > 0) {
-        self.tinyMCE = tinyMCE.get(editors[0].id);
-        self.tinyMCE.onChange.add(function (editor) { self.setDirty(true); });
-        
-        // Reset width to 100% via javascript. TinyMCE doesn't resize properly
-        // if this isn't completed AFTER instantiation
-        jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
-        
-        jQuery(window).bind('beforeunload', function () {
-            return self.beforeUnload();
-        });
-        
-        // There should only be one per view.
-        // Could get hairy once discussion is added to the mix.
-        self.collection_list = CollectionList.init({
-            'parent': self.el,
-            'template': 'collection',
-            'template_label': "collection_table",
-            'create_annotation_thumbs': true,
-            'space_owner': self.space_owner
-        });
-        
-        self.resize();
-        
-        if (self.panel.context.editing) {
-            self.tinyMCE.show();
-            self.tinyMCE.focus();
+    if (tinymce_instance_id === self.panel.context.project.id + "-project-content") {
+    
+        var editors = jQuery(self.el).find("textarea.mceEditor");
+        if (!self.tinyMCE && editors.length > 0) {
+            self.tinyMCE = tinyMCE.get(editors[0].id);
+            self.tinyMCE.onChange.add(function (editor) { self.setDirty(true); });
+            
+            // Reset width to 100% via javascript. TinyMCE doesn't resize properly
+            // if this isn't completed AFTER instantiation
+            jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
+            
+            jQuery(window).bind('beforeunload', function () {
+                return self.beforeUnload();
+            });
+            
+            // There should only be one per view.
+            // Could get hairy once discussion is added to the mix.
+            self.collection_list = new CollectionList({
+                'parent': self.el,
+                'template': 'collection',
+                'template_label': "collection_table",
+                'create_annotation_thumbs': true,
+                'space_owner': self.space_owner
+            });
+            
+            self.resize();
+            
+            if (self.panel.context.editing) {
+                self.tinyMCE.show();
+                self.tinyMCE.focus();
+            }
+            
+            jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
         }
-        
-        jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
     }
 };
 
@@ -104,6 +107,7 @@ ProjectPanelHandler.prototype.resize = function () {
     
     jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
+    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible) + "px");
     jQuery(self.el).find('div.panel').css('height', (visible - 200) + "px");
 };
 

@@ -675,11 +675,12 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
     -moz-border-radius: 10px 0px 0px 10px; 
     -webkit-border-radius: 10px 0px 0px 10px; 
     background-color: #fff;
-    border: 1px solid #999;
+    /* border: 1px solid #999; */
 }
 
 table#sliding-content-container tr td.panhandle-stripe {
     width: 17px;
+    height: 99%\9;
     padding-top: 7px;
     border-top: 1px solid #999;
     border-bottom: 1px solid #999;
@@ -855,14 +856,12 @@ td.panel-container.assignment {
     background-color: #DAE7E0 !important;
     width: 100%;
     min-width: 330px;
-    border: 1px solid #999 !important;
 }
 
 td.panel-container.composition {
     background-color: #f0f5fa !important;
     min-width: 330px;
     width: 100%;
-    border: 1px solid #999 !important;
 }
 
 td.panel-container.discussion {
@@ -896,7 +895,9 @@ td.panel-content.fluid {
 td.panel-content.fluid.composition,
 table#sliding-content-container tr td.panel-content.fluid.composition,
 td.panel-content.fluid.assignment,
-table#sliding-content-container tr td.panel-content.fluid.assignment {
+table#sliding-content-container tr td.panel-content.fluid.assignment,
+td.panel-content.fluid.discussion,
+table#sliding-content-container tr td.panel-content.fluid.discussion {
     min-width: 330px;
     max-width: 500px;
     background-color: #fff;
@@ -2637,16 +2638,21 @@ input.videoplay{
     margin-top: 14px;
 }
 
-#media .column-container {
+.media-column .column-container {
     width: 330px;
     margin: 5px 3px 5px 0px;
 }
 
-#media .column-container h2 {
+.media-column .column-container h2 {
     background-color: #a88448;
     text-transform: capitalize;
     font-size: 98%;
 }
+
+.media-column div.column-contents {
+    padding-top: 0px;
+}
+
 
 #projects .column-container {
     width: 330px;
@@ -2847,9 +2853,6 @@ div.column-contents {
     padding-top: 10px;
 }
 
-#media div.column-contents {
-    padding-top: 0px;
-}
 
 table.item-level-info {
 
@@ -2974,6 +2977,7 @@ input.project,
 a.project {
     background-image: url("../img/buttons/compositions_button_bg.jpg");
     border-color: #477794;
+    font-size: .85em;
 }
 
 ul#projects .createnew-button {

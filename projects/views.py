@@ -143,7 +143,7 @@ def project_workspace(request, project_id):
             panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
-        # Requested project, either assignment or composition
+        # Requested project, can be either an assignment or composition
         is_assignment = project.is_assignment(request)
         can_edit = project.can_edit(request)
         project_context = project_json(request, project, can_edit)
@@ -157,7 +157,9 @@ def project_workspace(request, project_id):
         panel = { 'panel_state': 'open', 'panel_state_label': panel_state_label, 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
-        # Assignment response for requester if one exists
+        # Project Response -- if the requested project is an assignment
+        # This is primarily a student view. The student's response should 
+        # pop up automatically when the parent assignment is viewed.
         if is_assignment:
             responses = project.responses_by(request, request.user)
             if len(responses) > 0:
@@ -169,6 +171,7 @@ def project_workspace(request, project_id):
             
         data['panels'] = panels
         
+        # If feedback exists for the requested project
         if feedback:
             # 3rd pane is the instructor feedback, if it exists
             panel = { 'panel_state': 'open' if is_faculty else 'closed',

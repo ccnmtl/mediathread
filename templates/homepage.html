@@ -51,7 +51,8 @@
             });
             
             DjangoSherd_Asset_Config();    
-            CollectionList.init({
+            var collectionList = new CollectionList({
+                'parent': jQuery("div#classwork_table")[0],
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
                 'template': 'classwork',
                 'template_label': 'classwork_table',

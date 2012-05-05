@@ -25,10 +25,13 @@ Discussion of {{root_comment.content_object.title}}
   <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/discussion/commentform.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/project/project.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/discussion.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/discussion/commentform.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/discussion/discussion.js?version={%revision%}"></script>
     
     <script type="text/javascript">
         function resizeDiscussionPage() {
@@ -51,13 +54,8 @@ Discussion of {{root_comment.content_object.title}}
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
                 'view_callback': resizeDiscussionPage,
                 'targets': [ { 'parent': 'threadedcomments', 'default_target': '' } ], 
-                {% ifequal target.content_type.model "project" %}
-                   'enable_project_selection': true,
-                   'project_id': {{target.content_object.id}}
-                {% else %}
-                   'enable_project_selection': false
-                {% endifequal %}
-            }); 
+                'enable_project_selection': false
+            });
             
             jQuery(window).resize(function () {  
                  resizeDiscussionPage();
@@ -110,7 +108,6 @@ Discussion of {{root_comment.content_object.title}}
     <div>
         <div id="threadedcomments">
             {%get_comment_list for root_comment.content_object as comment_list%}
-            <h1>Comment List</h1>
             {% for current_comment in comment_list|fill_tree|annotate_tree %}
                 <!-- starting comment: >{{ current_comment.id }}-->
                 {% ifchanged current_comment.parent_id %}

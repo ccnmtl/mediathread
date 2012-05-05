@@ -1875,28 +1875,25 @@ div.panel-column-stump {
     margin-top: -3px;
 }
 
-.asset_title.type-collaboration
-{
+.asset_title.type-collaboration {
     background-image: url(../img/icons/item_discussion.png);
 }
 
 .asset_title a.title {
-
     font-weight: bold;
     color: #8d3b2f;
     margin-bottom: .25em;
     font-size: 100%;
 }
-.asset-title-rest
-{ 
-  font-size:85%;
-  display:inline-block;
- }
-.asset-activities
-{ 
-  padding-top:3px;
-  padding-left:25px;
- } 
+.asset-title-rest { 
+    font-size:85%;
+    display:inline-block;
+}
+
+.asset-activities { 
+    padding-top:3px;
+    padding-left:25px;
+} 
 
 .asset-view-big {
     /*so youtube 620px's can play on left*/
@@ -2741,16 +2738,13 @@ div#instructor-column h4.inst-header.project{
 
 }
 
-div#instructor-column h4.inst-header.discussion{
-
- background-image: url("../img/icons/item_discussion.gif");
+div#instructor-column h4.inst-header.discussion {
+    background-image: url("../img/icons/item_discussion.gif");
 }
 
-div#instructor-column h4.inst-header.assignment{
-
- background-image: url("../img/icons/item_assignment.gif");
+div#instructor-column h4.inst-header.assignment {
+    background-image: url("../img/icons/item_assignment.gif");
 }
-
 
 div#materials,
 div#composition-materials,

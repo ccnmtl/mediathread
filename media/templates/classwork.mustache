@@ -1,12 +1,12 @@
 {{#>>classwork_table}}
 <div id="classwork_table">
-    <div id="filter-widget" class="filter-widget">
+    <div class="filter-widget">
         {{#>>switcher_collection_chooser}}
-        <div id="switcher_collection_chooser" class="switcher collection-chooser" tabindex="1">
+        <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
             <a class="switcher-top menuclosed" onclick="switcher(this);">
                 <span class="down-arrow" tabindex="3"></span>
-                <span class="title" id="switcher-title">{{{selected_label}}}</span>
+                <span class="title">{{{selected_label}}}</span>
             </a>
             
             <ul class="switcher-options" style="left: -51px">
@@ -14,7 +14,7 @@
                 <li>
                     <ul class="switcher-sub" id="switcher-extras">
                         <li class="choice_my_items" id="choice_my_items">
-                            <a href="" onclick="return CollectionList.selectOwner('{{space_viewer.username}}')">&mdash; Me &mdash;</a>
+                            <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
                         </li>
                     </ul>
                 </li>
@@ -23,11 +23,11 @@
                     <ul class="scroll switcher-sub">
                         {{^showing_all_items}}
                         <li class="choice_all_items" id="choice_all_items">
-                            <a href="" onclick="return CollectionList.selectOwner();">&mdash; All Class Members &mdash;</a>
+                            <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
                         </li>
                         {{/showing_all_items}}
                         {{#owners}}                            
-                            <li><a href="" onclick="return CollectionList.selectOwner('{{username}}');">{{public_name}}</a></li>
+                            <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
                         {{/owners}}
                     </ul>
                 </li>
@@ -35,7 +35,7 @@
         </div>
         {{/>>switcher_collection_chooser}}
         
-        <div class="switcher collection-filter" id="switcher-collection-filter" tabindex="2" style="width: 135px">
+        <div class="switcher collection-filter" tabindex="2" style="width: 160px">
             <a class="switcher-top menuclosed" onclick="switcher(this);">
                 <span class="down-arrow" tabindex="4"></span>
                 <span class="title">Collection Filters 
@@ -54,16 +54,16 @@
                     <li>
                         <ul class="switcher-sub switcher-active-filters">
                             {{#active_filters}}
-                            <li><a class="remove" href="" onclick="return CollectionList.clearFilter(null)"><span class="metadata-label">Clear All Filters</span></a></li>
+                            <li><a class="switcher-choice remove" href="clear-all"><span class="metadata-label">Clear All Filters</span></a></li>
                                 {{#tag?}}
                                     <li>
-                                        <a class="remove" onclick="return CollectionList.clearFilter('tag')">&nbsp;</a>
+                                        <a class="switcher-choice remove" href="tag">&nbsp;</a>
                                         <span class="metadata-label">Tag</span>: <span class="metadata-value">{{tag}}</span>
                                     </li>
                                 {{/tag?}}
                                 {{#modified?}}
                                     <li>
-                                        <a class="remove" onclick="return CollectionList.clearFilter('modified')">&nbsp;</a>
+                                        <a class="switcher-choice remove" href="modified">&nbsp;</a>
                                         <span class="metadata-label">Modified</span>: <span class="metadata-value">{{modified}}</span>
                                     </li>
                                 {{/modified?}}
@@ -75,22 +75,22 @@
                 {{^showing_all_items}}
                 <li>
                     <h3>Date Modified</h3>
-                    <p class="switcher-sub">
-                        <a href="" onclick="return CollectionList.filterByDate('today')">today</a>
-                        <a href="" onclick="return CollectionList.filterByDate('yesterday')">yesterday</a>
-                        <a href="" onclick="return CollectionList.filterByDate('lastweek')">within the last week</a>
-                    </p>
+                        <p class="switcher-sub filterbydate">
+                            <a class="switcher-choice" href="today">today</a>
+                            <a class="switcher-choice" href="yesterday">yesterday</a>
+                            <a class="switcher-choice" href="lastweek">within the last week</a>
+                        </p>                
                 </li>
                 {{/showing_all_items}}
         
                 <li>
                     <h3>Tags</h3>
-                    <p class="switcher-sub">
+                    <p class="switcher-sub ">
                         {{^tags}}
                             No tags
                         {{/tags}}
                         {{#tags}}
-                            <a href="" onclick="return CollectionList.filterByTag('{{name}}')" >{{name}}</a>
+                            <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
                         {{/tags}}
                     </p>
                 </li>
@@ -205,7 +205,7 @@
                 </div>
             </td>
         
-            <td class="" id="media" >
+            <td class="media-column">
                 <div class="column-container media-column-container">
                     <h2>
                         <div class="button-form inline">
@@ -254,7 +254,7 @@
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                                             <div class="actions">
                                                 {{#editable?}}
-                                                    <a href="" title="Remove item from your collection" onclick="return CollectionList.deleteAsset({{id}})">
+                                                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
                                                     <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
                                                 {{/editable?}}
                                             </div>
@@ -278,7 +278,7 @@
                                                                 <span class="metadata-label">Item Tags:</span>
                                                                 <span class="metadata-value">
                                                                     {{#tags}}
-                                                                        <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                        <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
                                                                     {{/tags}}
                                                                 </span>
                                                             </li>
@@ -298,7 +298,7 @@
                                                             <span class="metadata-label">Selection Tags:</span>
                                                             <span class="metadata-value">
                                                                 {{#tags}}
-                                                                    <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
                                                                 {{/tags}}
                                                             </span>
                                                          {{/tags?}}
@@ -338,7 +338,7 @@
                                 <div><span class="metadata-label">Tags:</span>
                                 <span class="metadata-value">
                                 {{#tags}}
-                                <a href="" title='Filter collection by "{{name}}"' onclick="return CollectionList.filterByTag('{{name}}')">{{name}}</a>&nbsp;
+                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
                                 {{/tags}}
                                 </span>
                                 </div>
@@ -354,10 +354,10 @@
                                 </td>
                               {{#editable?}}
                                 <td class="selection-trash">
-                                <div class="actions">
-                                <a href="" title="Delete selection" onclick="return CollectionList.deleteAnnotation('{{id}}')">
-                                <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
-                                </div>
+                                    <div class="actions">
+                                        <a class="collection-choice delete-annotation" href="{{id}}" title="Delete selection">
+                                        <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+                                    </div>
                                 </td>
                                 {{/editable?}}
                                 </tr>

@@ -40,6 +40,7 @@ def threaded_comment_json(comment):
         'type': 'discussion',
         'form': comments.get_form()(comment.content_object).__unicode__(),
         'editing': True,
+        'can_edit': True,
         'discussion': {
             'id': comment.id,
             'max_length': COMMENT_MAX_LENGTH

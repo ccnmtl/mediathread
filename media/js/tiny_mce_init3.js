@@ -26,9 +26,9 @@ var tiny_mce_settings = {
         remove_linebreaks: true,
         convert_urls: false,
         gecko_spellcheck: true,
-        init_instance_callback: function () {
+        init_instance_callback: function (inst) {
             // broadcast initialized message using the textarea
-            jQuery(window).trigger('tinymce_init_instance');
+            jQuery(window).trigger('tinymce_init_instance', [ inst.id ]);
         },
         //setupcontent_callback : "plugin_regexrep_setup",
         //save_callback : "plugin_regexrep_save",

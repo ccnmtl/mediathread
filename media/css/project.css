@@ -153,7 +153,7 @@ body.mceContentBody {
       to styled as published (and 10px is too small for the image-annotation
       icon)
     **/
-    font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
+    font: 0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }
 
 .mceContentBodyCursor {

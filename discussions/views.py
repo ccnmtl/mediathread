@@ -98,9 +98,13 @@ def discussion_create(request):
                }
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')   
 
-@allow_http("DELETE")
-def discussion_delete(request, root_comment):
+@allow_http("POST")
+def discussion_delete(request, discussion_id):
     space_viewer = request.user
+    
+    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
+    if not root_comment.content_object.permission_to('read', request):
+        return HttpResponseForbidden('You do not have permission to view this discussion.')
 
     return delete_collaboration(request, root_comment.object_pk)    
     

@@ -17,10 +17,6 @@ var CollectionList = function (config) {
     jQuery(self.parent).find(".collection_table").ajaxStop(function () {
         jQuery(this).removeClass("ajaxLoading");
     });
-
-    jQuery(window).resize(function () {
-        self.resize();
-    });
     
     jQuery.ajax({
         url: '/site_media/templates/' + config.template + '.mustache?nocache=v2',
@@ -49,14 +45,6 @@ var CollectionList = function (config) {
     });
     
     return this;
-};
-     
-CollectionList.prototype.resize = function () {
-    var self = this;
-    var visible = getVisibleContentHeight();
-    
-    // scrolling media (collections) window
-    jQuery(self.parent).find('div.scroll').css('height', (visible - 165) + "px");
 };
 
 CollectionList.prototype.selectOwner = function (username) {
@@ -245,6 +233,14 @@ CollectionList.prototype.updateSwitcher = function () {
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
 };
 
+CollectionList.prototype.decorateCitationAdders = function (mceEditorInstance) {
+    var self = this;
+    var new_assets = jQuery(self.parent).find('.asset-table').get(0);
+       
+    mceEditorInstance.plugins.citation.decorateCitationAdders(new_assets);
+    jQuery(new_assets.parentNode).addClass('annotation-embedding');
+};
+
 CollectionList.prototype.updateAssets = function (the_records) {
     var self = this;
     self.switcher_context.owners = the_records.owners;
@@ -294,11 +290,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
             var editors = jQuery(self.parent).find("textarea.mceEditor");
             if (editors.length) {
                 var ed = tinyMCE.get(editors[0].id);
-
-                var new_assets = jQuery(self.parent).find('.asset-table').get(0);
-                   
-                ed.plugins.citation.decorateCitationAdders(new_assets);
-                jQuery(new_assets.parentNode).addClass('annotation-embedding');
+                self.decorateCitationAdders(ed);
             }
             
             // hook up behaviors

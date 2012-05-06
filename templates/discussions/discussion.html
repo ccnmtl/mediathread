@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif collaborations user_projects coursetags revision %}
+{% load smartif revision %}
 
 {% block title %}
     {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
@@ -38,6 +38,9 @@
         
     <script type="text/javascript">
         jQuery(document).ready(function () {
+            ///makes it resizable--somewhat hacking tinyMCE.init()
+            tinyMCE.settings.theme_advanced_statusbar_location = "bottom";
+            
             PanelManager.init({ 
                 'container': 'sliding-content-container',
                 'url': MediaThread.urls['discussion-view']({{discussion.id}})

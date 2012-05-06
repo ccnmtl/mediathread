@@ -36,20 +36,26 @@
                                     <li id="comment-{{id}}" class="comment-thread">
                                         <div class="comment">
                                             <div class="threaded_comment_header">
-                                                <span class="threaded_comment_author">{{author}}</span>
-                                                <a class="comment-anchor" href="#comment-{{id}}">said:</a>
-                                                <div class="comment-date">{{submit_date}}</div>
                                                 <div class="respond_to_comment_form_div">
                                                     <span class="respond_prompt comment_action" data-comment="{{id}}" title="Click to respond to this comment">
                                                         Respond
                                                     </span>
+                                                    {{#can_edit?}}
                                                     <span class="edit_prompt comment_action" data-comment="{{id}}" title="Click to edit this comment">Edit</span>
+                                                    {{/can_edit?}}
                                                 </div>
-                                                
+                                                <div>
+                                                    <span class="threaded_comment_author">{{author}}</span>
+                                                    <a class="comment-anchor" href="#comment-{{id}}">said:</a>
+                                                </div>
+                                                <div class="comment-date">
+                                                    <span>{{submit_date}}</span>
+                                                </div>
                                             </div>
                     
                                             <div class="threaded_comment_title">{{title}}</div>
-                                            <div class="threaded_comment_text">{{{comment}}}</div>
+                                            <div class="threaded_comment_text">{{{content}}}</div>
+                                        </div>
                                     {{#close?}}
                                         {{#close}}
                                                 </li>
@@ -58,8 +64,6 @@
                                     {{/close?}}
                                 {{/context.discussion.thread}}
                             {{/context.discussion.thread?}}
-                            <ul class="comment-thread">
-                            </ul>
                             <form style="display: none" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{context.discussion.max_length}}">
                                 <h3 style="display: none">Respond</h3>
                                 <input type="hidden" id="comment-edit-id" name="edit-id" />

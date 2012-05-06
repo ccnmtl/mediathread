@@ -107,7 +107,7 @@ ProjectPanelHandler.prototype.resize = function () {
 };
 
 ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
-    var a = jQuery(target).parents("td.panel-container.media");
+    var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);
     }
@@ -313,6 +313,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         jQuery(self.el).find("div.collection-materials").show();
         jQuery(self.el).find("input.project-title").show();
         jQuery(self.el).find("input.participants_toggle").show();
+        jQuery(self.el).find("span.project-current-version").show();
         
         self.tinyMCE.show();
     } else {
@@ -326,6 +327,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         jQuery(self.el).find("div.collection-materials").hide();
         jQuery(self.el).find("input.project-title").hide();
         jQuery(self.el).find("input.participants_toggle").hide();
+        jQuery(self.el).find("span.project-current-version").hide();
         
         // Get updated text into the preview space - decorate any new links
         jQuery(self.essaySpace).html(self.tinyMCE.getContent());

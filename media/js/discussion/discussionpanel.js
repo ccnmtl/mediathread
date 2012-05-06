@@ -67,6 +67,10 @@ DiscussionPanelHandler.prototype.postInitialize = function (instance) {
             if (threads.length === 0) {
                 self.open_edit();
             }
+            
+            //decorate respond listeners
+            jQuery('span.respond_prompt', self.el).click(function (evt) { self.open_respond(evt); });
+            jQuery('span.edit_prompt', self.el).click(function (evt) { self.open_edit(evt); });
         }
         self.resize();
     }
@@ -101,8 +105,8 @@ DiscussionPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.threadedcomments-container').css('height', (visible) + "px");
 };
 
-ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
-    var a = jQuery(target).parents("td.panel-container.media");
+DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
+    var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);
     }
@@ -165,6 +169,8 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
         jQuery(myToolbar).hide();
 
         elt = jQuery(li).find("div.threaded_comment_header")[0];
+        jQuery(self.form).children("input.cancel").show();
+        
         self.open_comment_form(elt);
     }
 };
@@ -179,8 +185,9 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
     }
     jQuery(self.form).show();
     
-    var elt = jQuery(self.form).find("#comment-form-submit")[0];
-    jQuery(self.el).find("div.threadedcomments-container").animate({scrollTop: jQuery(elt).offset().top}, 500);
+    if (insertAfter) {
+        jQuery(self.el).find("div.threadedcomments-container").animate({scrollTop: jQuery(self.form).position().top}, 500);
+    }
     
     // Switch to an Edit View
     // Unload any citations

@@ -1,7 +1,7 @@
-from djangohelpers.lib import rendered_with
-from djangohelpers.lib import allow_http
-
-from django.db.models import get_model
+from django.core import urlresolvers
+from django.conf import settings
+from django.db.models import get_model, Max
+from djangohelpers.lib import rendered_with, allow_http
 
 from datetime import datetime
 
@@ -9,18 +9,21 @@ from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
 
 from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse,resolve
-from django.contrib.contenttypes.models import ContentType
-from threadedcomments import ThreadedComment
+
+from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.comments.managers import CommentManager
+
+from threadedcomments import ThreadedComment
+from threadedcomments.util import annotate_tree_properties, fill_tree
 
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
-
-from discussions.utils import threaded_comment_json
 
 import simplejson
 
@@ -33,8 +36,6 @@ def show(request, discussion_id):
 @allow_http("GET","DELETE")
 def show_discussion(request, root_comment):
     space_viewer = request.user
-    if space_viewer.is_staff and request.GET.has_key('as'):
-        space_viewer = get_object_or_404(User,username=request.GET['as'])
 
     if request.method == "DELETE":
         return delete_collaboration(request, root_comment.object_pk)
@@ -132,7 +133,7 @@ def new(request):
         data = { 'panel_state': 'open', 
                  'panel_state_label': "Feedback",
                  'template': 'discussion',
-                 'context': threaded_comment_json(new_threaded_comment)
+                 'context': threaded_comment_json(new_threaded_comment, request.user)
                }
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')   
     
@@ -166,3 +167,77 @@ def comment_change(request, comment_id, next=None):
         'comment': comment,
         }
     
+    
+
+def pretty_date(timestamp):
+    """
+    Get a datetime object or a int() Epoch timestamp and return a
+    pretty string like 'an hour ago', 'Yesterday', '3 months ago',
+    'just now', etc
+    """
+    from datetime import datetime
+    now = datetime.now()
+    diff = now - timestamp 
+    
+    second_diff = diff.seconds
+    day_diff = diff.days
+    ago = ""
+    
+    if day_diff == 0:
+        if second_diff < 10:
+            ago = "just now"
+        elif second_diff < 60:
+            ago = str(second_diff) + " seconds ago"
+        elif second_diff < 120:
+            ago =  "a minute ago"
+        elif second_diff < 3600:
+            ago = str( second_diff / 60 ) + " minutes ago"
+        elif second_diff < 7200:
+            ago = "an hour ago"
+        elif second_diff < 86400:
+            ago = str( second_diff / 3600 ) + " hours ago"
+        
+        return "%s (%s)" % (timestamp.strftime("%I:%M %p"), ago)
+    elif day_diff == 1:
+        ago = "(Yesterday)"
+    elif day_diff < 14:
+        ago = "(" + str(day_diff) + " days ago)"
+        
+    return "%s %s" % (timestamp.strftime("%m/%d/%Y %I:%M %p"), ago)
+      
+def threaded_comment_json(comment, viewer):
+    coll = ContentType.objects.get_for_model(Collaboration)
+    all = ThreadedComment.objects.filter(content_type=coll, object_pk=comment.content_object.pk, site__pk=settings.SITE_ID)
+    
+    all = fill_tree(all)
+    all = annotate_tree_properties(all)
+    
+    current_parent_id = None
+    thread = []
+    for obj in all:
+        data = { 'open': obj.open if hasattr(obj, "open") else None,
+                 'close': [ i for i in obj.close ] if hasattr(obj, "close") else None,
+                 'id': obj.id,
+                 'author': obj.name,
+                 'submit_date': pretty_date(obj.submit_date),
+                 'title': obj.title,
+                 'content': obj.comment,
+               }
+    
+        if obj.user == viewer:
+            data['can_edit'] = True
+            
+        thread.append(data)
+    
+    data = { 
+        'type': 'discussion',
+        'form': comments.get_form()(comment.content_object).__unicode__(),
+        'editing': True,
+        'can_edit': True,
+        'discussion': {
+            'id': comment.id,
+            'max_length': COMMENT_MAX_LENGTH,
+            'thread': thread
+         }
+    }
+    return data    

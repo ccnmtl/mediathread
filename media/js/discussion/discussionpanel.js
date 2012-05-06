@@ -13,11 +13,8 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     
     // hook up behaviors
     jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
-        self.postInitialize(instance);
+        self.onTinyMCEInitialize(instance);
     });
-    
-    // Add the tinyMCE control to the comment field.
-    tinyMCE.execCommand("mceAddControl", false, "id_comment");
     
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -28,55 +25,56 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     });
     //self.citationView.decorateLinks(self.essaySpace.id);
     
-    self.resize();
+    self.collection_list = new CollectionList({
+        'parent': self.el,
+        'template': 'collection',
+        'template_label': "collection_table",
+        'create_annotation_thumbs': true,
+        'space_owner': self.space_owner
+    });
+    
+    jQuery(this.form).bind('submit', {self: this}, this.submit);
+    jQuery("input.cancel").bind('click', { self: this }, this.cancel);
+    
+    if (jQuery(this.form.elements.name).attr("value") === "") {
+        jQuery(this.form.elements.name).attr("value", this.space_owner);
+    }
+    
+    if (jQuery(this.form.elements.email).attr("value") === "") {
+        jQuery(this.form.elements.email).attr("value", "null@example.com");
+    }
+                
+    //decorate respond listeners
+    jQuery('span.respond_prompt', self.el).click(function (evt) { self.open_respond(evt); });
+    jQuery('span.edit_prompt', self.el).click(function (evt) { self.open_edit(evt); });
+    
+    // if there's only one comment, and i'm the author and the content is empty, then open the edit form
+    if (self.panel.context.discussion.thread.length === 1 &&
+        self.panel.context.discussion.thread[0].author === self.space_owner &&
+        self.panel.context.discussion.thread[0].content.length < 1) {
+        var elt = jQuery(self.el).find("span.edit_prompt")[0];
+        jQuery(elt).trigger("click");
+    } else {
+        self.hide_comment_form();
+    }
 };
 
-DiscussionPanelHandler.prototype.postInitialize = function (instance) {
+DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     var self = this;
     
     if (instance.id === "id_comment") {
         
         self.tinyMCE = instance;
-        self.tinyMCE.focus();
-        
         // Reset tinyMCE width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
         jQuery('#id_comment_tbl').css('width', "100%");
-                
-        if (!self.collection_list) {
-            self.collection_list = new CollectionList({
-                'parent': self.el,
-                'template': 'collection',
-                'template_label': "collection_table",
-                'create_annotation_thumbs': true,
-                'space_owner': self.space_owner
-            });
-            
-            jQuery(this.form).bind('submit', {self: this}, this.submit);
-            jQuery("input.cancel").bind('click', { self: this }, this.cancel);
-            
-            if (jQuery(this.form.elements.name).attr("value") === "") {
-                jQuery(this.form.elements.name).attr("value", this.space_owner);
-            }
-            
-            if (jQuery(this.form.elements.email).attr("value") === "") {
-                jQuery(this.form.elements.email).attr("value", "null@example.com");
-            }
-                        
-            //decorate respond listeners
-            jQuery('span.respond_prompt', self.el).click(function (evt) { self.open_respond(evt); });
-            jQuery('span.edit_prompt', self.el).click(function (evt) { self.open_edit(evt); });
-            
-            // if there's only one comment, and i'm the author and the content is empty, then open the edit form
-            if (self.panel.context.discussion.thread.length === 1 &&
-                self.panel.context.discussion.thread[0].author === self.space_owner &&
-                self.panel.context.discussion.thread[0].content.length < 1) {
-                var elt = jQuery(self.el).find("span.edit_prompt")[0];
-                jQuery(elt).trigger("click");
-            } else {
-                self.hide_comment_form();
-            }
+        
+        if (jQuery("#id_title").is(":visible")) {
+            jQuery("#id_title").focus();
+        } else {
+            self.tinyMCE.focus();
         }
+
         self.resize();
     }
 };
@@ -177,6 +175,12 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
         jQuery(self.form).children("input.cancel").show();
         
         self.open_comment_form(elt);
+        
+        if (self.panel.can_edit_title &&
+            self.panel.root_comment_id.toString() === self.form.elements['edit-id'].value) {
+            
+            jQuery(self.form.elements.title).show();
+        }
     }
 };
 
@@ -204,6 +208,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
 
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
+    jQuery(self.form.elements.title).hide();
     jQuery(self.form).hide();
     
     // Switch to a readonly view
@@ -216,6 +221,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function () {
     
     jQuery(self.el).find("td.panhandle-stripe div.label").html("View Selection");
     jQuery(self.el).find("div.asset-view-published").show();
+    
 };
 
 DiscussionPanelHandler.prototype._bind = function (parent, elementSelector, event, handler) {
@@ -389,6 +395,7 @@ DiscussionPanelHandler.prototype.read = function (found_obj) {
 };
 
 DiscussionPanelHandler.prototype.update = function (obj, html_dom, components) {
+    var self = this;
     var success = 0;
     components = components || this.components(html_dom);
 
@@ -398,8 +405,8 @@ DiscussionPanelHandler.prototype.update = function (obj, html_dom, components) {
     if (obj.title) {
         success += jQuery(components.title).html(obj.title).length;
         if (!components.parent) { //if base_comment
-            jQuery('#discussion-subject-title').html(obj.title);
-            document.title = 'Discussion of ' + obj.title;
+            document.title = obj.title;
+            jQuery(self.el).find("h1.discussion-title").html(obj.title);
         }
     }
     return success;

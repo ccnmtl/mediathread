@@ -783,6 +783,11 @@ tr.project-content-row {
     height: 500px;
 }
 
+tr.discussion-toolbar-row {
+    height: 40px;
+}
+
+
 table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
    background: rgb(205,205,205); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(205,205,205,1) 0%, rgba(171,171,171,1) 100%); /* FF3.6+ */

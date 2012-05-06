@@ -53,6 +53,9 @@
             'project-create': function () {
                 return '/project/create/';
             },
+            'discussion-view': function (discussion_id) {
+                return '/discussion/show/' + discussion_id + "/";
+            },
             'discussion-create': function () {
                 return '/discussion/new/';
             },

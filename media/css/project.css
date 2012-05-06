@@ -45,15 +45,6 @@ a.edit-pencil {
     margin-left: 10px;
 }
 
-/** Needed?
-.annotation-title.materialCitation {
-    background-image: url('../img/icons/item_video.gif') left no-repeat;
-    border: 0;
-    color: #660000;
-    width:auto;
-    overflow:visible; /* IE 5-6 hack */
-}
-
 .annotation-title.materialCitation h2 {
     background: #969696 url('../img/icons/item_video.gif') 5px 3px no-repeat;
     color:#DEDEDE;
@@ -67,7 +58,7 @@ a.edit-pencil {
     border: 1px solid #ccc;
     padding: 20px;
 }
-**/
+
 
 .essay-options
 { 
@@ -278,6 +269,13 @@ form.threaded_comments_form input[type="submit"],
 form.threaded_comments_form input[type="button"] {
     float: right;
     margin-right: 5px;
+}
+
+form.threaded_comments_form table tr td input[name="title"] {
+    width: 50%;
+    font-size: 110%;
+    margin: 8px 0px;
+    padding: 2px;
 }
 
 .threaded_comment_title {

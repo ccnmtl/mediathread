@@ -243,8 +243,6 @@ def project_workspace(request, project_id):
             panels.append(panel)
             
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
-
-
     
 def project_json(request, project, can_edit, version_number=None):
     rand = ''.join([choice(letters) for i in range(5)])

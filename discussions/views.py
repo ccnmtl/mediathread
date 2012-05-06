@@ -27,14 +27,6 @@ from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
 
 import simplejson
-
-def show(request, discussion_id):
-    """Show a threadedcomments discussion of an arbitrary object.
-    discussion_id is the pk of the root comment."""
-    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    return show_discussion(request, root_comment)
-
-
         
 @allow_http("POST")
 def discussion_create(request):
@@ -42,6 +34,7 @@ def discussion_create(request):
     rp = request.POST
 
     title = rp['comment_html']
+    
     #Find the object we're discussing.
     the_content_type = ContentType.objects.get(app_label=rp['app_label'], model=rp['model'])
     assert the_content_type != None
@@ -112,9 +105,11 @@ def discussion_delete(request, root_comment):
     return delete_collaboration(request, root_comment.object_pk)    
     
 @allow_http("GET")
-def discussion_view(request, root_comment):
-    space_viewer = request.user
-
+def discussion_view(request, discussion_id):
+    """Show a threadedcomments discussion of an arbitrary object.
+    discussion_id is the pk of the root comment."""
+    
+    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
     if not root_comment.content_object.permission_to('read', request):
         return HttpResponseForbidden('You do not have permission to view this discussion.')
     
@@ -125,23 +120,24 @@ def discussion_view(request, root_comment):
         my_course = request.course
         root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
         root_comment.content_object.save()
+        
+    data = { 'space_owner' : request.user.username }    
 
-    target = None
-    if root_comment.content_object._parent_id and \
-            root_comment.content_object._parent.object_pk:
-        target = root_comment.content_object._parent
-
-    rv = {
-        'is_space_owner': True,
-        'edit_comment_permission': my_course.is_faculty(space_viewer),
-        'space_owner': space_viewer, #for now
-        'space_viewer': space_viewer,
-        'root_comment': root_comment,
-        'target':target,        
-        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
-        }
-    
-    return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))    
+    if not request.is_ajax():
+        data['discussion'] = root_comment
+        return render_to_response('discussions/discussion.html', data, context_instance=RequestContext(request))
+    else:
+        data['panels'] = [{ 
+            'panel_state': 'open',
+            'panel_state_label': "Discussion",
+            'template': 'discussion',
+            'title': root_comment.title,
+            'can_edit_title': my_course.is_faculty(request.user),
+            'root_comment_id': root_comment.id,
+            'context': threaded_comment_json(root_comment, request.user)
+        }]
+        
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
 @allow_http("POST")    
 @rendered_with('comments/posted.html')

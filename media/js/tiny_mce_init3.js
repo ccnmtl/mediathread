@@ -1,6 +1,5 @@
 var tiny_mce_settings = {
         theme: "advanced",
-        /* content_css: "tinyContent.css", CUSTOM CCNMTL--commenting out*/
         content_css: "/site_media/css/project.css",
         mode: "specific_textareas",
         editor_selector: "mceEditor",

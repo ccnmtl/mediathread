@@ -47,6 +47,10 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         'presentation': "medium"
     });
     self.citationView.decorateLinks(self.essaySpace.id);
+    
+    if (panel.context.can_edit) {
+        tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
+    }
 
     self.resize();
 };

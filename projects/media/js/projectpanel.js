@@ -338,10 +338,6 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         jQuery(self.el).find("h1.project-title").show();
     }
     
-    jQuery(self.el).find("td.panel-container").toggleClass("media collection");
-    jQuery(self.el).find("td.panhandle-stripe").toggleClass("media collection");
-    jQuery(self.el).find("div.pantab").toggleClass("media collection");
-    
     jQuery(window).trigger("resize");
     
     return false;

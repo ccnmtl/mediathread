@@ -850,6 +850,8 @@ td.filler {
 
 td.panel-container.collection {
     min-width: 380px;
+    background-color: #ededed;
+    border: 1px solid #ccc;
 }
 
 td.panel-container.assignment {

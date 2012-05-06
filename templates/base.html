@@ -63,7 +63,7 @@
         	   <ul id="standardnav">
                     {% if request.user.is_authenticated %}
                         <li class="settings" onclick="jQuery('#standardnav_settings_menu').toggle();">
-                            <img src="/site_media/img/settings.png" style="height: 18px;"></img>
+                            <img alt="settings_gear" src="/site_media/img/settings.png" style="height: 18px;"></img>
                             <!-- Settings Menu -->
                             <div id="standardnav_settings_menu" style="display: none">
                                 {%if user.is_staff %}
@@ -83,7 +83,7 @@
                         </li>
                         <li class="settings" style="margin-top: 2px;">
                             <a href="#" onclick='jQuery("#standardnav_settings_menu").toggle();'>
-                                <img src="/site_media/img/down_arrow_gray.png" />
+                                <img src="/site_media/img/down_arrow_gray.png" alt="down arrow" />
                             </a>
                         </li>
                     {% else %}

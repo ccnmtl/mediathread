@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import allow_http
 
-from discussions.utils import threaded_comment_json
+from discussions.views import threaded_comment_json
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from projects.forms import ProjectForm
 
@@ -104,17 +104,79 @@ def project_save(request, project_id):
         return HttpResponseRedirect(redirect_to)
     
 
-@allow_http("GET", "POST")
+@allow_http("POST")
 def project_delete(request, project_id):
-    project = get_object_or_404(Project, pk=project_id,
-                                course=request.course)
-    space_owner = in_course_or_404(project.author.username, request.course)
+    """
+    Delete the requested project. Regular access conventions apply. 
+    If the logged-in user is not allowed to delete the project, an HttpResponseForbidden
+    will be returned
+    """
+    project = get_object_or_404(Project, pk=project_id, course=request.course)
     
     if not project.can_edit(request) or not request.method == "POST":
-        return HttpResponseRedirect(project.get_absolute_url())
+        return HttpResponseForbidden("forbidden")
 
     project.delete()
-    return HttpResponseRedirect('.')    
+    return HttpResponseRedirect('/')
+
+@allow_http("GET")
+def project_view_readonly(request, project_id, version_number=None):
+    """
+    A single panel read-only view of the specified project/version combination.
+    No assignment, response or feedback access/links.
+    Regular access conventions apply. For example, if the project is "private"
+    an HTTPResponseForbidden will be returned.
+    
+    Used for reviewing old project versions and public project access.
+    
+    Keyword arguments:
+    project_id -- the model id
+    version_number -- a specific project version or None for the current version 
+    
+    """
+    
+    project = get_object_or_404(Project, pk = project_id)
+    
+    if not project.can_read(request):
+        return HttpResponseForbidden("forbidden")
+    
+    if not version_number:
+        versions = project.versions.order_by('-change_time')
+        version_number = versions[0].version_number
+    
+    data = { 'space_owner' : request.user.username }
+    
+    course = request.course
+    if not course:
+        # public view
+        course = request.collaboration_context.content_object
+        public_url = project.public_url()
+    else:
+        # versioned view
+        public_url = reverse('project-view-readonly', kwargs = { 'project_id': project.id, 'version_number': version_number})
+        
+    if not request.is_ajax():
+        data['project'] = project
+        data['version'] = version_number
+        data['public_url'] = public_url
+        return render_to_response('projects/project.html', data, context_instance=RequestContext(request))
+    else:
+        version = get_object_or_404(ProjectVersion,
+                                    versioned_id = project_id,
+                                    version_number=version_number)
+        
+        project = version.instance()
+        
+        panels = []
+            
+        # Requested project, either assignment or composition
+        project_context = project_json(request, project, False, version_number)
+        panel = { 'panel_state': 'open', 'panel_state_label': "Version View", 'context': project_context, 'template': 'project' }
+        panels.append(panel)
+        
+        data['panels'] = panels
+        
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')  
     
 @allow_http("GET")
 def project_workspace(request, project_id):
@@ -133,25 +195,24 @@ def project_workspace(request, project_id):
     else:
         panels = []
         
-        feedback = project.feedback_discussion()
+        is_assignment = project.is_assignment(request)
+        can_edit = project.can_edit(request)
+        feedback = project.feedback_discussion() if is_faculty or can_edit else None
     
         # Project Parent (assignment) if exists
-        assignment = project.assignment()
-        if assignment:
-            assignment_context = project_json(request, assignment, assignment.can_edit(request))
+        parent_assignment = project.assignment()
+        if parent_assignment:
+            assignment_context = project_json(request, parent_assignment, parent_assignment.can_edit(request))
             assignment_context['create_selection'] = True
             panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
         # Requested project, can be either an assignment or composition
-        is_assignment = project.is_assignment(request)
-        can_edit = project.can_edit(request)
         project_context = project_json(request, project, can_edit)
         project_context['editing'] = can_edit # Always editing if it's allowed.
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
             not project.responses_by(request, request.user)
-        project_context['create_instructor_feedback'] = is_faculty and not is_assignment and \
-            project.assignment() and not feedback  
+        project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback
         panel_state_label = "Edit" if can_edit else "View"   
         
         panel = { 'panel_state': 'open', 'panel_state_label': panel_state_label, 'context': project_context, 'template': 'project' }
@@ -183,51 +244,7 @@ def project_workspace(request, project_id):
             
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
 
-@allow_http("GET")
-def project_view_readonly(request, project_id, version_number=None):
-    project = get_object_or_404(Project, pk = project_id)
-    
-    if not project.can_read(request):
-        return HttpResponseForbidden("forbidden")
-    
-    if not version_number:
-        versions = project.versions.order_by('-change_time')
-        version_number = versions[0].version_number
-    
-    data = { 'space_owner' : request.user.username }
-    
-    course = request.course
-    if not course:
-        course = request.collaboration_context.content_object
-        public_url = project.public_url()
-    else:
-        public_url = reverse('project-view-readonly', kwargs = { 'project_id': project.id, 'version_number': version_number})
-        
-    if not request.is_ajax():
-        data['project'] = project
-        data['version'] = version_number
-        data['public_url'] = public_url
-        return render_to_response('projects/project.html', data, context_instance=RequestContext(request))
-    else:
-        is_faculty = course.is_faculty(request.user)
-    
-        version = get_object_or_404(ProjectVersion,
-                                    versioned_id = project_id,
-                                    version_number=version_number)
-        
-        project = version.instance()
-        
-        panels = []
-            
-        # Requested project, either assignment or composition
-        is_assignment = project.is_assignment(request)
-        project_context = project_json(request, project, False, version_number)
-        panel = { 'panel_state': 'open', 'panel_state_label': "Version View", 'context': project_context, 'template': 'project' }
-        panels.append(panel)
-        
-        data['panels'] = panels
-        
-        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')  
+
     
 def project_json(request, project, can_edit, version_number=None):
     rand = ''.join([choice(letters) for i in range(5)])

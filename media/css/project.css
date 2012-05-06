@@ -245,8 +245,8 @@ div.threadedcomments-container {
     overflow-y: auto;
 }
 
-form.threaded_comments_form.response {
-    margin: 10px;
+form.threaded_comments_form {
+    margin: 10px 10px 30px 10px;
 }
 
 form.threaded_comments_form ul li {
@@ -351,27 +351,30 @@ li.comment-thread:target > .comment .threaded_comment_header {
     height: 35px;
 }
 
+.threaded_comment_text {
+    padding: 1px 2px 1px 5px;
+    margin-right: 5px;
+    width: 99%;
+}
+
 .threaded_comment_author {
     padding-top: 4px;
     padding-left: 5px;
+    font-weight: bold;
 }
 
-.threaded_comment_text {
-    padding: 1px 2px 1px 5px;
-    width: 100%;
+div.comment-date {
+    font-size: 80%;
+    margin-left: 5px;
+    margin-top: 4px;
 }
 
 .respond_to_comment_form_div {
     float: right;
-    margin-right: 5px;
+    margin-right: 0px;
     margin-top: 2px;
 }
 
-div.comment-date {
-    float: right;
-    font-size: 80%;
-    margin-right: 5px;
-}
 
 /* ---- End threaded comments ---------- */
 

@@ -108,6 +108,7 @@ ProjectPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible) + "px");
     jQuery(self.el).find('div.panel').css('height', (visible - 200) + "px");
+    jQuery(self.el).find('div.scroll').css('height', (visible - 50) + "px");
 };
 
 ProjectPanelHandler.prototype.onPrepareCitation = function (target) {

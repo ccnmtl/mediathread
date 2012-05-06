@@ -129,7 +129,7 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
     var self = this;
 
     PanelManager.newPanel({
-        'url': MediaThread.urls['discussion-panel-create'](),
+        'url': MediaThread.urls['discussion-create'](),
         'params': {
             'publish': 'PrivateStudentAndFaculty',
             'inherit': 'true',

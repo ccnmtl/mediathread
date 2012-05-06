@@ -53,13 +53,13 @@
             'project-create': function () {
                 return '/project/create/';
             },
-            'discussion-panel-create': function () {
+            'discussion-create': function () {
                 return '/discussion/new/';
             },
-            'edit-comment': function (comment_id) {
+            'comment-edit': function (comment_id) {
                 return '/discussion/comment/' + comment_id;
             },
-            'create-comment': function () {
+            'comment-create': function () {
                 return '/comments/post/';
             }
         };

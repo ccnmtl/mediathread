@@ -62,15 +62,20 @@ DiscussionPanelHandler.prototype.postInitialize = function (instance) {
             if (jQuery(this.form.elements.email).attr("value") === "") {
                 jQuery(this.form.elements.email).attr("value", "null@example.com");
             }
-            
-            var threads = jQuery('li.comment-thread');
-            if (threads.length === 0) {
-                self.open_edit();
-            }
-            
+                        
             //decorate respond listeners
             jQuery('span.respond_prompt', self.el).click(function (evt) { self.open_respond(evt); });
             jQuery('span.edit_prompt', self.el).click(function (evt) { self.open_edit(evt); });
+            
+            // if there's only one comment, and i'm the author and the content is empty, then open the edit form
+            if (self.panel.context.discussion.thread.length === 1 &&
+                self.panel.context.discussion.thread[0].author === self.space_owner &&
+                self.panel.context.discussion.thread[0].content.length < 1) {
+                var elt = jQuery(self.el).find("span.edit_prompt")[0];
+                jQuery(elt).trigger("click");
+            } else {
+                self.hide_comment_form();
+            }
         }
         self.resize();
     }
@@ -197,7 +202,6 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
     jQuery(self.el).find("div.collection-materials").show();
 };
 
-
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
     jQuery(self.form).hide();
@@ -254,10 +258,10 @@ DiscussionPanelHandler.prototype.submit = function (evt) {
     info.mode = ((info['edit-id'] === '') ? 'post' : 'update');
     switch (info.mode) {
     case 'update':
-        info.url = MediaThread.urls['edit-comment'](info['edit-id']);
+        info.url = MediaThread.urls['comment-edit'](info['edit-id']);
         break;
     case 'post':
-        info.url = MediaThread.urls['create-comment']();
+        info.url = MediaThread.urls['comment-create']();
         break;
     }
     jQuery.ajax({
@@ -489,5 +493,3 @@ DiscussionPanelHandler.prototype.readonly = function () {
     
     return false;
 };
-
-

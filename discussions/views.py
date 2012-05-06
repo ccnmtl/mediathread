@@ -21,6 +21,7 @@ from django.contrib.comments.managers import CommentManager
 
 from threadedcomments import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
+from discussions.utils import pretty_date
 
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
@@ -33,43 +34,10 @@ def show(request, discussion_id):
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
     return show_discussion(request, root_comment)
 
-@allow_http("GET","DELETE")
-def show_discussion(request, root_comment):
-    space_viewer = request.user
 
-    if request.method == "DELETE":
-        return delete_collaboration(request, root_comment.object_pk)
-
-    if not root_comment.content_object.permission_to('read',request):
-        return HttpResponseForbidden('You do not have permission to view this discussion.')
-    
-    try:
-        my_course = root_comment.content_object.context.content_object
-    except:
-        #legacy: for when contexts weren't being set in new()
-        my_course = request.course
-        root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
-        root_comment.content_object.save()
-
-    target = None
-    if root_comment.content_object._parent_id and \
-            root_comment.content_object._parent.object_pk:
-        target = root_comment.content_object._parent
-
-    rv = {
-        'is_space_owner': True,
-        'edit_comment_permission': my_course.is_faculty(space_viewer),
-        'space_owner': space_viewer, #for now
-        'space_viewer': space_viewer,
-        'root_comment': root_comment,
-        'target':target,        
-        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
-        }
-    
-    return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))
         
 @allow_http("POST")
-def new(request):
+def discussion_create(request):
     """Start a discussion of an arbitrary model instance."""
     rp = request.POST
 
@@ -136,10 +104,48 @@ def new(request):
                  'context': threaded_comment_json(new_threaded_comment, request.user)
                }
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')   
+
+@allow_http("DELETE")
+def discussion_delete(request, root_comment):
+    space_viewer = request.user
+
+    return delete_collaboration(request, root_comment.object_pk)    
+    
+@allow_http("GET")
+def discussion_view(request, root_comment):
+    space_viewer = request.user
+
+    if not root_comment.content_object.permission_to('read', request):
+        return HttpResponseForbidden('You do not have permission to view this discussion.')
+    
+    try:
+        my_course = root_comment.content_object.context.content_object
+    except:
+        #legacy: for when contexts weren't being set in new()
+        my_course = request.course
+        root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
+        root_comment.content_object.save()
+
+    target = None
+    if root_comment.content_object._parent_id and \
+            root_comment.content_object._parent.object_pk:
+        target = root_comment.content_object._parent
+
+    rv = {
+        'is_space_owner': True,
+        'edit_comment_permission': my_course.is_faculty(space_viewer),
+        'space_owner': space_viewer, #for now
+        'space_viewer': space_viewer,
+        'root_comment': root_comment,
+        'target':target,        
+        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
+        }
+    
+    return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))    
     
 @allow_http("POST")    
 @rendered_with('comments/posted.html')
-def comment_change(request, comment_id, next=None):
+def comment_save(request, comment_id, next=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
 
@@ -163,73 +169,15 @@ def comment_change(request, comment_id, next=None):
             disc_sc.save()
 
     comment.save()
-    return {
-        'comment': comment,
-        }
-    
-    
-
-def pretty_date(timestamp):
-    """
-    Get a datetime object or a int() Epoch timestamp and return a
-    pretty string like 'an hour ago', 'Yesterday', '3 months ago',
-    'just now', etc
-    """
-    from datetime import datetime
-    now = datetime.now()
-    diff = now - timestamp 
-    
-    second_diff = diff.seconds
-    day_diff = diff.days
-    ago = ""
-    
-    if day_diff == 0:
-        if second_diff < 10:
-            ago = "just now"
-        elif second_diff < 60:
-            ago = str(second_diff) + " seconds ago"
-        elif second_diff < 120:
-            ago =  "a minute ago"
-        elif second_diff < 3600:
-            ago = str( second_diff / 60 ) + " minutes ago"
-        elif second_diff < 7200:
-            ago = "an hour ago"
-        elif second_diff < 86400:
-            ago = str( second_diff / 3600 ) + " hours ago"
-        
-        return "%s (%s)" % (timestamp.strftime("%I:%M %p"), ago)
-    elif day_diff == 1:
-        ago = "(Yesterday)"
-    elif day_diff < 14:
-        ago = "(" + str(day_diff) + " days ago)"
-        
-    return "%s %s" % (timestamp.strftime("%m/%d/%Y %I:%M %p"), ago)
+    return { 'comment': comment, }
       
 def threaded_comment_json(comment, viewer):
     coll = ContentType.objects.get_for_model(Collaboration)
     all = ThreadedComment.objects.filter(content_type=coll, object_pk=comment.content_object.pk, site__pk=settings.SITE_ID)
-    
     all = fill_tree(all)
     all = annotate_tree_properties(all)
-    
-    current_parent_id = None
-    thread = []
-    for obj in all:
-        data = { 'open': obj.open if hasattr(obj, "open") else None,
-                 'close': [ i for i in obj.close ] if hasattr(obj, "close") else None,
-                 'id': obj.id,
-                 'author': obj.name,
-                 'submit_date': pretty_date(obj.submit_date),
-                 'title': obj.title,
-                 'content': obj.comment,
-               }
-    
-        if obj.user == viewer:
-            data['can_edit'] = True
-            
-        thread.append(data)
-    
-    data = { 
+
+    return {
         'type': 'discussion',
         'form': comments.get_form()(comment.content_object).__unicode__(),
         'editing': True,
@@ -237,7 +185,14 @@ def threaded_comment_json(comment, viewer):
         'discussion': {
             'id': comment.id,
             'max_length': COMMENT_MAX_LENGTH,
-            'thread': thread
+            'thread': [{ 'open': obj.open if hasattr(obj, "open") else None,
+                         'close': [ i for i in obj.close ] if hasattr(obj, "close") else None,
+                         'id': obj.id,
+                         'author': obj.name,
+                         'submit_date': pretty_date(obj.submit_date),
+                         'title': obj.title,
+                         'content': obj.comment,
+                         'can_edit': True if obj.user == viewer else False
+                       } for obj in all]
          }
     }
-    return data    

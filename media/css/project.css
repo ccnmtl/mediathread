@@ -32,7 +32,6 @@ a.edit-pencil {
     background: url('../img/media-Bkgd.gif') no-repeat center top;
     height: 100%;
     min-height: 300px;
-
 }
 
 .asset-view-small {
@@ -241,27 +240,6 @@ div.save-publish-status {
     text-decoration:none;
 }
 
-.comment_form_space ul {
-    margin: 0 0 0 0;
-}
-
-.respond_to_comment_form_div {
-    float: right;
-    margin-right: 5px;
-    margin-top: 2px;
-}
-
-.respond_to_comment_form_div .control-open {
-    padding-right:20px;
-    background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
-    font-weight:bold;
-}
-
-.comment-date {
-
-	font-size: 80%;
-}
-
 div.threadedcomments-container {
     overflow-x: hidden;
     overflow-y: auto;
@@ -370,7 +348,7 @@ li.comment-thread:target > .comment .threaded_comment_header {
     background-color:#CCCCCC;
     padding: 2px 0px 4px 0px;
     width: 100%;
-    height: 25px;
+    height: 35px;
 }
 
 .threaded_comment_author {
@@ -383,10 +361,18 @@ li.comment-thread:target > .comment .threaded_comment_header {
     width: 100%;
 }
 
-.comment-actions {
-    float:right;
-
+.respond_to_comment_form_div {
+    float: right;
+    margin-right: 5px;
+    margin-top: 2px;
 }
+
+div.comment-date {
+    float: right;
+    font-size: 80%;
+    margin-right: 5px;
+}
+
 /* ---- End threaded comments ---------- */
 
 /* Revision dialog */

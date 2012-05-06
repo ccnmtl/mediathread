@@ -195,7 +195,7 @@ CollectionList.prototype.createThumbs = function (assets) {
                 var obj_div = document.createElement('div');
                 obj_div.setAttribute('class', 'annotation-thumb');
 
-                var target_div = document.getElementById("annotation-thumb-" + ann.id);
+                var target_div = jQuery(self.parent).find(".annotation-thumb-" + ann.id)[0];
                 target_div.appendChild(obj_div);
                 // should probably be in .view
                 asset.presentation = 'thumb';

@@ -38,7 +38,7 @@
                                 <div>
                                     {{#context.can_edit?}}
                                         <input class="{{context.project.type}} project project-savebutton" 
-                                            type="submit" value="Save &amp; Publish" />
+                                            type="submit" value="Save" />
                                             
                                             <div class="save-publish-status" style="display: none" title="Save Changes">
                                                 <div><label>Visibility</label></div>    
@@ -55,7 +55,7 @@
                                                 type="button" value="Revisions" />
                                             
                                                 <div class="revision-list" style="display: none" title="Revisions">
-                                                    <div>Select a revision, then click "View".</div>    
+                                                    <div>Select a revision, then click "View". The revision view will open in a separate window.</div>    
                                                     <select name="revisions" multiple="multiple">
                                                         {{#context.revisions}}
                                                             <option value="/project/view/{{versioned_id}}/version/{{version_number}}/">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
@@ -67,7 +67,7 @@
                                         {{#context.responses?}}
                                             <input class="project project-responsesbutton" type="button" value="Responses"/>
                                                 <div class="response-list" style="display: none" title="Responses">
-                                                    <h5>Select a response to this assignment, then click "View".</h5>
+                                                    <div>Select an assignment response, then click "View"</div>
                                                     <select name="responses" multiple="multiple">
                                                         {{#context.responses}}
                                                             <option value="{{url}}">

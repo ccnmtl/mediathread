@@ -58,10 +58,12 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
 ProjectPanelHandler.prototype.postInitialize = function (instance) {
     var self = this;
     
-    if (instance && instance.id === self.panel.context.project.id + "-project-content") {
+    if (instance && instance.id === self.panel.context.project.id + "-project-content" && !self.tinyMCE) {
     
         self.tinyMCE = instance;
-        self.tinyMCE.onChange.add(function (editor) { self.setDirty(true); });
+        self.tinyMCE.onChange.add(function (editor) {
+            self.setDirty(true);
+        });
         
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
@@ -166,12 +168,13 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
                   { text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
-        "draggable": false,
-        "resizable": false,
-        "modal": true,
-        "width": 425,
-        "height": 245
+        beforeClose: function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
+        draggable: true,
+        resizable: false,
+        modal: true,
+        width: 425,
+        height: 245,
+        position: "top"
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -195,7 +198,7 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
                   { text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function (event, ui) {
+        beforeClose: function (event, ui) {
             if (self._save) {
                 var opts = jQuery(self.el).find("select[name='revisions'] option:selected");
                 var val = jQuery(opts[0]).val();
@@ -204,11 +207,10 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
             self._save = false;
             return true;
         },
-        "draggable": false,
-        "resizable": false,
-        "modal": true,
-        "width": 425,
-        "height": 245
+        modal: true,
+        width: 425,
+        height: 245,
+        position: "top"
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -232,7 +234,7 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
                   { text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function (event, ui) {
+        beforeClose: function (event, ui) {
             if (self._save) {
                 var opts = jQuery(self.el).find("select[name='responses'] option:selected");
                 var val = jQuery(opts[0]).val();
@@ -241,11 +243,10 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
             self._save = false;
             return true;
         },
-        "draggable": false,
-        "resizable": false,
-        "modal": true,
-        "width": 425,
-        "height": 245
+        modal: true,
+        width: 425,
+        height: 200,
+        position: "top"
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -322,6 +323,8 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         
         self.tinyMCE.show();
     } else {
+        var isDirty = self.projectModified;
+        
         // Switch to Preview View
         self.tinyMCE.hide();
         self.tinyMCE.plugins.editorwindow._closeWindow();
@@ -343,6 +346,11 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         jQuery(self.el).find("input.project-previewbutton").attr("value", "Edit");
         jQuery(self.el).find("div.asset-view-published").show();
         jQuery(self.el).find("h1.project-title").show();
+        
+        // TinyMCE bug
+        // The first time the editor is shown
+        // the project can be marked as dirty incorrectly
+        self.projectModified = isDirty;
     }
     
     jQuery(window).trigger("resize");
@@ -368,7 +376,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
                   { text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }}
               ],
-        "beforeClose": function (event, ui) {
+        beforeClose: function (event, ui) {
             if (self._save) {
                 self.saveProject(frm);
             }
@@ -376,11 +384,12 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
             self._save = false;
             return true;
         },
-        "draggable": false,
-        "resizable": false,
-        "modal": true,
-        "width": 250,
-        "height": 145
+        draggable: true,
+        resizable: false,
+        modal: true,
+        width: 250,
+        height: 145,
+        position: "top"
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -390,7 +399,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
 ProjectPanelHandler.prototype.saveProject = function (frm) {
     var self = this;
     
-    tinyMCE.triggerSave();
+    self.tinyMCE.save();
     
     if (/preview/.test(frm.target)) {
         return true;

@@ -277,7 +277,7 @@ DiscussionPanelHandler.prototype.cancel = function (evt) {
 DiscussionPanelHandler.prototype.submit = function (evt) {
     var self = evt.data.self;
 
-    tinyMCE.triggerSave();
+    self.tinyMCE.save();
     evt.preventDefault();
 
     if (self.max_comment_length &&

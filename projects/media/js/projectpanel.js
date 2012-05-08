@@ -445,7 +445,7 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             
             jQuery(saveButton).removeAttr("disabled")
                 .attr("value", "Saved")
-                .effect("bounce", { times: 3  }, 1000, function () { jQuery(saveButton).attr("value", "Save & Publish"); });
+                .effect("bounce", { times: 3  }, 1000, function () { jQuery(saveButton).attr("value", "Save"); });
         }
     });
     

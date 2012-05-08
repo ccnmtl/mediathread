@@ -51,7 +51,6 @@ def project_create(request):
         project_context['editing'] = True
         
         data = { 'panel_state': 'open', 
-                 'panel_state_label': "Edit",
                  'template': 'project',
                  'context': project_context 
         }
@@ -204,7 +203,7 @@ def project_workspace(request, project_id):
         if parent_assignment:
             assignment_context = project_json(request, parent_assignment, parent_assignment.can_edit(request))
             assignment_context['create_selection'] = True
-            panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': assignment_context, 'template': 'project' }
+            panel = { 'panel_state': 'closed', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
         # Requested project, can be either an assignment or composition
@@ -213,9 +212,8 @@ def project_workspace(request, project_id):
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
             not project.responses_by(request, request.user)
         project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback
-        panel_state_label = "Edit" if can_edit else "View"   
         
-        panel = { 'panel_state': 'open', 'panel_state_label': panel_state_label, 'context': project_context, 'template': 'project' }
+        panel = { 'panel_state': 'open', 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
         # Project Response -- if the requested project is an assignment
@@ -227,7 +225,7 @@ def project_workspace(request, project_id):
                 response = responses[0]
                 response_context = project_json(request, response, response.can_edit(request))
                 
-                panel = { 'panel_state': 'closed', 'panel_state_label': 'View', 'context': response_context, 'template': 'project' }
+                panel = { 'panel_state': 'closed', 'context': response_context, 'template': 'project' }
                 panels.append(panel)
             
         data['panels'] = panels

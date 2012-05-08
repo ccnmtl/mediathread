@@ -183,7 +183,7 @@
                                             
                                               <div>
                                                   <span class="metadata-label">Author(s):</span>
-                                                  <span class="metadata-value">{{#authors}}{{name}}, {{/authors}}</span>
+                                                  <span class="metadata-value">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
                                               </div>
                                               
                                               <span class="metadata-label">Saved at:</span>

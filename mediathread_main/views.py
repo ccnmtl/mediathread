@@ -388,7 +388,10 @@ def get_records(user, course, request):
         the_json['url'] = p.get_absolute_url()
         
         participants = p.attribution_list()
-        the_json['authors'] = [ {'name': get_public_name(u, request) } for u in participants]
+        the_json['authors'] = [{
+            'name': get_public_name(u, request),
+            'last': idx == (len(participants) - 1) 
+        } for idx, u in enumerate(participants)]
         the_json['modified'] = p.modified.strftime("%m/%d/%y %I:%M %p")
         the_json['status'] = p.status()
         the_json['editable'] = editable

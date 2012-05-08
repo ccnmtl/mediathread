@@ -248,14 +248,16 @@ def project_json(request, project, can_edit, version_number=None):
     rand = ''.join([choice(letters) for i in range(5)])
     
     versions = project.versions.order_by('-change_time')
+    participants = project.attribution_list()
     
     data = { 'project': { 'title': project.title,
                           'body': project.body,
                           'participants': [{ 'name': p.get_full_name(),
                                              'username': p.username,
                                              'public_name': get_public_name(p, request),
-                                             'is_viewer': request.user.username == p.username,  
-                                            } for p in project.attribution_list()],
+                                             'is_viewer': request.user.username == p.username,
+                                             'last':  idx == (len(participants) - 1) 
+                                            } for idx, p in enumerate(participants)],
                           'id': project.pk,
                           'url': project.get_absolute_url(),
                           'public_url': project.public_url(),
@@ -274,7 +276,11 @@ def project_json(request, project, can_edit, version_number=None):
                            ],
             'responses': [ { 'url': r.get_absolute_url(),
                              'title': r.title,
-                             'attribution_list': [ { 'name': get_public_name(p, request) } for p in r.attribution_list() ],
+                             'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
+                             'attribution_list': [{ 
+                                 'name': get_public_name(p, request),
+                                 'last': idx == (len(r.attribution_list()) - 1)
+                             } for idx, p in enumerate(r.attribution_list()) ],
                            } for r in project.responses(request)],
             'type': 'project',
             'can_edit': can_edit

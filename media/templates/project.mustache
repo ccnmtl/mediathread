@@ -67,15 +67,15 @@
                                         {{#context.responses?}}
                                             <input class="project project-responsesbutton" type="button" value="Responses"/>
                                                 <div class="response-list" style="display: none" title="Responses">
-                                                    <div>Select a student's response, then click "View".</div>
+                                                    <h5>Select a response to this assignment, then click "View".</h5>
                                                     <select name="responses" multiple="multiple">
                                                         {{#context.responses}}
                                                             <option value="{{url}}">
+                                                                {{ modified }} &mdash;
                                                                 {{#attribution_list}}
-                                                                    {{ name }}, 
+                                                                    {{ name }}{{^last}}, {{/last}} 
                                                                 {{/attribution_list}}
-                                                                &mdash;
-                                                                {{ title }} &nbsp;
+                                                                
                                                             </option>
                                                         {{/context.responses}}
                                                     </select> 
@@ -110,7 +110,7 @@
                             {{/context.can_edit?}}
                             <h5 style="margin-top: 0px">by <span class="participants_chosen">
                                 {{#context.project.participants}}
-                                    {{public_name}}
+                                    {{public_name}}{{^last}}, {{/last}}
                                 {{/context.project.participants}}
                                 </span>
                             </h5>

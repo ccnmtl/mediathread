@@ -143,7 +143,7 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
             'app_label': 'projects',
             'model': 'project',
             'obj_pk': self.panel.context.project.id,
-            'comment_html': self.panel.context.project.type + ": " + jQuery(self.el).find("input.project-title").val()
+            'comment_html': jQuery(self.el).find("h1.project-title").html().trim() + ": Instructor Feedback"
         }
     });
     

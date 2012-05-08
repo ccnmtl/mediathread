@@ -4,7 +4,7 @@ from django.conf import settings
 urlpatterns = patterns(
     'discussions.views', 
 
-    url(r'^new/$', 'discussion_create', name='discussion-create'),
+    url(r'^create/$', 'discussion_create', name='discussion-create'),
     
     url(r'^delete/(?P<discussion_id>\d+)/$', 'discussion_delete', name='discussion-delete'),
 

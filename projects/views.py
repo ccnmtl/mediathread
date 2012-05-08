@@ -69,15 +69,7 @@ def project_save(request, project_id):
     if request.method == "POST":
         projectform = ProjectForm(request, instance=project, data=request.POST)
         if projectform.is_valid():
-            if "Preview" == request.POST.get('submit',None):
-                #doesn't send project.author, and other non-exposed fields
-                mock_project = projectform.cleaned_data.copy()
-                mock_project['attribution_list'] = mock_project['participants']
-                mock_project['assignment'] = projectform.instance.assignment()
-                mock_project['id'] = project_id
-                return project_preview(request, space_owner, mock_project, 
-                                       is_participant=True, preview_num=request.GET.get('preview',1))
-            
+
             #legacy and for optimizing queries
             projectform.instance.submitted = (request.POST.get('publish',None) != 'PrivateEditorsAreOwners')
             
@@ -179,6 +171,19 @@ def project_view_readonly(request, project_id, version_number=None):
     
 @allow_http("GET")
 def project_workspace(request, project_id):
+    """
+    A multi-panel editable view for the specified project
+    Legacy note: Ideally, this function would be named project_view but
+    StructuredCollaboration requires the view name to be  <class>-view to do a reverse        
+    
+    Panel 1: Parent Assignment (if applicable)
+    Panel 2: Project
+    Panel 3: Instructor Feedback (if applicable & exists) 
+    
+    Keyword arguments:
+    project_id -- the model id
+    
+    """    
     project = get_object_or_404(Project, pk=project_id)
     
     if not project.can_read(request):
@@ -243,6 +248,16 @@ def project_workspace(request, project_id):
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
 def project_json(request, project, can_edit, version_number=None):
+    '''
+        JSON representation for a project. Includes:
+        * basic project information
+        * assets
+        * annotations
+        * responses (if applicable & permissable)
+        * revisions (if permissable)
+        * a project participant form (if permissable)
+    '''
+    
     rand = ''.join([choice(letters) for i in range(5)])
     
     versions = project.versions.order_by('-change_time')

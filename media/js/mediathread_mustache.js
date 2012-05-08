@@ -57,7 +57,7 @@
                 return '/discussion/show/' + discussion_id + "/";
             },
             'discussion-create': function () {
-                return '/discussion/new/';
+                return '/discussion/create/';
             },
             'comment-edit': function (comment_id) {
                 return '/discussion/comment/' + comment_id;

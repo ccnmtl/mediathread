@@ -209,7 +209,7 @@ def project_workspace(request, project_id):
                     
         # Requested project, can be either an assignment or composition
         project_context = project_json(request, project, can_edit)
-        project_context['editing'] = can_edit # Always editing if it's allowed.
+        project_context['editing'] = len(project.body) < 1 # only editing if it's new
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
             not project.responses_by(request, request.user)
         project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback

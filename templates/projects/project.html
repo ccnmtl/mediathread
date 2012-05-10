@@ -48,11 +48,13 @@
                 'container': 'sliding-content-container',
                 {% if public_url %}
                     'url': '{{ public_url }}'
+                {% else %}{% if show_feedback %}
+                    'url': MediaThread.urls['project-feedback']({{project.id}})
                 {% else %}{% if version %}
                     'url': MediaThread.urls['project-readonly']({{project.id}}, {{version}})
                 {% else %}
                     'url': MediaThread.urls['project-view']({{project.id}})
-                {% endif %}{% endif %}
+                {% endif %}{% endif %}{% endif %}
             });
         });
   </script>

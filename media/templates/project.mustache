@@ -63,25 +63,25 @@
                                                     </select> 
                                                 </div>  
                                         {{/context.revisions?}}
-                                            
-                                        {{#context.responses?}}
-                                            <input class="project project-responsesbutton" type="button" value="Responses"/>
-                                                <div class="response-list" style="display: none" title="Responses">
-                                                    <div>Select an assignment response, then click "View"</div>
-                                                    <select name="responses" multiple="multiple">
-                                                        {{#context.responses}}
-                                                            <option value="{{url}}">
-                                                                {{ modified }} &mdash;
-                                                                {{#attribution_list}}
-                                                                    {{ name }}{{^last}}, {{/last}} 
-                                                                {{/attribution_list}}
-                                                                
-                                                            </option>
-                                                        {{/context.responses}}
-                                                    </select> 
-                                                </div>  
-                                        {{/context.responses?}}
                                     {{/context.can_edit?}}
+                                    
+                                   {{#context.responses?}}
+                                        <input class="project project-responsesbutton" type="button" value="Responses"/>
+                                            <div class="response-list" style="display: none" title="Responses">
+                                                <div>Select an assignment response, then click "View"</div>
+                                                <select name="responses" multiple="multiple">
+                                                    {{#context.responses}}
+                                                        <option value="{{url}}">
+                                                            {{ modified }} &mdash;
+                                                            {{#attribution_list}}
+                                                                {{ name }}{{^last}}, {{/last}} 
+                                                            {{/attribution_list}}
+                                                            
+                                                        </option>
+                                                    {{/context.responses}}
+                                                </select> 
+                                            </div>  
+                                    {{/context.responses?}}
                                     
                                     {{#context.create_assignment_response?}}
                                         <input class="{{context.project.type}} project project-create-assignment-response" 

@@ -7,6 +7,7 @@ urlpatterns = patterns(
     url(r'^create/$', 'project_create', name="project-create"),
     
     url(r'^view/(?P<project_id>\d+)/$', 'project_workspace', name="project-workspace"),
+    url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$', 'project_workspace', name="project-workspace-feedback"),
     
     url(r'^save/(?P<project_id>\d+)/$', 'project_save', name='project-save'),
     

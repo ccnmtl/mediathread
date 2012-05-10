@@ -457,7 +457,8 @@ ProjectPanelHandler.prototype.setDirty = function (is_dirty, animate) {
     if (is_dirty) {
         self.projectModified = true;
         if (animate) {
-            jQuery(self.el).find("input.project-savebutton").effect("bounce", {}, 750);
+            jQuery(self.el).find("input.project-savebutton").attr("value", "Save Needed")
+            .effect("highlight", { times: 3 }, 750);
         }
     } else {
         self.projectModified = false;

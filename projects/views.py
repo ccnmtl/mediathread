@@ -167,10 +167,10 @@ def project_view_readonly(request, project_id, version_number=None):
         
         data['panels'] = panels
         
-        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')  
-    
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
+      
 @allow_http("GET")
-def project_workspace(request, project_id):
+def project_workspace(request, project_id, feedback=None):
     """
     A multi-panel editable view for the specified project
     Legacy note: Ideally, this function would be named project_view but
@@ -189,7 +189,8 @@ def project_workspace(request, project_id):
     if not project.can_read(request):
         return HttpResponseForbidden("forbidden")
     
-    data = { 'space_owner' : request.user.username }
+    show_feedback = feedback == "feedback"
+    data = { 'space_owner' : request.user.username, 'show_feedback': show_feedback }
     course = request.course
     is_faculty = course.is_faculty(request.user)
     
@@ -201,7 +202,7 @@ def project_workspace(request, project_id):
         
         is_assignment = project.is_assignment(request)
         can_edit = project.can_edit(request)
-        feedback = project.feedback_discussion() if is_faculty or can_edit else None
+        feedback_discussion = project.feedback_discussion() if is_faculty or can_edit else None
     
         # Project Parent (assignment) if exists
         parent_assignment = project.assignment()
@@ -216,9 +217,9 @@ def project_workspace(request, project_id):
         project_context['editing'] = len(project.body) < 1 # only editing if it's new
         project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
             not project.responses_by(request, request.user)
-        project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback
+        project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback_discussion
         
-        panel = { 'panel_state': 'open', 'context': project_context, 'template': 'project' }
+        panel = { 'panel_state': 'closed' if show_feedback else 'open', 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
         # Project Response -- if the requested project is an assignment
@@ -228,20 +229,24 @@ def project_workspace(request, project_id):
             responses = project.responses_by(request, request.user)
             if len(responses) > 0:
                 response = responses[0]
-                response_context = project_json(request, response, response.can_edit(request))
+                response_can_edit = response.can_edit(request)
+                response_context = project_json(request, response, response_can_edit)
                 
                 panel = { 'panel_state': 'closed', 'context': response_context, 'template': 'project' }
                 panels.append(panel)
+                
+                if not feedback_discussion and response_can_edit:
+                    feedback_discussion = response.feedback_discussion()
             
         data['panels'] = panels
         
         # If feedback exists for the requested project
-        if feedback:
+        if feedback_discussion:
             # 3rd pane is the instructor feedback, if it exists
-            panel = { 'panel_state': 'open' if is_faculty else 'closed',
+            panel = { 'panel_state': 'open' if show_feedback else 'closed',
                       'panel_state_label': "Feedback",
                       'template': 'discussion',
-                      'context': threaded_comment_json(feedback, request.user)
+                      'context': threaded_comment_json(feedback_discussion, request.user)
                     }
             panels.append(panel)
             
@@ -287,17 +292,24 @@ def project_json(request, project, can_edit, version_number=None):
             'annotations': [ ann.sherd_json(request, rand, ('title','author')) 
                                 for ann in project.citations()
                            ],
-            'responses': [ { 'url': r.get_absolute_url(),
-                             'title': r.title,
-                             'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
-                             'attribution_list': [{ 
-                                 'name': get_public_name(p, request),
-                                 'last': idx == (len(r.attribution_list()) - 1)
-                             } for idx, p in enumerate(r.attribution_list()) ],
-                           } for r in project.responses(request)],
             'type': 'project',
             'can_edit': can_edit
     }
+    
+    data['responses'] = []
+    for r in project.responses(request):
+        if r.can_read(request):
+            obj = { 'url': r.get_absolute_url(),
+                    'title': r.title,
+                    'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
+                    'attribution_list': [] }
+            
+            x = len(r.attribution_list()) - 1
+            for idx, author in enumerate(r.attribution_list()):
+                obj['attribution_list'].append({ 'name': get_public_name(author, request),
+                                                 'last': idx == x }) 
+                
+            data['responses'].append(obj)
     
     if project.is_participant(request.user):
         data['revisions'] = [{ 'version_number': v.version_number,

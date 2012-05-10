@@ -47,6 +47,9 @@
             'project-view': function (project_id) {
                 return '/project/view/' + project_id + '/';
             },
+            'project-feedback': function (project_id) {
+                return '/project/view/' + project_id + '/feedback/';
+            },
             'project-readonly': function (project_id, version) {
                 return '/project/view/' + project_id + '/version/' + version + '/';
             },

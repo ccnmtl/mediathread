@@ -66,7 +66,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
         var elt = jQuery(self.el).find("span.edit_prompt")[0];
         jQuery(elt).trigger("click");
     } else {
-        self.hide_comment_form();
+        self.hide_comment_form(false);
     }
 };
 
@@ -236,23 +236,35 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
     jQuery(self.el).find("div.collection-materials").show();
 };
 
-DiscussionPanelHandler.prototype.hide_comment_form = function () {
+DiscussionPanelHandler.prototype.hide_comment_form = function (scrollToPrevious) {
     var self = this;
-    jQuery(self.form.elements.title).hide();
-    jQuery(self.form).hide();
-
+    
     // Switch to a readonly view
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
-
-    // Switch to a readonly view
-    jQuery(self.el).find("div.collection-materials").hide();
-
-    jQuery(self.el).find("td.panhandle-stripe div.label")
-            .html("View Selection");
-    jQuery(self.el).find("div.asset-view-published").show();
-
+    
+    if (scrollToPrevious) {
+        scrollToPrevious = jQuery(self.form).prev()[0];
+    }
+    
+    jQuery(self.form).hide('fast', function () {
+        if (scrollToPrevious) {
+            var elt = jQuery(self.el).find("div.threadedcomments-container")[0];
+            jQuery(elt).animate({
+                scrollTop: jQuery(scrollToPrevious).offset().top - jQuery(elt).offset().top
+            }, 500);
+        }
+        
+        jQuery(self.form.elements.title).hide();
+    
+        // Switch to a readonly view
+        jQuery(self.el).find("div.collection-materials").hide();
+    
+        jQuery(self.el).find("td.panhandle-stripe div.label")
+                .html("View Selection");
+        jQuery(self.el).find("div.asset-view-published").show();
+    });
 };
 
 DiscussionPanelHandler.prototype._bind = function (parent, elementSelector,
@@ -271,7 +283,7 @@ DiscussionPanelHandler.prototype.cancel = function (evt) {
     var elt = evt.srcElement || evt.target || evt.originalTarget;
 
     self.set_comment_content();// empty it
-    self.hide_comment_form();
+    self.hide_comment_form(true);
     jQuery("div.threaded_comment_text").show();
     jQuery("div.respond_to_comment_form_div").show();
 };
@@ -377,7 +389,7 @@ DiscussionPanelHandler.prototype.oncomplete = function (responseText,
                 self.form.elements.security_hash.value = res.security_hash;
             }
             // /4. hide form
-            self.hide_comment_form();
+            self.hide_comment_form(false);
             // /5. show respond/edit controls again
             jQuery("div.threaded_comment_text").show();
             jQuery("div.respond_to_comment_form_div").show();

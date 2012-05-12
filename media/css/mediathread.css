@@ -2651,7 +2651,7 @@ input.videoplay{
 
 .media-column .column-container h2 {
     background-color: #a88448;
-    text-transform: capitalize;
+    text-transform: capitalize !important;
     font-size: 98%;
 }
 

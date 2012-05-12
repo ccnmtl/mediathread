@@ -30,9 +30,12 @@ import simplejson
         
 @allow_http("POST")
 def discussion_create(request):
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+    
     """Start a discussion of an arbitrary model instance."""
     rp = request.POST
-
+    
     title = rp['comment_html']
     
     #Find the object we're discussing.

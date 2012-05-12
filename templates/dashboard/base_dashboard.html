@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {%load user_annotations comments %}
 
-{% block title %}Course Summary{% endblock %}
+{% block title %}Instructor Dashboard{% endblock %}
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/reports.js"></script>
@@ -50,7 +50,7 @@
               
               <form class="project-createnew" method="post" action="{%url project-create %}">
                   <input type="hidden" name="title" />
-                  <input type="submit" value="Create Composition or Assignment"/>
+                  <input type="submit" value="Create Composition Or Assignment"/>
               </form> 
               
               <!--Create Discussion-->

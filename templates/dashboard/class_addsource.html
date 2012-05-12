@@ -39,7 +39,8 @@
     {% if upload_enabled %}
         <h4>Upload Permission Settings</h4>
     
-        <form action="{% url class-add-source %}" method="POST">
+        <form action="{% url class-add-source %}" method="POST" name="form-upload-permission">
+        
             <select name="upload_permission">
                 {% for level in permission_levels %}
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>

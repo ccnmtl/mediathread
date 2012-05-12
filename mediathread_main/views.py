@@ -11,7 +11,7 @@ from djangosherd.models import DiscussionIndex
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseForbidden
 
 from django.core.urlresolvers import reverse
 import datetime
@@ -433,9 +433,11 @@ def get_records(user, course, request):
 @rendered_with('dashboard/dashboard_home.html')
 def dashboard(request):
     user = request.user
+    if not request.course.is_faculty(user):
+        return HttpResponseForbidden("forbidden")
     
     return { 
-       "space_viewer": request.user,
+       "space_viewer": user,
        "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", True),
        "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", True)      
     }

@@ -3,6 +3,7 @@ from lettuce.django import django_url
 from lettuce import before, after, world, step
 from django.test import client
 import sys, os, time
+from selenium.webdriver.common.keys import Keys
 
 import time
 try:
@@ -78,8 +79,13 @@ def i_log_out(step):
 def i_am_at_the_name_page(step, name):
     if world.using_selenium:
         # Check the page title
-        title = world.firefox.title
-        assert title.find(name) > -1, "Page title is %s. Expected something like %s" % (title, name)
+        try:
+            title = world.firefox.title
+            assert title.find(name) > -1, "Page title is %s. Expected something like %s" % (title, name)
+        except:
+            time.sleep(1)
+            title = world.firefox.title
+            assert title.find(name) > -1, "Page title is %s. Expected something like %s" % (title, name)
     
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):
@@ -133,6 +139,57 @@ def then_i_wait_count_second(step, count):
     n = int(count)
     time.sleep(n)
     
+@step(u'I see "([^"]*)"')
+def i_see_text(step, text):
+    try:
+        assert text in world.firefox.page_source, world.firefox.page_source
+    except:
+        time.sleep(1)
+        assert text in world.firefox.page_source, world.firefox.page_source
+    
+@step(u'I do not see "([^"]*)"')
+def i_do_not_see_text(step, text):
+    assert text not in world.firefox.page_source, world.firefox.page_source
+    
+@step(u'I dismiss a save warning')
+def i_dismiss_a_save_warning(step):
+    time.sleep(1)
+    alert = world.firefox.switch_to_alert()
+    alert.accept()
+    time.sleep(1)    
+    
+@step(u'There is an? ([^"]*) column')
+def there_is_a_title_column(step, title):
+    elts = world.firefox.find_elements_by_tag_name("h2")
+    for e in elts:
+        if e.text and e.text.strip().lower().startswith(title.lower()):
+            return
+        
+    assert False, "Unable to find a column entitled %s" % title
+
+@step(u'There is not an? ([^"]*) column')
+def there_is_not_a_title_column(step, title):
+    elts = world.firefox.find_elements_by_tag_name("h2")
+    for e in elts:
+        if e.text and e.text.strip().lower().startswith(title.lower()):
+            assert False, "Found a column entitled %s" % title
+
+@step(u'There is help for the ([^"]*) column')
+def there_is_help_for_the_title_column(step, title):
+    elts = world.firefox.find_elements_by_tag_name("h2")
+    for e in elts:
+        if e.text and e.text.strip().lower().startswith(title.lower()):
+            help = e.parent.find_element_by_css_selector("div.helpblock.on")
+            if help:
+                return
+        
+    assert False, "No help found for %s" % title    
+    
+@step(u'Then I\'m told ([^"]*)')
+def then_i_m_told_text(step, text):
+    alert = world.firefox.switch_to_alert()
+    assert alert.text.startswith(text), "Alert text invalid: %s" % alert.text
+    alert.accept()
     
 # Local utility functions
 def find_button_by_value(value):

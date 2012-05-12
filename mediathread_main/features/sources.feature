@@ -1,18 +1,15 @@
 Feature: Manage Sources
 
-    Scenario: 1. View Source Media, Add Sources, Enable Upload 
+    Scenario: 1. Manage Sources - View Source Media, Add Sources, Enable Upload 
         Using selenium
-        Given I am logged in as test_instructor
-        Given I am in the Sample Course class
-        When I access the url "/"
-        Then I am at the Home page
+        Given I am test_instructor in Sample Course
         
         When I click the Source Media button
         Then I am at the Source Media page
-        Then there is a Source Media column
-        Then there is help for the Source Media column
-        Then I do not see "Upload Video"
-        Then I see 0 sources
+        And there is a Source Media column
+        And there is help for the Source Media column
+        And I do not see "Upload Video"
+        And I see 0 sources
         
         When I click the Instructor Dashboard button
         Then I am at the Instructor Dashboard page
@@ -23,7 +20,7 @@ Feature: Manage Sources
         # Enable Video Upload
         When I click the Enable Video Upload button
         Then I'm told "Mediathread Video Upload has been enabled for your class"
-        Then I see "Upload Permission Settings"
+        And I see "Upload Permission Settings"
         
         # Add the YouTube Source
         When I add YouTube to the class
@@ -33,16 +30,15 @@ Feature: Manage Sources
         # Under Source Media        
         When I click the Source Media button
         Then I am at the Source Media page
-        Then I see "Upload Video"
-        Then I see 1 source
+        And I see "Upload Video"
+        And I see 1 source
         
         Finished using Selenium
    
            
-    Scenario: 2. Video Upload - Instructors Only
+    Scenario: 2. Manage Sources - Video Upload - Instructors Only
         Using selenium
-        Given I am logged in as test_instructor
-        Given I am in the Sample Course class
+        Given I am test_instructor in Sample Course
         Given video upload is enabled
         
         # By default, instructors and administrators are allowed to upload
@@ -60,15 +56,14 @@ Feature: Manage Sources
 
         Finished using Selenium
         
-    Scenario: 3. Video Upload - Administrators Only 
+    Scenario: 3. Manage Sources - Video Upload - Administrators Only 
         Using selenium
-        Given I am logged in as test_instructor
-        Given I am in the Sample Course class
+        Given I am test_instructor in Sample Course
         Given video upload is enabled
         
         # Set for administrators
         When I click the Instructor Dashboard button
-        When I click the Manage Sources button
+        Then I click the Manage Sources button
         Then I am at the Manage Sources page
         When I allow Administrators to upload videos
         Then I'm told "Your changes have been saved"
@@ -88,10 +83,9 @@ Feature: Manage Sources
         
         Finished using Selenium
         
-    Scenario: 4. Video Upload - Students Too 
+    Scenario: 4. Manage Sources - Video Upload - Students Too 
         Using selenium
-        Given I am logged in as test_instructor
-        Given I am in the Sample Course class
+        Given I am test_instructor in Sample Course
         Given video upload is enabled
         
         # Set for students

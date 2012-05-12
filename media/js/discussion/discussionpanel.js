@@ -218,13 +218,15 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
         jQuery(self.form).insertAfter(insertAfter);
         tinyMCE.execCommand("mceAddControl", false, "id_comment");
     }
-    jQuery(self.form).show();
-
-    if (insertAfter) {
-        jQuery(self.el).find("div.threadedcomments-container").animate({
-            scrollTop : jQuery(self.form).position().top
-        }, 500);
-    }
+    jQuery(self.form).show('fast', function () {
+        if (insertAfter) {
+            var elt = jQuery(self.el).find("div.threadedcomments-container")[0];
+            jQuery(elt).animate({
+                scrollTop: jQuery(self.form).offset().top - jQuery(elt).offset().top
+            }, 500);
+        }
+    });
+    
 
     // Switch to an Edit View
     // Unload any citations

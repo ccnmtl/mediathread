@@ -2446,7 +2446,7 @@ background-color: #ece8df;
    border: 1px solid #C89345;
    float: right;
    padding: 0px 5px 3px;
-   width: 90px;
+   width: 100px;
    height: 14px;
    font-size: .9em;
    text-align: center;
@@ -2462,7 +2462,10 @@ background-color: #ece8df;
     white-space: nowrap;
     display: block;
     text-transform: capitalize;
+}
 
+.create-selection a { 
+    padding-top: 1px;
 }
 
 #external-archives h2,

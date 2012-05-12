@@ -1,6 +1,6 @@
 {% extends "dashboard/base_dashboard.html" %}
 {% load assetlinks %}
-{% block title %}Manage Settings{% endblock %}
+{% block title %}Manage Publishing Options{% endblock %}
 
 {% block js %}
     {{ block.super }}
@@ -18,7 +18,7 @@
 
 {% block dashboard_module %}
 
-    <h2>Manage Settings</h2>
+    <h2>Manage Publishing Options</h2>
     
     {% with "help_public_compositions" as help_id %}
     {% with help_public_compositions as default_help_state %}

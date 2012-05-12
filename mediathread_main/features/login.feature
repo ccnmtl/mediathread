@@ -1,6 +1,6 @@
 Feature: Login
 
-    Scenario: 1. Invalid Login
+    Scenario: 1. Login - Test Invalid Login
         Using selenium
         Given I am not logged in
         When I access the url "/"
@@ -11,7 +11,7 @@ Feature: Login
         Then I am at the Login page
         Finished using Selenium
         
-    Scenario: 2. Student Login
+    Scenario: 2. Login - Test Student Login
         Using selenium
         Given I am not logged in
         When I access the url "/"
@@ -24,7 +24,7 @@ Feature: Login
         Then I am at the Login page
         Finished using Selenium      
 
-    Scenario: 3. Instructor Login
+    Scenario: 3. Login - Test Instructor Login
         Using selenium
         Given I am not logged in
         When I access the url "/"

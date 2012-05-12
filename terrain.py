@@ -58,6 +58,14 @@ def access_url(step, url):
     else:
         response = world.client.get(django_url(url))
         world.dom = html.fromstring(response.content)
+        
+@step(u'I am ([^"]*) in ([^"]*)')
+def i_am_username_in_course(step, username, course):
+    step.given('I am not logged in')
+    step.given('I am logged in as %s' % username)
+    step.given('I access the url "/"')
+    step.given('I am at the Home page')
+    step.given('I am in the %s class' % course)
 
 @step(u'I am not logged in')
 def i_am_not_logged_in(step):
@@ -158,7 +166,7 @@ def i_dismiss_a_save_warning(step):
     alert.accept()
     time.sleep(1)    
     
-@step(u'There is an? ([^"]*) column')
+@step(u'there is an? ([^"]*) column')
 def there_is_a_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
     for e in elts:
@@ -167,14 +175,14 @@ def there_is_a_title_column(step, title):
         
     assert False, "Unable to find a column entitled %s" % title
 
-@step(u'There is not an? ([^"]*) column')
+@step(u'there is not an? ([^"]*) column')
 def there_is_not_a_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
             assert False, "Found a column entitled %s" % title
 
-@step(u'There is help for the ([^"]*) column')
+@step(u'there is help for the ([^"]*) column')
 def there_is_help_for_the_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
     for e in elts:
@@ -185,8 +193,8 @@ def there_is_help_for_the_title_column(step, title):
         
     assert False, "No help found for %s" % title    
     
-@step(u'Then I\'m told ([^"]*)')
-def then_i_m_told_text(step, text):
+@step(u'I\'m told ([^"]*)')
+def i_m_told_text(step, text):
     alert = world.firefox.switch_to_alert()
     assert alert.text.startswith(text), "Alert text invalid: %s" % alert.text
     alert.accept()

@@ -682,8 +682,6 @@ table#sliding-content-container tr td.panhandle-stripe {
     width: 17px;
     height: 99%\9;
     padding-top: 7px;
-    border-top: 1px solid #999;
-    border-bottom: 1px solid #999;
 }
 
 table#sliding-content-container tr td.panhandle-stripe div.label {
@@ -706,12 +704,24 @@ table#sliding-content-container tr td.panel-container {
 }
 
 table#sliding-content-container tr td.panel-container div.panel {
-
     margin: 0;
     padding: 0px;
     border: none;
     min-height: 180px;
     height: 100%;
+}
+
+table#sliding-content-container tr td.panel-container div.panel.composition {
+    border: 1px solid #3A84BE;
+}
+
+table#sliding-content-container tr td.panel-container div.panel.feedback,
+table#sliding-content-container tr td.panel-container div.panel.discussion {
+        border: 1px solid black;
+}
+
+table#sliding-content-container tr td.panel-container div.panel.assignment {
+    border: 1px solid #175D35;
 }
 
 table#sliding-content-container tr td.panel-container div.panel form {
@@ -927,14 +937,17 @@ td.panhandle-stripe.composition {
 
 div.panhandle-left.assignment {
     background-color: #DAE7E0 !important;
+    border: 1px solid #175D35;
 }
 
-div.panhandle-left.composition{
+div.panhandle-left.composition {
     background-color: #F0F5FA !important;
+    border: 1px solid #3A84BF;
 }
 
 div.panhandle-left.discussion {
     background-color: #ededed !important;
+    border: 1px solid black;
 }
 
 div.pantab.collection,

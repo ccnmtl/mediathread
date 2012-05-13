@@ -7,7 +7,7 @@
     </td>
 
     <td id="{{context.project.id}}-panel-container" class="panel-container {{panel_state}} {{context.project.type}}">
-        <div class="panel">
+        <div class="panel {{context.project.type}}">
             <form name="editproject" method="POST" action="/project/save/{{context.project.id}}/">
                 <table class="panel-subcontainer">
                     <tr class="project-toolbar-row">

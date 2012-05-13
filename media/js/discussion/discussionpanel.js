@@ -96,6 +96,8 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
 DiscussionPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
+    
+    jQuery(self.el).find('tr td.panel-container div.panel').css('height', (visible) + "px");
 
     visible -= jQuery(self.el).find(".discussion-toolbar-row").height();
     visible -= jQuery(self.el).find(".discussion-participant-row").height();
@@ -116,14 +118,13 @@ DiscussionPanelHandler.prototype.resize = function () {
         jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
     }
 
-    visible += 25;
+    visible += 45;
     jQuery(self.el).find('tr.discussion-content-row').css('height',
             (visible) + "px");
     jQuery(self.el).find('tr.discussion-content-row').children(
             'td.panhandle-stripe').css('height', (visible) + "px");
-    jQuery(self.el).find('div.panel').css('height', (visible - 100) + "px");
     jQuery(self.el).find('div.threadedcomments-container').css('height',
-            (visible) + "px");
+            (visible + 20) + "px");
 
     jQuery(self.el).find('div.scroll').css('height', (visible - 50) + "px");
 };

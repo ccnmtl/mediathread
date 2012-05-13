@@ -61,11 +61,23 @@ def access_url(step, url):
         
 @step(u'I am ([^"]*) in ([^"]*)')
 def i_am_username_in_course(step, username, course):
-    step.given('I am not logged in')
-    step.given('I am logged in as %s' % username)
-    step.given('I access the url "/"')
-    step.given('I am at the Home page')
-    step.given('I am in the %s class' % course)
+    if world.using_selenium:
+        world.firefox.get(django_url("/accounts/logout/"))
+        world.firefox.get(django_url("accounts/login/?next=/"))
+        username_field = world.firefox.find_element_by_id("id_username")
+        password_field = world.firefox.find_element_by_id("id_password")
+        form = world.firefox.find_element_by_name("login_local")
+        username_field.send_keys(username)
+        password_field.send_keys("test")
+        form.submit()
+        title = world.firefox.title
+        assert username in world.firefox.page_source, world.firefox.page_source
+        
+        step.given('I access the url "/"')
+        step.given('I am in the %s class' % course)
+        step.given('I am at the Home page')
+    else:
+        world.client.login(username=username,password='test')
 
 @step(u'I am not logged in')
 def i_am_not_logged_in(step):
@@ -109,22 +121,6 @@ def i_click_the_value_button(step, value):
         elt = find_button_by_value(value)
         assert elt, "Cannot locate button named %s" % value
         elt.click()
-    
-@step(u'I am logged in as ([^"]*)')
-def i_am_logged_in_as_username(step, username):
-    if world.using_selenium:
-        world.firefox.get(django_url("/accounts/logout/"))
-        world.firefox.get(django_url("accounts/login/?next=/"))
-        username_field = world.firefox.find_element_by_id("id_username")
-        password_field = world.firefox.find_element_by_id("id_password")
-        form = world.firefox.find_element_by_name("login_local")
-        username_field.send_keys(username)
-        password_field.send_keys("test")
-        form.submit()
-        title = world.firefox.title
-        assert username in world.firefox.page_source, world.firefox.page_source
-    else:
-        world.client.login(username=username,password='test')
 
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
@@ -134,8 +130,13 @@ def i_am_in_the_coursename_class(step, coursename):
         
 @step(u'there is an? ([^"]*) button')
 def there_is_a_value_button(step, value):
-    elt = find_button_by_value(value)
-    assert elt, "Cannot locate button named %s" % value
+    try:
+        elt = find_button_by_value(value)
+        assert elt, "Cannot locate button named %s" % value
+    except:
+        time.sleep(1)
+        elt = find_button_by_value(value)
+        assert elt, "Cannot locate button named %s" % value
 
 @step(u'there is not an? ([^"]*) button')
 def there_is_not_a_value_button(step, value):
@@ -170,7 +171,7 @@ def i_dismiss_a_save_warning(step):
 def there_is_a_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
     for e in elts:
-        if e.text and e.text.strip().lower().startswith(title.lower()):
+        if e.text and e.text.strip().lower().find(title.lower()) > -1:
             return
         
     assert False, "Unable to find a column entitled %s" % title
@@ -200,21 +201,27 @@ def i_m_told_text(step, text):
     alert.accept()
     
 # Local utility functions
-def find_button_by_value(value):
-    elts = world.firefox.find_elements_by_css_selector("input[type=submit]")
+def find_button_by_value(value, parent = None):
+    
+    if not parent:
+        parent = world.firefox
+    
+    elts = parent.find_elements_by_css_selector("input[type=submit]")
     for e in elts:
         if e.get_attribute("value") == value:
             return e
     
-    elts = world.firefox.find_elements_by_css_selector("input[type=button]")
+    elts = parent.find_elements_by_css_selector("input[type=button]")
     for e in elts:
         if e.get_attribute("value") == value:
             return e
         
     # try the links too
-    elts = world.firefox.find_elements_by_tag_name("a")
+    elts = parent.find_elements_by_tag_name("a")
     for e in elts:
         if e.text and e.text.strip() == value:
             return e
         
     return None
+
+world.find_button_by_value = find_button_by_value

@@ -95,6 +95,9 @@ ProjectPanelHandler.prototype.postInitialize = function (instance) {
 ProjectPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
+    
+    jQuery(self.el).find('tr td.panel-container div.panel').css('height', (visible) + "px");
+    
     visible -= jQuery(self.el).find(".project-toolbar-row").height();
     visible -= jQuery(self.el).find(".project-participant-row").height();
     visible -= 35; // padding
@@ -109,7 +112,6 @@ ProjectPanelHandler.prototype.resize = function () {
     jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible) + "px");
-    jQuery(self.el).find('div.panel').css('height', (visible - 200) + "px");
     jQuery(self.el).find('div.scroll').css('height', (visible - 50) + "px");
 };
 

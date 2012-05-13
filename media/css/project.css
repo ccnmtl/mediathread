@@ -32,6 +32,7 @@ a.edit-pencil {
     background: url('../img/media-Bkgd.gif') no-repeat center top;
     height: 100%;
     min-height: 300px;
+    border: 1px solid #ccc;
 }
 
 .asset-view-small {
@@ -234,6 +235,7 @@ div.save-publish-status {
 div.threadedcomments-container {
     overflow-x: hidden;
     overflow-y: auto;
+    border: 1px solid #bbb;
 }
 
 form.threaded_comments_form {

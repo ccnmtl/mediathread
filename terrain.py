@@ -4,6 +4,7 @@ from lettuce import before, after, world, step
 from django.test import client
 import sys, os, time
 from selenium.webdriver.common.keys import Keys
+from mediathread.projects.models import Project
 
 import time
 try:
@@ -50,6 +51,8 @@ def finished_selenium(step):
 @before.each_scenario
 def clear_selenium(step):
     world.using_selenium = False
+    
+    Project.objects.all().delete()
 
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
@@ -199,6 +202,24 @@ def i_m_told_text(step, text):
     alert = world.firefox.switch_to_alert()
     assert alert.text.startswith(text), "Alert text invalid: %s" % alert.text
     alert.accept()
+    
+ 
+@step(u'the most recent notification is "([^"]*)"')
+def the_most_recent_notification_is_text(step, text):
+    try:
+        list = world.firefox.find_element_by_id("parent-clumper")
+    except:
+        time.sleep(1)
+        list = world.firefox.find_element_by_id("parent-clumper")
+    
+    elts = list.find_elements_by_css_selector("div.asset_title")
+    assert len(elts) > 0, "Found 0 notifications. Expected at least one."
+    
+    link = elts[0].find_element_by_tag_name("a")
+    assert link != None, "Found no notification links. Expected at least one"
+    
+    assert link.text.strip() == text, "Notification text is [%s]. Expected [%s]" % (link.text.strip(), text)
+    
     
 # Local utility functions
 def find_button_by_value(value, parent = None):

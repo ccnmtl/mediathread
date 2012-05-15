@@ -36,13 +36,23 @@ class ProjectForm(forms.ModelForm):
                 self.fields['publish'].choices.append( (pol,pol) )
             self.initial['publish'] = pol
         
-        if not request.course.is_faculty(request.user):
+        if request.course.is_faculty(request.user):
+            # Faculty
             self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
-                                              if choice[0] not in PUBLISH_OPTIONS_FACULTY_ONLY]
+                                              if choice[0] in PUBLISH_OPTIONS_FACULTY]
+        else:
+            # Student
+            if kwargs['instance'].assignment():
+                # Assignment response
+                self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
+                                                  if choice[0] in PUBLISH_OPTIONS_STUDENT_ASSIGNMENT]
+            else:
+                self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
+                                                  if choice[0] in PUBLISH_OPTIONS_STUDENT_COMPOSITION]
 
-        if not course_details.allow_public_compositions(request.course):
-            self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
-                                              if choice[0] not in PUBLISH_OPTIONS_PUBLIC]   
+        
+        if course_details.allow_public_compositions(request.course):
+            self.fields['publish'].choices.append(PUBLISH_OPTIONS_PUBLIC)   
 
         self.fields['participants'].required = False
         self.fields['body'].required = False

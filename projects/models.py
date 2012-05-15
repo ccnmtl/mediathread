@@ -28,10 +28,13 @@ SHORT_NAME = {
     "PrivateStudentAndFaculty":"with Instructors", 
     }
 
-# Add keys from PUBLISH_OPTIONS if they should
-# be filtered out of the choices for non-faculty
-PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',)
-PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',)
+PUBLISH_OPTIONS_STUDENT_COMPOSITION = ['PrivateEditorsAreOwners', 'CourseProtected' ]
+
+PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners', 'InstructorShared', 'CourseProtected' ]
+
+PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners', 'Assignment', 'CourseProtected' ]
+
+PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners', 'Published to World' )
 
 class Project(models.Model):
 

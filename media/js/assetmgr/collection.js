@@ -285,8 +285,6 @@ CollectionList.prototype.updateAssets = function (the_records) {
             
             jQuery(elt).fadeIn("slow");
             
-            jQuery("body").trigger("resize");
-            
             var editors = jQuery(self.parent).find("textarea.mceEditor");
             if (editors.length) {
                 var ed = tinyMCE.get(editors[0].id);
@@ -344,11 +342,12 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 var bits = srcElement.parentNode.href.split("/");
                 return self.deleteAnnotation(bits[bits.length - 1]);
             });
-
-                
+            
             if (self.view_callback) {
                 self.view_callback();
             }
+            
+            jQuery("body").trigger("resize");
         }
     });
 };

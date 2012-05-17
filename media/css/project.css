@@ -29,7 +29,7 @@ a.edit-pencil {
 }
 
 .asset-view-published {
-    background: url('../img/media-Bkgd.gif') no-repeat center top;
+    background: url('../img/media-Bkgd.gif') no-repeat center center;
     height: 100%;
     min-height: 300px;
     border: 1px solid #ccc;
@@ -72,6 +72,14 @@ a.edit-pencil {
 { 
     margin: 0 0 1em 0;
 
+}
+
+h1.project-title {
+    font-size: 160%;
+    font-weight: bold;
+    margin-top: 10px;
+    line-height: 1.2em;
+    max-width: 450px;
 }
 
 #response-list {

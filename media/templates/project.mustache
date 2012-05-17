@@ -11,8 +11,8 @@
             <form name="editproject" method="POST" action="/project/save/{{context.project.id}}/">
                 <table class="panel-subcontainer">
                     <tr class="project-toolbar-row">
-                        <td colspan="4" class="panel-subcontainer-toolbar-column">
-                            <div class="panel-subcontainer-title {{context.project.type}}">
+                        <td colspan="4" class="panel-subcontainer-toolbar-column {{context.project.type}} {{#context.editing?}}editing{{/context.editing?}}">
+                            <div class="panel-subcontainer-title">
                                 {{#context.can_edit?}}
                                     <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
                                         class="project-title" style="display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
@@ -22,7 +22,7 @@
                                     {{context.project.title}}
                                 </h1>
                             </div>
-                            <div class="panel-subcontainer-toolbar">
+                            <div class="panel-subcontainer-toolbar {{context.project.type}}">
                                 {{#context.project.visibility?}}
                                     <div class="project-visibility">
                                         <span class="project-visibility-description">{{context.project.visibility}}</span>
@@ -65,7 +65,12 @@
                                         {{/context.revisions?}}
                                     {{/context.can_edit?}}
                                     
-                                   {{#context.responses?}}
+                                    {{#context.create_assignment_response?}}
+                                        <input class="{{context.project.type}} project project-create-assignment-response" 
+                                            type="button" value="Create Assignment Response">
+                                    {{/context.create_assignment_response?}}
+                                    
+                                    {{#context.responses?}}
                                         <input class="project project-responsesbutton" type="button" value="Responses"/>
                                             <div class="response-list" style="display: none" title="Responses">
                                                 <div>Select an assignment response, then click "View"</div>
@@ -82,11 +87,6 @@
                                                 </select> 
                                             </div>  
                                     {{/context.responses?}}
-                                    
-                                    {{#context.create_assignment_response?}}
-                                        <input class="{{context.project.type}} project project-create-assignment-response" 
-                                            type="button" value="Create Assignment Response">
-                                    {{/context.create_assignment_response?}}
                                     
                                     {{#context.create_instructor_feedback?}}
                                         <input class="{{context.project.type}} project project-create-instructor-feedback" 
@@ -136,7 +136,7 @@
                             </div>
                         </td>
                         {{! Media Display Window and or a Collections box }}
-                        <td class="panel-container medium {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}closed{{/context.editing}} collection">
+                        <td class="panel-container medium {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}open{{/context.editing}} collection">
                             {{#context.can_edit}}
                             <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 <h2>
@@ -166,7 +166,7 @@
                             <div class="label">{{#context.editing?}}Add{{/context.editing?}}{{^context.editing}}View{{/context.editing}} Selection</div>
                         </td>
                         <td class="pantab-container">
-                            <div class="pantab collection {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}closed{{/context.editing}}"></div>
+                            <div class="pantab collection {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}open{{/context.editing}}"></div>
                         </td>
                     </tr>
                 </table>

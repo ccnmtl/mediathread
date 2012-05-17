@@ -81,14 +81,14 @@ ProjectPanelHandler.prototype.postInitialize = function (instance) {
             'space_owner': self.space_owner
         });
         
-        self.resize();
-        
         if (self.panel.context.editing) {
             self.tinyMCE.show();
-            self.tinyMCE.focus();
+            var title = jQuery(self.el).find("input.project-title");
+            title.focus();
         }
         
         jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
+        self.resize();
     }
 };
 
@@ -96,11 +96,9 @@ ProjectPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
     
-    jQuery(self.el).find('tr td.panel-container div.panel').css('height', (visible) + "px");
-    
     visible -= jQuery(self.el).find(".project-toolbar-row").height();
     visible -= jQuery(self.el).find(".project-participant-row").height();
-    visible -= 35; // padding
+    visible -= jQuery("#footer").height(); // padding
     
     if (self.tinyMCE) {
         var editorHeight = visible - 15;
@@ -111,7 +109,7 @@ ProjectPanelHandler.prototype.resize = function () {
     
     jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
-    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible) + "px");
+    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
     jQuery(self.el).find('div.scroll').css('height', (visible - 50) + "px");
 };
 
@@ -125,6 +123,8 @@ ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
 ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     var self = this;
     
+    PanelManager.closeSubPanel(self);
+    
     PanelManager.newPanel({
         'url': MediaThread.urls['project-create'](),
         'params': { parent: self.panel.context.project.id }
@@ -136,7 +136,9 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
 
 ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
     var self = this;
-
+    
+    PanelManager.closeSubPanel(self);
+    
     PanelManager.newPanel({
         'url': MediaThread.urls['discussion-create'](),
         'params': {
@@ -323,6 +325,9 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         jQuery(self.el).find("input.participants_toggle").show();
         jQuery(self.el).find("span.project-current-version").show();
         
+        // Highlight toolbar
+        jQuery(self.el).find('table.panel-subcontainer tr td.panel-subcontainer-toolbar-column').addClass("editing");
+        
         self.tinyMCE.show();
     } else {
         var isDirty = self.projectModified;
@@ -338,6 +343,10 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         jQuery(self.el).find("input.project-title").hide();
         jQuery(self.el).find("input.participants_toggle").hide();
         jQuery(self.el).find("span.project-current-version").hide();
+        
+        // De-Highlight toolbar
+        jQuery(self.el).find('table.panel-subcontainer tr td.panel-subcontainer-toolbar-column').removeClass("editing");
+
         
         // Get updated text into the preview space - decorate any new links
         jQuery(self.essaySpace).html(self.tinyMCE.getContent());

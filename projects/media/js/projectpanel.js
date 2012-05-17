@@ -165,11 +165,11 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
     
     var element = jQuery(self.el).find(".participant_list")[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Ok",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
-                  { text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }}
-              ],
+        buttons: [{ text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }},
+                  { text: "Ok",
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
+                 ],
         beforeClose: function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
         draggable: true,
         resizable: false,
@@ -195,10 +195,10 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
     
     var element = jQuery(self.el).find(".revision-list")[0];
     jQuery(element).dialog({
-        buttons: [{ text: "View",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
-                  { text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }}
+        buttons: [{ text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }},
+                  { text: "View",
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
               ],
         beforeClose: function (event, ui) {
             if (self._save) {
@@ -231,11 +231,11 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
     
     var element = jQuery(self.el).find(".response-list")[0];
     jQuery(element).dialog({
-        buttons: [{ text: "View",
+        buttons: [{ text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }},
+                  { text: "View",
                     click: function () { self._save = true; jQuery(this).dialog("close"); }},
-                  { text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }}
-              ],
+                 ],
         beforeClose: function (event, ui) {
             if (self._save) {
                 var opts = jQuery(self.el).find("select[name='responses'] option:selected");
@@ -373,10 +373,10 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     var element = jQuery(frm).find("div.save-publish-status")[0];
         
     jQuery(element).dialog({
-        buttons: [{ text: "Save",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
-                  { text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }}
+        buttons: [{ text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }},
+                  { text: "Save",
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
               ],
         beforeClose: function (event, ui) {
             if (self._save) {
@@ -459,7 +459,7 @@ ProjectPanelHandler.prototype.setDirty = function (is_dirty, animate) {
     if (is_dirty) {
         self.projectModified = true;
         if (animate) {
-            jQuery(self.el).find("input.project-savebutton").attr("value", "Save Needed")
+            jQuery(self.el).find("input.project-savebutton").attr("value", "Save")
             .effect("highlight", { times: 3 }, 750);
         }
     } else {

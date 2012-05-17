@@ -801,8 +801,10 @@ tr.discussion-toolbar-row {
 }
 
 
-table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
-   background: rgb(205,205,205); /* Old browsers */
+table.panel-subcontainer tr td.panel-subcontainer-toolbar-column.composition.editing,
+table.panel-subcontainer tr td.panel-subcontainer-toolbar-column.assignment.editing,
+table.panel-subcontainer tr td.panel-subcontainer-toolbar-column.discussion.editing {
+    background: rgb(205,205,205); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(205,205,205,1) 0%, rgba(171,171,171,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,205,205,1)), color-stop(100%,rgba(171,171,171,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(205,205,205,1) 0%,rgba(171,171,171,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -812,12 +814,13 @@ table.panel-subcontainer tr td.panel-subcontainer-toolbar-column {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdcdcd', endColorstr='#ababab',GradientType=0 ); /* IE6-9 */
 }
 
+table.panel-subcontainer tr td.panel-subcontainer-toolbar-column.composition {
+    background: #F0F5FA;
+}
+
 
 table.panel-subcontainer tr td div.panel-subcontainer-title {
     float: left;
-    min-width: 100px;
-    max-width: 330px;
-    width: 100%;
     min-height: 40px;
 }
 
@@ -920,7 +923,10 @@ td.panel-content.fluid.discussion,
 table#sliding-content-container tr td.panel-content.fluid.discussion {
     min-width: 330px;
     max-width: 500px;
-    background-color: #fff;
+}
+
+table#sliding-content-container tr td.panel-content.fluid.discussion {
+    background-color: #ffffff;
 }
 
 div.pantab.assignment,
@@ -988,7 +994,7 @@ div.collection-materials h2 a.browse-button {
 
 /* Project Toolbar Particulars */
 table.panel-subcontainer tr td input.project-title {
-    width: 100%;
+    width: 330px;
     font-size: 120%;
     padding: 5px;
     margin: 8px;

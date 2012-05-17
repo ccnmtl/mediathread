@@ -763,7 +763,6 @@ div.pantab.closed {
 table.panel-subcontainer {
     margin: 1em;
     padding: 0;
-    height: 97%;
     border: none;
     min-height: 200px;
     vertical-align: top;
@@ -790,10 +789,6 @@ tr.project-toolbar-row {
 
 tr.project-participant-row {
     height: 30px;
-}
-
-tr.project-content-row {
-    height: 500px;
 }
 
 tr.discussion-toolbar-row {

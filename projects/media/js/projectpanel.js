@@ -108,9 +108,15 @@ ProjectPanelHandler.prototype.resize = function () {
     }
     
     jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
-    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
-    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
-    jQuery(self.el).find('div.scroll').css('height', (visible - 50) + "px");
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 10) + "px");
+    
+    // Resize the collections box, subtracting its header elements
+    jQuery(self.el).find('div.collection-assets').css('height', (visible - 50) + "px");
+    
+    // For IE?
+//    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
+//    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
+
 };
 
 ProjectPanelHandler.prototype.onPrepareCitation = function (target) {

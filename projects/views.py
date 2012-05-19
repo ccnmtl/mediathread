@@ -283,7 +283,7 @@ def project_json(request, project, can_edit, version_number=None):
                           'visibility': project.visibility(),
                           'username': request.user.username,
                           'type': 'assignment' if project.is_assignment(request) else 'composition',
-                          'current_version': version_number if version_number else versions[0].version_number,
+                          'current_version': version_number if version_number else project.get_latest_version(),
                           'create_selection': True if project.is_assignment(request) else False
                        },
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),

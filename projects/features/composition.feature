@@ -11,7 +11,7 @@ Feature: Composition
         Then I am at the Untitled page
         I see "by Instructor One"
         And I see "Private - Only Author(s) Can View"
-        And I see "Version 2"
+        And I see "Version 1"
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -35,7 +35,7 @@ Feature: Composition
         And the project visibility is "Private - Only Author(s) Can View"
         
         When I save the changes
-        Then I see "Version 3"
+        Then I see "Version 2"
         
         # The project shows on Home
         When I click the HOME button
@@ -59,7 +59,7 @@ Feature: Composition
         Then I am at the Untitled page
         I see "by Student One"
         And I see "Private - Only Author(s) Can View"
-        And I see "Version 2"
+        And I see "Version 1"
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -82,7 +82,7 @@ Feature: Composition
         And the project visibility is "Private - Only Author(s) Can View"
         
         When I save the changes
-        Then I see "Version 3"
+        Then I see "Version 2"
         
         # The project shows on Home
         When I click the HOME button
@@ -95,24 +95,21 @@ Feature: Composition
         
         Finished using Selenium
 
-    Scenario: 3. Composition Visibility - Private
+    Scenario Outline: 3. Composition Visibility - Private
         Using selenium
         Given I am test_instructor in Sample Course
-        Given there are no projects 
                 
         # Create a project from the home page
         There is a New Composition button
         When I click the New Composition button
         Then I am at the Untitled page
+        Then I call the Composition "<title>"
         
-        # Name and Save
-        Then I call the Composition "Composition: Scenario 1"
-        And I write some text for the Composition
+        # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        Then I set the project visibility to Private - Only Author(s) Can View
-        When I save the changes
-        Then I see "Version 3"
+        Then I set the project visibility to "<visibility>"
+        Then I save the changes
         
         # Try to view as student one
         When I log out
@@ -120,5 +117,10 @@ Feature: Composition
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        Then there are <count> projects
+        Then there are "<count>" projects named "<title">
+             
+      Examples:
+        | title   | visibility                        | count |
+        | private | Private - Only Author(s) Can View |   0   |
+        | public  | Published to Whole Class          |   1   |        
         

@@ -26,6 +26,7 @@ def setup_database(variables):
     os.system("echo 'create table test(idx integer primary key);' | sqlite3 lettuce.db")
     os.system('./manage.py syncdb --settings=settings_test --noinput')
     os.system('./manage.py migrate --settings=settings_test --noinput')
+    os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db")
     os.system('./manage.py loaddata mediathread_main/fixtures/sample_course.json --settings=settings_test')
 
 @before.all

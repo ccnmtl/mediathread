@@ -227,17 +227,16 @@ div.save-publish-status {
     margin-left: 20px;
 }
 
-
 .comment_action {
-    background-color:#EEEEEE;
-    border:1px solid #CCCCCC;
-    color:#992222;
-    cursor:pointer;
-    float:left;
-    font-size:80%;
-    margin:0 4px 0 0;
-    padding:1px 3px;
-    text-decoration:none;
+    margin: 4px 2px 0 0;
+    background-repeat: repeat-x;
+    border: 1px solid #477794;
+    text-transform: capitalize;
+    padding: 2px 5px;
+    text-decoration: none;
+    color: black;
+    background-image: url("../img/buttons/compositions_button_bg.jpg");
+    font-size: 85%;
 }
 
 div.threadedcomments-container {
@@ -380,7 +379,7 @@ div.comment-date {
 .respond_to_comment_form_div {
     float: right;
     margin-right: 0px;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 

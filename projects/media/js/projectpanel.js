@@ -357,6 +357,9 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         
         self.tinyMCE.show();
     } else {
+        // TinyMCE bug
+        // The first time the editor is shown
+        // the project can be marked as dirty incorrectly
         var isDirty = self.projectModified;
         
         // Switch to Preview View
@@ -503,30 +506,32 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
     return true;
 };
 
-ProjectPanelHandler.prototype.setDirty = function (is_dirty) {
+ProjectPanelHandler.prototype.setDirty = function (isDirty) {
     var self = this;
-    if (is_dirty) {
-        self.projectModified = true;
-    } else {
-        self.projectModified = false;
-    }
+    self.projectModified = isDirty;
 };
 
 ProjectPanelHandler.prototype.beforeUnload = function () {
     var self = this;
+    var msg = null;
     
     if (self.projectModified) {
-        return "Changes to your project have not been saved.";
+        msg = "Changes to your project have not been saved.";
     } else {
         var title = jQuery(self.el).find("input[name=title]");
         if (title && title.length > 0) {
             var value = jQuery(title[0]).val();
             if (!value || value.length < 1) {
-                return "Please specify a project title.";
+                msg = "Please specify a project title.";
             } else if (value === "Untitled") {
-                return 'Please update your "Untitled" project title.';
+                msg = 'Please update your "Untitled" project title.';
             }
         }
+    }
+    
+    if (msg) {
+        PanelManager.openPanel(self.el);
+        return msg;
     }
 };
 

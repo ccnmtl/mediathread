@@ -239,6 +239,8 @@
                 
                 var panelTab = jQuery(panel).next().children("div.pantab")[0];
                 jQuery(panelTab).toggleClass("open closed");
+                
+                self.verifyLayout(panel);
             }
         };
 

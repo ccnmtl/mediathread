@@ -13,10 +13,9 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     });
 
     // hook up behaviors
-    jQuery(window).bind('tinymce_init_instance',
-            function (event, instance, param2) {
-                self.onTinyMCEInitialize(instance);
-            });
+    jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
+        self.onTinyMCEInitialize(instance);
+    });
 
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -73,7 +72,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     var self = this;
 
-    if (instance.id === "id_comment") {
+    if (instance && instance.id === "id_comment" && !self.tinyMCE) {
 
         self.tinyMCE = instance;
         // Reset tinyMCE width to 100% via javascript. TinyMCE doesn't resize

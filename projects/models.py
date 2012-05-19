@@ -28,7 +28,7 @@ SHORT_NAME = {
     "PrivateStudentAndFaculty":"with Instructors", 
     }
 
-PUBLISH_OPTIONS_STUDENT_COMPOSITION = ['PrivateEditorsAreOwners', 'CourseProtected' ]
+PUBLISH_OPTIONS_STUDENT_COMPOSITION = ['PrivateEditorsAreOwners', 'InstructorShared', 'CourseProtected' ]
 
 PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners', 'InstructorShared', 'CourseProtected' ]
 

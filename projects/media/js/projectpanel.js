@@ -218,11 +218,16 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
               ],
         beforeClose: function (event, ui) {
             if (self._save) {
+                self._save = false;
                 var opts = jQuery(self.el).find("select[name='revisions'] option:selected");
-                var val = jQuery(opts[0]).val();
-                window.open(val, 'mediathread_project' + self.panel.context.project.id);
+                if (opts.length < 1) {
+                    alert("Please select a revision");
+                    return false;
+                } else {
+                    var val = jQuery(opts[0]).val();
+                    window.open(val, 'mediathread_project' + self.panel.context.project.id);
+                }
             }
-            self._save = false;
             return true;
         },
         modal: true,
@@ -255,11 +260,17 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
                  ],
         beforeClose: function (event, ui) {
             if (self._save) {
+                self._save = false;
                 var opts = jQuery(self.el).find("select[name='responses'] option:selected");
-                var val = jQuery(opts[0]).val();
-                window.location = val;
+                if (opts.length < 1) {
+                    alert("Please select a response");
+                    return false;
+                } else {
+                    var val = jQuery(opts[0]).val();
+                    window.location = val;
+                }
             }
-            self._save = false;
+            
             return true;
         },
         modal: true,

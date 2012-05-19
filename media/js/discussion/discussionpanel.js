@@ -127,6 +127,8 @@ DiscussionPanelHandler.prototype.resize = function () {
 };
 
 DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
+    jQuery(target).parent().css("background", "none");
+    
     var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);

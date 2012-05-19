@@ -9,16 +9,18 @@
     <td id="{{context.discussion.id}}-panel-container" class="panel-container {{panel_state}} discussion">
         <div class="panel discussion">
             <table class="panel-subcontainer">
+                {{#title?}}
                 <tr class="discussion-toolbar-row">
                     <td colspan="4" class="panel-subcontainer-toolbar-column">
+                        
                         <div class="panel-subcontainer-title discussion">
                             <h1 class="discussion-title">
-                                {{#title?}}{{title}}{{/title?}}
-                                {{^title}}Instructor Feedback{{/title}}        
+                                {{title}}        
                             </h1>
                         </div>
                     </td>
                 </tr>
+                {{/title?}}
                 <tr class="discussion-content-row">
                     <td class="panel-content fluid discussion">
                         <div class="threadedcomments-container">
@@ -36,16 +38,14 @@
                                         <div class="comment">
                                             <div class="threaded_comment_header">
                                                 <div class="respond_to_comment_form_div">
-                                                    <span class="respond_prompt comment_action" data-comment="{{id}}" title="Click to respond to this comment">
-                                                        Respond
-                                                    </span>
+                                                    <span class="respond_prompt comment_action" data-comment="{{id}}" title="Click to respond to this comment">Respond</span>
                                                     {{#can_edit?}}
                                                     <span class="edit_prompt comment_action" data-comment="{{id}}" title="Click to edit this comment">Edit</span>
                                                     {{/can_edit?}}
                                                 </div>
                                                 <div>
                                                     <span class="threaded_comment_author">{{author}}</span>
-                                                    <a class="comment-anchor" href="#comment-{{id}}">said:</a>
+                                                    said:
                                                 </div>
                                                 <div class="comment-date">
                                                     <span>{{submit_date}}</span>

@@ -120,6 +120,7 @@
         };
         
         this.slidePanel = function (pantab_container, event) {
+            
             // Open/close this panhandle's panel
             var panel = jQuery(pantab_container).prevAll("td.panel-container");
             jQuery(panel[0]).toggleClass("open closed");
@@ -129,15 +130,52 @@
             
             self.verifyLayout(panel[0]);
             jQuery(window).trigger("resize");
+            
+            /** Fade
+            if (jQuery(panel).hasClass("open")) {
+                jQuery(panel).removeClass("open");
+                jQuery(panel).fadeOut("slow", function () {
+                    jQuery(panel).addClass("closed");
+                });
+            } else {
+                jQuery(panel).removeClass("closed");
+                jQuery(panel).fadeIn("slow", function () {
+                    jQuery(panel).addClass("open");
+                });
+            }
+            **/
+            
+            /** Real Sliding
+            // Open/close this panhandle's panel
+            var div = jQuery(panel).children('div.panel');
+            var panelTab = jQuery(pantab_container).children("div.pantab")[0];
+            
+            if (jQuery(panel).hasClass("open")) {
+                jQuery(panelTab).fadeOut();
+                jQuery(panel).css("background-color", "white !important");
+                jQuery(div).hide("slide", { direction: "left" }, 500, function () {
+                    jQuery(panel).toggleClass("open closed");
+                    jQuery(panelTab).toggleClass("open closed");
+                    jQuery(panelTab).fadeIn("fast");
+                });
+            } else {
+                jQuery(div).show("slide", { direction: "left" }, 1000, function () {
+                    jQuery(panel).toggleClass("open closed");
+                });
+            }
+            **/
+
         };
         
         this.openSubPanel = function (subpanel) {
-            if (subpanel && !jQuery(subpanel).hasClass("open")) {
-                jQuery(subpanel).toggleClass("open closed");
+            if (subpanel) {
+                jQuery(subpanel).removeClass("closed");
+                jQuery(subpanel).addClass("open");
                 
                 var container = jQuery(subpanel).nextAll("td.pantab-container");
                 var panelTab = jQuery(container[0]).children("div.pantab");
-                jQuery(panelTab[0]).toggleClass("open closed");
+                jQuery(panelTab[0]).removeClass("closed");
+                jQuery(panelTab[0]).addClass("open");
                 
                 self.verifyLayout(subpanel);
                 jQuery(window).trigger("resize");
@@ -163,11 +201,13 @@
                         var p = a[i];
                         if (panel !== p && parent !== p) {
                             // close it
-                            jQuery(p).toggleClass("open closed");
+                            jQuery(p).removeClass("open");
+                            jQuery(p).addClass("closed");
                             
                             var container = jQuery(p).nextAll("td.pantab-container");
                             var panelTab = jQuery(container[0]).children("div.pantab");
-                            jQuery(panelTab[0]).toggleClass("open closed");
+                            jQuery(panelTab[0]).removeClass("open");
+                            jQuery(panelTab[0]).addClass("closed");
                             
                             tableWidth = jQuery(self.el).width();
                         }
@@ -192,22 +232,23 @@
             });
         };
         
-        this.closePanel = function (view) {
-            // Open/close this panhandle's panel
-            var panel = view.el;
-            jQuery(panel).toggleClass("open closed");
-            
-            var panelTab = jQuery(panel).next().children("div.pantab");
-            jQuery(panelTab[0]).toggleClass("open closed");
+        this.openPanel = function (panel) {
+            // Open this panel
+            if (jQuery(panel).hasClass("closed")) {
+                jQuery(panel).toggleClass("open closed");
+                
+                var panelTab = jQuery(panel).next().children("div.pantab")[0];
+                jQuery(panelTab).toggleClass("open closed");
+            }
         };
-        
+
         this.closeSubPanel = function (view) {
             var panel = view.el;
             var subpanel = jQuery(view.el).find("td.panel-container.open")[0];
             
             jQuery(subpanel).toggleClass("open closed");
             
-            var panelTab = jQuery(subpanel).next().children("div.pantab")[0];
+            var panelTab = jQuery(subpanel).next().next().children("div.pantab")[0];
             jQuery(panelTab).toggleClass("open closed");
         };
 

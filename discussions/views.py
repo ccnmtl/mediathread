@@ -95,7 +95,7 @@ def discussion_create(request):
         return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     else:
         data = { 'panel_state': 'open', 
-                 'panel_state_label': "Feedback",
+                 'panel_state_label': "Instructor Feedback",
                  'template': 'discussion',
                  'context': threaded_comment_json(new_threaded_comment, request.user)
                }

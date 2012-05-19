@@ -210,7 +210,7 @@ def project_workspace(request, project_id, feedback=None):
         if parent_assignment:
             assignment_context = project_json(request, parent_assignment, parent_assignment.can_edit(request))
             assignment_context['create_selection'] = True
-            panel = { 'panel_state': 'closed', 'context': assignment_context, 'template': 'project' }
+            panel = { 'panel_state': 'closed' if show_feedback else 'open', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
         # Requested project, can be either an assignment or composition
@@ -245,7 +245,7 @@ def project_workspace(request, project_id, feedback=None):
         if feedback_discussion:
             # 3rd pane is the instructor feedback, if it exists
             panel = { 'panel_state': 'open' if show_feedback else 'closed',
-                      'panel_state_label': "Feedback",
+                      'panel_state_label': "Instructor Feedback",
                       'template': 'discussion',
                       'context': threaded_comment_json(feedback_discussion, request.user)
                     }

@@ -136,7 +136,7 @@
                             </div>
                         </td>
                         {{! Media Display Window and or a Collections box }}
-                        <td class="panel-container medium {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}open{{/context.editing}} collection">
+                        <td class="panel-container medium {{#subpanel_state?}}{{subpanel_state}}{{/subpanel_state?}} {{^subpanel_state}}open{{/subpanel_state}} collection">
                             {{#context.can_edit}}
                             <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 <h2>
@@ -166,7 +166,7 @@
                             <div class="label">{{#context.editing?}}Add{{/context.editing?}}{{^context.editing}}View{{/context.editing}} Selection</div>
                         </td>
                         <td class="pantab-container">
-                            <div class="pantab collection {{#context.editing?}}open{{/context.editing?}} {{^context.editing}}open{{/context.editing}}"></div>
+                            <div class="pantab collection {{#subpanel_state?}}{{subpanel_state}}{{/subpanel_state?}} {{^subpanel_state}}open{{/subpanel_state}}"></div>
                         </td>
                     </tr>
                 </table>

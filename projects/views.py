@@ -82,14 +82,15 @@ def project_save(request, project_id):
             if request.META.get('HTTP_ACCEPT','').find('json') >=0:
                 v_num = projectform.instance.get_latest_version()
                 return HttpResponse(simplejson.dumps(
-                        {'status':'success',
-                         'revision':{
-                                'id': v_num,
-                                'public_url': projectform.instance.public_url(),
-                                'visibility': project.visibility()
-                                }
-                         }, indent=2),
-                                    mimetype='application/json')
+                    { 'status':'success',
+                      'is_assignment': projectform.instance.is_assignment(request),
+                      'revision': {
+                          'id': v_num,
+                          'public_url': projectform.instance.public_url(),
+                          'visibility': project.visibility()
+                       }
+                    }, indent=2),
+                    mimetype='application/json')
 
         redirect_to = '.'
         return HttpResponseRedirect(redirect_to)

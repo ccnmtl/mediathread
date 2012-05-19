@@ -72,12 +72,16 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             return self.beforeUnload();
         });
         
-        self.collection_list = new CollectionList({
+        self.collectionList = new CollectionList({
             'parent': self.el,
             'template': 'collection',
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
-            'space_owner': self.space_owner
+            'space_owner': self.space_owner,
+            'view_callback': function () {
+                var newAssets = self.collectionList.getAssets();
+                self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
+            }
         });
         
         if (self.panel.context.editing) {

@@ -26,14 +26,6 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     });
     self.citationView.decorateLinks(self.el.id);
 
-    self.collectionList = new CollectionList({
-        'parent' : self.el,
-        'template' : 'collection',
-        'template_label' : "collection_table",
-        'create_annotation_thumbs' : true,
-        'space_owner' : self.space_owner
-    });
-
     jQuery(this.form).bind('submit', {
         self : this
     }, this.submit);
@@ -85,8 +77,18 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
         } else {
             self.tinyMCE.focus();
         }
-
-        self.collectionList.decorateCitationAdders(instance);
+        
+        self.collectionList = new CollectionList({
+            'parent' : self.el,
+            'template' : 'collection',
+            'template_label' : "collection_table",
+            'create_annotation_thumbs' : true,
+            'space_owner' : self.space_owner,
+            'view_callback': function () {
+                var newAssets = self.collectionList.getAssets();
+                self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
+            }
+        });
 
         self.resize();
     }

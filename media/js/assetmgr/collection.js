@@ -233,12 +233,9 @@ CollectionList.prototype.updateSwitcher = function () {
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
 };
 
-CollectionList.prototype.decorateCitationAdders = function (mceEditorInstance) {
+CollectionList.prototype.getAssets = function () {
     var self = this;
-    var new_assets = jQuery(self.parent).find('.asset-table').get(0);
-       
-    mceEditorInstance.plugins.citation.decorateCitationAdders(new_assets);
-    jQuery(new_assets.parentNode).addClass('annotation-embedding');
+    return jQuery(self.parent).find('.asset-table').get(0);
 };
 
 CollectionList.prototype.updateAssets = function (the_records) {
@@ -284,12 +281,6 @@ CollectionList.prototype.updateAssets = function (the_records) {
             }
             
             jQuery(elt).fadeIn("slow");
-            
-            var editors = jQuery(self.parent).find("textarea.mceEditor");
-            if (editors.length) {
-                var ed = tinyMCE.get(editors[0].id);
-                self.decorateCitationAdders(ed);
-            }
             
             // hook up behaviors
             jQuery(self.parent).find("a.switcher-choice.owner").unbind('click').click(function (evt) {

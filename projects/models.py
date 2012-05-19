@@ -6,7 +6,6 @@ import re
 
 from django.contrib.auth.models import User, Group
 from courseaffils.models import Course
-from modelversions import version_model
 
 from threadedcomments.models import ThreadedComment
 from django.contrib.contenttypes.models import ContentType
@@ -298,6 +297,4 @@ class Project(models.Model):
             elif change < 0: #track deletes
                 author_contributions[v.author][1] -= change
             last_content = v.body
-        return author_contributions
-               
-ProjectVersion = version_model(Project)
+        return author_contributions            

@@ -1041,6 +1041,19 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-bu
     width: 170px;    
 }
 
+/** Project Dialogs **/
+
+div.panel.composition form div.ui-dialog div.ui-dialog-titlebar {
+    background-image: none;
+    background-color: #3A84BF;
+    color: white;
+}
+
+div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
+    background-image: none;
+    background-color: #175D35;
+    color: white;
+}
 
 /** Shield Box **/
 .warningmessage

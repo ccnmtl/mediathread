@@ -59,6 +59,8 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     } else {
         self.hide_comment_form(false);
     }
+    
+    self.resize();
 };
 
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {

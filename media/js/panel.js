@@ -120,10 +120,17 @@
         };
         
         this.slidePanel = function (pantab_container, event) {
-            
             // Open/close this panhandle's panel
-            var panel = jQuery(pantab_container).prevAll("td.panel-container");
-            jQuery(panel[0]).toggleClass("open closed");
+            var panel = jQuery(pantab_container).prevAll("td.panel-container")[0];
+            if (jQuery(panel).hasClass("open")) {
+                for (var i = 0; i < self.panelViews.length; i++) {
+                    if (self.panelViews[i].el === panel) {
+                        self.panelViews[i].onClose();
+                    }
+                }
+            }
+            
+            jQuery(panel).toggleClass("open closed");
             
             var panelTab = jQuery(pantab_container).children("div.pantab");
             jQuery(panelTab[0]).toggleClass("open closed");

@@ -128,6 +128,15 @@ DiscussionPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 20) + "px");
 };
 
+DiscussionPanelHandler.prototype.onClose = function () {
+    var self = this;
+    console.log("DiscussionPanelHandler.onClose");
+    // close any outstanding citation windows
+    if (self.tinyMCE) {
+        self.tinyMCE.plugins.editorwindow._closeWindow();
+    }
+};
+
 DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
     jQuery(target).parent().css("background", "none");
     

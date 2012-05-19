@@ -233,7 +233,13 @@ class Project(models.Model):
             return self.submitted
         
     def can_edit(self, request):
-        return self.collaboration(request).permission_to('edit',request) or self.collaboration(request, sync_group=True).permission_to('edit',request)
+        if not self.is_participant(request.user):
+            return False
+        
+        can_edit = self.collaboration(request).permission_to('edit', request) or \
+            self.collaboration(request, sync_group=True).permission_to('edit', request)
+            
+        return can_edit
     
     def can_read(self, request):
         return self.collaboration(request).permission_to('read',request) or self.collaboration(request, sync_group=True).permission_to('read',request)

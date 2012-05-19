@@ -37,7 +37,9 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self._bind(self.el, "input.project-create-assignment-response", "click", function (evt) { self.createAssignmentResponse(evt); });
     self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
     
-    self._bind(self.el, "input.project-title", 'change', function (evt) { self.projectModified = true; });
+    self._bind(self.el, "input.project-title", 'keypress', function (evt) {
+        self.setDirty(true); 
+    });
     
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -173,18 +175,24 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
     
     var element = jQuery(self.el).find(".participant_list")[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }},
-                  { text: "Ok",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
+        buttons: [{ text: "Update",
+                    click: function () { jQuery(this).dialog("close"); }}
                  ],
-        beforeClose: function (event, ui) { if (self._save) { self.updateParticipantList(); } self._save = false; return true; },
+        beforeClose: function (event, ui) {
+            self._save = false;
+            if (!self._validAuthors()) {
+                return false;
+            } else {
+                self.updateParticipantList();
+                return true;
+            }
+        },
         draggable: true,
         resizable: false,
         modal: true,
         width: 425,
-        height: 245,
-        position: "top"
+        position: "top",
+        zIndex: 10000
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -220,7 +228,8 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
         modal: true,
         width: 425,
         height: 245,
-        position: "top"
+        position: "top",
+        zIndex: 10000
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -256,7 +265,8 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
         modal: true,
         width: 425,
         height: 200,
-        position: "top"
+        position: "top",
+        zIndex: 10000
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -282,7 +292,7 @@ ProjectPanelHandler.prototype.updateParticipantList = function (evt) {
     
     if (!matches) {
         self.updateParticipantsLabel();
-        self.setDirty(true, true);
+        self.setDirty(true);
     }
     
     return false;
@@ -379,7 +389,8 @@ ProjectPanelHandler.prototype.preview = function (evt) {
 ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     var self = this;
     
-    if (!self._validTitle()) {
+    // Validate title. Not empty or "Untitled". At least one author
+    if (!self._validTitle() || !self._validAuthors()) {
         return false;
     }
     
@@ -406,7 +417,8 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
         modal: true,
         width: 250,
         height: 145,
-        position: "top"
+        position: "top",
+        zIndex: 10000
     });
     
     jQuery(element).parent().appendTo(frm);
@@ -418,21 +430,17 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
     
     self.tinyMCE.save();
     
-    if (/preview/.test(frm.target)) {
-        return true;
-    }
-    
-    if (!self._validTitle()) {
+    if (!self._validTitle() || !self._validAuthors()) {
         return false;
     }
-    
-    // select all participants so they will be picked up when the form is serialized
+
     jQuery(self.el).find("select[name='participants'] option").attr("selected", "selected");
     var data = jQuery(frm).serializeArray();
     data = data.concat(jQuery(document.forms.editparticipants).serializeArray());
-    
+
     var saveButton = jQuery(self.el).find(".project-savebutton").get(0);
-    jQuery(saveButton).attr("disabled", "disabled");
+    jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+
     
     jQuery.ajax({
         type: 'POST',
@@ -440,7 +448,7 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
         data: data,
         dataType: 'json',
         error: function () {
-            jQuery(saveButton).removeAttr("disabled");
+            jQuery(saveButton).removeAttr("disabled").attr("value", "Saving").removeClass("saving");
             alert('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {
@@ -461,22 +469,17 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             self.revision = json.revision;
             
             jQuery(saveButton).removeAttr("disabled")
-                .attr("value", "Saved")
-                .effect("bounce", { times: 3  }, 1000, function () { jQuery(saveButton).attr("value", "Save"); });
+                .removeClass("saving", 1200, function () { jQuery(this).attr("value", "Save"); });
         }
     });
     
     return true;
 };
 
-ProjectPanelHandler.prototype.setDirty = function (is_dirty, animate) {
+ProjectPanelHandler.prototype.setDirty = function (is_dirty) {
     var self = this;
     if (is_dirty) {
         self.projectModified = true;
-        if (animate) {
-            jQuery(self.el).find("input.project-savebutton").attr("value", "Save")
-            .effect("highlight", { times: 3 }, 750);
-        }
     } else {
         self.projectModified = false;
     }
@@ -510,6 +513,18 @@ ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, 
     }
 };
 
+ProjectPanelHandler.prototype._validAuthors = function () {
+    var self = this;
+    // Make sure there's at least one author
+    var options = jQuery(self.el).find("select[name='participants'] option");
+    if (options.length < 1) {
+        alert("This project has no authors. Please select at least one author.");
+        return false;
+    } else {
+        return true;
+    }
+};
+
 ProjectPanelHandler.prototype._validTitle = function () {
     var self = this;
     
@@ -527,8 +542,3 @@ ProjectPanelHandler.prototype._validTitle = function () {
         return true;
     }
 };
-
-
-
-
-

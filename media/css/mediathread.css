@@ -1021,6 +1021,11 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-save
     margin-left: 5px;
 }
 
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton.saving {
+    text-align: left;
+    background: url("/site_media/img/ajax-loader.gif") no-repeat 95% 50%;
+}
+
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
     float: right;
     margin-left: 5px;

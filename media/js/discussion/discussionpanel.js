@@ -113,20 +113,18 @@ DiscussionPanelHandler.prototype.resize = function () {
         }
 
         // tinyMCE project editing window. Make sure we only resize ourself.
-        jQuery(self.el).find("table.mceLayout").css('height',
-                (editorHeight) + "px");
+        jQuery(self.el).find("table.mceLayout").css('height', (editorHeight) + "px");
         jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
     }
 
     visible += 45;
-    jQuery(self.el).find('tr.discussion-content-row').css('height',
-            (visible) + "px");
-    jQuery(self.el).find('tr.discussion-content-row').children(
-            'td.panhandle-stripe').css('height', (visible) + "px");
-    jQuery(self.el).find('div.threadedcomments-container').css('height',
-            (visible + 20) + "px");
-
-    jQuery(self.el).find('div.scroll').css('height', (visible - 50) + "px");
+    jQuery(self.el).find('div.threadedcomments-container').css('height', (visible + 20) + "px");
+    
+    // Resize the collections box, subtracting its header elements
+    jQuery(self.el).find('div.collection-assets').css('height', (visible - 50) + "px");
+    
+    // Resize the media display window
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 20) + "px");
 };
 
 DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {

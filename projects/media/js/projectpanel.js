@@ -20,7 +20,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     // hook up behaviors
     jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
-        self.postInitialize(instance);
+        self.onTinyMCEInitialize(instance);
     });
     
     jQuery(window).resize(function () {
@@ -57,15 +57,12 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.resize();
 };
 
-ProjectPanelHandler.prototype.postInitialize = function (instance) {
+ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     var self = this;
     
     if (instance && instance.id === self.panel.context.project.id + "-project-content" && !self.tinyMCE) {
     
         self.tinyMCE = instance;
-        self.tinyMCE.onChange.add(function (editor) {
-            self.setDirty(true);
-        });
         
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
@@ -122,6 +119,8 @@ ProjectPanelHandler.prototype.resize = function () {
 };
 
 ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
+    jQuery(target).parent().css("background", "none");
+    
     var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);
@@ -515,7 +514,9 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
     var self = this;
     var msg = null;
     
-    if (self.projectModified) {
+    // Check tinyMCE dirty state. For some reason, the instance we're holding is not always current
+    if (self.projectModified || self.tinyMCE.isDirty() ||
+        (self.tinyMCE.editorId === tinyMCE.activeEditor.editorId && tinyMCE.activeEditor.isDirty())) {
         msg = "Changes to your project have not been saved.";
     } else {
         var title = jQuery(self.el).find("input[name=title]");

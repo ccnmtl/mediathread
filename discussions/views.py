@@ -136,6 +136,7 @@ def discussion_view(request, discussion_id):
     else:
         data['panels'] = [{ 
             'panel_state': 'open',
+            'subpanel_state': 'open',
             'panel_state_label': "Discussion",
             'template': 'discussion',
             'title': root_comment.title,

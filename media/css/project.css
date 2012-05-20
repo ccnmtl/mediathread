@@ -211,6 +211,14 @@ div.save-publish-status {
     text-align: left;
 }
 
+div.save-publish-status ul {
+    margin-left: .5em
+}
+
+div.save-publish-status li {
+    list-style-type: none;
+}
+
 /* ---- Threaded comments ---------- */
 
 #threadedcomments {

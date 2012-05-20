@@ -4,6 +4,7 @@ from django.contrib.admin import widgets
 from projects.models import *
 from courseaffils.lib import get_public_name
 from mediathread_main import course_details
+from django.forms.widgets import RadioSelect
 
 class ProjectForm(forms.ModelForm):
 
@@ -11,9 +12,9 @@ class ProjectForm(forms.ModelForm):
                                         ('Save','Save'),
                                         ))
 
-    publish = forms.ChoiceField(choices=PUBLISH_OPTIONS,#from models
-                                label='Visibility',
-                                )
+    publish = forms.ChoiceField(choices = PUBLISH_OPTIONS,#from models
+                                label = 'Visibility',
+                                widget = RadioSelect)
 
     parent =  forms.CharField(required=False,label='Response to',
                               #choices=[(1,1)],

@@ -11,11 +11,11 @@ from threadedcomments.models import ThreadedComment
 from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
-PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Private - Only Author(s) Can View'),
-                   ('Assignment','Publish Assignment to Whole Class'),
-                   ('InstructorShared','Submit to Instructor'),
-                   ('CourseProtected','Publish to Whole Class'),
-                   ('PublicEditorsAreOwners','Publish to World'),
+PUBLISH_OPTIONS = (('PrivateEditorsAreOwners', 'Private - only author(s) can view'),
+                   ('Assignment', 'Assignment - work for all class members'),
+                   ('InstructorShared', 'Instructor - only author(s) and instructor can view'),
+                   ('CourseProtected', 'Whole Class - information for all class members'),
+                   ('PublicEditorsAreOwners', 'Whole World - a public url is provided'),
                    )
 
 SHORT_NAME = {
@@ -33,7 +33,7 @@ PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners', 'InstructorShar
 
 PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners', 'Assignment', 'CourseProtected' ]
 
-PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners', 'Publish to World' )
+PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners', 'Whole World - a public url is provided' )
 
 class Project(models.Model):
 

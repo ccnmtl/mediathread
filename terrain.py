@@ -5,6 +5,7 @@ from django.test import client
 import sys, os, time
 from selenium.webdriver.common.keys import Keys
 from mediathread.projects.models import Project
+from mediathread.structuredcollaboration.models import Collaboration
 
 import time
 try:
@@ -54,6 +55,8 @@ def clear_selenium(step):
     world.using_selenium = False
     
     Project.objects.all().delete()
+    Collaboration.objects.all().delete()
+    os.system("echo 'delete from projects_projectversion;' | sqlite3 lettuce.db")
 
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
@@ -158,7 +161,7 @@ def i_see_text(step, text):
         assert text in world.firefox.page_source, world.firefox.page_source
     except:
         time.sleep(1)
-        assert text in world.firefox.page_source, world.firefox.page_source
+        assert text in world.firefox.page_source, "I did not see %s in this page" % text
     
 @step(u'I do not see "([^"]*)"')
 def i_do_not_see_text(step, text):
@@ -221,8 +224,48 @@ def the_most_recent_notification_is_text(step, text):
     
     assert link.text.strip() == text, "Notification text is [%s]. Expected [%s]" % (link.text.strip(), text)
     
+@step(u'I select "([^"]*)" as the owner in the ([^"]*) column')
+def i_select_name_as_the_owner_in_the_title_column(step, name, title):
+    column = get_column(title)
+    if not column:
+        time.sleep(1)
+        column = get_column(title)
+        
+    assert column, "Unable to find a column entitled %s" % title
+
+    menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    menu.find_element_by_css_selector("a.switcher-top").click()
+    
+    owners = menu.find_elements_by_css_selector("a.switcher-choice.owner")
+    for o in owners:
+        if o.text == name:
+            o.click()
+            return
+        
+    assert False, "Unable to find owner %s" % name
+    
+@step(u'the owner is "([^"]*)" in the ([^"]*) column')    
+def the_owner_is_name_in_the_title_column(step, name, title):
+    column = get_column(title)
+    if not column:
+        time.sleep(1)
+        column = get_column(title)
+        
+    assert column, "Unable to find a column entitled %s" % title
+    
+    menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    owner = menu.find_element_by_css_selector("a.switcher-top span.title")
+    assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)
     
 # Local utility functions
+def get_column(title):
+    elts = world.firefox.find_elements_by_tag_name("h2")
+    for e in elts:
+        if e.text and e.text.strip().lower().find(title.lower()) > -1:
+            return e.parent
+    
+    return None
+
 def find_button_by_value(value, parent = None):
     
     if not parent:

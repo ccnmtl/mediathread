@@ -72,6 +72,8 @@ TEMPLATE_DIRS = (
 
 LETTUCE_APPS = (
     'mediathread_main',
+    'projects',
+    'assetmgr'
 )
 
 INSTALLED_APPS = (

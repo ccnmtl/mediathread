@@ -15,7 +15,6 @@ Feature: Composition
         
         # Verify user is able to edit the project
         There is an open Composition panel
-        There is an open Collection panel
         
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button
@@ -29,9 +28,10 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Assignment for Class"
         There is a project visibility "Private - Only Author(s) Can View"
-        There is a project visibility "Published to Whole Class"
+        There is a project visibility "Publish Assignment to Whole Class"
+        There is a project visibility "Publish to Whole Class"
+        There is not a project visibility "Publish to World"
         And the project visibility is "Private - Only Author(s) Can View"
         
         When I save the changes
@@ -63,7 +63,6 @@ Feature: Composition
         
         # Verify user is able to edit the project
         There is an open Composition panel
-        There is an open Collection panel
         
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button
@@ -78,7 +77,9 @@ Feature: Composition
         When I click the Save button
         Then I see a Save Changes dialog
         There is a project visibility "Private - Only Author(s) Can View"
-        There is a project visibility "Published to Whole Class"
+        There is a project visibility "Submit to Instructor"
+        There is a project visibility "Publish to Whole Class"
+        There is not a project visibility "Publish to World"
         And the project visibility is "Private - Only Author(s) Can View"
         
         When I save the changes
@@ -95,7 +96,7 @@ Feature: Composition
         
         Finished using Selenium
 
-    Scenario Outline: 3. Composition Visibility - Private
+    Scenario Outline: 3. Homepage Composition Visibility - Student Viewing Instructor Created Information / Assignments
         Using selenium
         Given I am test_instructor in Sample Course
                 
@@ -109,18 +110,58 @@ Feature: Composition
         When I click the Save button
         Then I see a Save Changes dialog
         Then I set the project visibility to "<visibility>"
-        Then I save the changes
+        When I save the changes
+        Then I see "Version 2"
+        Then I see "<status>"
         
         # Try to view as student one
-        When I log out
-        When I type "test_student_one" for username
-        When I type "test" for password
-        When I click the Log In button
-        Then I am at the Home page
-        Then there are "<count>" projects named "<title">
+        Given I am test_student_one in Sample Course
+        Then the instructor panel has <count> projects named "<title>"
+        
+        Finished using Selenium
              
       Examples:
-        | title   | visibility                        | count |
-        | private | Private - Only Author(s) Can View |   0   |
-        | public  | Published to Whole Class          |   1   |        
+        | title   | visibility                        | status                            | count |
+        | private | Private - Only Author(s) Can View | Private - Only Author(s) Can View | 0     |
+        | assign  | Publish Assignment to Whole Class | Assignment                        | 1     |
+        | public  | Publish to Whole Class            | Published to Class                | 1     |
+                 
+    Scenario Outline: 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
+        Using selenium
+        Given I am test_student_one in Sample Course
+                
+        # Create a project from the home page
+        There is a New Composition button
+        When I click the New Composition button
+        Then I am at the Untitled page
+        Then I call the Composition "<title>"
+        
+        # Save
+        When I click the Save button
+        Then I see a Save Changes dialog
+        Then I set the project visibility to "<visibility>"
+        When I save the changes
+        Then I see "Version 2"
+        Then I see "<status>"
+        
+        # Try to view as student two
+        Given I am test_student_two in Sample Course
+        When I select "Student One" as the owner in the Analysis column
+        Then the owner is "Student One" in the Analysis column
+        Then the classwork panel has <count> projects named "<title>"
+
+        # Try to view as test_instructor
+        Given I am test_instructor in Sample Course
+        When I select "Student One" as the owner in the Analysis column
+        Then the owner is "Student One" in the Analysis column
+        Then the classwork panel has <count> projects named "<title>"
+        
+        Finished using Selenium
+             
+      Examples:
+        | title   | visibility                        | status                            | count |
+        | private | Private - Only Author(s) Can View | Private - Only Author(s) Can View | 0     |
+        | public  | Publish to Whole Class            | Published to Class                | 1     |
+
+            
         

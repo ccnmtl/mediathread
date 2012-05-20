@@ -34,7 +34,11 @@ def the_panel_has_a_name_button(step, panel, name):
     
 @step(u'I call the ([^"]*) "([^"]*)"')
 def i_call_the_composition_title(step, panel, title):
-    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    try:
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    except:
+        time.sleep(1)
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
     assert panel != None, "Can't find panel named %s" % panel
     
     input = panel.find_element_by_name("title")
@@ -81,6 +85,17 @@ def there_is_a_project_visibility_level(step, level):
     
     assert False, "No %s option found" % (level)
     
+@step(u'There is not a project visibility "([^"]*)"')
+def there_is_not_a_project_visibility_level(step, level):
+    elt = world.firefox.find_element_by_id('id_publish')
+    assert elt != None, "Cannot locate project visibility options"
+    
+    select_box = Select(elt)
+    for o in select_box.options:
+        if o.text.strip() == level:
+            assert False, "Found %s option" % (level)
+    
+    
 @step(u'Then I set the project visibility to "([^"]*)"')
 def i_set_the_project_visibility_to_visibility(step, visibility):
     elt = world.firefox.find_element_by_id('id_publish')
@@ -88,11 +103,27 @@ def i_set_the_project_visibility_to_visibility(step, visibility):
     
     select_box = Select(elt)
     select_box.select_by_visible_text(visibility)
+  
+@step(u'the instructor panel has ([0-9][0-9]?) projects named "([^"]*)"')
+def the_instructor_panel_has_count_projects_named_title(step, count, title):
+    elts = world.firefox.find_elements_by_css_selector("ul.instructor-list li")
+    n = 0
+    for e in elts:
+        a = e.find_element_by_css_selector("a")
+        if a.text == title:
+            n += 1
+    assert n == int(count), "The instructor panel had %s projects named %s. Expected %s"  % (n, title, count)
     
-@step(u'Then there are ([0-9][0-9]?) projects')
-def then_there_are_count_projects(step, count):
+@step(u'the classwork panel has ([0-9][0-9]?) projects named "([^"]*)"')
+def the_classwork_panel_has_count_projects_named_title(step, count, title):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
-    assert len(elts) == int(count), "There are %s projects. Expected %s"  % (len(elts), count)
+    n = 0
+    for e in elts:
+        a = e.find_element_by_css_selector("a.asset_title")
+        if a.text == title:
+            n += 1
+    assert n == int(count), "There are %s projects named %s. Expected %s"  % (n, title, count)
+     
     
 @step(u'i save the changes')
 def i_save_the_changes(step):

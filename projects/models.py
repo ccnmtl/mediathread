@@ -11,11 +11,11 @@ from threadedcomments.models import ThreadedComment
 from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
-PUBLISH_OPTIONS = (('Assignment','Assignment for Class'),
-                   ('PrivateEditorsAreOwners','Private - Only Author(s) Can View'),
-                   ('InstructorShared','Submitted to Instructor'),
-                   ('CourseProtected','Published to Whole Class'),
-                   ('PublicEditorsAreOwners','Published to World'),
+PUBLISH_OPTIONS = (('PrivateEditorsAreOwners','Private - Only Author(s) Can View'),
+                   ('Assignment','Publish Assignment to Whole Class'),
+                   ('InstructorShared','Submit to Instructor'),
+                   ('CourseProtected','Publish to Whole Class'),
+                   ('PublicEditorsAreOwners','Publish to World'),
                    )
 
 SHORT_NAME = {
@@ -33,7 +33,7 @@ PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners', 'InstructorShar
 
 PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners', 'Assignment', 'CourseProtected' ]
 
-PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners', 'Published to World' )
+PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners', 'Publish to World' )
 
 class Project(models.Model):
 
@@ -158,6 +158,18 @@ class Project(models.Model):
             return u"Submitted"
         else:
             return u"Private"
+        
+    def visibility_short(self):
+        o = dict(PUBLISH_OPTIONS)
+
+        col = self.collaboration()
+        if col:
+            return SHORT_NAME.get(col._policy.policy_name, col._policy.policy_name)
+        elif self.submitted:
+            return u"Submitted"
+        else:
+            return u"Private"
+        
 
     def status(self):
         """

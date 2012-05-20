@@ -25,4 +25,4 @@ Feature: Homepage
         And there is a Collections column
         And there is help for the Compositions column
         And there is help for the Collections column
-        Finished using Selenium    
+        Finished using Selenium

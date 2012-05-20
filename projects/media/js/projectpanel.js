@@ -521,6 +521,10 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
 ProjectPanelHandler.prototype.setDirty = function (isDirty) {
     var self = this;
     self.projectModified = isDirty;
+    
+    if (!isDirty && self.tinyMCE) {
+        self.tinyMCE.isNotDirty = 1; // clear the tinymce dirty flags
+    }
 };
 
 ProjectPanelHandler.prototype.beforeUnload = function () {

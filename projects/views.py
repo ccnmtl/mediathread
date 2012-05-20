@@ -87,7 +87,7 @@ def project_save(request, project_id):
                       'revision': {
                           'id': v_num,
                           'public_url': projectform.instance.public_url(),
-                          'visibility': project.visibility()
+                          'visibility': project.visibility_short()
                        }
                     }, indent=2),
                     mimetype='application/json')
@@ -280,7 +280,7 @@ def project_json(request, project, can_edit, version_number=None):
                           'id': project.pk,
                           'url': project.get_absolute_url(),
                           'public_url': project.public_url(),
-                          'visibility': project.visibility(),
+                          'visibility': project.visibility_short(),
                           'username': request.user.username,
                           'type': 'assignment' if project.is_assignment(request) else 'composition',
                           'current_version': version_number if version_number else project.get_latest_version(),

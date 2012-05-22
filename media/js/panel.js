@@ -132,10 +132,10 @@
             
             jQuery(panel).toggleClass("open closed");
             
-            var panelTab = jQuery(pantab_container).children("div.pantab");
-            jQuery(panelTab[0]).toggleClass("open closed");
+            var panelTab = jQuery(pantab_container).children("div.pantab")[0];
+            jQuery(panelTab).toggleClass("open closed");
             
-            self.verifyLayout(panel[0]);
+            self.verifyLayout(panel);
             jQuery(window).trigger("resize");
             
             /** Fade

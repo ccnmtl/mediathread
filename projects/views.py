@@ -132,10 +132,6 @@ def project_view_readonly(request, project_id, version_number=None):
     if not project.can_read(request):
         return HttpResponseForbidden("forbidden")
     
-    if not version_number:
-        versions = project.versions.order_by('-change_time')
-        version_number = versions[0].version_number
-    
     data = { 'space_owner' : request.user.username }
     
     course = request.course
@@ -153,11 +149,13 @@ def project_view_readonly(request, project_id, version_number=None):
         data['public_url'] = public_url
         return render_to_response('projects/project.html', data, context_instance=RequestContext(request))
     else:
-        version = get_object_or_404(ProjectVersion,
-                                    versioned_id = project_id,
-                                    version_number=version_number)
         
-        project = version.instance()
+        if version_number:
+            version = get_object_or_404(ProjectVersion,
+                                        versioned_id = project_id,
+                                        version_number=version_number)
+            
+            project = version.instance()
         
         panels = []
             
@@ -283,7 +281,7 @@ def project_json(request, project, can_edit, version_number=None):
                           'visibility': project.visibility_short(),
                           'username': request.user.username,
                           'type': 'assignment' if project.is_assignment(request) else 'composition',
-                          'current_version': version_number if version_number else project.get_latest_version(),
+                          'current_version': version_number if version_number else None,
                           'create_selection': True if project.is_assignment(request) else False
                        },
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),

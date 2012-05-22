@@ -477,8 +477,6 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             alert('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {
-            jQuery(self.el).find(".project-current-version").html("| Version " + json.revision.id);
-            
             var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
             if (json.revision.public_url) {
                 jQuery(lastVersionPublic).attr("href", json.revision.public_url);

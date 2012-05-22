@@ -29,9 +29,11 @@
                                         <a class="last-version-public" 
                                             style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
                                         </a>
-                                        <span class="project-current-version" style="display: {{#context.editing?}}inline{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
+                                        {{#context.project.current_version?}}
+                                        <span class="project-current-version" style="display: inline">
                                             | Version {{context.project.current_version}}
                                         </span>
+                                        {{/context.project.current_version?}}
                                     </div>
                                 {{/context.project.visibility?}}
                                 

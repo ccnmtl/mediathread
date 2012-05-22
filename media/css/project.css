@@ -77,7 +77,7 @@ a.edit-pencil {
 h1.project-title {
     font-size: 160%;
     font-weight: bold;
-    margin-top: 10px;
+    margin: 5px 0 0 0;
     line-height: 1.2em;
     max-width: 450px;
 }

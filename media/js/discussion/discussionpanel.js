@@ -184,7 +184,8 @@ DiscussionPanelHandler.prototype.open_respond = function (evt) {
     var li = jQuery(elt).parents("li.comment-thread")[0];
     jQuery(li).find("div.respond_to_comment_form_div").hide();
 
-    self.open_comment_form(li);
+    var comment_div = jQuery(li).children("div.comment")[0];
+    self.open_comment_form(comment_div, true);
 };
 
 DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
@@ -223,7 +224,7 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
     }
 };
 
-DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
+DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scroll) {
     var self = this;
     if (insertAfter) {
         self.tinyMCE = null;
@@ -232,10 +233,10 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
         tinyMCE.execCommand("mceAddControl", false, "id_comment");
     }
     jQuery(self.form).show('fast', function () {
-        if (insertAfter) {
+        if (scroll) {
             var elt = jQuery(self.el).find("div.threadedcomments-container")[0];
             jQuery(elt).animate({
-                scrollTop: jQuery(self.form).offset().top - jQuery(elt).offset().top
+                scrollTop: jQuery(elt).scrollTop() + jQuery(self.form).parent().position().top + 20
             }, 500);
         }
     });
@@ -249,7 +250,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter) {
     jQuery(self.el).find("div.collection-materials").show();
 };
 
-DiscussionPanelHandler.prototype.hide_comment_form = function (scrollToPrevious) {
+DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
     
     // Switch to a readonly view
@@ -257,18 +258,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function (scrollToPrevious)
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
     
-    if (scrollToPrevious) {
-        scrollToPrevious = jQuery(self.form).prev()[0];
-    }
-    
-    jQuery(self.form).hide('fast', function () {
-        if (scrollToPrevious) {
-            var elt = jQuery(self.el).find("div.threadedcomments-container")[0];
-            jQuery(elt).animate({
-                scrollTop: jQuery(scrollToPrevious).offset().top - jQuery(elt).offset().top
-            }, 500);
-        }
-        
+    jQuery(self.form).hide('fast', function () {        
         jQuery(self.form.elements.title).hide();
     
         // Switch to a readonly view
@@ -406,6 +396,7 @@ DiscussionPanelHandler.prototype.oncomplete = function (responseText,
             // /5. show respond/edit controls again
             jQuery("div.threaded_comment_text").show();
             jQuery("div.respond_to_comment_form_div").show();
+            
             document.location = '#comment-' + res.comment_id;
         }
     } else {

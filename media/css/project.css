@@ -251,6 +251,7 @@ div.threadedcomments-container {
     overflow-x: hidden;
     overflow-y: auto;
     border: 1px solid #bbb;
+    position: relative;
 }
 
 form.threaded_comments_form {

@@ -246,7 +246,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
     // Unload any citations
     self.citationView.unload();
     jQuery(self.el).find("div.asset-view-published").hide();
-    jQuery(self.el).find("td.panhandle-stripe div.label").html("Add Selection");
+    jQuery(self.el).find("td.panhandle-stripe div.label").html("Embed Media");
     jQuery(self.el).find("div.collection-materials").show();
 };
 
@@ -265,7 +265,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function () {
         jQuery(self.el).find("div.collection-materials").hide();
     
         jQuery(self.el).find("td.panhandle-stripe div.label")
-                .html("View Selection");
+                .html("View Media");
         jQuery(self.el).find("div.asset-view-published").show();
     });
 };
@@ -545,7 +545,7 @@ DiscussionPanelHandler.prototype.readonly = function () {
     if (!jQuery(self.form).is(":visible")) {
         // Switch to Edit View
         jQuery(self.el).find("td.panhandle-stripe div.label").html(
-                "Add Selection");
+                "Embed Media");
         jQuery(self.el).find("div.asset-view-published").hide();
 
         // Kill the asset view
@@ -561,7 +561,7 @@ DiscussionPanelHandler.prototype.readonly = function () {
         jQuery(self.el).find("div.collection-materials").hide();
 
         jQuery(self.el).find("td.panhandle-stripe div.label").html(
-                "View Selection");
+                "View Media");
         jQuery(self.el).find("div.asset-view-published").show();
     }
 

@@ -28,6 +28,9 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     });
     
     self._bind(self.el, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
+    self._bind(self.el, "a.project-visibility-link", "click", function (evt) {
+        jQuery(self.el).find("input.project-savebutton").click();
+    });
     self._bind(self.el, "input.project-previewbutton", "click", function (evt) { return self.preview(evt); });
     self._bind(self.el, "input.participants_toggle", "click", function (evt) { return self.showParticipantList(evt); });
     

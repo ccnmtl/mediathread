@@ -107,17 +107,17 @@ ProjectPanelHandler.prototype.resize = function () {
     visible -= jQuery("#footer").height(); // padding
     
     if (self.tinyMCE) {
-        var editorHeight = visible - 15;
+        var editorHeight = visible + 15;
         // tinyMCE project editing window. Make sure we only resize ourself.
         jQuery(self.el).find("table.mceLayout").css('height', (editorHeight) + "px");
         jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
     }
     
-    jQuery(self.el).find("div.essay-space").css('height', (visible) + "px");
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 10) + "px");
+    jQuery(self.el).find("div.essay-space").css('height', (visible + 30) + "px");
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 40) + "px");
     
     // Resize the collections box, subtracting its header elements
-    jQuery(self.el).find('div.collection-assets').css('height', (visible - 50) + "px");
+    jQuery(self.el).find('div.collection-assets').css('height', (visible - 25) + "px");
     
     // For IE?
 //    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");

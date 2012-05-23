@@ -41,7 +41,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
     
     self._bind(self.el, "input.project-title", 'keypress', function (evt) {
-        self.setDirty(true); 
+        self.setDirty(true);
     });
     
     // Setup the media display window.
@@ -57,7 +57,8 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
     }
 
-    self.resize();
+    jQuery(window).trigger("resize");
+    
 };
 
 ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
@@ -84,6 +85,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
+                jQuery(window).trigger("resize");
             }
         });
         
@@ -94,7 +96,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
         }
         
         jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
-        self.resize();
+        jQuery(window).trigger("resize");
     }
 };
 
@@ -102,22 +104,23 @@ ProjectPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
     
+    visible -= jQuery(self.el).find(".project-visibility-row").height();
     visible -= jQuery(self.el).find(".project-toolbar-row").height();
     visible -= jQuery(self.el).find(".project-participant-row").height();
     visible -= jQuery("#footer").height(); // padding
     
     if (self.tinyMCE) {
-        var editorHeight = visible + 15;
+        var editorHeight = visible;
         // tinyMCE project editing window. Make sure we only resize ourself.
         jQuery(self.el).find("table.mceLayout").css('height', (editorHeight) + "px");
         jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
     }
     
-    jQuery(self.el).find("div.essay-space").css('height', (visible + 30) + "px");
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 40) + "px");
+    jQuery(self.el).find("div.essay-space").css('height', (visible + 20) + "px");
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
     
     // Resize the collections box, subtracting its header elements
-    jQuery(self.el).find('div.collection-assets').css('height', (visible - 25) + "px");
+    jQuery(self.el).find('div.collection-assets').css('height', (visible - 35) + "px");
     
     // For IE?
 //    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
@@ -394,7 +397,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
 
         
         // Get updated text into the preview space - decorate any new links
-        jQuery(self.essaySpace).html(self.tinyMCE.getContent());
+        jQuery(self.essaySpace).html(tinyMCE.activeEditor.getContent());
         self.citationView.decorateLinks(self.essaySpace.id);
 
         jQuery(self.essaySpace).show();
@@ -456,7 +459,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
 ProjectPanelHandler.prototype.saveProject = function (frm) {
     var self = this;
     
-    self.tinyMCE.save();
+    tinyMCE.activeEditor.save();
     
     if (!self._validTitle() || !self._validAuthors()) {
         return false;

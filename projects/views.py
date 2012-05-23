@@ -310,6 +310,7 @@ def project_json(request, project, can_edit, version_number=None):
                                                  'last': idx == x }) 
                 
             data['responses'].append(obj)
+    data['response_count'] = len(data['responses'])
     
     if project.is_participant(request.user):
         data['revisions'] = [{ 'version_number': v.version_number,

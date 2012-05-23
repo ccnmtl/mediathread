@@ -10,35 +10,28 @@
         <div class="panel {{context.project.type}}">
             <form name="editproject" method="POST" action="/project/save/{{context.project.id}}/">
                 <table class="panel-subcontainer">
+                    <tr class="project-visibility-row">
+                        <td colspan="4">
+                            {{#context.project.visibility?}}
+                                <div class="project-visibility">
+                                    {{#context.can_edit?}}<a href="#" class="project-visibility-link">{{/context.can_edit?}}
+                                        <span class="project-visibility-description">{{context.project.visibility}}</span>{{#context.can_edit?}}</a>{{/context.can_edit?}}
+                                    &nbsp;
+                                    <a class="last-version-public" 
+                                        style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
+                                    </a>
+                                    {{#context.project.current_version?}}
+                                    <span class="project-current-version" style="display: inline">
+                                        | Version {{context.project.current_version}}
+                                    </span>
+                                    {{/context.project.current_version?}}
+                                </div>
+                            {{/context.project.visibility?}}
+                        </td>
+                    </tr>
                     <tr class="project-toolbar-row">
                         <td colspan="4" class="panel-subcontainer-toolbar-column {{context.project.type}} {{#context.editing?}}editing{{/context.editing?}}">
-                            <div class="panel-subcontainer-title">
-                                {{#context.can_edit?}}
-                                    <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
-                                        class="project-title" style="display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
-                                {{/context.can_edit?}}
-                                <h1 class="project-title" 
-                                    style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
-                                    {{context.project.title}}
-                                </h1>
-                            </div>
                             <div class="panel-subcontainer-toolbar {{context.project.type}}">
-                                {{#context.project.visibility?}}
-                                    <div class="project-visibility">
-                                        {{#context.can_edit?}}<a href="#" class="project-visibility-link">{{/context.can_edit?}}
-                                            <span class="project-visibility-description">{{context.project.visibility}}</span>{{#context.can_edit?}}</a>{{/context.can_edit?}}
-                                        &nbsp;
-                                        <a class="last-version-public" 
-                                            style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
-                                        </a>
-                                        {{#context.project.current_version?}}
-                                        <span class="project-current-version" style="display: inline">
-                                            | Version {{context.project.current_version}}
-                                        </span>
-                                        {{/context.project.current_version?}}
-                                    </div>
-                                {{/context.project.visibility?}}
-                                
                                 <div>
                                     {{#context.can_edit?}}
                                         <input class="{{context.project.type}} project project-savebutton" 
@@ -76,7 +69,7 @@
                                     {{/context.create_assignment_response?}}
                                     
                                     {{#context.responses?}}
-                                        <input class="project project-responsesbutton" type="button" value="Responses"/>
+                                        <input class="project project-responsesbutton" type="button" value="Responses ({{context.response_count}})"/>
                                             <div class="response-list" style="display: none" title="Responses">
                                                 <div>Select an assignment response, then click "View"</div>
                                                 <select name="responses" multiple="multiple">
@@ -100,6 +93,17 @@
 
                                 </div>     
                             </div>
+                            <div class="panel-subcontainer-title">
+                                {{#context.can_edit?}}
+                                    <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
+                                        class="project-title" style="display: {{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
+                                {{/context.can_edit?}}
+                                <h1 class="project-title" 
+                                    style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
+                                    {{context.project.title}}
+                                </h1>
+                            </div>
+                            
                         </td>
                     </tr>
     

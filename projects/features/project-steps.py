@@ -66,43 +66,53 @@ def i_see_a_name_dialog(step, name):
     
 @step(u'the project visibility is "([^"]*)"')
 def the_project_visibility_is_level(step, level):
-    elt = world.firefox.find_element_by_id('id_publish')
-    assert elt != None, "Cannot locate project visibility options"
+    elt = world.firefox.find_element_by_css_selector("input[name=publish]:checked")
+    assert elt != None
     
-    select_box = Select(elt)
-    selected = select_box.first_selected_option
-    assert selected.text == level, "Expect visibility to be like %s. Instead it is %s" % (level, value)
+    label_selector = "label[for=%s]" % elt.get_attribute("id")
+    label = world.firefox.find_element_by_css_selector(label_selector)
+    if label.text.strip() == level:
+        return
+
+    assert False, "The %s option is not checked" % (level)
     
 @step(u'There is a project visibility "([^"]*)"')
 def there_is_a_project_visibility_level(step, level):
-    elt = world.firefox.find_element_by_id('id_publish')
-    assert elt != None, "Cannot locate project visibility options"
+    elts = world.firefox.find_elements_by_name("publish")
+    assert len(elts) > 0
     
-    select_box = Select(elt)
-    for o in select_box.options:
-        if o.text.strip() == level:
+    for e in elts:
+        label_selector = "label[for=%s]" % e.get_attribute("id")
+        label = world.firefox.find_element_by_css_selector(label_selector)
+        if label.text.strip() == level:
             return
-    
+
     assert False, "No %s option found" % (level)
     
 @step(u'There is not a project visibility "([^"]*)"')
 def there_is_not_a_project_visibility_level(step, level):
-    elt = world.firefox.find_element_by_id('id_publish')
-    assert elt != None, "Cannot locate project visibility options"
+    elts = world.firefox.find_elements_by_name("publish")
+    assert len(elts) > 0
     
-    select_box = Select(elt)
-    for o in select_box.options:
-        if o.text.strip() == level:
-            assert False, "Found %s option" % (level)
-    
+    for e in elts:
+        label_selector = "label[for=%s]" % e.get_attribute("id")
+        label = world.firefox.find_element_by_css_selector(label_selector)
+        if label.text.strip() == level:
+            assert False, "Found %s option" % (level)    
     
 @step(u'Then I set the project visibility to "([^"]*)"')
-def i_set_the_project_visibility_to_visibility(step, visibility):
-    elt = world.firefox.find_element_by_id('id_publish')
-    assert elt != None, "Cannot locate project visibility options"
+def i_set_the_project_visibility_to_level(step, level):
+    elts = world.firefox.find_elements_by_name("publish")
+    assert len(elts) > 0
     
-    select_box = Select(elt)
-    select_box.select_by_visible_text(visibility)
+    for e in elts:
+        label_selector = "label[for=%s]" % e.get_attribute("id")
+        label = world.firefox.find_element_by_css_selector(label_selector)
+        if label.text.strip() == level:
+            e.click()
+            return
+
+    assert False, "No %s option found" % (level)
   
 @step(u'the instructor panel has ([0-9][0-9]?) projects named "([^"]*)"')
 def the_instructor_panel_has_count_projects_named_title(step, count, title):

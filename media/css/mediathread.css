@@ -1014,6 +1014,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-prev
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton {
     float: right;
     margin-left: 5px;
+    width: 62px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton.saving {

@@ -128,11 +128,15 @@ DiscussionPanelHandler.prototype.resize = function () {
     
     // Resize the media display window
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 20) + "px");
+
+    // For IE
+    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
+    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
+
 };
 
 DiscussionPanelHandler.prototype.onClose = function () {
     var self = this;
-    console.log("DiscussionPanelHandler.onClose");
     // close any outstanding citation windows
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();

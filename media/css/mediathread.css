@@ -640,7 +640,7 @@ div.button-form form, div.button-form.inline form{
 /* SLIDING CONTENT */
 
 .medium {
-    width: 400px !important;
+    width: 475px !important;
 }
 
 .small {
@@ -682,7 +682,7 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
 }
 
 table#sliding-content-container tr td.panhandle-stripe {
-    width: 17px;
+    width: 14px;
     height: 99%\9;
     padding-top: 7px;
 }
@@ -698,7 +698,7 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
     font-size:12px;
     font-weight:normal;
     text-transform: uppercase;
-    padding: 1px 0 3px;
+    padding: 1px 0 1px;
     width: 17px;
 }
 
@@ -734,8 +734,8 @@ table#sliding-content-container tr td.panel-container div.panel form {
 table#sliding-content-container tr td.pantab-container {
     vertical-align: top;
     text-align: left;
-    width: 20px;
-    padding-right: 10px;
+    width: 18px;
+    padding-right: 8px;
 }
 
 div.pantab {
@@ -761,7 +761,7 @@ div.pantab.closed {
 
 
 table.panel-subcontainer {
-    margin: .5em 1em;
+    margin: .5em .25em .5em .5em;
     padding: 0;
     border: none;
     min-height: 200px;
@@ -909,7 +909,7 @@ td.panel-content.fluid.assignment,
 table#sliding-content-container tr td.panel-content.fluid.assignment,
 td.panel-content.fluid.discussion,
 table#sliding-content-container tr td.panel-content.fluid.discussion {
-    min-width: 330px;
+    min-width: 300px;
     max-width: 500px;
 }
 

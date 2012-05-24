@@ -12,9 +12,9 @@ from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
 PUBLISH_OPTIONS = (('PrivateEditorsAreOwners', 'Private - only author(s) can view'),
-                   ('Assignment', 'Assignment - work for all class members'),
                    ('InstructorShared', 'Instructor - only author(s) and instructor can view'),
-                   ('CourseProtected', 'Whole Class - information for all class members'),
+                   ('CourseProtected', 'Whole Class - all class members can view'),
+                   ('Assignment', 'Assignment - published to all students in class, tracks responses'),
                    ('PublicEditorsAreOwners', 'Whole World - a public url is provided'),
                    )
 

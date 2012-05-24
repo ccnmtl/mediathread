@@ -128,6 +128,57 @@ def i_click_the_value_button(step, value):
         elt = find_button_by_value(value)
         assert elt, "Cannot locate button named %s" % value
         elt.click()
+        
+@step(u'there is an? "([^"]*)" link')
+def there_is_a_text_link(step, text):
+    if not world.using_selenium:
+        for a in world.dom.cssselect("a"):
+            if a.text:
+                if text.strip().lower() in a.text.strip().lower():
+                    href = a.attrib['href']
+                    response = world.client.get(django_url(href))
+                    world.dom = html.fromstring(response.content)
+                    return
+        assert False, "could not find the '%s' link" % text
+    else:
+        try:
+            link = world.firefox.find_element_by_partial_link_text(text)
+            assert link.is_displayed()
+        except:
+            try:
+                time.sleep(1)
+                link = world.firefox.find_element_by_partial_link_text(text)
+                assert link.is_displayed()
+            except:
+                world.firefox.get_screenshot_as_file("/tmp/selenium.png")
+                assert False, link.location      
+        
+        
+@step(u'I click the "([^"]*)" link')
+def i_click_the_link(step, text):
+    if not world.using_selenium:
+        for a in world.dom.cssselect("a"):
+            if a.text:
+                if text.strip().lower() in a.text.strip().lower():
+                    href = a.attrib['href']
+                    response = world.client.get(django_url(href))
+                    world.dom = html.fromstring(response.content)
+                    return
+        assert False, "could not find the '%s' link" % text
+    else:
+        try:
+            link = world.firefox.find_element_by_partial_link_text(text)
+            assert link.is_displayed()
+            link.click()
+        except:
+            try:
+                time.sleep(1)
+                link = world.firefox.find_element_by_partial_link_text(text)
+                assert link.is_displayed()
+                link.click()
+            except:
+                world.firefox.get_screenshot_as_file("/tmp/selenium.png")
+                assert False, link.location      
 
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):

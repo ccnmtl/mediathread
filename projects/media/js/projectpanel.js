@@ -510,7 +510,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
         draggable: true,
         resizable: false,
         modal: true,
-        width: 405,
+        width: 430,
         position: "top",
         zIndex: 10000
     });

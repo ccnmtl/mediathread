@@ -9,7 +9,7 @@ from mediathread.projects.models import Project
 def there_are_no_projects(step):
     assert len(Project.objects.all()) == 0
 
-@step(u'There is an? ([^"]*) ([^"]*) panel')
+@step(u'there is an? ([^"]*) ([^"]*) panel')
 def there_is_a_state_name_panel(step, state, name):
     """
     Keyword arguments:
@@ -24,13 +24,24 @@ def there_is_a_state_name_panel(step, state, name):
         panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
     assert panel != None, "Can't find panel named %s" % panel
     
-@step(u'the ([^"]*) panel has a ([^"]*) button')
+@step(u'the ([^"]*) panel has an? ([^"]*) button')
 def the_panel_has_a_name_button(step, panel, name):
     panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
     assert panel != None, "Can't find panel named %s" % panel
     
     btn = world.find_button_by_value(name, panel)
     assert btn != None, "Can't find button named %s" % name
+    
+@step(u'the ([^"]*) panel does not have an? ([^"]*) button')
+def the_panel_does_not_have_a_name_button(step, panel, name):
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    try:
+        btn = world.find_button_by_value(name, panel)
+        assert False, "Found a button named %s" % name
+    except:
+        pass # expected
     
 @step(u'I call the ([^"]*) "([^"]*)"')
 def i_call_the_composition_title(step, panel, title):
@@ -146,7 +157,7 @@ def i_save_the_changes(step):
         
     assert False, "Unable to locate the dialog's save button"
     
-@step(u'there is a ([^"]*) "([^"]*)" project by ([^"]*)')
+@step(u'there is an? ([^"]*) "([^"]*)" project by ([^"]*)')
 def there_is_a_status_title_project_by_author(step, status, title, author):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
     assert len(elts) > 0, "Expected to find at least 1 project. Instead there are none"

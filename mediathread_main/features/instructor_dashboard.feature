@@ -48,17 +48,6 @@ Feature: Instructor Dashboard
         And there is a Student Contributions button
         Finished using Selenium     
         
-    Scenario: 3. Instructor Dashboard - Test Manage Publishing Settings
-        Using selenium
-        Given I am test_instructor in Sample Course
-        
-        When I access the url "/dashboard/"
-        Then I am at the Instructor Dashboard page
-        When I click the Manage Publishing Options button
-        Then I am at the Manage Publishing Options page
-        ## TODO
-        Finished using Selenium
-        
     Scenario: 4. Instructor Dashboard - Test Create Discussion
         Using selenium
         Given I am test_instructor in Sample Course

@@ -36,6 +36,8 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     self._bind(self.el, "input.project-revisionbutton", "click", function (evt) { self.showRevisions(evt); });
     self._bind(self.el, "input.project-responsesbutton", "click", function (evt) { self.showResponses(evt); });
+    self._bind(self.el, "input.project-my-responses", "click", function (evt) { self.showMyResponses(evt); });
+    self._bind(self.el, "input.project-my-response", "click", function (evt) { self.showMyResponse(evt); });
     
     self._bind(self.el, "input.project-create-assignment-response", "click", function (evt) { self.createAssignmentResponse(evt); });
     self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
@@ -151,10 +153,21 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     
     PanelManager.closeSubPanel(self);
     
-    PanelManager.newPanel({
+    var context = {
         'url': MediaThread.urls['project-create'](),
         'params': { parent: self.panel.context.project.id }
-    });
+    };
+    
+    // Short-term
+    // Navigate to a new project if the user is looking
+    // at another response.
+    if (PanelManager.count() > 1) {
+        context.callback = function (json) {
+            window.location = json.context.project.url;
+        };
+    }
+    
+    PanelManager.newPanel(context);
     
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     jQuery(srcElement).remove();
@@ -300,6 +313,56 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
     
     jQuery(element).parent().appendTo(frm);
     return false;
+};
+
+// Multiple responses.
+ProjectPanelHandler.prototype.showMyResponses = function (evt) {
+    var self = this;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var frm = srcElement.form;
+    
+    // close any outstanding citation windows
+    if (self.tinyMCE) {
+        self.tinyMCE.plugins.editorwindow._closeWindow();
+    }
+    
+    var element = jQuery(self.el).find(".my-response-list")[0];
+    jQuery(element).dialog({
+        buttons: [{ text: "Cancel",
+                    click: function () { jQuery(this).dialog("close"); }},
+                  { text: "View",
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
+                 ],
+        beforeClose: function (event, ui) {
+            if (self._save) {
+                self._save = false;
+                var opts = jQuery(self.el).find("select[name='my-responses'] option:selected");
+                if (opts.length < 1) {
+                    alert("Please select a response");
+                    return false;
+                } else {
+                    var val = jQuery(opts[0]).val();
+                    window.location = val;
+                }
+            }
+            
+            return true;
+        },
+        modal: true,
+        width: 425,
+        height: 200,
+        position: "top",
+        zIndex: 10000
+    });
+    
+    jQuery(element).parent().appendTo(frm);
+    return false;
+};
+
+// A single response
+ProjectPanelHandler.prototype.showMyResponse = function (evt) {
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    window.location = jQuery(srcElement).data("url");
 };
 
 ProjectPanelHandler.prototype.updateParticipantList = function (evt) {

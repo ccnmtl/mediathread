@@ -842,7 +842,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-title.discussion h1 {
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
-    margin: 5px 0px 0px 5px;
+    margin: 5px 0px 5px 5px;
     padding: 2px 5px 4px 0px;
     float: right;
     width: 330px;
@@ -989,17 +989,14 @@ table.panel-subcontainer tr td input.project-title {
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
-    width: 68px;
+    width: 50px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project.project-responsesbutton {
-    width: 90px;
-}
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-assignment-response {
     float: right;
     margin-left: 5px;    
-    width: 175px;
+    width: 145px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-instructor-feedback {
@@ -1011,6 +1008,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-crea
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-previewbutton {
     float: right;
     margin-left: 5px;    
+    width: 60px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton {
@@ -1026,11 +1024,25 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-save
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
     float: right;
     margin-left: 5px;
+    width: 65px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-responsesbutton {
     float: right;
     margin-left: 5px;
+    width: 120px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-responses {
+    float: right;
+    margin-left: 5px;
+    width: 105px;
+}
+
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-response {
+    float: right;
+    margin-left: 5px;
+    width: 90px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {

@@ -43,7 +43,7 @@ def project_create(request):
         except Project.DoesNotExist:
             parent = None
             # @todo -- an error has occurred
-
+            
     if not request.is_ajax():
         return HttpResponseRedirect(project.get_absolute_url())
     else: 
@@ -189,9 +189,9 @@ def project_workspace(request, project_id, feedback=None):
         return HttpResponseForbidden("forbidden")
     
     show_feedback = feedback == "feedback"
-    data = { 'space_owner' : request.user.username, 'show_feedback': show_feedback }
     course = request.course
     is_faculty = course.is_faculty(request.user)
+    data = { 'space_owner' : request.user.username, 'show_feedback': show_feedback }
     
     if not request.is_ajax():
         data['project'] = project
@@ -208,17 +208,14 @@ def project_workspace(request, project_id, feedback=None):
         if parent_assignment:
             assignment_context = project_json(request, parent_assignment, parent_assignment.can_edit(request))
             assignment_context['create_selection'] = True
-            panel = { 'panel_state': 'closed' if show_feedback else 'open', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
+            panel = { 'is_faculty': is_faculty, 'panel_state': 'closed' if show_feedback else 'open', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
         # Requested project, can be either an assignment or composition
         project_context = project_json(request, project, can_edit)
         project_context['editing'] =  True if can_edit and len(project.body) < 1 else False # only editing if it's new
-        project_context['create_assignment_response'] = is_assignment and not is_faculty and in_course(request.user.username, course) and \
-            not project.responses_by(request, request.user)
         project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback_discussion
-        
-        panel = { 'panel_state': 'closed' if show_feedback else 'open', 'context': project_context, 'template': 'project' }
+        panel = { 'is_faculty': is_faculty, 'panel_state': 'closed' if show_feedback else 'open', 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
         # Project Response -- if the requested project is an assignment
@@ -231,7 +228,7 @@ def project_workspace(request, project_id, feedback=None):
                 response_can_edit = response.can_edit(request)
                 response_context = project_json(request, response, response_can_edit)
                 
-                panel = { 'panel_state': 'closed', 'context': response_context, 'template': 'project' }
+                panel = { 'is_faculty': is_faculty, 'panel_state': 'closed', 'context': response_context, 'template': 'project' }
                 panels.append(panel)
                 
                 if not feedback_discussion and response_can_edit:
@@ -266,6 +263,7 @@ def project_json(request, project, can_edit, version_number=None):
     
     versions = project.versions.order_by('-change_time')
     participants = project.attribution_list()
+    is_assignment = project.is_assignment(request)
     
     data = { 'project': { 'title': project.title,
                           'body': project.body,
@@ -280,9 +278,10 @@ def project_json(request, project, can_edit, version_number=None):
                           'public_url': project.public_url(),
                           'visibility': project.visibility_short(),
                           'username': request.user.username,
-                          'type': 'assignment' if project.is_assignment(request) else 'composition',
+                          'type': 'assignment' if is_assignment else 'composition',
                           'current_version': version_number if version_number else None,
-                          'create_selection': True if project.is_assignment(request) else False
+                          'create_selection': is_assignment,
+                          'is_assignment': is_assignment
                        },
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)
@@ -293,7 +292,7 @@ def project_json(request, project, can_edit, version_number=None):
                                 for ann in project.citations()
                            ],
             'type': 'project',
-            'can_edit': can_edit
+            'can_edit': can_edit,
     }
     
     data['responses'] = []
@@ -311,6 +310,26 @@ def project_json(request, project, can_edit, version_number=None):
                 
             data['responses'].append(obj)
     data['response_count'] = len(data['responses'])
+    
+    my_responses = []
+    for r in project.responses_by(request, request.user):
+        obj = { 'url': r.get_absolute_url(),
+                'title': r.title,
+                'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
+                'attribution_list': [] }
+        
+        x = len(r.attribution_list()) - 1
+        for idx, author in enumerate(r.attribution_list()):
+            obj['attribution_list'].append({ 'name': get_public_name(author, request),
+                                             'last': idx == x }) 
+            
+        my_responses.append(obj)
+        
+    if len(my_responses) == 1:
+        data['my_response'] = my_responses[0]
+    elif len(my_responses) > 1:
+        data['my_responses'] = my_responses
+        data['my_responses_count'] = len(my_responses)
     
     if project.is_participant(request.user):
         data['revisions'] = [{ 'version_number': v.version_number,

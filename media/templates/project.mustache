@@ -63,13 +63,42 @@
                                         {{/context.revisions?}}
                                     {{/context.can_edit?}}
                                     
-                                    {{#context.create_assignment_response?}}
-                                        <input class="{{context.project.type}} project project-create-assignment-response" 
-                                            type="button" value="Create Assignment Response">
-                                    {{/context.create_assignment_response?}}
+                                    {{#context.project.is_assignment?}}
+                                        {{^is_faculty}}
+                                            {{^context.my_responses}}
+                                                {{^context.my_response}}
+                                                    <input class="{{context.project.type}} project project-create-assignment-response" 
+                                                        type="button" value="Respond to Assignment">
+                                                {{/context.my_response}}
+                                            {{/context.my_responses}}
+                                        {{/is_faculty}}
+                                    {{/context.project.is_assignment?}}
+                                    
+                                    {{#context.my_response?}}
+                                        {{^context.viewing_my_response}}
+                                            <input class="project project-my-response" type="button" value="My Response" data-url="{{context.my_response.url}}"/>
+                                        {{/context.viewing_my_response}}
+                                    {{/context.my_response?}}
+                                    
+                                    {{#context.my_responses?}}
+                                        <input class="project project-my-responses" type="button" value="My Responses ({{context.my_responses_count}})"/>
+                                            <div class="my-response-list" style="display: none" title="My Responses">
+                                                <div>Select an assignment response, then click "View"</div>
+                                                <select name="my-responses" multiple="multiple">
+                                                    {{#context.my_responses}}
+                                                        <option value="{{url}}">
+                                                            {{ modified }} &mdash;
+                                                            {{#attribution_list}}
+                                                                {{ name }}{{^last}}, {{/last}} 
+                                                            {{/attribution_list}}
+                                                        </option>
+                                                    {{/context.my_responses}}
+                                                </select> 
+                                            </div>  
+                                    {{/context.my_responses?}}
                                     
                                     {{#context.responses?}}
-                                        <input class="project project-responsesbutton" type="button" value="Responses ({{context.response_count}})"/>
+                                        <input class="project project-responsesbutton" type="button" value="Class Responses ({{context.response_count}})"/>
                                             <div class="response-list" style="display: none" title="Responses">
                                                 <div>Select an assignment response, then click "View"</div>
                                                 <select name="responses" multiple="multiple">
@@ -79,7 +108,6 @@
                                                             {{#attribution_list}}
                                                                 {{ name }}{{^last}}, {{/last}} 
                                                             {{/attribution_list}}
-                                                            
                                                         </option>
                                                     {{/context.responses}}
                                                 </select> 

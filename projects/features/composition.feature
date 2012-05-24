@@ -10,8 +10,7 @@ Feature: Composition
         When I click the New Composition button
         Then I am at the Untitled page
         I see "by Instructor One"
-        And I see "Private - Only Author(s) Can View"
-        And I see "Version 1"
+        And I see "Private"
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -28,14 +27,13 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Private - Only Author(s) Can View"
-        There is a project visibility "Publish Assignment to Whole Class"
-        There is a project visibility "Publish to Whole Class"
-        There is not a project visibility "Publish to World"
-        And the project visibility is "Private - Only Author(s) Can View"
+        There is a project visibility "Private - only author(s) can view"
+        There is a project visibility "Assignment - work for all class members"
+        There is a project visibility "Whole Class - information for all class members"
+        There is not a project visibility "Whole World - a public url is provided"
+        And the project visibility is "Private - only author(s) can view"
         
         When I save the changes
-        Then I see "Version 2"
         
         # The project shows on Home
         When I click the HOME button
@@ -58,8 +56,7 @@ Feature: Composition
         When I click the New Composition button
         Then I am at the Untitled page
         I see "by Student One"
-        And I see "Private - Only Author(s) Can View"
-        And I see "Version 1"
+        And I see "Private"
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -76,14 +73,13 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Private - Only Author(s) Can View"
-        There is a project visibility "Submit to Instructor"
-        There is a project visibility "Publish to Whole Class"
-        There is not a project visibility "Publish to World"
-        And the project visibility is "Private - Only Author(s) Can View"
+        There is a project visibility "Private - only author(s) can view"
+        There is a project visibility "Instructor - only author(s) and instructor can view"
+        There is a project visibility "Whole Class - information for all class members"
+        There is not a project visibility "Whole World - a public url is provided"
+        And the project visibility is "Private - only author(s) can view"
         
         When I save the changes
-        Then I see "Version 2"
         
         # The project shows on Home
         When I click the HOME button
@@ -111,7 +107,6 @@ Feature: Composition
         Then I see a Save Changes dialog
         Then I set the project visibility to "<visibility>"
         When I save the changes
-        Then I see "Version 2"
         Then I see "<status>"
         
         # Try to view as student one
@@ -121,10 +116,10 @@ Feature: Composition
         Finished using Selenium
              
       Examples:
-        | title   | visibility                        | status                            | count |
-        | private | Private - Only Author(s) Can View | Private - Only Author(s) Can View | 0     |
-        | assign  | Publish Assignment to Whole Class | Assignment                        | 1     |
-        | public  | Publish to Whole Class            | Published to Class                | 1     |
+        | title   | visibility                                      | status             | count |
+        | private | Private - only author(s) can view               | Private            | 0     |
+        | assign  | Assignment - work for all class members         | Assignment         | 1     |
+        | public  | Whole Class - information for all class members | Published to Class | 1     |
                  
     Scenario Outline: 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
         Using selenium
@@ -141,7 +136,6 @@ Feature: Composition
         Then I see a Save Changes dialog
         Then I set the project visibility to "<visibility>"
         When I save the changes
-        Then I see "Version 2"
         Then I see "<status>"
         
         # Try to view as student two
@@ -159,9 +153,9 @@ Feature: Composition
         Finished using Selenium
              
       Examples:
-        | title   | visibility                        | status                            | count |
-        | private | Private - Only Author(s) Can View | Private - Only Author(s) Can View | 0     |
-        | public  | Publish to Whole Class            | Published to Class                | 1     |
+        | title   | visibility                                      | status             | count |
+        | private | Private - only author(s) can view               | Private            | 0     |
+        | public  | Whole Class - information for all class members | Published to Class | 1     |
 
             
         

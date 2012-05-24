@@ -57,10 +57,13 @@
             });
         };
         
+        this.count = function() {
+            return self.panelViews.length;
+        };
+        
         this.resize = function () {
             var visible = getVisibleContentHeight();
             jQuery(self.el).css('height', visible + "px");
-            
         };
         
         this.loadTemplates = function (idx) {
@@ -171,7 +174,6 @@
                 });
             }
             **/
-
         };
         
         this.openSubPanel = function (subpanel) {
@@ -187,6 +189,16 @@
                 self.verifyLayout(subpanel);
                 jQuery(window).trigger("resize");
             }
+        };
+
+        this.closeSubPanel = function (view) {
+            var panel = view.el;
+            var subpanel = jQuery(view.el).find("td.panel-container.open")[0];
+            
+            jQuery(subpanel).toggleClass("open closed");
+            
+            var panelTab = jQuery(subpanel).next().next().children("div.pantab")[0];
+            jQuery(panelTab).toggleClass("open closed");
         };
                 
         this.verifyLayout = function (panel) {
@@ -233,8 +245,12 @@
                 dataType: 'json',
                 data: options.params,
                 success: function (json) {
-                    var length = self.panels.push(json);
-                    self.loadTemplates(length - 1);
+                    if (options.callback) {
+                        options.callback(json);
+                    } else {
+                        var length = self.panels.push(json);
+                        self.loadTemplates(length - 1);
+                    }
                 }
             });
         };
@@ -249,16 +265,6 @@
                 
                 self.verifyLayout(panel);
             }
-        };
-
-        this.closeSubPanel = function (view) {
-            var panel = view.el;
-            var subpanel = jQuery(view.el).find("td.panel-container.open")[0];
-            
-            jQuery(subpanel).toggleClass("open closed");
-            
-            var panelTab = jQuery(subpanel).next().next().children("div.pantab")[0];
-            jQuery(panelTab).toggleClass("open closed");
         };
 
         

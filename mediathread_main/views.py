@@ -438,8 +438,8 @@ def dashboard(request):
     
     return { 
        "space_viewer": user,
-       "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", True),
-       "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", True)      
+       "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", False),
+       "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", False)      
     }
 
 @allow_http("GET", "POST")

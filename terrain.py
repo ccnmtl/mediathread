@@ -37,7 +37,10 @@ def setup_browser():
     world.firefox = webdriver.Firefox(ff_profile)
     world.client = client.Client()
     world.using_selenium = False
-
+    
+    # Make the browser size at least 1024x768
+    world.firefox.execute_script("window.moveTo(0, 1); window.resizeTo(1024, 768);");
+    
 @after.all
 def teardown_browser(total):
     world.firefox.quit()
@@ -128,6 +131,23 @@ def i_click_the_value_button(step, value):
         elt = find_button_by_value(value)
         assert elt, "Cannot locate button named %s" % value
         elt.click()
+        
+@step(u'there is not an? "([^"]*)" link')
+def there_is_not_a_text_link(step, text):
+    if not world.using_selenium:
+        for a in world.dom.cssselect("a"):
+            if a.text:
+                if text.strip().lower() in a.text.strip().lower():
+                    href = a.attrib['href']
+                    response = world.client.get(django_url(href))
+                    world.dom = html.fromstring(response.content)
+                    assert False, "found the '%s' link" % text
+    else:
+        try:
+            link = world.firefox.find_element_by_partial_link_text(text)
+            assert False, "found the '%s' link" % text
+        except:
+            pass # expected             
         
 @step(u'there is an? "([^"]*)" link')
 def there_is_a_text_link(step, text):

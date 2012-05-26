@@ -125,7 +125,7 @@ def i_set_the_project_visibility_to_level(step, level):
 
     assert False, "No %s option found" % (level)
   
-@step(u'the instructor panel has ([0-9][0-9]?) projects named "([^"]*)"')
+@step(u'the instructor panel has ([0-9][0-9]?) projects? named "([^"]*)"')
 def the_instructor_panel_has_count_projects_named_title(step, count, title):
     elts = world.firefox.find_elements_by_css_selector("ul.instructor-list li")
     n = 0
@@ -161,13 +161,21 @@ def i_save_the_changes(step):
 def there_is_a_status_title_project_by_author(step, status, title, author):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
     assert len(elts) > 0, "Expected to find at least 1 project. Instead there are none"
+    
+    assignment = False
     for e in elts:
-        title_elt = e.find_element_by_css_selector("a.asset_title.type-project")
+        try:
+            title_elt = e.find_element_by_css_selector("a.asset_title.type-project")
+        except:
+            title_elt = e.find_element_by_css_selector("a.asset_title.type-assignment")
+            assignment = True
+            
         if title_elt.text.strip() == title:
-            # author
-            author_elt = e.find_element_by_css_selector("span.metadata-value-author")
-            msg = "%s author is [%s]. Expected [%s]." % (title, author_elt.text.strip(), author)
-            assert author_elt.text.strip() == author, msg
+            if not assignment:
+                # author
+                author_elt = e.find_element_by_css_selector("span.metadata-value-author")
+                msg = "%s author is [%s]. Expected [%s]." % (title, author_elt.text.strip(), author)
+                assert author_elt.text.strip() == author, msg
                 
             # status            
             status_elt = e.find_element_by_css_selector("span.metadata-value-status")

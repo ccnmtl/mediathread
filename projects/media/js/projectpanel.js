@@ -132,7 +132,6 @@ ProjectPanelHandler.prototype.resize = function () {
 
 ProjectPanelHandler.prototype.onClose = function () {
     var self = this;
-    console.log("ProjectPanelHandler.onClose");
     // close any outstanding citation windows
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();

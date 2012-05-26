@@ -193,6 +193,7 @@ def threaded_comment_json(comment, viewer):
                          'close': [ i for i in obj.close ] if hasattr(obj, "close") else None,
                          'id': obj.id,
                          'author': obj.name,
+                         'author_username': obj.user.username,
                          'submit_date': pretty_date(obj.submit_date),
                          'title': obj.title,
                          'content': obj.comment,

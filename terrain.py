@@ -5,7 +5,7 @@ from django.test import client
 import sys, os, time
 from selenium.webdriver.common.keys import Keys
 from mediathread.projects.models import Project
-from mediathread.structuredcollaboration.models import Collaboration
+from mediathread.structuredcollaboration.models import Collaboration, CollaborationPolicyRecord
 
 import time
 try:
@@ -58,9 +58,14 @@ def clear_selenium(step):
     world.using_selenium = False
     
     Project.objects.all().delete()
-    Collaboration.objects.all().delete()
+    Collaboration.objects.exclude(title="Sample Course").delete()
+    CollaborationPolicyRecord.objects.all().delete()
+    os.system("echo 'delete from projects_project_participants;' | sqlite3 lettuce.db")
     os.system("echo 'delete from projects_projectversion;' | sqlite3 lettuce.db")
-
+    os.system("echo 'delete from threadedcomments_comment;' | sqlite3 lettuce.db")
+    os.system("echo 'delete from django_comments;' | sqlite3 lettuce.db")
+    os.system("echo 'delete from django_comment_flags;' | sqlite3 lettuce.db")
+    
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
     if world.using_selenium:
@@ -116,6 +121,14 @@ def i_am_at_the_name_page(step, name):
             time.sleep(1)
             title = world.firefox.title
             assert title.find(name) > -1, "Page title is %s. Expected something like %s" % (title, name)
+            
+@step(u'there is a sample assignment')            
+def there_is_a_sample_assignment(step):
+    os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment.json --settings=settings_test')
+
+@step(u'there is a sample assignment and response')            
+def there_is_a_sample_assignment_and_response(step):
+    os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment_and_response.json --settings=settings_test')
     
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):

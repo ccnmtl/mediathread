@@ -24,6 +24,20 @@ def there_is_a_state_name_panel(step, state, name):
         panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
     assert panel != None, "Can't find panel named %s" % panel
     
+@step(u'there is not an? ([^"]*) ([^"]*) panel')
+def there_is_not_a_state_name_panel(step, state, name):
+    """
+    Keyword arguments:
+    state -- open, closed
+    name -- composition, assignment, discussion, collection 
+
+    """
+    try:
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
+        assert False, "Found panel named %s" % panel
+    except:
+        pass # expected
+    
 @step(u'the ([^"]*) panel has an? ([^"]*) button')
 def the_panel_has_a_name_button(step, panel, name):
     panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
@@ -57,7 +71,7 @@ def i_call_the_composition_title(step, panel, title):
     input.send_keys(title)
     
 @step(u'I write some text for the ([^"]*)')
-def i_write_some_text_for_the_composition(step, panel):
+def i_write_some_text_for_the_panel(step, panel):
     panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
     assert panel != None, "Can't find panel named %s" % panel
     
@@ -69,7 +83,7 @@ def i_write_some_text_for_the_composition(step, panel):
                     learning through the purposeful use of new media and technology""")
     
     world.firefox.switch_to_default_content()
-
+    
 @step(u'I see a ([^"]*) dialog')
 def i_see_a_name_dialog(step, name):
     elt = world.firefox.find_element_by_css_selector('span.ui-dialog-title')
@@ -185,3 +199,16 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
             return
             
     assert False, "Unable to find project named %s" % title
+    
+    
+@step(u'there is a comment that begins "([^"]*)"')
+def there_is_a_comment_that_begins_text(step, text):
+    elts = world.firefox.find_elements_by_css_selector("div.threaded_comment_text")
+    assert len(elts) > 0, "Expected to find at least one div.threaded_comment_text. Found 0"
+    
+    for e in elts:
+        if e.text.startswith(text):
+            return
+    
+    assert False, "Could not find a comment that begins with %s" % text
+    

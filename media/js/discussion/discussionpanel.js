@@ -52,7 +52,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     // if there's only one comment, and i'm the author and the content is empty,
     // then open the edit form
     if (self.panel.context.discussion.thread.length === 1 &&
-        self.panel.context.discussion.thread[0].author === self.space_owner &&
+        self.panel.context.discussion.thread[0].author_username === self.space_owner &&
         self.panel.context.discussion.thread[0].content.length < 1) {
         var elt = jQuery(self.el).find("span.edit_prompt")[0];
         jQuery(elt).trigger("click");

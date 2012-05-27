@@ -365,6 +365,11 @@ def find_button_by_value(value, parent = None):
         if e.get_attribute("value") == value:
             return e
         
+    elts = world.firefox.find_elements_by_tag_name("button")
+    for e in elts:
+        if e.get_attribute("type") == "button" and e.text == value:
+            return e    
+        
     # try the links too
     elts = parent.find_elements_by_tag_name("a")
     for e in elts:

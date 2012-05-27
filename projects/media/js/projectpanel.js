@@ -285,7 +285,7 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
     jQuery(element).dialog({
         buttons: [{ text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }},
-                  { text: "View",
+                  { text: "View Response",
                     click: function () { self._save = true; jQuery(this).dialog("close"); }},
                  ],
         beforeClose: function (event, ui) {

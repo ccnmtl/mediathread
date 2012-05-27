@@ -58,7 +58,7 @@ def the_panel_does_not_have_a_name_button(step, panel, name):
         pass # expected
     
 @step(u'I call the ([^"]*) "([^"]*)"')
-def i_call_the_composition_title(step, panel, title):
+def i_call_the_panel_title(step, panel, title):
     try:
         panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
     except:
@@ -70,6 +70,18 @@ def i_call_the_composition_title(step, panel, title):
     input.clear()
     input.send_keys(title)
     
+@step(u'The ([^"]*) title is "([^"]*)"')
+def the_panel_title_is_value(step, panel, value):
+    try:
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    except:
+        time.sleep(1)
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    h1 = panel.find_element_by_css_selector("h1.project-title")
+    assert h1.text.strip() == value, "Expected %s title %s. Found %s" % (panel, value, h1.text.strip())
+        
 @step(u'I write some text for the ([^"]*)')
 def i_write_some_text_for_the_panel(step, panel):
     panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
@@ -87,7 +99,7 @@ def i_write_some_text_for_the_panel(step, panel):
 @step(u'I see a ([^"]*) dialog')
 def i_see_a_name_dialog(step, name):
     elt = world.firefox.find_element_by_css_selector('span.ui-dialog-title')
-    assert elt != None and elt.text == "Save Changes"
+    assert elt != None and elt.text == name
     
 @step(u'the project visibility is "([^"]*)"')
 def the_project_visibility_is_level(step, level):
@@ -138,6 +150,18 @@ def i_set_the_project_visibility_to_level(step, level):
             return
 
     assert False, "No %s option found" % (level)
+    
+@step(u'I select ([^"]*)\'s response')
+def i_select_username_s_response(step, username):
+    elt = world.firefox.find_element_by_name("responses")
+    
+    select = Select(elt)
+    for o in select.options:
+        if o.text.find(username) > -1:
+            select.select_by_visible_text(o.text)
+            return
+    assert False, "Unable to find a response for %s" % username
+
   
 @step(u'the instructor panel has ([0-9][0-9]?) projects? named "([^"]*)"')
 def the_instructor_panel_has_count_projects_named_title(step, count, title):

@@ -226,3 +226,83 @@ Feature: Assignment
         | Private - only author(s) can view                   | Private                 | test_student_two |   0   |
         | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_student_two |   0   |
         | Whole Class - all class members can view            | Published to Class      | test_student_two |   1   |
+
+    Scenario: 5. Class Responses link - instructor       
+        Using selenium
+        Given there is a sample assignment and response
+        Give I am test_instructor in Sample Course
+        
+        When I click the "Sample Assignment" link
+        Then I am at the Sample Assignment page
+        There is an open Assignment panel
+        And the Assignment Panel has a Class Responses (1) button
+        
+        When I click the Class Responses (1) button
+        Then I see a Responses dialog
+        When I select Student One's response
+        Then I click the View Response button
+        
+        Then I am at the Sample Assignment Response page
+        And there is an open Assignment panel
+        And there is an open Composition panel
+        And the Composition title is "Sample Assignment Response"
+        
+        Finished using Selenium
+        
+    Scenario: 6. Class Responses link + Response Visibility - student       
+        Using selenium
+        Given there is a sample assignment and response
+        
+        # By default, the response is "Instructor Only"
+        # Student Two does not have access
+        Give I am test_student_two in Sample Course
+        When I click the "Sample Assignment" link
+        Then I am at the Sample Assignment page
+        There is an open Assignment panel
+        And the Assignment Panel has a Respond to Assignment button
+        And the Assignment Panel does not have a Class Responses (1) button
+
+        # Update to "Public to Class" 
+        # Student Two can see the button now & view the response       
+        Given I am test_student_one in Sample Course
+        When I click the "Sample Assignment Response" link
+        Then I am at the Sample Assignment Response page
+        Then there is an open Composition panel
+        When I click the Save button
+        Then I see a Save Changes dialog
+        Then I set the project visibility to "Whole Class - all class members can view"
+        When I save the changes
+        Then there is a "Published to Class" link
+        
+        # Now, test_student_two can see the response
+        Give I am test_student_two in Sample Course
+        When I click the "Sample Assignment" link
+        Then I am at the Sample Assignment page
+        There is an open Assignment panel
+        And the Assignment Panel has a Class Responses (1) button
+        And the Assignment Panel has a Respond to Assignment button
+
+        When I click the Class Responses (1) button
+        Then I see a Responses dialog
+        
+        When I select Student One's response
+        And I click the View Response button
+        Then I am at the Sample Assignment Response page
+        And there is an open Assignment panel
+        And there is an open Composition panel
+        And the Composition title is "Sample Assignment Response"
+        
+        # Create my own response and make sure it's the right one
+        When I click the Respond to Assignment button
+        Then I am at the Untitled page
+        And there is an open Assignment panel
+        And the Assignment title is "Sample Assignment"
+        
+        And there is an open Composition panel
+        The Composition panel has a Revisions button
+        And the Composition panel has a Preview button
+        And the Composition panel does not have an Edit button
+        And the Composition panel has a Save button
+        And the Composition panel has a +/- Author button
+        
+        Finished using Selenium

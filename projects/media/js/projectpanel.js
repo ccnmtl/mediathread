@@ -124,7 +124,7 @@ ProjectPanelHandler.prototype.resize = function () {
     // Resize the collections box, subtracting its header elements
     jQuery(self.el).find('div.collection-assets').css('height', (visible - 35) + "px");
     
-    // For IE?
+    // For IE
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
 

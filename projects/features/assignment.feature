@@ -194,9 +194,9 @@ Feature: Assignment
         And there is not a "Read Instructor Feedback" link
         
         When I select "Student Two" as the owner in the Analysis column
-        Then the owner is "Student Two" in the Analysis column
+        Then the owner is "Me" in the Analysis column
         
-        When I click the Sample Assignment link
+        When I click the "Sample Assignment" link
         Then I am at the Sample Assignment page
         There is an open Assignment panel
         And the Assignment Panel has a Respond to Assignment button

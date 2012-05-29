@@ -339,6 +339,10 @@ def the_owner_is_name_in_the_title_column(step, name, title):
     
     menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
     owner = menu.find_element_by_css_selector("a.switcher-top span.title")
+    if owner.text != name:
+        time.sleep(1)
+        owner = menu.find_element_by_css_selector("a.switcher-top span.title")
+        
     assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)
     
 # Local utility functions

@@ -178,6 +178,7 @@ Feature: Assignment
         Then I click the Save Comment button
         Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
         
+        # View as Student One
         Give I am test_student_one in Sample Course
         Then there is a "Read Instructor Feedback" link
         When I click the "Read Instructor Feedback" link
@@ -190,7 +191,16 @@ Feature: Assignment
         When I select "Student One" as the owner in the Analysis column
         Then the owner is "Student One" in the Analysis column
         Then the classwork panel has 0 projects named "Sample Assignment Response"
-        And there is not a "Read Instructor Feedback" link        
+        And there is not a "Read Instructor Feedback" link
+        
+        When I select "Student Two" as the owner in the Analysis column
+        Then the owner is "Student Two" in the Analysis column
+        
+        When I click the Sample Assignment link
+        Then I am at the Sample Assignment page
+        There is an open Assignment panel
+        And the Assignment Panel has a Respond to Assignment button
+        And the Assignment Panel does not have a Class Responses (1) button
 
         Finished using Selenium
         
@@ -215,7 +225,7 @@ Feature: Assignment
         When I select "Student One" as the owner in the Analysis column
         Then the owner is "Student One" in the Analysis column
         Then the classwork panel has <count> projects named "Sample Assignment Response"
-
+        
         Finished using Selenium
              
       Examples:
@@ -249,7 +259,7 @@ Feature: Assignment
         
         Finished using Selenium
         
-    Scenario: 6. Class Responses link + Response Visibility - student       
+    Scenario: 6. Class Responses link + Response Visibility + Respond - Student Two       
         Using selenium
         Given there is a sample assignment and response
         
@@ -295,8 +305,11 @@ Feature: Assignment
         # Create my own response and make sure it's the right one
         When I click the Respond to Assignment button
         Then I am at the Untitled page
+        
         And there is an open Assignment panel
         And the Assignment title is "Sample Assignment"
+        And the Assignment Panel has a Class Responses (2) button
+        And the Assignment Panel has a My Response button
         
         And there is an open Composition panel
         The Composition panel has a Revisions button

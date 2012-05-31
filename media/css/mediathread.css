@@ -125,6 +125,10 @@ a:visited
     color: #660000;
 }
 
+a.materialCitation.disabled {
+    color: gray !important;
+}
+
 
 /* ---- block elements ---------- */
 

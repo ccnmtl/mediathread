@@ -186,7 +186,7 @@ DiscussionPanelHandler.prototype.open_respond = function (evt) {
     self.mode = 'post';
 
     var li = jQuery(elt).parents("li.comment-thread")[0];
-    jQuery(li).find("div.respond_to_comment_form_div").hide();
+    jQuery("div.respond_to_comment_form_div").hide();
 
     var comment_div = jQuery(li).children("div.comment")[0];
     self.open_comment_form(comment_div, true);
@@ -213,8 +213,7 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
         var li = jQuery(elt).parents("li.comment-thread")[0];
         var myText = jQuery(li).find("div.threaded_comment_text")[0];
         jQuery(myText).hide();
-        var myToolbar = jQuery(li).find("div.respond_to_comment_form_div")[0];
-        jQuery(myToolbar).hide();
+        jQuery("div.respond_to_comment_form_div").hide(); // hide all toolbars until this one is saved or cancelled
 
         elt = jQuery(li).find("div.threaded_comment_header")[0];
         jQuery(self.form).children("input.cancel").show();
@@ -230,6 +229,11 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
 
 DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scroll) {
     var self = this;
+    
+    jQuery(self.el).find("div.threaded_comment_text").css("opacity", "1");
+    jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").addClass("disabled");
+
+    
     if (insertAfter) {
         self.tinyMCE = null;
         tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
@@ -256,6 +260,9 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
 
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
+    
+    jQuery(self.el).find("div.threaded_comment_text").css("opacity", "1");
+    jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").removeClass("disabled");
     
     // Switch to a readonly view
     if (self.tinyMCE) {

@@ -49,7 +49,7 @@ class AnnotationForm(forms.ModelForm):
 
 class GlobalAnnotationForm(forms.ModelForm):
     body = forms.CharField(label='My Item Notes', widget=forms.widgets.Textarea(attrs={'rows':7, 'cols':51}) )
-    tags = forms.CharField(label='My Item Tags', help_text="<span class='helptext'>For multi-word tags, use underscores. Use commas to separate tags.<br />Example: Vietnam_War, Fall_of_Saigon</span>")
+    tags = forms.CharField(label='My Item Tags', help_text="<span class='helptext'>Use commas to separate tags. Example: tag 1, tag 2, tag 3</span>")
     class Meta:
         model = SherdNote
         exclude = ('annotation_data', 'author', 'asset', 'range1', 'range2', 'title')

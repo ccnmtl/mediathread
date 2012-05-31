@@ -230,14 +230,18 @@ def triple_homepage(request):
 
     if not c:
         return HttpResponseRedirect('/accounts/login/')
-
-    user = request.user        
+    
+    logged_in_user = request.user
+    classwork_owner = request.user # Viewing your own work by default
+    if request.GET.has_key('username'):
+        user_name = request.GET['username']
+        in_course_or_404(user_name, c)
+        classwork_owner = get_object_or_404(User, username=user_name)
 
     user_records = {
-       'space_viewer': user,
-       'space_owner' : user,
-       "help_homepage_instructor_column": UserSetting.get_setting(user, "help_homepage_instructor_column", True),
-       "help_homepage_classwork_column":  UserSetting.get_setting(user, "help_homepage_classwork_column", True)
+       'classwork_owner': classwork_owner,
+       "help_homepage_instructor_column": UserSetting.get_setting(logged_in_user, "help_homepage_instructor_column", True),
+       "help_homepage_classwork_column":  UserSetting.get_setting(logged_in_user, "help_homepage_classwork_column", True)
     }
     prof_feed = get_prof_feed(c, request)
     discussions = get_course_discussions(c)
@@ -250,7 +254,7 @@ def triple_homepage(request):
     user_records.update({
         'faculty_feed': prof_feed,
         'instructor_full_feed': full_prof_list,
-        'is_faculty': c.is_faculty(user),
+        'is_faculty': c.is_faculty(logged_in_user),
         'display': {
            'instructor': prof_feed['show'],
            'course': (len(prof_feed['tags']) < 5)

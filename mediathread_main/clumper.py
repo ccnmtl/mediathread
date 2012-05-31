@@ -86,8 +86,12 @@ class Clumper():
         @property
         def href(self):
             if self.add_only or isinstance(self.content_object,Collaboration):
-                return getattr(self.things[0],'get_parent_url',
-                               self.things[0].get_absolute_url)()
+                parent = self.content_object.get_parent()
+                if parent and isinstance(parent.content_object, Project):
+                    return parent.content_object.get_absolute_url()
+                else:
+                    return getattr(self.things[0],'get_parent_url',
+                                   self.things[0].get_absolute_url)()
             else:
                 return self.content_object.get_absolute_url()
         @property
@@ -115,22 +119,30 @@ class Clumper():
 
         @staticmethod
         def adapt_action(thing):
-            amap = {Comment:'discussed',
-                    SherdNote:'analyzed',
-                    Asset:'added',
-                    Project:'updated',
-                    DiscussionIndex:'discussed',
-                    }
+            amap = { Comment: 'discussed',
+                     SherdNote: 'analyzed',
+                     Asset: 'added',
+                     Project: 'updated',
+                     DiscussionIndex: 'discussed',
+                   }
             return amap.get(type(thing),'notes')
 
         def adapt_href(self,thing):
-            if isinstance(thing,Comment): return None
-            if isinstance(thing,SherdNote) and thing.range1 is None:
-                return None            
+            if isinstance(thing, Comment): 
+                return None
+            if isinstance(thing, SherdNote) and thing.range1 is None:
+                return None
+                     
+            if isinstance(self.content_object, Collaboration):
+                if hasattr(thing.content_object, "get_top_ancestor"): 
+                    parent = thing.content_object.get_top_ancestor()
+                    if parent and isinstance(parent.content_object, Project):
+                        return None
+            
             if hasattr(thing,'get_absolute_url'):
                 return thing.get_absolute_url()
-            else:
-                return self.content_object.get_absolute_url()
+                
+            return self.content_object.get_absolute_url()
 
         def __iter__(self):
             """returns strings for each interesting thingie"""

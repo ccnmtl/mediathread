@@ -1,75 +1,43 @@
-from djangohelpers.lib import rendered_with
-from djangohelpers.lib import allow_http
-
-from django.db.models import get_model
+from django.core import urlresolvers
+from django.conf import settings
+from django.db.models import get_model, Max
+from djangohelpers.lib import rendered_with, allow_http
 
 from datetime import datetime
 
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
 
-from django.http import HttpResponseForbidden, HttpResponseServerError
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+from django.http import HttpResponseForbidden, HttpResponseServerError, HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse,resolve
-from django.contrib.contenttypes.models import ContentType
-from threadedcomments import ThreadedComment
+
+from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.comments.managers import CommentManager
+
+from threadedcomments import ThreadedComment
+from threadedcomments.util import annotate_tree_properties, fill_tree
+from discussions.utils import pretty_date
 
 from courseaffils.lib import in_course_or_404
 from courseaffils.models import Course
-from django.http import HttpResponseRedirect
 
-def show(request, discussion_id):
-    """Show a threadedcomments discussion of an arbitrary object.
-    discussion_id is the pk of the root comment."""
-    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    return show_discussion(request, root_comment)
-
-@allow_http("GET","DELETE")
-def show_discussion(request, root_comment):
-    space_viewer = request.user
-    if space_viewer.is_staff and request.GET.has_key('as'):
-        space_viewer = get_object_or_404(User,username=request.GET['as'])
-
-    if request.method == "DELETE":
-        return delete_collaboration(request, root_comment.object_pk)
-
-    if not root_comment.content_object.permission_to('read',request):
-        return HttpResponseForbidden('You do not have permission to view this discussion.')
-    
-    try:
-        my_course = root_comment.content_object.context.content_object
-    except:
-        #legacy: for when contexts weren't being set in new()
-        my_course = request.course
-        root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
-        root_comment.content_object.save()
-
-    target = None
-    if root_comment.content_object._parent_id and \
-            root_comment.content_object._parent.object_pk:
-        target = root_comment.content_object._parent
-
-    rv = {
-        'is_space_owner': True,
-        'edit_comment_permission': my_course.is_faculty(space_viewer),
-        'space_owner': space_viewer, #for now
-        'space_viewer': space_viewer,
-        'root_comment': root_comment,
-        'target':target,        
-        'COMMENT_MAX_LENGTH':COMMENT_MAX_LENGTH, #change this in settings.COMMENT_MAX_LENGTH
-        }
-    
-    return render_to_response('discussions/discussion.html', rv, context_instance=RequestContext(request))
+import simplejson
         
 @allow_http("POST")
-def new(request):
+def discussion_create(request):
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+    
     """Start a discussion of an arbitrary model instance."""
     rp = request.POST
-
+    
     title = rp['comment_html']
+    
     #Find the object we're discussing.
     the_content_type = ContentType.objects.get(app_label=rp['app_label'], model=rp['model'])
     assert the_content_type != None
@@ -122,14 +90,66 @@ def new(request):
 
     disc_sc.content_object = new_threaded_comment
     disc_sc.save()
-
-    return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
     
+    if not request.is_ajax():
+        return HttpResponseRedirect( "/discussion/show/%d" % new_threaded_comment.id )
+    else:
+        data = { 'panel_state': 'open', 
+                 'panel_state_label': "Instructor Feedback",
+                 'template': 'discussion',
+                 'context': threaded_comment_json(new_threaded_comment, request.user)
+               }
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')   
 
+@allow_http("POST")
+def discussion_delete(request, discussion_id):
+    space_viewer = request.user
+    
+    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
+    if not root_comment.content_object.permission_to('read', request):
+        return HttpResponseForbidden('You do not have permission to view this discussion.')
 
+    return delete_collaboration(request, root_comment.object_pk)    
+    
+@allow_http("GET")
+def discussion_view(request, discussion_id):
+    """Show a threadedcomments discussion of an arbitrary object.
+    discussion_id is the pk of the root comment."""
+    
+    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
+    if not root_comment.content_object.permission_to('read', request):
+        return HttpResponseForbidden('You do not have permission to view this discussion.')
+    
+    try:
+        my_course = root_comment.content_object.context.content_object
+    except:
+        #legacy: for when contexts weren't being set in new()
+        my_course = request.course
+        root_comment.content_object.context = Collaboration.get_associated_collab(my_course)
+        root_comment.content_object.save()
+        
+    data = { 'space_owner' : request.user.username }    
+
+    if not request.is_ajax():
+        data['discussion'] = root_comment
+        return render_to_response('discussions/discussion.html', data, context_instance=RequestContext(request))
+    else:
+        data['panels'] = [{ 
+            'panel_state': 'open',
+            'subpanel_state': 'open',
+            'panel_state_label': "Discussion",
+            'template': 'discussion',
+            'title': root_comment.title,
+            'can_edit_title': my_course.is_faculty(request.user),
+            'root_comment_id': root_comment.id,
+            'context': threaded_comment_json(root_comment, request.user)
+        }]
+        
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
+    
 @allow_http("POST")    
 @rendered_with('comments/posted.html')
-def comment_change(request, comment_id, next=None):
+def comment_save(request, comment_id, next=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
 
@@ -153,7 +173,31 @@ def comment_change(request, comment_id, next=None):
             disc_sc.save()
 
     comment.save()
+    return { 'comment': comment, }
+      
+def threaded_comment_json(comment, viewer):
+    coll = ContentType.objects.get_for_model(Collaboration)
+    all = ThreadedComment.objects.filter(content_type=coll, object_pk=comment.content_object.pk, site__pk=settings.SITE_ID)
+    all = fill_tree(all)
+    all = annotate_tree_properties(all)
+
     return {
-        'comment': comment,
-        }
-    
+        'type': 'discussion',
+        'form': comments.get_form()(comment.content_object).__unicode__(),
+        'editing': True,
+        'can_edit': True,
+        'discussion': {
+            'id': comment.id,
+            'max_length': COMMENT_MAX_LENGTH,
+            'thread': [{ 'open': obj.open if hasattr(obj, "open") else None,
+                         'close': [ i for i in obj.close ] if hasattr(obj, "close") else None,
+                         'id': obj.id,
+                         'author': obj.name,
+                         'author_username': obj.user.username,
+                         'submit_date': pretty_date(obj.submit_date),
+                         'title': obj.title,
+                         'content': obj.comment,
+                         'can_edit': True if obj.user == viewer else False
+                       } for obj in all]
+         }
+    }

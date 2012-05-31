@@ -6,32 +6,34 @@ import re
 
 from django.contrib.auth.models import User, Group
 from courseaffils.models import Course
-from modelversions import version_model
 
 from threadedcomments.models import ThreadedComment
 from django.contrib.contenttypes.models import ContentType
 from structuredcollaboration.models import Collaboration
 
-PUBLISH_OPTIONS = (('Assignment','Assignment for Class'),
-                   ('PrivateEditorsAreOwners','Private - Only Author(s) Can View'),
-                   ('InstructorShared','Submitted to Instructor'),
-                   ('CourseProtected','Published to Whole Class'),
-                   ('PublicEditorsAreOwners','Published to World (w/ Public Link)'),
+PUBLISH_OPTIONS = (('PrivateEditorsAreOwners', 'Private - only author(s) can view'),
+                   ('InstructorShared', 'Instructor - only author(s) and instructor can view'),
+                   ('CourseProtected', 'Whole Class - all class members can view'),
+                   ('Assignment', 'Assignment - published to all students in class, tracks responses'),
+                   ('PublicEditorsAreOwners', 'Whole World - a public url is provided'),
                    )
 
 SHORT_NAME = {
     "Assignment":'Assignment',
     "PrivateEditorsAreOwners":'Private',
-    "InstructorShared":'Submitted',
-    "CourseProtected":'Class',
-    "PublicEditorsAreOwners":'World',
+    "InstructorShared":'Submitted to Instructor',
+    "CourseProtected":'Published to Class',
+    "PublicEditorsAreOwners":'Published to World',
     "PrivateStudentAndFaculty":"with Instructors", 
     }
 
-# Add keys from PUBLISH_OPTIONS if they should
-# be filtered out of the choices for non-faculty
-PUBLISH_OPTIONS_FACULTY_ONLY = ('Assignment',)
-PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',)
+PUBLISH_OPTIONS_STUDENT_COMPOSITION = ['PrivateEditorsAreOwners', 'InstructorShared', 'CourseProtected' ]
+
+PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners', 'InstructorShared', 'CourseProtected' ]
+
+PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners', 'Assignment', 'CourseProtected' ]
+
+PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners', 'Whole World - a public url is provided' )
 
 class Project(models.Model):
 
@@ -67,18 +69,15 @@ class Project(models.Model):
 
     modified = models.DateTimeField('date modified', editable=False, auto_now=True)
 
-
-    @models.permalink
-    def get_workspace_url(self):
-        return ('project-workspace', (), {
-                'project_id': self.pk,
-                })
-
     @models.permalink
     def get_absolute_url(self):
-        return ('project-view', (), {
-                'project_id': self.pk,
-                })
+        return ('project-workspace', (), { 'project_id': self.pk })
+    
+    def public_url(self,col=None):
+        if col is None:
+            col = self.collaboration()
+        if col and col._policy.policy_name == 'PublicEditorsAreOwners':
+            return col.get_absolute_url()
 
     def subobjects(self, request, type):
         col = self.collaboration()
@@ -98,12 +97,12 @@ class Project(models.Model):
     def responses_by(self, request, user):
         responses = self.responses(request)
         return [response for response in responses
-                if response and user in response.content_object.participants.all()]
+                if response and (user in response.content_object.participants.all() or user == response.content_object.author)]
 
     def responses(self, request):
         project_type = ContentType.objects.get_for_model(Project)
         return self.subobjects(request, project_type)
-
+    
     def is_assignment(self, request):
         if hasattr(self,'is_assignment_cached'):
             return self.is_assignment_cached
@@ -146,11 +145,30 @@ class Project(models.Model):
         self.collaboration(sync_group=True)
 
 
-    def public_url(self,col=None):
-        if col is None:
-            col = self.collaboration()
-        if col and col._policy.policy_name=='PublicEditorsAreOwners':
-            return col.get_absolute_url()
+    def visibility(self):  
+        """
+        The project's status, one of "draft submitted complete".split()
+        """
+        o = dict(PUBLISH_OPTIONS)
+
+        col = self.collaboration()
+        if col:
+            return o.get(col._policy.policy_name, col._policy.policy_name)
+        elif self.submitted:
+            return u"Submitted"
+        else:
+            return u"Private"
+        
+    def visibility_short(self):
+        o = dict(PUBLISH_OPTIONS)
+
+        col = self.collaboration()
+        if col:
+            return SHORT_NAME.get(col._policy.policy_name, col._policy.policy_name)
+        elif self.submitted:
+            return u"Submitted"
+        else:
+            return u"Private"
         
 
     def status(self):
@@ -224,6 +242,18 @@ class Project(models.Model):
             return col.permission_to('read',request)
         else:
             return self.submitted
+        
+    def can_edit(self, request):
+        if not self.is_participant(request.user):
+            return False
+        
+        can_edit = self.collaboration(request).permission_to('edit', request) or \
+            self.collaboration(request, sync_group=True).permission_to('edit', request)
+            
+        return can_edit
+    
+    def can_read(self, request):
+        return self.collaboration(request).permission_to('read',request) or self.collaboration(request, sync_group=True).permission_to('read',request)
     
     def collaboration(self,request=None,sync_group=False):
         col = None
@@ -279,10 +309,4 @@ class Project(models.Model):
             elif change < 0: #track deletes
                 author_contributions[v.author][1] -= change
             last_content = v.body
-        return author_contributions
-
-    @property
-    def dir(self):
-        return dir(self)
-               
-ProjectVersion = version_model(Project)
+        return author_contributions            

@@ -25,7 +25,7 @@ INSTALLATION
 1. Mediathread relies on several submodules.  The easiest way to download
    it all is to run with git 1.6.5+ is:
 
-  git clone --recursive http://github.com/ccnmtl/mediathread.git 
+  git clone --recursive https://github.com/ccnmtl/mediathread.git 
 
 2. Build the database
    For Postgres:

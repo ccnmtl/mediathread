@@ -1,7 +1,0 @@
-go ${base_url}/admin/auth/user/
-follow "Add user"
-fv user_form id_username ${user}
-fv user_form id_password1 ${pw}
-fv user_form id_password2 ${pw}
-submit
-find 'The user &quot;${user}&quot; was added successfully.'

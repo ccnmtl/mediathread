@@ -1,8 +1,0 @@
-You'll need three terminals, one to execute the twill scripts and two to serve the application.
-This is because one of the server-side handlers in analyze_it.twill makes a synchronous HTTP call 
-to the test server, but the test server only handles one request at a time, so the tests will
-hang forever unless you put up two servers.
-
-1) ./ftests/serve 8001
-2) ./ftests/serve 8002
-3) ./ftests/run

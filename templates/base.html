@@ -1,53 +1,53 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load cache user_projects coursetags revision %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 {% with request.collaboration_context.content_object as course %}
 <head><!-- {{controller_name}} :: {{template_name}} -->
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>{% block title %}{% endblock %} Mediathread {{course.title}} > </title>
+	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
 
-	<link rel="stylesheet" type="text/css" href="/site_media/css/course.css?version={{settings.REVISION}}" />
-	<link rel="stylesheet" type="text/css" href="/site_media/css/intermame.css?version={{settings.REVISION}}" />
-    <link rel="stylesheet" type="text/css" href="/site_media/css/shield.css" />
-	<link rel="stylesheet" href="/site_media/css/mediathread.css?version={{settings.REVISION}}" media="screen" />
-	<link rel="stylesheet" href="/site_media/css/print.css?version={{settings.REVISION}}" media="print" />
-    
+	<link rel="stylesheet" href="/site_media/css/jquery-ui-1.8.17.custom.css" media="screen" />
+	<link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
+    <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
     <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
     
-	{% load cache user_projects coursetags %}
     {% cache 500 heads course %}
        {% if course.settings.custom_headers %}
         {{course.settings.custom_headers|safe}}
        {% endif %}
     {% endcache %}
     
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    {% block css %}{% endblock %}
+    
+    <script type="text/javascript" src="/site_media/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="/site_media/js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>
     
     <script src="/site_media/js/browserdetect.js" type="text/javascript" language="javascript"></script>
     <script src="/site_media/js/shield.js" type="text/javascript" language="javascript"></script>
     
-    <script type="text/javascript" src="/site_media/js/util.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/util.js?version={%revision%}"></script>
     
     <script type="text/javascript">
-          var lt = String.fromCharCode(60);
-          if (window.jQuery) {
+        var lt = String.fromCharCode(60);
+        if (window.jQuery) {
             jQuery.noConflict();
-          } else {
-            document.write(lt+'script src="/site_media/js/sherdjs/lib/jquery.min.js" type="text/javascript">'+lt+'/script>');
-            document.write(lt+'script src="/site_media/js/sherdjs/lib/jquery-ui.min.js" type="text/javascript">'+lt+'/script>');
-          }
-          if (!window.JSON) {
-            document.write(lt+'script src="/site_media/js/sherdjs/lib/json2.js" type="text/javascript">'+lt+'/script>');          
-          }
-          var MediaThread = new (function() {
-             this.templates = {};
-             {% if request.user.is_authenticated %}
-               this.current_user = {{request.user.id}};
-               this.user_full_name = "{%public_name for request.user %}";
-             {% endif %}
-          })();
+        }
+         
+        var MediaThread = new (function() {
+            this.templates = {};
+            {% if request.user.is_authenticated %}
+                this.current_user = {{request.user.id}};
+                this.user_full_name = "{%public_name for request.user %}";
+            {% endif %}
+        })();
+
+        //Bind to the ui-widget-overlay and watch for when it is clicked
+        jQuery('.ui-widget-overlay').live("click", function() {
+           //Close the dialog
+           jQuery("#settings_menu").dialog("close");
+        });   
     </script>
-	{% block css %}{% endblock %}
 	{% block feeds %}{% endblock %}
 </head>
 {% course_role for request.user in course as role_in_course %}
@@ -62,17 +62,30 @@
         	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
         	   <ul id="standardnav">
                     {% if request.user.is_authenticated %}
-                        <li>Welcome, <span id="logged_in_name" class="username">{% public_name for user %}</span>!</li>
-            			<li><a href="/accounts/logout/">Log Out</a></li>
-            		    {%if user.is_staff %}
-                			<li>
-                			  <a href="/admin/">ADMIN</a>
-                			</li>
-            		    {%endif%}
-                        {% num_courses for user as user_courses %}
-                        {% if user_courses > 1 or user.is_staff %}
-                            <li><a href="/?unset_course">Switch Course</a></li>
-                        {% endif %}
+                        <li class="settings" onclick="jQuery('#standardnav_settings_menu').toggle();">
+                            <img alt="settings_gear" src="/site_media/img/settings.png" style="height: 18px;"></img>
+                            <!-- Settings Menu -->
+                            <div id="standardnav_settings_menu" style="display: none">
+                                {%if user.is_staff %}
+                                    <a href="/admin/">Admin</a>
+                                {%endif%}
+                                
+                                {% num_courses for user as user_courses %}
+                                
+                                {% if user_courses > 1 or user.is_staff %}
+                                    <a href="/?unset_course">Switch Course</a>
+                                {% endif %}
+                                <a href="/accounts/logout/">Log Out</a>
+                            </div>
+                        </li>
+                        <li class="settings" style="margin-top: 2px;">
+                            <span id="logged_in_name" class="username">{% public_name for user %}</span>
+                        </li>
+                        <li class="settings" style="margin-top: 2px;">
+                            <a href="#" onclick='jQuery("#standardnav_settings_menu").toggle();'>
+                                <img src="/site_media/img/down_arrow_gray.png" alt="down arrow" />
+                            </a>
+                        </li>
                     {% else %}
         			    <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}
@@ -81,7 +94,9 @@
                 </ul>
     		{% endblock %}
     		
+                
     	</div><!-- id="header" -->
+        
     {% endblock %}
         
     <!-- ###### Don't touch this ###### -->
@@ -102,14 +117,16 @@
          {% if request.course %}
 			{% block primarynavtabs %}
 			<ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
-			
-			    {% if is_course_faculty %}
-				<li class="{% active request 'Instructor' %} instructor"><a href="{% url dashboard-home %}">Instructor Dashboard</a></li>
+				
+                <li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>
+                
+                {% if is_course_faculty %}
+                    <li class="{% active request 'Instructor' %} instructor"><a href="{% url dashboard-home %}">Instructor Dashboard</a></li>
                 {% endif %}
-
-				<li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>
-				<li class="{% active request 'Notifications' %} activity"><a href="/notifications/">Recent Activity</a></li>
-                <li class="{% active request 'Explore' %} activity"><a href="/explore/">Source Media </a></li>
+				
+                <li class="{% active request 'Notifications' %} activity"><a href="/notifications/">Recent Activity</a></li>
+                
+                <li class="{% active request 'Explore' %} explore"><a href="/explore/">Source Media</a></li>
 
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
@@ -155,6 +172,7 @@
                            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
                            <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact</a></li>
                            {% endif %}
+                           <li><a href="/help/">Help</a></li>
 			</ul>
 			
 			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a></h4> 
@@ -190,6 +208,7 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+      
     });
 </script>
 </body>

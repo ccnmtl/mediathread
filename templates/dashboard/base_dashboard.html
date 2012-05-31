@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {%load user_annotations comments %}
 
-{% block title %}Course Summary{% endblock %}
+{% block title %}Instructor Dashboard{% endblock %}
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/reports.js"></script>
@@ -46,15 +46,15 @@
               {% include "help/help_contentarea.html" %}
               <a href="/dashboard/addsource/">Manage Sources</a>
               
-              <a href="/dashboard/settings/">Manage Settings</a>
+              <a href="/dashboard/settings/">Manage Publishing Options</a>
               
-              <form class="project-createnew" method="post" action="{%url your-space-projects user%}">
-                <input type="hidden" name="title" />
-                <input type="submit" value="Create Composition or Assignment"/>
+              <form class="project-createnew" method="post" action="{%url project-create %}">
+                  <input type="hidden" name="title" />
+                  <input type="submit" value="Create Composition Or Assignment"/>
               </form> 
               
-              <!--<a href="/discussion/new/">Create Discussion</a>-->
-              <form class="discussion-createnew"  action="/discussion/new/" method="post">
+              <!--Create Discussion-->
+              <form class="discussion-createnew"  action="/discussion/create/" method="post">
                 <input type="hidden" name="comment_html" value="Discussion Title" />
                 <input type="hidden" name="app_label" value="courseaffils"/>
                 <input type="hidden" name="model" value="course"/>

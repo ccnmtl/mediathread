@@ -11,12 +11,12 @@ from djangosherd.models import DiscussionIndex
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseForbidden
 
 from django.core.urlresolvers import reverse
 import datetime
 from django.db.models import get_model, Q
-from discussions.utils import get_discussions
+from discussions.utils import get_discussions, get_course_discussions
 
 from mediathread_main.models import UserSetting
 
@@ -231,41 +231,31 @@ def triple_homepage(request):
     if not c:
         return HttpResponseRedirect('/accounts/login/')
 
-    user = request.user
-    if request.GET.has_key('username'):
-        user_name = request.GET['username']
-        in_course_or_404(user_name, c)
-        user = get_object_or_404(User, username=user_name)
-    elif user.is_staff and request.GET.has_key('as'):
-        user = get_object_or_404(User, username=request.GET['as'])
-        
-    #bad language, we should change this to user_of_assets or something
-    space_viewer = request.user 
-    if request.GET.has_key('as') and request.user.is_staff:
-        space_viewer = get_object_or_404(User, username=request.GET['as'])   
+    user = request.user        
 
     user_records = {
-       'space_viewer': space_viewer,
+       'space_viewer': user,
        'space_owner' : user,
        "help_homepage_instructor_column": UserSetting.get_setting(user, "help_homepage_instructor_column", True),
        "help_homepage_classwork_column":  UserSetting.get_setting(user, "help_homepage_classwork_column", True)
     }
     prof_feed = get_prof_feed(c, request)
-    discussions = get_discussions(c)
+    discussions = get_course_discussions(c)
 
     full_prof_list = []
     for lis in (prof_feed['projects'], prof_feed['assignments'], discussions,):
         full_prof_list.extend(lis)
     full_prof_list.sort(lambda a, b:cmp(a.title.lower(), b.title.lower()))
     
-    user_records.update(
-        {'faculty_feed':prof_feed,
-         'instructor_full_feed':full_prof_list,
-         'is_faculty':c.is_faculty(user),
-         'display':{'instructor':prof_feed['show'],
-                    'course': (len(prof_feed['tags']) < 5)
-                    },
-         'discussions' : discussions,
+    user_records.update({
+        'faculty_feed': prof_feed,
+        'instructor_full_feed': full_prof_list,
+        'is_faculty': c.is_faculty(user),
+        'display': {
+           'instructor': prof_feed['show'],
+           'course': (len(prof_feed['tags']) < 5)
+         },
+         'discussions': discussions,
          'msg': request.GET.get('msg', ''),
          'tag': request.GET.get('tag', ''),
          'view': request.GET.get('view', '')
@@ -301,7 +291,7 @@ def get_records(user, course, request):
     today = datetime.date.today()
 
     editable = (user == request.user)
-    
+     
     #bad language, we should change this to user_of_assets or something
     space_viewer = request.user 
     if request.GET.has_key('as') and request.user.is_staff:
@@ -398,7 +388,10 @@ def get_records(user, course, request):
         the_json['url'] = p.get_absolute_url()
         
         participants = p.attribution_list()
-        the_json['authors'] = [ {'name': get_public_name(u, request) } for u in participants]
+        the_json['authors'] = [{
+            'name': get_public_name(u, request),
+            'last': idx == (len(participants) - 1) 
+        } for idx, u in enumerate(participants)]
         the_json['modified'] = p.modified.strftime("%m/%d/%y %I:%M %p")
         the_json['status'] = p.status()
         the_json['editable'] = editable
@@ -440,11 +433,13 @@ def get_records(user, course, request):
 @rendered_with('dashboard/dashboard_home.html')
 def dashboard(request):
     user = request.user
+    if not request.course.is_faculty(user):
+        return HttpResponseForbidden("forbidden")
     
     return { 
-       "space_viewer": request.user,
-       "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", True),
-       "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", True)      
+       "space_viewer": user,
+       "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", False),
+       "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", False)      
     }
 
 @allow_http("GET", "POST")
@@ -523,10 +518,13 @@ def class_settings(request):
             # Check any existing projects -- if they are world publishable, turn this feature OFF
             projects = Project.objects.filter(course=c)
             for p in projects:
-                col = Collaboration.get_associated_collab(p)
-                if col._policy.policy_name == 'PublicEditorsAreOwners':
-                    col.policy = 'CourseProtected'
-                    col.save()
+                try:
+                    col = Collaboration.get_associated_collab(p)
+                    if col._policy.policy_name == 'PublicEditorsAreOwners':
+                        col.policy = 'CourseProtected'
+                        col.save()
+                except:
+                    pass
                 
     return context
 

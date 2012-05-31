@@ -30,12 +30,9 @@ a.edit-pencil {
 
 .asset-view-published {
     background: url('../img/media-Bkgd.gif') no-repeat center center;
-    padding-top: 3px;
-    margin-left: 5px;
-    background-color: #ededed;
-    float: left;
-    width: 57%;
-    height: 450px;
+    height: 100%;
+    min-height: 300px;
+    border: 1px solid #ccc;
 }
 
 .asset-view-small {
@@ -47,14 +44,6 @@ a.edit-pencil {
 
 .asset-title {
     margin-left: 10px;
-}
-
-.annotation-title.materialCitation {
-    background-image: url('../img/icons/item_video.gif') left no-repeat;
-    border: 0;
-    color: #660000;
-    width:auto;
-    overflow:visible; /* IE 5-6 hack */
 }
 
 .annotation-title.materialCitation h2 {
@@ -71,52 +60,80 @@ a.edit-pencil {
     padding: 20px;
 }
 
+
 .essay-options
 { 
-    padding:1em;
+    margin: 2em 0 2em;
     clear:both;
+
 }
 
-.essay-space-container {
-    float: left; 
-    width: 42%;
+.essay-options h3
+{ 
+    margin: 0 0 1em 0;
+
 }
 
+h1.project-title {
+    font-size: 160%;
+    font-weight: bold;
+    margin: 0 0 0 0;
+    line-height: 1.2em;
+    max-width: 450px;
+}
+
+#response-list {
+    margin-bottom: 1em;
+}
+
+/** Needed?
 .essay-space-feedback
 { 
   height: 89%;
   overflow: auto;
-  position:relative;/*important companion to overflow:auto for IE7*/
+  position:relative
   margin-left: 5px;
   border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
   background-color:white;
   max-width:550px;
 }
+**/
 
 .essay-space
 { 
-  height: 442px;
+/*  height: 100%;*/
+  min-height: 300px;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
-  margin-left: 5px;
-  border: 1px solid #ccc;
   padding: 0 10px 10px 10px;
   background-color:white;
+  border: 1px solid #ccc;
 }
 
 .essay-space h2 input {
     padding:0 3px;
 }
 
-#essay-space-materials {
+#essay-space-materials,
+#composition-essay-space-materials,
+#assignment-essay-space-materials {
     float: left;
     width: 40%;
     margin-left: 20px;
 }
 
+#project-revision-history table tr td,
+#assignment-revision-history  table tr td {
+    padding: 2px 8px;
+    border: 1px solid #ccc;
+
+}
+
 #discussion-space-materials h2,
-#essay-space-materials h2 {
+#essay-space-materials h2,
+#collection-materials h2,
+.collection-materials h2 {
     background-color: #a88448;
     text-transform: capitalize;
     font-size: 98%;
@@ -140,45 +157,12 @@ h4 img.materialCitation {
     margin: 0 0px 0px 4px;
 }
 
-input.materialCitation {
-    background: #fff url('../img/icons/item_video.gif') left no-repeat;
-    margin: 2px 0px 2px 4px;
-    padding: 1px;
-    border: 0;
-    padding-left: 14px;
-    font-size:12px;
-    color: #369;
-    cursor:pointer;
-    display:inline;
-    width:auto;
-    overflow:visible; /* IE 5-6 hack */
-    text-decoration: underline;
-    font: normal 12px Arial, Helvetica, Verdana, "Lucida Grande", Lucida, sans-serif;
-}
-
-input.materialCitation:hover
-{
-    background-color: #efefef;
-}
-
-#last-version-public {
-    padding-left:10px;
-}
-
-#last-version-saved {
-
-   float: right;
-   padding: 3px;
-   margin: 5px 1px 1px 0;
-}
-
-
 body.mceContentBody {
-    /*overrides tinyMCE's default 10px which will not correspond
+    /**overrides tinyMCE's default 10px which will not correspond
       to styled as published (and 10px is too small for the image-annotation
       icon)
-     */
-    font:0.8em/120% 'lucida grande',arial,verdana,sans-serif;
+    **/
+    font: 0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }
 
 .mceContentBodyCursor {
@@ -191,48 +175,50 @@ body.mceContentBody {
     font-weight: bold;
 }
 
+
 div.mce_editorwindow {
     min-width: 324px;
 }
 
-#project-container {
-    background-color: #ccc;
-    margin: 0;
-    padding: 0 5px;
+.defaultSkin table.mceLayout {
+    border-top: 1px solid #CCC !important;
+    border-bottom: 1px solid #CCC !important;
 }
 
-#project-content {
+.project-content { 
     width: 100%;
+    border: 1px solid #ccc;
+}
+ 
+.project_participants_chosen {
+    padding-bottom: 0px;
+    vertical-align: none;
 }
 
-.project-form-title input#id_title {
-    width:375px;
-    font-size: 100%;
-    padding-left: 5px;
+#participants_chosen {
+    padding-bottom:3px;
+    max-width: 650px;
+    margin: 0 0 .1em;
 }
 
-
-#project-form-buttons {
-    margin-top:5px;
+input.participants_toggle {
+    margin: 0px 10px 5px 0px;
 }
 
-#project_participants {
-    font-size: 90%;
-    max-width: 451px;
-    padding-top: 4px;
-    margin: 2px;
+#id_participants {*height: 15em;}
+
+div.save-publish-status {
+    text-align: left;
 }
 
-span.project-dropdown {
-    margin-right:10px;
-    *margin: -23px 45px 0 0;
+div.save-publish-status ul {
+    margin-left: .25em;
+    margin-right: .25em;
 }
 
-input.project-savebutton,
-span.project-dropdown {
-    float:right;
+div.save-publish-status li {
+    list-style-type: none;
 }
-
 
 /* ---- Threaded comments ---------- */
 
@@ -250,71 +236,65 @@ span.project-dropdown {
     margin-left: 20px;
 }
 
+.comment_action {
+    margin: 4px 2px 0 0;
+    background-repeat: repeat-x;
+    border: 1px solid #477794;
+    text-transform: capitalize;
+    padding: 2px 5px;
+    text-decoration: none;
+    color: black;
+    background-image: url("../img/buttons/compositions_button_bg.jpg");
+    font-size: 85%;
+}
+
+div.threadedcomments-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 1px solid #bbb;
+    position: relative;
+}
+
+form.threaded_comments_form {
+    margin: 10px 10px 30px 10px;
+}
 
 form.threaded_comments_form ul li {
- background: #AAA;
- list-style-type: none;
+    background: #AAA;
+    list-style-type: none;
 }
 
-.comment_action {
-    background-color:#EEEEEE;
-    border:1px solid #CCCCCC;
-    color:#992222;
-    cursor:pointer;
-    float:left;
-    font-size:80%;
-    margin:0 4px 0 0;
-    padding:1px 3px;
-    text-decoration:none;
+form.threaded_comments_form table.threaded_comments_form_table {
+    width: 100%;
 }
 
-.comment_form_space ul {
-    margin: 0 0 0 0;
+form.threaded_comments_form table, 
+form.threaded_comments_form table tr, 
+form.threaded_comments_form table tr td {
+    border: none;
 }
 
-.respond_to_comment_form_div .control-open {
-    padding-right:20px;
-    background:#eeeeee url("/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/cornerx.png") 97% 45% no-repeat;
-    font-weight:bold;
-    
-}
-
-.comment-manage, .comment_actions a.comment-manage {
-	
-	color:#992222;
-	cursor:pointer;
-	padding:1px 3px;
-	text-decoration:underline;
-	font-size: 90%;
-}
-
-.comment-date {
-
-	font-size: 80%;
-}
-
-
-
-.invisible { display: none; }
-
-
-/***
-doesn't work in WebKit OR IE?!!?
-,
-form.threaded_comments_form input[name=url],
-form.threaded_comments_form input[name=honeypot],
-form.threaded_comments_form input[name=name],
-form.threaded_comments_form input[name=email],
-form.threaded_comments_form input[name=title],
-form.threaded_comments_form label[for=id_url],
-form.threaded_comments_form label[for=id_honeypot],
-form.threaded_comments_form label[for=id_name],
-form.threaded_comments_form label[for=id_email],
-form.threaded_comments_form label[for=id_title] 
-***/
-form.threaded_comments_form,
-form.threaded_comments_form .formtitle {
+form.threaded_comments_form table th,
+form.threaded_comments_form table tr td input[name="name"],
+form.threaded_comments_form table tr td input[name="email"],
+form.threaded_comments_form table tr td input[name="url"],
+form.threaded_comments_form table tr td input[name="title"],
+form.threaded_comments_form table tr td input[name="honeypot"]
+{
     display:none;
+}
+
+form.threaded_comments_form input[type="submit"],
+form.threaded_comments_form input[type="button"] {
+    float: right;
+    margin-right: 5px;
+}
+
+form.threaded_comments_form table tr td input[name="title"] {
+    width: 50%;
+    font-size: 110%;
+    margin: 8px 0px;
+    padding: 2px;
 }
 
 .threaded_comment_title {
@@ -323,8 +303,6 @@ form.threaded_comments_form .formtitle {
 
 ul.comment-thread {
     margin: 0px; /*no left indent on first comment*/
-
-
 }
 
 
@@ -364,38 +342,19 @@ li > ul.comment-thread div.comment {
 
 }
 
-li > ul.comment-thread div.comment.new-comment {
-
-	padding-bottom: 33px;
-
-}
-
-
-
 li.comment-thread {
     list-style:none;
     padding-bottom: 4px;
-
-
 }
 
 /*TinyMCE adds _tbl to the #id_comment id for the table where the editor is dynamically created. */
-
-#id_comment {
-    width: 96%;
-}
-
-table#id_comment_tbl {
-    clear:both;
-    margin-left:10px;
-}
 
 /*comment that someone has linked to
   This MUST be shown in some way, so it's clear what comment
   just created.
 */
 li.comment-thread:target > .comment {
-    border:2px solid black;
+    border: 1px solid black;
 }
 
 li.comment-thread:target > .comment .threaded_comment_header {
@@ -404,42 +363,73 @@ li.comment-thread:target > .comment .threaded_comment_header {
 
 .threaded_comment_header {
     background-color:#CCCCCC;
-    padding: 1px 2px 1px 5px;
+    padding: 2px 0px 4px 0px;
     width: 100%;
+    height: 35px;
 }
 
 .threaded_comment_text {
     padding: 1px 2px 1px 5px;
-    width: 100%;
+    margin-right: 5px;
+    width: 99%;
 }
 
-.comment-actions {
-    float:right;
-
+.threaded_comment_author {
+    padding-top: 4px;
+    padding-left: 5px;
+    font-weight: bold;
 }
+
+div.comment-date {
+    font-size: 80%;
+    margin-left: 5px;
+    margin-top: 4px;
+}
+
+.respond_to_comment_form_div {
+    float: right;
+    margin-right: 0px;
+    margin-top: 4px;
+}
+
+
 /* ---- End threaded comments ---------- */
+
+/* Revision dialog */
+.revision-list, .response-list {
+    text-align: left;
+}
+
+.revision-list div, .response-list div {
+    padding-bottom: 5px;
+}
+
+.revision-list select, .response-list select {
+    height: 75%;
+    width: 99%;
+}
 
 
 /* ---- Participant Selector Widget ------------ */
 
 /*for FilteredSelectMultiple*/
 .selector {
-width: 450px;
+width: 410px;
 float: left;
 }
 
 .selector select {
-width: 205px;
+width: 185px;
 height: 8em;
 }
 
-.selector img, .selector img a {
+.selector img {
     vertical-align: middle;
 }
 
 .selector-available, .selector-chosen {
 float: left;
-width: 205px;
+width: 185px;
 text-align: center;
 margin-bottom: 5px;
 }
@@ -473,11 +463,11 @@ text-align: left;
 }
 
 .selector .selector-chosen .selector-filter {
-padding: 4px 5px;
+padding: 4px 2px;
 }
 
 .selector .selector-available input {
-width: 170px;
+width: 130px;
 }
 
 .selector ul.selector-chooser {
@@ -547,6 +537,14 @@ font-weight:normal;
 }
 .selector h2 {
 margin-bottom:0; /*override dojo style*/
+}
+
+#save-publish-status {
+    margin-top: 10px;
+}
+
+label[for=id_publish] {
+    margin-bottom: 5px;
 }
 
 

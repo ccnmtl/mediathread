@@ -1,1 +1,0 @@
-[{"pk": 1, "model": "projects.useraffiliation", "fields": {"course": "summer09", "user": 2}}, {"pk": 2, "model": "projects.useraffiliation", "fields": {"course": "painting", "user": 2}}, {"pk": 3, "model": "projects.useraffiliation", "fields": {"course": "summer09", "user": 3}}]

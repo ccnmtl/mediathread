@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags  comments collaborations %}
+{% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags comments collaborations revision %}
 
 {% block title %}
     {% if space_owner == user %}
@@ -15,15 +15,16 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/tablesort.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/tablesort.js?version={%revision%}"></script>
       
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
     
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
 
     <script type="text/javascript">
         resizeHomepage = function() {
@@ -41,8 +42,17 @@
         }
     
         jQuery(document).ready(function() {
+            jQuery("div#classwork_table").ajaxStart(function(){
+                jQuery(this).addClass("ajaxLoading");
+            });
+            
+            jQuery("div#classwork_table").ajaxStop(function(){
+                jQuery(this).removeClass("ajaxLoading");
+            });
+            
             DjangoSherd_Asset_Config();    
-            CollectionList.init({
+            var collectionList = new CollectionList({
+                'parent': jQuery("div#classwork_table")[0],
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
                 'template': 'classwork',
                 'template_label': 'classwork_table',
@@ -107,7 +117,7 @@
                                             <div class="actions">
                                                 {% if is_faculty %}
                                                     <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                                                        href="{% url discussion-view disc.id %}?delete">
+                                                        href="{% url discussion-delete disc.id %}">
                                                     <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
                                                 {% endif %}
                                             </div>
@@ -130,7 +140,7 @@
             {% with "resizeHomepage" as callback %}
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <h2>Class Work {% include "help/help_button.html" %}</h2>
+                    <h2>Analysis {% include "help/help_button.html" %}</h2>
                     {% include "help/help_contentarea.html" %}
                     <div id="classwork_table"></div>
                 </div>

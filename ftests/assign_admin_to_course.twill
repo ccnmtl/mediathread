@@ -1,4 +1,0 @@
-go ${base_url}/admin/auth/user/1/
-fv user_form id_groups ${course}
-submit
-find "was changed successfully."

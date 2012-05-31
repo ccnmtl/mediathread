@@ -102,3 +102,9 @@ def is_assignment(project, request):
     return (isinstance(project, Project) and project.is_assignment(request)) or (isinstance(project, dict) and project['publish'] == 'Assignment')
 register.filter(is_assignment)
 
+def project_type(project, request):
+    if is_assignment(project, request):
+        return "assignment"
+    else:
+        return "composition"
+register.filter(project_type)

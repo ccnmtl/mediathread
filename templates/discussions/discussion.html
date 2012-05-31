@@ -1,220 +1,61 @@
 {% extends "base.html" %}
-{% load collaborations user_annotations tagging_tags smartif user_projects threadedcomments_tags coursetags %}
+{% load smartif revision %}
 
 {% block title %}
-Discussion of {{root_comment.content_object.title}}
+    {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
 {% endblock %}
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" href="/site_media/css/project.css" />  
-    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />  
-    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_editorwindow/skins/minimalist/window.css" />
-  
+    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+    
+    <script type="text/javascript" src="/jsi18n"></script>
+    
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}
-  <script type="text/javascript">
-    var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
-  </script>
-  <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-  <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
-  
-  <!--All the annotation javascript/css -->
+    <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/project/project.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/discussion.js?version={{settings.REVISION}}"></script>
-    <script type="text/javascript" src="/site_media/js/hs.js?version={{settings.REVISION}}"></script>
     
     <script type="text/javascript">
-        function resizeDiscussionPage() {
-            var visible = getVisibleContentHeight();
-            var additional = 0;
-            {% ifequal target.content_type.model "project" %}
-                visible -= 50;
-                jQuery('#id_comment_ifr').css('height', (visible - 150) + "px");
-                jQuery('#id_comment_tbl').css('width', "97%");
-            {% endifequal %}
-
-            jQuery('#discussion-space-materials').css('height', visible + "px");
-            jQuery('div.scroll').css('height', (visible - 85) + "px");
-            jQuery('#threadedcomments').css('height', (visible - 20) + "px");
-        }
-
-        jQuery(document).ready(function() { 
-            ProjectView.initEditing({
-                'open_from_hash':true, 
-                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
-                'view_callback': resizeDiscussionPage,
-                {% ifequal target.content_type.model "project" %}
-                   'enable_project_selection': true,
-                   'project_id': {{target.content_object.id}}
-                {% else %}
-                   'enable_project_selection': false
-                {% endifequal %}
-            }); 
-            
-            jQuery(window).resize(function () {  
-                 resizeDiscussionPage();
-            });
-        });   
+        var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
     </script>
+    <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
+    <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
+    
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    
+    <script type="text/javascript" src="/site_media/js/jquery.colorBlend.js"></script>
+    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
+    
+    <script type="text/javascript" src="/site_media/js/discussion/discussionpanel.js?version={%revision%}"></script>
+        
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            ///makes it resizable--somewhat hacking tinyMCE.init()
+            tinyMCE.settings.theme_advanced_statusbar_location = "bottom";
+            
+            PanelManager.init({ 
+                'container': 'sliding-content-container',
+                'url': MediaThread.urls['discussion-view']({{discussion.id}})
+            });
+        });
+  </script>
 {% endblock %}
 
 {% block content %}
     {{ block.super }}
-         <!--  Where the media is shown. Displays as an overlay next to the clip -->
-         <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute; z-index: 1000;">
-              <a id="close-clipbox" class="mce_editorwindow_closebtn" href="#close_viewer" onmousedown="jQuery('#videoclipbox').hide();return false;">x</a>
-              <div class="annotation-title"></div>
-              <div class="asset-title"></div>
-              <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
-                <div class="asset-display"></div>
-                <div id="clipstrip-display" class="clipstrip-display"></div>    
-              </div>
-        </div>
-        
-        {% ifequal target.content_type.model "project" %}       
-            <h2>Instructor Feedback for 
-                {{target.content_type.model}}:
-                <a href="{{target.content_object.get_absolute_url}}">
-                    <span id="discussion-subject-title">{{target.title}}</span>
-                </a>
-            </h2>
-          
-            {% with target.content_object as project %}
-            
-            <h5 style="margin: .2em 0 .2em">by <span id="participants_chosen">{% public_name for project.attribution_list %}</span></h5>
-            {% with project.assignment as assignment %}
-            {% if assignment %}
-                    <h6 style="margin: .2em 0 1em">Response to
-                      <a href="{{assignment.get_absolute_url}}">
-                    {{assignment.title}}
-                      </a>
-                    </h6>
-            {% endif %}
-            {% endwith %}
-            {% endwith %} 
-        {% else %}
-          <h2><span id="discussion-subject-title">
-             {%firstof root_comment.title root_comment.content_object.title %} Discussion
-            </span>
-          </h2>
-        {% endifequal %}
     
-    <div>
-        <div id="threadedcomments">
-            {%get_comment_list for root_comment.content_object as comment_list%}
-            {% for current_comment in comment_list|fill_tree|annotate_tree %}
-                <!-- starting comment: >{{ current_comment.id }}-->
-                {% ifchanged current_comment.parent_id %}
-                {% else %}
-                    </li>
-                {% endifchanged %}
-                {% if not current_comment.open and not current_comment.close %}
-                    </li>
-                {% endif %}
-                {% if current_comment.open %}
-                    <ul class="comment-thread">
-                {% endif %}
-                <li id="comment-{{current_comment.id}}"
-                    class="comment-thread {% if current_comment.last %}last{% endif %}"
-                    >
-                  <div class="comment">
-                    <div class="threaded_comment_header">
-                    <span class="comment-actions">
-                        {% if space_viewer.is_staff %}
-                          <a class="comment-manage" 
-                             href="{%url admin:threadedcomments_threadedcomment_change current_comment.id %}">Manage</a>
-                          {% ifequal current_comment root_comment%}
-                          <a class="comment-manage"
-                             href="{%url admin:structuredcollaboration_collaboration_change root_comment.content_object.id %}">Title/Access</a>
-                          {% endifequal %}
-                        {% endif %}
-                      </span>
-                   
-                   <span class="threaded_comment_author">{{current_comment.name}}</span>
-                      <a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>
-                      <span class="comment-date">
-                        (
-                        {%ifequal current_comment.submit_date.now.date current_comment.submit_date.date %}
-                        {{current_comment.submit_date|timesince_approx}} ago, {{current_comment.submit_date|date:"g:ma"}}
-                        {%else %}                    
-                        {{current_comment.submit_date|date:"D M d Y, g:ma"}}
-                        {%endifequal%}
-                      )</span>
-                     
-                    </div>
-                    <!-- ( #{{current_comment.id}}): -->
-                    <div class="threaded_comment_title">{{current_comment.title}}</div>
-                    <div class="threaded_comment_text">{{current_comment.comment|safe}}</div>
-                    <div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">
-                      <span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the reply form">
-                        Respond<!-- to comment {{ current_comment.id }}: -->
-                        </span>
-                        {% if current_comment.user == space_viewer or edit_comment_permission %}
-                           <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>
-                        {% endif %}
-                        <div class="comment_form_space"></div>
-                    </div>
-                  </div><br /><br />
-                  {% if current_comment.added_path %} <span class="new-comment">ADDED</span> {% endif %}
-                  {% for close in current_comment.close %}
-                </li>
-                    </ul>
-                {% endfor %}
-                
-            {% endfor %}        
-    
-            {% get_comment_form for root_comment.content_object as current_comment_form with root_comment.id %}
-            <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{COMMENT_MAX_LENGTH}}">
-              <input type="hidden" id="comment-edit-id" name="edit-id" />
-              <ul>
-                <li><!-- instead of current_comment_form.as_ul since that has all the field labels of fields we don't care about -->
-                  {% for field in current_comment_form %}
-                    {% if field.is_hidden %}
-                      {{ field }}
-                    {% else %}
-                      {#SWITCH#}
-                      {% ifequal field.name "comment" %}
-                        {{ field }}
-                         {% else %}
-                      {% ifequal field.name "title" %}
-                        <span class="formtitle"><label for="title">Title:</label> {{ field }}</span>
-                        {% else %}
-                      {% ifequal field.name "email" %}
-                         <input type="hidden" name="email" value="{{field.value|default:'null@example.com'}}" />
-                      {% else %}
-                          <input type="hidden" name="{{field.html_name}}" value="{{field.value}}" />
-                      {% endifequal %}{% endifequal %}{% endifequal %}
-                    {% endif %}
-                  {% endfor %}
-                </li>
-                <li><input class="project" id="comment-form-submit" type="submit" value="Save Comment" /></li>
-              </ul>
-            </form>
-            
-        </div> <!--  end threaded comments -->
-    
-    
-        <div id="discussion-space-materials">
-            <h2>
-                <div class="button-form inline">
-                    <form class="block media-browse hinline" method="POST" action="/explore/">
-                        <input type="hidden" name="title" />
-                        <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
-                    </form>
-                </div>
-                Collections
-            </h2>        
-            <div id="collection_table"></div> <!--  replaced by mustache -->
-        </div>    
-                
-    </div> <!--  end container -->
+    <table id="sliding-content-container" class="ajaxLoading">
+        <tr id="sliding-content-row" class="sliding-content-row">
+            <td id="sliding-content-last-column" class="filler"></td>
+        </tr>
+    </table>
 
-            
-{% endblock %}
+{% endblock %}    

@@ -4,6 +4,7 @@ from django.contrib.admin import widgets
 from projects.models import *
 from courseaffils.lib import get_public_name
 from mediathread_main import course_details
+from django.forms.widgets import RadioSelect
 
 class ProjectForm(forms.ModelForm):
 
@@ -11,24 +12,23 @@ class ProjectForm(forms.ModelForm):
                                         ('Save','Save'),
                                         ))
 
-    publish = forms.ChoiceField(choices=PUBLISH_OPTIONS,#from models
-                                label='Save as:',
-                                )
+    publish = forms.ChoiceField(choices = PUBLISH_OPTIONS,#from models
+                                label = 'Visibility',
+                                widget = RadioSelect)
 
     parent =  forms.CharField(required=False,label='Response to',
                               #choices=[(1,1)],
                               )
     class Meta:
         model = Project
-        fields = ('title','body','participants','submit','publish')
+        fields = ('title', 'body', 'participants', 'submit', 'publish')
 
-    def __init__(self,request, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super(ProjectForm,self).__init__(*args,**kwargs)
-        self.fields['participants'].widget = widgets.FilteredSelectMultiple("participants",False) 
         
         lst = [(u.id,get_public_name(u, request)) for u in request.course.user_set.all()]
-        self.fields['participants'].choices = sorted(lst, key=lambda participant: participant[1])   # sort by name
-        
+        self.fields['participants'].choices = sorted(lst, key=lambda participant: participant[1])
+        self.fields['participants'].widget.attrs = { 'id': "id_participants_%s" % self.instance.id }
         
         col = kwargs['instance'].collaboration()
         if col:
@@ -37,25 +37,23 @@ class ProjectForm(forms.ModelForm):
                 self.fields['publish'].choices.append( (pol,pol) )
             self.initial['publish'] = pol
         
-        if not request.course.is_faculty(request.user):
+        if request.course.is_faculty(request.user):
+            # Faculty
             self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
-                                              if choice[0] not in PUBLISH_OPTIONS_FACULTY_ONLY]
+                                              if choice[0] in PUBLISH_OPTIONS_FACULTY]
+        else:
+            # Student
+            if kwargs['instance'].assignment():
+                # Assignment response
+                self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
+                                                  if choice[0] in PUBLISH_OPTIONS_STUDENT_ASSIGNMENT]
+            else:
+                self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
+                                                  if choice[0] in PUBLISH_OPTIONS_STUDENT_COMPOSITION]
 
-        if not course_details.allow_public_compositions(request.course):
-            self.fields['publish'].choices = [choice for choice in self.fields['publish'].choices
-                                              if choice[0] not in PUBLISH_OPTIONS_PUBLIC]
-            
         
-        #not restrictive enough -- people can add children to their own projects
-        # is that a good idea?
-        # necessary to add a discussion to it, but maybe that's a workaround
-        # how about we just have people 'create' a project from the assignment page for now.
-        #self.fields['parent'].choices = [(sc.id,sc.title) for sc in 
-        #                                 Collaboration.objects.filter(context=request.collaboration_context,
-        #                                                              content_type = ContentType.objects.get_for_model(Project))
-        #                                 if sc.permission_to('add_child',request)
-        #                                 ]
-            
+        if course_details.allow_public_compositions(request.course):
+            self.fields['publish'].choices.append(PUBLISH_OPTIONS_PUBLIC)   
 
         self.fields['participants'].required = False
         self.fields['body'].required = False

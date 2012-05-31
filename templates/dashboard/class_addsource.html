@@ -39,7 +39,8 @@
     {% if upload_enabled %}
         <h4>Upload Permission Settings</h4>
     
-        <form action="{% url class-add-source %}" method="POST">
+        <form action="{% url class-add-source %}" method="POST" name="form-upload-permission">
+        
             <select name="upload_permission">
                 {% for level in permission_levels %}
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
@@ -238,7 +239,6 @@
             </form>
         </li>
         <li class="archive"> 
-        
             <h3>MP4 (.mp4)</h3>
             <form action="{% url asset-save %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -251,6 +251,21 @@
             <input type="submit" />
             </form>
         </li>
+        <li class="archive"> 
+            <h3>MP3 Audio (.mp3)</h3>
+            <form action="{% url asset-save %}" method="POST">
+            {% include "assetmgr/pretender_select.html" %}
+            View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the audio clip)
+            <br/>
+            Audio URL: <input type="text" name="mp3" value="" /> (the actual audio URL)
+            <br/>
+            Cover Image URL: <input type="text" name="poster" value="" />
+            <br/>
+            Title: <input type="text" name="title" value="" />
+            <br/>
+            <input type="submit" />
+            </form>
+        </li>        
         <li class="archive"> 
             <h3>MP4 Pseudo Streaming (.mp4)</h3>
             <form action="{% url asset-save %}" method="POST">

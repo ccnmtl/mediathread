@@ -13,8 +13,6 @@ ADMINS = (
     ('admin', 'mediathread@example.com'),
 )
 
-REVISION = 6 # introducing a script version to provide cache busting
-
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql_psycopg2' # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -56,7 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'someutils.AuthRequirementMiddleware',
+    'mediathread_main.middleware.AuthRequirementMiddleware',
     'djangohelpers.middleware.HttpDeleteMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
@@ -72,11 +70,16 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__),"templates"),
 )
 
+LETTUCE_APPS = (
+    'mediathread_main',
+    'projects',
+    'assetmgr'
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.markup',
     'sorl.thumbnail',
@@ -85,8 +88,6 @@ INSTALLED_APPS = (
     'tagging',
     'smartif',
     'modelversions',
-    #'debug_toolbar',
-    #mediathread local
     'structuredcollaboration',
     'djangosherd',#strangely must precede assetmgr
     'assetmgr',
@@ -95,11 +96,11 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'threadedcomments',
     'djangohelpers',
-    #mediathread local
-    #'slider',
     'reports',
     'mediathread_main',
-    'sentry.client'
+    'sentry.client',
+    'south',
+    'lettuce.django'
 )
 
 THUMBNAIL_SUBDIR = "thumbs"
@@ -171,6 +172,11 @@ def no_reject(request, reason):
 
 CSRF_FAILURE_VIEW = no_reject
 
+LETTUCE_APPS = (
+    'mediathread_main',
+)
+
+
 #if you add a 'deploy_specific' directory
 #then you can put a settings.py file and templates/ overrides there
 try:
@@ -180,4 +186,5 @@ try:
 
 except ImportError:
     pass
+
 

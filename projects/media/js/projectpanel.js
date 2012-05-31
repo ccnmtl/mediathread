@@ -84,6 +84,8 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
+            'project_id': self.panel.context.project.id,
+            'project_version': self.panel.context.revisions[0].version_number,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);

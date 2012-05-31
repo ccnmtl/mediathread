@@ -5,8 +5,7 @@
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
                 <span class="switcher-prefix">
-                    {{#enable_project_selection?}}Title: {{/enable_project_selection?}}
-                    {{^enable_project_selection}}Owner: {{/enable_project_selection}} 
+                    Owner: 
                 </span>
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="3"></span>
@@ -117,21 +116,6 @@
 
             
         <div class="collection-assets scroll annotation-embedding">
-            {{#>>project_view}}
-                <div id="project_view" class="project-view" style="display: none">
-                     <!--  Where the media is shown. Displays as an overlay next to the clip -->
-                     <div id="videoclipbox" class="asset-view-small" style="display:none; position: absolute; z-index: 1000;">
-                          <div class="annotation-title"></div>
-                          <div class="asset-title"></div>
-                          <div class="asset-object" style="width: 322px;"><!-- width changes here too if video size changes -->
-                            <div class="asset-display"></div>
-                            <div id="clipstrip-display" class="clipstrip-display"></div>    
-                          </div>
-                    </div>
-                
-                    {{{project.body}}}
-                </div>
-            {{/>>project_view}}
             {{#>>assets}}
             <div id="asset_table" class="asset-table">
                 {{^assets}}

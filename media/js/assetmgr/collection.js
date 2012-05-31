@@ -4,10 +4,10 @@ var CollectionList = function (config) {
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
     self.project_id = config.project_id;
+    self.project_version = config.project_version;
     self.parent = config.parent;
     
     self.switcher_context = {};
-    self.switcher_context.enable_project_selection = config.enable_project_selection;
     
     // add some flair to the collection table
     jQuery(self.parent).find(".collection_table").ajaxStart(function () {
@@ -65,21 +65,6 @@ CollectionList.prototype.selectOwner = function (username) {
     return false;
 };
 
-CollectionList.prototype.selectProject = function (username) {
-    var self = this;
-    // update selected label & switcher choices
-    self.switcher_context.selected_label = self.current_project.project.title;
-    self.switcher_context.showing_all_items = false;
-    self.switcher_context.showing_my_items = false;
-    self.updateSwitcher();
-    
-    // hide assets, show project
-    jQuery(self.parent).find(".asset-table").hide();
-    jQuery(self.parent).find(".project-view").show();
-    jQuery(self.parent).find("div.collection-filter").hide();
-    
-    return false;
-};
 
 CollectionList.prototype.deleteAsset = function (asset_id) {
     var self = this;
@@ -198,7 +183,7 @@ CollectionList.prototype.createThumbs = function (assets) {
 
 CollectionList.prototype.updateProject = function () {
     var self = this;
-    var url = MediaThread.urls['project-workspace'](self.project_id);
+    var url = MediaThread.urls['project-readonly'](self.project_id, self.project_version);
     
     // retrieve project json
     djangosherd.storage.get({
@@ -206,31 +191,30 @@ CollectionList.prototype.updateProject = function () {
         url: url
     },
     false,
-    function (the_project) {
-        self.current_project = the_project;
-        self.switcher_context.project = the_project.project;
-        
-        if (self.switcher_context.enable_project_selection) {
-            // push the body of the project into a div
-            Mustache.update("project_view", the_project, {
-                parent: self.parent,
-                post: function (elt) {
-                    var cv = new CitationView();
-                    cv.init({});
-                    cv.decorateLinks('project_view');
-                    self.selectProject();
-                }
-            });
-        } else {
-            self.updateSwitcher();
-        }
+    function (json) {
+        self.current_project = json.panels[0].context.project;
+        self.switcher_context.project = self.current_project;
+        self.updateSwitcher();
     });
 };
 
 CollectionList.prototype.updateSwitcher = function () {
     var self = this;
-    self.switcher_context.display_switcher_extras = self.enable_project_selection || !self.switcher_context.showing_my_items || (self.current_project && self.current_project.project.participants.length > 1);
+    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items || (self.current_project && self.current_project.participants.length > 1);
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
+    
+    // hook up switcher choice owner behavior
+    jQuery(self.parent).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.href.split("/");
+        var username = bits[bits.length - 1];
+        
+        if (username === "all-class-members") {
+            username = null;
+        }
+        return self.selectOwner(username);
+    });
+
 };
 
 CollectionList.prototype.getAssets = function () {
@@ -281,18 +265,6 @@ CollectionList.prototype.updateAssets = function (the_records) {
             }
             
             jQuery(elt).fadeIn("slow");
-            
-            // hook up behaviors
-            jQuery(self.parent).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.href.split("/");
-                var username = bits[bits.length - 1];
-                
-                if (username === "all-class-members") {
-                    username = null;
-                }
-                return self.selectOwner(username);
-            });
             
             jQuery(self.parent).find("a.switcher-choice.remove").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;

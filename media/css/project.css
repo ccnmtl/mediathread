@@ -404,7 +404,7 @@ div.comment-date {
     padding-bottom: 5px;
 }
 
-.revision-list select, .response-list select {
+.revision-list select, .response-list select, .my-response-list select {
     height: 75%;
     width: 99%;
 }

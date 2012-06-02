@@ -178,7 +178,7 @@ DiscussionPanelHandler.prototype.open_respond = function (evt) {
 
     jQuery(self.form).addClass("response");
     jQuery(self.form).children("h3").show();
-    jQuery(self.form).children("input.cancel").show();
+    jQuery(self.form).find("input.cancel").show();
 
     var elt = evt.srcElement || evt.target || evt.originalTarget;
     self.form.elements.parent.value = elt.getAttribute("data-comment");
@@ -216,7 +216,7 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
         jQuery("div.respond_to_comment_form_div").hide(); // hide all toolbars until this one is saved or cancelled
 
         elt = jQuery(li).find("div.threaded_comment_header")[0];
-        jQuery(self.form).children("input.cancel").show();
+        jQuery(self.form).find("input.cancel").show();
 
         self.open_comment_form(elt);
 
@@ -230,7 +230,8 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
 DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scroll) {
     var self = this;
     
-    jQuery(self.el).find("div.threaded_comment_text").css("opacity", "1");
+    jQuery(self.el).find("div.threaded_comment_header").css("opacity", ".5");
+    jQuery(self.el).find("div.threaded_comment_text").css("opacity", ".5");
     jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").addClass("disabled");
 
     
@@ -261,6 +262,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
     
+    jQuery(self.el).find("div.threaded_comment_header").css("opacity", "1");
     jQuery(self.el).find("div.threaded_comment_text").css("opacity", "1");
     jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").removeClass("disabled");
     

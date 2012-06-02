@@ -129,6 +129,13 @@ a.materialCitation.disabled {
     color: gray !important;
 }
 
+.opacity_fiftypercent {
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
+}
+
+
 
 /* ---- block elements ---------- */
 

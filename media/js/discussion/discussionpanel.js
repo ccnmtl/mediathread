@@ -230,8 +230,8 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
 DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scroll) {
     var self = this;
     
-    jQuery(self.el).find("div.threaded_comment_header").css("opacity", ".5");
-    jQuery(self.el).find("div.threaded_comment_text").css("opacity", ".5");
+    jQuery(self.el).find("div.threaded_comment_header").addClass("opacity_fiftypercent");
+    jQuery(self.el).find("div.threaded_comment_text").addClass("opacity_fiftypercent");
     jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").addClass("disabled");
 
     
@@ -262,8 +262,8 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
     
-    jQuery(self.el).find("div.threaded_comment_header").css("opacity", "1");
-    jQuery(self.el).find("div.threaded_comment_text").css("opacity", "1");
+    jQuery(self.el).find("div.threaded_comment_header").removeClass("opacity_fiftypercent");
+    jQuery(self.el).find("div.threaded_comment_text").removeClass("opacity_fiftypercent");
     jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").removeClass("disabled");
     
     // Switch to a readonly view

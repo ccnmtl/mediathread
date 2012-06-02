@@ -79,7 +79,7 @@
                             </div>
                         </li>
                         <li class="settings" style="margin-top: 2px;">
-                            <span id="logged_in_name" class="username">{% public_name for user %}</span>
+                            <span id="logged_in_name" class="username" unselectable="on" onclick="jQuery('#standardnav_settings_menu').toggle();">{% public_name for user %}</span>
                         </li>
                         <li class="settings" style="margin-top: 2px;">
                             <a href="#" onclick='jQuery("#standardnav_settings_menu").toggle();'>

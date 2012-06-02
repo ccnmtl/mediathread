@@ -473,6 +473,10 @@ html.busy, html.busy * {
     font-size: 0.9em;
 }
 
+#logged_in_name {
+    -moz-user-select: none; -khtml-user-select: none; user-select: none;
+}
+
 #standardnav a
 {
     text-decoration: none;

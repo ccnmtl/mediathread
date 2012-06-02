@@ -257,6 +257,18 @@ div.threadedcomments-container {
 
 form.threaded_comments_form {
     margin: 10px 10px 30px 10px;
+    background-color: #ccc;
+    padding: 10px;
+}
+
+form.threaded_comments_form h3 {
+    margin-top: 5px;
+}
+
+form.threaded_comments_form div.save_and_cancel {
+    height: 20px;
+    width: 100%;
+    background-color: #ccc;
 }
 
 form.threaded_comments_form ul li {

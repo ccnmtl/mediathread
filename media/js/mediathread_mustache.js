@@ -1,4 +1,4 @@
-(function() {
+(function () {
     var global = this;
     
     ///MUSTACHE CODE

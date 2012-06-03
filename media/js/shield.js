@@ -3,38 +3,52 @@ var browserblock = '<div class="nosupport_close"><a href="#" onclick="javascript
 var browserlist;
 
 function buildshieldbox() {
-	if (!document.getElementById("shieldbox")) return false;
-	var shieldwarningbox = document.getElementById("shieldbox");
-	shieldwarningbox.className = "warningmessage";
-	shieldwarningbox.innerHTML = browserblock;
-	var nobrowserwarningdiv = document.getElementById("nobrowserwarning");
-	var nobrowsercommentdiv = document.getElementById("nobrowsercomment");
-	nobrowserwarningdiv.innerHTML = 'You are using ' + BrowserDetect.browser + ' v.' + BrowserDetect.version + ', an unsupported browser.';
-	nobrowsercommentdiv.innerHTML = '<br /><br />For a better experience using this site, please upgrade to a recommended recent web browser.';
-	if (BrowserDetect.browser == 'Internet Explorer') {var thisbrowsername = 'MSIE';};
-	for(var key in browserlist) {
-		if (BrowserDetect.browser.toLowerCase()==key.toLowerCase() || (thisbrowsername && thisbrowsername.toLowerCase()==key.toLowerCase())) {
-		document.getElementById("minreqversion").innerHTML = 'The minimum required version for this browser is ' + browserlist[key] + '.';
-		}
-		var currentclass = document.getElementById(key.toLowerCase()).className;
-		document.getElementById(key.toLowerCase()).className = currentclass + ' isrequired';
-	}
+    if (!document.getElementById("shieldbox")) {
+        return false;
+    }
+    var shieldwarningbox = document.getElementById("shieldbox");
+    shieldwarningbox.className = "warningmessage";
+    shieldwarningbox.innerHTML = browserblock;
+    var nobrowserwarningdiv = document.getElementById("nobrowserwarning");
+    var nobrowsercommentdiv = document.getElementById("nobrowsercomment");
+    nobrowserwarningdiv.innerHTML = 'You are using ' + BrowserDetect.browser + ' v.' + BrowserDetect.version + ', an unsupported browser.';
+    nobrowsercommentdiv.innerHTML = '<br /><br />For a better experience using this site, please upgrade to a recommended recent web browser.';
+    
+    var thisbrowsername = null;
+    if (BrowserDetect.browser === 'Internet Explorer') {
+        thisbrowsername = 'MSIE';
+    }
+    for (var key in browserlist) {
+        if (browserlist.hasOwnProperty(key)) {
+            if (BrowserDetect.browser.toLowerCase() === key.toLowerCase() ||
+                (thisbrowsername && thisbrowsername.toLowerCase() === key.toLowerCase())) {
+                document.getElementById("minreqversion").innerHTML = 'The minimum required version for this browser is ' + browserlist[key] + '.';
+            }
+            var currentclass = document.getElementById(key.toLowerCase()).className;
+            document.getElementById(key.toLowerCase()).className = currentclass + ' isrequired';
+        }
+    }
 }
 
 function shieldbrowser(reqbrowser) {
-	var browsername = false;
-	var versionmismatch = false;
-	if (BrowserDetect.browser == 'Internet Explorer') {var thisbrowsername = 'MSIE';};
-	for(var key in reqbrowser) {
-		if (BrowserDetect.browser.toLowerCase()==key.toLowerCase() || (thisbrowsername && thisbrowsername.toLowerCase()==key.toLowerCase())) {
-			browsername = true;
-			if ((BrowserDetect.version)<reqbrowser[key]) {
-				versionmismatch = true;
-			}
-		} 
-	}
-	if (!browsername || versionmismatch) {
-		browserlist = reqbrowser;
-		addLoadEvent(buildshieldbox);
-	}
+    var browsername = false;
+    var versionmismatch = false;
+    
+    var thisbrowsername = null;
+    if (BrowserDetect.browser === 'Internet Explorer') {
+        thisbrowsername = 'MSIE';
+    }
+    for (var key in reqbrowser) {
+        if (BrowserDetect.browser.toLowerCase() === key.toLowerCase() ||
+            (thisbrowsername && thisbrowsername.toLowerCase() === key.toLowerCase())) {
+            browsername = true;
+            if ((BrowserDetect.version) < reqbrowser[key]) {
+                versionmismatch = true;
+            }
+        }
+    }
+    if (!browsername || versionmismatch) {
+        browserlist = reqbrowser;
+        addLoadEvent(buildshieldbox);
+    }
 }

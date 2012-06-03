@@ -57,7 +57,7 @@
             });
         };
         
-        this.count = function() {
+        this.count = function () {
             return self.panelViews.length;
         };
         
@@ -202,38 +202,45 @@
         };
                 
         this.verifyLayout = function (panel) {
-            if (jQuery(panel).hasClass("open")) {
-                // Is there enough room? Does anything need to be closed?
-                var screenWidth = jQuery(window).width();
-                var tableWidth = jQuery(self.el).width();
-                
-                if (tableWidth > screenWidth) {
-                    var parent = panel;
-                    
-                    var parents = jQuery(panel).parents("td.panel-container");
-                    if (parents && parents.length) {
-                        parent = parents[0];
-                    }
+            var screenWidth = jQuery(window).width();
+            var tableWidth = jQuery(self.el).width();
+            
+            var elts = jQuery(panel).parents("td.panel-container.open");
+            var parent = elts.length > 0 ? elts[0] : null;
 
-                    var a = jQuery(self.el).find("td.panel-container.open");
-                    for (var i = a.length - 1; i >= 0 && tableWidth > screenWidth; i--) {
-                        var p = a[i];
-                        if (panel !== p && parent !== p) {
-                            // close it
-                            jQuery(p).removeClass("open");
-                            jQuery(p).addClass("closed");
-                            
-                            var container = jQuery(p).nextAll("td.pantab-container");
-                            var panelTab = jQuery(container[0]).children("div.pantab");
-                            jQuery(panelTab[0]).removeClass("open");
-                            jQuery(panelTab[0]).addClass("closed");
-                            
-                            tableWidth = jQuery(self.el).width();
-                        }
-                    }
+            // Try closing the subpanels first
+            var a = jQuery(self.el).find("table.panel-subcontainer tbody tr td.panel-container.open");
+            for (var i = 0; i < a.length && tableWidth > screenWidth; i++) {
+                var p = a[i];
+                if (panel !== p) {
+                 // close it
+                    jQuery(p).removeClass("open");
+                    jQuery(p).addClass("closed");
                     
-                    // @todo -- once discussion is in place and we have a 3 column solution
-                    // Code should break on panel != parent, then start closing from the right, rather than from the left.
+                    var container = jQuery(p).nextAll("td.pantab-container");
+                    var panelTab = jQuery(container[0]).children("div.pantab");
+                    jQuery(panelTab[0]).removeClass("open");
+                    jQuery(panelTab[0]).addClass("closed");
+                    
+                    tableWidth = jQuery(self.el).width();
+                }
+            }
+            
+            // Then go for the parent panels
+            a = jQuery(self.el).find("tr.sliding-content-row").children("td.panel-container.open");
+            for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
+                
+                if (a[i] !== panel && a[i] !== parent) {
+                    // close it
+                    jQuery(a[i]).removeClass("open");
+                    jQuery(a[i]).addClass("closed");
+                    
+                    var parentContainer = jQuery(a[i]).nextAll("td.pantab-container")[0];
+                    var parentPanelTab = jQuery(parentContainer).children("div.pantab")[0];
+                    jQuery(parentPanelTab).removeClass("open");
+                    jQuery(parentPanelTab).addClass("closed");
+                    
+                    tableWidth = jQuery(self.el).width();
                 }
             }
         };

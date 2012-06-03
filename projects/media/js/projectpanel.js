@@ -6,6 +6,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.projectModified = false;
     self.parentContainer = parent;
     self.space_owner = space_owner;
+    self.tiny_mce_settings = tiny_mce_settings;
     
     djangosherd.storage.json_update(panel.context);
     
@@ -57,8 +58,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     if (panel.context.can_edit) {
         // make sure it's not resizable
-        tinyMCE.settings.theme_advanced_statusbar_location = "top";
-        tinyMCE.settings.theme_advanced_resize_vertical = false;
+        tinyMCE.settings = self.tiny_mce_settings;
         
         tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
     }

@@ -21,7 +21,7 @@
     {% include "djangosherd/annotator_resources.html" %}
     
     <script type="text/javascript">
-        var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+        var tinyMCEPreInit = { query: '', suffix: '', base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce' };
     </script>
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
     <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
@@ -37,10 +37,7 @@
     <script type="text/javascript" src="/site_media/js/discussion/discussionpanel.js?version={%revision%}"></script>
         
     <script type="text/javascript">
-        jQuery(document).ready(function () {
-            ///makes it resizable--somewhat hacking tinyMCE.init()
-            tinyMCE.settings.theme_advanced_statusbar_location = "bottom";
-            
+        jQuery(document).ready(function () {            
             PanelManager.init({ 
                 'container': 'sliding-content-container',
                 'url': MediaThread.urls['discussion-view']({{discussion.id}})

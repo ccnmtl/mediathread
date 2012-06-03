@@ -56,6 +56,10 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.citationView.decorateLinks(self.essaySpace.id);
     
     if (panel.context.can_edit) {
+        // make sure it's not resizable
+        tinyMCE.settings.theme_advanced_statusbar_location = "top";
+        tinyMCE.settings.theme_advanced_resize_vertical = false;
+        
         tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
     }
 

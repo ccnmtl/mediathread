@@ -5,8 +5,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     self.parentContainer = parent;
     self.space_owner = space_owner;
     self.form = jQuery(self.el).find("form.threaded_comments_form")[0];
-    self.max_comment_length = parseInt(
-            self.form.getAttribute('data-maxlength'), 10);
+    self.max_comment_length = parseInt(self.form.getAttribute('data-maxlength'), 10);
 
     jQuery(window).resize(function () {
         self.resize();
@@ -69,9 +68,9 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     if (instance && instance.id === "id_comment" && !self.tinyMCE) {
 
         self.tinyMCE = instance;
+
         // Reset tinyMCE width to 100% via javascript. TinyMCE doesn't resize
-        // properly
-        // if this isn't completed AFTER instantiation
+        // properly if this isn't completed AFTER instantiation
         jQuery('#id_comment_tbl').css('width', "100%");
 
         if (jQuery("#id_title").is(":visible")) {
@@ -239,6 +238,11 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
         self.tinyMCE = null;
         tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
         jQuery(self.form).insertAfter(insertAfter);
+        
+        ///makes it resizable--somewhat hacking tinyMCE.init()
+        tinyMCE.settings.theme_advanced_statusbar_location = "bottom";
+        tinyMCE.settings.theme_advanced_resize_vertical = true;
+
         tinyMCE.execCommand("mceAddControl", false, "id_comment");
     }
     jQuery(self.form).show('fast', function () {

@@ -70,12 +70,6 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__),"templates"),
 )
 
-LETTUCE_APPS = (
-    'mediathread_main',
-    'projects',
-    'assetmgr'
-)
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -173,6 +167,8 @@ def no_reject(request, reason):
 CSRF_FAILURE_VIEW = no_reject
 
 LETTUCE_APPS = (
+    'projects',
+    'assetmgr',
     'mediathread_main',
 )
 

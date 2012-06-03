@@ -275,7 +275,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function () {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
     
-    jQuery(self.form).hide('fast', function () {        
+    jQuery(self.form).hide('fast', function () {
         jQuery(self.form.elements.title).hide();
     
         // Switch to a readonly view
@@ -518,23 +518,23 @@ DiscussionPanelHandler.prototype.create = function (obj, doc) {
     // {{current_comment.id}}
     // {{current_comment.name}}
     // {{current_comment.comment|safe}}
-    var html = '<li id="comment-{{current_comment.id}}"'
-            + 'class="comment-thread">'
-            + '<div class="comment new-comment">'
-            + ' <div class="threaded_comment_header">'
-            + '<span class="threaded_comment_author">{{current_comment.name}}</span>&nbsp;'
-            + '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>'
-            + '<div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">'
-            + '<span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">'
-            + 'Respond<!-- to comment {{current_comment.id}}: --></span>'
-            + ' <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>'
-            + '<div class="comment_form_space"></div>'
-            + '</div>'
-            + ' </div>'
-            + '<div class="threaded_comment_title">{{current_comment.title}}</div>'
-            + '<div class="threaded_comment_text">'
-            + '{{current_comment.comment|safe}}' + '</div>' + '</div>'
-            + '</li>';
+    var html = '<li id="comment-{{current_comment.id}}"' +
+        'class="comment-thread">' +
+        '<div class="comment new-comment">' +
+        ' <div class="threaded_comment_header">' +
+        '<span class="threaded_comment_author">{{current_comment.name}}</span>&nbsp;' +
+        '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>' +
+        '<div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">' +
+        '<span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">' +
+        'Respond<!-- to comment {{current_comment.id}}: --></span>' +
+        ' <span class="edit_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the edit comment form">Edit</span>' +
+        '<div class="comment_form_space"></div>' +
+        '</div>' +
+        ' </div>' +
+        '<div class="threaded_comment_title">{{current_comment.title}}</div>' +
+        '<div class="threaded_comment_text">' +
+        '{{current_comment.comment|safe}}' + '</div>' + '</div>' +
+        '</li>';
     //'</ul>';
 
     var text = html.replace(/\{\{current_comment\.id\}\}/g, obj.id).replace(

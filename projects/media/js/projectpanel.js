@@ -128,7 +128,8 @@ ProjectPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
     
     // Resize the collections box, subtracting its header elements
-    jQuery(self.el).find('div.collection-assets').css('height', (visible - 35) + "px");
+    visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
+    jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
     
     // For IE
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");

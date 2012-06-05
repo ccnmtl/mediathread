@@ -171,11 +171,12 @@ Feature: Assignment
         
         # BUG -- the assignment panel should close not the composition
         Then there is an open Assignment panel
-        Then there is a closed Composition panel
+        Then there is an open Composition panel
         Then there is an open Discussion panel
         
         When I write some text for the discussion
         Then I click the Save Comment button
+        Then I wait 2 seconds
         Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
         
         # View as Student One
@@ -317,5 +318,10 @@ Feature: Assignment
         And the Composition panel does not have an Edit button
         And the Composition panel has a Save button
         And the Composition panel has a +/- Author button
+        
+        Then I call the Composition "Assignment Response: Scenario 6"
+        When I click the Save button
+        Then I see a Save Changes dialog
+        Then I save the changes
         
         Finished using Selenium

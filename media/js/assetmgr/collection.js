@@ -267,8 +267,8 @@ CollectionList.prototype.updateAssets = function (the_records) {
             jQuery(elt).fadeIn("slow");
             
             jQuery(self.parent).find("a.switcher-choice.remove").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.href.split("/");
+                var href = jQuery(this).attr("href");
+                var bits = href.split("/");
                 var filterName = bits[bits.length - 1];
                 
                 if (filterName === "both") {
@@ -310,7 +310,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 self.view_callback();
             }
             
-            jQuery("body").trigger("resize");
+            jQuery(window).trigger("resize");
         }
     });
 };

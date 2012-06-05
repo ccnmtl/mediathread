@@ -33,3 +33,5 @@ requirements/src/xmeml-0.9.tar.gz
 requirements/src/selenium-2.20.0.tar.gz
 requirements/src/nose-1.1.2.tar.gz
 requirements/src/lettuce-0.1.34.tar.gz
+
+requirements/src/statsd-0.5.1.tar.gz

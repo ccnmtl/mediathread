@@ -47,6 +47,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     )
 
 MIDDLEWARE_CLASSES = (
+    'django_statsd.middleware.GraphiteRequestTimingMiddleware',
+    'django_statsd.middleware.GraphiteMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -100,8 +102,15 @@ INSTALLED_APPS = (
     'mediathread_main',
     'sentry.client',
     'south',
-    'lettuce.django'
+    'lettuce.django',
+    'django_statsd',
 )
+
+STATSD_CLIENT = 'statsd.client'
+STATSD_PREFIX = 'mediathread'
+STATSD_HOST = 'localhost'
+STATSD_PORT = 8125
+STATSD_PATCHES = ['django_statsd.patches.db', ]
 
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mediathread] "

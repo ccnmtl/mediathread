@@ -17,4 +17,4 @@ requirements/src/django-annoying-0.7.6.tar.gz
 requirements/src/django-nose-0.1.3.tar.gz
 requirements/src/django-threadedcomments-0.9.tar.gz
 requirements/src/django_courseaffils-0.4.tar.gz 
-
+requirements/src/django-statsd-mozilla-0.3.3.tar.gz

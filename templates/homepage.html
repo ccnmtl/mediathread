@@ -34,8 +34,11 @@
             if (jQuery(helpBlock).hasClass("on"))
                 helpOffset += jQuery(helpBlock).outerHeight();
             
-            jQuery('#classwork .projects-column-container').css('height', (visible - 87 - helpOffset) + "px");
-            jQuery('#classwork .media-column-container').css('height', (visible - 77 - helpOffset) + "px");
+            visible -= helpOffset;
+            visible -= jQuery("div.filter-widget").outerHeight() + jQuery("#classwork div.parent-column-container").children('h2').outerHeight();
+            visible -= 28; // padding
+            jQuery('#classwork .projects-column-container').css('height', (visible) + "px");
+            jQuery('#classwork .media-column-container').css('height', (visible + 10) + "px");
         }
     
         jQuery(document).ready(function() {

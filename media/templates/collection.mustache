@@ -51,40 +51,9 @@
             <div class="switcher collection-filter" tabindex="2" style="width: 135px">
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="4"></span>
-                    <span class="title">Collection Filters 
-                        <span
-                            {{#active_filter_count?}}
-                                class="filter-on">: ON
-                            {{/active_filter_count?}}
-                            {{^active_filter_count}}
-                                class="filter-off">...
-                            {{/active_filter_count}}
-                        </span>
-                    </span>
+                    <span class="title">Collection Filters...</span>
                 </a>
                 <ul class="switcher-options" style="right: -51px">
-                    {{#active_filter_count?}}
-                        <li>
-                            <ul class="switcher-sub switcher-active-filters">
-                                {{#active_filters}}
-                                <li><a class="switcher-choice remove" href="both"><span class="metadata-label">Clear All Filters</span></a></li>
-                                    {{#tag?}}
-                                        <li>
-                                            <a class="switcher-choice remove" href="tag">&nbsp;</a>
-                                            <span class="metadata-label">Tag</span>: <span class="metadata-value">{{tag}}</span>
-                                        </li>
-                                    {{/tag?}}
-                                    {{#modified?}}
-                                        <li>
-                                            <a class="switcher-choice remove" href="modified">&nbsp;</a>
-                                            <span class="metadata-label">Modified</span>: <span class="metadata-value">{{modified}}</span>
-                                        </li>
-                                    {{/modified?}}
-                                {{/active_filters}}
-                            </ul>
-                        </li>
-                    {{/active_filter_count?}}
-                    
                     {{^showing_all_items}}
                     <li>
                         <h3>Date Modified</h3>
@@ -112,6 +81,27 @@
             </div>
             
             <div class="visualclear"></div>
+            
+            
+            {{#active_filter_count?}}
+                <div class="switcher-active-filters">
+                    {{#active_filters}}
+                        {{#tag?}}
+                            <div class="switcher-active-filter">
+                                <span>{{tag}}</span>
+                                <a class="switcher-choice remove" href="tag" title="Remove {{tag}} filter"><img src="/site_media/img/x.png"></a>
+                            </div>
+                        {{/tag?}}
+                        {{#modified?}}
+                            <div class="switcher-active-filter">
+                                <span>{{modified}}</span>
+                                <a class="switcher-choice remove" href="modified" title="Remove {{modified}} filter"><img src="/site_media/img/x.png"></a>
+                            </div>
+                        {{/modified?}}
+                    {{/active_filters}}
+                </div>
+            {{/active_filter_count?}}
+            
         </div> {{! end filter widget }}
 
             

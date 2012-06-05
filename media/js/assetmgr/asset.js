@@ -455,8 +455,8 @@
             if (tag_field) {//is this null?
                 var tags = tag_field.value.split(',');
                 for (var i = 0; i < tags.length; i++) {
-                    if (tags[i].length > 50) {
-                        alert('You are trying to add a tag with greater than the maximum 50 character-limit.  Be sure to separate your tags with commas.  Also, tags are best used as single words that you would tag other assets with.  Try using the Notes field for longer expressions.');
+                    if (tags[i].length > 25) {
+                        alert('You are trying to add a tag with greater than the maximum 25 character-limit. Be sure to separate your tags with commas. Also, tags are best used as single words that you would tag other assets with. Try using the Notes field for longer expressions.');
                         return;
                     }
                 }

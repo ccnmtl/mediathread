@@ -75,6 +75,15 @@
             return MediaThread.urls[name].apply(this, url_args);
         };
         
+        Mustache.Renderer.prototype.filters_supported.ellipses = function (name, context, args) {
+            var length = parseInt(args[0], 10);
+            var value = String(this.get_object(name, context, this.context) || '');
+            if (value.length > length) {
+                value = value.substring(0, length) + "...";
+            }
+            return value;
+        };
+        
         Mustache.Renderer.prototype.filters_supported['default'] = function (name, context, args) {
             var lookup = this.get_object(name, context, this.context);
             if (lookup) {

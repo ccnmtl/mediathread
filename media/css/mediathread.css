@@ -1613,6 +1613,13 @@ div.collection-chooser ul.switcher-options {
 }
 
 .switcher a.menuclosed {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     /*firefox*/
     border: 1px solid rgb(204, 204, 204); 
     padding: 0px 3px 3px 8px; 
@@ -1679,6 +1686,14 @@ div.collection-chooser ul.switcher-options {
 }
 
 .switcher a.menuopen {
+    font-size: 11px; 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     /*firefox*/
     border-style: solid solid none; 
     
@@ -1742,28 +1757,120 @@ div.collection-chooser ul.switcher-options {
 div.switcher-active-filters {
     background-color: #ccc;
     width: 100%;
+    height: auto;
     text-align: right;
 }
 
 div.switcher-active-filter {
-    margin: 2px 5px 0 0;
+    margin: 2px 0 4px 0;
     font-size: 11px;
+    height: 18px;
 }
 
-div.switcher-active-filter a {
+#classwork div.switcher-active-filter span {
+    width: 147px;
+}
+
+div.switcher-active-filter span {
+    width: 122px;
+    float: right;
+    text-align: left;
+    white-space:nowrap;
+    overflow:hidden;
+    
+    /*firefox*/
+    border: 1px solid rgb(204, 204, 204); 
+    padding: 0px 3px 3px 8px; 
+    font-size: 11px; 
+    color: rgb(102, 102, 102); 
+    -moz-background-clip: border; 
+    -moz-background-origin: padding; 
+    -moz-background-inline-policy: continuous; 
+    -moz-border-radius-topleft: 10px; 
+    -moz-border-radius-topright: 10px; 
+    -moz-border-radius-bottomright: 10px; 
+    -moz-border-radius-bottomleft: 10px; 
+    text-decoration: none; 
+    height: 14px; 
+    outline-color: -moz-use-text-color; 
+    outline-style: none; 
+    outline-width: 0pt; 
+    cursor: pointer;
+    
+
+    /*webkit*/
+    border-top-width: 1px; 
+    border-right-width: 1px; 
+    border-bottom-width: 1px; 
+    border-left-width: 1px; 
+    border-top-style: solid; 
+    border-right-style: solid; 
+    border-bottom-style: solid; 
+    border-left-style: solid; 
+    border-top-left-radius: 10px 10px; 
+    border-top-right-radius: 10px 10px; 
+    border-bottom-right-radius: 10px 10px; 
+    border-bottom-left-radius: 10px 10px; 
+    text-decoration: none; 
+    padding-top: 3px; 
+    padding-right: 3px; 
+    padding-bottom: 3px; 
+    padding-left: 8px; 
+    height: 14px; 
+    outline-width: 0px; 
+    outline-style: initial; 
+    outline-color: initial; 
+    border-top-color: rgb(187, 187, 187); 
+    border-right-color: rgb(187, 187, 187); 
+    border-bottom-color: rgb(187, 187, 187); 
+    border-left-color: rgb(187, 187, 187); 
+    background-color: rgb(240, 240, 240); 
+    cursor: pointer; 
+    color: rgb(68, 68, 68); 
+}
+
+div.switcher-active-filter span a.remove {
     vertical-align: middle;
+    display: block;
+    background: transparent url(../img/switcher/icon_x.png) no-repeat scroll 100% 50%;
+    width: 16px;
+    height: 16px;
+    text-decoration: none;
+    float: right;
+    margin-left; 2px;
+}
+
+div.switcher-active-filter span a.remove:hover {
+    background: transparent url(../img/switcher/icon_x_hover.png) no-repeat scroll 100% 50%;
+    width: 16px;
+    height: 16px;
 }
 
 span.down-arrow {
-    background: transparent url(../img/switcher/icon_color_arrow.gif) no-repeat scroll 100% 50%; 
     position:absolute;
-    right:10px;
-    width: 5px; 
-    height: 16px; 
-    -moz-background-clip: border; 
-    -moz-background-origin: padding; 
-    -moz-background-inline-policy: continuous;
+    right: 4px;
+    width: 16px; 
+    height: 16px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
 }
+
+a.switcher-top.menuopen span.down-arrow {
+    background: url(../img/switcher/icon_x_hover.png) no-repeat scroll 100% 50%;
+}
+
+a.switcher-top.menuclosed span.down-arrow {
+    background: url(../img/switcher/icon_down_arrow.png) no-repeat scroll 100% 50%; 
+}
+
+a.switcher-top.menuclosed span.down-arrow:hover {
+    background: url(../img/switcher/icon_down_arrow_hover.png) no-repeat scroll 100% 50%;
+}
+
 
 /** Course CSS **/
 

@@ -88,14 +88,12 @@
                     {{#active_filters}}
                         {{#tag?}}
                             <div class="switcher-active-filter">
-                                <span>{{tag}}</span>
-                                <a class="switcher-choice remove" href="tag" title="Remove {{tag}} filter"><img src="/site_media/img/x.png"></a>
+                                <span>Tag: {{tag?ellipses(12)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
                             </div>
                         {{/tag?}}
                         {{#modified?}}
                             <div class="switcher-active-filter">
-                                <span>{{modified}}</span>
-                                <a class="switcher-choice remove" href="modified" title="Remove {{modified}} filter"><img src="/site_media/img/x.png"></a>
+                                <span>Date: {{modified}}<a class="switcher-choice remove" href="modified" title="Clear "{{modified}}" filter"></a></span>
                             </div>
                         {{/modified?}}
                     {{/active_filters}}

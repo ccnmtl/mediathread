@@ -166,6 +166,12 @@ class Asset(models.Model):
         except ValueError:
             metadata = None
             
+        media_type_label = 'video'
+        if self.primary.is_image():
+            media_type_label = 'image'
+        elif self.primary.is_audio():
+            media_type_label = 'audio'
+            
         return {
             'sources':sources,
             'primary_type':self.primary.label,
@@ -173,7 +179,7 @@ class Asset(models.Model):
             'metadata':metadata,
             'local_url':self.get_absolute_url(),
             'id':self.pk,
-            'media_type_label': 'image' if self.primary.is_image() else 'video',
+            'media_type_label': media_type_label,
             'tags': [ { 'name': tag.name } for tag in self.tags() ]
             }
         
@@ -215,6 +221,9 @@ class Source(models.Model):
 
     def is_image(self):
         return (self.label=='poster' or self.label == "image" or self.label == "image_fpx"  or (self.media_type and self.media_type.startswith('image/')))
+    
+    def is_audio(self):
+        return self.label == 'mp3'
     
     def is_archive(self):
         return self.label=='archive'

@@ -1906,6 +1906,11 @@ div.panel-column-stump {
     background-position: 5px 2px;
 }
 
+.asset_title.asset-mp3 {
+    background-image: url(../img/icons/item_audio.png);
+    background-position: 5px 2px;
+}
+
 .asset-insert-flv,
 .asset-insert-flv_pseudo,
 .asset-insert-flv_rtmp,
@@ -1936,6 +1941,15 @@ div.panel-column-stump {
     height: 18px;
     width: 24px;
     float: left;
+}
+
+.asset-insert-mp3
+{
+    background-image: url(../img/icons/insert_item_audio.png);
+    height: 18px;
+    width: 24px;
+    float: left;
+    
 }
 
 .record-image .annotation-timecode, .record-image_fpx .annotation-timecode {

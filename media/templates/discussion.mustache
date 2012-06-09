@@ -22,7 +22,7 @@
                 </tr>
                 {{/title?}}
                 <tr class="discussion-content-row">
-                    <td class="panel-content fluid discussion">
+                    <td class="panel-content discussion {{#subpanel_state?}}fluid{{/subpanel_state?}}{{^subpanel_state}}fixed{{/subpanel_state}}">
                         <div class="threadedcomments-container">
                             {{#context.discussion.thread?}}
                                 {{#context.discussion.thread}}
@@ -45,7 +45,6 @@
                                                 </div>
                                                 <div>
                                                     <span class="threaded_comment_author">{{author}}</span>
-                                                    said:
                                                 </div>
                                                 <div class="comment-date">
                                                     <span>{{submit_date}}</span>
@@ -76,7 +75,10 @@
                         </div>
                     </td>
                     {{! Media Display Window and or a Collections box }}
-                    <td class="panel-container medium {{#subpanel_state?}}{{subpanel_state}}{{/subpanel_state?}} {{^subpanel_state}}closed{{/subpanel_state}} collection">
+                    <td class="panel-container fluid 
+                        {{#subpanel_state?}}{{subpanel_state}}{{/subpanel_state?}} {{^subpanel_state}}closed{{/subpanel_state}}
+                        {{#context.editing?}} fixed {{/context.editing?}}{{^context.editing}} fluid {{/context.editing}} 
+                        collection">
                         {{#context.can_edit}}
                         <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                             <h2>
@@ -88,7 +90,7 @@
                             <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                         </div>
                         {{/context.can_edit}}
-                        <div class="asset-view-published medium"
+                        <div class="asset-view-published"
                             style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
                             
                             <div id="{{context.discussion.id}}-videoclipbox" class="videoclipbox" style="display: none;">

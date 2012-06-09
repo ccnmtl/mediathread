@@ -5,8 +5,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     self.parentContainer = parent;
     self.space_owner = space_owner;
     self.form = jQuery(self.el).find("form.threaded_comments_form")[0];
-    self.max_comment_length = parseInt(
-            self.form.getAttribute('data-maxlength'), 10);
+    self.max_comment_length = parseInt(self.form.getAttribute('data-maxlength'), 10);
 
     jQuery(window).resize(function () {
         self.resize();
@@ -15,6 +14,10 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     // hook up behaviors
     jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
         self.onTinyMCEInitialize(instance);
+    });
+    
+    self._bind(self.el, "td.panel-container", "panel_state_change", function () {
+        self.onClosePanel(jQuery(this).hasClass("subpanel"));
     });
 
     // Setup the media display window.
@@ -60,8 +63,19 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
         self.hide_comment_form(false);
     }
     
-    self.resize();
+    jQuery(window).trigger("resize");
 };
+
+DiscussionPanelHandler.prototype.isEditing = function () {
+    var self = this;
+    return jQuery(self.form).css("display") === "block";
+};
+
+DiscussionPanelHandler.prototype.isSubpanelOpen = function () {
+    var self = this;
+    return jQuery(self.el).find("td.panel-container.collection").hasClass("open");
+};
+
 
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     var self = this;
@@ -135,12 +149,33 @@ DiscussionPanelHandler.prototype.resize = function () {
 
 };
 
-DiscussionPanelHandler.prototype.onClose = function () {
+DiscussionPanelHandler.prototype.onClosePanel = function () {
     var self = this;
     // close any outstanding citation windows
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
+    self.render();
+};
+
+DiscussionPanelHandler.prototype.render = function () {
+    var self = this;
+    
+    // Give precedence to media view IF the subpanel is open and we're in readonly mode
+    
+    if (!self.isEditing() && self.isSubpanelOpen()) {
+        if (!self.panel.full_discussion_view) {
+            jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
+        }
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
+    } else {
+        if (!self.panel.context.full_discussion_view) {
+            jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
+        }
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
+    }
+    
+    jQuery(window).trigger("resize");
 };
 
 DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
@@ -234,6 +269,11 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
         self.tinyMCE = null;
         tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
         jQuery(self.form).insertAfter(insertAfter);
+        
+        ///makes it resizable--somewhat hacking tinyMCE.init()
+        tinyMCE.settings.theme_advanced_statusbar_location = "bottom";
+        tinyMCE.settings.theme_advanced_resize_vertical = true;
+        
         tinyMCE.execCommand("mceAddControl", false, "id_comment");
     }
     jQuery(self.form).show('fast', function () {
@@ -252,6 +292,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
     jQuery(self.el).find("div.asset-view-published").hide();
     jQuery(self.el).find("td.panhandle-stripe div.label").html("Embed Media");
     jQuery(self.el).find("div.collection-materials").show();
+    self.render();
 };
 
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
@@ -262,7 +303,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function () {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
     
-    jQuery(self.form).hide('fast', function () {        
+    jQuery(self.form).hide('fast', function () {
         jQuery(self.form.elements.title).hide();
     
         // Switch to a readonly view
@@ -271,6 +312,8 @@ DiscussionPanelHandler.prototype.hide_comment_form = function () {
         jQuery(self.el).find("td.panhandle-stripe div.label")
                 .html("View Media");
         jQuery(self.el).find("div.asset-view-published").show();
+        
+        self.render();
     });
 };
 

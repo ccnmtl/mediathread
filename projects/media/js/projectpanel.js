@@ -6,6 +6,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.projectModified = false;
     self.parentContainer = parent;
     self.space_owner = space_owner;
+    self.tiny_mce_settings = tiny_mce_settings;
     
     djangosherd.storage.json_update(panel.context);
     
@@ -17,7 +18,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     
     self.project_type = panel.context.project.project_type;
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
-    
+
     // hook up behaviors
     jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
         self.onTinyMCEInitialize(instance);
@@ -26,6 +27,11 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     jQuery(window).resize(function () {
         self.resize();
     });
+    
+    self._bind(self.el, "td.panel-container", "panel_state_change", function () {
+        self.onClosePanel(jQuery(this).hasClass("subpanel"));
+    });
+    
     
     self._bind(self.el, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
     self._bind(self.el, "a.project-visibility-link", "click", function (evt) {
@@ -56,11 +62,10 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.citationView.decorateLinks(self.essaySpace.id);
     
     if (panel.context.can_edit) {
+        tinyMCE.settings = self.tiny_mce_settings;
         tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
     }
-
-    jQuery(window).trigger("resize");
-    
+    self.render();
 };
 
 ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
@@ -98,7 +103,8 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
         }
         
         jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
-        jQuery(window).trigger("resize");
+        
+        self.render();
     }
 };
 
@@ -127,15 +133,35 @@ ProjectPanelHandler.prototype.resize = function () {
     // For IE
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
     jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
-
 };
 
-ProjectPanelHandler.prototype.onClose = function () {
+ProjectPanelHandler.prototype.render = function () {
     var self = this;
+    
+    // Make sure initial state is correct
+    // Give precedence to media view IF the subpanel is open and we're in preview mode
+    var preview = self.isPreview();
+    var open = self.isSubpanelOpen();
+    if (preview && open) {
+        jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
+    } else {
+        jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
+    }
+    
+    jQuery(window).trigger("resize");
+};
+
+ProjectPanelHandler.prototype.onClosePanel = function (isSubpanel) {
+    var self = this;
+    
     // close any outstanding citation windows
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
+    
+    self.render();
 };
 
 ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
@@ -403,6 +429,15 @@ ProjectPanelHandler.prototype.updateParticipantsLabel = function () {
     jQuery(self.el).find('.participants_chosen').html(participant_list);
 };
 
+ProjectPanelHandler.prototype.isPreview = function () {
+    var self = this;
+    return jQuery(self.essaySpace).css("display") === "block";
+};
+
+ProjectPanelHandler.prototype.isSubpanelOpen = function () {
+    var self = this;
+    return jQuery(self.el).find("td.panel-container.collection").hasClass("open");
+};
 
 ProjectPanelHandler.prototype.preview = function (evt) {
     var self = this;
@@ -415,7 +450,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
     
-    if (jQuery(self.essaySpace).is(":visible")) {
+    if (self.isPreview()) {
         // Switch to Edit View
         jQuery(self.essaySpace).hide();
         
@@ -434,6 +469,10 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         
         // Highlight toolbar
         jQuery(self.el).find('table.panel-subcontainer tr td.panel-subcontainer-toolbar-column').addClass("editing");
+        
+        // Make the edit space take up the most room
+        jQuery(self.el).find(".panel-content.fixed").removeClass("fixed").addClass("fluid");
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
         
         self.tinyMCE.show();
     } else {
@@ -457,6 +496,11 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         // De-Highlight toolbar
         jQuery(self.el).find('table.panel-subcontainer tr td.panel-subcontainer-toolbar-column').removeClass("editing");
 
+        // Give precedence to media view IF the subpanel is open
+        if (jQuery(self.el).find("td.panel-container.collection").hasClass("open")) {
+            jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
+            jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
+        }
         
         // Get updated text into the preview space - decorate any new links
         jQuery(self.essaySpace).html(tinyMCE.activeEditor.getContent());

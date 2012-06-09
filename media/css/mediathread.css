@@ -672,7 +672,7 @@ table#sliding-content-container tr td.panhandle-left-container {
 }
 
 table#sliding-content-container tr td.panhandle-left-container div.panhandle-left {
-    width: 10px;
+    width: 8px;
     height: 100%;
     border-radius: 10px 0px 0px 10px; 
     -moz-border-radius: 10px 0px 0px 10px; 
@@ -766,6 +766,7 @@ table.panel-subcontainer {
     border: none;
     min-height: 200px;
     vertical-align: top;
+    width: 98%;
 }
 
 table.panel-subcontainer tbody {
@@ -775,7 +776,6 @@ table.panel-subcontainer tbody {
 table.panel-subcontainer tr.fluid {
     height: 100%;
 }
-
 
 table.panel-subcontainer tr td {
     margin: 0;
@@ -845,7 +845,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
     margin: 5px 0px 5px 5px;
     padding: 2px 5px 4px 0px;
     float: right;
-    width: 330px;
+    width: 400px;
 }
 
 table.panel-subcontainer tr td div.project-visibility {
@@ -857,8 +857,31 @@ td.filler {
     width: 2000px;
 }
 
+td.panel-content.fluid,
+td.panel-content.fluid div.essay-space-container {
+    min-width: 330px;    
+}
+
+td.panel-content.fixed,
+td.panel-content.fixed div.essay-space-container,
+td.panel-content.fixed div.threadedcomments-container {
+    width: 300px;
+}
+
+td.panel-container.collection.fluid,
+td.panel-container.collection.fluid div.collection-materials {
+    min-width: 475px;
+}
+
+td.panel-container.collection.fixed,
+td.panel-container.collection.fixed div.collection-materials {
+    width: 380px;
+} 
+
+
+
 td.panel-container.collection {
-    min-width: 380px;
+    
     background-color: #ededed;
     border: 1px solid #ccc;
 }
@@ -899,19 +922,6 @@ table#sliding-content-container tr td.panel-container.media {
     border: 1px solid #ccc;
 }
 
-td.panel-content.fluid {
-    width: 100%;
-}
-
-td.panel-content.fluid.composition,
-table#sliding-content-container tr td.panel-content.fluid.composition,
-td.panel-content.fluid.assignment,
-table#sliding-content-container tr td.panel-content.fluid.assignment,
-td.panel-content.fluid.discussion,
-table#sliding-content-container tr td.panel-content.fluid.discussion {
-    min-width: 300px;
-    max-width: 500px;
-}
 
 table#sliding-content-container tr td.panel-content.fluid.discussion {
     background-color: #ffffff;

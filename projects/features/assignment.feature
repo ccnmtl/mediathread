@@ -170,8 +170,8 @@ Feature: Assignment
         When I click the Create Instructor Feedback button
         
         # BUG -- the assignment panel should close not the composition
-        Then there is an open Assignment panel
-        Then there is a closed Composition panel
+        Then there is a closed Assignment panel
+        Then there is an open Composition panel
         Then there is an open Discussion panel
         
         When I write some text for the discussion
@@ -317,5 +317,10 @@ Feature: Assignment
         And the Composition panel does not have an Edit button
         And the Composition panel has a Save button
         And the Composition panel has a +/- Author button
+        
+        Then I call the Composition "Assignment Response: Scenario 6"
+        When I click the Save button
+        Then I see a Save Changes dialog
+        Then I save the changes
         
         Finished using Selenium

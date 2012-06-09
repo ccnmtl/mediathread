@@ -10,7 +10,10 @@ Mediathread connects to a variety of image and video collections (such as YouTub
 </div>
 
 <div style="text-align: center;">
+{% if settings.DEBUG %}
+{% else %}
 <iframe width="560" height="315" src="http://www.youtube.com/embed/7KjzRG8zYYo" frameborder="0" allowfullscreen></iframe>
+{% endif %}
 </div>
 
 </div>

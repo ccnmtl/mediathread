@@ -253,6 +253,7 @@ div.threadedcomments-container {
     overflow-y: auto;
     border: 1px solid #bbb;
     position: relative;
+    background-color: white;
 }
 
 form.threaded_comments_form {
@@ -381,9 +382,10 @@ li.comment-thread:target > .comment .threaded_comment_header {
 }
 
 div.comment-date {
+    clear: both;
     font-size: 80%;
     margin-left: 5px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .respond_to_comment_form_div {

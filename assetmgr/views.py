@@ -228,8 +228,10 @@ def add_asset(request):
         elif "archive" == asset.primary.label:
             redirect_url = request.POST.get('redirect-url', reverse('class-add-source'))
             url = "%s?newsrc=%s" % (redirect_url, asset.title)
+            transaction.commit()
             return HttpResponseRedirect(url)
         else:
+            transaction.commit()
             return HttpResponseRedirect(asset_url)
     else:
         #we'll make it here if someone doesn't submit

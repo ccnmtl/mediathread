@@ -1992,8 +1992,6 @@ div.panel-column-stump {
 }
 
 .flowplayer-timedisplay {
-    float: right;
-    margin-right: 5px;
     font-size: 80%;
 }
 
@@ -2860,12 +2858,8 @@ div#assignment-materials h4 a.asset-title-link.insert
 
 
 ul.instructor-list {
-
-    margin: 0 20px 0 40px;
+    margin: 0 20px 0 30px;
 }
-
-
-
 
 ul.instructor-list li {
 

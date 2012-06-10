@@ -37,6 +37,15 @@ def there_is_not_a_state_name_panel(step, state, name):
         assert False, "Found panel named %s" % panel
     except:
         pass # expected
+
+@step(u'the ([^"]*) panel has an? ([^"]*) subpanel')
+def the_name_panel_has_a_state_subpanel(step, name, state):
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % name.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    selector = "td.panel-container.%s" % state
+    subpanel = panel.find_element_by_css_selector(selector)
+    assert selector != None, "Can't find %s subpanel in %s panel" % (state, name)
     
 @step(u'the ([^"]*) panel has an? ([^"]*) button')
 def the_panel_has_a_name_button(step, panel, name):

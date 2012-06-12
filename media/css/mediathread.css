@@ -866,12 +866,12 @@ td.panel-content.fluid div.essay-space-container {
     min-width: 330px;    
 }
 
-td.panel-content.fixed div.essay-space-container {
+td.panel-content.fixed div.essay-space-container,
+td.panel-content.fixed div.threadedcomments-container {
     width: 100%;
 }
 
-td.panel-content.fixed,
-td.panel-content.fixed div.threadedcomments-container {
+td.panel-content.fixed {
     width: 40%;
     min-width: 300px;
 }

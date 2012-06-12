@@ -706,6 +706,10 @@ table#sliding-content-container tr td.panel-container {
     border-left: none;
 }
 
+table#sliding-content-container tr td.panel-container.closing {
+    background-color: white !important;
+}
+
 table#sliding-content-container tr td.panel-container div.panel {
     margin: 0;
     padding: 0px;
@@ -845,7 +849,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
     margin: 5px 0px 5px 5px;
     padding: 2px 5px 4px 0px;
     float: right;
-    width: 400px;
+    width: 375px;
 }
 
 table.panel-subcontainer tr td div.project-visibility {
@@ -862,10 +866,14 @@ td.panel-content.fluid div.essay-space-container {
     min-width: 330px;    
 }
 
+td.panel-content.fixed div.essay-space-container {
+    width: 100%;
+}
+
 td.panel-content.fixed,
-td.panel-content.fixed div.essay-space-container,
 td.panel-content.fixed div.threadedcomments-container {
-    width: 300px;
+    width: 40%;
+    min-width: 300px;
 }
 
 td.panel-container.collection.fluid,

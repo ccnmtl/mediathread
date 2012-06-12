@@ -142,38 +142,36 @@
             self.verifyLayout(panel);
             jQuery(window).trigger("resize");
             
-            /** Fade
-            if (jQuery(panel).hasClass("open")) {
-                jQuery(panel).removeClass("open");
-                jQuery(panel).fadeOut("slow", function () {
-                    jQuery(panel).addClass("closed");
-                });
-            } else {
-                jQuery(panel).removeClass("closed");
-                jQuery(panel).fadeIn("slow", function () {
-                    jQuery(panel).addClass("open");
-                });
-            }
-            **/
             
             /** Real Sliding
             // Open/close this panhandle's panel
-            var div = jQuery(panel).children('div.panel');
+            var panel = jQuery(pantab_container).prevAll("td.panel-container")[0];
             var panelTab = jQuery(pantab_container).children("div.pantab")[0];
+            var panelDiv = jQuery(panel).children('div.panel')[0];
             
             if (jQuery(panel).hasClass("open")) {
-                jQuery(panelTab).fadeOut();
-                jQuery(panel).css("background-color", "white !important");
-                jQuery(div).hide("slide", { direction: "left" }, 500, function () {
-                    jQuery(panel).toggleClass("open closed");
-                    jQuery(panelTab).toggleClass("open closed");
+                jQuery(panelTab).hide();
+                jQuery(panel).addClass("closing");
+                jQuery(panelDiv).hide("slide", { direction: "left" }, 500, function () {
+                    jQuery(panel).removeClass("closing").removeClass("open").addClass("closed");
+                    jQuery(panelTab).removeClass("open").addClass("closed");
+                    jQuery(panel).trigger('panel_state_change', ["closed"]);
                     jQuery(panelTab).fadeIn("fast");
                 });
+
+                
             } else {
-                jQuery(div).show("slide", { direction: "left" }, 1000, function () {
-                    jQuery(panel).toggleClass("open closed");
+                jQuery(panelTab).hide();
+                jQuery(panel).addClass("closing").removeClass("closed").addClass("open");
+                jQuery(panelDiv).show("slide", { direction: "left" }, 500, function () {
+                    jQuery(panel).removeClass("closing");
+                    jQuery(panelTab).removeClass("closed").addClass("open").fadeIn("fast");
+                    jQuery(panel).trigger('panel_state_change', ["open"]);
                 });
             }
+            
+            self.verifyLayout(panel);
+            jQuery(window).trigger("resize");
             **/
         };
         

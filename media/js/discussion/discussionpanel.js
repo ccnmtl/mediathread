@@ -15,13 +15,24 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
         self.onTinyMCEInitialize(instance);
     });
+    
+    self._bind(self.el, "td.panel-container", "panel_state_change", function () {
+        self.onClosePanel(jQuery(this).hasClass("subpanel"));
+    });
 
     // Setup the media display window.
     self.citationView = new CitationView();
     self.citationView.init({
         'default_target' : panel.context.discussion.id + "-videoclipbox",
         'onPrepareCitation' : self.onPrepareCitation,
-        'presentation' : "medium"
+        'presentation' : "medium",
+        'winHeight': function () {
+            var elt = jQuery(self.el).find("div.asset-view-published")[0];
+            return jQuery(elt).height() -
+                (jQuery(elt).find("div.annotation-title").height() +
+                 jQuery(elt).find("div.asset-title").height() +
+                 jQuery(elt).find("div.discussion-toolbar-row").height() + 15);
+        }
     });
     self.citationView.decorateLinks(self.el.id);
 
@@ -59,8 +70,19 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
         self.hide_comment_form(false);
     }
     
-    self.resize();
+    jQuery(window).trigger("resize");
 };
+
+DiscussionPanelHandler.prototype.isEditing = function () {
+    var self = this;
+    return jQuery(self.form).css("display") === "block";
+};
+
+DiscussionPanelHandler.prototype.isSubpanelOpen = function () {
+    var self = this;
+    return jQuery(self.el).find("td.panel-container.collection").hasClass("open");
+};
+
 
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     var self = this;
@@ -68,9 +90,9 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     if (instance && instance.id === "id_comment" && !self.tinyMCE) {
 
         self.tinyMCE = instance;
-
         // Reset tinyMCE width to 100% via javascript. TinyMCE doesn't resize
-        // properly if this isn't completed AFTER instantiation
+        // properly
+        // if this isn't completed AFTER instantiation
         jQuery('#id_comment_tbl').css('width', "100%");
 
         if (jQuery("#id_title").is(":visible")) {
@@ -120,13 +142,13 @@ DiscussionPanelHandler.prototype.resize = function () {
     }
 
     visible += 45;
-    jQuery(self.el).find('div.threadedcomments-container').css('height', (visible + 20) + "px");
+    jQuery(self.el).find('div.threadedcomments-container').css('height', (visible + 30) + "px");
     
     // Resize the collections box, subtracting its header elements
     jQuery(self.el).find('div.collection-assets').css('height', (visible - 50) + "px");
     
     // Resize the media display window
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 20) + "px");
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
 
     // For IE
     jQuery(self.el).find('tr.discussion-content-row').css('height', (visible) + "px");
@@ -134,12 +156,33 @@ DiscussionPanelHandler.prototype.resize = function () {
 
 };
 
-DiscussionPanelHandler.prototype.onClose = function () {
+DiscussionPanelHandler.prototype.onClosePanel = function () {
     var self = this;
     // close any outstanding citation windows
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
+    self.render();
+};
+
+DiscussionPanelHandler.prototype.render = function () {
+    var self = this;
+    
+    // Give precedence to media view IF the subpanel is open and we're in readonly mode
+    
+    if (!self.isEditing() && self.isSubpanelOpen()) {
+        if (!self.panel.full_discussion_view) {
+            jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
+        }
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
+    } else {
+        if (!self.panel.context.full_discussion_view) {
+            jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
+        }
+        jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
+    }
+    
+    jQuery(window).trigger("resize");
 };
 
 DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
@@ -261,6 +304,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
     jQuery(self.el).find("div.asset-view-published").hide();
     jQuery(self.el).find("td.panhandle-stripe div.label").html("Embed Media");
     jQuery(self.el).find("div.collection-materials").show();
+    self.render();
 };
 
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
@@ -284,6 +328,8 @@ DiscussionPanelHandler.prototype.hide_comment_form = function () {
         jQuery(self.el).find("td.panhandle-stripe div.label")
                 .html("View Media");
         jQuery(self.el).find("div.asset-view-published").show();
+        
+        self.render();
     });
 };
 

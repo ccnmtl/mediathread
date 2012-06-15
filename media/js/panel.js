@@ -272,6 +272,7 @@
                 jQuery(panelTab).toggleClass("open closed");
                 
                 self.verifyLayout(panel);
+                jQuery(window).trigger("resize");
             }
         };
 

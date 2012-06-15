@@ -25,7 +25,14 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     self.citationView.init({
         'default_target' : panel.context.discussion.id + "-videoclipbox",
         'onPrepareCitation' : self.onPrepareCitation,
-        'presentation' : "medium"
+        'presentation' : "medium",
+        'winHeight': function () {
+            var elt = jQuery(self.el).find("div.asset-view-published")[0];
+            return jQuery(elt).height() -
+                (jQuery(elt).find("div.annotation-title").height() +
+                 jQuery(elt).find("div.asset-title").height() +
+                 jQuery(elt).find("div.discussion-toolbar-row").height() + 15);
+        }
     });
     self.citationView.decorateLinks(self.el.id);
 
@@ -135,13 +142,13 @@ DiscussionPanelHandler.prototype.resize = function () {
     }
 
     visible += 45;
-    jQuery(self.el).find('div.threadedcomments-container').css('height', (visible + 20) + "px");
+    jQuery(self.el).find('div.threadedcomments-container').css('height', (visible + 30) + "px");
     
     // Resize the collections box, subtracting its header elements
     jQuery(self.el).find('div.collection-assets').css('height', (visible - 50) + "px");
     
     // Resize the media display window
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 20) + "px");
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
 
     // For IE
     jQuery(self.el).find('tr.discussion-content-row').css('height', (visible) + "px");

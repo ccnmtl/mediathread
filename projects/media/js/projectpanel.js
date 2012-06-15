@@ -57,7 +57,12 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.citationView.init({
         'default_target': panel.context.project.id + "-videoclipbox",
         'onPrepareCitation': self.onPrepareCitation,
-        'presentation': "medium"
+        'presentation': "medium",
+        'winHeight': function () {
+            var elt = jQuery(self.el).find("div.asset-view-published")[0];
+            return jQuery(elt).height() -
+                (jQuery(elt).find("div.annotation-title").height() + jQuery(elt).find("div.asset-title").height() + 15);
+        }
     });
     self.citationView.decorateLinks(self.essaySpace.id);
     

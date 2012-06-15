@@ -57,7 +57,7 @@
             });
         };
         
-        this.count = function() {
+        this.count = function () {
             return self.panelHandlers.length;
         };
         

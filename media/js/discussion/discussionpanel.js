@@ -171,14 +171,10 @@ DiscussionPanelHandler.prototype.render = function () {
     // Give precedence to media view IF the subpanel is open and we're in readonly mode
     
     if (!self.isEditing() && self.isSubpanelOpen()) {
-        if (!self.panel.full_discussion_view) {
-            jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
-        }
+        jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
         jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
     } else {
-        if (!self.panel.context.full_discussion_view) {
-            jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
-        }
+        jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
         jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
     }
     

@@ -88,7 +88,7 @@
                 <div class="indexcard tabbertab" title="Source">
                     <div class="asset-info">
                         {% if asset.id and request.user.is_staff %}
-                          <a href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a>
+                          <a href="{%url admin:assetmgr_asset_change asset.id %}">Manage</a><br /><br />
                         {% endif %}
                         
                         {%if asset.html_source.url %}
@@ -97,6 +97,14 @@
                                 <dd id="metadata-html_source"><a href="{{asset.html_source.url}}">{{asset.html_source.url}}</a></dd>
                             </dl>
                         {%endif%}
+                        
+                        {% if asset.xmeml_source %}
+                            <h2 class="metadata-title">Final Cut Pro</h2>
+                            <dl>
+                                <dd><a href="{% url final_cut_pro_xml asset.id %}">Export clips to XML</a></dd>
+                            </dl>    
+                        {% endif %}
+                        
                         
                         {% for name, values in asset.metadata.items %}
                             <h2 class="metadata-title">{{name}}</h2>

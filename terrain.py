@@ -74,6 +74,12 @@ def access_url(step, url):
         response = world.client.get(django_url(url))
         world.dom = html.fromstring(response.content)
         
+@step(u'my browser resolution is ([^"]*) x ([^"]*)')
+def my_browser_resolution_is_width_x_height(step, width, height):
+    cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (width, height)
+    world.firefox.execute_script(cmd);
+        
+        
 @step(u'I am ([^"]*) in ([^"]*)')
 def i_am_username_in_course(step, username, course):
     if world.using_selenium:

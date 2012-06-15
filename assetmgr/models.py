@@ -100,6 +100,9 @@ class Asset(models.Model):
     @property
     def html_source(self):
         return Source.objects.get(asset=self, label='url')
+    
+    def xmeml_source(self):
+        return self.sources.get('xmeml', None)
 
     @property
     def sources(self):

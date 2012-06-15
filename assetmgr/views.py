@@ -27,6 +27,8 @@ import operator
 import re
 import simplejson
 import urllib
+import urllib2
+
 
 Asset = models.get_model('assetmgr','asset')
 Source = models.get_model('assetmgr','source')
@@ -523,4 +525,39 @@ def asset_json(request, asset_id):
             }
     return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')
+    
+def final_cut_pro_xml(request, asset_id):
+    user = request.user
+    if not user.is_staff:
+        return HttpResponseForbidden()
+        
+    "support for http://developer.apple.com/mac/library/documentation/AppleApplications/Reference/FinalCutPro_XML/Topics/Topics.html"
+    try:
+        from xmeml import VideoSequence
+        #http://github.com/ccnmtl/xmeml
+        asset = get_object_or_404(Asset, pk=asset_id)
+        
+        xmeml = asset.sources.get('xmeml', None)
+        if xmeml is None:
+            return HttpResponse("Not Found: This annotation's asset does not have a Final Cut Pro source XML associated with it", status=404)
+        
+        f = urllib2.urlopen(xmeml.url)
+        assert f.code == 200
+        v = VideoSequence(xml_string=f.read())
+        
+        clips = []
+        for ann in asset.sherdnote_set.filter(range1__isnull=False):
+            clip = v.clip(ann.range1, ann.range2 ,units='seconds')
+            clips.append(clip)
+            
+        xmldom,dumb_uuid = v.clips2dom(clips)
+        res = HttpResponse(xmldom.toxml(), mimetype='application/xml')
+        res['Content-Disposition'] = 'attachment; filename="%s.xml"' % asset.title
+        return res
 
+    except ImportError:
+        return HttpResponse('Not Implemented: No Final Cut Pro Xmeml support', status=503)
+
+    
+
+    

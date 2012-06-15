@@ -170,13 +170,12 @@ Feature: Assignment
         When I click the Create Instructor Feedback button
         
         # BUG -- the assignment panel should close not the composition
-        Then there is an open Assignment panel
+        Then there is a closed Assignment panel
         Then there is an open Composition panel
         Then there is an open Discussion panel
         
         When I write some text for the discussion
         Then I click the Save Comment button
-        Then I wait 2 seconds
         Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
         
         # View as Student One

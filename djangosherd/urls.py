@@ -14,6 +14,4 @@ urlpatterns = patterns(
     url(r'^json/(?P<annot_id>\w+)/$', 
         'annotation_json', name="annotation-json"),
 
-    url(r'^xmeml/(?P<annot_id>\w+)/$', 
-        'final_cut_pro_xml', name="final_cut_pro_xml"),
     )

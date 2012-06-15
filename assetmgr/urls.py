@@ -20,4 +20,7 @@ urlpatterns = patterns(
     url(r'^(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
         'annotationview',
         name="annotation-form"),
-    )
+    
+    url(r'^xmeml/(?P<asset_id>\w+)/$', 'final_cut_pro_xml', name="final_cut_pro_xml"),
+)
+

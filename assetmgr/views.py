@@ -547,7 +547,7 @@ def final_cut_pro_xml(request, asset_id):
         
         clips = []
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            clip = v.clip(ann.range1, ann.range2 ,units='seconds')
+            clip = v.clip(ann.range1, ann.range2, units='seconds')
             clips.append(clip)
             
         xmldom,dumb_uuid = v.clips2dom(clips)

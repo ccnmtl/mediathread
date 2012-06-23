@@ -477,8 +477,8 @@ def class_addsource(request):
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
             'help_video_upload': UserSetting.get_setting(user, "help_video_upload", True),
             'help_supported_collections': UserSetting.get_setting(user, "help_supported_collections", True),
-            'help_dashboard_nav_actions': UserSetting.get_setting(user, "help_dashboard_nav_actions", True),
-            'help_dashboard_nav_reports': UserSetting.get_setting(user, "help_dashboard_nav_reports", True)
+            'help_dashboard_nav_actions': UserSetting.get_setting(user, "help_dashboard_nav_actions", False),
+            'help_dashboard_nav_reports': UserSetting.get_setting(user, "help_dashboard_nav_reports", False)
         }
 
     if request.method == "GET":

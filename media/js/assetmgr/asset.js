@@ -18,7 +18,7 @@
             });
             
             window.onbeforeunload = config.level === "item" ? this.saveItemPrompt : null;
-
+            
             jQuery.ajax({
                 url: '/site_media/templates/annotations.mustache?nocache=v2',
                 dataType: 'text',
@@ -332,6 +332,52 @@
                     self.unhighlight();
                 });
             }
+        };
+        
+        this.showExportDialog = function (anchor, asset_id) {
+            var self = this;
+            var element = jQuery(".export-finalcutpro")[0];
+            var list  = jQuery(element).find("ul.selections")[0];
+            jQuery(list).find('li').remove();
+            
+            if (this.hasOwnProperty('active_asset_annotations')) {
+                for (var i = 0; i < this.active_asset_annotations.length; i++) {
+                    var ann = this.active_asset_annotations[i];
+                    if (ann.annotation) {
+                        var li = "<li>" +
+                            "<span class='ui-icon-reverse ui-icon-arrowthick-2-n-s'></span>" +
+                            "<input readonly='readonly' type='text' name='" + ann.id + "' value='" + ann.metadata.title + "'></input></li>";
+                        
+                        jQuery(list).append(li);
+                    }
+                }
+            }
+            
+            jQuery(list).sortable({ containment: 'parent' }).disableSelection();
+            
+            jQuery(element).dialog({
+                buttons: [{ text: "Export",
+                    click: function () { jQuery("form[name=export-finalcutpro]").trigger('submit'); jQuery(this).dialog("close"); }}
+                 ],
+                draggable: true,
+                resizable: true,
+                modal: true,
+                width: 425,
+                position: "top",
+                zIndex: 10000
+            });
+            
+            return false;
+        };
+        
+        this.onExportSubmit = function (evt) {
+            var selections = jQuery('ul.selections li input[type=text]');
+            for (var i = 0; i < selections.length; i++) {
+                var id = jQuery(selections[i]).attr('name');
+                jQuery(selections[i]).attr("name", i);
+                jQuery(selections[i]).attr("value", id);
+            }
+            return true;
         };
         
         this.showAnnotation = function (annotation_id) {

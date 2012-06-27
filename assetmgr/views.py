@@ -516,7 +516,7 @@ def asset_json(request, asset_id):
                 return None
             return 'author_name',get_public_name(annotation.author, request)
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            annotations.append( ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
+            annotations.append(ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
 
     #we make assets plural here to be compatible with the project JSON structure
     data = {'assets': {asset_key:asset.sherd_json(request)},
@@ -546,9 +546,15 @@ def final_cut_pro_xml(request, asset_id):
         v = VideoSequence(xml_string=f.read())
         
         clips = []
-        for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            clip = v.clip(ann.range1, ann.range2, units='seconds')
-            clips.append(clip)
+        
+        keys = request.POST.keys()
+        keys.sort(key=lambda x: int(x))
+        for key in keys:
+            sherd_id = request.POST.get(key)
+            ann = asset.sherdnote_set.get(id=sherd_id, range1__isnull=False)
+            if ann:
+                clip = v.clip(ann.range1, ann.range2, units='seconds')
+                clips.append(clip)
             
         xmldom,dumb_uuid = v.clips2dom(clips)
         res = HttpResponse(xmldom.toxml(), mimetype='application/xml')

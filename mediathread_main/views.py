@@ -295,6 +295,10 @@ def get_records(user, course, request):
     today = datetime.date.today()
 
     editable = (user == request.user)
+    
+    citable = False
+    if request.GET.has_key('citable'):
+        citable = request.GET.get('citable') == 'true'
      
     #bad language, we should change this to user_of_assets or something
     space_viewer = request.user 
@@ -368,6 +372,7 @@ def get_records(user, course, request):
             the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags', 'body'))
             
         the_json['editable'] = editable
+        the_json['citable'] = citable
             
         annotations = []
         if request.GET.has_key('annotations'):
@@ -379,7 +384,9 @@ def get_records(user, course, request):
             def primary_type(request, annotation, key):
                 return "primary_type", asset.primary.label
             for ann in asset.sherdnote_set.filter(range1__isnull=False, author=user):
-                annotations.append(ann.sherd_json(request, 'x', ('title', 'author', 'tags', author_name, 'body', 'modified', 'timecode', primary_type)))
+                ann_json = ann.sherd_json(request, 'x', ('title', 'author', 'tags', author_name, 'body', 'modified', 'timecode', primary_type))
+                ann_json['citable'] = citable
+                annotations.append(ann_json)
             the_json['annotations'] = annotations
             
         asset_json.append(the_json)
@@ -422,6 +429,7 @@ def get_records(user, course, request):
             'active_filters': active_filters,
             'space_viewer'  : { 'username': space_viewer.username, 'public_name': get_public_name(space_viewer, request), 'can_manage': (space_viewer.is_staff and not user) },
             'editable' : editable,
+            'citable' : citable,
             'owners' : [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members],
             'compositions' : len(projects) > 0 or len(assignments) > 0,
             'is_faculty': c.is_faculty(space_viewer),

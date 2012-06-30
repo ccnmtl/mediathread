@@ -84,7 +84,7 @@
                     {{#tag?}}
                         <div class="switcher-active-filter">
                             <span>
-                                Tag: {{tag?ellipses(15)}}
+                                Tag: {{tag?ellipses(10)}}
                                 <a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a>
                             </span>
                         </div>
@@ -112,7 +112,7 @@
                         <div class="button-form inline">
                             <form class="block project-createnew inline" method="POST" action="/project/create/">
                                 <input type="hidden" name="title" />
-                                <input class="columnbutton project createnew-button" type="submit" value="New Composition"/>
+                                <input class="columnbutton project createnew-button" type="submit" value="Create Composition"/>
                             </form>
                         </div>
 
@@ -211,9 +211,18 @@
                 <div class="column-container media-column-container">
                     <h2>
                         <div class="button-form inline">
-                            <form class="block media-browse hinline" method="POST" action="/explore/">
+                            {{^assets}}
+                            <form class="block browse-media hinline" method="POST" action="/explore/">
                                 <input class="columnbutton media browse-button" type="submit" value="Source Media"/>
                             </form>
+                            {{/assets}}
+                            
+                            {{#assets?}}
+                            <form class="block annotate-media hinline" method="GET" action="/asset/">
+                                <input class="columnbutton media annotate-button" type="submit" value="Annotate Media"/>
+                            </form>
+                            {{/assets?}}
+                            
                         </div>
                         
                         Collections

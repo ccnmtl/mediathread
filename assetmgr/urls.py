@@ -7,6 +7,8 @@ media_root = os.path.join(os.path.dirname(__file__),"media")
 urlpatterns = patterns(
     'assetmgr.views',
 
+    url(r'^$', 'new_asset_workspace', name="new-asset-workspace"),
+    
     url(r'^json/(?P<asset_id>\d+)/$', 
         'asset_json', name="asset-json"),
 

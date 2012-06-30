@@ -8,6 +8,8 @@
                 handler = new ProjectPanelHandler(el, parent, panels, space_owner);
             } else if (type === "discussion") {
                 handler = new DiscussionPanelHandler(el, parent, panels, space_owner);
+            } else if (type === "asset") {
+                handler = new AssetPanelHandler(el, parent, panels, space_owner);
             }
             
             return handler;

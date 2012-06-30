@@ -54,7 +54,7 @@
             var collectionList = new CollectionList({
                 'parent': jQuery("div#classwork_table")[0],
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
-                'template': 'classwork',
+                'template': 'homepage',
                 'template_label': 'classwork_table',
                 'view_callback': resizeHomepage,
                 'view': "{{request.GET.view}}",

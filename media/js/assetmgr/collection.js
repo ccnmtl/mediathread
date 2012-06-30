@@ -6,6 +6,7 @@ var CollectionList = function (config) {
     self.project_id = config.project_id;
     self.project_version = config.project_version;
     self.parent = config.parent;
+    self.citable = config.hasOwnProperty('citable') ? config.citable : false;
     
     self.switcher_context = {};
     
@@ -29,10 +30,11 @@ var CollectionList = function (config) {
             
             // Retrieve the full asset w/annotations from storage
             if (config.view === 'all' || !config.space_owner) {
-                url = MediaThread.urls['all-space'](config.tag);
+                url = MediaThread.urls['all-space'](config.tag, null, self.citable);
             } else {
-                url = MediaThread.urls['your-space'](config.space_owner, config.tag);
+                url = MediaThread.urls['your-space'](config.space_owner, config.tag, null, self.citable);
             }
+            
             djangosherd.storage.get({
                     type: 'asset',
                     url: url
@@ -51,7 +53,7 @@ CollectionList.prototype.selectOwner = function (username) {
     var self = this;
     djangosherd.storage.get({
         type: 'asset',
-        url: username ? MediaThread.urls['your-space'](username) : MediaThread.urls['all-space']()
+        url: username ? MediaThread.urls['your-space'](username, null, null, self.citable) : MediaThread.urls['all-space'](null, null, self.citable)
     },
     false,
     function (the_records) {
@@ -139,9 +141,9 @@ CollectionList.prototype.getShowingAllItems = function (json) {
 CollectionList.prototype.getSpaceUrl = function (active_tag, active_modified) {
     var self = this;
     if (self.getShowingAllItems(self.current_records)) {
-        return MediaThread.urls['all-space'](active_tag, active_modified);
+        return MediaThread.urls['all-space'](active_tag, active_modified, self.citable);
     } else {
-        return MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified);
+        return MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified, self.citable);
     }
 };
 

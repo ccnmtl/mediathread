@@ -49,6 +49,30 @@ from tagging.models import Tag
 from tagging.utils import calculate_cloud
 from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT, get_public_name
 
+@allow_http("GET")
+def new_asset_workspace(request):
+    """
+    
+    """
+    
+    data = { 'space_owner' : request.user.username }
+    course = request.course
+        
+    if not request.is_ajax():
+        return render_to_response('assetmgr/asset_workspace.html', data, context_instance=RequestContext(request))
+    else:
+        panels = []
+            
+        # Requested project, either assignment or composition
+        asset_workspace_context = { 'type': 'asset' }
+        panel = { 'panel_state': 'open', 'panel_state_label': "Annotate Media", 'context': asset_workspace_context, 'template': 'asset_workspace' }
+        panels.append(panel)
+        
+        data['panels'] = panels
+        
+        return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
+
+
 #@login_required #no login, so server2server interface is possible
 @allow_http("GET", "POST")
 def add_view(request):

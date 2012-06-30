@@ -743,6 +743,10 @@ table#sliding-content-container tr td.panel-container div.panel.composition {
     border: 1px solid #3A84BE;
 }
 
+table#sliding-content-container tr td.panel-container div.panel.asset-workspace {
+    border: 1px solid #A88448;
+}
+
 table#sliding-content-container tr td.panel-container div.panel.feedback,
 table#sliding-content-container tr td.panel-container div.panel.discussion {
         border: 1px solid black;
@@ -834,7 +838,6 @@ table.panel-subcontainer tr td.panel-subcontainer-toolbar-column.composition {
     background: #F0F5FA;
 }
 
-
 table.panel-subcontainer tr td div.panel-subcontainer-title {
     float: left;
 }
@@ -905,12 +908,13 @@ td.panel-container.collection.fluid div.collection-materials {
 td.panel-container.collection.fixed,
 td.panel-container.collection.fixed div.collection-materials {
     width: 380px;
-} 
+}
 
-
+div.panel.asset-workspace td.panel-container.collection.fixed div.collection-materials {
+    width: 400px;    
+}
 
 td.panel-container.collection {
-    
     background-color: #ededed;
     border: 1px solid #ccc;
 }
@@ -925,6 +929,16 @@ td.panel-container.composition {
     background-color: #f0f5fa !important;
     min-width: 330px;
     width: 100%;
+}
+
+td.panel-container.asset-workspace {
+    background-color: #F9F6F1 !important;
+    min-width: 330px;
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid #A88448;
+    border-bottom: 1px solid #A88448;
+    border-left: 1px solid #A88448;
 }
 
 td.panel-container.discussion {
@@ -971,6 +985,16 @@ td.panhandle-stripe.composition {
     background-color: #3a84bf !important;
 }
 
+div.pantab.asset-workspace,
+td.panhandle-stripe.asset-workspace {
+    background-color: #A88448 !important;
+}
+
+div.pantab.composition,
+td.panhandle-stripe.composition {
+    background-color: #3a84bf !important;
+}
+
 div.panhandle-left.assignment {
     background-color: #DAE7E0 !important;
     border: 1px solid #175D35;
@@ -984,6 +1008,11 @@ div.panhandle-left.composition {
 div.panhandle-left.discussion {
     background-color: #ededed !important;
     border: 1px solid black;
+}
+
+div.panhandle-left.asset-workspace {
+    background-color: #F9F6F1 !important;
+    border: 1px solid #A88448;
 }
 
 div.pantab.collection,
@@ -1018,6 +1047,24 @@ div.collection-materials h2 a.browse-button {
     font-size: 85%;
     border-image: initial;
 }
+
+#discussion-space-materials h2,
+#essay-space-materials h2,
+#collection-materials h2,
+.collection-materials h2 {
+    background-color: #a88448;
+    text-transform: capitalize;
+    font-size: 98%;
+    padding: 5px 12px;
+    text-transform: capitalize;
+    font-size: 98%;
+    font-weight: normal;
+    -moz-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+    color: white
+}
+
 
 /* Project Toolbar Particulars */
 table.panel-subcontainer tr td input.project-title {
@@ -2882,7 +2929,7 @@ input.videoplay{
 }
 
 .media-column .column-container h2 {
-    background-color: #a88448;
+    background-color: #a88448 !important;
     text-transform: capitalize !important;
     font-size: 98%;
 }
@@ -2899,8 +2946,8 @@ input.videoplay{
 
 #projects .column-container h2{
     background-color: #557691;
-        text-transform: capitalize;
-        font-size: 98%;
+    text-transform: capitalize;
+    font-size: 98%;
 }
 
 .default-content h4,
@@ -3008,6 +3055,10 @@ div#assignment-materials h4 {
     margin: 0 0 0.5em;
     padding: 0.3em 0;
     text-align: left;
+}
+
+div.panel.asset-workspace div#materials h4 a {
+    margin-left: 0px;
 }
 
 div#materials h4 a,
@@ -3404,3 +3455,45 @@ margin-left: 269px;
     position:absolute;
     z-index:0;
 }
+
+/* Asset View Published */
+
+.asset-view {
+    width: 370px;
+    height: 370px;
+    background-color: #dedede;
+    border: 1px solid #ccc;
+    float: left;
+}
+
+.asset-view-published {
+    background: url('../img/media-Bkgd.gif') no-repeat center center;
+    height: 100%;
+    min-height: 300px;
+    border: 1px solid #ccc;
+}
+
+.asset-title {
+    margin-left: 10px;
+}
+
+.annotation-title.materialCitation h2 {
+    background: #969696 url('../img/icons/item_video.gif') 5px 3px no-repeat;
+    color:#DEDEDE;
+    font-weight:normal;
+    margin:0 0 0.5em;
+    padding:0.2em 0.5em .2em 1.8em;
+    text-align:left;
+}
+
+.asset-view-small .asset-object {
+    margin: 6px;
+}
+
+.asset-view-small {
+    background: url('../img/media-Bkgd.gif') no-repeat;
+    width: 363px;
+    min-height: 324px;
+    padding-top: 3px;
+}
+

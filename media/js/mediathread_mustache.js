@@ -15,11 +15,20 @@
             'home-space': function (username) {
                 return '/?username=' + username;
             },
-            'your-space': function (username, tag, modified) {
-                return '/yourspace/' + username + '/asset/?annotations=true' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
+            'your-space': function (username, tag, modified, citable) {
+                return '/yourspace/' + username + '/asset/?annotations=true' +
+                    (tag ? '&tag=' + tag : '') +
+                    (modified ? '&modified=' + modified : '') +
+                    (citable ? '&citable=' + citable : '');
             },
-            'all-space': function (tag, modified) {
-                return '/yourspace/all/asset/?' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
+            'all-space': function (tag, modified, citable) {
+                return '/yourspace/all/asset/?' +
+                    (tag ? '&tag=' + tag : '') +
+                    (modified ? '&modified=' + modified : '') +
+                    (citable ? '&citable=' + citable : '');
+            },
+            'asset-workspace': function () {
+                return '/asset/';
             },
             'asset-delete': function (username, asset_id) {
                 return '/yourspace/' + username + '/asset/' + asset_id + '/?delete';

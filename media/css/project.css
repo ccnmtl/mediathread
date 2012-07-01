@@ -1,3 +1,11 @@
+.asset-view {
+    width: 370px;
+    height: 370px;
+    background-color: #dedede;
+    border: 1px solid #ccc;
+    float: left;
+}
+
 a.active-annotation.materialCitation {
     background-color:#fff100;
 }

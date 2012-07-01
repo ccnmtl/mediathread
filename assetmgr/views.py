@@ -543,7 +543,12 @@ def asset_json(request, asset_id):
             annotations.append(ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
 
     #we make assets plural here to be compatible with the project JSON structure
-    data = {'assets': {asset_key:asset.sherd_json(request)},
+    asset_json = asset.sherd_json(request)
+    
+    ga = asset.global_annotation(request.user, False)
+    asset_json['notes'] = ga.body if ga else ""
+     
+    data = {'assets': { asset_key: asset_json },
             'annotations':annotations,
             'type':'asset',
             }

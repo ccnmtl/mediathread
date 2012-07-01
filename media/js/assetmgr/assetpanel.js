@@ -20,26 +20,14 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     self.citationView.init({
         'default_target': "asset-workspace-videoclipbox",
         'presentation': "medium",
+        'clipform': true,
         'winHeight': function () {
             var elt = jQuery(self.el).find("div.asset-view-published")[0];
             return jQuery(elt).height() -
                 (jQuery(elt).find("div.annotation-title").height() + jQuery(elt).find("div.asset-title").height() + 15);
         }
     });
-    
-/**
-    // Setup the media display window.
-    self.citationView = new CitationView();
-    self.citationView.init({
-        'default_target': panel.context.project.id + "-videoclipbox",
-        'presentation': "default"
-    });
-    
-    jQuery(window).bind('beforeunload', function () {
-        return self.beforeUnload();
-    });
-**/
-    
+
     self.collectionList = new CollectionList({
         'parent': self.el,
         'template': 'collection',
@@ -49,8 +37,6 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'view_callback': function () {
             jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
             jQuery(self.el).find("a.materialCitationLink").bind("click", { self: self}, self.onClickAssetTitle);
-            
-            jQuery(self.el).find("a.annotate-asset").bind("click", { self: self }, self.onZoomInAsset);
         }
     });
 };
@@ -103,6 +89,15 @@ AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {
         var self = evt.data.self;
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         self.citationView.openCitation(srcElement);
+        
+        var bits = srcElement.href.split('/');
+        
+        // Setup the edit view
+        AnnotationList.init({
+            "asset_id": bits[bits.length - 2],
+            "level": "item",
+            //,"edit_state": "{{request.GET.edit_state}}"
+        });
     } catch (Exception) {}
         
     return false;

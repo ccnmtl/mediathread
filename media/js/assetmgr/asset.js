@@ -585,7 +585,7 @@
             self.active_annotation = null;
             self.xywh = null;
             
-            var context = {};
+            var context = { 'asset-current': self.active_asset };
             
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);

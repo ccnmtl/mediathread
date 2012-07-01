@@ -7,7 +7,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.parentContainer = parent;
     self.space_owner = space_owner;
     self.tiny_mce_settings = tiny_mce_settings;
-    
+
     djangosherd.storage.json_update(panel.context);
     
     if (panel.context.can_edit) {

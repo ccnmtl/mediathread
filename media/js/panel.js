@@ -27,21 +27,6 @@
             jQuery(self.el).ajaxStop(function () {
                 jQuery(this).removeClass("ajaxLoading");
             });
-
-            
-            // Create an assetview.
-            // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the
-            // core architecture means the two views are really sharing the underlying code.
-            // Consider how to resolve this contention. (It's a big change in the core.)
-            
-            // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
-            if (!djangosherd.assetview) {
-                djangosherd.assetview = new Sherd.GenericAssetView({ clipform: false, clipstrip: true});
-            }
-            
-            if (!djangosherd.storage) {
-                djangosherd.storage = new DjangoSherd_Storage();
-            }
             
             jQuery.ajax({
                 url: options.url,

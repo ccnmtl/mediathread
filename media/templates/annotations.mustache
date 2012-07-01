@@ -8,6 +8,21 @@
 
 {{#>>asset-annotations}}
 <div id="asset-details-annotations">
+    {{#asset-current}}
+        <div id="asset-current">
+            <h1>Item</h1>
+            <h2>{{title}}</h2>
+            {{#thumb?}}
+                <img src="{{thumb}}" />
+            {{/thumb?}}
+            <div class="meta">
+            {{#tags?}}<div><span class="metadata-label">Tags:</span> <span class="metadata-value">{{#tags}}{{name}}, {{/tags}}{{/tags?}}</span></div>
+            {{#notes?}}<div><span class="metadata-label">Notes:</span> <span class="metadata-value">{{notes}}{{/notes?}}</span></div>
+            </div>
+            <br />
+            <br />
+        </div>
+    {{/asset-current}}
     {{#>>annotation-current}}
         <div id="asset-details-annotations-current">
             {{#annotation}}
@@ -104,12 +119,11 @@
                 <input class="media newselection-button" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="Create Selection"/>
             {{/showNewAnnotation?}}
         </div>
-        
-
     {{/>>annotation-current}}
     
     {{#>>annotations-organized}}
-        <div id="annotations-organized"> 
+        <div id="annotations-organized">
+            <h1>Selections</h1> 
             <h2><form name="annotation-list-filter">
                     Group by: <select name="groupby"><option>author</option><option>tag</option></select>
                     <input type="checkbox" name="showall" />Show all

@@ -50,7 +50,6 @@
                 jQuery(this).removeClass("ajaxLoading");
             });
             
-            DjangoSherd_Asset_Config();
             var collectionList = new CollectionList({
                 'parent': jQuery("div#classwork_table")[0],
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',

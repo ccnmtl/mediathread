@@ -2168,23 +2168,13 @@ div.panel-column-stump {
     padding-left:25px;
 } 
 
-.asset-view-big {
-    /*so youtube 620px's can play on left*/
-    
-
-}
-
-.asset-view-big  .asset-object {
-
-    width:60%; 
+.asset-view-big .asset-object {
+    width: 60%; 
 }
 
 .asset-object {
-    /* width:60%; */
-  /*  min-width: 356px; */
     border:1px solid #ccc;
     background-color: #dedede;
-  /*  margin: 1em auto; */
 }
 
 .asset-view-small  .asset-object {
@@ -3457,14 +3447,6 @@ margin-left: 269px;
 }
 
 /* Asset View Published */
-
-.asset-view {
-    width: 370px;
-    height: 370px;
-    background-color: #dedede;
-    border: 1px solid #ccc;
-    float: left;
-}
 
 .asset-view-published {
     background: url('../img/media-Bkgd.gif') no-repeat center center;

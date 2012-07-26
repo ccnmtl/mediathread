@@ -21,6 +21,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'default_target': "asset-workspace-videoclipbox",
         'presentation': "medium",
         'clipform': true,
+        'autoplay': false,
         'winHeight': function () {
             var elt = jQuery(self.el).find("div.asset-view-published")[0];
             return jQuery(elt).height() -
@@ -30,13 +31,21 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
 
     self.collectionList = new CollectionList({
         'parent': self.el,
-        'template': 'collection',
-        'template_label': "collection_table",
-        'create_annotation_thumbs': true,
+        'template': 'gallery',
+        'template_label': "media_gallery",
+        'create_annotation_thumbs': false,
+        'create_asset_thumbs': true,
         'space_owner': self.space_owner,
         'view_callback': function () {
-            jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
-            jQuery(self.el).find("a.materialCitationLink").bind("click", { self: self}, self.onClickAssetTitle);
+            jQuery(self.el).find(".asset-thumb-metadata h6 a").bind("click", { self: self }, self.onClickAssetTitle);
+            jQuery(self.el).find("div.gallery-item").bind("mouseenter", { self: self }, self.onMouseEnterAsset);
+            jQuery(self.el).find("div.gallery-item").bind("mouseleave", { self: self }, self.onMouseLeaveAsset);
+            
+            var container = jQuery(self.el).find('div.asset-table')[0];
+            jQuery(container).masonry({
+                itemSelector : '.gallery-item',
+                columnWidth: 25
+            });
         }
     });
 };
@@ -53,40 +62,17 @@ AssetPanelHandler.prototype.resize = function () {
     // Resize the collections box, subtracting its header elements
     visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
     jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
-    
-    
-};
-
-AssetPanelHandler.prototype.onZoomInAnnotation = function(evt) {
-    
-};
-
-AssetPanelHandler.prototype.onZoomInAsset = function (evt) {
-    
-    try {
-        var self = evt.data.self;
-        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-        var bits = srcElement.parentNode.href.split('/');
-
-        // Open the citation to the right
-        self.citationView.openCitation(srcElement.parentNode);
-
-        // Setup the edit view
-        AnnotationList.init({
-            "asset_id": bits[bits.length - 2],
-            "level": "item",
-            //,"edit_state": "{{request.GET.edit_state}}"
-        });
-        
-    } catch (Exception) {
-        
-    }
-    return false;
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {
     try {
+
         var self = evt.data.self;
+        
+        jQuery(self.el).find('td.panel-container.collection').removeClass('fluid').addClass('fixed');
+        jQuery(self.el).find('td.panel-container.asset').show();
+        jQuery(self.el).find('td.panel-container.asset-details').show();
+        
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         self.citationView.openCitation(srcElement);
         
@@ -101,6 +87,18 @@ AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {
     } catch (Exception) {}
         
     return false;
+};
+
+AssetPanelHandler.prototype.onMouseEnterAsset = function () {
+    var metadata = jQuery(this).children('.asset-thumb-metadata')[0];
+    jQuery(metadata).fadeIn('fast');
+};
+
+AssetPanelHandler.prototype.onMouseLeaveAsset = function () {
+    var metadata = jQuery(this).children('.asset-thumb-metadata')[0];
+    jQuery(metadata).fadeOut('fast', function () {
+        jQuery(metadata).hide();
+    });
 };
 
 AssetPanelHandler.prototype.onClosePanel = function (isSubpanel) {

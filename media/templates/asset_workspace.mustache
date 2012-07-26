@@ -11,20 +11,12 @@
             <table class="panel-subcontainer">
                 <tr class="asset-workspace-content-row">
                 
-                    <td class="panel-container open collection subpanel fixed">
-                        <div class="collection-materials" style="display: block">
-                            <h2>
-                                <div class="button-form inline">
-                                    <a class="columnbutton media browse-button" href="/explore">Source Media</a>
-                                </div>
-                                Collections
-                            </h2>
-                            <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
-                        </div>
-                    </td>
-                    
                     <td class="panel-container open collection subpanel fluid">
-                        <div class="asset-view-published" style="display: block">
+                        <div id="media_gallery" class="media_gallery"></div>
+                    </td>
+                                    
+                    <td class="panel-container open asset subpanel fixed" style="display: none">
+                        <div class="asset-view-published">
                             <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
                                 <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                                     <div class="asset-display"></div>
@@ -34,10 +26,9 @@
                         </div>
                     </td>
                     
-                    <td class="panel-container open collection subpanel fixed">
+                    <td class="panel-container open asset-details subpanel fixed" style="display: none">
                         <div id="asset-details-annotations"></div>
                     </td>
-                    
                 </tr>
             </table>
         </div>

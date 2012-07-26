@@ -221,8 +221,8 @@ filter_by = {
     'tag': lambda asset, tag, user: filter(lambda x: x.name == tag,
                                            asset.tags()),
     'added': date_filter_for('added'),
-    'modified': date_filter_for('modified'),
-    }
+    'modified': date_filter_for('modified')
+}
 
 @rendered_with('homepage.html')
 def triple_homepage(request):

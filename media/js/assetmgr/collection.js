@@ -3,9 +3,11 @@ var CollectionList = function (config) {
     self.template_label = config.template_label;
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
+    self.create_asset_thumbs = config.create_asset_thumbs;
     self.project_id = config.project_id;
     self.project_version = config.project_version;
     self.parent = config.parent;
+    self.selected_view = config.hasOwnProperty('selectedView') ? config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
     
     self.switcher_context = {};
@@ -147,6 +149,48 @@ CollectionList.prototype.getSpaceUrl = function (active_tag, active_modified) {
     }
 };
 
+CollectionList.prototype.createAssetThumbs = function (assets) {
+    var self = this;
+    djangosherd.thumbs = [];
+    for (var i = 0; i < assets.length; i++) {
+        var asset = assets[i];
+        DjangoSherd_adaptAsset(asset); //in-place
+        
+        var target_parent = jQuery(self.parent).find(".gallery-item-" + asset.id)[0];
+        
+        if (!asset.thumbable) {
+            jQuery(target_parent).css({ height: '180px' });
+        } else {
+            var view;
+            switch (asset.type) {
+            case 'image':
+                view = new Sherd.Image.OpenLayers();
+                break;
+            case 'fsiviewer':
+                view = new Sherd.Image.FSIViewer();
+                break;
+            }
+            djangosherd.thumbs.push(view);
+            
+            // scale the height
+            var width = jQuery(target_parent).width();
+            var height = (width / asset.width * asset.height + 30) + 'px';
+            jQuery(target_parent).css({ height: height });
+            
+            var obj_div = document.createElement('div');
+            jQuery(target_parent).children('.asset-thumb').append(obj_div);
+            
+            asset.presentation = 'gallery';
+            asset.x = 0;
+            asset.y = 0;
+            asset.zoom = 1;
+            
+            view.html.push(obj_div, { asset: asset });
+            view.setState(asset);
+        }
+    }
+};
+
 CollectionList.prototype.createThumbs = function (assets) {
     var self = this;
     djangosherd.thumbs = [];
@@ -228,6 +272,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
     var self = this;
     self.switcher_context.owners = the_records.owners;
     self.switcher_context.space_viewer = the_records.space_viewer;
+    self.switcher_context.selected_view = self.selected_view;
     
     if (self.getShowingAllItems(the_records)) {
         self.switcher_context.selected_label = "All Class Members";
@@ -258,6 +303,8 @@ CollectionList.prototype.updateAssets = function (the_records) {
         post: function (elt) {
             if (self.create_annotation_thumbs) {
                 self.createThumbs(the_records.assets);
+            } else if (self.create_asset_thumbs) {
+                self.createAssetThumbs(the_records.assets);
             }
             
             if (self.project_id && !self.current_project) {

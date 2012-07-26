@@ -10,8 +10,7 @@
 <div id="asset-details-annotations">
     {{#asset-current}}
         <div id="asset-current">
-            <h1>Item</h1>
-            <h2>{{title}}</h2>
+            <h2><a href="#" class="asset-title-link insert" onclick="return AnnotationList.showAsset()">{{title}}</a></h2>
             {{#thumb?}}
                 <img src="{{thumb}}" />
             {{/thumb?}}

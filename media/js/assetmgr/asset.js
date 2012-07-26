@@ -385,6 +385,12 @@
             self._addHistory(/*replace=*/false);
         };
         
+        this.showAsset = function () {
+            self._update({ 'level': 'item', 'asset_id': self.active_asset.id }, "annotation-current");
+            self._addHistory(/*replace=*/false);
+        };
+
+        
         this.cancelAnnotation = function () {
             var annotation_id = self.active_annotation ? self.active_annotation.id : null;
             self._update({ 'annotation_id' : annotation_id }, "annotation-current");

@@ -127,6 +127,11 @@ class Asset(models.Model):
 
     def tags(self):
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
+    
+    def filter_tags_by_users(self, users):
+        tags = Tag.objects.usage_for_queryset(self.sherdnote_set.filter(author__in=users))
+        tags.sort(lambda a, b:cmp(a.name.lower(), b.name.lower()))
+        return tags
 
     def global_annotation(self, user, auto_create=True):
         SherdNote = models.get_model('djangosherd','sherdnote')

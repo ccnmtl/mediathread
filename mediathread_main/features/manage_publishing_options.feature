@@ -6,7 +6,7 @@ Feature: Manage Sources
         
         When I access the url "/dashboard/"
         Then I am at the Instructor Dashboard page
-        When I click the Manage Publishing Options button
-        Then I am at the Manage Publishing Options page
+        When I click the Manage Course Settings button
+        Then I am at the Manage Course Settings page
         ## TODO
         Finished using Selenium

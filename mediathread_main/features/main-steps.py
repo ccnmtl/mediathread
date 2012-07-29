@@ -16,6 +16,30 @@ def video_upload_is_enabled(step):
                 alert.accept()
         except:
             pass # It's already enabled. That's ok.
+        
+        
+@step(u'Given the selection visibility is set to "([^"]*)"')
+def given_the_selection_visibility_is_value(step, value):
+    if world.using_selenium:
+        world.firefox.get(django_url("/dashboard/settings/"))
+        
+        if value == "Yes":
+            elt = world.firefox.find_element_by_id("selection_visibility_yes")
+            elt.click();
+            int_value = 1
+        else:
+            elt = world.firefox.find_element_by_id("selection_visibility_no")
+            elt.click();
+            int_value = 0
+        
+        elt = world.firefox.find_element_by_id("selection_visibility_submit")
+        if elt: 
+            elt.click()
+            alert = world.firefox.switch_to_alert()
+            alert.accept()
+            
+            world.firefox.get(django_url("/"))
+        
 
 @step(u'I see ([0-9][0-9]?) sources?')
 def i_see_count_source(step, count):
@@ -39,6 +63,12 @@ def i_allow_level_to_upload_videos(step, level):
     
     form = world.firefox.find_element_by_name("form-upload-permission")
     form.submit()
-  
-
-        
+    
+@step(u'The selection visibility is "([^"]*)"')
+def the_selection_visibility_is_value(step, value):
+    if value == 'Yes':
+        elt = world.firefox.find_element_by_id('selection_visibility_yes')
+    else:
+        elt = world.firefox.find_element_by_id('selection_visibility_no')
+    
+    assert elt.get_attribute('checked'), "The checked attribute was %s" % elt.get_attribute("checked")

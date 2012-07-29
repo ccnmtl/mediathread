@@ -6,8 +6,8 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         I see "by Instructor One"
         And I see "Private"
@@ -80,8 +80,8 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         I see "by Student One"
         And there is a "Private" link
@@ -153,8 +153,8 @@ Feature: Composition
         Given I am test_instructor in Sample Course
                 
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         Then I call the Composition "Composition <title>: Scenario 3"
         
@@ -182,8 +182,8 @@ Feature: Composition
         Given I am test_student_one in Sample Course
                 
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         Then I call the Composition "<title>"
         

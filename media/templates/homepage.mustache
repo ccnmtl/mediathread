@@ -303,18 +303,6 @@
                                                         </ul>
                                                     {{/metadata}}   
                                                 {{/global_annotation}}
-                                                {{^global_annotation}}
-                                                     {{^space_owner}} {{! All Class Items. Is this really necessary? }}
-                                                         {{#tags?}}    
-                                                            <span class="metadata-label">Selection Tags:</span>
-                                                            <span class="metadata-value">
-                                                                {{#tags}}
-                                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                                {{/tags}}
-                                                            </span>
-                                                         {{/tags?}}
-                                                    {{/space_owner}}
-                                                {{/global_annotation}}
                                                 </td>
                                              </tr>
                                               </table>
@@ -328,7 +316,6 @@
                 <div id="annotation-{{id}}">
                         <table class="selection-level-info">
                             <tr>
-                            {{! Too Crazy Overloading section to support thumbnails }}
                             <td class="selection-meta">
                                 <div class="metadata-container">
                                 <a 
@@ -346,7 +333,7 @@
                                 <div id="annotation-body-{{id}}" class="meta">
                                 {{#metadata}}
                                 {{#tags?}}       
-                                <div><span class="metadata-label">Tags:</span>
+                                <div class="annotation-tags"><span class="metadata-label">Tags:</span>
                                 <span class="metadata-value">
                                 {{#tags}}
                                 <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
@@ -355,7 +342,7 @@
                                 </div>
                                 {{/tags?}}
                                 {{#body?}}
-                                <div><span class="metadata-label">Note:</span>
+                                <div class="annotation-notes"><span class="metadata-label">Note:</span>
                                 <span class="metadata-value">{{body}}</span> 
                                 </div>
                                 {{/body?}}

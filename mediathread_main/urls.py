@@ -11,11 +11,11 @@ urlpatterns = patterns(
         name='all-records'),
 
     # Collections box: View a specified class member's assets & work
-    url(r'^(?P<user_name>\w[^/]*)/asset/$',
+    url(r'^(?P<record_owner_name>\w[^/]*)/asset/$',
         'your_records',
         name='your-records'),
                        
-    # User specific settings
+    # User specific settings -- primarily used to track help visibility
     url(r'^(?P<user_name>\w[^/]*)/setting/$',
         'set_user_setting',
         name='set-user-setting'),

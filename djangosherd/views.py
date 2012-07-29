@@ -15,8 +15,6 @@ from tagging.utils import calculate_cloud
 from djangohelpers.lib import allow_http
 from djangohelpers.lib import rendered_with
 
-from assetmgr.lib import annotated_by,get_active_filters
-
 from courseaffils.lib import in_course_or_404,in_course,get_public_name
 
 import simplejson
@@ -115,8 +113,6 @@ def annotation_dispatcher(request, annot_id):
         return delete_annotation(request, annot_id)
     if request.method == "POST":
         return edit_annotation(request, annot_id)
-    #if request.method == "GET":
-    #    return view_annotation(request, annot_id)
 
 @login_required
 def delete_annotation(request, annot_id):
@@ -160,43 +156,3 @@ def edit_annotation(request, annot_id):
     else:
         redirect_to = request.GET.get('next', '.')
         return HttpResponseRedirect(redirect_to)
-
-def tags_json(request):
-    assets = {}
-    tags = {}
-    rv = {'nodes':[],'links':[]}
-
-    for ann in SherdNote.objects.filter(asset__course=request.course):
-        if not assets.has_key(ann.asset_id):
-            assets[ann.asset_id] = len(rv['nodes'])
-            rv['nodes'].append({'group':2,
-                                'href':reverse('asset-view', args=[ann.asset_id]),
-                                })
-        for t in ann.tags_lazy():
-            if not t in tags:
-                tags[t] = len(rv['nodes'])
-                rv['nodes'].append({'group':1,
-                                    'href':"/?tag=%s" % (t),
-                                    })
-            rv['links'].append({'source':tags[t],
-                                'target':assets[ann.asset_id],
-                                'value':1,
-                                })
-    rv['tags'] = tags
-    return HttpResponse(simplejson.dumps(
-            rv, 
-            indent=2), mimetype='application/json')
-
-
-def annotation_json(request, annot_id):
-    ann = get_object_or_404(SherdNote,pk=annot_id)
-    rand = ''.join([choice(letters) for i in range(5)])
-  
-    data = {'assets':dict([('%s_%s' % (rand,ann.asset.pk),
-                              ann.asset.sherd_json(request))]),
-              #should correspond to same format in project.views.project_json
-              'annotations':[ann.sherd_json(request, rand, ('title','author') )],
-              'type':'annotation',
-            }
-                            
-    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')

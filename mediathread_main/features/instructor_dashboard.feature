@@ -40,7 +40,7 @@ Feature: Instructor Dashboard
         When I click the Instructor Dashboard button
         Then I am at the Instructor Dashboard page
         And there is a Manage Sources button
-        And there is a Manage Publishing Options button
+        And there is a Manage Course Settings button
         And there is a Create Composition Or Assignment button
         And there is a Create Discussion button
         And there is an Assignment Responses button

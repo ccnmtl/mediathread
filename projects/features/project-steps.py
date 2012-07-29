@@ -244,6 +244,13 @@ def there_is_a_comment_that_begins_text(step, text):
     for e in elts:
         if e.text.startswith(text):
             return
+        
+    time.sleep(1)
+
+    elts = world.firefox.find_elements_by_css_selector("div.threaded_comment_text")
+    for e in elts:
+        if e.text.startswith(text):
+            return
     
     assert False, "Could not find a comment that begins with %s" % text
     

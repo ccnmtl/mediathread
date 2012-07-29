@@ -81,7 +81,7 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {%if display.instructor or is_faculty %}
+            {% if faculty_feed.show or is_faculty %}
             <td class="" id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}

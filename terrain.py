@@ -324,11 +324,16 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
     assert column, "Unable to find a column entitled %s" % title
 
     menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    if not menu:
+        time.sleep(1)
+        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    assert menu, 'Unable to find the owner menu'
+    
     menu.find_element_by_css_selector("a.switcher-top").click()
     
     owners = menu.find_elements_by_css_selector("a.switcher-choice.owner")
     for o in owners:
-        if o.text == name:
+        if o.text.find(name) > -1:
             o.click()
             return
         
@@ -350,6 +355,202 @@ def the_owner_is_name_in_the_title_column(step, name, title):
         owner = menu.find_element_by_css_selector("a.switcher-top span.title")
         
     assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)
+    
+    
+@step(u'the collections panel has a "([^"]*)" item')
+def the_collections_panel_has_a_title_item(step, title):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            return
+    
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+@step(u'the "([^"]*)" item has a note "([^"]*)"')
+def the_title_item_has_a_note_text(step, title, text):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            note = i.find_element_by_css_selector('li.annotation-global-body span.metadata-value')
+            assert note, "Unable to find a note for the %s item" % title
+            assert note.text == text, "The item note reads %s. Expected %s" % (note.text, text)
+            return
+            
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+@step(u'the "([^"]*)" item has a tag "([^"]*)"')
+def the_title_item_has_a_tag_text(step, title, text):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            tags = i.find_elements_by_css_selector('li.annotation-global-tags span.metadata-value a.switcher-choice')
+            for t in tags:
+                if t.text == text:
+                    return 
+            assert tag, "Unable to find a tag for the %s item" % title
+            return
+            
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+    
+@step(u'the "([^"]*)" item has a selection "([^"]*)"')
+def the_title_item_has_a_selection_seltitle(step, title, seltitle):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            selection = i.find_element_by_css_selector('td.selection-meta div.metadata-container a.materialCitationLink')
+            assert selection, "Unable to find the %s selection" % seltitle
+            assert selection.text == seltitle, "Selection title is %s. Expected %s" % (selection.text, seltitle)
+            return
+    
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+@step(u'the "([^"]*)" item has no selections')
+def the_title_item_has_no_selections(step, title):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            try:
+                selections = i.find_elements_by_css_selector('td.selection-meta div.metadata-container a.materialCitationLink')
+                assert False, "Item %s has %s selections" % (title, len(selections))
+            except:
+                return 
+    
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+@step(u'the "([^"]*)" item has no notes')
+def the_title_item_has_no_notes(step, title):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            try:
+                note = i.find_element_by_css_selector('li.annotation-global-body span.metadata-value')
+                assert False, "Item %s has notes" % title
+            except:
+                return
+            
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+@step(u'the "([^"]*)" item has no tags')
+def the_title_item_has_no_tags(step, title):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            try:
+                tag = i.find_element_by_css_selector('li.annotation-global-tags span.metadata-value a.switcher-choice')
+                assert False, "Item %s has tags" % title
+            except:
+                return
+            
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+    
+@step(u'the "([^"]*)" selection has a note "([^"]*)"')
+def the_seltitle_selection_has_a_note_text(step, seltitle, text):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    selections = panel.find_elements_by_css_selector('td.selection-meta')
+    for s in selections:
+         title = s.find_element_by_css_selector('div.metadata-container a.materialCitationLink')
+         if title and title.text == seltitle:
+             note = s.find_element_by_css_selector('div.annotation-notes span.metadata-value')
+             assert note, "Unable to find a note for the %s selection" % seltitle
+             assert note.text == text, "The %s note reads %s. Expected %s" % (seltitle, note.text, text) 
+             return
+        
+    assert False, "Unable to find a selection named %s in the collections panel" % seltitle
+    
+    
+@step(u'the "([^"]*)" selection has a tag "([^"]*)"')
+def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    selections = panel.find_elements_by_css_selector('td.selection-meta')
+    for s in selections:
+         title = s.find_element_by_css_selector('div.metadata-container a.materialCitationLink')
+         if title and title.text == seltitle:
+             tags = s.find_elements_by_css_selector('div.annotation-tags span.metadata-value a.switcher-choice')
+             for t in tags:
+                 if t.text == text:
+                     return
+             assert tag, "Unable to find a tag for the %s selection" % seltitle
+             return
+        
+    assert False, "Unable to find a selection named %s in the collections panel" % seltitle
+    
+@step(u'I can filter by "([^"]*)" in the ([^"]*) column')    
+def i_can_filter_by_tag_in_the_title_column(step, tag, title):
+    column = get_column(title)
+    if not column:
+        time.sleep(1)
+        column = get_column(title)
+        
+    assert column, "Unable to find a column entitled %s" % title
+    
+    filter_menu = column.find_element_by_css_selector("div.switcher.collection-filter a.switcher-top")
+    filter_menu.click()
+    
+    tags = column.find_elements_by_css_selector("div.switcher.collection-filter a.switcher-choice.filterbytag")
+        
+    for t in tags:
+        if t.text == tag:
+            filter_menu.click()
+            return
+        
+    filter_menu.click()
+    assert False, "Unable to filter by %s tag" % tag
+    
+@step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')    
+def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
+    column = get_column(title)
+    if not column:
+        time.sleep(1)
+        column = get_column(title)
+        
+    assert column, "Unable to find a column entitled %s" % title
+    
+    filter_menu = column.find_element_by_css_selector("div.switcher.collection-filter")
+    assert filter_menu
+    filter_menu.click()
+    
+    try:
+        tags = filter_menu.find_element_by_css_selector("a.switcher-choice.filterbytag")
+        for t in tags:
+            if t.text == tag:
+                assert False, "Found %s tag" % tag
+    except:
+        # pass - there may be no tags
+        return
     
 # Local utility functions
 def get_column(title):

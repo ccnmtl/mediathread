@@ -6,8 +6,8 @@ Feature: Assignment
         Given there are no projects
         
         # Create an assignment from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         There is an open Composition panel
 

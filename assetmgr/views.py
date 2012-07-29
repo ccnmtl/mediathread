@@ -1,53 +1,49 @@
-from django.contrib.auth.decorators import login_required
-from django.core import serializers
-from django.core.urlresolvers import reverse
-from django.db import transaction
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.http import Http404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-
-from django.contrib.contenttypes.models import ContentType
-from threadedcomments import ThreadedComment
-from structuredcollaboration.models import Collaboration
-from mediathread_main.clumper import Clumper
-from mediathread_main import course_details
-from mediathread_main.models import UserSetting
-
-from django.conf import settings
-
-from django.shortcuts import get_object_or_404
-from django.db import models
-
-from random import choice
-from string import letters
-
 import operator
+from random import choice
 import re
+from string import letters
 import simplejson
 import urllib
 import urllib2
 
-
-Asset = models.get_model('assetmgr','asset')
-Source = models.get_model('assetmgr','source')
-SherdNote = models.get_model('djangosherd','sherdnote')
-DiscussionIndex = models.get_model('djangosherd','discussionindex')
-User = models.get_model('auth','user')
-from courseaffils.models import CourseAccess
-from djangosherd.views import AnnotationForm, GlobalAnnotationForm
-
-Comment = models.get_model('comments','comment')
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
+from django.core import serializers
+from django.core.urlresolvers import reverse
+from django.db import models, transaction
+from django.http import HttpResponse
+from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect
+from django.http import Http404
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 from djangohelpers.lib import rendered_with
 from djangohelpers.lib import allow_http
 
-from assetmgr.lib import filter_by,get_active_filters
-
+from assetmgr.lib import detail_asset_json
+from courseaffils.models import CourseAccess
+from djangosherd.views import create_annotation
+from djangosherd.views import delete_annotation
+from djangosherd.views import edit_annotation
+from djangosherd.views import annotation_dispatcher
+from djangosherd.views import AnnotationForm
+from djangosherd.views import GlobalAnnotationForm
+from mediathread_main.clumper import Clumper
+from mediathread_main import course_details
+from mediathread_main.models import UserSetting
+from structuredcollaboration.models import Collaboration
+from threadedcomments import ThreadedComment
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
 from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT, get_public_name
+
+Asset = models.get_model('assetmgr','asset')
+Comment = models.get_model('comments','comment')
+DiscussionIndex = models.get_model('djangosherd','discussionindex')
+Source = models.get_model('assetmgr','source')
+SherdNote = models.get_model('djangosherd','sherdnote')
+User = models.get_model('auth','user')
 
 @allow_http("GET")
 def new_asset_workspace(request):
@@ -342,14 +338,6 @@ AUTO_COURSE_SELECT[asset_workspace] = asset_workspace_courselookup
 
 
 
-from django.http import HttpResponseForbidden
-
-from djangosherd.views import create_annotation
-from djangosherd.views import delete_annotation
-from djangosherd.views import edit_annotation
-from djangosherd.views import annotation_dispatcher
-from djangosherd.views import AnnotationForm
-from djangosherd.views import GlobalAnnotationForm
 
 @login_required
 @allow_http("POST")
@@ -522,37 +510,13 @@ def source_specialauth(request,url,key):
         )
 
 def asset_json(request, asset_id):
-    asset = get_object_or_404(Asset,pk=asset_id)
-    asset_key = 'x_%s' % asset.pk
-    annotations = [{
-            'asset_key':asset_key,
-            'range1':None,
-            'range2':None,
-            'annotation':None,
-            'id':'asset-%s' % asset.pk,
-            'asset_id': asset.pk,
-            }]
+    asset = get_object_or_404(Asset, pk=asset_id)
     
-    if request.GET.has_key('annotations'):
-        # @todo: refactor this serialization into a common place.
-        def author_name(request, annotation, key):
-            if not annotation.author_id:
-                return None
-            return 'author_name',get_public_name(annotation.author, request)
-        for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            annotations.append(ann.sherd_json(request, 'x', ('title','author','tags',author_name,'body') ) )
-
-    #we make assets plural here to be compatible with the project JSON structure
-    asset_json = asset.sherd_json(request)
-    
-    ga = asset.global_annotation(request.user, False)
-    asset_json['notes'] = ga.body if ga else ""
+    asset_json = detail_asset_json(request, asset, 
+        { 'selections_visible': course_details.all_selections_are_visible(request.course) or 
+              request.course.is_faculty(request.user) })
      
-    data = {'assets': { asset_key: asset_json },
-            'annotations':annotations,
-            'type':'asset',
-            }
-    return HttpResponse(simplejson.dumps(data, indent=2),
+    return HttpResponse(simplejson.dumps(asset_json, indent=2), 
                         mimetype='application/json')
     
 def final_cut_pro_xml(request, asset_id):

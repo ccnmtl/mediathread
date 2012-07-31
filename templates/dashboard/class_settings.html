@@ -35,10 +35,10 @@
         
             <form action="{% url class-settings %}" method="POST">
                 <h4>"Publish to the World" Enabled</h4>
-                <input type="radio" name="allow_public_compositions" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
-                <input type="radio" name="allow_public_compositions" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
+                <input type="radio" name="allow_public_compositions" id="allow_public_compositions_yes" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
+                <input type="radio" name="allow_public_compositions" id="allow_public_compositions_no" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
                 <br /><br />
-                <input type="submit" value="Save Publish Options"></input>
+                <input id="allow_public_compositions_submit" type="submit" value="Save Publish Options"></input>
             </form>
             
         </li>

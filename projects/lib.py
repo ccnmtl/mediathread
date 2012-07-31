@@ -72,7 +72,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)
                             ) for ann in project.citations()
-                           if ann.title and ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted'
+                           if ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted'
                            ]),
             'annotations': [ ann.sherd_json(request, rand, ('title','author')) 
                                 for ann in project.citations()

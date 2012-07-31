@@ -530,6 +530,35 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     filter_menu.click()
     assert False, "Unable to filter by %s tag" % tag
     
+@step(u'Given publish to world is ([^"]*)')
+def given_publish_to_world_is_value(step, value):
+    if world.using_selenium:
+        world.firefox.get(django_url("/dashboard/settings/"))
+        
+        if value == "enabled":
+            elt = world.firefox.find_element_by_id('allow_public_compositions_yes')
+            elt.click();
+        else:
+            elt = world.firefox.find_element_by_id('allow_public_compositions_no')
+            elt.click();
+        
+        elt = world.firefox.find_element_by_id("allow_public_compositions_submit")
+        if elt: 
+            elt.click()
+            alert = world.firefox.switch_to_alert()
+            alert.accept()
+            
+            world.firefox.get(django_url("/"))
+            
+@step(u'Then publish to world is ([^"]*)')
+def then_publish_to_world_is_value(step, value):
+    if value == 'enabled':
+        elt = world.firefox.find_element_by_id('allow_public_compositions_yes')
+    else:
+        elt = world.firefox.find_element_by_id('allow_public_compositions_no')
+    
+    assert elt.get_attribute('checked'), "The checked attribute was %s" % elt.get_attribute("checked")                
+    
 @step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')    
 def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)

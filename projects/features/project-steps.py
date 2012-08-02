@@ -4,6 +4,7 @@ import sys, time
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.select import Select
 from mediathread.projects.models import Project
+from urlparse import urlparse
 
 @step(u'There are no projects')
 def there_are_no_projects(step):
@@ -253,4 +254,56 @@ def there_is_a_comment_that_begins_text(step, text):
             return
     
     assert False, "Could not find a comment that begins with %s" % text
+    
+@step(u'I insert "([^"]*)" into the text')
+def i_insert_title_into_the_text(step, title):
+    link = world.firefox.find_element_by_partial_link_text(title)
+    href = link.get_attribute("href")
+    
+    # strip the http://localhost:port off this href
+    pieces = urlparse(href)
+    
+    
+    insert_icon = world.firefox.find_element_by_name(pieces.path)
+    insert_icon.click()
+
+@step(u'Then I remember the "([^"]*)" link')
+def then_i_remember_the_title_link(step, title):
+    link = world.firefox.find_element_by_partial_link_text(title)
+    world.memory[title] = link.get_attribute('href')
+
+@step(u'I navigate to the "([^"]*)" link')
+def i_navigate_to_the_title_link(step, title):
+    link = world.memory[title]
+    world.firefox.get(link)
+    del(world.memory[title])
+    
+
+@step(u'I click the "([^"]*)" citation in the ([^"]*) panel')
+def i_click_the_link_citation_in_the_panelname_panel(step, link, panelname):
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panelname.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    # Click the link in the tinymc window
+    anchors = panel.find_elements_by_css_selector("a.materialCitation")
+    for a in anchors:
+        if a.text == link:
+            a.click()
+    
+@step(u'the ([^"]*) panel media window displays "([^"]*)"')
+def the_panelname_panel_media_window_displays_title(step, panelname, title):
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panelname.lower())
+    assert panel, "Cannot find the %s panel" % panelname
+    
+    media_window = panel.find_element_by_css_selector('div.asset-view-published')
+    try:
+        a = media_window.find_element_by_css_selector('div.annotation-title a')
+        assert a.text == title
+    except:
+        try:
+            a = media_window.find_element_by_css_selector('div.annotation-title')
+            assert a.text == title
+        except:
+            assert False, "Unable to find %s in the %s media window" % (title, panelname)
+        
     

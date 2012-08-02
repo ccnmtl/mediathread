@@ -41,6 +41,9 @@ def setup_browser():
     # Make the browser size at least 1024x768
     world.firefox.execute_script("window.moveTo(0, 1); window.resizeTo(1024, 768);");
     
+    # stash
+    world.memory = {}
+    
 @after.all
 def teardown_browser(total):
     world.firefox.quit()

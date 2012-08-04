@@ -276,11 +276,19 @@
                                          <table class="item-level-info">
                                             <tr>
                                             <td class="item-thumb">
-                                        {{#thumb?}}
-                                        <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
-                                        {{/thumb?}}
-                                      </td>
-                                <td class="item-meta">
+                                                {{#thumb?}}
+                                                <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
+                                                {{/thumb?}}
+                                            </td>
+                                            <td class="item-meta">
+                                                {{#annotation_count?}}
+                                                    <div class="item-annotation-count meta">
+                                                        <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
+                                                        <span class="metadata-value">selections</span>
+                                                        | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
+                                                          <span class="metadata-value">by me</span>
+                                                    </div>
+                                                {{/annotation_count?}}
                                                 {{#global_annotation}}
                                                     {{#metadata}}
                                                     <ul class="record-metadata-list">

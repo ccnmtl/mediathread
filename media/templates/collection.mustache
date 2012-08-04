@@ -141,8 +141,15 @@
                         <h4 id="asset-item-{{id}}" class="asset_title">
                             <div class="actions">
                                 {{#editable?}}
+                                    <a class="collection-choice create-asset-annotation" href="{{id}}" title="Create selection on this asset">
+                                        =+
+                                    </a>
+                                    <a class="collection-choice edit-asset" href="{{id}}" title="Edit item attributes">
+                                        <img src="/site_media/img/pencil.gif" class="edit_icon" alt="Edit item attributes"  />
+                                    </a>
                                     <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                    <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove Asset and Clips"  /></a>
+                                        <img src="/site_media/img/Trashcan.gif" class="delete_icon" alt="Remove item from your collection"  />
+                                    </a>
                                 {{/editable?}}
                             </div>
                             {{#citable?}}
@@ -165,6 +172,14 @@
                                     {{/thumb?}}
                                 </td>
                                 <td class="item-meta">
+                                    {{#annotation_count?}}
+                                        <div class="item-annotation-count meta">
+                                            <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
+                                            <span class="metadata-value">selections</span>
+                                            | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
+                                              <span class="metadata-value">by me</span>
+                                        </div>
+                                    {{/annotation_count?}}
                                     {{#global_annotation}}
                                         {{#metadata}}
                                             <ul class="record-metadata-list">
@@ -268,8 +283,12 @@
                                                             <td class="selection-trash">
                                                                 
                                                                 <div class="actions">
+                                                                    <a class="collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
+                                                                        <img src="/site_media/img/pencil.gif" class="edit_icon" alt="Edit selection attributes"  />
+                                                                    </a>
                                                                     <a class="collection-choice delete-annotation" href="{{id}}" title="Delete selection">
-                                                                    <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove Annotation from My Analysis"  /></a>
+                                                                        <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Delete selection"  />
+                                                                    </a>
                                                                 </div>
                                                                 
                                                             </td>

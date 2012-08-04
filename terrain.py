@@ -354,7 +354,7 @@ def the_owner_is_name_in_the_title_column(step, name, title):
     menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
     owner = menu.find_element_by_css_selector("a.switcher-top span.title")
     if owner.text != name:
-        time.sleep(1)
+        time.sleep(2)
         owner = menu.find_element_by_css_selector("a.switcher-top span.title")
         
     assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)
@@ -388,6 +388,27 @@ def the_title_item_has_a_note_text(step, title, text):
             return
             
     assert False, "Unable to find an item named %s in the collections panel" % title
+    
+@step(u'the "([^"]*)" item has ([^"]*) selections, ([^"]*) by me')
+def the_title_item_has_a_total_selections_count_by_me(step, title, total, count):
+    panel = get_column('collections')
+    assert panel, "Cannot find the collections panel"
+    
+    items = panel.find_elements_by_css_selector('div.record')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            item_total = i.find_element_by_css_selector('span.item-annotation-count-total')
+            assert item_total.text == total, "The item selection total is %s. Expected %s" % (item_total.text, total)
+            
+            my_count = i.find_element_by_css_selector('span.item-annotation-count-user')
+            assert my_count.text == count, "The user item selection count is %s. Expected %s" % (my_count.text, count)
+            
+            return
+            
+    assert False, "Unable to find an item named %s in the collections panel" % title
+    
+       
     
 @step(u'the "([^"]*)" item has a tag "([^"]*)"')
 def the_title_item_has_a_tag_text(step, title, text):

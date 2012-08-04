@@ -61,7 +61,10 @@ urlpatterns = patterns('',
                        
                        # Collections Space
                        (r'^asset/', include('mediathread.assetmgr.urls')),
-                       url(r'^save/$', 'assetmgr.views.add_view', name="asset-save"),
+                       
+                       # Bookmarklet Entry point
+                       # Staff custom asset entry
+                       url(r'^save/$', 'assetmgr.views.asset_create', name="asset-save"),
                        
                        # Composition Space
                        (r'^project/',include('mediathread.projects.urls')),

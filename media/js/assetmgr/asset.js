@@ -12,6 +12,7 @@
             this.active_asset = null;
             this.active_asset_annotations = null;
             this.config = config;
+            this.view_callback = config.view_callback;
             
             jQuery("#edit-item-form").submit(function () {
                 return self.saveItem();
@@ -19,69 +20,19 @@
             
             window.onbeforeunload = config.level === "item" ? this.saveItemPrompt : null;
             
-            jQuery.ajax({
-                url: '/site_media/templates/annotations.mustache?nocache=v2',
-                dataType: 'text',
-                cache: false, // Chrome && Internet Explorer has aggressive caching policies.
-                success: function (text) {
-                    MediaThread.templates.annotations = Mustache.template('annotations', text);
-                    
-                    if (config.asset_id) {
-                        // Retrieve the full asset w/annotations from storage
-                        djangosherd.storage.get({
-                                id: config.asset_id,
-                                type: 'asset',
-                                url: MediaThread.urls['asset-json'](config.asset_id, /*annotations=*/true)
-                            },
-                            false,
-                            function (asset_full) {
-                                var theAsset;
-                                for (var key in asset_full.assets) {
-                                    if (asset_full.assets.hasOwnProperty(key)) {
-                                        theAsset = asset_full.assets[key];
-                                        break;
-                                    }
-                                }
-                                self.active_asset = theAsset;
-                                self.active_asset_annotations = asset_full.annotations;
-                                
-                                // window.location.hash
-                                // #annotation_id=xxxx
-                                // #xywh=pixel:x,y,w,h (MediaFragment syntax)
-                                if (window.location.hash) {
-                                    var annotation_query = djangosherd.assetview.queryformat.find(document.location.hash);
-                                    if (annotation_query.length) {
-                                        config.xywh = annotation_query[0];
-                                    } else {
-                                        var annid = String(window.location.hash).match(/annotation_id=([.\d]+)/);
-                                        if (annid !== null) {
-                                            config.annotation_id = Number(annid[1]);
-                                        }
-                                    }
-                                }
-                                
-                                self._update(config, "asset-annotations");
-                                self._addHistory(/*replace=*/true);
-                                
-                                // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
-                                var frm = document.forms['annotation-list-filter'];
-            
-                                frm.elements.showall.checked = hs_DataRetrieve('annotation-list-filter__showall');
-                                jQuery(frm.elements.groupby).val(
-                                        hs_DataRetrieve('annotation-list-filter__group') || 'author');
-            
-                                jQuery(frm.elements.showall).change(self.showHideAnnotations);
-                                jQuery(frm.elements.groupby).change(function () {
-                                    var val = jQuery(this).val();
-                                    hs_DataStore('annotation-list-filter__group', val);
-                                    self.groupBy(val);
-                                });
-                                self.groupBy(jQuery(frm.elements.groupby).val());
-                            }
-                        );
+            if (config.fetchTemplate) {
+                jQuery.ajax({
+                    url: '/site_media/templates/annotations.mustache?nocache=v2',
+                    dataType: 'text',
+                    cache: false, // Chrome && Internet Explorer has aggressive caching policies.
+                    success: function (text) {
+                        MediaThread.templates.annotations = Mustache.template('annotations', text);
+                        self.initialUpdate(config);
                     }
-                }
-            });
+                });
+            } else {
+                this.initialUpdate(config);
+            }
             
             // setup url rewriting for HTML5 && HTML4 browsers
             jQuery(window).bind("popstate", function (event) {
@@ -127,6 +78,63 @@
             });
             return this;
         };
+        
+        this.initialUpdate = function (config) {
+            if (config.asset_id) {
+                // Retrieve the full asset w/annotations from storage
+                djangosherd.storage.get({
+                        id: config.asset_id,
+                        type: 'asset',
+                        url: MediaThread.urls['asset-json'](config.asset_id, /*annotations=*/true)
+                    },
+                    false,
+                    function (asset_full) {
+                        var theAsset;
+                        for (var key in asset_full.assets) {
+                            if (asset_full.assets.hasOwnProperty(key)) {
+                                theAsset = asset_full.assets[key];
+                                break;
+                            }
+                        }
+                        self.active_asset = theAsset;
+                        self.active_asset_annotations = asset_full.annotations;
+                        
+                        // window.location.hash
+                        // #annotation_id=xxxx
+                        // #xywh=pixel:x,y,w,h (MediaFragment syntax)
+                        if (window.location.hash) {
+                            var annotation_query = djangosherd.assetview.queryformat.find(document.location.hash);
+                            if (annotation_query.length) {
+                                config.xywh = annotation_query[0];
+                            } else {
+                                var annid = String(window.location.hash).match(/annotation_id=([.\d]+)/);
+                                if (annid !== null) {
+                                    config.annotation_id = Number(annid[1]);
+                                }
+                            }
+                        }
+                        
+                        self._update(config, "asset-annotations");
+                        self._addHistory(/*replace=*/true);
+                        
+                        // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
+                        var frm = document.forms['annotation-list-filter'];
+    
+                        frm.elements.showall.checked = hs_DataRetrieve('annotation-list-filter__showall');
+                        jQuery(frm.elements.groupby).val(
+                                hs_DataRetrieve('annotation-list-filter__group') || 'author');
+    
+                        jQuery(frm.elements.showall).change(self.showHideAnnotations);
+                        jQuery(frm.elements.groupby).change(function () {
+                            var val = jQuery(this).val();
+                            hs_DataStore('annotation-list-filter__group', val);
+                            self.groupBy(val);
+                        });
+                        self.groupBy(jQuery(frm.elements.groupby).val());
+                    }
+                );
+            }
+        }
 
         this.showHideAnnotations = function () {
             var show = document.forms['annotation-list-filter'].elements.showall.checked;
@@ -507,7 +515,7 @@
             if (tag_field) {//is this null?
                 var tags = tag_field.value.split(',');
                 for (var i = 0; i < tags.length; i++) {
-                    if (tags[i].length > 25) {
+                    if (tags[i].trim().length > 25) {
                         alert('You are trying to add a tag with greater than the maximum 25 character-limit. Be sure to separate your tags with commas. Also, tags are best used as single words that you would tag other assets with. Try using the Notes field for longer expressions.');
                         return;
                     }
@@ -521,8 +529,8 @@
             
             // Save the results up on the server
             var url =  frm.elements['annotation-id'] ?
-                url = MediaThread.urls['edit-annotation'](self.active_asset.id, frm.elements['annotation-id'].value) :
-                url = MediaThread.urls['create-annotation'](self.active_asset.id);
+                url = MediaThread.urls['annotation-edit'](self.active_asset.id, frm.elements['annotation-id'].value) :
+                url = MediaThread.urls['annotation-create'](self.active_asset.id);
                 
             jQuery.ajax({
                 type: 'POST',
@@ -658,7 +666,7 @@
                         // /#default initialization. no annotation defined.
                         // don't need to set state on clipstrip/form as there is no state
                         djangosherd.assetview.setState();
-                        djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
+                        djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'browse' });
                     }
                     
                     if (context.annotation && context.annotation.editing) {
@@ -667,7 +675,15 @@
                         jQuery("#annotations-organized").show();
                     }
                     
+                    Mustache.update("asset-sources", context);
+                    Mustache.update("asset-references", context);
+                    Mustache.update("asset-view-header", context);
+                    
                     jQuery(elt).fadeIn("slow");
+                    
+                    if (self.view_callback) {
+                        self.view_callback();
+                    }
                     
                     if (self.config.edit_state === "new") {
                         self.config.edit_state = "";

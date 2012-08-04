@@ -660,6 +660,10 @@ div.button-form form, div.button-form.inline form{
 
 /* SLIDING CONTENT */
 
+.large {
+    width: 620px !important;
+}
+
 .medium {
     width: 475px !important;
 }
@@ -790,12 +794,12 @@ div.pantab.closed {
 
 
 table.panel-subcontainer {
-    margin: .5em .25em .5em .5em;
+    margin: .5em 0 .5em .5em;
     padding: 0;
     border: none;
     min-height: 200px;
     vertical-align: top;
-    width: 98%;
+    width: 99%;
 }
 
 table.panel-subcontainer tbody {
@@ -2153,7 +2157,8 @@ div.panel-column-stump {
     margin-top: -3px;
 }
 
-.asset_title.type-collaboration {
+.asset_title.type-collaboration,
+.asset_title.type-discussion {
     background-image: url(../img/icons/item_discussion.png);
 }
 
@@ -2366,10 +2371,8 @@ div.archive p {
 }
 
 #annotations-organized ul {
-
     list-style-type: none;
-    margin: 4px 0 4px 28px;
-
+    margin: 4px 0 4px 4px;
 }
 
 .annotation-group h4 {
@@ -2916,6 +2919,7 @@ input.videoplay{
 .meta label,
 .metadata-label {
     font-weight: bold;
+    text-transform: capitalize;
 }
 
 #instructor .column-container {
@@ -3484,10 +3488,11 @@ margin-left: 269px;
 }
 
 /* Gallery View */
+
 .gallery-item {
     float: left;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-left: 5px;
     padding: 10px;
     width: 200px;
     border: 1px #ccc solid;
@@ -3514,74 +3519,45 @@ margin-left: 269px;
 }
 
 .gallery-item div.asset-thumb-title {
-    position: absolute;
-    bottom: 0;
     margin-bottom: 5px;
-    margin-top: 5px;
     text-align: left;
+    width: 200px;
+    overflow: hidden;
 }
 
-.gallery-item div.asset-thumb-metadata div.asset-thumb-title {
-    color: white;
-    margin-left: 10px;
-    
-}
-
-.gallery-item div.asset-thumb-metadata {
+.gallery-item div.meta {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    opacity: 0.75;
-    -moz-opacity: 0.75;
-    filter: alpha(opacity=75);
-    z-index: 2000;    
-    
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-bottomright: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-.gallery-item div.asset-thumb-metadata h6 {
-    text-decoration: none;
-    font-style: normal;
+    bottom: 2px;
     text-align: left;
-    margin: 5px;
-    padding: 5px;
-    background: white;
-    width: 90px;
-    text-align: center;
-    position: relative;
-    top: 30%;
-    left: 55px;
-        
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-bottomright: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
 }
 
-.gallery-item div.asset-thumb-metadata h6:hover {
-    background-color: yellow;
-    cursor: pointer;
+div#asset-view-header div {
+    float: left;
 }
+
+div.asset-view-title {
+    margin: 10px;
+    width: 80%;
+}
+
+div.asset-view-title h1 {
+    font-size: 150%;
+    font-weight: bold;
+}
+
+div.asset-view-container div.asset-view-published {
+    margin-left: 10px;
+    min-width: 475px;
+    width: 68%;
+    float: left;
+}
+
+div.asset-view-container div.asset-view-details {
+    min-width: 250px;
+    width: 30%;
+    float: left;
+}
+
+
+
 

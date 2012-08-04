@@ -24,6 +24,7 @@
             {% if not mock %}
                 AnnotationList.init({ 
                      "asset_id":{{asset.id}}
+                     , "fetchTemplate": true
                      ,"level": "{{request.GET.level}}"
                      ,"edit_state": "{{request.GET.edit_state}}"
                    {% if global_annotation %}
@@ -164,18 +165,6 @@
                                 </ul>
                             {%endif%}{#end if discussions #}
                         </div><!--end id="discussions" -->
-
-                        <div id="discussion" class="sub-control">
-                            {% load comments %}
-                                {# {% if comments.10 %}  {% render_comment_form for asset %}{% endif %} #}
-                            {% for comment in comments %}
-                                <p>
-                                <strong>{% public_name for comment.user %}</strong> at {{comment.submit_date|date}}
-                                <br/>
-                                {{comment.comment}}
-                                </p>
-                            {% endfor %}
-                        </div>
                     </div><!-- title="Class Activity" -->
                 {% endif %}<!--end if not mock-->
                 

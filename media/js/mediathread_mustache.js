@@ -27,14 +27,18 @@
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');
             },
-            'asset-workspace': function () {
-                return '/asset/';
+            'asset-workspace': function (asset_id, annotation_id) {
+                var base = '/asset/';
+                if (asset_id) {
+                    base += asset_id + '/';
+                    if (annotation_id) {
+                        base += 'annotations/' + annotation_id + '/';
+                    }
+                }
+                return base;
             },
             'asset-delete': function (username, asset_id) {
                 return '/yourspace/' + username + '/asset/' + asset_id + '/?delete';
-            },
-            'annotation-delete': function (asset_id, annotation_id) {
-                return '/asset/' + asset_id + '/annotations/' + annotation_id + '/?delete';
             },
             'asset-view': function (asset_id) {
                 return '/asset/' + asset_id + '/';
@@ -45,13 +49,16 @@
             'assets': function (username, with_annotations) {
                 return '/annotations/' + (username ? username + '/' : '');
             },
-            'create-annotation': function (asset_id) {
+            'annotation-create': function (asset_id) {
                 // a.k.a. server-side annotation-containers
-                return '/asset/' + asset_id + '/annotations/';
+                return 'create/asset/' + asset_id + '/annotations/';
             },
-            'edit-annotation': function (asset_id, annotation_id) {
+            'annotation-edit': function (asset_id, annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview
-                return '/asset/' + asset_id + '/annotations/' + annotation_id + '/';
+                return '/asset/save/' + asset_id + '/annotations/' + annotation_id + '/';
+            },
+            'annotation-delete': function (asset_id, annotation_id) {
+                return '/asset/delete/' + asset_id + '/annotations/' + annotation_id;
             },
             'project-view': function (project_id) {
                 return '/project/view/' + project_id + '/';
@@ -92,7 +99,10 @@
             }
             return value;
         };
-        
+        Mustache.Renderer.prototype.filters_supported.upper = function (name, context, args) {
+            var value = String(this.get_object(name, context, this.context) || '');
+            return value.toUpperCase();
+        };        
         Mustache.Renderer.prototype.filters_supported['default'] = function (name, context, args) {
             var lookup = this.get_object(name, context, this.context);
             if (lookup) {

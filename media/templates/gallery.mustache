@@ -1,6 +1,7 @@
 {{#>>media_gallery}}
 <div class="media_gallery">
     <div class="media-column">
+        <div class="expand" style="display: none">&lt;&gt;</div>
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
@@ -136,6 +137,9 @@
                 {{/assets}} 
                 {{#assets}}
                     <div class="gallery-item record-{{primary_type}} gallery-item-{{id}}">
+                        <div class="asset-thumb-title">
+                            <b><a href="{{local_url}}">{{title}}</b></a>
+                        </div>
                         <div class="asset-thumb">
                             {{^thumbable}}
                                 {{^thumb}}
@@ -146,18 +150,15 @@
                                 {{/thumb?}}
                             {{/thumbable}}
                         </div>
-                        <div class="asset-thumb-title">
-                            <b>{{title?ellipses(25)}}</b><br />
-                            5 annotations
-                        </div>
-                        <div class="asset-thumb-metadata" style="display: none">
-                            <h6><a href="{{local_url}}">Edit</a></h6>
-                            <h6>Delete</h6>
-                            <div class="asset-thumb-title">
-                                <b>{{title?ellipses(25)}}</b><br />
-                                5 annotations
+                        
+                        {{#annotation_count?}}
+                            <div class="item-annotation-count meta">
+                                <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
+                                <span class="metadata-value">selections</span>
+                                | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
+                                  <span class="metadata-value">by me</span>
                             </div>
-                        </div>
+                        {{/annotation_count?}}
                     </div>
                 {{/assets}}
                   

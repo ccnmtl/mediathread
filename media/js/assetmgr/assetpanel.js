@@ -6,6 +6,10 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     self.parentContainer = parent;
     self.space_owner = space_owner;
     
+    djangosherd.storage.json_update(panel.context);
+    
+    jQuery("div.asset-view-details").tabs();
+    
     jQuery(window).resize(function () {
         self.resize();
     });
@@ -37,68 +41,93 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'create_asset_thumbs': true,
         'space_owner': self.space_owner,
         'view_callback': function () {
-            jQuery(self.el).find(".asset-thumb-metadata h6 a").bind("click", { self: self }, self.onClickAssetTitle);
-            jQuery(self.el).find("div.gallery-item").bind("mouseenter", { self: self }, self.onMouseEnterAsset);
-            jQuery(self.el).find("div.gallery-item").bind("mouseleave", { self: self }, self.onMouseLeaveAsset);
+            jQuery(self.el).find(".asset-thumb-title a").bind("click", { self: self }, self.onClickAssetTitle);
+            jQuery(self.el).find(".expand").bind("click", { self: self }, self.onToggleFullCollection);
             
             var container = jQuery(self.el).find('div.asset-table')[0];
             jQuery(container).masonry({
                 itemSelector : '.gallery-item',
                 columnWidth: 25
             });
+            
+            if (self.panel.current_asset) {
+                jQuery(self.el).find('div.expand').show();
+            }
+        }
+    });
+    
+    if (self.panel.current_asset) {
+        self.showAsset(self.panel.current_asset, self.panel.current_annotation);
+    }
+};
+
+AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
+    var self = this;
+
+    jQuery(self.el).find('td.panel-container.collection').removeClass('fluid').addClass('fixed');
+    jQuery(self.el).find('td.panel-container.asset').show();
+    jQuery(self.el).find('td.panel-container.asset-details').show();
+    jQuery(self.el).find('div.expand').show();
+    
+    self.citationView.openCitationById(null, asset_id, annotation_id);
+    
+    jQuery(self.el).find("a.filterbyclasstag").unbind();
+
+    // Setup the edit view
+    AnnotationList.init({
+        "asset_id": asset_id,
+        "annotation_id": annotation_id,
+        "view_callback": function () {
+            jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
         }
     });
 };
-
 
 AssetPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
     
     visible -= jQuery("#footer").height(); // padding
-    
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 23) + "px");
-    
+
     // Resize the collections box, subtracting its header elements
-    visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
-    jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
+    var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").outerHeight() - jQuery(self.el).find('div.expand').height();
+    jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + 35 + "px");
+    
+    visible = visible - jQuery(self.el).find('div.asset-view-header').height() - 20;
+    jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
+    jQuery(self.el).find('div.asset-view-details').css('height', (visible) + "px");
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {
-    try {
-
-        var self = evt.data.self;
-        
-        jQuery(self.el).find('td.panel-container.collection').removeClass('fluid').addClass('fixed');
-        jQuery(self.el).find('td.panel-container.asset').show();
-        jQuery(self.el).find('td.panel-container.asset-details').show();
-        
-        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-        self.citationView.openCitation(srcElement);
-        
-        var bits = srcElement.href.split('/');
-        
-        // Setup the edit view
-        AnnotationList.init({
-            "asset_id": bits[bits.length - 2],
-            "level": "item",
-            //,"edit_state": "{{request.GET.edit_state}}"
-        });
-    } catch (Exception) {}
+    var self = evt.data.self;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    
+    var bits = srcElement.href.split('/');
+    self.showAsset(bits[bits.length - 2]);
         
     return false;
 };
 
-AssetPanelHandler.prototype.onMouseEnterAsset = function () {
-    var metadata = jQuery(this).children('.asset-thumb-metadata')[0];
-    jQuery(metadata).fadeIn('fast');
+AssetPanelHandler.prototype.onFilterByClassTag = function (evt) {
+    var self = evt.data.self;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var bits = srcElement.href.split("/");
+    
+    self.collectionList.filterByClassTag(bits[bits.length - 1]);
+    
+    return false;
 };
 
-AssetPanelHandler.prototype.onMouseLeaveAsset = function () {
-    var metadata = jQuery(this).children('.asset-thumb-metadata')[0];
-    jQuery(metadata).fadeOut('fast', function () {
-        jQuery(metadata).hide();
-    });
+AssetPanelHandler.prototype.onToggleFullCollection = function (evt) {
+    var self = evt.data.self;
+    
+    jQuery(self.el).find('td.panel-container.collection').toggleClass('fixed fluid', 100);
+    jQuery(self.el).find('td.panel-container.asset').toggle();
+    jQuery(self.el).find('td.panel-container.asset-details').toggle();
+    
+    jQuery(window).trigger("resize");
+    return false;
 };
 
 AssetPanelHandler.prototype.onClosePanel = function (isSubpanel) {

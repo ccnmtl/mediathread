@@ -171,6 +171,10 @@ class Asset(models.Model):
 
         try:
             metadata = simplejson.loads(self.metadata_blob)
+            
+            # convert to an array for mustache
+            metadata = [{ 'key': k, 'value': v } for k,v in metadata.items()]   
+
         except ValueError:
             metadata = None
             
@@ -180,16 +184,18 @@ class Asset(models.Model):
         elif self.primary.is_audio():
             media_type_label = 'audio'
             
+        tags = Tag.objects.usage_for_queryset(self.sherdnote_set.all(), counts=True)
+        tag_last = len(tags) - 1
         return {
-            'sources':sources,
-            'primary_type':self.primary.label,
+            'sources': sources,
+            'primary_type': self.primary.label,
             'title': strip_tags(self.title), 
-            'metadata':metadata,
-            'local_url':self.get_absolute_url(),
-            'id':self.pk,
+            'metadata': metadata,
+            'local_url': self.get_absolute_url(),
+            'id': self.pk,
             'media_type_label': media_type_label,
-            'tags': [ { 'name': tag.name } for tag in self.tags() ]
-            }
+            'tags': [ { 'name': tag.name, 'last': idx == tag_last, 'count': tag.count } for idx, tag in enumerate(tags) ]
+       }
         
 class Source(models.Model):
     asset = models.ForeignKey(Asset)

@@ -60,10 +60,6 @@ CollectionList.prototype.selectOwner = function (username) {
     false,
     function (the_records) {
         self.updateAssets(the_records);
-        
-        jQuery(self.parent).find(".project-view").hide();
-        jQuery(self.parent).find(".asset-table").show();
-        jQuery(self.parent).find("div.collection-filter").show();
     });
     
     return false;
@@ -136,6 +132,20 @@ CollectionList.prototype.filterByTag = function (tag) {
     return false;
 };
 
+CollectionList.prototype.filterByClassTag = function (tag) {
+    var self = this;
+    djangosherd.storage.get({
+        type: 'asset',
+        url: MediaThread.urls['all-space'](tag, null, self.citable)
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
+    
+    return false;
+};
+
 CollectionList.prototype.getShowingAllItems = function (json) {
     return !json.hasOwnProperty('space_owner');
 };
@@ -159,7 +169,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         var target_parent = jQuery(self.parent).find(".gallery-item-" + asset.id)[0];
         
         if (!asset.thumbable) {
-            jQuery(target_parent).css({ height: '180px' });
+            jQuery(target_parent).css({ height: '200px' });
         } else {
             var view;
             switch (asset.type) {
@@ -174,7 +184,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
             
             // scale the height
             var width = jQuery(target_parent).width();
-            var height = (width / asset.width * asset.height + 30) + 'px';
+            var height = (width / asset.width * asset.height + 65) + 'px';
             jQuery(target_parent).css({ height: height });
             
             var obj_div = document.createElement('div');

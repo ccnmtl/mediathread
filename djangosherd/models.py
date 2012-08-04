@@ -293,7 +293,7 @@ class SherdNote(Annotation):
         try:
             if self.is_null():
                 return self.asset.get_absolute_url()
-            return reverse('annotation-form', None, 
+            return reverse('annotation-view', None, 
                            (self.asset.pk, self.pk))
         except:
             return ''
@@ -397,6 +397,15 @@ class DiscussionIndex(models.Model):
                                                        self.comment.id)
         elif self.collaboration.content_object:
             return self.collaboration.content_object.get_absolute_url()
+        
+    def get_type_label(self):
+        if self.comment and self.comment.threadedcomment:
+            return 'discussion'
+        
+        elif self.collaboration.content_object:
+            return 'project'
+        
+        return ''
 
     @classmethod
     def with_permission(cls, request,query):

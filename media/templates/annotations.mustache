@@ -9,19 +9,23 @@
 {{#>>asset-annotations}}
 <div id="asset-details-annotations">
     {{#asset-current}}
+        <!-- If no annotation or if annotation viewing (not adding/editing/copying) -->    
+        <input class="media newselection-button" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="Create Selection"/>
+        
         <div id="asset-current">
-            <h2><a href="#" class="asset-title-link insert" onclick="return AnnotationList.showAsset()">{{title}}</a></h2>
+            <h2>{{title}}</h2>
             {{#thumb?}}
                 <img src="{{thumb}}" />
             {{/thumb?}}
             <div class="meta">
-            {{#tags?}}<div><span class="metadata-label">Tags:</span> <span class="metadata-value">{{#tags}}{{name}}, {{/tags}}{{/tags?}}</span></div>
-            {{#notes?}}<div><span class="metadata-label">Notes:</span> <span class="metadata-value">{{notes}}{{/notes?}}</span></div>
+                {{#tags?}}<div><span class="metadata-label">Tags:</span> <span class="metadata-value">{{#tags}}{{name}}{{^last}}, {{/last}} {{/tags}}{{/tags?}}</span></div>
+                {{#notes?}}<div><span class="metadata-label">Notes:</span> <span class="metadata-value">{{notes}}{{/notes?}}</span></div>
             </div>
             <br />
             <br />
         </div>
     {{/asset-current}}
+    <h2>Selections</h2>
     {{#>>annotation-current}}
         <div id="asset-details-annotations-current">
             {{#annotation}}
@@ -40,7 +44,7 @@
     
                 <!-- Browse -->
                 {{^editing}}
-                    <h2>Viewing Selection
+                    <h3><h3>{{metadata.title?default(-Untitled-)}}</h3>
                         <div class="actions">
                             
                            {{#editable?}}
@@ -53,13 +57,12 @@
                                </a>
                            {{/editable}}
                        </div>
-                    </h2>
+                    </h3>
                     <div id="annotation-body">
-                        <h3>{{metadata.title?default(-Untitled-)}}</h3>
                         <div class="meta">
                         <span id="clipform-display" name="clipform-display"></span>
                         <div><label for="">Author:</label> <a href="{{home-space?url(metadata.author.username)}}">{{metadata.author_name}}</a></div>
-                        {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}, {{/metadata.tags}}</div>{{/metadata.tags?}}
+                        {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}</div>{{/metadata.tags?}}
                         {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
                         </div>
                     </div>
@@ -89,7 +92,7 @@
                         <br /><br />
 
                         <label for="annotation-tags">Tags:</label> 
-                        <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{#metadata.tags}}{{name}}, {{/metadata.tags}}"/>
+                        <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}"/>
                                                     <span class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</span>
                         
                         <label for="annotation-body">Note:</label>
@@ -112,21 +115,16 @@
                     </form>
                 {{/editing?}}
             {{/annotation}}
-            
-            <!-- If no annotation or if annotation viewing (not adding/editing/copying) -->    
-            {{#showNewAnnotation?}}
-                <input class="media newselection-button" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="Create Selection"/>
-            {{/showNewAnnotation?}}
         </div>
     {{/>>annotation-current}}
     
     {{#>>annotations-organized}}
         <div id="annotations-organized">
-            <h1>Selections</h1> 
-            <h2><form name="annotation-list-filter">
+            <h3><form name="annotation-list-filter">
                     Group by: <select name="groupby"><option>author</option><option>tag</option></select>
                     <input type="checkbox" name="showall" />Show all
-            </form></h2>
+            </form>
+            </h3>
           
           {{#>>annotation-list}}
           <ul id="asset-details-annotations-list">
@@ -155,5 +153,54 @@
           {{/>>annotation-list}}
         </div>
     {{/>>annotations-organized}}
+       
+    {{#>>asset-sources}}
+        <div id="asset-sources">
+            {{#asset-current}}
+                <h2>Original Source</h2>
+                <div class="meta">
+                    <span class="metadata-label">Item Source:</span> 
+                    <span class="metadata-value">
+                        <a href="{{sources.url.url}}">{{sources.url.url?ellipses(50)}}</a>
+                    </span>
+                </div>
+                
+                {{#sources.xmeml?}}
+                    <h2 class="metadata-title">Final Cut Pro</h2>
+                    <dl>
+                        <dd>
+                            <a onclick="return AnnotationList.showExportDialog(this, {{id}});" href="#">Export clips to XML</a>
+                            <div class="export-finalcutpro" style="display: none" title="Export Final Cut Pro XML">
+                                <div class="selection-list" title="Selections">
+                                    <form name="export-finalcutpro" method="POST" action="/asset/xmeml/{{id}}/" 
+                                        onsubmit="return AnnotationList.onExportSubmit();">
+                                        <div>Order the selections by clicking and dragging. Click "Export" when you're ready.</div>
+                                        <br />
+                                        <ul class="selections"></ul>
+                                    </form>    
+                                </div>
+                            </div>  
+                        </dd>
+                    </dl>    
+                {{/sources.xmeml?}}
+                
+                {{#metadata}}
+                    <div class="meta">
+                        <span class="metadata-label">{{key}}:</span>
+                        <span class="metadata-value">{{value}}</span>
+                    </div>
+                {{/metadata}}
+            {{/asset-current}}
+        </div>
+        
+    {{/>>asset-sources}}
+    
+    {{#>>asset-references}}
+        {{#asset-current}}
+            <div id="asset-references">
+                <h2>References</h2>
+            </div>
+        {{/asset-current}}
+    {{/>>asset-references}} 
 </div>
 {{/>>asset-annotations}}

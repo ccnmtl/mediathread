@@ -32,7 +32,9 @@
         jQuery(document).ready(function () {
             PanelManager.init({ 
                 'container': 'sliding-content-container',
-                'url': MediaThread.urls['asset-workspace']()
+                'url': MediaThread.urls['asset-workspace'](
+                     {% if asset_id %}{{asset_id}}{% endif %}
+                     {% if asset_id and annotation_id %}, {{annotation_id}}{% endif %})
             });
         });
     </script>

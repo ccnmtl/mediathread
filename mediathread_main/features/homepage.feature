@@ -43,6 +43,8 @@ Feature: Homepage
         And the "MAAP Award Reception" item has a note "instructor one item note"
         And the "MAAP Award Reception" item has a tag "instructor_one"
         And the "MAAP Award Reception" item has a selection "Our esteemed leaders"
+        And the "MAAP Award Reception" item has <total_selections> selections, 1 by me
+        
         And the "Our esteemed leaders" selection has a note "instructor one selection note"
         And the "Our esteemed leaders" selection has a tag "instructor_one_selection"
         
@@ -56,11 +58,13 @@ Feature: Homepage
         And the "MAAP Award Reception" item has a note "student one item note"
         And the "MAAP Award Reception" item has a tag "student_one_item"
         And the "MAAP Award Reception" item has a selection "The Award"
+        And the "MAAP Award Reception" item has <total_selections> selections, 1 by me
         And the "The Award" selection has a note "student one selection note"
         And the "The Award" selection has a tag "student_one_selection"
         
         And I can filter by "student_one_selection" in the Analysis column
         And I can filter by "student_one_item" in the Analysis column
+        
         
         # All Class Members
         When I select "All Class Members" as the owner in the Analysis column
@@ -69,6 +73,7 @@ Feature: Homepage
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
+        And the "MAAP Award Reception" item has <total_selections> selections, 1 by me
         
         Then the collections panel has a "Mediathread: Introduction" item
         And the "Mediathread: Introduction" item has no notes
@@ -90,12 +95,11 @@ Feature: Homepage
         Finished using Selenium
         
       Examples:
-        | user_name           |  instructor_one_relationship  |  student_one_relationship | selection_visibility |
-        | test_instructor     |  Me                           |  Student One              | Yes                  |
-        | test_student_one    |  Instructor One               |  Me                       | Yes                  |
-        | test_student_two    |  Instructor One               |  Student One              | Yes                  |
-        | test_instructor     |  Me                           |  Student One              | No                   |
-        
+        | user_name           |  instructor_one_relationship  |  student_one_relationship | selection_visibility | total_selections |
+        | test_instructor     |  Me                           |  Student One              | Yes                  | 3                |
+        | test_student_one    |  Instructor One               |  Me                       | Yes                  | 3                |
+        | test_student_two    |  Instructor One               |  Student One              | Yes                  | 3                |
+        | test_instructor     |  Me                           |  Student One              | No                   | 3                |        
         
    Scenario: 4. Homepage - Collections Box - Limited Selection Visibility 
         Using selenium
@@ -115,6 +119,7 @@ Feature: Homepage
         And the "MAAP Award Reception" item has a note "instructor one item note"
         And the "MAAP Award Reception" item has a tag "instructor_one"
         And the "MAAP Award Reception" item has a selection "Our esteemed leaders"
+        And the "MAAP Award Reception" item has 2 selections, 1 by me
         And the "Our esteemed leaders" selection has a note "instructor one selection note"
         And the "Our esteemed leaders" selection has a tag "instructor_one_selection"
         
@@ -128,6 +133,7 @@ Feature: Homepage
         And the "MAAP Award Reception" item has a note "student one item note"
         And the "MAAP Award Reception" item has a tag "student_one_item"
         And the "MAAP Award Reception" item has a selection "The Award"
+        And the "MAAP Award Reception" item has 2 selections, 1 by me
         And the "The Award" selection has a note "student one selection note"
         And the "The Award" selection has a tag "student_one_selection"
         
@@ -141,6 +147,7 @@ Feature: Homepage
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
+        And the "MAAP Award Reception" item has 2 selections, 1 by me
         And I cannot filter by "student_two_selection" in the Analysis column
         And I cannot filter by "student_two_item" in the Analysis column
         
@@ -152,6 +159,7 @@ Feature: Homepage
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
+        And the "MAAP Award Reception" item has 2 selections, 1 by me
         
         Then the collections panel has a "Mediathread: Introduction" item
         And the "Mediathread: Introduction" item has no notes

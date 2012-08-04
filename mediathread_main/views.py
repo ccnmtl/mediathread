@@ -12,7 +12,8 @@ from djangohelpers.lib import rendered_with, allow_http
 
 from clumper import Clumper
 
-from assetmgr.lib import annotated_by, get_active_filters, homepage_asset_json
+from assetmgr.lib import annotated_by, get_active_filters
+from assetmgr.views import homepage_asset_json
 
 from courseaffils.lib import get_public_name, in_course_or_404, users_in_course
 from courseaffils.models import Course
@@ -314,7 +315,7 @@ def get_records(request, record_owner, projects, assignments, assets):
     is_faculty = course.is_faculty(logged_in_user)
     
     # Does the course allow viewing other user selections?
-    selections_visible = course_details.all_selections_are_visible(course) or \
+    owner_selections_are_visible = course_details.all_selections_are_visible(course) or \
         viewing_my_records or viewing_faculty_records or is_faculty
         
     # Filter the assets 
@@ -329,7 +330,8 @@ def get_records(request, record_owner, projects, assignments, assets):
     # Spew out json for the assets 
     asset_json = []
     options = {
-        'selections_visible': request.GET.has_key('annotations') and selections_visible,
+        'owner_selections_are_visible': request.GET.has_key('annotations') and owner_selections_are_visible,
+        'all_selections_are_visible': course_details.all_selections_are_visible(course) or is_faculty,
         'can_edit': viewing_my_records,
         'citable': citable
     }
@@ -345,13 +347,13 @@ def get_records(request, record_owner, projects, assignments, assets):
     # Tags
     tags = []
     if record_owner:
-        if selections_visible:
+        if owner_selections_are_visible:
             # Tags for selected user
             tags = Tag.objects.usage_for_queryset(
                 record_owner.sherdnote_set.filter(asset__course=course),
                 counts=True)
     else:
-        if selections_visible:
+        if owner_selections_are_visible:
             # Tags for the whole class
             tags = Tag.objects.usage_for_queryset(
                 SherdNote.objects.filter(asset__course=course),

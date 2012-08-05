@@ -429,9 +429,12 @@ def detail_asset_json(request, asset_id, options):
     asset_json = asset.sherd_json(request)
     asset_key = 'x_%s' % asset.pk
     
+    
     ga = asset.global_annotation(request.user, False)
-    asset_json['notes'] = ga.body if ga else ""
-    asset_json['user_tags'] = tag_json(asset.filter_tags_by_users([request.user]))
+    if ga:
+        asset_json['global_annotation_id'] = ga.id
+        asset_json['notes'] = ga.body
+        asset_json['user_tags'] = tag_json(ga.tags_split())
     
     if not selections_visible:
         owners = [ request.user ]

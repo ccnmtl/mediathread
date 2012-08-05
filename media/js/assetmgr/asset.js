@@ -14,11 +14,7 @@
             this.config = config;
             this.view_callback = config.view_callback;
             
-            jQuery("#edit-item-form").submit(function () {
-                return self.saveItem();
-            });
-            
-            window.onbeforeunload = config.level === "item" ? this.saveItemPrompt : null;
+            window.onbeforeunload = this.saveItemPrompt;
             
             if (config.fetchTemplate) {
                 jQuery.ajax({
@@ -114,9 +110,10 @@
                             }
                         }
                         
-                        self._update(config, "asset-annotations");
+                        self._update(config, "asset-view-details");
                         self._addHistory(/*replace=*/true);
                         
+                        /**
                         // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                         var frm = document.forms['annotation-list-filter'];
     
@@ -130,11 +127,11 @@
                             hs_DataStore('annotation-list-filter__group', val);
                             self.groupBy(val);
                         });
-                        self.groupBy(jQuery(frm.elements.groupby).val());
+                        self.groupBy(jQuery(frm.elements.groupby).val());                        **/
                     }
                 );
             }
-        }
+        };
 
         this.showHideAnnotations = function () {
             var show = document.forms['annotation-list-filter'].elements.showall.checked;
@@ -471,17 +468,61 @@
             return false;
         };
         
+        this.blurItemField = function (field) {
+            setTimeout(function () {
+                var saveButton = jQuery(field).nextAll("input[type=submit]")[0];
+                var disabled = jQuery(saveButton).attr("disabled");
+                if (typeof disabled === 'undefined' || disabled === false) {
+                    jQuery(field).prevAll().show();
+                    jQuery(field).hide();
+                    jQuery(field).nextAll().hide();
+                }
+            }, 150);
+        };
+        
+        this.editItemField = function (field) {
+            jQuery(field).hide();
+            jQuery(field).nextAll().show();
+            jQuery(field).next().focus();
+        };
+        
         ///Item Save
-        this.saveItem = function () {
-            var frm = document.forms['edit-item-form'];
-            if (frm.elements['annotation-tags'].value === "" && frm.elements['annotation-body'].value === "") {
-                alert("Please specify tags and notes before saving.");
-                frm.elements['annotation-tags'].focus();
-                return false;
-            } else {
-                window.onbeforeunload = null;
-                return true;
-            }
+        this.saveItem = function (saveButton) {
+            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+            
+            var frm = jQuery(saveButton).parents('form')[0];
+            
+            jQuery.ajax({
+                type: 'POST',
+                url: frm.action,
+                data: jQuery(frm).serializeArray(),
+                dataType: 'json',
+                error: function () {
+                    jQuery(saveButton).removeAttr("disabled").attr("value", "Saving").removeClass("saving");
+                    alert('There was an error saving your project.');
+                },
+                success: function (json, textStatus, xhr) {
+                    setTimeout(function () {
+                        jQuery(saveButton).removeAttr("disabled");
+                        jQuery(saveButton).removeClass("saving");
+                        jQuery(saveButton).attr("value", "Save");
+                        
+                        // transfer input value to the read-only div display
+                        var input = jQuery(saveButton).prevAll('input, textarea')[0];
+                        var value = jQuery(input).val();
+                         
+                        var display = jQuery(saveButton).prevAll('div.metadata-value')[0];
+                        jQuery(display).html(value);
+                        
+                        // The blur function should take care of hiding the fields.
+                        jQuery(input).hide();
+                        jQuery(input).nextAll().hide();
+                        jQuery(input).prevAll().show();
+                    }, 1000);
+                }
+            });
+            
+            return true;
         };
         
         ///Item Save Prompt
@@ -649,6 +690,11 @@
                     });
                     jQuery('.annotation-active').removeClass('annotation-active');
                     
+                    Mustache.update("asset-view-header", context);
+                    //Mustache.update("asset-global-annotation", context);
+                    //Mustache.update("asset-sources", context);
+                    //Mustache.update("asset-references", context);
+                    
                     if (self.active_annotation) {
                         djangosherd.assetview.setState(self.active_annotation.annotation);
                         
@@ -675,15 +721,11 @@
                         jQuery("#annotations-organized").show();
                     }
                     
-                    Mustache.update("asset-sources", context);
-                    Mustache.update("asset-references", context);
-                    Mustache.update("asset-view-header", context);
-                    
-                    jQuery(elt).fadeIn("slow");
-                    
                     if (self.view_callback) {
                         self.view_callback();
                     }
+                    
+                    jQuery(elt).fadeIn("slow");
                     
                     if (self.config.edit_state === "new") {
                         self.config.edit_state = "";

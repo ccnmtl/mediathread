@@ -150,15 +150,8 @@ def asset_create(request):
             # @todo verify the above comment.
             raise AssertionError("no primary source provided")
 
-    # if we got here from an attempt to annotate the mock asset
-    # we'll save that annotation now that the asset exists
-    if request.POST.has_key('save-global-annotation'):
-        # if the user is saving a global annotation
-        # we need to create it first and then edit it
-        global_annotation = asset.global_annotation(user)
-        annotationview(request, asset.pk, global_annotation.pk)
-    elif request.POST.has_key('save-clip-annotation'):
-        create_annotations_container(request, asset.pk)
+    # create a global annotation
+    global_annotation = asset.global_annotation(user)
 
     asset_url = reverse('asset-view', args=[asset.id])
     

@@ -2547,8 +2547,11 @@ ul#projects {
 }
 
 ul#projects li {
-padding: 10px;
-margin-bottom: 10px;
+	background-color: #fff;
+	padding: 10px;
+	margin-bottom: 10px;
+	border-radius: 5px;
+	border: solid 1px #ccc;
 
 }
 
@@ -2938,11 +2941,6 @@ input.videoplay{
     font-size: 98%;
 }
 
-.media-column div.column-contents {
-    padding-top: 0px;
-}
-
-
 #projects .column-container {
     width: 330px;
     margin: 5px 0px 5px 2px;
@@ -3046,17 +3044,19 @@ div#assignment-materials
     overflow-x: hidden;
     box-shadow: none;
     border: none;
-    background-color: #d5cec2;
+    background-color: #fff;
+    border-radius: 5px;
+    border: solid 1px #ccc;
 
 }
 
 div#materials h4,
 div#composition-materials h4,
 div#assignment-materials h4 {
-    background-color: #6F6F6F;
-    color: #DEDEDE;
+    background-color: #fff;
+    color: #000;
     font-weight: normal;
-    margin: 0 0 0.5em;
+    margin: .5em .25em 0.25em;
     padding: 0.3em 0;
     text-align: left;
 }
@@ -3069,12 +3069,13 @@ div#materials h4 a,
 div#composition-materials h4 a,
 div#assignment-materials h4 a
 {
-    color: #fff;
+    font-weight: bold;
     padding-right: 4px;
     margin-left: 30px;
     display: block;
 
 }
+
 
 div#materials h4 a.asset-title-link.insert,
 div#composition-materials h4 a.asset-title-link.insert,
@@ -3126,6 +3127,13 @@ table#home-columns td#instructor h2 {
     
 }
 
+td#projects .column-contents,
+td.media-column .column-contents {
+	background-color: #EDEDED;
+}
+td.media-column .column-contents {
+	padding: 0px;
+}
 div.column-contents {
     background-color: #ffffff;
     -moz-box-shadow: 0px 5px 5px #ccc;
@@ -3161,7 +3169,7 @@ table.item-level-info td {
 }
 
 table.item-level-info td.item-meta {
-
+	padding: 0 5px 0 5px;
     width: 100%;
 }
 
@@ -3190,8 +3198,6 @@ table.selection-level-info td {
     border: none;
     vertical-align: top;
     padding: 5px 0px;
-    width: 0;
-
 }
 
 table.selection-level-info td.selection-inserter {
@@ -3234,7 +3240,6 @@ input.media.newselection-button {
 ul.record-metadata-list {
     list-style-type: none;
     margin:0;
-    padding: 0 5px;
     
  }
 

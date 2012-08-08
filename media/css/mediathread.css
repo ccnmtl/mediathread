@@ -2470,9 +2470,6 @@ margin: 0 8px 0 0;
     max-height:100px;
 }
 
-.record-metadata {
-  padding: 0;
-}
 
 /* styles for hs.js */
 .hs-show { display: block; }
@@ -2906,17 +2903,23 @@ input.videoplay{
 
 }
 
-.meta,
-.record-metadata {
-    font-size:90%;
+.meta
+{
+	font-size:90%;
     color: #333;
     line-height: 18px;
     font-weight: normal;
     margin: 0 5px;
 }
 
-.record-metadata {
-    padding: 0 .5em 4px 0px;
+.record-metadata 
+{
+	font-size:90%;
+    color: #333;
+    line-height: 18px;
+    font-weight: normal;
+    margin: .5em 1em .75em 1em;
+    border-radius: 3px;
 }
 
 .meta label,
@@ -3188,7 +3191,6 @@ table.selection-level-info {
 
     border: none;
     width: 100%;
-    margin: 5px 0 2px 5px;
     border-collapse: collapse;
     background-color:#f7f7f7;
 }

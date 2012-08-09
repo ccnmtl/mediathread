@@ -47,41 +47,48 @@
                                     {{#>>asset-global-annotation}}
                                         <div id="asset-global-annotation">
                                             {{#asset-current}}
-                                                <form id="edit-global-annotation-form" method="post" 
-                                                    action="/asset/save/{{id}}/annotations/{{global_annotation_id}}/">
+                                                <h1>Item
+                                                    <div class="actions">
+                                                        <input type="image" title="Edit Item" 
+                                                           onclick="return AnnotationList.editItem(this);" 
+                                                           alt="Edit" src="/site_media/img/icons/meth_edit.png" />
+                                                    </div>                                                
+                                                </h1>
+                                                
+                                                <div class="metadata">
+                                                    <div class="metadata-label">My Tags:</div> 
+                                                    <div class="metadata-value">
+                                                        {{#user_tags}}
+                                                            {{name}}{{^last}}, {{/last}}
+                                                        {{/user_tags}}
+                                                    </div>
+                                                </div>
+                                                <div class="metadata">
+                                                    <div class="metadata-label">My Notes:</div>
+                                                    <div class="metadata-value">
+                                                        {{notes}}
+                                                    </div>
+                                                </div>
+                                                
+                                                <form id="edit-global-annotation-form" method="post"
+                                                    action="/asset/save/{{id}}/annotations/{{global_annotation_id}}/"
+                                                    style="display: none">
                                                     <div class="metadata">
-                                                        <div class="metadata-label">My Item Tags:</div> 
-                                                        <div class="metadata-value" onclick="AnnotationList.editItemField(this);">
-                                                            {{#user_tags}}
-                                                                {{name}}{{^last}}, {{/last}}
-                                                            {{/user_tags}}
-                                                            {{^user_tags}}
-                                                                &lt;click to edit tags&gt;
-                                                            {{/user_tags}}
-                                                        </div>
+                                                        <div class="metadata-label">Tags:</div> 
                                                         <input type="text" name="annotation-tags" id="id_annotation-tags" 
                                                             value="{{#user_tags}}{{name}}{{^last}}, {{/last}}{{/user_tags}}"
-                                                            onblur="AnnotationList.blurItemField(this)" style="display: none" />
-                                                        <span style="display: none" class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</span>
+                                                        <span class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</span>
                                                         <input type="submit" name="submit_tags" value="Save" 
-                                                            style="display: none" onclick="return AnnotationList.saveItem(this)" />
+                                                            onclick="return AnnotationList.saveItem(this)" />
                                                         <div class="visualclear"></div>
                                                     </div>
                                                     <div class="metadata">
-                                                        <div class="metadata-label">My Item Notes:</div>
-                                                        <div class="metadata-value" onclick="AnnotationList.editItemField(this);">
-                                                            {{notes}}
-                                                            {{^notes}}
-                                                                &lt;click to edit notes&gt;
-                                                            {{/notes}}
-                                                        </div>
-                                                        <textarea style="display: none" id="id_annotation-body" rows="7" cols="51" 
-                                                            onblur="AnnotationList.blurItemField(this)" 
+                                                        <div class="metadata-label">Notes:</div>
+                                                        <textarea id="id_annotation-body" rows="7" cols="51"
                                                             name="annotation-body" value="{{notes}}">{{notes}}</textarea>
-                                                        <input type="submit" name="submit_notes" value="Save" 
-                                                            style="display: none" onclick="return AnnotationList.saveItem(this)" />
                                                     </div>
-                                                    
+                                                    <input type="submit" name="submit_notes" value="Save" 
+                                                       onclick="return AnnotationList.saveItem(this)" />
                                                 </form>
                                             {{/asset-current}}
                                         </div>
@@ -90,13 +97,118 @@
                                     <p>
                                         {{#>>asset-annotations}}
                                             <div id="asset-details-annotations">
+                                                {{#>>annotation-current}}
+                                                <div id="asset-details-annotations-current">
+                                                    {{#annotation}}                                            
+                                                        <!-- Browse -->
+                                                        {{^editing}}
+                                                            <div id="asset-details-annotations-current-browse" style="display: none">
+                                                                <h5>
+                                                                    <div class="actions">
+                                                                       {{#editable?}}
+                                                                           <input type="image" title="Edit Selection" 
+                                                                               onclick="return AnnotationList.editAnnotation(this);" 
+                                                                               alt="Edit" src="/site_media/img/icons/meth_edit.png" />
+                                                                       {{/editable?}}
+                                                
+                                                                       {{^editable}}
+                                                                           <a href="" onclick="return AnnotationList.copyAnnotation(this);">
+                                                                               <img title="Copy Selection" src="/site_media/img/selection_copy.gif">
+                                                                           </a>
+                                                                       {{/editable}}
+                                                                   </div>                          
+                                                                    
+                                                                </h5>
+                                                                <div id="annotation-body">
+                                                                    <div class="meta">
+                                                                    <span id="clipform-display" name="clipform-display"></span>
+                                                                    <div><label for="">Author:</label> <a href="{{home-space?url(metadata.author.username)}}">{{metadata.author_name}}</a></div>
+                                                                    {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}</div>{{/metadata.tags?}}
+                                                                    {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {{/editing}}
+                                                        
+                                                        <!-- Add, Edit, Copy -->
+                                                        {{#editing?}}
+                                                            <div id="asset-details-annotations-current-edit" style="display: none">
+                                                                <!-- Used by clipform. @todo figure out how this -->
+                                                                <!-- all fits in with the new storage system  -->
+                                                                <!-- For both videos and images. -->
+                                                                <div id="original-annotation" class="annotation-data" 
+                                                                     data-begin="{{range1}}" 
+                                                                     data-end="{{range2}}"
+                                                                     {{#annotation_data?}}
+                                                                        data-annotation="{{annotation_data}}"
+                                                                     {{/annotation_data?}}
+                                                                     {{^annotation_data}}
+                                                                        data-annotation="{}"
+                                                                     {{/annotation_data}}> 
+                                                                </div>
+                                                                
+                                                                <h1>{{#id?}}Editing Selection{{/id?}}{{^id}}Adding Selection{{/id}}
+                                                                    <div class="actions">
+                                                                        {{#showCancel?}}
+                                                                        <input type="image" title="Cancel Changes" id="btnCancel" src="/site_media/img/icons/meth_close_icon.png" alt="X" onclick="javascript:AnnotationList.cancelAnnotation()"/>
+                                                                        {{/showCancel?}}
+                                                                   </div>
+                                                                </h1>
+                                                                
+                                                                <form name="edit-annotation-form" onsubmit="return false;">
+                                                                    <div class="asset-annotator">
+                                                                        <div class="sherd-instructions">
+                                                                        <b>Instructions</b>
+                                                                        </div>
+                                                                     
+                                                                        <div id="clipform-display"></div>
+                                                                    </div>
+                                                                    <div id="annotation-body">
+                                                                    <label for="annotation-title">Title:</label>
+                                                                    <input style="width: 75%" type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/>
+                                                                    <br /><br />
+                                            
+                                                                    <label for="annotation-tags">Tags:</label> 
+                                                                    <input style="width: 75%" type="text" id="id_annotation-tags" name="annotation-tags" value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}"/>
+                                                                                                <span class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</span>
+                                                                    
+                                                                    <label for="annotation-body">Note:</label>
+                                                                    <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
+                                                                    
+                                                                    <input type="hidden" name="annotation-range1" value="{{range1}}" />
+                                                                    <input type="hidden" name="annotation-range2" value="{{range2}}" />
+                                                                    <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
+                                                                    
+                                                                    <input class="media" type="button" name="Save" value="Save" onclick="javascript:AnnotationList.saveAnnotation(this)" />
+                                                                    
+                                                                    {{#showCancel?}}
+                                                                    <input class="media secondary" type="button" name="Cancel" value="Cancel" onclick="javascript:AnnotationList.cancelAnnotation()" />
+                                                                    {{/showCancel?}}
+                                                                    
+                                                                    {{#id?}} <!-- Editing existing annotation -->
+                                                                    <input type="hidden" name="annotation-id" value="{{id}}" />
+                                                                    {{/id?}}
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        {{/editing?}}
+                                                    {{/annotation}}
+                                                </div>
+                                                {{/>>annotation-current}}                                                        
+                                            
+                                            
                                                 {{#>>annotations-organized}}
                                                     <div id="annotations-organized">
-                                                        <h3>Selections</h3>
+                                                        <h1>Selections</h1>
                                                         <div class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
                                                             <form name="annotation-list-filter">
-                                                                Group by: <select name="groupby"><option>author</option><option>tag</option></select>
-                                                                <input type="checkbox" name="showall" />Show all
+                                                                <div id="annotation-list-filter-groupby">
+                                                                    Group by: <select name="groupby"><option>author</option><option>tag</option></select>
+                                                                </div>
+                                                                <div id="annotation-list-filter-showall">
+                                                                    <input type="checkbox" name="showall" />
+                                                                    Show all
+                                                                </div>
                                                             </form>
                                                         </div>
                                                       
@@ -114,8 +226,10 @@
                                                                             {{^annotation}}annotation-whole{{/annotation}}
                                                                             {{#active_annotation?}}annotation-active{{/active_annotation?}}" 
                                                                             data-id="{{id}}">
-                                                                   <a class="{{#editable}}annotation-editable{{/editable}}" href="javascript:AnnotationList.showAnnotation({{id}})">{{metadata.title?default(-Untitled-)}}</a>
+                                                                   <a class="{{#editable}}annotation-editable{{/editable}}" 
+                                                                       onclick="javascript:AnnotationList.showAnnotation(this.parentNode, {{id}})">{{metadata.title?default(-Untitled-)}}</a>
                                                                    {{^annotation}}(whole item){{/annotation}}
+                                                                   <div class="browse"></div>
                                                                  </li>
                                                                {{/>>annotation-listitem}}
                                                              {{/annotations}}

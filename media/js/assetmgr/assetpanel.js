@@ -51,6 +51,8 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             if (self.panel.current_asset) {
                 jQuery(self.el).find('div.expand').show();
             }
+            
+            jQuery(window).trigger("resize");
         }
     });
     
@@ -96,6 +98,8 @@ AssetPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
     jQuery(self.el).find('div.asset-view-details').css('height', (visible) + "px");
+    
+    jQuery(self.el).find('div#asset-details-annotations').css('height', (visible - 210) + "px");
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {

@@ -2214,7 +2214,7 @@ div.panel-column-stump {
 
 .actions {
     float: right;
-    margin:-2px
+    margin:-8px
 }
 
 .actions a {
@@ -2405,8 +2405,8 @@ div.archive p {
       affecting the image.
      */
     background-image:url("../img/icons/item_clip.png");
-        background-repeat: no-repeat; 
-        background-position:left center;
+    background-repeat: no-repeat; 
+    background-position:left top;
     padding: 2px 5px 2px 25px; 
     margin-bottom: 2px;
 }
@@ -2809,10 +2809,6 @@ a.bookmarklet {
     background-color:#fff100;
 }
 
-.asset-annotator {
-    margin: 10px 10px 0 10px;
-}
-
 .sherd-instructions {
     color: black;
     display:block;
@@ -2872,21 +2868,18 @@ body.old-assetwindow #asset-details-annotations-list {
 }
 
 #asset-details-annotations-list {
-    overflow-y:auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 85%;
 }
 
 
 #asset-details-annotations-current h3 {
-    margin: .5em 0 .5em;
+    margin: 0 0 .5em;
 }
 
 #asset-details-annotations-current h2 {
     margin-bottom: 0;
-}
-
-#asset-details-annotations-current {
-    background-color: #fcfb97;
-    
 }
 
 /** Intermame CSS **/
@@ -3276,17 +3269,6 @@ ul#projects .createnew-button {
     margin: 5px;
 }
 
-
-/*Selection Styles*/
-
-#annotation-body,
-div#annotation-body,
-div>#annotation-body {
-    margin: 0 0 10px;
-    padding: 5px 15px 10px;
-}
-
-
 /*Instructor Dashboard*/
 
 #dashboard-container {
@@ -3565,33 +3547,24 @@ div.asset-view-container div.asset-view-details {
     float: left;
 }
 
+div.asset-view-container div.asset-view-details h1 {
+    font-weight: bold;
+}
+
 div#asset-global-annotation,
 div#annotations-organized {
     border: 1px solid #AAA;
     padding: 10px;
 }
 
+div#annotations-organized {
+    overflow-y: auto;
+    height: 100%;
+}
+
 div#asset-global-annotation div.metadata-value {
     padding: 5px;
     border: 1px solid white;
-}
-
-div#asset-global-annotation div.metadata-value:hover {
-    border: 1px solid #C89345;
-    background-color: #F9F6F1;
-    padding: 5px;    
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-bottomright: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
 }
 
 div#asset-global-annotation div.metadata {
@@ -3614,7 +3587,23 @@ div#asset-global-annotation input[type="submit"].saving {
 }
 
 div#asset-sources {
-    width: 300px;
+    width: 290px;
     overflow: hidden;
 }
+
+form[name="annotation-list-filter"] {
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+#annotation-list-filter-showall {
+    float: right;
+    padding: 3px 2px 0 0;
+}
+
+#annotation-list-filter-groupby {
+    float: left;
+    padding-left: 2px;
+}
+
 

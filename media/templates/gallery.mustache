@@ -6,12 +6,9 @@
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
-                <span class="switcher-prefix">
-                    Owner: 
-                </span>
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="3"></span>
-                    <span class="title">{{{selected_label}}}</span>
+                    <span class="title">Owner: {{{selected_label?ellipses(30)}}}</span>
                 </a>
                 
                 <ul class="switcher-options" style="left: -51px">

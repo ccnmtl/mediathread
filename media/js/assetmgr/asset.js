@@ -199,7 +199,7 @@
                         return tags;
                     } else {
                         //127 ensures that None is last
-                        return [String.fromCharCode(127) + '(None)'];
+                        return [String.fromCharCode(127) + 'No Tags'];
                     }
                 };
                 break;
@@ -277,8 +277,11 @@
                 Mustache.update('annotation-list', context, {
                     pre: function (elt) { jQuery(elt).hide(); },
                     post: function (elt) {
+                        self._updateCurrent();
                         jQuery(elt).fadeIn("slow");
                         jQuery('li.annotation-listitem', elt).each(self.decorateLink);
+                        
+                        
                     }
                 });
             });
@@ -384,7 +387,8 @@
             return true;
         };
         
-        this.showAnnotation = function (annotation_id) {
+        this.showAnnotation = function (list_item, annotation_id) {
+            self.list_item = list_item;
             self._update({ 'annotation_id': annotation_id }, "annotation-current");
             self._addHistory(/*replace=*/false);
         };
@@ -479,10 +483,8 @@
             }, 150);
         };
         
-        this.editItemField = function (field) {
-            jQuery(field).hide();
-            jQuery(field).nextAll().show();
-            jQuery(field).next().focus();
+        this.editItemField = function () {
+            jQuery(self.el).find("#edit-item-annotation-form").show();
         };
         
         ///Item Save
@@ -724,6 +726,8 @@
                         self.view_callback();
                     }
                     
+                    self._updateCurrent();
+                    
                     jQuery(elt).fadeIn("slow");
                     
                     if (self.config.edit_state === "new") {
@@ -732,6 +736,26 @@
                     }
                 }
             });
+        };
+        
+        this._updateCurrent = function () {
+            if (self.active_annotation) {
+                var inplace = self.list_item || jQuery("li.annotation-listitem-" + self.active_annotation.id)[0];
+                if (inplace) {
+                    jQuery('div.browse').hide();
+                    
+                    var current = jQuery("#asset-details-annotations-current-browse")[0];
+                    jQuery(current).fadeOut();
+                    
+                    var browse = jQuery(inplace).children('div.browse')[0];
+                    jQuery(browse).html(current);
+                    jQuery(browse).show();
+                    
+                    jQuery(current).fadeIn();
+                    
+                    self.list_item = null;
+                }
+            }            
         };
     })();
 

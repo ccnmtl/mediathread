@@ -62,7 +62,6 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
 AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
     var self = this;
 
-    jQuery(self.el).find("div.accordion").hide().accordion("destroy");
     jQuery(self.el).find('td.panel-container.collection').removeClass('fluid').addClass('fixed');
     jQuery(self.el).find('td.panel-container.asset').show();
     jQuery(self.el).find('td.panel-container.asset-details').show();
@@ -78,7 +77,7 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
         "annotation_id": annotation_id,
         "view_callback": function () {
             jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
-            jQuery(self.el).find("div.accordion").accordion({ autoHeight: false });
+            jQuery(self.el).find("div.tabs").tabs();
         }
     });
 };
@@ -97,9 +96,6 @@ AssetPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
     jQuery(self.el).find('div.asset-view-details').css('height', (visible) + "px");
-    jQuery(self.el).find('div#asset-accordion').css('height', (visible) + "px");
-    
-    jQuery("div.accordion").accordion("resize");
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {

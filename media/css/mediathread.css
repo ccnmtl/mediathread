@@ -2365,9 +2365,12 @@ div.archive p {
 
 #annotations-organized {
 
-    background-color: #dedede;
+/**    background-color: #dedede; **/
     padding-bottom: 1px;
+}
 
+#annotations-organized h3 {
+    margin: 0 0 0.7em 0;
 }
 
 #annotations-organized ul {
@@ -2376,8 +2379,6 @@ div.archive p {
 }
 
 .annotation-group h4 {
-
-    background-color: #CCCCCC;
     height: 22px;
     line-height: 22px;
     margin: 0;
@@ -3557,6 +3558,12 @@ div.asset-view-container div.asset-view-details {
     float: left;
 }
 
+div#asset-global-annotation,
+div#annotations-organized {
+    border: 1px solid #AAA;
+    padding: 10px;
+}
+
 div#asset-global-annotation div.metadata-value {
     padding: 5px;
     border: 1px solid white;
@@ -3597,5 +3604,10 @@ div#asset-global-annotation input[type="submit"] {
 div#asset-global-annotation input[type="submit"].saving {
     text-align: left;
     background: url("/site_media/img/ajax-loader.gif") no-repeat 95% 50%;
+}
+
+div#asset-sources {
+    width: 300px;
+    overflow: hidden;
 }
 

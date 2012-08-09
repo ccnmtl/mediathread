@@ -113,7 +113,6 @@
                         self._update(config, "asset-view-details");
                         self._addHistory(/*replace=*/true);
                         
-                        /**
                         // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                         var frm = document.forms['annotation-list-filter'];
     
@@ -127,7 +126,7 @@
                             hs_DataStore('annotation-list-filter__group', val);
                             self.groupBy(val);
                         });
-                        self.groupBy(jQuery(frm.elements.groupby).val());                        **/
+                        self.groupBy(jQuery(frm.elements.groupby).val());
                     }
                 );
             }

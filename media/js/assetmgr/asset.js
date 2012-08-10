@@ -5,8 +5,6 @@
        
         this.init = function (config) {
             this.layers = {}; //should we really store layers here?
-            this.grouping = null;
-            this.highlight_layer = null;
 
             this.active_annotation = null;
             this.active_asset = null;
@@ -16,19 +14,7 @@
             
             window.onbeforeunload = this.saveItemPrompt;
             
-            if (config.fetchTemplate) {
-                jQuery.ajax({
-                    url: '/site_media/templates/annotations.mustache?nocache=v2',
-                    dataType: 'text',
-                    cache: false, // Chrome && Internet Explorer has aggressive caching policies.
-                    success: function (text) {
-                        MediaThread.templates.annotations = Mustache.template('annotations', text);
-                        self.initialUpdate(config);
-                    }
-                });
-            } else {
-                this.initialUpdate(config);
-            }
+            this.refresh(config);
             
             // setup url rewriting for HTML5 && HTML4 browsers
             jQuery(window).bind("popstate", function (event) {
@@ -75,8 +61,11 @@
             return this;
         };
         
-        this.initialUpdate = function (config) {
+        this.refresh = function (config) {
             if (config.asset_id) {
+                this.grouping = null;
+                this.highlight_layer = null;
+                
                 // Retrieve the full asset w/annotations from storage
                 djangosherd.storage.get({
                         id: config.asset_id,
@@ -85,6 +74,8 @@
                     },
                     false,
                     function (asset_full) {
+                        self.asset_full_json = asset_full;
+                        
                         var theAsset;
                         for (var key in asset_full.assets) {
                             if (asset_full.assets.hasOwnProperty(key)) {
@@ -214,76 +205,95 @@
         };
         
         this.updateAnnotationList = function () {
-            djangosherd.storage.get({
-                id: self.active_asset.id,
-                type: 'asset',
-                url: MediaThread.urls['asset-json'](self.active_asset.id, /*annotations=*/true)
-            },
-            false,
-            function (asset_full) {
-                var grouping = self.grouping;
-                var context = {'annotation_list': []};
-                var cats = {};
-                var user_listing = false;
-                self.layers[grouping].removeAll();
-                DjangoSherd_Colors.reset(grouping);
-                for (var i = 0; i < asset_full.annotations.length; i++) {
-                    var ann = asset_full.annotations[i];
-                    ///TODO: WILL BREAK when we ajax this
-                    if (self.active_annotation) {
-                        ann.active_annotation = (ann.id === self.active_annotation.id);
-                    }
-                    if (ann.metadata) {
-                        var titles = self.layers[grouping].color_by(ann);
-                        for (var j = 0; j < titles.length; j++) {
-                            var title = titles[j];
-                            var color = DjangoSherd_Colors.get(title);
-                            /// add the annotation onto the layer in the right color
-                            if (ann.annotation) {
-                                self.layers[grouping].add(
-                                    ann.annotation, { 'id': ann.id,
-                                                     'color': color
-                                                    }
-                                );
-                            }
-                            ///..and setup the category for the AnnotationList
-                            if (!cats[title]) {
-                                cats[title] = {'title': title,
-                                               'color': color,
-                                               'annotations': []
-                                              };
-                                if (title && title === MediaThread.user_full_name) {
-                                    user_listing = title;
-                                } else {
-                                    context.annotation_list.push(title);
-                                }
-                            }
-                            cats[title].annotations.push(ann);
+            var asset_full = self.asset_full_json;
+            var grouping = self.grouping;
+            var context = {'annotation_list': []};
+            var cats = {};
+            var user_listing = false;
+            self.layers[grouping].removeAll();
+            DjangoSherd_Colors.reset(grouping);
+            for (var i = 0; i < asset_full.annotations.length; i++) {
+                var ann = asset_full.annotations[i];
+                ///TODO: WILL BREAK when we ajax this
+                if (self.active_annotation) {
+                    ann.active_annotation = (ann.id === self.active_annotation.id);
+                }
+                if (ann.metadata) {
+                    var titles = self.layers[grouping].color_by(ann);
+                    for (var j = 0; j < titles.length; j++) {
+                        var title = titles[j];
+                        var color = DjangoSherd_Colors.get(title);
+                        /// add the annotation onto the layer in the right color
+                        if (ann.annotation) {
+                            self.layers[grouping].add(
+                                ann.annotation, { 'id': ann.id,
+                                                 'color': color
+                                                }
+                            );
                         }
+                        ///..and setup the category for the AnnotationList
+                        if (!cats[title]) {
+                            cats[title] = {'title': title,
+                                           'color': color,
+                                           'annotations': []
+                                          };
+                            if (title && title === MediaThread.user_full_name) {
+                                user_listing = title;
+                            } else {
+                                context.annotation_list.push(title);
+                            }
+                        }
+                        cats[title].annotations.push(ann);
                     }
                 }
-                
-                ///sort and build the annotation_list
-                ///TODO: if by_author, then sort the owner to the top.
-                context.annotation_list.sort();
-                if (user_listing) {
-                    context.annotation_list.unshift(user_listing);
-                }
-                
-                for (var k = 0; k < context.annotation_list.length; k++) {
-                    context.annotation_list[k] = { 'category': cats[context.annotation_list[k]] };
-                }
-                
-                Mustache.update('annotation-list', context, {
-                    pre: function (elt) { jQuery(elt).hide(); },
-                    post: function (elt) {
-                        self._updateCurrent();
-                        jQuery(elt).fadeIn("slow");
-                        jQuery('li.annotation-listitem', elt).each(self.decorateLink);
+            }
+            
+            ///sort and build the annotation_list
+            ///TODO: if by_author, then sort the owner to the top.
+            context.annotation_list.sort();
+            if (user_listing) {
+                context.annotation_list.unshift(user_listing);
+            }
+            
+            for (var k = 0; k < context.annotation_list.length; k++) {
+                context.annotation_list[k] = { 'category': cats[context.annotation_list[k]] };
+            }
+            
+            
+            Mustache.update('annotation-list', context, {
+                pre: function (elt) {
+                    jQuery(elt).hide();
+                    jQuery("div.accordion").accordion("destroy");
+                },
+                post: function (elt) {
+                    var options = {
+                        autoHeight: false,
+                        collapsible: true,
+                        active: false
+                    };
+                    
+                    jQuery(elt).show();
+                    jQuery('li.annotation-listitem', elt).each(self.decorateLink);
+                    
+                    // active the current annotation if it exists
+                    jQuery("div.accordion").accordion(options);
+                    if (self.active_annotation) {
+                        var active = jQuery("#accordion-" + self.active_annotation.id)[0];
+                        var parent = jQuery(active).parents("div.accordion");
+                        jQuery(parent).accordion("activate", active);
                         
+                        jQuery(active).find('input.annotation-listitem-icon').show();
                         
+                        setTimeout(function () {
+                            var list = jQuery(active).offsetParent()[0];
+                            jQuery(list).scrollTop(jQuery(list).scrollTop() + jQuery(active).position().top);
+                        }, 200);
                     }
-                });
+                    
+                    // Wait to hook up the changestart to prevent default 'showAnnotation'
+                    // behavior on initial activation
+                    jQuery("div.accordion").accordion({ 'changestart': self.showAnnotation });
+                }
             });
         };
         
@@ -387,22 +397,126 @@
             return true;
         };
         
-        this.showAnnotation = function (list_item, annotation_id) {
-            self.list_item = list_item;
-            self._update({ 'annotation_id': annotation_id }, "annotation-current");
-            self._addHistory(/*replace=*/false);
-        };
-        
         this.showAsset = function () {
             self._update({ 'level': 'item', 'asset_id': self.active_asset.id }, "annotation-current");
             self._addHistory(/*replace=*/false);
         };
 
+        ///Item Edit -- global annotation
+        this.editItem = function () {
+            var form = jQuery("#edit-global-annotation-form");
+            jQuery(form).find("div.metadata-value").hide();
+            jQuery(form).find(".metadata-value-edit").fadeIn();
+            jQuery("#annotations-organized").fadeOut();
+        };
+        
+        this.cancelItem = function () {
+            var form = jQuery("#edit-global-annotation-form");
+            jQuery(form).find(".metadata-value-edit").hide();
+            jQuery(form).find("div.metadata-value").show();
+            
+            jQuery("#annotations-organized").fadeIn();
+            
+            return false;
+        };
+        
+        ///Item Save -- global annotation
+        this.saveItem = function (saveButton) {
+            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+            
+            var frm = jQuery(saveButton).parents('form')[0];
+            
+            jQuery.ajax({
+                type: 'POST',
+                url: frm.action,
+                data: jQuery(frm).serializeArray(),
+                dataType: 'json',
+                error: function () {
+                    jQuery(saveButton).removeAttr("disabled").attr("value", "Saving").removeClass("saving");
+                    alert('There was an error saving your project.');
+                },
+                success: function (json, textStatus, xhr) {
+                    setTimeout(function () {
+                        jQuery(saveButton).removeAttr("disabled");
+                        jQuery(saveButton).removeClass("saving");
+                        jQuery(saveButton).attr("value", "Save");
+                        
+                        // transfer input value to the read-only div display
+                        var form = jQuery("#edit-global-annotation-form");
+                        
+                        var elt = jQuery(form).find("div.global-annotation-tags");
+                        jQuery(elt).html(jQuery(form).find("#id_annotation-tags").val());
+                        
+                        elt = jQuery(form).find("div.global-annotation-notes");
+                        jQuery(elt).html(jQuery(form).find("#id_annotation-body").val());
+                        
+                        jQuery(form).find("div.metadata-value").show();
+                        jQuery(form).find(".metadata-value-edit").hide();
+                        
+                        jQuery("#annotations-organized").fadeIn();
+
+                    }, 1000);
+                }
+            });
+            
+            return false;
+        };
+        
+        ///Item Save Prompt
+        this.saveItemPrompt = function () {
+            var frm = document.forms['edit-item-form'];
+            if (frm.elements['annotation-tags'].value === "" && frm.elements['annotation-body'].value === "") {
+                return "Add tags and notes to place this item in your collection.";
+            }
+        };
+        
+        this.showAnnotation = function (event, ui) {
+            if (ui.newHeader.length > 0) {
+                jQuery('input.annotation-listitem-icon').hide();
+                
+                jQuery(ui.newHeader).find('input.annotation-listitem-icon').show();
+                
+                var new_annotation_id = jQuery(ui.newHeader).data("id");
+                self._update({ 'annotation_id': new_annotation_id }, "annotation-current");
+                self._addHistory(/*replace=*/false);
+                
+                var group = jQuery(ui.newHeader).parents('li.annotation-group')[0];
+                jQuery(group).siblings().find('div.accordion').accordion("activate", false);
+
+                setTimeout(function () {
+                    var list = jQuery(ui.newHeader).offsetParent()[0];
+                    jQuery(list).scrollTop(jQuery(list).scrollTop() + jQuery(ui.newHeader).position().top - 10);
+                }, 200);
+
+            }
+        };
+
+        this.deleteAnnotation = function (event, record, annotation_id) {
+            event.stopPropagation();
+            
+            var self = this;
+            if (annotation_id === self.active_annotation.id) {
+                var url = MediaThread.urls['annotation-delete'](self.active_asset.id, annotation_id);
+                ajaxDelete(null, null,
+                        { 'href': url, 'success': this.deleteAnnotationComplete, 'dom': jQuery('#accordion-' + annotation_id + ' a') });
+            }
+            return false;
+        };
+        
+        this.deleteAnnotationComplete = function () {
+            self.refresh({ asset_id: self.active_asset.id });
+        };
         
         this.cancelAnnotation = function () {
             var annotation_id = self.active_annotation ? self.active_annotation.id : null;
-            self._update({ 'annotation_id' : annotation_id }, "annotation-current");
-            jQuery("#annotations-organized").show();
+            jQuery("#asset-details-annotations-current").fadeOut(function () {
+                self._update({ 'annotation_id' : annotation_id }, "annotation-current");
+
+                var active = jQuery("#accordion-" + self.active_annotation.id)[0];
+                var parent = jQuery(active).parents("div.accordion");
+                jQuery(parent).accordion("activate", active);
+
+            });
         };
         
         ///Annotation Add Form
@@ -425,7 +539,9 @@
                 
                 djangosherd.assetview.setState({});
                 djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
-                jQuery("#annotations-organized").hide();
+                jQuery("#annotations-organized").fadeOut(function () {
+                    jQuery("#asset-details-annotations-current").fadeIn();
+                });
             }});
         };
         
@@ -442,6 +558,7 @@
             // Add template...but with all the properties of this annotation.
             var context = { 'annotation': {
                     'editing': true,
+                    'copying': true,
                     'showCancel': true,
                     'metadata': {
                         'body': self.active_annotation.metadata.body,
@@ -452,92 +569,38 @@
                     },
                     'range1': self.active_annotation.range1,
                     'range2': self.active_annotation.range2,
-                    'annotation_data': self.active_annotation.annotation_data
+                    'annotation_data': self.active_annotation.annotation_data,
                 }};
             
-            Mustache.update('annotation-current', context, { post: function (elt) {
-                if (self.active_annotation) {
-                    djangosherd.assetview.clipform.html.push('clipform-display', {
-                        asset : {},
-                        extra : { 'tools' : 'clipform-tools' }
-                    });
-
-                    djangosherd.assetview.setState(self.active_annotation.annotation);
-                    djangosherd.assetview.clipform.setState(self.active_annotation.annotation, { 'mode': 'copy' });
-                    jQuery("#annotations-organized").hide();
-                }
-            }});
-            
-            return false;
-        };
-        
-        this.blurItemField = function (field) {
-            setTimeout(function () {
-                var saveButton = jQuery(field).nextAll("input[type=submit]")[0];
-                var disabled = jQuery(saveButton).attr("disabled");
-                if (typeof disabled === 'undefined' || disabled === false) {
-                    jQuery(field).prevAll().show();
-                    jQuery(field).hide();
-                    jQuery(field).nextAll().hide();
-                }
-            }, 150);
-        };
-        
-        this.editItemField = function () {
-            jQuery(self.el).find("#edit-item-annotation-form").show();
-        };
-        
-        ///Item Save
-        this.saveItem = function (saveButton) {
-            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
-            
-            var frm = jQuery(saveButton).parents('form')[0];
-            
-            jQuery.ajax({
-                type: 'POST',
-                url: frm.action,
-                data: jQuery(frm).serializeArray(),
-                dataType: 'json',
-                error: function () {
-                    jQuery(saveButton).removeAttr("disabled").attr("value", "Saving").removeClass("saving");
-                    alert('There was an error saving your project.');
+            Mustache.update('annotation-current', context, {
+                pre: function (elt) {
+                    jQuery(elt).hide();
                 },
-                success: function (json, textStatus, xhr) {
-                    setTimeout(function () {
-                        jQuery(saveButton).removeAttr("disabled");
-                        jQuery(saveButton).removeClass("saving");
-                        jQuery(saveButton).attr("value", "Save");
-                        
-                        // transfer input value to the read-only div display
-                        var input = jQuery(saveButton).prevAll('input, textarea')[0];
-                        var value = jQuery(input).val();
-                         
-                        var display = jQuery(saveButton).prevAll('div.metadata-value')[0];
-                        jQuery(display).html(value);
-                        
-                        // The blur function should take care of hiding the fields.
-                        jQuery(input).hide();
-                        jQuery(input).nextAll().hide();
-                        jQuery(input).prevAll().show();
-                    }, 1000);
+                post: function (elt) {
+                    if (self.active_annotation) {
+                        djangosherd.assetview.clipform.html.push('clipform-display', {
+                            asset : {},
+                            extra : { 'tools' : 'clipform-tools' }
+                        });
+    
+                        djangosherd.assetview.setState(self.active_annotation.annotation);
+                        djangosherd.assetview.clipform.setState(self.active_annotation.annotation, { 'mode': 'copy' });
+                        jQuery("#annotations-organized").fadeOut(function () {
+                            jQuery(elt).fadeIn();
+                        });
+                    }
                 }
             });
             
-            return true;
-        };
-        
-        ///Item Save Prompt
-        this.saveItemPrompt = function () {
-            var frm = document.forms['edit-item-form'];
-            if (frm.elements['annotation-tags'].value === "" && frm.elements['annotation-body'].value === "") {
-                return "Add tags and notes to place this item in your collection.";
-            }
+            return false;
         };
         
         ///Annotation Save
         //  - update list items
         //  - replace with 'new' annotation
-        this.saveAnnotation = function () {
+        this.saveAnnotation = function (saveButton) {
+            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+            
             var frm = document.forms['edit-annotation-form'];
 
             // Push clipform or assetview state into "local storage", i.e. the form that is posted to the server.
@@ -558,7 +621,8 @@
                 var tags = tag_field.value.split(',');
                 for (var i = 0; i < tags.length; i++) {
                     if (tags[i].trim().length > 25) {
-                        alert('You are trying to add a tag with greater than the maximum 25 character-limit. Be sure to separate your tags with commas. Also, tags are best used as single words that you would tag other assets with. Try using the Notes field for longer expressions.');
+                        alert('The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
+                              'And, be sure to separate your tags with commas.');
                         return;
                     }
                 }
@@ -592,6 +656,7 @@
                     },
                     false,
                     function (asset_full) {
+                        self.asset_full_json = asset_full;
                         var theAsset;
                         for (var key in asset_full.assets) {
                             if (asset_full.assets.hasOwnProperty(key)) {
@@ -601,12 +666,19 @@
                         }
                         self.active_asset = theAsset;
                         self.active_asset_annotations = asset_full.annotations;
+                        
+                        jQuery(saveButton).removeAttr("disabled");
+                        jQuery(saveButton).removeClass("saving");
+                        jQuery(saveButton).attr("value", "Save");
                          
-                        self._update({ 'annotation_id': json.annotation.id }, "annotation-current");
-                        self.updateAnnotationList();
-                        self._addHistory(/*replace=*/false);
-                        jQuery("#annotations-organized").show();
-                        window.onbeforeunload = null;
+                        jQuery("#asset-details-annotations-current").fadeOut(function () {
+                            jQuery("#asset-details-annotations-current").hide();
+                            self._update({ 'annotation_id': json.annotation.id, 'editing': false }, "annotation-current");
+                            self.updateAnnotationList();
+                            self._addHistory(/*replace=*/false);
+                            jQuery("#annotations-organized").fadeIn();
+                            window.onbeforeunload = null;
+                        });
                     });
                 }
             });
@@ -691,10 +763,11 @@
                     });
                     jQuery('.annotation-active').removeClass('annotation-active');
                     
-                    Mustache.update("asset-view-header", context);
-                    //Mustache.update("asset-global-annotation", context);
-                    //Mustache.update("asset-sources", context);
-                    //Mustache.update("asset-references", context);
+                    if (template_label === "asset-view-details") {
+                        Mustache.update("asset-view-header", context);
+                        Mustache.update("asset-sources", context);
+                        Mustache.update("asset-references", context);
+                    }
                     
                     if (self.active_annotation) {
                         djangosherd.assetview.setState(self.active_annotation.annotation);
@@ -726,8 +799,6 @@
                         self.view_callback();
                     }
                     
-                    self._updateCurrent();
-                    
                     jQuery(elt).fadeIn("slow");
                     
                     if (self.config.edit_state === "new") {
@@ -737,26 +808,5 @@
                 }
             });
         };
-        
-        this._updateCurrent = function () {
-            if (self.active_annotation) {
-                var inplace = self.list_item || jQuery("li.annotation-listitem-" + self.active_annotation.id)[0];
-                if (inplace) {
-                    jQuery('div.browse').hide();
-                    
-                    var current = jQuery("#asset-details-annotations-current-browse")[0];
-                    jQuery(current).fadeOut();
-                    
-                    var browse = jQuery(inplace).children('div.browse')[0];
-                    jQuery(browse).html(current);
-                    jQuery(browse).show();
-                    
-                    jQuery(current).fadeIn();
-                    
-                    self.list_item = null;
-                }
-            }            
-        };
     })();
-
 })();

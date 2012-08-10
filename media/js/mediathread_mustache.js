@@ -51,7 +51,7 @@
             },
             'annotation-create': function (asset_id) {
                 // a.k.a. server-side annotation-containers
-                return 'create/asset/' + asset_id + '/annotations/';
+                return '/asset/create/' + asset_id + '/annotations/';
             },
             'annotation-edit': function (asset_id, annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview

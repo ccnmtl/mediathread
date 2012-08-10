@@ -658,6 +658,11 @@ div.button-form form, div.button-form.inline form{
     
 }
 
+.about-to-delete {
+    border: 1px solid red !important;
+}
+
+
 /* SLIDING CONTENT */
 
 .large {
@@ -1973,7 +1978,10 @@ margin: 0 0 5px 0;
       font-size: 90%;
   }
 
-#id_annotation-body { height: 65px;}
+#id_annotation-body { 
+    height: 65px;
+    width: 98%;
+}
 
 .clipform {
     margin-bottom:0.5em;
@@ -2207,20 +2215,25 @@ div.panel-column-stump {
     font-size: 80%;
 }
 
-
 .asset-table .asset-clips .citationTemplate {
   float:left;
 }
 
 .actions {
     float: right;
-    margin:-8px
+    margin: -8px -6px 0 0;
 }
 
 .actions a {
     float: left;
     margin-left: 0px !important; 
 }
+
+.actions input {
+    border: none;
+    margin: 0;
+}
+
 
 .archive {
    float:left;
@@ -2363,69 +2376,22 @@ div.archive p {
     font-size: 94%;
 }
 
-#annotations-organized {
-
-/**    background-color: #dedede; **/
-    padding-bottom: 1px;
-}
-
-#annotations-organized h3 {
-    margin: 0 0 0.7em 0;
-}
-
-#annotations-organized ul {
-    list-style-type: none;
-    margin: 4px 0 4px 4px;
-}
-
 .annotation-group h4 {
-    height: 22px;
-    line-height: 22px;
+    height: 25px;
+    line-height: 25px;
     margin: 0;
     padding: 1px;
-
 }
 
 .color-box {
-
     display: block;
     height: 20px;
     width: 20px;
     border: 1px solid #333;
     float: left;
     margin-right: 5px;
-
 }
 
-
-
-#annotations-organized ul.annotation-group-sublist li {
-    /*do not tighten this up to one background: property
-      so we can set the background-color for highlighting without
-      affecting the image.
-     */
-    background-image:url("../img/icons/item_clip.png");
-    background-repeat: no-repeat; 
-    background-position:left top;
-    padding: 2px 5px 2px 25px; 
-    margin-bottom: 2px;
-}
-
-#annotations-organized ul.annotation-group-sublist li.annotation-image {
-    background-image:url("../img/icons/item_clip.png"); 
-}
-
-#annotations-organized ul.annotation-group-sublist li.highlight {
-    background-color:white; 
-}
-
-#annotations-organized ul.annotation-group-sublist li.annotation-active {
-    border:1px solid black;
-}
-
-#annotations-organized ul.annotation-group-sublist li.annotation-active a.annotation-asset-link {
-    float:right;
-}
 
 .metadata-title {
     text-transform: capitalize;
@@ -2860,19 +2826,13 @@ p.sherd-instructions {
     font-weight: normal;
 }
 
-
-body.old-assetwindow #asset-details-annotations-list {
-    max-height:400px;
-    margin: 5px;
-    border: 1px solid #ccc;
-}
-
 #asset-details-annotations-list {
     overflow-y: auto;
     overflow-x: hidden;
     height: 85%;
+    position: relative;
+    background-color: #EDEDED;
 }
-
 
 #asset-details-annotations-current h3 {
     margin: 0 0 .5em;
@@ -3035,7 +2995,8 @@ div#instructor-column h4.inst-header.assignment {
 
 div#materials,
 div#composition-materials,
-div#assignment-materials
+div#assignment-materials,
+li.annotation-group
 {
     margin: 5px 5px 10px;
     overflow-x: hidden;
@@ -3214,6 +3175,7 @@ table.selection-level-info td.selection-trash {
 
 .indexcard input.media {
     margin-top: 5px;
+    
 
 }
 
@@ -3222,16 +3184,19 @@ input.media {
     border-color: #c89345;
 }
 
+input.media.secondary {
+    float: right;
+    width: 75px;
+    height: 20px;
+    margin-left: 5px;
+    margin-top: 5px;
+} 
+
 input.media.newselection-button {
     float: right;
     margin: 4px;
+    width: 125px;
 }
-
-.actions input {
-
-    border: none;
-    margin: 0;
-    }
 
 ul.record-metadata-list {
     list-style-type: none;
@@ -3541,7 +3506,7 @@ div.asset-view-container div.asset-view-published {
     float: left;
 }
 
-div.asset-view-container div.asset-view-details {
+div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
     width: 30%;
     float: left;
@@ -3552,18 +3517,40 @@ div.asset-view-container div.asset-view-details h1 {
 }
 
 div#asset-global-annotation,
-div#annotations-organized {
+div#asset-sources,
+div#asset-references {
     border: 1px solid #AAA;
     padding: 10px;
 }
 
+div#asset-details-annotations-current {
+    border: 1px solid #AAA;
+    padding: 10px;
+    margin-top: 10px;
+}
+
 div#annotations-organized {
-    overflow-y: auto;
-    height: 100%;
+    border: 1px solid #AAA;
+    margin-top: 10px;
+}
+
+div#annotations-organized h1 {
+    margin: 10px;
+}
+
+#annotations-organized ul {
+    list-style-type: none;
+    margin: 0;
+    padding-bottom: 4px;
+    height: 83%;
+}
+
+#annotations-organized ul li {
+    padding: 7px;
 }
 
 div#asset-global-annotation div.metadata-value {
-    padding: 5px;
+    padding: 5px 5px 5px 0;
     border: 1px solid white;
 }
 
@@ -3578,10 +3565,13 @@ div#asset-global-annotation input[type="text"] {
 
 div#asset-global-annotation input[type="submit"] {
     float: right;
-    width: 100px;
+    width: 75px;
+    height: 20px;
+    margin-left: 5px;
 }
 
-div#asset-global-annotation input[type="submit"].saving {
+input[type="submit"].saving,
+input[type="button"].saving {
     text-align: left;
     background: url("/site_media/img/ajax-loader.gif") no-repeat 95% 50%;
 }
@@ -3598,12 +3588,22 @@ form[name="annotation-list-filter"] {
 
 #annotation-list-filter-showall {
     float: right;
-    padding: 3px 2px 0 0;
+    padding: 3px 10px 0 0;
 }
 
 #annotation-list-filter-groupby {
     float: left;
-    padding-left: 2px;
+    padding-left: 5px;
+}
+
+input.annotation-listitem-icon {
+    float: right;
+    margin-top: -25px;
+    border: none;    
+}
+
+input.annotation-listitem-icon.delete {
+    margin-right: 24px;
 }
 
 

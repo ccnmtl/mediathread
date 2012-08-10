@@ -8,6 +8,8 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     
     djangosherd.storage.json_update(panel.context);
     
+    jQuery(self.el).find("div.tabs").tabs();
+    
     jQuery(window).resize(function () {
         self.resize();
     });
@@ -59,6 +61,8 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     if (self.panel.current_asset) {
         self.showAsset(self.panel.current_asset, self.panel.current_annotation);
     }
+    
+    jQuery(window).trigger("resize");
 };
 
 AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
@@ -79,7 +83,9 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
         "annotation_id": annotation_id,
         "view_callback": function () {
             jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
-            jQuery(self.el).find("div.tabs").tabs();
+            jQuery(window).trigger("resize");
+            
+            jQuery(self.el).find("div.tabs").fadeIn();
         }
     });
 };
@@ -92,14 +98,16 @@ AssetPanelHandler.prototype.resize = function () {
 
     // Resize the collections box, subtracting its header elements
     var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").outerHeight() - jQuery(self.el).find('div.expand').height();
-    jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + 35 + "px");
+    jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
     
-    visible = visible - jQuery(self.el).find('div.asset-view-header').height() - 20;
+    visible -= 20; // asset-view-header height
     jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
-    jQuery(self.el).find('div.asset-view-details').css('height', (visible) + "px");
+    jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
     
-    jQuery(self.el).find('div#asset-details-annotations').css('height', (visible - 210) + "px");
+    visible -= 200; // div#asset-global-annotation').height()
+    jQuery(self.el).find('div#annotations-organized').css('height', (visible) + "px");
+    jQuery("div.accordion").accordion("resize");
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {

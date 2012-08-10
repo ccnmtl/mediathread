@@ -256,7 +256,7 @@ def annotation_save(request, asset_id, annot_id):
         return HttpResponseForbidden("forbidden")
     
 @login_required    
-@allow_http("POST", "DELETE")
+@allow_http("GET", "DELETE")
 def annotation_delete(request, asset_id, annot_id):
     try:
         annotation = SherdNote.objects.get(pk=annot_id, 
@@ -271,9 +271,6 @@ def annotation_delete(request, asset_id, annot_id):
         return delete_annotation(request, annot_id) # djangosherd.views
     except SherdNote.DoesNotExist:
         return HttpResponseForbidden("forbidden")
-
-
-
 
 @rendered_with('assetmgr/browse_sources.html')
 def browse_sources(request):
@@ -423,7 +420,7 @@ def detail_asset_json(request, asset_id, options):
     asset_key = 'x_%s' % asset.pk
     
     
-    ga = asset.global_annotation(request.user, False)
+    ga = asset.global_annotation(request.user, True)
     if ga:
         asset_json['global_annotation_id'] = ga.id
         asset_json['notes'] = ga.body

@@ -151,7 +151,7 @@ def asset_create(request):
             raise AssertionError("no primary source provided")
 
     # create a global annotation
-    global_annotation = asset.global_annotation(user)
+    global_annotation = asset.global_annotation(user, True)
 
     asset_url = reverse('asset-view', args=[asset.id])
     
@@ -174,6 +174,24 @@ def asset_create(request):
         return HttpResponseRedirect(url)
     else:
         return HttpResponseRedirect(asset_url)
+    
+@login_required
+@allow_http("GET", "POST")
+def asset_delete(request, asset_id):
+    if not request.is_ajax():
+        raise Http404()
+    
+    in_course_or_404(request.user.username, request.course)
+    
+    # Remove all annotations by this user
+    # By removing the "global annotation" this effectively removes
+    # The asset from the workspace
+    asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
+    annotations = asset.sherdnote_set.filter(author=request.user)
+    annotations.delete()
+    
+    json_stream = simplejson.dumps({})
+    return HttpResponse(json_stream, mimetype='application/json')    
 
 
 OPERATION_TAGS = ('jump','title','noui','v','share','as','set_course','secret')
@@ -238,7 +256,24 @@ def annotation_create(request, asset_id):
     form['annotation-next'] = reverse('asset-view', args=[asset_id])
     request.GET = form
 
-    return create_annotation(request)    
+    return create_annotation(request)
+
+@login_required    
+@allow_http("POST")
+def annotation_create_global(request, asset_id):
+    try:
+        asset = get_object_or_404(Asset, 
+                                  pk=asset_id,
+                                  course=request.course)
+
+        global_annotation = asset.global_annotation(request.user, True)
+    
+        form = request.GET.copy()
+        form['next'] = '.'
+        request.GET = form
+        return edit_annotation(request, global_annotation.id)
+    except SherdNote.DoesNotExist:
+        return HttpResponseForbidden("forbidden")
     
 @login_required    
 @allow_http("POST")
@@ -420,7 +455,7 @@ def detail_asset_json(request, asset_id, options):
     asset_key = 'x_%s' % asset.pk
     
     
-    ga = asset.global_annotation(request.user, True)
+    ga = asset.global_annotation(request.user, False)
     if ga:
         asset_json['global_annotation_id'] = ga.id
         asset_json['notes'] = ga.body
@@ -457,10 +492,13 @@ def detail_asset_json(request, asset_id, options):
             if not annotation.author_id:
                 return None
             return 'author_name', get_public_name(annotation.author, request)
+        def primary_type(request, annotation, key):
+            return "primary_type", asset.primary.label
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
             visible = selections_visible or request.user == ann.author or request.course.is_faculty(ann.author)
             if visible:     
-                annotations.append(ann.sherd_json(request, 'x', ('title', 'author', 'tags', author_name, 'body')))
+                ann_json = ann.sherd_json(request, 'x', ('title', 'author', 'tags', author_name, 'body', 'modified', 'timecode', primary_type))
+                annotations.append(ann_json)
     
     return {
         'type': 'asset',

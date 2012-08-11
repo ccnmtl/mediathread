@@ -37,8 +37,11 @@
                 }
                 return base;
             },
-            'asset-delete': function (username, asset_id) {
-                return '/yourspace/' + username + '/asset/' + asset_id + '/?delete';
+            'assets': function (username, with_annotations) {
+                return '/annotations/' + (username ? username + '/' : '');
+            },
+            'asset-delete': function (asset_id) {
+                return '/asset/delete/' + asset_id + '/';
             },
             'asset-view': function (asset_id) {
                 return '/asset/' + asset_id + '/';
@@ -46,12 +49,13 @@
             'asset-json': function (asset_id, with_annotations) {
                 return '/asset/json/' + asset_id + (with_annotations ? '/?annotations=true' : '/');
             },
-            'assets': function (username, with_annotations) {
-                return '/annotations/' + (username ? username + '/' : '');
-            },
             'annotation-create': function (asset_id) {
                 // a.k.a. server-side annotation-containers
                 return '/asset/create/' + asset_id + '/annotations/';
+            },
+            'annotation-create-global': function (asset_id) {
+                // a.k.a. server-side annotation-containers
+                return '/asset/create/' + asset_id + '/global/';
             },
             'annotation-edit': function (asset_id, annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview

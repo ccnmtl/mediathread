@@ -18,6 +18,10 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         self.onClosePanel(jQuery(this).hasClass("subpanel"));
     });
     
+    self._bind(self.el, "td.pantab.collection", "click", function (event) {
+        event.stopPropagation();
+        alert('foo');
+    });
     
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -42,17 +46,12 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'space_owner': self.space_owner,
         'view_callback': function () {
             jQuery(self.el).find(".asset-thumb-title a").bind("click", { self: self }, self.onClickAssetTitle);
-            jQuery(self.el).find(".expand").bind("click", { self: self }, self.onToggleFullCollection);
             
             var container = jQuery(self.el).find('div.asset-table')[0];
             jQuery(container).masonry({
                 itemSelector : '.gallery-item',
                 columnWidth: 25
             });
-            
-            if (self.panel.current_asset) {
-                jQuery(self.el).find('div.expand').show();
-            }
             
             jQuery(window).trigger("resize");
         }
@@ -69,6 +68,7 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
     var self = this;
 
     jQuery(self.el).find('td.panel-container.collection').removeClass('fluid').addClass('fixed');
+    jQuery(self.el).find('td.pantab-container').show();
     jQuery(self.el).find('td.panel-container.asset').show();
     jQuery(self.el).find('td.panel-container.asset-details').show();
     jQuery(self.el).find('div.expand').show();
@@ -105,7 +105,7 @@ AssetPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
     jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
     
-    visible -= 200; // div#asset-global-annotation').height()
+    visible -= 218; // div#asset-global-annotation').height()
     jQuery(self.el).find('div#annotations-organized').css('height', (visible) + "px");
     jQuery("div.accordion").accordion("resize");
 };

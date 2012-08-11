@@ -18,10 +18,5 @@ urlpatterns = patterns(
     # User specific settings -- primarily used to track help visibility
     url(r'^(?P<user_name>\w[^/]*)/setting/$',
         'set_user_setting',
-        name='set-user-setting'),
-                       
-    # Delete an asset from your collection
-    # @todo - move this into asset. No reason for it to be here
-    url(r'^(?P<user_name>\w[^/]*)/asset/(?P<asset_id>\d+)/$',
-        'remove_record'),
+        name='set-user-setting'),                       
 )                       

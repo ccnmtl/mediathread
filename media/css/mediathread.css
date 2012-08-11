@@ -659,6 +659,7 @@ div.button-form form, div.button-form.inline form{
 }
 
 .about-to-delete {
+    margin: 1px;
     border: 1px solid red !important;
 }
 
@@ -919,8 +920,13 @@ td.panel-container.collection.fixed div.collection-materials {
     width: 380px;
 }
 
+div.panel.asset-workspace table.panel-subcontainer {
+    margin: 0;
+}
+
 div.panel.asset-workspace td.panel-container.collection.fixed {
-    width: 250px;    
+    width: 250px;
+    border-right: 1px solid #A88448 !important;    
 }
 
 div.panel.asset-workspace td.panel-container.asset-details.fixed {
@@ -2540,10 +2546,10 @@ margin: 4px -4px 0px;
 
 .helptext {
     color:#666;
-    display:block;
     font-size:80%;
     margin:0.4em 0 .5em;
     text-align:left;
+    text-transform: none;
 }
 
 .active-annotation
@@ -2779,15 +2785,12 @@ a.bookmarklet {
     color: black;
     display:block;
     text-align:left;
-    padding: 10px;
     background-color: #dedede;
 }
 
 p.sherd-instructions {
-    display:block;
-    margin: 0 0 .5em 0em;
-    padding: 0 0 .7em .7em;
-    text-align:left;
+    padding: .7em;
+    text-align: left;
 }
 
 .sherd-clipform {
@@ -2796,6 +2799,7 @@ p.sherd-instructions {
 
 .sherd-clipform table {
     border: none;
+    margin-top: 5px;
 }
 
 .sherd-clipform-play {
@@ -2805,16 +2809,22 @@ p.sherd-instructions {
 }
 
 .sherd-clipform-editing input.timecode {
-    width:6.5em;
+    width: 80px;
+    margin: 0 5px 0 10px;
+    text-align: right;
 }
 
 .sherd-clipform-editing input.regButton {
-    width:9em;
+    width: 84px;
+    margin: 0 5px 5px 10px;
+}
+
+.sherd-clipform-editing input.regButton.videoplay {
+    width: 65px;
 }
 
 .sherd-clipform-editing td {
     padding:5px;
-    background-color: #FCFB97;
     border: 0px;
 }
 
@@ -2824,14 +2834,6 @@ p.sherd-instructions {
 
 .sherd-clipform span {
     font-weight: normal;
-}
-
-#asset-details-annotations-list {
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: 85%;
-    position: relative;
-    background-color: #EDEDED;
 }
 
 #asset-details-annotations-current h3 {
@@ -2849,17 +2851,26 @@ input {
     background-repeat: repeat-x;
 }
 
-input.videoplay{
+input.videoplay {
     padding: 2px 2px 4px 22px;
     background-image:url("../img/selection_play.gif");
     background-repeat: no-repeat;
     border: none;
-
+    background-color: white;
 }
 
 .meta
 {
 	font-size:90%;
+    color: #333;
+    line-height: 18px;
+    font-weight: normal;
+    margin: 0 5px;
+}
+
+.annotation-metadata
+{
+    font-size: 100%;
     color: #333;
     line-height: 18px;
     font-weight: normal;
@@ -3543,6 +3554,10 @@ div#annotations-organized h1 {
     margin: 0;
     padding-bottom: 4px;
     height: 83%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 85%;
+    position: relative;
 }
 
 #annotations-organized ul li {
@@ -3577,8 +3592,7 @@ input[type="button"].saving {
 }
 
 div#asset-sources {
-    width: 290px;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 form[name="annotation-list-filter"] {

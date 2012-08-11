@@ -68,7 +68,7 @@ CollectionList.prototype.selectOwner = function (username) {
 
 CollectionList.prototype.deleteAsset = function (asset_id) {
     var self = this;
-    var url = MediaThread.urls['asset-delete'](self.current_records.space_viewer.username, asset_id);
+    var url = MediaThread.urls['asset-delete'](asset_id);
     return ajaxDelete(null, 'record-' + asset_id, { 'href': url });
 };
 

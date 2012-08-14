@@ -197,13 +197,17 @@
                                       
                                     {{^global_annotation}}
                                          {{^space_owner}} {{! All Class Items. Is this really necessary? }}
-                                             {{#tags?}}    
-                                                <span class="metadata-label">Selection Tags:</span>
-                                                <span class="metadata-value">
-                                                    {{#tags}}
-                                                        <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                    {{/tags}}
-                                                </span>
+                                             {{#tags?}}
+                                                <div class="meta">
+                                                    <div class="meta"> 
+                                                        <span class="metadata-label">Selection Tags:</span>
+                                                        <span class="metadata-value">
+                                                            {{#tags}}
+                                                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                            {{/tags}}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                              {{/tags?}}
                                         {{/space_owner}}
                                     {{/global_annotation}}

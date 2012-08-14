@@ -6,27 +6,32 @@
         <div class="label">Media Collection</div>
     </td>
 
-    <td id="asset-workspace-panel-container" class="panel-container {{panel_state}} asset-workspace parent">
-        <div class="panel asset-workspace">           
+    <td id="asset-workspace-panel-container" class="panel-container open asset-workspace parent">
+        <div class="panel asset-workspace">
             <table class="panel-subcontainer">
                 <tr class="asset-workspace-content-row">
                     
-                    <td class="panel-container open collection subpanel fluid">
+                    <td class="panel-container maximized collection subpanel">
                         <div id="media_gallery" class="media_gallery"></div>
                     </td>
                     
-                    <td class="pantab-container">
-                        <div class="pantab collection open"></div>
+                    <td class="pantab-container maximized">
+                        <div class="pantab collection maximized"></div>
                     </td>
                                     
-                    <td class="panel-container open asset subpanel fixed" style="display: none">
+                    <td class="panel-container closed asset subpanel fixed">
                         {{#>>asset-view-header}}
                             <div id="asset-view-header">
                                 {{#asset-current}}
                                      <div class="asset-view-title"><h1>{{title}}</h1></div>
                                 {{/asset-current}}
                              
-                                <input class="media newselection-button" type="button" onclick="javascript:AnnotationList.newAnnotation()" value="Create Selection"/>
+                                <input class="media newselection-button" type="button" 
+                                    onclick="javascript:AnnotationList.newAnnotation()" 
+                                    value="Create Selection"
+                                    {{#annotation.editing?}}
+                                        style="display: none"
+                                    {{/annotation.editing?}} />
                              </div>
                         {{/>>asset-view-header}}
                         
@@ -49,7 +54,10 @@
                                 <div id="tabs-1">
                                     {{#>>asset-view-details}}
                                     <div id="asset-view-details" class="asset-view-details">
-                                        <div id="asset-global-annotation">
+                                        <div id="asset-global-annotation"
+                                            {{#annotation.editing?}}
+                                                style="display: none"
+                                            {{/annotation.editing?}}>
                                             {{#asset-current}}
                                                 <h1>Item
                                                     <div class="actions">                                                           
@@ -197,7 +205,10 @@
                                     
                                         {{#>>annotations-organized}}
                                             <div id="annotations-organized-container">
-                                            <div id="annotations-organized">
+                                            <div id="annotations-organized"
+                                                {{#annotation.editing?}}
+                                                    style="display: none"
+                                                {{/annotation.editing?}}>
                                                 <h1>Selections
                                                     <div class="actions">
                                                         <input type="image" title="Create Selection" 
@@ -263,7 +274,7 @@
                                                                                 <div id="clipform-tools" class="annotation-timecode">
                                                                                     <label for="">Time code:</label>
                                                                                     <span>{{annotation.startCode}} - {{annotation.endCode}}</span>
-                                                                                    <input type="button" class="regButton videoplay" value="Play" />
+                                                                                    <input type="button" class="regButton videoplay" />
                                                                                 </div>
                                                                                 
                                                                             {{/annotation.startCode?}}

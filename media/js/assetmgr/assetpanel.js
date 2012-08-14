@@ -14,15 +14,6 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         self.resize();
     });
     
-    self._bind(self.el, "td.panel-container", "panel_state_change", function () {
-        self.onClosePanel(jQuery(this).hasClass("subpanel"));
-    });
-    
-    self._bind(self.el, "td.pantab.collection", "click", function (event) {
-        event.stopPropagation();
-        alert('foo');
-    });
-    
     // Setup the media display window.
     self.citationView = new CitationView();
     self.citationView.init({
@@ -67,11 +58,12 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
 AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
     var self = this;
 
-    jQuery(self.el).find('td.panel-container.collection').removeClass('fluid').addClass('fixed');
-    jQuery(self.el).find('td.pantab-container').show();
+    jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
+    jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
+    jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
+    jQuery(self.el).find('td.panel-container.asset').removeClass("closed").addClass("open");
     jQuery(self.el).find('td.panel-container.asset').show();
     jQuery(self.el).find('td.panel-container.asset-details').show();
-    jQuery(self.el).find('div.expand').show();
     
     self.citationView.openCitationById(null, asset_id, annotation_id);
     
@@ -83,9 +75,11 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
         "annotation_id": annotation_id,
         "view_callback": function () {
             jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
-            jQuery(window).trigger("resize");
             
-            jQuery(self.el).find("div.tabs").fadeIn();
+            jQuery(self.el).find("div.tabs").fadeIn("fast", function () {
+                PanelManager.verifyLayout(self.el);
+                jQuery(window).trigger("resize");    
+            });
         }
     });
 };
@@ -93,19 +87,19 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
 AssetPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
-    
-    visible -= jQuery("#footer").height(); // padding
 
+    visible -= 10;
+    
     // Resize the collections box, subtracting its header elements
-    var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").outerHeight() - jQuery(self.el).find('div.expand').height();
+    var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
     jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
     
-    visible -= 20; // asset-view-header height
+    visible -= jQuery("div.asset-view-title").height();
     jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
     jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
     
-    visible -= 218; // div#asset-global-annotation').height()
+    visible -= jQuery('ul.ui-tabs-nav').height() + jQuery("div#asset-global-annotation").outerHeight() + 30;
     jQuery(self.el).find('div#annotations-organized').css('height', (visible) + "px");
     jQuery("div.accordion").accordion("resize");
 };
@@ -129,30 +123,3 @@ AssetPanelHandler.prototype.onFilterByClassTag = function (evt) {
     
     return false;
 };
-
-AssetPanelHandler.prototype.onToggleFullCollection = function (evt) {
-    var self = evt.data.self;
-    
-    jQuery(self.el).find('td.panel-container.collection').toggleClass('fixed fluid', 100);
-    jQuery(self.el).find('td.panel-container.asset').toggle();
-    jQuery(self.el).find('td.panel-container.asset-details').toggle();
-    
-    jQuery(window).trigger("resize");
-    return false;
-};
-
-AssetPanelHandler.prototype.onClosePanel = function (isSubpanel) {
-    var self = this;
-};
-
-AssetPanelHandler.prototype._bind = function (parent, elementSelector, event, handler) {
-    var elements = jQuery(parent).find(elementSelector);
-    if (elements.length) {
-        jQuery(elements[0]).bind(event, handler);
-        return true;
-    } else {
-        return false;
-    }
-};
-
-

@@ -65,6 +65,9 @@ CollectionList.prototype.selectOwner = function (username) {
     return false;
 };
 
+CollectionList.prototype.editAsset = function (asset_id) {
+    var self = this;
+};
 
 CollectionList.prototype.deleteAsset = function (asset_id) {
     var self = this;
@@ -77,6 +80,16 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
     var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
     var url = MediaThread.urls['annotation-delete'](asset_id, annotation_id);
     return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
+};
+
+CollectionList.prototype.createAnnotation = function (asset_id) {
+    var self = this;
+    var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
+};
+
+CollectionList.prototype.editAnnotation = function (annotation_id) {
+    var self = this;
+    var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
 };
 
 CollectionList.prototype.clearFilter = function (filterName) {
@@ -169,7 +182,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         var target_parent = jQuery(self.parent).find(".gallery-item-" + asset.id)[0];
         
         if (!asset.thumbable) {
-            jQuery(target_parent).css({ height: '200px' });
+            jQuery(target_parent).css({ height: '195px' });
         } else {
             var view;
             switch (asset.type) {
@@ -353,6 +366,12 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return self.filterByTag(bits[bits.length - 1]);
             });
             
+            jQuery(self.parent).find("a.collection-choice.edit-asset").unbind('click').click(function (evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                var bits = srcElement.parentNode.href.split("/");
+                return self.editAsset(bits[bits.length - 1]);
+            });
+            
             jQuery(self.parent).find("a.collection-choice.delete-asset").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
@@ -364,6 +383,19 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 var bits = srcElement.parentNode.href.split("/");
                 return self.deleteAnnotation(bits[bits.length - 1]);
             });
+            
+            jQuery(self.parent).find("a.collection-choice.create-annotation").unbind('click').click(function (evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                var bits = srcElement.parentNode.href.split("/");
+                return self.createAnnotation(bits[bits.length - 1]);
+            });
+            
+            jQuery(self.parent).find("a.collection-choice.edit-annotation").unbind('click').click(function (evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                var bits = srcElement.parentNode.href.split("/");
+                return self.editAnnotation(bits[bits.length - 1]);
+            });
+
             
             if (self.view_callback) {
                 self.view_callback();

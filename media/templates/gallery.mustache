@@ -4,9 +4,10 @@
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
+                <span class="switcher-prefix">Owner: </span>
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="down-arrow" tabindex="3"></span>
-                    <span class="title">Owner: {{{selected_label?ellipses(30)}}}</span>
+                    <span class="title">{{{selected_label?ellipses(30)}}}</span>
                 </a>
                 
                 <ul class="switcher-options" style="left: -51px">
@@ -133,9 +134,18 @@
                 {{/assets}} 
                 {{#assets}}
                     <div class="gallery-item record-{{primary_type}} gallery-item-{{id}}">
-                        <div class="asset-thumb-title">
-                            <b><a href="{{local_url}}">{{title}}</b></a>
-                        </div>
+                        <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
+                            <a class="asset-title-link"
+                                href="{{local_url}}">
+                                    {{#title?}}
+                                        {{{title?ellipses(35)}}}
+                                    {{/title?}}
+                                    {{^title}}
+                                        -Untitled-
+                                    {{/title}}
+                                    
+                            </a>
+                        </h4>
                         <div class="asset-thumb">
                             {{^thumbable}}
                                 {{^thumb}}

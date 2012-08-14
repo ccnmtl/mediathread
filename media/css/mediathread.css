@@ -770,6 +770,15 @@ table#sliding-content-container tr td.panel-container div.panel form {
     height: 100%;
 }
 
+table#sliding-content-container tr td.pantab-container.maximized {
+    display: none;
+}
+
+table#sliding-content-container tr td.pantab-container.minimized {
+    display: default;
+    padding-right: 4px;
+}
+
 table#sliding-content-container tr td.pantab-container {
     vertical-align: top;
     text-align: left;
@@ -790,14 +799,15 @@ div.pantab {
     float: left;
 }
 
+div.pantab.maximized, 
 div.pantab.open {
     background-image:url('../img/panels/closer_bg.png');
 }
 
+div.pantab.minimized,
 div.pantab.closed {
      background-image:url('../img/panels/opener_bg.png');
 }
-
 
 table.panel-subcontainer {
     margin: .5em 0 .5em .5em;
@@ -910,6 +920,11 @@ td.panel-content.fixed {
     min-width: 300px;
 }
 
+td.panel-container.asset.fixed,
+td.panel-container.asset.fixed div.asset-view-container {
+    min-width: 934px;
+}
+
 td.panel-container.collection.fluid,
 td.panel-container.collection.fluid div.collection-materials {
     min-width: 475px;
@@ -922,9 +937,14 @@ td.panel-container.collection.fixed div.collection-materials {
 
 div.panel.asset-workspace table.panel-subcontainer {
     margin: 0;
+    width: 100%;
 }
 
-div.panel.asset-workspace td.panel-container.collection.fixed {
+div.panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
+    width: 250px;
+}
+
+div.panel.asset-workspace td.panel-container.collection.minimized {
     width: 250px;
     border-right: 1px solid #A88448 !important;    
 }
@@ -974,6 +994,7 @@ td.panel-container.closed {
     display: none;
 }
 
+td.panel-container.maximized,
 td.panel-container.open {
     display: table-cell;
 }
@@ -2820,7 +2841,7 @@ p.sherd-instructions {
 }
 
 .sherd-clipform-editing input.regButton.videoplay {
-    width: 65px;
+    width: 55px;
 }
 
 .sherd-clipform-editing td {
@@ -3501,7 +3522,7 @@ div#asset-view-header div {
 }
 
 div.asset-view-title {
-    margin: 10px;
+    margin: 10px 10px 5px 10px;
     width: 80%;
 }
 
@@ -3513,13 +3534,13 @@ div.asset-view-title h1 {
 div.asset-view-container div.asset-view-published {
     margin-left: 10px;
     min-width: 475px;
-    width: 68%;
+    width: 65%;
     float: left;
 }
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
-    width: 30%;
+    width: 33%;
     float: left;
 }
 
@@ -3553,10 +3574,9 @@ div#annotations-organized h1 {
     list-style-type: none;
     margin: 0;
     padding-bottom: 4px;
-    height: 83%;
+    height: 80%;
     overflow-y: auto;
     overflow-x: hidden;
-    height: 85%;
     position: relative;
 }
 

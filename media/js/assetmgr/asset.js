@@ -780,8 +780,9 @@
                         asset: {}
                     });
                     
+                    Mustache.update("asset-view-header", context);
+                    
                     if (template_label === "asset-view-details") {
-                        Mustache.update("asset-view-header", context);
                         Mustache.update("asset-sources", context);
                         Mustache.update("asset-references", context);
                     }
@@ -808,16 +809,16 @@
                             { 'mode': context.annotation && context.annotation.editing ? 'create' : 'browse' });
                     }
                     
-                    if (self.view_callback) {
-                        self.view_callback();
-                    }
-                    
-                    jQuery(elt).fadeIn("slow");
-                    
-                    if (self.config.edit_state === "new") {
-                        self.config.edit_state = "";
-                        return self.newAnnotation();
-                    }
+                    jQuery(elt).fadeIn("slow", function () {
+                        if (self.view_callback) {
+                            self.view_callback();
+                        }
+
+                        if (self.config.edit_state === "new") {
+                            self.config.edit_state = "";
+                            return self.newAnnotation();
+                        }
+                    });
                 }
             });
         };

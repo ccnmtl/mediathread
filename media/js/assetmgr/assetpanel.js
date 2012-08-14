@@ -36,7 +36,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'create_asset_thumbs': true,
         'space_owner': self.space_owner,
         'view_callback': function () {
-            jQuery(self.el).find(".asset-thumb-title a").bind("click", { self: self }, self.onClickAssetTitle);
+            jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
             
             var container = jQuery(self.el).find('div.asset-table')[0];
             jQuery(container).masonry({

@@ -68,6 +68,11 @@
                                                         <input type="image" title="Edit Item" 
                                                            onclick="return AnnotationList.editItem(this);" 
                                                            alt="Edit" src="/site_media/img/icons/meth_edit.png" />
+                                                           
+                                                        <input type="image" title="Create Selection" 
+                                                             onclick="return AnnotationList.newAnnotation();" 
+                                                             alt="Create" src="/site_media/img/icons/meth_addselection.png" />
+                                                           
                                                     </div>                                                
                                                 </h1>
                                                 
@@ -98,7 +103,7 @@
                                                     </div>
                                                     <div class="metadata">
                                                         <div class="metadata-label">My Notes:
-                                                            {{^notes}}<span class="helptext">[Notes are the place for longer thoughts]</span>{{/notes}}
+                                                            {{^notes}}<span class="helptext">[Notes are for longer thoughts]</span>{{/notes}}
                                                         </div>
                                                         <div class="metadata-value global-annotation-notes">
                                                             {{notes}}

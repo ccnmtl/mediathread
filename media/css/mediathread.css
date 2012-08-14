@@ -2094,11 +2094,12 @@ div.panel-column-stump {
     background-repeat: no-repeat;
     background-position: 3px 1px;
     padding: 2px 5px 4px 24px;
-}
-
-.asset_title {
     margin-top: -3px;
     font-size: 100%;
+}
+
+div.gallery-item h4.asset_title {
+    background-position: 0 0;
 }
   
 .asset_title.asset-flv,
@@ -2117,20 +2118,17 @@ div.panel-column-stump {
 .asset_title.asset-vimeo,
 .asset_title.asset-kaltura        
 {
-    background-image: url(../img/icons/item_video.gif);
-    background-position: 5px 2px;
+    background-image: url(../img/icons/meth_video.png);
 }
 
 .asset_title.asset-image,
 .asset_title.asset-image_fpx
 {
-    background-image: url(../img/icons/item_image.gif);
-    background-position: 5px 2px;
+    background-image: url(../img/icons/meth_image.png);
 }
 
 .asset_title.asset-mp3 {
-    background-image: url(../img/icons/item_audio.png);
-    background-position: 5px 2px;
+    background-image: url(../img/icons/meth_soundfile.png);
 }
 
 .asset-insert-flv,
@@ -2457,11 +2455,10 @@ dd {
 }
 
 .record img.asset-thumb {
-  border:1px solid #999999;
-float:left;
-margin: 0 8px 0 0;
-    max-width:100px;
-    max-height:100px;
+    border: 1px solid #999999;
+    margin: 0 8px 0 0;
+    width: 100px;
+    height: auto;
 }
 
 
@@ -3042,7 +3039,8 @@ li.annotation-group
 
 div#materials h4,
 div#composition-materials h4,
-div#assignment-materials h4 {
+div#assignment-materials h4,
+div.gallery-item h4 {
     background-color: #fff;
     color: #000;
     font-weight: normal;
@@ -3051,20 +3049,37 @@ div#assignment-materials h4 {
     text-align: left;
 }
 
+div.gallery-item h4 {
+    margin: .5em 0 0.25em;
+}
+
+div#materials.column-contents {
+    padding-top: 0px;
+}
+
 div.panel.asset-workspace div#materials h4 a {
     margin-left: 0px;
 }
 
 div#materials h4 a,
 div#composition-materials h4 a,
-div#assignment-materials h4 a
+div#assignment-materials h4 a,
+div.gallery-item h4 a
 {
     font-weight: bold;
     padding-right: 4px;
     margin-left: 30px;
     display: block;
-
 }
+
+div.gallery-item h4 {
+    margin-bottom: 5px;
+    text-align: left;
+    width: 190px;
+    overflow: hidden;
+    max-height: 48px;
+}
+
 
 
 div#materials h4 a.asset-title-link.insert,
@@ -3151,23 +3166,19 @@ table.item-level-info {
 }
 
 table.item-level-info td {
-
+    text-align: left;
     vertical-align: top;
     padding: 0px;
     width: 0;
+}
 
+div#materials.homepage table.item-level-info td {
+    text-align: center;
 }
 
 table.item-level-info td.item-meta {
 	padding: 0 5px 0 5px;
     width: 100%;
-}
-
-.metadata-container {
-    display: block;
-    float: left;
-    margin-left: 8px;
-    width: 93%;
 }
 
 .annotation-thumb {
@@ -3183,7 +3194,6 @@ table.selection-level-info {
 }
 
 table.selection-level-info td {
-
     border: none;
     vertical-align: top;
     padding: 5px 0px;
@@ -3196,11 +3206,14 @@ table.selection-level-info td.selection-inserter {
 }
 
 table.selection-level-info td.selection-trash {
-
     width: 50px;
     padding-right: 3px;
-
 }
+
+table.selection-level-info td.selection-thumb {
+    width: 115px;
+}
+
 
 
 /*Collection Styles*/
@@ -3232,8 +3245,8 @@ input.media.newselection-button {
 
 ul.record-metadata-list {
     list-style-type: none;
-    margin:0;
-    
+    margin: 0;
+    font-size: 90%;    
  }
 
 div#classwork_table,
@@ -3479,7 +3492,7 @@ margin-left: 269px;
     float: left;
     margin-top: 10px;
     margin-left: 5px;
-    padding: 10px;
+    padding: 0 10px 10px 10px;
     width: 200px;
     border: 1px #ccc solid;
     background: white;
@@ -3504,17 +3517,11 @@ margin-left: 269px;
     height: auto;
 }
 
-.gallery-item div.asset-thumb-title {
-    margin-bottom: 5px;
-    text-align: left;
-    width: 200px;
-    overflow: hidden;
-}
-
 .gallery-item div.meta {
     position: absolute;
-    bottom: 2px;
-    text-align: left;
+    bottom: 5px;
+    text-align: center;
+    width: 85%;
 }
 
 div#asset-view-header div {

@@ -61,7 +61,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     }
     
     if (self.panel.current_asset) {
-        self.showAsset(self.panel.current_asset, self.panel.current_annotation);
+        self.showAsset(self.panel.current_asset, self.panel.current_annotation, true);
     }
     
     jQuery(window).trigger("resize");
@@ -111,22 +111,24 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
 };
 
 
-AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id) {
+AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displayNow) {
     var self = this;
     
     self.current_asset = parseInt(asset_id, 10);
     
-    jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
-    jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
-    jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
-    jQuery(self.el).find('td.panel-container.asset').removeClass("closed").addClass("open");
-    jQuery(self.el).find('td.panel-container.asset').show();
-    jQuery(self.el).find('td.panel-container.asset-details').show();
+    if (displayNow) {
+        jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
+        jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
+        jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
+        jQuery(self.el).find('td.panel-container.asset').removeClass("closed").addClass("open");
+        jQuery(self.el).find('td.panel-container.asset').show();
+        jQuery(self.el).find('td.panel-container.asset-details').show();
     
-    self.citationView.openCitationById(null, asset_id, annotation_id);
+        self.citationView.openCitationById(null, asset_id, annotation_id);
+    }
     
     jQuery(self.el).find("a.filterbyclasstag").unbind();
-
+    
     // Setup the edit view
     AnnotationList.init({
         "asset_id": asset_id,
@@ -168,7 +170,7 @@ AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     
     var bits = srcElement.href.split('/');
-    self.showAsset(bits[bits.length - 2]);
+    self.showAsset(bits[bits.length - 2], null, true);
         
     return false;
 };
@@ -178,7 +180,7 @@ AssetPanelHandler.prototype.editItem = function (evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     
     var bits = srcElement.parentNode.href.split('/');
-    self.showAsset(bits[bits.length - 2]);
+    self.showAsset(bits[bits.length - 2], null, true);
     return false;
 };
 
@@ -191,7 +193,8 @@ AssetPanelHandler.prototype.onDeleteItem = function (asset_id) {
     }
     
     if (asset_id === self.current_asset) {
-        self.showAsset(self.current_asset);
+        var displayNow = jQuery(self.el).find('td.panel-container.collection').hasClass('minimized');
+        self.showAsset(self.current_asset, null, displayNow);
     }
 };
 

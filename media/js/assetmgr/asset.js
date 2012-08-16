@@ -693,6 +693,10 @@
                     },
                     false,
                     function (asset_full) {
+                        if (creating) {
+                            jQuery(window).trigger("annotation.on_create", []);
+                        }
+                        
                         self.asset_full_json = asset_full;
                         var theAsset;
                         for (var key in asset_full.assets) {
@@ -707,10 +711,6 @@
                         jQuery(saveButton).removeAttr("disabled");
                         jQuery(saveButton).removeClass("saving");
                         jQuery(saveButton).attr("value", "Save");
-                        
-                        if (creating) {
-                            jQuery(window).trigger("annotation.on_create", []);
-                        }
                          
                         jQuery("#asset-details-annotations-current").fadeOut(function () {
                             jQuery("#asset-details-annotations-current").hide();

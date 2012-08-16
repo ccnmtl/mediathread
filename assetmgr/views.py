@@ -68,7 +68,9 @@ def asset_workspace(request, asset_id=None, annot_id=None):
                             'context': asset_workspace_context, 
                             'template': 'asset_workspace',
                             'current_asset': asset_id,
-                            'current_annotation': annot_id
+                            'current_annotation': annot_id,
+                            'update_history': True,
+                            'show_collection': True,
                           }]
         
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
@@ -466,6 +468,7 @@ def detail_asset_json(request, asset_id, options):
         owners = [ request.user ]
         owners.extend(request.course.faculty)
         asset_json['tags'] = tag_json(asset.filter_tags_by_users(owners))
+        
         
     # DiscussionIndex is misleading. Objects returned are projects & discussions
     # title, object_pk, content_type, modified

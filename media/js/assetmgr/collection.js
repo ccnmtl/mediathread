@@ -21,6 +21,9 @@ var CollectionList = function (config) {
         jQuery(this).removeClass("ajaxLoading");
     });
     
+    jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) { event.data.self.refresh(); });
+    jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) { event.data.self.refresh(); });
+    
     jQuery.ajax({
         url: '/site_media/templates/' + config.template + '.mustache?nocache=v2',
         dataType: 'text',
@@ -30,25 +33,39 @@ var CollectionList = function (config) {
             
             var url = null;
             
-            // Retrieve the full asset w/annotations from storage
-            if (config.view === 'all' || !config.space_owner) {
-                url = MediaThread.urls['all-space'](config.tag, null, self.citable);
-            } else {
-                url = MediaThread.urls['your-space'](config.space_owner, config.tag, null, self.citable);
-            }
-            
-            djangosherd.storage.get({
-                    type: 'asset',
-                    url: url
-                },
-                false,
-                function (the_records) {
-                    self.updateAssets(the_records);
-                });
+            self.refresh(config);
         }
     });
     
     return this;
+};
+
+CollectionList.prototype.refresh = function (config) {
+    var self = this;
+    var url;
+    
+    if (config && config.parent) {
+        // Retrieve the full asset w/annotations from storage
+        if (config.view === 'all' || !config.space_owner) {
+            url = MediaThread.urls['all-space'](config.tag, null, self.citable);
+        } else {
+            url = MediaThread.urls['your-space'](config.space_owner, config.tag, null, self.citable);
+        }
+    } else {
+        var active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
+        var active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
+        
+        url = self.getSpaceUrl(active_tag, active_modified);
+    }
+    
+    djangosherd.storage.get({
+        type: 'asset',
+        url: url
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
 };
 
 CollectionList.prototype.selectOwner = function (username) {
@@ -72,7 +89,14 @@ CollectionList.prototype.editAsset = function (asset_id) {
 CollectionList.prototype.deleteAsset = function (asset_id) {
     var self = this;
     var url = MediaThread.urls['asset-delete'](asset_id);
-    return ajaxDelete(null, 'record-' + asset_id, { 'href': url });
+    return ajaxDelete(null, 'record-' + asset_id, {
+        'href': url,
+        'success': function () {
+            try {
+                jQuery(window).trigger("asset.on_delete", [ asset_id ]);
+            } catch (e) {}
+        }
+    });
 };
 
 CollectionList.prototype.deleteAnnotation = function (annotation_id) {
@@ -80,16 +104,6 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
     var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
     var url = MediaThread.urls['annotation-delete'](asset_id, annotation_id);
     return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
-};
-
-CollectionList.prototype.createAnnotation = function (asset_id) {
-    var self = this;
-    var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
-};
-
-CollectionList.prototype.editAnnotation = function (annotation_id) {
-    var self = this;
-    var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
 };
 
 CollectionList.prototype.clearFilter = function (filterName) {
@@ -182,7 +196,9 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         var target_parent = jQuery(self.parent).find(".gallery-item-" + asset.id)[0];
         
         if (!asset.thumbable) {
-            jQuery(target_parent).css({ height: '195px' });
+            if (jQuery(target_parent).hasClass("static-height")) {
+                jQuery(target_parent).css({ height: '240px' });
+            }
         } else {
             var view;
             switch (asset.type) {
@@ -197,11 +213,13 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
             
             // scale the height
             var width = jQuery(target_parent).width();
-            var height = (width / asset.width * asset.height + 65) + 'px';
-            jQuery(target_parent).css({ height: height });
+            var height = (width / asset.width * asset.height + 85) + 'px';
+            if (jQuery(target_parent).hasClass("static-height")) {
+                jQuery(target_parent).css({ height: height });
+            }
             
             var obj_div = document.createElement('div');
-            jQuery(target_parent).children('.asset-thumb').append(obj_div);
+            jQuery(target_parent).find('.asset-thumb').append(obj_div);
             
             asset.presentation = 'gallery';
             asset.x = 0;
@@ -369,7 +387,9 @@ CollectionList.prototype.updateAssets = function (the_records) {
             jQuery(self.parent).find("a.collection-choice.edit-asset").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
-                return self.editAsset(bits[bits.length - 1]);
+                var asset_id = bits[bits.length - 1];
+                jQuery(window).trigger('asset.edit', [ asset_id ]);
+                return false;
             });
             
             jQuery(self.parent).find("a.collection-choice.delete-asset").unbind('click').click(function (evt) {
@@ -387,13 +407,18 @@ CollectionList.prototype.updateAssets = function (the_records) {
             jQuery(self.parent).find("a.collection-choice.create-annotation").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
-                return self.createAnnotation(bits[bits.length - 1]);
+                var asset_id = bits[bits.length - 1];
+                jQuery(window).trigger('annotation.create', [ asset_id ]);
+                return false;
             });
             
             jQuery(self.parent).find("a.collection-choice.edit-annotation").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
-                return self.editAnnotation(bits[bits.length - 1]);
+                var annotation_id = bits[bits.length - 1];
+                var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
+                jQuery(window).trigger('annotation.edit', [ asset_id, annotation_id ]);
+                return false;
             });
 
             

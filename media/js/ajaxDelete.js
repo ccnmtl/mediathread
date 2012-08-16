@@ -19,8 +19,9 @@ function ajaxDelete(link, container, opts) {
             url: postUrl,
             success: function (responseText, textStatus, xhr) {
                 if (xhr.status === 200) {
-                    jQuery(dom).hide("fade");
-                    jQuery(dom).remove();
+                    jQuery(dom).fadeOut(function () {
+                        jQuery(dom).remove();
+                    });
                 } else {
                     alert("Error: " + textStatus);
                 }

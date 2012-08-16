@@ -61,17 +61,19 @@
                                             {{#asset-current}}
                                                 <h1>Item
                                                     <div class="actions">                                                           
-                                                        <input type="image" title="Delete Item" 
-                                                            onclick="return AnnotationList.deleteItem(event, this, {{id}});" 
-                                                            alt="Delete" src="/site_media/img/icons/meth_delete.png" />
+                                                        <input type="image" title="Create Selection" 
+                                                             onclick="return AnnotationList.newAnnotation();" 
+                                                             alt="Create" src="/site_media/img/icons/meth_addselection.png" />
                                                               
                                                         <input type="image" title="Edit Item" 
                                                            onclick="return AnnotationList.editItem(this);" 
                                                            alt="Edit" src="/site_media/img/icons/meth_edit.png" />
-                                                           
-                                                        <input type="image" title="Create Selection" 
-                                                             onclick="return AnnotationList.newAnnotation();" 
-                                                             alt="Create" src="/site_media/img/icons/meth_addselection.png" />
+                                                    
+                                                        {{#global_annotation_id?}}       
+                                                        <input type="image" title="Delete Item" 
+                                                            onclick="return AnnotationList.deleteItem(event, this, {{id}});" 
+                                                            alt="Delete" src="/site_media/img/icons/meth_delete.png" />
+                                                        {{/global_annotation_id?}}
                                                            
                                                     </div>                                                
                                                 </h1>
@@ -162,10 +164,13 @@
                                                          {{/id}}
                                                     </h1>
                                                 
-                                                    <form name="edit-annotation-form" onsubmit="return false;">
+                                                    <form name="edit-annotation-form" onsubmit="return false;">                                                    
                                                         <div class="asset-annotator">
-                                                            <div class="sherd-instructions"></div>
-                                                         
+                                                            {{^global_annotation_id}}
+                                                            <p class="sherd-instructions" style="margin-bottom: -12px">
+                                                                This item is not currently in your collection. Add a selection to make it your own.
+                                                            </p>
+                                                            {{/global_annotation_id}}
                                                             <div id="clipform-display"></div>
                                                         </div>
                                                         <div id="annotation-body">
@@ -214,13 +219,7 @@
                                                 {{#annotation.editing?}}
                                                     style="display: none"
                                                 {{/annotation.editing?}}>
-                                                <h1>Selections
-                                                    <div class="actions">
-                                                        <input type="image" title="Create Selection" 
-                                                             onclick="return AnnotationList.newAnnotation();" 
-                                                             alt="Create" src="/site_media/img/icons/meth_addselection.png" />
-                                                    </div>
-                                                </h1>
+                                                <h1>Selections</h1>
                                                 <div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
                                                     <form name="annotation-list-filter">
                                                         <div id="annotation-list-filter-groupby">
@@ -252,16 +251,15 @@
                                                                             {{/metadata.title?}}
                                                                          </a>
                                                                          
-                                                                         {{#editable?}}
+                                                                         {{#editable?}}                                                                             
                                                                              <input style="display: none" type="image" title="Edit Selection" 
                                                                                  onclick="return AnnotationList.editAnnotation(this);" 
                                                                                  alt="Edit" src="/site_media/img/icons/meth_edit.png" 
-                                                                                 class="annotation-listitem-icon" />
-                                                                             
+                                                                                 class="annotation-listitem-icon edit" />
                                                                             <input style="display: none" type="image" title="Delete Selection" 
                                                                                 onclick="return AnnotationList.deleteAnnotation(event, this, {{id}});" 
                                                                                 alt="Delete" src="/site_media/img/icons/meth_delete.png" 
-                                                                                class="annotation-listitem-icon delete" />  
+                                                                                class="annotation-listitem-icon delete" />                                                                                 
                                                                          {{/editable?}}
                                                     
                                                                          {{^editable}}

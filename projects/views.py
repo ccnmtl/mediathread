@@ -247,6 +247,16 @@ def project_workspace(request, project_id, feedback=None):
                     }
             panels.append(panel)
             
+        # Create a place for asset editing
+        panel = { 'panel_state': 'closed',
+                  'panel_state_label': "Item Details",
+                  'template': 'asset_quick_edit',
+                  'update_history': False,
+                  'show_colleciton': False,
+                  'context': { 'type': 'asset' }
+                }
+        panels.append(panel)    
+            
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
 

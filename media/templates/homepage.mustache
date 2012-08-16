@@ -260,35 +260,58 @@
                             {{/assets}} 
                             {{#assets}}
                                 <div id="materials" class="column-contents homepage">
-                                <div id="record-{{id}}" class="record record-{{primary_type}}">
-                                    <input type="hidden" class="record" value="{{id}}" name="record-id" />
+                                    <div id="record-{{id}}" class="gallery-item-homepage record-{{primary_type}} gallery-item-{{id}}">
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                                             <a class="asset-title-link"
-                                                href="{{local_url}}">{{{title?default(-Untitled-)}}}</a>
+                                                href="{{local_url}}">
+                                                    {{#title?}}
+                                                        {{{title?ellipses(35)}}}
+                                                    {{/title?}}
+                                                    {{^title}}
+                                                        -Untitled-
+                                                    {{/title}}
+                                                    
+                                            </a>
                                         </h4>
+                                        <div class="asset-thumb">
+                                            {{^thumbable}}
+                                                {{^thumb}}
+                                                    <img class="gallery-item-thumb" src="/site_media/img/thumb_{{media_type_label}}.png" alt="Item Thumbnail" />
+                                                {{/thumb}}
+                                                {{#thumb?}}
+                                                    <img class="gallery-item-thumb" src="{{thumb}}" alt="Item Thumbnail" />
+                                                {{/thumb?}}
+                                            {{/thumbable}}
+                                        </div>
                                         
-                                         <table class="item-level-info">
-                                            <tr>
-                                                <td class="item-thumb">
-                                                    {{#thumb?}}
-                                                    <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
-                                                    {{/thumb?}}
-                                                </td>
-                                             </tr>
-                                             <tr>
-                                                <td class="item-meta">
-                                                    {{#annotation_count?}}
-                                                        <div class="item-annotation-count meta">
-                                                            <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
-                                                            <span class="metadata-value">selections</span>
-                                                            | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
-                                                              <span class="metadata-value">by me</span>
-                                                        </div>
-                                                    {{/annotation_count?}}
-                                                </td>
-                                             </tr>   
-                                         </table>
-                                    </div> {{! end id="record-id" }}
+                                        <div class="actions">
+                                            <a class="collection-choice" href="{{local_url}}" title="Edit item attributes">
+                                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
+                                            </a>
+                                            
+                                            {{#editable?}}
+                                                <a class="collection-choice delete-asset" href="{{id}}" title="Delete asset">
+                                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
+                                                </a>
+                                            {{/editable?}}
+                                        </div>
+                                        
+                                        
+                                        {{#annotation_count?}}
+                                            <div class="item-annotation-count meta">
+                                                <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
+                                                <span class="metadata-value">selections</span>
+                                                | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
+                                                  <span class="metadata-value">by me</span>
+                                            </div>
+                                        {{/annotation_count?}}
+                                        {{^annotation_count}}
+                                            <div class="item-annotation-count meta">
+                                                <span class="metadata-label item-annotation-count-total">0</span>
+                                                <span class="metadata-value">selections</span>
+                                            </div>
+                                        {{/annotation_count}}
+                                    </div>
                                     </div> {{! end id=materials, class="column-contents scroll" }} 
                                 {{/assets}}
                             

@@ -11,6 +11,7 @@
             this.active_asset_annotations = null;
             this.config = config;
             this.view_callback = config.view_callback;
+            this.update_history = config.update_history !== undefined ? config.update_history : true;
             
             window.onbeforeunload = this.saveItemPrompt;
             
@@ -106,18 +107,19 @@
                         
                         // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                         var frm = document.forms['annotation-list-filter'];
-    
-                        frm.elements.showall.checked = hs_DataRetrieve('annotation-list-filter__showall');
-                        jQuery(frm.elements.groupby).val(
-                                hs_DataRetrieve('annotation-list-filter__group') || 'author');
-    
-                        jQuery(frm.elements.showall).change(self.showHideAnnotations);
-                        jQuery(frm.elements.groupby).change(function () {
-                            var val = jQuery(this).val();
-                            hs_DataStore('annotation-list-filter__group', val);
-                            self.groupBy(val);
-                        });
-                        self.groupBy(jQuery(frm.elements.groupby).val());
+                        if (frm) {
+                            frm.elements.showall.checked = hs_DataRetrieve('annotation-list-filter__showall');
+                            jQuery(frm.elements.groupby).val(
+                                    hs_DataRetrieve('annotation-list-filter__group') || 'author');
+        
+                            jQuery(frm.elements.showall).change(self.showHideAnnotations);
+                            jQuery(frm.elements.groupby).change(function () {
+                                var val = jQuery(this).val();
+                                hs_DataStore('annotation-list-filter__group', val);
+                                self.groupBy(val);
+                            });
+                            self.groupBy(jQuery(frm.elements.groupby).val());
+                        }
                     }
                 );
             }
@@ -205,6 +207,10 @@
         };
         
         this.updateAnnotationList = function () {
+            var frm = document.forms['annotation-list-filter'];
+            if (!frm) {
+                return;
+            }
             var asset_full = self.asset_full_json;
             var grouping = self.grouping;
             var context = {'annotation_list': []};
@@ -374,8 +380,11 @@
             
             jQuery(element).dialog({
                 buttons: [{ text: "Export",
-                    click: function () { jQuery("form[name=export-finalcutpro]").trigger('submit'); jQuery(this).dialog("close"); }}
-                 ],
+                    click: function () {
+                        jQuery("form[name=export-finalcutpro]").trigger('submit');
+                        jQuery(this).dialog("close");
+                    }
+                }],
                 draggable: true,
                 resizable: true,
                 modal: true,
@@ -424,16 +433,14 @@
             event.stopPropagation();
             
             var url = MediaThread.urls['asset-delete'](asset_id);
-            ajaxDelete(null, null,
-                { 'href': url, 'success': this.deleteItemComplete, 'dom': jQuery('#asset-global-annotation') });
+            ajaxDelete(null, null, {
+                'href': url,
+                'success': function () {
+                    jQuery(window).trigger("asset.on_delete", [ asset_id ]);
+                }
+            });
 
             return false;
-        };
-        
-        this.deleteItemComplete = function () {
-            // whate now? The Item is gone -- get the panel to re-expand I think
-            // For the moment, I'm going to cheat and navigate
-            window.location = '/asset/';
         };
         
         ///Item Save -- global annotation
@@ -512,14 +519,15 @@
             var self = this;
             if (annotation_id === self.active_annotation.id) {
                 var url = MediaThread.urls['annotation-delete'](self.active_asset.id, annotation_id);
-                ajaxDelete(null, null,
-                        { 'href': url, 'success': this.deleteAnnotationComplete, 'dom': jQuery('#accordion-' + annotation_id + ' a') });
+                ajaxDelete(null, "annotation-body-" + annotation_id,
+                        { 'href': url, 'success': this.deleteAnnotationComplete });
             }
             return false;
         };
         
         this.deleteAnnotationComplete = function () {
             self.refresh({ asset_id: self.active_asset.id });
+            jQuery(window).trigger("annotation.on_delete", []);
         };
         
         this.cancelAnnotation = function () {
@@ -535,6 +543,7 @@
                 
                 jQuery("#asset-global-annotation, #annotations-organized").fadeIn();
             });
+            return false;
         };
         
         ///Annotation Add Form
@@ -649,13 +658,22 @@
             
             if (frm.elements['annotation-title'].value === '') {
                 alert('Please specify a selection title');
+                jQuery(saveButton).removeAttr("disabled");
+                jQuery(saveButton).removeClass("saving");
+                jQuery(saveButton).attr("value", "Save");
                 return;
             }
             
             // Save the results up on the server
-            var url =  frm.elements['annotation-id'] ?
-                url = MediaThread.urls['annotation-edit'](self.active_asset.id, frm.elements['annotation-id'].value) :
+            var url, creating;
+            
+            if (frm.elements['annotation-id']) {
+                url = MediaThread.urls['annotation-edit'](self.active_asset.id, frm.elements['annotation-id'].value);
+                creating = false;
+            } else {
                 url = MediaThread.urls['annotation-create'](self.active_asset.id);
+                creating = true;
+            }
                 
             jQuery.ajax({
                 type: 'POST',
@@ -689,6 +707,10 @@
                         jQuery(saveButton).removeAttr("disabled");
                         jQuery(saveButton).removeClass("saving");
                         jQuery(saveButton).attr("value", "Save");
+                        
+                        if (creating) {
+                            jQuery(window).trigger("annotation.on_create", []);
+                        }
                          
                         jQuery("#asset-details-annotations-current").fadeOut(function () {
                             jQuery("#asset-details-annotations-current").hide();
@@ -708,6 +730,10 @@
         // HTML 5.0 browsers: https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history
         // < HTML 5.0 browsers: Hashtag implementation
         this._addHistory = function (replace) {
+            if (self.update_history === false) {
+                return;
+            }
+            
             if (window.history.pushState) {
                 var action = replace ? window.history.replaceState : window.history.pushState;
                 var currentState = { asset_id: ((self.active_asset) ? self.active_asset.id : self.config.asset_id) };

@@ -58,6 +58,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         'default_target': panel.context.project.id + "-videoclipbox",
         'onPrepareCitation': self.onPrepareCitation,
         'presentation': "medium",
+        'clipform': true,
         'winHeight': function () {
             var elt = jQuery(self.el).find("div.asset-view-published")[0];
             return jQuery(elt).height() -

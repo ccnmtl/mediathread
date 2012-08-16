@@ -141,14 +141,14 @@
                         <h4 id="asset-item-{{id}}" class="asset_title">
                             <div class="actions">
                                 {{#editable?}}
-                                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                        <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
+                                    <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
+                                        <img src="/site_media/img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
                                     </a>
                                     <a class="collection-choice edit-asset" href="{{id}}" title="Edit item attributes">
                                         <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
                                     </a>
-                                    <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
-                                        <img src="/site_media/img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
+                                        <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
                                     </a>
                                 {{/editable?}}
                             </div>
@@ -279,11 +279,11 @@
                                                             <td class="selection-trash">
                                                                 
                                                                 <div class="actions">
-                                                                    <a class="collection-choice delete-annotation" href="{{id}}" title="Delete selection">
-                                                                        <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
-                                                                    </a>
                                                                     <a class="collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
                                                                         <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit selection attributes"  />
+                                                                    </a>
+                                                                    <a class="collection-choice delete-annotation" href="{{id}}" title="Delete selection">
+                                                                        <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
                                                                     </a>
                                                                 </div>
                                                                 

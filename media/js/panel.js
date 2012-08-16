@@ -289,8 +289,20 @@
                 jQuery(window).trigger("resize");
             }
         };
-
         
+        this.maximizePanel = function (panel) {
+            if (jQuery(panel).hasClass("minimized")) {
+                jQuery(panel).removeClass("minimized").addClass("maximized");
+                jQuery(panel).siblings('td.panel-container').hide();
+                
+                var panelTab = jQuery(panel).next().children("div.pantab")[0];
+                jQuery(panelTab).parent().removeClass("minimized").addClass("maximized");
+                jQuery(panelTab).removeClass("minimized").addClass("maximized");
+                
+                self.verifyLayout(panel);
+                jQuery(window).trigger("resize");
+            }
+        };
     })();
 })();
 

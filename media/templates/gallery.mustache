@@ -133,7 +133,7 @@
                    </div>
                 {{/assets}} 
                 {{#assets}}
-                    <div class="gallery-item record-{{primary_type}} gallery-item-{{id}}">
+                    <div id="record-{{id}}" class="gallery-item record-{{primary_type}} gallery-item-{{id}} static-height">
                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                             <a class="asset-title-link"
                                 href="{{local_url}}">
@@ -157,6 +157,20 @@
                             {{/thumbable}}
                         </div>
                         
+                        <div class="actions">
+                            <a class="collection-choice edit-asset-inplace" href="{{local_url}}" title="Edit item attributes">
+                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
+                            </a>
+                            
+                            {{#editable?}}
+                                <a class="collection-choice delete-asset" href="{{id}}" title="Delete asset">
+                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
+                                </a>
+                            {{/editable?}}
+                        </div>
+
+                        
+                        
                         {{#annotation_count?}}
                             <div class="item-annotation-count meta">
                                 <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
@@ -165,6 +179,12 @@
                                   <span class="metadata-value">by me</span>
                             </div>
                         {{/annotation_count?}}
+                        {{^annotation_count}}
+                            <div class="item-annotation-count meta">
+                                <span class="metadata-label item-annotation-count-total">0</span>
+                                <span class="metadata-value">selections</span>
+                            </div>
+                        {{/annotation_count}}
                     </div>
                 {{/assets}}
                   

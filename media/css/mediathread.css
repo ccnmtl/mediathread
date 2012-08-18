@@ -370,7 +370,6 @@ html.busy, html.busy * {
     background-image: url(../img/ajax-loader.gif);
     background-repeat: no-repeat;
     background-position: center center;
-    cursor: wait;
 }
 
 /* ########## Blocks style definitions ########## */
@@ -985,13 +984,55 @@ td.panel-container.asset-workspace {
     border-left: 1px solid #A88448;
 }
 
-td.panel-container.asset-workspace-dialog {
+.asset-workspace-dialog {
     background-color: white !important;
-    min-width: 330px;
     width: 100%;
     height: 100%;
-    border: none;    
+    border: none;
+    padding: 0 !important;
+    overflow: hidden;
 }
+
+div.panel.asset-workspace-dialog table.panel-subcontainer {
+    margin: 0 0 0 10px;
+    width: 500px;
+}
+
+div.panel.asset-workspace-dialog td.panel-container.asset.fixed, 
+div.panel.asset-workspace-dialog td.panel-container.asset.fixed div.asset-view-container {
+    width: 825px;
+    min-width: 825px;
+}
+
+div.panel.asset-workspace-dialog div.asset-view-title {
+    margin: 10px 0 0 0;
+}
+
+div.panel.asset-workspace-dialog div.asset-view-published {
+    border: 0;
+    width: 500px !important;
+    height: 450px;    
+    margin-left: 0;
+    background-color: #ededed;
+}
+
+div.panel.asset-workspace-dialog div.asset-view-tabs {
+    margin-left: 15px;
+    height: 450px;
+    border: 1px solid #AAA;
+    width: 285px;
+}
+
+div.panel.asset-workspace-dialog #id_annotation-body {
+    height: 65px !important;
+}
+
+div.panel.asset-workspace-dialog #asset-global-annotation,
+div.panel.asset-workspace-dialog #annotation-current,
+div.panel.asset-workspace-dialog #asset-details-annotations-current {
+    border: none;
+}
+
 
 td.panel-container.discussion {
     width: 100%;
@@ -2849,11 +2890,13 @@ p.sherd-instructions {
 }
 
 .sherd-clipform-editing input.regButton.videoplay {
-    width: 55px;
+    width: 25px;
+    margin: 0;
+    padding-left: 0;
 }
 
 .sherd-clipform-editing td {
-    padding:5px;
+    padding: 5px;
     border: 0px;
 }
 
@@ -3665,9 +3708,6 @@ div.asset-view-container div.asset-view-published {
     float: left;
 }
 
-div.asset-view-container div.asset-view-published.asset-view-dialog {
-    border: none;
-}
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;

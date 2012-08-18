@@ -140,10 +140,11 @@
                         <input type="hidden" class="record" value="{{id}}" name="record-id" />
                         <h4 id="asset-item-{{id}}" class="asset_title">
                             <div class="actions">
+                                <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
+                                    <img src="/site_media/img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                                </a>
+                                
                                 {{#editable?}}
-                                    <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
-                                        <img src="/site_media/img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
-                                    </a>
                                     <a class="collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
                                         <img src="/site_media/img/icons/meth_edit_inplace.png" class="edit_icon" alt="Edit item attributes"  />
                                     </a>

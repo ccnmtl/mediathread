@@ -1,3 +1,17 @@
+/**
+ * Listens For:
+ * asset.edit > open asset edit dialog
+ * asset.on_delete > update annotation view if required
+ *
+ * annotation.edit > open annotation edit dialog
+ * annotation.create > open create annotation dialog
+ * annotation.on_cancel > close create/save dialog
+ * annotation.on_save > close create/save dialog
+ *
+ * Signals:
+ * Nothing
+ */
+
 var AssetPanelHandler = function (el, parent, panel, space_owner) {
     var self = this;
     
@@ -18,10 +32,13 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     jQuery(window).bind('asset.on_delete', { 'self': self },
         function (event, asset_id) { event.data.self.onDeleteItem(asset_id); });
 
-    //jQuery(window).bind('asset.edit', { 'self': self }, self.dialog);
-    //jQuery(window).bind('annotation.create', { 'self': self }, self.dialog);
-    //jQuery(window).bind('annotation.edit', { 'self': self }, self.dialog);
+    jQuery(window).bind('asset.edit', { 'self': self }, self.dialog);
+    jQuery(window).bind('annotation.create', { 'self': self }, self.dialog);
+    jQuery(window).bind('annotation.edit', { 'self': self }, self.dialog);
     
+    jQuery(window).bind('annotation.on_cancel', { 'self': self }, self.closeDialog);
+    jQuery(window).bind('annotation.on_save', { 'self': self }, self.closeDialog);
+    jQuery(window).bind('annotation.on_create', { 'self': self }, self.closeDialog);
     
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -31,9 +48,13 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'clipform': true,
         'autoplay': false,
         'winHeight': function () {
-            var elt = jQuery(self.el).find("div.asset-view-published")[0];
-            return jQuery(elt).height() -
-                (jQuery(elt).find("div.annotation-title").height() + jQuery(elt).find("div.asset-title").height() + 15);
+            if (self.dialog) {
+                return 450;
+            } else {
+                var elt = jQuery(self.el).find("div.asset-view-published")[0];
+                return jQuery(elt).height() -
+                    (jQuery(elt).find("div.annotation-title").height() + jQuery(elt).find("div.asset-title").height() + 15);
+            }
         }
     });
     
@@ -70,12 +91,13 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
 AssetPanelHandler.prototype.closeDialog = function (event) {
     var self = event.data.self;
     
+    if (self.dialog) {
+        jQuery(self.dialog).dialog("close");
+    }
 };
 
 AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
     var self = event.data.self;
-    
-    var element = jQuery("#asset-workspace-panel-container")[0];
     
     var title = "Edit Item";
     if (event.type === "annotation") {
@@ -85,24 +107,37 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
             title = "Edit Selection";
         }
     }
-        
-    self.dialog = jQuery(element).dialog({
+    
+    var dlg = jQuery("#asset-workspace-panel-container")[0];
+    var elt = jQuery(dlg).find("div.asset-view-tabs").hide();
+    
+    self.dialog = jQuery(dlg).dialog({
         open: function () {
+            self.dialog = true;
             self.citationView.openCitationById(null, assetId, annotationId);
-            
+                        
             // Setup the edit view
             AnnotationList.init({
                 "asset_id": assetId,
                 "annotation_id": annotationId,
-                "edit_state": event.type === "annotation" && event.namespace === "create" ? "new" : "",
-                "update_history": false
+                "edit_state": event.type + "." + event.namespace,
+                "update_history": false,
+                "view_callback": function () {
+                    if (self.dialog) {
+                        jQuery(elt).fadeIn("slow");
+                    }
+                }
             });
+        },
+        close: function () {
+            self.dialog = null;
         },
         title: title,
         draggable: true,
         resizable: false,
         modal: true,
-        width: 934,
+        width: 825,
+        height: 520,
         position: "top",
         zIndex: 10000
     });

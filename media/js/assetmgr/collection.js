@@ -1,3 +1,16 @@
+/**
+ * Listens For:
+ * asset.on_delete > refresh
+ * annotation.on_create > refresh
+ * annotation.on_save > refresh
+ *
+ * Signals:
+ * asset.edit > when edit in place is clicked
+ * asset.on_delete > after ajaxDelete is called
+ * annotation.create > when create selection is clicked
+ * annotation.edit > when edit in place is clicked
+ */
+
 var CollectionList = function (config) {
     var self = this;
     self.template_label = config.template_label;
@@ -23,6 +36,12 @@ var CollectionList = function (config) {
     
     jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) { event.data.self.refresh(); });
     jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) { event.data.self.refresh(); });
+    jQuery(window).bind('annotation.on_save', { 'self': self }, function (event) {
+        var self = event.data.self;
+        if (self.citable) {
+            event.data.self.refresh();
+        }
+    });
     
     jQuery.ajax({
         url: '/site_media/templates/' + config.template + '.mustache?nocache=v2',

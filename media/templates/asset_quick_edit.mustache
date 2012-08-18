@@ -15,7 +15,7 @@
                         
                         <div class="asset-view-container">
                             <div class="asset-view-published asset-view-dialog">
-                                <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
+                                <div id="asset-workspace-videoclipbox" class="videoclipbox">
                                     <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                                     <div class="asset-display"></div>
                                     <div class="clipstrip-display"></div>
@@ -111,7 +111,7 @@
                                                         Copy Selection
                                                     {{/copying?}}
                                                     {{^copying}}
-                                                        Add Selection
+                                                        Create Selection
                                                     {{/copying}}
                                                  {{/id}}
                                             </h1>
@@ -142,11 +142,8 @@
                                                 <input class="media secondary" type="button" name="Save" value="Save" 
                                                     onclick="javascript:AnnotationList.saveAnnotation(this)" />
                                                     
-                                                {{#showCancel?}}
                                                 <input class="media secondary" type="button" name="Cancel" value="Cancel" 
                                                     onclick="javascript:AnnotationList.cancelAnnotation()" />
-                                                {{/showCancel?}}
-                                                    
                                                 
                                                 {{#id?}} <!-- Editing existing annotation -->
                                                 <input type="hidden" name="annotation-id" value="{{id}}" />

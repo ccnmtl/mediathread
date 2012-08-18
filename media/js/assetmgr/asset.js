@@ -15,6 +15,10 @@
             
             window.onbeforeunload = this.saveItemPrompt;
             
+            if (String(window.location.href).match(/edit_state=new/)) {
+                self.config.edit_state = "annotation.create";
+            }
+            
             this.refresh(config);
             
             // setup url rewriting for HTML5 && HTML4 browsers
@@ -420,6 +424,8 @@
         };
         
         this.cancelItem = function () {
+            jQuery(window).trigger("annotation.on_cancel", []);
+            
             var form = jQuery("#edit-global-annotation-form");
             
             jQuery(form).find(".metadata-value-edit").fadeOut(function () {
@@ -472,6 +478,8 @@
                     function (asset_full) {
                         if (json.annotation.creating) {
                             jQuery(window).trigger("annotation.on_create", []);
+                        } else {
+                            jQuery(window).trigger("annotation.on_save", []);
                         }
 
                         self.asset_full_json = asset_full;
@@ -554,6 +562,8 @@
         };
         
         this.cancelAnnotation = function () {
+            jQuery(window).trigger("annotation.on_cancel", []);
+            
             var annotation_id = self.active_annotation ? self.active_annotation.id : null;
             jQuery("#asset-details-annotations-current").fadeOut(function () {
                 self._update({ 'annotation_id' : annotation_id, 'editing': false }, "annotation-current");
@@ -718,6 +728,8 @@
                     function (asset_full) {
                         if (creating) {
                             jQuery(window).trigger("annotation.on_create", []);
+                        } else {
+                            jQuery(window).trigger("annotation.on_save", []);
                         }
                         
                         self.asset_full_json = asset_full;
@@ -795,7 +807,11 @@
                 }
                 if (self.active_annotation) {
                     context.annotation = self.active_annotation;
-                    context.annotation.editing = config.editing;
+                    if (self.config.edit_state === "annotation.edit") {
+                        context.annotation.editing = true;
+                    } else {
+                        context.annotation.editing = config.editing;
+                    }
                 }
             } else if (config.xywh) {
                 self.xywh = config.xywh;
@@ -806,7 +822,9 @@
                         'author_name': MediaThread.user_full_name
                     }
                 };
-            } else if (!self.active_asset_annotations.length || self.active_asset_annotations.length <= 1) {
+            } else if (!self.active_asset_annotations.length ||
+                self.active_asset_annotations.length <= 1 ||
+                self.config.edit_state === "annotation.create") {
                 context.annotation = {
                     'editing': true,
                     'metadata': {
@@ -861,11 +879,6 @@
                     jQuery(elt).fadeIn("slow", function () {
                         if (self.view_callback) {
                             self.view_callback();
-                        }
-
-                        if (self.config.edit_state === "new") {
-                            self.config.edit_state = "";
-                            return self.newAnnotation();
                         }
                     });
                 }

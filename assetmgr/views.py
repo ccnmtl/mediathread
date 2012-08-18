@@ -490,7 +490,8 @@ def detail_asset_json(request, asset_id, options):
             'asset_id': asset.pk,
             }]
     
-    if request.GET.has_key('annotations') or options['include_annotations']:
+    if request.GET.has_key('annotations') or \
+        (options and options.has_key('include_annotations') and options['include_annotations']):
         # @todo: refactor this serialization into a common place.
         def author_name(request, annotation, key):
             if not annotation.author_id:
@@ -514,7 +515,8 @@ def homepage_asset_json(request, asset, logged_in_user, record_owner, options):
     the_json = asset.sherd_json(request)
     
     gannotation, created = SherdNote.objects.global_annotation(asset, record_owner or logged_in_user, auto_create=False)
-    if gannotation and options['owner_selections_are_visible']:
+    if gannotation and \
+        (options.has_key('owner_selections_are_visible') and options['owner_selections_are_visible']):
         the_json['global_annotation'] = gannotation.sherd_json(request, 'x', ('tags', 'body'))
 
     all_annotations = asset.sherdnote_set.filter(range1__isnull=False)

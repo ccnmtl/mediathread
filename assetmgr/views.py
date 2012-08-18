@@ -24,7 +24,7 @@ from djangohelpers.lib import allow_http
 from courseaffils.models import CourseAccess
 from djangosherd.views import create_annotation
 from djangosherd.views import delete_annotation
-from djangosherd.views import edit_annotation
+from djangosherd.views import edit_annotation, update_annotation
 from djangosherd.views import annotation_dispatcher
 from djangosherd.views import AnnotationForm
 from djangosherd.views import GlobalAnnotationForm
@@ -84,7 +84,8 @@ def asset_workspace_courselookup(asset_id=None):
 
 AUTO_COURSE_SELECT[asset_workspace] = asset_workspace_courselookup
     
-    
+@login_required
+@allow_http("GET")    
 def asset_json(request, asset_id):
     the_json = detail_asset_json(request, asset_id, {})
     return HttpResponse(simplejson.dumps(the_json, indent=2), mimetype='application/json')
@@ -168,10 +169,11 @@ def asset_create(request):
                                                          request.REQUEST['noui']),
                                   })
     elif request.is_ajax():
-        return HttpResponse(serializers.serialize('json',asset),
+        return HttpResponse(serializers.serialize('json', asset),
                             mimetype="application/json")
     elif "archive" == asset.primary.label:
-        redirect_url = request.POST.get('redirect-url', reverse('class-add-source'))
+        redirect_url = request.POST.get('redirect-url', 
+                                        reverse('class-add-source'))
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
     else:
@@ -263,17 +265,26 @@ def annotation_create(request, asset_id):
 @login_required    
 @allow_http("POST")
 def annotation_create_global(request, asset_id):
+    if not request.is_ajax():
+        return HttpResponseForbidden("forbidden") 
+    
     try:
         asset = get_object_or_404(Asset, 
                                   pk=asset_id,
                                   course=request.course)
 
         global_annotation = asset.global_annotation(request.user, True)
-    
-        form = request.GET.copy()
-        form['next'] = '.'
-        request.GET = form
-        return edit_annotation(request, global_annotation.id)
+        update_annotation(request, global_annotation)
+        
+        response = { 
+            'asset': { 'id': asset_id }, 
+            'annotation': { 
+                'id': global_annotation.id,
+                'creating': True 
+            } 
+        }
+        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
+        
     except SherdNote.DoesNotExist:
         return HttpResponseForbidden("forbidden")
     

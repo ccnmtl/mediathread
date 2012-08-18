@@ -107,7 +107,10 @@ img.materialCitation {
 }
 
 h4 img.materialCitation {
-    margin: 0 0px 0px 4px;
+    margin: -4px -4px;
+    width: 25px;
+    height: 25px;
+    border: none;
 }
 
 body.mceContentBody {

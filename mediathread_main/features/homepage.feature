@@ -9,9 +9,9 @@ Feature: Homepage
         And there is help for the FROM YOUR INSTRUCTOR column
         And there is help for the ANALYSIS column
         And there is a Compositions column
-        And there is a Collections column
+        And there is a Collection column
         And there is help for the Compositions column
-        And there is help for the Collections column
+        And there is help for the Collection column
         Finished using Selenium
         
     Scenario: 2. Homepage - Student Homepage
@@ -22,12 +22,12 @@ Feature: Homepage
         And there is an ANALYSIS column
         And there is help for the ANALYSIS column
         And there is a Compositions column
-        And there is a Collections column
+        And there is a Collection column
         And there is help for the Compositions column
-        And there is help for the Collections column
+        And there is help for the Collection column
         Finished using Selenium
         
-    Scenario Outline: 3. Homepage - Collections Box - Viewing Items & Selections
+    Scenario Outline: 3. Homepage - Collection Box - Viewing Items & Selections
         Using selenium
         
         Given I am test_instructor in Sample Course
@@ -39,7 +39,7 @@ Feature: Homepage
         # Instructor One
         When I select "Instructor One" as the owner in the Analysis column
         Then the owner is "<instructor_one_relationship>" in the Analysis column
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
@@ -51,7 +51,7 @@ Feature: Homepage
         # Student One
         When I select "Student One" as the owner in the Analysis column
         Then the owner is "<student_one_relationship>" in the Analysis column
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
@@ -63,21 +63,21 @@ Feature: Homepage
         # All Class Members
         When I select "All Class Members" as the owner in the Analysis column
         Then the owner is "All Class Members" in the Analysis column
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
         And the "MAAP Award Reception" item has <total_selections> selections, 1 by me
         
-        Then the collections panel has a "Mediathread: Introduction" item
+        Then the Collection panel has a "Mediathread: Introduction" item
         And the "Mediathread: Introduction" item has no notes
         And the "Mediathread: Introduction" item has no tags
         And the "Mediathread: Introduction" item has no selections
 
-        Then the collections panel has a "The Armory - Home to CCNMTL'S CUMC Office" item
-        And the "The Armory - Home to CCNMTL'S CUMC Office" item has no notes
-        And the "The Armory - Home to CCNMTL'S CUMC Office" item has no tags
-        And the "The Armory - Home to CCNMTL'S CUMC Office" item has no selections
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
+        And the "The Armory - Home to CCNMTL'S CUMC ..." item has no notes
+        And the "The Armory - Home to CCNMTL'S CUMC ..." item has no tags
+        And the "The Armory - Home to CCNMTL'S CUMC ..." item has no selections
         
         And I can filter by "instructor_one" in the Analysis column
         And I can filter by "instructor_one_selection" in the Analysis column
@@ -95,7 +95,7 @@ Feature: Homepage
         | test_student_two    |  Instructor One               |  Student One              | Yes                  | 3                |
         | test_instructor     |  Me                           |  Student One              | No                   | 3                |        
         
-   Scenario: 4. Homepage - Collections Box - Limited Selection Visibility 
+   Scenario: 4. Homepage - Collection Box - Limited Selection Visibility 
         Using selenium
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "No"
@@ -109,7 +109,7 @@ Feature: Homepage
         # Instructor One
         When I select "Instructor One" as the owner in the Analysis column
         Then the owner is "Instructor One" in the Analysis column
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
@@ -121,7 +121,7 @@ Feature: Homepage
         # Student One
         When I select "Student One" as the owner in the Analysis column
         Then the owner is "Me" in the Analysis column
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
@@ -133,7 +133,7 @@ Feature: Homepage
         # Student Two
         When I select "Student Two" as the owner in the Analysis column
         Then the owner is "Student Two" in the Analysis column
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
@@ -145,21 +145,21 @@ Feature: Homepage
         When I select "All Class Members" as the owner in the Analysis column
         Then the owner is "All Class Members" in the Analysis column
         
-        Then the collections panel has a "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has no selections
         And the "MAAP Award Reception" item has 2 selections, 1 by me
         
-        Then the collections panel has a "Mediathread: Introduction" item
+        Then the Collection panel has a "Mediathread: Introduction" item
         And the "Mediathread: Introduction" item has no notes
         And the "Mediathread: Introduction" item has no tags
         And the "Mediathread: Introduction" item has no selections
 
-        Then the collections panel has a "The Armory - Home to CCNMTL'S CUMC Office" item
-        And the "The Armory - Home to CCNMTL'S CUMC Office" item has no notes
-        And the "The Armory - Home to CCNMTL'S CUMC Office" item has no tags
-        And the "The Armory - Home to CCNMTL'S CUMC Office" item has no selections
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
+        And the "The Armory - Home to CCNMTL'S CUMC ..." item has no notes
+        And the "The Armory - Home to CCNMTL'S CUMC ..." item has no tags
+        And the "The Armory - Home to CCNMTL'S CUMC ..." item has no selections
         
         And I can filter by "instructor_one" in the Analysis column
         And I can filter by "instructor_one_selection" in the Analysis column

@@ -1,13 +1,13 @@
 Feature: Manage Sources
 
-    Scenario: 1. Manage Sources - View Source Media, Add Sources, Enable Upload 
+    Scenario: 1. Manage Sources - View Add to My Collection, Add Sources, Enable Upload 
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I click the Source Media button
-        Then I am at the Source Media page
-        And there is a Source Media column
-        And there is help for the Source Media column
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page
+        And there is an Add to My Collection column
+        And there is help for the Add to My Collection column
         And I do not see "Upload Video"
         And I see 0 sources
         
@@ -28,8 +28,8 @@ Feature: Manage Sources
         Then there is an Added button
 
         # Under Source Media        
-        When I click the Source Media button
-        Then I am at the Source Media page
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page
         And I see "Upload Video"
         And I see 1 source
         
@@ -42,7 +42,7 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # By default, instructors and administrators are allowed to upload
-        When I click the Source Media button
+        When I click the Add to My Collection button
         Then I see "Upload Video"
         
         # Student cannot see
@@ -51,7 +51,7 @@ Feature: Manage Sources
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        When I click the Source Media button
+        When I click the Add to My Collection button
         Then I do not see "Upload Video"
 
         Finished using Selenium
@@ -69,7 +69,7 @@ Feature: Manage Sources
         Then I'm told "Your changes have been saved"
         
         # Instructor cannot see
-        When I click the Source Media button
+        When I click the Add to My Collection button
         Then I do not see "Upload Video"
         
         # Student cannot see
@@ -78,7 +78,7 @@ Feature: Manage Sources
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        When I click the Source Media button
+        When I click the Add to My Collection button
         Then I do not see "Upload Video"
         
         Finished using Selenium
@@ -96,7 +96,7 @@ Feature: Manage Sources
         Then I'm told "Your changes have been saved"
         
         # Instructor can see
-        When I click the Source Media button
+        When I click the Add to My Collection button
         Then I see "Upload Video"
         
         # Student can see
@@ -105,7 +105,7 @@ Feature: Manage Sources
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        When I click the Source Media button
+        When I click the Add to My Collection button
         Then I see "Upload Video"
 
         Finished using Selenium

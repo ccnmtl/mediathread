@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Source Media {% endblock %}
+{% block title %}Add to My Collection{% endblock %}
 
 {% block js %}
     {{ block.super }}
@@ -24,7 +24,7 @@
 {% with help_browse_sources as default_help_state %}
                  
     <div id="external-archives" class="top-archive">
-        <h2>Source Media {% include "help/help_button.html" %}{% if is_faculty %}
+        <h2>Add to My Collection{% include "help/help_button.html" %}{% if is_faculty %}
                         <div id="managesources">
                             <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
                         </div>

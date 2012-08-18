@@ -68,8 +68,8 @@ Feature: Composition
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         
-        # The project shows on Recent Activity
-        When I click the Recent Activity button
+        # The project shows on View Recent Activity
+        When I click the View Recent Activity button
         Then the most recent notification is "Composition: Scenario 1"
         
         Finished using Selenium
@@ -142,8 +142,8 @@ Feature: Composition
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         
-        # The project shows on Recent Activity
-        When I click the Recent Activity button
+        # The project shows on View Recent Activity
+        When I click the View Recent Activity button
         Then the most recent notification is "Composition: Scenario 2"
         
         Finished using Selenium

@@ -57,8 +57,8 @@ Feature: Assignment
         And the Assignment panel does not have a Respond To Assignment button
         And the Assignment panel does not have a Responses (1) button
         
-        # The project shows on Recent Activity
-        When I click the Recent Activity button
+        # The project shows on View Recent Activity
+        When I click the View Recent Activity button
         Then the most recent notification is "Assignment: Scenario 1"
         
         Finished using Selenium 
@@ -132,8 +132,8 @@ Feature: Assignment
         And the Composition panel does not have a +/- Author button
         And there is a "Submitted to Instructor" link 
         
-        # The project shows on Recent Activity
-        When I click the Recent Activity button
+        # The project shows on View Recent Activity
+        When I click the View Recent Activity button
         Then the most recent notification is "Sample Assignment Response"
         
         Finished using Selenium 

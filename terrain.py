@@ -5,7 +5,8 @@ from django.test import client
 import sys, os, time
 from selenium.webdriver.common.keys import Keys
 from mediathread.projects.models import Project
-from mediathread.structuredcollaboration.models import Collaboration, CollaborationPolicyRecord
+from mediathread.structuredcollaboration.models import Collaboration
+from mediathread.structuredcollaboration.models import CollaborationPolicyRecord
 
 import time
 try:
@@ -360,25 +361,25 @@ def the_owner_is_name_in_the_title_column(step, name, title):
     assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)
     
     
-@step(u'the collections panel has a "([^"]*)" item')
-def the_collections_panel_has_a_title_item(step, title):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+@step(u'the collection panel has a "([^"]*)" item')
+def the_collection_panel_has_a_title_item(step, title):
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
             return
     
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
 @step(u'the "([^"]*)" item has a note "([^"]*)"')
 def the_title_item_has_a_note_text(step, title, text):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -387,14 +388,14 @@ def the_title_item_has_a_note_text(step, title, text):
             assert note.text == text, "The item note reads %s. Expected %s" % (note.text, text)
             return
             
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
 @step(u'the "([^"]*)" item has ([^"]*) selections, ([^"]*) by me')
 def the_title_item_has_a_total_selections_count_by_me(step, title, total, count):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -406,16 +407,16 @@ def the_title_item_has_a_total_selections_count_by_me(step, title, total, count)
             
             return
             
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
        
     
 @step(u'the "([^"]*)" item has a tag "([^"]*)"')
 def the_title_item_has_a_tag_text(step, title, text):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -426,15 +427,15 @@ def the_title_item_has_a_tag_text(step, title, text):
             assert tag, "Unable to find a tag for the %s item" % title
             return
             
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
     
 @step(u'the "([^"]*)" item has a selection "([^"]*)"')
 def the_title_item_has_a_selection_seltitle(step, title, seltitle):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -443,14 +444,14 @@ def the_title_item_has_a_selection_seltitle(step, title, seltitle):
             assert selection.text == seltitle, "Selection title is %s. Expected %s" % (selection.text, seltitle)
             return
     
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
 @step(u'the "([^"]*)" item has no selections')
 def the_title_item_has_no_selections(step, title):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -460,14 +461,14 @@ def the_title_item_has_no_selections(step, title):
             except:
                 return 
     
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
 @step(u'the "([^"]*)" item has no notes')
 def the_title_item_has_no_notes(step, title):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -477,14 +478,14 @@ def the_title_item_has_no_notes(step, title):
             except:
                 return
             
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
 @step(u'the "([^"]*)" item has no tags')
 def the_title_item_has_no_tags(step, title):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
-    items = panel.find_elements_by_css_selector('div.record')
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -494,13 +495,13 @@ def the_title_item_has_no_tags(step, title):
             except:
                 return
             
-    assert False, "Unable to find an item named %s in the collections panel" % title
+    assert False, "Unable to find an item named %s in the collection panel" % title
     
     
 @step(u'the "([^"]*)" selection has a note "([^"]*)"')
 def the_seltitle_selection_has_a_note_text(step, seltitle, text):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
     selections = panel.find_elements_by_css_selector('td.selection-meta')
     for s in selections:
@@ -511,13 +512,13 @@ def the_seltitle_selection_has_a_note_text(step, seltitle, text):
              assert note.text == text, "The %s note reads %s. Expected %s" % (seltitle, note.text, text) 
              return
         
-    assert False, "Unable to find a selection named %s in the collections panel" % seltitle
+    assert False, "Unable to find a selection named %s in the collection panel" % seltitle
     
     
 @step(u'the "([^"]*)" selection has a tag "([^"]*)"')
 def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
-    panel = get_column('collections')
-    assert panel, "Cannot find the collections panel"
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
     
     selections = panel.find_elements_by_css_selector('td.selection-meta')
     for s in selections:
@@ -530,7 +531,7 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
              assert tag, "Unable to find a tag for the %s selection" % seltitle
              return
         
-    assert False, "Unable to find a selection named %s in the collections panel" % seltitle
+    assert False, "Unable to find a selection named %s in the collection panel" % seltitle
     
 @step(u'I can filter by "([^"]*)" in the ([^"]*) column')    
 def i_can_filter_by_tag_in_the_title_column(step, tag, title):

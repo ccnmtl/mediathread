@@ -61,6 +61,7 @@ urlpatterns = patterns('',
                        
                        # Collections Space
                        (r'^asset/', include('mediathread.assetmgr.urls')),
+                       (r'^annotations/', include('mediathread.djangosherd.urls')),
                        
                        # Bookmarklet Entry point
                        # Staff custom asset entry

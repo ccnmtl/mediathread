@@ -80,6 +80,21 @@
                                                     </div>                                                
                                                 </h1>
                                                 
+                                                {{^user_tags}}
+                                                    {{^notes}}
+                                                    <div id="help_homepage_compositions_section" class="helpblock" style="margin-top: 5px;">
+
+                                                            <h3>Add more information to this item.</h3>
+                                                            
+                                                            <ul>
+                                                            <li>Click the pencil icon in the upper-right corner to add tags and notes.</li>
+                                                            <li>Click the plus icon in the upper-right corner to add a selection.</li>
+                                                            </ul>
+                                                        </div>
+                                                        
+                                                    {{/notes}}
+                                                {{/user_tags}}
+                                                
                                                 <form id="edit-global-annotation-form" method="post"
                                                     {{#global_annotation_id?}}
                                                     action="/asset/save/{{id}}/annotations/{{global_annotation_id}}/"
@@ -269,18 +284,17 @@
                                                                         <p>
                                                                         <div id="annotation-body-{{id}}">
                                                                             <div class="annotation-metadata meta">
-                                                                            {{#annotation.startCode?}}
-                                                                                <div id="clipform-tools" class="annotation-timecode">
-                                                                                    <label for="">Time code:</label>
-                                                                                    <span>{{annotation.startCode}} - {{annotation.endCode}}</span>
-                                                                                    <input type="button" class="regButton videoplay" />
-                                                                                </div>
-                                                                                
-                                                                            {{/annotation.startCode?}}
-                                                                            <div><label for="">Title:</label> {{metadata.title?default(-Untitled-)}}</div>
-                                                                            <div><label for="">Author:</label> <a href="{{home-space?url(metadata.author.username)}}">{{metadata.author_name}}</a></div>
-                                                                            {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}</div>{{/metadata.tags?}}
-                                                                            {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
+                                                                                {{#annotation.startCode?}}
+                                                                                    <div id="clipform-tools" class="annotation-timecode">
+                                                                                        <label for="">Time code:</label>
+                                                                                        <span>{{annotation.startCode}} - {{annotation.endCode}}</span>
+                                                                                        <input type="button" class="regButton videoplay" />
+                                                                                    </div>
+                                                                                {{/annotation.startCode?}}
+                                                                                <div><label for="">Title:</label> {{metadata.title?default(-Untitled-)}}</div>
+                                                                                <div><label for="">Author:</label> <a href="{{home-space?url(metadata.author.username)}}">{{metadata.author_name}}</a></div>
+                                                                                {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}</div>{{/metadata.tags?}}
+                                                                                {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
                                                                             </div>
                                                                         </div>
                                                                         </p>

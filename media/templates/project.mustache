@@ -182,8 +182,14 @@
                             {{#context.can_edit}}
                             <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 <h2>
+                                    <div class="button-form inline">
+                                        <form class="block annotate-media inline" method="GET" action="/asset/">
+                                            <input class="columnbutton media annotate-button" type="submit" value="View All Items"/>
+                                        </form>
+                                    </div>                            
                                     Collection
                                 </h2>
+                                
                                 <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                             </div>
                             {{/context.can_edit}}

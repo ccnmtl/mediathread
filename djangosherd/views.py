@@ -141,6 +141,20 @@ def edit_annotation(request, annot_id):
         redirect_to = request.GET.get('next', '.')
         return HttpResponseRedirect(redirect_to)
     
+@login_required
+def annotation_json(request, annot_id):
+    ann = get_object_or_404(SherdNote, pk=annot_id)
+    rand = ''.join([choice(letters) for i in range(5)])
+  
+    data = { 
+        'assets': dict([('%s_%s' % (rand, ann.asset.pk),
+            ann.asset.sherd_json(request))]),
+        'annotations': [ann.sherd_json(request, rand, ('title','author') )],
+        'type': 'annotation',
+    }
+                            
+    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')    
+    
 @login_required    
 def update_annotation(request, annotation):
     

@@ -160,7 +160,7 @@
                                             <h3>
                                                 {{#editable?}}
                                                     <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
-                                                        href="/project/delete/{{id}}/"><img src="/site_media/img/Trashcan.gif" 
+                                                        href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                         class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
                                     
@@ -211,12 +211,9 @@
                 <div class="column-container media-column-container">
                     <h2>
                         <div class="button-form inline">
-                            {{#assets?}}
                             <form class="block annotate-media hinline" method="GET" action="/asset/">
                                 <input class="columnbutton media annotate-button" type="submit" value="View All Items"/>
                             </form>
-                            {{/assets?}}
-                            
                         </div>
                         collection
                     </h2>
@@ -237,7 +234,7 @@
                                             {{^is_faculty}}    
                                                 <h5>You have not yet collected any items</h5>
                                                 <ul>
-                                                    <li>To collect items, click "Source Media" above.</li>
+                                                    <li>To collect items, click "Add to My Collection" above.</li>
                                                     <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
                                                 </ul>
                                             {{/is_faculty}}

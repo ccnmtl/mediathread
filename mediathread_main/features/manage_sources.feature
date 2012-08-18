@@ -27,7 +27,7 @@ Feature: Manage Sources
         Then I'm told "You Tube has been enabled for your class"
         Then there is an Added button
 
-        # Under Source Media        
+        # Under Add to My Collection        
         When I click the Add to My Collection button
         Then I am at the Add to My Collection page
         And I see "Upload Video"

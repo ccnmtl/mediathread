@@ -902,6 +902,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar {
 table.panel-subcontainer tr td div.project-visibility {
     text-align: right;
     font-size: 80%;
+    margin-right: 5px;
 }
 
 td.filler {
@@ -2157,9 +2158,9 @@ div.gallery-item h4.asset_title {
 .asset-insert-kaltura,
 .asset-insert-vimeo
 {
-    background-image: url(../img/icons/insert_item_video.png);
-    height: 18px;
-    width: 24px;
+    background-image: url(../img/icons/meth_insert_video.png);
+    height: 25px;
+    width: 25px;
     float: left;
     
 }
@@ -2167,17 +2168,17 @@ div.gallery-item h4.asset_title {
 .asset-insert-image,
 .asset-insert-image_fpx
 {
-    background-image: url(../img/icons/insert_item_image.png);
-    height: 18px;
-    width: 24px;
+    background-image: url(../img/icons/meth_insert_image.png);
+    height: 25px;
+    width: 25px;
     float: left;
 }
 
 .asset-insert-mp3
 {
-    background-image: url(../img/icons/insert_item_audio.png);
-    height: 18px;
-    width: 24px;
+    background-image: url(../img/icons/meth_insert_audio.png);
+    height: 25px;
+    width: 25px;
     float: left;
     
 }
@@ -2898,6 +2899,11 @@ input.videoplay {
     margin: 0 5px;
 }
 
+.meta.annotation-global-tags,
+.meta.annotation-global-body {
+    margin: 0;
+}
+
 .annotation-metadata
 {
     font-size: 100%;
@@ -3034,7 +3040,7 @@ div#instructor-column h4.inst-header.assignment {
 }
 
 div#materials {
-    margin: 5px 5px 5px;
+    margin: 0 5px;
     overflow-x: hidden;
     box-shadow: none;
     border: none;
@@ -3095,6 +3101,14 @@ div.gallery-item h4 a
     margin-left: 30px;
     display: block;
 }
+
+div.gallery-item-homepage h4 {
+    margin-bottom: 5px !important;
+    text-align: left;
+    overflow: hidden;
+    max-height: 48px;
+}
+
 
 div.gallery-item h4 {
     margin-bottom: 5px;
@@ -3268,6 +3282,10 @@ table.selection-level-info td.selection-trash {
 input.media {
     background-image: url("../img/buttons/collections_button_bg.jpg");
     border-color: #c89345;
+}
+
+input.media.annotate-button {
+    float: right;
 }
 
 input.media.secondary {
@@ -3508,7 +3526,7 @@ margin-left: 269px;
 }
 
 .annotation-title.materialCitation h2 {
-    background: #969696 url('../img/icons/item_video.gif') 5px 3px no-repeat;
+    background: #969696 url('../img/icons/meth_video.png') 5px 3px no-repeat;
     color:#DEDEDE;
     font-weight:normal;
     margin:0 0 0.5em;

@@ -20,7 +20,7 @@ BASIC LETTUCE VOCABULARY
 * I am <username> in <coursename>
 * I am at the <page title fragment> page
 * I click the <button label> button, 
-    ex: I click the Source Media button
+    ex: I click the Add to My Collection button
 * There is an <button label> button
 * There is not a <button label> button
 * I see <some text>

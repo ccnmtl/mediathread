@@ -2016,7 +2016,7 @@ margin: 0 0 5px 0;
   }
 
 #id_annotation-body { 
-    height: 65px;
+    height: 150px;
     width: 98%;
 }
 
@@ -3619,7 +3619,7 @@ div.asset-view-container div.asset-view-published.asset-view-dialog {
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
-    width: 32%;
+    width: 33%;
     float: left;
 }
 
@@ -3666,6 +3666,13 @@ div#annotations-organized h1 {
 div#asset-global-annotation div.metadata-value {
     padding: 5px 5px 5px 0;
     border: 1px solid white;
+}
+
+div#asset-global-annotation div.metadata-value.global-annotation-notes {
+    padding: 5px 5px 5px 0;
+    border: 1px solid white;
+    max-height: 100px;
+    overflow-x: auto;
 }
 
 div#asset-global-annotation div.metadata {

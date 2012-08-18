@@ -459,25 +459,48 @@
                     alert('There was an error saving your changes.');
                 },
                 success: function (json, textStatus, xhr) {
-                    setTimeout(function () {
+                    // Repopulate the cache & refresh the asset view
+                    // @todo -- if asset_json could be moved over to djangosherd:views.py,
+                    // then create_annotation, edit_annotation could just return the full asset json
+                    // And eliminate this extra call.
+                    djangosherd.storage.get({
+                        id: json.asset.id,
+                        type: 'asset',
+                        url: MediaThread.urls['asset-json'](json.asset.id,/*annotations=*/true)
+                    },
+                    false,
+                    function (asset_full) {
+                        if (json.annotation.creating) {
+                            jQuery(window).trigger("annotation.on_create", []);
+                        }
+
+                        self.asset_full_json = asset_full;
+                        var theAsset;
+                        for (var key in asset_full.assets) {
+                            if (asset_full.assets.hasOwnProperty(key)) {
+                                theAsset = asset_full.assets[key];
+                                break;
+                            }
+                        }
+                        self.active_asset = theAsset;
+                        self.active_asset_annotations = asset_full.annotations;
+                        
                         jQuery(saveButton).removeAttr("disabled");
                         jQuery(saveButton).removeClass("saving");
                         jQuery(saveButton).attr("value", "Save");
                         
-                        // transfer input value to the read-only div display
-                        var form = jQuery("#edit-global-annotation-form");
-                        
-                        var elt = jQuery(form).find("div.global-annotation-tags");
-                        jQuery(elt).html(jQuery(form).find("#id_annotation-tags").val());
-                        
-                        elt = jQuery(form).find("div.global-annotation-notes");
-                        jQuery(elt).html(jQuery(form).find("#id_annotation-body").val());
-                        
-                        jQuery(form).find(".metadata-value-edit").fadeOut(function () {
-                            jQuery(form).find("div.metadata-value").show();
-                            jQuery("#annotations-organized-container, #annotation-current").fadeIn();
+                        var context = { 'asset-current': self.active_asset };
+                         
+                        Mustache.update("asset-global-annotation", context, {
+                            pre: function (elt) { jQuery(elt).hide(); },
+                            post: function (elt) {
+                                jQuery(elt).fadeIn("slow", function () {
+                                    jQuery("#annotations-organized-container, #annotation-current").fadeIn();
+                                    jQuery(window).trigger("resize");
+                                });
+                            }
                         });
-                    }, 1000);
+                    });
                 }
             });
             
@@ -533,7 +556,7 @@
         this.cancelAnnotation = function () {
             var annotation_id = self.active_annotation ? self.active_annotation.id : null;
             jQuery("#asset-details-annotations-current").fadeOut(function () {
-                self._update({ 'annotation_id' : annotation_id }, "annotation-current");
+                self._update({ 'annotation_id' : annotation_id, 'editing': false }, "annotation-current");
                 
                 if (self.active_annotation) {
                     var active = jQuery("#accordion-" + self.active_annotation.id)[0];
@@ -807,6 +830,7 @@
                     });
                     
                     Mustache.update("asset-view-header", context);
+                    Mustache.update("asset-global-annotation", context);
                     
                     if (template_label === "asset-view-details") {
                         Mustache.update("asset-sources", context);
@@ -828,8 +852,7 @@
                             djangosherd.assetview.clipform.setState(self.xywh, {'mode': 'create' });
                         }
                     } else {
-                        // /#default initialization. no annotation defined.
-                        // don't need to set state on clipstrip/form as there is no state
+                        // #default initialization. no annotation defined.
                         djangosherd.assetview.setState();
                         djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 },
                             { 'mode': context.annotation && context.annotation.editing ? 'create' : 'browse' });

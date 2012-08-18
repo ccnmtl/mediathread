@@ -462,7 +462,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         // Switch to Edit View
         jQuery(self.essaySpace).hide();
         
-        jQuery(self.el).find("td.panhandle-stripe div.label").html("Embed Media");
+        jQuery(self.el).find("td.panhandle-stripe div.label").html("Insert Selections");
         jQuery(self.el).find("input.project-previewbutton").attr("value", "Preview");
         jQuery(self.el).find("div.asset-view-published").hide();
         jQuery(self.el).find("h1.project-title").hide();
@@ -515,7 +515,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.citationView.decorateLinks(self.essaySpace.id);
 
         jQuery(self.essaySpace).show();
-        jQuery(self.el).find("td.panhandle-stripe div.label").html("View Media");
+        jQuery(self.el).find("td.panhandle-stripe div.label").html("View Inserted Selections");
         jQuery(self.el).find("input.project-previewbutton").attr("value", "Edit");
         jQuery(self.el).find("div.asset-view-published").show();
         jQuery(self.el).find("h1.project-title").show();

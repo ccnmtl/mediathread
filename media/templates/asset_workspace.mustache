@@ -3,7 +3,7 @@
     </td>
     
     <td class="panhandle-stripe collection">
-        <div class="label">Media Collection</div>
+        <div class="label">Collection</div>
     </td>
 
     <td id="asset-workspace-panel-container" class="panel-container open asset-workspace parent">
@@ -54,10 +54,12 @@
                                 <div id="tabs-1">
                                     {{#>>asset-view-details}}
                                     <div id="asset-view-details" class="asset-view-details">
+                                        {{#>>asset-global-annotation}}
                                         <div id="asset-global-annotation"
                                             {{#annotation.editing?}}
                                                 style="display: none"
                                             {{/annotation.editing?}}>
+                                            
                                             {{#asset-current}}
                                                 <h1>Item
                                                     <div class="actions">                                                           
@@ -90,7 +92,6 @@
                                                 
                                                     <div class="metadata">
                                                         <div class="metadata-label">My Tags: 
-                                                            {{^user_tags}}<span class="helptext">[Tags help organize your media collection]</span>{{/user_tags}}
                                                         </div> 
                                                         <div class="metadata-value global-annotation-tags">
                                                             {{#user_tags}}
@@ -105,7 +106,6 @@
                                                     </div>
                                                     <div class="metadata">
                                                         <div class="metadata-label">My Notes:
-                                                            {{^notes}}<span class="helptext">[Notes are for longer thoughts]</span>{{/notes}}
                                                         </div>
                                                         <div class="metadata-value global-annotation-notes">
                                                             {{notes}}
@@ -125,7 +125,8 @@
                                                     <div class="visualclear"></div>
                                                 </form>
                                             {{/asset-current}}
-                                        </div> {{! end global annotation }}
+                                        </div>
+                                        {{/>>asset-global-annotation}}
                                         
                                         {{#>>annotation-current}}
                                             <div id="annotation-current">
@@ -166,11 +167,6 @@
                                                 
                                                     <form name="edit-annotation-form" onsubmit="return false;">                                                    
                                                         <div class="asset-annotator">
-                                                            {{^global_annotation_id}}
-                                                            <p class="sherd-instructions" style="margin-bottom: -12px">
-                                                                This item is not currently in your collection. Add a selection to make it your own.
-                                                            </p>
-                                                            {{/global_annotation_id}}
                                                             <div id="clipform-display"></div>
                                                         </div>
                                                         <div id="annotation-body">

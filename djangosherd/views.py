@@ -131,7 +131,19 @@ def edit_annotation(request, annot_id):
 
     if annotation.author != request.user:
         return HttpResponseForbidden("forbidden")
+    
+    update_annotation(request, annotation)
 
+    if request.is_ajax():
+        response = { 'asset': { 'id': annotation.asset_id }, 'annotation': { 'id': annotation.id } }
+        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
+    else:
+        redirect_to = request.GET.get('next', '.')
+        return HttpResponseRedirect(redirect_to)
+    
+@login_required    
+def update_annotation(request, annotation):
+    
     form = dict((key[len('annotation-'):], val) for key, val in request.POST.items()
                 if key.startswith('annotation-'))
 
@@ -148,11 +160,5 @@ def edit_annotation(request, annot_id):
         if field == 'tags': default = ''
         setattr(annotation, field,
                 form[field] or default)
+        
     annotation.save()
-
-    if request.is_ajax():
-        response = { 'asset': { 'id': annotation.asset_id }, 'annotation': { 'id': annotation.id } }
-        return HttpResponse(simplejson.dumps(response), mimetype="application/json")
-    else:
-        redirect_to = request.GET.get('next', '.')
-        return HttpResponseRedirect(redirect_to)

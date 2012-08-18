@@ -149,8 +149,6 @@ AssetPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
 
-    visible -= 10;
-    
     // Resize the collections box, subtracting its header elements
     var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
     jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
@@ -160,8 +158,13 @@ AssetPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
     jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
     
-    visible -= jQuery('ul.ui-tabs-nav').height() + jQuery("div#asset-global-annotation").outerHeight() + 30;
+    visible -= jQuery('ul.ui-tabs-nav').outerHeight() + 
+        jQuery("div#asset-global-annotation").outerHeight() + 30;
     jQuery(self.el).find('div#annotations-organized').css('height', (visible) + "px");
+    
+    visible -= jQuery("div#annotations-organized h1").outerHeight() +
+        jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 30;
+    jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
     jQuery("div.accordion").accordion("resize");
 };
 
@@ -193,8 +196,7 @@ AssetPanelHandler.prototype.onDeleteItem = function (asset_id) {
     }
     
     if (asset_id === self.current_asset) {
-        var displayNow = jQuery(self.el).find('td.panel-container.collection').hasClass('minimized');
-        self.showAsset(self.current_asset, null, displayNow);
+        AnnotationList.refresh({ 'asset_id': asset_id });
     }
 };
 

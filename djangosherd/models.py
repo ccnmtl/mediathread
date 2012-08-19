@@ -111,7 +111,6 @@ class Annotation(models.Model):
             'url': self.get_absolute_url(),
             'is_null': self.is_null()
             }
-        
 
 class SherdNoteManager(models.Manager):
 
@@ -131,11 +130,6 @@ class SherdNoteManager(models.Manager):
             except:
                 gannotation = None
             return gannotation, False
-
-    @property
-    def dir(self):
-        return dir(self)
-        
 
     def modified_filter(self,txt_date_range,qs=None):
         if qs is None:
@@ -326,11 +320,6 @@ class SherdNote(Annotation):
 
         return Annotation.save(self, *args, **kw)
         
-        
-    @property
-    def dir(self):
-        return dir(self)
-
     @classmethod
     def date_filter_for(cls, field):
 
@@ -348,8 +337,7 @@ class SherdNote(Annotation):
                 return date > over_a_week_ago
 
         return date_filter
-                
-
+    
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants
     helpful in answering:

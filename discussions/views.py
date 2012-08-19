@@ -145,6 +145,17 @@ def discussion_view(request, discussion_id):
             'context': threaded_comment_json(root_comment, request.user)
         }]
         
+        # Create a place for asset editing
+        panel = { 'panel_state': 'closed',
+                  'panel_state_label': "Item Details",
+                  'template': 'asset_quick_edit',
+                  'update_history': False,
+                  'show_colleciton': False,
+                  'context': { 'type': 'asset' }
+        }
+        data['panels'].append(panel)    
+
+        
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
 @allow_http("POST")    

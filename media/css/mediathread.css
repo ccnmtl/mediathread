@@ -990,7 +990,7 @@ td.panel-container.asset-workspace {
     height: 100%;
     border: none;
     padding: 0 !important;
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 div.panel.asset-workspace-dialog table.panel-subcontainer {
@@ -2180,7 +2180,7 @@ div.gallery-item h4.asset_title {
 }
 
 .asset_title.asset-mp3 {
-    background-image: url(../img/icons/meth_soundfile.png);
+    background-image: url(../img/icons/meth_audio.png);
 }
 
 .asset-insert-flv,
@@ -3791,6 +3791,7 @@ input[type="button"].saving {
 
 div#asset-sources {
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 form[name="annotation-list-filter"] {

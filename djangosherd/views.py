@@ -15,7 +15,8 @@ from tagging.utils import calculate_cloud
 from djangohelpers.lib import allow_http
 from djangohelpers.lib import rendered_with
 
-from courseaffils.lib import in_course_or_404,in_course,get_public_name
+from courseaffils.lib import in_course_or_404, in_course,get_public_name
+from mediathread_main import course_details
 
 import simplejson
 import re
@@ -140,20 +141,6 @@ def edit_annotation(request, annot_id):
     else:
         redirect_to = request.GET.get('next', '.')
         return HttpResponseRedirect(redirect_to)
-    
-@login_required
-def annotation_json(request, annot_id):
-    ann = get_object_or_404(SherdNote, pk=annot_id)
-    rand = ''.join([choice(letters) for i in range(5)])
-  
-    data = { 
-        'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-            ann.asset.sherd_json(request))]),
-        'annotations': [ann.sherd_json(request, rand, ('title','author') )],
-        'type': 'annotation',
-    }
-                            
-    return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')    
     
 @login_required    
 def update_annotation(request, annotation):

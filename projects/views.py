@@ -254,7 +254,7 @@ def project_workspace(request, project_id, feedback=None):
                   'update_history': False,
                   'show_colleciton': False,
                   'context': { 'type': 'asset' }
-                }
+        }
         panels.append(panel)    
             
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')

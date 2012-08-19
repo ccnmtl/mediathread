@@ -48,7 +48,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         'clipform': true,
         'autoplay': false,
         'winHeight': function () {
-            if (self.dialog) {
+            if (self.dialogWindow) {
                 return 450;
             } else {
                 var elt = jQuery(self.el).find("div.asset-view-published")[0];
@@ -91,8 +91,8 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
 AssetPanelHandler.prototype.closeDialog = function (event) {
     var self = event.data.self;
     
-    if (self.dialog) {
-        jQuery(self.dialog).dialog("close");
+    if (self.dialogWindow) {
+        jQuery(self.dialogWindow).dialog("close");
     }
 };
 
@@ -111,9 +111,9 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
     var dlg = jQuery("#asset-workspace-panel-container")[0];
     var elt = jQuery(dlg).find("div.asset-view-tabs").hide();
     
-    self.dialog = jQuery(dlg).dialog({
+    self.dialogWindow = jQuery(dlg).dialog({
         open: function () {
-            self.dialog = true;
+            self.dialogWindow = true;
             self.citationView.openCitationById(null, assetId, annotationId);
                         
             // Setup the edit view
@@ -123,14 +123,14 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
                 "edit_state": event.type + "." + event.namespace,
                 "update_history": false,
                 "view_callback": function () {
-                    if (self.dialog) {
+                    if (self.dialogWindow) {
                         jQuery(elt).fadeIn("slow");
                     }
                 }
             });
         },
         close: function () {
-            self.dialog = null;
+            self.dialogWindow = null;
         },
         title: title,
         draggable: true,
@@ -188,13 +188,16 @@ AssetPanelHandler.prototype.resize = function () {
     var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
     jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
     
-    visible -= jQuery("div.asset-view-title").height();
     jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 4) + "px");
+    
+    visible -= jQuery("div.asset-view-title").outerHeight();
+    jQuery(self.el).find('div.asset-view-published').css('height', (visible) + "px");
     jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
     
-    visible -= jQuery('ul.ui-tabs-nav').outerHeight() + 
-        jQuery("div#asset-global-annotation").outerHeight() + 30;
+    visible -= jQuery('ul.ui-tabs-nav').outerHeight() + 30;
+    jQuery(self.el).find('div#asset-sources').css('height', (visible - 10) + "px");
+    
+    visible -= jQuery("div#asset-global-annotation").outerHeight();
     jQuery(self.el).find('div#annotations-organized').css('height', (visible) + "px");
     
     visible -= jQuery("div#annotations-organized h1").outerHeight() +

@@ -21,50 +21,52 @@
             
             this.refresh(config);
             
-            // setup url rewriting for HTML5 && HTML4 browsers
-            jQuery(window).bind("popstate", function (event) {
-                if (event.originalEvent.state) {
-                    window.AnnotationList._update({ 'annotation_id': event.originalEvent.state.annotation_id }, "annotation-current");
-                }
-            });
-            
-            jQuery(window).bind("hashchange", function () {
-                var asset_id = null;
-                var annotation_id = null;
-                var xywh = null;
+            if (this.update_history) {
+                // setup url rewriting for HTML5 && HTML4 browsers
+                jQuery(window).bind("popstate", function (event) {
+                    if (event.originalEvent.state) {
+                        window.AnnotationList._update({ 'annotation_id': event.originalEvent.state.annotation_id }, "annotation-current");
+                    }
+                });
                 
-                // parse out parameters on the command line
-                var params = window.location.pathname.split('/');
-                for (var i = 0; i < params.length; i++) {
-                    var prev = i - 1;
-                    if (prev > -1) {
-                        if (params[prev] === 'asset') {
-                            asset_id = params[i];
-                        } else if (params[prev] === 'annotations') {
-                            annotation_id = params[i];
+                jQuery(window).bind("hashchange", function () {
+                    var asset_id = null;
+                    var annotation_id = null;
+                    var xywh = null;
+                    
+                    // parse out parameters on the command line
+                    var params = window.location.pathname.split('/');
+                    for (var i = 0; i < params.length; i++) {
+                        var prev = i - 1;
+                        if (prev > -1) {
+                            if (params[prev] === 'asset') {
+                                asset_id = params[i];
+                            } else if (params[prev] === 'annotations') {
+                                annotation_id = params[i];
+                            }
                         }
                     }
-                }
-                
-                // parse out the annotation id in the hashtag (if it exists)
-                // hashtags override a urls embedded annotation_id
-                var config = {};
-                if (window.location.hash) {
-                    var annotation_query = djangosherd.assetview.queryformat.find(document.location.hash);
-                    if (annotation_query.length) {
-                        config.xywh = annotation_query[0];
-                    } else {
-                        var annid = String(window.location.hash).match(/annotation_id=([.\d]+)/);
-                        if (annid !== null) {
-                            config.annotation_id = Number(annid[1]);
+                    
+                    // parse out the annotation id in the hashtag (if it exists)
+                    // hashtags override a urls embedded annotation_id
+                    var config = {};
+                    if (window.location.hash) {
+                        var annotation_query = djangosherd.assetview.queryformat.find(document.location.hash);
+                        if (annotation_query.length) {
+                            config.xywh = annotation_query[0];
+                        } else {
+                            var annid = String(window.location.hash).match(/annotation_id=([.\d]+)/);
+                            if (annid !== null) {
+                                config.annotation_id = Number(annid[1]);
+                            }
                         }
                     }
-                }
-
-                window.AnnotationList._update(config, "annotation-current", xywh);
-            });
-            return this;
-        };
+    
+                    window.AnnotationList._update(config, "annotation-current", xywh);
+                });
+                return this;
+            };
+        }
         
         this.refresh = function (config) {
             if (config.asset_id) {
@@ -822,11 +824,11 @@
                         'author_name': MediaThread.user_full_name
                     }
                 };
-            } else if (!self.active_asset_annotations.length ||
+            } else if (!self.active_asset_annotations || 
                 self.active_asset_annotations.length <= 1 ||
                 self.config.edit_state === "annotation.create") {
                 context.annotation = {
-                    'editing': true,
+                'editing': true,
                     'metadata': {
                         'author': { 'id': MediaThread.current_user },
                         'author_name': MediaThread.user_full_name

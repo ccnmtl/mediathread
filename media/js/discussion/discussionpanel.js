@@ -26,6 +26,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
         'default_target' : panel.context.discussion.id + "-videoclipbox",
         'onPrepareCitation' : self.onPrepareCitation,
         'presentation' : "medium",
+        'clipform': true,
         'winHeight': function () {
             var elt = jQuery(self.el).find("div.asset-view-published")[0];
             return jQuery(elt).height() -

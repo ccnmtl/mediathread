@@ -3,6 +3,7 @@
  * asset.on_delete > refresh
  * annotation.on_create > refresh
  * annotation.on_save > refresh
+ * annotation.on_delete > refresh
  *
  * Signals:
  * asset.edit > when edit in place is clicked
@@ -36,6 +37,7 @@ var CollectionList = function (config) {
     
     jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) { event.data.self.refresh(); });
     jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) { event.data.self.refresh(); });
+    jQuery(window).bind('annotation.on_delete', { 'self': self }, function (event) { event.data.self.refresh(); });
     jQuery(window).bind('annotation.on_save', { 'self': self }, function (event) {
         var self = event.data.self;
         if (self.citable) {

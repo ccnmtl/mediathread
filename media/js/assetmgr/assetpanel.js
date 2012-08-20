@@ -194,14 +194,14 @@ AssetPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-published').css('height', (visible) + "px");
     jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
     
-    visible -= jQuery('ul.ui-tabs-nav').outerHeight() + 30;
-    jQuery(self.el).find('div#asset-sources').css('height', (visible - 10) + "px");
+    visible -= jQuery('ul.ui-tabs-nav').outerHeight() + 2;
+    jQuery(self.el).find('.ui-tabs-panel').css('height', (visible) + "px");
     
     visible -= jQuery("div#asset-global-annotation").outerHeight();
-    jQuery(self.el).find('div#annotations-organized').css('height', (visible) + "px");
+    jQuery(self.el).find('div#annotations-organized').css('height', (visible - 20) + "px");
     
     visible -= jQuery("div#annotations-organized h1").outerHeight() +
-        jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 30;
+        jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 40;
     jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
     jQuery("div.accordion").accordion("resize");
 };

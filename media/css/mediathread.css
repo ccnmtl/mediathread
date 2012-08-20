@@ -3341,8 +3341,9 @@ input.media.secondary {
 
 input.media.newselection-button {
     float: right;
-    margin: 4px;
-    width: 125px;
+    margin: 7px 5px 0 0;
+    width: 100px;
+    font-size: .9em;
 }
 
 ul.record-metadata-list {
@@ -3706,6 +3707,10 @@ div.asset-view-container div.asset-view-published {
     min-width: 475px;
     width: 65%;
     float: left;
+    border: none;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #CCC;
 }
 
 
@@ -3715,36 +3720,34 @@ div.asset-view-container div.asset-view-tabs {
     float: left;
 }
 
+
 div.asset-view-container div.asset-view-details h1 {
     font-weight: bold;
 }
 
-div#asset-global-annotation,
-div#asset-sources,
-div#asset-references {
-    border: 1px solid #AAA;
-    padding: 10px;
+div#asset-view-details {
+    height: 100%;    
 }
 
 div#asset-details-annotations-current {
-    border: 1px solid #AAA;
     padding: 10px;
     margin-top: 10px;
 }
 
 div#annotations-organized {
-    border: 1px solid #AAA;
-    margin-top: 10px;
+    border: 1px solid #CCC;
+    margin: 10px;
+    background-color: #F7F7F7;
 }
 
 div#annotations-organized h1 {
     margin: 10px;
+    color: #212121;
 }
 
 #annotations-organized ul {
     list-style-type: none;
     margin: 0;
-    padding-bottom: 4px;
     height: 80%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -3753,6 +3756,14 @@ div#annotations-organized h1 {
 
 #annotations-organized ul li {
     padding: 7px;
+}
+
+div#asset-global-annotation {
+    padding: 15px 15px 5px 15px;
+}
+
+div#asset-global-annotation h1 {
+    font-size: 150%;
 }
 
 div#asset-global-annotation div.metadata-value {
@@ -3789,9 +3800,12 @@ input[type="button"].saving {
     background: url("/site_media/img/ajax-loader.gif") no-repeat 95% 50%;
 }
 
+div#asset-references,
 div#asset-sources {
     overflow-x: hidden;
     overflow-y: auto;
+    padding-left: 10px;
+    height: 100%;
 }
 
 form[name="annotation-list-filter"] {
@@ -3801,7 +3815,7 @@ form[name="annotation-list-filter"] {
 
 #annotation-list-filter-showall {
     float: right;
-    padding: 3px 10px 0 0;
+    padding: 3px 5px 0 0;
 }
 
 #annotation-list-filter-groupby {

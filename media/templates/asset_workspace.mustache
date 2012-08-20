@@ -25,13 +25,6 @@
                                 {{#asset-current}}
                                      <div class="asset-view-title"><h1>{{title}}</h1></div>
                                 {{/asset-current}}
-                             
-                                <input class="media newselection-button" type="button" 
-                                    onclick="javascript:AnnotationList.newAnnotation()" 
-                                    value="Create Selection"
-                                    {{#annotation.editing?}}
-                                        style="display: none"
-                                    {{/annotation.editing?}} />
                              </div>
                         {{/>>asset-view-header}}
                         
@@ -79,21 +72,6 @@
                                                            
                                                     </div>                                                
                                                 </h1>
-                                                
-                                                {{^user_tags}}
-                                                    {{^notes}}
-                                                    <div id="help_homepage_compositions_section" class="helpblock" style="margin-top: 5px;">
-
-                                                            <h3>Add more information to this item.</h3>
-                                                            
-                                                            <ul>
-                                                            <li>Click the pencil icon in the upper-right corner to add tags and notes.</li>
-                                                            <li>Click the plus icon in the upper-right corner to add a selection.</li>
-                                                            </ul>
-                                                        </div>
-                                                        
-                                                    {{/notes}}
-                                                {{/user_tags}}
                                                 
                                                 <form id="edit-global-annotation-form" method="post"
                                                     {{#global_annotation_id?}}
@@ -230,7 +208,13 @@
                                                 {{#annotation.editing?}}
                                                     style="display: none"
                                                 {{/annotation.editing?}}>
-                                                <h1>Selections</h1>
+                                                <input class="media newselection-button" type="button" 
+                                                    onclick="javascript:AnnotationList.newAnnotation()" 
+                                                    value="Create Selection">
+                                            
+                                                <h1>
+                                                    Selections
+                                                </h1>
                                                 <div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
                                                     <form name="annotation-list-filter">
                                                         <div id="annotation-list-filter-groupby">
@@ -238,7 +222,7 @@
                                                         </div>
                                                         <div id="annotation-list-filter-showall">
                                                             <input type="checkbox" name="showall" />
-                                                            Show all on media
+                                                            Show all selections
                                                             </div>
                                                     </form>
                                                 </div>

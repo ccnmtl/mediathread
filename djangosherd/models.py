@@ -89,7 +89,9 @@ class Annotation(models.Model):
             if m=='author':
                 metadata[m] = {'id':getattr(self,'author_id',None), 'username': self.author.username if self.author else '' }
             elif m=='tags':
-                metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ]
+                tags = self.tags_split()
+                tag_last = len(tags) - 1
+                metadata[m] = [ { 'name': tag.name, 'last': idx == tag_last } for idx, tag in enumerate(tags) ]
             elif m=='modified':
                 metadata[m] = self.modified.strftime("%m/%d/%y %I:%M %p")
             elif m=='timecode':

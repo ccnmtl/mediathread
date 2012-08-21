@@ -82,6 +82,7 @@
                     false,
                     function (asset_full) {
                         self.asset_full_json = asset_full;
+                        self.user_settings = asset_full.user_settings;
                         
                         var theAsset;
                         for (var key in asset_full.assets) {
@@ -410,6 +411,18 @@
                 jQuery(selections[i]).attr("value", id);
             }
             return true;
+        };
+        
+        this.showHelp = function () {
+            jQuery("#asset-view-overlay, #asset-view-help, #asset-view-help-tab").show();
+            return false;
+        };
+        
+        this.dismissHelp = function () {
+            jQuery("#asset-view-overlay, #asset-view-help, #asset-view-help-tab").hide();
+            var checked = jQuery("#asset-view-show-help").is(":checked");
+            updateHelpSetting(MediaThread.current_username, 'help_item_detail_view', !checked);
+            return false;
         };
         
         this.showAsset = function () {
@@ -795,7 +808,9 @@
             self.active_annotation = null;
             self.xywh = null;
             
-            var context = { 'asset-current': self.active_asset };
+            var context = {
+                'asset-current': self.active_asset
+            };
             
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);
@@ -824,19 +839,19 @@
                         'author_name': MediaThread.user_full_name
                     }
                 };
-            } else if (!self.active_asset_annotations || 
-                self.active_asset_annotations.length <= 1 ||
-                self.config.edit_state === "annotation.create") {
+            } else if (self.config.edit_state === "annotation.create") {
                 context.annotation = {
-                'editing': true,
+                    'editing': true,
                     'metadata': {
                         'author': { 'id': MediaThread.current_user },
                         'author_name': MediaThread.user_full_name
                     }
                 };
+            } else if (self.active_asset.user_analysis === undefined ||
+                        self.active_asset.user_analysis < 1) {
+                context.show_help = self.user_settings.help_item_detail_view;
             }
-            
-            context.showNewAnnotation = !context.annotation || (context.annotation && !context.annotation.editing);
+            context.show_help_checked = !self.user_settings.help_item_detail_view;
             
             if (context.annotation) {
                 context.annotation.showCancel = self.active_asset_annotations.length > 1;

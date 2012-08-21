@@ -38,6 +38,7 @@
             this.templates = {};
             {% if request.user.is_authenticated %}
                 this.current_user = {{request.user.id}};
+                this.current_username = "{{request.user.username}}";
                 this.user_full_name = "{%public_name for request.user %}";
             {% endif %}
         })();

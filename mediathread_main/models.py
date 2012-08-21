@@ -11,9 +11,9 @@ class UserSetting(models.Model):
         try:
             user_setting = UserSetting.objects.get(user=user, name=setting_id)
             
-            if user_setting.value == 'True':
+            if user_setting.value == 'True' or user_setting.value == 'true':
                 return True
-            elif user_setting.value == 'False':
+            elif user_setting.value == 'False' or user_setting.value == 'false':
                 return False
             else:
                 return user_setting.value

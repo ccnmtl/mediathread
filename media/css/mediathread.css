@@ -3667,7 +3667,8 @@ margin-left: 269px;
 
 div#materials.column-contents.homepage div.actions {
     width: 100%;
-    margin-top: 10px;    
+    margin-top: 10px;
+    margin-right: 0px;
 }
 
 .gallery-item div.actions {
@@ -3704,6 +3705,10 @@ div.asset-view-title {
 div.asset-view-title h1 {
     font-size: 150%;
     font-weight: bold;
+}
+
+div#asset-view-overlay {
+    z-index:  10001;
 }
 
 div.asset-view-help {

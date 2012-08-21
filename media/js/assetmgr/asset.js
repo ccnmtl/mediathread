@@ -839,8 +839,8 @@
                         'author_name': MediaThread.user_full_name
                     }
                 };
-            } else if (self.active_asset.user_analysis === undefined ||
-                        self.active_asset.user_analysis < 1) {
+            } else if (self.active_asset && (self.active_asset.user_analysis === undefined ||
+                        self.active_asset.user_analysis < 1)) {
                 context.show_help = self.user_settings.help_item_detail_view;
             }
             context.show_help_checked = !self.user_settings.help_item_detail_view;
@@ -852,6 +852,8 @@
             Mustache.update(template_label, context, {
                 pre: function (elt) { jQuery(elt).hide(); },
                 post: function (elt) {
+                    self.edit_state = null;
+                    
                     djangosherd.assetview.clipform.html.push('clipform-display', {
                         asset: {}
                     });

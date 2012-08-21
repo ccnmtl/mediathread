@@ -182,6 +182,7 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
 AssetPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
+    visible -= 18; // IE9 requires this small margin
 
     // Resize the collections box, subtracting its header elements
     var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();

@@ -13,8 +13,6 @@
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ? config.update_history : true;
             
-            window.onbeforeunload = this.saveItemPrompt;
-            
             if (String(window.location.href).match(/edit_state=new/)) {
                 self.config.edit_state = "annotation.create";
             }
@@ -530,14 +528,6 @@
             });
             
             return false;
-        };
-        
-        ///Item Save Prompt
-        this.saveItemPrompt = function () {
-            var frm = document.forms['edit-item-form'];
-            if (frm.elements['annotation-tags'].value === "" && frm.elements['annotation-body'].value === "") {
-                return "Add tags and notes to place this item in your collection.";
-            }
         };
         
         this.showAnnotation = function (event, ui) {

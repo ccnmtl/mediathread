@@ -613,6 +613,10 @@ div.button-form form, div.button-form.inline form{
 }
 
 /* LOGIN PAGE */
+#id_username, #id_password {
+    width: 125px;    
+}
+
 #introduction {
     text-align: left; 
     background-color: #dedede; 
@@ -3711,7 +3715,8 @@ div#asset-view-header div {
 
 div.asset-view-title {
     margin: 10px 10px 5px 10px;
-    width: 80%;
+    width: 100%;
+    line-height: 20px;
 }
 
 div.asset-view-title h1 {

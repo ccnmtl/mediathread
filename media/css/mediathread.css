@@ -1668,7 +1668,8 @@ div a.switcher-top {
 }
 
 div.collection-filter ul.switcher-options {  
-    width:350px; /*width -2px for border */ 
+    width:233px; /*width -2px for border */
+     
     right:0px;
     left:auto;
 }
@@ -1726,7 +1727,7 @@ div.collection-chooser ul.switcher-options {
     margin:0;
     max-height:350px;
     overflow-y:auto;
-
+    overflow-x: hidden;
 
 }
 .switcher ul.switcher-options .switcher-sub li {

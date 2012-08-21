@@ -433,7 +433,7 @@
         ///Item Edit -- global annotation
         this.editItem = function () {
             var form = jQuery("#edit-global-annotation-form");
-            jQuery("div.metadata-value, #annotations-organized-container, #annotation-current").fadeOut(function () {
+            jQuery("div.metadata-value, #annotations-organized-container, #annotation-current, div.actions").fadeOut(function () {
                 jQuery(form).find(".metadata-value-edit").fadeIn();
             });
         };
@@ -444,7 +444,7 @@
             var form = jQuery("#edit-global-annotation-form");
             
             jQuery(form).find(".metadata-value-edit").fadeOut(function () {
-                jQuery("div.metadata-value, #annotations-organized-container, #annotation-current").fadeIn();
+                jQuery("div.metadata-value, #annotations-organized-container, #annotation-current, div.actions").fadeIn();
             });
             
             return false;

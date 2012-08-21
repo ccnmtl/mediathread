@@ -314,7 +314,7 @@
                                                                                 {{/annotation.startCode?}}
                                                                                 <div><label for="">Title:</label> {{metadata.title?default(-Untitled-)}}</div>
                                                                                 <div><label for="">Author:</label> <a href="{{home-space?url(metadata.author.username)}}">{{metadata.author_name}}</a></div>
-                                                                                {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}} {{/metadata.tags}}</div>{{/metadata.tags?}}
+                                                                                {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags?}}
                                                                                 {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
                                                                             </div>
                                                                         </div>

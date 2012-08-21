@@ -19,6 +19,8 @@
                 self.config.edit_state = "annotation.create";
             }
             
+            djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'reset' });
+            
             this.refresh(config);
             
             if (this.update_history) {
@@ -866,20 +868,18 @@
                     
                     Mustache.update("asset-view-header", context);
                     Mustache.update("asset-global-annotation", context);
+                    Mustache.update("asset-references", context);
                     
                     if (template_label === "asset-view-details") {
                         Mustache.update("asset-sources", context);
-                        Mustache.update("asset-references", context);
+                        
                     }
                     
                     if (self.active_annotation) {
                         djangosherd.assetview.setState(self.active_annotation.annotation);
-                        
-                        setTimeout(function () {
-                            djangosherd.assetview.clipform.setState(self.active_annotation.annotation,
-                                    { 'mode': context.annotation.editing ? 'edit' : 'browse',
-                                      'tool_play': jQuery('#annotation-body-' + self.active_annotation.id + ' input.videoplay')[0] });
-                        }, 300);
+                        djangosherd.assetview.clipform.setState(self.active_annotation.annotation,
+                                { 'mode': context.annotation.editing ? 'edit' : 'browse',
+                                  'tool_play': jQuery('#annotation-body-' + self.active_annotation.id + ' input.videoplay')[0] });
                     } else if (self.xywh) {
                         djangosherd.assetview.setState(self.xywh);
                         

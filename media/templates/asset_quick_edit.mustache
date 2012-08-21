@@ -28,6 +28,7 @@
                                         style="display: none"
                                     {{/annotation.editing?}}>
                                     {{#asset-current}}
+                                        <h1>Edit Item</h1>
                                         <form id="edit-global-annotation-form" method="post"
                                             {{#global_annotation_id?}}
                                             action="/asset/save/{{id}}/annotations/{{global_annotation_id}}/"
@@ -39,9 +40,7 @@
                                             >                                                    
                                         
                                             <div class="metadata">
-                                                <div class="metadata-label">My Tags: 
-                                                    {{^user_tags}}<span class="helptext">[Tags help organize your media collection]</span>{{/user_tags}}
-                                                </div> 
+                                                <div class="metadata-label">My Tags:</div> 
                                                 <div class="metadata-value global-annotation-tags">
                                                     {{#user_tags}}
                                                         {{name}}{{^last}}, {{/last}}
@@ -50,13 +49,11 @@
                                                 <div class="metadata-value-edit">
                                                     <input type="text" name="annotation-tags" id="id_annotation-tags" 
                                                         value="{{#user_tags}}{{name}}{{^last}}, {{/last}}{{/user_tags}}"></input>
-                                                    <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
+                                                    <div class="helptext">Use commas to separate tags. Ex: tag1, tag two, tag3</div>
                                                 </div>
                                             </div>
                                             <div class="metadata">
-                                                <div class="metadata-label">My Notes:
-                                                    {{^notes}}<span class="helptext">[Notes are for longer thoughts]</span>{{/notes}}
-                                                </div>
+                                                <div class="metadata-label">My Notes:</div>
                                                 <div class="metadata-value global-annotation-notes">
                                                     {{notes}}
                                                 </div>

@@ -468,12 +468,17 @@ def detail_asset_json(request, asset_id, options):
     asset_json = asset.sherd_json(request)
     asset_key = 'x_%s' % asset.pk
     
+    asset_json['user_analysis'] = 0
     
     ga = asset.global_annotation(request.user, False)
     if ga:
         asset_json['global_annotation_id'] = ga.id
         asset_json['notes'] = ga.body
         asset_json['user_tags'] = tag_json(ga.tags_split())
+        
+        if (asset_json['notes'] and len(asset_json['notes']) > 0) or \
+            (asset_json['user_tags'] and len(asset_json['user_tags']) > 0):
+            asset_json['user_analysis'] += 1
     
     if not selections_visible:
         owners = [ request.user ]
@@ -501,6 +506,7 @@ def detail_asset_json(request, asset_id, options):
             'asset_id': asset.pk,
             }]
     
+    
     if request.GET.has_key('annotations') or \
         (options and options.has_key('include_annotations') and options['include_annotations']):
         # @todo: refactor this serialization into a common place.
@@ -512,15 +518,19 @@ def detail_asset_json(request, asset_id, options):
             return "primary_type", asset.primary.label
         for ann in asset.sherdnote_set.filter(range1__isnull=False):
             visible = selections_visible or request.user == ann.author or request.course.is_faculty(ann.author)
-            if visible:     
+            if visible:
+                if request.user == ann.author:
+                    asset_json['user_analysis'] += 1     
                 ann_json = ann.sherd_json(request, 'x', ('title', 'author', 'tags', author_name, 'body', 'modified', 'timecode', primary_type))
                 annotations.append(ann_json)
-    
-    return {
+
+    rv = {
         'type': 'asset',
         'assets': { asset_key: asset_json }, #we make assets plural here to be compatible with the project JSON structure
         'annotations': annotations,
-    }    
+        'user_settings': { 'help_item_detail_view': UserSetting.get_setting(request.user, "help_item_detail_view", True) }
+    }
+    return rv 
     
 def homepage_asset_json(request, asset, logged_in_user, record_owner, options):
     the_json = asset.sherd_json(request)

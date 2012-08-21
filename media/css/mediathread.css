@@ -2753,7 +2753,11 @@ background-color: #ece8df;
    margin: 2px 20px;
 }
 
-#managesources {
+.collection_button {
+    width: 90px !important;
+}
+
+#managesources, .collection_button {
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
@@ -2780,13 +2784,19 @@ background-color: #ece8df;
 
 #uploader a,
 .create-selection a,
-#managesources a {
-
+#managesources a,
+.collection_button a {
     text-decoration: none;
     color: #000;
     white-space: nowrap;
     display: block;
     text-transform: capitalize;
+    margin-top: -1px;
+}
+
+.collection_button a {
+    margin-left: 5px;
+    font-size: .95em;
 }
 
 .create-selection a { 
@@ -2887,6 +2897,7 @@ p.sherd-instructions {
 .sherd-clipform-editing input.regButton {
     width: 84px;
     margin: 0 5px 5px 10px;
+    
 }
 
 .sherd-clipform-editing input.regButton.videoplay {

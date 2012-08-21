@@ -90,16 +90,16 @@
                                                 <h1>Item
                                                     <div class="actions">
                                                         {{#global_annotation_id?}}       
-                                                        <input type="image" title="Delete Item" 
+                                                        <input type="image" title="Remove item from collection" 
                                                             onclick="return AnnotationList.deleteItem(event, this, {{id}});" 
                                                             alt="Delete" src="/site_media/img/icons/meth_delete.png" />
                                                         {{/global_annotation_id?}}                                                           
                                                         
-                                                        <input type="image" title="Edit Item" 
+                                                        <input type="image" title="Edit item" 
                                                            onclick="return AnnotationList.editItem(this);" 
                                                            alt="Edit" src="/site_media/img/icons/meth_edit.png" />
                                                         
-                                                        <input type="image" title="Create Selection" 
+                                                        <input type="image" title="Create selection" 
                                                              onclick="return AnnotationList.newAnnotation();" 
                                                              alt="Create" src="/site_media/img/icons/meth_addselection.png" />
                                                              

@@ -209,7 +209,7 @@ def project_workspace(request, project_id, feedback=None):
         if parent_assignment:
             assignment_context = composition_project_json(request, parent_assignment, parent_assignment.can_edit(request))
             assignment_context['create_selection'] = True
-            panel = { 'is_faculty': is_faculty, 'panel_state': 'closed' if show_feedback else 'open', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
+            panel = { 'is_faculty': is_faculty, 'panel_state': 'closed', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
         # Requested project, can be either an assignment or composition

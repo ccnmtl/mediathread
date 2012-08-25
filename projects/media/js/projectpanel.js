@@ -194,7 +194,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     // Short-term
     // Navigate to a new project if the user is looking
     // at another response.
-    if (PanelManager.count() > 1) {
+    if (jQuery(self.parentContainer).find("td.panel-container.composition").length > 0) {
         context.callback = function (json) {
             window.location = json.context.project.url;
         };

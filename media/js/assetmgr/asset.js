@@ -458,6 +458,7 @@
             var url = MediaThread.urls['asset-delete'](asset_id);
             ajaxDelete(null, null, {
                 'href': url,
+                'item': true,
                 'success': function () {
                     jQuery(window).trigger("asset.on_delete", [ asset_id ]);
                 }

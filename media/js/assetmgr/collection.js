@@ -35,12 +35,30 @@ var CollectionList = function (config) {
         jQuery(this).removeClass("ajaxLoading");
     });
     
-    jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) { event.data.self.refresh(); });
-    jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) { event.data.self.refresh(); });
-    jQuery(window).bind('annotation.on_delete', { 'self': self }, function (event) { event.data.self.refresh(); });
+    jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) {
+        var self = event.data.self;
+        var div = jQuery(self.parent).find("div.collection-assets");
+        if (!self.citable && div.length > 0) {
+            self.scrollTop = jQuery(div[0]).scrollTop();
+            event.data.self.refresh();
+        }
+    });
+    jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) {
+        var self = event.data.self;
+        self.scrollTop = jQuery(self.parent).find("div.collection-assets").scrollTop();
+        event.data.self.refresh();
+    });
+    jQuery(window).bind('annotation.on_delete', { 'self': self }, function (event) {
+        var self = event.data.self;
+        if (!self.citable) {
+            self.scrollTop = jQuery(self.parent).find("div.collection-assets").scrollTop();
+            event.data.self.refresh();
+        }
+    });
     jQuery(window).bind('annotation.on_save', { 'self': self }, function (event) {
         var self = event.data.self;
         if (self.citable) {
+            self.scrollTop = jQuery(self.parent).find("div.collection-assets").scrollTop();
             event.data.self.refresh();
         }
     });
@@ -112,6 +130,7 @@ CollectionList.prototype.deleteAsset = function (asset_id) {
     var url = MediaThread.urls['asset-delete'](asset_id);
     return ajaxDelete(null, 'record-' + asset_id, {
         'href': url,
+        'item': true,
         'success': function () {
             try {
                 jQuery(window).trigger("asset.on_delete", [ asset_id ]);
@@ -448,6 +467,11 @@ CollectionList.prototype.updateAssets = function (the_records) {
             }
             
             jQuery(window).trigger("resize");
+            
+            if (self.scrollTop) {
+                jQuery(self.parent).find("div.collection-assets").scrollTop(self.scrollTop);
+                self.scrollTop = undefined;
+            }
         }
     });
 };

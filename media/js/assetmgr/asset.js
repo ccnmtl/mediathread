@@ -12,6 +12,7 @@
             this.config = config;
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ? config.update_history : true;
+            this.user_settings = { 'help_item_detail_view': true };
             
             if (String(window.location.hash).match(/edit_state=new/)) {
                 self.config.edit_state = "annotation.create";

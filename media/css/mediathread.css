@@ -2946,6 +2946,7 @@ input.videoplay {
     border: none;
     background-color: white;
     width: 25px;
+    height: 15px;
     cursor: pointer;
 }
 

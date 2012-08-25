@@ -483,7 +483,7 @@ def detail_asset_json(request, asset_id, options):
     if not selections_visible:
         owners = [ request.user ]
         owners.extend(request.course.faculty)
-        asset_json['tags'] = tag_json(asset.filter_tags_by_users(owners))
+        asset_json['tags'] = tag_json(asset.filter_tags_by_users(owners, True))
         
         
     # DiscussionIndex is misleading. Objects returned are projects & discussions
@@ -575,4 +575,13 @@ def homepage_asset_json(request, asset, logged_in_user, record_owner, options):
 
 def tag_json(tags):
     tag_last = len(tags) - 1
-    return [ { 'name': tag.name, 'last': idx == tag_last } for idx, tag in enumerate(tags) ]
+    rv = []
+    for idx, tag in enumerate(tags):
+        t = {}
+        t['name'] = tag.name
+        t['last'] = idx == tag_last
+        
+        if hasattr(tag, 'count'):
+            t['count'] = tag.count
+        rv.append(t)
+    return rv

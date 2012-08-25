@@ -13,8 +13,9 @@
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ? config.update_history : true;
             
-            if (String(window.location.href).match(/edit_state=new/)) {
+            if (String(window.location.hash).match(/edit_state=new/)) {
                 self.config.edit_state = "annotation.create";
+                window.location.hash = '';
             }
             
             djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'reset' });

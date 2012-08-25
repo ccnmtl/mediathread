@@ -11,7 +11,6 @@ Feature: Homepage
         And there is a Compositions column
         And there is a Collection column
         And there is help for the Compositions column
-        And there is help for the Collection column
         Finished using Selenium
         
     Scenario: 2. Homepage - Student Homepage
@@ -24,7 +23,6 @@ Feature: Homepage
         And there is a Compositions column
         And there is a Collection column
         And there is help for the Compositions column
-        And there is help for the Collection column
         Finished using Selenium
         
     Scenario Outline: 3. Homepage - Collection Box - Viewing Items & Selections

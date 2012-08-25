@@ -468,9 +468,23 @@
         
         ///Item Save -- global annotation
         this.saveItem = function (saveButton) {
+            var frm = jQuery(saveButton).parents('form')[0];
+            
+            // Validate the tag fields...should be in djangosherd?
+            var tag_field = frm.elements['annotation-tags'];
+            if (tag_field) {//is this null?
+                var tags = tag_field.value.split(',');
+                for (var i = 0; i < tags.length; i++) {
+                    if (tags[i].trim().length > 25) {
+                        alert('The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
+                              'And, be sure to separate your tags with commas.');
+                        return false;
+                    }
+                }
+            }
+            
             jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
             
-            var frm = jQuery(saveButton).parents('form')[0];
             
             jQuery.ajax({
                 type: 'POST',

@@ -306,4 +306,11 @@ def the_panelname_panel_media_window_displays_title(step, panelname, title):
         except:
             assert False, "Unable to find %s in the %s media window" % (title, panelname)
         
+@step(u'I toggle the ([^"]*) panel')
+def i_toggle_the_panelname_panel(step, panelname):
+    pantab = world.firefox.find_element_by_css_selector("div.pantab.%s" % panelname.lower())
+    assert pantab, "Cannot find the %s pantab" % panelname
+
+    pantab.click()
+
     

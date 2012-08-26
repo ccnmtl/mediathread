@@ -1,6 +1,6 @@
-Feature: Manage Sources
+Feature: Manage Selection Visibility
 
-    Scenario: 1. Manage Selection Visibility
+    Scenario: 1. Verify default selection visibility is yes
         Using selenium
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "Yes"

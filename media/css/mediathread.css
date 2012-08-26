@@ -662,8 +662,7 @@ div.button-form form, div.button-form.inline form{
 
 .about-to-delete {
     margin: 1px;
-    border: 1px solid red !important;
-    background-color: #ccc !important;
+    border: 2px dashed red !important;
     opacity:0.65;
     -moz-opacity:0.65;
     filter:alpha(opacity=65);

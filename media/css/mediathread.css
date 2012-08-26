@@ -1638,6 +1638,10 @@ div.collection-filter {
     width:80px;
 }
 
+div#media_gallery div.collection-filter {
+    margin-right: 11px;
+}
+
 h2.switcher-extraneous-title {
     display:none;
 }

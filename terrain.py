@@ -327,10 +327,12 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
         
     assert column, "Unable to find a column entitled %s" % title
 
-    menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
-    if not menu:
-        time.sleep(1)
+    try:
         menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    except:
+        time.sleep(2)
+        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+
     assert menu, 'Unable to find the owner menu'
     
     menu.find_element_by_css_selector("a.switcher-top").click()
@@ -352,7 +354,12 @@ def the_owner_is_name_in_the_title_column(step, name, title):
         
     assert column, "Unable to find a column entitled %s" % title
     
-    menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    try:
+        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    except:
+        time.sleep(2)
+        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+
     owner = menu.find_element_by_css_selector("a.switcher-top span.title")
     if owner.text != name:
         time.sleep(2)

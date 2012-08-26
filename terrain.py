@@ -261,8 +261,15 @@ def i_see_text(step, text):
 def i_do_not_see_text(step, text):
     assert text not in world.firefox.page_source, world.firefox.page_source
     
-@step(u'I dismiss a save warning')
-def i_dismiss_a_save_warning(step):
+@step(u'I cancel an alert dialog')
+def i_cancel_an_alert_dialog(step):
+    time.sleep(1)
+    alert = world.firefox.switch_to_alert()
+    alert.dismiss()
+    time.sleep(1)    
+
+@step(u'I ok an alert dialog')
+def i_ok_an_alert_dialog(step):
     time.sleep(1)
     alert = world.firefox.switch_to_alert()
     alert.accept()
@@ -612,6 +619,66 @@ def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     except:
         # pass - there may be no tags
         return
+    
+@step(u'The "([^"]*)" project has no delete icon')
+def the_title_project_has_no_delete_icon(step, title):
+    time.sleep(1)
+    link = world.firefox.find_element_by_partial_link_text(title)
+    try:
+        link.parent.find_element_by_css_selector(".delete_icon")
+        assert False, "%s does have a delete icon" % title
+    except:
+        assert True, "Item does not have a delete icon"
+
+@step(u'The "([^"]*)" project has a delete icon')
+def the_title_project_has_a_delete_icon(step, title):
+    try:
+        link = world.firefox.find_element_by_partial_link_text(title)
+    except:
+        time.sleep(1)
+        link = world.firefox.find_element_by_partial_link_text(title)
+    
+    try:
+        link.parent.find_element_by_css_selector(".delete_icon")
+    except:
+        time.sleep(1)
+        link.parent.find_element_by_css_selector(".delete_icon")
+        
+@step(u'I click the "([^"]*)" project delete icon')
+def i_click_the_title_project_delete_icon(step, title):
+    try:
+        link = world.firefox.find_element_by_partial_link_text(title)
+    except:
+        time.sleep(1)
+        link = world.firefox.find_element_by_partial_link_text(title)
+    
+    try:
+        img = link.parent.find_element_by_css_selector(".delete_icon")
+    except:
+        time.sleep(1)
+        img = link.parent.find_element_by_css_selector(".delete_icon")
+        
+    img.click()      
+        
+@step(u'the instructor panel has ([0-9][0-9]?) projects? named "([^"]*)"')
+def the_instructor_panel_has_count_projects_named_title(step, count, title):
+    elts = world.firefox.find_elements_by_css_selector("ul.instructor-list li")
+    n = 0
+    for e in elts:
+        a = e.find_element_by_css_selector("a")
+        if a.text == title:
+            n += 1
+    assert n == int(count), "The instructor panel had %s projects named %s. Expected %s"  % (n, title, count)
+    
+@step(u'the classwork panel has ([0-9][0-9]?) projects named "([^"]*)"')
+def the_classwork_panel_has_count_projects_named_title(step, count, title):
+    elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    n = 0
+    for e in elts:
+        a = e.find_element_by_css_selector("a.asset_title")
+        if a.text == title:
+            n += 1
+    assert n == int(count), "There are %s projects named %s. Expected %s"  % (n, title, count)     
     
 # Local utility functions
 def get_column(title):

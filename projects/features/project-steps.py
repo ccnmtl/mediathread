@@ -173,25 +173,6 @@ def i_select_username_s_response(step, username):
     assert False, "Unable to find a response for %s" % username
 
   
-@step(u'the instructor panel has ([0-9][0-9]?) projects? named "([^"]*)"')
-def the_instructor_panel_has_count_projects_named_title(step, count, title):
-    elts = world.firefox.find_elements_by_css_selector("ul.instructor-list li")
-    n = 0
-    for e in elts:
-        a = e.find_element_by_css_selector("a")
-        if a.text == title:
-            n += 1
-    assert n == int(count), "The instructor panel had %s projects named %s. Expected %s"  % (n, title, count)
-    
-@step(u'the classwork panel has ([0-9][0-9]?) projects named "([^"]*)"')
-def the_classwork_panel_has_count_projects_named_title(step, count, title):
-    elts = world.firefox.find_elements_by_css_selector("li.projectlist")
-    n = 0
-    for e in elts:
-        a = e.find_element_by_css_selector("a.asset_title")
-        if a.text == title:
-            n += 1
-    assert n == int(count), "There are %s projects named %s. Expected %s"  % (n, title, count)
      
     
 @step(u'i save the changes')

@@ -2,6 +2,7 @@ import simplejson
 from random import choice
 from string import letters
 
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, Http404
@@ -17,6 +18,7 @@ from projects.lib import composition_project_json
 Project = get_model('projects','project')
 ProjectVersion = get_model('projects','projectversion')
 
+@login_required
 @allow_http("POST")
 def project_create(request):
     if request.method != "POST":
@@ -58,6 +60,7 @@ def project_create(request):
                 
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
 
+@login_required
 @allow_http("POST")
 def project_save(request, project_id):
     project = get_object_or_404(Project, pk=project_id, course=request.course)
@@ -96,8 +99,7 @@ def project_save(request, project_id):
         redirect_to = '.'
         return HttpResponseRedirect(redirect_to)
     
-
-@allow_http("POST")
+@login_required
 def project_delete(request, project_id):
     """
     Delete the requested project. Regular access conventions apply. 
@@ -169,6 +171,7 @@ def project_view_readonly(request, project_id, version_number=None):
         
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
       
+@login_required      
 @allow_http("GET")
 def project_workspace(request, project_id, feedback=None):
     """

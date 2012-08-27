@@ -3750,8 +3750,15 @@ div.asset-view-help {
     border: none;
 }
 
-div.asset-view-help ul {
-    margin: 0 1em 0.7em 2em;
+div.asset-view-help div.asset-view-help-instructions {
+    background-color: #ededed;
+    padding: 5px;
+    margin-bottom: 10px;"
+}
+
+div.asset-view-help div.asset-view-help-instructions img {
+    vertical-align: middle;
+    margin-bottom: 4px;
 }
 
 div.asset-view-help-tab {

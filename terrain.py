@@ -19,17 +19,17 @@ try:
 except:
     pass
 
-@before.harvest
+@before.each_feature
 def setup_database(variables):
     try:
         os.remove('lettuce.db')
     except:
         pass #database doesn't exist yet. that's ok.
-    os.system("echo 'create table test(idx integer primary key);' | sqlite3 lettuce.db")
-    os.system('./manage.py syncdb --settings=settings_test --noinput')
-    os.system('./manage.py migrate --settings=settings_test --noinput')
-    os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db")
-    os.system('./manage.py loaddata mediathread_main/fixtures/sample_course.json --settings=settings_test')
+    os.system("echo 'create table test(idx integer primary key);' | sqlite3 lettuce.db > /dev/null")
+    os.system('./manage.py syncdb --settings=settings_test --noinput > /dev/null')
+    os.system('./manage.py migrate --settings=settings_test --noinput > /dev/null')
+    os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db > /dev/null")
+    os.system('./manage.py loaddata mediathread_main/fixtures/sample_course.json --settings=settings_test > /dev/null')
 
 @before.all
 def setup_browser():
@@ -64,11 +64,11 @@ def clear_selenium(step):
     Project.objects.all().delete()
     Collaboration.objects.exclude(title="Sample Course").delete()
     CollaborationPolicyRecord.objects.all().delete()
-    os.system("echo 'delete from projects_project_participants;' | sqlite3 lettuce.db")
-    os.system("echo 'delete from projects_projectversion;' | sqlite3 lettuce.db")
-    os.system("echo 'delete from threadedcomments_comment;' | sqlite3 lettuce.db")
-    os.system("echo 'delete from django_comments;' | sqlite3 lettuce.db")
-    os.system("echo 'delete from django_comment_flags;' | sqlite3 lettuce.db")
+    os.system("echo 'delete from projects_project_participants;' | sqlite3 lettuce.db > /dev/null")
+    os.system("echo 'delete from projects_projectversion;' | sqlite3 lettuce.db > /dev/null")
+    os.system("echo 'delete from threadedcomments_comment;' | sqlite3 lettuce.db > /dev/null")
+    os.system("echo 'delete from django_comments;' | sqlite3 lettuce.db > /dev/null")
+    os.system("echo 'delete from django_comment_flags;' | sqlite3 lettuce.db > /dev/null")
     
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
@@ -134,11 +134,11 @@ def i_am_at_the_name_page(step, name):
             
 @step(u'there is a sample assignment')            
 def there_is_a_sample_assignment(step):
-    os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment.json --settings=settings_test')
+    os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment.json --settings=settings_test > /dev/null')
 
 @step(u'there is a sample assignment and response')            
 def there_is_a_sample_assignment_and_response(step):
-    os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment_and_response.json --settings=settings_test')
+    os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment_and_response.json --settings=settings_test > /dev/null')
     
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):
@@ -278,6 +278,10 @@ def i_ok_an_alert_dialog(step):
 @step(u'there is an? ([^"]*) column')
 def there_is_a_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
+    if len(elts) < 1:
+        time.sleep(1)
+        elts = world.firefox.find_elements_by_tag_name("h2")
+    
     for e in elts:
         if e.text and e.text.strip().lower().find(title.lower()) > -1:
             return
@@ -354,32 +358,19 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
     
 @step(u'the owner is "([^"]*)" in the ([^"]*) column')    
 def the_owner_is_name_in_the_title_column(step, name, title):
+    time.sleep(2)
     column = get_column(title)
-    if not column:
-        time.sleep(1)
-        column = get_column(title)
-        
     assert column, "Unable to find a column entitled %s" % title
     
-    try:
-        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
-    except:
-        time.sleep(2)
-        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
-
-    owner = menu.find_element_by_css_selector("a.switcher-top span.title")
-    if owner.text != name:
-        time.sleep(2)
-        owner = menu.find_element_by_css_selector("a.switcher-top span.title")
-        
-    assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)
-    
+    menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    owner = menu.find_element_by_css_selector("a.switcher-top span.title")        
+    assert owner.text == name, "Expected owner title to be %s. Actually %s" % (name, owner.text)    
     
 @step(u'the collection panel has a "([^"]*)" item')
 def the_collection_panel_has_a_title_item(step, title):
     panel = get_column('collection')
     assert panel, "Cannot find the collection panel"
-    
+
     items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
@@ -387,6 +378,19 @@ def the_collection_panel_has_a_title_item(step, title):
             return
     
     assert False, "Unable to find an item named %s in the collection panel" % title
+    
+@step(u'the collection panel has no "([^"]*)" item')
+def the_collection_panel_has_no_title_item(step, title):
+    panel = get_column('collection')
+    assert panel, "Cannot find the collection panel"
+    
+    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    for i in items:
+        elt = i.find_element_by_css_selector('a.asset-title-link')
+        if elt.text == title:
+            assert False, "Found an item named %s in the collection panel" % title
+    
+    assert True, "Unable to find the %s item in the collection panel" % title    
     
 @step(u'the "([^"]*)" item has a note "([^"]*)"')
 def the_title_item_has_a_note_text(step, title, text):
@@ -546,6 +550,66 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
              return
         
     assert False, "Unable to find a selection named %s in the collection panel" % seltitle
+    
+@step(u'the "([^"]*)" item has an? ([^"]*) icon')
+def the_title_item_has_a_type_icon(step, title, type):
+    time.sleep(1)
+    items = world.firefox.find_elements_by_css_selector("div.gallery-item-homepage");
+    for item in items:
+        try:
+            link = item.find_element_by_partial_link_text(title)
+        except:
+            continue
+            
+        try:
+            icon = item.find_element_by_css_selector("a.%s-asset" % type)
+            return # found the link & the icon
+        except: 
+            assert False, "Item %s does not have a %s icon." % (title, type)
+     
+    assert False, "Unable to find the %s item" % title   
+    
+@step(u'the "([^"]*)" item has no ([^"]*) icon')
+def the_title_item_has_no_type_icon(step, title, type):
+    time.sleep(1)
+    items = world.firefox.find_elements_by_css_selector("div.gallery-item-homepage");
+    for item in items:
+        try:
+            link = item.find_element_by_partial_link_text(title)
+        except:
+            continue
+            
+        try:
+            icon = item.find_element_by_css_selector("a.%s-asset" % type)
+            assert False, "Item %s has a %s icon." % (title, type)
+        except: 
+            assert True, "Item %s does not have a %s icon" % (title, type)
+            return
+     
+    assert False, "Unable to find the %s item" % title       
+            
+@step(u'I click the "([^"]*)" item ([^"]*) icon')
+def i_click_the_title_item_type_icon(step, title, type):
+    time.sleep(1)
+    items = world.firefox.find_elements_by_css_selector("div.gallery-item-homepage");
+    for item in items:
+        try:
+            link = item.find_element_by_partial_link_text(title)
+        except:
+            continue
+            
+        try:
+            if type == "delete":
+                icon = item.find_element_by_css_selector(".%s_icon" % type)
+            else:
+                icon = item.find_element_by_css_selector("a.%s-asset" % type)
+                
+            icon.click()
+            return # found the link & the icon
+        except:
+            assert False, "Item %s does not have a %s icon." % (title, type)
+     
+    assert False, "Unable to find the %s item" % title   
     
 @step(u'I can filter by "([^"]*)" in the ([^"]*) column')    
 def i_can_filter_by_tag_in_the_title_column(step, tag, title):

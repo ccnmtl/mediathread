@@ -190,6 +190,7 @@ def i_save_the_changes(step):
 def there_is_a_status_title_project_by_author(step, status, title, author):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
     if len(elts) < 1:
+        time.sleep(1)
         elts = world.firefox.find_elements_by_css_selector("li.projectlist")
     assert len(elts) > 0, "Expected to find at least 1 project. Instead there are none"
     

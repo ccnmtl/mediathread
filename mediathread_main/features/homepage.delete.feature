@@ -1,4 +1,4 @@
-Feature: Homepage
+Feature: Homepage Delete Operations. Project, Item
 
     Scenario: 1. Homepage - Student cannot delete assignment
         Using selenium
@@ -60,6 +60,25 @@ Feature: Homepage
         Then I ok an alert dialog
         
         Then there is not a "Sample Assignment Response" link
+        
+        Finished using Selenium
+        
+    Scenario: 5. Homepage - Instructor can remove an item from his own collection
+        Using selenium
+        Given there is a sample assignment
+        Given I am test_instructor in Sample Course
+        
+        Then the owner is "Me" in the Analysis column
+        Then the Collection panel has a "MAAP Award Reception" item
+        And the "MAAP Award Reception" item has a delete icon
+        
+        When I click the "MAAP Award Reception" item delete icon
+        Then I cancel an alert dialog
+        
+        When I click the "MAAP Award Reception" item delete icon
+        Then I ok an alert dialog
+        
+        Then the Collection panel has no "MAAP Award Reception" item
         
         Finished using Selenium
    

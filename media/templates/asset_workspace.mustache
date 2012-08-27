@@ -59,14 +59,15 @@
                                         
                                         <div id="asset-view-help" class="ui-widget-content asset-view-help" {{^show_help}}style="display: none"{{/show_help}}>
                                             <h1>
-                                                Annotate this Item
-                                            </h1>
-                                            <ul>
-                                            <li>To tag or add notes to the whole item, click <img src="/site_media/img/icons/meth_edit.png" alt="Pencil Icon">. </li>
-                                            
-                                            <li>To tag or add notes to a selection of this item, first create the selection by clicking the yellow Create Selection button.</li>
-                                            </ul>
-                                            <br /><br />
+                                                Analyze this item
+                                            </h1>                                            
+                                            <div class="asset-view-help-instructions">
+                                                Click the [<img alt="Pencil Icon" src="/site_media/img/icons/meth_edit.png" />] to edit an item or selection. 
+                                            </div>
+                                            <div class="asset-view-help-instructions">
+                                                Click the [<img alt="Create Selection" src="/site_media/img/icons/meth_addselection.png" />] or the yellow Create Selection button to add a selection.
+                                            </div>
+                                            <br />
                                             <div style="float: right">
                                                 <input id="asset-view-show-help"
                                                     type="checkbox" {{#show_help_checked?}}checked="checked"{{/show_help_checked?}} />

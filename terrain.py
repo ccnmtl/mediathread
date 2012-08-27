@@ -301,10 +301,20 @@ def there_is_help_for_the_title_column(step, title):
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
             help = e.parent.find_element_by_css_selector("div.helpblock.on")
-            if help:
-                return
+            return
         
     assert False, "No help found for %s" % title    
+    
+@step(u'there is no help for the ([^"]*) column')
+def there_is_no_help_for_the_title_column(step, title):
+    elts = world.firefox.find_elements_by_tag_name("h2")
+    for e in elts:
+        if e.text and e.text.strip().lower().startswith(title.lower()):
+            try:
+                help = e.parent.find_element_by_css_selector("div.helpblock.on")
+                assert False, "Help found for %s" % title
+            except:
+                return # Expected outcome
     
 @step(u'I\'m told ([^"]*)')
 def i_m_told_text(step, text):

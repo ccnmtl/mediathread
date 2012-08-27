@@ -31,8 +31,12 @@ Feature: Homepage
         Given I am test_student_one in Sample Course
         
         And there is a FROM YOUR INSTRUCTOR column
+        And there is no help for the FROM YOUR INSTRUCTOR column
         Then there is an assignment "Sample Assignment" project by Instructor One
         Then the instructor panel has 1 projects named "Sample Assignment"
+        
+        And there is an ANALYSIS column
+        And there is no help for the ANALYSIS column
         
         When I click the "Sample Assignment" link
         Then I am at the Sample Assignment page

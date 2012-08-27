@@ -54,17 +54,6 @@ def the_panel_does_not_have_a_name_button(step, panel, name):
     except:
         pass # expected
     
-@step(u'The ([^"]*) title is "([^"]*)"')
-def the_panel_title_is_value(step, panel, value):
-    try:
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
-    except:
-        time.sleep(1)
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
-    assert panel != None, "Can't find panel named %s" % panel
-    
-    h1 = panel.find_element_by_css_selector("h1.project-title")
-    assert h1.text.strip() == value, "Expected %s title %s. Found %s" % (panel, value, h1.text.strip())
         
 
     

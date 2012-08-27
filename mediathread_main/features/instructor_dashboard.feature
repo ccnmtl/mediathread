@@ -83,3 +83,63 @@ Feature: Instructor Dashboard
         Then there is a private "Instructor Dashboard: Scenario 4" project by Instructor One
         
         Finished using Selenium
+        
+    Scenario: 5. Instructor Dashboard - Test Assignment Responses      
+        Using selenium
+        Given there is a sample assignment and response
+        Given I am test_instructor in Sample Course
+        
+        When I click the Instructor Dashboard button
+        Then I am at the Instructor Dashboard page        
+        When I click the Assignment Responses button
+        There is a "Sample Assignment" link
+        When I click the "Sample Assignment" link
+        Then I am at the Sample Assignment page
+        There is an open Assignment panel
+
+        When I click the Instructor Dashboard button
+        Then I am at the Instructor Dashboard page        
+        When I click the Assignment Responses button        
+        Then there is a "1 / 3" link
+        When I click the "1 / 3" link
+        Then I see "Assignment Report: Sample Assignment"
+        And I see "Student One"
+        And I there is a "Sample Assignment Response" link
+        And I see "Submitted to Instructor"
+        And I see "No feedback" 
+        
+        When I click the "Sample Assignment Response" link
+        Then I am at the Sample Assignment Response page
+        There is an open Composition panel
+        And the Composition title is "Sample Assignment Response"
+         
+        Finished using Selenium
+        
+    Scenario: 6. Instructor Dashboard - Class Activity      
+        Using selenium
+        Given there is a sample assignment and response
+        Given I am test_instructor in Sample Course
+        
+        When I click the Instructor Dashboard button
+        Then I am at the Instructor Dashboard page
+        When I click the Class Activity button
+        Then I see "Report: Class Activity"
+        
+        And there is a "MAAP Award Reception" link
+        And there is a "Sample Assignment Response" link
+        And there is a "The Armory - Home to CCNMTL'S CUMC Office" link
+        And there is a "Mediathread: Introduction" link
+            
+        Finished using Selenium
+        
+    Scenario: 7. Instructor Dashboard - Student Contributions     
+        Using selenium
+        Given there is a sample assignment and response
+        Given I am test_instructor in Sample Course
+        
+        When I click the Instructor Dashboard button
+        Then I am at the Instructor Dashboard page
+        When I click the Student Contributions button
+        Then I see "Report: Student Contributions"
+        
+        Finished using Selenium  

@@ -742,7 +742,92 @@ def the_classwork_panel_has_count_projects_named_title(step, count, title):
         a = e.find_element_by_css_selector("a.asset_title")
         if a.text == title:
             n += 1
-    assert n == int(count), "There are %s projects named %s. Expected %s"  % (n, title, count)     
+    assert n == int(count), "There are %s projects named %s. Expected %s"  % (n, title, count) 
+    
+@step(u'there is an? ([^"]*) ([^"]*) panel')
+def there_is_a_state_name_panel(step, state, name):
+    """
+    Keyword arguments:
+    state -- open, closed
+    name -- composition, assignment, discussion, collection 
+
+    """
+    try:
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
+    except:
+        time.sleep(1)
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
+    assert panel != None, "Can't find panel named %s" % panel
+    
+@step(u'I call the ([^"]*) "([^"]*)"')
+def i_call_the_panel_title(step, panel, title):
+    try:
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    except:
+        time.sleep(1)
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    input = panel.find_element_by_name("title")
+    input.clear()
+    input.send_keys(title)
+
+@step(u'I write some text for the ([^"]*)')
+def i_write_some_text_for_the_panel(step, panel):
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    frame = panel.find_element_by_tag_name("iframe")
+    world.firefox.switch_to_frame(frame)
+    input = world.firefox.find_element_by_class_name("mceContentBody")
+    input.send_keys("""The Columbia Center for New Teaching and Learning was (CCNMTL)
+                    was founded at Columbia University in 1999 to enhance teaching and
+                    learning through the purposeful use of new media and technology""")
+    
+    world.firefox.switch_to_default_content()       
+    
+@step(u'there is an? ([^"]*) "([^"]*)" project by ([^"]*)')
+def there_is_a_status_title_project_by_author(step, status, title, author):
+    elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    if len(elts) < 1:
+        time.sleep(1)
+        elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    assert len(elts) > 0, "Expected to find at least 1 project. Instead there are none"
+    
+    assignment = False
+    for e in elts:
+        try:
+            title_elt = e.find_element_by_css_selector("a.asset_title.type-project")
+        except:
+            title_elt = e.find_element_by_css_selector("a.asset_title.type-assignment")
+            assignment = True
+            
+        if title_elt.text.strip() == title:
+            if not assignment:
+                # author
+                author_elt = e.find_element_by_css_selector("span.metadata-value-author")
+                msg = "%s author is [%s]. Expected [%s]." % (title, author_elt.text.strip(), author)
+                assert author_elt.text.strip() == author, msg
+                
+            # status            
+            status_elt = e.find_element_by_css_selector("span.metadata-value-status")
+            msg = "%s status starts with [%s]. Expected [%s]" % (title, status_elt.text.strip().lower(), status)
+            assert status_elt.text.strip().lower().startswith(status), msg 
+            
+            return
+            
+    assert False, "Unable to find project named %s" % title
+    
+@step(u'i save the changes')
+def i_save_the_changes(step):
+    elts = world.firefox.find_elements_by_tag_name("button")
+    for e in elts:
+        if e.get_attribute("type") == "button" and e.text == "Save":
+            e.click()
+            time.sleep(1)
+            return
+        
+    assert False, "Unable to locate the dialog's save button"             
     
 # Local utility functions
 def get_column(title):

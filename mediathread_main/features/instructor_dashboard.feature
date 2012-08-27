@@ -48,7 +48,7 @@ Feature: Instructor Dashboard
         And there is a Student Contributions button
         Finished using Selenium     
         
-    Scenario: 4. Instructor Dashboard - Test Create Discussion
+    Scenario: 3. Instructor Dashboard - Test Create Discussion
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -58,4 +58,28 @@ Feature: Instructor Dashboard
         Then I am at the Discussion page
         When I click the HOME button
         Then I am at the Home page
+        And there is a "Discussion Title" link
+        When I click the "Discussion Title" link
+        Then I am at the Discussion page
+        Finished using Selenium
+        
+    Scenario: 4. Instructor Dashboard - Test Create Composition
+        Using selenium
+        Given I am test_instructor in Sample Course
+        
+        When I access the url "/dashboard/"
+        Then I am at the Instructor Dashboard page
+        When I click the Create Composition or Assignment button
+        Then I am at the Untitled page
+        
+        There is an open Composition panel
+        I call the Composition "Instructor Dashboard: Scenario 4"
+        And I write some text for the Composition
+        Then I click the Save button
+        And I save the changes
+        
+        When I click the HOME button
+        Then I am at the Home page
+        Then there is a private "Instructor Dashboard: Scenario 4" project by Instructor One
+        
         Finished using Selenium

@@ -818,6 +818,19 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
             
     assert False, "Unable to find project named %s" % title
     
+@step(u'The ([^"]*) title is "([^"]*)"')
+def the_panel_title_is_value(step, panel, value):
+    try:
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    except:
+        time.sleep(1)
+        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    assert panel != None, "Can't find panel named %s" % panel
+    
+    h1 = panel.find_element_by_css_selector("h1.project-title")
+    assert h1.text.strip() == value, "Expected %s title %s. Found %s" % (panel, value, h1.text.strip())
+    
+    
 @step(u'i save the changes')
 def i_save_the_changes(step):
     elts = world.firefox.find_elements_by_tag_name("button")

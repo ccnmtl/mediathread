@@ -435,7 +435,9 @@ CollectionList.prototype.updateAssets = function (the_records) {
             jQuery(self.parent).find("a.collection-choice.delete-asset").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
-                return self.deleteAsset(bits[bits.length - 1]);
+                var asset_id = bits[bits.length - 1];
+                self.deleteAsset(asset_id);
+                return false;
             });
             
             jQuery(self.parent).find("a.collection-choice.delete-annotation").unbind('click').click(function (evt) {

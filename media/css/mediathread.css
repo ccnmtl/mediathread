@@ -2523,8 +2523,8 @@ dd {
 
 
 /* styles for hs.js */
-.hs-show { display: block; }
-.hs-hide { display: none; }
+.hs-show { display: block !important; }
+.hs-hide { display: none !important; }
 
 .hs-init-hide {display:none;}
 

@@ -633,6 +633,42 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     filter_menu.click()
     assert False, "Unable to filter by %s tag" % tag
     
+@step(u'I filter by "([^"]*)" in the ([^"]*) column')    
+def i_filter_by_tag_in_the_title_column(step, tag, title):
+    column = get_column(title)
+    if not column:
+        time.sleep(1)
+        column = get_column(title)
+        
+    assert column, "Unable to find a column entitled %s" % title
+    
+    filter_menu = column.find_element_by_css_selector("div.switcher.collection-filter a.switcher-top")
+    filter_menu.click()
+    
+    tags = column.find_elements_by_css_selector("div.switcher.collection-filter a.switcher-choice.filterbytag")
+        
+    for t in tags:
+        if t.text == tag:
+            t.click()
+            time.sleep(2)
+            return
+        
+    filter_menu.click()
+    assert False, "Unable to filter by %s tag" % tag  
+    
+@step(u'I clear the filter in the ([^"]*) column')
+def i_clear_the_filter_in_the_title_column(step, title): 
+    column = get_column(title)
+    if not column:
+        time.sleep(1)
+        column = get_column(title) 
+        
+    assert column, "Unable to find a column entitled %s" % title
+    
+    elt = column.find_element_by_css_selector("a.switcher-choice.remove")
+    elt.click()
+    time.sleep(2)    
+    
 @step(u'Given publish to world is ([^"]*)')
 def given_publish_to_world_is_value(step, value):
     if world.using_selenium:
@@ -846,8 +882,11 @@ def i_save_the_changes(step):
 def get_column(title):
     elts = world.firefox.find_elements_by_tag_name("h2")
     for e in elts:
-        if e.text and e.text.strip().lower().find(title.lower()) > -1:
-            return e.parent
+        try:
+            if e.text and e.text.strip().lower().find(title.lower()) > -1:
+                return e.parent
+        except StaleElementReferenceException:
+            continue
     
     return None
 

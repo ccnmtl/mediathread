@@ -1,6 +1,6 @@
 Feature: Homepage
 
-    Scenario: 1. Homepage - Instructor Homepage
+    Scenario: homepage.feature 1. Instructor default view
         Using selenium
         Given I am test_instructor in Sample Course
         There is an Instructor Dashboard button
@@ -13,7 +13,7 @@ Feature: Homepage
         And there is help for the Compositions column
         Finished using Selenium
         
-    Scenario: 2. Homepage - Student Homepage
+    Scenario: homepage.feature 2. Student view w/o assignment
         Using selenium
         Given I am test_student_one in Sample Course
         Then there is not an Instructor Dashboard button
@@ -25,7 +25,7 @@ Feature: Homepage
         And there is help for the Compositions column
         Finished using Selenium
 
-    Scenario: 3. Homepage - Student Homepage w/assignment
+    Scenario: homepage.feature 3. Student view w/assignment
         Using selenium
         Given there is a sample assignment
         Given I am test_student_one in Sample Course
@@ -45,7 +45,7 @@ Feature: Homepage
         
         Finished using Selenium
         
-    Scenario: 4. Homepage - Student Homepage w/assignment & response
+    Scenario: homepage.feature 4. Student view w/assignment & response
         Using selenium
         Given there is a sample assignment and response
         Given I am test_student_one in Sample Course
@@ -63,7 +63,7 @@ Feature: Homepage
         
         Finished using Selenium    
                 
-    Scenario: 5. Homepage - Collections Box - Basic item functionality
+    Scenario: homepage.feature 5. Collection - Basic item functionality
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -94,7 +94,7 @@ Feature: Homepage
         
         Finished using Selenium
         
-    Scenario Outline: 6. Homepage - Collection Box - Viewing Items & Selections
+    Scenario Outline: homepage.feature 6. Collection - Viewing Items & Selections
         Using selenium
         
         Given I am test_instructor in Sample Course
@@ -147,7 +147,7 @@ Feature: Homepage
         | test_student_two    |  Instructor One               |  Student One              | Yes                  | 3                |
         | test_instructor     |  Me                           |  Student One              | No                   | 3                |        
         
-   Scenario: 7. Homepage - Collection Box - Limited Selection Visibility 
+   Scenario: 7. homepage.feature 7. Collection - Limited Selection Visibility 
         Using selenium
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "No"
@@ -210,7 +210,7 @@ Feature: Homepage
                 
         Finished using Selenium
     
-    Scenario: 8. Homepage - Collections box - filtering by tag
+    Scenario: homepage.feature 8. Collection - Filter by tag
         Using selenium
         Given I am test_instructor in Sample Course
         

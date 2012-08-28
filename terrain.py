@@ -30,6 +30,7 @@ def setup_database(variables):
     os.system('./manage.py migrate --settings=settings_test --noinput > /dev/null')
     os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db > /dev/null")
     os.system('./manage.py loaddata mediathread_main/fixtures/sample_course.json --settings=settings_test > /dev/null')
+    time.sleep(2)
 
 @before.all
 def setup_browser():
@@ -135,10 +136,12 @@ def i_am_at_the_name_page(step, name):
 @step(u'there is a sample assignment')            
 def there_is_a_sample_assignment(step):
     os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment.json --settings=settings_test > /dev/null')
+    time.sleep(2)
 
 @step(u'there is a sample assignment and response')            
 def there_is_a_sample_assignment_and_response(step):
     os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment_and_response.json --settings=settings_test > /dev/null')
+    time.sleep(2)
     
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):
@@ -189,12 +192,12 @@ def there_is_a_text_link(step, text):
             assert link.is_displayed()
         except:
             try:
-                time.sleep(1)
+                time.sleep(2)
                 link = world.firefox.find_element_by_partial_link_text(text)
                 assert link.is_displayed()
             except:
                 world.firefox.get_screenshot_as_file("/tmp/selenium.png")
-                assert False, link.location      
+                assert False, "Cannot find link %s" % text   
         
         
 @step(u'I click the "([^"]*)" link')

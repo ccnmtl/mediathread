@@ -1,6 +1,6 @@
 Feature: Public Compositions
         
-    Scenario: 1. Public Composition - create by test_instructor, verify visibility 
+    Scenario: publishtoworld.composition.feature 1. Instructor creates public to world composition - verify visibility 
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects

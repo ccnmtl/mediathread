@@ -1,6 +1,6 @@
 Feature: Manage Sources
 
-    Scenario: 1. Manage Sources - View Add to My Collection, Add Sources, Enable Upload 
+    Scenario: manage_sources.feature 1. View Add to My Collection, Add Sources, Enable Upload 
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -36,7 +36,7 @@ Feature: Manage Sources
         Finished using Selenium
    
            
-    Scenario: 2. Manage Sources - Video Upload - Instructors Only
+    Scenario: manage_sources.feature 2. Video Upload - Instructors Only
         Using selenium
         Given I am test_instructor in Sample Course
         Given video upload is enabled
@@ -56,7 +56,7 @@ Feature: Manage Sources
 
         Finished using Selenium
         
-    Scenario: 3. Manage Sources - Video Upload - Administrators Only 
+    Scenario: manage_sources.feature 3. Video Upload - Administrators Only 
         Using selenium
         Given I am test_instructor in Sample Course
         Given video upload is enabled
@@ -83,7 +83,7 @@ Feature: Manage Sources
         
         Finished using Selenium
         
-    Scenario: 4. Manage Sources - Video Upload - Students Too 
+    Scenario: manage_sources.feature 4. Video Upload - Students Too 
         Using selenium
         Given I am test_instructor in Sample Course
         Given video upload is enabled

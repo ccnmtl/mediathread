@@ -1,6 +1,6 @@
 Feature: Assignment
 
-    Scenario: 1. Assignment - Create by test_instructor, verify initial state
+    Scenario: assignment.feature 1. Instructor creates assignment
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
@@ -63,7 +63,7 @@ Feature: Assignment
         
         Finished using Selenium 
         
-    Scenario: 2. Assignment Response - by student, verify creation & initial state
+    Scenario: assignment.feature 2. Student creates assignment response
         Using selenium
         Given there is a sample assignment
         Given I am test_student_one in Sample Course
@@ -130,7 +130,7 @@ Feature: Assignment
         
         Finished using Selenium 
 
-    Scenario: 3. Sample Assignment Response - view and provide feedback as an instructor
+    Scenario: assignment.feature 3. Instructor provides response feedback
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
@@ -192,7 +192,7 @@ Feature: Assignment
 
         Finished using Selenium
         
-    Scenario Outline: 4. Assignment Response - visibility rules        
+    Scenario Outline: assignment.feature 4. Assignment Response - visibility rules        
         Using selenium
         Given there is a sample assignment and response
         Give I am test_student_one in Sample Course
@@ -225,7 +225,7 @@ Feature: Assignment
         | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_student_two |   0   |
         | Whole Class - all class members can view            | Published to Class      | test_student_two |   1   |
 
-    Scenario: 5. Class Responses link - instructor       
+    Scenario: assignment.feature 5. Class Responses link - instructor       
         Using selenium
         Given there is a sample assignment and response
         Give I am test_instructor in Sample Course
@@ -247,7 +247,7 @@ Feature: Assignment
         
         Finished using Selenium
         
-    Scenario: 6. Class Responses link + Response Visibility + Respond - Student Two       
+    Scenario: assignment.feature 6. Class Responses link + Response Visibility + Respond - Student Two       
         Using selenium
         Given there is a sample assignment and response
         
@@ -291,7 +291,7 @@ Feature: Assignment
         And the Composition title is "Sample Assignment Response"
         
         # Create my own response and make sure it's the right one
-	When I toggle the Assignment panel
+	    When I toggle the Assignment panel
         Then I click the Respond to Assignment button
         Then I am at the Untitled page
         

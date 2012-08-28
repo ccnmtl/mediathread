@@ -1,6 +1,6 @@
 Feature: Instructor Dashboard
 
-    Scenario: 1. Instructor Dashboard - Students are forbidden
+    Scenario: instructor_dashboard.feature 1. Students are forbidden
         Using selenium
         Given I am test_student_one in Sample Course
         
@@ -34,25 +34,26 @@ Feature: Instructor Dashboard
                
         Finished using Selenium
         
-    Scenario: 2. Instructor Dashboard - Verify expected instructor functionality
+    Scenario: instructor_dashboard.feature 2. Verify expected instructor functionality
         Using selenium
         Given I am test_instructor in Sample Course
         When I click the Instructor Dashboard button
         Then I am at the Instructor Dashboard page
         And there is a Manage Sources button
         And there is a Manage Course Settings button
-        And there is a Create Composition Or Assignment button
+        And there is a Create Composition or Assignment button
         And there is a Create Discussion button
         And there is an Assignment Responses button
         And there is a Class Activity button
         And there is a Student Contributions button
-        Finished using Selenium     
+        Finished using Selenium
         
-    Scenario: 3. Instructor Dashboard - Test Create Discussion
+    Scenario: instructor_dashboard.feature 3. Test Create Discussion
         Using selenium
+        Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I access the url "/dashboard/"
+        When I click the Instructor Dashboard button
         Then I am at the Instructor Dashboard page
         When I click the Create Discussion button
         Then I am at the Discussion page
@@ -63,11 +64,12 @@ Feature: Instructor Dashboard
         Then I am at the Discussion page
         Finished using Selenium
         
-    Scenario: 4. Instructor Dashboard - Test Create Composition
+    Scenario: instructor_dashboard.feature 4. Test Create Composition
         Using selenium
+        Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I access the url "/dashboard/"
+        When I click the Instructor Dashboard button
         Then I am at the Instructor Dashboard page
         When I click the Create Composition or Assignment button
         Then I am at the Untitled page
@@ -84,7 +86,7 @@ Feature: Instructor Dashboard
         
         Finished using Selenium
         
-    Scenario: 5. Instructor Dashboard - Test Assignment Responses      
+    Scenario: instructor_dashboard.feature 5. Test Assignment Responses      
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
@@ -115,7 +117,7 @@ Feature: Instructor Dashboard
          
         Finished using Selenium
         
-    Scenario: 6. Instructor Dashboard - Class Activity      
+    Scenario: instructor_dashboard.feature 6. Class Activity      
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
@@ -132,7 +134,7 @@ Feature: Instructor Dashboard
             
         Finished using Selenium
         
-    Scenario: 7. Instructor Dashboard - Student Contributions     
+    Scenario: instructor_dashboard.feature 7. Student Contributions     
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course

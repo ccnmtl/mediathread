@@ -1,6 +1,6 @@
 Feature: Composition
         
-    Scenario: 1. Composition - create by test_instructor, verify initial state
+    Scenario: composition.feature 1. Instructor creates composition
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
@@ -74,7 +74,7 @@ Feature: Composition
         
         Finished using Selenium
 
-    Scenario: 2. Composition - create by test_student_one, verify initial state
+    Scenario: composition.feature 2. Student creates composition
         Using selenium
         Given I am test_student_one in Sample Course
         Given there are no projects
@@ -148,7 +148,7 @@ Feature: Composition
         
         Finished using Selenium
 
-    Scenario Outline: 3. Homepage Composition Visibility - Student Viewing Instructor Created Information / Assignments
+    Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information / Assignments
         Using selenium
         Given I am test_instructor in Sample Course
                 
@@ -177,7 +177,7 @@ Feature: Composition
         | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 1     |
         | Public  | Whole Class - all class members can view                          | Published to Class | 1     |
                  
-    Scenario Outline: 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
+    Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
         Using selenium
         Given I am test_student_one in Sample Course
                 

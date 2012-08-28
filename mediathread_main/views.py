@@ -236,7 +236,7 @@ def your_records(request, record_owner_name):
 
     assets = annotated_by(Asset.objects.filter(course = course),
                           record_owner,
-                          include_archives = course.is_faculty(record_owner))
+                          include_archives = False)
             
     projects = Project.get_user_projects(record_owner, course).order_by('-modified')
     if not record_owner == logged_in_user:

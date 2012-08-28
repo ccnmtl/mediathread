@@ -33,6 +33,14 @@ Feature: Manage Sources
         And I see "Upload Video"
         And I see 1 source
         
+        # On the Home Page
+        When I click the HOME button
+        Then I am at the Home page
+        The Collection panel has no "You Tube" item
+        And the Collection panel has a "MAAP Award Reception" item
+        And the Collection panel has a "Mediathread: Introduction" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
+        
         Finished using Selenium
    
            

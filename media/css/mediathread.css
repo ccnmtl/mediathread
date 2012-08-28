@@ -2509,6 +2509,15 @@ dd {
 
 .delete_icon, .edit_icon {vertical-align: middle;}
 
+/**
+.delete_icon:hover,
+.edit_icon:hover {
+    opacity:0.85;
+    -moz-opacity:0.85;
+    filter:alpha(opacity=85);    
+}
+**/
+
 .record {
     clear:both;
 
@@ -3165,8 +3174,11 @@ div.gallery-item h4 a
 {
     font-weight: bold;
     padding-right: 4px;
-    margin-left: 30px;
+    margin-left: 28px;
     display: block;
+    padding-top: 2px;
+    max-width: 225px;
+    overflow-x: hidden;
 }
 
 div.gallery-item-homepage h4 {
@@ -3184,17 +3196,6 @@ div.gallery-item h4 {
     overflow: hidden;
     max-height: 48px;
 }
-
-div#materials h4 a.asset-title-link.insert {
-    padding-left: 0;
-}
-
-div#materials h4 a.asset-title-link.insert,
-div#composition-materials h4 a.asset-title-link.insert,
-div#assignment-materials h4 a.asset-title-link.insert {
-    padding-left: 5px;
-}
-
 
 ul.instructor-list {
 
@@ -3432,7 +3433,6 @@ ul#projects .createnew-button {
     width: 202px;
     background-repeat: repeat-x;
     border: 1px solid #477794;
-    text-transform: capitalize;
     display: block;
     padding: 0px 5px 1px 5px;
     text-decoration: none;

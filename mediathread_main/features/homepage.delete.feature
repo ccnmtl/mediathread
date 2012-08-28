@@ -1,6 +1,6 @@
 Feature: Homepage Delete Operations. Project, Item
 
-    Scenario: 1. Homepage - Student cannot delete assignment
+    Scenario: homepage.delete.feature 1. Student cannot delete assignment
         Using selenium
         Given there is a sample assignment
         Given I am test_student_one in Sample Course
@@ -13,7 +13,7 @@ Feature: Homepage Delete Operations. Project, Item
         
         Finished using Selenium 
         
-    Scenario: 2. Homepage -- Instructor cannot delete student's response
+    Scenario: homepage.delete.feature 2. Instructor cannot delete student's response
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
@@ -29,7 +29,7 @@ Feature: Homepage Delete Operations. Project, Item
         
         Finished using Selenium
 
-    Scenario: 3. Homepage - Instructor can delete his own assignment
+    Scenario: homepage.delete.feature 3. Instructor can delete his own assignment
         Using selenium
         Given there is a sample assignment
         Given I am test_instructor in Sample Course
@@ -46,7 +46,7 @@ Feature: Homepage Delete Operations. Project, Item
         
         Finished using Selenium
         
-    Scenario: 4. Homepage - Student can delete his own response
+    Scenario: homepage.delete.feature 4. Student can delete his own response
         Using selenium
         Given there is a sample assignment and response
         Given I am test_student_one in Sample Course
@@ -63,7 +63,7 @@ Feature: Homepage Delete Operations. Project, Item
         
         Finished using Selenium
         
-    Scenario: 5. Homepage - Instructor can remove an item from his own collection
+    Scenario: homepage.delete.feature 5. Instructor can remove an item from his own collection
         Using selenium
         Given there is a sample assignment
         Given I am test_instructor in Sample Course

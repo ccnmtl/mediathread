@@ -1,6 +1,6 @@
 Feature: Manage Sources
 
-    Scenario: 1. Manage Publish Options - Default is off
+    Scenario: manage_publish_options.feature 1. Publish options - default is off
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -14,7 +14,7 @@ Feature: Manage Sources
         
         Finished using Selenium
 
-    Scenario: 2. Manage Publish Options - Yes
+    Scenario: manage_publish_options.feature 2. Publish options set to Yes
         Using selenium
         Given I am test_instructor in Sample Course
         Given publish to world is enabled
@@ -29,7 +29,7 @@ Feature: Manage Sources
         
         Finished using Selenium
         
-    Scenario: 3. Manage Publish Options - No
+    Scenario: manage_publish_options.feature 3. Publish options set to No
         Using selenium
         Given I am test_instructor in Sample Course
         Given publish to world is disabled

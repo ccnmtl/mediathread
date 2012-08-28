@@ -2,8 +2,11 @@ from settings_shared import *
 
 DATABASES = {
     'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'lettuce.db'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'lettuce.db',
+        'OPTIONS': {
+            'timeout': 30,
+        }
     }
 }
 

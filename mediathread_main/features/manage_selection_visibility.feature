@@ -1,6 +1,6 @@
 Feature: Manage Selection Visibility
 
-    Scenario: 1. Verify default selection visibility is yes
+    Scenario: manage_selection_visibility.feature 1. Verify default selection visibility is yes
         Using selenium
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "Yes"
@@ -15,7 +15,7 @@ Feature: Manage Selection Visibility
         
         Finished using Selenium
         
-    Scenario: 2. Change selection visibility to no
+    Scenario: manage_selection_visibility.feature 2. Change selection visibility to no
         Using selenium
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "No"

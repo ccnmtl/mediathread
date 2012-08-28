@@ -2,9 +2,7 @@
 {% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags comments collaborations revision %}
 
 {% block title %}
-    {% if space_owner == user %}
-        Home
-    {% endif %}
+    Home
 {% endblock %}
 
 {% block css %}
@@ -17,7 +15,6 @@
 {% block js %}
     <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/tablesort.js?version={%revision%}"></script>
       
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
@@ -37,8 +34,11 @@
             if (jQuery(helpBlock).hasClass("on"))
                 helpOffset += jQuery(helpBlock).outerHeight();
             
-            jQuery('#classwork .projects-column-container').css('height', (visible - 87 - helpOffset) + "px");
-            jQuery('#classwork .media-column-container').css('height', (visible - 77 - helpOffset) + "px");
+            visible -= helpOffset;
+            visible -= jQuery("div.filter-widget").outerHeight() + jQuery("#classwork div.parent-column-container").children('h2').outerHeight();
+            visible -= 28; // padding
+            jQuery('#classwork .projects-column-container').css('height', (visible) + "px");
+            jQuery('#classwork .media-column-container').css('height', (visible + 10) + "px");
         }
     
         jQuery(document).ready(function() {
@@ -50,15 +50,16 @@
                 jQuery(this).removeClass("ajaxLoading");
             });
             
-            DjangoSherd_Asset_Config();    
             var collectionList = new CollectionList({
                 'parent': jQuery("div#classwork_table")[0],
-                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{space_owner.username}}{% endifnotequal %}',
-                'template': 'classwork',
+                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
+                'template': 'homepage',
                 'template_label': 'classwork_table',
                 'view_callback': resizeHomepage,
                 'view': "{{request.GET.view}}",
                 'tag': "{{request.GET.tag}}",
+                'create_asset_thumbs': true,
+                'citable': false
             });
             
             jQuery(window).resize(function () {  
@@ -82,7 +83,7 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {%if display.instructor or is_faculty %}
+            {% if faculty_feed.show or is_faculty %}
             <td class="" id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}

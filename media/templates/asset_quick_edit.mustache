@@ -1,0 +1,162 @@
+    <td class="panel-container open" style="display: none">
+        <div id="asset-workspace-panel-container" class="panel asset-workspace-dialog">
+            <table class="panel-subcontainer">
+                <tr class="asset-workspace-content-row">                    
+                    <td class="panel-container open asset subpanel fixed" style="display: block">
+                        {{#>>asset-view-header}}
+                            <div id="asset-view-header">
+                                {{#asset-current}}
+                                     <div class="asset-view-title"><h1>{{title}}</h1></div>
+                                {{/asset-current}}                             
+                             </div>
+                        {{/>>asset-view-header}}
+                        
+                        <div class="asset-view-container">
+                            <div class="asset-view-published asset-view-dialog">
+                                <div id="asset-workspace-videoclipbox" class="videoclipbox">
+                                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                    <div class="asset-display"></div>
+                                    <div class="clipstrip-display"></div>
+                                </div>
+                            </div>
+
+                            {{#>>asset-view-details}}
+                            <div class="asset-view-tabs">
+                            <div id="asset-view-details" class="asset-view-details">
+                                <div id="asset-global-annotation"
+                                    {{#annotation.editing?}}
+                                        style="display: none"
+                                    {{/annotation.editing?}}>
+                                    {{#asset-current}}
+                                        <h1>Edit Item</h1>
+                                        <form id="edit-global-annotation-form" method="post"
+                                            {{#global_annotation_id?}}
+                                            action="/asset/save/{{id}}/annotations/{{global_annotation_id}}/"
+                                            {{/global_annotation_id?}}
+                                            
+                                            {{^global_annotation_id}}
+                                                action="/asset/create/{{id}}/global/"
+                                            {{/global_annotation_id}}
+                                            >                                                    
+                                        
+                                            <div class="metadata">
+                                                <div class="metadata-label">My Tags:</div> 
+                                                <div class="metadata-value global-annotation-tags">
+                                                    {{#user_tags}}
+                                                        {{name}}{{^last}}, {{/last}}
+                                                    {{/user_tags}}
+                                                </div>
+                                                <div class="metadata-value-edit">
+                                                    <input type="text" name="annotation-tags" id="id_annotation-tags" 
+                                                        value="{{#user_tags}}{{name}}{{^last}}, {{/last}}{{/user_tags}}"></input>
+                                                    <div class="helptext">Use commas to separate tags. Ex: tag1, tag two, tag3</div>
+                                                </div>
+                                            </div>
+                                            <div class="metadata">
+                                                <div class="metadata-label">My Notes:</div>
+                                                <div class="metadata-value global-annotation-notes">
+                                                    {{notes}}
+                                                </div>
+                                                <div class="metadata-value-edit">
+                                                    <textarea id="id_annotation-body" rows="7" cols="51"
+                                                        name="annotation-body" value="{{notes}}">{{notes}}</textarea>
+                                                </div>
+                                            </div>
+                                            <input class="metadata-value-edit media"
+                                                type="submit" name="submit_notes" value="Save" 
+                                                onclick="return AnnotationList.saveItem(this)"></input>
+                                                
+                                            <input class="metadata-value-edit media"
+                                                type="submit" name="submit_notes_cancel" value="Cancel" 
+                                                onclick="return AnnotationList.cancelItem(this)"></input>
+                                            <div class="visualclear"></div>
+                                        </form>
+                                    {{/asset-current}}
+                                </div> {{! end global annotation }}
+                                
+                                {{#>>annotation-current}}
+                                    <div id="annotation-current">
+                                    {{#annotation}}
+                                        <div id="asset-details-annotations-current" 
+                                            {{#editing?}}
+                                                style="display: block"
+                                            {{/editing?}}
+                                            
+                                            {{^editing}}
+                                                style="display: none"
+                                            {{/editing}}
+                                            >        
+                                            <div id="original-annotation" class="annotation-data" 
+                                                 data-begin="{{range1}}" 
+                                                 data-end="{{range2}}"
+                                                 {{#annotation_data?}}
+                                                    data-annotation="{{annotation_data}}"
+                                                 {{/annotation_data?}}
+                                                 {{^annotation_data}}
+                                                    data-annotation="{}"
+                                                 {{/annotation_data}}> 
+                                            </div>
+                                        
+                                            <h1>
+                                                {{#id?}}
+                                                    Edit Selection
+                                                {{/id?}}
+                                                {{^id}}
+                                                    {{#copying?}}
+                                                        Copy Selection
+                                                    {{/copying?}}
+                                                    {{^copying}}
+                                                        Create Selection
+                                                    {{/copying}}
+                                                 {{/id}}
+                                            </h1>
+                                        
+                                            <form name="edit-annotation-form" onsubmit="return false;">
+                                                <div class="asset-annotator">
+                                                    <div class="sherd-instructions"></div>
+                                                    <div id="clipform-display"></div>
+                                                </div>
+                                                <div id="annotation-body">
+                                                <label for="annotation-title">Title:</label>
+                                                <input style="width: 75%" type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/>
+                                                <br /><br />
+                        
+                                                <label for="annotation-tags">Tags:</label> 
+                                                <input style="width: 75%" type="text" id="id_annotation-tags" 
+                                                    name="annotation-tags" 
+                                                    value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/>
+                                                <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
+                                                
+                                                <label for="annotation-body">Note:</label>
+                                                <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
+                                                
+                                                <input type="hidden" name="annotation-range1" value="{{range1}}" />
+                                                <input type="hidden" name="annotation-range2" value="{{range2}}" />
+                                                <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
+                                                
+                                                <input class="media secondary" type="button" name="Save" value="Save" 
+                                                    onclick="javascript:AnnotationList.saveAnnotation(this)" />
+                                                    
+                                                <input class="media secondary" type="button" name="Cancel" value="Cancel" 
+                                                    onclick="javascript:AnnotationList.cancelAnnotation()" />
+                                                
+                                                {{#id?}} <!-- Editing existing annotation -->
+                                                <input type="hidden" name="annotation-id" value="{{id}}" />
+                                                {{/id?}}
+                                                
+                                                <div class="visualclear"></div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                    {{/annotation}}
+                                    </div>
+                                {{/>>annotation-current}}  
+                                </div></div>                                                
+                            {{/>>asset-view-details}}
+                        </div> {{! end asset-view-container }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </td>

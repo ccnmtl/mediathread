@@ -183,10 +183,13 @@
                             <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                                 <h2>
                                     <div class="button-form inline">
-                                        <a class="columnbutton media browse-button" href="/explore">Source Media</a>
-                                    </div>
-                                    Collections
+                                        <div class="collection_button">
+                                            <a href="/asset/">View All Items</a>
+                                        </div>
+                                    </div>                            
+                                    Collection
                                 </h2>
+                                
                                 <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                             </div>
                             {{/context.can_edit}}
@@ -205,7 +208,7 @@
                             </div>
                         </td>
                         <td class="panhandle-stripe collection">
-                            <div class="label">{{#context.editing?}}Embed{{/context.editing?}}{{^context.editing}}View{{/context.editing}} Media</div>
+                            <div class="label">{{#context.editing?}}Insert Selections{{/context.editing?}}{{^context.editing}}View Inserted Selections{{/context.editing}}</div>
                         </td>
                         <td class="pantab-container">
                             <div class="pantab collection {{#subpanel_state?}}{{subpanel_state}}{{/subpanel_state?}} {{^subpanel_state}}open{{/subpanel_state}}"></div>

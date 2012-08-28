@@ -1,4 +1,5 @@
 from django.db import models
+from mediathread_main import course_details
 
 Collaboration = models.get_model('structuredcollaboration','collaboration')
 Asset = models.get_model('assetmgr','asset')
@@ -107,10 +108,12 @@ class Clumper():
 
         @staticmethod
         def adapt_str(thing):
-            if isinstance(thing,Project): return None
-            return getattr(thing,'body',
-                           getattr(thing,'comment',None) or getattr(thing,'title',None)
-                           )
+            if isinstance(thing, Project): 
+                return None
+            if isinstance(thing, SherdNote): 
+                return None
+            return getattr(thing, 'body', 
+                getattr(thing,'comment', None) or getattr(thing, 'title', None))
 
         @staticmethod
         def adapt_user(thing):

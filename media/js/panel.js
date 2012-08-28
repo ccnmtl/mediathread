@@ -8,6 +8,8 @@
                 handler = new ProjectPanelHandler(el, parent, panels, space_owner);
             } else if (type === "discussion") {
                 handler = new DiscussionPanelHandler(el, parent, panels, space_owner);
+            } else if (type === "asset") {
+                handler = new AssetPanelHandler(el, parent, panels, space_owner);
             }
             
             return handler;
@@ -25,21 +27,6 @@
             jQuery(self.el).ajaxStop(function () {
                 jQuery(this).removeClass("ajaxLoading");
             });
-
-            
-            // Create an assetview.
-            // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the
-            // core architecture means the two views are really sharing the underlying code.
-            // Consider how to resolve this contention. (It's a big change in the core.)
-            
-            // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
-            if (!djangosherd.assetview) {
-                djangosherd.assetview = new Sherd.GenericAssetView({ clipform: false, clipstrip: true});
-            }
-            
-            if (!djangosherd.storage) {
-                djangosherd.storage = new DjangoSherd_Storage();
-            }
             
             jQuery.ajax({
                 url: options.url,
@@ -57,7 +44,7 @@
             });
         };
         
-        this.count = function() {
+        this.count = function () {
             return self.panelHandlers.length;
         };
         
@@ -132,16 +119,35 @@
             // Open/close this panhandle's panel
             var panel = jQuery(pantab_container).prevAll("td.panel-container")[0];
             
-            var param = jQuery(panel).hasClass("open") ? "closed" : "open";
-            jQuery(panel).toggleClass("open closed");
-            jQuery(panel).trigger('panel_state_change', [ param ]);
-            
-            var panelTab = jQuery(pantab_container).children("div.pantab")[0];
-            jQuery(panelTab).toggleClass("open closed");
-            
-            self.verifyLayout(panel);
-            jQuery(window).trigger("resize");
-            
+            var param, panelTab;
+            if (jQuery(panel).hasClass("minimized") || jQuery(panel).hasClass("maximized")) {
+                param = jQuery(panel).hasClass("minimized") ? "maximized" : "minimized";
+                jQuery(panel).toggleClass("minimized maximized");
+                jQuery(panel).trigger('panel_state_change', [ param ]);
+                
+                panelTab = jQuery(pantab_container).children("div.pantab")[0];
+                jQuery(panelTab).toggleClass("minimized maximized");
+                
+                if (param === "maximized") {
+                    jQuery(panel).siblings('td.panel-container').hide();
+                    jQuery(panel).css("display", "table-cell");
+                } else {
+                    jQuery(panel).siblings('td.panel-container').show();
+                }
+                
+                self.verifyLayout(panel);
+                jQuery(window).trigger("resize");
+            } else {
+                param = jQuery(panel).hasClass("open") ? "closed" : "open";
+                jQuery(panel).toggleClass("open closed");
+                jQuery(panel).trigger('panel_state_change', [ param ]);
+                
+                panelTab = jQuery(pantab_container).children("div.pantab")[0];
+                jQuery(panelTab).toggleClass("open closed");
+                
+                self.verifyLayout(panel);
+                jQuery(window).trigger("resize");
+            }
             
             /** Real Sliding
             // Open/close this panhandle's panel
@@ -188,7 +194,7 @@
                 self.verifyLayout(subpanel);
                 jQuery(window).trigger("resize");
             }
-        };
+        };        
 
         this.closeSubPanel = function (view) {
             var subpanel = jQuery(view.el).find("td.panel-container.open")[0];
@@ -209,10 +215,18 @@
             
             var elts = jQuery(panel).parents("td.panel-container.open");
             var parent = elts.length > 0 ? elts[0] : null;
+            
+            // Try really minimizing the minimized guys first
+            var a = jQuery(self.el).find("table.panel-subcontainer td.panel-container.minimized");
+            for (var i = 0; i < a.length && tableWidth > screenWidth; i++) {
+                var subcontainer = a[i];
+                jQuery(subcontainer).css("display", "none");
+                tableWidth = jQuery(self.el).width();
+            }
 
             // Try closing the subpanels first
-            var a = jQuery(self.el).find("table.panel-subcontainer tbody tr td.panel-container.open");
-            for (var i = 0; i < a.length && tableWidth > screenWidth; i++) {
+            a = jQuery(self.el).find("table.panel-subcontainer tbody tr td.panel-container.open");
+            for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
                 var p = a[i];
                 if (panel !== p) {
                     // close it
@@ -272,10 +286,23 @@
                 jQuery(panelTab).toggleClass("open closed");
                 
                 self.verifyLayout(panel);
+                jQuery(window).trigger("resize");
             }
         };
-
         
+        this.maximizePanel = function (panel) {
+            if (jQuery(panel).hasClass("minimized")) {
+                jQuery(panel).removeClass("minimized").addClass("maximized");
+                jQuery(panel).siblings('td.panel-container').hide();
+                
+                var panelTab = jQuery(panel).next().children("div.pantab")[0];
+                jQuery(panelTab).parent().removeClass("minimized").addClass("maximized");
+                jQuery(panelTab).removeClass("minimized").addClass("maximized");
+                
+                self.verifyLayout(panel);
+                jQuery(window).trigger("resize");
+            }
+        };
     })();
 })();
 

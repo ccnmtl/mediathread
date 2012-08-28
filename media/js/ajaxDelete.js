@@ -9,19 +9,29 @@ function ajaxDelete(link, container, opts) {
     } else {
         alert("An error occurred. Unable to delete this item.");
     }
-
+    
     var dom = document.getElementById(container);
     jQuery(dom).addClass('about-to-delete');
-    if (confirm("Are you sure you want to delete this?")) {
+    
+    var msg = "Are you sure you want to delete this?";
+    if (opts && opts.item) {
+        msg = "Are you sure you want to remove this item from your collection?";
+    }
+
+    if (confirm(msg)) {
         jQuery.ajax({
             type: 'POST',
             url: postUrl,
             success: function (responseText, textStatus, xhr) {
                 if (xhr.status === 200) {
-                    jQuery(dom).hide("fade");
-                    jQuery(dom).remove();
+                    jQuery(dom).fadeOut(function () {
+                        jQuery(dom).remove();
+                    });
                 } else {
                     alert("Error: " + textStatus);
+                }
+                if (opts && opts.success) {
+                    opts.success();
                 }
             },
             error: function (xhr) {
@@ -32,5 +42,6 @@ function ajaxDelete(link, container, opts) {
     } else {
         jQuery(dom).removeClass('about-to-delete');
     }
+    
     return false;
 }

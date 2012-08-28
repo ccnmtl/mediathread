@@ -25,7 +25,7 @@
 <h2>Manage Sources </h2>
     
   <p>
-  This page allows you to manage the resources listed on the <a href="{% url explore %}">Source Media</a> page.
+  This page allows you to manage the resources listed on the <a href="{% url explore %}">Add to My Collection</a> page.
   </p>
   <br />
 
@@ -80,7 +80,7 @@
 {% with help_supported_collections as default_help_state %}
 <ul id="supported_collections" class="archive-gallery">
     <li class="archive-container">
-        <h2 id="archives">Add<!--/Remove--> Supported Collections {% include "help/help_button.html" %}</h2>
+        <h2 id="archives">Add<!--/Remove--> Supported Sources {% include "help/help_button.html" %}</h2>
     
         <ul class="archive-gallery">
             {% include "help/help_contentarea.html" %}

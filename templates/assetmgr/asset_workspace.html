@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load smartif revision %}
+
+{% block title %}
+    Collection
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript/css -->
+    {% include "djangosherd/annotator_resources.html" %}
+    
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/jquery.masonry.min.js"></script>
+    
+    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/assetpanel.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
+    
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            PanelManager.init({ 
+                'container': 'sliding-content-container',
+                'url': MediaThread.urls['asset-workspace'](
+                     {% if asset_id %}{{asset_id}}{% endif %}
+                     {% if asset_id and annotation_id %}, {{annotation_id}}{% endif %})
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    
+    <table id="sliding-content-container" class="ajaxLoading">
+        <tr id="sliding-content-row" class="sliding-content-row">
+            <td id="sliding-content-last-column" class="filler"></td>
+        </tr>
+    </table>
+
+{% endblock %}    

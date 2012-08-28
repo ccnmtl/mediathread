@@ -69,8 +69,10 @@
                                 <table class="threaded_comments_form_table">
                                     {{{context.form}}}
                                 </table>
-                                <input class="project" id="comment-form-submit" type="submit" value="Save Comment" /></li>
-                                <input class="project cancel" style="display: none" type="button" value="Cancel" /></li>
+                                <div class="save_and_cancel">
+                                    <input class="project" id="comment-form-submit" type="submit" value="Save Comment" /></li>
+                                    <input class="project cancel" style="display: none" type="button" value="Cancel" /></li>
+                                </div>
                             </form>
                         </div>
                     </td>
@@ -83,9 +85,11 @@
                         <div class="collection-materials" style="display:{{#context.editing?}}block{{/context.editing?}}{{^context.editing}}none{{/context.editing}}">
                             <h2>
                                 <div class="button-form inline">
-                                    <a class="columnbutton media browse-button" href="/explore">Source Media</a>
-                                </div>
-                                Collections
+                                    <form class="block annotate-media inline" method="GET" action="/asset/">
+                                        <input class="columnbutton media annotate-button" type="submit" value="View All Items"/>
+                                    </form>
+                                </div>                            
+                                Collection
                             </h2>
                             <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                         </div>
@@ -105,7 +109,7 @@
                         </div>
                     </td>
                     <td class="panhandle-stripe collection">
-                        <div class="label">{{#context.editing?}}Embed{{/context.editing?}}{{^context.editing}}View{{/context.editing}} Media</div>
+                        <div class="label">{{#context.editing?}}Insert Selections{{/context.editing?}}{{^context.editing}}View Inserted Selections{{/context.editing}}/div>
                     </td>
                     <td class="pantab-container">
                         <div class="pantab collection {{#subpanel_state?}}{{subpanel_state}}{{/subpanel_state?}} {{^subpanel_state}}closed{{/subpanel_state}}"></div>

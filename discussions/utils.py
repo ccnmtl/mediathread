@@ -34,7 +34,7 @@ def get_course_discussions(course):
     
     content_type = ContentType.objects.get_for_model(ThreadedComment)
     colls = Collaboration.objects.filter(_parent=parent, content_type=content_type, object_pk__isnull=False)
-    return [c.content_object for c in colls]
+    return [c.content_object for c in colls if c.content_object != None]
 
                       
 def pretty_date(timestamp):

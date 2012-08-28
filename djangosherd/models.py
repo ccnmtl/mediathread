@@ -89,7 +89,9 @@ class Annotation(models.Model):
             if m=='author':
                 metadata[m] = {'id':getattr(self,'author_id',None), 'username': self.author.username if self.author else '' }
             elif m=='tags':
-                metadata[m] = [ { 'name': tag.name } for tag in self.tags_split() ]
+                tags = self.tags_split()
+                tag_last = len(tags) - 1
+                metadata[m] = [ { 'name': tag.name, 'last': idx == tag_last } for idx, tag in enumerate(tags) ]
             elif m=='modified':
                 metadata[m] = self.modified.strftime("%m/%d/%y %I:%M %p")
             elif m=='timecode':
@@ -111,7 +113,6 @@ class Annotation(models.Model):
             'url': self.get_absolute_url(),
             'is_null': self.is_null()
             }
-        
 
 class SherdNoteManager(models.Manager):
 
@@ -131,11 +132,6 @@ class SherdNoteManager(models.Manager):
             except:
                 gannotation = None
             return gannotation, False
-
-    @property
-    def dir(self):
-        return dir(self)
-        
 
     def modified_filter(self,txt_date_range,qs=None):
         if qs is None:
@@ -293,7 +289,7 @@ class SherdNote(Annotation):
         try:
             if self.is_null():
                 return self.asset.get_absolute_url()
-            return reverse('annotation-form', None, 
+            return reverse('annotation-view', None, 
                            (self.asset.pk, self.pk))
         except:
             return ''
@@ -326,11 +322,6 @@ class SherdNote(Annotation):
 
         return Annotation.save(self, *args, **kw)
         
-        
-    @property
-    def dir(self):
-        return dir(self)
-
     @classmethod
     def date_filter_for(cls, field):
 
@@ -348,8 +339,7 @@ class SherdNote(Annotation):
                 return date > over_a_week_ago
 
         return date_filter
-                
-
+    
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants
     helpful in answering:
@@ -397,6 +387,15 @@ class DiscussionIndex(models.Model):
                                                        self.comment.id)
         elif self.collaboration.content_object:
             return self.collaboration.content_object.get_absolute_url()
+        
+    def get_type_label(self):
+        if self.comment and self.comment.threadedcomment:
+            return 'discussion'
+        
+        elif self.collaboration.content_object:
+            return 'project'
+        
+        return ''
 
     @classmethod
     def with_permission(cls, request,query):

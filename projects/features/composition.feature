@@ -6,8 +6,8 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         I see "by Instructor One"
         And I see "Private"
@@ -68,8 +68,8 @@ Feature: Composition
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         
-        # The project shows on Recent Activity
-        When I click the Recent Activity button
+        # The project shows on View Recent Activity
+        When I click the View Recent Activity button
         Then the most recent notification is "Composition: Scenario 1"
         
         Finished using Selenium
@@ -80,8 +80,8 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         I see "by Student One"
         And there is a "Private" link
@@ -142,8 +142,8 @@ Feature: Composition
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         
-        # The project shows on Recent Activity
-        When I click the Recent Activity button
+        # The project shows on View Recent Activity
+        When I click the View Recent Activity button
         Then the most recent notification is "Composition: Scenario 2"
         
         Finished using Selenium
@@ -153,8 +153,8 @@ Feature: Composition
         Given I am test_instructor in Sample Course
                 
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         Then I call the Composition "Composition <title>: Scenario 3"
         
@@ -182,8 +182,8 @@ Feature: Composition
         Given I am test_student_one in Sample Course
                 
         # Create a project from the home page
-        There is a New Composition button
-        When I click the New Composition button
+        There is a Create Composition button
+        When I click the Create Composition button
         Then I am at the Untitled page
         Then I call the Composition "<title>"
         

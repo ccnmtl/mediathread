@@ -70,6 +70,11 @@ Here you can access your compositions and your collection of items saved in Medi
 {% comment %} INSTRUCTOR DASHBOARD/MANAGE SETTINGS/PUBLIC COMPOSITIONS {% endcomment %}
     {% ifequal help_id "help_public_compositions" %}
         The "Publish to the world" feature allows authors to publish compositions at a public level, via a link that does not require logging into Mediathread.
+    {% endifequal %}
+    
+{% comment %} INSTRUCTOR DASHBOARD/MANAGE SETTINGS/SELECTION VISIBILITY {% endcomment %}
+    {% ifequal help_id "help_selection_visibility" %}
+        Turning on selection visibility hides individual item selections from all collections views. Faculty and students can still view a selection embedded in a visible composition.
     {% endifequal %} 
  
 {% comment %} INSTRUCTOR DASHBOARD/MANAGE SOURCES/SUPPORTED ARCHIVES {% endcomment %}
@@ -161,7 +166,6 @@ Here you can access your compositions and your collection of items saved in Medi
                     </div>
                  
          
-         <h3>Instructions</h3> 
                     <ol>
                         <h4><li>
                             Install the Mediathread Bookmarklet</h4>

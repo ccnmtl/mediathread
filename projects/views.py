@@ -2,6 +2,7 @@ import simplejson
 from random import choice
 from string import letters
 
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, Http404
@@ -12,10 +13,12 @@ from djangohelpers.lib import allow_http
 from discussions.views import threaded_comment_json
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from projects.forms import ProjectForm
+from projects.lib import composition_project_json
 
 Project = get_model('projects','project')
 ProjectVersion = get_model('projects','projectversion')
 
+@login_required
 @allow_http("POST")
 def project_create(request):
     if request.method != "POST":
@@ -47,7 +50,7 @@ def project_create(request):
     if not request.is_ajax():
         return HttpResponseRedirect(project.get_absolute_url())
     else: 
-        project_context = project_json(request, project, project.can_edit(request))    
+        project_context = composition_project_json(request, project, project.can_edit(request))    
         project_context['editing'] = True
         
         data = { 'panel_state': 'open', 
@@ -57,6 +60,7 @@ def project_create(request):
                 
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
 
+@login_required
 @allow_http("POST")
 def project_save(request, project_id):
     project = get_object_or_404(Project, pk=project_id, course=request.course)
@@ -95,8 +99,7 @@ def project_save(request, project_id):
         redirect_to = '.'
         return HttpResponseRedirect(redirect_to)
     
-
-@allow_http("POST")
+@login_required
 def project_delete(request, project_id):
     """
     Delete the requested project. Regular access conventions apply. 
@@ -160,7 +163,7 @@ def project_view_readonly(request, project_id, version_number=None):
         panels = []
             
         # Requested project, either assignment or composition
-        project_context = project_json(request, project, False, version_number)
+        project_context = composition_project_json(request, project, False, version_number)
         panel = { 'panel_state': 'open', 'panel_state_label': "Version View", 'context': project_context, 'template': 'project' }
         panels.append(panel)
         
@@ -168,6 +171,7 @@ def project_view_readonly(request, project_id, version_number=None):
         
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
       
+@login_required      
 @allow_http("GET")
 def project_workspace(request, project_id, feedback=None):
     """
@@ -206,13 +210,13 @@ def project_workspace(request, project_id, feedback=None):
         # Project Parent (assignment) if exists
         parent_assignment = project.assignment()
         if parent_assignment:
-            assignment_context = project_json(request, parent_assignment, parent_assignment.can_edit(request))
+            assignment_context = composition_project_json(request, parent_assignment, parent_assignment.can_edit(request))
             assignment_context['create_selection'] = True
-            panel = { 'is_faculty': is_faculty, 'panel_state': 'closed' if show_feedback else 'open', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
+            panel = { 'is_faculty': is_faculty, 'panel_state': 'closed', 'subpanel_state': 'closed', 'context': assignment_context, 'template': 'project' }
             panels.append(panel)
                     
         # Requested project, can be either an assignment or composition
-        project_context = project_json(request, project, can_edit)
+        project_context = composition_project_json(request, project, can_edit)
         project_context['editing'] =  True if can_edit and len(project.body) < 1 else False # only editing if it's new
         project_context['create_instructor_feedback'] = is_faculty and parent_assignment and not feedback_discussion
         panel = { 'is_faculty': is_faculty, 'panel_state': 'closed' if show_feedback else 'open', 'context': project_context, 'template': 'project' }
@@ -226,7 +230,7 @@ def project_workspace(request, project_id, feedback=None):
             if len(responses) > 0:
                 response = responses[0]
                 response_can_edit = response.can_edit(request)
-                response_context = project_json(request, response, response_can_edit)
+                response_context = composition_project_json(request, response, response_can_edit)
                 
                 panel = { 'is_faculty': is_faculty, 'panel_state': 'closed', 'context': response_context, 'template': 'project' }
                 panels.append(panel)
@@ -246,100 +250,16 @@ def project_workspace(request, project_id, feedback=None):
                     }
             panels.append(panel)
             
+        # Create a place for asset editing
+        panel = { 'panel_state': 'closed',
+                  'panel_state_label': "Item Details",
+                  'template': 'asset_quick_edit',
+                  'update_history': False,
+                  'show_colleciton': False,
+                  'context': { 'type': 'asset' }
+        }
+        panels.append(panel)    
+            
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
-def project_json(request, project, can_edit, version_number=None):
-    '''
-        JSON representation for a project. Includes:
-        * basic project information
-        * assets
-        * annotations
-        * responses (if applicable & permissable)
-        * revisions (if permissable)
-        * a project participant form (if permissable)
-    '''
-    
-    rand = ''.join([choice(letters) for i in range(5)])
-    
-    versions = project.versions.order_by('-change_time')
-    participants = project.attribution_list()
-    is_assignment = project.is_assignment(request)
-    
-    data = { 'project': { 'title': project.title,
-                          'body': project.body,
-                          'participants': [{ 'name': p.get_full_name(),
-                                             'username': p.username,
-                                             'public_name': get_public_name(p, request),
-                                             'is_viewer': request.user.username == p.username,
-                                             'last':  idx == (len(participants) - 1) 
-                                            } for idx, p in enumerate(participants)],
-                          'id': project.pk,
-                          'url': project.get_absolute_url(),
-                          'public_url': project.public_url(),
-                          'visibility': project.visibility_short(),
-                          'username': request.user.username,
-                          'type': 'assignment' if is_assignment else 'composition',
-                          'current_version': version_number if version_number else None,
-                          'create_selection': is_assignment,
-                          'is_assignment': is_assignment
-                       },
-            'assets': dict([('%s_%s' % (rand,ann.asset.pk),
-                            ann.asset.sherd_json(request)
-                            ) for ann in project.citations()
-                           if ann.title and ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted'
-                           ]),
-            'annotations': [ ann.sherd_json(request, rand, ('title','author')) 
-                                for ann in project.citations()
-                           ],
-            'type': 'project',
-            'can_edit': can_edit,
-    }
-    
-    data['responses'] = []
-    for r in project.responses(request):
-        if r.can_read(request):
-            obj = { 'url': r.get_absolute_url(),
-                    'title': r.title,
-                    'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
-                    'attribution_list': [] }
-            
-            x = len(r.attribution_list()) - 1
-            for idx, author in enumerate(r.attribution_list()):
-                obj['attribution_list'].append({ 'name': get_public_name(author, request),
-                                                 'last': idx == x }) 
-                
-            data['responses'].append(obj)
-    data['response_count'] = len(data['responses'])
-    
-    my_responses = []
-    for r in project.responses_by(request, request.user):
-        obj = { 'url': r.get_absolute_url(),
-                'title': r.title,
-                'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
-                'attribution_list': [] }
-        
-        x = len(r.attribution_list()) - 1
-        for idx, author in enumerate(r.attribution_list()):
-            obj['attribution_list'].append({ 'name': get_public_name(author, request),
-                                             'last': idx == x }) 
-            
-        my_responses.append(obj)
-        
-    if len(my_responses) == 1:
-        data['my_response'] = my_responses[0]
-    elif len(my_responses) > 1:
-        data['my_responses'] = my_responses
-        data['my_responses_count'] = len(my_responses)
-    
-    if project.is_participant(request.user):
-        data['revisions'] = [{ 'version_number': v.version_number,
-                               'versioned_id': v.versioned_id,
-                               'author': get_public_name(v.instance().author, request),
-                               'modified': v.modified.strftime("%m/%d/%y %I:%M %p") }
-                              for v in versions ]
-                              
-    if can_edit:
-        projectform = ProjectForm(request, instance=project)
-        data['form'] = { 'participants': projectform['participants'].__unicode__(), 'publish': projectform['publish'].__unicode__() }
-        
-    return data
+

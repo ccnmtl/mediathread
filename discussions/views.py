@@ -136,7 +136,6 @@ def discussion_view(request, discussion_id):
     else:
         data['panels'] = [{ 
             'panel_state': 'open',
-            'full_discussion_view': True,
             'subpanel_state': 'open',
             'panel_state_label': "Discussion",
             'template': 'discussion',
@@ -145,6 +144,17 @@ def discussion_view(request, discussion_id):
             'root_comment_id': root_comment.id,
             'context': threaded_comment_json(root_comment, request.user)
         }]
+        
+        # Create a place for asset editing
+        panel = { 'panel_state': 'closed',
+                  'panel_state_label': "Item Details",
+                  'template': 'asset_quick_edit',
+                  'update_history': False,
+                  'show_colleciton': False,
+                  'context': { 'type': 'asset' }
+        }
+        data['panels'].append(panel)    
+
         
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     

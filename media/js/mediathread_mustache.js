@@ -1,4 +1,4 @@
-(function() {
+(function () {
     var global = this;
     
     ///MUSTACHE CODE
@@ -15,17 +15,33 @@
             'home-space': function (username) {
                 return '/?username=' + username;
             },
-            'your-space': function (username, tag, modified) {
-                return '/yourspace/' + username + '/asset/?annotations=true' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
+            'your-space': function (username, tag, modified, citable) {
+                return '/yourspace/' + username + '/asset/?annotations=true' +
+                    (tag ? '&tag=' + tag : '') +
+                    (modified ? '&modified=' + modified : '') +
+                    (citable ? '&citable=' + citable : '');
             },
-            'all-space': function (tag, modified) {
-                return '/yourspace/all/asset/?' + (tag ? '&tag=' + tag : '') + (modified ? '&modified=' + modified : '');
+            'all-space': function (tag, modified, citable) {
+                return '/yourspace/all/asset/?' +
+                    (tag ? '&tag=' + tag : '') +
+                    (modified ? '&modified=' + modified : '') +
+                    (citable ? '&citable=' + citable : '');
             },
-            'asset-delete': function (username, asset_id) {
-                return '/yourspace/' + username + '/asset/' + asset_id + '/?delete';
+            'asset-workspace': function (asset_id, annotation_id) {
+                var base = '/asset/';
+                if (asset_id) {
+                    base += asset_id + '/';
+                    if (annotation_id) {
+                        base += 'annotations/' + annotation_id + '/';
+                    }
+                }
+                return base;
             },
-            'annotation-delete': function (asset_id, annotation_id) {
-                return '/asset/' + asset_id + '/annotations/' + annotation_id + '/?delete';
+            'assets': function (username, with_annotations) {
+                return '/annotations/' + (username ? username + '/' : '');
+            },
+            'asset-delete': function (asset_id) {
+                return '/asset/delete/' + asset_id + '/';
             },
             'asset-view': function (asset_id) {
                 return '/asset/' + asset_id + '/';
@@ -33,16 +49,20 @@
             'asset-json': function (asset_id, with_annotations) {
                 return '/asset/json/' + asset_id + (with_annotations ? '/?annotations=true' : '/');
             },
-            'assets': function (username, with_annotations) {
-                return '/annotations/' + (username ? username + '/' : '');
-            },
-            'create-annotation': function (asset_id) {
+            'annotation-create': function (asset_id) {
                 // a.k.a. server-side annotation-containers
-                return '/asset/' + asset_id + '/annotations/';
+                return '/asset/create/' + asset_id + '/annotations/';
             },
-            'edit-annotation': function (asset_id, annotation_id) {
+            'annotation-create-global': function (asset_id) {
+                // a.k.a. server-side annotation-containers
+                return '/asset/create/' + asset_id + '/global/';
+            },
+            'annotation-edit': function (asset_id, annotation_id) {
                 // a.k.a server-side annotation-form assetmgr:views.py:annotationview
-                return '/asset/' + asset_id + '/annotations/' + annotation_id + '/';
+                return '/asset/save/' + asset_id + '/annotations/' + annotation_id + '/';
+            },
+            'annotation-delete': function (asset_id, annotation_id) {
+                return '/asset/delete/' + asset_id + '/annotations/' + annotation_id;
             },
             'project-view': function (project_id) {
                 return '/project/view/' + project_id + '/';
@@ -75,6 +95,18 @@
             return MediaThread.urls[name].apply(this, url_args);
         };
         
+        Mustache.Renderer.prototype.filters_supported.ellipses = function (name, context, args) {
+            var length = parseInt(args[0], 10);
+            var value = String(this.get_object(name, context, this.context) || '');
+            if (value.length > length) {
+                value = value.substring(0, length) + "...";
+            }
+            return value;
+        };
+        Mustache.Renderer.prototype.filters_supported.upper = function (name, context, args) {
+            var value = String(this.get_object(name, context, this.context) || '');
+            return value.toUpperCase();
+        };        
         Mustache.Renderer.prototype.filters_supported['default'] = function (name, context, args) {
             var lookup = this.get_object(name, context, this.context);
             if (lookup) {

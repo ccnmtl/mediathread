@@ -26,3 +26,12 @@ def allow_public_compositions(course):
     value = int(course.get_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY, ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
     b = bool(value)
     return b
+
+SELECTION_VISIBILITY_KEY = "selection_visibility"
+SELECTION_VISIBILITY_DEFAULT = 1
+
+def all_selections_are_visible(course):
+    value = int(course.get_detail(SELECTION_VISIBILITY_KEY, SELECTION_VISIBILITY_DEFAULT))
+    b = bool(value)
+    return b
+

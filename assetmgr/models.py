@@ -100,6 +100,9 @@ class Asset(models.Model):
     @property
     def html_source(self):
         return Source.objects.get(asset=self, label='url')
+    
+    def xmeml_source(self):
+        return self.sources.get('xmeml', None)
 
     @property
     def sources(self):
@@ -124,6 +127,11 @@ class Asset(models.Model):
 
     def tags(self):
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
+    
+    def filter_tags_by_users(self, users, counts=False):
+        tags = Tag.objects.usage_for_queryset(self.sherdnote_set.filter(author__in=users), counts=counts)
+        tags.sort(lambda a, b:cmp(a.name.lower(), b.name.lower()))
+        return tags
 
     def global_annotation(self, user, auto_create=True):
         SherdNote = models.get_model('djangosherd','sherdnote')
@@ -163,19 +171,31 @@ class Asset(models.Model):
 
         try:
             metadata = simplejson.loads(self.metadata_blob)
+            
+            # convert to an array for mustache
+            metadata = [{ 'key': k, 'value': v } for k,v in metadata.items()]   
+
         except ValueError:
             metadata = None
             
+        media_type_label = 'video'
+        if self.primary.is_image():
+            media_type_label = 'image'
+        elif self.primary.is_audio():
+            media_type_label = 'audio'
+            
+        tags = Tag.objects.usage_for_queryset(self.sherdnote_set.all(), counts=True)
+        tag_last = len(tags) - 1
         return {
-            'sources':sources,
-            'primary_type':self.primary.label,
+            'sources': sources,
+            'primary_type': self.primary.label,
             'title': strip_tags(self.title), 
-            'metadata':metadata,
-            'local_url':self.get_absolute_url(),
-            'id':self.pk,
-            'media_type_label': 'image' if self.primary.is_image() else 'video',
-            'tags': [ { 'name': tag.name } for tag in self.tags() ]
-            }
+            'metadata': metadata,
+            'local_url': self.get_absolute_url(),
+            'id': self.pk,
+            'media_type_label': media_type_label,
+            'tags': [ { 'name': tag.name, 'last': idx == tag_last, 'count': tag.count } for idx, tag in enumerate(tags) ]
+       }
         
 class Source(models.Model):
     asset = models.ForeignKey(Asset)
@@ -215,6 +235,9 @@ class Source(models.Model):
 
     def is_image(self):
         return (self.label=='poster' or self.label == "image" or self.label == "image_fpx"  or (self.media_type and self.media_type.startswith('image/')))
+    
+    def is_audio(self):
+        return self.label == 'mp3'
     
     def is_archive(self):
         return self.label=='archive'

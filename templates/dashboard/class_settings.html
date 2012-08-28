@@ -1,6 +1,6 @@
 {% extends "dashboard/base_dashboard.html" %}
 {% load assetlinks %}
-{% block title %}Manage Publishing Options{% endblock %}
+{% block title %}Manage Course Settings{% endblock %}
 
 {% block js %}
     {{ block.super }}
@@ -18,7 +18,13 @@
 
 {% block dashboard_module %}
 
-    <h2>Manage Publishing Options</h2>
+    <h2>Manage Course Settings</h2>
+    
+    <p>
+        This page allows you to manage various course settings.
+    </p>
+    <br />
+    
     
     {% with "help_public_compositions" as help_id %}
     {% with help_public_compositions as default_help_state %}
@@ -29,14 +35,34 @@
         
             <form action="{% url class-settings %}" method="POST">
                 <h4>"Publish to the World" Enabled</h4>
-                <input type="radio" name="allow_public_compositions" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
-                <input type="radio" name="allow_public_compositions" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
+                <input type="radio" name="allow_public_compositions" id="allow_public_compositions_yes" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
+                <input type="radio" name="allow_public_compositions" id="allow_public_compositions_no" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
                 <br /><br />
-                <input type="submit" value="submit"></input>
+                <input id="allow_public_compositions_submit" type="submit" value="Save Publish Options"></input>
             </form>
             
         </li>
     </ul>
     {% endwith %}{% endwith %}
+    
+    {% with "help_selection_visibility" as help_id %}
+    {% with help_selection_visibility as default_help_state %}
+    <ul class="archive-gallery">
+        <li class="archive-container">
+            <h2>Item Selection Visibility {% include "help/help_button.html" %}</h2>
+            {% include "help/help_contentarea.html" %}
+        
+            <form action="{% url class-settings %}" method="POST">
+                <h4>Course members can see each other's selections.</h4>
+                <input type="radio" name="selection_visibility" id="selection_visibility_yes" value="1" {% if selection_visibility %}checked{% endif %}/>Yes
+                <input type="radio" name="selection_visibility" id="selection_visibility_no" value="0" {% if not selection_visibility %}checked{% endif %}/>No
+                <br /><br />
+                <input id="selection_visibility_submit" type="submit" value="Save Visiblity Options"></input>
+            </form>
+            
+        </li>
+    </ul>
+    {% endwith %}{% endwith %}
+    
 
 {% endblock %}

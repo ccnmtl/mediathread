@@ -38,6 +38,7 @@
             this.templates = {};
             {% if request.user.is_authenticated %}
                 this.current_user = {{request.user.id}};
+                this.current_username = "{{request.user.username}}";
                 this.user_full_name = "{%public_name for request.user %}";
             {% endif %}
         })();
@@ -79,7 +80,7 @@
                             </div>
                         </li>
                         <li class="settings" style="margin-top: 2px;">
-                            <span id="logged_in_name" class="username">{% public_name for user %}</span>
+                            <span id="logged_in_name" class="username" unselectable="on" onclick="jQuery('#standardnav_settings_menu').toggle();">{% public_name for user %}</span>
                         </li>
                         <li class="settings" style="margin-top: 2px;">
                             <a href="#" onclick='jQuery("#standardnav_settings_menu").toggle();'>
@@ -124,9 +125,9 @@
                     <li class="{% active request 'Instructor' %} instructor"><a href="{% url dashboard-home %}">Instructor Dashboard</a></li>
                 {% endif %}
 				
-                <li class="{% active request 'Notifications' %} activity"><a href="/notifications/">Recent Activity</a></li>
+                <li class="{% active request 'Notifications' %} activity"><a href="/notifications/">View Recent Activity</a></li>
                 
-                <li class="{% active request 'Explore' %} explore"><a href="/explore/">Source Media</a></li>
+                <li class="{% active request 'Explore' %} explore"><a href="/explore/">Add to My Collection</a></li>
 
 			</ul><!-- id="primarynavtabs" -->
 			{% endblock %}
@@ -196,18 +197,20 @@
         });
         
         /* Select from list: Chrome, Firefox, Safari, MSIE */
-        shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 7 });
+        shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 8 });
 
-        var _gaq = _gaq || [];
-        var _gaq_mediathread = 'UA-311226-18';
-        _gaq.push(['_setAccount', _gaq_mediathread]);
-        _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+        {% if settings.DEBUG %}
+        {% else %}
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-311226-32']);
+            _gaq.push(['_trackPageview']);
+    
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+       {% endif %}
       
     });
 </script>

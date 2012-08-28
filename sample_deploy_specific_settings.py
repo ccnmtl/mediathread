@@ -1,4 +1,4 @@
-#Put this file in deploy_specific/settings.py 
+#Put this file in deploy_specific/settings.py
 
 #if you actually have template overrides or your own views, etc.
 #EXTRA_INSTALLED_APPS = (
@@ -13,7 +13,7 @@ ADMINS = (
 #PUBLIC_CONTACT_EMAIL = "mediathread@example.com"
 
 #developer IPs
-INTERNAL_IPS = (,)
+INTERNAL_IPS = ('000.000.000.000',)
 
 #custom authentication module
 #AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
@@ -37,7 +37,7 @@ SECRET_KEY = ''
 # and the processed Source URL should be returned
 #ASSET_URL_PROCESSOR = some_url_processor
 
-#These are used for supporting flickr in the bookmarklet and 
+#These are used for supporting flickr in the bookmarklet and
 #using flowplayer to show flash-supported video (h264,flv,rtmp)
 
 #DJANGOSHERD_FLICKR_APIKEY = ''

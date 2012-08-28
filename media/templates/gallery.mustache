@@ -1,0 +1,195 @@
+{{#>>media_gallery}}
+<div class="media_gallery">
+    <div class="media-column">
+        <div class="filter-widget">
+            {{#>>switcher_collection_chooser}}
+            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
+                <span class="switcher-prefix">Owner: </span>
+                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="down-arrow" tabindex="3"></span>
+                    <span class="title">{{{selected_label?ellipses(30)}}}</span>
+                </a>
+                
+                <ul class="switcher-options" style="left: -51px">
+                    <div>
+                        {{#display_switcher_extras?}}
+                            <li style="padding-top:10px;">
+                                <ul class="switcher-sub">
+                                    {{^showing_my_items}}
+                                        <li class="choice_my_items">
+                                            <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                                        </li>
+                                    {{/showing_my_items}}
+                                    
+                                    {{#project.participants}}
+                                        {{^is_viewer}}
+                                            <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
+                                        {{/is_viewer}}   
+                                    {{/project.participants}}
+                                </ul>
+                            </li>
+                        {{/display_switcher_extras?}}
+                    </div>
+                    <li>
+                        <ul class="scroll switcher-sub">
+                            {{^showing_all_items}}
+                                <li class="choice_all_items">
+                                    <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
+                                </li>
+                            {{/showing_all_items}}                        
+                            {{#owners}}                            
+                                <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
+                            {{/owners}}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            {{/>>switcher_collection_chooser}}
+            
+            <div class="switcher collection-filter" tabindex="2" style="width: 135px">
+                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="down-arrow" tabindex="4"></span>
+                    <span class="title">Filters...</span>
+                </a>
+                <ul class="switcher-options" style="right: -51px">
+                    {{^showing_all_items}}
+                    <li>
+                        <h3>Date Modified</h3>
+                        <p class="switcher-sub filterbydate">
+                            <a class="switcher-choice" href="today">today</a>
+                            <a class="switcher-choice" href="yesterday">yesterday</a>
+                            <a class="switcher-choice" href="lastweek">within the last week</a>
+                        </p>
+                    </li>
+                    {{/showing_all_items}}
+            
+                    <li>
+                        <h3>Tags</h3>
+                        <p class="switcher-sub">
+                            {{^tags}}
+                                No tags
+                            {{/tags}}
+                            {{#tags}}
+                                <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
+                            {{/tags}}
+                        </p>
+                    </li>
+                    
+                </ul>
+            </div>
+            
+            <div class="visualclear"></div>
+            
+            
+            {{#active_filter_count?}}
+                <div class="switcher-active-filters">
+                    {{#active_filters}}
+                        {{#tag?}}
+                            <div class="switcher-active-filter">
+                                <span>Tag: {{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
+                            </div>
+                        {{/tag?}}
+                        {{#modified?}}
+                            <div class="switcher-active-filter">
+                                <span>Date: {{modified}}<a class="switcher-choice remove" href="modified" title="Clear "{{modified}}" filter"></a></span>
+                            </div>
+                        {{/modified?}}
+                    {{/active_filters}}
+                </div>
+            {{/active_filter_count?}}
+            
+        </div> {{! end filter widget }}
+
+            
+        <div class="collection-assets scroll annotation-embedding">
+            {{#>>assets}}
+            <div id="asset_table" class="asset-table">
+                {{^assets}}
+                    <div class="default-content intro-text">
+                        {{#showing_my_items?}}
+                            {{^active_filter_count}}
+                                {{#is_faculty?}}
+                                    <h5>Import media items</h5>
+                                    
+                                    <p>Items saved in Mediathread appear here. To collect items, click the "Add to My Collection" button above.</p>
+
+                                    <p>Instructors can add sources to the "Add to My Collection" page. For more information, visit the <a href="/reports/class_activity">Instructor Dashboard</a>.</p>
+                                {{/is_faculty?}}
+                                {{^is_faculty}}    
+                                    <h5>You have not yet collected any items</h5>
+                                    <ul>
+                                        <li>To collect items, click "Add to My Collection" above.</li>
+                                        <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
+                                    </ul>
+                                {{/is_faculty}}
+                            {{/active_filter_count}}
+                            {{#active_filter_count}}
+                                <h5>No Items</h5>
+                            {{/active_filter_count}}
+                        {{/showing_my_items?}}
+                        {{^showing_my_items}}
+                            <h4>No items found</h4>
+                        {{/showing_my_items}}
+                   </div>
+                {{/assets}} 
+                {{#assets}}
+                    <div id="record-{{id}}" class="gallery-item record-{{primary_type}} gallery-item-{{id}} static-height">
+                        <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
+                            <a class="asset-title-link"
+                                href="{{local_url}}">
+                                    {{#title?}}
+                                        {{{title?ellipses(35)}}}
+                                    {{/title?}}
+                                    {{^title}}
+                                        -Untitled-
+                                    {{/title}}
+                                    
+                            </a>
+                        </h4>
+                        <div class="asset-thumb">
+                            {{^thumbable}}
+                                {{^thumb}}
+                                    <img class="gallery-item-thumb" src="/site_media/img/nothumb_{{media_type_label}}.png" alt="Item Thumbnail" />
+                                {{/thumb}}
+                                {{#thumb?}}
+                                    <img class="gallery-item-thumb" src="{{thumb}}" alt="Item Thumbnail" />
+                                {{/thumb?}}
+                            {{/thumbable}}
+                        </div>
+                        
+                        <div class="actions">
+                            {{#editable?}}
+                                <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
+                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
+                                </a>
+                            {{/editable?}}
+                            
+                            <a class="collection-choice edit-asset-inplace" href="{{local_url}}" title="Edit item attributes">
+                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
+                            </a>
+                        </div>
+
+                        
+                        
+                        {{#annotation_count?}}
+                            <div class="item-annotation-count meta">
+                                <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
+                                <span class="metadata-value">selections</span>
+                                | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
+                                  <span class="metadata-value">by me</span>
+                            </div>
+                        {{/annotation_count?}}
+                        {{^annotation_count}}
+                            <div class="item-annotation-count meta">
+                                <span class="metadata-label item-annotation-count-total">0</span>
+                                <span class="metadata-value">selections</span>
+                            </div>
+                        {{/annotation_count}}
+                    </div>
+                {{/assets}}
+                  
+            </div>
+        {{/>>assets}}
+    </div>
+</div>
+{{/>>media_gallery}}

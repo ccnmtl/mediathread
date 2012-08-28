@@ -7,7 +7,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.parentContainer = parent;
     self.space_owner = space_owner;
     self.tiny_mce_settings = tiny_mce_settings;
-    
+
     djangosherd.storage.json_update(panel.context);
     
     if (panel.context.can_edit) {
@@ -58,6 +58,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         'default_target': panel.context.project.id + "-videoclipbox",
         'onPrepareCitation': self.onPrepareCitation,
         'presentation': "medium",
+        'clipform': true,
         'winHeight': function () {
             var elt = jQuery(self.el).find("div.asset-view-published")[0];
             return jQuery(elt).height() -
@@ -94,6 +95,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
+            'citable': true,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
@@ -133,7 +135,8 @@ ProjectPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
     
     // Resize the collections box, subtracting its header elements
-    jQuery(self.el).find('div.collection-assets').css('height', (visible - 35) + "px");
+    visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
+    jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
     
     // For IE
     jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
@@ -191,7 +194,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     // Short-term
     // Navigate to a new project if the user is looking
     // at another response.
-    if (PanelManager.count() > 1) {
+    if (jQuery(self.parentContainer).find("td.panel-container.composition").length > 0) {
         context.callback = function (json) {
             window.location = json.context.project.url;
         };
@@ -459,7 +462,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         // Switch to Edit View
         jQuery(self.essaySpace).hide();
         
-        jQuery(self.el).find("td.panhandle-stripe div.label").html("Embed Media");
+        jQuery(self.el).find("td.panhandle-stripe div.label").html("Insert Selections");
         jQuery(self.el).find("input.project-previewbutton").attr("value", "Preview");
         jQuery(self.el).find("div.asset-view-published").hide();
         jQuery(self.el).find("h1.project-title").hide();
@@ -512,7 +515,7 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.citationView.decorateLinks(self.essaySpace.id);
 
         jQuery(self.essaySpace).show();
-        jQuery(self.el).find("td.panhandle-stripe div.label").html("View Media");
+        jQuery(self.el).find("td.panhandle-stripe div.label").html("View Inserted Selections");
         jQuery(self.el).find("input.project-previewbutton").attr("value", "Edit");
         jQuery(self.el).find("div.asset-view-published").show();
         jQuery(self.el).find("h1.project-title").show();

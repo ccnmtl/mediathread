@@ -382,6 +382,10 @@ def the_owner_is_name_in_the_title_column(step, name, title):
 @step(u'the collection panel has a "([^"]*)" item')
 def the_collection_panel_has_a_title_item(step, title):
     panel = get_column('collection')
+    if not panel:
+        time.sleep(2)
+        panel = get_column('collection')
+        
     assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
@@ -395,6 +399,9 @@ def the_collection_panel_has_a_title_item(step, title):
 @step(u'the collection panel has no "([^"]*)" item')
 def the_collection_panel_has_no_title_item(step, title):
     panel = get_column('collection')
+    if not panel:
+        time.sleep(2)
+        panel = get_column('collection')
     assert panel, "Cannot find the collection panel"
     
     items = panel.find_elements_by_css_selector('div.gallery-item-homepage')

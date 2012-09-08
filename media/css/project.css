@@ -1,19 +1,6 @@
-.asset-view {
-    width: 370px;
-    height: 370px;
-    background-color: #dedede;
-    border: 1px solid #ccc;
-    float: left;
-}
-
 a.active-annotation.materialCitation {
     background-color:#fff100;
 }
-
-a.edit-pencil {
-    text-decoration:none;
-}
-
 
 .active-annotation {
     background-color: none;
@@ -30,20 +17,6 @@ a.edit-pencil {
     padding: 20px;
 }
 
-
-.essay-options
-{ 
-    margin: 2em 0 2em;
-    clear:both;
-
-}
-
-.essay-options h3
-{ 
-    margin: 0 0 1em 0;
-
-}
-
 h1.project-title {
     font-size: 160%;
     font-weight: bold;
@@ -52,52 +25,13 @@ h1.project-title {
     max-width: 450px;
 }
 
-#response-list {
-    margin-bottom: 1em;
-}
-
-/** Needed?
-.essay-space-feedback
-{ 
-  height: 89%;
-  overflow: auto;
-  position:relative
-  margin-left: 5px;
-  border: 1px solid #ccc;
-  padding: 0 10px 10px 10px;
-  background-color:white;
-  max-width:550px;
-}
-**/
-
-.essay-space
-{ 
-/*  height: 100%;*/
+.essay-space { 
   min-height: 300px;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
   padding: 0 10px 10px 10px;
   background-color:white;
   border: 1px solid #ccc;
-}
-
-.essay-space h2 input {
-    padding:0 3px;
-}
-
-#essay-space-materials,
-#composition-essay-space-materials,
-#assignment-essay-space-materials {
-    float: left;
-    width: 40%;
-    margin-left: 20px;
-}
-
-#project-revision-history table tr td,
-#assignment-revision-history  table tr td {
-    padding: 2px 8px;
-    border: 1px solid #ccc;
-
 }
 
 img.materialCitation {
@@ -146,17 +80,6 @@ div.mce_editorwindow {
     border: 1px solid #ccc;
 }
  
-.project_participants_chosen {
-    padding-bottom: 0px;
-    vertical-align: none;
-}
-
-#participants_chosen {
-    padding-bottom:3px;
-    max-width: 650px;
-    margin: 0 0 .1em;
-}
-
 input.participants_toggle {
     margin: 0px 10px 5px 0px;
 }
@@ -177,20 +100,6 @@ div.save-publish-status li {
 }
 
 /* ---- Threaded comments ---------- */
-
-#threadedcomments {
-    overflow-y:auto;
-    padding: 0px 5px 0 0px;
-    float: left;
-    width: 50%;
-    border:1px solid #CCCCCC;
-}
-
-#discussion-space-materials {
-    float: left;
-    width: 30%;
-    margin-left: 20px;
-}
 
 .comment_action {
     margin: 4px 2px 0 0;
@@ -226,11 +135,6 @@ form.threaded_comments_form div.save_and_cancel {
     height: 20px;
     width: 100%;
     background-color: #ccc;
-}
-
-form.threaded_comments_form ul li {
-    background: #AAA;
-    list-style-type: none;
 }
 
 form.threaded_comments_form table.threaded_comments_form_table {
@@ -276,58 +180,28 @@ ul.comment-thread {
 
 
 ul.comment-thread > li.comment-thread > ul.comment-thread > li.comment-thread {
-
-border-left:1px solid #CCCCCC;
-margin-top: 3px;
-
+    border-left:1px solid #CCCCCC;
+    margin-top: 3px;
 }
-
-
-
-ul.comment-thread li.comment-thread.last {
-border: none;
-margin-bottom: none;
-
-
-}
-
 
 li > ul.comment-thread {
     margin:0px 0px 0 1.5em; /*indent each subsequent thread level*/
     padding: 0px;
-    
 }
 
 li > ul.comment-thread.last {
-
     background-color: none;
     padding: 0px;
     border-bottom: 1px solid #ccc;
-    
 }
 
 li > ul.comment-thread div.comment {
     background-color: #fff;
-
 }
 
 li.comment-thread {
     list-style:none;
     padding-bottom: 4px;
-}
-
-/*TinyMCE adds _tbl to the #id_comment id for the table where the editor is dynamically created. */
-
-/*comment that someone has linked to
-  This MUST be shown in some way, so it's clear what comment
-  just created.
-*/
-li.comment-thread:target > .comment {
-    border: 1px solid black;
-}
-
-li.comment-thread:target > .comment .threaded_comment_header {
-    /*background-color:#DDDDDD;*/
 }
 
 .threaded_comment_header {
@@ -374,7 +248,7 @@ div.comment-date {
     padding-bottom: 5px;
 }
 
-.revision-list select, .response-list select, .my-response-list select {
+.revision-list select, .response-list select {
     height: 75%;
     width: 99%;
 }
@@ -501,20 +375,13 @@ background: url(/media/img/admin/selector-removeall.gif) left center no-repeat;
 }
 
 .selector select {
-font-family:"Lucida Grande",Verdana,Arial,sans-serif;
-font-size:11px;
-font-weight:normal;
+    font-family:"Lucida Grande",Verdana,Arial,sans-serif;
+    font-size:11px;
+    font-weight:normal;
 }
+
 .selector h2 {
-margin-bottom:0; /*override dojo style*/
-}
-
-#save-publish-status {
-    margin-top: 10px;
-}
-
-label[for=id_publish] {
-    margin-bottom: 5px;
+    margin-bottom:0; /*override dojo style*/
 }
 
 

@@ -66,15 +66,6 @@ p
     font-size: 100%;
 }
 
-blockquote
-{
-    display: block;
-    margin: 0 4em 0.7em 4em;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-}
-
 table
 {
     margin: 0 0 0.7em 0;
@@ -347,11 +338,6 @@ img
     border: 0;    
 }
 
-.visualhide
-{
-    display: none !important;
-}
-
 .printonly
 {
     display: none;
@@ -482,8 +468,7 @@ html.busy, html.busy * {
     -moz-user-select: none; -khtml-user-select: none; user-select: none;
 }
 
-#standardnav a
-{
+#standardnav a {
     text-decoration: none;
     color: white;
 }
@@ -494,6 +479,7 @@ html.busy, html.busy * {
     color: #333;
 }
 
+#standardnav li.settings span:hover,
 #standardnav a:hover
 {
     color: #e5da14;
@@ -509,8 +495,7 @@ html.busy, html.busy * {
 #standardnav li.settings a,
 #standardnav li.settings span {
     cursor: pointer;
-} 
-
+}
 
 #standardnav_settings_menu {
     list-style: none;
@@ -740,10 +725,6 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
 
 table#sliding-content-container tr td.panel-container {
     border-left: none;
-}
-
-table#sliding-content-container tr td.panel-container.closing {
-    background-color: white !important;
 }
 
 table#sliding-content-container tr td.panel-container div.panel {
@@ -1576,32 +1557,7 @@ table#home-columns td#classwork .helptoggle {
     padding: 10px;
 }
 
-.intro-text {
-    /*margin 20px on right-and left, squeezes homepage content over [x] */
-    margin: 10px;
-    background-color: #dedede;
-    padding: 10px;
-    font-size: 95%;
-    max-width:600px;
-}
-
-.intro-text h4 {
-    margin-top: 10px;
-}
-
-.intro-text ul li {
-    margin-top: 3px;
-}
-
-.intro-text h3 {
-    margin-top:0px;
-}
-
 /*Assignment Specific styles */
-
-.project-view {
-    padding: 5px;
-}
 
 /** Switcher CSS **/
 .filter-widget {
@@ -1641,11 +1597,6 @@ div.collection-filter {
 div#media_gallery div.collection-filter {
     margin-right: 11px;
 }
-
-h2.switcher-extraneous-title {
-    display:none;
-}
-
 
 div.collection-chooser {
     /*must update with this below: div.collection-filter ul.switcher-options */
@@ -2050,41 +2001,9 @@ ul li {
 margin: 0 0 5px 0;
 }
 
-.indexcard {
-  display: block;
-  border: 2px solid gray;
-
-}
-  
-  .indexcard input[type=text],
-  .indexcard textarea
- {
-    width: 95%;
-    padding: 2px 3px;
-      font-family: 'lucida grande',arial,verdana,sans-serif;
-      font-size: 90%;
-  }
-
 #id_annotation-body { 
     height: 150px;
     width: 98%;
-}
-
-.clipform {
-    margin-bottom:0.5em;
-}
-
-.asset-links ul,
-.asset-links li
-{ 
-    list-style: none;  
-  margin:0;
-  padding:0;
- }
-.asset-links a,
-.asset-links img,
-.asset-links li /*for IE7*/ { 
-  display:none; 
 }
 
 .panel { 
@@ -2261,28 +2180,15 @@ div.gallery-item h4.asset_title {
     margin-bottom: .25em;
     font-size: 100%;
 }
-.asset-title-rest { 
-    font-size:85%;
-    display:inline-block;
-}
 
 .asset-activities { 
     padding-top:3px;
     padding-left:25px;
 } 
 
-.asset-view-big .asset-object {
-    width: 60%; 
-}
-
 .asset-object {
     border:1px solid #ccc;
     background-color: #dedede;
-}
-
-.asset-view-small  .asset-object {
-    padding: 1em;
-    min-width:0;
 }
 
 .sherd-video-wrapper,
@@ -2424,16 +2330,6 @@ table#summary_columns, table#summary_columns tr td.mainsection {
     text-align: left;
 }
     
-.archive h2, .tabberlive .tabbertab h2 {
-
-margin: 0 0 10px 0;
-font-size: 110%;
-background-color: #6f6f6f;
-padding: 5px 10px 4px;
-color: #dedede;
-font-weight: normal;
-text-align: left;
-}
 
 .archive a.archive-link {
     font-weight:bold;
@@ -2454,13 +2350,6 @@ div.archive p {
     margin: 10px 10px 1em 10px;
 }
 
-#asset_details_col {
-    float:right;
-    margin:0 0 0 1em;
-    width: 35%;
-    font-size: 94%;
-}
-
 .annotation-group h4 {
     height: 25px;
     line-height: 25px;
@@ -2477,26 +2366,12 @@ div.archive p {
     margin-right: 5px;
 }
 
-
 .metadata-title {
     text-transform: capitalize;
 }
 
 ul.selections {
     list-style-type: none; margin: 0; padding: 0; width: 100%;
-}
-
-ul.selections li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1em; height: 18px; border: 1px solid #555; background: white; }
-ul.selections li span { position: absolute; margin-left: -1.6em; }
-ul.selections li input { 
-    border: none; 
-    background: white;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none; 
 }
 
 dd {
@@ -2509,14 +2384,19 @@ dd {
 
 .delete_icon, .edit_icon {vertical-align: middle;}
 
-/**
-.delete_icon:hover,
-.edit_icon:hover {
-    opacity:0.85;
-    -moz-opacity:0.85;
-    filter:alpha(opacity=85);    
+img.delete_icon:hover,
+img.edit_icon:hover,
+img.create_annotation_icon:hover,
+img.materialCitation:hover,
+.actions input:hover,
+input.delete:hover,
+input.edit:hover,
+input.videoplay:hover,
+#standardnav li.settings img:hover {
+    opacity:0.75;
+    -moz-opacity:0.75;
+    filter:alpha(opacity=75);    
 }
-**/
 
 .record {
     clear:both;
@@ -2676,21 +2556,6 @@ margin: 1em 2em;
     right:10px;
     top:80px;
 }
-
-#instructor-items {
-border:1px solid #CCCCCC;
-float:left;
-margin:1em 1em;
-overflow-x:hidden;
-overflow-y:auto;
-text-align:left;
-width:55%;
-}
-
-.revision-selected {
-    background-color:#ededed;
-}
-
 
 #external-archives,
 #course-list,
@@ -2936,14 +2801,6 @@ p.sherd-instructions {
     font-weight: normal;
 }
 
-#asset-details-annotations-current h3 {
-    margin: 0 0 .5em;
-}
-
-#asset-details-annotations-current h2 {
-    margin-bottom: 0;
-}
-
 /** Intermame CSS **/
 
 input {
@@ -3031,24 +2888,6 @@ input.videoplay {
     font-size: 98%;
 }
 
-.default-content h4,
-#project_table .default-content h4,
-#materials .default-content h4,
-#composition-materials .default-content h4,
-#assignment-materials .default-content h4 {
-    background-color: dedede;
-    color: #000;
-    margin: 0;
-    padding: 0;
-    font-weight:: bold;
-}
-
-
-table#home-columns td#instructor .default-content ul, 
-table#home-columns td#classwork .default-content ul
-{
-    list-style-type: disc;
-}
 
 table#home-columns td#classwork {
     width: 676px;
@@ -3912,5 +3751,3 @@ input.annotation-listitem-icon {
 input.annotation-listitem-icon.delete {
     margin-right: 24px;
 }
-
-.ui-effects-transfer { border: 2px dotted gray; }

@@ -52,13 +52,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread_main.middleware.AuthRequirementMiddleware',
-    'djangohelpers.middleware.HttpDeleteMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'djangohelpers.middleware.HttpDeleteMiddleware'
 )
 
 ROOT_URLCONF = 'mediathread.urls'

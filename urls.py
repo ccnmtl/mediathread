@@ -1,6 +1,7 @@
+from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-from django.conf import settings
+from django.views.generic.simple import direct_to_template
 import os.path
 
 admin.autodiscover()
@@ -22,14 +23,14 @@ urlpatterns = patterns('',
 , 'path': 'crossdomain.xml'}),
                        (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
                            {'document_root': os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),'show_indexes': True}),
-
+                           
                        (r'^comments/', include('django.contrib.comments.urls')),
                        
                        logout_page,
                        
                        auth_urls,#see above
 
-                
+                       (r'^_stats/',direct_to_template, {'template': 'mediathread_main/stats.html'}),
                        (r'^admin/', admin.site.urls),
                        (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),

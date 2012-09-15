@@ -54,7 +54,8 @@ def asset_workspace(request, asset_id=None, annot_id=None):
         in_course_or_404(request.user.username, request.course)
     
     try:
-        asset = Asset.objects.get(pk=asset_id, course=request.course)
+        if asset_id:
+            asset = Asset.objects.get(pk=asset_id, course=request.course)
     except Asset.DoesNotExist:
         asset = Asset.objects.get(pk=asset_id)
         in_course_or_404(request.user.username, asset.course)

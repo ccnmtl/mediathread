@@ -1,5 +1,12 @@
 Feature: Homepage
 
+    Scenario: homepage.feature 0. Test Wait
+        Using selenium
+        Given I am test_instructor in Sample Course
+        Given the home workspace is loaded
+        Then the Collection panel has a "MAAP Award Reception" item
+        Finished using Selenium
+
     Scenario: homepage.feature 1. Instructor default view
         Using selenium
         Given I am test_instructor in Sample Course

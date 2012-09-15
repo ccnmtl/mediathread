@@ -63,7 +63,7 @@ def clear_selenium(step):
     world.using_selenium = False
     
     Project.objects.all().delete()
-    Collaboration.objects.exclude(title="Sample Course").delete()
+    Collaboration.objects.exclude(title="Sample Course").exclude(title="Alternate Course").delete()
     CollaborationPolicyRecord.objects.all().delete()
     os.system("echo 'delete from projects_project_participants;' | sqlite3 lettuce.db > /dev/null")
     os.system("echo 'delete from projects_projectversion;' | sqlite3 lettuce.db > /dev/null")
@@ -90,6 +90,7 @@ def i_am_username_in_course(step, username, course):
     if world.using_selenium:
         world.firefox.get(django_url("/accounts/logout/"))
         world.firefox.get(django_url("accounts/login/?next=/"))
+        time.sleep(1)
         username_field = world.firefox.find_element_by_id("id_username")
         password_field = world.firefox.find_element_by_id("id_password")
         form = world.firefox.find_element_by_name("login_local")
@@ -229,7 +230,12 @@ def i_click_the_link(step, text):
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
     if world.using_selenium:
-        course_title = world.firefox.find_element_by_id("course_title")
+        try:
+            course_title = world.firefox.find_element_by_id("course_title")
+        except:
+            time.sleep(1)
+            course_title = world.firefox.find_element_by_id("course_title")
+            
         assert course_title.text.find(coursename) > -1, "Expected the %s class, but found the %s class" % (coursename, course_title.text)
         
 @step(u'there is an? ([^"]*) button')
@@ -276,7 +282,12 @@ def i_ok_an_alert_dialog(step):
     time.sleep(1)
     alert = world.firefox.switch_to_alert()
     alert.accept()
-    time.sleep(1)    
+    time.sleep(1)
+    
+@step(u'I open the user settings menu')
+def i_open_the_user_settings_menu(step):
+    elt = world.firefox.find_element_by_css_selector("li.settings")
+    elt.click()
     
 @step(u'there is an? ([^"]*) column')
 def there_is_a_title_column(step, title):
@@ -755,7 +766,7 @@ def the_title_project_has_a_delete_icon(step, title):
     try:
         link = world.firefox.find_element_by_partial_link_text(title)
     except:
-        time.sleep(1)
+        time.sleep(2)
         link = world.firefox.find_element_by_partial_link_text(title)
     
     try:
@@ -793,6 +804,10 @@ def the_instructor_panel_has_count_projects_named_title(step, count, title):
 @step(u'the classwork panel has ([0-9][0-9]?) projects named "([^"]*)"')
 def the_classwork_panel_has_count_projects_named_title(step, count, title):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    if len(elts) < 1:
+        time.sleep(1)
+        elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+        
     n = 0
     for e in elts:
         a = e.find_element_by_css_selector("a.asset_title")

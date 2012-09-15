@@ -104,6 +104,9 @@ AUTO_COURSE_SELECT[asset_workspace] = asset_workspace_courselookup
 @login_required
 @allow_http("GET")    
 def asset_json(request, asset_id):
+    if not request.is_ajax():
+        raise Http404()
+    
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
     

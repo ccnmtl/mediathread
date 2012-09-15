@@ -4,6 +4,7 @@ from lettuce import before, after, world, step
 from django.test import client
 import sys, os, time
 from selenium.webdriver.common.keys import Keys
+import selenium.webdriver.support.ui as ui
 from mediathread.projects.models import Project
 from mediathread.structuredcollaboration.models import Collaboration
 from mediathread.structuredcollaboration.models import CollaborationPolicyRecord
@@ -78,6 +79,26 @@ def access_url(step, url):
     else:
         response = world.client.get(django_url(url))
         world.dom = html.fromstring(response.content)
+    
+@step(u'Given the ([^"]*) workspace is loaded')
+def given_the_name_workspace_is_loaded(step, name):
+    if name == "composition":
+        elt = ""
+    elif name == "assignment":
+        elt == ""
+    elif name == "discussion":
+        elt = ""
+    elif name == "home":
+        elt = "loaded"
+    else:
+        assert False, "No selector configured for %s" % name
+        
+    #wait = new WebDriverWait(d, TimeSpan.FromSeconds(5));
+    #    var element = wait.Until(driver => driver.FindElement(By.Id("Hobbies")));
+        
+    wait = ui.WebDriverWait(world.firefox, 10)
+    wait.until(ui.ExpectedConditions.visibilityOf(By.id(elt)))
+        
         
 @step(u'my browser resolution is ([^"]*) x ([^"]*)')
 def my_browser_resolution_is_width_x_height(step, width, height):
@@ -382,10 +403,6 @@ def the_owner_is_name_in_the_title_column(step, name, title):
 @step(u'the collection panel has a "([^"]*)" item')
 def the_collection_panel_has_a_title_item(step, title):
     panel = get_column('collection')
-    if not panel:
-        time.sleep(2)
-        panel = get_column('collection')
-        
     assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item-homepage')

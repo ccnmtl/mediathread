@@ -235,4 +235,27 @@ Feature: Homepage
         And the Collection panel has a "Mediathread: Introduction" item
 
         Finished using Selenium
+        
+    Scenario Outline: homepage.feature 9. User Settings menu
+        Using selenium
+        Given I am <user_name> in Sample Course
+        
+        When I open the user settings menu
+        Then there is a "Log Out" link
+        There is not a "Switch Course" link
+        There is not an "Admin" link
+        
+        When I click the "Log Out" link
+        Then I am at the Login page 
+
+        Finished using Selenium
+        
+    Examples:
+        | user_name           |
+        | test_instructor     |
+        | test_student_one    |
+        
+        
+        
+        
          

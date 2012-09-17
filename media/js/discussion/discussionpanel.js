@@ -6,6 +6,8 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     self.space_owner = space_owner;
     self.form = jQuery(self.el).find("form.threaded_comments_form")[0];
     self.max_comment_length = parseInt(self.form.getAttribute('data-maxlength'), 10);
+    
+    djangosherd.storage.json_update(panel.context);
 
     jQuery(window).resize(function () {
         self.resize();

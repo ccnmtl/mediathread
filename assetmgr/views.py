@@ -50,6 +50,23 @@ def asset_workspace(request, asset_id=None, annot_id=None):
     """
     
     """
+    if not request.user.is_staff:
+        in_course_or_404(request.user.username, request.course)
+    
+    try:
+        if asset_id:
+            asset = Asset.objects.get(pk=asset_id, course=request.course)
+    except Asset.DoesNotExist:
+        asset = Asset.objects.get(pk=asset_id)
+        in_course_or_404(request.user.username, asset.course)
+        
+        # the user is logged into the wrong class?
+        rv = {}
+        rv['switch_to'] = asset.course
+        rv['switch_from'] = request.course
+        rv['redirect'] = reverse('asset-view', args=[asset_id])
+        return render_to_response('assetmgr/asset_not_found.html', rv, context_instance=RequestContext(request))
+    
     data = { 'space_owner' : request.user.username, 'asset_id': asset_id, 'annotation_id': annot_id }
     course = request.course
         
@@ -87,6 +104,26 @@ AUTO_COURSE_SELECT[asset_workspace] = asset_workspace_courselookup
 @login_required
 @allow_http("GET")    
 def asset_json(request, asset_id):
+    if not request.is_ajax():
+        raise Http404()
+    
+    if not request.user.is_staff:
+        in_course_or_404(request.user.username, request.course)
+    
+    try:
+        asset = Asset.objects.get(pk=asset_id, course=request.course)
+    except Asset.DoesNotExist:
+        asset = Asset.objects.get(pk=asset_id)
+        in_course_or_404(request.user.username, asset.course)
+        
+        # the user is logged into the wrong class?
+        rv = {}
+        rv['switch_to'] = asset.course
+        rv['switch_from'] = request.course
+        rv['redirect'] = reverse('asset-view', args=[asset_id])
+        return render_to_response('assetmgr/asset_not_found.html', rv, context_instance=RequestContext(request))
+
+    
     the_json = detail_asset_json(request, asset_id, {})
     return HttpResponse(simplejson.dumps(the_json, indent=2), mimetype='application/json')
 

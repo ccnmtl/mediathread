@@ -8,7 +8,7 @@ RUNNING TESTS
 
 1. Required in path: sqlite3 and Firefox.
 2. Run ./bootstrap.py --full to ensure necessary lxml dependencies are built
-3. 3. time(./manage.py harvest --settings=settings_test --debug-mode --verbosity=2 --traceback)
+3. ./manage.py harvest --settings=settings_test --debug-mode
 4. The server runs on port 8002
 
 More information here...http://lettuce.it/reference/cli.html
@@ -40,20 +40,37 @@ Basic test data is automatically bootstrapped before a harvest
 Course & Users
 --------------- 
 
-Sample Course
-test_instructor / test
-test_student_one / test
-test_student_two / test
+Administrator - selenium / selenium
+
+1. Sample Course
+
+Instructor One - test_instructor / test
+Student One - test_student_one / test
+Student Two - test_student_two / test
+Student Three - test_student_three / test
+
+2. Alternate Course
+
+Instructor Alternate - test_instructor_alt / test
+Student Alternate - test_student_alt / test
+Student Three - test_student_three / test
 
 Assets
 -------
- 
+
+Sample Course
+
 1. YouTube CCNMTL Mediathread video w/
    2 annotations
 2. Flickr CCNTML Photo of Medical Center
    1 annotation
 3. Flickr CCNMTl Photo of Frank and Maurice
    1 annotation
+   
+Alternate Course
+
+1. Design Research Openlayers Image w/
+   2 annotations
    
    
 

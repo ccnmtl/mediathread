@@ -1,9 +1,12 @@
 from django.core import urlresolvers
 from django.conf import settings
+from django.db import models
 from django.db.models import get_model, Max
 from djangohelpers.lib import rendered_with, allow_http
 
 from datetime import datetime
+from random import choice
+from string import letters
 
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
@@ -97,7 +100,7 @@ def discussion_create(request):
         data = { 'panel_state': 'open', 
                  'panel_state_label': "Instructor Feedback",
                  'template': 'discussion',
-                 'context': threaded_comment_json(new_threaded_comment, request.user)
+                 'context': threaded_comment_json(request, new_threaded_comment)
                }
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')   
 
@@ -142,7 +145,7 @@ def discussion_view(request, discussion_id):
             'title': root_comment.title,
             'can_edit_title': my_course.is_faculty(request.user),
             'root_comment_id': root_comment.id,
-            'context': threaded_comment_json(root_comment, request.user)
+            'context': threaded_comment_json(request, root_comment)
         }]
         
         # Create a place for asset editing
@@ -185,13 +188,28 @@ def comment_save(request, comment_id, next=None):
 
     comment.save()
     return { 'comment': comment, }
-      
-def threaded_comment_json(comment, viewer):
+
+def threaded_comment_citations(all_comments, viewer):
+    """
+    citation references to sherdnotes
+    """
+    a = []
+    m = models.get_model('djangosherd','SherdNote')
+    for obj in all_comments:
+        refs = m.objects.references_in_string(obj.comment, viewer)
+        a.extend(refs)
+    return a
+          
+def threaded_comment_json(request, comment):
+    viewer = request.user
     coll = ContentType.objects.get_for_model(Collaboration)
     all = ThreadedComment.objects.filter(content_type=coll, object_pk=comment.content_object.pk, site__pk=settings.SITE_ID)
     all = fill_tree(all)
-    all = annotate_tree_properties(all)
-
+    all = list(annotate_tree_properties(all))
+    
+    rand = ''.join([choice(letters) for i in range(5)])
+    citations = threaded_comment_citations(all, viewer)
+    
     return {
         'type': 'discussion',
         'form': comments.get_form()(comment.content_object).__unicode__(),
@@ -210,5 +228,13 @@ def threaded_comment_json(comment, viewer):
                          'content': obj.comment,
                          'can_edit': True if obj.user == viewer else False
                        } for obj in all]
-         }
+         },
+        'assets': dict([('%s_%s' % (rand,ann.asset.pk),
+                        ann.asset.sherd_json(request)
+                        ) for ann in citations
+                       if ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted'
+                       ]),
+        'annotations': [ ann.sherd_json(request, rand, ('title','author')) 
+                for ann in citations
+           ],
     }

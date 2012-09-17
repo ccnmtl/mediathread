@@ -246,7 +246,7 @@ def project_workspace(request, project_id, feedback=None):
             panel = { 'panel_state': 'open' if show_feedback else 'closed',
                       'panel_state_label': "Instructor Feedback",
                       'template': 'discussion',
-                      'context': threaded_comment_json(feedback_discussion, request.user)
+                      'context': threaded_comment_json(request, feedback_discussion)
                     }
             panels.append(panel)
             

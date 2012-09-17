@@ -33,14 +33,14 @@ MEDIA_URL = '/uploads/'
 ADMIN_MEDIA_PREFIX = '/media/'
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 ### be careful: if you add/remove something here
 ### do the same with settings_production.py
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.auth',
+    'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
     'mediathread_main.views.django_settings',

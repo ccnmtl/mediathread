@@ -92,7 +92,7 @@ def asset_workspace(request, asset_id=None, annot_id=None):
         
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
     
-def asset_workspace_courselookup(asset_id=None):
+def asset_workspace_courselookup(asset_id=None, annot_id=None):
     """lookup function corresponding to asset_workspace
     if an asset is being requested then we can guess the course
     """

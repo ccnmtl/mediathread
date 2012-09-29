@@ -24,28 +24,41 @@
 {% with help_browse_sources as default_help_state %}
                  
     <div id="external-archives" class="top-archive">
-        <h2>Add to My Collection{% include "help/help_button.html" %}{% if is_faculty %}
-                        <div id="managesources">
-                            <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
-                        </div>
-                    {% endif %}</h2>
+        <h2>Add to My Collection{% include "help/help_button.html" %}
+            {% if is_faculty %}
+                <div id="managesources">
+                    <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
+                </div>
+             {% endif %}
+        </h2>
         {% include "help/help_contentarea.html" %}
         
                     
-          {% if can_upload %}
+        {% if can_upload %}
            {% if upload_archive %}
-           <div id="upload_container">
-            
-            <h2>Upload Video</h2>            
-            
-            <div id="uploader">
-            <a href="redirect/?url={{upload_archive.archive.url|urlencode}}" class="columnbutton media browse-button">Upload a video</a>
-            </div>
-            
-            <p>This tool supports direct uploading of videos from your desktop into Mediathread.</p>
-            
-            </div>
-         {% endif %}{% endif %}
+               <div id="upload_container">
+                    <h2>Upload Video</h2>            
+                    <div class="instructions">
+                        This tool supports direct uploading of videos from your desktop into Mediathread.
+                    </div>
+                    
+                    <form action="redirect/" method="POST">
+                        {% if owners %}
+                            <div><b>As:</b>&nbsp;
+                            <select name="as"> 
+                            {% for owner in owners %}                                
+                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                            {% endfor %}
+                            </select>
+                            </div>
+                        {% endif %}
+                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                        <input id="uploader" type="submit" value="Upload a video" />
+                    </form>
+                    <div class="visualclear"></div>
+                </div>                
+            {% endif %}
+        {% endif %}
          
         {% if archives %}
             <div id="archive_container" class="column-container media-column-container">  

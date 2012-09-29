@@ -446,9 +446,6 @@ def source_specialauth(request,url,key):
     if request.user.is_staff and request.REQUEST.has_key('as'):
         username = request.REQUEST['as']
         
-    url = "http://wardenclyffe.ccnmtl.columbia.edu/mediathread/"
-    redirect_back = "http://mediathread.ccnmtl.columbia.edu/explore/?msg=upload"
-    
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
         url,
         request.course.group.name,

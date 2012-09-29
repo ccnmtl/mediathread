@@ -362,9 +362,6 @@ def browse_sources(request):
     c = request.course
 
     user = request.user
-    if user.is_staff and request.GET.has_key('as'):
-        user = get_object_or_404(User,username=request.GET['as'])
-
     archives = []
     upload_archive = None
     for a in c.asset_set.archives().order_by('title'):
@@ -388,6 +385,10 @@ def browse_sources(request):
             archives.append(archive_context)
         
     archives.sort(key=operator.itemgetter('title'))
+    
+    owners = []
+    if user.is_staff:
+        owners = [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members]
         
     rv = {"archives":archives,
           "upload_archive": upload_archive,
@@ -398,7 +399,8 @@ def browse_sources(request):
           'upload_service': getattr(settings,'UPLOAD_SERVICE',None),
           "help_browse_sources": UserSetting.get_setting(user, "help_browse_sources", True),
           "help_no_sources": UserSetting.get_setting(user, "help_no_sources", True),
-          'msg': request.GET.get('msg', '')
+          'msg': request.GET.get('msg', ''),
+          'owners': owners
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
@@ -412,10 +414,12 @@ def browse_sources(request):
     
     return rv
 
+@login_required  
+@allow_http("POST")
 def source_redirect(request):
-    url = request.GET.get('url',None)
+    url = request.POST.get('url', None)
     if not url:
-        url = reverse('browse-sources')
+        url = reverse('explore')
     else:
         source = None
         try:
@@ -438,6 +442,13 @@ def source_specialauth(request,url,key):
     nonce = '%smthc' % datetime.datetime.now().isoformat()
     redirect_back = "%s?msg=upload" % (request.build_absolute_uri(reverse('explore')))
     username = request.user.username
+    
+    if request.user.is_staff and request.REQUEST.has_key('as'):
+        username = request.REQUEST['as']
+        
+    url = "http://wardenclyffe.ccnmtl.columbia.edu/mediathread/"
+    redirect_back = "http://mediathread.ccnmtl.columbia.edu/explore/?msg=upload"
+    
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
         url,
         request.course.group.name,

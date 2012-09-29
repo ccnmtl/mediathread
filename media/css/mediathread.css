@@ -2619,20 +2619,33 @@ text-align: left;
 }
 
 #upload_container {
-background-color: #ece8df;
+    background-color: #ece8df;
 }
 
+#upload_container div.instructions {
+    margin: 10px;    
+    float: left;
+}
+
+#upload_container form {
+    float: right;
+    margin-right: 20px;
+    text-align: right;
+}
+
+#upload_container form select {
+    margin-bottom: 5px;
+}
 
 #uploader {
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
-   float: right;
-   padding: 2px 5px 0 0;
-   width: 195px;
-   height: 14px;
+   padding: 0;
+   width: 150px;
+   height: 22px;
    font-size: 12px;
    text-align: center;
-   margin: 2px 20px;
+   margin: 5px 0;
 }
 
 .collection_button {

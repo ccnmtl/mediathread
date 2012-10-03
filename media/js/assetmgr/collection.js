@@ -265,9 +265,12 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
             asset.x = 0;
             asset.y = 0;
             asset.zoom = 1;
-            
-            view.html.push(obj_div, { asset: asset });
-            view.setState(asset);
+
+            try {
+                view.html.push(obj_div, { asset: asset });
+                view.setState(asset);
+            } catch (e) {
+            }
         }
     }
 };

@@ -2609,7 +2609,8 @@ text-align: left;
 
 
 #archive_container,
-#upload_container {
+#upload_container,
+#audio_upload_container {
     border: 1px solid #ccc;
     width: 920px;
     margin: 20px;
@@ -2618,21 +2619,25 @@ text-align: left;
     border-radius: 10px;
 }
 
-#upload_container {
+#upload_container,
+#audio_upload_container {
     background-color: #ece8df;
 }
 
+#audio_upload_container div.instructions,
 #upload_container div.instructions {
     margin: 10px;    
     float: left;
 }
 
+#audio_upload_container form,
 #upload_container form {
     float: right;
     margin-right: 20px;
     text-align: right;
 }
 
+#audio_upload_container form select,
 #upload_container form select {
     margin-bottom: 5px;
 }
@@ -2713,7 +2718,8 @@ text-align: left;
 }
 
 #archive_container h2,
-#upload_container h2
+#upload_container h2,
+#audio_upload_container h2
 {
     background-color: #A88448;
         -webkit-border-top-left-radius: 10px;

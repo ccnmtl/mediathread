@@ -9,7 +9,7 @@
     {% ifequal msg "upload" %}
         <script type="text/javascript"> 
             jQuery(document).ready(function() {
-                var msg = "Your video file submission is being processed.\nYou will receive an e-mail when it is ready."
+                var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
                 alert(msg);
             });
         </script>
@@ -56,7 +56,32 @@
                         <input id="uploader" type="submit" value="Upload a video" />
                     </form>
                     <div class="visualclear"></div>
-                </div>                
+                </div>
+                
+                {% if space_viewer.is_staff %}
+                <div id="audio_upload_container">
+                    <h2>Upload Audio</h2>            
+                    <div class="instructions">
+                        This tool supports direct uploading of audio files from your desktop into Mediathread.
+                    </div>
+                    
+                    <form action="redirect/" method="POST">
+                        {% if owners %}
+                            <div><b>As:</b>&nbsp;
+                            <select name="as"> 
+                            {% for owner in owners %}                                
+                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                            {% endfor %}
+                            </select>
+                            </div>
+                        {% endif %}
+                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                        <input type="hidden" name="audio" value="mp3"></input>
+                        <input id="uploader" type="submit" value="Upload audio file" />
+                    </form>
+                    <div class="visualclear"></div>
+                </div>  
+                {% endif %}                           
             {% endif %}
         {% endif %}
          

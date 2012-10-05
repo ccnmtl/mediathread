@@ -446,7 +446,7 @@ def source_specialauth(request,url,key):
     if request.user.is_staff and request.REQUEST.has_key('as'):
         username = request.REQUEST['as']
         
-    return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s' % (
+    return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s&audio=%s' % (
         url,
         request.course.group.name,
         username,
@@ -455,7 +455,8 @@ def source_specialauth(request,url,key):
         hmac.new(key,
                  '%s:%s:%s' % (username,redirect_back,nonce),
                  hashlib.sha1
-                 ).hexdigest()
+                 ).hexdigest(),
+        request.POST.get('audio', '')
         )
     
 def final_cut_pro_xml(request, asset_id):

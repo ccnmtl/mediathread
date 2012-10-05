@@ -125,7 +125,7 @@ The rest of the instructions work like standard Django.  See:
 
 4. Sync the database
    ./manage.py syncdb
-  #create a superuser
+   ./manage.py migrate # to complete the south migration setup
 
 5. Run locally (during development)
   ./manage.py runserver myhost.example.com:8000

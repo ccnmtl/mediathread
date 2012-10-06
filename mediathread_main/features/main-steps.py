@@ -72,3 +72,18 @@ def the_selection_visibility_is_value(step, value):
         elt = world.firefox.find_element_by_id('selection_visibility_no')
     
     assert elt.get_attribute('checked'), "The checked attribute was %s" % elt.get_attribute("checked")
+    
+@step(u'I can upload on behalf of other users')
+def i_can_upload_on_behalf_of_other_users(step):
+    elt = world.firefox.find_element_by_id('video_owners')
+
+@step(u'I cannot upload on behalf of other users')
+def i_cannot_upload_on_behalf_of_other_users(step):
+    try:
+        elt = world.firefox.find_element_by_id('video_owners')
+        assert False, "This user can upload on behalf of other users"
+    except:
+        pass # expected
+        
+
+ 

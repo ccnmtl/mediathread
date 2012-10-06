@@ -117,3 +117,55 @@ Feature: Manage Sources
         Then I see "Upload Video"
 
         Finished using Selenium
+        
+    Scenario: manage_sources.feature 5. Video Upload - On Behalf Of Permissions
+        Using selenium
+        Given I am test_instructor in Sample Course
+        Given video upload is enabled
+        
+        # Set for students
+        When I click the Instructor Dashboard button
+        When I click the Manage Sources button
+        Then I am at the Manage Sources page
+        When I allow Students to upload videos
+        Then I'm told "Your changes have been saved"
+        
+        # Regular Instructor cannot upload on behalf of
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page
+        Then I see "Upload Video"
+        And I cannot upload on behalf of other users
+        
+        # Regular student cannot upload on someone's behalf
+        Given I am test_student_one in Sample Course
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page        
+        Then I see "Upload Video"
+        And I cannot upload on behalf of other users
+        
+        # Student with special privileges can upload on someone's behalf
+        Given I am test_ta in Sample Course
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page        
+        Then I see "Upload Video"
+        And I can upload on behalf of other users
+        
+        # Staff that are not a member of this class cannot upload on someone's behalf
+        Given I am not logged in
+        When I access the url "/"
+        Then I am at the Login page
+        When I type "test_staff" for username
+        When I type "test" for password
+        When I click the Log In button        
+        Then I am at the Switch Course page        
+        When I click the "Sample Course" link
+        Then I am in the Sample Course class        
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page        
+        Then I see "Upload Video"
+        And I see "You must be a course member to upload media files."
+        And I cannot upload on behalf of other users
+        
+
+               
+        Finished using Selenium

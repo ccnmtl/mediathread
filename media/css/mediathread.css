@@ -479,6 +479,11 @@ html.busy, html.busy * {
     color: #333;
 }
 
+#standardnav {
+    position: relative;
+    z-index: 9999;
+}
+
 #standardnav li.settings span:hover,
 #standardnav a:hover
 {
@@ -505,7 +510,7 @@ html.busy, html.busy * {
     width: 110px;
     padding: 10px;
     margin-left: -.65em;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 #standardnav_settings_menu a {
@@ -528,7 +533,7 @@ html.busy, html.busy * {
 
 #course_title
 {
-    z-index:9999;
+    z-index: 9998;
     float: left;
     font-size: 1.7em;
         line-height:1.2em;

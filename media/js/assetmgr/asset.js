@@ -886,23 +886,27 @@
                     
                     if (self.active_annotation) {
                         djangosherd.assetview.setState(self.active_annotation.annotation);
-                        djangosherd.assetview.clipform.setState(self.active_annotation.annotation,
-                                { 'mode': context.annotation.editing ? 'edit' : 'browse',
-                                  'tool_play': jQuery('#annotation-body-' + self.active_annotation.id + ' input.videoplay')[0] });
                     } else if (self.xywh) {
                         djangosherd.assetview.setState(self.xywh);
-                        
-                        if (djangosherd.assetview.clipform) {
-                            djangosherd.assetview.clipform.setState(self.xywh, {'mode': 'create' });
-                        }
                     } else {
                         // #default initialization. no annotation defined.
                         djangosherd.assetview.setState();
-                        djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 },
-                            { 'mode': context.annotation && context.annotation.editing ? 'create' : 'browse' });
                     }
                     
                     jQuery(elt).fadeIn("slow", function () {
+                        if (self.active_annotation) {
+                            djangosherd.assetview.clipform.setState(self.active_annotation.annotation,
+                                    { 'mode': context.annotation.editing ? 'edit' : 'browse',
+                                      'tool_play': jQuery('#annotation-body-' + self.active_annotation.id + ' input.videoplay')[0] });
+                        } else if (self.xywh) {
+                            if (djangosherd.assetview.clipform) {
+                                djangosherd.assetview.clipform.setState(self.xywh, {'mode': 'create' });
+                            }
+                        } else {
+                            // #default initialization. no annotation defined.
+                            djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 },
+                                { 'mode': context.annotation && context.annotation.editing ? 'create' : 'browse' });
+                        }
                         if (self.view_callback) {
                             self.view_callback();
                         }

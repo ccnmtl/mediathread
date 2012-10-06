@@ -44,7 +44,7 @@
                     
                     <form action="redirect/" method="POST">
                         {% if owners %}
-                            <div><b>As:</b>&nbsp;
+                            <div><b>For:</b>&nbsp;
                             <select name="as"> 
                             {% for owner in owners %}                                
                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
@@ -67,7 +67,7 @@
                     
                     <form action="redirect/" method="POST">
                         {% if owners %}
-                            <div><b>As:</b>&nbsp;
+                            <div><b>For:</b>&nbsp;
                             <select name="as"> 
                             {% for owner in owners %}                                
                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>

@@ -72,6 +72,11 @@ class Asset(models.Model):
     #not good for uniqueness
     fundamental_labels = ('archive','url',)
     primary_labels = useful_labels + fundamental_labels
+    
+    class Meta:
+        permissions = (
+            ("can_upload_for", "Can upload assets for others"),
+        )
 
     @classmethod
     def good_args(cls, args):

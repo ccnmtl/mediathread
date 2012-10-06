@@ -35,7 +35,8 @@ from structuredcollaboration.models import Collaboration
 from threadedcomments import ThreadedComment
 from tagging.models import Tag
 from tagging.utils import calculate_cloud
-from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT, get_public_name
+from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
+from courseaffils.lib import in_course, get_public_name
 
 Asset = models.get_model('assetmgr','asset')
 Comment = models.get_model('comments','comment')
@@ -387,7 +388,7 @@ def browse_sources(request):
     archives.sort(key=operator.itemgetter('title'))
     
     owners = []
-    if user.is_staff:
+    if in_course(user.username, request.course) and (user.is_staff or user.has_perm('assetmgr.can_upload_for')):
         owners = [{ 'username': m.username, 'public_name': get_public_name(m, request) } for m in request.course.members]
         
     rv = {"archives":archives,
@@ -400,7 +401,7 @@ def browse_sources(request):
           "help_browse_sources": UserSetting.get_setting(user, "help_browse_sources", True),
           "help_no_sources": UserSetting.get_setting(user, "help_no_sources", True),
           'msg': request.GET.get('msg', ''),
-          'owners': owners
+          'owners': owners, 
           }
     if not rv['archives']:
         rv['faculty_assets'] = [a for a in Asset.objects.filter(c.faculty_filter).order_by('added')
@@ -443,7 +444,9 @@ def source_specialauth(request,url,key):
     redirect_back = "%s?msg=upload" % (request.build_absolute_uri(reverse('explore')))
     username = request.user.username
     
-    if request.user.is_staff and request.REQUEST.has_key('as'):
+    if request.REQUEST.has_key('as') and \
+       in_course(request.user.username, request.course) and \
+       (request.user.is_staff or request.user.has_perm('assetmgr.can_upload_for')):
         username = request.REQUEST['as']
         
     return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s&audio=%s' % (

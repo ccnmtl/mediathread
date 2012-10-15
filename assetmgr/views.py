@@ -416,9 +416,10 @@ def browse_sources(request):
     return rv
 
 @login_required  
-@allow_http("POST")
+@allow_http("GET", "POST")
 def source_redirect(request):
-    url = request.POST.get('url', None)
+    url = request.REQUEST.get('url', None)
+
     if not url:
         url = reverse('explore')
     else:

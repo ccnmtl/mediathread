@@ -3423,6 +3423,10 @@ margin-left: 269px;
     z-index:0;
 }
 
+#clipStripStart {
+    z-index: 1;
+}
+
 .clipStripRange {
     top:0px;
     background:#CCE6EF;

@@ -120,8 +120,8 @@ Feature: Instructor Dashboard
         When I click the Instructor Dashboard button
         Then I am at the Instructor Dashboard page        
         When I click the Assignment Responses button        
-        Then there is a "1 / 4" link
-        When I click the "1 / 4" link
+        Then there is a "1 / 5" link
+        When I click the "1 / 5" link
         Then I see "Assignment Report: Sample Assignment"
         And I see "Student One"
         And I there is a "Sample Assignment Response" link

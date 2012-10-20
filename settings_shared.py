@@ -134,7 +134,7 @@ ANONYMOUS_PATHS = ('/site_media/',
 
 NON_ANONYMOUS_PATHS = ('/asset/',
                       '/annotations/',
-                      
+                      '/contact/',
                       '/yourspace/',
                       '/project/',
                       '/explore/',

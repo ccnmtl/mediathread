@@ -58,7 +58,7 @@
     {% block masthead %}
     	<!-- ###### Site banner ###### -->
     	<div id="header">
-    		<!-- Project title/logo --><h1 id="logo_project"><a href="/" title="Project Title: Project Django"><span>Project Title: Project Django </span></a></h1>	
+            <div id="course_title">{{course.title}}</div>
     		{% block standardnav %}
         	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
         	   <ul id="standardnav">
@@ -76,6 +76,7 @@
                                 {% if user_courses > 1 or user.is_staff %}
                                     <a href="/?unset_course">Switch Course</a>
                                 {% endif %}
+                                <a href="/contact">Contact Us</a>
                                 <a href="/accounts/logout/">Log Out</a>
                             </div>
                         </li>
@@ -107,7 +108,7 @@
 {% block primarynav %}
 	<!-- ###### Primary navigation ###### -->
 	<div id="primarynav">
-		<div class="encase" id="{% block navalignment %}leftside{% endblock %}"><div id="course_title"><a href="/">{{course.title}}</a></div>
+		<div class="encase" id="{% block navalignment %}leftside{% endblock %}">
 
 
 {% comment %}

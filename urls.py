@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 import os.path
+
 
 admin.autodiscover()
 
@@ -29,8 +31,10 @@ urlpatterns = patterns('',
                        logout_page,
                        
                        auth_urls,#see above
-
-                       (r'^_stats/',direct_to_template, {'template': 'mediathread_main/stats.html'}),
+                                              
+                       (r'^contact/', login_required(direct_to_template), {'template': 'mediathread_main/contact.html'}),
+                        
+                       (r'^_stats/', direct_to_template, {'template': 'mediathread_main/stats.html'}),
                        (r'^admin/', admin.site.urls),
                        (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
                        (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': site_media_root}),

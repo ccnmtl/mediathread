@@ -194,7 +194,7 @@
                 self.verifyLayout(subpanel);
                 jQuery(window).trigger("resize");
             }
-        };        
+        };
 
         this.closeSubPanel = function (view) {
             var subpanel = jQuery(view.el).find("td.panel-container.open")[0];

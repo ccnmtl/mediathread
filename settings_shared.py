@@ -44,7 +44,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
     'mediathread_main.views.django_settings',
-    )
+)
 
 MIDDLEWARE_CLASSES = (
     'django_statsd.middleware.GraphiteRequestTimingMiddleware',
@@ -114,6 +114,9 @@ EMAIL_SUBJECT_PREFIX = "[mediathread] "
 EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "mediathread@example.com"
 PUBLIC_CONTACT_EMAIL = "mediathread@example.com"
+
+# External url for issue reporting system or e-mail notification 
+CONTACT_US_DESTINATION = ""
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'

@@ -69,7 +69,7 @@
             please contact us using the following form. We will do our best to respond within one business day. 
         </p>
    
-        <form action="http://pmt.ccnmtl.columbia.edu/external_add_item.pl" method="post" name="feedback" onsubmit="return validate()">
+        <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback" onsubmit="return validate()">
                 <div><label for="name">Name</label></div>
                 <div><input class="text" type="text" id="name" name="name" value="{{ user.get_full_name }}"/></div>
                 

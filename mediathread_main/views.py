@@ -48,6 +48,7 @@ SupportedSource = get_model('assetmgr', 'supportedsource')
 #returns important setting information for all web pages.
 def django_settings(request):
     whitelist = ['PUBLIC_CONTACT_EMAIL',
+                 'CONTACT_US_DESTINATION',
                  'FLOWPLAYER_SWF_LOCATION',
                  'DEBUG',
                  'REVISION'

@@ -67,7 +67,8 @@ def composition_project_json(request, project, can_edit, version_number=None):
                           'type': 'assignment' if is_assignment else 'composition',
                           'current_version': version_number if version_number else None,
                           'create_selection': is_assignment,
-                          'is_assignment': is_assignment
+                          'is_assignment': is_assignment,
+                          'course_title': request.course.title
                        },
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)

@@ -1,0 +1,50 @@
+{% load coursetags %}
+
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<style>
+@page Section1 {size:595.45pt 841.7pt; margin:1.0in 1.25in 1.0in 1.25in;mso-header-margin:.5in;mso-footer-margin:.5in;mso-paper-source:0;}
+div.Section1 {page:Section1;}
+@page Section2 {size:841.7pt 595.45pt;mso-page-orientation:landscape;margin:1.25in 1.0in 1.25in 1.0in;mso-header-margin:.5in;mso-footer-margin:.5in;mso-paper-source:0;}
+div.Section2 {page:Section2;}
+
+div.Section2 {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: #fff;
+    font: normal 1.25em/120% 'lucida grande', arial, verdana, sans-serif;
+    color: #000;
+    width: 100% auto;
+    min-width: 1000px;
+    overflow: auto;
+}
+
+</style>
+</head>
+<body>
+<div class=Section2>
+
+<div class="info">
+    <h3>Experimental Feature</h3>
+    <div>Please note that this MS-Word export feature is in the very early stages of development.
+    If you experience problems or would like to comment, please use the 
+    <a href="http://mediathread.ccnmtl.columbia.edu/contact/">Contact</a> form to
+    communicate with the Mediathread team.</div> 
+</div>
+<hr/>
+
+<h3>{{project.title}}</h3>
+<br />
+<div>by {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
+            {%public_name for part %}{%endfor%}
+<hr />
+<br />
+<div>{{body|safe}}</div>
+</div>
+</body>
+</html>

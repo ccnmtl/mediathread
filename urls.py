@@ -57,6 +57,8 @@ urlpatterns = patterns('',
                     
                        # Instructor Dashboard & reporting
                        (r'^reports/',include('mediathread.reports.urls')),
+                       
+                       url(r'^dashboard/migrate/', 'mediathread_main.views.migrate', name="dashboard-migrate"),
                        url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource', name="class-add-source"),
                        url(r'^dashboard/settings/', 'mediathread_main.views.class_settings', name="class-settings"),
                        url(r'^dashboard/$', 'mediathread_main.views.dashboard', name="dashboard-home"),

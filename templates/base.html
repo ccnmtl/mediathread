@@ -58,9 +58,10 @@
     {% block masthead %}
     	<!-- ###### Site banner ###### -->
     	<div id="header">
+            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
             <div id="course_title">{{course.title}}</div>
     		{% block standardnav %}
-        	   <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
+        	   
         	   <ul id="standardnav">
                     {% if request.user.is_authenticated %}
                         <li class="settings" onclick="jQuery('#standardnav_settings_menu').toggle();">

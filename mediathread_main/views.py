@@ -4,6 +4,7 @@ import re
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from django.db.models import get_model, Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -431,6 +432,7 @@ def class_addsource(request):
     return context
 
 @allow_http("GET", "POST")
+@login_required
 @rendered_with('dashboard/class_settings.html')
 def class_settings(request):
     c = request.course
@@ -481,6 +483,7 @@ def class_settings(request):
     return context
 
 @allow_http("POST")
+@rendered_with('dashboard/class_settings.html')
 def set_user_setting(request, user_name):
     if not request.is_ajax():
         raise Http404()
@@ -493,3 +496,17 @@ def set_user_setting(request, user_name):
     
     json_stream = simplejson.dumps({ 'success': True })
     return HttpResponse(json_stream, mimetype='application/json')
+
+@allow_http("GET", "POST")
+@rendered_with('dashboard/migrate.html')
+@login_required
+def migrate(request):
+    if not request.course.is_faculty(request.user):
+        return HttpResponseForbidden("forbidden")
+    
+    if request.method == "GET":
+        return {}
+    else:
+        return {}
+    
+

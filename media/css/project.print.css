@@ -1,0 +1,46 @@
+table#sliding-content-container tr td.panhandle-left-container,
+table#sliding-content-container tr td.panhandle-stripe,
+table#sliding-content-container tr td.pantab-container,
+td.panel-container.assignment,
+td.panel-container.discussion,
+tr.project-visibility-row,
+td.panel-container.collection,
+div.panel-subcontainer-toolbar,
+#shieldbox,
+#footer,
+#standardnav,
+#primarynav
+{
+    display: none;
+}
+
+div#header {
+    height: 100%;
+}
+
+div.essay-space {
+    height: 100% !important;
+    border: none;
+    background-color: white;
+}
+
+#course_title,
+#mediathread_logo {
+    float: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+table#sliding-content-container,
+table#sliding-content-container tr,
+table#sliding-content-container tr td,
+table#sliding-content-container tr td.panel-container div.panel.composition {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    border: none
+}

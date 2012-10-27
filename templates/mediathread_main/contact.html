@@ -19,12 +19,12 @@
                 if (valid) {
                     if (this.tagName === 'INPUT' && this.type === 'text' ||
                         this.tagName === 'TEXTAREA') {
-                        valid = jQuery(this).val().trim().length > 0;
+                        valid = jQuery(this).val().length > 0;
                     }
 
                     if (this.tagName === 'SELECT') {
                         var value=jQuery(this).val()
-                        valid = value !== undefined && value.length > 0 && jQuery(this).val().trim() !== '-----';
+                        valid = value !== undefined && value.length > 0 && jQuery(this).val() !== '-----';
                     }
 
                     if (this.type === 'checkbox' || this.type === 'radio') {

@@ -11,53 +11,6 @@ body
 
 /* ########## Standard elements ########## */
 
-h1, h2, h3, h4, h5, h6
-{
-	margin: 0 0 0.7em 0;
-	padding: 0;
-	border: 0;
-	font-family: 'trebuchet ms', verdana, sans-serif;
-	font-weight: bold;
-}
-
-h1
-{
-	margin: 0 0 0.7em 0;
-	font-size: 180%;
-	font-weight: normal;
-}
-
-h2
-{
-	margin: 1.6em 0 0.7em 0;
-	font-size: 160%;
-}
-
-h3
-{
-	margin: 1.4em 0 0.7em 0;
-	font-size: 140%;
-}
-
-h4
-{
-	margin: 1.2em 0 0.7em 0;
-	font-size: 140%;
-	font-style: italic;
-}
-
-h5
-{
-	margin: 1em 0 0.7em 0;
-	font-size: 120%;
-}
-
-h6
-{
-	margin: 1em 0 0.7em 0;
-	font-size: 110%;
-}
-
 p
 {
 	display: block;
@@ -129,66 +82,6 @@ img
 #standardnav
 {
 	display: none !important;
-}
-
-/* ---- Header block elements ---------- */
-#header
-{
-	display: block;
-	width: 100%;
-	min-width: 1px;
-	height: 100px;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	background: #fffbc7 url('../img/bg_header.jpg') left top no-repeat;
-}
-
-#header #logo_project
-{
-	display: block;
-	float: left;
-	width: 430px;
-	height: 90px;
-	overflow: hidden;
-	margin: 5px 0 0 0;
-	padding: 0;
-	border: 0;
-}
-
-#header #logo_project a
-{
-	display: block;
-	width: 430px;
-	height: 90px;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	background: transparent url('../img/logo_project.png') left center no-repeat;
-}
-
-#header #logo_ccnmtl
-{
-	display: none;
-}
-
-#header #logo_project span,
-#header #logo_ccnmtl span
-{
-	display: none;
-}
-
-#pagebody
-{
-	border-top: 2px solid #ccc;
-	clear: both;
-	margin-top: 1.5em;
-	padding-top: 2em;
-}
-
-#footer
-{
-		border-top: 2px solid #ccc;
 }
 
 .printonly

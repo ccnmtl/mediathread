@@ -896,6 +896,17 @@ table.panel-subcontainer tr td div.project-visibility {
     margin-right: 5px;
 }
 
+a.project-export, a.project-print {
+    text-decoration: none;
+    margin-right: 2px;
+}
+
+img.project-print-icon,
+img.project-export-icon {
+    width: 18px;
+    height: auto;    
+}
+
 td.filler {
     width: 2000px;
 }

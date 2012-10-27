@@ -3564,8 +3564,8 @@ div#materials.column-contents.homepage div.actions {
     bottom: 20px;
 }
 
-.gallery-item .asset-thumb img,
-.gallery-item-homepage .asset-thumb img {
+.gallery-item .asset-thumb img.gallery-item-thumb,
+.gallery-item-homepage .asset-thumb img.gallery-item-thumb {
     width: 200px;
     height: auto;
 }

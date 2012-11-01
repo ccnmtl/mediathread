@@ -26,11 +26,14 @@ def setup_database(variables):
         os.remove('lettuce.db')
     except:
         pass #database doesn't exist yet. that's ok.
+    
     os.system("echo 'create table test(idx integer primary key);' | sqlite3 lettuce.db > /dev/null")
     os.system('./manage.py syncdb --settings=settings_test --noinput > /dev/null')
     os.system('./manage.py migrate --settings=settings_test --noinput > /dev/null')
     os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db > /dev/null")
     os.system('./manage.py loaddata mediathread_main/fixtures/sample_course.json --settings=settings_test > /dev/null')
+    
+    # System calls are asynchronous. Give some time to complete before continuing
     time.sleep(2)
 
 @before.all
@@ -43,6 +46,9 @@ def setup_browser():
     
     # Make the browser size at least 1024x768
     world.firefox.execute_script("window.moveTo(0, 1); window.resizeTo(1024, 768);");
+    
+    # Wait implicitly for 2 seconds
+    world.firefox.implicitly_wait(5)
     
     # stash
     world.memory = {}
@@ -82,22 +88,16 @@ def access_url(step, url):
     
 @step(u'Given the ([^"]*) workspace is loaded')
 def given_the_name_workspace_is_loaded(step, name):
-    if name == "composition":
-        elt = ""
-    elif name == "assignment":
-        elt == ""
-    elif name == "discussion":
-        elt = ""
-    elif name == "home":
-        elt = "loaded"
+    id = None
+    if name == "composition" or \
+       name == "assignment" or \
+       name == "home":
+        id = "loaded"
     else:
         assert False, "No selector configured for %s" % name
         
-    #wait = new WebDriverWait(d, TimeSpan.FromSeconds(5));
-    #    var element = wait.Until(driver => driver.FindElement(By.Id("Hobbies")));
-        
-    wait = ui.WebDriverWait(world.firefox, 10)
-    wait.until(ui.ExpectedConditions.visibilityOf(By.id(elt)))
+    wait = ui.WebDriverWait(world.firefox, 5)
+    wait.until(lambda driver: world.firefox.find_element_by_id(id))
         
         
 @step(u'my browser resolution is ([^"]*) x ([^"]*)')
@@ -111,7 +111,6 @@ def i_am_username_in_course(step, username, course):
     if world.using_selenium:
         world.firefox.get(django_url("/accounts/logout/"))
         world.firefox.get(django_url("accounts/login/?next=/"))
-        time.sleep(1)
         username_field = world.firefox.find_element_by_id("id_username")
         password_field = world.firefox.find_element_by_id("id_password")
         form = world.firefox.find_element_by_name("login_local")
@@ -146,15 +145,9 @@ def i_log_out(step):
 @step(u'I am at the ([^"]*) page')
 def i_am_at_the_name_page(step, name):
     if world.using_selenium:
-        # Check the page title
-        try:
-            title = world.firefox.title
-            assert title.find(name) > -1, "Page title is %s. Expected something like %s" % (title, name)
-        except:
-            time.sleep(1)
-            title = world.firefox.title
-            assert title.find(name) > -1, "Page title is %s. Expected something like %s" % (title, name)
-            
+        wait = ui.WebDriverWait(world.firefox, 2)
+        wait.until(lambda driver: world.firefox.title.find(name) > -1)
+        
 @step(u'there is a sample assignment')            
 def there_is_a_sample_assignment(step):
     os.system('./manage.py loaddata mediathread_main/fixtures/sample_assignment.json --settings=settings_test > /dev/null')
@@ -213,13 +206,8 @@ def there_is_a_text_link(step, text):
             link = world.firefox.find_element_by_partial_link_text(text)
             assert link.is_displayed()
         except:
-            try:
-                time.sleep(2)
-                link = world.firefox.find_element_by_partial_link_text(text)
-                assert link.is_displayed()
-            except:
-                world.firefox.get_screenshot_as_file("/tmp/selenium.png")
-                assert False, "Cannot find link %s" % text   
+            world.firefox.get_screenshot_as_file("/tmp/selenium.png")
+            assert False, "Cannot find link %s" % text   
         
         
 @step(u'I click the "([^"]*)" link')
@@ -239,35 +227,20 @@ def i_click_the_link(step, text):
             assert link.is_displayed()
             link.click()
         except:
-            try:
-                time.sleep(1)
-                link = world.firefox.find_element_by_partial_link_text(text)
-                assert link.is_displayed()
-                link.click()
-            except:
-                world.firefox.get_screenshot_as_file("/tmp/selenium.png")
-                assert False, link.location      
+            world.firefox.get_screenshot_as_file("/tmp/selenium.png")
+            assert False, link.location      
 
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
     if world.using_selenium:
-        try:
-            course_title = world.firefox.find_element_by_id("course_title")
-        except:
-            time.sleep(1)
-            course_title = world.firefox.find_element_by_id("course_title")
+        course_title = world.firefox.find_element_by_id("course_title")
             
         assert course_title.text.find(coursename) > -1, "Expected the %s class, but found the %s class" % (coursename, course_title.text)
         
 @step(u'there is an? ([^"]*) button')
 def there_is_a_value_button(step, value):
-    try:
-        elt = find_button_by_value(value)
-        assert elt, "Cannot locate button named %s" % value
-    except:
-        time.sleep(1)
-        elt = find_button_by_value(value)
-        assert elt, "Cannot locate button named %s" % value
+    elt = find_button_by_value(value)
+    assert elt, "Cannot locate button named %s" % value
 
 @step(u'there is not an? ([^"]*) button')
 def there_is_not_a_value_button(step, value):
@@ -313,9 +286,6 @@ def i_open_the_user_settings_menu(step):
 @step(u'there is an? ([^"]*) column')
 def there_is_a_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
-    if len(elts) < 1:
-        time.sleep(1)
-        elts = world.firefox.find_elements_by_tag_name("h2")
     
     for e in elts:
         if e.text and e.text.strip().lower().find(title.lower()) > -1:
@@ -360,11 +330,7 @@ def i_m_told_text(step, text):
  
 @step(u'the most recent notification is "([^"]*)"')
 def the_most_recent_notification_is_text(step, text):
-    try:
-        list = world.firefox.find_element_by_id("parent-clumper")
-    except:
-        time.sleep(1)
-        list = world.firefox.find_element_by_id("parent-clumper")
+    list = world.firefox.find_element_by_id("parent-clumper")
     
     elts = list.find_elements_by_css_selector("div.asset_title")
     assert len(elts) > 0, "Found 0 notifications. Expected at least one."
@@ -377,17 +343,10 @@ def the_most_recent_notification_is_text(step, text):
 @step(u'I select "([^"]*)" as the owner in the ([^"]*) column')
 def i_select_name_as_the_owner_in_the_title_column(step, name, title):
     column = get_column(title)
-    if not column:
-        time.sleep(1)
-        column = get_column(title)
         
     assert column, "Unable to find a column entitled %s" % title
 
-    try:
-        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
-    except:
-        time.sleep(2)
-        menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    menu = column.find_element_by_css_selector("div.switcher_collection_chooser")
 
     assert menu, 'Unable to find the owner menu'
     
@@ -403,7 +362,6 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
     
 @step(u'the owner is "([^"]*)" in the ([^"]*) column')    
 def the_owner_is_name_in_the_title_column(step, name, title):
-    time.sleep(2)
     column = get_column(title)
     assert column, "Unable to find a column entitled %s" % title
     
@@ -427,9 +385,6 @@ def the_collection_panel_has_a_title_item(step, title):
 @step(u'the collection panel has no "([^"]*)" item')
 def the_collection_panel_has_no_title_item(step, title):
     panel = get_column('collection')
-    if not panel:
-        time.sleep(2)
-        panel = get_column('collection')
     assert panel, "Cannot find the collection panel"
     
     items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
@@ -601,7 +556,6 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
     
 @step(u'the "([^"]*)" item has an? ([^"]*) icon')
 def the_title_item_has_a_type_icon(step, title, type):
-    time.sleep(1)
     items = world.firefox.find_elements_by_css_selector("div.gallery-item-homepage");
     for item in items:
         try:
@@ -619,7 +573,6 @@ def the_title_item_has_a_type_icon(step, title, type):
     
 @step(u'the "([^"]*)" item has no ([^"]*) icon')
 def the_title_item_has_no_type_icon(step, title, type):
-    time.sleep(1)
     items = world.firefox.find_elements_by_css_selector("div.gallery-item-homepage");
     for item in items:
         try:
@@ -662,10 +615,6 @@ def i_click_the_title_item_type_icon(step, title, type):
 @step(u'I can filter by "([^"]*)" in the ([^"]*) column')    
 def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
-    if not column:
-        time.sleep(1)
-        column = get_column(title)
-        
     assert column, "Unable to find a column entitled %s" % title
     
     filter_menu = column.find_element_by_css_selector("div.switcher.collection-filter a.switcher-top")
@@ -684,10 +633,6 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
 @step(u'I filter by "([^"]*)" in the ([^"]*) column')    
 def i_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
-    if not column:
-        time.sleep(1)
-        column = get_column(title)
-        
     assert column, "Unable to find a column entitled %s" % title
     
     filter_menu = column.find_element_by_css_selector("div.switcher.collection-filter a.switcher-top")
@@ -707,10 +652,6 @@ def i_filter_by_tag_in_the_title_column(step, tag, title):
 @step(u'I clear the filter in the ([^"]*) column')
 def i_clear_the_filter_in_the_title_column(step, title): 
     column = get_column(title)
-    if not column:
-        time.sleep(1)
-        column = get_column(title) 
-        
     assert column, "Unable to find a column entitled %s" % title
     
     elt = column.find_element_by_css_selector("a.switcher-choice.remove")
@@ -749,10 +690,6 @@ def then_publish_to_world_is_value(step, value):
 @step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')    
 def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
-    if not column:
-        time.sleep(1)
-        column = get_column(title)
-        
     assert column, "Unable to find a column entitled %s" % title
     
     filter_menu = column.find_element_by_css_selector("div.switcher.collection-filter")
@@ -780,32 +717,13 @@ def the_title_project_has_no_delete_icon(step, title):
 
 @step(u'The "([^"]*)" project has a delete icon')
 def the_title_project_has_a_delete_icon(step, title):
-    try:
-        link = world.firefox.find_element_by_partial_link_text(title)
-    except:
-        time.sleep(2)
-        link = world.firefox.find_element_by_partial_link_text(title)
-    
-    try:
-        link.parent.find_element_by_css_selector(".delete_icon")
-    except:
-        time.sleep(1)
-        link.parent.find_element_by_css_selector(".delete_icon")
+    link = world.firefox.find_element_by_partial_link_text(title)
+    link.parent.find_element_by_css_selector(".delete_icon")
         
 @step(u'I click the "([^"]*)" project delete icon')
 def i_click_the_title_project_delete_icon(step, title):
-    try:
-        link = world.firefox.find_element_by_partial_link_text(title)
-    except:
-        time.sleep(1)
-        link = world.firefox.find_element_by_partial_link_text(title)
-    
-    try:
-        img = link.parent.find_element_by_css_selector(".delete_icon")
-    except:
-        time.sleep(1)
-        img = link.parent.find_element_by_css_selector(".delete_icon")
-        
+    link = world.firefox.find_element_by_partial_link_text(title)
+    img = link.parent.find_element_by_css_selector(".delete_icon")
     img.click()      
         
 @step(u'the instructor panel has ([0-9][0-9]?) projects? named "([^"]*)"')
@@ -821,10 +739,7 @@ def the_instructor_panel_has_count_projects_named_title(step, count, title):
 @step(u'the classwork panel has ([0-9][0-9]?) projects named "([^"]*)"')
 def the_classwork_panel_has_count_projects_named_title(step, count, title):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
-    if len(elts) < 1:
-        time.sleep(1)
-        elts = world.firefox.find_elements_by_css_selector("li.projectlist")
-        
+
     n = 0
     for e in elts:
         a = e.find_element_by_css_selector("a.asset_title")
@@ -840,20 +755,12 @@ def there_is_a_state_name_panel(step, state, name):
     name -- composition, assignment, discussion, collection 
 
     """
-    try:
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
-    except:
-        time.sleep(1)
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.%s.%s" % (state.lower(), name.lower()))
     assert panel != None, "Can't find panel named %s" % panel
     
 @step(u'I call the ([^"]*) "([^"]*)"')
 def i_call_the_panel_title(step, panel, title):
-    try:
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
-    except:
-        time.sleep(1)
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
     assert panel != None, "Can't find panel named %s" % panel
     
     input = panel.find_element_by_name("title")
@@ -877,9 +784,6 @@ def i_write_some_text_for_the_panel(step, panel):
 @step(u'there is an? ([^"]*) "([^"]*)" project by ([^"]*)')
 def there_is_a_status_title_project_by_author(step, status, title, author):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
-    if len(elts) < 1:
-        time.sleep(1)
-        elts = world.firefox.find_elements_by_css_selector("li.projectlist")
     assert len(elts) > 0, "Expected to find at least 1 project. Instead there are none"
     
     assignment = False
@@ -908,11 +812,7 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
     
 @step(u'The ([^"]*) title is "([^"]*)"')
 def the_panel_title_is_value(step, panel, value):
-    try:
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
-    except:
-        time.sleep(1)
-        panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
+    panel = world.firefox.find_element_by_css_selector("td.panel-container.open.%s" % panel.lower())
     assert panel != None, "Can't find panel named %s" % panel
     
     h1 = panel.find_element_by_css_selector("h1.project-title")

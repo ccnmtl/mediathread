@@ -22,25 +22,21 @@ Feature: Manage Sources
         Then I'm told "Mediathread Video Upload has been enabled for your class"
         And I see "Upload Permission Settings"
         
-        # Add the YouTube Source
-        When I add YouTube to the class
-        Then I'm told "You Tube has been enabled for your class"
-        Then there is an Added button
-
         # Under Add to My Collection        
         When I click the Add to My Collection button
         Then I am at the Add to My Collection page
         And I see "Upload Video"
-        And I see 1 source
         
         # On the Home Page
         When I click the HOME button
         Then I am at the Home page
-        The Collection panel has no "You Tube" item
-        And the Collection panel has a "MAAP Award Reception" item
-        And the Collection panel has a "Mediathread: Introduction" item
-        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         
+        Given the home workspace is loaded
+            The Collection panel has no "You Tube" item
+            And the Collection panel has a "MAAP Award Reception" item
+            And the Collection panel has a "Mediathread: Introduction" item
+            And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
+            
         Finished using Selenium
    
            
@@ -166,6 +162,29 @@ Feature: Manage Sources
         And I see "You must be a course member to upload media files."
         And I cannot upload on behalf of other users
         
+    Scenario: manage_sources.feature 6. Add External Source, verify navigation from Add to My Collection
+        Using selenium
+        Given I am test_instructor in Sample Course
+        
+        When I click the Instructor Dashboard button
+        Then I am at the Instructor Dashboard page
+        
+        When I click the Manage Sources button
+        Then I am at the Manage Sources page
+        
+        # Add the YouTube Source
+        When I add YouTube to the class
+        Then I'm told "You Tube has been enabled for your class"
+        Then there is an Added button
 
-               
+        # Under Add to My Collection
+        Given I am test_student_one in Sample Course        
+        When I click the Add to My Collection button
+        Then I am at the Add to My Collection page
+        And I see 1 source
+        
+        # Verify YouTube navigation works
+        When I click the "You Tube" link
+        Then I am at the YouTube page
+        
         Finished using Selenium

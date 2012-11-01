@@ -194,7 +194,7 @@
                 self.verifyLayout(subpanel);
                 jQuery(window).trigger("resize");
             }
-        };        
+        };
 
         this.closeSubPanel = function (view) {
             var subpanel = jQuery(view.el).find("td.panel-container.open")[0];
@@ -225,7 +225,7 @@
             }
 
             // Try closing the subpanels first
-            a = jQuery(self.el).find("table.panel-subcontainer tbody tr td.panel-container.open");
+            a = jQuery(self.el).find("table.panel-subcontainer tbody tr td.panel-container.open").not(".alwaysopen");
             for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
                 var p = a[i];
                 if (panel !== p) {
@@ -242,19 +242,21 @@
             }
             
             // Then go for the parent panels
-            a = jQuery(self.el).find("tr.sliding-content-row").children("td.panel-container.open");
-            for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
-                
-                if (a[i] !== panel && a[i] !== parent) {
-                    // close it
-                    jQuery(a[i]).removeClass("open").addClass("closed");
-                    jQuery(a[i]).trigger('panel_state_change', [ 'closed' ]);
+            a = jQuery(self.el).find("tr.sliding-content-row").children("td.panel-container.open:visible").not(".alwaysopen");
+            if (a.length > 1) {
+                for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
                     
-                    var parentContainer = jQuery(a[i]).nextAll("td.pantab-container")[0];
-                    var parentPanelTab = jQuery(parentContainer).children("div.pantab")[0];
-                    jQuery(parentPanelTab).removeClass("open").addClass("closed");
-                    
-                    tableWidth = jQuery(self.el).width();
+                    if (a[i] !== panel && a[i] !== parent) {
+                        // close it
+                        jQuery(a[i]).removeClass("open").addClass("closed");
+                        jQuery(a[i]).trigger('panel_state_change', [ 'closed' ]);
+                        
+                        var parentContainer = jQuery(a[i]).nextAll("td.pantab-container")[0];
+                        var parentPanelTab = jQuery(parentContainer).children("div.pantab")[0];
+                        jQuery(parentPanelTab).removeClass("open").addClass("closed");
+                        
+                        tableWidth = jQuery(self.el).width();
+                    }
                 }
             }
         };

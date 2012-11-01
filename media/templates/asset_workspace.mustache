@@ -19,7 +19,7 @@
                         <div class="pantab collection maximized"></div>
                     </td>
                                     
-                    <td class="panel-container closed asset subpanel fixed">
+                    <td class="panel-container closed asset subpanel fixed alwaysopen">
                         {{#>>asset-view-header}}
                             <div id="asset-view-header">
                                 {{#asset-current}}
@@ -55,7 +55,6 @@
                                                     onclick="return AnnotationList.dismissHelp(this);" 
                                                     alt="Dismiss Help" src="/site_media/img/icons/meth_help.png" />
                                         </div>
-                                            
                                         
                                         <div id="asset-view-help" class="ui-widget-content asset-view-help" {{^show_help}}style="display: none"{{/show_help}}>
                                             <h1>

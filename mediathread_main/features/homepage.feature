@@ -161,6 +161,7 @@ Feature: Homepage
 
         Given I am test_student_one in Sample Course
         Given I am at the Home page
+        Given the home workspace is loaded
         
         # Student One can see his own & the instructors annotations
         # But, should see nothing to do with Student Two

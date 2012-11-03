@@ -534,7 +534,6 @@ html.busy, html.busy * {
 #course_title
 {
     z-index: 9997;
-    float: left;
     font-size: 1.7em;
     line-height:1.2em;
     text-transform: capitalize;
@@ -547,7 +546,6 @@ html.busy, html.busy * {
     color: #333;
     max-height: 65px;
     overflow: hidden;
-    max-width: 615px;
     overflow: hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
@@ -894,6 +892,17 @@ table.panel-subcontainer tr td div.project-visibility {
     text-align: right;
     font-size: 80%;
     margin-right: 5px;
+}
+
+a.project-export, a.project-print {
+    text-decoration: none;
+    margin-right: 2px;
+}
+
+img.project-print-icon,
+img.project-export-icon {
+    width: 18px;
+    height: auto;    
 }
 
 td.filler {
@@ -3564,8 +3573,8 @@ div#materials.column-contents.homepage div.actions {
     bottom: 20px;
 }
 
-.gallery-item .asset-thumb img,
-.gallery-item-homepage .asset-thumb img {
+.gallery-item .asset-thumb img.gallery-item-thumb,
+.gallery-item-homepage .asset-thumb img.gallery-item-thumb {
     width: 200px;
     height: auto;
 }

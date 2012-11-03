@@ -19,12 +19,12 @@
                 if (valid) {
                     if (this.tagName === 'INPUT' && this.type === 'text' ||
                         this.tagName === 'TEXTAREA') {
-                        valid = jQuery(this).val().trim().length > 0;
+                        valid = jQuery(this).val().length > 0;
                     }
 
                     if (this.tagName === 'SELECT') {
                         var value=jQuery(this).val()
-                        valid = value !== undefined && value.length > 0 && jQuery(this).val().trim() !== '-----';
+                        valid = value !== undefined && value.length > 0 && jQuery(this).val() !== '-----';
                     }
 
                     if (this.type === 'checkbox' || this.type === 'radio') {
@@ -41,7 +41,7 @@
                 var description = "\n\nCourse: " + document.forms.feedback.course.value;
                 description += "\n\nIssue date/time: " + document.forms.feedback.time.value;
                 description += "\n\nCategory: " + document.forms.feedback.category.value;
-                description += "\n\nDescription: " + document.forms.feedback.description.value;                 
+                description += "\n\nUser Description: " + document.forms.feedback.user_description.value;
                 document.forms.feedback.description.value = description; 
 
                 // Tack on any additional information that could be helpful
@@ -50,8 +50,7 @@
                     "Resolution: " + screen.width + " x " + screen.height + "\n\n" +
                     "Browser Name: " + navigator.appName + "\n\n" +
                     "Browser Version: " + navigator.appVersion + "\n\n" +
-                    "Platform: " + navigator.platform + "\n\n" + 
-                    "Javascript Enabled: " + navigator.javaEnabled();
+                    "Platform: " + navigator.platform;
             }
 
             return valid;
@@ -69,7 +68,7 @@
             please contact us using the following form. We will do our best to respond within one business day. 
         </p>
    
-        <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback" onsubmit="return validate()">
+        <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback">
                 <div><label for="name">Name</label></div>
                 <div><input class="text" type="text" id="name" name="name" value="{{ user.get_full_name }}"/></div>
                 
@@ -106,7 +105,7 @@
                 
                 <br />
                 <div><label for="description">Comment or Problem</label></div>
-                <div><textarea rows="4" cols="35" id="description" name="description"></textarea></div>
+                <div><textarea rows="4" cols="35" id="user_description" name="user_description"></textarea></div>
                 
                 <input type="submit" id="submit_feedback" name="add item" value="Send Feedback"/>
                 
@@ -122,9 +121,10 @@
             <input type="hidden" name="owner" value="markp" />
             <input type="hidden" name="assigned_to"  value="agarber"></input>
             <input type="hidden" name="estimated_time" value="1h"></input>
-            <input type="hidden" name="redirect_url" value="http://{{request.get_host}}/contact?msg=submitted"></input>
+            <input type="hidden" name="redirect_url" value="http://{{request.get_host}}/contact/?msg=submitted"></input>
             <input type="hidden" name="keyword" value="user-reported-error" />
             <input type="hidden" name="debug_info" value="" />
+            <input type="hidden" name="description" value="" />
         </form>
     </div>
 {% endblock %}

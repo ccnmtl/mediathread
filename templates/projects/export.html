@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load smartif coursetags revision %}
+
+{% block title %}
+    {% if project.title %}{{project.title}}{% else %}Print View{% endif %}
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}"  media="screen" />
+    <link rel="stylesheet" href="/site_media/css/project.print.css?version={%revision%}"  media="print" />
+    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <h1 class="project-title">{{project.title}}</h1>
+    
+    <h5>by {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
+            {%public_name for part %}{%endfor%}</h5>
+    <h5> for {{request.course.title}}</h5>
+    <hr />
+    <div class="essay-space-container">{{body|safe}}</div>
+
+{% endblock %}

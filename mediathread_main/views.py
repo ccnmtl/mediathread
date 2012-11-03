@@ -63,7 +63,6 @@ def django_settings(request):
 
     return rv
 
-
 @rendered_with('dashboard/notifications.html')
 @allow_http("GET")
 def notifications(request):

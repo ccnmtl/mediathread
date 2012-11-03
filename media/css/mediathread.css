@@ -115,16 +115,6 @@ a:visited
     color: #660000;
 }
 
-a.materialCitation.disabled {
-    color: gray !important;
-}
-
-.opacity_fiftypercent {
-    opacity:0.50;
-    -moz-opacity:0.50;
-    filter:alpha(opacity=50);
-}
-
 
 
 /* ---- block elements ---------- */
@@ -144,137 +134,32 @@ a.materialCitation.disabled {
 #header
 {
     display: block;
-    height: 74px;
+    height: 90px;
     overflow: hidden;
     margin: 0;
     padding: 0;
     border: 0;
     width: 100%;
-    background: #444; /* for non-css3 browsers */
-
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cccccc', endColorstr='#ffffff'); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ccc)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  #fff,  #ccc); /* for firefox 3.6+ */
-
 }
 
-/* ---- Primary navigation block elements ---------- */
-
-#primarynav
-{
-
-    width: auto;
-    left: 5px;
-    right: 5px;
-    clear: both;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 110%;
-    position:absolute;
-    top:52px;
-    z-index:100;
-}
-
-#primarynav div.encase
-{
-    width: auto;
-    left: 5px;
-    right: 5px;
-    margin-top:-10px;
-    height: 37px;
-
-}
-
-#primarynav ul
-{
-    float: left;
-    margin: 0 9px;
-    padding: 0;
-    border: 0;
-    list-style: none;
-
-}
-
-#primarynav #leftside ul
-{
-  float: left;
-
-}
-
-#primarynav a
-{
+#course_title {
+    z-index: 9997;
+    font-size: 1.7em;
+    line-height: 1.2em;
+    text-transform: default;
     text-decoration: none;
-    /*text-align: center;*/
-    display: block;
-    padding-right: 6px;
-    padding-left:6px;
- 
-}
-
-#primarynav a:hover
-{
-    text-decoration: none;
-}
-
-
-#primarynav li {
-    display: block;
-    float: left;
-    margin: 0px 4px;
-    line-height: 22px;
-    text-align: center;
-    border: 1px solid #9d9d9d; 
-    background-color: #ddd;
-}
-
-#primarynav li.activity {
-    margin: 0px 4px 0px 28px;
-}
-
-#primarynav li a
-{
-    color: #666;
-}
-
-#primarynav li a:hover
-{
-    background-color: #fff;
-    color: #660000;
-    border: 1px solid #9d9d9d; 
-    margin: -1px;
-}
-
-#primarynav li.active
-{
-    background-color: #fff;
+    margin: 15px 0 0 10px;
+    padding: 0;
+    font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
     color: #333;
-    
-}
-#primarynav ul.non-member:after {
-    content:"You are not a class member!";
-    margin-left: 25px;
-    /*background-image:url('../img/icons/meth_info_icon.png');*/
-    /*background-repeat: no-repeat;*/
-    background-color: #8C3B2E;
-    color: #fff;
-    padding: 3px 8px;
+    max-height: 65px;
+    max-width: 990px;
+    overflow: hidden;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 }
 
-#primarynav li.home a
-{
-    padding-left: 27px;
-    background-image: url('../img/icons/meth_home_icon.png');
-    background-repeat: no-repeat;
-}
-
-#primarynav li.active a 
-{
-
-    color:black;
-    text-decoration: none;
-    text-align: center;
-}
 
  /* ---- Pagebody block elements ---------- */
  
@@ -338,6 +223,10 @@ img
     border: 0;    
 }
 
+.left {
+    float: left;
+}
+
 .printonly
 {
     display: none;
@@ -346,6 +235,14 @@ img
 .inline {
     display: inline;
 }
+
+.opacity_fiftypercent {
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
+}
+
+
 
 /** Global Progress Indications **/
 html.busy, html.busy * {  
@@ -372,17 +269,93 @@ html.busy, html.busy * {
     border: 0;
 }
 
-#header #logo_project a
+#mediathread_logo {
+    display: block;
+    float: left;
+    height: 43px;
+}
+
+/* ---- Standard navigation block elements ---------- */
+
+#standardnav
 {
     display: block;
-    width: 280px;
-    height: 72px;
+    float: right;
     margin: 0;
-    padding: 0;
+    margin-top: 10px;
+    margin-right: -1px;
+    padding: 3px 3px 3px 3px;
+    list-style: none;
+    z-index: 9998;
+    font-size: 1.2em;
+}
+
+#standardnav li {
+    display: block;
+    float: left;
     border: 0;
-    background: transparent url('../img/logo_project.png') left top no-repeat;
-  position:absolute;
-  z-index:100;
+    margin: 0;
+    padding: 0 1em 0 .3em;
+}
+
+#standardnav a,
+#standardnav li div {
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    -moz-user-select: none; 
+    -khtml-user-select: none; 
+    user-select: none;
+}
+
+#standardnav li a:hover {
+    color: #777;
+    text-decoration: none;
+}
+
+#standardnav li div.settings_submenu {
+    list-style: none;
+    padding: 10px 10px 10px 10px;
+    z-index: 9998;
+    position: absolute;
+    margin-top: 5px;    
+    font-size: .75em;
+    
+    background-color: white;
+    border: 1px solid #CCC;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;    
+}
+
+#standardnav li div.settings_submenu a {
+    display: block;
+    padding: 2px 0 0 0;
+    z-index: 9999;
+    float: none;    
+}
+
+#standardnav li div.settings_submenu h3 {
+    margin: 0 0 0.1em 0;
+}
+
+/* ---- Footer block elements ---------- */
+#footer
+{
+    display: block;
+    width: 100%;
+    height: 33px;
+    clear: both;
+    margin: 10px 0 0 0;
+    padding: 6px 0 0 0;
+    border: 0;
+    background-color: #cdcdcd;
 }
 
 #footer #logo_ccnmtl
@@ -410,40 +383,6 @@ html.busy, html.busy * {
     border: 0;
 }
 
-#header #logo_project span
-{
-    display: none;
-}
-
-/* ---- Standard navigation block elements ---------- */
-
-#mediathread_logo {
-    display: block;
-    float: right;
-    height: 43px;
-    border-bottom: 1px solid #acacac;
-    border-left:  1px solid #acacac;
-    background-color: #6f6f6f;
-    -moz-border-radius-bottomleft: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-
-}
-
-#standardnav
-{
-    display: block;
-    float: right;
-    margin: 0;
-    margin-right: -1px;
-    padding: 3px 10px 3px 3px;
-    border-left: 1px solid #acacac;
-    border-bottom: 1px solid #acacac;
-    border-right: 1px solid #6f6f6f;
-    list-style: none;
-    background-color: #6f6f6f;
-    color: #fff;
-}
-
 #footernav
 {
     display: block;
@@ -454,8 +393,7 @@ html.busy, html.busy * {
     list-style: none;
 }
 
-#standardnav li, #footernav li
-{
+#footernav li {
     display: block;
     float: left;
     margin: 0.2em 0.5em 0 0.9em;
@@ -464,98 +402,13 @@ html.busy, html.busy * {
     font-size: 0.9em;
 }
 
-#logged_in_name {
-    -moz-user-select: none; -khtml-user-select: none; user-select: none;
-}
-
-#standardnav a {
-    text-decoration: none;
-    color: white;
-}
-
 #footernav a
 {
     text-decoration: none;
     color: #333;
 }
 
-#standardnav {
-    z-index: 9998;
-}
 
-#standardnav li.settings span:hover,
-#standardnav a:hover
-{
-    color: #e5da14;
-    text-decoration: none;
-}
-
-#standardnav li.settings {
-    margin: 0;
-    padding: 0 0 0 .3em;
-}
-
-#standardnav li.settings img,
-#standardnav li.settings a,
-#standardnav li.settings span {
-    cursor: pointer;
-}
-
-#standardnav_settings_menu {
-    list-style: none;
-    background-color: #6f6f6f;
-    color: #fff;
-    position: absolute;
-    width: 110px;
-    padding: 2px 10px 10px 10px;
-    margin-left: -.65em;
-    z-index: 9998;
-}
-
-#standardnav_settings_menu a {
-    display: block;
-    padding: 2px 0 0 0;
-    z-index: 9999;
-}
-
-/* ---- Footer block elements ---------- */
-#footer
-{
-    display: block;
-    width: 100%;
-        height: 33px;
-    clear: both;
-    margin: 10px 0 0 0;
-    padding: 6px 0 0 0;
-    border: 0;
-    background-color: #cdcdcd;
-}
-
-#course_title
-{
-    z-index: 9997;
-    font-size: 1.7em;
-    line-height:1.2em;
-    text-transform: capitalize;
-    text-decoration: none;
-    margin: 6px 0 0 18px;
-    padding: 0;
-    font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
-    font-style: italic;
-    *font-style: none;/*IE doesn't anti-alias italics well*/
-    color: #333;
-    max-height: 65px;
-    overflow: hidden;
-    overflow: hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-}
-
-#course_title a
-{
-  color: #333;
-  
-}
 
 #coursefilter {
     float: right;
@@ -612,18 +465,9 @@ div.button-form form, div.button-form.inline form{
     text-align: left; 
     background-color: #dedede; 
     padding: 0 0 10px 0;
-    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-bottomright: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-radius: 10px 0px 0px 10px; 
+    -moz-border-radius: 10px 0px 0px 10px; 
+    -webkit-border-radius: 10px 0px 0px 10px; 
     overflow-x:hidden;
     overflow-y:hidden;
     margin-right: 25px;
@@ -1628,10 +1472,6 @@ span.switcher-prefix {
     padding-left: 4px;
 }
 
-body.role-non-member li.choice_my_items {
-    display:none;
-}
-
 div.collection-chooser a.switcher-top {
     font-size: 80%;
     font-weight:normal;
@@ -2398,6 +2238,9 @@ dd {
     color: #666;
 }
 
+a.materialCitation.disabled {
+    color: gray !important;
+}
 
 .delete_icon, .edit_icon {vertical-align: middle;}
 
@@ -2408,8 +2251,7 @@ img.materialCitation:hover,
 .actions input:hover,
 input.delete:hover,
 input.edit:hover,
-input.videoplay:hover,
-#standardnav li.settings img:hover {
+input.videoplay:hover {
     opacity:0.75;
     -moz-opacity:0.75;
     filter:alpha(opacity=75);    

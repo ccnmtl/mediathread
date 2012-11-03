@@ -2404,16 +2404,11 @@ text-align: left;
 
 .top-archive p,
 .top-archive h4 {
-
-margin: 1em 2em;
-
-
+    margin: 1em 2em;
 }
 
 #staff-switchcourse {
-    position:absolute;
-    right:10px;
-    top:80px;
+    margin: 10px 0;
 }
 
 #external-archives,
@@ -3126,53 +3121,6 @@ ul#projects .createnew-button {
 
 /*Instructor Dashboard*/
 
-#dashboard-container {
-    padding: 10px;
-    margin: 10px 10px 30px 0;
-    border: 1px solid #ccc;
-    min-height: 45em;
-
-
-}
-
-#instructor-nav {
-    width: 200px;
-    float: left;
-    background-color: #999;
-    margin-right: 35px;
-    padding: 10px;
-
-}
-
-#instructor-nav input, #instructor-nav input a {
-    text-align: left;
-    margin: 4px 0;
-    width: 202px;
-    background-repeat: repeat-x;
-    border: 1px solid #477794;
-    display: block;
-    padding: 0px 5px 1px 5px;
-    text-decoration: none;
-    color: #000;
-    background-image: url("../img/buttons/compositions_button_bg.jpg");
-    font-size: 85%;
-    height: 17px;
-}
-
-#instructor-nav a {
-    margin: 4px 0;
-    width: 190px;
-    background-repeat: repeat-x;
-    border: 1px solid #477794;
-    text-transform: capitalize;
-    display: block;
-    padding: 0px 5px;
-    text-decoration: none;
-    color: #000;
-    background-image: url("../img/buttons/compositions_button_bg.jpg");
-    font-size: 85%;
-}
-
 #course-list a.project {
 
     margin: 4px 0;
@@ -3188,22 +3136,6 @@ ul#projects .createnew-button {
         font-size: 85%;
 
 }
-
-#dashboard-module {
-margin-left: 269px;
-
-}
-
-#dashboard-module-body {
-    display: block;
-}
-
-#instructor-nav h3,
-#dashboard-module h3{
-    margin: 0 0 13px;
-
-}
-
 
 #clipStrip
 {

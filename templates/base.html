@@ -65,7 +65,7 @@
                         
                     {% if request.user.is_authenticated %}
                         <li>
-                            <div unselectable="on"><a href="/help/">Home</a></div>
+                            <div unselectable="on"><a href="/">Home</a></div>
                         </li>
                         
                         {% if is_course_faculty %}
@@ -80,14 +80,14 @@
                                 <!-- Course Settings Menu -->
                                 <div class="settings_submenu" style="display: none">
                                     <h3>Actions</h3>                                    
-                                    <a href="/dashboard/addsources/">Manage Settings</a>
-                                    <a href="/dashboard/settings/">Manage Sources</a>
+                                    <a href="/dashboard/settings/">Manage Settings</a>
+                                    <a href="/dashboard/addsource/">Manage Sources</a>
                                     <a href="/dashboard/migrate/">Migrate Materials</a>
                                     <br />
                                     <h3>Reports</h3>
-                                    <a href="/dashboard/reports/class_assignments">Assignment Responses</a>
-                                    <a href="/dashboard/reports/class_activity">Class Activity</a>
-                                    <a href="/dashboard/reports/class_summary">Student Contributions</a>
+                                    <a href="/reports/class_assignments">Assignment Responses</a>
+                                    <a href="/reports/class_activity">Class Activity</a>
+                                    <a href="/reports/class_summary">Student Contributions</a>
                                 </div>
                             </li>
                         {% endif %}

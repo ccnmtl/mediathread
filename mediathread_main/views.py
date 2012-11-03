@@ -375,19 +375,6 @@ def get_records(request, record_owner, projects, assignments, assets):
     return HttpResponse(json_stream, mimetype='application/json')
 
 @allow_http("GET", "POST")
-@rendered_with('dashboard/dashboard_home.html')
-def dashboard(request):
-    user = request.user
-    if not request.course.is_faculty(user):
-        return HttpResponseForbidden("forbidden")
-    
-    return { 
-       "space_viewer": user,
-       "help_dashboard_nav_actions": UserSetting.get_setting(user, "help_dashboard_nav_actions", False),
-       "help_dashboard_nav_reports": UserSetting.get_setting(user, "help_dashboard_nav_reports", False)      
-    }
-
-@allow_http("GET", "POST")
 @rendered_with('dashboard/class_addsource.html')
 def class_addsource(request):
     key = course_details.UPLOAD_PERMISSION_KEY

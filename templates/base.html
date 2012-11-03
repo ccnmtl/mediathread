@@ -59,10 +59,8 @@
     	<!-- ###### Site banner ###### -->
     	<div id="header">
             <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
-            <div id="course_title">{{course.title}}</div>
-    		{% block standardnav %}
-        	   
-        	   <ul id="standardnav">
+            {% block standardnav %}            
+               <ul id="standardnav">
                     {% if request.user.is_authenticated %}
                         <li class="settings" onclick="jQuery('#standardnav_settings_menu').toggle();">
                             <img alt="settings_gear" src="/site_media/img/settings.png" style="height: 18px;"></img>
@@ -77,7 +75,7 @@
                                 {% if user_courses > 1 or user.is_staff %}
                                     <a href="/?unset_course">Switch Course</a>
                                 {% endif %}
-                                {% comment %}<a href="/contact">Contact Us</a>{% endcomment %}
+                                <a href="/contact">Contact Us</a>
                                 <a href="/accounts/logout/">Log Out</a>
                             </div>
                         </li>
@@ -90,14 +88,46 @@
                             </a>
                         </li>
                     {% else %}
-        			    <li><a href="/accounts/login/">Log In</a></li>
+                        <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}
         
                     <li><a href="/help/">Help</a></li>
                 </ul>
-    		{% endblock %}
-    		
-                
+            {% endblock %}
+            <div id="course_title">{{course.title}}</div>
+
+            
+            {% block primarynav %}
+    <!-- ###### Primary navigation ###### -->
+    <div id="primarynav">
+        <div class="encase" id="{% block navalignment %}leftside{% endblock %}">
+            {% comment %}
+            ###### FOR ALIGNMENT OF TABS on the primary navigation--
+               leftside : all tabs aligning to the left, login to the right
+               rightside :  all tabs aligning to the right, login to the left
+            {% endcomment %}
+                     {% if request.course %}
+                        {% block primarynavtabs %}
+                        <ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
+                            
+                            <li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>
+                            
+                            {% if is_course_faculty %}
+                                <li class="{% active request 'Instructor' %} instructor"><a href="{% url dashboard-home %}">Instructor Dashboard</a></li>
+                            {% endif %}
+                            
+                            <li class="{% active request 'Notifications' %} activity"><a href="/notifications/">View Recent Activity</a></li>
+                            
+                            <li class="{% active request 'Explore' %} explore"><a href="/explore/">Add to My Collection</a></li>
+            
+                        </ul><!-- id="primarynavtabs" -->
+                        {% endblock %}
+                  {% endif %}
+                        {% block usernav %}{% endblock %}
+            
+                    </div><!-- id="leftside/rightside" -->
+                </div><!-- id="primarynav" -->
+            {% endblock %}
     	</div><!-- id="header" -->
         
     {% endblock %}
@@ -106,39 +136,6 @@
     <div class="visualclear"></div>
     	
 
-{% block primarynav %}
-	<!-- ###### Primary navigation ###### -->
-	<div id="primarynav">
-		<div class="encase" id="{% block navalignment %}leftside{% endblock %}">
-
-
-{% comment %}
-###### FOR ALIGNMENT OF TABS on the primary navigation--
-   leftside : all tabs aligning to the left, login to the right
-   rightside :  all tabs aligning to the right, login to the left
-{% endcomment %}
-         {% if request.course %}
-			{% block primarynavtabs %}
-			<ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
-				
-                <li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>
-                
-                {% if is_course_faculty %}
-                    <li class="{% active request 'Instructor' %} instructor"><a href="{% url dashboard-home %}">Instructor Dashboard</a></li>
-                {% endif %}
-				
-                <li class="{% active request 'Notifications' %} activity"><a href="/notifications/">View Recent Activity</a></li>
-                
-                <li class="{% active request 'Explore' %} explore"><a href="/explore/">Add to My Collection</a></li>
-
-			</ul><!-- id="primarynavtabs" -->
-			{% endblock %}
-	  {% endif %}
-			{% block usernav %}{% endblock %}
-
-		</div><!-- id="leftside/rightside" -->
-	</div><!-- id="primarynav" -->
-{% endblock %}
 
 	<!-- ###### Page: Sidebars and Content ###### -->
 	<div id="pagebody">

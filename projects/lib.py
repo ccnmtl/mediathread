@@ -49,6 +49,8 @@ def composition_project_json(request, project, can_edit, version_number=None):
     participants = project.attribution_list()
     is_assignment = project.is_assignment(request)
     
+    course = request.course if request.course else request.collaboration_context.content_object
+    
     data = { 'project': { 'id': project.pk,
                           'title': project.title,
                           'url': project.get_absolute_url(),
@@ -68,7 +70,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
                           'current_version': version_number if version_number else None,
                           'create_selection': is_assignment,
                           'is_assignment': is_assignment,
-                          'course_title': request.course.title
+                          'course_title': course.title
                        },
             'assets': dict([('%s_%s' % (rand,ann.asset.pk),
                             ann.asset.sherd_json(request)

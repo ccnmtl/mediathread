@@ -17,7 +17,7 @@
                                     {{#context.can_edit?}}<a href="#" class="project-visibility-link">{{/context.can_edit?}}
                                         <span class="project-visibility-description">{{context.project.visibility}}</span>{{#context.can_edit?}}</a>{{/context.can_edit?}}
                                     &nbsp;
-                                    <a class="last-version-public" 
+                                    <a class="last-version-public"
                                         style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)
                                     </a>
                                     {{#context.project.current_version?}}
@@ -25,6 +25,16 @@
                                         | Version {{context.project.current_version}}
                                     </span>
                                     {{/context.project.current_version?}}
+                                    
+                                    {{^context.project.is_assignment}}
+                                        <a class="project-export" href="/project/export/msword/{{context.project.id}}">
+                                            <img class="project-export-icon" src="/site_media/img/export.png"/>
+                                        </a>
+                                                                        
+                                        <a class="project-print" href="/project/export/html/{{context.project.id}}" target="_blank">
+                                            <img class="project-print-icon" src="/site_media/img/printer.png"/>
+                                        </a>
+                                    {{/context.project.is_assignment}}                            
                                 </div>
                             {{/context.project.visibility?}}
                         </td>
@@ -151,8 +161,7 @@
                                 {{/context.project.participants}}
                                 </span>
                             </h5>
-                            
-
+                            <h5 class="printonly"> for {{context.project.course_title}}</h5>
                         </td>
                     </tr>
                     
@@ -221,5 +230,6 @@
     
     <td class="pantab-container">
         <div class="pantab {{context.project.type}} {{panel_state}}"></div>
+        <div id="loaded"></div>
     </td>
     

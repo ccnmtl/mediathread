@@ -419,13 +419,13 @@ html.busy, html.busy * {
 
 #mediathread_logo {
     display: block;
-  float: right;
-  height: 43px;
-      border-bottom: 1px solid #acacac;
-      border-left:  1px solid #acacac;
+    float: right;
+    height: 43px;
+    border-bottom: 1px solid #acacac;
+    border-left:  1px solid #acacac;
     background-color: #6f6f6f;
     -moz-border-radius-bottomleft: 10px;
--webkit-border-bottom-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
 
 }
 
@@ -480,7 +480,6 @@ html.busy, html.busy * {
 }
 
 #standardnav {
-    position: relative;
     z-index: 9998;
 }
 
@@ -535,20 +534,21 @@ html.busy, html.busy * {
 #course_title
 {
     z-index: 9997;
-    float: left;
     font-size: 1.7em;
-        line-height:1.2em;
+    line-height:1.2em;
     text-transform: capitalize;
-    margin-left: 5px;
+    text-decoration: none;
+    margin: 6px 0 0 18px;
     padding: 0;
-    margin-top: -37px;
-  /*white-space:nowrap;*/
-  font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
-  font-style: italic;
-  *font-style: none;/*IE doesn't anti-alias italics well*/
-  color: #333;
-  max-height: 65px;
-  overflow: hidden;
+    font-family: "Trebuchet MS", "Avenir LT std", Helvetica, Arial, sans-serif;
+    font-style: italic;
+    *font-style: none;/*IE doesn't anti-alias italics well*/
+    color: #333;
+    max-height: 65px;
+    overflow: hidden;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 }
 
 #course_title a
@@ -892,6 +892,17 @@ table.panel-subcontainer tr td div.project-visibility {
     text-align: right;
     font-size: 80%;
     margin-right: 5px;
+}
+
+a.project-export, a.project-print {
+    text-decoration: none;
+    margin-right: 2px;
+}
+
+img.project-print-icon,
+img.project-export-icon {
+    width: 18px;
+    height: auto;    
 }
 
 td.filler {
@@ -3423,10 +3434,6 @@ margin-left: 269px;
     z-index:0;
 }
 
-#clipStripStart {
-    z-index: 1;
-}
-
 .clipStripRange {
     top:0px;
     background:#CCE6EF;
@@ -3566,8 +3573,8 @@ div#materials.column-contents.homepage div.actions {
     bottom: 20px;
 }
 
-.gallery-item .asset-thumb img,
-.gallery-item-homepage .asset-thumb img {
+.gallery-item .asset-thumb img.gallery-item-thumb,
+.gallery-item-homepage .asset-thumb img.gallery-item-thumb {
     width: 200px;
     height: auto;
 }
@@ -3779,4 +3786,58 @@ input.annotation-listitem-icon {
 
 input.annotation-listitem-icon.delete {
     margin-right: 24px;
+}
+
+div.contact_us_form {
+    border: 1px solid #6f6f6f;
+    padding: 15px;
+    margin: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radiust: 10px;
+    border-radius: 10px;
+    width: 600px;
+}
+
+div.contact_us_form table,
+div.contact_us_form table tr,
+div.contact_us_form table tr td {
+    border: none;
+}
+
+div.contact_us_form table tr {
+    padding-bottom: 10px;
+}
+
+div.contact_us_form h1 {
+    font-size: 150%;
+    font-weight: bold;
+    color: #333;
+}
+
+div.contact_us_form p {
+    margin: 20px 0;
+}
+
+div.contact_us_form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+div.contact_us_form input,
+div.contact_us_form select {
+    width: 50%;
+    margin-bottom: 10px;
+}
+
+div.contact_us_form textarea {
+    width: 97%;
+    height: 200px;
+    margin-top: 5px;
+}
+
+div.contact_us_form input#submit_feedback {
+    float: right;
+    width: 125px;
+    margin-top: 10px;
+    margin-right: 10px;
 }

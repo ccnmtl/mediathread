@@ -10,6 +10,8 @@ urlpatterns = patterns(
     url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$', 'project_workspace', name="project-workspace-feedback"),
     
     url(r'^save/(?P<project_id>\d+)/$', 'project_save', name='project-save'),
+    url(r'^export/msword/(?P<project_id>\d+)/$', 'project_export_msword', name="project-export-msword"),
+    url(r'^export/html/(?P<project_id>\d+)/$', 'project_export_html', name="project-export-html"),
     
     url(r'^delete/(?P<project_id>\d+)/$', 'project_delete', name='project-delete'),
     

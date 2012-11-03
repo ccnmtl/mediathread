@@ -34,7 +34,7 @@ Feature: Assignment
         
          # The project shows on Home
         When I click the HOME button
-        Then I wait 2 seconds
+        Given the home workspace is loaded
         Then there is an assignment "Assignment: Scenario 1" project by Instructor One
         Then the instructor panel has 1 projects named "Assignment: Scenario 1"
         
@@ -293,8 +293,11 @@ Feature: Assignment
         # Create my own response and make sure it's the right one
 	    When I toggle the Assignment panel
         Then I click the Respond to Assignment button
-        Then I am at the Untitled page
         
+        # This navigates rather than automagically opening the panel
+        Given the composition workspace is loaded
+
+        Then I am at the Untitled page
         And there is a closed Assignment panel
         
         And there is an open Composition panel

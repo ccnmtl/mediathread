@@ -151,6 +151,24 @@ class SherdNoteManager(models.Manager):
                                            content_type=me).values_list('object_id',flat=True)
         return qs.filter(id__in = titems)
     
+    def fully_qualify_references(self, text, host):
+        """
+        Replace relative urls with fully-qualified urls
+        Designed for exporting project contents
+        """ 
+        
+        # annotations
+        regex_string = r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/annotations/(\d+)'
+        replace_with = r'href="http://%s/asset/\2/annotations/\3' % host
+        text = re.sub(regex_string, replace_with, text)
+
+        #assets
+        regex_string = r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/[^a]'
+        replace_with = r'href="http://%s/asset/\2/"' % host
+        text = re.sub(regex_string, replace_with, text)
+        
+        return text
+    
     def references_in_string(self,text,user):
         """
         citation references to sherdnotes

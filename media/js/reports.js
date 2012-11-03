@@ -111,7 +111,7 @@ var SherdReport = (new (function () {
                 });
             }
         });
-    }
+    };
 })()); //end SherdReport
 
 
@@ -126,4 +126,4 @@ window['hs_onshow_reports-graph'] = function () {
             success: SherdReport.init
         });
     }
-}
+};

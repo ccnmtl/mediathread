@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        {% if request.GET.msg %}
+            alert("Thank you for your comments.");
+        {% endif %}
+    
+        jQuery("form").submit(function() {
+            var valid = true;
+
+            var children = jQuery(this).find("input,textarea,select");
+            jQuery.each(children, function() {
+                if (valid) {
+                    if (this.tagName === 'INPUT' && this.type === 'text' ||
+                        this.tagName === 'TEXTAREA') {
+                        valid = jQuery(this).val().length > 0;
+                    }
+
+                    if (this.tagName === 'SELECT') {
+                        var value=jQuery(this).val()
+                        valid = value !== undefined && value.length > 0 && jQuery(this).val() !== '-----';
+                    }
+
+                    if (this.type === 'checkbox' || this.type === 'radio') {
+                        // one in the group needs to be checked
+                        var selector = 'input[name=' + jQuery(this).attr("name") + ']';
+                        valid = jQuery(selector).is(":checked");
+                    }
+                }
+            });
+
+            if (!valid) {
+                alert("Please complete all form fields before continuing.");
+            } else { 
+                var description = "\n\nCourse: " + document.forms.feedback.course.value;
+                description += "\n\nIssue date/time: " + document.forms.feedback.time.value;
+                description += "\n\nCategory: " + document.forms.feedback.category.value;
+                description += "\n\nUser Description: " + document.forms.feedback.user_description.value;
+                document.forms.feedback.description.value = description; 
+
+                // Tack on any additional information that could be helpful
+                document.forms.feedback.debug_info.value =
+                    "\n\nUser Agent: " + navigator.userAgent + "\n\n" +
+                    "Resolution: " + screen.width + " x " + screen.height + "\n\n" +
+                    "Browser Name: " + navigator.appName + "\n\n" +
+                    "Browser Version: " + navigator.appVersion + "\n\n" +
+                    "Platform: " + navigator.platform;
+            }
+
+            return valid;
+        });       
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="contact_us_form">
+        <h1 class="title">Contact Us</h1>
+    
+        <p>
+            If you have comments, suggestions, or questions about this site, or are having a problem using it, 
+            please contact us using the following form. We will do our best to respond within one business day. 
+        </p>
+   
+        <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback">
+                <div><label for="name">Name</label></div>
+                <div><input class="text" type="text" id="name" name="name" value="{{ user.get_full_name }}"/></div>
+                
+                <div><label for="name">UNI or Username</label></div>
+                <div><input class="text" type="text" id="name" name="name" value="{{ user.username }}"/></div>                
+                
+                <div><label for="email">Email address</label></div>
+                <div><input class="text" type="text" id="email" name="email" value="{{user.email}}"/></div>
+                
+                <div><label for="issue_time">Date and time issue occurred:</label></div>
+                <div><input class="text" type="text" id="time" name="time" /></div>
+                
+                <div><label for="category">Category:</label></div>
+                <div>
+                    <select id="category" name="category">
+                        <option value="-----">Please select a category...</option>
+                        <option value="finding">Finding Media</option>
+                        <option value="importing">Adding Media to the Collection</option>
+                        <option value="uploading">Uploading Media</option>
+                        <option value="video">Video playback/clipping</option>
+                        <option value="audio">Audio playback/clipping</option>
+                        <option value="image">Image view/clipping</option>
+                        <option value="composition">Composition Workspace</option>
+                        <option value="assignment">Assignment Workspace</option>
+                        <option value="discussion">Discussion Workspace</option>
+                        <option value="course_mgmt">Course management (roster list, for example)</option>
+                        <option value="browser">Browser Issues (garbled layout, for example)</option>
+                        <option value="http_404">"HTTP Status 404" error</option>
+                        <option value="http_500">"HTTP Status 500" error</option>
+                        <option value="internal_server_error">Internal Server Error</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <br />
+                <div><label for="description">Comment or Problem</label></div>
+                <div><textarea rows="4" cols="35" id="user_description" name="user_description"></textarea></div>
+                
+                <input type="submit" id="submit_feedback" name="add item" value="Send Feedback"/>
+                
+                <div class="visualclear"/>
+            </table>
+            
+            <input type="hidden" name="course" value="{{request.course}}"></input>
+            
+            <input type="hidden" name="title" value="Mediathread Error Report From Web User"></input>
+            <input type="hidden" name="pid" value="514"></input>
+            <input type="hidden" name="mid" value="3181"></input>
+            <input type="hidden" name="type" value="bug"></input>
+            <input type="hidden" name="owner" value="markp" />
+            <input type="hidden" name="assigned_to"  value="agarber"></input>
+            <input type="hidden" name="estimated_time" value="1h"></input>
+            <input type="hidden" name="redirect_url" value="http://{{request.get_host}}/contact/?msg=submitted"></input>
+            <input type="hidden" name="keyword" value="user-reported-error" />
+            <input type="hidden" name="debug_info" value="" />
+            <input type="hidden" name="description" value="" />
+        </form>
+    </div>
+{% endblock %}

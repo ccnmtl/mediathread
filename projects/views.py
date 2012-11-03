@@ -4,10 +4,12 @@ from string import letters
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.db.models import get_model
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render_to_response
-from django.template import RequestContext
+from django.template import RequestContext, loader, Context
+from django.template.defaultfilters import slugify
 from djangohelpers.lib import allow_http
 
 from discussions.views import threaded_comment_json
@@ -261,5 +263,41 @@ def project_workspace(request, project_id, feedback=None):
         panels.append(panel)    
             
         return HttpResponse(simplejson.dumps(data, indent=2), mimetype='application/json')
-    
 
+@login_required
+@allow_http("GET")
+def project_export_html(request, project_id):    
+    project = get_object_or_404(Project, pk = project_id)    
+    if not project.can_read(request):
+        return HttpResponseForbidden("forbidden")
+    
+    template = loader.get_template("projects/export.html")
+    
+    context = RequestContext(request, { 
+        'space_owner' : request.user.username, 
+        'project': project,
+        'body': project.body })
+    
+    return HttpResponse(template.render(context))
+    
+@login_required
+@allow_http("GET")
+def project_export_msword(request, project_id):    
+    project = get_object_or_404(Project, pk = project_id)    
+    if not project.can_read(request):
+        return HttpResponseForbidden("forbidden")
+    
+    template = loader.get_template("projects/msword.html")
+    
+    SherdNote = models.get_model('djangosherd','SherdNote')
+    body = SherdNote.objects.fully_qualify_references(project.body, request.get_host())    
+    body = body.replace("padding-left", "margin-left")
+    
+    context = RequestContext(request, { 
+        'space_owner' : request.user.username, 
+        'project': project,
+        'body': body })
+    
+    response = HttpResponse(template.render(context), content_type='application/vnd.ms-word')
+    response['Content-Disposition'] = 'attachment; filename=%s.doc' % (slugify(project.title))
+    return response

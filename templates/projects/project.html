@@ -7,7 +7,8 @@
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
+    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}"  media="screen" />
+    <link rel="stylesheet" href="/site_media/css/project.print.css?version={%revision%}"  media="print" />
     <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
     
     <script type="text/javascript" src="/jsi18n"></script>

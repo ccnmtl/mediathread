@@ -67,8 +67,8 @@
                     window.AnnotationList._update(config, "annotation-current", xywh);
                 });
                 return this;
-            };
-        }
+            }
+        };
         
         this.refresh = function (config) {
             if (config.asset_id) {

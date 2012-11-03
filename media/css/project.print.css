@@ -1,0 +1,65 @@
+.printonly {
+    display: block !important;
+}
+
+table#sliding-content-container tr td.panhandle-left-container,
+table#sliding-content-container tr td.panhandle-stripe,
+table#sliding-content-container tr td.pantab-container,
+td.panel-container.assignment,
+td.panel-container.discussion,
+tr.project-visibility-row,
+td.panel-container.collection,
+div.panel-subcontainer-toolbar,
+#shieldbox,
+#footer,
+#standardnav,
+#primarynav,
+div#course_title
+{
+    display: none;
+}
+
+div#header {
+    height: 100%;
+    background: white;    
+}
+
+td.panel-content.composition {
+    width: 800px !important;
+    border: 0 !important;
+}
+
+div.essay-space {
+    height: 100% !important;
+    border: none;
+    background-color: white;
+    width: 100%;
+}
+
+#mediathread_logo {
+    float: none;
+    border: 0 !important;
+    border-bottom: 0;
+    border-left: 0;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    -webkit-border-bottom-left-radius: 0;
+}
+
+table#sliding-content-container,
+table#sliding-content-container tr,
+table#sliding-content-container tr td,
+table#sliding-content-container tr td.panel-container div.panel.composition,
+td.panel-container.composition {
+    border: none;
+    margin: 0;
+    padding: 0;
+    background-color: white !important;
+    width: 100%;
+}
+
+textarea {
+    border: none
+}
+

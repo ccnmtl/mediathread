@@ -358,7 +358,7 @@ def annotation_delete(request, asset_id, annot_id):
     except SherdNote.DoesNotExist:
         return HttpResponseForbidden("forbidden")
 
-@rendered_with('assetmgr/browse_sources.html')
+@rendered_with('assetmgr/add_to_my_collection.html')
 def browse_sources(request):
     c = request.course
 

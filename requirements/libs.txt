@@ -35,3 +35,9 @@ requirements/src/nose-1.1.2.tar.gz
 requirements/src/lettuce-0.1.34.tar.gz
 
 requirements/src/statsd-0.5.1.tar.gz
+
+requirements/src/six-1.1.0.tar.gz
+requirements/src/python-dateutil-2.1.tar.gz
+requirements/src/mimeparse-0.1.3.tar.gz 
+requirements/src/django-tastypie-0.9.11.tar.gz
+

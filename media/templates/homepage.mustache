@@ -136,7 +136,7 @@
                             {{#compositions?}}
                                 <ul id="projects">
                                     {{#assignments}}
-                                        <li class="projectlist assignment-listitem" id="assignment-{{id}}">
+                                        <li class="projectlist assignment-listitem rounded" id="assignment-{{id}}">
                                             <h3>
                                                 <a href="{{url}}"
                                                    class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
@@ -250,7 +250,7 @@
                             {{/assets}} 
                             {{#assets}}
                                 <div id="materials" class="column-contents homepage">
-                                    <div id="record-{{id}}" class="gallery-item-homepage record-{{primary_type}} gallery-item-{{id}}">
+                                    <div id="record-{{id}}" class="gallery-item-homepage record-{{primary_type}} gallery-item-{{id}} rounded">
                                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                                             <a class="asset-title-link"
                                                 href="{{local_url}}">

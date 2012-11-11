@@ -18,6 +18,7 @@ from assetmgr.views import homepage_asset_json
 
 from courseaffils.lib import get_public_name, in_course_or_404, users_in_course
 from courseaffils.models import Course
+from courseaffils.views import available_courses_query
 
 from djangosherd.models import DiscussionIndex
 
@@ -484,14 +485,17 @@ def set_user_setting(request, user_name):
     return HttpResponse(json_stream, mimetype='application/json')
 
 @allow_http("GET", "POST")
-@rendered_with('dashboard/migrate.html')
+@rendered_with('dashboard/class_migrate.html')
 @login_required
 def migrate(request):
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
     
     if request.method == "GET":
-        return {}
+        return {
+            "available_courses": available_courses_query(request.user),
+            "help_migrate_materials": UserSetting.get_setting(request.user, "help_migrate_materials", True),
+        }
     else:
         return {}
     

@@ -1,0 +1,81 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Migrate Course Materials{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    
+    <script type="text/javascript"> 
+        var courses =
+            [{% for c in available_courses %}
+                {% ifnotequal c.id request.course.id %}
+                    { label: "{{c.title}}", value: "{{c.title}}", id: "{{c.id}}" }{% if forloop.last %}{% else %},{% endif %}
+                {% endifnotequal %}
+            {% endfor %}];
+        
+        
+        jQuery(document).ready(function () {
+            var view = new CourseMaterialsView({ availableCourses: courses, el: "#course-materials-container" });
+        });
+
+    </script>
+    
+    <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+    <script type="text/javascript" src="/site_media/js/instructor/class_migrate.js"></script>
+    
+    <script type="text/template" id="projects-template">
+        <h1><%= title %></h1>
+    </script>
+    
+    <script type="text/template" id="items-template">
+        <h1><%= title %></h1>
+    </script>
+    
+    <script type="text/template" id="course-template">
+        <h1><%= title %></h1>
+    </script>
+{% endblock %}
+
+{% block dashboard_module %}
+    {% with "help_migrate_materials" as help_id %}
+    {% with help_migrate_materials as default_help_state %}
+    
+    <ul class="archive-gallery">
+        <li class="archive-container">                
+            <h2>Migrate Course Materials {% include "help/help_button.html" %}</h2>
+            {% include "help/help_contentarea.html" %}
+            
+            <div id="course-materials-container">
+                <div id="no-materials-to-migrate" style="display: none">
+                    You are not affiliated with any other courses. Please review our help materials
+                    if you need to migrate course materials from a colleague's class.
+                </div>
+                
+                <div id="available-courses-selector" style="display: none">
+                    <input type="text" class="default" id="available-courses" value="Type course name here">
+                </div>
+                    
+                <div>
+                    <div class="left">
+                        <div id="course">
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="left">Selected for import</div><div class="right">Remove</div>
+                        <div class="visualclear"/>
+                        <div class="scroll">                    
+                        </div>
+                    </div>
+                    
+                </div>            
+            </div>
+        </li>
+    </ul>
+    
+    {% endwith %}{% endwith %}
+
+{% endblock %}
+
+
+

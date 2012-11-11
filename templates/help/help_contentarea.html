@@ -107,6 +107,10 @@ Here you can access your compositions and your collection of items saved in Medi
             </ul>
         {% endifequal %}
 
+{% comment %} MIGRATE MATERIALS {% endcomment %}
+    {% ifequal help_id "help_migrate_materials" %}
+        Provide instructions here
+    {% endifequal %}
         
 {% comment %} SOURCE MEDIA PAGE, BOOKMARKLET BOX {% endcomment %}
         {% ifequal help_id "help_browse_sources" %}

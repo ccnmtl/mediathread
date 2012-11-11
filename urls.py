@@ -4,7 +4,8 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 import os.path
-
+from tastypie.api import Api
+from mediathread_main.api import *
 
 admin.autodiscover()
 
@@ -19,6 +20,11 @@ logout_page = (r'^accounts/logout/$','django.contrib.auth.views.logout', {'next_
 if hasattr(settings,'WIND_BASE'):
     auth_urls = (r'^accounts/',include('djangowind.urls'))
     logout_page = (r'^accounts/logout/$','djangowind.views.logout', {'next_page': redirect_after_logout})
+    
+v1_api = Api(api_name='v1')
+v1_api.register(UserResource())
+v1_api.register(GroupResource())
+v1_api.register(CourseResource())
 
 urlpatterns = patterns('',
                        (r'^crossdomain.xml$', 'django.views.static.serve', {'document_root': os.path.abspath(os.path.dirname(__file__))
@@ -53,7 +59,8 @@ urlpatterns = patterns('',
 
                        # Homepage
                        (r'^$', 'mediathread_main.views.triple_homepage'),
-                       (r'^yourspace/', include('mediathread.mediathread_main.urls')), 
+                       (r'^yourspace/', include('mediathread.mediathread_main.urls')),
+                       (r'^_main/api/', include(v1_api.urls)), 
                     
                        # Instructor Dashboard & reporting
                        (r'^reports/',include('mediathread.reports.urls')),

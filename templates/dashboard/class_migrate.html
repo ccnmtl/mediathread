@@ -33,7 +33,27 @@
     </script>
     
     <script type="text/template" id="course-template">
-        <h1><%= title %></h1>
+        <h3><%= title %></h3>
+        <p><b>Term:</b> <% if (info.term === 1) { %>
+                    Spring 
+                  <% } else if (info.term === 2) { %>
+                    Summer
+                  <% } else if (info.term === 3) { %>
+                    Fall
+                  <% } %></p>
+        <p><b>Year:</b> <%= info.year %></p>
+        <p><b>Faculty:</b>  
+            <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
+                <%= faculty_group.user_set[i].first_name %> <%= faculty_group.user_set[i].last_name  %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+            <% } %></p>
+
+        <input type="button" value="Import Complete Course">
+        <br /><br />
+        <div>x Projects Found</div>
+        <div><input type="button" value="Select Projects to Import"> <input type="button" value="Import All Projects"></div>
+        <br /><br />
+        <div>x Items with x Selections Found</div>
+        <div><input type="button" value="Select Items to Import"> <input type="button" value="Import All Items"></div>    
     </script>
 {% endblock %}
 
@@ -57,11 +77,11 @@
                 </div>
                     
                 <div>
-                    <div class="left">
+                    <div class="left half">
                         <div id="course">
                         </div>
                     </div>
-                    <div class="right">
+                    <div class="right half border">
                         <div class="left">Selected for import</div><div class="right">Remove</div>
                         <div class="visualclear"/>
                         <div class="scroll">                    

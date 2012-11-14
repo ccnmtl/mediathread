@@ -22,8 +22,6 @@ if hasattr(settings,'WIND_BASE'):
     logout_page = (r'^accounts/logout/$','djangowind.views.logout', {'next_page': redirect_after_logout})
     
 v1_api = Api(api_name='v1')
-v1_api.register(UserResource())
-v1_api.register(GroupResource())
 v1_api.register(CourseResource())
 
 urlpatterns = patterns('',

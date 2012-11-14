@@ -221,6 +221,14 @@ img
     float: right;
 }
 
+.half {
+    width: 49%;
+}
+
+.border {
+    border: 1px solid black;
+}
+
 .printonly
 {
     display: none;

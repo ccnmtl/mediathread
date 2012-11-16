@@ -195,7 +195,7 @@ class Project(models.Model):
         return cls.objects.filter(Q(author=user, course=course)
                                   |Q(participants=user, course=course)
                                   ).distinct()
-
+                                      
     def is_participant(self,user_or_request):
         user = getattr(user_or_request,'user',user_or_request)
         return (user == self.author

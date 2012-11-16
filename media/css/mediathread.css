@@ -3531,6 +3531,21 @@ input#available-courses.default {
     color: #999;
 }
 
+div#course-materials-container {
+    margin-top: 5px;
+}
+
+div.selected-for-import {
+    float: right;
+    width: 48%;
+    margin-right: 10px;
+}
+
+div.selected-for-import div.results {    
+    border: 1px solid black;
+    height: 400px;    
+}
+
 /**
 .step.one img {
     position: absolute;

@@ -491,9 +491,19 @@ def migrate(request):
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
     
+    # Only show courses for which the user is an instructor
+    available_courses = available_courses_query(request.user)
+    courses = []
+    if request.user.is_superuser:
+        courses = available_courses
+    else:
+        for c in available_courses:
+            if c.is_faculty(request.user):
+                courses.append(c)
+    
     if request.method == "GET":
         return {
-            "available_courses": available_courses_query(request.user),
+            "available_courses": courses,
             "help_migrate_materials": UserSetting.get_setting(request.user, "help_migrate_materials", True),
         }
     else:

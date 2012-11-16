@@ -14,7 +14,7 @@
         
         
         jQuery(document).ready(function () {
-            var view = new CourseMaterialsView({ availableCourses: courses, el: "#course-materials-container" });
+            var view = new CourseMaterialsView({ availableCourses: courses, el: "li.archive-container" });
         });
 
     </script>
@@ -33,23 +33,27 @@
     </script>
     
     <script type="text/template" id="course-template">
-        <h3><%= title %></h3>
-        <p><b>Term:</b> <% if (info.term === 1) { %>
+        <h1><%= title %></h1>
+        <% if (info && info.term) { %> 
+            <p><b>Term:</b> <% if (info.term === 1) { %>
                     Spring 
                   <% } else if (info.term === 2) { %>
                     Summer
                   <% } else if (info.term === 3) { %>
                     Fall
                   <% } %></p>
-        <p><b>Year:</b> <%= info.year %></p>
+        <% } %>
+        <% if (info && info.year) { %>
+            <p><b>Year:</b> <%= info.year %></p>
+        <% } %>
         <p><b>Faculty:</b>  
             <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
-                <%= faculty_group.user_set[i].first_name %> <%= faculty_group.user_set[i].last_name  %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+                <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
             <% } %></p>
 
         <input type="button" value="Import Complete Course">
         <br /><br />
-        <div>x Projects Found</div>
+        <div><%= projects %> Projects Found</div>
         <div><input type="button" value="Select Projects to Import"> <input type="button" value="Import All Projects"></div>
         <br /><br />
         <div>x Items with x Selections Found</div>
@@ -66,29 +70,25 @@
             <h2>Migrate Course Materials {% include "help/help_button.html" %}</h2>
             {% include "help/help_contentarea.html" %}
             
-            <div id="course-materials-container">
-                <div id="no-materials-to-migrate" style="display: none">
-                    You are not affiliated with any other courses. Please review our help materials
-                    if you need to migrate course materials from a colleague's class.
-                </div>
+            <div id="no-materials-to-migrate" style="display: none">
+                You are not affiliated with any other courses. Please review our help materials
+                if you need to migrate course materials from a colleague's class.
+            </div>
+            
+            <div id="available-courses-selector" style="display: none">
+                <input type="text" class="default" id="available-courses" value="Type course name here">
+                <input type="submit" id="view-materials" value="View materials" />
+            </div>
                 
-                <div id="available-courses-selector" style="display: none">
-                    <input type="text" class="default" id="available-courses" value="Type course name here">
+            <div id="course-materials-container" style="display: none">                
+                <div class="left half">
+                    <div id="course"></div>
                 </div>
-                    
-                <div>
-                    <div class="left half">
-                        <div id="course">
-                        </div>
-                    </div>
-                    <div class="right half border">
-                        <div class="left">Selected for import</div><div class="right">Remove</div>
-                        <div class="visualclear"/>
-                        <div class="scroll">                    
-                        </div>
-                    </div>
-                    
-                </div>            
+                <div class="selected-for-import">
+                    <div><h4 class="left">Selected for import</h4><h4 class="right">Remove</h4></div>
+                    <div class="visualclear"/>
+                    <div class="results scroll"></div>
+                </div>                    
             </div>
         </li>
     </ul>

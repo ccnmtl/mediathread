@@ -1,10 +1,10 @@
-import copy
 from django.contrib.auth.models import User, Group
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.authorization import Authorization
 from courseaffils.models import *
 from projects.models import Project
+from assetmgr.models import Asset
 
 class UserResource(ModelResource):
     class Meta:
@@ -38,11 +38,25 @@ class ProjectResource(ModelResource):
         resource_name = 'project'
         excludes = ['author', 'participants', 'body', 'submitted', 'feedback']
         allowed_methods = ['get']
-
+        
     def dehydrate(self, bundle):
-        bundle.data['is_assignment'] = bundle.obj.is_assignment(bundle.request)
-        return bundle
+        bundle.data['is_assignment'] = bundle.obj.visibility_short() == 'Assignment' 
+        bundle.data['attribution'] = bundle.obj.attribution()
+        bundle.data['selection_count'] = len(bundle.obj.citations())
+        return bundle  
     
+class AssetResource(ModelResource):
+    class Meta:
+        queryset = Asset.objects.none()
+        resource_name = 'asset'
+        excludes = ['added', 'modified', 'course', 'active', 'metadata_blob']
+        allowed_methods = ['get']        
+        
+    def dehydrate(self, bundle):
+        bundle.data['thumb_url'] = bundle.obj.thumb_url 
+        bundle.data['primary_type'] = bundle.obj.primary.label,
+        return bundle
+
 class CourseAuthorization(Authorization):
     def is_authorized(self, request, object=None):
         return request.course.is_faculty(request.user)
@@ -53,6 +67,9 @@ class CourseResource(ModelResource):
     project_set = fields.ToManyField('mediathread_main.api.ProjectResource',
         blank=True, null=True, full=True,
         attribute=lambda bundle: Project.objects.filter(bundle.obj.faculty_filter))
+    item_set = fields.ToManyField('mediathread_main.api.AssetResource',
+        blank=True, null=True, full=True,
+        attribute=lambda bundle: Asset.objects.filter(bundle.obj.faculty_filter))
 
     class Meta:
         queryset = Course.objects.all()
@@ -63,8 +80,10 @@ class CourseResource(ModelResource):
     
     def dehydrate(self, bundle):
         # Unable to completely filter the project_set using QuerySet
+        # due to complexity of the StructuredCollaboration architecture
         # Iterate all projects to remove private + assignment responses
         lst = []
+        project_set_selections = 0
         for project in bundle.data['project_set']:
             if project.obj.class_visible() and not project.obj.assignment():
                 lst.append(project)

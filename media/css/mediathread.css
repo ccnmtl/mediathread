@@ -25,7 +25,7 @@ h1
 {
     font-size: 1.8em;
     font-weight: normal;
-    line-height: 2em;
+    line-height: 1.5em;
 }
 
 h2
@@ -2881,7 +2881,7 @@ div.panel.asset-workspace div#materials h4 a {
 div#materials h4 a,
 div#composition-materials h4 a,
 div#assignment-materials h4 a,
-div.gallery-item h4 a
+div.gallery-item h4 a,
 {
     font-weight: bold;
     padding-right: 4px;
@@ -3546,22 +3546,38 @@ div.selected-for-import div.results {
     height: 400px;    
 }
 
-/**
-.step.one img {
-    position: absolute;
-    clip:rect(0px, 35px, 42px, 0px);
-    margin-top: -16px;
+.import-dialog div.import-stuff {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #CCC;
+    margin-top: 10px;    
 }
 
-.step.two img {
-    position: absolute;
-    clip:rect(42px, 35px, 84px, 0px);
-    margin-top: -58px;
+.import-dialog div.import-stuff table,
+.import-dialog div.import-stuff table tr {
+    border: none;
 }
 
-.step.three img {
-    position: absolute;
-    clip:rect(84px, 35px, 126px, 0px);
-    margin-top: -96px;
+.import-dialog div.import-stuff table tr td {
+    border: none;
+    padding: 5px;
 }
-**/
+
+.import-dialog div.import-stuff table tr td.title {
+    width: 540px;
+    text-overflow: ellipsis;
+    font-size: .9em;
+}
+
+.import-dialog div.import-stuff table tr.odd {
+    background-color: #EEE;
+}
+
+.import-items-dialog {
+    background-color: #EDEDED !important;
+}
+
+.import-items-dialog h4 div {
+    margin-left: 28px;
+}

@@ -142,6 +142,15 @@ class Asset(models.Model):
         SherdNote = models.get_model('djangosherd','sherdnote')
         if SherdNote:
             return SherdNote.objects.global_annotation(self, user, auto_create=auto_create)[0]
+        
+    def media_type(self):
+        label = 'video'
+        if self.primary.is_image():
+            label = 'image'
+        elif self.primary.is_audio():
+            label = 'audio'
+            
+        return label
 
     def save_tag(self, user, tag):
         """ 
@@ -158,9 +167,6 @@ class Asset(models.Model):
             bucket.add_tag(tag)
             bucket.save()        
             return created
-    @property
-    def dir(self):
-        return dir(self)
 
     request = None
     def sherd_json(self,request=None):
@@ -183,12 +189,6 @@ class Asset(models.Model):
         except ValueError:
             metadata = None
             
-        media_type_label = 'video'
-        if self.primary.is_image():
-            media_type_label = 'image'
-        elif self.primary.is_audio():
-            media_type_label = 'audio'
-            
         tags = Tag.objects.usage_for_queryset(self.sherdnote_set.all(), counts=True)
         tag_last = len(tags) - 1
         return {
@@ -198,7 +198,7 @@ class Asset(models.Model):
             'metadata': metadata,
             'local_url': self.get_absolute_url(),
             'id': self.pk,
-            'media_type_label': media_type_label,
+            'media_type_label': self.media_type(),
             'tags': [ { 'name': tag.name, 'last': idx == tag_last, 'count': tag.count } for idx, tag in enumerate(tags) ]
        }
         

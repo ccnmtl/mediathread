@@ -6,14 +6,11 @@
         customJSON: function () {
             var json = this.toJSON();
             
-            json.projects = 0;
-            
+            json.project_set_selections = 0;
             for (var i = 0; i < json.project_set.length; i++) {
-                if (json.project_set[i].is_class_visible) {
-                    json.projects++;
-                }
+                json.project_set_selections += json.project_set[i].selection_count;
             }
-            
+
             json.items = 0;
             
             return json;
@@ -23,11 +20,14 @@
     global.CourseMaterialsView = Backbone.View.extend({
         events : {
             'focus input#available-courses': 'focusAvailableCourses',
-            'click #view-materials': 'clickViewMaterials'
+            'click #view-materials': 'clickViewMaterials',
+            'click #import-all': 'importAll',
+            'click #import-projects': 'importProjects',
+            'click #import-items': 'importItems'
         },
 
         initialize: function (options) {
-            _.bindAll(this, "setCourse", "focusAvailableCourses", "render", "clickViewMaterials");
+            _.bindAll(this, "setCourse", "focusAvailableCourses", "render", "clickViewMaterials", 'importAll', 'importProjects', 'importItems');
             
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
@@ -89,48 +89,83 @@
             this.model.fetch();
         },
         
-        showProjectDialog: function (evt) {
-/**            
-            var self = this;
-            var element = jQuery(".export-finalcutpro")[0];
-            var list  = jQuery(element).find("ul.selections")[0];
-            jQuery(list).find('li').remove();
-            
-            if (this.hasOwnProperty('active_asset_annotations')) {
-                for (var i = 0; i < this.active_asset_annotations.length; i++) {
-                    var ann = this.active_asset_annotations[i];
-                    if (ann.annotation) {
-                        var li = "<li>" +
-                            "<span class='ui-icon-reverse ui-icon-arrowthick-2-n-s'></span>" +
-                            "<input readonly='readonly' type='text' name='" + ann.id + "' value='" + ann.metadata.title + "'></input></li>";
-                        
-                        jQuery(list).append(li);
-                    }
+        importAll: function (evt) {
+            jQuery("#import-all-dialog").dialog({
+                buttons: [{ text: "Cancel",
+                            click: function () {
+                                jQuery(this).dialog("close");
+                            }
+                          },
+                          { text: 'Import',
+                            click: function () {
+                                jQuery(this).dialog("close");
+                            }
+                          },
+                ],
+                draggable: true,
+                resizable: false,
+                modal: true,
+                width: 425,
+                zIndex: 10000,
+                open: function () {
+                    var container = jQuery(this.el).find('#import-items-dialog')[0];
+                    jQuery(container).masonry({
+                        itemSelector : '.gallery-item',
+                        columnWidth: 3
+                    });
                 }
-            }
+            });
             
-            jQuery(list).sortable({ containment: 'parent' }).disableSelection();
-            
-            jQuery(element).dialog({
-                buttons: [{ text: "Export",
-                    click: function () {
-                        jQuery("form[name=export-finalcutpro]").trigger('submit');
-                        jQuery(this).dialog("close");
-                    }
-                }],
+            return false;
+        },
+        
+        importProjects: function (evt) {
+            jQuery("#import-projects-dialog").dialog({
+                buttons: [{ text: "Cancel",
+                            click: function () {
+                                jQuery(this).dialog("close");
+                            }
+                          },
+                          { text: 'Import',
+                            click: function () {
+                                jQuery("div.selected-for-import").show();
+                                jQuery(this).dialog("close");
+                            }
+                          },
+                ],
                 draggable: true,
                 resizable: true,
                 modal: true,
-                width: 425,
-                position: "top",
+                width: 600,
+                height: 450,
                 zIndex: 10000
             });
             
             return false;
-**/            
         },
         
-        showItemDialog: function (evt) {
+        importItems: function (evt) {
+            jQuery("#import-items-dialog").dialog({
+                buttons: [{ text: "Cancel",
+                            click: function () {
+                                jQuery(this).dialog("close");
+                            }
+                          },
+                          { text: 'Import',
+                            click: function () {
+                                jQuery(this).dialog("close");
+                            }
+                          },
+                ],
+                draggable: true,
+                resizable: true,
+                modal: true,
+                width: 725,
+                height: 550,
+                zIndex: 10000
+            });
+            
+            return false;
         }
     });
 }(jQuery));

@@ -22,6 +22,7 @@
     <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
     <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery.masonry.min.js"></script>        
     <script type="text/javascript" src="/site_media/js/instructor/class_migrate.js"></script>
     
     <script type="text/template" id="projects-template">
@@ -51,13 +52,62 @@
                 <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
             <% } %></p>
 
-        <input type="button" value="Import Complete Course">
+        <input id="import-all" type="button" value="Import Complete Course">
+        <div id="import-all-dialog" style="display: none" title="Import">
+            <h3><%= title %></h3>
+            <div><%= project_set.length %> Projects with <%= project_set_selections %> associated items and selections</div>
+            <div>x items and 26 selections</div>
+            <br />
+            <div>Are you sure you want to import this entire course?</div>                                                              
+        </div> 
         <br /><br />
-        <div><%= projects %> Projects Found</div>
-        <div><input type="button" value="Select Projects to Import"> <input type="button" value="Import All Projects"></div>
+        <% if (project_set && project_set.length > 0) { %>
+            <div><%= project_set.length %> Projects Found</div>
+            <div><input id="import-projects" type="button" value="Select Projects To Import"></div>
+            <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Projects To Import">
+                <i>Note: Items and selections associated with a project are automatically migrated</i>
+                <div class="import-stuff">
+                <table>
+                <% for (var i = 0; i < project_set.length; i++) { %>
+                    <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
+                        <td class="title"><b>
+                            <% if (project_set[i].is_assignment) { %>
+                                Assignment:                             
+                            <% } %>
+                            <%= project_set[i].title %></b><br />
+                            by <%= project_set[i].attribution %>
+                            
+                            <% if (project_set[i].selection_count > 0) { %>
+                                <br />
+                                <i>Includes <%= project_set[i].selection_count %> items and selections</i>
+                            <% } %>
+                        </td>
+                        <td><input type="checkbox" value="<%= project_set[i].id %>"/></td>
+                    </tr>
+                <% } %>
+                </table>
+                </div>                
+            </div>
+        <% } %>
         <br /><br />
-        <div>x Items with x Selections Found</div>
-        <div><input type="button" value="Select Items to Import"> <input type="button" value="Import All Items"></div>    
+
+        <% if (item_set && item_set.length > 0) { %>
+            <div><%= item_set.length %> Items with X Selections Found</div>
+            <div><input id="import-items" type="button" value="Select Items To Import"></div>
+
+            <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Import">
+            <% for (var i = 0; i < item_set.length; i++) { %>
+                <div class="gallery-item rounded gallery-item-mini">                    
+                    <h4 class="asset_title asset-<%=item_set[i].primary_type%>"><input class="right" type="checkbox" value="<%= item_set[i].id %>"/><div class="title"><%= item_set[i].title %></div></h4>
+                    <% if (item_set[i].thumb_url) { %>
+                        <div class="record">
+                            <img class="asset-thumb" src="<%=item_set[i].thumb_url%>" alt="Item Thumbnail" />
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+            </div>
+        <% } %>
     </script>
 {% endblock %}
 
@@ -84,10 +134,11 @@
                 <div class="left half">
                     <div id="course"></div>
                 </div>
-                <div class="selected-for-import">
+                <div class="selected-for-import" style="display: none">
                     <div><h4 class="left">Selected for import</h4><h4 class="right">Remove</h4></div>
                     <div class="visualclear"/>
                     <div class="results scroll"></div>
+                    <input type="button" value="Import Selected" />
                 </div>                    
             </div>
         </li>

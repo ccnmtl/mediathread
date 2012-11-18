@@ -45,6 +45,7 @@ Administrator - selenium / selenium
 1. Sample Course
 
 Instructor One - test_instructor / test
+Instructor Two - test_instructor_two / test
 Student One - test_student_one / test
 Student Two - test_student_two / test
 Student Three - test_student_three / test
@@ -52,8 +53,11 @@ Student Three - test_student_three / test
 2. Alternate Course
 
 Instructor Alternate - test_instructor_alt / test
+Instructor Two - test_instructor_two / test
 Student Alternate - test_student_alt / test
 Student Three - test_student_three / test
+
+
 
 Assets
 -------

@@ -62,7 +62,7 @@
         </div> 
         <br /><br />
         <% if (project_set && project_set.length > 0) { %>
-            <div><%= project_set.length %> Projects Found</div>
+            <div><%= project_set.length %> Projects</div>
             <div><input id="import-projects" type="button" value="Select Projects To Import"></div>
             <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Projects To Import">
                 <i>Note: Items and selections associated with a project are automatically migrated</i>
@@ -92,7 +92,7 @@
         <br /><br />
 
         <% if (item_set && item_set.length > 0) { %>
-            <div><%= item_set.length %> Items with X Selections Found</div>
+            <div><%= item_set.length %> Items with X Selections</div>
             <div><input id="import-items" type="button" value="Select Items To Import"></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Import">

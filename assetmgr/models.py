@@ -243,7 +243,7 @@ class Source(models.Model):
         return (self.label=='poster' or self.label == "image" or self.label == "image_fpx"  or (self.media_type and self.media_type.startswith('image/')))
     
     def is_audio(self):
-        return self.label == 'mp3'
+        return self.label == 'mp3' or self.label == 'mp4_audio'
     
     def is_archive(self):
         return self.label=='archive'

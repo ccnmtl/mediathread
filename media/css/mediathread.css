@@ -2152,16 +2152,15 @@ div.gallery-item h4.asset_title {
 }
 
 .asset-insert-image,
-.asset-insert-image_fpx
-{
+.asset-insert-image_fpx {
     background-image: url(../img/icons/meth_insert_image.png);
     height: 25px;
     width: 25px;
     float: left;
 }
 
-.asset-insert-mp3
-{
+.asset-insert-mp3,
+.asset-insert-mp4_audio {
     background-image: url(../img/icons/meth_insert_audio.png);
     height: 25px;
     width: 25px;

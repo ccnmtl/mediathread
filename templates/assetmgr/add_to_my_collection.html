@@ -81,7 +81,21 @@
                         <div class="instructions">
                             This tool supports direct uploading of audio files from your desktop into Mediathread.
                         </div>
-                
+                        <div class="visualclear"></div>
+                        <form action="redirect/" method="POST">
+                            {% if owners %}
+                                <div><b>For:</b>&nbsp;
+                                <select name="as"> 
+                                {% for owner in owners %}                                
+                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                {% endfor %}
+                                </select>
+                                </div>
+                            {% endif %}
+                            <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                            <input type="hidden" name="audio2" value="mp3"></input>
+                            <input id="uploader" type="submit" value="As MP4" />
+                        </form>
                         <form action="redirect/" method="POST">
                             {% if owners %}
                                 <div><b>For:</b>&nbsp;
@@ -94,8 +108,8 @@
                             {% endif %}
                             <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                             <input type="hidden" name="audio" value="mp3"></input>
-                            <input id="uploader" type="submit" value="Upload audio file" />
-                        </form>
+                            <input id="uploader" type="submit" value="As MP3" />
+                        </form>                        
                     {% endifequal %}            
                     <div class="visualclear"></div>
                 </div>  

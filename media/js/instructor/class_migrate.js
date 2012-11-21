@@ -23,11 +23,17 @@
             'click #view-materials': 'clickViewMaterials',
             'click #import-all': 'importAll',
             'click #import-projects': 'importProjects',
-            'click #import-items': 'importItems'
+            'click #select-all-projects': 'selectAllProjects',
+            'click #clear-all-projects': 'clearAllProjects',
+            'click #import-items': 'importItems',
+            'click #select-all-items': 'selectAllItems',
+            'click #clear-all-items': 'clearAllItems'
         },
 
         initialize: function (options) {
-            _.bindAll(this, "setCourse", "focusAvailableCourses", "render", "clickViewMaterials", 'importAll', 'importProjects', 'importItems');
+            _.bindAll(this, "setCourse", "focusAvailableCourses", "render",
+                "clickViewMaterials", "importAll", "importProjects", "importItems",
+                "selectAllItems", "clearAllItems", "selectAllProjects", "clearAllProjects");
             
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
@@ -120,7 +126,8 @@
         },
         
         importProjects: function (evt) {
-            jQuery("#import-projects-dialog").dialog({
+            var element = jQuery("#import-projects-dialog");
+            jQuery(element).dialog({
                 buttons: [{ text: "Cancel",
                             click: function () {
                                 jQuery(this).dialog("close");
@@ -137,15 +144,25 @@
                 resizable: true,
                 modal: true,
                 width: 600,
-                height: 450,
+                maxHeight: 450,
                 zIndex: 10000
             });
             
+            jQuery(element).parent().appendTo(this.el);
             return false;
         },
         
+        selectAllProjects: function (evt) {
+            jQuery("div.import-stuff input:checkbox").attr("checked", "checked");
+        },
+        
+        clearAllProjects: function (evt) {
+            jQuery("div.import-stuff input:checkbox").removeAttr("checked");
+        },
+        
         importItems: function (evt) {
-            jQuery("#import-items-dialog").dialog({
+            var element = jQuery("#import-items-dialog");
+            jQuery(element).dialog({
                 buttons: [{ text: "Cancel",
                             click: function () {
                                 jQuery(this).dialog("close");
@@ -161,11 +178,20 @@
                 resizable: true,
                 modal: true,
                 width: 725,
-                height: 550,
+                maxHeight: 550,
                 zIndex: 10000
             });
             
+            jQuery(element).parent().appendTo(this.el);
             return false;
+        },
+        
+        selectAllItems: function (evt) {
+            jQuery("h4.asset_title input:checkbox").attr("checked", "checked");
+        },
+        
+        clearAllItems: function (evt) {
+            jQuery("h4.asset_title input:checkbox").removeAttr("checked");
         }
     });
 }(jQuery));

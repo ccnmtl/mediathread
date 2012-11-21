@@ -3320,6 +3320,15 @@ div#materials.column-contents.homepage div.actions {
     bottom: 2px;
 }
 
+.gallery-item-mini div.meta {
+    width: 85%;
+    clear: both;
+    text-align: left;
+    bottom: 2px;
+    position: static
+}
+
+
 div#asset-view-header div {
     float: left;
 }

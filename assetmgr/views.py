@@ -450,7 +450,7 @@ def source_specialauth(request,url,key):
        (request.user.is_staff or request.user.has_perm('assetmgr.can_upload_for')):
         username = request.REQUEST['as']
         
-    return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s&audio=%s' % (
+    return '%s?set_course=%s&as=%s&redirect_url=%s&nonce=%s&hmac=%s&audio=%s&audio2=%s' % (
         url,
         request.course.group.name,
         username,
@@ -460,7 +460,8 @@ def source_specialauth(request,url,key):
                  '%s:%s:%s' % (username,redirect_back,nonce),
                  hashlib.sha1
                  ).hexdigest(),
-        request.POST.get('audio', '')
+        request.POST.get('audio', ''),
+        request.POST.get('audio2', '')
         )
     
 def final_cut_pro_xml(request, asset_id):

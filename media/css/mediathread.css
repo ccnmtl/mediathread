@@ -2123,7 +2123,8 @@ div.gallery-item h4.asset_title {
     background-image: url(../img/icons/meth_image.png);
 }
 
-.asset_title.asset-mp3 {
+.asset_title.asset-mp3,
+.asset_title.asset-mp4_audio {
     background-image: url(../img/icons/meth_audio.png);
 }
 

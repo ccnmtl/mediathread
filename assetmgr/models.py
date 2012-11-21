@@ -143,6 +143,16 @@ class Asset(models.Model):
         if SherdNote:
             return SherdNote.objects.global_annotation(self, user, auto_create=auto_create)[0]
         
+    def faculty_annotations(self):
+        # SherdNotes - global & other for course faculty
+        qs = self.sherdnote_set.filter(author=self.course.faculty_filter)
+        return qs
+            
+    def annotations(self, user):
+        # SherdNotes - global & other for specific user
+        qs = self.sherdnote_set.filter(author=user)
+        return qs
+        
     def media_type(self):
         label = 'video'
         if self.primary.is_image():

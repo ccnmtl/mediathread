@@ -78,9 +78,6 @@ class Annotation(models.Model):
                and self.range2 != self.range1 :
             tc_range += " - %s" % self.secondsToCode(self.range2)
         return tc_range
-    @property
-    def dir(self):
-        return dir(self)
 
     def sherd_json(self, request=None, asset_key='', metadata_keys=tuple() ):
         user_id = getattr(getattr(request,'user',None),'id',None)

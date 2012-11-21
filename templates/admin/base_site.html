@@ -27,6 +27,9 @@
 
 {% block branding %}
 <h1 id="site-name"><a href="/">{% trans 'Django administration' %}</a></h1>
+{% if settings.DATABASE_HOST %}
+<div style="float: right; font-size: 11px; padding: 0 10px 5px 10px">{{ settings.DATABASE_HOST }}</div>
+{% endif %}
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

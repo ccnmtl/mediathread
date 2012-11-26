@@ -53,7 +53,8 @@ def django_settings(request):
                  'CONTACT_US_DESTINATION',
                  'FLOWPLAYER_SWF_LOCATION',
                  'DEBUG',
-                 'REVISION'
+                 'REVISION',
+                 'DATABASE_HOST'
                  ]
 
     rv = {'settings':dict([(k, getattr(settings, k, None)) for k in whitelist]),

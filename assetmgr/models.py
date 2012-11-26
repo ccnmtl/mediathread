@@ -62,10 +62,11 @@ class Asset(models.Model):
     #in order of priority for which label is marked primary
     #an asset must have at least one source label from this list
     #'url' should probably stay at the end
-    useful_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 'mp4', 'mp4_pseudo', 'mp4_rtmp',
+    useful_labels = ('flv', 'flv_pseudo', 'flv_rtmp', 
+                     'mp4', 'mp4_pseudo', 'mp4_rtmp',
                      'youtube','quicktime','realplayer', 'ogg', 'vimeo', 'kaltura', 
                      'video_pseudo','video_rtmp','video',#unknown format, but we can try to play
-                     'mp3',
+                     'mp3', 'mp4_audio',
                      'image_fpx', #artstor.org and FSI flash image viewer in general
                      'image')
 
@@ -252,7 +253,7 @@ class Source(models.Model):
         return (self.label=='poster' or self.label == "image" or self.label == "image_fpx"  or (self.media_type and self.media_type.startswith('image/')))
     
     def is_audio(self):
-        return self.label == 'mp3'
+        return self.label == 'mp3' or self.label == 'mp4_audio'
     
     def is_archive(self):
         return self.label=='archive'

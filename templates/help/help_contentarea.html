@@ -109,7 +109,27 @@ Here you can access your compositions and your collection of items saved in Medi
 
 {% comment %} MIGRATE MATERIALS {% endcomment %}
     {% ifequal help_id "help_migrate_materials" %}
-        Provide instructions here
+        Import rules/logic
+        <ol>
+            <li>Faculty Assignments and Compositions Only</li>
+                <ul>
+                    <li>Items and selections referenced in an imported project are automatically included regardless of original author.</li> 
+                    <li>Tags and notes are not included for items and selections authored by non-faculty members?</li>
+                </ul>
+            <li>
+            <li>Items import by Faculty</li>
+                <ul>
+                    <li>Selections authored by faculty are automatically included with tags & notes</li>
+                    <li>Selections by non-faculty members are not visible and cannot be included</li>
+                </ul>
+            </li>
+            <li>Selections on Non-Faculty Items</li>
+                <ul>
+                    <li>Items on which faculty have selections are available for import</li>
+                    <li>Selections by non-faculty members are not visible and cannot be included</li>
+                </ul>
+            </li>
+        </ol>
     {% endifequal %}
         
 {% comment %} SOURCE MEDIA PAGE, BOOKMARKLET BOX {% endcomment %}

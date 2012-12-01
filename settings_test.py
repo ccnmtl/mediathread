@@ -4,6 +4,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'lettuce.db',
+        'PORT': '8002',
         'OPTIONS': {
             'timeout': 30,
         }

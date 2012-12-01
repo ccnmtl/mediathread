@@ -37,9 +37,21 @@ class AssetManager(models.Manager):
                            source__label='archive'
                            )
         
-    @property
-    def dir(self):
-        return dir(self)
+    def references(self, course, authors):
+        # All course assets created/imported by faculty OR annotated by faculty
+        qs = Asset.objects.filter(course=course).exclude(source__primary=True, 
+            source__label='archive')
+        
+        # Assets without notes are filtered by author
+        assets_without_notes = qs.filter(author__in=authors)
+        
+        # Assets with notes are filtered based on the note's author, not the 
+        assets_with_notes = \
+            qs.filter(sherdnote__author__in=authors)
+        
+        qs = assets_without_notes | assets_with_notes
+        return qs.distinct()
+  
 
 class Asset(models.Model):
     objects = AssetManager() #custom manager
@@ -144,14 +156,10 @@ class Asset(models.Model):
         if SherdNote:
             return SherdNote.objects.global_annotation(self, user, auto_create=auto_create)[0]
         
-    def faculty_annotations(self):
+    def annotations(self, authors):
         # SherdNotes - global & other for course faculty
-        qs = self.sherdnote_set.filter(author=self.course.faculty_filter)
-        return qs
-            
-    def annotations(self, user):
-        # SherdNotes - global & other for specific user
-        qs = self.sherdnote_set.filter(author=user)
+        qs = self.sherdnote_set.filter(author__in=authors)
+        qs = qs.filter(range1__isnull=False)
         return qs
         
     def media_type(self):

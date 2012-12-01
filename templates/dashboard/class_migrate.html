@@ -56,12 +56,12 @@
         <div id="import-all-dialog" style="display: none" title="Import">
             <h3><%= title %></h3>
             <% if (project_set.length > 0) { %>
-                <div><%= project_set.length %> Projects with <%= project_set_selections %> associated items and selections</div>
+                <div><%= project_set.length %> Projects with <%= project_set_selections %> referenced items</div>
             <% } else { %>
                 <div>No projects</div>
             <% } %>
             <% if (item_set.length > 0) { %>
-                <div><%= item_set.length %> items and @todo selections</div>
+                <div><%= item_set.length %> items and <%= item_set_selections %> selections</div>
             <% } else { %>
                 <div>No items or selections</div>
             <% } %>
@@ -70,7 +70,7 @@
         </div> 
         <br /><br />
         <% if (project_set && project_set.length > 0) { %>
-            <div><%= project_set.length %> Projects</div>
+            <div><%= project_set.length %> Projects with <%= project_set_selections %> referenced items</div>
             <div><input id="import-projects" type="button" value="Select Projects To Import"></div>
             <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Projects To Import">
                 <i>Note: Items and selections associated with a project are automatically migrated</i>
@@ -88,11 +88,13 @@
                             by <%= project_set[i].attribution %>
                             
                             <% if (project_set[i].hasOwnProperty('citations') > 0) { %>
-                                <br />
-                                <i>Includes <%= project_set[i].citations.length %> selections</i>
+                                <% if (project_set[i].citations.length > 0) { %>
+                                    <br />
+                                    <i>Includes <%= project_set[i].citations.length %> selections</i>
+                                <% } %>
                             <% } %>
                         </td>
-                        <td><input type="checkbox" value="<%= project_set[i].id %>"/></td>
+                        <td><input class="project" type="checkbox" value="<%= project_set[i].id %>"/></td>
                     </tr>
                 <% } %>
                 </table>
@@ -102,15 +104,20 @@
         <br /><br />
 
         <% if (item_set && item_set.length > 0) { %>
-            <div><%= item_set.length %> Items with @todo Selections</div>
+            <div><%= item_set.length %> Items with <%= item_set_selections %> Selections</div>
             <div><input id="import-items" type="button" value="Select Items To Import"></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Import">
             <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
             <div class="visualclear"/>
             <% for (var i = 0; i < item_set.length; i++) { %>
-                <div class="gallery-item rounded gallery-item-mini">                    
-                    <h4 class="asset_title asset-<%=item_set[i].primary_type%>"><input class="right" type="checkbox" value="<%= item_set[i].id %>"/><div class="title"><%= item_set[i].title %></div></h4>
+                <div class="gallery-item rounded gallery-item-mini <%=item_set[i].required%>">                    
+                    <h4 class="asset_title asset-<%=item_set[i].primary_type%>">
+                        <input class="right <%=item_set[i].required%>" type="checkbox" value="<%= item_set[i].id %>"
+                            <% if (item_set[i].required === "required") { %> disabled="disabled" checked="checked" <% } %> 
+                        />
+                        <div class="title"><%= item_set[i].title %></div>
+                    </h4>
                     <% if (item_set[i].thumb_url) { %>
                         <div class="record">
                             <img class="asset-thumb" src="<%=item_set[i].thumb_url%>" alt="Item Thumbnail" />
@@ -119,10 +126,9 @@
                     <div class="meta">
                         <div class="metadata-value">Imported by <%= item_set[i].author.full_name %></div>
                         <div>
-                        <span class="metadata-label item-annotation-count-total"><%=item_set[i].annotation_count%></span>
-                          <span class="metadata-value">selections</span>
-                        | <span class="metadata-label item-annotation-count-user"><%=item_set[i].user_annotation_count%></span>
-                          <span class="metadata-value">by me</span>
+                            <span class="metadata-value">Includes </span>  
+                            <span class="metadata-label item-annotation-count-total"><%=item_set[i].selections.length %></span>
+                            <span class="metadata-value">selections</span>                        
                         </div>
                     </div>
                     
@@ -138,7 +144,7 @@
     {% with help_migrate_materials as default_help_state %}
     
     <ul class="archive-gallery">
-        <li class="archive-container">                
+        <li class="archive-container">
             <h2>Migrate Course Materials {% include "help/help_button.html" %}</h2>
             {% include "help/help_contentarea.html" %}
             
@@ -157,12 +163,17 @@
                     <div id="course"></div>
                 </div>
                 <div class="selected-for-import" style="display: none">
-                    <div><h4 class="left">Selected for import</h4><h4 class="right">Remove</h4></div>
-                    <div class="visualclear"/>
-                    <div class="results scroll"></div>
-                    <input type="button" value="Import Selected" />
+                    <form>
+                        <div><h4 class="left">Selected for import</h4><h4 class="right">Remove</h4></div>
+                        <div class="visualclear"/>
+                        <div id="to_import" class="results scroll">
+                        </div>
+                        <input type="button" value="Import Selected" />
+                    </form>
                 </div>                    
             </div>
+            
+            
         </li>
     </ul>
     

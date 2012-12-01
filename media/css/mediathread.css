@@ -3292,6 +3292,12 @@ ul#projects .createnew-button {
     text-align: center;
 }
 
+.gallery-item.required {
+    opacity:0.75;
+    -moz-opacity:0.75;
+    filter:alpha(opacity=75);
+}
+
 div#materials.column-contents.homepage div.actions {
     width: 100%;
     margin-top: 10px;
@@ -3585,6 +3591,7 @@ div.selected-for-import div.results {
 
 .import-items-dialog {
     background-color: #EDEDED !important;
+    max-height: 420px;
 }
 
 .import-items-dialog h4 div {

@@ -29,6 +29,7 @@ def get_discussions(arbitrary_object):
     return discussions  
 
 def get_course_discussions(course):
+    
     content_type = ContentType.objects.get_for_model(Course)
     parent = Collaboration.objects.get(object_pk=course.id, content_type=content_type)
     

@@ -1,0 +1,40 @@
+/** Discussions in the system **/
+
+select cr.title, th.title, c.submit_date
+from structuredcollaboration_collaboration s, 
+     django_content_type t,
+     threadedcomments_comment th,
+     django_comments c,
+     structuredcollaboration_collaboration s1, 
+     django_content_type t1,
+     courseaffils_course cr
+where t.name='Threaded comment'       
+  and s.content_type_id=t.id 
+  and s._parent_id=s1.id 
+  and t1.name='course' 
+  and s1.content_type_id=t1.id
+  and cast(s.object_pk as int)=th.comment_ptr_id
+  and th.comment_ptr_id=c.id
+  and cast(s1.object_pk as int)=cr.id
+order by c.submit_date desc
+
+/** Courses using discussions **/
+
+select cr.title, max(c.submit_date) as most_recent, count(th.id)
+from structuredcollaboration_collaboration s, 
+     django_content_type t,
+     threadedcomments_comment th,
+     django_comments c,
+     structuredcollaboration_collaboration s1, 
+     django_content_type t1,
+     courseaffils_course cr
+where t.name='Threaded comment'       
+  and s.content_type_id=t.id 
+  and s._parent_id=s1.id 
+  and t1.name='course' 
+  and s1.content_type_id=t1.id
+  and cast(s.object_pk as int)=th.comment_ptr_id
+  and th.comment_ptr_id=c.id
+  and cast(s1.object_pk as int)=cr.id
+group by cr.title
+order by most_recent desc

@@ -44,6 +44,6 @@ try:
                     settings.LOGIN_URL,
                     REDIRECT_FIELD_NAME,
                     path))
-
+            
 except ImportError:
     pass

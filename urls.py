@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 import os.path
 from tastypie.api import Api
-from mediathread_main.api import *
 
 admin.autodiscover()
 
@@ -21,8 +20,12 @@ if hasattr(settings,'WIND_BASE'):
     auth_urls = (r'^accounts/',include('djangowind.urls'))
     logout_page = (r'^accounts/logout/$','djangowind.views.logout', {'next_page': redirect_after_logout})
     
+from mediathread_main.api import *
+from djangosherd.api import *
+    
 v1_api = Api(api_name='v1')
 v1_api.register(CourseResource())
+v1_api.register(SherdNoteResource())
 
 urlpatterns = patterns('',
                        (r'^crossdomain.xml$', 'django.views.static.serve', {'document_root': os.path.abspath(os.path.dirname(__file__))

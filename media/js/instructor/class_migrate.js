@@ -1,17 +1,63 @@
 (function (jQuery) {
     var global = this;
     
+    var Selection = Backbone.Model.extend({
+        
+    });
+
+    var SelectionList = Backbone.Collection.extend({
+        model: Selection
+    });
+
+    var Item = Backbone.Model.extend({
+        
+    });
+
+    var ItemList = Backbone.Collection.extend({
+        model: Item,
+        parse: function (response) {
+            if (response) {
+                //response.questions = new ActorQuestionList(response.questions);
+            }
+            return response;
+        }
+    });
+
+
+    var Project = Backbone.Model.extend({
+        parse: function (response) {
+            if (response) {
+                response.item_set = new ItemList(response.item_set);
+            }
+            return response;
+        }
+    });
+
+    var ProjectList = Backbone.Collection.extend({
+        model: Project
+    });
+    
     var Course = Backbone.Model.extend({
         urlRoot: '/_main/api/v1/course/',
+        parse: function (response) {
+            if (response) {
+                response.projects = new ProjectList(response.questions);
+            }
+            return response;
+        },
         customJSON: function () {
             var json = this.toJSON();
             
             json.project_set_selections = 0;
             for (var i = 0; i < json.project_set.length; i++) {
-                json.project_set_selections += json.project_set[i].selection_count;
+                json.project_set_selections += json.project_set[i].citations.length;
             }
-
-            json.items = 0;
+            
+            json.item_set_selections = 0;
+            for (var l = 0; l < json.item_set.length; l++) {
+                // count up the total selections while we're at it.
+                json.item_set_selections += json.item_set[l].selections.length;
+            }
             
             return json;
         }
@@ -112,7 +158,6 @@
                 resizable: false,
                 modal: true,
                 width: 425,
-                zIndex: 10000,
                 open: function () {
                     var container = jQuery(this.el).find('#import-items-dialog')[0];
                     jQuery(container).masonry({
@@ -126,6 +171,7 @@
         },
         
         importProjects: function (evt) {
+            var self = this;
             var element = jQuery("#import-projects-dialog");
             jQuery(element).dialog({
                 buttons: [{ text: "Cancel",
@@ -135,7 +181,21 @@
                           },
                           { text: 'Import',
                             click: function () {
-                                jQuery("div.selected-for-import").show();
+                                var lst = jQuery("input.project:checked");
+                                if (lst.length > 0) {
+                                    jQuery(lst).each(
+                                        function (idx, elt) {
+                                            var id = jQuery(elt).attr("value");
+                                            var type = "project";
+                                            var description = jQuery(elt).parent().prev("td").html();
+                                            alert(id);
+                                            alert(type);
+                                            alert(description);
+                                        }
+                                    );
+                                    
+                                    jQuery("div.selected-for-import").show();
+                                }
                                 jQuery(this).dialog("close");
                             }
                           },
@@ -144,8 +204,7 @@
                 resizable: true,
                 modal: true,
                 width: 600,
-                maxHeight: 450,
-                zIndex: 10000
+                maxHeight: 450
             });
             
             jQuery(element).parent().appendTo(this.el);
@@ -178,8 +237,7 @@
                 resizable: true,
                 modal: true,
                 width: 725,
-                maxHeight: 550,
-                zIndex: 10000
+                maxHeight: 425
             });
             
             jQuery(element).parent().appendTo(this.el);
@@ -191,7 +249,7 @@
         },
         
         clearAllItems: function (evt) {
-            jQuery("h4.asset_title input:checkbox").removeAttr("checked");
+            jQuery("h4.asset_title input:checkbox").not(".required").removeAttr("checked");
         }
     });
 }(jQuery));

@@ -62,8 +62,8 @@ class Annotation(models.Model):
             return tc_range
         if self.range1 is not None:
             tc_range += self.secondsToCode(self.range1)
-        if self.range2 is not None \
-               and self.range2 != self.range1:
+        if (self.range2 is not None
+                and self.range2 != self.range1):
             tc_range += " - %s" % self.secondsToCode(self.range2)
         return tc_range
 
@@ -288,7 +288,7 @@ class DiscussionIndex(models.Model):
     collaboration = models.ForeignKey(Collaboration)
 
     asset = models.ForeignKey(Asset, null=True,
-        related_name="discussion_references")
+                              related_name="discussion_references")
 
     # just for use-case #3
     comment = models.ForeignKey(Comment, null=True)
@@ -350,8 +350,9 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
     author = None
     if (hasattr(instance, 'comment') and
         hasattr(instance, 'user') and
-        isinstance(getattr(instance, 'content_object', None), Collaboration)
-        ):  # duck-typing for Comment and ThreadedComment
+            isinstance(getattr(instance, 'content_object', None),
+                       Collaboration)):
+        # duck-typing for Comment and ThreadedComment
         participant = instance.user
         author = instance.user
         comment = instance
@@ -380,8 +381,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
             di, c = DiscussionIndex.objects.get_or_create(
                 participant=participant,
                 collaboration=collaboration,
-                asset=ann.asset,
-                )
+                asset=ann.asset)
             di.comment = comment
             di.save()
         except:

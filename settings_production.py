@@ -7,8 +7,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'mediathread_main.views.django_settings',
     )
 
-DATABASE_ENGINE = 'postgresql_psycopg2'
-
 TEMPLATE_DIRS = (
     "/var/www/mediathread/mediathread/templates",
 )

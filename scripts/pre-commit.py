@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# link me into your git hooks like so:
+# ln -s `pwd`/scripts/pre-commit.py `pwd`/.git/hooks/pre-commit
 
 import os
 import re
@@ -112,9 +114,14 @@ def main(all_files):
     
     for check in CHECKS:
         result = check_files(files, check) or result
-    
+        
     # Unstash changes to the working tree that we had stashed
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    # Update the release id
+    print 'Updating Release Id...'
+    return_code = subprocess.call('scripts/update-release-id.sh', shell=True)
+        
     sys.exit(result)
 
 

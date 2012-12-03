@@ -20,6 +20,7 @@ Comment = get_model('comments', 'comment')
 NULL_FIELDS = dict((i, None) for i in
                    'range1 range2 title'.split())
 
+
 class Annotation(models.Model):
     range1 = models.FloatField(default=None, null=True)
     range2 = models.FloatField(default=None, null=True)

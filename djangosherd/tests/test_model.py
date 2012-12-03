@@ -7,7 +7,6 @@ from djangosherd.models import SherdNote
 class SherdNoteTest(TestCase):
     fixtures = ['unittest_sample_course.json']
 
-    '''
     def test_is_global_annotation(self):
         # Alternate Course, test_student_three
         global_annotation = SherdNote.objects.get(id=16)
@@ -53,7 +52,6 @@ class SherdNoteTest(TestCase):
         
         real_annotation = SherdNote.objects.get(id=3)
         self.assertEquals(real_annotation.range_as_timecode(), "0:43 - 01:15")
-    '''
     
     def test_get_global_annotation(self):
         asset = Asset.objects.get(id=1)

@@ -51,10 +51,8 @@ CHECKS = [
                          '.*/ve/.*',
                          '.*virtualenv\.py$',
                          '.*/assetmgr/.*',
-                         '.*/deploy_specific/.*',
                          '.*/mediathread_main/.*',
-                         '.*/projects/.*',
-                         '.*/structuredcollaboration/.*'],
+                         '.*/projects/.*'],
         'print_filename': True,
     },
 ]

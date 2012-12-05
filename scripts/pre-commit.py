@@ -52,7 +52,6 @@ CHECKS = [
                          '.*virtualenv\.py$',
                          '.*/assetmgr/.*',
                          '.*/deploy_specific/.*',
-                         '.*/discussions/.*',
                          '.*/mediathread_main/.*',
                          '.*/projects/.*',
                          '.*/reports/.*',

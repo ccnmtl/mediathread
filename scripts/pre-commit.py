@@ -43,7 +43,7 @@ CHECKS = [
     },
     {
         'output': 'Running flake8...',
-        'command': 'flake8 --max-complexity=10 %s',
+        'command': 'flake8 --max-complexity=15 %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*settings/.*',
                          '.*manage.py',
@@ -54,7 +54,6 @@ CHECKS = [
                          '.*/deploy_specific/.*',
                          '.*/mediathread_main/.*',
                          '.*/projects/.*',
-                         '.*/reports/.*',
                          '.*/structuredcollaboration/.*'],
         'print_filename': True,
     },

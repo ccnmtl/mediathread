@@ -52,7 +52,8 @@ CHECKS = [
                          '.*virtualenv\.py$',
                          '.*/assetmgr/.*',
                          '.*/mediathread_main/.*',
-                         '.*/projects/.*'],
+                         '.*/projects/.*',
+                         '.*/assetmgr/supported_archives\.py$'],
         'print_filename': True,
     },
 ]

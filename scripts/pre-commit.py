@@ -113,7 +113,7 @@ def main(all_files):
     result = return_code or result
 
     print 'Running Unit Tests...'
-    return_code = subprocess.call('./manage.py test djangosherd.SherdNoteTest',
+    return_code = subprocess.call('./manage.py test djangosherd',
                                   shell=True)
     result = return_code or result
 

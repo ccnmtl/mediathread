@@ -7,9 +7,6 @@ class ProjectResourceTest(ResourceTestCase):
     fixtures = ['unittest_sample_course.json',
                 'unittest_sample_projects.json']
 
-    def setUp(self):
-        super(ProjectResourceTest, self).setUp()
-
     def assertProjectEquals(self, project, title, author, selection_ids):
         self.assertEquals(project['title'], title)
         self.assertEquals(project['attribution'], author)

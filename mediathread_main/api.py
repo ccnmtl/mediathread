@@ -1,9 +1,22 @@
+from assetmgr.api import AssetAuthorization
 from courseaffils.models import Course, CourseInfo
-from mediathread.api import ClassLevelAuthentication, GroupResource
+from mediathread.api import ClassLevelAuthentication
+from mediathread.api import GroupResource
 from projects.api import ProjectAuthorization
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
+
+
+class CourseMemberAuthorization(Authorization):
+
+    def apply_limits(self, request, object_list):
+        # User must be a member of all courses in the request list
+        for course in object_list:
+            if not course.is_member(request.user):
+                return Course.objects.none()
+
+        return object_list
 
 
 class CourseInfoResource(ModelResource):
@@ -12,11 +25,6 @@ class CourseInfoResource(ModelResource):
         resource_name = 'info'
         allowed_methods = ['get']
         excludes = ['days', 'endtime', 'starttime']
-
-
-class CourseAuthorization(Authorization):
-    def is_authorized(self, request, object=None):
-        return object and object.is_member(request.user)
 
 
 class CourseResource(ModelResource):
@@ -29,26 +37,26 @@ class CourseResource(ModelResource):
                              blank=True,
                              null=True)
 
-    project_filter = lambda bundle: ProjectAuthorization().apply_limits(
-        bundle.request, bundle.obj.project_set.all())
+    project_set = fields.ToManyField(
+        'projects.api.ProjectResource', blank=True, null=True, full=True,
+        attribute=lambda bundle: ProjectAuthorization().apply_limits(
+            bundle.request,
+            bundle.obj.project_set.all(), bundle.obj).order_by('id'))
 
-    project_set = fields.ToManyField('mediathread_main.api.ProjectResource',
-                                     blank=True, null=True, full=True,
-                                     attribute=project_filter)
-
-    # item_filter = lambda bundle: Asset.objects.references(bundle.obj,
-    #                                                      bundle.obj.faculty)
-    # item_set = fields.ToManyField('mediathread_main.api.AssetResource',
-    #                              blank=True, null=True, full=True,
-    #                              attribute=item_filter)
+    item_set = fields.ToManyField(
+        'assetmgr.api.AssetResource', blank=True, null=True, full=True,
+        attribute=lambda bundle: AssetAuthorization().apply_limits(
+            bundle.request,
+            bundle.obj.asset_set.all(), bundle.obj).order_by('id'))
 
     class Meta:
         queryset = Course.objects.all()
         excludes = ['group']
-        allowed_methods = ['get']
+        list_allowed_methods = []
+        detail_allowed_methods = ['get']
 
         # User is logged into some course
         authentication = ClassLevelAuthentication()
 
-        # User has access to the requested object
-        authorization = CourseAuthorization()
+        # User is a member of this course
+        authorization = CourseMemberAuthorization()

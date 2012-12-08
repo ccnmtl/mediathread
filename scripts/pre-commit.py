@@ -50,9 +50,7 @@ CHECKS = [
                          '.*migrations.*',
                          '.*/ve/.*',
                          '.*virtualenv\.py$',
-                         '.*/assetmgr/.*',
                          '.*/mediathread_main/.*',
-                         '.*/projects/.*',
                          '.*/assetmgr/supported_archives\.py$'],
         'print_filename': True,
     },
@@ -113,8 +111,8 @@ def main(all_files):
     result = return_code or result
 
     print 'Running Unit Tests...'
-    return_code = subprocess.call('./manage.py test djangosherd',
-                                  shell=True)
+    return_code = subprocess.call(
+        './manage.py test djangosherd assetmgr projects', shell=True)
     result = return_code or result
 
     for check in CHECKS:

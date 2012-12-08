@@ -50,7 +50,6 @@ CHECKS = [
                          '.*migrations.*',
                          '.*/ve/.*',
                          '.*virtualenv\.py$',
-                         '.*/mediathread_main/.*',
                          '.*/assetmgr/supported_archives\.py$'],
         'print_filename': True,
     },

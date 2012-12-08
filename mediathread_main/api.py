@@ -1,6 +1,5 @@
 from courseaffils.models import Course, CourseInfo
-from mediathread.api import ClassLevelAuthentication
-from mediathread.api import GroupResource
+from mediathread.api import ClassLevelAuthentication, GroupResource
 from projects.api import ProjectAuthorization
 from tastypie import fields
 from tastypie.authorization import Authorization

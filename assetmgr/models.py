@@ -14,6 +14,9 @@ Course = models.get_model('courseaffils', 'course')
 def default_url_processor(source, request):
     return source.url
 
+# Override in deploy_specific/settings.py
+# for special authentication processing
+# Called by Source:url_processed
 url_processor = getattr(settings, 'ASSET_URL_PROCESSOR', default_url_processor)
 
 
@@ -35,22 +38,6 @@ class AssetManager(models.Manager):
 
     def archives(self):
         return self.filter(source__primary=True, source__label='archive')
-
-    def references(self, course, authors):
-        # All course assets created/imported by faculty OR annotated by faculty
-        qs = Asset.objects.filter(
-            course=course).exclude(
-                source__primary=True, source__label='archive')
-
-        # Assets without notes are filtered by author
-        assets_without_notes = qs.filter(author__in=authors)
-
-        # Assets with notes are filtered based on the note's author, not the
-        assets_with_notes = \
-            qs.filter(sherdnote__author__in=authors)
-
-        qs = assets_without_notes | assets_with_notes
-        return qs.distinct()
 
 
 class Asset(models.Model):
@@ -97,9 +84,7 @@ class Asset(models.Model):
     primary_labels = useful_labels + fundamental_labels
 
     class Meta:
-        permissions = (
-            ("can_upload_for", "Can upload assets for others"),
-        )
+        permissions = (("can_upload_for", "Can upload assets for others"), )
 
     @classmethod
     def good_args(cls, args):
@@ -116,14 +101,9 @@ class Asset(models.Model):
                 return {}
         return {}
 
-    def saved_by(self):
-        return self.author
-
     @models.permalink
     def get_absolute_url(self):
-        return ('asset-view', (), {
-                'asset_id': self.pk,
-                })
+        return ('asset-view', (), {'asset_id': self.pk, })
 
     @property
     def html_source(self):
@@ -169,11 +149,11 @@ class Asset(models.Model):
             return SherdNote.objects.global_annotation(
                 self, user, auto_create=auto_create)[0]
 
-    def annotations(self, authors):
+    #def annotations(self, authors):
         # SherdNotes - global & other for course faculty
-        qs = self.sherdnote_set.filter(author__in=authors)
-        qs = qs.filter(range1__isnull=False)
-        return qs
+    #    qs = self.sherdnote_set.filter(author__in=authors)
+    #    qs = qs.filter(range1__isnull=False)
+    #    return qs
 
     def media_type(self):
         label = 'video'
@@ -286,11 +266,7 @@ class Source(models.Model):
     def is_archive(self):
         return self.label == 'archive'
 
-    request = None
-
-    def url_processed(self, request=None):
-        if request is None:
-            request = self.request or self.asset.request
+    def url_processed(self, request):
         return url_processor(self, request)
 
 

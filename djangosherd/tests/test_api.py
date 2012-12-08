@@ -8,9 +8,6 @@ class SherdNoteResourceTest(ResourceTestCase):
     # documentation for the gory details.
     fixtures = ['unittest_sample_course.json']
 
-    def setUp(self):
-        super(SherdNoteResourceTest, self).setUp()
-
     def assertNoteEquals(self, note, id, title, author, is_global_annotation):
         self.assertEquals(note['asset_id'], id)
         self.assertEquals(note['title'], title)
@@ -18,7 +15,6 @@ class SherdNoteResourceTest(ResourceTestCase):
         self.assertEquals(note['is_global_annotation'], is_global_annotation)
 
     def test_student_getlist(self):
-        # As Course Student
         self.assertTrue(
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
@@ -346,14 +342,8 @@ class SherdNoteResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_instructor",
                                          password="test"))
 
-        self.post_data = {
-            'author': '/api/v1/user/2/',
-            'title': 'Post!',
-            'asset': '/api/v1/asset/2/'
-        }
-
         self.assertHttpMethodNotAllowed(self.api_client.post(
-            '/_main/api/v1/sherdnote/', format='json', data=self.post_data))
+            '/_main/api/v1/sherdnote/', format='json', data={}))
 
     def test_put_detail(self):
         self.assertTrue(
@@ -370,3 +360,77 @@ class SherdNoteResourceTest(ResourceTestCase):
 
         self.assertHttpMethodNotAllowed(self.api_client.delete(
             '/_main/api/v1/sherdnote/2/', format='json'))
+
+    def test_getobject_multiple_class_member(self):
+        # User prompted to select class after login
+        # User can access notes for this class
+        # User cannot access notes for another class
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_three",
+                                         password="test"))
+
+        # Student One Selection from Sample Course
+        response = self.api_client.get('/_main/api/v1/sherdnote/8/',
+                                       format='json')
+        self.assertHttpOK(response)
+        self.assertEquals(response.template[0].name,
+                          "courseaffils/select_course.html")
+
+        # No dice, login to Alternate Course
+        response = self.api_client.client.get(
+            '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
+        self.assertHttpOK(response)
+        self.assertEquals(response.template[0].name, "homepage.html")
+
+        # Let's try this again -- Student One Selection from Sample Course
+        response = self.api_client.get('/_main/api/v1/sherdnote/8/',
+                                       format='json')
+        self.assertEqual(response.status_code, 404)
+
+        # Now ask for one from Alternate Course
+        response = self.api_client.get('/_main/api/v1/sherdnote/15/',
+                                       format='json')
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+        self.assertNoteEquals(json, '4', 'Whole Item Selection',
+                              'test_student_three', 'False')
+
+    def test_getlist_multiple_class_member(self):
+        # User prompted to login to class after login
+        # User receives only assets for logged-in class
+                # User prompted to select class after login
+        # User can access notes for this class
+        # User cannot access notes for another class
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_three",
+                                         password="test"))
+
+        # Student One Selection from Sample Course
+        response = self.api_client.get('/_main/api/v1/sherdnote/',
+                                       format='json')
+        self.assertHttpOK(response)
+        self.assertEquals(response.template[0].name,
+                          "courseaffils/select_course.html")
+
+        # No dice, login to Alternate Course
+        response = self.api_client.client.get(
+            '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
+        self.assertHttpOK(response)
+        self.assertEquals(response.template[0].name, "homepage.html")
+
+        # Let's try this again -- asset list please
+        response = self.api_client.get('/_main/api/v1/sherdnote/',
+                                       format='json')
+
+        json = self.deserialize(response)
+        objects = json['objects']
+        self.assertEquals(len(objects), 4)
+
+        self.assertNoteEquals(objects[0], '4', 'Research and Evaluation',
+                              'test_instructor_alt', 'False')
+        self.assertNoteEquals(objects[1], '4', 'Curricular Context',
+                              'test_instructor_alt', 'False')
+        self.assertNoteEquals(objects[2], '4', 'Whole Item Selection',
+                              'test_student_three', 'False')
+        self.assertNoteEquals(objects[3], '4', None,
+                              'test_student_three', 'True')

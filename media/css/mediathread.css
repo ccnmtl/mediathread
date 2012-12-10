@@ -16,7 +16,6 @@ body
 
 h1, h2, h3, h4, h5, h6
 {
-    margin: 0 0 0.7em 0;
     padding: 0;
     border: 0;
 }
@@ -25,12 +24,13 @@ h1
 {
     font-size: 2.142em;
     font-weight: normal;
-    line-height: 2.5em;
 }
 
 h2
 {
-    font-size: 120%;
+    font-size: 1.4285em;
+    color: #777;
+    font-weight: normal;
 }
 
 h3
@@ -114,7 +114,6 @@ a:hover {
     margin: 0 auto;
     width: auto;
     padding: 0;
-    border: 1px solid #999;
     border-collapse: collapse;
     background-color: #fff;
     border-top: none;
@@ -124,24 +123,26 @@ a:hover {
 #header
 {
     display: block;
-    height: 90px;
     overflow: hidden;
     margin: 0;
-    padding: 0 0 5px 10px;
-    border: 0;
+	padding:0;
+	border: 0;
     width: 100%;
 }
 
 #course_title {
-	font-weight: bold;
+	display: block;
+	clear: both;
+	float: left;
     z-index: 9997;
-    padding: 0 0 0 10px;
-    overflow: hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
 }
 
-
+h1#course_title {
+	font-weight: bold;
+	padding: 10px 0 0 10px;
+}
  /* ---- Pagebody block elements ---------- */
  
 #pagebody
@@ -407,7 +408,27 @@ html.busy, html.busy * {
     color: #333;
 }
 
+/* Home Page Columns */
 
+#instructor .column-container {
+    width: 280px;
+}
+
+div.column-contents {
+    overflow: auto;
+    height: 95%;
+}
+
+.column-container h2 {
+	padding: 10px 0;
+	border-bottom: solid 1px #efefef;
+}
+
+table#home-columns td {
+    border: none;
+    border-collapse: collapse;
+    vertical-align: top;
+}
 
 #coursefilter {
     float: right;
@@ -416,7 +437,6 @@ html.busy, html.busy * {
     padding: 8px 10px;
     display: block;
     margin: 5px 10px 10px;
-
 }
 
 
@@ -2719,11 +2739,6 @@ input.videoplay {
     text-transform: capitalize;
 }
 
-#instructor .column-container {
-    width: 300px;
-    margin-top: 14px;
-}
-
 .media-column .column-container {
     width: 320px;
     margin: 5px 3px 5px 0px;
@@ -2768,12 +2783,7 @@ table#home-columns
     margin: 0;
 }
 
-table#home-columns td {
-    border: none;
-    border-collapse: collapse;
-    vertical-align: top;
-    padding: 5px;
-}
+
 
 table#home-columns td#instructor ul,
 table#home-columns td#classwork ul {
@@ -2914,29 +2924,6 @@ ul.instructor-list li {
 }
 
 
-
-table#home-columns td h2 {
-    background-color: #333333;
-    padding: 5px 12px;
-    text-transform: uppercase;
-    color: #ffffff;
-    font-weight: normal;
-    -moz-border-radius: 10px 10px 0 0;
-    border-radius: 10px 10px 0 0;
-    margin: 0;
-}
-
-table#home-columns td#instructor h2 {
-    background-color: #006031;
-    height: 14px;
-    text-transform: uppercase;
-    color: #ffffff;
-    font-weight: normal;
-    -moz-border-radius: 10px 10px 0 0;
-    border-radius: 10px 10px 0 0;
-    margin: -14px 0 0 0;
-}
-
 td#projects .column-contents,
 td.media-column .column-contents {
 	background-color: #EDEDED;
@@ -2944,23 +2931,6 @@ td.media-column .column-contents {
 td.media-column .column-contents {
 	padding: 0px;
 }
-div.column-contents {
-    background-color: #ffffff;
-    -moz-box-shadow: 0px 5px 5px #ccc;
-    -webkit-box-shadow: 0px 5px 5px #ccc;
-    box-shadow: 0px 5px 5px #ccc;
-    border: 1px solid #ccc;
-    border-top: 0;
-    overflow: auto;
-    height: 95%;
-
-}
-
-
-div.column-contents {
-    padding-top: 10px;
-}
-
 
 table.item-level-info {
 

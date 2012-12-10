@@ -40,7 +40,7 @@ class UserResource(ModelResource):
 
 
 class GroupResource(ModelResource):
-    user_set = fields.ToManyField('mediathread_main.api.UserResource',
+    user_set = fields.ToManyField('mediathread.api.UserResource',
                                   'user_set',
                                   full=True)
 

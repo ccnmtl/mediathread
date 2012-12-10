@@ -142,11 +142,6 @@ class CourseResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
 
-        self.assertEquals(json['faculty_group']['user_set'][0]['full_name'],
-                          'test_instructor_two')
-        self.assertEquals(json['faculty_group']['user_set'][1]['full_name'],
-                          'Instructor One')
-
         objects = json['item_set']
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [1, 2, 3, 17],

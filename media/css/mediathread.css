@@ -68,9 +68,7 @@ table
 {
     margin: 0 0 0.7em 0;
     padding: 0;
-    border: 1px solid #ccc;
     border-collapse: collapse;
-    font-size: 100%;
 }
 
 th
@@ -438,7 +436,6 @@ table#home-columns td {
     display: block;
     margin: 5px 10px 10px;
 }
-
 
 table.course-choices {
     padding:5px;
@@ -1346,19 +1343,6 @@ div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
     
 }
 
-.helptoggle.on 
-{
-
-    background-color: #DEDEDE;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom: 3px solid #DEDEDE;
-
-}
 
 #instructor-nav .helptoggle a, .helptoggle a.togglebutton 
 {
@@ -1387,9 +1371,7 @@ div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
 
 .helpblock {
     margin: -7px 3px 20px 4px;
-    background-color: #dedede;
     padding: 15px;
-    font-size: 95%;
     text-transform: none;
 
 }
@@ -1427,21 +1409,21 @@ table#home-columns td#classwork .helptoggle {
     margin: 0;
     width: 100%;
     background-color: white;
-    border: 1px solid #dedede;
     padding: 0;
 }
 
 #help_homepage_classwork_column div.help_content{
-    background-color: #dedede;
-    margin: 2px 4px 4px 4px;
-    padding: 10px;
+	background-color: #f5f5f5;
+	padding: 10px;
+    margin: 10px 0;
+    font-size: .857em;
+    color: #2f2f2f;
 }
 
 /*Assignment Specific styles */
 
 /** Switcher CSS **/
 .filter-widget {
-    background-color: #ccc;
     padding: 2px;
     padding-top: 4px;
     /*margin-bottom here causes a firefox bug to push down the top instead
@@ -2760,9 +2742,7 @@ input.videoplay {
 }
 
 #projects .column-container h2 {
-    background-color: #557691;
     text-transform: capitalize;
-    font-size: 98%;
 }
 
 
@@ -2924,10 +2904,6 @@ ul.instructor-list li {
 }
 
 
-td#projects .column-contents,
-td.media-column .column-contents {
-	background-color: #EDEDED;
-}
 td.media-column .column-contents {
 	padding: 0px;
 }

@@ -111,7 +111,8 @@ def main(all_files):
 
     print 'Running Unit Tests...'
     return_code = subprocess.call(
-        './manage.py test djangosherd assetmgr projects', shell=True)
+        './manage.py test djangosherd assetmgr projects mediathread_main',
+        shell=True)
     result = return_code or result
 
     for check in CHECKS:

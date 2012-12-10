@@ -33,16 +33,16 @@ class CourseResource(ModelResource):
                                       full=True)
 
     info = fields.ForeignKey(CourseInfoResource, 'info',
-                             full=True,
-                             blank=True,
-                             null=True)
+                             full=True, blank=True, null=True)
 
+    # All viewable assets - paginated at 20
     project_set = fields.ToManyField(
         'projects.api.ProjectResource', blank=True, null=True, full=True,
         attribute=lambda bundle: ProjectAuthorization().apply_limits(
             bundle.request,
             bundle.obj.project_set.all(), bundle.obj).order_by('id'))
 
+    # All viewable assets - paginated at 20
     item_set = fields.ToManyField(
         'assetmgr.api.AssetResource', blank=True, null=True, full=True,
         attribute=lambda bundle: AssetAuthorization().apply_limits(

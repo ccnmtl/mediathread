@@ -231,7 +231,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
     djangosherd.thumbs = [];
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
-        DjangoSherd_adaptAsset(asset); //in-place
+        djangosherd_adaptAsset(asset); //in-place
         
         var target_parent = jQuery(self.parent).find(".gallery-item-" + asset.id)[0];
         
@@ -280,7 +280,7 @@ CollectionList.prototype.createThumbs = function (assets) {
     djangosherd.thumbs = [];
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
-        DjangoSherd_adaptAsset(asset); //in-place
+        djangosherd_adaptAsset(asset); //in-place
         if (asset.thumbable && asset.annotations) {
             for (var j = 0; j < asset.annotations.length; j++) {
                 var ann = asset.annotations[j];

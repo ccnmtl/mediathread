@@ -483,9 +483,8 @@ ul#projects li {
 }
 
 .projectlist {
-    background-color:#EDEDED;
     padding-bottom: .5em;
-
+    border-left: solid 10px #39b54a;
 }
 
 
@@ -2044,6 +2043,10 @@ div.gallery-item h4.asset_title {
     margin-top: -3px;
 }
 
+a.asset_title.type-project {
+	color: #2f2f2f;
+}
+
 .asset_title.type-collaboration,
 .asset_title.type-discussion {
     background-image: url(../img/icons/item_discussion.png);
@@ -2681,14 +2684,6 @@ input.videoplay {
     cursor: pointer;
 }
 
-.meta
-{
-	font-size:90%;
-    color: #333;
-    line-height: 18px;
-    font-weight: normal;
-    margin: 0 5px;
-}
 
 .meta.annotation-global-tags,
 .meta.annotation-global-body {
@@ -2714,9 +2709,11 @@ input.videoplay {
 }
 
 .meta label,
-.metadata-label {
+.metadata-label,
+.metadata-value {
     font-weight: bold;
-    text-transform: capitalize;
+    color: #777;
+    font-size:.857em;
 }
 
 .media-column .column-container {
@@ -3308,7 +3305,7 @@ div.asset-view-help {
 div.asset-view-help div.asset-view-help-instructions {
     background-color: #ededed;
     padding: 5px;
-    margin-bottom: 10px;"
+    margin-bottom: 10px;
 }
 
 div.asset-view-help div.asset-view-help-instructions img {

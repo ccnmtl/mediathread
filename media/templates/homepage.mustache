@@ -108,16 +108,14 @@
         <tr>
             <td id="projects">
                 <div class="column-container projects-column-container" style="padding-bottom: 8px;">
-                    <h2>
-                        <div class="button-form inline">
+                       <!--
+                       <div class="button-form inline">
                             <form class="block project-createnew inline" method="POST" action="/project/create/">
                                 <input type="hidden" name="title" />
                                 <input class="columnbutton project createnew-button" type="submit" value="Create Composition"/>
                             </form>
                         </div>
-
-                        Compositions 
-                    </h2>
+						-->
                     <div class="column-contents scroll">
                         {{#>>projects}}
                         <div id="project_table">
@@ -183,12 +181,10 @@
                                                 </div>
                                                {{/collaboration?}}
                                             
-                                              <div>
-                                                  <span class="metadata-label">Author(s):</span>
-                                                  <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
-                                              </div>
+                                            <span class="metadata-label">by</span>
+                                            <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
                                               
-                                              <span class="metadata-label">Saved at:</span>
+                                              <span class="metadata-label">on</span>
                                               <span class="metadata-value">{{modified}}</span>
                                               <br />
                                               

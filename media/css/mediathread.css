@@ -140,6 +140,7 @@ a:hover {
 h1#course_title {
 	font-weight: bold;
 	padding: 10px 0 0 10px;
+	color: #2f2f2f;
 }
  /* ---- Pagebody block elements ---------- */
  
@@ -407,10 +408,43 @@ html.busy, html.busy * {
 }
 
 /* Home Page Columns */
-
-#instructor .column-container {
-    width: 280px;
+table#home-columns td {
+    border: none;
+    border-collapse: collapse;
+    vertical-align: top;
 }
+
+table#home-columns td#instructor {
+    width: 15%;
+    float: left;
+}
+
+table#home-columns td#classwork {
+    width: 60%;
+    float: left;
+}
+
+table#home-columns td#explore {
+	width: 15%;
+	float: left;
+}
+
+/* Smaller than standard 960 (devices and browsers) */
+	@media only screen and (max-width: 959px) {
+	
+		table#home-columns td#instructor,
+		table#home-columns td#classwork,
+		table#home-columns td#explore {
+	    width: 100%;
+    	display: block;
+    	clear: all;
+	}
+}
+
+div#classwork_table table {
+	width: 100%;
+}
+
 
 div.column-contents {
     overflow: auto;
@@ -422,11 +456,24 @@ div.column-contents {
 	border-bottom: solid 1px #efefef;
 }
 
-table#home-columns td {
-    border: none;
-    border-collapse: collapse;
-    vertical-align: top;
+/* Explore */
+
+#bookmarklet {
+	width: 100%;
+	background-color: #f5f5f5;
+	padding: 10px;
 }
+
+#bookmarklet ul {
+	margin: 20px 0 0 0;
+}
+
+#bookmarklet ul li {
+	list-style-type: none;
+	font-size: .857em;
+	color: #777;
+}
+
 
 #coursefilter {
     float: right;
@@ -2740,14 +2787,6 @@ input.videoplay {
 }
 
 
-table#home-columns td#classwork {
-    width: 60%;
-    float: left;
-}
-
-div#classwork_table table {
-	width: 100%;
-}
 
 /*Home Page specific styles*/
 

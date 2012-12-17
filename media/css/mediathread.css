@@ -522,11 +522,15 @@ ul#projects li {
 	padding: 20px 15px;
 }
 
-.projectlist {
+.projectlist.assignment {
     padding-bottom: .5em;
     border-left: solid 10px #39b54a;
 }
 
+.projectlist.composition {
+    padding-bottom: .5em;
+    border-left: solid 10px #1e77bd;
+}
 
 /* LOGIN PAGE */
 #id_username, #id_password {

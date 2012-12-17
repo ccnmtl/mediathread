@@ -35,48 +35,7 @@
         </div>
         {{/>>switcher_collection_chooser}}
         
-        <div class="switcher collection-filter" tabindex="2" style="width: 160px">
-            <a class="switcher-top menuclosed" onclick="switcher(this);">
-                <span class="down-arrow" tabindex="4"></span>
-                <span class="title">Collection Filters 
-                    <span
-                        {{#active_filter_count?}}
-                            class="filter-on">: ON
-                        {{/active_filter_count?}}
-                        {{^active_filter_count}}
-                            class="filter-off">...
-                        {{/active_filter_count}}
-                    </span>
-                </span>
-            </a>
-            <ul class="switcher-options" style="right: -51px">
-                {{^showing_all_items}}
-                <li>
-                    <h3>Date Modified</h3>
-                        <p class="switcher-sub filterbydate">
-                            <a class="switcher-choice" href="today">today</a>
-                            <a class="switcher-choice" href="yesterday">yesterday</a>
-                            <a class="switcher-choice" href="lastweek">within the last week</a>
-                        </p>                
-                </li>
-                {{/showing_all_items}}
-        
-                <li>
-                    <h3>Tags</h3>
-                    <p class="switcher-sub ">
-                        {{^tags}}
-                            No tags
-                        {{/tags}}
-                        {{#tags}}
-                            <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
-                        {{/tags}}
-                    </p>
-                </li>
-                
-            </ul>
-        </div>
-        
-        <div class="visualclear"></div>
+     
         
         {{#active_filter_count?}}
             <div class="switcher-active-filters">

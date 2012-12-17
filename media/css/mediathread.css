@@ -417,31 +417,21 @@ table#home-columns td {
 }
 
 table#home-columns td#instructor {
-    width: 15%;
+    width: 20%;
     float: left;
 }
 
 table#home-columns td#classwork {
-    width: 60%;
+    width: 50%;
     float: left;
 }
 
 table#home-columns td#explore {
-	width: 15%;
+	width: 20%;
 	float: left;
 }
 
 /* Smaller than standard 960 (devices and browsers) */
-	@media only screen and (max-width: 959px) {
-	
-		table#home-columns td#instructor,
-		table#home-columns td#classwork,
-		table#home-columns td#explore {
-	    width: 100%;
-    	display: block;
-    	clear: all;
-	}
-}
 
 div#classwork_table table {
 	width: 100%;
@@ -460,10 +450,11 @@ div.column-contents {
 
 /* Explore */
 
-#bookmarklet {
+#bookmarklet, #upload {
 	width: 100%;
 	background-color: #f5f5f5;
 	padding: 10px;
+	margin: 20px 0;
 }
 
 #bookmarklet ul {
@@ -2795,7 +2786,7 @@ input.videoplay {
 
 table#home-columns
  {
-
+    width: 100%;
     padding: 0;
     border: none;
     margin: 0;
@@ -2928,7 +2919,7 @@ div.gallery-item h4 {
 
 ul.instructor-list {
 
-    margin: 0 20px 0 30px;
+    margin: 0;
 }
 
 ul.instructor-list li {

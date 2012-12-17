@@ -92,8 +92,27 @@
                             
                             {{#compositions?}}
                                 <ul id="projects">
+                                        <! -- Compositions -->
+                                        <li class="projectlist composition" id="assignment-{{id}}">
+                                            <h3>
+                                                <a href="{{url}}"
+                                                   class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
+                                                  {{{title?default(-Untitled-)}}}
+                                                </a>
+                                            </h3>
+                                            <div class="meta">
+                                                <span class="metadata-label">Saved at:</span>
+                                                <span class="metadata-value">{{modified}}</span>
+                                                <br />
+                                              
+                                                <span class="metadata-label">Status:</span>
+                                                <span class="metadata-value metadata-value-status">Assignment</span>
+                                                <br />  
+                                            </div>
+                                        </li>
+                                        <! -- End Compositions -->
                                     {{#assignments}}
-                                        <li class="projectlist assignment-listitem rounded" id="assignment-{{id}}">
+                                        <li class="projectlist assignment rounded" id="assignment-{{id}}">
                                             <h3>
                                                 <a href="{{url}}"
                                                    class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
@@ -113,7 +132,7 @@
                                     {{/assignments}}
                                 
                                     {{#projects}}
-                                        <li class="projectlist" id="project-{{id}}">
+                                        <li class="projectlist assignment" id="project-{{id}}">
                                             <h3>
                                                 {{#editable?}}
                                                     <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
@@ -162,110 +181,6 @@
                 </div>
             </td>
         
-            <!-- <td class="media-column">
-                <div class="column-container media-column-container">
-                    <h2>
-                        <div class="button-form inline">
-                            <div class="collection_button">
-                                <a href="/asset/">View All Items</a>
-                            </div>
-                        </div>
-                        collection
-                    </h2>
-                    <div class="column-contents scroll">
-                        {{#>>assets}}
-                        <div id="asset_table" class="asset-table">
-                            {{^assets}}
-                                <div id="help_homepage_collections_section" class="helpblock">
-                                    {{#showing_my_items?}}
-                                        {{^active_filter_count}}
-                                            {{#is_faculty?}}
-                                                <h3>Media Items appear here:</h3>
-                                                
-                                                <p>To collect items, click the "Add to My Collection" button above.</p>
-
-                                                <p>Instructors can add sources to the "Add to My Collection" page. For more information, visit the <a href="/dashboard/">Instructor Dashboard</a>.</p>
-                                            {{/is_faculty?}}
-                                            {{^is_faculty}}    
-                                                <h5>You have not yet collected any items</h5>
-                                                <ul>
-                                                    <li>To collect items, click "Add to My Collection" above.</li>
-                                                    <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
-                                                </ul>
-                                            {{/is_faculty}}
-                                        {{/active_filter_count}}
-                                        {{#active_filter_count}}
-                                            <h5>No Items</h5>
-                                        {{/active_filter_count}}
-                                    {{/showing_my_items?}}
-                                    {{^showing_my_items}}
-                                        <h4>No items found</h4>
-                                    {{/showing_my_items}}
-                               </div>
-                            {{/assets}} 
-                            {{#assets}}
-                                <div id="materials" class="column-contents homepage">
-                                    <div id="record-{{id}}" class="gallery-item-homepage record-{{primary_type}} gallery-item-{{id}} rounded">
-                                        <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
-                                            <a class="asset-title-link"
-                                                href="{{local_url}}">
-                                                    {{#title?}}
-                                                        {{{title?ellipses(35)}}}
-                                                    {{/title?}}
-                                                    {{^title}}
-                                                        -Untitled-
-                                                    {{/title}}
-                                                    
-                                            </a>
-                                        </h4>
-                                        <div class="asset-thumb">
-                                            {{^thumbable}}
-                                                {{^thumb}}
-                                                    <img class="gallery-item-thumb" src="/site_media/img/nothumb_{{media_type_label}}.png" alt="Item Thumbnail" />
-                                                {{/thumb}}
-                                                {{#thumb?}}
-                                                    <img class="gallery-item-thumb" src="{{thumb}}" alt="Item Thumbnail" />
-                                                {{/thumb?}}
-                                            {{/thumbable}}
-                                        </div>
-                                        
-                                        <div class="actions">
-                                            {{#editable?}}
-                                                <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
-                                                </a>
-                                            {{/editable?}}
-                                            <a class="collection-choice edit-asset" href="{{local_url}}" title="Edit item attributes">
-                                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                                            </a>
-                                        </div>
-                                        
-                                        
-                                        {{#annotation_count?}}
-                                            <div class="item-annotation-count meta">
-                                                <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
-                                                <span class="metadata-value">selections</span>
-                                                | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
-                                                  <span class="metadata-value">by me</span>
-                                            </div>
-                                        {{/annotation_count?}}
-                                        {{^annotation_count}}
-                                            <div class="item-annotation-count meta">
-                                                <span class="metadata-label item-annotation-count-total">0</span>
-                                                <span class="metadata-value">selections</span>
-                                            </div>
-                                        {{/annotation_count}}
-                                    </div>
-                                    </div> {{! end id=materials, class="column-contents scroll" }} 
-                                {{/assets}}
-                            
-                        </div>
-                        {{/>>assets}}
-                    </div>
-                </div>
-            </td>
-            -->
-            
         </tr>
     </tbody>
 </table>

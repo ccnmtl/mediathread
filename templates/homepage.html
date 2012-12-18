@@ -87,7 +87,7 @@
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
                 <div class="column-container">    
-                   <h2>From Your Instructor  {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
+                   <h2>Course Information {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
                       <div class="column-contents scroll">
                          {% if is_faculty %}{% include "help/help_contentarea.html" %} {% endif %}
                         <div id="instructor-column">
@@ -100,14 +100,6 @@
                                 </ul>
                             {%endif%}
                             
-                            {%if faculty_feed.assignments %}
-                                <h4 class="inst-header assignment">Assignments</h4>
-                                <ul class="instructor-list">
-                                    {%for project in faculty_feed.assignments %}
-                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {%endfor%}
-                                </ul>
-                            {%endif%}
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>

@@ -144,6 +144,30 @@ h1#course_title {
 	padding: 10px 0 0 10px;
 	color: #2f2f2f;
 }
+
+/* ---- Sitewide menu ---------- */
+
+#sitewide_menu {
+    clear: both;
+    width:98%;
+    height: 18px;
+    margin: 0 0 0 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+#sitewide_menu ul {
+    margin: 0;
+}
+
+#sitewide_menu ul li {
+    list-style-type: none;
+    padding: 0 20px 0 0;
+    display: inline;
+}    
+
+
+
  /* ---- Pagebody block elements ---------- */
  
 #pagebody

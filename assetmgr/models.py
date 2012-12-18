@@ -53,7 +53,7 @@ class Asset(models.Model):
 
     author = models.ForeignKey(User)
 
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, related_name='asset_set')
 
     active = models.BooleanField(default=True)
 

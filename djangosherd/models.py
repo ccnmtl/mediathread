@@ -189,7 +189,7 @@ class SherdNote(Annotation):
     objects = SherdNoteManager()
 
     title = models.CharField(blank=True, max_length=1024, null=True)
-    asset = models.ForeignKey(Asset)
+    asset = models.ForeignKey(Asset, related_name="sherdnote_set")
     author = models.ForeignKey(User, null=True, blank=True)
     tags = TagField()
     body = models.TextField(blank=True, null=True)

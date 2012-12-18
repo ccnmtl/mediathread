@@ -11,8 +11,8 @@ class ProjectResourceTest(ResourceTestCase):
         self.assertEquals(project['title'], title)
         self.assertEquals(project['attribution'], author)
 
-        self.assertEquals(len(project['selections']), len(selection_ids))
-        for idx, s in enumerate(project['selections']):
+        self.assertEquals(len(project['sherdnote_set']), len(selection_ids))
+        for idx, s in enumerate(project['sherdnote_set']):
             self.assertEquals(int(s['id']), selection_ids[idx])
 
     def test_student_one_getlist(self):
@@ -26,7 +26,7 @@ class ProjectResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 3)
+        self.assertEquals(len(objects), 4)
 
         self.assertProjectEquals(objects[0], 'Private Composition',
                                  'Student One', [8, 10])
@@ -36,6 +36,9 @@ class ProjectResourceTest(ResourceTestCase):
 
         self.assertProjectEquals(objects[2], 'Public To Class Composition',
                                  'Student One', [2, 5, 7])
+
+        self.assertProjectEquals(objects[3], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
 
     def test_student_two_getlist(self):
         self.assertTrue(
@@ -48,10 +51,26 @@ class ProjectResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 1)
+        self.assertEquals(len(objects), 2)
 
         self.assertProjectEquals(objects[0], 'Public To Class Composition',
                                  'Student One', [2, 5, 7])
+
+        self.assertProjectEquals(objects[1], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
+
+    def test_student_two_getlist_filtered(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_two",
+                                         password="test"))
+
+        response = self.api_client.get('/_main/api/v1/project/?author__id=4',
+                                       format='json')
+        self.assertValidJSONResponse(response)
+
+        json = self.deserialize(response)
+        objects = json['objects']
+        self.assertEquals(len(objects), 0)
 
     def test_instructor_getlist(self):
         self.assertTrue(
@@ -64,13 +83,16 @@ class ProjectResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 2)
+        self.assertEquals(len(objects), 3)
 
         self.assertProjectEquals(objects[0], 'Instructor Shared',
                                  'Student One', [])
 
         self.assertProjectEquals(objects[1], 'Public To Class Composition',
                                  'Student One', [2, 5, 7])
+
+        self.assertProjectEquals(objects[2], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
 
     def test_student_one_getobject(self):
         self.assertTrue(

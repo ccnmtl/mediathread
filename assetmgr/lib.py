@@ -1,7 +1,7 @@
 def annotated_by(assets, user, include_archives=False):
     fassets = assets.filter(
-        sherdnote__author=user, sherdnote__range1=None).distinct().order_by(
-            '-sherdnote__modified').select_related()
+        sherdnote_set__author=user, sherdnote_set__range1=None).distinct() \
+        .order_by('-sherdnote_set__modified').select_related()
     if include_archives:
         return fassets
     else:

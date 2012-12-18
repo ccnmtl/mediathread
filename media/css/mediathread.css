@@ -441,7 +441,7 @@ table#home-columns td {
 }
 
 table#home-columns td#instructor {
-    width: 20%;
+    width: 15%;
     float: left;
 }
 
@@ -453,6 +453,22 @@ table#home-columns td#classwork {
 table#home-columns td#explore {
 	width: 20%;
 	float: left;
+}
+
+@media (max-width: 1400px) {
+    
+    table#home-columns td#instructor {
+    width: 25%;
+    float: left;
+    }
+    table#home-columns td#classwork {
+    width: 70%;
+    float: left;
+    }
+    table#home-columns td#explore {
+	width: 90%;
+	clear: both;
+    }
 }
 
 /* Smaller than standard 960 (devices and browsers) */
@@ -555,6 +571,39 @@ ul#projects li {
     padding-bottom: .5em;
     border-left: solid 10px #1e77bd;
 }
+
+.btnRespond {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  *background-color: #51a351;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #51a351 #51a351 #387038;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btnRespond:hover,
+.btnRespond:active,
+.btnRespond.active,
+.btnRespond.disabled,
+.btnRespond[disabled] {
+  color: #ffffff;
+  background-color: #51a351;
+  *background-color: #499249;
+}
+
+.btnRespond:active,
+.btnRespond.active {
+  background-color: #408140 \9;
+}
+
 
 /* LOGIN PAGE */
 #id_username, #id_password {
@@ -2844,23 +2893,9 @@ div#instructor-column h4{
 
 div#instructor-column h4.inst-header{
 
-    padding: 0 0 0 20px;
+    padding: 0;
     background-position: top left;
     background-repeat: no-repeat;
-}
-
-div#instructor-column h4.inst-header.project{
-
-    background-image: url("../img/icons/item_project.gif");
-
-}
-
-div#instructor-column h4.inst-header.discussion {
-    background-image: url("../img/icons/item_discussion.gif");
-}
-
-div#instructor-column h4.inst-header.assignment {
-    background-image: url("../img/icons/item_assignment.gif");
 }
 
 div#materials {

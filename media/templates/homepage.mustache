@@ -112,7 +112,7 @@
                                         </li>
                                         <! -- End Compositions -->
                                     {{#assignments}}
-                                        <li class="projectlist assignment rounded" id="assignment-{{id}}">
+                                        <li class="projectlist assignment" id="assignment-{{id}}">
                                             <h3>
                                                 <a href="{{url}}"
                                                    class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
@@ -127,6 +127,9 @@
                                                 <span class="metadata-label">Status:</span>
                                                 <span class="metadata-value metadata-value-status">Assignment</span>
                                                 <br />  
+                                            </div>
+                                            <div class="respond">
+                                                <button class="btnRespond">Respond to Assignment</button>
                                             </div>
                                         </li>
                                     {{/assignments}}

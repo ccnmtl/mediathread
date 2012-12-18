@@ -17,17 +17,17 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(asset['primary_type'], primary_type)
         self.assertEquals(asset['thumb_url'], thumb_url)
 
-        self.assertEquals(len(asset['selections']), len(selection_ids))
+        self.assertEquals(len(asset['sherdnote_set']), len(selection_ids))
 
-        for idx, s in enumerate(asset['selections']):
+        for idx, s in enumerate(asset['sherdnote_set']):
             self.assertEquals(int(s['id']), selection_ids[idx])
 
     def assertProjectEquals(self, project, title, author, selection_ids):
         self.assertEquals(project['title'], title)
         self.assertEquals(project['attribution'], author)
 
-        self.assertEquals(len(project['selections']), len(selection_ids))
-        for idx, s in enumerate(project['selections']):
+        self.assertEquals(len(project['sherdnote_set']), len(selection_ids))
+        for idx, s in enumerate(project['sherdnote_set']):
             self.assertEquals(int(s['id']), selection_ids[idx])
 
     def test_student_getobject_facultygroup(self):
@@ -62,9 +62,10 @@ class CourseResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
 
-        objects = json['item_set']
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17],
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         self.assertAssetEquals(
@@ -78,7 +79,74 @@ class CourseResourceTest(ResourceTestCase):
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
 
+        self.assertAssetEquals(
+            objects[3],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
+
         objects = json['project_set']
+        self.assertEquals(len(objects), 4)
+        self.assertProjectEquals(objects[0], 'Private Composition',
+                                 'Student One', [8, 10])
+
+        self.assertProjectEquals(objects[1], 'Instructor Shared',
+                                 'Student One', [])
+
+        self.assertProjectEquals(objects[2], 'Public To Class Composition',
+                                 'Student One', [2, 5, 7])
+
+        self.assertProjectEquals(objects[3], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
+
+    def test_student_getobject_filtered(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        response = self.api_client.get(
+            '/_main/api/v1/course/1/?project_set__author__id=4&\
+            asset_set__sherdnote_set__author__id=4',
+            format='json')
+
+        self.assertValidJSONResponse(response)
+
+        json = self.deserialize(response)
+
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 1)
+        self.assertAssetEquals(
+            objects[0], 'MAAP Award Reception',
+            'Instructor One', 'image', [10],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+        objects = json['project_set']
+        self.assertEquals(len(objects), 0)
+
+    def test_student_getobject_filtered2(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        response = self.api_client.get(
+            '/_main/api/v1/course/1/?project_set__author__id=3&\
+            asset_set__sherdnote_set__author__id=3',
+            format='json')
+
+        self.assertValidJSONResponse(response)
+
+        json = self.deserialize(response)
+
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 1)
+
+        self.assertAssetEquals(
+            objects[0], 'MAAP Award Reception',
+            'Instructor One', 'image', [8, 9],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+        objects = json['project_set']
+        self.assertEquals(len(objects), 3)
         self.assertProjectEquals(objects[0], 'Private Composition',
                                  'Student One', [8, 10])
 
@@ -104,9 +172,10 @@ class CourseResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
 
-        objects = json['item_set']
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17],
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         self.assertAssetEquals(
@@ -120,7 +189,14 @@ class CourseResourceTest(ResourceTestCase):
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
 
+        self.assertAssetEquals(
+            objects[3],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
+
         objects = json['project_set']
+        self.assertEquals(len(objects), 4)
         self.assertProjectEquals(objects[0], 'Private Composition',
                                  'Student One', [8, 10])
 
@@ -129,6 +205,9 @@ class CourseResourceTest(ResourceTestCase):
 
         self.assertProjectEquals(objects[2], 'Public To Class Composition',
                                  'Student One', [2, 5, 7])
+
+        self.assertProjectEquals(objects[3], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
 
     def test_instructor_getobject(self):
         self.assertTrue(
@@ -142,9 +221,10 @@ class CourseResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
 
-        objects = json['item_set']
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [1, 2, 3, 17],
+                               'Instructor One', 'youtube', [1, 2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         self.assertAssetEquals(
@@ -158,12 +238,22 @@ class CourseResourceTest(ResourceTestCase):
             'Instructor One', 'image', [6, 7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
 
+        self.assertAssetEquals(
+            objects[3],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
+
         objects = json['project_set']
+        self.assertEquals(len(objects), 3)
         self.assertProjectEquals(objects[0], 'Instructor Shared',
                                  'Student One', [])
 
         self.assertProjectEquals(objects[1], 'Public To Class Composition',
                                  'Student One', [2, 5, 7])
+
+        self.assertProjectEquals(objects[2], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
 
     def test_instructor_getobject_restricted(self):
         # Set course details to restricted
@@ -181,6 +271,77 @@ class CourseResourceTest(ResourceTestCase):
                                        format='json')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_student_multiple_class_getobject_filtered(self):
+        # Test Student Three is a member of both Sample Course + Alt Course
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_three",
+                                         password="test"))
+
+        # Login to Alternate Course
+        response = self.api_client.client.get(
+            '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
+        self.assertHttpOK(response)
+        self.assertEquals(response.template[0].name, "homepage.html")
+
+        # Request Sample Course information
+        # Projects & Assets w/sherdnotes from Student One
+        response = self.api_client.get(
+            '/_main/api/v1/course/1/?project_set__author__id=3&\
+            asset_set__sherdnote_set__author__id=3',
+            format='json')
+
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 1)
+        self.assertAssetEquals(
+            objects[0], 'MAAP Award Reception',
+            'Instructor One', 'image', [8],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+        objects = json['project_set']
+        self.assertEquals(len(objects), 1)
+        self.assertProjectEquals(objects[0], 'Public To Class Composition',
+                                 'Student One', [2, 5, 7])
+
+    def test_instructor_multiple_class_getobject_filtered(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_instructor_two",
+                                         password="test"))
+
+        # Login to Alternate Course
+        response = self.api_client.client.get(
+            '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
+        self.assertHttpOK(response)
+        self.assertEquals(response.template[0].name, "homepage.html")
+
+        # Request Sample Course information
+        # Projects & Assets w/sherdnotes from Test Instructor Two
+        response = self.api_client.get(
+            '/_main/api/v1/course/1/?project_set__author__id=10&\
+            asset_set__sherdnote_set__author__id=10',
+            format='json')
+
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+
+        objects = json['asset_set']
+        self.assertEquals(len(objects), 2)
+
+        self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
+                               'Instructor One', 'youtube', [19, 20],
+                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+
+        self.assertAssetEquals(objects[1], 'Project Portfolio',
+                               'test_instructor_two', 'image', [18],
+                               None)
+
+        objects = json['project_set']
+        self.assertEquals(len(objects), 1)
+        self.assertProjectEquals(objects[0], 'Sample Course Assignment',
+                                 'test_instructor_two', [18, 19, 20])
 
     def test_get_list(self):
         self.assertTrue(

@@ -50,7 +50,7 @@ class Project(models.Model):
 
     title = models.CharField(max_length=1024)
 
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, related_name='project_set')
 
     # this is actually the LAST UPDATER for version-control purposes
     author = models.ForeignKey(User)
@@ -62,7 +62,7 @@ class Project(models.Model):
                                           null=True,
                                           blank=True,
                                           related_name='projects',
-                                          verbose_name='Authors', )
+                                          verbose_name='Authors',)
 
     only_save_if_changed = True
     only_save_version_if_changed_fields_to_ignore = ['modified', 'author']
@@ -276,6 +276,7 @@ class Project(models.Model):
         except Collaboration.DoesNotExist:
             if policy is None:
                 policy = "PrivateEditorsAreOwners"
+
             if request is not None:
                 col = Collaboration.objects.create(
                     user=self.author, title=self.title, content_object=self,

@@ -941,7 +941,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2012-12-01 11:10:05", 
+            "last_login": "2012-12-14 14:53:12", 
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$03e73$f0d7f55609d802cc7e24c31bca9091b09ea310e7", 
@@ -1023,8 +1023,7 @@
             "last_login": "2012-12-01 11:09:35", 
             "groups": [
                 2, 
-                3, 
-                4
+                3
             ], 
             "user_permissions": [], 
             "password": "sha1$3cd75$d91efff1e581f6ed6a5663761ec2d997e752b6eb", 
@@ -1123,7 +1122,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2012-11-18 09:26:55", 
+            "last_login": "2012-12-18 11:41:42", 
             "groups": [
                 1, 
                 2, 
@@ -1233,6 +1232,22 @@
         }
     }, 
     {
+        "pk": "1e1ebd64d33a6075febe4af242e45964", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-12-28 14:53:37", 
+            "session_data": "YjE4ZTUzODY0M2U5MTcwNTk1YWY2YTVhYjJmNDFhZTQwYmFkMmU1ODqAAn1xAS4=\n"
+        }
+    }, 
+    {
+        "pk": "3d873ee00ebf5420473e79fc27cefca0", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2013-01-01 11:49:27", 
+            "session_data": "MDY5ZDJmMjczMDgyNWRjY2Q1MGZlNzg0ZWFjMTMzMDRiYzYwNTA0NTqAAn1xAVUKdGVzdGNvb2tp\nZXECVQZ3b3JrZWRxA3Mu\n"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "courseaffils.course", 
         "fields": {
@@ -1248,6 +1263,19 @@
             "faculty_group": 4, 
             "group": 3, 
             "title": "Alternate Course"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-12-14 14:53:28", 
+            "object_repr": "test_student_three", 
+            "object_id": "5", 
+            "change_message": "Changed groups.", 
+            "user": 1, 
+            "content_type": 3
         }
     }, 
     {
@@ -1502,7 +1530,7 @@
             "content_type": 8, 
             "slug": "Sample_Course"
         }
-    }, 
+    },
     {
         "pk": 1, 
         "model": "mediathread_main.usersetting", 
@@ -1526,6 +1554,33 @@
         "model": "mediathread_main.usersetting", 
         "fields": {
             "user": 5, 
+            "value": "true", 
+            "name": "help_item_detail_view"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 10, 
+            "value": "False", 
+            "name": "help_homepage_classwork_column"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 10, 
+            "value": "False", 
+            "name": "help_homepage_instructor_column"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 10, 
             "value": "true", 
             "name": "help_item_detail_view"
         }
@@ -1642,6 +1697,19 @@
             "author": 6, 
             "modified": "2012-09-15 08:53:57", 
             "course": 2, 
+            "active": true
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "assetmgr.asset", 
+        "fields": {
+            "added": "2012-12-18 11:47:04", 
+            "title": "Project Portfolio", 
+            "metadata_blob": "", 
+            "author": 10, 
+            "modified": "2012-12-18 11:47:04", 
+            "course": 1, 
             "active": true
         }
     }, 
@@ -1886,6 +1954,51 @@
         }
     }, 
     {
+        "pk": 19, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://ccnmtl.columbia.edu/", 
+            "primary": false, 
+            "label": "url", 
+            "width": 0, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:47:04", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://ccnmtl.columbia.edu/images/banner/portfolio.jpg", 
+            "primary": true, 
+            "label": "image", 
+            "width": 768, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:47:04", 
+            "media_type": null, 
+            "height": 230, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "bookmarklet", 
+            "primary": false, 
+            "label": "asset-source", 
+            "width": 0, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:47:04", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "assetmgr.supportedsource", 
         "fields": {
@@ -2046,6 +2159,33 @@
             "range2": 0.0, 
             "range1": 0.0, 
             "annotation_data": "{\"startCode\":\"00:00:00\",\"endCode\":\"00:00:00\",\"duration\":0,\"timeScale\":1,\"start\":0,\"end\":0}"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 120.0, 
+            "range1": 60.0, 
+            "annotation_data": "{\"startCode\":\"00:01:00\",\"endCode\":\"00:02:00\",\"duration\":171,\"timeScale\":1,\"start\":60,\"end\":120}"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
         }
     }, 
     {
@@ -2267,6 +2407,56 @@
             "modified": "2012-12-01 11:58:08", 
             "asset": 1, 
             "title": "Whole Item Selection"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-18 11:47:04", 
+            "author": 10, 
+            "tags": "", 
+            "modified": "2012-12-18 11:47:04", 
+            "asset": 5, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-18 11:49:21", 
+            "author": 10, 
+            "tags": ",test_instructor_two", 
+            "modified": "2012-12-18 11:49:21", 
+            "asset": 1, 
+            "title": "Video Selection Is Time-based"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-18 11:49:22", 
+            "author": 10, 
+            "tags": "", 
+            "modified": "2012-12-18 11:49:22", 
+            "asset": 1, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangosherd.discussionindex", 
+        "fields": {
+            "comment": null, 
+            "collaboration": 3, 
+            "participant": null, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:48:16"
         }
     }
 ]

@@ -16,9 +16,9 @@ class AssetResourceTest(ResourceTestCase):
         self.assertEquals(asset['primary_type'], primary_type)
         self.assertEquals(asset['thumb_url'], thumb_url)
 
-        self.assertEquals(len(asset['selections']), len(selection_ids))
+        self.assertEquals(len(asset['sherdnote_set']), len(selection_ids))
 
-        for idx, s in enumerate(asset['selections']):
+        for idx, s in enumerate(asset['sherdnote_set']):
             self.assertEquals(int(s['id']), selection_ids[idx])
 
     def test_student_getlist(self):
@@ -32,10 +32,10 @@ class AssetResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 3)
+        self.assertEquals(len(objects), 4)
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17],
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         self.assertAssetEquals(
@@ -48,6 +48,12 @@ class AssetResourceTest(ResourceTestCase):
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+
+        self.assertAssetEquals(
+            objects[3],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
 
     def test_student_getlist_restricted(self):
         # Set course details to restricted
@@ -64,10 +70,10 @@ class AssetResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 3)
+        self.assertEquals(len(objects), 4)
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17],
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         self.assertAssetEquals(
@@ -80,6 +86,12 @@ class AssetResourceTest(ResourceTestCase):
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+
+        self.assertAssetEquals(
+            objects[3],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
 
     def test_student_getobject(self):
         self.assertTrue(
@@ -126,10 +138,10 @@ class AssetResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 3)
+        self.assertEquals(len(objects), 4)
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [1, 2, 3, 17],
+                               'Instructor One', 'youtube', [1, 2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         self.assertAssetEquals(
@@ -142,6 +154,12 @@ class AssetResourceTest(ResourceTestCase):
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [6, 7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+
+        self.assertAssetEquals(
+            objects[3],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
 
     def test_instructor_getlist_restricted(self):
          # Set course details to restricted
@@ -161,7 +179,7 @@ class AssetResourceTest(ResourceTestCase):
         json = self.deserialize(response)
 
         self.assertAssetEquals(json, 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [1, 2, 3, 17],
+                               'Instructor One', 'youtube', [1, 2, 3, 17, 19],
                                'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
     def test_instructor_getobject_restricted(self):
@@ -208,9 +226,6 @@ class AssetResourceTest(ResourceTestCase):
             '/_main/api/v1/asset/2/', format='json'))
 
     def test_getobject_multiple_class_member(self):
-        # User prompted to select class after login
-        # User can access notes for this class
-        # User cannot access notes for another class
         self.assertTrue(
             self.api_client.client.login(username="test_student_three",
                                          password="test"))
@@ -231,7 +246,11 @@ class AssetResourceTest(ResourceTestCase):
         # Let's try this again -- Student One Selection from Sample Course
         response = self.api_client.get('/_main/api/v1/asset/1/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+        self.assertAssetEquals(json, 'Mediathread: Introduction',
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
+                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
 
         # Now ask for one from Alternate Course
         response = self.api_client.get('/_main/api/v1/asset/4/',
@@ -244,11 +263,6 @@ class AssetResourceTest(ResourceTestCase):
                                None)
 
     def test_getlist_multiple_class_member(self):
-        # User prompted to login to class after login
-        # User receives only assets for logged-in class
-                # User prompted to select class after login
-        # User can access notes for this class
-        # User cannot access notes for another class
         self.assertTrue(
             self.api_client.client.login(username="test_student_three",
                                          password="test"))
@@ -272,9 +286,46 @@ class AssetResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
+        self.assertEquals(len(objects), 5)
+
+        self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
+                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+
+        self.assertAssetEquals(
+            objects[1], 'MAAP Award Reception',
+            'Instructor One', 'image', [5, 8, 10],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+        self.assertAssetEquals(
+            objects[2],
+            'The Armory - Home to CCNMTL\'S CUMC Office',
+            'Instructor One', 'image', [7],
+            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+
+        self.assertAssetEquals(objects[3], 'Design Research',
+                               'test_instructor_alt', 'image',
+                               [13, 14, 15, 16], None)
+
+        self.assertAssetEquals(objects[4], 'Project Portfolio',
+                               'test_instructor_two', 'image', [], None)
+
+    def test_student_getlist_filtered(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        # Get all assets w/notes by student two
+        response = self.api_client.get(
+            '/_main/api/v1/asset/?sherdnote_set__author__id=4',
+            format='json')
+        self.assertValidJSONResponse(response)
+
+        json = self.deserialize(response)
+        objects = json['objects']
         self.assertEquals(len(objects), 1)
 
-        self.assertAssetEquals(objects[0], 'Design Research',
-                               'test_instructor_alt', 'image',
-                               [13, 14, 15, 16],
-                               None)
+        self.assertAssetEquals(
+            objects[0], 'MAAP Award Reception',
+            'Instructor One', 'image', [10],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')

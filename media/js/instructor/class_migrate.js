@@ -17,12 +17,11 @@
         model: Item,
         parse: function (response) {
             if (response) {
-                //response.questions = new ActorQuestionList(response.questions);
+                response.selections = new SelectionList(response.selections);
             }
             return response;
         }
     });
-
 
     var Project = Backbone.Model.extend({
         parse: function (response) {
@@ -41,25 +40,10 @@
         urlRoot: '/_main/api/v1/course/',
         parse: function (response) {
             if (response) {
-                response.projects = new ProjectList(response.questions);
+                response.project_set = new ProjectList(response.questions);
+                response.item_set = new ItemList(response.questions);
             }
             return response;
-        },
-        customJSON: function () {
-            var json = this.toJSON();
-            
-            json.project_set_selections = 0;
-            for (var i = 0; i < json.project_set.length; i++) {
-                json.project_set_selections += json.project_set[i].citations.length;
-            }
-            
-            json.item_set_selections = 0;
-            for (var l = 0; l < json.item_set.length; l++) {
-                // count up the total selections while we're at it.
-                json.item_set_selections += json.item_set[l].selections.length;
-            }
-            
-            return json;
         }
     });
     

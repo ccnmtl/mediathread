@@ -1,10 +1,9 @@
-from assetmgr.api import AssetAuthorization
 from courseaffils.models import Course, CourseInfo
 from mediathread.api import ClassLevelAuthentication
-from mediathread.api import GroupResource
-from projects.api import ProjectAuthorization
+from mediathread.api import GroupResource, ToManyFieldEx
 from tastypie import fields
 from tastypie.authorization import Authorization
+from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
 
 
@@ -35,19 +34,15 @@ class CourseResource(ModelResource):
     info = fields.ForeignKey(CourseInfoResource, 'info',
                              full=True, blank=True, null=True)
 
-    # All viewable assets - paginated at 20
-    project_set = fields.ToManyField(
-        'projects.api.ProjectResource', blank=True, null=True, full=True,
-        attribute=lambda bundle: ProjectAuthorization().apply_limits(
-            bundle.request,
-            bundle.obj.project_set.all(), bundle.obj).order_by('id'))
+    project_set = ToManyFieldEx(
+        'projects.api.ProjectResource',
+        'project_set',
+        blank=True, null=True, full=True)
 
-    # All viewable assets - paginated at 20
-    item_set = fields.ToManyField(
-        'assetmgr.api.AssetResource', blank=True, null=True, full=True,
-        attribute=lambda bundle: AssetAuthorization().apply_limits(
-            bundle.request,
-            bundle.obj.asset_set.all(), bundle.obj).order_by('id'))
+    asset_set = ToManyFieldEx(
+        'assetmgr.api.AssetResource',
+        'asset_set',
+        blank=True, null=True, full=True)
 
     class Meta:
         queryset = Course.objects.all()
@@ -60,3 +55,8 @@ class CourseResource(ModelResource):
 
         # User is a member of this course
         authorization = CourseMemberAuthorization()
+
+        filtering = {
+            'project_set': ALL_WITH_RELATIONS,
+            'asset_set': ALL_WITH_RELATIONS
+        }

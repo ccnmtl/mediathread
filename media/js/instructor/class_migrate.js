@@ -1,47 +1,80 @@
 (function (jQuery) {
     var global = this;
     
-    var Selection = Backbone.Model.extend({
+    var SherdNote = Backbone.Model.extend({
         
     });
 
-    var SelectionList = Backbone.Collection.extend({
-        model: Selection
+    var SherdNoteList = Backbone.Collection.extend({
+        model: SherdNote
     });
 
-    var Item = Backbone.Model.extend({
-        
-    });
-
-    var ItemList = Backbone.Collection.extend({
-        model: Item,
-        parse: function (response) {
-            if (response) {
-                response.selections = new SelectionList(response.selections);
+    var Asset = Backbone.Model.extend({
+        defaults: {
+            sherdnote_set: new SherdNoteList()
+        },
+        initialize: function (attrs) {
+            if (attrs.hasOwnProperty("sherdnote_set")) {
+                this.set("sherdnote_set", new SherdNoteList(attrs.sherdnote_set));
             }
-            return response;
+        }
+    });
+
+    var AssetList = Backbone.Collection.extend({
+        model: Asset,
+        total_sherdnotes: function () {
+            var count = 0;
+            this.forEach(function (obj) {
+                count += obj.get('sherdnote_set').length;
+            });
+            return count;
         }
     });
 
     var Project = Backbone.Model.extend({
-        parse: function (response) {
-            if (response) {
-                response.item_set = new ItemList(response.item_set);
+        defaults: {
+            sherdnote_set: new SherdNoteList()
+        },
+        initialize: function (attrs) {
+            if (attrs.hasOwnProperty("sherdnote_set")) {
+                this.set("sherdnote_set", new SherdNoteList(attrs.sherdnote_set));
             }
-            return response;
         }
     });
 
     var ProjectList = Backbone.Collection.extend({
-        model: Project
+        model: Project,
+        total_sherdnotes: function () {
+            var count = 0;
+            this.forEach(function (obj) {
+                count += obj.get('sherdnote_set').length;
+            });
+            return count;
+        }
     });
     
     var Course = Backbone.Model.extend({
-        urlRoot: '/_main/api/v1/course/',
+        defaults: {
+            project_set: new ProjectList(),
+            asset_set: new AssetList()
+        },
+        urlRoot:  '/_main/api/v1/course/',
+        url: function () {
+            var url = Backbone.Model.prototype.url.apply(this);
+            
+            var filters = this.get('facultyString');
+            if (filters !== null && filters.length > 0) {
+                url += '?';
+                url += 'project_set__author__id__in=' + filters;
+                url += '&asset_set__sherdnote_set__author__id__in=' + filters;
+            }
+            
+            return url;
+        },
         parse: function (response) {
             if (response) {
-                response.project_set = new ProjectList(response.questions);
-                response.item_set = new ItemList(response.questions);
+                response.project_set = new ProjectList(response.project_set);
+                response.asset_set = new AssetList(response.asset_set);
             }
             return response;
         }
@@ -79,7 +112,8 @@
                 jQuery("#no-materials-to-migrate").show();
             } else if (this.availableCourses.length === 1) {
                 jQuery("#course-materials-container").show();
-                this.setCourse(this.availableCourses[0].id);
+                this.setCourse(this.availableCourses[0].id,
+                               this.availableCourses[0].faculty_string);
             } else {
                 jQuery("#available-courses-selector").show();
                  
@@ -113,19 +147,57 @@
         },
         
         render: function () {
-            var json = this.model.customJSON();
+            var json = this.model.toJSON();
             var markup = this.courseTemplate(json);
             jQuery("#course").html(markup);
             jQuery("#course-materials-container").show();
         },
         
-        setCourse: function (courseId) {
-            this.model = new Course({ id: courseId });
+        setCourse: function (courseId, courseFaculty) {
+            this.model = new Course({id: courseId,
+                                     facultyString: courseFaculty.trim()});
             this.model.on('change', this.render);
             this.model.fetch();
         },
         
+        migrateCourse: function () {
+            // Put up an overlay & a progress indicator.
+            
+            var data = {
+                'fromCourse': this.model.get('id')
+            };
+            
+            jQuery.ajax({
+                type: 'POST',
+                url: '.',
+                data: data,
+                dataType: 'json',
+                error: function () {
+                    // Remove overlay & progress indicator
+                    alert('There was an error saving your project.');
+                },
+                success: function (json, textStatus, xhr) {
+                    var msg = "Success! \n";
+                    if (json.asset_count) {
+                        msg += json.asset_count + " items imported";
+                        if (json.note_count) {
+                            msg += " with " + json.note_count + " selections";
+                        }
+                        
+                        msg += "\n";
+                    }
+                    if (json.project_count) {
+                        msg += json.project_count + " projects imported";
+                    }
+                    alert(msg);
+
+                    // Remove overlay & progress indicator
+                }
+            });
+        },
+        
         importAll: function (evt) {
+            var self = this;
             jQuery("#import-all-dialog").dialog({
                 buttons: [{ text: "Cancel",
                             click: function () {
@@ -135,6 +207,7 @@
                           { text: 'Import',
                             click: function () {
                                 jQuery(this).dialog("close");
+                                self.migrateCourse();
                             }
                           },
                 ],

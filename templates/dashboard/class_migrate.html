@@ -8,7 +8,12 @@
         var courses =
             [{% for c in available_courses %}
                 {% ifnotequal c.id request.course.id %}
-                    { label: "{{c.title}}", value: "{{c.title}}", id: "{{c.id}}" }{% if forloop.last %}{% else %},{% endif %}
+                    { label: "{{c.title}}",
+                      value: "{{c.title}}",
+                      id: "{{c.id}}",
+                      faculty_string: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"  
+                    }
+                    {% if forloop.last %}{% else %},{% endif %}
                 {% endifnotequal %}
             {% endfor %}];
         
@@ -47,7 +52,7 @@
         <% if (info && info.year) { %>
             <p><b>Year:</b> <%= info.year %></p>
         <% } %>
-        <p><b>Faculty:</b>  
+        <p><b>Faculty:</b>
             <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
                 <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
             <% } %></p>
@@ -55,13 +60,13 @@
         <input id="import-all" type="button" value="Import Complete Course">
         <div id="import-all-dialog" style="display: none" title="Import">
             <h3><%= title %></h3>
-            <% if (project_set.length > 0) { %>
-                <div><%= project_set.length %> Projects with <%= project_set_selections %> referenced items</div>
+            <% if (project_set && project_set.length > 0) { %>
+                <div><%= project_set.length %> Projects with <%= project_set.total_sherdnotes() %> referenced items</div>
             <% } else { %>
                 <div>No projects</div>
             <% } %>
-            <% if (item_set.length > 0) { %>
-                <div><%= item_set.length %> items and <%= item_set_selections %> selections</div>
+            <% if (asset_set && asset_set.length > 0) { %>
+                <div><%= asset_set.length %> items and <%= asset_set.total_sherdnotes()  %> selections</div>
             <% } else { %>
                 <div>No items or selections</div>
             <% } %>
@@ -70,7 +75,7 @@
         </div> 
         <br /><br />
         <% if (project_set && project_set.length > 0) { %>
-            <div><%= project_set.length %> Projects with <%= project_set_selections %> referenced items</div>
+            <div><%= project_set.length %> Projects with <%= project_set.total_sherdnotes() %> referenced items</div>
             <div><input id="import-projects" type="button" value="Select Projects To Import"></div>
             <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Projects To Import">
                 <i>Note: Items and selections associated with a project are automatically migrated</i>
@@ -79,22 +84,21 @@
                 <div class="import-stuff">
                 <table>
                 <% for (var i = 0; i < project_set.length; i++) { %>
+                    <% var project = project_set.at(i) %>
                     <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
                         <td class="title"><b>
-                            <% if (project_set[i].is_assignment) { %>
+                            <% if (project.get('is_assignment')) { %>
                                 Assignment:                             
                             <% } %>
-                            <%= project_set[i].title %></b><br />
-                            by <%= project_set[i].attribution %>
+                            <%= project.get('title') %></b><br />
+                            by <%= project.get('attribution') %>
                             
-                            <% if (project_set[i].hasOwnProperty('citations') > 0) { %>
-                                <% if (project_set[i].citations.length > 0) { %>
-                                    <br />
-                                    <i>Includes <%= project_set[i].citations.length %> selections</i>
-                                <% } %>
+                            <% if (project.get('sherdnote_set').length > 0) { %>
+                                <br />
+                                <i>Includes <%= project.get('sherdnote_set').length %> selections</i>
                             <% } %>
                         </td>
-                        <td><input class="project" type="checkbox" value="<%= project_set[i].id %>"/></td>
+                        <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
                     </tr>
                 <% } %>
                 </table>
@@ -103,31 +107,32 @@
         <% } %>
         <br /><br />
 
-        <% if (item_set && item_set.length > 0) { %>
-            <div><%= item_set.length %> Items with <%= item_set_selections %> Selections</div>
+        <% if (asset_set && asset_set.length > 0) { %>             
+            <div><%= asset_set.length %> Items with <%= asset_set.total_sherdnotes() %> Selections</div>
             <div><input id="import-items" type="button" value="Select Items To Import"></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Import">
             <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
             <div class="visualclear"/>
-            <% for (var i = 0; i < item_set.length; i++) { %>
-                <div class="gallery-item rounded gallery-item-mini <%=item_set[i].required%>">                    
-                    <h4 class="asset_title asset-<%=item_set[i].primary_type%>">
-                        <input class="right <%=item_set[i].required%>" type="checkbox" value="<%= item_set[i].id %>"
-                            <% if (item_set[i].required === "required") { %> disabled="disabled" checked="checked" <% } %> 
+            <% for (var j = 0; j < asset_set.length; j++) { %>
+                <% var asset = asset_set.at(j) %>
+                <div class="gallery-item rounded gallery-item-mini <%= asset.get('required') %>">                    
+                    <h4 class="asset_title asset-<%=asset.get('primary_type') %>">
+                        <input class="right <%=asset.get('required') %>" type="checkbox" value="<%= asset.get('id') %>"
+                            <% if (asset.get('required') === "required") { %> disabled="disabled" checked="checked" <% } %> 
                         />
-                        <div class="title"><%= item_set[i].title %></div>
+                        <div class="title"><%= asset.get('title') %></div>
                     </h4>
-                    <% if (item_set[i].thumb_url) { %>
+                    <% if (asset.get('thumb_url')) { %>
                         <div class="record">
-                            <img class="asset-thumb" src="<%=item_set[i].thumb_url%>" alt="Item Thumbnail" />
+                            <img class="asset-thumb" src="<%=asset.get('thumb_url') %>" alt="Item Thumbnail" />
                         </div>
                     <% } %>
                     <div class="meta">
-                        <div class="metadata-value">Imported by <%= item_set[i].author.full_name %></div>
+                        <div class="metadata-value">Imported by <%= asset.get('author').full_name %></div>
                         <div>
                             <span class="metadata-value">Includes </span>  
-                            <span class="metadata-label item-annotation-count-total"><%=item_set[i].selections.length %></span>
+                            <span class="metadata-label item-annotation-count-total"><%=asset.get('sherdnote_set').length %></span>
                             <span class="metadata-value">selections</span>                        
                         </div>
                     </div>

@@ -6,8 +6,8 @@ body
     padding: 0;
     border: 0;
     background-color: #fff;
-    font: normal 0.8em/120% 'lucida grande', arial, verdana, sans-serif;
-    color: #000;
+    font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
+    color: #2f2f2f;
     width: 100% auto;
     min-width: 1000px;
     overflow: auto;
@@ -16,21 +16,21 @@ body
 
 h1, h2, h3, h4, h5, h6
 {
-    margin: 0 0 0.7em 0;
     padding: 0;
     border: 0;
 }
 
 h1
 {
-    font-size: 1.8em;
+    font-size: 2.142em;
     font-weight: normal;
-    line-height: 1.5em;
 }
 
 h2
 {
-    font-size: 120%;
+    font-size: 1.4285em;
+    color: #777;
+    font-weight: normal;
 }
 
 h3
@@ -68,9 +68,7 @@ table
 {
     margin: 0 0 0.7em 0;
     padding: 0;
-    border: 1px solid #ccc;
     border-collapse: collapse;
-    font-size: 100%;
 }
 
 th
@@ -98,21 +96,15 @@ ol, ul
     font-size: 100%;
 }
 
-a
-{
-    color: #8c3b2e;
+a:link, a:active, a:visited {
+	color: #1b75bc;
+	text-decoration: none;
+	font-weight: bold;
 }
 
-a:hover
-{
-    color: #666;
+a:hover {
+	text-decoration: underline;
 }
-
-a:visited
-{
-    color: #660000;
-}
-
 
 
 /* ---- block elements ---------- */
@@ -122,7 +114,6 @@ a:visited
     margin: 0 auto;
     width: auto;
     padding: 0;
-    border: 1px solid #999;
     border-collapse: collapse;
     background-color: #fff;
     border-top: none;
@@ -132,25 +123,49 @@ a:visited
 #header
 {
     display: block;
-    height: 90px;
     overflow: hidden;
     margin: 0;
-    padding: 0 0 5px 10px;
-    border: 0;
+	padding:0;
+	border: 0;
     width: 100%;
-    box-shadow: inset 0 0 10px #CDCDCD;
 }
 
 #course_title {
+	display: block;
+	clear: both;
+	float: left;
     z-index: 9997;
-    margin: 8px 0 0 0;
-    padding-bottom: 15px;
-    max-height: 65px;
-    overflow: hidden;
-    overflow: hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
 }
+
+h1#course_title {
+	font-weight: bold;
+	padding: 10px 0 0 10px;
+	color: #2f2f2f;
+}
+
+/* ---- Sitewide menu ---------- */
+
+#sitewide_menu {
+    clear: both;
+    width:98%;
+    height: 18px;
+    margin: 0 0 0 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+#sitewide_menu ul {
+    margin: 0;
+}
+
+#sitewide_menu ul li {
+    list-style-type: none;
+    padding: 0 20px 0 0;
+    display: inline;
+}    
+
 
 
  /* ---- Pagebody block elements ---------- */
@@ -293,24 +308,25 @@ html.busy, html.busy * {
     margin: 0;
     margin-top: 10px;
     margin-right: -1px;
-    padding: 3px 3px 3px 3px;
+    padding: 3px 25px 3px 3px;
     list-style: none;
     z-index: 9998;
-    font-size: 1.2em;
+    font-size: .857em;
 }
 
 #standardnav li {
     display: block;
+    font-weight: bold;
+   	color: #1b75bc;
     float: left;
     border: 0;
     margin: 0;
-    padding: 0 1em 0 .3em;
+    padding: 0 1.5em 0 .3em;
 }
 
 #standardnav a,
 #standardnav li div {
     text-decoration: none;
-    color: black;
     cursor: pointer;
     -moz-user-select: none; 
     -khtml-user-select: none; 
@@ -318,8 +334,7 @@ html.busy, html.busy * {
 }
 
 #standardnav li a:hover {
-    color: #777;
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 #standardnav li div.settings_submenu {
@@ -328,8 +343,6 @@ html.busy, html.busy * {
     z-index: 9998;
     position: absolute;
     margin-top: 5px;    
-    font-size: .75em;
-    
     background-color: white;
     border: 1px solid #CCC;
     -webkit-border-radius: 6px;
@@ -351,7 +364,10 @@ html.busy, html.busy * {
 }
 
 #standardnav li div.settings_submenu h3 {
-    margin: 0 0 0.1em 0;
+	font-size: .875em;
+	text-transform: uppercase;
+    margin: 0 0 0.25em 0;
+    color: #777;
 }
 
 /* ---- Footer block elements ---------- */
@@ -417,6 +433,79 @@ html.busy, html.busy * {
     color: #333;
 }
 
+/* Home Page Columns */
+table#home-columns td {
+    border: none;
+    border-collapse: collapse;
+    vertical-align: top;
+}
+
+table#home-columns td#instructor {
+    width: 15%;
+    float: left;
+}
+
+table#home-columns td#classwork {
+    width: 50%;
+    float: left;
+}
+
+table#home-columns td#explore {
+	width: 20%;
+	float: left;
+}
+
+@media (max-width: 1400px) {
+    
+    table#home-columns td#instructor {
+    width: 25%;
+    float: left;
+    }
+    table#home-columns td#classwork {
+    width: 70%;
+    float: left;
+    }
+    table#home-columns td#explore {
+	width: 90%;
+	clear: both;
+    }
+}
+
+/* Smaller than standard 960 (devices and browsers) */
+
+div#classwork_table table {
+	width: 100%;
+}
+
+
+div.column-contents {
+    overflow: auto;
+    height: 95%;
+}
+
+.column-container h2 {
+	padding: 10px 0;
+	border-bottom: solid 1px #efefef;
+}
+
+/* Explore */
+
+#bookmarklet, #upload {
+	width: 100%;
+	background-color: #f5f5f5;
+	padding: 10px;
+	margin: 20px 0;
+}
+
+#bookmarklet ul {
+	margin: 20px 0 0 0;
+}
+
+#bookmarklet ul li {
+	list-style-type: none;
+	font-size: .857em;
+	color: #777;
+}
 
 
 #coursefilter {
@@ -426,9 +515,7 @@ html.busy, html.busy * {
     padding: 8px 10px;
     display: block;
     margin: 5px 10px 10px;
-
 }
-
 
 table.course-choices {
     padding:5px;
@@ -449,7 +536,6 @@ td.manage-course {
 
 
 div.button-form {
-
     display: block;
     height: 28px;
     padding: 10px 0;
@@ -460,10 +546,64 @@ div.button-form.inline {
 }
 
 
-div.button-form form, div.button-form.inline form{
-
+div.button-form form, div.button-form.inline form {
     float: right;
 }
+
+ul#projects {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul#projects li {
+	background-color: #f5f5f5;
+	margin-bottom: 15px;
+	padding: 20px 15px;
+}
+
+.projectlist.assignment {
+    padding-bottom: .5em;
+    border-left: solid 10px #39b54a;
+}
+
+.projectlist.composition {
+    padding-bottom: .5em;
+    border-left: solid 10px #1e77bd;
+}
+
+.btnRespond {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  *background-color: #51a351;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #51a351 #51a351 #387038;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btnRespond:hover,
+.btnRespond:active,
+.btnRespond.active,
+.btnRespond.disabled,
+.btnRespond[disabled] {
+  color: #ffffff;
+  background-color: #51a351;
+  *background-color: #499249;
+}
+
+.btnRespond:active,
+.btnRespond.active {
+  background-color: #408140 \9;
+}
+
 
 /* LOGIN PAGE */
 #id_username, #id_password {
@@ -1336,19 +1476,6 @@ div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
     
 }
 
-.helptoggle.on 
-{
-
-    background-color: #DEDEDE;
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom: 3px solid #DEDEDE;
-
-}
 
 #instructor-nav .helptoggle a, .helptoggle a.togglebutton 
 {
@@ -1377,9 +1504,7 @@ div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
 
 .helpblock {
     margin: -7px 3px 20px 4px;
-    background-color: #dedede;
     padding: 15px;
-    font-size: 95%;
     text-transform: none;
 
 }
@@ -1417,21 +1542,21 @@ table#home-columns td#classwork .helptoggle {
     margin: 0;
     width: 100%;
     background-color: white;
-    border: 1px solid #dedede;
     padding: 0;
 }
 
 #help_homepage_classwork_column div.help_content{
-    background-color: #dedede;
-    margin: 2px 4px 4px 4px;
-    padding: 10px;
+	background-color: #f5f5f5;
+	padding: 10px;
+    margin: 10px 0;
+    font-size: .857em;
+    color: #2f2f2f;
 }
 
 /*Assignment Specific styles */
 
 /** Switcher CSS **/
 .filter-widget {
-    background-color: #ccc;
     padding: 2px;
     padding-top: 4px;
     /*margin-bottom here causes a firefox bug to push down the top instead
@@ -2035,6 +2160,10 @@ div.gallery-item h4.asset_title {
     margin-top: -3px;
 }
 
+a.asset_title.type-project {
+	color: #2f2f2f;
+}
+
 .asset_title.type-collaboration,
 .asset_title.type-discussion {
     background-image: url(../img/icons/item_discussion.png);
@@ -2337,25 +2466,6 @@ a.hs-control.hs-control-show.plist.float
     
 }
 
-ul#projects {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-ul#projects li {
-	background-color: #fff;
-	padding: 10px;
-	margin-bottom: 10px;
-	border: solid 1px #ccc;
-}
-
-.projectlist {
-    background-color:#EDEDED;
-    margin:0 1em;
-    padding-bottom: .5em;
-
-}
 
 .assignment-listitem  {
 background-color: #dae7e0; 
@@ -2691,14 +2801,6 @@ input.videoplay {
     cursor: pointer;
 }
 
-.meta
-{
-	font-size:90%;
-    color: #333;
-    line-height: 18px;
-    font-weight: normal;
-    margin: 0 5px;
-}
 
 .meta.annotation-global-tags,
 .meta.annotation-global-body {
@@ -2724,14 +2826,11 @@ input.videoplay {
 }
 
 .meta label,
-.metadata-label {
+.metadata-label,
+.metadata-value {
     font-weight: bold;
-    text-transform: capitalize;
-}
-
-#instructor .column-container {
-    width: 300px;
-    margin-top: 14px;
+    color: #777;
+    font-size:.857em;
 }
 
 .media-column .column-container {
@@ -2750,19 +2849,11 @@ input.videoplay {
 }
 
 #projects .column-container {
-    width: 330px;
-    margin: 5px 0px 5px 2px;
+    width: 100%;
 }
 
 #projects .column-container h2 {
-    background-color: #557691;
     text-transform: capitalize;
-    font-size: 98%;
-}
-
-
-table#home-columns td#classwork {
-    width: 676px;
 }
 
 
@@ -2772,18 +2863,13 @@ table#home-columns td#classwork {
 
 table#home-columns
  {
-
+    width: 100%;
     padding: 0;
     border: none;
     margin: 0;
 }
 
-table#home-columns td {
-    border: none;
-    border-collapse: collapse;
-    vertical-align: top;
-    padding: 5px;
-}
+
 
 table#home-columns td#instructor ul,
 table#home-columns td#classwork ul {
@@ -2807,23 +2893,9 @@ div#instructor-column h4{
 
 div#instructor-column h4.inst-header{
 
-    padding: 0 0 0 20px;
+    padding: 0;
     background-position: top left;
     background-repeat: no-repeat;
-}
-
-div#instructor-column h4.inst-header.project{
-
-    background-image: url("../img/icons/item_project.gif");
-
-}
-
-div#instructor-column h4.inst-header.discussion {
-    background-image: url("../img/icons/item_discussion.gif");
-}
-
-div#instructor-column h4.inst-header.assignment {
-    background-image: url("../img/icons/item_assignment.gif");
 }
 
 div#materials {
@@ -2910,11 +2982,8 @@ div.gallery-item h4 {
 
 ul.instructor-list {
 
-    margin: 0 20px 0 30px;
+    margin: 0;
 }
-
-
-
 
 ul.instructor-list li {
 
@@ -2924,53 +2993,9 @@ ul.instructor-list li {
 }
 
 
-
-table#home-columns td h2 {
-    background-color: #333333;
-    padding: 5px 12px;
-    text-transform: uppercase;
-    color: #ffffff;
-    font-weight: normal;
-    -moz-border-radius: 10px 10px 0 0;
-    border-radius: 10px 10px 0 0;
-    margin: 0;
-}
-
-table#home-columns td#instructor h2 {
-    background-color: #006031;
-    height: 14px;
-    text-transform: uppercase;
-    color: #ffffff;
-    font-weight: normal;
-    -moz-border-radius: 10px 10px 0 0;
-    border-radius: 10px 10px 0 0;
-    margin: -14px 0 0 0;
-}
-
-td#projects .column-contents,
-td.media-column .column-contents {
-	background-color: #EDEDED;
-}
 td.media-column .column-contents {
 	padding: 0px;
 }
-div.column-contents {
-    background-color: #ffffff;
-    -moz-box-shadow: 0px 5px 5px #ccc;
-    -webkit-box-shadow: 0px 5px 5px #ccc;
-    box-shadow: 0px 5px 5px #ccc;
-    border: 1px solid #ccc;
-    border-top: 0;
-    overflow: auto;
-    height: 95%;
-
-}
-
-
-div.column-contents {
-    padding-top: 10px;
-}
-
 
 table.item-level-info {
 
@@ -3375,7 +3400,7 @@ div.asset-view-help {
 div.asset-view-help div.asset-view-help-instructions {
     background-color: #ededed;
     padding: 5px;
-    margin-bottom: 10px;"
+    margin-bottom: 10px;
 }
 
 div.asset-view-help div.asset-view-help-instructions img {

@@ -87,7 +87,7 @@
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
                 <div class="column-container">    
-                   <h2>From Your Instructor  {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
+                   <h2>Course Information {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
                       <div class="column-contents scroll">
                          {% if is_faculty %}{% include "help/help_contentarea.html" %} {% endif %}
                         <div id="instructor-column">
@@ -100,14 +100,6 @@
                                 </ul>
                             {%endif%}
                             
-                            {%if faculty_feed.assignments %}
-                                <h4 class="inst-header assignment">Assignments</h4>
-                                <ul class="instructor-list">
-                                    {%for project in faculty_feed.assignments %}
-                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {%endfor%}
-                                </ul>
-                            {%endif%}
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>
@@ -140,11 +132,34 @@
             {% with "resizeHomepage" as callback %}
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <h2>Analysis {% include "help/help_button.html" %}</h2>
-                    {% include "help/help_contentarea.html" %}
+                    <h2>Student Dashboard</h2>
                     <div id="classwork_table"></div>
                 </div>
             </td>
+            <td id="explore">
+            	<div class="column-container">
+            	<h2>Explore</h2>
+            		<div id="bookmarklet">
+            		<strong>Install Bookmarklet in Firefox</strong>
+            		<ul>
+            		<li>In the View menu, show the "Bookmarks" toolbar.</li>
+					<li>Drag this link onto your browser bookmarks toolbar:<br />
+					<a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+					<li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
+            		</ul>
+            		</div>
+            	    <div id="upload">
+            	    <strong>Upload Media</strong>
+                    <ul>
+            		<li>In the View menu, show the "Bookmarks" toolbar.</li>
+					<li>Drag this link onto your browser bookmarks toolbar:</li>
+					<li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
+            		</ul>
+            		</div>
+            	</div>
+            	
+            </td>            
+            
             {% endwith %}{% endwith %}{% endwith %}
         </tr>
     </tbody>

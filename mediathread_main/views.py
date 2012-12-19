@@ -534,24 +534,41 @@ def set_user_setting(request, user_name):
 @rendered_with('dashboard/class_migrate.html')
 @login_required
 def migrate(request):
+
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
 
-    # Only show courses for which the user is an instructor
-    available_courses = available_courses_query(request.user)
-    courses = []
-    if request.user.is_superuser:
-        courses = available_courses
-    else:
-        for c in available_courses:
-            if c.is_faculty(request.user):
-                courses.append(c)
-
     if request.method == "GET":
-        return {
-            "available_courses": courses,
-            "help_migrate_materials": UserSetting.get_setting(
-                request.user, "help_migrate_materials", True),
-        }
-    else:
-        return {}
+        # Only show courses for which the user is an instructor
+        available_courses = available_courses_query(request.user)
+        courses = []
+        if request.user.is_superuser:
+            courses = available_courses
+        else:
+            for c in available_courses:
+                if c.is_faculty(request.user):
+                    courses.append(c)
+
+        if request.method == "GET":
+            return {
+                "available_courses": courses,
+                "help_migrate_materials": UserSetting.get_setting(
+                    request.user, "help_migrate_materials", True),
+            }
+    elif request.method == "POST":
+        asset_count = 1
+        note_count = 1
+        project_count = 5
+        if 'asset_set' in request.POST:
+            # copy over assets
+            asset_count = 1
+            note_count = 1
+        if 'project_set' in request.POST:
+            # copy over projects
+            project_count = 5
+
+        json_stream = simplejson.dumps({'success': True,
+                                       'asset_count': asset_count,
+                                       'project_count': project_count,
+                                       'note_count': note_count})
+        return HttpResponse(json_stream, mimetype='application/json')

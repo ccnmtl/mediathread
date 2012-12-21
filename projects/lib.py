@@ -30,8 +30,14 @@ def homepage_project_json(request, project, can_edit):
         the_json['collaboration']['title'] = parent_assignment.title
         the_json['collaboration']['url'] = parent_assignment.get_absolute_url()
 
+    is_assignment = project.is_assignment(request)
+
     the_json['display_as_assignment'] = \
-        project.is_assignment(request) or parent_assignment is not None
+        is_assignment or parent_assignment is not None
+
+    if is_assignment:
+        the_json['is_assignment'] = True
+        the_json['responses'] = len(project.responses(request))
 
     return the_json
 

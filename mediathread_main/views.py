@@ -18,6 +18,7 @@ from projects.lib import homepage_project_json
 from reports.views import is_unanswered_assignment
 from tagging.models import Tag
 import datetime
+import operator
 import simplejson
 
 
@@ -209,6 +210,34 @@ def triple_homepage(request):
         in_course_or_404(user_name, request.course)
         classwork_owner = get_object_or_404(User, username=user_name)
 
+    c = request.course
+
+    archives = []
+    upload_archive = None
+    for a in c.asset_set.archives().order_by('title'):
+        archive = a.sources['archive']
+        thumb = a.sources.get('thumb', None)
+        description = a.metadata().get('description', '')
+        uploader = a.metadata().get('upload', 0)
+
+        archive_context = {
+            "id": a.id,
+            "title": a.title,
+            "thumb": (None if not thumb else {"id": thumb.id,
+                                              "url": thumb.url}),
+            "archive": {"id": archive.id, "url": archive.url},
+            # is description a list or a string?
+            "metadata": (description[0]
+                         if hasattr(description, 'append') else description)
+        }
+
+        if (uploader[0] if hasattr(uploader, 'append') else uploader):
+            upload_archive = archive_context
+        else:
+            archives.append(archive_context)
+
+    archives.sort(key=operator.itemgetter('title'))
+
     context = {
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': UserSetting.get_setting(
@@ -219,8 +248,9 @@ def triple_homepage(request):
         'is_faculty': request.course.is_faculty(logged_in_user),
         'discussions': get_course_discussions(request.course),
         'msg': request.GET.get('msg', ''),
-        'tag': request.GET.get('tag', ''),
-        'view': request.GET.get('view', '')
+        'view': request.GET.get('view', ''),
+        'archives': archives,
+        'uplodate_archive': upload_archive
     }
     return context
 

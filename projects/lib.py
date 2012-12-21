@@ -19,6 +19,7 @@ def homepage_project_json(request, project, can_edit):
     the_json['modified_time'] = project.modified.strftime("%I:%M %p")
     the_json['status'] = project.status()
     the_json['editable'] = can_edit
+    the_json['is_assignment'] = project.is_assignment(request)
 
     feedback = project.feedback_discussion()
     if feedback:

@@ -2555,13 +2555,10 @@ a.hs-control.hs-control-show.plist.float
 }
 
 
-.assignment-listitem  {
-
-}
-
 .assignment-listitem.response  {
-    margin: 10px 0 -7px 0;
-
+	background-color: #e4eef7;
+	padding: 10px;
+    margin: 10px 0;
 }
 
 .helptext {

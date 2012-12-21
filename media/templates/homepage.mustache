@@ -108,15 +108,13 @@
                                                     <div class="assignment-listitem response">
                                                         <span class="metadata-label">                                                            
                                                              My Response:</span> 
-                                                            <span class="metadata-value"><a href="{{url}}">{{title}}</a>
-                                                              
+                                                        <span class="metadata-value"><a href="{{url}}">{{title}}</a>
                                                             {{#editable?}}
                                                                 <a title="Delete My Response" onclick="return ajaxDelete(this, 'project-{{id}}');"
                                                                     href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                                     class="delete_icon" alt="Delete" /></a>
                                                             {{/editable?}}
                                                         </span>
-                                                        <br />
                                                     </div>
                                                {{/collaboration?}}
                                                

@@ -88,23 +88,25 @@
                                 {%if user.is_staff %}
                                     <h3>Tools</h3>    
                                     <a href="/admin/">Admin</a>
+                                    <br />
                                 {%endif%}
                                 
                                 {% num_courses for user as user_courses %}
                                  <h3>Actions</h3>                  
-                                 {% if user_courses > 1 or user.is_staff %}
-                                     <a href="/?unset_course">Switch Course</a>
-                                 {% endif %}
-                                 {% if is_course_faculty %}
-                                    <a href="/dashboard/settings/">Manage Settings</a>
-                                    <a href="/dashboard/addsource/">Manage Sources</a>
-                                    <a href="/dashboard/migrate/">Migrate Materials</a>
-                                    <br />
-                                    <h3>Reports</h3>
-                                    <a href="/reports/class_assignments">Assignment Responses</a>
-                                    <a href="/reports/class_activity">Class Activity</a>
-                                    <a href="/reports/class_summary">Student Contributions</a>        
-                                    <br />
+                                     {% if user_courses > 1 or user.is_staff %}
+                                        <a href="/?unset_course">Switch Course</a>
+                                     {% endif %}
+                                     {% if is_course_faculty %}
+                                         <a href="/dashboard/settings/">Manage Settings</a>
+                                         <a href="/dashboard/addsource/">Manage Sources</a>
+                                         <a href="/dashboard/migrate/">Migrate Materials</a>
+                                         <br />
+                                    
+                                         <h3>Reports</h3>
+                                         <a href="/reports/class_assignments">Assignment Responses</a>
+                                         <a href="/reports/class_activity">Class Activity</a>
+                                         <a href="/reports/class_summary">Student Contributions</a>        
+                                         <br />
                                     {% endif %}
                                     <a href="/accounts/logout/">Log Out</a>
                             </div>
@@ -122,15 +124,8 @@
                     </li>
                 </ul>
             {% endblock %}
-            <a href="/"><h1 id="course_title">{{course.title}}</h1></a>
-                <div id="sitewide_menu">
-                    <ul>
-                        <li><a href="/asset/">View Full Collection</a> </li>
-                        <li><a href="/">Create Composition</a> </li>
-                        <li><a href="/">Upload Video</a> </li>
-                        <li><a href="/">Upload Audio</a> </li>
-                    </ul>
-                </div>   
+            <h1 id="course_title"><a href="/">{{course.title}}</a></h1>
+            {% block course_metadata %}{% endblock %}
     	</div><!-- id="header" -->
         
     {% endblock %}
@@ -158,6 +153,7 @@
 
 				</div><!-- class="block" -->
 			</div><!-- id="squish" -->
+			<div id="clearfooter"></div>
 		</div><!-- id="content" -->
 
 

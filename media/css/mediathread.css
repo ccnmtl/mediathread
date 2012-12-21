@@ -15,6 +15,10 @@ body
     overflow: auto;
 }
 
+.ui-widget {
+    font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
+    color: #2f2f2f;
+}
 
 h1, h2, h3, h4, h5, h6
 {
@@ -184,6 +188,14 @@ h1#course_title a:hover {
 	display: inline;
 }
 
+#sitewide_menu ul li.full_collection {
+    background: url(../img/viewfullcollection.png) no-repeat center left;
+}
+
+.full_collection a {
+    padding: 0 0 0 19px;
+}
+
 .project-createnew input {
     display: inline;
     border: none;
@@ -238,6 +250,7 @@ img
 }
 
 .scroll {
+    overflow: auto;
 }
 
 /* ########## Globally useful definitions ########## */
@@ -2128,6 +2141,15 @@ div.gallery-item h4.asset_title {
     background-image: url(../img/icons/meth_image.png);
 }
 
+.gallery-item .asset_title {
+    background-repeat: no-repeat;
+}
+
+.gallery-item .asset_title a {
+	margin: 0 0 0 30px;
+}
+
+
 .asset_title.asset-mp3,
 .asset_title.asset-mp4_audio {
     background-image: url(../img/icons/meth_audio.png);
@@ -2195,7 +2217,7 @@ div.gallery-item h4.asset_title {
 
 .asset_title a.title {
     font-weight: bold;
-    color: #8d3b2f;
+    color: ##1B75BC;
     margin-bottom: .25em;
     font-size: 100%;
 }
@@ -2961,6 +2983,10 @@ div.gallery-item h4 {
     text-align: left;
 }
 
+#materials .asset-title-link {
+    margin: 0 0 0 5px;
+}
+
 div.gallery-item h4 {
     margin: .5em 0 0.25em;
 }
@@ -3419,6 +3445,7 @@ div.asset-view-help {
 }
 
 div.asset-view-help div.asset-view-help-instructions {
+    font-size: .875em;
     background-color: #ededed;
     padding: 5px;
     margin-bottom: 10px;

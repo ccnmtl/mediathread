@@ -30,7 +30,7 @@ SherdNote = get_model('djangosherd', 'sherdnote')
 Project = get_model('projects', 'project')
 ProjectVersion = get_model('projects', 'projectversion')
 User = get_model('auth', 'user')
-# for portal
+
 Comment = get_model('comments', 'comment')
 ContentType = get_model('contenttypes', 'contenttype')
 SupportedSource = get_model('assetmgr', 'supportedsource')
@@ -556,19 +556,63 @@ def migrate(request):
                     request.user, "help_migrate_materials", True),
             }
     elif request.method == "POST":
-        asset_count = 1
-        note_count = 1
-        project_count = 5
-        if 'asset_set' in request.POST:
-            # copy over assets
-            asset_count = 1
-            note_count = 1
-        if 'project_set' in request.POST:
-            # copy over projects
-            project_count = 5
+        # Map old ids to new objects
+        object_map = {'assets': {}, 'notes': {}}
 
+        if 'asset_set' in request.POST:
+            asset_set = simplejson.loads(request.POST.get('asset_set'))
+            object_map = Asset.objects.migrate(asset_set,
+                                               request.course,
+                                               request.user,
+                                               object_map)
+
+#        project_count = 0
+#        if 'project_set' in request.POST:
+#            projects = simplejson.loads(request.POST.get('project_set'))
+#            for project_json in projects:
+#                old_project = Project.objects.get(id=project_json.id)
+#                project_body = old_project.body
+#
+#                new_project = Project.objects.migrate(old_project,
+#                                                      request.course,
+#                                                      request.user)
+#                project_count += 1
+#
+#                for old_note in SherdNote.objects. \
+#                        references_in_string(project_body, request.user):
+#
+#                    if old_note.id in note_map:
+#                        new_note = note_map[old_note.id]
+#                    else:
+#                        if old_note.asset.id in asset_map:
+#                            new_asset = asset_map[old_note.asset.id]
+#                        else:
+#                            # migrate the asset first
+#                            new_asset = Asset.objects.migrate(old_note.asset,
+#                                                              request.course,
+#                                                              request.user)
+#                            asset_map[old_note.asset.id] = new_asset
+#
+#                        # migrate the note
+#                        new_note = SherdNote.objects.migrate(old_note,
+#                                                             new_asset,
+#                                                             request.user)
+#
+#                        note_map[old_note.id] = new_note
+#
+#                    # Update the citations in the body with the new id(s)
+#                    project_body = \
+#                        new_note.update_references_in_string(
+#                            project_body, old_note)
+#
+#                    project_body = \
+#                        new_note.asset.update_references_in_string(
+#                            project_body, old_note.asset)
+#
+#                new_project.body = project_body
+#                new_project.save()
         json_stream = simplejson.dumps({'success': True,
-                                       'asset_count': asset_count,
-                                       'project_count': project_count,
-                                       'note_count': note_count})
+                                       'asset_count': 0,
+                                       'project_count': 0,
+                                       'note_count': 0})
         return HttpResponse(json_stream, mimetype='application/json')

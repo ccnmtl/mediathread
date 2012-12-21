@@ -1,9 +1,9 @@
+from django.conf import settings
+from django.db import models
+from django.utils.html import strip_tags
+import re
 import simplejson
 
-from django.db import models
-from django.conf import settings
-
-from django.utils.html import strip_tags
 
 Tag = models.get_model('tagging', 'tag')
 User = models.get_model('auth', 'user')
@@ -38,6 +38,46 @@ class AssetManager(models.Manager):
 
     def archives(self):
         return self.filter(source__primary=True, source__label='archive')
+
+    def migrate(self, asset_set, course, user, object_map):
+        SherdNote = models.get_model('djangosherd', 'sherdnote')
+        for asset_json in asset_set:
+            if asset_json.id not in object_map['assets']:
+                old_asset = Asset.objects.get(id=asset_json.id)
+                new_asset = Asset.objects.migrate_one(old_asset,
+                                                      course,
+                                                      user)
+                object_map['assets'][old_asset.id] = new_asset
+
+                for note_json in asset_json.sherdnote_set:
+                    if note_json.id not in object_map['notes']:
+                        old_note = SherdNote.objects.get(id=note_json.id)
+                        new_note = SherdNote.objects.migrate(old_note,
+                                                             new_asset,
+                                                             user)
+                        object_map['notes'][old_note.id] = new_note
+
+        return object_map
+
+    def migrate_one(self, asset, course, user):
+        x = Asset(title=asset.title,
+                  course=course,
+                  author=user,
+                  metadata_blob=asset.metadata_blob)
+        x.save()
+
+        for source in asset.source_set.all():
+            s = Source(asset=x,
+                       label=source.label,
+                       url=source.url,
+                       primary=source.primary,
+                       media_type=source.media_type,
+                       size=source.size,
+                       height=source.height,
+                       width=source.width)
+            s.save()
+
+        return x
 
 
 class Asset(models.Model):
@@ -84,7 +124,7 @@ class Asset(models.Model):
     primary_labels = useful_labels + fundamental_labels
 
     class Meta:
-        permissions = (("can_upload_for", "Can upload assets for others"), )
+        permissions = (("can_upload_for", "Can upload assets for others"),)
 
     @classmethod
     def good_args(cls, args):
@@ -149,7 +189,7 @@ class Asset(models.Model):
             return SherdNote.objects.global_annotation(
                 self, user, auto_create=auto_create)[0]
 
-    #def annotations(self, authors):
+    # def annotations(self, authors):
         # SherdNotes - global & other for course faculty
     #    qs = self.sherdnote_set.filter(author__in=authors)
     #    qs = qs.filter(range1__isnull=False)
@@ -214,6 +254,14 @@ class Asset(models.Model):
             'tags': [{'name': tag.name,
                       'last': idx == tag_last,
                       'count': tag.count} for idx, tag in enumerate(tags)]}
+
+    def update_references_in_string(self, text, old_asset):
+        # substitute my id for an old asset id
+        regex_string = \
+            (r'(name=|href=|openCitation\()([\'"]/asset/)(%s)(/[^a])'
+             % (old_asset.id))
+        sub = r'\g<1>\g<2>%s\g<4>' % (self.id)
+        return re.sub(regex_string, sub, text)
 
 
 class Source(models.Model):

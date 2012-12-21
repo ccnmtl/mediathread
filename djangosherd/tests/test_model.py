@@ -104,3 +104,29 @@ class SherdNoteTest(TestCase):
         self.assertEquals(tags[0].name, 'bar')
         self.assertEquals(tags[1].name, 'foo')
         self.assertEquals(tags[2].name, 'test_student_three')
+
+    def test_update_reference_in_string(self):
+        text = ('<p><a href="/asset/2/annotations/10/">Nice Tie</a>'
+                '</p><p><a href="/asset/2/annotations/10/">Nice Tie</a>'
+                '</p><p><a href="/asset/2/annotations/8/">Nice Tie</a>'
+                '</p><a href="/asset/2/">Whole Item</a></p>')
+
+        old_note = SherdNote.objects.get(id=10)
+        new_note = SherdNote.objects.get(id=2)
+
+        new_text = new_note.update_references_in_string(text, old_note)
+
+        citations = SherdNote.objects.references_in_string(new_text,
+                                                           old_note.author)
+        self.assertEquals(len(citations), 4)
+        self.assertEquals(citations[0].id, new_note.id)
+        self.assertEquals(citations[0].asset.id, new_note.asset.id)
+
+        self.assertEquals(citations[1].id, new_note.id)
+        self.assertEquals(citations[1].asset.id, new_note.asset.id)
+
+        self.assertEquals(citations[2].id, 8)
+        self.assertEquals(citations[2].asset.id, 2)
+
+        self.assertEquals(citations[3].id, 11)
+        self.assertEquals(citations[3].asset.id, 2)

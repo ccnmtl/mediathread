@@ -22,6 +22,7 @@
 
     var AssetList = Backbone.Collection.extend({
         model: Asset,
+        urlRoot:  '/_main/api/v1/asset/',
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
@@ -44,6 +45,7 @@
 
     var ProjectList = Backbone.Collection.extend({
         model: Project,
+        urlRoot:  '/_main/api/v1/project/',
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
@@ -103,6 +105,8 @@
             this.projectsTemplate = _.template(jQuery("#projects-template").html());
             this.itemsTemplate = _.template(jQuery("#items-template").html());
             this.courseTemplate = _.template(jQuery("#course-template").html());
+            this.selectedProjects = new ProjectList();
+            this.selectedAssets = new AssetList();
             
             var self = this;
             // Setup initial state based on user's available courses
@@ -164,7 +168,9 @@
             // Put up an overlay & a progress indicator.
             
             var data = {
-                'fromCourse': this.model.get('id')
+                'fromCourse': this.model.get('id'),
+                'project_set': JSON.stringify(this.selectedProjects.toJSON()),
+                'asset_set': JSON.stringify(this.selectedAssets.toJSON())
             };
             
             jQuery.ajax({
@@ -207,6 +213,17 @@
                           { text: 'Import',
                             click: function () {
                                 jQuery(this).dialog("close");
+                                
+                                self.model.get('project_set').forEach(function (project) {
+                                    if (!self.selectedProjects.get(project.id)) {
+                                        self.selectedProjects.add(project);
+                                    }
+                                });
+                                self.model.get('asset_set').forEach(function (asset) {
+                                    if (!self.selectedAssets.get(asset.id)) {
+                                        self.selectedAssets.add(asset);
+                                    }
+                                });
                                 self.migrateCourse();
                             }
                           },

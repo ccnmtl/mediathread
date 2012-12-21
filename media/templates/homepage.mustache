@@ -66,17 +66,21 @@
                                             </div>
                                         </li>
                                     {{/assignments}}
-                                
+                                    
                                     {{#projects}}
                                         <li class="projectlist
-                                                   {{^collaboration}}composition{{/collaboration}}
-                                                   {{#collaboration?}}assignment{{/collaboration?}}"
-                                                   id="project-{{id}}">                                                                                                                                         
+                                                   {{^display_as_assignment}}composition{{/display_as_assignment}}
+                                                   {{#display_as_assignment?}}assignment{{/display_as_assignment?}}
+                                                   id="project-{{id}}">
+                                            {{^display_as_assignment}}<span class="metadata-value-composition">Composition</span>{{/display_as_assignment}}
+                                            {{#display_as_assignment?}}<span class="metadata-value-assignment">Assignment</span>{{/display_as_assignment?}}
+                                            
                                             {{^collaboration}}
-                                                <span class="metadata-value-composition">Composition</span>
                                                 <h3>                                       
                                                 <a href="{{url}}"
-                                                   class="asset_title type-project"
+                                                   class="asset_title
+                                                          {{#display_as_assignment?}}type-assignment{{/display_as_assignment?}}
+                                                          {{^display_as_assignment}}type-project{{/display_as_assignment}}"                                                        
                                                    title='View "{{{title?default(Untitled)}}}"'>
                                                        {{{title?default(Untitled)}}}
                                                 </a>
@@ -90,7 +94,6 @@
                                                 </h3>                                                
                                             {{/collaboration}}                                  
                                             {{#collaboration?}}
-                                                <span class="metadata-value-assignment">Assignment</span>
                                                 <h3>
                                                 <a href="{{collaboration.url}}"
                                                    class="asset_title type-assignment"

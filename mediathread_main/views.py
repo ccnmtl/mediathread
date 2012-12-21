@@ -332,6 +332,7 @@ def get_projects(request, record_owner, projects, assignments):
     data = {'assignments': [{'id': a.id,
                              'url': a.get_absolute_url(),
                              'title': a.title,
+                             'display_as_assignment': True,
                              'modified_date': a.modified.strftime("%m/%d/%y"),
                              'modified_time': a.modified.strftime("%I:%M %p")}
                             for a in assignments],

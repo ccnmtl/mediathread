@@ -12,7 +12,6 @@ body
     font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
     color: #2f2f2f;
     width: 100% auto;
-    overflow: auto;
 }
 
 .ui-widget {
@@ -220,10 +219,6 @@ h1#course_title a:hover {
 	min-height: 100%;
 	margin-bottom: -60px;
 	position: relative;
-    padding: 0;
-    border: 0;
-    background-color: #fff;
-    min-height: 500px;
 }
 
 
@@ -231,10 +226,7 @@ h1#course_title a:hover {
 
 #content
 {
-    float: none;
-    margin: 0;
-    padding: 0 10px;
-    border: 0;
+
 }
 
 #squish
@@ -609,6 +601,11 @@ ul#projects li {
 	background-color: #f5f5f5;
 	margin-bottom: 15px;
 	padding: 20px 15px;
+}
+
+
+.projectlist a.asset_title {
+	color: #2f2f2f;
 }
 
 .projectlist.assignment {

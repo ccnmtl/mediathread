@@ -226,7 +226,6 @@ def triple_homepage(request):
             "thumb": (None if not thumb else {"id": thumb.id,
                                               "url": thumb.url}),
             "archive": {"id": archive.id, "url": archive.url},
-            # is description a list or a string?
             "metadata": (description[0]
                          if hasattr(description, 'append') else description)
         }
@@ -250,7 +249,8 @@ def triple_homepage(request):
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
         'archives': archives,
-        'uplodate_archive': upload_archive
+        'upload_archive': upload_archive,
+        'can_upload': course_details.can_upload(request.user, request.course)
     }
     return context
 

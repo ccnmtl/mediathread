@@ -20,26 +20,9 @@
     
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/project/projectlist.js?version={%revision%}"></script>
 
     <script type="text/javascript">
-        resizeHomepage = function() {
-            var visible = getVisibleContentHeight();
-            jQuery('#instructor .column-container').css('height', visible + "px");
-            jQuery('#classwork').css('height', visible + "px");
-
-            var helpOffset = 0;
-            var helpBlock = jQuery("#help_homepage_classwork_column");
-            if (jQuery(helpBlock).hasClass("on"))
-                helpOffset += jQuery(helpBlock).outerHeight();
-            
-            visible -= helpOffset;
-            visible -= jQuery("div.filter-widget").outerHeight() + jQuery("#classwork div.parent-column-container").children('h2').outerHeight();
-            visible -= 28; // padding
-            jQuery('#classwork .projects-column-container').css('height', (visible) + "px");
-            jQuery('#classwork .media-column-container').css('height', (visible + 10) + "px");
-        }
-    
         jQuery(document).ready(function() {
             jQuery("div#classwork_table").ajaxStart(function(){
                 jQuery(this).addClass("ajaxLoading");
@@ -49,36 +32,38 @@
                 jQuery(this).removeClass("ajaxLoading");
             });
             
-            var collectionList = new CollectionList({
+            var projectList = new ProjectList({
                 'parent': jQuery("div#classwork_table")[0],
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
                 'template': 'homepage',
                 'template_label': 'classwork_table',
-                'view_callback': resizeHomepage,
                 'view': "{{request.GET.view}}",
-                'tag': "{{request.GET.tag}}",
-                'create_asset_thumbs': true,
-                'citable': false
             });
-            
-            jQuery(window).resize(function () {  
-                resizeHomepage();
-            });
-            
-            jQuery(".inst-header").click(function() {
-                jQuery(this).next().toggle();
-            })
-    
-            var visible = getVisibleContentHeight();
-            jQuery('#instructor .column-container').css('height', visible + "px");
-            jQuery('#classwork').css('height', visible + "px");
         });
     </script>
 {% endblock %}
 
+{% block course_metadata %}
+    <div id="course_metadata">Put course metadata here</div>
+{% endblock %}
+
 {% block content %}
     {{ block.super }}
-    
+        <div id="sitewide_menu">
+            <ul>
+                <li><a href="/asset/">View Full Collection</a> </li>
+                <li>
+                    <form class="project-createnew" action="/project/create/" method="post">
+                        <input type="hidden" name="title">
+                        {% if is_faculty %}
+                            <input type="submit" value="Create Composition or Assignment">
+                         {% else %}
+                            <input type="submit" value="Create Composition">
+                         {% endif %}
+                    </form>
+                </li>
+            </ul>
+        </div>   
     <table id="home-columns">
     <tbody>
         <tr>
@@ -87,9 +72,8 @@
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
                 <div class="column-container">    
-                   <h2>Course Information {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
+                   <h2>Course Information</h2>
                       <div class="column-contents scroll">
-                         {% if is_faculty %}{% include "help/help_contentarea.html" %} {% endif %}
                         <div id="instructor-column">
                             {%if faculty_feed.projects %}
                                 <h4 class="inst-header project">Information</h4>
@@ -132,34 +116,40 @@
             {% with "resizeHomepage" as callback %}
             <td id="classwork">
                 <div class="column-container parent-column-container">
-                    <h2>Student Dashboard</h2>
+                    <h2>Dashboard</h2>
                     <div id="classwork_table"></div>
                 </div>
             </td>
             <td id="explore">
             	<div class="column-container">
-            	<h2>Explore</h2>
+            	<h2>Add to My Collection</h2>
             		<div id="bookmarklet">
             		<strong>Install Bookmarklet in Firefox</strong>
-            		<ul>
-            		<li>In the View menu, show the "Bookmarks" toolbar.</li>
-					<li>Drag this link onto your browser bookmarks toolbar:<br />
-					<a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-					<li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
-            		</ul>
+            		    <ul>
+            		        <li>In the View menu, show the "Bookmarks" toolbar.</li>
+					        <li>Drag this link onto your browser bookmarks toolbar:<br />
+					        <a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+					        <li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
+            	        </ul>
             		</div>
-            	    <div id="upload">
-            	    <strong>Upload Media</strong>
-                    <ul>
-            		<li>In the View menu, show the "Bookmarks" toolbar.</li>
-					<li>Drag this link onto your browser bookmarks toolbar:</li>
-					<li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
-            		</ul>
-            		</div>
-            	</div>
-            	
+                    <div id="recommend">
+                    <strong>Instructor Recommendations</strong>
+                        <div class="recommend_source">
+                            <div class="source_title"><a href="/">The Metropolitan Museum of Art</a></div>
+                            <div class="source_thumb"><img src="http://www.metmuseum.org/content/img/presentation/icons/header-logo-icon.gif" /></div>
+
+                        </div>
+                        <div class="recommend_source">
+                            <div class="source_title"><a href="/">Victoria and Albert Museum Archives</a></div>
+                            <div class="source_thumb"><img src="http://books.google.com/intl/en/images/logos/books_logo_lg.gif" /></div>
+                        </div>
+                        <div class="recommend_source">
+                            <div class="source_title"><a href="/">WGBH OpenVault: The Vietnam Collection </a></div>
+                            <div class="source_thumb"><img src="http://ccnmtl.columbia.edu/projects/mediathread/skins/vietnam//img/bvault_bug.jpg" /></div>
+                        </div>
+                    </div>
+                </div>
             </td>            
-            
             {% endwith %}{% endwith %}{% endwith %}
         </tr>
     </tbody>

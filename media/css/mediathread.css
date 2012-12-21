@@ -1,5 +1,8 @@
 /* ########## Standard elements ########## */
 
+html,body {
+	height: 100%;
+}
 body
 {
     margin: 0;
@@ -9,7 +12,6 @@ body
     font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
     color: #2f2f2f;
     width: 100% auto;
-    min-width: 1000px;
     overflow: auto;
 }
 
@@ -125,9 +127,8 @@ a:hover {
     display: block;
     overflow: hidden;
     margin: 0;
-	padding:0;
+	padding:0 10px;
 	border: 0;
-    width: 100%;
 }
 
 #course_title {
@@ -139,11 +140,24 @@ a:hover {
     text-overflow:ellipsis;
 }
 
-h1#course_title {
+h1#course_title a {
 	font-weight: bold;
 	padding: 10px 0 0 10px;
 	color: #2f2f2f;
 }
+
+h1#course_title a:hover {
+	text-decoration: none;
+}
+
+#course_metadata {
+	display: block;
+	clear: both;
+	padding: 0 0 10px 10px;
+    font-size: .875em;
+    color: #2f2f2f;
+}
+
 
 /* ---- Sitewide menu ---------- */
 
@@ -166,16 +180,34 @@ h1#course_title {
     display: inline;
 }    
 
+#sitewide_menu ul li form {
+	display: inline;
+}
+
+.project-createnew input {
+    display: inline;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+   	color: #1b75bc;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1em;
+    font-family: 'helvetica neue', helvetica, arial, sans-serif;
+}
+
+.project-createnew input:hover {
+    text-decoration: underline;
+}
 
 
  /* ---- Pagebody block elements ---------- */
  
 #pagebody
 {
-    display: block;
-    width: 100%;
-    clear: both;
-    margin: 0;
+	min-height: 100%;
+	margin-bottom: -60px;
+	position: relative;
     padding: 0;
     border: 0;
     background-color: #fff;
@@ -189,13 +221,13 @@ h1#course_title {
 {
     float: none;
     margin: 0;
-    padding: .5em 0 0;
+    padding: 0 10px;
     border: 0;
 }
 
 #squish
 {
-    margin: 0 0 .25em 10px;
+    margin: 0;
     padding: 0;
     border: 0;
 }
@@ -206,7 +238,6 @@ img
 }
 
 .scroll {
-    overflow: auto;
 }
 
 /* ########## Globally useful definitions ########## */
@@ -373,14 +404,16 @@ html.busy, html.busy * {
 /* ---- Footer block elements ---------- */
 #footer
 {
-    display: block;
+    position: relative;
     width: 100%;
-    height: 33px;
-    clear: both;
-    margin: 10px 0 0 0;
+    height: 60px;
     padding: 6px 0 0 0;
     border: 0;
-    background-color: #cdcdcd;
+}
+
+#clearfooter {
+	height: 60px;
+	clear: both;
 }
 
 #footer #logo_ccnmtl
@@ -438,6 +471,7 @@ table#home-columns td {
     border: none;
     border-collapse: collapse;
     vertical-align: top;
+    margin: 0 20px 0 0;
 }
 
 table#home-columns td#instructor {
@@ -455,31 +489,12 @@ table#home-columns td#explore {
 	float: left;
 }
 
-@media (max-width: 1400px) {
-    
-    table#home-columns td#instructor {
-    width: 25%;
-    float: left;
-    }
-    table#home-columns td#classwork {
-    width: 70%;
-    float: left;
-    }
-    table#home-columns td#explore {
-	width: 90%;
-	clear: both;
-    }
-}
-
-/* Smaller than standard 960 (devices and browsers) */
-
 div#classwork_table table {
 	width: 100%;
 }
 
 
 div.column-contents {
-    overflow: auto;
     height: 95%;
 }
 
@@ -488,9 +503,9 @@ div.column-contents {
 	border-bottom: solid 1px #efefef;
 }
 
-/* Explore */
+/* Add to My Collection Column */
 
-#bookmarklet, #upload {
+#bookmarklet, #recommend {
 	width: 100%;
 	background-color: #f5f5f5;
 	padding: 10px;
@@ -507,6 +522,27 @@ div.column-contents {
 	color: #777;
 }
 
+.recommend_source {
+    display: block;
+    clear: both; 
+    border-bottom: solid 1px #cecece;
+    padding: 5px 0;
+    margin: 5px 0;
+    min-height: 24px;
+}
+
+.source_thumb {
+    float: left;
+}
+
+.source_thumb img {
+	max-height: 20px;
+}
+
+.source_title {
+    margin: 0 20px 0 0;
+    float: left;
+}
 
 #coursefilter {
     float: right;
@@ -1579,7 +1615,7 @@ table#home-columns td#classwork .helptoggle {
     float:left;
     position:relative;
     z-index:9999;/*IE z-index bug workaround*/
-    margin-bottom:2px;
+    margin-bottom:12px;
     outline:none;
 }
 
@@ -2061,11 +2097,6 @@ div.panel-column-stump {
 
 .asset_title {
     display:block;
-    background-repeat: no-repeat;
-    background-position: 3px 1px;
-    padding: 2px 5px 4px 24px;
-    margin-top: -3px;
-    font-size: 100%;
 }
 
 div.gallery-item h4.asset_title {
@@ -2146,10 +2177,7 @@ div.gallery-item h4.asset_title {
     display:none;
 }
 
-.asset_title.type-assignment {
-    
-    background-image: url(../img/icons/item_assignment.gif);
-    background-color: #dae7e0;
+
 }
 
 .asset_title.type-project
@@ -2158,10 +2186,6 @@ div.gallery-item h4.asset_title {
     background-repeat: no-repeat;
     background-position: 2px center;
     margin-top: -3px;
-}
-
-a.asset_title.type-project {
-	color: #2f2f2f;
 }
 
 .asset_title.type-collaboration,
@@ -2224,13 +2248,6 @@ a.asset_title.type-project {
 .archive {
    float:left;
    margin: 10px 10px;
-   background-color: #ededed;
-   border: 1px solid #ccc;
-   width:274px;
-   height: 150px;
-   max-height: 150px;
-   overflow-y: auto;
-   overflow-x: hidden;
    padding: 10px 5px 5px;
 }
 
@@ -2825,9 +2842,28 @@ input.videoplay {
     border-radius: 3px;
 }
 
+.metadata-value-assignment {
+    display: block;
+    padding: 0 0 10px 0;
+    font-size: .75em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #39b54a;
+}
+
+.metadata-value-composition {
+    display: block;
+    padding: 0 0 10px 0;
+    font-size: .75em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #1e77bd;
+}
+
 .meta label,
 .metadata-label,
-.metadata-value {
+.metadata-value
+ {
     font-weight: bold;
     color: #777;
     font-size:.857em;
@@ -2884,19 +2920,6 @@ div#instructor-column {
     line-height: 17px;
 }
 
-div#instructor-column h4{
-
-    margin: 10px 0;
-    font-weight: normal;
-    line-height: 17px;
-}
-
-div#instructor-column h4.inst-header{
-
-    padding: 0;
-    background-position: top left;
-    background-repeat: no-repeat;
-}
 
 div#materials {
     margin: 0 5px;
@@ -2981,8 +3004,7 @@ div.gallery-item h4 {
 }
 
 ul.instructor-list {
-
-    margin: 0;
+    margin: 20px 0 0 0;
 }
 
 ul.instructor-list li {
@@ -2991,7 +3013,6 @@ ul.instructor-list li {
     font-weight: normal;
     line-height: 17px;
 }
-
 
 td.media-column .column-contents {
 	padding: 0px;

@@ -33,33 +33,7 @@
                 </li>
             </ul>
         </div>
-        {{/>>switcher_collection_chooser}}
-        
-     
-        
-        {{#active_filter_count?}}
-            <div class="switcher-active-filters">
-                {{#active_filters}}
-                    {{#tag?}}
-                        <div class="switcher-active-filter">
-                            <span>
-                                Tag: {{tag?ellipses(10)}}
-                                <a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a>
-                            </span>
-                        </div>
-                    {{/tag?}}
-                    {{#modified?}}
-                        <div class="switcher-active-filter">
-                            <span>
-                                Date: {{modified}}
-                                <a class="switcher-choice remove" href="modified" title="Clear "{{modified}}" filter"></a>
-                            </span>
-                        </div>
-                    {{/modified?}}
-                {{/active_filters}}
-            </div>
-        {{/active_filter_count?}}
-        
+        {{/>>switcher_collection_chooser}}        
     </div> {{! end filter widget }}
     
     <table>
@@ -78,55 +52,23 @@
                     <div class="column-contents scroll">
                         {{#>>projects}}
                         <div id="project_table">
-                        
-                            {{^compositions}}
-                                <div id="help_homepage_compositions_section" class="helpblock">
-
-                                    <h3>Available compositions appear here:</h3>
-                                    
-                                    <ul>
-                                    <li>To create your own Composition, click "New Composition" in the upper right of this box.</li>
-                                    <li>To access others' published compositions, select a name in the "Owner" menu above.</li>
-                                </div>
-                            {{/compositions}}
                             
                             {{#compositions?}}
                                 <ul id="projects">
-                                        <! -- Compositions -->
-                                        <li class="projectlist composition" id="assignment-{{id}}">
-                                            <h3>
-                                                <a href="{{url}}"
-                                                   class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
-                                                  {{{title?default(-Untitled-)}}}
-                                                </a>
-                                            </h3>
-                                            <div class="meta">
-                                                <span class="metadata-label">Saved at:</span>
-                                                <span class="metadata-value">{{modified}}</span>
-                                                <br />
-                                              
-                                                <span class="metadata-label">Status:</span>
-                                                <span class="metadata-value metadata-value-status">Assignment</span>
-                                                <br />  
-                                            </div>
-                                        </li>
-                                        <! -- End Compositions -->
+
+                                        
                                     {{#assignments}}
                                         <li class="projectlist assignment" id="assignment-{{id}}">
+                                            <span class="metadata-value-assignment">Assignment</span>
                                             <h3>
-                                                <a href="{{url}}"
-                                                   class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
+                                                <a href="{{url}}" class="asset_title type-assignment" title='View "{{{title?default(Untitled)}}}"'>
                                                   {{{title?default(-Untitled-)}}}
                                                 </a>
                                             </h3>
                                             <div class="meta">
                                                 <span class="metadata-label">Saved at:</span>
-                                                <span class="metadata-value">{{modified}}</span>
+                                                <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>
                                                 <br />
-                                              
-                                                <span class="metadata-label">Status:</span>
-                                                <span class="metadata-value metadata-value-status">Assignment</span>
-                                                <br />  
                                             </div>
                                             <div class="respond">
                                                 <button class="btnRespond">Respond to Assignment</button>
@@ -135,52 +77,75 @@
                                     {{/assignments}}
                                 
                                     {{#projects}}
-                                        <li class="projectlist assignment" id="project-{{id}}">
-                                            <h3>
+                                        <li class="projectlist
+                                                   {{^collaboration}}composition{{/collaboration}}
+                                                   {{#collaboration?}}assignment{{/collaboration?}}"
+                                                   id="project-{{id}}">                                                                                                                                         
+                                            {{^collaboration}}
+                                                <span class="metadata-value-composition">Composition</span>
+                                                <h3>                                       
+                                                <a href="{{url}}"
+                                                   class="asset_title type-project"
+                                                   title='View "{{{title?default(Untitled)}}}"'>
+                                                       {{{title?default(Untitled)}}}
+                                                </a>
+                                                
                                                 {{#editable?}}
                                                     <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
                                                         href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                         class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
-                                    
-                                                <a href="{{url}}" class="asset_title type-project" title='View "{{{title?default(-Untitled-)}}}"'>
-                                                    {{{title?default(-Untitled-)}}}
+                                                
+                                                </h3>                                                
+                                            {{/collaboration}}                                                
+                                            {{#collaboration?}}
+                                                <span class="metadata-value-assignment">Assignment</span>
+                                                <h3>
+                                                <a href="{{collaboration.url}}"
+                                                   class="asset_title type-assignment"
+                                                   title='View "{{{collaboration.title?default(Untitled)}}}"'>
+                                                       {{{collaboration.title?default(Untitled)}}}
                                                 </a>
-                                        
-                                            </h3>
+                                                </h3>
+                                            {{/collaboration?}}                                        
+                                            
                                            <div class="meta">
+                                                {{#collaboration?}}
+                                                    <div class="assignment-listitem response">
+                                                        <span class="metadata-label">                                                            
+                                                             My Response:</span> 
+                                                            <span class="metadata-value"><a href="{{url}}">{{title}}</a>
+                                                              
+                                                            {{#editable?}}
+                                                                <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                                    href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
+                                                                    class="delete_icon" alt="Delete" /></a>
+                                                            {{/editable?}}
+                                                        </span>
+                                                        <br />
+                                                    </div>
+                                               {{/collaboration?}}
+                                               
+                                                <span class="metadata-label">by</span>
+                                                <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
+                                                <span class="metadata-label">Saved at:</span>
+                                                <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>                                            
+                                               
+                                               
                                                {{#feedback?}}
                                                   <div><span class="metadata-label"> <a href="{{url}}feedback/">Read Instructor Feedback</a></span></div>
-                                               {{/feedback?}}
-                                                
-                                               {{#collaboration?}}
-                                                <div class="assignment-listitem response">
-                                                <span class="metadata-label">
-                                                      Response for:</span> 
-                                                      <span class="metadata-value"><a href="{{collaboration.url}}">{{collaboration.title}}</a>
-                                                </span>
-                                                </div>
-                                               {{/collaboration?}}
-                                            
-                                            <span class="metadata-label">by</span>
-                                            <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
+                                               {{/feedback?}}                                            
                                               
-                                              <span class="metadata-label">on</span>
-                                              <span class="metadata-value">{{modified}}</span>
-                                              <br />
-                                              
-                                              <span class="metadata-label">Status:</span>
-                                              <span class="metadata-value metadata-value-status">{{{status}}}</span>
                                               <br />  
                                             </div>
                                         </li>
                                     {{/projects}}
                                 </ul>    
                             {{/compositions?}}
-                        
-                        </div>
+                           </div>
                         {{/>>projects}}
                     </div>
+
                 </div>
             </td>
         

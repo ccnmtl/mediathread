@@ -1,19 +1,19 @@
-import simplejson
+from courseaffils.lib import in_course_or_404
+from discussions.views import threaded_comment_json
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import get_model
-from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, \
+    HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from djangohelpers.lib import allow_http
-
-from discussions.views import threaded_comment_json
-from courseaffils.lib import in_course_or_404
 from projects.forms import ProjectForm
 from projects.lib import composition_project_json
+import simplejson
+
 
 Project = get_model('projects', 'project')
 ProjectVersion = get_model('projects', 'projectversion')

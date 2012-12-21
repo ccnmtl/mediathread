@@ -7,8 +7,8 @@ from discussions.utils import get_course_discussions
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import get_model, Q
-from django.http import Http404, HttpResponseForbidden
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponse, \
+    HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import rendered_with, allow_http
 from djangosherd.models import DiscussionIndex
@@ -223,6 +223,110 @@ def triple_homepage(request):
         'view': request.GET.get('view', '')
     }
     return context
+
+
+@allow_http("GET")
+def your_projects(request, record_owner_name):
+    """
+    An ajax-only request to retrieve a specified user's projects,
+    assignment responses and selections
+    """
+    if not request.is_ajax():
+        raise Http404()
+
+    course = request.course
+    in_course_or_404(record_owner_name, course)
+    record_owner = get_object_or_404(User, username=record_owner_name)
+    logged_in_user = request.user
+
+    projects = Project.get_user_projects(
+        record_owner, course).order_by('-modified')
+    if not record_owner == logged_in_user:
+        projects = [p for p in projects if p.visible(request)]
+
+    project_type = ContentType.objects.get_for_model(Project)
+    assignments = []
+    for assignment in Project.objects.filter(course.faculty_filter).\
+            order_by("-modified", "title"):
+        if not assignment.visible(request):
+            continue
+        if assignment in projects:
+            continue
+        if is_unanswered_assignment(assignment, record_owner,
+                                    request, project_type):
+            assignments.append(assignment)
+
+    return get_projects(request, record_owner, projects, assignments)
+
+
+@allow_http("GET")
+def all_projects(request):
+    """
+    An ajax-only request to retrieve a course's projects,
+    assignment responses and selections
+    """
+
+    if not request.is_ajax():
+        raise Http404()
+
+    if not request.user.is_staff:
+        in_course_or_404(request.user.username, request.course)
+
+    course = request.course
+
+    projects = [p for p in Project.objects.filter(
+        course=course, submitted=True).order_by('-modified, title')
+        if p.visible(request)]
+
+    return get_projects(request, None, projects, [])
+
+
+def get_projects(request, record_owner, projects, assignments):
+    course = request.course
+    logged_in_user = request.user
+
+    # Can the record_owner edit the records
+    viewing_my_records = (record_owner == logged_in_user)
+
+    # Is the current user faculty OR staff
+    is_faculty = course.is_faculty(logged_in_user)
+
+    # Spew out json for the projects
+    project_json = []
+    for p in projects:
+        project_json.append(homepage_project_json(request,
+                                                  p,
+                                                  viewing_my_records))
+
+    # Assemble the context
+    data = {'assignments': [{'id': a.id,
+                             'url': a.get_absolute_url(),
+                             'title': a.title,
+                             'modified_date': a.modified.strftime("%m/%d/%y"),
+                             'modified_time': a.modified.strftime("%I:%M %p")}
+                            for a in assignments],
+            'projects': project_json,
+            'space_viewer': {'username': logged_in_user.username,
+                             'public_name': get_public_name(logged_in_user,
+                                                            request),
+                             'can_manage': (logged_in_user.is_staff and
+                                            not record_owner)},
+            'editable': viewing_my_records,
+            'owners': [{
+                'username': m.username,
+                'public_name': get_public_name(m, request)}
+                for m in request.course.members],
+            'compositions': len(projects) > 0 or len(assignments) > 0,
+            'is_faculty': is_faculty, }
+
+    if record_owner:
+        data['space_owner'] = {
+            'username': record_owner.username,
+            'public_name': get_public_name(record_owner, request)
+        }
+
+    json_stream = simplejson.dumps(data, indent=2)
+    return HttpResponse(json_stream, mimetype='application/json')
 
 
 @allow_http("GET")

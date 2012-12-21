@@ -41,21 +41,12 @@
         <tr>
             <td id="projects">
                 <div class="column-container projects-column-container" style="padding-bottom: 8px;">
-                       <!--
-                       <div class="button-form inline">
-                            <form class="block project-createnew inline" method="POST" action="/project/create/">
-                                <input type="hidden" name="title" />
-                                <input class="columnbutton project createnew-button" type="submit" value="Create Composition"/>
-                            </form>
-                        </div>
-						-->
                     <div class="column-contents scroll">
                         {{#>>projects}}
                         <div id="project_table">
                             
                             {{#compositions?}}
                                 <ul id="projects">
-
                                         
                                     {{#assignments}}
                                         <li class="projectlist assignment" id="assignment-{{id}}">

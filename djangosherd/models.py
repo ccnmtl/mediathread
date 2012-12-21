@@ -184,6 +184,30 @@ class SherdNoteManager(models.Manager):
 
         return rv
 
+    def migrate_one(self, note, new_asset, user, copy_body_and_tags=False):
+        n = None
+
+        if (note.is_global_annotation() and
+                new_asset.global_annotation(user, False)):
+            # A global annotation already exists
+            # from this user
+            # Return the existing global_annotation
+            n = new_asset.global_annotation(user, False)
+        else:
+            n = SherdNote(asset=new_asset,
+                          range1=note.range1,
+                          range2=note.range2,
+                          annotation_data=note.annotation_data,
+                          title=note.title,
+                          author=user)
+
+        if (copy_body_and_tags):
+            n.body = note.body
+            n.tags = note.tags
+
+        n.save()
+        return n
+
 
 class SherdNote(Annotation):
     objects = SherdNoteManager()
@@ -275,6 +299,18 @@ class SherdNote(Annotation):
                 return date > over_a_week_ago
 
         return date_filter
+
+    def update_references_in_string(self, text, old_note):
+        """
+        substitute my new asset.id & id for the old references.
+        """
+        regex_string = \
+            (r'(name=|href=|openCitation\()([\'"]/asset/)(%s)'
+             '(/annotations/)(%s)' % (old_note.asset.id, old_note.id))
+
+        # annotations
+        sub = r'\g<1>\g<2>%s\g<4>%s' % (self.asset.id, self.id)
+        return re.sub(regex_string, sub, text)
 
 
 class DiscussionIndex(models.Model):

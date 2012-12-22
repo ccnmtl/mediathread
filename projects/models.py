@@ -46,7 +46,80 @@ PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
                           'Whole World - a public url is provided')
 
 
+class ProjectManager(models.Manager):
+
+    def migrate(self, project_set, course, user, object_map):
+        SherdNote = models.get_model('djangosherd', 'SherdNote')
+        Asset = models.get_model('assetmgr', 'Asset')
+
+        for project_json in project_set:
+            old_project = Project.objects.get(id=project_json['id'])
+            project_body = old_project.body
+            citations = SherdNote.objects.references_in_string(project_body,
+                                                               user)
+
+            new_project = Project.objects.migrate_one(old_project,
+                                                      course,
+                                                      user)
+
+            for old_note in citations:
+                new_note = None
+                new_asset = None
+                if old_note.id in object_map['notes']:
+                    new_note = object_map['notes'][old_note.id]
+                else:
+                    if old_note.asset.id in object_map['assets']:
+                        new_asset = object_map['assets'][old_note.asset.id]
+                    else:
+                        # migrate the asset
+                        new_asset = Asset.objects.migrate_one(old_note.asset,
+                                                              course,
+                                                              user)
+                        object_map['assets'][old_note.asset.id] = new_asset
+
+                    # migrate the note
+                    new_note = SherdNote.objects.migrate_one(old_note,
+                                                             new_asset,
+                                                             user)
+
+                    object_map['notes'][old_note.id] = new_note
+
+                # Update the citations in the body with the new id(s)
+                project_body = \
+                    new_note.update_references_in_string(
+                        project_body, old_note)
+
+                project_body = \
+                    new_note.asset.update_references_in_string(
+                        project_body, old_note.asset)
+
+            new_project.body = project_body
+            new_project.save()
+            object_map['projects'][old_project.id] = new_project
+
+        return object_map
+
+    def migrate_one(self, project, course, user):
+        x = Project(title=project.title,
+                    course=course,
+                    author=user)
+        x.save()
+
+        collaboration_context = Collaboration.objects.get(
+            content_type=ContentType.objects.get_for_model(Course),
+            object_pk=str(course.pk))
+
+        policy = project.collaboration()._policy
+
+        Collaboration.objects.create(
+            user=x.author, title=x.title, content_object=x,
+            context=collaboration_context, policy=policy.policy_name,)
+
+        return x
+
+
 class Project(models.Model):
+    objects = ProjectManager()  # custom manager
 
     title = models.CharField(max_length=1024)
 

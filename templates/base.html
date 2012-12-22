@@ -93,9 +93,6 @@
                                 
                                 {% num_courses for user as user_courses %}
                                  <h3>Actions</h3>                  
-                                     {% if user_courses > 1 or user.is_staff %}
-                                        <a href="/?unset_course">Switch Course</a>
-                                     {% endif %}
                                      {% if is_course_faculty %}
                                          <a href="/dashboard/settings/">Manage Settings</a>
                                          <a href="/dashboard/addsource/">Manage Sources</a>
@@ -108,6 +105,11 @@
                                          <a href="/reports/class_summary">Student Contributions</a>        
                                          <br />
                                     {% endif %}
+                                    
+                                    {% if user_courses > 1 or user.is_staff %}
+                                        <a href="/?unset_course">Switch Course</a>
+                                    {% endif %}
+                                    
                                     <a href="/accounts/logout/">Log Out</a>
                             </div>
                         </li>

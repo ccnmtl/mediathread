@@ -67,7 +67,7 @@
         "pk": 5, 
         "model": "projects.project", 
         "fields": {
-            "body": "<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/5/\">Project Portfolio</a></p>\r\n<p><a class=\"materialCitation asset-youtube asset-whole\" href=\"/asset/1/\">Mediathread: Introduction</a></p>\r\n<p><a class=\"materialCitation asset-youtube\" href=\"/asset/1/annotations/19/\">Video Selection Is Time-based</a></p>\r\n<p>&#160;</p>", 
+            "body": "<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/2/annotations/10/\">Nice Tie</a>&#160;- Student Two Annotation</p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/1/annotations/1/\">Mediathread: Introduction</a></p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/5/\">Project Portfolio</a></p>\r\n<p><a class=\"materialCitation asset-youtube asset-whole\" href=\"/asset/1/\">Mediathread: Introduction</a></p>\r\n<p><a class=\"materialCitation asset-youtube\" href=\"/asset/1/annotations/19/\">Video Selection Is Time-based</a></p>\r\n<p>&#160;</p>", 
             "feedback": null, 
             "author": 10, 
             "title": "Sample Course Assignment", 
@@ -211,11 +211,11 @@
             "group": null, 
             "context": 1, 
             "title": "Sample Course Assignment", 
-            "_policy": 4, 
+            "_policy": 4,
             "object_pk": "5", 
             "_parent": null, 
             "user": 10, 
-            "content_type": 17, 
+            "content_type": 17,
             "slug": null
         }
     }

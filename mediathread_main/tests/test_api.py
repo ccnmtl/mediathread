@@ -97,7 +97,7 @@ class CourseResourceTest(ResourceTestCase):
                                  'Student One', [2, 5, 7])
 
         self.assertProjectEquals(objects[3], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_student_getobject_filtered(self):
         self.assertTrue(
@@ -207,7 +207,7 @@ class CourseResourceTest(ResourceTestCase):
                                  'Student One', [2, 5, 7])
 
         self.assertProjectEquals(objects[3], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_instructor_getobject(self):
         self.assertTrue(
@@ -253,7 +253,7 @@ class CourseResourceTest(ResourceTestCase):
                                  'Student One', [2, 5, 7])
 
         self.assertProjectEquals(objects[2], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_instructor_getobject_restricted(self):
         # Set course details to restricted
@@ -341,7 +341,7 @@ class CourseResourceTest(ResourceTestCase):
         objects = json['project_set']
         self.assertEquals(len(objects), 1)
         self.assertProjectEquals(objects[0], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_get_list(self):
         self.assertTrue(

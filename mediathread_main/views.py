@@ -305,7 +305,7 @@ def all_projects(request):
     course = request.course
 
     projects = [p for p in Project.objects.filter(
-        course=course, submitted=True).order_by('-modified, title')
+        course=course, submitted=True).order_by('-modified', 'title')
         if p.visible(request)]
 
     return get_projects(request, None, projects, [])
@@ -691,8 +691,8 @@ def migrate(request):
                     request.user, "help_migrate_materials", True),
             }
     elif request.method == "POST":
-        # Map old ids to new objects
-        object_map = {'assets': {}, 'notes': {}}
+        # maps old ids to new objects
+        object_map = {'assets': {}, 'notes': {}, 'projects': {}}
 
         if 'asset_set' in request.POST:
             asset_set = simplejson.loads(request.POST.get('asset_set'))
@@ -701,53 +701,16 @@ def migrate(request):
                                                request.user,
                                                object_map)
 
-#        project_count = 0
-#        if 'project_set' in request.POST:
-#            projects = simplejson.loads(request.POST.get('project_set'))
-#            for project_json in projects:
-#                old_project = Project.objects.get(id=project_json.id)
-#                project_body = old_project.body
-#
-#                new_project = Project.objects.migrate(old_project,
-#                                                      request.course,
-#                                                      request.user)
-#                project_count += 1
-#
-#                for old_note in SherdNote.objects. \
-#                        references_in_string(project_body, request.user):
-#
-#                    if old_note.id in note_map:
-#                        new_note = note_map[old_note.id]
-#                    else:
-#                        if old_note.asset.id in asset_map:
-#                            new_asset = asset_map[old_note.asset.id]
-#                        else:
-#                            # migrate the asset first
-#                            new_asset = Asset.objects.migrate(old_note.asset,
-#                                                              request.course,
-#                                                              request.user)
-#                            asset_map[old_note.asset.id] = new_asset
-#
-#                        # migrate the note
-#                        new_note = SherdNote.objects.migrate(old_note,
-#                                                             new_asset,
-#                                                             request.user)
-#
-#                        note_map[old_note.id] = new_note
-#
-#                    # Update the citations in the body with the new id(s)
-#                    project_body = \
-#                        new_note.update_references_in_string(
-#                            project_body, old_note)
-#
-#                    project_body = \
-#                        new_note.asset.update_references_in_string(
-#                            project_body, old_note.asset)
-#
-#                new_project.body = project_body
-#                new_project.save()
-        json_stream = simplejson.dumps({'success': True,
-                                       'asset_count': 0,
-                                       'project_count': 0,
-                                       'note_count': 0})
+        if 'project_set' in request.POST:
+            project_set = simplejson.loads(request.POST.get('project_set'))
+            object_map = Project.objects.migrate(project_set,
+                                                 request.course,
+                                                 request.user,
+                                                 object_map)
+
+        json_stream = simplejson.dumps({
+            'success': True,
+            'asset_count': len(object_map['assets']),
+            'project_count': len(object_map['projects']),
+            'note_count': len(object_map['notes'])})
         return HttpResponse(json_stream, mimetype='application/json')

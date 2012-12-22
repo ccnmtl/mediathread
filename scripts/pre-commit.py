@@ -43,7 +43,7 @@ CHECKS = [
     },
     {
         'output': 'Running flake8...',
-        'command': 'flake8 --max-complexity=15 %s',
+        'command': 'flake8 --max-complexity=15 --ignore=W404 %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*settings/.*',
                          '.*manage.py',
@@ -109,11 +109,11 @@ def main(all_files):
     return_code = subprocess.call('./manage.py validate', shell=True)
     result = return_code or result
 
-    print 'Running Unit Tests...'
-    return_code = subprocess.call(
-        './manage.py test djangosherd assetmgr projects mediathread_main',
-        shell=True)
-    result = return_code or result
+    #print 'Running Unit Tests...'
+    #return_code = subprocess.call(
+    #    './manage.py test djangosherd assetmgr projects mediathread_main',
+    #    shell=True)
+    #result = return_code or result
 
     for check in CHECKS:
         result = check_files(files, check) or result

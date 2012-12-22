@@ -42,20 +42,22 @@ class AssetManager(models.Manager):
     def migrate(self, asset_set, course, user, object_map):
         SherdNote = models.get_model('djangosherd', 'sherdnote')
         for asset_json in asset_set:
-            if asset_json.id not in object_map['assets']:
-                old_asset = Asset.objects.get(id=asset_json.id)
+            if asset_json['id'] not in object_map['assets']:
+                old_asset = Asset.objects.get(id=asset_json['id'])
                 new_asset = Asset.objects.migrate_one(old_asset,
                                                       course,
                                                       user)
                 object_map['assets'][old_asset.id] = new_asset
 
-                for note_json in asset_json.sherdnote_set:
-                    if note_json.id not in object_map['notes']:
-                        old_note = SherdNote.objects.get(id=note_json.id)
-                        new_note = SherdNote.objects.migrate(old_note,
-                                                             new_asset,
-                                                             user)
-                        object_map['notes'][old_note.id] = new_note
+                if "sherdnote_set" in asset_json:
+                    for note_json in asset_json["sherdnote_set"]:
+                        if note_json["id"] not in object_map['notes']:
+                            old_note = SherdNote.objects.get(
+                                id=note_json["id"])
+                            new_note = SherdNote.objects.migrate_one(old_note,
+                                                                     new_asset,
+                                                                     user)
+                            object_map['notes'][old_note.id] = new_note
 
         return object_map
 
@@ -76,6 +78,8 @@ class AssetManager(models.Manager):
                        height=source.height,
                        width=source.width)
             s.save()
+
+        x.global_annotation(user, auto_create=True)
 
         return x
 

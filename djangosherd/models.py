@@ -184,7 +184,7 @@ class SherdNoteManager(models.Manager):
 
         return rv
 
-    def migrate_one(self, note, new_asset, user, copy_body_and_tags=False):
+    def migrate_one(self, note, new_asset, user):
         n = None
 
         if (note.is_global_annotation() and
@@ -201,7 +201,7 @@ class SherdNoteManager(models.Manager):
                           title=note.title,
                           author=user)
 
-        if (copy_body_and_tags):
+        if (note.author == user or not note.is_global_annotation()):
             n.body = note.body
             n.tags = note.tags
 
@@ -306,7 +306,7 @@ class SherdNote(Annotation):
         """
         regex_string = \
             (r'(name=|href=|openCitation\()([\'"]/asset/)(%s)'
-             '(/annotations/)(%s)' % (old_note.asset.id, old_note.id))
+             '(/annotations/)(%s)/' % (old_note.asset.id, old_note.id))
 
         # annotations
         sub = r'\g<1>\g<2>%s\g<4>%s' % (self.asset.id, self.id)

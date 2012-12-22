@@ -1,6 +1,6 @@
+from assetmgr.models import Asset
 from django.contrib.auth.models import User
 from django.test import TestCase
-from assetmgr.models import Asset
 from djangosherd.models import SherdNote
 
 
@@ -130,3 +130,20 @@ class SherdNoteTest(TestCase):
 
         self.assertEquals(citations[3].id, 11)
         self.assertEquals(citations[3].asset.id, 2)
+
+    def test_update_reference_in_string2(self):
+        text = ('<p><a href="/asset/1/annotations/1/">Foo</a>'
+                '</p><p><a href="/asset/1/annotations/19/">Bar</a></p>')
+        old_note = SherdNote.objects.get(id=1)
+        new_note = SherdNote.objects.get(id=5)
+
+        new_text = new_note.update_references_in_string(text, old_note)
+        citations = SherdNote.objects.references_in_string(new_text,
+                                                           old_note.author)
+        self.assertEquals(len(citations), 2)
+
+        self.assertEquals(citations[0].id, new_note.id)
+        self.assertEquals(citations[0].asset.id, new_note.asset.id)
+
+        self.assertEquals(citations[1].id, 19)
+        self.assertEquals(citations[1].asset.id, 1)

@@ -38,7 +38,7 @@ class ProjectResourceTest(ResourceTestCase):
                                  'Student One', [2, 5, 7])
 
         self.assertProjectEquals(objects[3], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_student_two_getlist(self):
         self.assertTrue(
@@ -57,7 +57,7 @@ class ProjectResourceTest(ResourceTestCase):
                                  'Student One', [2, 5, 7])
 
         self.assertProjectEquals(objects[1], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_student_two_getlist_filtered(self):
         self.assertTrue(
@@ -92,7 +92,7 @@ class ProjectResourceTest(ResourceTestCase):
                                  'Student One', [2, 5, 7])
 
         self.assertProjectEquals(objects[2], 'Sample Course Assignment',
-                                 'test_instructor_two', [18, 19, 20])
+                                 'test_instructor_two', [1, 10, 18, 19, 20])
 
     def test_student_one_getobject(self):
         self.assertTrue(

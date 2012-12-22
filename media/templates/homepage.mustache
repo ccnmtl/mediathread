@@ -62,7 +62,7 @@
                                                 <br />
                                             </div>
                                             <div class="respond">
-                                                <button class="btnRespond">Respond to Assignment</button>
+                                                <a class="btnRespond">Respond to Assignment</a>
                                             </div>
                                         </li>
                                     {{/assignments}}
@@ -86,7 +86,7 @@
                                                 </a>
                                                 
                                                 {{#editable?}}
-                                                    <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                    <a title="Delete this Composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
                                                         href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                         class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
@@ -108,26 +108,27 @@
                                                     <div class="assignment-listitem response">
                                                         <span class="metadata-label">                                                            
                                                              My Response:</span> 
-                                                            <span class="metadata-value"><a href="{{url}}">{{title}}</a>
-                                                              
+                                                        <span class="metadata-value"><a href="{{url}}">{{title}}</a>
                                                             {{#editable?}}
-                                                                <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                                <a title="Delete My Response" onclick="return ajaxDelete(this, 'project-{{id}}');"
                                                                     href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                                     class="delete_icon" alt="Delete" /></a>
                                                             {{/editable?}}
                                                         </span>
-                                                        <br />
                                                     </div>
                                                {{/collaboration?}}
                                                
-                                                <span class="metadata-label">by</span>
-                                                <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
-                                                <span class="metadata-label">Saved at:</span>
-                                                <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>                                            
-                                               
+                                               <div class="metadata">
+                                                  <span class="metadata-label">by</span>
+                                                  <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
+                                                  <span class="metadata-label">saved on</span>
+                                                  <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>                                            
+                                               </div>
                                                
                                                {{#feedback?}}
-                                                  <div><span class="metadata-label"> <a href="{{url}}feedback/">Read Instructor Feedback</a></span></div>
+                                                  <div class="feedback">
+                                                  <a class="btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>
+                                                  </div>
                                                {{/feedback?}}                                            
                                               
                                               <br />  

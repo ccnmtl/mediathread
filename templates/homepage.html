@@ -73,7 +73,7 @@
                 {% with help_homepage_instructor_column as default_help_state %}
                 <div class="column-container">    
                    <h2>Course Information</h2>
-                      <div class="column-contents scroll">
+                      <div class="column-contents">
                         <div id="instructor-column">
                             {%if faculty_feed.projects %}
                                 <h4 class="inst-header project">Information</h4>
@@ -132,8 +132,38 @@
 					        <li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
             	        </ul>
             		</div>
-                    <div id="recommend">
-                    <strong>Instructor Recommendations</strong>
+            <div id="recommend">
+            {% if archives %}
+                <strong>Instructor Recommendations</strong>
+                {% for archive in archives %}
+
+                        {% if space_viewer.is_staff %}
+                            <div class="manage-archive">
+                                <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+                            </div>
+                        {% endif %}
+                        <div class="recommend_source">
+                            <div class="source_title">
+                            <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                            </div>
+                        
+                            {% if archive.thumb %}
+                            <div class="source_thumb">
+                            <a href="redirect/?url={{archive.archive.url|urlencode}}">
+                            <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                            </a>
+                            </div>
+                            {% endif %}
+                        </div>     
+               {%endfor%}
+
+               {% else %}
+                <strong>Instructor Recommendations</h2>
+                {% if is_faculty %}
+                    <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="{% url class-add-source %}">Manage Sources</a> page.</a>.
+                {% endif %}
+                {% endif %}
+                  <!--  <strong>Instructor Recommendations</strong>
                         <div class="recommend_source">
                             <div class="source_title"><a href="/">The Metropolitan Museum of Art</a></div>
                             <div class="source_thumb"><img src="http://www.metmuseum.org/content/img/presentation/icons/header-logo-icon.gif" /></div>
@@ -147,6 +177,9 @@
                             <div class="source_title"><a href="/">WGBH OpenVault: The Vietnam Collection </a></div>
                             <div class="source_thumb"><img src="http://ccnmtl.columbia.edu/projects/mediathread/skins/vietnam//img/bvault_bug.jpg" /></div>
                         </div>
+                        -->
+                        
+                        
                     </div>
                 </div>
             </td>            

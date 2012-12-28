@@ -548,14 +548,16 @@ div.column-contents {
 	margin: 20px 0;
 }
 
-#bookmarklet ul {
-	margin: 20px 0 0 0;
+#bookmarklet ul,
+#bookmarklet ol  {
+	margin: 20px 0 0 10px;
 }
 
 #bookmarklet ul li {
 	list-style-type: none;
 	font-size: .857em;
 	color: #777;
+	padding: 0;
 }
 
 .recommend_source {

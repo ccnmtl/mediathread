@@ -147,16 +147,65 @@
             </td>
             <td id="explore">
             	<div class="column-container">
-            	<h2>Add to My Collection</h2>
+                	<h2>Add to My Collection</h2>
             		<div id="bookmarklet">
-            		<strong>Install Bookmarklet in Firefox</strong>
-            		    <ul>
-            		        <li>In the View menu, show the "Bookmarks" toolbar.</li>
-					        <li>Drag this link onto your browser bookmarks toolbar:<br />
-					        <a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-					        <li>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</li>
-            	        </ul>
-            		</div>
+                        <div id="browser-instructions">
+                            <strong>The Bookmarklet</strong><br />
+                            MediaThread collects images and video from popular sites like YouTube,
+                            Flickr and Vimeo via a bookmarklet.
+                            <br /><br />
+                            <div id="firefox" class="browser-instruction"> 
+                                <strong>Install Bookmarklet in Firefox</strong>
+                                <ol>
+                                  <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
+                                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
+                                </ol>
+                            </div>
+                            <div id="ie" class="browser-instruction">
+                                <strong>Install Bookmarklet in Internet Explorer</strong>
+                                <ol>
+                                  <li>Right-click on this link:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li><br />
+                                  <li>and choose <b>Add to Favorites</b></li>
+                                </ol>
+                            </div>
+                            <div id="safari" class="browser-instruction"> 
+                                <strong>Install Bookmarklet in Safari</strong>
+                                <ol>
+                                 <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+                                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
+                                </ol>
+                            </div>
+                            <div id="chrome" class="browser-instruction"> 
+                                <strong>Install Bookmarklet in Chrome</strong>
+                                <ol>
+                                  <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+                                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
+                                  {% if EXPERIMENTAL %}
+                                  <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
+                                  {% endif %}
+                                </ol>
+                            </div>
+                            <script type="text/javascript">
+                                var u = navigator.userAgent;
+                                if (/Chrome/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#chrome').show();
+                                } else if (/Safari/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#safari').show();
+                                } else if (/MSIE/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#ie').show();
+                                } else if (/Gecko/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#firefox').show();
+                                } 
+                            </script>
+                            
+                            <li>Clicking the Bookmarklet imports images and video from any web page containing Mediathread-friendly items.</li>
+                        </div>
+                    </div>
+
             <div id="recommend">
             {% if archives %}
                 <strong>Instructor Recommendations</strong>

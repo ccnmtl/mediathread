@@ -44,7 +44,32 @@
 {% endblock %}
 
 {% block course_metadata %}
-    <div id="course_metadata">Put course metadata here</div>
+    <div id="course_metadata" class="meta">
+        {% if course.details.instructor %}
+        <div>
+            <span class="metadata-label">Instructor: </span>
+            <span class="metadata-value">
+                {{course.details.instructor.value}}
+            </span>
+        </div>
+        {% endif %}
+        
+        {% if course.info.termyear %}
+            <div>
+                <span class="metadata-label">Term: </span>
+                <span class="metadata-value">
+                    {{course.info.termyear}}
+                </span>
+            </div>
+        {% endif %}
+        
+        <div>
+            <span class="metadata-label">Your Role: </span>
+            <span class="metadata-value">
+                {% course_role for request.user in course as role %}{{role}}
+            </span>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -78,9 +103,9 @@
                             {%if faculty_feed.projects %}
                                 <h4 class="inst-header project">Information</h4>
                                 <ul class="instructor-list">
-                                    {%for project in faculty_feed.projects %}
+                                    {% for project in faculty_feed.projects %}
                                         <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {%endfor%}
+                                    {% endfor %}
                                 </ul>
                             {%endif%}
                             

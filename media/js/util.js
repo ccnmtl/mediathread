@@ -59,3 +59,24 @@ function toggleHelp(a, user, parent, help_content_id, callback) {
         callback();
     }
 }
+
+function toggleHelpOverlay(btn, user, help_content_id) {
+    
+    var overlay_id = "#" + help_content_id + "-overlay";
+    var tab_id = "#" + help_content_id + "-tab";
+    var content_id = "#" + help_content_id + "-content";
+    
+    if (jQuery(overlay_id).is(":visible")) {
+        jQuery(overlay_id).hide();
+        jQuery(tab_id).hide();
+        jQuery(content_id).hide();
+    } else {
+        jQuery(overlay_id).show();
+        jQuery(tab_id).show();
+        jQuery(content_id).show();
+    }
+    
+    //var checked = jQuery("#asset-view-show-help").is(":checked");
+    //updateHelpSetting(MediaThread.current_username, 'help_item_detail_view', !checked);
+    return false;
+}

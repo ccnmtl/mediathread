@@ -66,7 +66,8 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
@@ -176,7 +177,8 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
@@ -225,7 +227,8 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [1, 2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
@@ -332,7 +335,8 @@ class CourseResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [19, 20],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(objects[1], 'Project Portfolio',
                                'test_instructor_two', 'image', [18],

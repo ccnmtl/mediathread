@@ -36,7 +36,8 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
@@ -74,7 +75,8 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
@@ -142,7 +144,8 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [1, 2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
@@ -180,7 +183,8 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(json, 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [1, 2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
     def test_instructor_getobject_restricted(self):
         # Set course details to restricted
@@ -250,7 +254,8 @@ class AssetResourceTest(ResourceTestCase):
         json = self.deserialize(response)
         self.assertAssetEquals(json, 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         # Now ask for one from Alternate Course
         response = self.api_client.get('/_main/api/v1/asset/4/',
@@ -290,7 +295,8 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg')
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',

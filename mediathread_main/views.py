@@ -687,8 +687,7 @@ def migrate(request):
         if request.method == "GET":
             return {
                 "available_courses": courses,
-                "help_migrate_materials": UserSetting.get_setting(
-                    request.user, "help_migrate_materials", True),
+                "help_migrate_materials": False
             }
     elif request.method == "POST":
         # maps old ids to new objects

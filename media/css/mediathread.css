@@ -3,6 +3,7 @@
 html,body {
 	height: 100%;
 }
+
 body
 {
     margin: 0;
@@ -299,6 +300,36 @@ img
     border-radius: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
+}
+
+.rounded-button {
+    margin-top: 4px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    background-color: #BBB;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    cursor: pointer;
+}
+
+.green {
+    background-color: #39B54A;
+    border-color:  #39B54A;
+    color: white;
+}
+
+.blue {
+    background-color: #1E77BD;
+    border-color: #1E77BD;
+    color: white; 
+}
+
+.gray {
+    background-color: #919191;
+    border-color:  #919191;
+    color: white;
 }
 
 /* ########## jQuery UI extensions ########## */
@@ -2322,9 +2353,44 @@ div.gallery-item h4.asset_title {
    padding: 10px 5px 5px;
 }
 
+.dashboard-module-header h2 {
+    padding: 10px 0;
+    margin: 0 10px 10px 10px;
+    border-bottom: solid 1px #EFEFEF;
+    width: 75%;
+    min-width: 900px;
+}
+
+.dashboard-module-header input.help-tab-icon {
+    margin-right: 15px;
+}
+
+#dashboard-module-body div.help-tab { 
+    top: -42px;
+    width: 25px;
+    border-top: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+}
+
+#dashboard-module-body div.feature-help {
+    width: 500px;
+    top: -14px;
+    right: 0px;
+    border: 2px solid #DDD;
+    z-index: 10001;
+}
+
+#dashboard-module-body {
+    position: relative;
+    min-width: 900px;
+    min-height: 600px;
+    width: 75%;
+    margin: 0 10px;
+}
+
 #dashboard-module-body .archive-container,
 #dashboard-module-body .upload-container {
-
    float:left;
    border: 1px solid #ccc;
    margin: 0 1em 1em 1em;
@@ -2333,26 +2399,22 @@ div.gallery-item h4.asset_title {
    height: auto;
    max-height: none;
    -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-   }
+   -webkit-border-top-right-radius: 10px;
+   -moz-border-radius-topleft: 10px;
+   -moz-border-radius-topright: 10px;
+   border-top-left-radius: 10px;
+   border-top-right-radius: 10px;
+}
    
-   #dashboard-module-body .upload-container {
-
+#dashboard-module-body .upload-container {
     background-color: #ece8df;
-   }
+}
    
-   #dashboard-module-body .archive-container ul {
-
-  margin: 0;
-   }
+#dashboard-module-body .archive-container ul {
+    margin: 0;
+}
    
-   
-   #dashboard-module-body .archive {
-
+#dashboard-module-body .archive {
    border: 1px solid #ccc;
    margin: 10px 10px;
    width: 95%;
@@ -2360,8 +2422,7 @@ div.gallery-item h4.asset_title {
    max-height: none;
    background-color: #dedede; 
    padding: 10px 10px 5px;
-   
-   }
+}
    
 #dashboard-module-body .archive h3 {
    font-size: 100%;
@@ -3663,6 +3724,7 @@ input.annotation-listitem-icon.delete {
 div#available-courses-selector {
     height: 60px;
     background-color: #ddd;
+    margin-top: 5px;
 }
 
 input#available-courses {
@@ -3681,12 +3743,29 @@ input#available-courses.default {
 
 div#course-materials-container {
     margin-top: 5px;
+    
+}
+
+div#course-materials-container h3 {
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+#switch-course {
+    font-size: .675em;
+    padding-left: 20px;   
+}
+
+div.course-information {
+    width: 25%;
+    float: left;
 }
 
 div.selected-for-import {
     float: right;
-    width: 48%;
-    margin-right: 10px;
+    margin-top: 
+    margin-left: 50px;
+    width: 65%;
 }
 
 div.selected-for-import div.results {    
@@ -3699,12 +3778,14 @@ div.selected-for-import div.results {
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #CCC;
-    margin-top: 10px;    
+    margin-top: 4px;    
+    margin-bottom: 10px;
 }
 
 .import-dialog div.import-stuff table,
 .import-dialog div.import-stuff table tr {
     border: none;
+    width: 100%;
 }
 
 .import-dialog div.import-stuff table tr td {
@@ -3713,20 +3794,94 @@ div.selected-for-import div.results {
 }
 
 .import-dialog div.import-stuff table tr td.title {
-    width: 540px;
+    width: 95%;
     text-overflow: ellipsis;
-    font-size: .9em;
+    vertical-align: top;
 }
 
 .import-dialog div.import-stuff table tr.odd {
     background-color: #EEE;
 }
 
-.import-items-dialog {
-    background-color: #EDEDED !important;
-    max-height: 420px;
+.import-dialog div.import-stuff table tr td.record {
+    margin: 0 8px 0 0;
+    width: 100px;
+    height: auto;
+    padding: 10px;
+}
+
+.import-dialog div.import-stuff table tr td.record img.asset-thumb {
+    border: none;
 }
 
 .import-items-dialog h4 div {
     margin-left: 28px;
+}
+
+input.deselect-project, input.deselect-asset {
+    border: none;
+    font-weight: bold;
+    color: #777;
+    font-size: 1em;
+    cursor: pointer;
+    background: none;
+}
+
+input.deselect-project:hover, input.deselect-asset:hover {
+    color: #999;
+}
+
+/** Generic Help Tab **/
+input.help-tab-icon {
+    border: none;
+    float: right;    
+}
+
+div.help-tab {
+    position: absolute;
+    display: block;
+    z-index: 10002;
+    padding: 2px;
+    right: 0;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background: white;
+    border: none;
+}
+
+div.help-tab input.dismiss-help {
+     border: none;
+}
+
+div.feature-help {
+    position: absolute;
+    display: block;
+    z-index: 10002;
+    padding: 10px;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    -moz-border-radius-bottomright: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    top: 58px;
+    border: none;
+}
+
+div.feature-help div.feature-help-instructions {
+    font-size: .875em;
+    background-color: #ededed;
+    padding: 5px;
+    margin: 10px 0;
+}
+
+div.feature-help div.feature-help-instructions img {
+    vertical-align: middle;
+    margin-bottom: 4px;
 }

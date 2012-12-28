@@ -1193,7 +1193,7 @@
         "pk": 4, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg", 
+            "url": "http://localhost:8002/site_media/img/test/mediathread_introduction_thumb.jpg", 
             "primary": false, 
             "label": "thumb", 
             "width": 120, 
@@ -1358,7 +1358,7 @@
         "pk": 17, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://ccnmtl.columbia.edu/images/banner/dr.jpg", 
+            "url": "http://localhost:8002/site_media/img/test/dr.jpg", 
             "primary": true, 
             "label": "image", 
             "width": 768, 
@@ -1403,7 +1403,7 @@
         "pk": 20, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://ccnmtl.columbia.edu/images/banner/portfolio.jpg", 
+            "url": "http://localhost:8002/site_media/img/test/portfolio.jpg", 
             "primary": true, 
             "label": "image", 
             "width": 768, 

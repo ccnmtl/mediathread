@@ -138,6 +138,11 @@ class SherdNoteTest(TestCase):
         new_note = SherdNote.objects.get(id=5)
 
         new_text = new_note.update_references_in_string(text, old_note)
+
+        new_note_href = "/asset/%s/annotations/%s/" % (new_note.asset.id,
+                                                       new_note.id)
+        self.assertTrue(new_text.find(new_note_href) > 0)
+
         citations = SherdNote.objects.references_in_string(new_text,
                                                            old_note.author)
         self.assertEquals(len(citations), 2)

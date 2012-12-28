@@ -1,0 +1,43 @@
+
+<div id="{{help_id}}-overlay"
+    class="ui-widget-overlay"
+    {% if not default_help_state %}style="display: none"{% endif %}>
+</div>
+
+<div id="{{help_id}}-tab"
+    class="ui-widget-content help-tab"
+    {% if not default_help_state %}style="display: none"{% endif %}>
+        <input class="dismiss-help" type="image" title="Dismiss help" 
+            onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
+            alt="Dismiss Help"
+            src="/site_media/img/icons/meth_help.png" />
+</div>
+
+<div id="{{help_id}}-content"
+    class="ui-widget-content feature-help"
+    {% if not default_help_state %}style="display: none"{% endif %}>
+    
+    {% ifequal help_id "help_migrate_materials" %}
+        <strong>
+            How To Migrate Course Materials
+        </strong>
+        
+        <div class="feature-help-instructions">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+            when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+            It has survived not only five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
+            like Aldus PageMaker including versions of Lorem Ipsum.
+        </div> 
+    {% endifequal %}
+    
+    <div class="visualclear"></div>
+    <div style="float: right">    
+        <input class="media" type="button" 
+            onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
+            value="Dismiss Help">
+    </div>
+</div>
+<div class="visualclear"></div>

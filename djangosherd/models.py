@@ -309,7 +309,7 @@ class SherdNote(Annotation):
              '(/annotations/)(%s)/' % (old_note.asset.id, old_note.id))
 
         # annotations
-        sub = r'\g<1>\g<2>%s\g<4>%s' % (self.asset.id, self.id)
+        sub = r'\g<1>\g<2>%s\g<4>%s/' % (self.asset.id, self.id)
         return re.sub(regex_string, sub, text)
 
 

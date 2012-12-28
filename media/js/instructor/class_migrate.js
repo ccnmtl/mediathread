@@ -12,6 +12,7 @@
     var Asset = Backbone.Model.extend({
         defaults: {
             sherdnote_set: new SherdNoteList()
+            
         },
         initialize: function (attrs) {
             if (attrs.hasOwnProperty("sherdnote_set")) {
@@ -29,6 +30,10 @@
                 count += obj.get('sherdnote_set').length;
             });
             return count;
+        },
+        getByDataId: function (id) {
+            var internalId = this.urlRoot + id + '/';
+            return this.get(internalId);
         }
     });
 
@@ -52,6 +57,10 @@
                 count += obj.get('sherdnote_set').length;
             });
             return count;
+        },
+        getByDataId: function (id) {
+            var internalId = this.urlRoot + id + '/';
+            return this.get(internalId);
         }
     });
     
@@ -64,7 +73,7 @@
         url: function () {
             var url = Backbone.Model.prototype.url.apply(this);
             
-            var filters = this.get('facultyString');
+            var filters = this.get('facultyIds');
             if (filters !== null && filters.length > 0) {
                 url += '?';
                 url += 'project_set__author__id__in=' + filters;
@@ -92,21 +101,32 @@
             'click #clear-all-projects': 'clearAllProjects',
             'click #import-items': 'importItems',
             'click #select-all-items': 'selectAllItems',
-            'click #clear-all-items': 'clearAllItems'
+            'click #clear-all-items': 'clearAllItems',
+            'click #import-selected': 'migrateCourseMaterials',
+            'click #switch-course': 'switchCourse',
+            'click input.deselect-project': 'deselectProject',
+            'click input.deselect-asset': 'deselectAsset'
         },
 
         initialize: function (options) {
             _.bindAll(this, "setCourse", "focusAvailableCourses", "render",
                 "clickViewMaterials", "importAll", "importProjects", "importItems",
-                "selectAllItems", "clearAllItems", "selectAllProjects", "clearAllProjects");
+                "selectAllItems", "clearAllItems", "selectAllProjects", "clearAllProjects",
+                "renderSelectedList", "switchCourse", "setCourse",
+                "deselectProject", "deselectAsset");
             
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
+            
             this.projectsTemplate = _.template(jQuery("#projects-template").html());
             this.itemsTemplate = _.template(jQuery("#items-template").html());
             this.courseTemplate = _.template(jQuery("#course-template").html());
+            this.selectedTemplate = _.template(jQuery("#selected-template").html());
+            
             this.selectedProjects = new ProjectList();
             this.selectedAssets = new AssetList();
+            this.selectedProjects.on("add remove", this.renderSelectedList);
+            this.selectedAssets.on("add remove", this.renderSelectedList);
             
             var self = this;
             // Setup initial state based on user's available courses
@@ -116,8 +136,7 @@
                 jQuery("#no-materials-to-migrate").show();
             } else if (this.availableCourses.length === 1) {
                 jQuery("#course-materials-container").show();
-                this.setCourse(this.availableCourses[0].id,
-                               this.availableCourses[0].faculty_string);
+                this.setCourse(this.availableCourses[0].id);
             } else {
                 jQuery("#available-courses-selector").show();
                  
@@ -154,18 +173,69 @@
             var json = this.model.toJSON();
             var markup = this.courseTemplate(json);
             jQuery("#course").html(markup);
-            jQuery("#course-materials-container").show();
+            
+            jQuery("#course-title").html(this.model.get("title"));
+            
+            jQuery("#available-courses-selector").fadeOut(function () {
+                jQuery("#course-materials-container").fadeIn();
+            });
         },
         
-        setCourse: function (courseId, courseFaculty) {
+        renderSelectedList: function () {
+            var json = {
+                'project_set': this.selectedProjects.toJSON(),
+                'asset_set': this.selectedAssets.toJSON()
+            };
+            var markup = this.selectedTemplate(json);
+            jQuery("#selected-for-import").html(markup);
+            if (this.selectedProjects.length > 0 ||
+                this.selectedAssets.length > 0) {
+                jQuery("#selected-for-import").show();
+            } else {
+                jQuery("#selected-for-import").hide();
+            }
+        },
+        
+        setCourse: function (courseId) {
+            var facultyIds = "";
+            
+            for (var i = 0; i < this.availableCourses.length; i++) {
+                if (this.availableCourses[i].id === courseId) {
+                    facultyIds = this.availableCourses[i].faculty_ids;
+                    break;
+                }
+            }
+            
             this.model = new Course({id: courseId,
-                                     facultyString: courseFaculty.trim()});
+                                     facultyIds: facultyIds.trim()});
             this.model.on('change', this.render);
             this.model.fetch();
         },
         
-        migrateCourse: function () {
-            // Put up an overlay & a progress indicator.
+        switchCourse: function () {
+            this.selectedCourse = undefined;
+            
+            this.selectedProjects.off("add remove");
+            this.selectedAssets.off("add remove");
+
+            this.selectedProjects = new ProjectList();
+            this.selectedAssets = new AssetList();
+
+            this.selectedProjects.on("add remove", this.renderSelectedList);
+            this.selectedAssets.on("add remove", this.renderSelectedList);
+            
+            jQuery("#course-materials-container").fadeOut();
+            jQuery("#course").html("");
+            jQuery("#selected-for-import").fadeOut();
+            jQuery("#selected-for-import").html("");
+            jQuery("#available-courses-selector").fadeIn();
+            jQuery("#available-courses").val("Type course name here");
+            jQuery("#available-courses").addClass("default");
+            jQuery("#course-title").html("");
+        },
+        
+        migrateCourseMaterials: function () {
+            // @todo - put up an overlay & a progress indicator.
             
             var data = {
                 'fromCourse': this.model.get('id'),
@@ -197,7 +267,7 @@
                     }
                     alert(msg);
 
-                    // Remove overlay & progress indicator
+                    // @todo - Remove overlay & progress indicator
                 }
             });
         },
@@ -224,21 +294,14 @@
                                         self.selectedAssets.add(asset);
                                     }
                                 });
-                                self.migrateCourse();
+                                self.migrateCourseMaterials();
                             }
                           },
                 ],
                 draggable: true,
                 resizable: false,
                 modal: true,
-                width: 425,
-                open: function () {
-                    var container = jQuery(this.el).find('#import-items-dialog')[0];
-                    jQuery(container).masonry({
-                        itemSelector : '.gallery-item',
-                        columnWidth: 3
-                    });
-                }
+                width: 425
             });
             
             return false;
@@ -253,22 +316,21 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Import',
+                          { text: 'Queue Projects',
                             click: function () {
-                                var lst = jQuery("input.project:checked");
+                                var lst = jQuery("input.project");
                                 if (lst.length > 0) {
                                     jQuery(lst).each(
                                         function (idx, elt) {
                                             var id = jQuery(elt).attr("value");
-                                            var type = "project";
-                                            var description = jQuery(elt).parent().prev("td").html();
-                                            alert(id);
-                                            alert(type);
-                                            alert(description);
+                                            var project = self.model.get('project_set').getByDataId(id);
+                                            if (jQuery(elt).is(":checked")) {
+                                                self.selectedProjects.add(project);
+                                            } else {
+                                                self.selectedProjects.remove(project);
+                                            }
                                         }
                                     );
-                                    
-                                    jQuery("div.selected-for-import").show();
                                 }
                                 jQuery(this).dialog("close");
                             }
@@ -278,22 +340,17 @@
                 resizable: true,
                 modal: true,
                 width: 600,
-                maxHeight: 450
+                height: 450,
+                maxHeight: 450,
+                position: "center"
             });
             
             jQuery(element).parent().appendTo(this.el);
             return false;
         },
         
-        selectAllProjects: function (evt) {
-            jQuery("div.import-stuff input:checkbox").attr("checked", "checked");
-        },
-        
-        clearAllProjects: function (evt) {
-            jQuery("div.import-stuff input:checkbox").removeAttr("checked");
-        },
-        
         importItems: function (evt) {
+            var self = this;
             var element = jQuery("#import-items-dialog");
             jQuery(element).dialog({
                 buttons: [{ text: "Cancel",
@@ -301,8 +358,22 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Import',
+                          { text: 'Queue Items',
                             click: function () {
+                                var lst = jQuery("input.asset");
+                                if (lst.length > 0) {
+                                    jQuery(lst).each(
+                                        function (idx, elt) {
+                                            var id = jQuery(elt).attr("value");
+                                            var asset = self.model.get('asset_set').getByDataId(id);
+                                            if (jQuery(elt).is(":checked")) {
+                                                self.selectedAssets.add(asset);
+                                            } else {
+                                                self.selectedAssets.remove(asset);
+                                            }
+                                        }
+                                    );
+                                }
                                 jQuery(this).dialog("close");
                             }
                           },
@@ -310,8 +381,9 @@
                 draggable: true,
                 resizable: true,
                 modal: true,
-                width: 725,
-                maxHeight: 425
+                width: 600,
+                height: 450,
+                maxHeight: 450
             });
             
             jQuery(element).parent().appendTo(this.el);
@@ -319,11 +391,34 @@
         },
         
         selectAllItems: function (evt) {
-            jQuery("h4.asset_title input:checkbox").attr("checked", "checked");
+            jQuery("div.import-stuff input:checkbox.asset").attr("checked", "checked");
         },
         
         clearAllItems: function (evt) {
-            jQuery("h4.asset_title input:checkbox").not(".required").removeAttr("checked");
+            jQuery("div.import-stuff input:checkbox.asset").removeAttr("checked");
+        },
+        
+        selectAllProjects: function (evt) {
+            jQuery("div.import-stuff input:checkbox.project").attr("checked", "checked");
+        },
+        
+        clearAllProjects: function (evt) {
+            jQuery("div.import-stuff input:checkbox.project").removeAttr("checked");
+        },
+        
+        deselectProject: function (evt) {
+            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+            
+            var project = this.selectedProjects.getByDataId(jQuery(srcElement).attr("name"));
+            this.selectedProjects.remove(project.id);
+        },
+        
+        deselectAsset: function (evt) {
+            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+            
+            var asset = this.selectedAssets.getByDataId(jQuery(srcElement).attr("name"));
+            this.selectedAssets.remove(asset.id);
         }
+        
     });
 }(jQuery));

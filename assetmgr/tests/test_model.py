@@ -155,16 +155,25 @@ class AssetTest(TestCase):
         text = ('<p><a href="/asset/2/annotations/10/">Nice Tie</a>'
                 '</p><p><a href="/asset/2/annotations/10/">Nice Tie</a>'
                 '</p><p><a href="/asset/2/annotations/8/">Nice Tie</a>'
-                '</p><a href="/asset/2/">Whole Item</a></p>')
+                '</p><a href="/asset/2/">Whole Item</a></p>'
+                '</p><a href="/asset/24/">This should still be there</a></p>'
+                '</p><a href="/asset/42/">This should still be there</a></p>'
+                )
 
         old_asset = Asset.objects.get(id=2)
         new_asset = Asset.objects.get(id=1)
 
         new_text = new_asset.update_references_in_string(text, old_asset)
 
+        new_asset_href = "/asset/%s/" % (new_asset.id)
+        self.assertTrue(new_text.find(new_asset_href) > 0)
+
+        old_asset_href = "/asset/24/"
+        self.assertTrue(new_text.find(old_asset_href) > 0)
+
         citations = SherdNote.objects.references_in_string(new_text,
                                                            new_asset.author)
-        self.assertEquals(len(citations), 4)
+        self.assertEquals(len(citations), 6)
         self.assertEquals(citations[0].id, 10)
         self.assertEquals(citations[0].asset.id, 2)
 
@@ -176,3 +185,6 @@ class AssetTest(TestCase):
 
         self.assertEquals(citations[3].id, 1)
         self.assertEquals(citations[3].asset.id, 1)
+
+        self.assertEquals(citations[4].id, 0)
+        self.assertEquals(citations[5].id, 0)

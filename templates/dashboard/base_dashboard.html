@@ -5,24 +5,12 @@
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/reports.js"></script>
-
-    <script type="text/javascript">
-        function resizeDashboard() {
-            var visible = getVisibleContentHeight();
-            jQuery('#dashboard-module-body .scroll').css('height', (visible - 87) + "px");
-        }
-    
-        jQuery(document).ready(function() {
-            jQuery(window).resize(function () {  
-                resizeDashboard();
-            });
-        });
-    </script>
 {% endblock %}
 
 {% block content %}
     {{ block.super }}
 
+    {% block switchcourse %}
     {%if request.user.is_staff and courses %}
        <div id="staff-switchcourse">
          <form>
@@ -35,15 +23,19 @@
                {% endfor %}
              </select>
            </form>
-           </div>
+       </div>
     {% endif %}
+    {% endblock %} 
 
-    <div>
-        {% block dashboard_module_header %}{% endblock %}
-         
-        <div id="dashboard-module-body" class="scroll">
-            {% block dashboard_module %}{% endblock %}
-        </div>
+    <div class="dashboard-module-header">
+        {% block dashboard_module_header %}
+            
+            
+        {% endblock %}
+    </div>
+     
+    <div id="dashboard-module-body">
+        {% block dashboard_module %}{% endblock %}
     </div>
     
  {% endblock %}   

@@ -293,7 +293,7 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Import',
+                          { text: 'Select',
                             click: function () {
                                 jQuery(this).dialog("close");
                                 
@@ -307,7 +307,6 @@
                                         self.selectedAssets.add(asset);
                                     }
                                 });
-                                self.migrateCourseMaterials();
                             }
                           },
                 ],
@@ -329,7 +328,7 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Queue Projects',
+                          { text: 'Select Projects',
                             click: function () {
                                 var lst = jQuery("input.project");
                                 if (lst.length > 0) {
@@ -371,7 +370,7 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Queue Items',
+                          { text: 'Select Items',
                             click: function () {
                                 var lst = jQuery("input.asset");
                                 if (lst.length > 0) {

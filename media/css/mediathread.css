@@ -1295,6 +1295,7 @@ table.panel-subcontainer tr td input.project-title {
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
     width: 50px;
+    font-size: .7em;
 }
 
 
@@ -2350,8 +2351,12 @@ div.gallery-item h4.asset_title {
     margin: 0;
 }
 
+.flat-page div.content {
+    margin: 10px;
+}
 
-.dashboard-module-header h2 {
+.dashboard-module-header h2,
+.flat-page h2 {
     padding: 10px 0;
     margin: 0 10px 10px 10px;
     border-bottom: solid 1px #EFEFEF;

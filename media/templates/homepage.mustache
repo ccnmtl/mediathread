@@ -62,7 +62,7 @@
                                                 <br />
                                             </div>
                                             <div class="respond">
-                                                <a class="btnRespond">Respond to Assignment</a>
+                                                <a data-id="{{id}}" class="btnRespond">Respond to Assignment</a>
                                             </div>
                                         </li>
                                     {{/assignments}}
@@ -86,7 +86,13 @@
                                                 </a>
                                                 
                                                 {{#editable?}}
-                                                    <a title="Delete this Composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                    <a title="Delete this Composition"
+                                                        {{#display_as_assignment?}}
+                                                            onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'assignment' });"
+                                                        {{/display_as_assignment?}}
+                                                        {{^display_as_assignment}}
+                                                            onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'composition' });"
+                                                        {{/display_as_assignment}}"
                                                         href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                         class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
@@ -110,9 +116,15 @@
                                                              My Response:</span> 
                                                         <span class="metadata-value"><a href="{{url}}">{{title}}</a>
                                                             {{#editable?}}
-                                                                <a title="Delete My Response" onclick="return ajaxDelete(this, 'project-{{id}}');"
-                                                                    href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
-                                                                    class="delete_icon" alt="Delete" /></a>
+                                                                <a href="/project/delete/{{id}}/"
+                                                                    onclick="return ajaxDelete(this,
+                                                                        'project-{{id}}',
+                                                                        { 'object_type': 'assignment response',
+                                                                          'success': function() { jQuery(window).trigger('projectlist.refresh'); }
+                                                                        });"
+                                                                    title="Delete My Response">
+                                                                    <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete" />
+                                                                </a>
                                                             {{/editable?}}
                                                         </span>
                                                     </div>

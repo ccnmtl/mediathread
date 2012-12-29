@@ -3780,6 +3780,7 @@ div#course-materials-container {
 div#course-materials-container h3 {
     margin: 0;
     margin-bottom: 20px;
+    font-size: 1.25em;
 }
 
 #switch-course {
@@ -3790,6 +3791,8 @@ div#course-materials-container h3 {
 div.course-information {
     width: 25%;
     float: left;
+    background-color: #f5f5f5;
+    padding: 10px;
 }
 
 div.selected-for-import {
@@ -3809,7 +3812,8 @@ div.selected-for-import div.results {
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #CCC;
-    margin-top: 4px;    
+    margin-top: 4px;
+    margin-bottom: 5px;    
 }
 
 .import-dialog div.import-stuff table,

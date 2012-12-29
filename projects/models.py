@@ -65,33 +65,36 @@ class ProjectManager(models.Manager):
             for old_note in citations:
                 new_note = None
                 new_asset = None
-                if old_note.id in object_map['notes']:
-                    new_note = object_map['notes'][old_note.id]
-                else:
-                    if old_note.asset.id in object_map['assets']:
-                        new_asset = object_map['assets'][old_note.asset.id]
+                try:
+                    if old_note.id in object_map['notes']:
+                        new_note = object_map['notes'][old_note.id]
                     else:
-                        # migrate the asset
-                        new_asset = Asset.objects.migrate_one(old_note.asset,
-                                                              course,
-                                                              user)
-                        object_map['assets'][old_note.asset.id] = new_asset
+                        if old_note.asset.id in object_map['assets']:
+                            new_asset = object_map['assets'][old_note.asset.id]
+                        else:
+                            # migrate the asset
+                            new_asset = Asset.objects.migrate_one(
+                                old_note.asset, course, user)
+                            object_map['assets'][old_note.asset.id] = new_asset
 
-                    # migrate the note
-                    new_note = SherdNote.objects.migrate_one(old_note,
-                                                             new_asset,
-                                                             user)
+                        # migrate the note
+                        new_note = SherdNote.objects.migrate_one(old_note,
+                                                                 new_asset,
+                                                                 user)
 
-                    object_map['notes'][old_note.id] = new_note
+                        object_map['notes'][old_note.id] = new_note
 
-                # Update the citations in the body with the new id(s)
-                project_body = \
-                    new_note.update_references_in_string(
-                        project_body, old_note)
+                    # Update the citations in the body with the new id(s)
+                    project_body = \
+                        new_note.update_references_in_string(
+                            project_body, old_note)
 
-                project_body = \
-                    new_note.asset.update_references_in_string(
-                        project_body, old_note.asset)
+                    project_body = \
+                        new_note.asset.update_references_in_string(
+                            project_body, old_note.asset)
+                except Asset.DoesNotExist:
+                    # todo: The asset was deleted, but is still referenced.
+                    pass
 
             new_project.body = project_body
             new_project.save()

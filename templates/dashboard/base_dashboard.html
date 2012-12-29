@@ -9,6 +9,13 @@
 
 {% block content %}
     {{ block.super }}
+    
+    <div class="dashboard-module-header">
+        {% block dashboard_module_header %}
+            
+            
+        {% endblock %}
+    </div>
 
     {% block switchcourse %}
     {%if request.user.is_staff and courses %}
@@ -27,12 +34,7 @@
     {% endif %}
     {% endblock %} 
 
-    <div class="dashboard-module-header">
-        {% block dashboard_module_header %}
-            
-            
-        {% endblock %}
-    </div>
+
      
     <div id="dashboard-module-body">
         {% block dashboard_module %}{% endblock %}

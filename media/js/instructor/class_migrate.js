@@ -235,6 +235,7 @@
         },
         
         migrateCourseMaterials: function () {
+            var self = this;
             // @todo - put up an overlay & a progress indicator.
             
             var data = {
@@ -250,7 +251,7 @@
                 dataType: 'json',
                 error: function () {
                     // Remove overlay & progress indicator
-                    alert('There was an error saving your project.');
+                    alert('There was an error migrating these course materials.');
                 },
                 success: function (json, textStatus, xhr) {
                     var msg = "Success! \n";
@@ -266,8 +267,20 @@
                         msg += json.project_count + " projects imported";
                     }
                     alert(msg);
+                    
 
-                    // @todo - Remove overlay & progress indicator
+                    jQuery("#selected-for-import").fadeOut();
+                    jQuery("#selected-for-import").html("");
+                    
+                    self.selectedProjects.off("add remove");
+                    self.selectedAssets.off("add remove");
+
+                    self.selectedProjects = new ProjectList();
+                    self.selectedAssets = new AssetList();
+
+                    self.selectedProjects.on("add remove", this.renderSelectedList);
+                    self.selectedAssets.on("add remove", this.renderSelectedList);
+
                 }
             });
         },

@@ -3805,12 +3805,11 @@ div.selected-for-import div.results {
 }
 
 .import-dialog div.import-stuff {
-    height: 300px;
+    height: 310px;
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #CCC;
     margin-top: 4px;    
-    margin-bottom: 10px;
 }
 
 .import-dialog div.import-stuff table,

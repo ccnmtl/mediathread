@@ -151,6 +151,37 @@ class AssetTest(TestCase):
         self.assertEquals(new_note.tags, ',video')
         self.assertEquals(new_note.body, None)
 
+    def test_migrate_one_duplicates(self):
+        asset = Asset.objects.get(id=1)
+        self.assertEquals(asset.title, "Mediathread: Introduction")
+
+        new_course = Course.objects.get(id=2)
+        self.assertEquals(new_course.title, "Alternate Course")
+
+        new_user = User.objects.get(username='test_instructor_alt')
+
+        new_asset = Asset.objects.migrate_one(asset, new_course, new_user)
+        self.assertEquals(new_asset.author, new_user)
+        self.assertEquals(new_asset.course, new_course)
+
+        duplicate_asset = Asset.objects.migrate_one(asset,
+                                                    new_course,
+                                                    new_user)
+        self.assertEquals(new_asset, duplicate_asset)
+
+        selected_annotation = SherdNote.objects.get(id=2)
+        new_note = SherdNote.objects.migrate_one(selected_annotation,
+                                                 new_asset,
+                                                 new_user)
+        self.assertFalse(new_note.is_global_annotation())
+        self.assertEquals(new_note.author, new_user)
+        self.assertEquals(new_note.title, 'Manage Sources')
+
+        duplicate_note = SherdNote.objects.migrate_one(selected_annotation,
+                                                       new_asset,
+                                                       new_user)
+        self.assertEquals(new_note, duplicate_note)
+
     def test_update_reference_in_string(self):
         text = ('<p><a href="/asset/2/annotations/10/">Nice Tie</a>'
                 '</p><p><a href="/asset/2/annotations/10/">Nice Tie</a>'

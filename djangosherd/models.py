@@ -194,18 +194,29 @@ class SherdNoteManager(models.Manager):
             # Return the existing global_annotation
             n = new_asset.global_annotation(user, False)
         else:
-            n = SherdNote(asset=new_asset,
-                          range1=note.range1,
-                          range2=note.range2,
-                          annotation_data=note.annotation_data,
-                          title=note.title,
-                          author=user)
+            try:
+                n = SherdNote.objects.get(asset=new_asset,
+                                          range1=note.range1,
+                                          range2=note.range2,
+                                          annotation_data=note.annotation_data,
+                                          title=note.title,
+                                          author=user)
+            except SherdNote.DoesNotExist:
+                n = SherdNote(asset=new_asset,
+                              range1=note.range1,
+                              range2=note.range2,
+                              annotation_data=note.annotation_data,
+                              title=note.title,
+                              author=user)
 
         if (note.author == user or not note.is_global_annotation()):
-            n.body = note.body
-            n.tags = note.tags
+            if note.body:
+                n.body = note.body
+            if note.tags:
+                n.tags = note.tags
 
         n.save()
+
         return n
 
 

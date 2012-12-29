@@ -87,6 +87,17 @@
                          {% endif %}
                     </form>
                 </li>
+                {% if is_faculty %}
+                    <li>
+                        <form class="discussion-createnew" action="/discussion/create/" method="post">
+                            <input type="hidden" name="comment_html" value="Discussion Title">
+                            <input type="hidden" name="app_label" value="courseaffils">
+                            <input type="hidden" name="model" value="course">
+                            <input type="hidden" name="obj_pk" value="84">
+                            <input type="submit" value="Create Discussion">
+                        </form>
+                    </li>
+                {% endif %}            
             </ul>
         </div>   
     <table id="home-columns">

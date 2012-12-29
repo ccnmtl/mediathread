@@ -201,6 +201,7 @@ h1#course_title a:hover {
     padding: 0 0 0 19px;
 }
 
+.discussion-createnew input,
 .project-createnew input {
     display: inline;
     border: none;
@@ -1009,6 +1010,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-title.discussion h1 {
     height: 20px;
     width: 100%;
     margin: 8px;
+    font-size: 160%;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar {

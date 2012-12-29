@@ -47,17 +47,7 @@
         </form>
     {% else %}
         <form action="{% url asset-save %}" method="POST">
-            <li class="archive">
                 <input class="addtoclass" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
-                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/" class="archive-link">Mediathread Video Uploader</a>
-                <br>
-                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/"><img src="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg" alt="thumbnail image" class="archive-link">
-                </a>
-             
-                <span>
-                   <p>Upload your own source material.</p>
-                </span>
-    
                 <input type="hidden" name="title" value="Mediathread Video Upload">
                 <input type="hidden" name="metadata-description" value="Upload your own source material.">
                 <input type="hidden" name="metadata-upload" value="1">
@@ -65,8 +55,8 @@
                 <input type="hidden" name="archive" value="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
                 <input type="hidden" name="thumb" value="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg">
                 <input type="hidden" name="redirect-url" value="{% url class-add-source %}">
-            </li>
          </form>
+         <div class="visualclear"></div>
      {% endif %}
     </div>
 

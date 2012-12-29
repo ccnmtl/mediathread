@@ -1064,8 +1064,7 @@
             "is_staff": false, 
             "last_login": "2012-09-15 08:56:21", 
             "groups": [
-                3, 
-                4
+                3
             ], 
             "user_permissions": [], 
             "password": "sha1$48465$279290fe16e6e367fe7abaeece026ac628685d2d", 

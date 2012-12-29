@@ -62,24 +62,38 @@ class AssetManager(models.Manager):
         return object_map
 
     def migrate_one(self, asset, course, user):
-        x = Asset(title=asset.title,
-                  course=course,
-                  author=user,
-                  metadata_blob=asset.metadata_blob)
-        x.save()
+        # Check to see if an asset exists with this mo already
+        x = None
+        try:
+            x = Asset.objects.get(title=asset.title,
+                                  course=course,
+                                  author=user,
+                                  metadata_blob=asset.metadata_blob)
+            if (x.primary.label != asset.primary.label or
+                    x.primary.url != asset.primary.url):
+                x = None
+        except Asset.DoesNotExist:
+            pass
 
-        for source in asset.source_set.all():
-            s = Source(asset=x,
-                       label=source.label,
-                       url=source.url,
-                       primary=source.primary,
-                       media_type=source.media_type,
-                       size=source.size,
-                       height=source.height,
-                       width=source.width)
-            s.save()
+        if not x:
+            x = Asset(title=asset.title,
+                      course=course,
+                      author=user,
+                      metadata_blob=asset.metadata_blob)
+            x.save()
 
-        x.global_annotation(user, auto_create=True)
+            for source in asset.source_set.all():
+                s = Source(asset=x,
+                           label=source.label,
+                           url=source.url,
+                           primary=source.primary,
+                           media_type=source.media_type,
+                           size=source.size,
+                           height=source.height,
+                           width=source.width)
+                s.save()
+
+            x.global_annotation(user, auto_create=True)
 
         return x
 

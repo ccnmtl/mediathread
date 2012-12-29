@@ -4,34 +4,61 @@ var ProjectList = function (config) {
     self.parent = config.parent;
     self.switcher_context = {};
     
-    // add some flair to the collection table
-    jQuery(self.parent).find(".collection_table").ajaxStart(function () {
-        jQuery(this).addClass("ajaxLoading");
-    });
-    
-    jQuery(self.parent).find(".collection_table").ajaxStop(function () {
-        jQuery(this).removeClass("ajaxLoading");
-    });
-    
     jQuery.ajax({
         url: '/site_media/templates/' + config.template + '.mustache?nocache=v2',
         dataType: 'text',
         cache: false, // Chrome && Internet Explorer has aggressive caching policies.
         success: function (text) {
             MediaThread.templates[config.template] = Mustache.template(config.template, text);
-            
-            var url = null;
-            
             self.refresh(config);
         }
+    });
+    
+    jQuery(window).bind('projectlist.refresh', { 'self': self }, function (event) {
+        var self = event.data.self;
+        self.refresh(config);
     });
     
     return this;
 };
 
+ProjectList.prototype.createAssignmentResponse = function (evt) {
+    var self = this;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    
+    var params = { 'parent': jQuery(srcElement).data("id") };
+    
+    jQuery.ajax({
+        type: 'POST',
+        url: MediaThread.urls['project-create'](),
+        dataType: 'json',
+        data: params,
+        success: function (json) {
+            window.location = json.context.project.url;
+        }
+    });
+};
+
+ProjectList.prototype.deleteAssignmentResponse = function (evt) {
+    var self = this;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var link = jQuery(srcElement).parent()[0];
+    var data_id = jQuery(link).data("id");
+    
+    return ajaxDelete(link, data_id, {
+        object_type: 'assignment response',
+        success: function () {
+            self.refresh(self.config);
+        }
+    });
+};
+
 ProjectList.prototype.refresh = function (config) {
     var self = this;
     var url;
+    
+    jQuery("a.btnRespond").unbind("click");
+    jQuery("a.btnDeleteResponse").unbind("click");
     
     // Retrieve the full asset w/annotations from storage
     if (config.view === 'all' || !config.space_owner) {
@@ -47,6 +74,14 @@ ProjectList.prototype.refresh = function (config) {
     false,
     function (the_records) {
         self.updateAssets(the_records);
+        
+        jQuery("a.btnRespond").bind("click", function (evt) {
+            self.createAssignmentResponse(evt);
+        });
+        
+        jQuery("a.btnDeleteResponse").bind("click", function (evt) {
+            self.deleteAssignmentResponse(evt);
+        });
     });
 };
 

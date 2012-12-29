@@ -105,6 +105,7 @@ def project_save(request, project_id):
 
 
 @login_required
+@allow_http("POST")
 def project_delete(request, project_id):
     """
     Delete the requested project. Regular access conventions apply.
@@ -114,10 +115,11 @@ def project_delete(request, project_id):
     """
     project = get_object_or_404(Project, pk=project_id, course=request.course)
 
-    if not project.can_edit(request) or not request.method == "POST":
+    if not project.can_edit(request):
         return HttpResponseForbidden("forbidden")
 
     project.delete()
+
     return HttpResponseRedirect('/')
 
 
@@ -238,9 +240,14 @@ def project_workspace(request, project_id, feedback=None):
                 request,
                 parent_assignment,
                 parent_assignment.can_edit(request))
+
             assignment_context['create_selection'] = True
+
+            display = "open" if (project.title == "Untitled" and
+                                 len(project.body) == 0) else "closed"
+
             panel = {'is_faculty': is_faculty,
-                     'panel_state': 'closed',
+                     'panel_state': display,
                      'subpanel_state': 'closed',
                      'context': assignment_context,
                      'template': 'project'}

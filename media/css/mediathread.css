@@ -159,7 +159,7 @@ a:hover {
 #course_title {
 	display: block;
 	clear: both;
-	margin: 25px 0 0 0;
+	margin: 25px 0;
 	float: left;
     z-index: 9997;
     white-space:nowrap;
@@ -181,7 +181,7 @@ h1#course_title a:hover {
 	float: left;
 	clear: both;
 	padding: 0;
-	margin: 8px 0 0 0;
+	margin: -15px 0 0 0;
     font-size: .85em;
     font-weight: normal;
     color: #2f2f2f;
@@ -294,11 +294,16 @@ ul#projects h3 {
     clear: both;
     display: block;
     float: left;
+    width: 100%;
+}
+
+.projectlist a.asset_title {
+	color: #2f2f2f;
+	display:inline;
 }
 
 .meta {
 	font-size: .85em;
-	font-weight: bold;
 	color: #777;
 	clear: both;
     display: block;
@@ -309,6 +314,7 @@ ul#projects h3 {
 ul#projects h3 .delete_icon,
 ul#projects h3 .edit_icon {
     float: right;
+    display: inline;
 }
 
 input.project,
@@ -367,10 +373,6 @@ a.btnRespond.active {
   background-color: #408140 \9;
 }
 
-.feedback {
-    margin: 15px 0 0 0;
-}
-
 a.btn-feedback {
   font-size: 1em;
   font-weight: normal;
@@ -393,6 +395,9 @@ a.btn-feedback {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  clear: both;
+  display: block;
+  float: left;
 }
 
 a.btn-feedback:hover,
@@ -412,12 +417,16 @@ a.btn-feedback.active {
 }
 
 .assignment-listitem.response  {
-	background-color: #e4eef7;
-	padding: 10px;
-    margin: 10px 0;
+    background-color: #E4EEF7;
     clear: both;
     display: block;
     float: left;
+    margin: 3px 0;
+    padding: 2px 10px;
+}
+
+.assignment-listitem.response .metadata-label {
+	color: #2f2f2f;
 }
 
 .metadata {
@@ -825,11 +834,6 @@ div.button-form.inline {
 
 div.button-form form, div.button-form.inline form {
     float: right;
-}
-
-
-.projectlist a.asset_title {
-	color: #2f2f2f;
 }
 
 .projectlist.assignment {

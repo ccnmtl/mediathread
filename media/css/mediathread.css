@@ -150,9 +150,16 @@ a:hover {
 
 /* ---- Header Contents ---- */
 
+#mediathread_logo {
+    display: block;
+    float: left;
+    height: 55px;
+}
+
 #course_title {
 	display: block;
 	clear: both;
+	margin: 25px 0 0 0;
 	float: left;
     z-index: 9997;
     white-space:nowrap;
@@ -171,10 +178,17 @@ h1#course_title a:hover {
 
 #course_metadata {
 	display: block;
+	float: left;
 	clear: both;
 	padding: 0;
+	margin: 8px 0 0 0;
     font-size: .875em;
     color: #2f2f2f;
+}
+
+#course_metadata div {
+	display: inline;
+	margin: 0 10px 0 0;
 }
 
 
@@ -182,9 +196,9 @@ h1#course_title a:hover {
 
 #sitewide_menu {
     clear: both;
-    width:98%;
+    width: 98%;
     height: 18px;
-    margin: 0;
+    margin: 10px 0 0 0;
     padding: 10px 0 12px 13px;
     background-color: #f5f5f5;
 }
@@ -367,11 +381,7 @@ html.busy, html.busy * {
     border: 0;
 }
 
-#mediathread_logo {
-    display: block;
-    float: left;
-    height: 43px;
-}
+
 
 /* ---- Standard navigation block elements ---------- */
 

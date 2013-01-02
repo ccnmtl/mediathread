@@ -182,7 +182,8 @@ h1#course_title a:hover {
 	clear: both;
 	padding: 0;
 	margin: 8px 0 0 0;
-    font-size: .875em;
+    font-size: .85em;
+    font-weight: normal;
     color: #2f2f2f;
 }
 
@@ -528,6 +529,7 @@ table#home-columns td {
 }
 
 table#home-columns td#instructor {
+    padding: 0 0 0 7px;
     width: 15%;
     float: left;
 }
@@ -651,7 +653,7 @@ ul#projects {
 ul#projects li {
 	background-color: #f5f5f5;
 	margin-bottom: 15px;
-	padding: 20px 15px;
+	padding: 14px 15px;
 }
 
 
@@ -1897,10 +1899,6 @@ div.collection-chooser ul.switcher-options {
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous; 
-    -moz-border-radius-topleft: 10px; 
-    -moz-border-radius-topright: 10px; 
-    -moz-border-radius-bottomright: 10px; 
-    -moz-border-radius-bottomleft: 10px; 
     text-decoration: none; 
     /*width: 139px; */
     width:auto;
@@ -1921,10 +1919,6 @@ div.collection-chooser ul.switcher-options {
     border-right-style: solid; 
     border-bottom-style: solid; 
     border-left-style: solid; 
-    border-top-left-radius: 10px 10px; 
-    border-top-right-radius: 10px 10px; 
-    border-bottom-right-radius: 10px 10px; 
-    border-bottom-left-radius: 10px 10px; 
     text-decoration: none; 
     padding-top: 3px; 
     padding-right: 3px; 
@@ -1972,10 +1966,6 @@ div.collection-chooser ul.switcher-options {
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous; 
-    -moz-border-radius-topleft: 10px; 
-    -moz-border-radius-topright: 10px; 
-    -moz-border-radius-bottomright: 0px; 
-    -moz-border-radius-bottomleft: 0px; 
     text-decoration: none; 
     display: block; 
     height: 14px; 
@@ -1985,8 +1975,6 @@ div.collection-chooser ul.switcher-options {
     cursor: pointer;
 
     /*webkit*/
-    border-top-left-radius: 10px 10px; 
-    border-top-right-radius: 10px 10px; 
     text-decoration: none; 
     padding-top: 3px; 
     padding-right: 3px; 
@@ -3032,14 +3020,6 @@ input.videoplay {
     color: #1e77bd;
 }
 
-.meta label,
-.metadata-label,
-.metadata-value
- {
-    font-weight: bold;
-    color: #777;
-    font-size:.857em;
-}
 
 .metadata {
     margin: 0
@@ -3197,7 +3177,7 @@ div.gallery-item h4 {
 }
 
 ul.instructor-list {
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
 }
 
 ul.instructor-list li {
@@ -3334,10 +3314,16 @@ div.collection_table {
 /*Composition Styles*/
 
 ul#projects h3 {
-    margin: 0;
+    margin: 0 0 2px 0;
     font-size: 1em;
-
 }
+
+.meta {
+	font-size: .85em;
+	font-weight: bold;
+	color: #777;
+}
+
 
 ul#projects h3 .delete_icon,
 ul#projects h3 .edit_icon {

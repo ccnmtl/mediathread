@@ -244,6 +244,189 @@ h1#course_title a:hover {
 }
 
 
+/* ---- Student Dashboard Blocks ---- */
+
+
+ul#projects {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul#projects li {
+	background-color: #f5f5f5;
+	margin-bottom: 15px;
+	padding: 14px 15px;
+	clear: both;
+    display: block;
+    float: left;
+    width: 95%;
+}
+
+.metadata-value-assignment {
+    padding: 0 0 10px 0;
+    font-size: .75em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #39b54a;
+    clear: both;
+    display: block;
+    float: left;
+}
+
+.metadata-value-composition {
+    padding: 0 0 10px 0;
+    font-size: .75em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #1e77bd;
+    clear: both;
+    display: block;
+    float: left;
+}
+
+ 
+/*Composition Styles*/
+
+ul#projects h3 {
+    margin: 0 0 2px 0;
+    font-size: 1em;
+    clear: both;
+    display: block;
+    float: left;
+}
+
+.meta {
+	font-size: .85em;
+	font-weight: bold;
+	color: #777;
+	clear: both;
+    display: block;
+    float: left;
+}
+
+
+ul#projects h3 .delete_icon,
+ul#projects h3 .edit_icon {
+    float: right;
+}
+
+input.project,
+a.project {
+    background-image: url("../img/buttons/compositions_button_bg.jpg");
+    border-color: #477794;
+    font-size: .85em;
+}
+
+ul#projects .createnew-button {
+    margin: 5px;
+}
+
+a.btnRespond {
+  font-size: 1em;
+  font-weight: normal;
+  letter-spacing: .05em;
+  color: #ffffff;
+  padding: 10px 15px;
+  margin: 10px 0 0 0;
+  border: solid 1px;
+  border-radius: 4px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  *background-color: #51a351;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #fff #fff #777;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  cursor: pointer;
+  clear: both;
+  display: block;
+  float: left;
+}
+
+a.btnRespond:hover,
+a.btnRespond:active,
+a.btnRespond.active,
+a.btnRespond.disabled,
+a.btnRespond[disabled] {
+  color: #ffffff;
+  background-color: #51a351;
+  *background-color: #499249;
+  text-decoration: none;
+
+}
+
+a.btnRespond:active,
+a.btnRespond.active {
+  background-color: #408140 \9;
+}
+
+.feedback {
+    margin: 15px 0 0 0;
+}
+
+a.btn-feedback {
+  font-size: 1em;
+  font-weight: normal;
+  letter-spacing: .05em;
+  color: #ffffff;
+  padding: 10px 15px;
+  margin: 10px 0 0 0;
+  border: solid 1px;
+  border-radius: 4px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #006dcc;
+  *background-color: #0044cc;
+  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
+  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  background-repeat: repeat-x;
+  border-color: #0044cc #0044cc #002a80;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+a.btn-feedback:hover,
+a.btn-primary.btn-feedback
+a.btn-primary.active,
+a.btn-feedback.disabled,
+a.btn-feedback[disabled] {
+  color: #ffffff;
+  background-color: #0044cc;
+  *background-color: #003bb3;
+  text-decoration: none;
+}
+
+a.btn-feedback:active,
+a.btn-feedback.active {
+  background-color: #003399 \9;
+}
+
+.assignment-listitem.response  {
+	background-color: #e4eef7;
+	padding: 10px;
+    margin: 10px 0;
+    clear: both;
+    display: block;
+    float: left;
+}
+
+.metadata {
+    margin: 0;
+    clear: both;
+    display: block;
+    float: left;
+}
+
 
 /* ---- Content block elements ---------- */
 
@@ -644,18 +827,6 @@ div.button-form form, div.button-form.inline form {
     float: right;
 }
 
-ul#projects {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-ul#projects li {
-	background-color: #f5f5f5;
-	margin-bottom: 15px;
-	padding: 14px 15px;
-}
-
 
 .projectlist a.asset_title {
 	color: #2f2f2f;
@@ -669,90 +840,6 @@ ul#projects li {
 .projectlist.composition {
     padding-bottom: .5em;
     border-left: solid 10px #1e77bd;
-}
-
-.respond {
-    margin: 15px 0 0 0;
-}
-
-a.btnRespond {
-  font-size: .875em;
-  font-weight: bold;
-  color: #ffffff;
-  padding: 7px 15px;
-  border-radius: 3px;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #5bb75b;
-  *background-color: #51a351;
-  background-image: -moz-linear-gradient(top, #62c462, #51a351);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
-  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
-  background-image: -o-linear-gradient(top, #62c462, #51a351);
-  background-image: linear-gradient(to bottom, #62c462, #51a351);
-  background-repeat: repeat-x;
-  border-color: #51a351 #51a351 #387038;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  cursor: pointer;
-}
-
-a.btnRespond:hover,
-a.btnRespond:active,
-a.btnRespond.active,
-a.btnRespond.disabled,
-a.btnRespond[disabled] {
-  color: #ffffff;
-  background-color: #51a351;
-  *background-color: #499249;
-  text-decoration: none;
-
-}
-
-a.btnRespond:active,
-a.btnRespond.active {
-  background-color: #408140 \9;
-}
-
-.feedback {
-    margin: 15px 0 0 0;
-}
-
-a.btn-feedback {
-  font-size: .875em;
-  font-weight: bold;
-  color: #ffffff;
-  padding: 7px 15px;
-  border-radius: 3px;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #006dcc;
-  *background-color: #0044cc;
-  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
-  background-repeat: repeat-x;
-  border-color: #0044cc #0044cc #002a80;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-}
-
-a.btn-feedback:hover,
-a.btn-primary.btn-feedback
-a.btn-primary.active,
-a.btn-feedback.disabled,
-a.btn-feedback[disabled] {
-  color: #ffffff;
-  background-color: #0044cc;
-  *background-color: #003bb3;
-  text-decoration: none;
-}
-
-a.btn-feedback:active,
-a.btn-feedback.active {
-  background-color: #003399 \9;
 }
 
 
@@ -2639,13 +2726,6 @@ a.hs-control.hs-control-show.plist.float
     
 }
 
-
-.assignment-listitem.response  {
-	background-color: #e4eef7;
-	padding: 10px;
-    margin: 10px 0;
-}
-
 .helptext {
     color:#666;
     font-size:80%;
@@ -3002,30 +3082,6 @@ input.videoplay {
     border-radius: 3px;
 }
 
-.metadata-value-assignment {
-    display: block;
-    padding: 0 0 10px 0;
-    font-size: .75em;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: #39b54a;
-}
-
-.metadata-value-composition {
-    display: block;
-    padding: 0 0 10px 0;
-    font-size: .75em;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: #1e77bd;
-}
-
-
-.metadata {
-    margin: 0
-}
-
-
 .response .metadata-label {
     font-size: 1em;
     color: #777;
@@ -3309,36 +3365,6 @@ div#classwork_table,
 div#collection_table,
 div.collection_table {
     min-height: 300px;
-}
- 
-/*Composition Styles*/
-
-ul#projects h3 {
-    margin: 0 0 2px 0;
-    font-size: 1em;
-}
-
-.meta {
-	font-size: .85em;
-	font-weight: bold;
-	color: #777;
-}
-
-
-ul#projects h3 .delete_icon,
-ul#projects h3 .edit_icon {
-    float: right;
-}
-
-input.project,
-a.project {
-    background-image: url("../img/buttons/compositions_button_bg.jpg");
-    border-color: #477794;
-    font-size: .85em;
-}
-
-ul#projects .createnew-button {
-    margin: 5px;
 }
 
 /*Instructor Dashboard*/

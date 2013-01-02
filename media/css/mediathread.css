@@ -334,7 +334,7 @@ a.btnRespond {
   letter-spacing: .05em;
   color: #ffffff;
   padding: 10px 15px;
-  margin: 10px 0 0 0;
+  margin: 15px 0 5px 0;
   border: solid 1px;
   border-radius: 4px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -379,7 +379,7 @@ a.btn-feedback {
   letter-spacing: .05em;
   color: #ffffff;
   padding: 10px 15px;
-  margin: 10px 0 0 0;
+  margin: 15px 0 5px 0;
   border: solid 1px;
   border-radius: 4px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);

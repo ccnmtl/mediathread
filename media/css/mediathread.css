@@ -94,7 +94,7 @@ td
 {
     border: 1px solid #ccc;
     border-collapse: collapse;
-    padding: .1em .5em .1em .5em;
+    padding: 0;
     text-align: left;
 }
 
@@ -130,15 +130,25 @@ a:hover {
     border-top: none;
 }
 
-/* ---- Header (Banner) block elements ---------- */
+/* ---- Structure ---------- */
 #header
 {
     display: block;
     overflow: hidden;
     margin: 0;
-	padding:0 10px;
+	padding: 0 0 0 20px;
 	border: 0;
 }
+
+#pagebody
+{
+	min-height: 100%;
+	margin-bottom: -60px;
+	position: relative;
+	padding: 0 0 0 20px;
+}
+
+/* ---- Header Contents ---- */
 
 #course_title {
 	display: block;
@@ -151,7 +161,7 @@ a:hover {
 
 h1#course_title a {
 	font-weight: bold;
-	padding: 10px 0 0 10px;
+	padding: 0;
 	color: #2f2f2f;
 }
 
@@ -162,7 +172,7 @@ h1#course_title a:hover {
 #course_metadata {
 	display: block;
 	clear: both;
-	padding: 0 0 10px 10px;
+	padding: 0;
     font-size: .875em;
     color: #2f2f2f;
 }
@@ -174,8 +184,8 @@ h1#course_title a:hover {
     clear: both;
     width:98%;
     height: 18px;
-    margin: 0 0 0 10px;
-    padding: 10px;
+    margin: 0;
+    padding: 10px 0 12px 13px;
     background-color: #f5f5f5;
 }
 
@@ -218,15 +228,6 @@ h1#course_title a:hover {
     text-decoration: underline;
 }
 
-
- /* ---- Pagebody block elements ---------- */
- 
-#pagebody
-{
-	min-height: 100%;
-	margin-bottom: -60px;
-	position: relative;
-}
 
 
 /* ---- Content block elements ---------- */
@@ -3093,7 +3094,7 @@ table#home-columns td#classwork ul {
 
 div#instructor-column {
 
-    margin: 0px 10px 5px;
+    margin: 0;
     font-weight: normal;
     line-height: 17px;
 }

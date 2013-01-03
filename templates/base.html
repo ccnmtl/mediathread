@@ -51,7 +51,7 @@
     {% block masthead %}
     	<!-- ###### Site banner ###### -->
     	<div id="header">
-            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" /></a></div>
+            
             {% block standardnav %}            
                <ul id="standardnav">
                     {% ifequal role_in_course "non-member" %}
@@ -126,8 +126,12 @@
                     </li>
                 </ul>
             {% endblock %}
+        <div id="course_information">
             <h1 id="course_title"><a href="/">{{course.title}}</a></h1>
             {% block course_metadata %}{% endblock %}
+            <div class="clear: right;"></div>
+        </div>
+            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" /></a></div>
     	</div><!-- id="header" -->
         
     {% endblock %}

@@ -77,7 +77,7 @@
         <div id="sitewide_menu">
             <ul>
                 <li class="full_collection"><a href="/asset/">View Full Collection</a> </li>
-                <li>
+                <li class="project_createnew">
                     <form class="project-createnew" action="/project/create/" method="post">
                         <input type="hidden" name="title">
                         {% if is_faculty %}
@@ -246,7 +246,7 @@
                {%endfor%}
 
                {% else %}
-                <strong>Instructor Recommendations</h2>
+                <strong>Instructor Recommendations</strong>
                 {% if is_faculty %}
                     <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="{% url class-add-source %}">Manage Sources</a> page.</a>.
                 {% endif %}

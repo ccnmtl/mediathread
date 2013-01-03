@@ -714,7 +714,7 @@ table#home-columns td {
     border: none;
     border-collapse: collapse;
     vertical-align: top;
-    margin: 0 20px 0 0;
+    margin: 0 35px 0 0;
 }
 
 table#home-columns td#instructor {
@@ -750,7 +750,7 @@ div.column-contents {
 
 /* Add to My Collection Column */
 
-#bookmarklet {
+#bookmarklet p, #bookmarklet li {
     font-size: .875em;
 	color: #2f2f2f;
 }
@@ -760,6 +760,12 @@ div.column-contents {
 	background-color: #f5f5f5;
 	padding: 20px;
 	margin: 20px 0;
+}
+
+#browser-instructions h3 {	
+    font-weight: bold;
+    font-size: 1em;
+    margin: 0;
 }
 
 .browser-instruction ol {

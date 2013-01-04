@@ -16,7 +16,7 @@
                 return '/?username=' + username;
             },
             'your-projects': function (username) {
-                return '/yourspace/projects/' + username;
+                return '/yourspace/projects/' + username + '/';
             },
             'all-projects': function () {
                 return '/yourspace/projects/';

@@ -54,15 +54,6 @@
             
             {% block standardnav %}            
                <ul id="standardnav">
-                    {% ifequal role_in_course "non-member" %}
-                        <li>
-                            <div class="ui-state-error" style="padding: 5px">
-                                <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-                                You are not a class member.
-                            </div>
-                        </li>
-                    {% endifequal %}
-                        
                     {% if request.user.is_authenticated %}
                         <li>
                             <div unselectable="on"><a href="/">Home</a></div>
@@ -114,9 +105,21 @@
                             </div>
                         </li>
                         <li>
-                            <div unselectable="on"><a href="/contact">Contact Us</a></div>
-                        </li>                                                
+                            <div unselectable="on"><a href="/contact/">Contact Us</a></div>
+                        </li>
                         
+                        <li>
+                            <div unselectable="on"><a href="/accounts/logout/">Log Out</a></div>
+                        </li>                                                 
+                        
+                        {% ifequal role_in_course "non-member" %}
+                            <li>
+                                <div class="ui-state-error" style="padding: 5px">
+                                    <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                    You are not a class member.
+                                </div>
+                            </li>
+                        {% endifequal %}
                     {% else %}
                         <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}

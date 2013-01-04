@@ -113,7 +113,8 @@
                                                     <div class="assignment-listitem response">
                                                         <span class="metadata-label">                                                            
                                                              My Response:</span> 
-                                                        <span class="metadata-value"><a href="{{url}}">{{title}}</a>
+                                                        <span class="metadata-value">
+                                                            <a class="metadata-value-response" href="{{url}}">{{title}}</a>
                                                             {{#editable?}}
                                                                 <a href="/project/delete/{{id}}/"
                                                                     onclick="return ajaxDelete(this,
@@ -135,6 +136,11 @@
                                                   <span class="metadata-label">saved on</span>
                                                   <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>                                            
                                                </div>
+                                               {{^is_assignment}}
+                                                   <div class="metadata">
+                                                       <span class="metadata-value metadata-value-status">{{status}}</span>
+                                                   </div>
+                                               {{/is_assignment}}
                                                
                                                {{#feedback?}}
                                                   <div class="feedback">

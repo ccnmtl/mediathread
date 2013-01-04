@@ -6,8 +6,8 @@ Feature: Assignment
         Given there are no projects
         
         # Create an assignment from the home page
-        There is a Create Composition button
-        When I click the Create Composition button
+        There is a Create Composition or Assignment button
+        When I click the Create Composition or Assignment button
         Then I am at the Untitled page
         There is an open Composition panel
 
@@ -33,10 +33,9 @@ Feature: Assignment
         And the Assignment panel does not have a +/- Author button
         
          # The project shows on Home
-        When I click the HOME button
+        When I click the "Home" link
         Given the home workspace is loaded
         Then there is an assignment "Assignment: Scenario 1" project by Instructor One
-        Then the instructor panel has 1 projects named "Assignment: Scenario 1"
         
         # View the project - it should appear in "Preview" mode
         When I click the "Assignment: Scenario 1" link
@@ -57,10 +56,6 @@ Feature: Assignment
         And the Assignment panel does not have a Respond To Assignment button
         And the Assignment panel does not have a Responses (1) button
         
-        # The project shows on View Recent Activity
-        When I click the View Recent Activity button
-        Then the most recent notification is "Assignment: Scenario 1"
-        
         Finished using Selenium 
         
     Scenario: assignment.feature 2. Student creates assignment response
@@ -70,7 +65,7 @@ Feature: Assignment
         
         # Respond as a student
         There is an assignment "Sample Assignment" project by Instructor One
-        And the instructor panel has 1 project named "Sample Assignment"
+        And the instructor panel has 0 projects named "Sample Assignment"
         
         When I click the "Sample Assignment" link
         Then I am at the Sample Assignment page
@@ -105,9 +100,9 @@ Feature: Assignment
         Then there is a "Submitted to Instructor" link
         
         # Verify home page display
-        When I click the HOME button
-        Then I wait 2 seconds
-        Then there is a submitted to instructor "Sample Assignment Response" project by Student One
+        When I click the "Home" link
+        Given the home workspace is loaded
+        Then there is a submitted to instructor "Sample Assignment Response" reply by Student One
         
         # View the project - it should reappear in "Preview" mode
         When I click the "Sample Assignment Response" link
@@ -124,10 +119,6 @@ Feature: Assignment
         And the Composition panel does not have a +/- Author button
         And there is a "Submitted to Instructor" link 
         
-        # The project shows on View Recent Activity
-        When I click the View Recent Activity button
-        Then the most recent notification is "Sample Assignment Response"
-        
         Finished using Selenium 
 
     Scenario: assignment.feature 3. Instructor provides response feedback
@@ -135,9 +126,10 @@ Feature: Assignment
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I select "Student One" as the owner in the Analysis column
-        Then the owner is "Student One" in the Analysis column
-        Then the classwork panel has 1 projects named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Dashboard column
+        Then the owner is "Student One" in the Dashboard column
+        Then the dashboard panel has 1 project named "Sample Assignment"
+        Then the dashboard panel has 1 response named "Sample Assignment Response"
         
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page
@@ -176,13 +168,13 @@ Feature: Assignment
         Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
         
         Give I am test_student_two in Sample Course
-        When I select "Student One" as the owner in the Analysis column
-        Then the owner is "Student One" in the Analysis column
-        Then the classwork panel has 0 projects named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Dashboard column
+        Then the owner is "Student One" in the Dashboard column
+        Then the dashboard panel has 0 projects named "Sample Assignment Response"
         And there is not a "Read Instructor Feedback" link
         
-        When I select "Student Two" as the owner in the Analysis column
-        Then the owner is "Me" in the Analysis column
+        When I select "Student Two" as the owner in the Dashboard column
+        Then the owner is "Me" in the Dashboard column
         
         When I click the "Sample Assignment" link
         Then I am at the Sample Assignment page
@@ -210,9 +202,9 @@ Feature: Assignment
         Then there is a "<status>" link
         
         Give I am <username> in Sample Course 
-        When I select "Student One" as the owner in the Analysis column
-        Then the owner is "Student One" in the Analysis column
-        Then the classwork panel has <count> projects named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Dashboard column
+        Then the owner is "Student One" in the Dashboard column
+        Then the dashboard panel has <count> responses named "Sample Assignment Response"
         
         Finished using Selenium
              
@@ -298,7 +290,7 @@ Feature: Assignment
         Given the composition workspace is loaded
 
         Then I am at the Untitled page
-        And there is a closed Assignment panel
+        And there is an open Assignment panel
         
         And there is an open Composition panel
         The Composition panel has a Revisions button

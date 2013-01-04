@@ -4,10 +4,9 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Course Settings button
+        When I click the "test_instructor" link
+        Then there is a "Manage Course Settings" link
+        When I click the "Manage Course Settings" link
         Then I am at the Manage Course Settings page
      
         Then publish to world is disabled

@@ -6,8 +6,8 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a Create Composition button
-        When I click the Create Composition button
+        There is a Create Composition or Assignment button
+        When I click the Create Composition or Assignment button
         Then I am at the Untitled page
         I see "by Instructor One"
         And I see "Private"
@@ -47,8 +47,8 @@ Feature: Composition
         And the Composition panel does not have a +/- Author button
         
         # The project shows on Home
-        When I click the HOME button
-        Then I wait 2 seconds
+        When I click the "Home" link
+        Given the home workspace is loaded
         Then there is a private "Composition: Scenario 1" project by Instructor One
         
         # View the project - it should appear in "Preview" mode
@@ -67,10 +67,6 @@ Feature: Composition
         And the Composition panel has a Save button
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
-        
-        # The project shows on View Recent Activity
-        When I click the View Recent Activity button
-        Then the most recent notification is "Composition: Scenario 1"
         
         Finished using Selenium
 
@@ -121,8 +117,8 @@ Feature: Composition
         And the Composition panel does not have a +/- Author button
         
         # The project shows on Home
-        When I click the HOME button
-        Then I wait 2 seconds
+        When I click the "Home" link
+        Given the home workspace is loaded
         Then there is a private "Composition: Scenario 2" project by Student One
         
         # View the project - it should appear in "Preview" mode
@@ -142,10 +138,6 @@ Feature: Composition
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         
-        # The project shows on View Recent Activity
-        When I click the View Recent Activity button
-        Then the most recent notification is "Composition: Scenario 2"
-        
         Finished using Selenium
 
     Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information / Assignments
@@ -153,8 +145,8 @@ Feature: Composition
         Given I am test_instructor in Sample Course
                 
         # Create a project from the home page
-        There is a Create Composition button
-        When I click the Create Composition button
+        There is a Create Composition or Assignment button
+        When I click the Create Composition or Assignment button
         Then I am at the Untitled page
         Then I call the Composition "Composition <title>: Scenario 3"
         
@@ -167,15 +159,16 @@ Feature: Composition
         
         # Try to view as student one
         Given I am test_student_one in Sample Course
-        Then the instructor panel has <count> projects named "Composition <title>: Scenario 3"
+        Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
+        Then the dashboard panel has <dashboard_count> projects named "Composition <title>: Scenario 3"
         
         Finished using Selenium
              
       Examples:
-        | title   | visibility                                                        | status             | count |
-        | Private | Private - only author(s) can view                                 | Private            | 0     |
-        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 1     |
-        | Public  | Whole Class - all class members can view                          | Published to Class | 1     |
+        | title   | visibility                                                        | status             | info_count | dashboard_count |
+        | Private | Private - only author(s) can view                                 | Private            | 0          | 0               |
+        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1               |
+        | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0               |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
         Using selenium
@@ -196,22 +189,22 @@ Feature: Composition
         
         # Try to view as student two
         Given I am test_student_two in Sample Course
-        When I select "Student One" as the owner in the Analysis column
-        Then the owner is "Student One" in the Analysis column
-        Then the classwork panel has <count> projects named "<title>"
+        When I select "Student One" as the owner in the Dashboard column
+        Then the owner is "Student One" in the Dashboard column
+        Then the dashboard panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am test_instructor in Sample Course
-        When I select "Student One" as the owner in the Analysis column
-        Then the owner is "Student One" in the Analysis column
-        Then the classwork panel has <count> projects named "<title>"
+        When I select "Student One" as the owner in the Dashboard column
+        Then the owner is "Student One" in the Dashboard column
+        Then the dashboard panel has <count> projects named "<title>"
         
         Finished using Selenium
              
       Examples:
         | title   | visibility                                      | status             | count |
         | private | Private - only author(s) can view               | Private            | 0     |
-        | public  | Whole Class - all class members can view | Published to Class | 1     |
+        | public  | Whole Class - all class members can view        | Published to Class | 1     |
 
 
         

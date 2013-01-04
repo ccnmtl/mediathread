@@ -6,7 +6,7 @@ Feature: Sliding Panels in the Asset View
         Given my browser resolution is <width> x <height>
     
         # Full Collection
-        When I click the View All Items button
+        When I click the "View Full Collection" link
         Then I am at the Collection page
         There is a maximized Collection panel
         And there is a closed Asset panel
@@ -37,7 +37,7 @@ Feature: Sliding Panels in the Asset View
         Given my browser resolution is <width> x <height>
     
         # View an individual asset
-        When I click the "MAAP Award Reception" link
+        When I access the url "/asset/2/"
         Then I am at the Collection page
         Then there is a minimized Collection panel
         And there is an open Asset panel

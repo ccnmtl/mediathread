@@ -319,10 +319,21 @@ def i_ok_an_alert_dialog(step):
     time.sleep(1)
 
 
-@step(u'I open the user settings menu')
-def i_open_the_user_settings_menu(step):
-    elt = world.firefox.find_element_by_css_selector("li.settings")
+@step(u'I open the ([^"]*) menu')
+def i_open_the_title_menu(step, title):
+    selector = "div.settings_menu.%s" % title
+    elt = world.firefox.find_element_by_css_selector(selector)
     elt.click()
+
+
+@step(u'there is no ([^"]*) menu')
+def there_is_no_title_menu(step, title):
+    try:
+        selector = "div.settings_menu.%s" % title
+        world.firefox.find_element_by_css_selector(selector)
+        assert False, "Found %s menu" % title
+    except:
+        pass  # expected
 
 
 @step(u'there is an? ([^"]*) column')
@@ -413,6 +424,9 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
 @step(u'the owner is "([^"]*)" in the ([^"]*) column')
 def the_owner_is_name_in_the_title_column(step, name, title):
     column = get_column(title)
+    if not column:
+        selector = "td.panel-container.%s" % title.lower()
+        column = world.firefox.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     m = column.find_element_by_css_selector("div.switcher_collection_chooser")
@@ -424,9 +438,13 @@ def the_owner_is_name_in_the_title_column(step, name, title):
 @step(u'the collection panel has a "([^"]*)" item')
 def the_collection_panel_has_a_title_item(step, title):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -438,9 +456,13 @@ def the_collection_panel_has_a_title_item(step, title):
 @step(u'the collection panel has no "([^"]*)" item')
 def the_collection_panel_has_no_title_item(step, title):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -452,9 +474,13 @@ def the_collection_panel_has_no_title_item(step, title):
 @step(u'the "([^"]*)" item has a note "([^"]*)"')
 def the_title_item_has_a_note_text(step, title, text):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -474,9 +500,13 @@ def the_title_item_has_a_total_selections_count_by_me(step,
                                                       total,
                                                       count):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -500,9 +530,13 @@ def the_title_item_has_a_total_selections_count_by_me(step,
 @step(u'the "([^"]*)" item has a tag "([^"]*)"')
 def the_title_item_has_a_tag_text(step, title, text):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -521,11 +555,15 @@ def the_title_item_has_a_tag_text(step, title, text):
 @step(u'the "([^"]*)" item has a selection "([^"]*)"')
 def the_title_item_has_a_selection_seltitle(step, title, seltitle):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
     select = 'td.selection-meta div.metadata-container a.materialCitationLink'
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -544,11 +582,15 @@ def the_title_item_has_a_selection_seltitle(step, title, seltitle):
 @step(u'the "([^"]*)" item has no selections')
 def the_title_item_has_no_selections(step, title):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
     select = 'td.selection-meta div.metadata-container a.materialCitationLink'
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -565,11 +607,15 @@ def the_title_item_has_no_selections(step, title):
 @step(u'the "([^"]*)" item has no notes')
 def the_title_item_has_no_notes(step, title):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
     select = 'li.annotation-global-body span.metadata-value'
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -585,10 +631,14 @@ def the_title_item_has_no_notes(step, title):
 @step(u'the "([^"]*)" item has no tags')
 def the_title_item_has_no_tags(step, title):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
     select = 'li.annotation-global-tags span.metadata-value a.switcher-choice'
 
-    items = panel.find_elements_by_css_selector('div.gallery-item-homepage')
+    items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
@@ -604,6 +654,10 @@ def the_title_item_has_no_tags(step, title):
 @step(u'the "([^"]*)" selection has a note "([^"]*)"')
 def the_seltitle_selection_has_a_note_text(step, seltitle, text):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
     selections = panel.find_elements_by_css_selector('td.selection-meta')
@@ -629,6 +683,10 @@ def the_seltitle_selection_has_a_note_text(step, seltitle, text):
 @step(u'the "([^"]*)" selection has a tag "([^"]*)"')
 def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
     panel = get_column('collection')
+    if not panel:
+        selector = "td.panel-container.collection"
+        panel = world.firefox.find_element_by_css_selector(selector)
+
     assert panel, "Cannot find the collection panel"
 
     selections = panel.find_elements_by_css_selector('td.selection-meta')

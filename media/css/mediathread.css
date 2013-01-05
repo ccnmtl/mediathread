@@ -11,13 +11,13 @@ body
     border: 0;
     background-color: #fff;
     font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
-    color: #2f2f2f;
+    color: #383838;
     width: 100% auto;
 }
 
 .ui-widget {
     font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
-    color: #2f2f2f;
+    color: #383838;
 }
 
 .ui-widget-overlay-dark {
@@ -165,7 +165,7 @@ a:hover {
 #course_title {
 	display: block;
 	clear: both;
-	margin: 25px 0 0 20px;
+	margin: 20px 0 0 20px;
 	float: left;
     z-index: 9997;
     white-space:nowrap;
@@ -175,7 +175,7 @@ a:hover {
 h1#course_title a {
 	font-weight: bold;
 	padding: 0;
-	color: #2f2f2f;
+	color: #383838;
 }
 
 h1#course_title a:hover {
@@ -187,10 +187,10 @@ h1#course_title a:hover {
 	float: left;
 	clear: both;
 	padding: 0;
-    margin: 8px 0 0 23px;
+    margin: 11px 0 0 23px;
     font-size: .875em;
     font-weight: normal;
-    color: #2f2f2f;
+    color: #383838;
 }
 
 #course_metadata div {
@@ -239,6 +239,7 @@ h1#course_title a:hover {
 #sitewide_menu ul li.create_discussion {
   background: url("../img/create_discussion.png") no-repeat scroll left center transparent;
 }
+
 .discussion-createnew input,
 .project-createnew input {
     display: inline;
@@ -252,6 +253,7 @@ h1#course_title a:hover {
     font-family: 'helvetica neue', helvetica, arial, sans-serif;
 }
 
+.discussion-createnew input:hover,
 .project-createnew input:hover {
     text-decoration: underline;
 }
@@ -311,7 +313,7 @@ ul#projects h3 {
 }
 
 .projectlist a.asset_title {
-	color: #2f2f2f;
+	color: #383838;
 	display:inline;
 }
 
@@ -436,7 +438,7 @@ a.btn-feedback.active {
 }
 
 .assignment-listitem.response .metadata-label {
-	color: #2f2f2f;
+	color: #383838;
 }
 
 .metadata {
@@ -558,6 +560,11 @@ img
 
 /* ########## jQuery UI extensions ########## */
 
+.ui-icon-reverse { 
+    width: 16px; 
+    height: 16px; 
+    background-image: url(/site_media/jquery/css/images/ui-icons_ffffff_256x240.png); 
+}
 
 /** Global Progress Indications **/
 html.busy, html.busy * {  
@@ -588,17 +595,21 @@ html.busy, html.busy * {
 
 /* ---- Standard navigation block elements ---------- */
 
-#standardnav
-{
+#standardnav_container {
     display: block;
     float: left;
     margin: 0;
-    padding: 3px 3px 3px 20px;
+    padding: 7px 3px 1px 35px;
+    width: 100%;
+    background-color: #383838;
+}
+
+ul#standardnav
+{
+	float: right;
     list-style: none;
     z-index: 9998;
     font-size: .857em;
-    width: 100%;
-    background-color: #2f2f2f;
 }
 
 #standardnav li {
@@ -621,6 +632,7 @@ html.busy, html.busy * {
     color: #fff;
 }
 
+#standardnav li div.settings_menu div.settings_menu_title:hover,
 #standardnav li a:hover {
     text-decoration: underline;
 }
@@ -642,6 +654,7 @@ html.busy, html.busy * {
     -moz-background-clip: padding;
     background-clip: padding-box;    
     background-color:#fff;
+    min-width: 120px;
 }
 
 #standardnav li div.settings_submenu a {
@@ -650,6 +663,7 @@ html.busy, html.busy * {
     z-index: 9999;
     float: none;    
     color: #1b75bc;
+
 }
 
 #standardnav li div.settings_submenu h3 {
@@ -767,7 +781,7 @@ div.column-contents {
 
 #bookmarklet p, #bookmarklet li {
     font-size: .875em;
-	color: #2f2f2f;
+	color: #383838;
 }
 
 #bookmarklet, #recommend, .dashboard-feature {
@@ -780,7 +794,7 @@ div.column-contents {
 }
 
 #recommend strong {
-	color: #2f2f2f;
+	color: #383838;
 	padding: 0 0 20px 0;
 	float: left;
 }
@@ -1817,7 +1831,7 @@ table#home-columns td#classwork .helptoggle {
 	padding: 10px;
     margin: 10px 0;
     font-size: .857em;
-    color: #2f2f2f;
+    color: #383838;
 }
 
 /*Assignment Specific styles */
@@ -3133,7 +3147,7 @@ input.videoplay {
 .response .metadata-value,
 .response .metadata-value a {
     font-size: 1em; 
-    color: #2f2f2f;
+    color: #383838;
     font-weight: bold;
 }
 

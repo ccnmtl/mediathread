@@ -4,9 +4,9 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I click the "test_instructor" link
-        Then there is a "Manage Course Settings" link
-        When I click the "Manage Course Settings" link
+        When I open the tools menu
+        Then there is a "Manage Settings" link
+        When I click the "Manage Settings" link
         Then I am at the Manage Course Settings page
      
         Then publish to world is disabled
@@ -18,10 +18,9 @@ Feature: Manage Sources
         Given I am test_instructor in Sample Course
         Given publish to world is enabled
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Course Settings button
+        When I open the tools menu
+        Then there is a "Manage Settings" link
+        When I click the "Manage Settings" link
         Then I am at the Manage Course Settings page
      
         Then publish to world is enabled
@@ -33,12 +32,11 @@ Feature: Manage Sources
         Given I am test_instructor in Sample Course
         Given publish to world is disabled
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Course Settings button
+        When I open the tools menu
+        Then there is a "Manage Settings" link
+        When I click the "Manage Settings" link
         Then I am at the Manage Course Settings page
-     
+             
         Then publish to world is disabled
         
         Finished using Selenium        

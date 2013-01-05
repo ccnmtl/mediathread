@@ -4,10 +4,10 @@ Feature: Instructor Dashboard
         Using selenium
         Given I am test_student_one in Sample Course
         
-        # Instructor Dashboard
-        When I access the url "/dashboard/"
-        Then I do not see "Instructor Dashboard"
-        And I see "forbidden"
+        # No Instructor Menus
+        Then I am at the Home page
+        There is no tools menu
+        There is no reports menu
         
         # Manage Sources
         When I access the url "/dashboard/addsource/"
@@ -37,15 +37,17 @@ Feature: Instructor Dashboard
     Scenario: instructor_dashboard.feature 2. Verify expected instructor functionality
         Using selenium
         Given I am test_instructor in Sample Course
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        And there is a Manage Sources button
-        And there is a Manage Course Settings button
-        And there is a Create Composition or Assignment button
-        And there is a Create Discussion button
-        And there is an Assignment Responses button
-        And there is a Class Activity button
-        And there is a Student Contributions button
+        
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        And there is a "Manage Settings" link
+        And there is a "Migrate Materials" link
+        
+        When I open the reports menu
+        Then there is an "Assignment Responses" link
+        And there is a "Class Activity" link
+        And there is a "Student Contributions" link
+        
         Finished using Selenium
         
     Scenario: instructor_dashboard.feature 3. Class Activity      
@@ -53,9 +55,9 @@ Feature: Instructor Dashboard
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        When I click the Class Activity button
+        When I open the reports menu
+        There is a "Class Activity" link
+        When I click the "Class Activity" link
         Then I see "Report: Class Activity"
         
         And there is a "MAAP Award Reception" link
@@ -70,11 +72,11 @@ Feature: Instructor Dashboard
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
+        Then I am at the Home page
+        
         When I click the Create Discussion button
         Then I am at the Discussion page
-        When I click the HOME button
+        When I click the "Home" link
         Then I am at the Home page
         And there is a "Discussion Title" link
         When I click the "Discussion Title" link
@@ -87,8 +89,8 @@ Feature: Instructor Dashboard
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
+        Then I am at the Home page
+        
         When I click the Create Composition or Assignment button
         Then I am at the Untitled page
         
@@ -98,8 +100,10 @@ Feature: Instructor Dashboard
         Then I click the Save button
         And I save the changes
         
-        When I click the HOME button
+        When I click the "Home" link
         Then I am at the Home page
+        
+        Given the home workspace is loaded
         Then there is a private "Instructor Dashboard: Scenario 4" project by Instructor One
         
         Finished using Selenium
@@ -109,19 +113,17 @@ Feature: Instructor Dashboard
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page        
-        When I click the Assignment Responses button
+        When I open the reports menu
+        When I click the "Assignment Responses" link
         There is a "Sample Assignment" link
         When I click the "Sample Assignment" link
         Then I am at the Sample Assignment page
         There is an open Assignment panel
 
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page        
-        When I click the Assignment Responses button        
-        Then there is a "1 / 5" link
-        When I click the "1 / 5" link
+        When I open the reports menu
+        When I click the "Assignment Responses" link
+        Then there is a "1 / 6" link
+        When I click the "1 / 6" link
         Then I see "Assignment Report: Sample Assignment"
         And I see "Student One"
         And I there is a "Sample Assignment Response" link
@@ -140,9 +142,8 @@ Feature: Instructor Dashboard
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        When I click the Student Contributions button
+        When I open the reports menu
+        When I click the "Student Contributions" link
         Then I see "Report: Student Contributions"
         
         Finished using Selenium  

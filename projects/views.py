@@ -105,7 +105,6 @@ def project_save(request, project_id):
 
 
 @login_required
-@allow_http("POST")
 def project_delete(request, project_id):
     """
     Delete the requested project. Regular access conventions apply.
@@ -114,6 +113,9 @@ def project_delete(request, project_id):
     will be returned
     """
     project = get_object_or_404(Project, pk=project_id, course=request.course)
+
+    if not request.method == "POST":
+        return HttpResponseForbidden("forbidden")
 
     if not project.can_edit(request):
         return HttpResponseForbidden("forbidden")

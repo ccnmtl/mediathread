@@ -4,11 +4,10 @@ Feature: Manage Selection Visibility
         Using selenium
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "Yes"
-        
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Course Settings button
+
+        When I open the tools menu
+        Then there is a "Manage Settings" link
+        When I click the "Manage Settings" link
         Then I am at the Manage Course Settings page
      
         The selection visibility is "Yes"
@@ -20,10 +19,9 @@ Feature: Manage Selection Visibility
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "No"
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Course Settings button
+        When I open the tools menu
+        Then there is a "Manage Settings" link
+        When I click the "Manage Settings" link
         Then I am at the Manage Course Settings page
      
         The selection visibility is "No"

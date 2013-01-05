@@ -145,7 +145,7 @@ a:hover {
 	min-height: 100%;
 	margin-bottom: -60px;
 	position: relative;
-	padding: 0 0 0 20px;
+	padding: 0 0 0 10px;
 }
 
 /* ---- Header Contents ---- */
@@ -184,20 +184,11 @@ h1#course_title a:hover {
 
 #course_metadata {
 	display: block;
-	float: left;
-	clear: both;
 	padding: 0;
-    margin: 11px 0 0 23px;
     font-size: .875em;
     font-weight: normal;
     color: #383838;
 }
-
-#course_metadata div {
-	display: inline;
-	margin: 0 10px 0 0;
-}
-
 
 /* ---- Sitewide menu ---------- */
 
@@ -566,6 +557,14 @@ img
     background-image: url(/site_media/jquery/css/images/ui-icons_ffffff_256x240.png); 
 }
 
+.help-overlay {
+     opacity:0.65 !important;
+    -moz-opacity:0.65 !important;
+    filter:alpha(opacity=65) !important;
+    padding: 10px;
+    left: -10px;    
+}
+
 /** Global Progress Indications **/
 html.busy, html.busy * {  
   cursor: wait;
@@ -748,13 +747,15 @@ table#home-columns td {
 
 table#home-columns td#instructor {
     padding: 0 0 0 7px;
-    width: 15%;
+    width: 22%;
     float: left;
+    position: relative;
 }
 
 table#home-columns td#classwork {
-    width: 50%;
+    width: 42%;
     float: left;
+    position: relative;
 }
 
 table#home-columns td#explore {
@@ -769,7 +770,7 @@ div#classwork_table table {
 
 
 div.column-contents {
-    height: 95%;
+    height: 95%;    
 }
 
 .column-container h2 {
@@ -784,13 +785,19 @@ div.column-contents {
 	color: #383838;
 }
 
-#bookmarklet, #recommend, .dashboard-feature {
+#bookmarklet,
+#recommend,
+.dashboard-feature {
    background-color: #F5F5F5;
     display: block;
     float: left;
     margin: 20px 0;
     padding: 20px;
     width: 100%;
+}
+
+.dashboard-feature {
+    width: 75%;
 }
 
 #recommend strong {
@@ -1819,20 +1826,53 @@ table#home-columns td#classwork .helptoggle {
     display: none;
 }
 
-.helpblock#help_homepage_classwork_column {
-    margin: 0;
+.helpblock#help_homepage_compositions_section {
+    background-color: #F5F5F5;
+    display: block;
+    float: left;
+    margin: 20px 0;
+    padding: 20px;
     width: 100%;
-    background-color: white;
-    padding: 0;
 }
 
-#help_homepage_classwork_column div.help_content{
-	background-color: #f5f5f5;
-	padding: 10px;
-    margin: 10px 0;
-    font-size: .857em;
-    color: #383838;
+td#instructor input.help-tab-icon {
+    margin-right: 15px;
 }
+
+td#instructor div.help-tab {
+    top: 19px;
+    right: 5px;
+    width: 25px;
+    border-top: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+}
+
+td#instructor div.feature-help {
+    top: 50px;
+    right: 7px;
+    width: 85%;
+}
+
+td#classwork input.help-tab-icon {
+    margin-right: 15px;
+}
+
+td#classwork div.help-tab {
+    top: 19px;
+    right: 5px;
+    width: 25px;
+    border-top: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+}
+
+td#classwork div.feature-help {
+    top: 50px;
+    right: 6px;
+    width: 90%;
+}
+
 
 /*Assignment Specific styles */
 
@@ -2126,14 +2166,13 @@ div.collection-chooser ul.switcher-options {
 }
 
 div.switcher-active-filters {
-    background-color: #ccc;
     width: 100%;
     height: auto;
     text-align: right;
 }
 
 div.switcher-active-filter {
-    margin: 2px 0 5px 0;
+    margin: 2px 8px 5px 0;
     font-size: 11px;
     height: 18px;
 }
@@ -2481,12 +2520,21 @@ div.gallery-item h4.asset_title {
 }
 
 .dashboard-module-header h2,
-.flat-page h2 {
+.flat-page h2,
+.add_to_my_collection h2 {
     padding: 10px 0;
     margin: 0 10px 10px 10px;
     border-bottom: solid 1px #EFEFEF;
     width: 75%;
     min-width: 900px;
+}
+
+.add_to_my_collection {
+    position: relative;
+    min-width: 900px;
+    min-height: 600px;
+    width: 75%;
+    margin: 0 10px;
 }
 
 .dashboard-module-header input.help-tab-icon {
@@ -2847,44 +2895,20 @@ text-align: left;
 }
 
 
-
-#archive_container,
-#upload_container,
-#audio_upload_container {
-    border: 1px solid #ccc;
-    width: 920px;
-    margin: 20px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-}
-
-#upload_container,
-#audio_upload_container {
-    background-color: #ece8df;
-}
-
-#audio_upload_container div.instructions,
-#upload_container div.instructions {
-    margin: 10px;    
+.media-column-container .archive {
     float: left;
-}
-
-#audio_upload_container form,
-#upload_container form {
-    float: right;
-    margin-right: 20px;
-    text-align: right;
-}
-
-#audio_upload_container form select,
-#upload_container form select {
-    margin-bottom: 5px;
+    margin: 10px 10px;
+    background-color: #EDEDED;
+    border: 1px solid #CCC;
+    width: 274px;
+    height: 200px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 5px 5px;
 }
 
 #uploader {
-   background-image: url("../img/buttons/collections_button_bg.jpg");
-   border: 1px solid #C89345;
    padding: 0;
    width: 150px;
    height: 22px;
@@ -3730,7 +3754,7 @@ div.asset-view-container div.asset-view-published {
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
-    width: 33%;
+    width: 32%;
     float: left;
 }
 
@@ -3995,6 +4019,10 @@ div.feature-help div.feature-help-instructions {
     background-color: #ededed;
     padding: 5px;
     margin: 10px 0;
+}
+
+div.feature-help div.feature-help-instructions ol {
+    margin: 0 .4em 0.7em 1.25em;
 }
 
 div.feature-help div.feature-help-instructions img {

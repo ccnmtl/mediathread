@@ -76,7 +76,12 @@ function toggleHelpOverlay(btn, user, help_content_id) {
         jQuery(content_id).show();
     }
     
-    //var checked = jQuery("#asset-view-show-help").is(":checked");
-    //updateHelpSetting(MediaThread.current_username, 'help_item_detail_view', !checked);
+    var checked_id = "#" + help_content_id + "_checkbox";
+    var elts = jQuery(checked_id);
+    if (elts.length) {
+        var checked = jQuery(elts[0]).is(":checked");
+        updateHelpSetting(MediaThread.current_username, help_content_id, !checked);
+    }
+    
     return false;
 }

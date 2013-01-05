@@ -239,8 +239,7 @@ def triple_homepage(request):
 
     context = {
         'classwork_owner': classwork_owner,
-        'help_homepage_instructor_column': UserSetting.get_setting(
-            logged_in_user, "help_homepage_instructor_column", True),
+        'help_homepage_instructor_column': False,
         'help_homepage_classwork_column': UserSetting.get_setting(
             logged_in_user, "help_homepage_classwork_column", True),
         'faculty_feed': get_prof_feed(request.course, request),

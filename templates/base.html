@@ -109,15 +109,6 @@
                         <li>
                             <div unselectable="on"><a href="/contact/">Contact Us</a></div>
                         </li>
-                        
-                        {% ifequal role_in_course "non-member" %}
-                            <li>
-                                <div class="ui-state-error" style="padding: 5px">
-                                    <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-                                    You are not a class member.
-                                </div>
-                            </li>
-                        {% endifequal %}
                     {% else %}
                         <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}
@@ -130,7 +121,6 @@
             </div><!--  standardnav container -->
             <div id="course_information">
                 <h1 id="course_title"><a href="/">{{course.title}}</a></h1>
-                {% block course_metadata %}{% endblock %}
                 <div class="clear: right;"></div>
             </div>
             <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" /></a></div>            

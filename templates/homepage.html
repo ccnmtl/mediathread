@@ -37,39 +37,19 @@
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
                 'template': 'homepage',
                 'template_label': 'classwork_table',
-                'view': "{{request.GET.view}}",
+                'view': "{{request.GET.view}}"
             });
+            
+            jQuery(window).resize(function () {  
+                var visible = getVisibleContentHeight();
+                jQuery('.ui-widget-overlay').css('height', visible + "px");
+            });
+    
+            var visible = getVisibleContentHeight();
+            jQuery('.ui-widget-overlay').css('height', visible + "px");
+
         });
     </script>
-{% endblock %}
-
-{% block course_metadata %}
-    <div id="course_metadata" class="meta">
-        {% if course.details.instructor %}
-        <div>
-            <span class="metadata-label">Instructor: </span>
-            <span class="metadata-value">
-                {{course.details.instructor.value}}
-            </span>
-        </div>
-        {% endif %}
-        
-        {% if course.info.termyear %}
-            <div>
-                <span class="metadata-label">Term: </span>
-                <span class="metadata-value">
-                    {{course.info.termyear}}
-                </span>
-            </div>
-        {% endif %}
-        
-        <div>
-            <span class="metadata-label">Your Role: </span>
-            <span class="metadata-value">
-                {% course_role for request.user in course as role %}{{role}}
-            </span>
-        </div>
-    </div>
 {% endblock %}
 
 {% block content %}
@@ -80,11 +60,14 @@
                 <li class="project_createnew">
                     <form class="project-createnew" action="/project/create/" method="post">
                         <input type="hidden" name="title">
-                        {% if is_faculty %}
-                            <input type="submit" value="Create Composition or Assignment">
-                         {% else %}
-                            <input type="submit" value="Create Composition">
-                         {% endif %}
+                        <input type="submit" value="Create Composition">                         
+                    </form>
+                </li>
+                <li class="project_createnew">
+                    <form class="project-createnew" action="/project/create/" method="post">
+                        <input type="hidden" name="title" />
+                        <input type="hidden" name="publish" value="Assignment"/>
+                        <input type="submit" value="Create Assignment"/>
                     </form>
                 </li>
                 {% if is_faculty %}
@@ -103,23 +86,68 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {% if faculty_feed.show or is_faculty %}
-            <td class="" id="instructor">
+            <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
-                <div class="column-container">    
-                   <h2>Course Information</h2>
-                      <div class="column-contents">
+                {% include "help/new_help_contentarea.html" %}
+                <div class="column-container">
+                   <h2>
+                        Course Information                     
+                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                   </h2>                   
+                   <div class="column-contents">
                         <div id="instructor-column">
-                            {%if faculty_feed.projects %}
-                                <h4 class="inst-header project">Information</h4>
-                                <ul class="instructor-list">
-                                    {% for project in faculty_feed.projects %}
-                                        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            {%endif%}
+                        
+                        <div id="course_metadata">
+                            {% if course.details.instructor %}
+                            <div class="meta">
+                                <span class="metadata-label">Instructor: </span>
+                                <span class="metadata-value">
+                                    {{course.details.instructor.value}}
+                                </span>
+                            </div>
+                            {% endif %}
                             
+                            {% if course.info.termyear %}
+                                <div class="meta">
+                                    <span class="metadata-label">Term: </span>
+                                    <span class="metadata-value">
+                                        {{course.info.termyear}}
+                                    </span>
+                                </div>
+                            {% endif %}
+                            
+                            {% if course.info.time %}
+                                 <div class="meta">
+                                    <span class="metadata-label">Day/Time: </span>
+                                    <span class="metadata-value">
+                                        {{course.info.time}}
+                                    </span>
+                                </div>
+                            {% endif %}
+                            
+                            {% ifequal role_in_course "non-member" %}
+                                <div class="ui-state-error" style="padding: 5px">
+                                    <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                    You are not a class member.
+                                </div>
+                            {% else %}
+                                <div class="meta">
+                                    <span class="metadata-label">Your Role: </span>
+                                    <span class="metadata-value">{{role_in_course}}</span>
+                                </div>
+                            {% endifequal %}
+                        </div>                        
+                        <div class="visualclear"></div>
+                            <ul class="instructor-list">
+                            {% if faculty_feed.projects %}
+                                
+                                {% for project in faculty_feed.projects %}
+                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                                {% endfor %}
+                                
+                            {% else %}{% endif %}
+                            </ul>
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>
@@ -145,20 +173,27 @@
                 </div>
                 {% endwith %}{% endwith %}
             </td>
-            {% endif %}
-        
-            {% with "help_homepage_classwork_column" as help_id %}
-            {% with help_homepage_classwork_column as default_help_state %}
-            {% with "resizeHomepage" as callback %}
+            
+            
             <td id="classwork">
+                {% with "help_homepage_classwork_column" as help_id %}
+                {% with help_homepage_classwork_column as default_help_state %}
+                {% include "help/new_help_contentarea.html" %}
+            
                 <div class="column-container parent-column-container">
-                    <h2>Dashboard</h2>
+                    <h2>
+                        Dashboard
+                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                    </h2>
                     <div id="classwork_table"></div>
                 </div>
+                {% endwith %}{% endwith %}
             </td>
+            
+            
             <td id="explore">
             	<div class="column-container">
-                	<h2>Add to My Collection</h2>
+                	<h2>Collect</h2>
             		<div id="bookmarklet">
                         <div id="browser-instructions">
                             <h3>The Bookmarklet</h3>
@@ -250,28 +285,11 @@
                 {% if is_faculty %}
                     <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="{% url class-add-source %}">Manage Sources</a> page.</a>.
                 {% endif %}
-                {% endif %}
-                  <!--  <strong>Instructor Recommendations</strong>
-                        <div class="recommend_source">
-                            <div class="source_title"><a href="/">The Metropolitan Museum of Art</a></div>
-                            <div class="source_thumb"><img src="http://www.metmuseum.org/content/img/presentation/icons/header-logo-icon.gif" /></div>
-
-                        </div>
-                        <div class="recommend_source">
-                            <div class="source_title"><a href="/">Victoria and Albert Museum Archives</a></div>
-                            <div class="source_thumb"><img src="http://books.google.com/intl/en/images/logos/books_logo_lg.gif" /></div>
-                        </div>
-                        <div class="recommend_source">
-                            <div class="source_title"><a href="/">WGBH OpenVault: The Vietnam Collection </a></div>
-                            <div class="source_thumb"><img src="http://ccnmtl.columbia.edu/projects/mediathread/skins/vietnam//img/bvault_bug.jpg" /></div>
-                        </div>
-                        -->
-                        
-                        
+                {% endif %} 
                     </div>
                 </div>
             </td>            
-            {% endwith %}{% endwith %}{% endwith %}
+
         </tr>
     </tbody>
 </table>

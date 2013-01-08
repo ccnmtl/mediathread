@@ -336,6 +336,40 @@ ul#projects .createnew-button {
     margin: 5px;
 }
 
+a.btn-primary {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #006dcc;
+  *background-color: #0044cc;
+  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
+  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  background-repeat: repeat-x;
+  border-color: #0044cc #0044cc #002a80;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+a.btn-primary:hover,
+a.btn-primary:active,
+a.btn-primary.active,
+a.btn-primary.disabled,
+a.btn-primary[disabled] {
+  color: #ffffff;
+  background-color: #0044cc;
+  *background-color: #003bb3;
+}
+
+a.btn-primary:active,
+a.btn-primary.active {
+  background-color: #003399 \9;
+}
+
+
+
 a.btnRespond {
   font-size: 1em;
   font-weight: normal;
@@ -369,8 +403,14 @@ a.btnRespond.active,
 a.btnRespond.disabled,
 a.btnRespond[disabled] {
   color: #ffffff;
-  background-color: #51a351;
-  *background-color: #499249;
+  background-image: -moz-linear-gradient(top, #51a351, #62c462);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#51a351), to(#62c462));
+  background-image: -webkit-linear-gradient(top, #51a351, #62c462);
+  background-image: -o-linear-gradient(top, #51a351, #62c462);
+  background-image: linear-gradient(to bottom, #51a351, #62c462);
+  background-repeat: repeat-x;
+  border-color: #fff #fff #777;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   text-decoration: none;
 }
 
@@ -380,7 +420,7 @@ a.btnRespond.active {
 }
 
 a.btn-feedback {
-  font-size: 1em;
+  font-size: 1.1428em;
   font-weight: normal;
   color: #ffffff;
   padding: 10px 15px;
@@ -411,8 +451,13 @@ a.btn-primary.active,
 a.btn-feedback.disabled,
 a.btn-feedback[disabled] {
   color: #ffffff;
-  background-color: #f7941e;
-  *background-color: #f7941e;
+  background-image: -moz-linear-gradient(top, #f7941e, #f7b362);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f7941e), to(#f7b362));
+  background-image: -webkit-linear-gradient(top, #f7941e, #f7b362);
+  background-image: -o-linear-gradient(top, #f7941e, #f7b362);
+  background-image: linear-gradient(to bottom, #f7941e, #f7b362);
+  background-repeat: repeat-x;
+  border-color: #f7941e;
   text-decoration: none;
 }
 

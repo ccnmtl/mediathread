@@ -63,35 +63,6 @@
 
 {% block content %}
     {{ block.super }}
-        <div id="sitewide_menu">
-            <ul>
-                <li class="full_collection"><a href="/asset/">View Full Collection</a> </li>
-                <li class="project_createnew">
-                    <form class="project-createnew" action="/project/create/" method="post">
-                        <input type="hidden" name="title">
-                        <input type="submit" value="Create Composition">                         
-                    </form>
-                </li>
-                {% if is_faculty %}
-                    <li class="project_createnew">
-                        <form class="project-createnew" action="/project/create/" method="post">
-                            <input type="hidden" name="title" />
-                            <input type="hidden" name="publish" value="Assignment"/>
-                            <input type="submit" value="Create Assignment"/>
-                        </form>
-                    </li>                
-                    <li class="create_discussion">
-                        <form class="discussion-createnew" action="/discussion/create/" method="post">
-                            <input type="hidden" name="comment_html" value="Discussion Title">
-                            <input type="hidden" name="app_label" value="courseaffils">
-                            <input type="hidden" name="model" value="course">
-                            <input type="hidden" name="obj_pk" value="{{course.id}}">
-                            <input type="submit" value="Create Discussion">
-                        </form>
-                    </li>
-                {% endif %}            
-            </ul>
-        </div>   
     <table id="home-columns">
     <tbody>
         <tr>
@@ -203,6 +174,26 @@
                         Composition
                         <div class="actions">{% include "help/new_help_button.html" %}</div>
                     </h2>
+                <div id="composition_actions">    
+                <form action="/project/create/" method="post">
+                        <input type="hidden" name="title" />
+                        <input type="submit" value="Create Composition" class="btn-primary" />                         
+                    </form>
+                {% if is_faculty %}
+                        <form action="/project/create/" method="post">
+                            <input type="hidden" name="title" />
+                            <input type="hidden" name="publish" value="Assignment"/>
+                            <input type="submit" value="Create Assignment" class="btn-primary" />
+                        </form>
+                        <form action="/discussion/create/" method="post">
+                            <input type="hidden" name="comment_html" value="Discussion Title" />
+                            <input type="hidden" name="app_label" value="courseaffils" />
+                            <input type="hidden" name="model" value="course" />
+                            <input type="hidden" name="obj_pk" value="{{course.id}}" />
+                            <input type="submit" value="Create Discussion" class="btn-primary" />
+                        </form>
+                {% endif %}            
+                </div>
                     <div id="classwork_table"></div>
                 </div>
                 {% endwith %}{% endwith %}

@@ -325,18 +325,20 @@ ul#projects h3 .edit_icon {
     display: inline;
 }
 
-input.project,
-a.project {
-    background-image: url("../img/buttons/compositions_button_bg.jpg");
-    border-color: #477794;
-    font-size: .85em;
+#composition_actions {
+	position: relative;
+    float: left;
+    top: -20px;
 }
 
-ul#projects .createnew-button {
-    margin: 5px;
+#composition_actions form {
+    display: inline;
+    float: left;
+    margin: 0 20px 0 0;
 }
 
-a.btn-primary {
+a.btn-primary,
+.btn-primary {
   font-size: 1em;
   font-weight: normal;
   color: #2f2f2f;
@@ -357,13 +359,14 @@ a.btn-primary {
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  cursor: pointer;
 }
 
-a.btn-primary:hover,
-a.btn-primary:active,
-a.btn-primary.active,
-a.btn-primary.disabled,
-a.btn-primary[disabled] {
+a.btn-primary:hover, .btn-primary:hover,
+a.btn-primary:active, .btn-primary:active,
+a.btn-primary.active, .btn-primary.active,
+a.btn-primary.disabled, .btn-primary.disabled,
+a.btn-primary[disabled], .btn-primary[disabled] {
   color: #2f2f2f;
    background-color: #efefef;
   *background-color: #efefef;
@@ -380,7 +383,8 @@ a.btn-primary.active {
   background-color: #003399 \9;
 }
 
-a.btn-primary img {
+a.btn-primary img,
+.btn-primary img {
 	padding: 0 10px 0 0;
 }
 

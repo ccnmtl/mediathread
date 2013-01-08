@@ -237,19 +237,27 @@ def triple_homepage(request):
 
     archives.sort(key=operator.itemgetter('title'))
 
+    assets = annotated_by(Asset.objects.filter(course=c),
+                          classwork_owner,
+                          include_archives=False)
+
+    projects = Project.get_user_projects(classwork_owner, c)
+
+    show_tour = len(assets) < 1 and len(projects) < 1
+
     context = {
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': False,
-        'help_homepage_classwork_column': UserSetting.get_setting(
-            logged_in_user, "help_homepage_classwork_column", True),
-        'faculty_feed': get_prof_feed(request.course, request),
-        'is_faculty': request.course.is_faculty(logged_in_user),
-        'discussions': get_course_discussions(request.course),
+        'help_homepage_classwork_column': False,
+        'faculty_feed': get_prof_feed(c, request),
+        'is_faculty': c.is_faculty(logged_in_user),
+        'discussions': get_course_discussions(c),
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
         'archives': archives,
         'upload_archive': upload_archive,
-        'can_upload': course_details.can_upload(request.user, request.course)
+        'can_upload': course_details.can_upload(request.user, request.course),
+        'show_tour': show_tour
     }
     return context
 

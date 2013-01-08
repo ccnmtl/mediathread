@@ -6,8 +6,8 @@ Feature: Sliding Panels
         Given my browser resolution is <width> x <height>
         
         # Composition Editing
-        There is a Create Composition button
-        When I click the Create Composition button
+        There is a Create Composition or Assignment button
+        When I click the Create Composition or Assignment button
         Then I am at the Untitled page
         There is an open Composition panel
         And the Composition panel has a <subpanel_state> subpanel
@@ -23,7 +23,7 @@ Feature: Sliding Panels
         
       Examples:
         | width | height | subpanel_state |
-        | 900   | 500    | closed         |
+        | 800   | 500    | closed         |
         | 1024  | 768    | open           |
         | 1280  | 800    | open           |
         | 1440  | 900    | open           |
@@ -56,7 +56,7 @@ Feature: Sliding Panels
         Then I save the changes
         
         # Delete the response from the home screen
-        When I click the HOME button        
+        When I click the "Home" link        
         Given the home workspace is loaded
             Then I am at the Home page
             Then I click the "Sliding Panel: Scenario 2 <width> x <height>" project delete icon
@@ -67,7 +67,7 @@ Feature: Sliding Panels
         
       Examples:
         | width | height | assignment_subpanel_state | assignment_panel_state | composition_subpanel_state |
-        | 900   | 500    | closed                    | closed                 | closed                     |
+        | 800   | 500    | closed                    | closed                 | closed                     |
         | 1024  | 768    | open                      | open                   | closed                     |
         | 1280  | 800    | open                      | open                   | open                       |
         | 1440  | 900    | open                      | open                   | open                       |

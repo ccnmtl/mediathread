@@ -18,9 +18,9 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I select "Student One" as the owner in the Analysis column
-        Then the owner is "Student One" in the Analysis column
-        Then the classwork panel has 1 projects named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Dashboard column
+        Then the owner is "Student One" in the Dashboard column
+        Then the dashboard panel has 1 response named "Sample Assignment Response"
         The "Sample Assignment Response" project has no delete icon
         
         # Direct delete url
@@ -60,25 +60,7 @@ Feature: Homepage Delete Operations. Project, Item
         Then I ok an alert dialog
         
         Then there is not a "Sample Assignment Response" link
-        
-        Finished using Selenium
-        
-    Scenario: homepage.delete.feature 5. Instructor can remove an item from his own collection
-        Using selenium
-        Given there is a sample assignment
-        Given I am test_instructor in Sample Course
-        
-        Then the owner is "Me" in the Analysis column
-        Then the Collection panel has a "MAAP Award Reception" item
-        And the "MAAP Award Reception" item has a delete icon
-        
-        When I click the "MAAP Award Reception" item delete icon
-        Then I cancel an alert dialog
-        
-        When I click the "MAAP Award Reception" item delete icon
-        Then I ok an alert dialog
-        
-        Then the Collection panel has no "MAAP Award Reception" item
+        Then the dashboard panel has 1 project named "Sample Assignment"
         
         Finished using Selenium
    

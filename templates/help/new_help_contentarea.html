@@ -1,6 +1,5 @@
-
 <div id="{{help_id}}-overlay"
-    class="ui-widget-overlay"
+    class="ui-widget-overlay help-overlay"
     {% if not default_help_state %}style="display: none"{% endif %}>
 </div>
 
@@ -32,6 +31,123 @@
             like Aldus PageMaker including versions of Lorem Ipsum.
         </div> 
     {% endifequal %}
+    
+    {% ifequal help_id "help_homepage_instructor_column" %}
+        <strong>The Review Section</strong>
+        <div class="feature-help-instructions">Read informational essays from your instructors and participate in class discussions here. </div>
+        <br />            
+        {% if is_faculty %}                            
+            <strong>
+                Creating Course Information
+            </strong>
+            <div class="feature-help-instructions">
+                <ol>
+                <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Create Composition</span> link above.</li>
+                <li>Save the composition as "Whole Class"</li>
+                </ol>
+            </div>
+            
+            <strong>
+                Creating Discussions
+            </strong>
+            <div class="feature-help-instructions">
+                <ol>
+                <li>Click the &nbsp;<img src="/site_media/img/create_discussion.png">&nbsp;<span style="color: #1B75BC">Create Discussion</span> link above.</li>
+                <li>Title your discussion.</li>
+                <li>Save</li>
+                </ol>
+            </div>
+         {% endif %}        
+    {% endifequal %}
+    
+    {% ifequal help_id "help_homepage_explore_column" %}
+        <strong>The Collect Section</strong>
+        <div class="feature-help-instructions">
+        Build your collection of images, video and audio by bookmarking items from popular sites like YouTube or Flickr or by uploading items from your personal portfolio.
+        </div>
+    
+        <strong>What is a collection?</strong>
+        <div class="feature-help-instructions">
+        A collection is a set of images, video and audio 
+        can be annotated, organized, and embedded into 
+        essays and other written analysis.
+        </div> 
+        
+        <strong>How do I build my collection?</strong>
+        <div class="feature-help-instructions">
+        <ul>
+            <li>The Bookmarklet: When added to your browser's Bookmarks Toolbar, this button enables you to import items for analysis.</li>
+            <li>Upload items from your personal portfolio</li>
+        </ul>
+        </div>
+        
+        <strong>How do I see my collection?</strong>
+        <div class="feature-help-instructions">
+            Click the &nbsp;<img src="/site_media/img/viewfullcollection.png">&nbsp;<span style="color: #1B75BC">View Full Collection</span> link above.
+        </div>
+    {% endifequal %}
+    
+    {% ifequal help_id "help_homepage_classwork_column" %}
+        <strong>
+            The Compose Section
+        </strong>
+        <div class="feature-help-instructions">
+            Create and edit your assignments and compositions here. Use the OWNER menu to view published work from instructors and classmates. 
+        </div>
+        <br />            
+        {% if is_faculty %}
+            <strong>
+                How To Create an Assignment
+            </strong>
+            <div class="feature-help-instructions">
+                <ol>
+                <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Create Assignment</span> link above.</li>
+                <li>Save the composition as "Assignment."</li>                
+                </ol>
+                <div><i>Note: Assignments are automatically public. Save your assignment as "Private" until you're ready to go.</i></div>
+            </div>
+        {% else %}
+            <strong>
+                How To Respond to an Assignment
+            </strong>
+            <div class="feature-help-instructions">
+                <ol>
+                <li>Assignments from your instructor appear in this list.
+                <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Respond</span> link above.</li>
+                <li>Save the composition as "Whole Class"</li>
+                </ol>
+            </div>        
+        {% endif %}
+        
+        <strong>
+            How To Create a Composition
+        </strong>
+        <div class="feature-help-instructions">
+            <ol>
+            <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Create Composition</span> link above.</li>
+            <li>Save the composition as "Whole Class"</li>
+            </ol>
+        </div>
+        <strong>
+            How To See Class Work
+        </strong>
+        <div class="feature-help-instructions">
+            <ol>
+            <li>The Owner box above lists class instructors and students.</li>
+            <li>Click the down arrow next to <strong>Me</strong>.</li>
+            <li>Select the person whose work you'd like to see.</li>
+            <li>The project list will automatically update.</li>
+            </ol>
+        </div>
+        {% comment %}
+        <div class="right">        
+         <input id="{{help_id}}_checkbox" class="dont-show-help"
+            type="checkbox" {% ifequal default_help_state 0 %}checked="checked" {% endifequal %}/>
+            Do not show this message again.
+        </div>   
+        {% endcomment %}
+    {% endifequal %}
+    
     
     <div class="visualclear"></div>
     <div style="float: right">    

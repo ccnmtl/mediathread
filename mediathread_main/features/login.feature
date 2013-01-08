@@ -53,7 +53,7 @@ Feature: Login
         When I click the "Alternate Course" link
         Then I am in the Alternate Course class
         
-        When I open the user settings menu
+        When I open the user menu
         Then there is a "Switch Course" link
         When I click the "Switch Course" link
         Then I am at the Switch Course page

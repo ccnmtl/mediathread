@@ -67,21 +67,24 @@ ProjectList.prototype.refresh = function (config) {
         url = MediaThread.urls['your-projects'](config.space_owner);
     }
     
-    djangosherd.storage.get({
-        type: 'asset',
-        url: url
-    },
-    false,
-    function (the_records) {
-        self.updateAssets(the_records);
-        
-        jQuery("a.btnRespond").bind("click", function (evt) {
-            self.createAssignmentResponse(evt);
-        });
-        
-        jQuery("a.btnDeleteResponse").bind("click", function (evt) {
-            self.deleteAssignmentResponse(evt);
-        });
+    jQuery("a.btnRespond").unbind("click");
+    jQuery("a.btnDeleteResponse").unbind("click");
+    
+    jQuery.ajax({
+        url: url,
+        dataType: 'json',
+        cache: false, // Internet Explorer has aggressive caching policies.
+        success: function (the_records) {
+            self.updateAssets(the_records);
+            
+            jQuery("a.btnRespond").bind("click", function (evt) {
+                self.createAssignmentResponse(evt);
+            });
+            
+            jQuery("a.btnDeleteResponse").bind("click", function (evt) {
+                self.deleteAssignmentResponse(evt);
+            });
+        }
     });
 };
 

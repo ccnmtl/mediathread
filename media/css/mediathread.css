@@ -153,17 +153,19 @@ a:hover {
 	clear: both;
 	display: block;
 	float: left;
+	height: 47px;
 }	
 
 #mediathread_logo {
-    float: right;
-    height: 55px;
-    padding: 0 30px 0 20px;
+    float: left;
+    height: 35px;
+    overflow: hidden;
+    padding: 0 0 0 10px;
+    position: relative;
+    top: -3px;
 }
 
 #course_title {
-	display: block;
-	clear: both;
 	margin: 20px 0 0 20px;
 	float: left;
     z-index: 9997;
@@ -598,8 +600,8 @@ html.busy, html.busy * {
     display: block;
     float: left;
     margin: 0;
-    padding: 7px 3px 1px 35px;
     width: 100%;
+    padding: 0;
     background-color: #383838;
 }
 
@@ -608,6 +610,7 @@ ul#standardnav
 	float: right;
     list-style: none;
     z-index: 9998;
+    padding: 10px 0 0 0;
     font-size: .857em;
 }
 

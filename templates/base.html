@@ -53,6 +53,7 @@
     	<div id="header">
 
             <div id="standardnav_container">   
+            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" /></a></div>
             {% block standardnav %}            
                <ul id="standardnav">
                     {% if request.user.is_authenticated %}   
@@ -125,7 +126,7 @@
             {% block course_metadata %}{% endblock %}
             <div class="clear: right;"></div>
         </div>
-            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" /></a></div>
+        
     	</div><!-- id="header" -->
 
     {% endblock %}

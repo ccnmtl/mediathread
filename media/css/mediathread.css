@@ -123,11 +123,12 @@ a:hover {
 #container
 {
     margin: 0 auto;
-    width: auto;
+    min-height: 100%;
+    position: relative;
     padding: 0;
     border-collapse: collapse;
-    background-color: #fff;
     border-top: none;
+    margin-bottom: -60px;
 }
 
 /* ---- Structure ---------- */
@@ -142,8 +143,6 @@ a:hover {
 
 #pagebody
 {
-	min-height: 100%;
-	margin-bottom: -60px;
 	position: relative;
 	padding: 0 0 0 10px;
 }

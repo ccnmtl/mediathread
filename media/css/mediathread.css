@@ -72,7 +72,7 @@ p
     display: block;
     padding: 0;
     border: 0;
-    font-size: 100%;
+    line-height: 1.5em;
 }
 
 table
@@ -337,15 +337,21 @@ ul#projects .createnew-button {
 }
 
 a.btn-primary {
-  color: #ffffff;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #006dcc;
-  *background-color: #0044cc;
-  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  font-size: 1em;
+  font-weight: normal;
+  color: #2f2f2f;
+  padding: 10px 15px;
+  margin: 15px 0 5px 0;
+  border: solid 1px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+   background-color: #efefef;
+  *background-color: #efefef;
+  background-image: -moz-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfcfc), to(#efefef));
+  background-image: -webkit-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: -o-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: linear-gradient(to bottom, #fcfcfc, #efefef);
   background-repeat: repeat-x;
   border-color: #0044cc #0044cc #002a80;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
@@ -358,9 +364,15 @@ a.btn-primary:active,
 a.btn-primary.active,
 a.btn-primary.disabled,
 a.btn-primary[disabled] {
-  color: #ffffff;
-  background-color: #0044cc;
-  *background-color: #003bb3;
+  color: #2f2f2f;
+   background-color: #efefef;
+  *background-color: #efefef;
+  background-image: -moz-linear-gradient(top, #efefef, #fcfcfc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#efefef), to(#fcfcfc));
+  background-image: -webkit-linear-gradient(top, #efefef, #fcfcfc);
+  background-image: -o-linear-gradient(top, #efefef, #fcfcfc);
+  background-image: linear-gradient(to bottom, #efefef, #fcfcfc);
+  text-decoration: none;
 }
 
 a.btn-primary:active,
@@ -368,7 +380,9 @@ a.btn-primary.active {
   background-color: #003399 \9;
 }
 
-
+a.btn-primary img {
+	padding: 0 10px 0 0;
+}
 
 a.btnRespond {
   font-size: 1em;
@@ -378,6 +392,7 @@ a.btnRespond {
   margin: 15px 0 5px 0;
   border: solid 1px;
   border-radius: 4px;
+  -moz-border-radius: 4px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #5bb75b;
   *background-color: #51a351;
@@ -427,6 +442,7 @@ a.btn-feedback {
   margin: 15px 0 5px 0;
   border: solid 1px;
   border-radius: 4px;
+  -moz-border-radius: 4px;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #f7941e;
   *background-color: #f7941e;
@@ -561,9 +577,9 @@ img
 }
 
 .rounded {
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
 }
 
 .rounded-button {
@@ -949,9 +965,6 @@ div.button-form form, div.button-form.inline form {
     text-align: left; 
     background-color: #dedede; 
     padding: 0 0 10px 0;
-    border-radius: 10px 0px 0px 10px; 
-    -moz-border-radius: 10px 0px 0px 10px; 
-    -webkit-border-radius: 10px 0px 0px 10px; 
     overflow-x:hidden;
     overflow-y:hidden;
     margin-right: 25px;
@@ -963,10 +976,7 @@ div.button-form form, div.button-form.inline form {
 }
 
 #introduction h2 {
-   -webkit-border-top-left-radius: 10px;
-    -webkit-border-top-right-radius: 10px;
-    -moz-border-radius-topleft: 10px;
-    -moz-border-radius-topright: 10px;
+
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     background-color: #666;
@@ -1979,9 +1989,9 @@ div.homepage-column-info {
 
 
 .switcher {
-    float:left;
+    float:right;
+    margin: 0 12px 12px 0;
     z-index:9999;/*IE z-index bug workaround*/
-    margin-bottom:12px;
     outline:none;
 }
 
@@ -2031,7 +2041,7 @@ div.collection-chooser ul.switcher-options {
 
 .switcher ul.switcher-options h3 {
    font-size: 90%;
-    font-weight: normal;
+   font-weight: normal;
    margin:0 0 6px 0;
 }
 
@@ -2045,7 +2055,7 @@ div.collection-chooser ul.switcher-options {
     background-color:#999;
     z-index:9999;
     width:inherit;
-    left:-10px;
+    right:-42px;
     border-left:1px solid rgb(204, 204, 204);
     border-right:1px solid rgb(204, 204, 204);
     border-bottom:1px solid rgb(204, 204, 204);
@@ -3101,29 +3111,27 @@ ul.clumper li div.type-project {
 }
 
 a.bookmarklet {
-  font-size: 1em;
+  clear: both;
+  float: left;
+  font-size: 1.1428em;
   font-weight: normal;
   color: #ffffff;
   padding: 10px 15px;
   margin: 15px 0 5px 0;
   border: solid 1px;
   border-radius: 4px;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #006dcc;
-  *background-color: #0044cc;
-  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  -moz-border-radius: 4px;
+  background-color: #0e76bc;
+  background-image: -moz-linear-gradient(top, #3d89bc, #0e76bc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3d89bc), to(#0e76bc));
+  background-image: -webkit-linear-gradient(top, #3d89bc, #0e76bc);
+  background-image: -o-linear-gradient(top, #3d89bc, #0e76bc);
+  background-image: linear-gradient(to bottom, #3d89bc, #0e76bc);
   background-repeat: repeat-x;
   border-color: #0044cc #0044cc #002a80;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  clear: both;
-  display: block;
-  width: 133px;
 }
 
 a.bookmarklet:hover,

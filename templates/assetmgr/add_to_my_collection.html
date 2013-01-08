@@ -22,38 +22,100 @@
 
 {% with "help_browse_sources" as help_id %}
 {% with help_browse_sources as default_help_state %}
-                 
-    <div id="external-archives" class="top-archive">
-        <h2>Add to My Collection{% include "help/help_button.html" %}
-            {% if is_faculty %}
-                <div id="managesources">
-                    <a href="{% url class-add-source %}" class="columnbutton media browse-button">Manage Sources</a>
-                </div>
-             {% endif %}
+    <div class="add_to_my_collection">
+        <h2>
+            Add to My Collection
+            <div class="actions">{% include "help/new_help_button.html" %}</div>
         </h2>
-        {% include "help/help_contentarea.html" %}
         
-                    
+                    <div id="import_instructions">
+             <div class="import_class bookmarklet_instructions">
+                        <div id="browser-instructions" class="browser-specific-instructions">
+                            
+                            <div id="firefox" class="browser-instruction"</div> 
+                            <h4>Firefox Installation:</h4>
+                            <ol>
+                              <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
+                              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                            </ol>
+                            </div>
+                            <div id="ie" class="browser-instruction"</div> 
+                            <h4> Internet Explorer Installation:</h4>
+                            <ol>
+                              <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li><br />
+                              <li>and choose <b>Add to Favorites</b></li>
+                            </ol>
+                            </div>
+                            <div id="safari" class="browser-instruction"</div> 
+                             <h4>Safari Installation:</h4>
+                            <ol>
+                             <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+                              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                            </ol>
+                            </div>
+                            <div id="chrome" class="browser-instruction"</div> 
+                            <h4>Chrome Installation:</h4>
+                            <ol>
+                              <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+                              <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                              {% if EXPERIMENTAL %}
+                              <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
+                              {% endif %}
+                            </ol>
+                            </div>
+                            <script type="text/javascript">
+                                var u = navigator.userAgent;
+                                var i = jQuery('browser-instructions');
+                                if (/Chrome/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#chrome').show();
+                                } else if (/Safari/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#safari').show();
+                                } else if (/MSIE/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#ie').show();
+                                } else if (/Gecko/.test(u)) {
+                                    jQuery('.browser-instruction').hide();
+                                    jQuery('#firefox').show();
+                                } 
+                            </script>
+                        </div>
+                    </div>
+                 
+         
+                    <ol>
+                        <h4><li>
+                            Install the Mediathread Bookmarklet</h4>
+                            <p>When added to your browser's Bookmarks Toolbar, this button enables you to import items for analysis in Mediathread.</p>
+                        </li>
+                        <h4><li>
+                            Click to Import Media</h4>
+                            <p>Clicking the Bookmarklet imports media from any web page containing Mediathread-friendly items.</p>
+                        </li>
+                    </ol>         
+                </div>     
+   
+        
+            <div class="visualclear"></div>
+
+        <h2>Upload</h2>
         {% if can_upload %}
+            <div class="media-column-container">
            {% if upload_archive %}
-               <div id="upload_container">
-                    <h2>Upload Video</h2>
+               <div class="archive">
+                    <h3>Video</h3>
                     
                     {% ifequal role_in_course "non-member" %}
                         <div class="instructions">
                             You must be a course member to upload media files.
                         </div>
                     {% else %}
-                        <div class="instructions">
+                        <p>
                             This tool supports direct uploading of videos from your desktop into Mediathread.<br />
-                            {% comment %}
-                            Having problems? Please visit the <a href="http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread">Mediathread Helpdesk</a><br />
-                            
-                            Still having problems? <a href="/contact/">Contact us to report an issue or request help.</a>
-                            {% endcomment %}
-                        </div>
+                        </p>
                         
-                        <form action="redirect/" method="POST">
+                        <form action="redirect/" method="POST" class="right">
                             {% if owners %}
                                 <div><b>For:</b>&nbsp;
                                 <select id="video_owners" name="as"> 
@@ -64,25 +126,22 @@
                                 </div>
                             {% endif %}
                             <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                            <input id="uploader" type="submit" value="Upload a video" />
+                            <input id="uploader" type="submit" value="Upload video" class="right" />
                         </form>
                     {% endifequal %}            
                     <div class="visualclear"></div>
                 </div>
                 
-                {% if space_viewer.is_staff %}
-                <div id="audio_upload_container">
-                    <h2>Upload Audio</h2>
+                <div class="archive">
+                    <h3>Audio</h3>
                     {% ifequal role_in_course "non-member" %}
                         <div class="instructions">
                             You must be a course member to upload media files.
                         </div>
                     {% else %}            
-                        <div class="instructions">
-                            This tool supports direct uploading of audio files from your desktop into Mediathread.
-                        </div>
+                            <p>This tool supports direct uploading of audio files from your desktop into Mediathread.</p>
                         <div class="visualclear"></div>
-                        <form action="redirect/" method="POST">
+                        <form action="redirect/" method="POST" class="right">
                             {% if owners %}
                                 <div><b>For:</b>&nbsp;
                                 <select name="as"> 
@@ -93,32 +152,20 @@
                                 </div>
                             {% endif %}
                             <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                            <input type="hidden" name="audio2" value="mp3"></input>
-                            <input id="uploader" type="submit" value="As MP4" />
-                        </form>
-                        <form action="redirect/" method="POST">
-                            {% if owners %}
-                                <div><b>For:</b>&nbsp;
-                                <select name="as"> 
-                                {% for owner in owners %}                                
-                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                {% endfor %}
-                                </select>
-                                </div>
-                            {% endif %}
-                            <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                            <input type="hidden" name="audio" value="mp3"></input>
-                            <input id="uploader" type="submit" value="As MP3" />
-                        </form>                        
+                            <input type="hidden" name="audio2" value="mp4"></input>
+                            <input id="uploader" type="submit" value="Upload audio" class="right"/>
+                        </form>                      
                     {% endifequal %}            
                     <div class="visualclear"></div>
                 </div>  
-                {% endif %}                           
             {% endif %}
+            </div>
         {% endif %}
+        
+        <div class="visualclear"></div>
          
         {% if archives %}
-            <div id="archive_container" class="column-container media-column-container">  
+            <div class="column-container media-column-container">  
                 <h2>Instructor Recommendations
                     
                 </h2>
@@ -151,7 +198,6 @@
                 {% endif %}
             </div>                
         {% endif %}
-
-{% endwith %}
-{% endwith %}
+    </div>
+    {% endwith %}{% endwith %}
 {% endblock %}

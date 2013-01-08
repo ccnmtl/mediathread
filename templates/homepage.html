@@ -8,12 +8,17 @@
 {% block css %}
     {{ block.super }}
     
+    <link rel="stylesheet" href="/site_media/jquery/css/jquery.websitetour.css" media="screen" />
+    
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
+    
       
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
@@ -21,6 +26,7 @@
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/project/projectlist.js?version={%revision%}"></script>
+        
 
     <script type="text/javascript">
         jQuery(document).ready(function() {
@@ -37,39 +43,22 @@
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
                 'template': 'homepage',
                 'template_label': 'classwork_table',
-                'view': "{{request.GET.view}}",
+                'view': "{{request.GET.view}}"
             });
+            
+            jQuery(window).resize(function () {  
+                var visible = getVisibleContentHeight();
+                jQuery('.ui-widget-overlay').css('height', visible - 50 + "px");
+            });
+    
+            var visible = getVisibleContentHeight();
+            jQuery('.ui-widget-overlay').css('height', visible - 50 + "px");
+            
+            {% if show_tour %}
+                jQuery(window).trigger('tour.start');
+            {% endif %}
         });
     </script>
-{% endblock %}
-
-{% block course_metadata %}
-    <div id="course_metadata" class="meta">
-        {% if course.details.instructor %}
-        <div>
-            <span class="metadata-label">Instructor: </span>
-            <span class="metadata-value">
-                {{course.details.instructor.value}}
-            </span>
-        </div>
-        {% endif %}
-        
-        {% if course.info.termyear %}
-            <div>
-                <span class="metadata-label">Term: </span>
-                <span class="metadata-value">
-                    {{course.info.termyear}}
-                </span>
-            </div>
-        {% endif %}
-        
-        <div>
-            <span class="metadata-label">Your Role: </span>
-            <span class="metadata-value">
-                {% course_role for request.user in course as role %}{{role}}
-            </span>
-        </div>
-    </div>
 {% endblock %}
 
 {% block content %}
@@ -80,20 +69,23 @@
                 <li class="project_createnew">
                     <form class="project-createnew" action="/project/create/" method="post">
                         <input type="hidden" name="title">
-                        {% if is_faculty %}
-                            <input type="submit" value="Create Composition or Assignment">
-                         {% else %}
-                            <input type="submit" value="Create Composition">
-                         {% endif %}
+                        <input type="submit" value="Create Composition">                         
                     </form>
                 </li>
                 {% if is_faculty %}
+                    <li class="project_createnew">
+                        <form class="project-createnew" action="/project/create/" method="post">
+                            <input type="hidden" name="title" />
+                            <input type="hidden" name="publish" value="Assignment"/>
+                            <input type="submit" value="Create Assignment"/>
+                        </form>
+                    </li>                
                     <li class="create_discussion">
                         <form class="discussion-createnew" action="/discussion/create/" method="post">
                             <input type="hidden" name="comment_html" value="Discussion Title">
                             <input type="hidden" name="app_label" value="courseaffils">
                             <input type="hidden" name="model" value="course">
-                            <input type="hidden" name="obj_pk" value="84">
+                            <input type="hidden" name="obj_pk" value="{{course.id}}">
                             <input type="submit" value="Create Discussion">
                         </form>
                     </li>
@@ -103,23 +95,77 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {% if faculty_feed.show or is_faculty %}
-            <td class="" id="instructor">
+            <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
-                <div class="column-container">    
-                   <h2>Course Information</h2>
-                      <div class="column-contents">
-                        <div id="instructor-column">
-                            {%if faculty_feed.projects %}
-                                <h4 class="inst-header project">Information</h4>
-                                <ul class="instructor-list">
-                                    {% for project in faculty_feed.projects %}
-                                        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            {%endif%}
-                            
+                {% include "help/new_help_contentarea.html" %}
+                <div class="column-container">
+                   <h2 class="tour_1">
+                        Review                     
+                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                   </h2>                   
+                   <div class="column-contents">
+                        <div id="instructor-column">                        
+                            <div id="course_metadata">
+                                {% if course.details.instructor %}
+                                <div class="meta">
+                                    <span class="metadata-label">Instructor: </span>
+                                    <span class="metadata-value">
+                                        {{course.details.instructor.value}}
+                                    </span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if course.info.termyear %}
+                                    <div class="meta">
+                                        <span class="metadata-label">Term: </span>
+                                        <span class="metadata-value">
+                                            {{course.info.termyear}}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if course.info.time %}
+                                     <div class="meta">
+                                        <span class="metadata-label">Day/Time: </span>
+                                        <span class="metadata-value">
+                                            {{course.info.time}}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% ifequal role_in_course "non-member" %}
+                                    <div class="ui-state-error" style="padding: 5px">
+                                        <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                        You are not a class member.
+                                    </div>
+                                {% else %}
+                                    <div class="meta">
+                                        <span class="metadata-label">Your Role: </span>
+                                        <span class="metadata-value">{{role_in_course}}</span>
+                                    </div>
+                                {% endifequal %}
+                            </div>                                          
+                            <div class="visualclear"></div>
+                            <br />
+                            <div id="tour_1_content" style="display: none">
+                                Read informational essays from your instructors and participate in class discussions here.
+                                <br /><br />
+                                Click the<img style="vertical-align: middle" src="/site_media/img/icons/meth_help.png">icon for detailed help.
+                                <br /><br />
+                                <span class="button" id="nextstep" style="">Next &gt;</span>
+                                <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
+                            </div>
+                        
+                            <ul class="instructor-list">
+                            {% if faculty_feed.projects %}
+                                
+                                {% for project in faculty_feed.projects %}
+                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                                {% endfor %}
+                                
+                            {% else %}{% endif %}
+                            </ul>
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>
@@ -145,133 +191,188 @@
                 </div>
                 {% endwith %}{% endwith %}
             </td>
-            {% endif %}
-        
-            {% with "help_homepage_classwork_column" as help_id %}
-            {% with help_homepage_classwork_column as default_help_state %}
-            {% with "resizeHomepage" as callback %}
+            
+            
             <td id="classwork">
+                {% with "help_homepage_classwork_column" as help_id %}
+                {% with help_homepage_classwork_column as default_help_state %}
+                {% include "help/new_help_contentarea.html" %}
+            
                 <div class="column-container parent-column-container">
-                    <h2>Dashboard</h2>
+                    <h2 class="tour_2">
+                        Compose
+                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                    </h2>
                     <div id="classwork_table"></div>
                 </div>
+                {% endwith %}{% endwith %}
             </td>
+            
+            
             <td id="explore">
+                {% with "help_homepage_explore_column" as help_id %}
+                {% with help_homepage_explore_column as default_help_state %}
+                {% include "help/new_help_contentarea.html" %}
+            
             	<div class="column-container">
-                	<h2>Add to My Collection</h2>
-            		<div id="bookmarklet">
-                        <div id="browser-instructions">
-                            <h3>The Bookmarklet</h3>
-                            <p>MediaThread collects images and video from popular sites like YouTube,
-                            Flickr and Vimeo via a bookmarklet.</p>
-                            <div id="firefox" class="browser-instruction"> 
-                                <strong>Install Bookmarklet in Firefox</strong>
-                                <ol>
-                                  <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
-                                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
-                                  <li>Clicking the Bookmarklet imports images and video from any web page containing Mediathread-friendly items.</li>
-                                </ol>
+                	<h2 class="tour_3">Collect<div class="actions">{% include "help/new_help_button.html" %}</div></h2>
+                    
+                    <div id="tour_3_content" style="display: none">
+                        Build your collection of images, video and audio by 
+                        bookmarking items from popular sites like YouTube or Flickr
+                        or by uploading items from your personal portfolio.<br /><br />
+                        Click the<img style="vertical-align: middle" src="/site_media/img/icons/meth_help.png">icon for detailed help.
+                        <br /><br />
+                        <span class="button" id="prevstep" style=""> &lt; Prev</span>
+                        <span class="button" id="nextstep" style="">Get Started &gt</span>            
+                        <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
+                    </div>
+                    
+                    <h3>Import </h3>
+                    <div>
+                        <p>
+                            Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
+                            <div>
+                                <a href="#" onclick='jQuery("#bookmarklet").toggle("blind", {}, 1000);'>Install Now</a>
                             </div>
-                            <div id="ie" class="browser-instruction">
-                                <strong>Install Bookmarklet in Internet Explorer</strong>
-                                <ol>
-                                  <li>Right-click on this link:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li><br />
-                                  <li>and choose <b>Add to Favorites</b></li>
-                                  <li>Clicking the Bookmarklet imports images and video from any web page containing Mediathread-friendly items.</li>
-                                </ol>
-                            </div>
-                            <div id="safari" class="browser-instruction"> 
-                                <strong>Install Bookmarklet in Safari</strong>
-                                <ol>
-                                 <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
-                                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
-                                  <li>Clicking the Bookmarklet imports images and video from any web page containing Mediathread-friendly items.</li>
-                                </ol>
-                            </div>
-                            <div id="chrome" class="browser-instruction"> 
-                                <strong>Install Bookmarklet in Chrome</strong>
-                                <ol>
-                                  <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
-                                  <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
-                                  <li>Clicking the Bookmarklet imports images and video from any web page containing Mediathread-friendly items.</li>
-                                  {% if EXPERIMENTAL %}
-                                  <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
-                                  {% endif %}
-                                </ol>
-                            </div>
-                            <script type="text/javascript">
-                                var u = navigator.userAgent;
-                                if (/Chrome/.test(u)) {
-                                    jQuery('.browser-instruction').hide();
-                                    jQuery('#chrome').show();
-                                } else if (/Safari/.test(u)) {
-                                    jQuery('.browser-instruction').hide();
-                                    jQuery('#safari').show();
-                                } else if (/MSIE/.test(u)) {
-                                    jQuery('.browser-instruction').hide();
-                                    jQuery('#ie').show();
-                                } else if (/Gecko/.test(u)) {
-                                    jQuery('.browser-instruction').hide();
-                                    jQuery('#firefox').show();
-                                } 
-                            </script>
                             
-
-                        </div>
+                            <div id="bookmarklet" style="display: none">
+                                <div id="browser-instructions">                            
+                                    <div id="firefox" class="browser-instruction"> 
+                                        <strong>Install Bookmarklet in Firefox</strong>
+                                        <ol>
+                                          <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
+                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
+                                          <li></li>
+                                        </ol>
+                                    </div>
+                                    <div id="ie" class="browser-instruction">
+                                        <strong>Install Bookmarklet in Internet Explorer</strong>
+                                        <ol>
+                                          <li>Right-click on this link:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li><br />
+                                          <li>and choose <b>Add to Favorites</b></li>
+                                        </ol>
+                                    </div>
+                                    <div id="safari" class="browser-instruction"> 
+                                        <strong>Install Bookmarklet in Safari</strong>
+                                        <ol>
+                                         <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
+                                        </ol>
+                                    </div>
+                                    <div id="chrome" class="browser-instruction"> 
+                                        <strong>Install Bookmarklet in Chrome</strong>
+                                        <ol>
+                                          <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href='{% include "assetmgr/bookmarklet.js" %}'>Analyze w/Mediathread</a></li>
+                                          {% if EXPERIMENTAL %}
+                                          <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
+                                          {% endif %}
+                                        </ol>
+                                    </div>
+                                    <script type="text/javascript">
+                                        var u = navigator.userAgent;
+                                        if (/Chrome/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#chrome').show();
+                                        } else if (/Safari/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#safari').show();
+                                        } else if (/MSIE/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#ie').show();
+                                        } else if (/Gecko/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#firefox').show();
+                                        } 
+                                    </script>
+                                </div>
+                            </div>                                       
+                        </p>
                     </div>
+                                            
+                    {% if can_upload %}
+                        {% if upload_archive %}
+                            {% ifequal role_in_course "non-member" %}
+                                <div class="instructions">
+                                    You must be a course member to upload media files.
+                                </div>
+                            {% else %}                        
+                                <h3>Upload</h3>
+                                <div>                            
+                                    <p>
+                                        This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
+                                    </p>
+                                    
+                                    <form action="/explore/redirect/" method="POST" class="right">
+                                        {% if owners %}
+                                            <div><b>For:</b>&nbsp;
+                                            <select name="as"> 
+                                            {% for owner in owners %}                                
+                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                            {% endfor %}
+                                            </select>
+                                            </div>
+                                        {% endif %}
+                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                                        <input type="hidden" name="audio2" value="mp4"></input>
+                                        <input id="uploader" type="submit" value="Upload audio" class="right"/>
+                                    </form>  
+                                    
+                                    <form action="/explore/redirect/" method="POST" class="right">
+                                        {% if owners %}
+                                            <div><b>For:</b>&nbsp;
+                                            <select id="video_owners" name="as"> 
+                                            {% for owner in owners %}                                
+                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                            {% endfor %}
+                                            </select>
+                                            </div>
+                                        {% endif %}
+                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                                        <input id="uploader" type="submit" value="Upload video" class="right" />
+                                    </form>               
+                                    
+                                 </div>
+                            {% endifequal %}
 
-            <div id="recommend">
-            {% if archives %}
-                <strong>Instructor Recommendations</strong>
-                {% for archive in archives %}
-
-                        {% if space_viewer.is_staff %}
-                            <div class="manage-archive">
-                                <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
-                            </div>
+                            
                         {% endif %}
-                        <div class="recommend_source">
-                            <div class="source_title">
-                            <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
-                            </div>
+                    {% endif %}
+                    
+                    {% if archives %}
+                    <div id="recommend">
                         
-                            {% if archive.thumb %}
-                            <div class="source_thumb">
-                            <a href="redirect/?url={{archive.archive.url|urlencode}}">
-                            <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                            </a>
-                            </div>
-                            {% endif %}
-                        </div>     
-               {%endfor%}
-
-               {% else %}
-                <strong>Instructor Recommendations</strong>
-                {% if is_faculty %}
-                    <p>This page lists sources of videos and/or images that you designate for class analysis.<br /> <br />You can add sources to this page via the  <a href="{% url class-add-source %}">Manage Sources</a> page.</a>.
-                {% endif %}
-                {% endif %}
-                  <!--  <strong>Instructor Recommendations</strong>
-                        <div class="recommend_source">
-                            <div class="source_title"><a href="/">The Metropolitan Museum of Art</a></div>
-                            <div class="source_thumb"><img src="http://www.metmuseum.org/content/img/presentation/icons/header-logo-icon.gif" /></div>
-
-                        </div>
-                        <div class="recommend_source">
-                            <div class="source_title"><a href="/">Victoria and Albert Museum Archives</a></div>
-                            <div class="source_thumb"><img src="http://books.google.com/intl/en/images/logos/books_logo_lg.gif" /></div>
-                        </div>
-                        <div class="recommend_source">
-                            <div class="source_title"><a href="/">WGBH OpenVault: The Vietnam Collection </a></div>
-                            <div class="source_thumb"><img src="http://ccnmtl.columbia.edu/projects/mediathread/skins/vietnam//img/bvault_bug.jpg" /></div>
-                        </div>
-                        -->
-                        
-                        
+                            <h3>Recommended Sources</h3>
+                            Your instructor suggests you search these sites for images, video and audio items. 
+                    
+                            {% for archive in archives %}
+                                {% if space_viewer.is_staff %}
+                                    <div class="manage-archive">
+                                        <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+                                    </div>
+                                {% endif %}
+                            <div class="recommend_source">
+                                <div class="source_title">
+                                <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                                </div>
+                            
+                                {% if archive.thumb %}
+                                    <div class="source_thumb">
+                                    <a href="redirect/?url={{archive.archive.url|urlencode}}">
+                                    <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                                    </a>
+                                    </div>
+                                {% endif %}
+                            </div>     
+                            {%endfor%}                        
                     </div>
+                    {% endif %} 
+                    
                 </div>
+                {% endwith %}{% endwith %}
             </td>            
-            {% endwith %}{% endwith %}{% endwith %}
+
         </tr>
     </tbody>
 </table>

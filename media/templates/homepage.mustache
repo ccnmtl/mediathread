@@ -1,12 +1,26 @@
 {{#>>classwork_table}}
 <div id="classwork_table">
+
+    <div id="tour_2_content" style="display: none">
+        Create and edit your assignments and compositions here. 
+        Use the OWNER menu to view published work from instructors and classmates.
+        <br /><br />
+        Click the<img style="vertical-align: middle" src="/site_media/img/icons/meth_help.png">icon for detailed help.
+        <br /><br />
+        <div>
+            <span class="button" id="prevstep" style="">&lt; Prev</span>
+            <span class="button" id="nextstep" style="">Next &gt;</span>
+        </div>
+        <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
+    </div>
+                      
     <div class="filter-widget">
         {{#>>switcher_collection_chooser}}
         <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
             <a class="switcher-top menuclosed" onclick="switcher(this);">
-                <span class="down-arrow" tabindex="3"></span>
                 <span class="title">{{{selected_label}}}</span>
+                <span class="down-arrow" tabindex="3"></span>                
             </a>
             
             <ul class="switcher-options" style="left: -51px">
@@ -44,7 +58,14 @@
                     <div class="column-contents scroll">
                         {{#>>projects}}
                         <div id="project_table">
-                            
+                            {{^compositions}}
+                                {{^showing_my_items}}                            
+                                <div class="homepage-column-info">                                    
+                                   No published work available.                                    
+                                </div>
+                                {{/showing_my_items}}
+                            {{/compositions}}
+                        
                             {{#compositions?}}
                                 <ul id="projects">
                                         
@@ -113,7 +134,8 @@
                                                     <div class="assignment-listitem response">
                                                         <span class="metadata-label">                                                            
                                                              My Response:</span> 
-                                                        <span class="metadata-value"><a href="{{url}}">{{title}}</a>
+                                                        <span class="metadata-value">
+                                                            <a class="metadata-value-response" href="{{url}}">{{title}}</a>
                                                             {{#editable?}}
                                                                 <a href="/project/delete/{{id}}/"
                                                                     onclick="return ajaxDelete(this,
@@ -135,6 +157,11 @@
                                                   <span class="metadata-label">saved on</span>
                                                   <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>                                            
                                                </div>
+                                               {{^is_assignment}}
+                                                   <div class="metadata">
+                                                       <span class="metadata-value metadata-value-status">{{status}}</span>
+                                                   </div>
+                                               {{/is_assignment}}
                                                
                                                {{#feedback?}}
                                                   <div class="feedback">

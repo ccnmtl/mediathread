@@ -20,11 +20,6 @@ body
     color: #383838;
 }
 
-.ui-widget-overlay-dark {
-    opacity: .6;
-    filter:Alpha(Opacity=60); 
-}
-
 h1, h2, h3, h4, h5, h6
 {
     padding: 0;
@@ -761,7 +756,8 @@ table#home-columns td#classwork {
 table#home-columns td#explore {
 	width: 23%;
 	float: left;
-	margin: 0
+	margin: 0;
+	position: relative;
 }
 
 div#classwork_table table {
@@ -1873,6 +1869,31 @@ td#classwork div.feature-help {
     width: 90%;
 }
 
+td#explore input.help-tab-icon {
+    margin-right: 15px;
+}
+
+td#explore div.help-tab {
+    top: 19px;
+    right: 5px;
+    width: 25px;
+    border-top: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+}
+
+td#explore div.feature-help {
+    top: 50px;
+    right: 6px;
+    width: 90%;
+}
+
+div.homepage-column-info {
+    color: #3a87ad;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 10px;
+}
 
 /*Assignment Specific styles */
 
@@ -1898,7 +1919,6 @@ td#classwork div.feature-help {
 
 .switcher {
     float:left;
-    position:relative;
     z-index:9999;/*IE z-index bug workaround*/
     margin-bottom:12px;
     outline:none;
@@ -1906,7 +1926,6 @@ td#classwork div.feature-help {
 
 div.collection-filter {
     float:right;
-    position:relative;
     width:80px;
 }
 
@@ -2256,7 +2275,6 @@ div.switcher-active-filter span a.remove:hover {
 }
 
 span.down-arrow {
-    position:absolute;
     right: 4px;
     width: 16px; 
     height: 16px;
@@ -2270,14 +2288,17 @@ span.down-arrow {
 
 a.switcher-top.menuopen span.down-arrow {
     background: url(../img/switcher/icon_x_hover.png) no-repeat scroll 100% 50%;
+    float: right;
 }
 
 a.switcher-top.menuclosed span.down-arrow {
-    background: url(../img/switcher/icon_down_arrow.png) no-repeat scroll 100% 50%; 
+    background: url(../img/switcher/icon_down_arrow.png) no-repeat scroll 100% 50%;
+    float: right; 
 }
 
 a.switcher-top.menuclosed span.down-arrow:hover {
     background: url(../img/switcher/icon_down_arrow_hover.png) no-repeat scroll 100% 50%;
+    float: right;
 }
 
 
@@ -4021,7 +4042,8 @@ div.feature-help div.feature-help-instructions {
     margin: 10px 0;
 }
 
-div.feature-help div.feature-help-instructions ol {
+div.feature-help div.feature-help-instructions ol,
+div.feature-help div.feature-help-instructions ul{
     margin: 0 .4em 0.7em 1.25em;
 }
 

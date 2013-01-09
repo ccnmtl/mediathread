@@ -431,12 +431,6 @@ def browse_sources(request):
           'msg': request.GET.get('msg', ''),
           'owners': owners, }
 
-    if not rv['archives']:
-        rv['faculty_assets'] = []
-        for a in Asset.objects.filter(c.faculty_filter).order_by('added'):
-            if a not in rv['archives']:
-                rv['faculty_assets'].append(a)
-
     if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
         # MUST only contain string values for now!!
         # (see templates/assetmgr/bookmarklet.js to see why or fix)

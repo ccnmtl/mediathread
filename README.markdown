@@ -18,7 +18,8 @@ Python 2.6 (or 2.5)
 Postgres (or MySQL)
 
 In Ubuntu (for postgres 8.4, but just change version numbers):
-$ sudo aptitude install postgres-8.4 postgresql-client-8.4 postgresql-server-dev-8.4 python-psycopg2 gcc python2.6 python-dev libc6-dev 
+
+    $ sudo aptitude install postgres-8.4 postgresql-client-8.4 postgresql-server-dev-8.4 python-psycopg2 gcc python2.6 python-dev libc6-dev 
 
 
 INSTALLATION
@@ -27,74 +28,79 @@ INSTALLATION
 1. Mediathread relies on several submodules.  The easiest way to download
    it all is to run with git 1.6.5+ is:
 
-  git clone --recursive https://github.com/ccnmtl/mediathread.git 
+    git clone --recursive https://github.com/ccnmtl/mediathread.git
 
 2. Build the database
    For Postgres:
-     A. Create the database ($ createdb mediathread)
+     A. Create the database `createdb mediathread`
 
    For MySQL:
-     A. Edit the file requirements/libs.txt
-        - comment out the line 'psycopg2'
-        - uncomment 'MySQLdb'
-     B. Create the database ($ echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql)
+     A. Edit the file `requirements/libs.txt`
+        - comment out the line `psycopg2`
+        - uncomment `MySQLdb`
+     B. Create the database
+
+    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
    For Both:
-     Edit the lines in settings_shared.py that start with DATABASE_ as appropriate
+     Edit the lines in `settings_shared.py` that start with `DATABASE_` as appropriate
      Even better would be:
-       $ mkdir deploy_specific
-       $ touch deploy_specific/__init__.py
-       # edit a file called deploy_specific/settings.py setting those same variables
-         which will override the values in settings_shared.py
+
+         $ mkdir deploy_specific
+         $ touch deploy_specific/__init__.py
+
+       # edit a file called `deploy_specific/settings.py` setting those same variables
+         which will override the values in `settings_shared.py`
          This is where we add custom settings for our deployment that will not
          be included in the open-sourced distribution
 
 
 
-3. Bootstrap uses virtualenv to build a contained library in ve/
-  ./bootstrap.py
-  NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
+3. Bootstrap uses virtualenv to build a contained library in `ve/`
+
+    ./bootstrap.py
+    NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
 
 
-# GT comment 1
-# It has been a little while since I installed mediathread, but according to my notes I had also to install
-# the wsgiref package, which did not seem to be included -- so I did the following
+GT comment 1
+It has been a little while since I installed mediathread, but according to my notes I had also to install
+the wsgiref package, which did not seem to be included -- so I did the following
 
-[root@mediathread wsgiref-0.1.2]# pwd
-/root
-[root@mediathread ~]# wget http://pypi.python.org/packages/source/w/wsgiref/wsgiref-0.1.2.zip#md5=29b146e6ebd0f9fb119fe321f7bcf6cb
- 
-[root@mediathread ~]# unzip wsgiref-0.1.2.zip 
- 
-[root@mediathread ~]# cd wsgiref-0.1.2
- 
-[root@mediathread wsgiref-0.1.2]# python setup.py install
+    [root@mediathread wsgiref-0.1.2]# pwd
+    /root
+    [root@mediathread ~]# wget http://pypi.python.org/packages/source/w/wsgiref/wsgiref-0.1.2.zip#md5=29b146e6ebd0f9fb119fe321f7bcf6cb
+     
+    [root@mediathread ~]# unzip wsgiref-0.1.2.zip 
+     
+    [root@mediathread ~]# cd wsgiref-0.1.2
+     
+    [root@mediathread wsgiref-0.1.2]# python setup.py install
 
 
-# GT comment 2
+GT comment 2
 According to my notes, I had to uncomment a line from settings_shared.py -- my notes say: uncommented 'sites' application from settings_shared.py, since I know it causes database errors if it's missing when the db is built
  
-[root@mediathread mediathread]# pwd
-/var/www/mediathread/mediathread
-[root@mediathread mediathread]# vi settings_shared.py 
- 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    #'django.contrib.sites',
- 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
+    [root@mediathread mediathread]# pwd
+    /var/www/mediathread/mediathread
+    [root@mediathread mediathread]# vi settings_shared.py 
+     
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        #'django.contrib.sites',
+     
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.sites',
 
 
-# GT comment 3
+GT comment 3
 We're using mysql and saw an error related to this when running bootstrap.py:
 
-Failed to install index for threadedcomments.ThreadedComment model: (1170, "BLOB/TEXT column 'tree_path' used in key specification without a key length")
+    Failed to install index for threadedcomments.ThreadedComment model: (1170, "BLOB/TEXT column 'tree_path' used in key specification without a key length")
  
 More discussion here:
  
@@ -103,18 +109,18 @@ http://drupal.org/node/146296
  
 But it appears that syncdb adjusted things so that the index on tree_path uses a limit of 255:
  
-mysql> show create table threadedcomments_comment;
- 
-( `comment_ptr_id` int(11) NOT NULL,
-  `title` longtext NOT NULL,
-  `parent_id` int(11) DEFAULT NULL,
-  `last_child_id` int(11) DEFAULT NULL,
-  `tree_path` longtext NOT NULL,
-  PRIMARY KEY (`comment_ptr_id`),
-  KEY `threadedcomments_comment_tree_path` (`tree_path`(255)),
-  KEY `threadedcomments_comment_63f17a16` (`parent_id`),
-  KEY `threadedcomments_comment_ffd563a7` (`last_child_id`)
-)
+    mysql> show create table threadedcomments_comment;
+     
+    ( `comment_ptr_id` int(11) NOT NULL,
+      `title` longtext NOT NULL,
+      `parent_id` int(11) DEFAULT NULL,
+      `last_child_id` int(11) DEFAULT NULL,
+      `tree_path` longtext NOT NULL,
+      PRIMARY KEY (`comment_ptr_id`),
+      KEY `threadedcomments_comment_tree_path` (`tree_path`(255)),
+      KEY `threadedcomments_comment_63f17a16` (`parent_id`),
+      KEY `threadedcomments_comment_ffd563a7` (`last_child_id`)
+    )
 
 
 
@@ -126,14 +132,15 @@ The rest of the instructions work like standard Django.  See:
 =====
 
 4. Sync the database
-   ./manage.py syncdb
-   ./manage.py migrate # to complete the south migration setup
+
+    ./manage.py syncdb
+    ./manage.py migrate # to complete the south migration setup
 
 5. Run locally (during development)
-  ./manage.py runserver myhost.example.com:8000
+    ./manage.py runserver myhost.example.com:8000
 
-6. For deployment to Apache, see our sample configuration in apache/prod.conf
-   This directory also contains standard django.wsgi file which can be used 
+6. For deployment to Apache, see our sample configuration in `apache/prod.conf`
+   This directory also contains standard `django.wsgi` file which can be used
    with other webservers
 
 ====
@@ -156,4 +163,4 @@ Go to your site in a web browser.
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
 
-10. For deployment, take a look at the apache/ directory for sample apache configuration files
+10. For deployment, take a look at the `apache/` directory for sample apache configuration files

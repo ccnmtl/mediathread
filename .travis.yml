@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+before_install:
+  - git submodule update --init --recursive
+install:
+  - ./bootstrap.py
+script:
+  - ./manage.py test report --settings=settings_test
+  - ./manage.py test structuredcollaboration --settings=settings_test

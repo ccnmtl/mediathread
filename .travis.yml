@@ -7,5 +7,5 @@ before_install:
 install:
   - ./bootstrap.py
 script:
-  - ./manage.py test report --settings=settings_test
+  - ./manage.py test reports --settings=settings_test
   - ./manage.py test structuredcollaboration --settings=settings_test

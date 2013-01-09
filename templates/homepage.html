@@ -150,7 +150,7 @@
             
             	<div class="column-container">
                 	<h2 class="tour_3">Collection<div class="actions">{% include "help/new_help_button.html" %}</div></h2>
-                	<a class="btn-primary" href="/asset/"><img src="/site_media/img/viewfullcollection.png" />View Full Collection</a> 
+                	<a class="btn-primary collection" href="/asset/"><img src="/site_media/img/viewfullcollection.png" />View Full Collection</a> 
                     
                     <div id="tour_3_content" style="display: none">
                         Build your collection of images, video and audio by 
@@ -162,16 +162,12 @@
                         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
                     </div>
                     
-                    <h3>Import </h3>
-                    <div>
+                <div class="collection_content">
+                    <a href="#" onclick='jQuery("#import_collection").toggle("blind", {}, 1000);'><h3>Import into Collection</h3></a>
+                    <div id="import_collection">
                         <p>
                             Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
-                            <div>
-                                <a href="#" onclick='jQuery("#bookmarklet").toggle("blind", {}, 1000);'>Install Now</a>
-                            </div>
-                            
-                            <div id="bookmarklet" style="display: none">
-                                <div id="browser-instructions">                            
+                           
                                     <div id="firefox" class="browser-instruction"> 
                                         <strong>Install Bookmarklet in Firefox</strong>
                                         <ol>
@@ -219,11 +215,13 @@
                                             jQuery('#firefox').show();
                                         } 
                                     </script>
-                                </div>
-                            </div>                                       
                         </p>
-                    </div>
-                                            
+                    </div> <!-- end import into collection box --> 
+                </div><!-- end collection content box -->
+                
+                <div class="collection_content">
+                   <a href="#" onclick='jQuery("#upload_desktop").toggle("blind", {}, 1000);'><h3>Upload from Desktop</h3></a>
+                        <div id="upload_desktop">                
                     {% if can_upload %}
                         {% if upload_archive %}
                             {% ifequal role_in_course "non-member" %}
@@ -231,7 +229,6 @@
                                     You must be a course member to upload media files.
                                 </div>
                             {% else %}                        
-                                <h3>Upload</h3>
                                 <div>                            
                                     <p>
                                         This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
@@ -272,6 +269,8 @@
                             
                         {% endif %}
                     {% endif %}
+                    </div><!-- end upload from desktop -->
+            </div><!-- end collection content box -->
                     
                     {% if archives %}
                     <div id="recommend">

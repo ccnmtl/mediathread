@@ -54,9 +54,14 @@
             var visible = getVisibleContentHeight();
             jQuery('.ui-widget-overlay').css('height', visible + "px");
             
-            {% if show_tour %}
+            {% ifequal msg "upload" %}
+                var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
+                alert(msg);
+            {% else %}{% if show_tour %}
                 jQuery(window).trigger('tour.start');
             {% endif %}
+            {% endifequal %}
+            
         });
     </script>
 {% endblock %}

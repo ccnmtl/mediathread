@@ -120,7 +120,6 @@ urlpatterns = patterns(
     (r'^discussion/', include('mediathread.discussions.urls')),
 
     # Manage Sources
-    url(r'^explore/$', 'assetmgr.views.browse_sources', name="explore"),
     url(r'^explore/redirect/$', 'assetmgr.views.source_redirect',
         name="source_redirect"),
 

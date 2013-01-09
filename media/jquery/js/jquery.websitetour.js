@@ -297,20 +297,20 @@
         $highlight.show();
     }
     
-    function removeTooltip(){
+    function removeTooltip() {
         $('#tour_tooltip').remove();
         $('#tour_tooltip_highlight').remove();
     }
     
-    function showControls(){
+    function showControls() {
         /*
         we can restart or stop the tour,
         and also navigate through the steps
-         */
+        */
         var $tourcontrols  = '<div id="tourcontrols" class="tourcontrols">';
-        $tourcontrols += '<p>First time here?</p>';
+        $tourcontrols += '<p>New to Mediathread?</p>';
         $tourcontrols += '<span class="button" id="activatetour">Start the tour</span>';
-            if(!autoplay){
+            if(!autoplay) {
                 $tourcontrols += '<div class="nav"><span class="button" id="prevstep" style="display:none;">< Previous</span>';
                 $tourcontrols += '<span class="button" id="nextstep" style="display:none;">Next ></span></div>';
             }

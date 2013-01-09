@@ -130,25 +130,7 @@
                         Composition
                         <div class="actions">{% include "help/new_help_button.html" %}</div>
                     </h2>
-                <div id="composition_actions">    
-                <form action="/project/create/" method="post">
-                        <input type="hidden" name="title" />
-                        <input type="submit" value="Create Composition" class="btn-primary" />                         
-                    </form>
-                {% if is_faculty %}
-                        <form action="/project/create/" method="post">
-                            <input type="hidden" name="title" />
-                            <input type="hidden" name="publish" value="Assignment"/>
-                            <input type="submit" value="Create Assignment" class="btn-primary" />
-                        </form>
-                        <form action="/discussion/create/" method="post">
-                            <input type="hidden" name="comment_html" value="Discussion Title" />
-                            <input type="hidden" name="app_label" value="courseaffils" />
-                            <input type="hidden" name="model" value="course" />
-                            <input type="hidden" name="obj_pk" value="{{course.id}}" />
-                            <input type="submit" value="Create Discussion" class="btn-primary" />
-                        </form>
-                {% endif %}            
+                <div id="composition_actions">                
                 </div>
                     <div id="classwork_table"></div>
                 </div>
@@ -169,6 +151,7 @@
                         Build your collection of images, video and audio by 
                         bookmarking items from popular sites like YouTube or Flickr
                         or by uploading items from your personal portfolio.<br /><br />
+                        For detailed help, click the question mark icon associated with each section or the Help link in the upper right corner.
                         <span class="button" id="prevstep" style=""> &lt; Prev</span>
                         <span class="button" id="nextstep" style="">Get Started &gt</span>            
                         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>

@@ -48,11 +48,11 @@
             
             jQuery(window).resize(function () {  
                 var visible = getVisibleContentHeight();
-                jQuery('.ui-widget-overlay').css('height', visible - 50 + "px");
+                jQuery('.ui-widget-overlay').css('height', visible + "px");
             });
     
             var visible = getVisibleContentHeight();
-            jQuery('.ui-widget-overlay').css('height', visible - 50 + "px");
+            jQuery('.ui-widget-overlay').css('height', visible + "px");
             
             {% if show_tour %}
                 jQuery(window).trigger('tour.start');
@@ -72,57 +72,13 @@
                 {% include "help/new_help_contentarea.html" %}
                 <div class="column-container">
                    <h2 class="tour_1">
-                        Review                     
+                        From Your Instructor                     
                         <div class="actions">{% include "help/new_help_button.html" %}</div>
                    </h2>                   
                    <div class="column-contents">
                         <div id="instructor-column">                        
-                            <div id="course_metadata">
-                                {% if course.details.instructor %}
-                                <div class="meta">
-                                    <span class="metadata-label">Instructor: </span>
-                                    <span class="metadata-value">
-                                        {{course.details.instructor.value}}
-                                    </span>
-                                </div>
-                                {% endif %}
-                                
-                                {% if course.info.termyear %}
-                                    <div class="meta">
-                                        <span class="metadata-label">Term: </span>
-                                        <span class="metadata-value">
-                                            {{course.info.termyear}}
-                                        </span>
-                                    </div>
-                                {% endif %}
-                                
-                                {% if course.info.time %}
-                                     <div class="meta">
-                                        <span class="metadata-label">Day/Time: </span>
-                                        <span class="metadata-value">
-                                            {{course.info.time}}
-                                        </span>
-                                    </div>
-                                {% endif %}
-                                
-                                {% ifequal role_in_course "non-member" %}
-                                    <div class="ui-state-error" style="padding: 5px">
-                                        <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-                                        You are not a class member.
-                                    </div>
-                                {% else %}
-                                    <div class="meta">
-                                        <span class="metadata-label">Your Role: </span>
-                                        <span class="metadata-value">{{role_in_course}}</span>
-                                    </div>
-                                {% endifequal %}
-                            </div>                                          
-                            <div class="visualclear"></div>
-                            <br />
                             <div id="tour_1_content" style="display: none">
                                 Read informational essays from your instructors and participate in class discussions here.
-                                <br /><br />
-                                Click the<img style="vertical-align: middle" src="/site_media/img/icons/meth_help.png">icon for detailed help.
                                 <br /><br />
                                 <span class="button" id="nextstep" style="">Next &gt;</span>
                                 <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
@@ -213,8 +169,6 @@
                         Build your collection of images, video and audio by 
                         bookmarking items from popular sites like YouTube or Flickr
                         or by uploading items from your personal portfolio.<br /><br />
-                        Click the<img style="vertical-align: middle" src="/site_media/img/icons/meth_help.png">icon for detailed help.
-                        <br /><br />
                         <span class="button" id="prevstep" style=""> &lt; Prev</span>
                         <span class="button" id="nextstep" style="">Get Started &gt</span>            
                         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>

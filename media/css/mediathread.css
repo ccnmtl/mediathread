@@ -384,7 +384,8 @@ ul#projects h3 .edit_icon {
 }
 
 a.btn-primary,
-.btn-primary {
+.btn-primary,
+input#uploader {
   font-size: 1em;
   font-weight: normal;
   color: #2f2f2f;
@@ -408,11 +409,11 @@ a.btn-primary,
   cursor: pointer;
 }
 
-a.btn-primary:hover, .btn-primary:hover,
-a.btn-primary:active, .btn-primary:active,
-a.btn-primary.active, .btn-primary.active,
-a.btn-primary.disabled, .btn-primary.disabled,
-a.btn-primary[disabled], .btn-primary[disabled] {
+a.btn-primary:hover, .btn-primary:hover, input#uploader:hover,
+a.btn-primary:active, .btn-primary:active, input#uploader:active,
+a.btn-primary.active, .btn-primary.active, input#uploader.active,
+a.btn-primary.disabled, .btn-primary.disabled, input#uploader:disabled,
+a.btn-primary[disabled], .btn-primary[disabled], input#uploader[disabled] {
   color: #2f2f2f;
    background-color: #efefef;
   *background-color: #efefef;
@@ -432,6 +433,12 @@ a.btn-primary.active {
 a.btn-primary img,
 .btn-primary img {
 	padding: 0 10px 0 0;
+}
+
+input#uploader {
+	display: inline;
+	float: left;
+	margin: 0 10px 0 0;
 }
 
 a.btnRespond {
@@ -3050,15 +3057,6 @@ text-align: left;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 10px 5px 5px;
-}
-
-#uploader {
-   padding: 0;
-   width: 150px;
-   height: 22px;
-   font-size: 12px;
-   text-align: center;
-   margin: 5px 0;
 }
 
 .collection_button {

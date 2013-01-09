@@ -234,7 +234,7 @@
                                         This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
                                     </p>
                                     
-                                    <form action="/explore/redirect/" method="POST" class="right">
+                                    <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
                                             <div><b>For:</b>&nbsp;
                                             <select name="as"> 
@@ -246,10 +246,10 @@
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <input type="hidden" name="audio2" value="mp4"></input>
-                                        <input id="uploader" type="submit" value="Upload audio" class="right"/>
+                                        <input id="uploader" type="submit" value="Upload audio" />
                                     </form>  
                                     
-                                    <form action="/explore/redirect/" method="POST" class="right">
+                                    <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
                                             <div><b>For:</b>&nbsp;
                                             <select id="video_owners" name="as"> 
@@ -260,7 +260,7 @@
                                             </div>
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                                        <input id="uploader" type="submit" value="Upload video" class="right" />
+                                        <input id="uploader" type="submit" value="Upload video" />
                                     </form>               
                                     
                                  </div>

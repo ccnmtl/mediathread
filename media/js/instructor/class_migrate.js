@@ -337,7 +337,9 @@
                                             var id = jQuery(elt).attr("value");
                                             var project = self.model.get('project_set').getByDataId(id);
                                             if (jQuery(elt).is(":checked")) {
-                                                self.selectedProjects.add(project);
+                                                if (!self.selectedProjects.get(project)) {
+                                                    self.selectedProjects.add(project);
+                                                }
                                             } else {
                                                 self.selectedProjects.remove(project);
                                             }
@@ -379,7 +381,9 @@
                                             var id = jQuery(elt).attr("value");
                                             var asset = self.model.get('asset_set').getByDataId(id);
                                             if (jQuery(elt).is(":checked")) {
-                                                self.selectedAssets.add(asset);
+                                                if (!self.selectedAssets.get(asset)) {
+                                                    self.selectedAssets.add(asset);
+                                                }
                                             } else {
                                                 self.selectedAssets.remove(asset);
                                             }

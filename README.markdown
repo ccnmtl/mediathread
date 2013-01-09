@@ -123,13 +123,8 @@ But it appears that syncdb adjusted things so that the index on tree_path uses a
     )
 
 
-
-
-=====
 The rest of the instructions work like standard Django.  See:
- http://docs.djangoproject.com/en/1.1/
- for more details.
-=====
+ http://docs.djangoproject.com/en/1.1/ for more details.
 
 4. Sync the database
 
@@ -143,22 +138,20 @@ The rest of the instructions work like standard Django.  See:
    This directory also contains standard `django.wsgi` file which can be used
    with other webservers
 
-====
 Go to your site in a web browser.
-====
 
 7. The default database is not very useful.  Login with the superuser you
    created in Step #4.
 
 8. Click the 'Create a Course' link.
-   - Click the "+" to make a group.  Name it something like "test_course"
-   - Click the "+" to make a faculty group.  Name it something like "test_course_faculty"
-   - In the "Add users to group" field...
-     = add yourself as a faculty member by putting your username with a "*" in front
-       like this "*admin"
-     = add some fellow faculty/student accounts -- you can create new accounts right here
-       (read the instructions under the textarea)
-     = Click "Save" and then click the upper-right link "Django administration" to get back to the regular site (yeah, not the most intuitive).
+    - Click the "+" to make a group.  Name it something like "test_course"
+    - Click the "+" to make a faculty group.  Name it something like "test_course_faculty"
+        - In the "Add users to group" field...
+            - add yourself as a faculty member by putting your username with a "*" in front
+              like this "*admin"
+            - add some fellow faculty/student accounts -- you can create new accounts right here
+              (read the instructions under the textarea)
+        - Click "Save" and then click the upper-right link "Django administration" to get back to the regular site (yeah, not the most intuitive).
 
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/

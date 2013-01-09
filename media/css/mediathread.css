@@ -296,14 +296,26 @@ ul#projects li {
  
 /*Composition Styles*/
 
-#create-project-menu {
-    display: block;
+.btn-primary.create img {
+    padding: 0 0 0 10px;
+}
+
+.btn-primary.create {
     position: absolute;
     right: 0;
-    top: 100px;
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 5px;
+    top: 48px;
+}
+
+#create-project-menu {
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    display: block;
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    top: 105px;
 }
 
 #create-project-menu input {
@@ -314,6 +326,20 @@ ul#projects li {
 	cursor: pointer;
 	color: #1b75bc;
 	margin: 0 0 5px 0;
+}
+
+#create-project-menu input:hover {
+    text-decoration: underline;
+}
+
+.collection_content {
+	display: block;
+	clear: both;
+}
+
+.btn-primary.collection {
+    float: right;
+    margin: -10px 0 0;
 }
 
 ul#projects h3 {
@@ -876,13 +902,15 @@ div.column-contents {
 
 #bookmarklet,
 #recommend,
+#upload_desktop, 
+#import_collection,
 .dashboard-feature {
    background-color: #F5F5F5;
     display: block;
     float: left;
-    margin: 20px 0;
+    margin: 0 0 20px;
     padding: 20px;
-    width: 100%;
+    width: 95%;
 }
 
 .dashboard-feature {
@@ -3137,7 +3165,7 @@ ul.clumper li div.type-project {
 a.bookmarklet {
   clear: both;
   float: left;
-  font-size: 1.1428em;
+  font-size: 1em;
   font-weight: normal;
   color: #ffffff;
   padding: 10px 15px;

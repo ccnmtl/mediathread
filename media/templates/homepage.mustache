@@ -48,7 +48,7 @@
         {{/>>switcher_collection_chooser}}        
     </div> {{! end filter widget }}
     
-    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle("blind", {}, 1000);' class="btn-primary"><img src="/site_media/img/project_createnew.png" />Create</a>
+    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create">Create<img src="/site_media/img/menuselect.png" /></a>
     <div id="create-project-menu" style="display: none;">                
         <form action="/project/create/" method="post">
             <input type="hidden" name="title" />

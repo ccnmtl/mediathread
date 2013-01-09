@@ -48,24 +48,24 @@
         {{/>>switcher_collection_chooser}}        
     </div> {{! end filter widget }}
     
-    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle("blind", {}, 1000);'>+ Create</a>
+    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle("blind", {}, 1000);' class="btn-primary"><img src="/site_media/img/project_createnew.png" />Create</a>
     <div id="create-project-menu" style="display: none;">                
         <form action="/project/create/" method="post">
             <input type="hidden" name="title" />
-            <input type="submit" value="Create Composition" class="btn-primary" />                         
+            <input type="submit" value="Create Composition" />                         
         </form>
         {{#is_faculty?}}
             <form action="/project/create/" method="post">
                 <input type="hidden" name="title" />
                 <input type="hidden" name="publish" value="Assignment"/>
-                <input type="submit" value="Create Assignment" class="btn-primary" />
+                <input type="submit" value="Create Assignment" />
             </form>
             <form action="/discussion/create/" method="post">
                 <input type="hidden" name="comment_html" value="Discussion Title" />
                 <input type="hidden" name="app_label" value="courseaffils" />
                 <input type="hidden" name="model" value="course" />
                 <input type="hidden" name="obj_pk" value="{{course.id}}" />
-                <input type="submit" value="Create Discussion" class="btn-primary" />
+                <input type="submit" value="Create Discussion" />
             </form>
         {{/is_faculty?}}
         {{^is_faculty}}

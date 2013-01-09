@@ -259,6 +259,14 @@ def triple_homepage(request):
         'can_upload': course_details.can_upload(request.user, request.course),
         'show_tour': show_tour
     }
+
+    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
+        # MUST only contain string values for now!!
+        # (see templates/assetmgr/bookmarklet.js to see why or fix)
+        context['bookmarklet_vars'] = {
+            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
+        }
+
     return context
 
 
@@ -350,6 +358,7 @@ def get_projects(request, record_owner, projects, assignments):
                              'can_manage': (logged_in_user.is_staff and
                                             not record_owner)},
             'editable': viewing_my_records,
+            'course': {'id': course.id},
             'owners': [{
                 'username': m.username,
                 'public_name': get_public_name(m, request)}

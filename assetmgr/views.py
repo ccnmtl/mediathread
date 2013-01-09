@@ -453,7 +453,7 @@ def source_redirect(request):
     url = request.REQUEST.get('url', None)
 
     if not url:
-        url = reverse('explore')
+        url = '/'
     else:
         source = None
         try:
@@ -475,8 +475,7 @@ def source_redirect(request):
 
 def source_specialauth(request, url, key):
     nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = "%s?msg=upload" % \
-        (request.build_absolute_uri(reverse('explore')))
+    redirect_back = "/?msg=upload"
     username = request.user.username
 
     if ('as' in request.REQUEST and

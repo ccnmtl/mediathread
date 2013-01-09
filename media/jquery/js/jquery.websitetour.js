@@ -139,7 +139,7 @@
         
         var $highlight = $('<div>', {
             id: 'tour_tooltip_highlight',
-            class: 'tooltip-highlighted-content',
+            'class': 'tooltip-highlighted-content',
             html: '<h2>' + tour_section + '</h2>'
         }).css({
             'display': 'none'
@@ -147,7 +147,7 @@
         
         var $tooltip = $('<div>',{
             id: 'tour_tooltip',
-            class: 'tooltip',
+            'class': 'tooltip',
             html: '<p>' + content + '</p><span class="tooltip_arrow"></span>'
         }).css({
             'display'           : 'none',

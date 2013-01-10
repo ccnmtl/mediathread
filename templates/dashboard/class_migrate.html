@@ -8,8 +8,8 @@
         var courses =
             [{% for c in available_courses %}
                 {% ifnotequal c.id request.course.id %}
-                    { label: "{{c.title}}",
-                      value: "{{c.title}}",
+                    { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                      value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
                       id: "{{c.id}}",
                       faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"  
                     }

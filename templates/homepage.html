@@ -218,11 +218,11 @@
                         </p>
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->
-                
+              {% if can_upload %}
                 <div class="collection_content">
                    <a href="#" onclick='jQuery("#upload_desktop").toggle("blind", {}, 1000);'><h3>Upload from Desktop</h3></a>
                         <div id="upload_desktop">                
-                    {% if can_upload %}
+                  
                         {% if upload_archive %}
                             {% ifequal role_in_course "non-member" %}
                                 <div class="instructions">
@@ -266,12 +266,11 @@
                                  </div>
                             {% endifequal %}
 
-                            
                         {% endif %}
-                    {% endif %}
                     </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
-                    
+        {% endif %}
+
                     {% if archives %}
                     <div id="recommend">
                         

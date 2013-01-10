@@ -943,7 +943,6 @@ div.column-contents {
 .recommend_source {
     display: block;
     clear: both; 
-    float: left;
     padding: 5px 0;
     margin: 5px 0;
     min-height: 24px;
@@ -951,10 +950,12 @@ div.column-contents {
 
 .source_thumb {
     float: left;
+    margin: 0 10px 0 0;
 }
 
 .source_thumb img {
-	max-height: 20px;
+    height: 20px;
+    width: 20px;
 }
 
 .source_title {

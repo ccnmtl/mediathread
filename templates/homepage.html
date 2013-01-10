@@ -269,7 +269,7 @@
                         {% endif %}
                     </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
-        {% endif %}
+            {% endif %}
 
                     {% if archives %}
                     <div id="recommend">
@@ -284,10 +284,6 @@
                                     </div>
                                 {% endif %}
                             <div class="recommend_source">
-                                <div class="source_title">
-                                <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
-                                </div>
-                            
                                 {% if archive.thumb %}
                                     <div class="source_thumb">
                                     <a href="redirect/?url={{archive.archive.url|urlencode}}">
@@ -295,6 +291,9 @@
                                     </a>
                                     </div>
                                 {% endif %}
+                                <div class="source_title">
+                                <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                                </div>
                             </div>     
                             {%endfor%}                        
                     </div>

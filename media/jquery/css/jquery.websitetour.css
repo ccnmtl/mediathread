@@ -3,10 +3,10 @@
     width:250px;
     left:0;
     top:0;
-    color: #3a87ad;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
-    padding: 10px;
+    color: #2f2f2f;
+    background-color: #fff;
+    border-color: #f5f5f5;
+    padding: 15px;
     z-index:999;
     -moz-border-radius:5px;
     -webkit-border-radius:5px;
@@ -14,6 +14,7 @@
     filter:progid:DXImageTransform.Microsoft.Alpha(opacity=70);
     margin-top: 20px;
 }
+
 div.tooltip-highlighted-content {
     position: absolute;
     background-color: white;
@@ -38,12 +39,11 @@ div.tooltip-highlighted-content h2 input {
     display: none;
 }
 
-.tooltip p{
-	padding:10px;
-	font-size:14px;
+.tooltip p {
 	text-shadow:none;
 }
-.tooltip_arrow{
+
+.tooltip_arrow {
 	position:absolute;
 	background-color:transparent;
 	background-repeat:no-repeat;
@@ -179,6 +179,63 @@ div.tooltip-highlighted-content h2 input {
 .tourcontrols p {
 	padding:10px;
 }
+
+.tour_buttons {
+    margin: 20px 0;
+	display: block;
+	clear: both;
+	float: left;
+}
+
+#tour_tooltip .button {
+  font-size: 1em;
+  font-weight: normal;
+  color: #2f2f2f;
+  padding: 10px 15px;
+  margin: 25px 0 5px 0;
+  border: solid 1px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+   background-color: #efefef;
+  *background-color: #efefef;
+  background-image: -moz-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfcfc), to(#efefef));
+  background-image: -webkit-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: -o-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: linear-gradient(to bottom, #fcfcfc, #efefef);
+  background-repeat: repeat-x;
+  border-color: #0044cc #0044cc #002a80;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  cursor: pointer;
+}
+
+#tour_tooltip .button.start {
+  font-size: 1em;
+  font-weight: normal;
+  color: #ffffff;
+  padding: 10px 15px;
+  margin: 15px 0 5px 0;
+  border: solid 1px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  *background-color: #51a351;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #fff #fff #777;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  cursor: pointer;
+}
+
 .button#activatetour {
   font-size: 1em;
   font-weight: normal;

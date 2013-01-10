@@ -94,7 +94,7 @@ td
 {
     border: 1px solid #ccc;
     border-collapse: collapse;
-    padding: 0;
+    padding: 2px;
     text-align: left;
 }
 
@@ -166,7 +166,7 @@ a:hover {
 }
 
 #course_title {
-	margin: 20px 0 0 20px;
+	margin: 20px 0 0 16px;
 	float: left;
     z-index: 9997;
     white-space:nowrap;
@@ -1173,6 +1173,10 @@ table#sliding-content-container tr td.pantab-container {
     text-align: left;
     width: 18px;
     padding-right: 8px;
+}
+
+#asset_table .intro-text {
+    padding: 7px;
 }
 
 div.pantab {
@@ -3593,7 +3597,8 @@ div.collection_table {
 #course-list a.project {
 
     margin: 4px 0;
-    width: 105px;
+    width: 113px;
+    height: 18px;
     background-repeat: repeat-x;
     border: 1px solid #477794;
     text-transform: capitalize;
@@ -3601,8 +3606,8 @@ div.collection_table {
     padding: 0 5px;
     text-decoration: none;
     color: #000;
-        background-image: url("../img/buttons/compositions_button_bg.jpg");
-        font-size: 85%;
+    background-image: url("../img/buttons/compositions_button_bg.jpg");
+    font-size: 85%;
 
 }
 

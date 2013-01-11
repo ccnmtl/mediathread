@@ -166,7 +166,7 @@ a:hover {
 }
 
 #course_title {
-	margin: 20px 0 0 16px;
+	margin: 16px 0 0 16px;
 	float: left;
     z-index: 9997;
     white-space:nowrap;
@@ -923,7 +923,7 @@ div.column-contents {
     display: block;
     float: left;
     margin: 20px 0;
-    padding: 20px;
+    padding: 4px 20px 20px;
     width: 95%;
 }
 
@@ -1597,6 +1597,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-crea
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-instructor-feedback {
     float: right;
     margin-left: 5px;    
+    margin-top: 4px;
     width: 175px;
 }
 
@@ -2204,15 +2205,20 @@ div.collection-chooser ul.switcher-options {
     user-select: none;
 
     /*firefox*/
-    border: 1px solid #777; 
-    padding: 6px 6px 8px 8px; 
-    background-color: #f5f5f5;
-    /*font-family: 'helvetica neue', helvetica, arial, sans-serif; */
+    border: 1px solid rgb(204, 204, 204); 
+    padding: 0px 3px 3px 8px; 
+    /*rgb(238, 238, 238) url(http://jqueryui.com/themeroller/themeswitchertool/images/buttonbg.png)*/
+    background: #DEDEDE  repeat-x scroll 50% 50%; 
+    /*font-family: Trebuchet MS,Verdana,sans-serif; */
     font-size: 11px; 
     color: rgb(102, 102, 102); 
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous; 
+    -moz-border-radius-topleft: 10px; 
+    -moz-border-radius-topright: 10px; 
+    -moz-border-radius-bottomright: 10px; 
+    -moz-border-radius-bottomleft: 10px; 
     text-decoration: none; 
     /*width: 139px; */
     width:auto;
@@ -2233,6 +2239,10 @@ div.collection-chooser ul.switcher-options {
     border-right-style: solid; 
     border-bottom-style: solid; 
     border-left-style: solid; 
+    border-top-left-radius: 10px 10px; 
+    border-top-right-radius: 10px 10px; 
+    border-bottom-right-radius: 10px 10px; 
+    border-bottom-left-radius: 10px 10px; 
     text-decoration: none; 
     padding-top: 3px; 
     padding-right: 3px; 
@@ -2251,6 +2261,7 @@ div.collection-chooser ul.switcher-options {
     background-attachment: initial; 
     background-origin: initial; 
     background-clip: initial; 
+    background-color: rgb(240, 240, 240); 
     cursor: pointer; 
     color: rgb(68, 68, 68); 
     background-position: initial initial; 
@@ -2273,12 +2284,16 @@ div.collection-chooser ul.switcher-options {
     border-color: rgb(204, 204, 204) rgb(204, 204, 204) -moz-use-text-color; 
 
     border-width: 1px 1px 0px; 
-    padding: 6px 6px 8px 8px; 
+    padding: 3px 3px 3px 8px; 
     background: #999 none repeat scroll 0% 0%; 
     color: white; 
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous; 
+    -moz-border-radius-topleft: 10px; 
+    -moz-border-radius-topright: 10px; 
+    -moz-border-radius-bottomright: 0px; 
+    -moz-border-radius-bottomleft: 0px; 
     text-decoration: none; 
     display: block; 
     height: 14px; 
@@ -2288,6 +2303,8 @@ div.collection-chooser ul.switcher-options {
     cursor: pointer;
 
     /*webkit*/
+    border-top-left-radius: 10px 10px; 
+    border-top-right-radius: 10px 10px; 
     text-decoration: none; 
     padding-top: 3px; 
     padding-right: 3px; 
@@ -2320,6 +2337,7 @@ div.collection-chooser ul.switcher-options {
     background-position: initial initial; 
     background-repeat: initial initial;
 }
+
 
 div.switcher-active-filters {
     width: 100%;

@@ -300,11 +300,6 @@ ul#projects li {
     padding: 0 0 0 10px;
 }
 
-.btn-primary.create {
-    position: absolute;
-    right: 0;
-    top: 48px;
-}
 
 #create-project-menu {
     background-color: #FFFFFF;
@@ -314,7 +309,7 @@ ul#projects li {
     display: block;
     padding: 10px;
     position: absolute;
-    right: 0;
+    right: 17px;
     top: 105px;
 }
 
@@ -337,9 +332,13 @@ ul#projects li {
 	clear: both;
 }
 
+.collection_content h3:after {
+    content: ''
+}
+
 .btn-primary.collection {
     float: right;
-    margin: -10px 0 0;
+    margin: -7px 0 0;
 }
 
 ul#projects h3 {
@@ -390,7 +389,7 @@ input#uploader {
   font-weight: normal;
   color: #2f2f2f;
   padding: 10px 15px;
-  margin: 15px 0 5px 0;
+  margin: -12px 15px 21px;
   border: solid 1px;
   border-radius: 4px;
   -moz-border-radius: 4px;
@@ -908,7 +907,6 @@ div.column-contents {
 }
 
 #bookmarklet,
-#recommend,
 #upload_desktop, 
 #import_collection,
 .dashboard-feature {
@@ -919,6 +917,16 @@ div.column-contents {
     padding: 20px;
     width: 95%;
 }
+
+#recommend {
+	background-color: #F5F5F5;
+    display: block;
+    float: left;
+    margin: 20px 0;
+    padding: 20px;
+    width: 95%;
+}
+
 
 .dashboard-feature {
     width: 75%;
@@ -1970,15 +1978,13 @@ table#home-columns td#classwork .helptoggle {
 
 td#instructor input.help-tab-icon {
     margin-right: 15px;
+    opacity: 0.5;
 }
 
 td#instructor div.help-tab {
-    top: 19px;
-    right: 5px;
+   right: 7px;
+    top: 21px;
     width: 25px;
-    border-top: 2px solid #ddd;
-    border-left: 2px solid #ddd;
-    border-right: 2px solid #ddd;
 }
 
 td#instructor div.feature-help {
@@ -1989,15 +1995,13 @@ td#instructor div.feature-help {
 
 td#classwork input.help-tab-icon {
     margin-right: 15px;
+    opacity: 0.5;
 }
 
 td#classwork div.help-tab {
-    top: 19px;
-    right: 5px;
+   right: 6px;
+    top: 21px;
     width: 25px;
-    border-top: 2px solid #ddd;
-    border-left: 2px solid #ddd;
-    border-right: 2px solid #ddd;
 }
 
 td#classwork div.feature-help {
@@ -2008,15 +2012,13 @@ td#classwork div.feature-help {
 
 td#explore input.help-tab-icon {
     margin-right: 15px;
+    opacity: 0.5;
 }
 
 td#explore div.help-tab {
-    top: 19px;
-    right: 5px;
+   right: 6px;
+    top: 21px;
     width: 25px;
-    border-top: 2px solid #ddd;
-    border-left: 2px solid #ddd;
-    border-right: 2px solid #ddd;
 }
 
 td#explore div.feature-help {

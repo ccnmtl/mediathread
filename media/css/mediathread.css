@@ -3963,8 +3963,9 @@ div.asset-view-container div.asset-view-tabs {
 
 
 div.asset-view-container div.asset-view-details h1 {
-    font-size: 1em;
+    font-size: 1.25em;
     font-weight: bold;
+    margin: 0;
 }
 
 div#asset-view-details {

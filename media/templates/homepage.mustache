@@ -55,6 +55,10 @@
                 <input type="hidden" name="publish" value="Assignment"/>
                 <input type="submit" value="Create Assignment" />
             </form>
+            <form action="/project/create/" method="post">
+                <input type="hidden" name="title" />
+                <input type="submit" value="Create Composition" />                         
+            </form>            
             <form action="/discussion/create/" method="post">
                 <input type="hidden" name="comment_html" value="Discussion Title" />
                 <input type="hidden" name="app_label" value="courseaffils" />
@@ -68,11 +72,11 @@
                 <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
             {{/assignments}}        
             <hr class="divideLinks" />
+            <form action="/project/create/" method="post">
+                <input type="hidden" name="title" />
+                <input type="submit" value="Create Composition" />                         
+            </form>            
         {{/is_faculty}}         
-        <form action="/project/create/" method="post">
-            <input type="hidden" name="title" />
-            <input type="submit" value="Create Composition" />                         
-        </form>
     </div>
     
     <table>

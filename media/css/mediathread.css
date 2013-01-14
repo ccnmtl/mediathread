@@ -313,6 +313,10 @@ ul#projects li {
     top: 105px;
 }
 
+#create-project-menu form {
+    clear: both;
+}
+
 #create-project-menu input {
     font: 1em 'helvetica neue', helvetica, arial, sans-serif;
 	font-weight: bold;
@@ -342,6 +346,8 @@ ul#projects li {
 	color: #efefef;
 	border-width: 0px;
 	height: 1px;
+	clear:both;
+	float: left;
 }
 
 #create-project-menu input:hover {
@@ -1448,13 +1454,11 @@ div.panel.asset-workspace-dialog div.asset-view-published {
     width: 500px !important;
     height: 450px;    
     margin-left: 0;
-    background-color: #ededed;
 }
 
 div.panel.asset-workspace-dialog div.asset-view-tabs {
     margin-left: 15px;
     height: 450px;
-    border: 1px solid #AAA;
     width: 285px;
 }
 
@@ -1603,9 +1607,12 @@ table.panel-subcontainer tr td input.project-title {
     margin: 8px;
 }
 
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar input {
+	cursor: pointer;
+}
+
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
     width: 50px;
-    font-size: .7em;
 }
 
 
@@ -2599,8 +2606,9 @@ div.gallery-item h4.asset_title {
 
 .gallery-item .asset_title a,
 .clumper .asset_title a {
-	margin: 0 0 0 30px;
+    margin: -2px 0 0 26px;
 	font-size: .875em;
+	float: left;
 }
 
 
@@ -3955,6 +3963,7 @@ div.asset-view-container div.asset-view-tabs {
 
 
 div.asset-view-container div.asset-view-details h1 {
+    font-size: 1em;
     font-weight: bold;
 }
 

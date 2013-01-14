@@ -26,6 +26,10 @@ ProjectList.prototype.createAssignmentResponse = function (evt) {
     var self = this;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     
+    if (!jQuery(srcElement).is("a")) {
+        srcElement = jQuery(srcElement).parent();
+    }
+    
     var params = { 'parent': jQuery(srcElement).data("id") };
     
     jQuery.ajax({
@@ -56,10 +60,7 @@ ProjectList.prototype.deleteAssignmentResponse = function (evt) {
 ProjectList.prototype.refresh = function (config) {
     var self = this;
     var url;
-    
-    jQuery("a.btnRespond").unbind("click");
-    jQuery("a.btnDeleteResponse").unbind("click");
-    
+        
     // Retrieve the full asset w/annotations from storage
     if (config.view === 'all' || !config.space_owner) {
         url = MediaThread.urls['all-projects']();
@@ -67,6 +68,7 @@ ProjectList.prototype.refresh = function (config) {
         url = MediaThread.urls['your-projects'](config.space_owner);
     }
     
+    jQuery("a.linkRespond").unbind("click");
     jQuery("a.btnRespond").unbind("click");
     jQuery("a.btnDeleteResponse").unbind("click");
     
@@ -80,6 +82,11 @@ ProjectList.prototype.refresh = function (config) {
             jQuery("a.btnRespond").bind("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
+            
+            jQuery("a.linkRespond").bind("click", function (evt) {
+                self.createAssignmentResponse(evt);
+            });
+
             
             jQuery("a.btnDeleteResponse").bind("click", function (evt) {
                 self.deleteAssignmentResponse(evt);

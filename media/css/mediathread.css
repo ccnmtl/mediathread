@@ -2441,18 +2441,26 @@ span.down-arrow {
     user-select: none; 
 }
 
+a.switcher-top.menuopen span.title {
+    float: left;
+}
+
 a.switcher-top.menuopen span.down-arrow {
-    background: url(../img/switcher/icon_x_hover.png) no-repeat scroll 100% 50%;
+    background-image: url(../img/switcher/icon_x_hover.png);
     float: right;
 }
 
+a.switcher-top.menuclosed span.title {
+    float: left;
+}
+
 a.switcher-top.menuclosed span.down-arrow {
-    background: url(../img/switcher/icon_down_arrow.png) no-repeat scroll 100% 50%;
+    background-image: url(../img/switcher/icon_down_arrow.png);
     float: right; 
 }
 
 a.switcher-top.menuclosed span.down-arrow:hover {
-    background: url(../img/switcher/icon_down_arrow_hover.png) no-repeat scroll 100% 50%;
+    background-image: url(../img/switcher/icon_down_arrow_hover.png);
     float: right;
 }
 

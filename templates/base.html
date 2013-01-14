@@ -101,23 +101,28 @@
                             <div class="visualclear"></div>
                             <!-- Settings Menu -->
                             <div class="settings_submenu" style="display: none">
-                                 <a href="/reports/class_assignments">Assignment Responses</a>
-                                 <a href="/reports/class_activity">Class Activity</a>
-                                 <a href="/reports/class_summary">Student Contributions</a>        
+                                 <a href="/reports/class_assignments/">Assignment Responses</a>
+                                 <a href="/reports/class_activity/">Class Activity</a>
+                                 <a href="/reports/class_summary/">Student Contributions</a>        
                             </div>
                         </li>                        
                         {% endif %}
+                        
+                        <li>
+                            {% block standardnav_help %}
+                                <div unselectable="on"><a href="/help/">Help</a></div>
+                            {% endblock %}
+                        </li>
                         
                         <li>
                             <div unselectable="on"><a href="/contact/">Contact Us</a></div>
                         </li>
                     {% else %}
                         <li><a href="/accounts/login/">Log In</a></li>
+                        <li><div unselectable="on"><a href="/help/">Help</a></div></li>
                     {% endif %}
         
-                    <li>
-                        <div unselectable="on"><a href="/help/">Help</a></div>
-                    </li>
+                    
                 </ul>
             {% endblock %}
         </div>

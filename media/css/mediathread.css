@@ -323,6 +323,27 @@ ul#projects li {
 	margin: 0 0 5px 0;
 }
 
+.linkRespond {
+    background-color: transparent;
+    border: none;
+    clear: both;
+    color: #1B75BC;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font: 1em 'helvetica neue',helvetica,arial,sans-serif;
+    margin: 0 10px 5px;
+	
+}
+
+.divideLinks {
+	width: 100%;
+	background-color: #efefef;
+	color: #efefef;
+	border-width: 0px;
+	height: 1px;
+}
+
 #create-project-menu input:hover {
     text-decoration: underline;
 }

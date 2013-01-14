@@ -68,8 +68,9 @@
             </form>
         {{/is_faculty?}}
         {{^is_faculty}}
+        <hr class="divideLinks" />
             {{#assignments}}
-                <a data-id="{{id}}" class="btnRespond">Respond to {{title}}</a>
+                <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
             {{/assignments}}        
         {{/is_faculty}}            
     </div>

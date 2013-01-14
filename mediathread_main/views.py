@@ -243,7 +243,9 @@ def triple_homepage(request):
 
     projects = Project.get_user_projects(classwork_owner, c)
 
-    show_tour = len(assets) < 1 and len(projects) < 1
+    show_tour = UserSetting.get_setting(request.user,
+                                        "help_show_homepage_tour",
+                                        len(assets) < 1 and len(projects) < 1)
 
     context = {
         'classwork_owner': classwork_owner,

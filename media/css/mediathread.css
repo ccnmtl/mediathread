@@ -3330,6 +3330,10 @@ input {
     background-repeat: repeat-x;
 }
 
+input[type="checkbox"] {
+    border: none; /* IE 8,9 look very very odd with a border */
+}
+
 input.videoplay {
     background-image: url("../img/icons/meth_video_play.png");
     background-position: left center !important;

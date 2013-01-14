@@ -118,8 +118,6 @@
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
             
-            this.projectsTemplate = _.template(jQuery("#projects-template").html());
-            this.itemsTemplate = _.template(jQuery("#items-template").html());
             this.courseTemplate = _.template(jQuery("#course-template").html());
             this.selectedTemplate = _.template(jQuery("#selected-template").html());
             
@@ -207,7 +205,7 @@
             }
             
             this.model = new Course({id: courseId,
-                                     facultyIds: facultyIds.trim()});
+                                     facultyIds: facultyIds});
             this.model.on('change', this.render);
             this.model.fetch();
         },
@@ -342,7 +340,7 @@
                                                 }
                                             } else {
                                                 self.selectedProjects.remove(project);
-                                            }
+                                            }                                            
                                         }
                                     );
                                 }

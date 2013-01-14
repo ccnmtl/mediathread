@@ -306,13 +306,13 @@
                             <div class="recommend_source">
                                 {% if archive.thumb %}
                                     <div class="source_thumb">
-                                    <a href="redirect/?url={{archive.archive.url|urlencode}}">
+                                    <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
                                     <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
                                     </a>
                                     </div>
                                 {% endif %}
                                 <div class="source_title">
-                                <a href="redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
                                 </div>
                             </div>     
                             {%endfor%}                        

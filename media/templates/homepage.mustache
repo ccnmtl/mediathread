@@ -49,10 +49,6 @@
     
     <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create">Create<img src="/site_media/img/menuselect.png" /></a>
     <div id="create-project-menu" style="display: none;">                
-        <form action="/project/create/" method="post">
-            <input type="hidden" name="title" />
-            <input type="submit" value="Create Composition" />                         
-        </form>
         {{#is_faculty?}}
             <form action="/project/create/" method="post">
                 <input type="hidden" name="title" />
@@ -68,11 +64,15 @@
             </form>
         {{/is_faculty?}}
         {{^is_faculty}}
-        <hr class="divideLinks" />
             {{#assignments}}
                 <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
             {{/assignments}}        
-        {{/is_faculty}}            
+            <hr class="divideLinks" />
+        {{/is_faculty}}         
+        <form action="/project/create/" method="post">
+            <input type="hidden" name="title" />
+            <input type="submit" value="Create Composition" />                         
+        </form>
     </div>
     
     <table>

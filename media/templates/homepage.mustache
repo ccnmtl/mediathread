@@ -107,7 +107,10 @@
                                                 <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>
                                                 <br />
                                             </div>
+                                            
+                                            {{#is_faculty?}}
                                                 <a data-id="{{id}}" class="btnRespond">Respond to Assignment</a>
+                                            {{/is_faculty?}}
                                         </li>
                                     {{/assignments}}
                                     

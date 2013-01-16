@@ -3472,8 +3472,8 @@ div.gallery-item h4 {
     text-align: left;
 }
 
-#materials .asset-title-link {
-    margin: 0 0 0 5px;
+a.asset-title-link {
+	overflow-x:hidden;
 }
 
 div.gallery-item h4 {
@@ -3488,19 +3488,16 @@ div.panel.asset-workspace div#materials h4 a {
     margin-left: 0px;
 }
 
-div#materials h4 a,
-div#composition-materials h4 a,
-div#assignment-materials h4 a,
-div.gallery-item h4 a,
-{
-    font-weight: bold;
-    padding-right: 4px;
-    margin-left: 28px;
+div#materials h4 a, div#composition-materials h4 a, div#assignment-materials h4 a, div.gallery-item h4 a {
     display: block;
-    padding-top: 2px;
+    font-weight: bold;
+    margin-left: 28px;
     max-width: 225px;
-    overflow-x: hidden;
+    overflow: hidden;
+    padding-right: 4px;
+    padding-top: 2px;
 }
+
 
 div.gallery-item-homepage h4 {
     margin-bottom: 5px !important;

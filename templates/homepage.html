@@ -63,15 +63,7 @@
             {% endifequal %}
             
             jQuery("a.arrow").click(function(evt) {
-                var self = this;
-                if (jQuery(self).hasClass("arrowOpen")) {
-                    jQuery(this).next("div.arrowContent").toggle("blind", {}, 1000, function () {
-                        jQuery(self).toggleClass("arrowOpen arrowClosed");   
-                    });
-                } else {
-                    jQuery(this).next("div.arrowContent").toggle("blind", {}, 1000);
-                    jQuery(self).toggleClass("arrowOpen arrowClosed");
-                }
+                jQuery(this).next("div.arrowContent").toggle("blind", {}, 1000);                
             });
         });
     </script>
@@ -79,7 +71,7 @@
 
 {% block standardnav_help %}
     <div class="settings_menu help closed">
-        <div class="right ui-icon-reverse ui-icon-triangle-1-w"></div>
+        <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
         <div class="left settings_menu_title">Help</div>                                
     </div>
     <div class="visualclear"></div>
@@ -118,7 +110,7 @@
                         
                             <ul class="instructor-list">
                             {% if faculty_feed.projects %}
-                                
+                                <h4 class="inst-header information">Information</h4>
                                 {% for project in faculty_feed.projects %}
                                     <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
                                 {% endfor %}
@@ -327,11 +319,13 @@
                                 {% endif %}
                             <div class="recommend_source">
                                 {% if archive.thumb %}
-                                    <div class="source_thumb">
-                                    <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
-                                    <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                                    </a>
-                                    </div>
+                                    {% if archive.thumb.url %}
+                                        <div class="source_thumb">
+                                            <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
+                                                <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                                 <div class="source_title">
                                 <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>

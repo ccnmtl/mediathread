@@ -259,15 +259,14 @@ div.arrowIcon {
     width: 16px;
     height: 16px;
     margin-left: .5em;
-    margin-top: 1.15em;
-}
-
-a.arrowOpen div.arrowIcon {
-    background-image: url(/site_media/img/arrowOpen.png);
+    margin-top: 1em;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 a.arrowClosed div.arrowIcon {
-    background-image: url(/site_media/img/arrowClosed.png);
+    background-image: url(/site_media/img/arrowOpen.png);
+    
 }
 
 

@@ -61,13 +61,25 @@
                 jQuery(window).trigger('tour.start');
             {% endif %}
             {% endifequal %}
+            
+            jQuery("a.arrow").click(function(evt) {
+                var self = this;
+                if (jQuery(self).hasClass("arrowOpen")) {
+                    jQuery(this).next("div.arrowContent").toggle("blind", {}, 1000, function () {
+                        jQuery(self).toggleClass("arrowOpen arrowClosed");   
+                    });
+                } else {
+                    jQuery(this).next("div.arrowContent").toggle("blind", {}, 1000);
+                    jQuery(self).toggleClass("arrowOpen arrowClosed");
+                }
+            });
         });
     </script>
 {% endblock %}
 
 {% block standardnav_help %}
     <div class="settings_menu help closed">
-        <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+        <div class="right ui-icon-reverse ui-icon-triangle-1-w"></div>
         <div class="left settings_menu_title">Help</div>                                
     </div>
     <div class="visualclear"></div>
@@ -182,9 +194,15 @@
                     </div>
                     </div>
                 <div class="visualclear"></div>
+                <br />
                 <div class="collection_content">
-                    <a href="#" onclick='jQuery("#import_collection").toggle("blind", {}, 1000);'><h3>Import into Collection</h3></a>
-                    <div id="import_collection" style="display: none">
+                    <a href="#"
+                       class ="arrow arrowClosed">
+                                              
+                        <h3 class="left">Import into Collection</h3>
+                        <div class="arrowIcon left"></div>
+                    </a>
+                    <div class="arrowContent" id="import_collection" style="display: none">
                         <p>
                             Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
                            
@@ -241,8 +259,12 @@
                 {% if can_upload %}
                 {% if upload_archive %}
                 <div class="collection_content">
-                   <a href="#" onclick='jQuery("#upload_desktop").toggle("blind", {}, 1000);'><h3>Upload from Desktop</h3></a>
-                        <div id="upload_desktop" style="display: none">                
+                    <a href="#"
+                       class ="arrow arrowClosed">
+                        <h3 class="left">Upload From Desktop</h3>
+                        <div class="arrowIcon left"></div>
+                    </a>
+                        <div class="arrowContent" id="upload_desktop" style="display: none">                
                             {% ifequal role_in_course "non-member" %}
                                 <div class="instructions">
                                     You must be a course member to upload media files.

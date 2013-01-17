@@ -33,7 +33,10 @@ class Migration(DataMigration):
         'http://www.wgbh.org/images/defaultMediumPlayer_WGBH.jpg': '/site_media/img/thumbs/openvault.png',
         'http://www.blakearchive.org/blake/public/urizen.G.P5.detail.jpg': '/site_media/img/thumbs/williamblake.png',
         '/site_media/img/youtube_logo.jpg': '/site_media/img/thumbs/youtube.png',
-        'http://mediathread.ccnmtl.columbia.edu/site_media/img/youtube_logo.jpg': '/site_media/img/thumbs/youtube.png'
+        'http://mediathread.ccnmtl.columbia.edu/site_media/img/youtube_logo.jpg': '/site_media/img/thumbs/youtube.png',
+        'http://ccnmtl.columbia.edu/images/portfolio/thumbs/287.jpg': '/site_media/img/thumbs/southsidechicago.png',
+        'http://classpop.ccnmtl.columbia.edu/sites/default/themes/mythemes/acq_classpop/images/logo_classpop.png': '/site_media/img/thumbs/classpop.png',
+        'http://techtv.mit.edu/images/logo.jpg': '/site_media/img/thumbs/mittechtv.png'
     }
 
     def forwards(self, orm):

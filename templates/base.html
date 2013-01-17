@@ -57,7 +57,11 @@
             {% block standardnav %}            
                <ul id="standardnav">
                     {% if request.user.is_authenticated %}   
-                                     
+                        {% ifequal role_in_course "non-member" %}
+                            <li>
+                                <div class="nonmember">You are not a class member!</div>
+                            </li>
+                        {% endifequal %}     
                         <li>
                             <div class="settings_menu user closed">
                                 <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>

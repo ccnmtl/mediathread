@@ -87,6 +87,7 @@
     <table id="home-columns">
     <tbody>
         <tr>
+            {% if faculty_feed.show or is_faculty or discussions %}
             <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
@@ -142,6 +143,7 @@
                 </div>
                 {% endwith %}{% endwith %}
             </td>
+            {% endif %}
             
             
             <td id="classwork">

@@ -796,6 +796,10 @@ ul#standardnav
     color: #fff;
 }
 
+#standardnav li div.nonmember {
+    color: yellow !important;
+}
+
 #standardnav li div.settings_menu div.settings_menu_title:hover,
 #standardnav li a:hover {
     text-decoration: underline;
@@ -4068,7 +4072,7 @@ div#asset-sources {
     overflow-x: hidden;
     overflow-y: auto;
     padding-left: 10px;
-    height: 100%;
+    height: 94%;
 }
 
 form[name="annotation-list-filter"] {

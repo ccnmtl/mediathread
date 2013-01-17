@@ -251,6 +251,25 @@ h1#course_title a:hover {
     text-decoration: underline;
 }
 
+div.arrowIcon {
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;    
+    width: 16px;
+    height: 16px;
+    margin-left: .5em;
+    margin-top: 1.15em;
+}
+
+a.arrowOpen div.arrowIcon {
+    background-image: url(/site_media/img/arrowOpen.png);
+}
+
+a.arrowClosed div.arrowIcon {
+    background-image: url(/site_media/img/arrowClosed.png);
+}
+
 
 /* ---- Student Dashboard Blocks ---- */
 

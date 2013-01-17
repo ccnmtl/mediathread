@@ -60,7 +60,7 @@
                                      
                         <li>
                             <div class="settings_menu user closed">
-                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                <div class="right ui-icon-reverse ui-icon-triangle-1-w"></div>
                                 <div class="left settings_menu_title">{% public_name for user %}</div>                                
                             </div>
                             <div class="visualclear"></div>
@@ -82,7 +82,7 @@
                         {% if is_course_faculty %}
                         <li>
                             <div class="settings_menu tools closed">
-                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                <div class="right ui-icon-reverse ui-icon-triangle-1-w"></div>
                                 <div class="left settings_menu_title">Tools</div>                                
                             </div>
                             <div class="visualclear"></div>
@@ -95,7 +95,7 @@
                         </li>
                         <li>
                             <div class="settings_menu reports closed">
-                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                <div class="right ui-icon-reverse ui-icon-triangle-1-w"></div>
                                 <div class="left settings_menu_title">Reports</div>                                
                             </div>
                             <div class="visualclear"></div>
@@ -214,7 +214,7 @@
            
            // close all other menus
            var opening = jQuery(this).hasClass("closed");
-           jQuery("div.ui-icon").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+           jQuery("div.ui-icon-reverse").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-w");
            jQuery("div.settings_submenu").hide();
            jQuery("div.settings_menu").removeClass("open").addClass("closed");
 
@@ -222,12 +222,12 @@
            if (opening) {
                jQuery(this).removeClass("closed").addClass("open");
                jQuery(this).nextAll("div.settings_submenu").toggle();
-               jQuery(this).children("div.ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s");    
+               jQuery(this).children("div.ui-icon-reverse").toggleClass("ui-icon-triangle-1-w ui-icon-triangle-1-s");    
            }
        });
        
        jQuery("body").click(function() {
-           jQuery("div.ui-icon").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-e");
+           jQuery("div.ui-icon-reverse").removeClass("ui-icon-triangle-1-s").addClass("ui-icon-triangle-1-w");
            jQuery("div.settings_submenu").hide();
            jQuery("div.settings_menu").removeClass("open").addClass("closed");
        });

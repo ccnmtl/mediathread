@@ -177,24 +177,16 @@ filter_by = {
 
 def get_prof_feed(course, request):
     prof_feed = {
-        'assets': [],  # assets.filter(c.faculty_filter).order_by('-added'),
-        'projects': [],  # add below to ensure security filters
-        'assignments': [],
-        'tags': Tag.objects.get_for_object(course)
+        'projects': []
     }
     prof_projects = Project.objects.filter(
         course.faculty_filter).order_by('title')
     for project in prof_projects:
         if project.class_visible():
-            if project.is_assignment(request):
-                prof_feed['assignments'].append(project)
-            else:
+            if not project.is_assignment(request):
                 prof_feed['projects'].append(project)
 
-    prof_feed['show'] = (prof_feed['assets'] or
-                         prof_feed['projects'] or
-                         prof_feed['assignments'] or
-                         prof_feed['tags'])
+    prof_feed['show'] = len(prof_feed['projects']) > 0
     return prof_feed
 
 
@@ -350,6 +342,7 @@ def get_projects(request, record_owner, projects, assignments):
                              'url': a.get_absolute_url(),
                              'title': a.title,
                              'display_as_assignment': True,
+                             'is_faculty': is_faculty,
                              'modified_date': a.modified.strftime("%m/%d/%y"),
                              'modified_time': a.modified.strftime("%I:%M %p")}
                             for a in assignments],

@@ -3292,6 +3292,7 @@ a.bookmarklet.active {
 p.sherd-instructions {
     padding: .7em;
     text-align: left;
+    font: 0.875em/1.25em helvetica neue,helvetica;
 }
 
 .sherd-clipform {
@@ -3893,7 +3894,7 @@ div#asset-view-header div {
 }
 
 div.asset-view-title {
-    margin: 10px 10px 5px 10px;
+    margin: 0px 10px 5px 10px;
     width: 100%;
     line-height: 20px;
 }
@@ -3901,6 +3902,7 @@ div.asset-view-title {
 div.asset-view-title h1 {
     font-size: 150%;
     font-weight: bold;
+    margin: 5px 10px;
 }
 
 div#asset-view-overlay {

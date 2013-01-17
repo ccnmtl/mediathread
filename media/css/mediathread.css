@@ -959,7 +959,7 @@ div.column-contents {
     display: block;
     float: left;
     margin: 0 0 20px;
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     width: 95%;
 }
 

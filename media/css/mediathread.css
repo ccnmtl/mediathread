@@ -1010,8 +1010,8 @@ div.column-contents {
 }
 
 .source_thumb img {
-    height: 20px;
-    width: 20px;
+    height: 30px;
+    width: 30px;
 }
 
 .source_title {
@@ -2853,6 +2853,7 @@ div.gallery-item h4.asset_title {
 #dashboard-module-body .archive table tr td.archive_thumb {
     width: 125px;
     height: 85px;
+    vertical-align: top;
 } 
 
 #dashboard-module-body .archive-container h2,

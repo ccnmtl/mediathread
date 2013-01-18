@@ -33,24 +33,8 @@ Feature: Instructor Dashboard
         And I see "forbidden"
                
         Finished using Selenium
-        
-    Scenario: instructor_dashboard.feature 2. Verify expected instructor functionality
-        Using selenium
-        Given I am test_instructor in Sample Course
-        
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        And there is a "Manage Settings" link
-        And there is a "Migrate Materials" link
-        
-        When I open the reports menu
-        Then there is an "Assignment Responses" link
-        And there is a "Class Activity" link
-        And there is a "Student Contributions" link
-        
-        Finished using Selenium
-        
-    Scenario: instructor_dashboard.feature 3. Class Activity      
+                
+    Scenario: instructor_dashboard.feature 2. Class Activity      
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
@@ -67,16 +51,22 @@ Feature: Instructor Dashboard
             
         Finished using Selenium
         
-    Scenario: instructor_dashboard.feature 4. Test Create Discussion
+    Scenario: instructor_dashboard.feature 3. Test Create Discussion
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
         Then I am at the Home page
         
+        There is a Create button
+        When I click the Create button
+        Then there is a Create Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
         When I click the Create Discussion button
         Then I am at the Discussion page
-        When I click the "Home" link
+        When I click the "Sample Course" link
         Then I am at the Home page
         And there is a "Discussion Title" link
         When I click the "Discussion Title" link
@@ -84,14 +74,21 @@ Feature: Instructor Dashboard
         
         Finished using Selenium
         
-    Scenario: instructor_dashboard.feature 5. Test Create Composition
+    Scenario: instructor_dashboard.feature 4. Test Create Composition
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
         Then I am at the Home page
         
-        When I click the Create Composition or Assignment button
+        There is a Create button
+        When I click the Create button
+        Then there is a Create Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
+        When I click the Create Composition button
+        
         Then I am at the Untitled page
         
         There is an open Composition panel
@@ -100,7 +97,7 @@ Feature: Instructor Dashboard
         Then I click the Save button
         And I save the changes
         
-        When I click the "Home" link
+        When I click the "Sample Course" link
         Then I am at the Home page
         
         Given the home workspace is loaded
@@ -108,7 +105,7 @@ Feature: Instructor Dashboard
         
         Finished using Selenium
         
-    Scenario: instructor_dashboard.feature 6. Test Assignment Responses      
+    Scenario: instructor_dashboard.feature 5. Test Assignment Responses      
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
@@ -137,7 +134,7 @@ Feature: Instructor Dashboard
          
         Finished using Selenium
         
-    Scenario: instructor_dashboard.feature 7. Student Contributions     
+    Scenario: instructor_dashboard.feature 6. Student Contributions     
         Using selenium
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course

@@ -18,9 +18,9 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I select "Student One" as the owner in the Dashboard column
-        Then the owner is "Student One" in the Dashboard column
-        Then the dashboard panel has 1 response named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Composition column
+        Then the owner is "Student One" in the Composition column
+        Then the composition panel has 1 response named "Sample Assignment Response"
         The "Sample Assignment Response" project has no delete icon
         
         # Direct delete url
@@ -60,7 +60,7 @@ Feature: Homepage Delete Operations. Project, Item
         Then I ok an alert dialog
         
         Then there is not a "Sample Assignment Response" link
-        Then the dashboard panel has 1 project named "Sample Assignment"
+        Then the composition panel has 1 project named "Sample Assignment"
         
         Finished using Selenium
    

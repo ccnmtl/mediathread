@@ -1,7 +1,7 @@
 from assetmgr.lib import annotated_by, get_active_filters
 from assetmgr.views import homepage_asset_json
 from clumper import Clumper
-from courseaffils.lib import get_public_name, in_course_or_404
+from courseaffils.lib import get_public_name, in_course, in_course_or_404
 from courseaffils.views import available_courses_query
 from discussions.utils import get_course_discussions
 from django.conf import settings
@@ -239,6 +239,14 @@ def triple_homepage(request):
                                         "help_show_homepage_tour",
                                         len(assets) < 1 and len(projects) < 1)
 
+    owners = []
+    if (in_course(logged_in_user.username, request.course) and
+        (logged_in_user.is_staff or
+         logged_in_user.has_perm('assetmgr.can_upload_for'))):
+        owners = [{'username': m.username,
+                   'public_name': get_public_name(m, request)}
+                  for m in request.course.members]
+
     context = {
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': False,
@@ -251,7 +259,8 @@ def triple_homepage(request):
         'archives': archives,
         'upload_archive': upload_archive,
         'can_upload': course_details.can_upload(request.user, request.course),
-        'show_tour': show_tour
+        'show_tour': show_tour,
+        'owners': owners
     }
 
     if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):

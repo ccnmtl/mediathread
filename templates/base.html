@@ -123,6 +123,7 @@
                         </li>
                     {% else %}
                         <li><div unselectable="on"><a href="/help/">Help</a></div></li>
+                        <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}
         
                     
@@ -174,7 +175,7 @@
 	<ul id="footernav"><li><a href="/about/">About</a></li>
 			<!--<li><a href="/partners/">Partners</a></li>-->
                            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
-                           <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact</a></li>
+                           <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
                            {% endif %}
                            <li><a href="/help/">Help</a></li>
 			</ul>

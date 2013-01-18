@@ -109,7 +109,7 @@ def given_the_name_workspace_is_loaded(step, name):
     id = None
     if (name == "composition" or
         name == "assignment" or
-            name == "home"):
+            name == "home" or name == "collection"):
         id = "loaded"
     else:
         assert False, "No selector configured for %s" % name
@@ -360,7 +360,8 @@ def there_is_help_for_the_title_column(step, title):
     elts = world.firefox.find_elements_by_tag_name("h2")
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
-            e.parent.find_element_by_css_selector("div.helpblock.on")
+            e.parent.find_element_by_css_selector(
+                "div.actions input.help-tab-icon")
             return
 
     assert False, "No help found for %s" % title
@@ -372,7 +373,8 @@ def there_is_no_help_for_the_title_column(step, title):
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
             try:
-                e.parent.find_element_by_css_selector("div.helpblock.on")
+                e.parent.find_element_by_css_selector(
+                    "div.actions input.help-tab-icon")
                 assert False, "Help found for %s" % title
             except:
                 return  # Expected outcome
@@ -398,6 +400,24 @@ def the_most_recent_notification_is_text(step, text):
     msg = "Notification text is [%s]. Expected [%s]" % (link.text.strip(),
                                                         text)
     assert link.text.strip() == text, msg
+
+
+@step(u'I select "([^"]*)" as the owner')
+def i_select_name_as_the_owner(step, name):
+    selector = "div.switcher_collection_chooser"
+    m = world.firefox.find_element_by_css_selector(selector)
+
+    assert m, 'Unable to find the owner menu'
+
+    m.find_element_by_css_selector("a.switcher-top").click()
+
+    owners = m.find_elements_by_css_selector("a.switcher-choice.owner")
+    for o in owners:
+        if o.text.find(name) > -1:
+            o.click()
+            return
+
+    assert False, "Unable to find owner %s" % name
 
 
 @step(u'I select "([^"]*)" as the owner in the ([^"]*) column')
@@ -707,7 +727,7 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
 
 @step(u'the "([^"]*)" item has an? ([^"]*) icon')
 def the_title_item_has_a_type_icon(step, title, type):
-    select = "div.gallery-item-homepage"
+    select = "div.gallery-item"
     items = world.firefox.find_elements_by_css_selector(select)
     for item in items:
         try:
@@ -719,14 +739,19 @@ def the_title_item_has_a_type_icon(step, title, type):
             item.find_element_by_css_selector("a.%s-asset" % type)
             return  # found the link & the icon
         except:
-            assert False, "Item %s does not have a %s icon." % (title, type)
+            try:
+                item.find_element_by_css_selector("a.%s-asset-inplace" % type)
+                return  # found the link & the icon
+            except:
+                assert False, \
+                    "Item %s does not have a %s icon." % (title, type)
 
     assert False, "Unable to find the %s item" % title
 
 
 @step(u'the "([^"]*)" item has no ([^"]*) icon')
 def the_title_item_has_no_type_icon(step, title, type):
-    select = "div.gallery-item-homepage"
+    select = "div.gallery-item"
     items = world.firefox.find_elements_by_css_selector(select)
     for item in items:
         try:
@@ -747,7 +772,7 @@ def the_title_item_has_no_type_icon(step, title, type):
 @step(u'I click the "([^"]*)" item ([^"]*) icon')
 def i_click_the_title_item_type_icon(step, title, type):
     time.sleep(1)
-    select = "div.gallery-item-homepage"
+    select = "div.gallery-item"
     items = world.firefox.find_elements_by_css_selector(select)
     for item in items:
         try:
@@ -758,7 +783,7 @@ def i_click_the_title_item_type_icon(step, title, type):
         try:
             if type == "delete":
                 icon = item.find_element_by_css_selector(".%s_icon" % type)
-            else:
+            elif type == "edit":
                 icon = item.find_element_by_css_selector("a.%s-asset" % type)
 
             icon.click()
@@ -915,8 +940,8 @@ def the_instructor_panel_has_count_projects_named_title(step, count, title):
     assert n == int(count), msg
 
 
-@step(u'the dashboard panel has ([0-9][0-9]?) projects? named "([^"]*)"')
-def the_dashboard_panel_has_count_projects_named_title(step, count, title):
+@step(u'the composition panel has ([0-9][0-9]?) projects? named "([^"]*)"')
+def the_composition_panel_has_count_projects_named_title(step, count, title):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
 
     n = 0
@@ -929,8 +954,8 @@ def the_dashboard_panel_has_count_projects_named_title(step, count, title):
                                                                    count)
 
 
-@step(u'the dashboard panel has ([0-9][0-9]?) responses? named "([^"]*)"')
-def the_dashboard_panel_has_count_responses_named_title(step, count, title):
+@step(u'the composition panel has ([0-9][0-9]?) responses? named "([^"]*)"')
+def the_composition_panel_has_count_responses_named_title(step, count, title):
     elts = world.firefox.find_elements_by_css_selector("li.projectlist")
 
     n = 0

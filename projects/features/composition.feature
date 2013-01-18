@@ -178,12 +178,12 @@ Feature: Composition
         # Try to view as student one
         Given I am test_student_one in Sample Course
         Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
-        Then the dashboard panel has <dashboard_count> projects named "Composition <title>: Scenario 3"
+        Then the composition panel has <composition_count> projects named "Composition <title>: Scenario 3"
         
         Finished using Selenium
              
       Examples:
-        | title   | visibility                                                        | status             | info_count | dashboard_count |
+        | title   | visibility                                                        | status             | info_count | composition_count |
         | Private | Private - only author(s) can view                                 | Private            | 0          | 0               |
         | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1               |
         | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0               |
@@ -212,15 +212,15 @@ Feature: Composition
         
         # Try to view as student two
         Given I am test_student_two in Sample Course
-        When I select "Student One" as the owner in the Dashboard column
-        Then the owner is "Student One" in the Dashboard column
-        Then the dashboard panel has <count> projects named "<title>"
+        When I select "Student One" as the owner in the Composition column
+        Then the owner is "Student One" in the Composition column
+        Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am test_instructor in Sample Course
-        When I select "Student One" as the owner in the Dashboard column
-        Then the owner is "Student One" in the Dashboard column
-        Then the dashboard panel has <count> projects named "<title>"
+        When I select "Student One" as the owner in the Composition column
+        Then the owner is "Student One" in the Composition column
+        Then the composition panel has <count> projects named "<title>"
         
         Finished using Selenium
              

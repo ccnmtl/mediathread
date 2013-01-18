@@ -192,6 +192,7 @@
 {% block js %}{% endblock %}
 <script type="text/javascript">
     jQuery(document).ready(function() {
+        // setup some ajax progress indicator
         jQuery("html").bind("ajaxStart", function(){  
            jQuery(this).addClass('busy');  
         }).bind("ajaxStop", function(){  

@@ -48,7 +48,7 @@
                                     {{#>>asset-view-details}}                                    
                                     <div id="asset-view-details" class="asset-view-details">
                                     
-                                        <div id="asset-view-overlay" class="ui-widget-overlay" {{^show_help}}style="display: none"{{/show_help}}></div>
+                                        <div id="asset-view-overlay" class="ui-widget-overlay ui-widget-overlay-dark" {{^show_help}}style="display: none"{{/show_help}}></div>
 
                                         <div id="asset-view-help-tab" class="ui-widget-content asset-view-help-tab" {{^show_help}}style="display: none"{{/show_help}}>
                                                 <input class="dismiss-help" type="image" title="Dismiss help" 
@@ -57,9 +57,9 @@
                                         </div>
                                         
                                         <div id="asset-view-help" class="ui-widget-content asset-view-help" {{^show_help}}style="display: none"{{/show_help}}>
-                                            <h1>
+                                            <h3>
                                                 How to analyze this item
-                                            </h1>                                            
+                                            </h3>                                            
                                             <div class="asset-view-help-instructions">
                                                 Click the [<img alt="Pencil Icon" src="/site_media/img/icons/meth_edit.png" />] to edit an item or selection. 
                                             </div>
@@ -87,7 +87,7 @@
                                             {{/annotation.editing?}}>
                                             
                                             {{#asset-current}}
-                                                <h1>Item
+                                                <h2>Item
                                                     <div class="actions">
                                                         {{#global_annotation_id?}}       
                                                         <input type="image" title="Remove item from collection" 
@@ -107,7 +107,7 @@
                                                              onclick="return AnnotationList.showHelp();" 
                                                              alt="Help" src="/site_media/img/icons/meth_help.png" />                                                             
                                                     </div>                                                
-                                                </h1>
+                                                </h2>
                                                 
                                                 <form id="edit-global-annotation-form" method="post"
                                                     {{#global_annotation_id?}}
@@ -180,7 +180,7 @@
                                                          {{/annotation_data}}> 
                                                     </div>
                                                 
-                                                    <h1>
+                                                    <h2>
                                                         {{#id?}}
                                                             Edit Selection
                                                         {{/id?}}
@@ -192,7 +192,7 @@
                                                                 Create Selection
                                                             {{/copying}}
                                                          {{/id}}
-                                                    </h1>
+                                                    </h2>
                                                 
                                                     <form name="edit-annotation-form" onsubmit="return false;">                                                    
                                                         <div class="asset-annotator">
@@ -248,9 +248,9 @@
                                                     onclick="javascript:AnnotationList.newAnnotation()" 
                                                     value="Create Selection">
                                             
-                                                <h1>
+                                                <h2>
                                                     Selections
-                                                </h1>
+                                                </h2>
                                                 <div class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
                                                     <form name="annotation-list-filter">
                                                         <div id="annotation-list-filter-groupby">

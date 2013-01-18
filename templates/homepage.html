@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load user_annotations tagging_tags smartif user_projects helpful_tags coursetags comments collaborations revision %}
+{% load tagging_tags smartif user_projects helpful_tags coursetags comments collaborations revision %}
 
 {% block title %}
     Home
@@ -8,39 +8,26 @@
 {% block css %}
     {{ block.super }}
     
+    <link rel="stylesheet" href="/site_media/jquery/css/jquery.websitetour.css" media="screen" />
+    
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
       
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
     
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/project/projectlist.js?version={%revision%}"></script>
+        
 
     <script type="text/javascript">
-        resizeHomepage = function() {
-            var visible = getVisibleContentHeight();
-            jQuery('#instructor .column-container').css('height', visible + "px");
-            jQuery('#classwork').css('height', visible + "px");
-
-            var helpOffset = 0;
-            var helpBlock = jQuery("#help_homepage_classwork_column");
-            if (jQuery(helpBlock).hasClass("on"))
-                helpOffset += jQuery(helpBlock).outerHeight();
-            
-            visible -= helpOffset;
-            visible -= jQuery("div.filter-widget").outerHeight() + jQuery("#classwork div.parent-column-container").children('h2').outerHeight();
-            visible -= 28; // padding
-            jQuery('#classwork .projects-column-container').css('height', (visible) + "px");
-            jQuery('#classwork .media-column-container').css('height', (visible + 10) + "px");
-        }
-    
         jQuery(document).ready(function() {
             jQuery("div#classwork_table").ajaxStart(function(){
                 jQuery(this).addClass("ajaxLoading");
@@ -50,65 +37,99 @@
                 jQuery(this).removeClass("ajaxLoading");
             });
             
-            var collectionList = new CollectionList({
+            var projectList = new ProjectList({
                 'parent': jQuery("div#classwork_table")[0],
                 'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
                 'template': 'homepage',
                 'template_label': 'classwork_table',
-                'view_callback': resizeHomepage,
-                'view': "{{request.GET.view}}",
-                'tag': "{{request.GET.tag}}",
-                'create_asset_thumbs': true,
-                'citable': false
+                'view': "{{request.GET.view}}"
             });
             
             jQuery(window).resize(function () {  
-                resizeHomepage();
+                var visible = getVisibleContentHeight();
+                jQuery('.ui-widget-overlay').css('height', visible + "px");
             });
-            
-            jQuery(".inst-header").click(function() {
-                jQuery(this).next().toggle();
-            })
     
             var visible = getVisibleContentHeight();
-            jQuery('#instructor .column-container').css('height', visible + "px");
-            jQuery('#classwork').css('height', visible + "px");
+            jQuery('.ui-widget-overlay').css('height', visible + "px");
+            
+            {% ifequal msg "upload" %}
+                var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
+                alert(msg);
+            {% else %}{% if show_tour %}
+                jQuery(window).trigger('tour.start');
+            {% endif %}
+            {% endifequal %}
+            
+            jQuery("a.arrow").click(function(evt) {
+                jQuery(this).next("div.arrowContent").toggle();                
+            });
         });
     </script>
 {% endblock %}
 
+{% block standardnav_help %}
+    <div class="settings_menu help closed">
+        <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+        <div class="left settings_menu_title">Help</div>                                
+    </div>
+    <div class="visualclear"></div>
+    <!-- Settings Menu -->
+    <div class="settings_submenu" style="display: none">
+         <a href="/help/">Knowledge Base</a>
+         <a href="#" onclick="jQuery(window).trigger('tour.start');">Homepage Tour</a>
+    </div>
+{% endblock %}
+
 {% block content %}
     {{ block.super }}
-    
     <table id="home-columns">
     <tbody>
         <tr>
-            {% if faculty_feed.show or is_faculty %}
-            <td class="" id="instructor">
+            {% if faculty_feed.show or is_faculty or discussions %}
+            <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
-                <div class="column-container">    
-                   <h2>From Your Instructor  {% if is_faculty %}{% include "help/help_button.html" %} {% endif %}</h2>
-                      <div class="column-contents scroll">
-                         {% if is_faculty %}{% include "help/help_contentarea.html" %} {% endif %}
-                        <div id="instructor-column">
-                            {%if faculty_feed.projects %}
-                                <h4 class="inst-header project">Information</h4>
-                                <ul class="instructor-list">
-                                    {%for project in faculty_feed.projects %}
-                                        <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {%endfor%}
-                                </ul>
-                            {%endif%}
+                {% include "help/new_help_contentarea.html" %}
+                <div class="column-container">
+                   <h2 class="tour_1">
+                        From Your Instructor                     
+                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                   </h2>                   
+                   <div class="column-contents">
+                        <div id="instructor-column">                        
+                            <div id="tour_1_content" style="display: none">
+                            <p>
+                                {% if is_faculty %}
+                                    Review and edit compositions you have saved for the whole class (such as a syllabus, 
+                                    a list of resources or model compositions) here. 
+                                    If you have created a discussion topic, links to the discussion appear here.                                  
+                                {% else %}
+                                    Review information posted by your instructor such as course materials and syllabus here. 
+                                    If your instructor has created a class discussion, you can respond to discussion posts in this area.           
+                                {% endif %}                                
+                            </p>
+                            <p>
+                                <i>
+                                    For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+                                </i>
+                            </p>                            
                             
-                            {%if faculty_feed.assignments %}
-                                <h4 class="inst-header assignment">Assignments</h4>
-                                <ul class="instructor-list">
-                                    {%for project in faculty_feed.assignments %}
+                                <div class="tour_buttons">
+                                    <span class="button" id="nextstep" style="">Next &gt;</span>
+                                    <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
+                                </div>
+                            </div>
+                        
+                            <ul class="instructor-list">
+                            {% if faculty_feed.projects %}
+                                <h4 class="inst-header information">Information</h4>
+                                {% for project in faculty_feed.projects %}
                                     <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
-                                    {%endfor%}
-                                </ul>
-                            {%endif%}
+                                {% endfor %}
+                                
+                            {% else %}{% endif %}
+                            </ul>
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>
@@ -135,18 +156,212 @@
                 {% endwith %}{% endwith %}
             </td>
             {% endif %}
-        
-            {% with "help_homepage_classwork_column" as help_id %}
-            {% with help_homepage_classwork_column as default_help_state %}
-            {% with "resizeHomepage" as callback %}
+            
+            
             <td id="classwork">
+                {% with "help_homepage_classwork_column" as help_id %}
+                {% with help_homepage_classwork_column as default_help_state %}
+                {% include "help/new_help_contentarea.html" %}
+            
                 <div class="column-container parent-column-container">
-                    <h2>Analysis {% include "help/help_button.html" %}</h2>
-                    {% include "help/help_contentarea.html" %}
+                    <h2 class="tour_2">
+                        Composition
+                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                    </h2>
+                <div id="composition_actions">                
+                </div>
                     <div id="classwork_table"></div>
                 </div>
+                {% endwith %}{% endwith %}
             </td>
-            {% endwith %}{% endwith %}{% endwith %}
+            
+            
+            <td id="explore">
+                {% with "help_homepage_explore_column" as help_id %}
+                {% with help_homepage_explore_column as default_help_state %}
+                {% include "help/new_help_contentarea.html" %}
+            
+            	<div class="column-container">
+                	<h2 class="tour_3">Collection<div class="actions">{% include "help/new_help_button.html" %}</div></h2>
+                	<a class="btn-primary collection" href="/asset/"><img src="/site_media/img/viewfullcollection.png" />View Full Collection</a> 
+                    
+                    <div id="tour_3_content" style="display: none">
+                        <p>
+                            A collection is a set of images, video and/or audio brought into Mediathread that 
+                            can be annotated, organized, and embedded into essays and other written analysis.
+                        </p>
+                        <p>
+                           <i>
+                            For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+                           </i>
+                        </p>       
+                        
+                   <div class="tour_buttons">
+                        <span class="button" id="prevstep" style=""> &lt; Prev</span>
+                        <span class="button start" id="nextstep"
+                            onclick="updateHelpSetting('{{request.user.username}}', 'help_show_homepage_tour', false);">
+                            Get Started &gt
+                        </span>            
+                        <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
+                    </div>
+                    </div>
+                <div class="visualclear"></div>
+                <br />
+                <div class="collection_content">
+                    <a href="#"
+                       class ="arrow arrowClosed">
+                                              
+                        <h3 class="left">Import into Collection</h3>
+                        <div class="arrowIcon left"></div>
+                    </a>
+                    <div class="arrowContent" id="import_collection" style="display: none">
+                        <p>
+                            Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
+                           
+                                    <div id="firefox" class="browser-instruction"> 
+                                        <strong>Install Bookmarklet in Firefox</strong>
+                                        <ol>
+                                          <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
+                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                        </ol>
+                                    </div>
+                                    <div id="ie" class="browser-instruction">
+                                        <strong>Install Bookmarklet in Internet Explorer</strong>
+                                        <ol>
+                                          <li>Right-click on the blue bookmarklet button.</li>  
+                                          <li>and choose <b>Add to Favorites</b><br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Med\
+iathread</a></li>
+                                        </ol>
+                                    </div>
+                                    <div id="safari" class="browser-instruction"> 
+                                        <strong>Install Bookmarklet in Safari</strong>
+                                        <ol>
+                                         <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
+                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                        </ol>
+                                    </div>
+                                    <div id="chrome" class="browser-instruction"> 
+                                        <strong>Install Bookmarklet in Chrome</strong>
+                                        <ol>
+                                          <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
+                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                          {% if EXPERIMENTAL %}
+                                          <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
+                                          {% endif %}
+                                        </ol>
+                                    </div>
+                                    <script type="text/javascript">
+                                        var u = navigator.userAgent;
+                                        if (/Chrome/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#chrome').show();
+                                        } else if (/Safari/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#safari').show();
+                                        } else if (/MSIE/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#ie').show();
+                                        } else if (/Gecko/.test(u)) {
+                                            jQuery('.browser-instruction').hide();
+                                            jQuery('#firefox').show();
+                                        } 
+                                    </script>
+                        </p>
+                    </div> <!-- end import into collection box --> 
+                </div><!-- end collection content box -->
+                {% if can_upload %}
+                {% if upload_archive %}
+                <div class="collection_content">
+                    <a href="#"
+                       class ="arrow arrowClosed">
+                        <h3 class="left">Upload from Computer</h3>
+                        <div class="arrowIcon left"></div>
+                    </a>
+                        <div class="arrowContent" id="upload_desktop" style="display: none">                
+                            {% ifequal role_in_course "non-member" %}
+                                <div class="instructions">
+                                    You must be a course member to upload media files.
+                                </div>
+                            {% else %}                        
+                                <div>                            
+                                    <p>
+                                        This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
+                                    </p>
+                                    
+                                    <form action="/explore/redirect/" method="POST">
+                                        {% if owners %}
+                                            <div><b>For:</b>&nbsp;
+                                            <select name="as"> 
+                                            {% for owner in owners %}                                
+                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                            {% endfor %}
+                                            </select>
+                                            </div>
+                                        {% endif %}
+                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                                        <input type="hidden" name="audio2" value="mp4"></input>
+                                        <input id="uploader" type="submit" value="Upload audio" />
+                                    </form>  
+                                    
+                                    <form action="/explore/redirect/" method="POST">
+                                        {% if owners %}
+                                            <div class="visualclear"></div>
+                                            <br /><br />
+                                            <div><b>For:</b>&nbsp;
+                                            <select id="video_owners" name="as"> 
+                                            {% for owner in owners %}                                
+                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                            {% endfor %}
+                                            </select>
+                                            </div>
+                                        {% endif %}
+                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                                        <input id="uploader" type="submit" value="Upload video" />
+                                    </form>               
+                                    
+                                 </div>
+                            {% endifequal %}
+
+                        
+                    </div><!-- end upload from desktop -->
+            </div><!-- end collection content box -->
+            {% endif %}
+            {% endif %}
+
+                    {% if archives %}
+                    <div id="recommend">
+                        
+                            <h3>Recommended Sources</h3>
+                            Your instructor suggests that you import items from these sites. 
+                    
+                            {% for archive in archives %}
+                                {% if space_viewer.is_staff %}
+                                    <div class="manage-archive">
+                                        <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+                                    </div>
+                                {% endif %}
+                            <div class="recommend_source">
+                                {% if archive.thumb %}
+                                    {% if archive.thumb.url %}
+                                        <div class="source_thumb">
+                                            <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
+                                                <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="source_title">
+                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                                </div>
+                            </div>     
+                            {%endfor%}                        
+                    </div>
+                    {% endif %} 
+                    
+                </div>
+                {% endwith %}{% endwith %}
+            </td>            
+
         </tr>
     </tbody>
 </table>

@@ -1,0 +1,272 @@
+.tooltip {
+    position:absolute;
+    width:250px;
+    left:0;
+    top:0;
+    color: #2f2f2f;
+    background-color: #fff;
+    border-color: #f5f5f5;
+    padding: 15px;
+    z-index:999;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    margin-top: 20px;
+}
+
+div.tooltip-highlighted-content {
+    position: absolute;
+    background-color: white;
+    z-index: 9999;
+    width: 250px;
+    padding: 5px;
+    margin-top: -10px;
+    margin-left: -10px;
+}
+
+div.tooltip-highlighted-content h2 {
+    font-size: 1.4285em;
+    color: #777;
+    font-weight: normal;
+    padding: 10px 0;
+    border-bottom: solid 1px #EFEFEF;
+    margin: 5px;    
+}
+
+div.tooltip-highlighted-content img,
+div.tooltip-highlighted-content h2 input {
+    display: none;
+}
+
+.tooltip p {
+	text-shadow:none;
+}
+
+.tooltip_arrow {
+	position:absolute;
+	background-color:transparent;
+	background-repeat:no-repeat;
+}
+.tooltip_arrow_T,
+.tooltip_arrow_B,
+.tooltip_arrow_TL,
+.tooltip_arrow_TR,
+.tooltip_arrow_BL,
+.tooltip_arrow_BR{
+	background-image:url(/site_media/img/topbottom.png);
+	width:13px;
+	height:7px;
+}
+.tooltip_arrow_L,
+.tooltip_arrow_R,
+.tooltip_arrow_LT,
+.tooltip_arrow_LB,
+.tooltip_arrow_RT,
+.tooltip_arrow_RB{
+	background-image:url(/site_media/img/leftright.png);
+	width:7px;
+	height:13px;
+}
+.tooltip_arrow_T{
+	background-position:0px -7px;
+	top:-7px;
+	left:50%;
+	margin-left:-3.5px;
+}
+.tooltip_arrow_TL{
+	background-position:0px -7px;
+	top:-7px;
+	left:5px;
+}
+.tooltip_arrow_TR{
+	background-position:0px -7px;
+	top:-7px;
+	right:5px;
+}
+.tooltip_arrow_B{
+	background-position:0px 0px;
+	bottom:-7px;
+	left:50%;
+	margin-left:-3.5px;
+}
+.tooltip_arrow_BL{
+	background-position:0px 0px;
+	bottom:-7px;
+	left:5px;
+}
+.tooltip_arrow_BR{
+	background-position:0px 0px;
+	bottom:-7px;
+	right:5px;
+}
+.tooltip_arrow_L{
+	background-position:-7px 0px;
+	top:50%;
+	margin-top:-6.5px;
+	left:-7px;
+}
+.tooltip_arrow_LT{
+	background-position:-7px 0px;
+	top:5px;
+	left:-7px;
+}
+.tooltip_arrow_LB{
+	background-position:-7px 0px;
+	bottom:5px;
+	left:-7px;
+}
+.tooltip_arrow_R{
+	background-position:0px 0px;
+	top:50%;
+	margin-top:-6.5px;
+	right:-7px;
+}
+.tooltip_arrow_RT{
+	background-position:0px 0px;
+	top:5px;
+	right:-7px;
+}
+.tooltip_arrow_RB{
+	background-position:0px 0px;
+	bottom:5px;
+	right:-7px;
+}
+.overlay{
+	position:fixed;
+	width:100%;
+	height:100%;
+	top:0px;
+	left:0px;
+	background:#000;
+	opacity:0.5;
+	z-index:100;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+}
+.tourcontrols{
+	position:fixed;
+	top:20px;
+	right:-500px;
+	width:270px;
+	background:#383838;
+	color:#fff;
+	text-shadow:0px 0px 1px #fff;
+	font-size:16px;
+	padding:10px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	z-index:9999;
+	text-align: center;
+}
+.tourcontrols a{
+	font-size:11px;
+	color:#f0f0f0;
+	cursor:pointer;
+	font-weight:normal;
+	text-decoration:underline;
+	margin:10px;
+}
+.tourcontrols a:hover{
+	color:#fff;
+}
+.close {
+	position:absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+}
+.tourcontrols p {
+	padding:10px;
+}
+
+.tour_buttons {
+    margin: 20px 0;
+	display: block;
+	clear: both;
+	float: left;
+}
+
+#tour_tooltip .button {
+  font-size: 1em;
+  font-weight: normal;
+  color: #2f2f2f;
+  padding: 10px 15px;
+  margin: 25px 0 5px 0;
+  border: solid 1px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+   background-color: #efefef;
+  *background-color: #efefef;
+  background-image: -moz-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfcfc), to(#efefef));
+  background-image: -webkit-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: -o-linear-gradient(top, #fcfcfc, #efefef);
+  background-image: linear-gradient(to bottom, #fcfcfc, #efefef);
+  background-repeat: repeat-x;
+  border-color: #0044cc #0044cc #002a80;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  cursor: pointer;
+}
+
+#tour_tooltip .button.start {
+  font-size: 1em;
+  font-weight: normal;
+  color: #ffffff;
+  padding: 10px 15px;
+  margin: 15px 0 5px 0;
+  border: solid 1px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  *background-color: #51a351;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #fff #fff #777;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  cursor: pointer;
+}
+
+.button#activatetour {
+  font-size: 1em;
+  font-weight: normal;
+  color: #ffffff;
+  padding: 10px 15px;
+  margin: 15px 0 5px 50px;
+  border: solid 1px;
+  border-radius: 4px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #006dcc;
+  *background-color: #0044cc;
+  background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
+  background-image: -o-linear-gradient(top, #0088cc, #0044cc);
+  background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+  background-repeat: repeat-x;
+  border-color: #0044cc #0044cc #002a80;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  clear: both;
+  display: block;
+  width: 133px;
+}
+.button:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.nav {
+	clear:both;
+	width:100%;
+	float:left;
+}

@@ -82,6 +82,7 @@ div.mce_editorwindow {
  
 input.participants_toggle {
     margin: 0px 10px 5px 0px;
+    font-size: .7em;
 }
 
 #id_participants {*height: 15em;}
@@ -111,6 +112,7 @@ div.save-publish-status li {
     color: black;
     background-image: url("../img/buttons/compositions_button_bg.jpg");
     font-size: 85%;
+    cursor: pointer;
 }
 
 div.threadedcomments-container {

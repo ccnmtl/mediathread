@@ -1,8 +1,11 @@
 {% extends "dashboard/base_reports.html" %}
-{%load user_annotations comments %}
+{% load comments %}
 
-{% block dashboard_module %}
-    <h1>Report: Class Activity</h1>    
+{% block dashboard_module_header %}
+    <h2>Report: Class Activity</h2>
+{% endblock %}
+
+{% block dashboard_module %}    
     <p>Listed below are the latest posting activities by all members of your Mediathread class.</p>
 
       <ul class="clumper">

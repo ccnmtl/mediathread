@@ -1,8 +1,11 @@
 {% extends "dashboard/base_reports.html" %}
-{%load user_annotations comments user_projects coursetags %}
+{% load comments user_projects coursetags %}
 
-{% block dashboard_module %}
-<h1>Assignment Report: {{assignment.title}}</h1>    
+{% block dashboard_module_header %}
+    <h2>Assignment Report: {{assignment.title}}</h2>
+{% endblock %}
+
+{% block dashboard_module %}    
 
 <table>
   <thead>

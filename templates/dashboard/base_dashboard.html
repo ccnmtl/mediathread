@@ -1,28 +1,23 @@
 {% extends "base.html" %}
-{%load user_annotations comments %}
+{% load comments %}
 
 {% block title %}Instructor Dashboard{% endblock %}
 
 {% block js %}
     <script type="text/javascript" src="/site_media/js/reports.js"></script>
-
-    <script type="text/javascript">
-        function resizeDashboard() {
-            var visible = getVisibleContentHeight();
-            jQuery('#dashboard-module-body .scroll').css('height', (visible - 87) + "px");
-        }
-    
-        jQuery(document).ready(function() {
-            jQuery(window).resize(function () {  
-                resizeDashboard();
-            });
-        });
-    </script>
 {% endblock %}
 
 {% block content %}
     {{ block.super }}
+    
+    <div class="dashboard-module-header">
+        {% block dashboard_module_header %}
+            
+            
+        {% endblock %}
+    </div>
 
+    {% block switchcourse %}
     {%if request.user.is_staff and courses %}
        <div id="staff-switchcourse">
          <form>
@@ -35,59 +30,14 @@
                {% endfor %}
              </select>
            </form>
-           </div>
+       </div>
     {% endif %}
+    {% endblock %} 
 
-    <div id="dashboard-container">
-        <div id="instructor-nav">
-              {% with "help_dashboard_nav_actions" as help_id %}
-              {% with help_dashboard_nav_actions as default_help_state %}        
-              <h3>Actions:{% include "help/help_button.html" %}</h3>
-              {% include "help/help_contentarea.html" %}
-              <a href="/dashboard/addsource/">Manage Sources</a>
-              
-              <a href="/dashboard/settings/">Manage Course Settings</a>
-              
-              <form class="project-createnew" method="post" action="{%url project-create %}">
-                  <input type="hidden" name="title" />
-                  <input type="submit" value="Create Composition or Assignment"/>
-              </form> 
-              
-              <!--Create Discussion-->
-              <form class="discussion-createnew"  action="/discussion/create/" method="post">
-                <input type="hidden" name="comment_html" value="Discussion Title" />
-                <input type="hidden" name="app_label" value="courseaffils"/>
-                <input type="hidden" name="model" value="course"/>
-                <input type="hidden" name="obj_pk" value="{{course.id}}"/>
-                <input type="submit" value="Create Discussion"/>
-              </form>
-              
-              
-              <br />
-              <br />
-        {% endwith %}{% endwith %}
-        
-        
-               {% with "help_dashboard_nav_reports" as help_id %}
-              {% with help_dashboard_nav_reports as default_help_state %}   
-              <h3>Reports:{% include "help/help_button.html" %}</h3>
-              {% include "help/help_contentarea.html" %}
-              <a href="/reports/class_assignments/">Assignment Responses</a>
-              <a href="/reports/class_activity/">Class Activity</a>
-              <a href="/reports/class_summary/">Student Contributions</a>
-              <br /><br />     
-{% endwith %}{% endwith %}
-        </div>
-        
 
-        <div id="dashboard-module">
-            {% block dashboard_module_header %}{% endblock %}
-             
-            <div id="dashboard-module-body" class="scroll">
-                {% block dashboard_module %}{% endblock %}
-            </div>
-        </div>
-    
+     
+    <div id="dashboard-module-body">
+        {% block dashboard_module %}{% endblock %}
     </div>
     
  {% endblock %}   

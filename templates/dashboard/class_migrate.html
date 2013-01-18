@@ -61,9 +61,9 @@
         <div id="import-all-dialog" style="display: none" title="Import">
             <h3><%= title %></h3>
             <% if (project_set && project_set.length > 0) { %>
-                <div><%= project_set.length %> Projects with <%= project_set.total_sherdnotes() %> selections</div>
+                <div><%= project_set.length %> Compositions & Assignments</div>
             <% } else { %>
-                <div>No projects</div>
+                <div>No compositions or assignments</div>
             <% } %>
             <% if (asset_set && asset_set.length > 0) { %>
                 <div><%= asset_set.length %> items and <%= asset_set.total_sherdnotes()  %> selections</div>
@@ -75,9 +75,9 @@
         </div> 
         <br /><br />
         <% if (project_set && project_set.length > 0) { %>
-            <div class="metadata-value"><%= project_set.length %> Projects with <%= project_set.total_sherdnotes() %> selections</div>
-            <div><input id="import-projects" type="button" class="rounded-button blue" value="Select Projects To Import"></div>
-            <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Projects To Import">
+            <div class="metadata-value"><%= project_set.length %> Compositions &amp; Assignments</div>
+            <div><input id="import-projects" type="button" class="rounded-button blue" value="Select Compositions &amp; Assignments"></div>
+            <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Compositions & Assignments To Migrate">
                 <div class="right"><a href="#" id="select-all-projects">Select All</a> | <a href="#" id="clear-all-projects">Clear All</a></div>
                 <div class="visualclear"/>
                 <div class="import-stuff">
@@ -97,7 +97,7 @@
                             
                             <% if (project.get('sherdnote_set').length > 0) { %>
                                 <br />
-                                <i>includes <%= project.get('sherdnote_set').length %> selections</i>
+                                <i>includes <%= project.get('sherdnote_set').length %> selection(s)</i>
                             <% } %>
                         </td>
                         <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
@@ -111,10 +111,10 @@
         <br />
 
         <% if (asset_set && asset_set.length > 0) { %>             
-            <div class="metadata-value"><%= asset_set.length %> Items with <%= asset_set.total_sherdnotes() %> Selections</div>
-            <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items To Import"></div>
+            <div class="metadata-value"><%= asset_set.length %> Items with <%= asset_set.total_sherdnotes() %> selection(s)</div>
+            <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items"></div>
 
-            <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Import">
+            <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
             <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
             <div class="visualclear"/>
             <div class="import-stuff">
@@ -128,7 +128,7 @@
                         <% } %>
                     </td>
                     <td class="title">
-                        <b><%= asset.get('title') %></b>
+                        <div><b><%= asset.get('title') %></b></div>
                         <div class="meta">
                             <div class="metadata-value">Imported by <%= asset.get('author').full_name %></div>
                             <div>
@@ -150,7 +150,7 @@
     
     <script type="text/template" id="selected-template">
         <form class="import-dialog">
-            <div><div class="left">Selected for Import</div><div class="right">Remove</div></div>
+            <div><div class="left">Selected Materials</div><div class="right">Remove</div></div>
             <div class="visualclear"/>
             <div id="to_import" class="import-stuff scroll">
                 <% if (project_set.length) { %>
@@ -189,7 +189,7 @@
                             <% } %>
                         </td>
                         <td class="title">
-                            <b><%= asset.title %></b>
+                            <div><b><%= asset.title %></b></div>
                             <div class="meta">
                                 <div class="metadata-value">Imported by <%= asset.author.full_name %></div>
                                 <div>
@@ -205,7 +205,7 @@
                     </table>
                 <% } %>
             </div>
-            <input id="import-selected" type="button" value="Import Selected" class="right" />
+            <input id="import-selected" type="button" value="Migrate Selected" class="right" />
         </form>
 
     </script>

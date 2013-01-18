@@ -2,9 +2,27 @@
 <div id="classwork_table">
 
     <div id="tour_2_content" style="display: none">
-       <p>Create and edit your assignments and compositions here. 
-        Use the OWNER menu to view published work from instructors and classmates.</p>
-       <div class="tour_buttons">
+        <p>
+            {{#is_faculty?}}
+                Create and view compositions, assignments, and instructor feedback here. 
+                Use the <b>Owner</b> field to view shared work from an individual student 
+                by choosing his or her name in the drop down menu. Use the <b>Create</b> 
+                button to begin new assignments and course information.              
+            {{/is_faculty?}}
+            {{^is_faculty}}
+                Respond to assignments posted by your instructor, review instructor feedback, and 
+                create compositions here. View compositions shared by other class members by 
+                choosing his or her name in the <b>Owner</b> drop down menu. Use the <b>Create</b> 
+                button to begin new compositions or respond to assignments.
+            {{/is_faculty}}
+        </p>
+        <p>
+           <i>
+            For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+           </i>
+        </p>       
+       
+        <div class="tour_buttons">
             <span class="button" id="prevstep" style="">&lt; Prev</span>
             <span class="button" id="nextstep" style="">Next &gt;</span>
         </div>

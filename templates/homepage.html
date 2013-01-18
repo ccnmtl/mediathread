@@ -18,7 +18,6 @@
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
     <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
-    
       
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
@@ -101,8 +100,21 @@
                         <div id="instructor-column">                        
                             <div id="tour_1_content" style="display: none">
                             <p>
-                                Read informational essays from your instructors and participate in class discussions here.
+                                {% if is_faculty %}
+                                    Review and edit compositions you have saved for the whole class (such as a syllabus, 
+                                    a list of resources or model compositions) here. 
+                                    If you have created a discussion topic, links to the discussion appear here.                                  
+                                {% else %}
+                                    Review information posted by your instructor such as course materials and syllabus here. 
+                                    If your instructor has created a class discussion, you can respond to discussion posts in this area.           
+                                {% endif %}                                
                             </p>
+                            <p>
+                                <i>
+                                    For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+                                </i>
+                            </p>                            
+                            
                                 <div class="tour_buttons">
                                     <span class="button" id="nextstep" style="">Next &gt;</span>
                                     <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
@@ -174,10 +186,16 @@
                 	<a class="btn-primary collection" href="/asset/"><img src="/site_media/img/viewfullcollection.png" />View Full Collection</a> 
                     
                     <div id="tour_3_content" style="display: none">
-                        <p>Build your collection of images, video and audio by 
-                        bookmarking items from popular sites like YouTube or Flickr
-                        or by uploading items from your personal portfolio.</p>
-                        <p>For detailed help, click the question mark icon associated with each section or the Help link in the upper right corner.</p>
+                        <p>
+                            A collection is a set of images, video and/or audio brought into Mediathread that 
+                            can be annotated, organized, and embedded into essays and other written analysis.
+                        </p>
+                        <p>
+                           <i>
+                            For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+                           </i>
+                        </p>       
+                        
                    <div class="tour_buttons">
                         <span class="button" id="prevstep" style=""> &lt; Prev</span>
                         <span class="button start" id="nextstep"
@@ -255,7 +273,7 @@
                 <div class="collection_content">
                     <a href="#"
                        class ="arrow arrowClosed">
-                        <h3 class="left">Upload From Desktop</h3>
+                        <h3 class="left">Upload from Computer</h3>
                         <div class="arrowIcon left"></div>
                     </a>
                         <div class="arrowContent" id="upload_desktop" style="display: none">                
@@ -311,7 +329,7 @@
                     <div id="recommend">
                         
                             <h3>Recommended Sources</h3>
-                            Your instructor suggests you search these sites for images, video and audio items. 
+                            Your instructor suggests that you import items from these sites. 
                     
                             {% for archive in archives %}
                                 {% if space_viewer.is_staff %}

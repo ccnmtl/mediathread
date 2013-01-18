@@ -326,7 +326,7 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Select Projects',
+                          { text: 'Select',
                             click: function () {
                                 var lst = jQuery("input.project");
                                 if (lst.length > 0) {
@@ -370,7 +370,7 @@
                                 jQuery(this).dialog("close");
                             }
                           },
-                          { text: 'Select Items',
+                          { text: 'Select',
                             click: function () {
                                 var lst = jQuery("input.asset");
                                 if (lst.length > 0) {

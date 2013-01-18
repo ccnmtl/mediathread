@@ -6,8 +6,14 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a Create Composition or Assignment button
-        When I click the Create Composition or Assignment button
+        There is a Create button
+        When I click the Create button
+        Then there is a Create Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
+        When I click the Create Composition button
+        
         Then I am at the Untitled page
         I see "by Instructor One"
         And I see "Private"
@@ -47,7 +53,7 @@ Feature: Composition
         And the Composition panel does not have a +/- Author button
         
         # The project shows on Home
-        When I click the "Home" link
+        When I click the "Sample Course" link
         Given the home workspace is loaded
         Then there is a private "Composition: Scenario 1" project by Instructor One
         
@@ -76,8 +82,14 @@ Feature: Composition
         Given there are no projects
         
         # Create a project from the home page
-        There is a Create Composition button
-        When I click the Create Composition button
+        There is a Create button
+        When I click the Create button
+        Then there is not a Create Assignment button
+        And there is a Create Composition button
+        And there is not a Create Discussion button
+        
+        When I click the Create Composition button      
+
         Then I am at the Untitled page
         I see "by Student One"
         And there is a "Private" link
@@ -117,7 +129,7 @@ Feature: Composition
         And the Composition panel does not have a +/- Author button
         
         # The project shows on Home
-        When I click the "Home" link
+        When I click the "Sample Course" link
         Given the home workspace is loaded
         Then there is a private "Composition: Scenario 2" project by Student One
         
@@ -145,8 +157,14 @@ Feature: Composition
         Given I am test_instructor in Sample Course
                 
         # Create a project from the home page
-        There is a Create Composition or Assignment button
-        When I click the Create Composition or Assignment button
+        There is a Create button
+        When I click the Create button
+        Then there is a Create Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
+        When I click the Create Composition button      
+
         Then I am at the Untitled page
         Then I call the Composition "Composition <title>: Scenario 3"
         
@@ -175,8 +193,13 @@ Feature: Composition
         Given I am test_student_one in Sample Course
                 
         # Create a project from the home page
-        There is a Create Composition button
-        When I click the Create Composition button
+        There is a Create button
+        When I click the Create button
+        Then there is not a Create Assignment button
+        And there is a Create Composition button
+        And there is not a Create Discussion button
+        
+        When I click the Create Composition button        
         Then I am at the Untitled page
         Then I call the Composition "<title>"
         

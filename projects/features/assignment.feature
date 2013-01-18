@@ -6,8 +6,14 @@ Feature: Assignment
         Given there are no projects
         
         # Create an assignment from the home page
-        There is a Create Composition or Assignment button
-        When I click the Create Composition or Assignment button
+        There is a Create button
+        When I click the Create button
+        Then there is a Create Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
+        When I click the Create Composition button       
+        
         Then I am at the Untitled page
         There is an open Composition panel
 
@@ -33,7 +39,7 @@ Feature: Assignment
         And the Assignment panel does not have a +/- Author button
         
          # The project shows on Home
-        When I click the "Home" link
+        When I click the "Sample Course" link
         Given the home workspace is loaded
         Then there is an assignment "Assignment: Scenario 1" project by Instructor One
         
@@ -100,7 +106,7 @@ Feature: Assignment
         Then there is a "Submitted to Instructor" link
         
         # Verify home page display
-        When I click the "Home" link
+        When I click the "Sample Course" link
         Given the home workspace is loaded
         Then there is a submitted to instructor "Sample Assignment Response" reply by Student One
         
@@ -126,10 +132,10 @@ Feature: Assignment
         Given there is a sample assignment and response
         Given I am test_instructor in Sample Course
         
-        When I select "Student One" as the owner in the Dashboard column
-        Then the owner is "Student One" in the Dashboard column
-        Then the dashboard panel has 1 project named "Sample Assignment"
-        Then the dashboard panel has 1 response named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Composition column
+        Then the owner is "Student One" in the Composition column
+        Then the composition panel has 1 project named "Sample Assignment"
+        Then the composition panel has 1 response named "Sample Assignment Response"
         
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page
@@ -168,13 +174,13 @@ Feature: Assignment
         Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
         
         Give I am test_student_two in Sample Course
-        When I select "Student One" as the owner in the Dashboard column
-        Then the owner is "Student One" in the Dashboard column
-        Then the dashboard panel has 0 projects named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Composition column
+        Then the owner is "Student One" in the Composition column
+        Then the composition panel has 0 projects named "Sample Assignment Response"
         And there is not a "Read Instructor Feedback" link
         
-        When I select "Student Two" as the owner in the Dashboard column
-        Then the owner is "Me" in the Dashboard column
+        When I select "Student Two" as the owner in the Composition column
+        Then the owner is "Me" in the Composition column
         
         When I click the "Sample Assignment" link
         Then I am at the Sample Assignment page
@@ -202,9 +208,9 @@ Feature: Assignment
         Then there is a "<status>" link
         
         Give I am <username> in Sample Course 
-        When I select "Student One" as the owner in the Dashboard column
-        Then the owner is "Student One" in the Dashboard column
-        Then the dashboard panel has <count> responses named "Sample Assignment Response"
+        When I select "Student One" as the owner in the Composition column
+        Then the owner is "Student One" in the Composition column
+        Then the composition panel has <count> responses named "Sample Assignment Response"
         
         Finished using Selenium
              

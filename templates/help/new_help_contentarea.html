@@ -22,138 +22,230 @@
         </strong>
         
         <div class="feature-help-instructions">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-            when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-            It has survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-            like Aldus PageMaker including versions of Lorem Ipsum.
+            <ol>
+            <li><b>Select a Course</b>: Type some or all of the course name from 
+            which you wish to migrate materials. Select course from drowdown menu, 
+            then click <b>View materials</b>
+            </li>
+            <li><b>Migrate All Materials</b>: To migrate all materials including all compositions and 
+            assignments that you have created and all items that you have imported or annotated 
+            in a course, choose "Select Complete Course" and follow directions.</li>
+            <li><b>Migrate Assignments &amp; Compositions</b>: Click
+            <b>Select Compositions to Migrate</b>. Scroll through the list and 
+            check materials you wish to migrate, then choose <b>Select</b>. Review your list
+            then click <b>Migrate Selected</b>.</li>
+            <li><b>Migrate Items</b>: Click
+            <b>Select Items to Migrate</b>. Scroll through the list and 
+            check materials you wish to migrate, then choose <b>Select</b>. Review your list
+            then click <b>Migrate Selected</b>.</li>                        
+            </ol>
+        </div>
+        
+        <strong>Migration confirmation</strong>
+        <div class="feature-help-instructions">   
+            <ul>
+            <li>Once materials have been imported, you will receive a confirmation message noting the number of materials that have successfully been migrated.</li>
+            <li>To import materials from another course, choose "switch course" link.</li>
+            <li>After materials have been migrated, they will appear as Assignments, Compositions, and/or items in your Collection in the new course.</li>
+            <li>Web links in migrated Assignments and Compositions may need to be updated.</li>
+            </ul>
+            
         </div> 
+        
+        <strong>Migration Details</strong>
+        <div class="feature-help-instructions">   
+            
+            <ul>
+            <li>Any Items and selections associated with a migrated project are also migrated.</li>
+            <li>Only instructor selections associated with an item are imported.</li>
+            <li>Student-authored compositions cannot be migrated; student-uploaded items and selections can only be migrated if they are embedded in instructor compositions.</li>
+            </ul>
+        </div>
+            
     {% endifequal %}
     
     {% ifequal help_id "help_homepage_instructor_column" %}
         <strong>From Your Instructor</strong>
-        <div class="feature-help-instructions">Read informational essays from your instructors and participate in class discussions here. </div>
-        <br />            
-        {% if is_faculty %}                            
+        {% if is_faculty %}
+            <div class="feature-help-instructions">
+                Review and edit compositions you have saved for the whole class (such as a syllabus, 
+                a list of resources or model compositions) here. 
+                If you have created a discussion topic, links to the discussion appear here.                                                
+            </div>
             <strong>
-                Creating Course Information
+                How to Create Course Information
             </strong>
             <div class="feature-help-instructions">
                 <ol>
-                <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Create Composition</span> link above.</li>
-                <li>Save the composition as "Whole Class"</li>
+                    <li>Click the Create button in the Composition column.</li>
+                    <li>Select Create Composition.</li>
+                    <li>Give your new composition a title and enter body text.</li>
+                    <li>Select "Whole Class", then click "Save".</li>
                 </ol>
-            </div>
-            
+            </div>            
             <strong>
-                Creating Discussions
+                How to Create a Discussion
             </strong>
             <div class="feature-help-instructions">
                 <ol>
-                <li>Click the &nbsp;<img src="/site_media/img/create_discussion.png">&nbsp;<span style="color: #1B75BC">Create Discussion</span> link above.</li>
-                <li>Title your discussion.</li>
-                <li>Save</li>
+                    <li>Click the Create button in the Composition column.</li>
+                    <li>Select Create Discussion.</li>
+                    <li>Give the new Discussion a title and enter your comment text.</li>
+                    <li>Click the Save Comment button.</li>
                 </ol>
             </div>
+         {% else %}
+            <div class="feature-help-instructions">
+                Review information posted by your instructor such as course materials and syllabus here. 
+                If your instructor has created a class discussion, you can respond to discussion posts in this area.           
+            </div>
+            <br />
          {% endif %}        
     {% endifequal %}
-    
-    {% ifequal help_id "help_homepage_explore_column" %}
-        <strong>The Collection Section</strong>
-        <div class="feature-help-instructions">
-        Build your collection of images, video and audio by bookmarking items from popular sites like YouTube or Flickr or by uploading items from your personal portfolio.
-        </div>
-    
-        <strong>What is a collection?</strong>
-        <div class="feature-help-instructions">
-        A collection is a set of images, video and audio 
-        can be annotated, organized, and embedded into 
-        essays and other written analysis.
-        </div> 
-        
-        <strong>How do I build my collection?</strong>
-        <div class="feature-help-instructions">
-        <ul>
-            <li>The Bookmarklet: When added to your browser's Bookmarks Toolbar, this button enables you to import items for analysis.</li>
-            <li>Upload items from your personal portfolio</li>
-        </ul>
-        </div>
-        
-        <strong>How do I see my collection?</strong>
-        <div class="feature-help-instructions">
-            Click the &nbsp;<img src="/site_media/img/viewfullcollection.png">&nbsp;<span style="color: #1B75BC">View Full Collection</span> link above.
-        </div>
-    {% endifequal %}
+
     
     {% ifequal help_id "help_homepage_classwork_column" %}
         <strong>
             The Composition Section
         </strong>
         <div class="feature-help-instructions">
-            Create and edit your assignments and compositions here. Use the OWNER menu to view published work from instructors and classmates. 
+            {% if is_faculty %}
+                Create and view compositions, assignments, and instructor feedback here. 
+                Use the <b>Owner</b> field to view shared work from an individual student 
+                by choosing his or her name in the drop down menu. Use the <b>Create</b> 
+                button to begin new assignments and course information.                           
+            {% else %}
+                Respond to assignments posted by your instructor, review instructor feedback, and 
+                create compositions here. View compositions shared by other class members by 
+                choosing his or her name in the <b>Owner</b> drop down menu. Use the <b>Create</b> 
+                button to begin new compositions or respond to assignments.              
+            {% endif %} 
         </div>
-        <br />            
         {% if is_faculty %}
             <strong>
                 How To Create an Assignment
             </strong>
             <div class="feature-help-instructions">
                 <ol>
-                <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Create Assignment</span> link above.</li>
-                <li>Save the composition as "Assignment."</li>                
+                    <li>Click the Create button in the Composition column.</li>
+                    <li>Select Create Assignment.</li>
+                    <li>Title the new assignment and insert text into the edit field.</li>
+                    <li>Click the Save button in the top right corner of the panel.</li>
+                    <li>Select Assignment from the available save levels.</li>
+                    <li>Click the Save button.</li>
                 </ol>
-                <div><i>Note: Assignments are automatically public. Save your assignment as "Private" until you're ready to go.</i></div>
+                <div>
+                    <i>
+                    Note: Assignments are by default public. Save your assignment as Private 
+                    to preserve it as a draft until you're ready to publish it.                
+                    </i>
+                </div>
             </div>
+            <strong>
+                How to Create Course Information
+            </strong>
+            <div class="feature-help-instructions">
+                <ol>
+                    <li>Click the Create button in the Composition column.</li>
+                    <li>Select Create Composition.</li>
+                    <li>Give your new composition a title and enter body text.</li>
+                    <li>Choose the Save button in the top right corner</li>
+                    <li>Select "Whole Class", then click "Save".</li>
+                </ol>
+            </div>                       
         {% else %}
             <strong>
                 How To Respond to an Assignment
             </strong>
             <div class="feature-help-instructions">
                 <ol>
-                <li>Assignments from your instructor appear in this list.
-                <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Respond</span> link above.</li>
-                <li>Save the composition as "Whole Class"</li>
+                <li>Assignments from your instructor appear in this column.</li>
+                <li>To respond, click the green Respond to Assignment button.</li> 
+                <li>Title your response and insert body text.</li>
+                <li>Click the Save button in the top right corner of the window.</li>
+                <li>Select the desired save level: Private, Submit to Instructor, Whole Class, or (if enabled by your instructor) Whole World.</li>
+                <li>Click the Save button.</li>
                 </ol>
-            </div>        
+            </div>
+            <strong>
+                How To Create a Composition
+            </strong>
+            <div class="feature-help-instructions">
+                <ol>
+                    <li>Click the Create button in the Composition column.</li>
+                    <li>Select Create Composition.</li>
+                    <li>Give your new composition a title and insert body text.</li>
+                    <li>Click the Save button in the top right corner of the window.</li>
+                    <li>Select the desired save level.</li>
+                    <li>Click the Save button.</li>
+                </ol>
+            </div>               
         {% endif %}
-        
-        <strong>
-            How To Create a Composition
-        </strong>
-        <div class="feature-help-instructions">
-            <ol>
-            <li>Click the &nbsp;<img src="/site_media/img/project_createnew.png">&nbsp;<span style="color: #1B75BC">Create Composition</span> link above.</li>
-            <li>Save the composition as "Whole Class"</li>
-            </ol>
-        </div>
-        <strong>
-            How To See Class Work
-        </strong>
-        <div class="feature-help-instructions">
-            <ol>
-            <li>The Owner box above lists class instructors and students.</li>
-            <li>Click the down arrow next to <strong>Me</strong>.</li>
-            <li>Select the person whose work you'd like to see.</li>
-            <li>The project list will automatically update.</li>
-            </ol>
-        </div>
-        {% comment %}
-        <div class="right">        
-         <input id="{{help_id}}_checkbox" class="dont-show-help"
-            type="checkbox" {% ifequal default_help_state 0 %}checked="checked" {% endifequal %}/>
-            Do not show this message again.
-        </div>   
-        {% endcomment %}
     {% endifequal %}
+    
+    {% ifequal help_id "help_homepage_explore_column" %}
+        <strong>The Collection Section</strong>
+        
+        <div class="feature-help-instructions">
+            A collection is a set of images, video and/or audio brought into Mediathread that 
+            can be annotated, organized, and embedded into essays and other written analysis.
+        </div>
+        
+        {% if is_faculty %}
+            <strong>How do I build my collection?</strong>
+            <div class="feature-help-instructions">
+                <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
+                bookmarking items from sites such as YouTube or Flickr.
+                To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
+                in this column and follow directions.
+                </li>
+                
+                <li style="margin-bottom: 4px">
+                    <b>Upload</b>: Video and audio files may be uploaded 
+                    into Mediathread. Enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>. 
+                    To upload, click the 
+                    <b>Upload from Computer</b> link in this column.</li>                
+                <li>
+                    <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>.
+                </li>
+                
+            </ul>
+            </div>
+            
+            <strong>How do I see my collection?</strong>
+            <div class="feature-help-instructions">
+                Click the <b>View Full Collection</b> button in this column.
+            </div>            
+        {% else %}
+            <strong>How do I build my collection?</strong>
+            <div class="feature-help-instructions">
+            <ul>
+                <li style="margin-bottom: 4px"><b>Import</b>: Build your collection 
+                by bookmarking items from sites such as YouTube or Flickr.
+                To install the bookmarklet into your browser, click the <b>Import into Collection</b> 
+                link in this column and follow directions. Your instructor may list recommended sites 
+                in this column.</li>
+                <li><b>Upload</b>: If this feature is enabled, 
+                you may upload video and audio files from your computer. Click the 
+                <b>Upload from Computer</b> link in this column and follow directions.</li>
+            </ul>
+            </div>
+            <strong>How do I see my collection?</strong>
+            <div class="feature-help-instructions">
+                Click the <b>View Full Collection</b> button in this column.
+            </div>                    
+        {% endif %}
+            
+        
+    {% endifequal %}    
     
     
     <div class="visualclear"></div>
-    <div style="float: right">    
-        <input class="media" type="button" 
+    <div>
+        <a href="/help/" style="margin-top: 3px;" class="more-help left">View More Help</a>        
+        <input class="media right" type="button" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
-            value="Dismiss Help">
+            value="Close">
     </div>
 </div>
 <div class="visualclear"></div>

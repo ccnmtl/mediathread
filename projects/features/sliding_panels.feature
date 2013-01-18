@@ -6,8 +6,14 @@ Feature: Sliding Panels
         Given my browser resolution is <width> x <height>
         
         # Composition Editing
-        There is a Create Composition or Assignment button
-        When I click the Create Composition or Assignment button
+        There is a Create button
+        When I click the Create button
+        Then there is a Create Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
+        When I click the Create Composition button        
+        
         Then I am at the Untitled page
         There is an open Composition panel
         And the Composition panel has a <subpanel_state> subpanel
@@ -56,7 +62,7 @@ Feature: Sliding Panels
         Then I save the changes
         
         # Delete the response from the home screen
-        When I click the "Home" link        
+        When I click the "Sample Course" link        
         Given the home workspace is loaded
             Then I am at the Home page
             Then I click the "Sliding Panel: Scenario 2 <width> x <height>" project delete icon

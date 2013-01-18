@@ -228,8 +228,9 @@
                                     <div id="ie" class="browser-instruction">
                                         <strong>Install Bookmarklet in Internet Explorer</strong>
                                         <ol>
-                                          <li>Right-click on this link:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li><br />
-                                          <li>and choose <b>Add to Favorites</b></li>
+                                          <li>Right-click on the blue bookmarklet button.</li>  
+                                          <li>and choose <b>Add to Favorites</b><br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Med\
+iathread</a></li>
                                         </ol>
                                     </div>
                                     <div id="safari" class="browser-instruction"> 
@@ -304,6 +305,8 @@
                                     
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
+                                            <div class="visualclear"></div>
+                                            <br /><br />
                                             <div><b>For:</b>&nbsp;
                                             <select id="video_owners" name="as"> 
                                             {% for owner in owners %}                                

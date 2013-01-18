@@ -112,6 +112,7 @@ div.save-publish-status li {
     color: black;
     background-image: url("../img/buttons/compositions_button_bg.jpg");
     font-size: 85%;
+    cursor: pointer;
 }
 
 div.threadedcomments-container {

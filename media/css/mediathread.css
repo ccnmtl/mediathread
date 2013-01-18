@@ -1635,6 +1635,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input {
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
     width: 50px;
+    font-size: .75em;
 }
 
 

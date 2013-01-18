@@ -340,7 +340,7 @@
                                                 }
                                             } else {
                                                 self.selectedProjects.remove(project);
-                                            }                                            
+                                            }
                                         }
                                     );
                                 }

@@ -1,4 +1,5 @@
-from settings_shared import *
+from mediathread.settings import *
+# this picks up deploy_specific settings.
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -25,17 +26,14 @@ SENTRY_SITE = 'mediathread'
 SENTRY_SERVERS = ['http://sentry.ccnmtl.columbia.edu/sentry/store/']
 
 import logging
-from raven.contrib.django.handlers import SentryHandler
-
+from sentry.client.handlers import SentryHandler
 logger = logging.getLogger()
-# ensure we havent already registered the handler
-if SentryHandler not in map(type, logger.handlers):
+if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
     logger.addHandler(SentryHandler())
-
-    # Add StreamHandler to sentry's default so you can catch missed exceptions
     logger = logging.getLogger('sentry.errors')
     logger.propagate = False
     logger.addHandler(logging.StreamHandler())
+    SENTRY_REMOTE_URL = 'http://sentry.ccnmtl.columbia.edu/sentry/store/'
 
 try:
     from local_settings import *

@@ -40,6 +40,8 @@ Feature: Sliding Panels
         Given I am test_student_one in Sample Course
         Given my browser resolution is <width> x <height>
         
+        Given the home workspace is loaded
+        
         # Assignment View
         There is an assignment "Sample Assignment" project by Instructor One
         When I click the "Sample Assignment" link

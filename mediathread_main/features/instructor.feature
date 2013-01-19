@@ -36,7 +36,7 @@ Feature: Instructor Dashboard
                 
     Scenario: instructor_dashboard.feature 2. Class Activity      
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_instructor in Sample Course
         
         When I open the reports menu
@@ -53,7 +53,7 @@ Feature: Instructor Dashboard
         
     Scenario: instructor_dashboard.feature 3. Test Create Discussion
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_instructor in Sample Course
         
         Then I am at the Home page
@@ -76,7 +76,7 @@ Feature: Instructor Dashboard
         
     Scenario: instructor_dashboard.feature 4. Test Create Composition
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_instructor in Sample Course
         
         Then I am at the Home page
@@ -107,7 +107,7 @@ Feature: Instructor Dashboard
         
     Scenario: instructor_dashboard.feature 5. Test Assignment Responses      
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_instructor in Sample Course
         
         When I open the reports menu
@@ -136,7 +136,7 @@ Feature: Instructor Dashboard
         
     Scenario: instructor_dashboard.feature 6. Student Contributions     
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_instructor in Sample Course
         
         When I open the reports menu

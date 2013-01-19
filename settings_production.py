@@ -1,11 +1,11 @@
-from mediathread.settings import *
+from settings_shared import *
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     #'django.core.context_processors.debug',
     'django.core.context_processors.request',
     'mediathread_main.views.django_settings',
-    )
+)
 
 TEMPLATE_DIRS = (
     "/var/www/mediathread/mediathread/templates",
@@ -41,4 +41,3 @@ try:
     from local_settings import *
 except ImportError:
     pass
-

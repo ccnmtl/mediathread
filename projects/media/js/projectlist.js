@@ -61,7 +61,6 @@ ProjectList.prototype.refresh = function (config) {
     var self = this;
     var url;
         
-    // Retrieve the full asset w/annotations from storage
     if (config.view === 'all' || !config.space_owner) {
         url = MediaThread.urls['all-projects']();
     } else {
@@ -99,30 +98,7 @@ ProjectList.prototype.selectOwner = function (username) {
     var self = this;
     djangosherd.storage.get({
         type: 'asset',
-        url: username ? MediaThread.urls['your-space'](username, null, null, self.citable) : MediaThread.urls['all-space'](null, null, self.citable)
-    },
-    false,
-    function (the_records) {
-        self.updateAssets(the_records);
-    });
-    
-    return false;
-};
-
-ProjectList.prototype.clearFilter = function (filterName) {
-    var self = this;
-    var active_tag = null;
-    var active_modified = null;
-        
-    if (filterName === 'tag') {
-        active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
-    } else if (filterName === 'modified') {
-        active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
-    }
-    
-    djangosherd.storage.get({
-        type: 'asset',
-        url: self.getSpaceUrl(active_tag, active_modified)
+        url: username ? MediaThread.urls['your-projects'](username) : MediaThread.urls['all-projects']()
     },
     false,
     function (the_records) {
@@ -139,9 +115,9 @@ ProjectList.prototype.getShowingAllItems = function (json) {
 ProjectList.prototype.getSpaceUrl = function (active_tag, active_modified) {
     var self = this;
     if (self.getShowingAllItems(self.current_records)) {
-        return MediaThread.urls['all-space'](active_tag, active_modified, self.citable);
+        return MediaThread.urls['all-projects']();
     } else {
-        return MediaThread.urls['your-space'](self.current_records.space_owner.username, active_tag, active_modified, self.citable);
+        return MediaThread.urls['your-projects'](self.current_records.space_owner.username);
     }
 };
 
@@ -200,17 +176,6 @@ ProjectList.prototype.updateAssets = function (the_records) {
             self.updateSwitcher();
             
             jQuery(elt).fadeIn("slow");
-            
-            jQuery(self.parent).find("a.switcher-choice.remove").unbind('click').click(function (evt) {
-                var href = jQuery(this).attr("href");
-                var bits = href.split("/");
-                var filterName = bits[bits.length - 1];
-                
-                if (filterName === "both") {
-                    filterName = null;
-                }
-                return self.clearFilter(filterName);
-            });
         }
     });
 };

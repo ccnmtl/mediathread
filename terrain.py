@@ -177,8 +177,8 @@ def there_is_a_sample_assignment(step):
     time.sleep(2)
 
 
-@step(u'there is a sample assignment and response')
-def there_is_a_sample_assignment_and_response(step):
+@step(u'there is a sample response')
+def there_is_a_sample_response(step):
     os.system("./manage.py loaddata mediathread_main/fixtures/"
               "sample_assignment_and_response.json "
               "--settings=settings_test > /dev/null")

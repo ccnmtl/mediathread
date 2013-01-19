@@ -1,5 +1,4 @@
 from mediathread.settings import *
-# this picks up deploy_specific settings.
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',

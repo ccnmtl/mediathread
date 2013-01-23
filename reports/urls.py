@@ -20,4 +20,12 @@ urlpatterns = patterns(
 
     url(r'^class_activity/$', 'reports.views.class_activity',
         name="class-activity"),
+
+    url(r'^activity/course/$',
+        'reports.views.mediathread_activity_by_course',
+        name="mediathread-activity-by-course"),
+    url(r'^activity/school/$',
+        'reports.views.mediathread_activity_by_school',
+        name="mediathread-activity-by-school"),
+
 )

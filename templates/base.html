@@ -107,7 +107,11 @@
                             <div class="settings_submenu" style="display: none">
                                  <a href="/reports/class_assignments/">Assignment Responses</a>
                                  <a href="/reports/class_activity/">Class Activity</a>
-                                 <a href="/reports/class_summary/">Student Contributions</a>        
+                                 <a href="/reports/class_summary/">Student Contributions</a>
+                                {%if user.is_staff %}
+                                    <a href="/reports/activity/course/">Activity by Course</a>
+                                    <a href="/reports/activity/school/">Activity by School</a>
+                                {%endif%}     
                             </div>
                         </li>                        
                         {% endif %}

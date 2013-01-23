@@ -1,19 +1,17 @@
-import re
-import simplejson as json
-
-from django.db.models import get_model
-from django.http import HttpResponse
-from django.http import HttpResponseForbidden
-from djangohelpers.lib import rendered_with
-from djangohelpers.lib import allow_http
-from django.shortcuts import get_object_or_404
-
 from courseaffils.lib import users_in_course
 from courseaffils.models import Course
-
+from discussions.utils import get_course_discussions
+from django.contrib.auth.decorators import login_required
+from django.db.models import get_model
+from django.http import HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404
+from djangohelpers.lib import allow_http, rendered_with
 from djangosherd.models import DiscussionIndex
-
 from mediathread_main.clumper import Clumper
+from structuredcollaboration.models import Collaboration
+import csv
+import re
+import simplejson as json
 
 Asset = get_model('assetmgr', 'asset')
 SherdNote = get_model('djangosherd', 'sherdnote')
@@ -238,9 +236,145 @@ def class_activity(request):
         DiscussionIndex.with_permission(request,
                                         DiscussionIndex.objects.filter(
                                         collaboration__context=collab_context)
-                                        .order_by('-modified')[:40], ))
+                                        .order_by('-modified')[:40],))
 
     rv = {'my_feed': my_feed, 'submenu': 'activity', }
     if request.user.is_staff:
         rv['courses'] = Course.objects.all()
     return rv
+
+
+@login_required
+def mediathread_activity_by_course(request):
+    """STAFF ONLY reporting of entire application activity """
+    if not request.user.is_staff:
+        return HttpResponseForbidden("forbidden")
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = \
+        'attachment; filename=mediathread_activity_by_course.csv'
+    writer = csv.writer(response)
+    headers = ['Id', 'Title', 'Instructor', 'Course String',
+               'Term', 'Year', 'Section', 'Course Number', 'School',
+               'Items', 'Selections',
+               'Compositions', 'Assignments', 'Discussions']
+    writer.writerow(headers)
+
+    rows = []
+    for c in Course.objects.all().order_by('-id'):
+        if not (c.faculty_group.name.startswith('t1') or
+                c.faculty_group.name.startswith('t2') or
+                c.faculty_group.name.startswith('t3')):
+            continue
+
+        row = []
+        row.append(c.id)
+        row.append(c.title)
+
+        if 'instructor' in c.details():
+            row.append(c.details()['instructor'].value)
+        else:
+            row.append('')
+
+        course_string = c.faculty_group.name
+        row.append(course_string)
+
+        bits = c.faculty_group.name.split('.')
+        row.append(bits[0])  # term
+        row.append(bits[1][1:])  # year
+        row.append(bits[2])  # section
+        row.append(bits[3])  # courseNo
+        row.append(bits[4])  # school
+
+        items = Asset.objects.filter(course=c)
+        row.append(len(items))
+
+        selections = SherdNote.objects.filter(asset__course=c)
+        row.append(len(selections))
+
+        compositions = 0
+        assignments = 0
+
+        projects = Project.objects.filter(course=c)
+        for p in projects:
+            if p.visibility_short() == 'Assignment':
+                assignments += 1
+            else:
+                compositions += 1
+
+        row.append(compositions)
+        row.append(assignments)
+        try:
+            row.append(len(get_course_discussions(c)))
+        except Collaboration.DoesNotExist:
+            row.append(0)
+
+        rows.append(row)
+
+    for row in rows:
+        try:
+            writer.writerow(row)
+        except:
+            pass
+
+    return response
+
+
+@login_required
+def mediathread_activity_by_school(request):
+    """STAFF ONLY reporting of entire application activity """
+    if not request.user.is_staff:
+        return HttpResponseForbidden("forbidden")
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = \
+        'attachment; filename=mediathread_activity_by_school.csv'
+    writer = csv.writer(response)
+    headers = ['School', 'Items', 'Selections',
+               'Compositions', 'Assignments', 'Discussions']
+    writer.writerow(headers)
+
+    rows = {}
+    for c in Course.objects.all().order_by('-id'):
+        if not (c.faculty_group.name.startswith('t1') or
+                c.faculty_group.name.startswith('t2') or
+                c.faculty_group.name.startswith('t3')):
+            continue
+
+        bits = c.faculty_group.name.split('.')
+        school = bits[4]
+
+        if not school in rows:
+            row = [school, 0, 0, 0, 0, 0]
+            rows[school] = row
+
+        items = Asset.objects.filter(course=c)
+        rows[school][1] += len(items)
+
+        selections = SherdNote.objects.filter(asset__course=c)
+        rows[school][2] += len(selections)
+
+        compositions = 0
+        assignments = 0
+
+        projects = Project.objects.filter(course=c)
+        for p in projects:
+            if p.visibility_short() == 'Assignment':
+                assignments += 1
+            else:
+                compositions += 1
+
+        rows[school][3] += compositions
+        rows[school][4] += assignments
+        try:
+            rows[school][5] += len(get_course_discussions(c))
+        except Collaboration.DoesNotExist:
+            pass  # no discussions exist, that's ok
+
+    for row in rows.values():
+        try:
+            writer.writerow(row)
+        except:
+            pass
+
+    return response

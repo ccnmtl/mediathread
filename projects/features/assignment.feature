@@ -129,7 +129,7 @@ Feature: Assignment
 
     Scenario: assignment.feature 3. Instructor provides response feedback
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_instructor in Sample Course
         
         When I select "Student One" as the owner in the Composition column
@@ -192,7 +192,7 @@ Feature: Assignment
         
     Scenario Outline: assignment.feature 4. Assignment Response - visibility rules        
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Give I am test_student_one in Sample Course
         
         # Set the assignment response visibility
@@ -225,7 +225,7 @@ Feature: Assignment
 
     Scenario: assignment.feature 5. Class Responses link - instructor       
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Give I am test_instructor in Sample Course
         
         When I click the "Sample Assignment" link
@@ -247,7 +247,7 @@ Feature: Assignment
         
     Scenario: assignment.feature 6. Class Responses link + Response Visibility + Respond - Student Two       
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         
         # By default, the response is "Instructor Only"
         # Student Two does not have access

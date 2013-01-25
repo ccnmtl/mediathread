@@ -94,7 +94,9 @@
                             <div class="settings_submenu" style="display: none">
                                  <a href="/dashboard/settings/">Manage Settings</a>
                                  <a href="/dashboard/addsource/">Manage Sources</a>
-                                 <a href="/dashboard/migrate/">Migrate Materials</a>
+                                 {% ifnotequal role_in_course "non-member" %}
+                                    <a href="/dashboard/migrate/">Migrate Materials</a>
+                                 {% endifnotequal %}
                             </div>
                         </li>
                         <li>
@@ -197,6 +199,7 @@
 {% block js %}{% endblock %}
 <script type="text/javascript">
     jQuery(document).ready(function() {
+        // setup some ajax progress indicator
         jQuery("html").bind("ajaxStart", function(){  
            jQuery(this).addClass('busy');  
         }).bind("ajaxStop", function(){  

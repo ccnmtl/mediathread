@@ -17,27 +17,6 @@ def video_upload_is_enabled(step):
             pass  # It's already enabled. That's ok.
 
 
-@step(u'Given the selection visibility is set to "([^"]*)"')
-def given_the_selection_visibility_is_value(step, value):
-    if world.using_selenium:
-        world.firefox.get(django_url("/dashboard/settings/"))
-
-        if value == "Yes":
-            elt = world.firefox.find_element_by_id("selection_visibility_yes")
-            elt.click()
-        else:
-            elt = world.firefox.find_element_by_id("selection_visibility_no")
-            elt.click()
-
-        elt = world.firefox.find_element_by_id("selection_visibility_submit")
-        if elt:
-            elt.click()
-            alert = world.firefox.switch_to_alert()
-            alert.accept()
-
-            world.firefox.get(django_url("/"))
-
-
 @step(u'I see ([0-9][0-9]?) sources?')
 def i_see_count_source(step, count):
     if world.using_selenium:

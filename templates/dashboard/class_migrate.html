@@ -227,28 +227,34 @@
     {% with help_migrate_materials as default_help_state %}
             
     {% include "help/new_help_contentarea.html" %}
-            
-    <div id="available-courses-selector" style="display: none">
-        <input type="text" class="default" id="available-courses" value="Type course name here">
-        <input type="submit" id="view-materials" value="View materials" class="rounded-button gray"/>        
-    </div>
     
-    <div id="course-materials-container" style="display: none">
-        <h3><span id="course-title"></span><a id="switch-course" href="#" class="metadata-value">switch course</a></h3>
+    {% ifequal role_in_course "non-member" %}
+        <div id="no-materials-to-migrate">
+            You are not a member of this course. You are not authorized to migrate materials into this course.
+        </div>
+    {% else %}
+                
+        <div id="available-courses-selector" style="display: none">
+            <input type="text" class="default" id="available-courses" value="Type course name here">
+            <input type="submit" id="view-materials" value="View materials" class="rounded-button gray"/>        
+        </div>
         
-        <div>
-            <div class="course-information">
-                <div id="course"></div>
-            </div>
-            <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
-        </div>                    
-    </div>
-    
-    <div id="no-materials-to-migrate" style="display: none">
-        You are not affiliated with any other courses. Please review our help materials
-        if you need to migrate course materials from a colleague's class.
-    </div>
-    
+        <div id="course-materials-container" style="display: none">
+            <h3><span id="course-title"></span><a id="switch-course" href="#" class="metadata-value">switch course</a></h3>
+            
+            <div>
+                <div class="course-information">
+                    <div id="course"></div>
+                </div>
+                <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
+            </div>                    
+        </div>
+        
+        <div id="no-materials-to-migrate" style="display: none">
+            You are not affiliated with any other courses. Please review our help materials
+            if you need to migrate course materials from a colleague's class.
+        </div>
+    {% endifequal %}    
 {% endwith %}{% endwith %}
 {% endblock %}
 

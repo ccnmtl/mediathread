@@ -469,7 +469,8 @@ def source_redirect(request):
 
 def source_specialauth(request, url, key):
     nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = "/?msg=upload"
+    redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
+
     username = request.user.username
 
     if ('as' in request.REQUEST and
@@ -478,19 +479,18 @@ def source_specialauth(request, url, key):
              request.user.has_perm('assetmgr.can_upload_for'))):
         username = request.REQUEST['as']
 
-    return '%s?set_course=%s&as=%s&redirect_url=%s\
-            &nonce=%s&hmac=%s&audio=%s&audio2=%s' % (
-        url,
-        request.course.group.name,
-        username,
-        urllib.quote(redirect_back),
-        nonce,
-        hmac.new(key,
-                 '%s:%s:%s' % (username, redirect_back, nonce),
-                 hashlib.sha1
-                 ).hexdigest(),
-        request.POST.get('audio', ''),
-        request.POST.get('audio2', ''))
+    return ("%s?set_course=%s&as=%s&redirect_url=%s"
+            "&nonce=%s&hmac=%s&audio=%s&audio2=%s") % \
+        (url,
+         request.course.group.name,
+         username,
+         urllib.quote(redirect_back),
+         nonce,
+         hmac.new(key,
+                  '%s:%s:%s' % (username, redirect_back, nonce),
+                  hashlib.sha1).hexdigest(),
+         request.POST.get('audio', ''),
+         request.POST.get('audio2', ''))
 
 
 def final_cut_pro_xml(request, asset_id):

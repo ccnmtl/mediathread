@@ -177,8 +177,8 @@ def there_is_a_sample_assignment(step):
     time.sleep(2)
 
 
-@step(u'there is a sample assignment and response')
-def there_is_a_sample_assignment_and_response(step):
+@step(u'there is a sample response')
+def there_is_a_sample_response(step):
     os.system("./manage.py loaddata mediathread_main/fixtures/"
               "sample_assignment_and_response.json "
               "--settings=settings_test > /dev/null")
@@ -406,7 +406,6 @@ def the_most_recent_notification_is_text(step, text):
 def i_select_name_as_the_owner(step, name):
     selector = "div.switcher_collection_chooser"
     m = world.firefox.find_element_by_css_selector(selector)
-
     assert m, 'Unable to find the owner menu'
 
     m.find_element_by_css_selector("a.switcher-top").click()
@@ -415,6 +414,7 @@ def i_select_name_as_the_owner(step, name):
     for o in owners:
         if o.text.find(name) > -1:
             o.click()
+            time.sleep(2)
             return
 
     assert False, "Unable to find owner %s" % name
@@ -449,9 +449,15 @@ def the_owner_is_name_in_the_title_column(step, name, title):
         column = world.firefox.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
-    m = column.find_element_by_css_selector("div.switcher_collection_chooser")
+    s = "div.switcher_collection_chooser"
+    m = column.find_element_by_css_selector(s)
     owner = m.find_element_by_css_selector("a.switcher-top span.title")
     msg = "Expected owner title to be %s. Actually %s" % (name, owner.text)
+    if owner.text != name:
+        time.sleep(1)
+        m = column.find_element_by_css_selector(s)
+        owner = m.find_element_by_css_selector("a.switcher-top span.title")
+
     assert owner.text == name, msg
 
 
@@ -784,7 +790,8 @@ def i_click_the_title_item_type_icon(step, title, type):
             if type == "delete":
                 icon = item.find_element_by_css_selector(".%s_icon" % type)
             elif type == "edit":
-                icon = item.find_element_by_css_selector("a.%s-asset" % type)
+                s = "a.%s-asset-inplace" % type
+                icon = item.find_element_by_css_selector(s)
 
             icon.click()
             return  # found the link & the icon
@@ -797,6 +804,10 @@ def i_click_the_title_item_type_icon(step, title, type):
 @step(u'I can filter by "([^"]*)" in the ([^"]*) column')
 def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
+    if not column:
+        selector = "td.panel-container.%s" % title.lower()
+        column = world.firefox.find_element_by_css_selector(selector)
+
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
@@ -818,6 +829,9 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
 @step(u'I filter by "([^"]*)" in the ([^"]*) column')
 def i_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
+    if not column:
+        selector = "td.panel-container.%s" % title.lower()
+        column = world.firefox.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
@@ -840,6 +854,9 @@ def i_filter_by_tag_in_the_title_column(step, tag, title):
 @step(u'I clear the filter in the ([^"]*) column')
 def i_clear_the_filter_in_the_title_column(step, title):
     column = get_column(title)
+    if not column:
+        selector = "td.panel-container.%s" % title.lower()
+        column = world.firefox.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     elt = column.find_element_by_css_selector("a.switcher-choice.remove")
@@ -883,6 +900,9 @@ def then_publish_to_world_is_value(step, value):
 @step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
 def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
+    if not column:
+        selector = "td.panel-container.%s" % title.lower()
+        column = world.firefox.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
@@ -1105,6 +1125,27 @@ def i_save_the_changes(step):
             return
 
     assert False, "Unable to locate the dialog's save button"
+
+
+@step(u'Given the selection visibility is set to "([^"]*)"')
+def given_the_selection_visibility_is_value(step, value):
+    if world.using_selenium:
+        world.firefox.get(django_url("/dashboard/settings/"))
+
+        if value == "Yes":
+            elt = world.firefox.find_element_by_id("selection_visibility_yes")
+            elt.click()
+        else:
+            elt = world.firefox.find_element_by_id("selection_visibility_no")
+            elt.click()
+
+        elt = world.firefox.find_element_by_id("selection_visibility_submit")
+        if elt:
+            elt.click()
+            alert = world.firefox.switch_to_alert()
+            alert.accept()
+
+            world.firefox.get(django_url("/"))
 
 
 # Local utility functions

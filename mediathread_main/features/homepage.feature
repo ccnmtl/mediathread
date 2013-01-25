@@ -61,7 +61,7 @@ Feature: Homepage
         
     Scenario: homepage.feature 4. Student view w/assignment & response
         Using selenium
-        Given there is a sample assignment and response
+        Given there is a sample response
         Given I am test_student_one in Sample Course
         
         There is not a From Your Instructor column

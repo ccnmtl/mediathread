@@ -40,7 +40,6 @@ if 'test' in sys.argv:
         }
     }
 
-
 CACHE_BACKEND = 'locmem:///'
 
 TIME_ZONE = 'America/New_York'

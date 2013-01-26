@@ -16,8 +16,6 @@ MEDIA_ROOT = '/var/www/mediathread/uploads/'
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-WIND_SERVICE = "cnmtl_full_p"
-
 # IMPORTANT: make sure your local_settings.py file
 # has a SENTRY_KEY defined
 # as documented in the wiki

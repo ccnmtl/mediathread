@@ -13,6 +13,19 @@ RUNNING TESTS
 
 More information here...http://lettuce.it/reference/cli.html
 
+------------------
+BROWSER SELECTION
+------------------
+
+These selenium tests exercise the full stack, including javascript and UI verification.
+As such a real browser needs to be instantiated to complete the tests. 
+
+To select your browser, set the BROWSER variable in settings_test.py to Firefox or Chrome. 
+
+Please read the selenium documentation on local configuration for each browser.
+Firefox: http://code.google.com/p/selenium/wiki/FirefoxDriver
+Chrome: http://code.google.com/p/selenium/wiki/ChromeDriver 
+
 -------------------------
 BASIC LETTUCE VOCABULARY
 -------------------------

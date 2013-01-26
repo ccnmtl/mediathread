@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce.django import django_url
@@ -43,18 +44,25 @@ def setup_database(variables):
 
 @before.all
 def setup_browser():
-    ff_profile = FirefoxProfile()
-    ff_profile.set_preference("webdriver_enable_native_events", False)
-    world.firefox = webdriver.Firefox(ff_profile)
+    browser = getattr(settings, 'BROWSER', None)
+    if browser is None:
+        raise Exception('Please configure a browser in settings_test.py')
+    elif browser == 'Firefox':
+        ff_profile = FirefoxProfile()
+        ff_profile.set_preference("webdriver_enable_native_events", False)
+        world.browser = webdriver.Firefox(ff_profile)
+    elif  browser == 'Chrome':
+        world.browser = webdriver.Chrome()
+
     world.client = client.Client()
     world.using_selenium = False
 
     # Make the browser size at least 1024x768
-    world.firefox.execute_script("window.moveTo(0, 1); "
+    world.browser.execute_script("window.moveTo(0, 1); "
                                  "window.resizeTo(1024, 768);")
 
     # Wait implicitly for 2 seconds
-    world.firefox.implicitly_wait(5)
+    world.browser.implicitly_wait(5)
 
     # stash
     world.memory = {}
@@ -62,7 +70,7 @@ def setup_browser():
 
 @after.all
 def teardown_browser(total):
-    world.firefox.quit()
+    world.browser.quit()
 
 
 @step(u'Using selenium')
@@ -98,7 +106,7 @@ def clear_selenium(step):
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
     if world.using_selenium:
-        world.firefox.get(django_url(url))
+        world.browser.get(django_url(url))
     else:
         response = world.client.get(django_url(url))
         world.dom = html.fromstring(response.content)
@@ -114,28 +122,28 @@ def given_the_name_workspace_is_loaded(step, name):
     else:
         assert False, "No selector configured for %s" % name
 
-    wait = ui.WebDriverWait(world.firefox, 5)
-    wait.until(lambda driver: world.firefox.find_element_by_id(id))
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(lambda driver: world.browser.find_element_by_id(id))
 
 
 @step(u'my browser resolution is ([^"]*) x ([^"]*)')
 def my_browser_resolution_is_width_x_height(step, width, height):
     cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (width, height)
-    world.firefox.execute_script(cmd)
+    world.browser.execute_script(cmd)
 
 
 @step(u'I am ([^"]*) in ([^"]*)')
 def i_am_username_in_course(step, username, course):
     if world.using_selenium:
-        world.firefox.get(django_url("/accounts/logout/"))
-        world.firefox.get(django_url("accounts/login/?next=/"))
-        username_field = world.firefox.find_element_by_id("id_username")
-        password_field = world.firefox.find_element_by_id("id_password")
-        form = world.firefox.find_element_by_name("login_local")
+        world.browser.get(django_url("/accounts/logout/"))
+        world.browser.get(django_url("accounts/login/?next=/"))
+        username_field = world.browser.find_element_by_id("id_username")
+        password_field = world.browser.find_element_by_id("id_password")
+        form = world.browser.find_element_by_name("login_local")
         username_field.send_keys(username)
         password_field.send_keys("test")
         form.submit()
-        assert username in world.firefox.page_source, world.firefox.page_source
+        assert username in world.browser.page_source, world.browser.page_source
 
         step.given('I access the url "/"')
         step.given('I am in the %s class' % course)
@@ -147,7 +155,7 @@ def i_am_username_in_course(step, username, course):
 @step(u'I am not logged in')
 def i_am_not_logged_in(step):
     if world.using_selenium:
-        world.firefox.get(django_url("/accounts/logout/"))
+        world.browser.get(django_url("/accounts/logout/"))
     else:
         world.client.logout()
 
@@ -155,7 +163,7 @@ def i_am_not_logged_in(step):
 @step(u'I log out')
 def i_log_out(step):
     if world.using_selenium:
-        world.firefox.get(django_url("/accounts/logout/"))
+        world.browser.get(django_url("/accounts/logout/"))
     else:
         response = world.client.get(django_url("/accounts/logout/"),
                                     follow=True)
@@ -166,8 +174,8 @@ def i_log_out(step):
 @step(u'I am at the ([^"]*) page')
 def i_am_at_the_name_page(step, name):
     if world.using_selenium:
-        wait = ui.WebDriverWait(world.firefox, 2)
-        wait.until(lambda driver: world.firefox.title.find(name) > -1)
+        wait = ui.WebDriverWait(world.browser, 2)
+        wait.until(lambda driver: world.browser.title.find(name) > -1)
 
 
 @step(u'there is a sample assignment')
@@ -189,7 +197,7 @@ def there_is_a_sample_response(step):
 def i_type_value_for_field(step, value, field):
     if world.using_selenium:
         selector = "input[name=%s]" % field
-        input = world.firefox.find_element_by_css_selector(selector)
+        input = world.browser.find_element_by_css_selector(selector)
         assert input is not None, "Cannot locate input field named %s" % field
         input.send_keys(value)
 
@@ -214,7 +222,7 @@ def there_is_not_a_text_link(step, text):
                     assert False, "found the '%s' link" % text
     else:
         try:
-            world.firefox.find_element_by_partial_link_text(text)
+            world.browser.find_element_by_partial_link_text(text)
             assert False, "found the '%s' link" % text
         except:
             pass  # expected
@@ -233,10 +241,10 @@ def there_is_a_text_link(step, text):
         assert False, "could not find the '%s' link" % text
     else:
         try:
-            link = world.firefox.find_element_by_partial_link_text(text)
+            link = world.browser.find_element_by_partial_link_text(text)
             assert link.is_displayed()
         except:
-            world.firefox.get_screenshot_as_file("/tmp/selenium.png")
+            world.browser.get_screenshot_as_file("/tmp/selenium.png")
             assert False, "Cannot find link %s" % text
 
 
@@ -253,18 +261,18 @@ def i_click_the_link(step, text):
         assert False, "could not find the '%s' link" % text
     else:
         try:
-            link = world.firefox.find_element_by_partial_link_text(text)
+            link = world.browser.find_element_by_partial_link_text(text)
             assert link.is_displayed()
             link.click()
         except:
-            world.firefox.get_screenshot_as_file("/tmp/selenium.png")
+            world.browser.get_screenshot_as_file("/tmp/selenium.png")
             assert False, link.location
 
 
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
     if world.using_selenium:
-        course_title = world.firefox.find_element_by_id("course_title")
+        course_title = world.browser.find_element_by_id("course_title")
         msg = ("Expected the %s class, but found the %s class" %
                (coursename, course_title.text))
         assert course_title.text.find(coursename) > -1, msg
@@ -291,22 +299,22 @@ def then_i_wait_count_seconds(step, count):
 @step(u'I see "([^"]*)"')
 def i_see_text(step, text):
     try:
-        assert text in world.firefox.page_source, world.firefox.page_source
+        assert text in world.browser.page_source, world.browser.page_source
     except:
         time.sleep(1)
         msg = "I did not see %s in this page" % text
-        assert text in world.firefox.page_source, msg
+        assert text in world.browser.page_source, msg
 
 
 @step(u'I do not see "([^"]*)"')
 def i_do_not_see_text(step, text):
-    assert text not in world.firefox.page_source, world.firefox.page_source
+    assert text not in world.browser.page_source, world.browser.page_source
 
 
 @step(u'I cancel an alert dialog')
 def i_cancel_an_alert_dialog(step):
     time.sleep(1)
-    alert = world.firefox.switch_to_alert()
+    alert = world.browser.switch_to_alert()
     alert.dismiss()
     time.sleep(1)
 
@@ -314,7 +322,7 @@ def i_cancel_an_alert_dialog(step):
 @step(u'I ok an alert dialog')
 def i_ok_an_alert_dialog(step):
     time.sleep(1)
-    alert = world.firefox.switch_to_alert()
+    alert = world.browser.switch_to_alert()
     alert.accept()
     time.sleep(1)
 
@@ -322,7 +330,7 @@ def i_ok_an_alert_dialog(step):
 @step(u'I open the ([^"]*) menu')
 def i_open_the_title_menu(step, title):
     selector = "div.settings_menu.%s" % title
-    elt = world.firefox.find_element_by_css_selector(selector)
+    elt = world.browser.find_element_by_css_selector(selector)
     elt.click()
 
 
@@ -330,7 +338,7 @@ def i_open_the_title_menu(step, title):
 def there_is_no_title_menu(step, title):
     try:
         selector = "div.settings_menu.%s" % title
-        world.firefox.find_element_by_css_selector(selector)
+        world.browser.find_element_by_css_selector(selector)
         assert False, "Found %s menu" % title
     except:
         pass  # expected
@@ -338,7 +346,7 @@ def there_is_no_title_menu(step, title):
 
 @step(u'there is an? ([^"]*) column')
 def there_is_a_title_column(step, title):
-    elts = world.firefox.find_elements_by_tag_name("h2")
+    elts = world.browser.find_elements_by_tag_name("h2")
 
     for e in elts:
         if e.text and e.text.strip().lower().find(title.lower()) > -1:
@@ -349,7 +357,7 @@ def there_is_a_title_column(step, title):
 
 @step(u'there is not an? ([^"]*) column')
 def there_is_not_a_title_column(step, title):
-    elts = world.firefox.find_elements_by_tag_name("h2")
+    elts = world.browser.find_elements_by_tag_name("h2")
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
             assert False, "Found a column entitled %s" % title
@@ -357,7 +365,7 @@ def there_is_not_a_title_column(step, title):
 
 @step(u'there is help for the ([^"]*) column')
 def there_is_help_for_the_title_column(step, title):
-    elts = world.firefox.find_elements_by_tag_name("h2")
+    elts = world.browser.find_elements_by_tag_name("h2")
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
             e.parent.find_element_by_css_selector(
@@ -369,7 +377,7 @@ def there_is_help_for_the_title_column(step, title):
 
 @step(u'there is no help for the ([^"]*) column')
 def there_is_no_help_for_the_title_column(step, title):
-    elts = world.firefox.find_elements_by_tag_name("h2")
+    elts = world.browser.find_elements_by_tag_name("h2")
     for e in elts:
         if e.text and e.text.strip().lower().startswith(title.lower()):
             try:
@@ -382,14 +390,14 @@ def there_is_no_help_for_the_title_column(step, title):
 
 @step(u'I\'m told ([^"]*)')
 def i_m_told_text(step, text):
-    alert = world.firefox.switch_to_alert()
+    alert = world.browser.switch_to_alert()
     assert alert.text.startswith(text), "Alert text invalid: %s" % alert.text
     alert.accept()
 
 
 @step(u'the most recent notification is "([^"]*)"')
 def the_most_recent_notification_is_text(step, text):
-    list = world.firefox.find_element_by_id("parent-clumper")
+    list = world.browser.find_element_by_id("parent-clumper")
 
     elts = list.find_elements_by_css_selector("div.asset_title")
     assert len(elts) > 0, "Found 0 notifications. Expected at least one."
@@ -405,7 +413,7 @@ def the_most_recent_notification_is_text(step, text):
 @step(u'I select "([^"]*)" as the owner')
 def i_select_name_as_the_owner(step, name):
     selector = "div.switcher_collection_chooser"
-    m = world.firefox.find_element_by_css_selector(selector)
+    m = world.browser.find_element_by_css_selector(selector)
     assert m, 'Unable to find the owner menu'
 
     m.find_element_by_css_selector("a.switcher-top").click()
@@ -446,7 +454,7 @@ def the_owner_is_name_in_the_title_column(step, name, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
-        column = world.firefox.find_element_by_css_selector(selector)
+        column = world.browser.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     s = "div.switcher_collection_chooser"
@@ -466,7 +474,7 @@ def the_collection_panel_has_a_title_item(step, title):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -484,7 +492,7 @@ def the_collection_panel_has_no_title_item(step, title):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -502,7 +510,7 @@ def the_title_item_has_a_note_text(step, title, text):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -528,7 +536,7 @@ def the_title_item_has_a_total_selections_count_by_me(step,
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -558,7 +566,7 @@ def the_title_item_has_a_tag_text(step, title, text):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -583,7 +591,7 @@ def the_title_item_has_a_selection_seltitle(step, title, seltitle):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -610,7 +618,7 @@ def the_title_item_has_no_selections(step, title):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -635,7 +643,7 @@ def the_title_item_has_no_notes(step, title):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -659,7 +667,7 @@ def the_title_item_has_no_tags(step, title):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
     select = 'li.annotation-global-tags span.metadata-value a.switcher-choice'
@@ -682,7 +690,7 @@ def the_seltitle_selection_has_a_note_text(step, seltitle, text):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -711,7 +719,7 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
     panel = get_column('collection')
     if not panel:
         selector = "td.panel-container.collection"
-        panel = world.firefox.find_element_by_css_selector(selector)
+        panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel, "Cannot find the collection panel"
 
@@ -734,7 +742,7 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
 @step(u'the "([^"]*)" item has an? ([^"]*) icon')
 def the_title_item_has_a_type_icon(step, title, type):
     select = "div.gallery-item"
-    items = world.firefox.find_elements_by_css_selector(select)
+    items = world.browser.find_elements_by_css_selector(select)
     for item in items:
         try:
             item.find_element_by_partial_link_text(title)
@@ -758,7 +766,7 @@ def the_title_item_has_a_type_icon(step, title, type):
 @step(u'the "([^"]*)" item has no ([^"]*) icon')
 def the_title_item_has_no_type_icon(step, title, type):
     select = "div.gallery-item"
-    items = world.firefox.find_elements_by_css_selector(select)
+    items = world.browser.find_elements_by_css_selector(select)
     for item in items:
         try:
             item.find_element_by_partial_link_text(title)
@@ -779,7 +787,7 @@ def the_title_item_has_no_type_icon(step, title, type):
 def i_click_the_title_item_type_icon(step, title, type):
     time.sleep(1)
     select = "div.gallery-item"
-    items = world.firefox.find_elements_by_css_selector(select)
+    items = world.browser.find_elements_by_css_selector(select)
     for item in items:
         try:
             item.find_element_by_partial_link_text(title)
@@ -806,7 +814,7 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
-        column = world.firefox.find_element_by_css_selector(selector)
+        column = world.browser.find_element_by_css_selector(selector)
 
     assert column, "Unable to find a column entitled %s" % title
 
@@ -831,7 +839,7 @@ def i_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
-        column = world.firefox.find_element_by_css_selector(selector)
+        column = world.browser.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
@@ -856,7 +864,7 @@ def i_clear_the_filter_in_the_title_column(step, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
-        column = world.firefox.find_element_by_css_selector(selector)
+        column = world.browser.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     elt = column.find_element_by_css_selector("a.switcher-choice.remove")
@@ -867,8 +875,8 @@ def i_clear_the_filter_in_the_title_column(step, title):
 @step(u'Given publish to world is ([^"]*)')
 def given_publish_to_world_is_value(step, value):
     if world.using_selenium:
-        ff = world.firefox
-        world.firefox.get(django_url("/dashboard/settings/"))
+        ff = world.browser
+        world.browser.get(django_url("/dashboard/settings/"))
 
         if value == "enabled":
             elt = ff.find_element_by_id('allow_public_compositions_yes')
@@ -889,9 +897,9 @@ def given_publish_to_world_is_value(step, value):
 @step(u'Then publish to world is ([^"]*)')
 def then_publish_to_world_is_value(step, value):
     if value == 'enabled':
-        elt = world.firefox.find_element_by_id('allow_public_compositions_yes')
+        elt = world.browser.find_element_by_id('allow_public_compositions_yes')
     else:
-        elt = world.firefox.find_element_by_id('allow_public_compositions_no')
+        elt = world.browser.find_element_by_id('allow_public_compositions_no')
 
     msg = "The checked attribute was %s" % elt.get_attribute("checked")
     assert elt.get_attribute('checked'), msg
@@ -902,7 +910,7 @@ def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
-        column = world.firefox.find_element_by_css_selector(selector)
+        column = world.browser.find_element_by_css_selector(selector)
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
@@ -924,7 +932,7 @@ def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
 @step(u'The "([^"]*)" project has no delete icon')
 def the_title_project_has_no_delete_icon(step, title):
     time.sleep(1)
-    link = world.firefox.find_element_by_partial_link_text(title)
+    link = world.browser.find_element_by_partial_link_text(title)
     try:
         link.parent.find_element_by_css_selector(".delete_icon")
         assert False, "%s does have a delete icon" % title
@@ -934,20 +942,20 @@ def the_title_project_has_no_delete_icon(step, title):
 
 @step(u'The "([^"]*)" project has a delete icon')
 def the_title_project_has_a_delete_icon(step, title):
-    link = world.firefox.find_element_by_partial_link_text(title)
+    link = world.browser.find_element_by_partial_link_text(title)
     link.parent.find_element_by_css_selector(".delete_icon")
 
 
 @step(u'I click the "([^"]*)" project delete icon')
 def i_click_the_title_project_delete_icon(step, title):
-    link = world.firefox.find_element_by_partial_link_text(title)
+    link = world.browser.find_element_by_partial_link_text(title)
     img = link.parent.find_element_by_css_selector(".delete_icon")
     img.click()
 
 
 @step(u'the instructor panel has ([0-9][0-9]?) projects? named "([^"]*)"')
 def the_instructor_panel_has_count_projects_named_title(step, count, title):
-    elts = world.firefox.find_elements_by_css_selector("ul.instructor-list li")
+    elts = world.browser.find_elements_by_css_selector("ul.instructor-list li")
     n = 0
     for e in elts:
         a = e.find_element_by_css_selector("a")
@@ -962,7 +970,7 @@ def the_instructor_panel_has_count_projects_named_title(step, count, title):
 
 @step(u'the composition panel has ([0-9][0-9]?) projects? named "([^"]*)"')
 def the_composition_panel_has_count_projects_named_title(step, count, title):
-    elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    elts = world.browser.find_elements_by_css_selector("li.projectlist")
 
     n = 0
     for e in elts:
@@ -976,7 +984,7 @@ def the_composition_panel_has_count_projects_named_title(step, count, title):
 
 @step(u'the composition panel has ([0-9][0-9]?) responses? named "([^"]*)"')
 def the_composition_panel_has_count_responses_named_title(step, count, title):
-    elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    elts = world.browser.find_elements_by_css_selector("li.projectlist")
 
     n = 0
     for e in elts:
@@ -996,14 +1004,14 @@ def there_is_a_state_name_panel(step, state, name):
     name -- composition, assignment, discussion, collection
     """
     selector = "td.panel-container.%s.%s" % (state.lower(), name.lower())
-    panel = world.firefox.find_element_by_css_selector(selector)
+    panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
 
 @step(u'I call the ([^"]*) "([^"]*)"')
 def i_call_the_panel_title(step, panel, title):
     selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.firefox.find_element_by_css_selector(selector)
+    panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
     input = panel.find_element_by_name("title")
@@ -1014,24 +1022,24 @@ def i_call_the_panel_title(step, panel, title):
 @step(u'I write some text for the ([^"]*)')
 def i_write_some_text_for_the_panel(step, panel):
     selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.firefox.find_element_by_css_selector(selector)
+    panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
     frame = panel.find_element_by_tag_name("iframe")
-    world.firefox.switch_to_frame(frame)
-    input = world.firefox.find_element_by_class_name("mceContentBody")
+    world.browser.switch_to_frame(frame)
+    input = world.browser.find_element_by_class_name("mceContentBody")
     input.send_keys("""The Columbia Center for New Teaching and Learning
                      was (CCNMTL) was founded at Columbia University in 1999
                      to enhance teaching and learning through the purposeful
                      use of new media and technology""")
 
-    world.firefox.switch_to_default_content()
+    world.browser.switch_to_default_content()
 
 
 @step(u'there is an? ([^"]*) "([^"]*)" reply by ([^"]*)')
 def there_is_a_status_title_reply_by_author(step, status, title, author):
     selector = "div.assignment-listitem.response"
-    elts = world.firefox.find_elements_by_css_selector(selector)
+    elts = world.browser.find_elements_by_css_selector(selector)
     assert len(elts) > 0, "Expected at least 1 response. 0 found"
 
     for e in elts:
@@ -1060,7 +1068,7 @@ def there_is_a_status_title_reply_by_author(step, status, title, author):
 
 @step(u'there is an? ([^"]*) "([^"]*)" project by ([^"]*)')
 def there_is_a_status_title_project_by_author(step, status, title, author):
-    elts = world.firefox.find_elements_by_css_selector("li.projectlist")
+    elts = world.browser.find_elements_by_css_selector("li.projectlist")
     assert len(elts) > 0, "Expected at least 1 project. Found 0"
 
     assignment = False
@@ -1107,7 +1115,7 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
 @step(u'The ([^"]*) title is "([^"]*)"')
 def the_panel_title_is_value(step, panel, value):
     selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.firefox.find_element_by_css_selector(selector)
+    panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
     h1 = panel.find_element_by_css_selector("h1.project-title")
@@ -1117,7 +1125,7 @@ def the_panel_title_is_value(step, panel, value):
 
 @step(u'i save the changes')
 def i_save_the_changes(step):
-    elts = world.firefox.find_elements_by_tag_name("button")
+    elts = world.browser.find_elements_by_tag_name("button")
     for e in elts:
         if e.get_attribute("type") == "button" and e.text == "Save":
             e.click()
@@ -1130,27 +1138,27 @@ def i_save_the_changes(step):
 @step(u'Given the selection visibility is set to "([^"]*)"')
 def given_the_selection_visibility_is_value(step, value):
     if world.using_selenium:
-        world.firefox.get(django_url("/dashboard/settings/"))
+        world.browser.get(django_url("/dashboard/settings/"))
 
         if value == "Yes":
-            elt = world.firefox.find_element_by_id("selection_visibility_yes")
+            elt = world.browser.find_element_by_id("selection_visibility_yes")
             elt.click()
         else:
-            elt = world.firefox.find_element_by_id("selection_visibility_no")
+            elt = world.browser.find_element_by_id("selection_visibility_no")
             elt.click()
 
-        elt = world.firefox.find_element_by_id("selection_visibility_submit")
+        elt = world.browser.find_element_by_id("selection_visibility_submit")
         if elt:
             elt.click()
-            alert = world.firefox.switch_to_alert()
+            alert = world.browser.switch_to_alert()
             alert.accept()
 
-            world.firefox.get(django_url("/"))
+            world.browser.get(django_url("/"))
 
 
 # Local utility functions
 def get_column(title):
-    elts = world.firefox.find_elements_by_tag_name("h2")
+    elts = world.browser.find_elements_by_tag_name("h2")
     for e in elts:
         try:
             if e.text and e.text.strip().lower().find(title.lower()) > -1:
@@ -1164,7 +1172,7 @@ def get_column(title):
 def find_button_by_value(value, parent=None):
 
     if not parent:
-        parent = world.firefox
+        parent = world.browser
 
     elts = parent.find_elements_by_css_selector("input[type=submit]")
     for e in elts:
@@ -1176,7 +1184,7 @@ def find_button_by_value(value, parent=None):
         if e.get_attribute("value") == value:
             return e
 
-    elts = world.firefox.find_elements_by_tag_name("button")
+    elts = world.browser.find_elements_by_tag_name("button")
     for e in elts:
         if e.get_attribute("type") == "button" and e.text == value:
             return e

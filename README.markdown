@@ -25,10 +25,36 @@ In Ubuntu (for postgres 8.4, but just change version numbers):
 INSTALLATION
 ------------
 
-1. Mediathread relies on several submodules.  The easiest way to download
+1. Mediathread relies on the djangosherd submodule.  The easiest way to download
    it all is to run with git 1.6.5+ is:
 
     git clone --recursive https://github.com/ccnmtl/mediathread.git
+    
+2. Django settings
+   settings_shared.py contains common settings information
+   settings_stage.py/settings_production.py contain common overrides for test & production environments.
+   
+   For local setup & sensitive information:
+     At CCNMTL, we use an unchecked in local_settings.py file to hardwire 
+     very specific or very sensitive environment details, like database username and password
+     or developer debug configuration. 
+     local_settings.py is automatically imported via the default Django settings.py file
+     for the environment.
+     
+   For settings specific to your overall organization:
+     Mediathread also respects deploy_specific.settings.py, where we add custom settings 
+     for our deployment that will not be included in the open-sourced distribution     
+     These settings are chiefly organization specific, like a Flickr api key and 
+     instructions on where to route application errors and user problem reports.
+     
+     To create
+         $ mkdir deploy_specific
+         $ touch deploy_specific/__init__.py
+
+       # edit a file called `deploy_specific/settings.py` setting those same variables
+         which will override the values in `settings_shared.py`
+
+     See sample_deploy_specific_settings.py in /docs for more information   
 
 2. Build the database
    For Postgres:
@@ -42,86 +68,14 @@ INSTALLATION
 
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
-   For Both:
-     Edit the lines in `settings_shared.py` that start with `DATABASE_` as appropriate
-     Even better would be:
-
-         $ mkdir deploy_specific
-         $ touch deploy_specific/__init__.py
-
-       # edit a file called `deploy_specific/settings.py` setting those same variables
-         which will override the values in `settings_shared.py`
-         This is where we add custom settings for our deployment that will not
-         be included in the open-sourced distribution
-
-
+   To configure database settings:
+     Edit the DATABASES dictionary in your local_settings.py to point to your environment-specific location.
+     See here for Django doc on the DATABASES definition - https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
 3. Bootstrap uses virtualenv to build a contained library in `ve/`
 
     ./bootstrap.py
     NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
-
-
-GT comment 1
-It has been a little while since I installed mediathread, but according to my notes I had also to install
-the wsgiref package, which did not seem to be included -- so I did the following
-
-    [root@mediathread wsgiref-0.1.2]# pwd
-    /root
-    [root@mediathread ~]# wget http://pypi.python.org/packages/source/w/wsgiref/wsgiref-0.1.2.zip#md5=29b146e6ebd0f9fb119fe321f7bcf6cb
-     
-    [root@mediathread ~]# unzip wsgiref-0.1.2.zip 
-     
-    [root@mediathread ~]# cd wsgiref-0.1.2
-     
-    [root@mediathread wsgiref-0.1.2]# python setup.py install
-
-
-GT comment 2
-According to my notes, I had to uncomment a line from settings_shared.py -- my notes say: uncommented 'sites' application from settings_shared.py, since I know it causes database errors if it's missing when the db is built
- 
-    [root@mediathread mediathread]# pwd
-    /var/www/mediathread/mediathread
-    [root@mediathread mediathread]# vi settings_shared.py 
-     
-    INSTALLED_APPS = (
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        #'django.contrib.sites',
-     
-    INSTALLED_APPS = (
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.sites',
-
-
-GT comment 3
-We're using mysql and saw an error related to this when running bootstrap.py:
-
-    Failed to install index for threadedcomments.ThreadedComment model: (1170, "BLOB/TEXT column 'tree_path' used in key specification without a key length")
- 
-More discussion here:
- 
-https://code.djangoproject.com/ticket/2495
-http://drupal.org/node/146296
- 
-But it appears that syncdb adjusted things so that the index on tree_path uses a limit of 255:
- 
-    mysql> show create table threadedcomments_comment;
-     
-    ( `comment_ptr_id` int(11) NOT NULL,
-      `title` longtext NOT NULL,
-      `parent_id` int(11) DEFAULT NULL,
-      `last_child_id` int(11) DEFAULT NULL,
-      `tree_path` longtext NOT NULL,
-      PRIMARY KEY (`comment_ptr_id`),
-      KEY `threadedcomments_comment_tree_path` (`tree_path`(255)),
-      KEY `threadedcomments_comment_63f17a16` (`parent_id`),
-      KEY `threadedcomments_comment_ffd563a7` (`last_child_id`)
-    )
-
 
 The rest of the instructions work like standard Django.  See:
  http://docs.djangoproject.com/en/1.1/ for more details.
@@ -130,8 +84,18 @@ The rest of the instructions work like standard Django.  See:
 
     ./manage.py syncdb
     ./manage.py migrate # to complete the south migration setup
+    
+    If you are upgrading from a pre-south version of Mediathread
+    (prior to May 29, 2012), please complete the following steps:
+    * Perform a ./manage.py syncdb
+    * Run "Fakes" for each application
+    ./manage.py migrate assetmgr 0001 --fake
+    ./manage.py migrate djangosherd 0001 --fake
+    ./manage.py migrate mediathread_main 0001 --fake
+    ./manage.py migrate projects 0001 --fake
+    ./manage.py migrate structuredcollaboration 0001 --fake    
 
-5. Run locally (during development)
+5. Run locally (during development ONLY)
     ./manage.py runserver myhost.example.com:8000
 
 6. For deployment to Apache, see our sample configuration in `apache/prod.conf`
@@ -140,7 +104,7 @@ The rest of the instructions work like standard Django.  See:
 
 Go to your site in a web browser.
 
-7. The default database is not very useful.  Login with the superuser you
+7. The default database is not very useful. Login with the superuser you
    created in Step #4.
 
 8. Click the 'Create a Course' link.
@@ -155,5 +119,9 @@ Go to your site in a web browser.
 
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
+   
+   OR
+   
+   Install the bookmarklet from the homescreen and follow instructions there.
 
 10. For deployment, take a look at the `apache/` directory for sample apache configuration files

@@ -12,6 +12,10 @@ CODE: http://github.com/ccnmtl/mediathread (see wiki for some dev documentation)
 INFO: http://ccnmtl.columbia.edu/mediathread
 FORUM: http://groups.google.com/group/mediathread
 
+* "SherdJS":http://github.com/ccnmtl/SherdJS 
+* "django_courseaffils":http://github.com/ccnmtl/django_courseaffils is our 'group space' Django app.  This allows someone to select a course at the beginning and the user's environment is in that Course for the rest of the session.  If they are only in one course, then it automatically decorates the Django Request object with this course.
+
+
 REQUIREMENTS
 ------------
 Python 2.6 (or 2.5)
@@ -25,10 +29,13 @@ In Ubuntu (for postgres 8.4, but just change version numbers):
 INSTALLATION
 ------------
 
-1. Mediathread relies on the djangosherd submodule.  The easiest way to download
-   it all is to run with git 1.6.5+ is:
+1. Mediathread consists of the main application and the the SherdJS submodule. The SherdJs module
+   contains all the javascript annotating code and media display viewers. This code was separated so that 
+   it can be used on other non-Django platforms)
+   
+   To checkout:
 
-    git clone --recursive https://github.com/ccnmtl/mediathread.git
+       git clone --recursive https://github.com/ccnmtl/mediathread.git
     
 2. Django settings
    settings_shared.py contains common settings information
@@ -117,6 +124,9 @@ Go to your site in a web browser.
             - add some fellow faculty/student accounts -- you can create new accounts right here
               (read the instructions under the textarea)
         - Click "Save" and then click the upper-right link "Django administration" to get back to the regular site (yeah, not the most intuitive).
+    - NOTE: If you have developer resources, you can make this process more integrated with your institution.  The developer would:
+        - Make a comparable file to http://github.com/ccnmtl/django_courseaffils/blob/master/courseaffils/columbia.py
+        - In your deploy_specific/settings.py, set COURSEAFFILS_COURSESTRING_MAPPER equal to the CourseStringMapper from that file        
 
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/

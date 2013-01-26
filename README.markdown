@@ -48,11 +48,12 @@ INSTALLATION
      instructions on where to route application errors and user problem reports.
      
      To create
+
          $ mkdir deploy_specific
          $ touch deploy_specific/__init__.py
+         $ touch deploy_specific/settings.py
 
-       # edit a file called `deploy_specific/settings.py` setting those same variables
-         which will override the values in `settings_shared.py`
+         # override `settings_shared.py` values in the new settings.py file.
 
      See sample_deploy_specific_settings.py in /docs for more information   
 

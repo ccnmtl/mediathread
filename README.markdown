@@ -112,7 +112,7 @@ The rest of the instructions work like standard Django.  See:
 
 Go to your site in a web browser.
 
-7. The default database is not very useful. Login with the superuser you
+7. The default database is not useful. At the very least, you need a course and some users. Login with the superuser you
    created in Step #4.
 
 8. Click the 'Create a Course' link.

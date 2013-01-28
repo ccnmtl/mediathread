@@ -1,0 +1,222 @@
+[
+    {
+        "pk": 1, 
+        "model": "projects.project", 
+        "fields": {
+            "body": "<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/2/annotations/10/\">Nice Tie</a>&#160;- Student Two Annotation</p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/2/annotations/8/\">The Award</a>&#160;- Student One Annotation</p>", 
+            "feedback": null, 
+            "author": 3, 
+            "title": "Private Composition", 
+            "modified": "2012-12-08 14:54:02", 
+            "submitted": false, 
+            "course": 1, 
+            "participants": [
+                3
+            ]
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "projects.project", 
+        "fields": {
+            "body": "<p>Some text here.</p>", 
+            "feedback": null, 
+            "author": 3, 
+            "title": "Instructor Shared", 
+            "modified": "2012-12-08 14:54:24", 
+            "submitted": true, 
+            "course": 1, 
+            "participants": [
+                3
+            ]
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "projects.project", 
+        "fields": {
+            "body": "<p>Test Instructor Selections</p>\r\n<p><a class=\"materialCitation asset-youtube\" href=\"/asset/1/annotations/2/\">Manage Sources</a></p>\r\n<p><a class=\"materialCitation asset-image\" href=\"/asset/2/annotations/5/\">Our esteemed leaders</a></p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/3/annotations/7/\">Left Corner</a></p>", 
+            "feedback": null, 
+            "author": 3, 
+            "title": "Public To Class Composition", 
+            "modified": "2012-12-08 14:55:08", 
+            "submitted": true, 
+            "course": 1, 
+            "participants": [
+                3
+            ]
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "projects.project", 
+        "fields": {
+            "body": "<p>Test Student Three Item &amp; Selections</p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/4/\">Design Research</a></p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/4/annotations/15/\">Whole Item Selection</a></p>", 
+            "feedback": null, 
+            "author": 5, 
+            "title": "Public To Class", 
+            "modified": "2012-12-08 14:59:29", 
+            "submitted": true, 
+            "course": 2, 
+            "participants": [
+                5
+            ]
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "projects.project", 
+        "fields": {
+            "body": "<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/2/annotations/10/\">Nice Tie</a>&#160;- Student Two Annotation</p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/1/annotations/1/\">Mediathread: Introduction</a></p>\r\n<p><a class=\"materialCitation asset-image asset-whole\" href=\"/asset/5/\">Project Portfolio</a></p>\r\n<p><a class=\"materialCitation asset-youtube asset-whole\" href=\"/asset/1/\">Mediathread: Introduction</a></p>\r\n<p><a class=\"materialCitation asset-youtube\" href=\"/asset/1/annotations/19/\">Video Selection Is Time-based</a></p>\r\n<p>&#160;</p>", 
+            "feedback": null, 
+            "author": 10, 
+            "title": "Sample Course Assignment", 
+            "modified": "2012-12-18 12:17:08", 
+            "submitted": true, 
+            "course": 1, 
+            "participants": [
+                10
+            ]
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "structuredcollaboration.collaborationpolicyrecord", 
+        "fields": {
+            "policy_name": "PrivateEditorsAreOwners"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "structuredcollaboration.collaborationpolicyrecord", 
+        "fields": {
+            "policy_name": "InstructorShared"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "structuredcollaboration.collaborationpolicyrecord", 
+        "fields": {
+            "policy_name": "CourseProtected"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "structuredcollaboration.collaborationpolicyrecord", 
+        "fields": {
+            "policy_name": "Assignment"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 2, 
+            "group": 3, 
+            "context": null, 
+            "title": "Alternate Course", 
+            "_policy": null, 
+            "object_pk": "2", 
+            "_parent": null, 
+            "user": null, 
+            "content_type": 8, 
+            "slug": "Alternate_Course"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 4, 
+            "group": null, 
+            "context": 1, 
+            "title": "Instructor Shared ", 
+            "_policy": 2, 
+            "object_pk": "2", 
+            "_parent": null, 
+            "user": 3, 
+            "content_type": 17, 
+            "slug": null
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 3, 
+            "group": null, 
+            "context": 1, 
+            "title": "Private Composition", 
+            "_policy": 1, 
+            "object_pk": "1", 
+            "_parent": null, 
+            "user": 3, 
+            "content_type": 17, 
+            "slug": null
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 6, 
+            "group": null, 
+            "context": 2, 
+            "title": "Public To Class", 
+            "_policy": 3, 
+            "object_pk": "4", 
+            "_parent": null, 
+            "user": 5, 
+            "content_type": 17, 
+            "slug": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 5, 
+            "group": null, 
+            "context": 1, 
+            "title": "Public To Class Composition", 
+            "_policy": 3, 
+            "object_pk": "3", 
+            "_parent": null, 
+            "user": 3, 
+            "content_type": 17, 
+            "slug": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 1, 
+            "group": 2, 
+            "context": null, 
+            "title": "Sample Course", 
+            "_policy": null, 
+            "object_pk": "1", 
+            "_parent": null, 
+            "user": null, 
+            "content_type": 8, 
+            "slug": "Sample_Course"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 7, 
+            "group": null, 
+            "context": 1, 
+            "title": "Sample Course Assignment", 
+            "_policy": 4,
+            "object_pk": "5", 
+            "_parent": null, 
+            "user": 10, 
+            "content_type": 17,
+            "slug": null
+        }
+    }
+]

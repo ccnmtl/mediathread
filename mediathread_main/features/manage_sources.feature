@@ -4,17 +4,12 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page
-        And there is an Add to My Collection column
-        And there is help for the Add to My Collection column
-        And I do not see "Upload Video"
+        There is not an "Upload from Computer" link
         And I see 0 sources
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Sources button
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
         Then I am at the Manage Sources page
         
         # Enable Video Upload
@@ -23,19 +18,18 @@ Feature: Manage Sources
         And I see "Upload Permission Settings"
         
         # Under Add to My Collection        
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page
-        And I see "Upload Video"
-        
-        # On the Home Page
-        When I click the HOME button
-        Then I am at the Home page
-        
+        When I click the "Sample Course" link
         Given the home workspace is loaded
-            The Collection panel has no "You Tube" item
-            And the Collection panel has a "MAAP Award Reception" item
-            And the Collection panel has a "Mediathread: Introduction" item
-            And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
+        Then there is an "Upload from Computer" link
+        
+        # On the Full Collection page
+        When I access the url "/asset/"
+        Then I am at the Mediathread Collection page
+        
+        The Collection panel has no "You Tube" item
+        And the Collection panel has a "MAAP Award Reception" item
+        And the Collection panel has a "Mediathread: Introduction" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
             
         Finished using Selenium
    
@@ -46,8 +40,9 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # By default, instructors and administrators are allowed to upload
-        When I click the Add to My Collection button
-        Then I see "Upload Video"
+        When I click the "Sample Course" link
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
         
         # Student cannot see
         When I log out
@@ -55,8 +50,8 @@ Feature: Manage Sources
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        When I click the Add to My Collection button
-        Then I do not see "Upload Video"
+        Given the home workspace is loaded
+        Then there is not an "Upload from Computer" link
 
         Finished using Selenium
         
@@ -66,15 +61,17 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # Set for administrators
-        When I click the Instructor Dashboard button
-        Then I click the Manage Sources button
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
         Then I am at the Manage Sources page
         When I allow Administrators to upload videos
         Then I'm told "Your changes have been saved"
         
         # Instructor cannot see
-        When I click the Add to My Collection button
-        Then I do not see "Upload Video"
+        When I click the "Sample Course" link
+        Given the home workspace is loaded
+        Then there is not an "Upload from Computer" link
         
         # Student cannot see
         When I log out
@@ -82,8 +79,8 @@ Feature: Manage Sources
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        When I click the Add to My Collection button
-        Then I do not see "Upload Video"
+        Given the home workspace is loaded
+        Then there is not an "Upload from Computer" link
         
         Finished using Selenium
         
@@ -93,15 +90,17 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # Set for students
-        When I click the Instructor Dashboard button
-        When I click the Manage Sources button
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
         Then I am at the Manage Sources page
         When I allow Students to upload videos
         Then I'm told "Your changes have been saved"
         
         # Instructor can see
-        When I click the Add to My Collection button
-        Then I see "Upload Video"
+        When I click the "Sample Course" link
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
         
         # Student can see
         When I log out
@@ -109,8 +108,8 @@ Feature: Manage Sources
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
-        When I click the Add to My Collection button
-        Then I see "Upload Video"
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
 
         Finished using Selenium
         
@@ -120,30 +119,38 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # Set for students
-        When I click the Instructor Dashboard button
-        When I click the Manage Sources button
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
         Then I am at the Manage Sources page
         When I allow Students to upload videos
         Then I'm told "Your changes have been saved"
         
         # Regular Instructor cannot upload on behalf of
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page
-        Then I see "Upload Video"
+        When I click the "Sample Course" link
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
+        When I click the "Upload from Computer" link
+        Then there is an Upload video button
+        And there is an Upload audio button
         And I cannot upload on behalf of other users
         
         # Regular student cannot upload on someone's behalf
         Given I am test_student_one in Sample Course
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page        
-        Then I see "Upload Video"
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
+        When I click the "Upload from Computer" link
+        Then there is an Upload video button
+        And there is an Upload audio button        
         And I cannot upload on behalf of other users
         
         # Student with special privileges can upload on someone's behalf
         Given I am test_ta in Sample Course
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page        
-        Then I see "Upload Video"
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
+        When I click the "Upload from Computer" link
+        Then there is an Upload video button
+        And there is an Upload audio button        
         And I can upload on behalf of other users
         
         # Staff that are not a member of this class cannot upload on someone's behalf
@@ -155,10 +162,14 @@ Feature: Manage Sources
         When I click the Log In button        
         Then I am at the Switch Course page        
         When I click the "Sample Course" link
-        Then I am in the Sample Course class        
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page        
-        Then I see "Upload Video"
+        Then I am in the Sample Course class
+        
+        Given the home workspace is loaded
+        Then there is an "Upload from Computer" link
+        When I click the "Upload from Computer" link
+        Then there is not an Upload video button
+        And there is not an Upload audio button        
+        And I cannot upload on behalf of other users
         And I see "You must be a course member to upload media files."
         And I cannot upload on behalf of other users
         
@@ -166,10 +177,9 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I click the Instructor Dashboard button
-        Then I am at the Instructor Dashboard page
-        
-        When I click the Manage Sources button
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
         Then I am at the Manage Sources page
         
         # Add the YouTube Source
@@ -178,13 +188,11 @@ Feature: Manage Sources
         Then there is an Added button
 
         # Under Add to My Collection
-        Given I am test_student_one in Sample Course        
-        When I click the Add to My Collection button
-        Then I am at the Add to My Collection page
+        Given I am test_student_one in Sample Course
+        Given the home workspace is loaded
         And I see 1 source
         
         # Verify YouTube navigation works
         When I click the "You Tube" link
         Then I am at the YouTube page
         
-        Finished using Selenium

@@ -65,6 +65,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'template_label': "media_gallery",
             'create_annotation_thumbs': false,
             'create_asset_thumbs': true,
+            'space_owner': self.space_owner,
             'view_callback': function () {
                 jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
                 jQuery(self.el).find("a.edit-asset-inplace").bind("click", { self: self }, self.editItem);
@@ -198,10 +199,10 @@ AssetPanelHandler.prototype.resize = function () {
     jQuery(self.el).find('.ui-tabs-panel').css('height', (visible) + "px");
     
     visible -= jQuery("div#asset-global-annotation").outerHeight();
-    jQuery(self.el).find('div#annotations-organized').css('height', (visible - 20) + "px");
+    jQuery(self.el).find('div#annotations-organized').css('height', (visible - 25) + "px");
     
-    visible -= jQuery("div#annotations-organized h1").outerHeight() +
-        jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 40;
+    visible -= jQuery("div#annotations-organized h2").outerHeight() +
+        jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 50;
     jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
     jQuery("div.accordion").accordion("resize");
 };

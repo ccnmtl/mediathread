@@ -1,0 +1,2461 @@
+[
+    {
+        "pk": 34, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_logentry", 
+            "name": "Can add log entry", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_logentry", 
+            "name": "Can change log entry", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_logentry", 
+            "name": "Can delete log entry", 
+            "content_type": 12
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_asset", 
+            "name": "Can add asset", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "can_upload_for", 
+            "name": "Can upload for other users", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_asset", 
+            "name": "Can change asset", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_asset", 
+            "name": "Can delete asset", 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_source", 
+            "name": "Can add source", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_source", 
+            "name": "Can change source", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_source", 
+            "name": "Can delete source", 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_supportedsource", 
+            "name": "Can add supported source", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_supportedsource", 
+            "name": "Can change supported source", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_supportedsource", 
+            "name": "Can delete supported source", 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_group", 
+            "name": "Can add group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_group", 
+            "name": "Can change group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_group", 
+            "name": "Can delete group", 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_message", 
+            "name": "Can add message", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_message", 
+            "name": "Can change message", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_message", 
+            "name": "Can delete message", 
+            "content_type": 4
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_permission", 
+            "name": "Can add permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_permission", 
+            "name": "Can change permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_permission", 
+            "name": "Can delete permission", 
+            "content_type": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_user", 
+            "name": "Can add user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_user", 
+            "name": "Can change user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_user", 
+            "name": "Can delete user", 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_comment", 
+            "name": "Can add comment", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "can_moderate", 
+            "name": "Can moderate comments", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_comment", 
+            "name": "Can change comment", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_comment", 
+            "name": "Can delete comment", 
+            "content_type": 15
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_commentflag", 
+            "name": "Can add comment flag", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_commentflag", 
+            "name": "Can change comment flag", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_commentflag", 
+            "name": "Can delete comment flag", 
+            "content_type": 16
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_contenttype", 
+            "name": "Can add content type", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_contenttype", 
+            "name": "Can change content type", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_contenttype", 
+            "name": "Can delete content type", 
+            "content_type": 5
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_course", 
+            "name": "Can add course", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_course", 
+            "name": "Can change course", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_course", 
+            "name": "Can delete course", 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_coursedetails", 
+            "name": "Can add course details", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_coursedetails", 
+            "name": "Can change course details", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_coursedetails", 
+            "name": "Can delete course details", 
+            "content_type": 11
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_courseinfo", 
+            "name": "Can add course info", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_courseinfo", 
+            "name": "Can change course info", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_courseinfo", 
+            "name": "Can delete course info", 
+            "content_type": 10
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_coursesettings", 
+            "name": "Can add course settings", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_coursesettings", 
+            "name": "Can change course settings", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_coursesettings", 
+            "name": "Can delete course settings", 
+            "content_type": 9
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_annotation", 
+            "name": "Can add annotation", 
+            "content_type": 27
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_annotation", 
+            "name": "Can change annotation", 
+            "content_type": 27
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_annotation", 
+            "name": "Can delete annotation", 
+            "content_type": 27
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_discussionindex", 
+            "name": "Can add discussion index", 
+            "content_type": 29
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_discussionindex", 
+            "name": "Can change discussion index", 
+            "content_type": 29
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_discussionindex", 
+            "name": "Can delete discussion index", 
+            "content_type": 29
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_sherdnote", 
+            "name": "Can add sherd note", 
+            "content_type": 28
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_sherdnote", 
+            "name": "Can change sherd note", 
+            "content_type": 28
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_sherdnote", 
+            "name": "Can delete sherd note", 
+            "content_type": 28
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_flatpage", 
+            "name": "Can add flat page", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_flatpage", 
+            "name": "Can change flat page", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_flatpage", 
+            "name": "Can delete flat page", 
+            "content_type": 7
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_usersetting", 
+            "name": "Can add user setting", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_usersetting", 
+            "name": "Can change user setting", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_usersetting", 
+            "name": "Can delete user setting", 
+            "content_type": 23
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_project", 
+            "name": "Can add project", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_project", 
+            "name": "Can change project", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_project", 
+            "name": "Can delete project", 
+            "content_type": 21
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_projectversion", 
+            "name": "Can add project version", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_projectversion", 
+            "name": "Can change project version", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_projectversion", 
+            "name": "Can delete project version", 
+            "content_type": 22
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_session", 
+            "name": "Can add session", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_session", 
+            "name": "Can change session", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_session", 
+            "name": "Can delete session", 
+            "content_type": 6
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_migrationhistory", 
+            "name": "Can add migration history", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_migrationhistory", 
+            "name": "Can change migration history", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_migrationhistory", 
+            "name": "Can delete migration history", 
+            "content_type": 18
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_collaboration", 
+            "name": "Can add collaboration", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_collaboration", 
+            "name": "Can change collaboration", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_collaboration", 
+            "name": "Can delete collaboration", 
+            "content_type": 20
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_collaborationpolicyrecord", 
+            "name": "Can add collaboration policy record", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_collaborationpolicyrecord", 
+            "name": "Can change collaboration policy record", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_collaborationpolicyrecord", 
+            "name": "Can delete collaboration policy record", 
+            "content_type": 19
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_tag", 
+            "name": "Can add tag", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_tag", 
+            "name": "Can change tag", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_tag", 
+            "name": "Can delete tag", 
+            "content_type": 13
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_taggeditem", 
+            "name": "Can add tagged item", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_taggeditem", 
+            "name": "Can change tagged item", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_taggeditem", 
+            "name": "Can delete tagged item", 
+            "content_type": 14
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "add_threadedcomment", 
+            "name": "Can add Threaded comment", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "change_threadedcomment", 
+            "name": "Can change Threaded comment", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "auth.permission", 
+        "fields": {
+            "codename": "delete_threadedcomment", 
+            "name": "Can delete Threaded comment", 
+            "content_type": 17
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Sample_Course_Faculty", 
+            "permissions": [
+                34, 
+                35, 
+                36, 
+                71, 
+                72, 
+                73, 
+                74, 
+                75, 
+                76, 
+                77, 
+                78, 
+                79, 
+                4, 
+                5, 
+                6, 
+                10, 
+                11, 
+                12, 
+                1, 
+                2, 
+                3, 
+                7, 
+                8, 
+                9, 
+                43, 
+                46, 
+                44, 
+                45, 
+                47, 
+                48, 
+                49, 
+                13, 
+                14, 
+                15, 
+                22, 
+                23, 
+                24, 
+                31, 
+                32, 
+                33, 
+                28, 
+                29, 
+                30, 
+                25, 
+                26, 
+                27, 
+                80, 
+                81, 
+                82, 
+                86, 
+                87, 
+                88, 
+                83, 
+                84, 
+                85, 
+                19, 
+                20, 
+                21, 
+                68, 
+                69, 
+                70, 
+                62, 
+                63, 
+                64, 
+                65, 
+                66, 
+                67, 
+                16, 
+                17, 
+                18, 
+                53, 
+                54, 
+                55, 
+                59, 
+                60, 
+                61, 
+                56, 
+                57, 
+                58, 
+                37, 
+                38, 
+                39, 
+                40, 
+                41, 
+                42, 
+                50, 
+                51, 
+                52
+            ]
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Sample_Course_Students", 
+            "permissions": []
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Alternate Course Members", 
+            "permissions": []
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Alternate Course Faculty", 
+            "permissions": []
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Teacher's Assistant", 
+            "permissions": [
+                99
+            ]
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "selenium", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2012-12-14 14:53:12", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$03e73$f0d7f55609d802cc7e24c31bca9091b09ea310e7", 
+            "email": "selenium@ccnmtl.columbia.edu", 
+            "date_joined": "2012-04-21 08:28:13"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_instructor", 
+            "first_name": "Instructor", 
+            "last_name": "One", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-12-01 11:57:24", 
+            "groups": [
+                1, 
+                2
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$26134$97ef50a76b5bbfa21bf308637ca7d3f2efe0c995", 
+            "email": "", 
+            "date_joined": "2012-04-21 08:29:22"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_student_one", 
+            "first_name": "Student", 
+            "last_name": "One", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-12-01 10:59:26", 
+            "groups": [
+                2
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$6bd4b$80001435b98c7005dcf3d94f00c132c6b38447a9", 
+            "email": "", 
+            "date_joined": "2012-04-21 08:29:45"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_student_two", 
+            "first_name": "Student", 
+            "last_name": "Two", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-07-29 09:57:35", 
+            "groups": [
+                2
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$4c349$35250ab5720ba6d16f1dfab25559ee27d562e8ae", 
+            "email": "", 
+            "date_joined": "2012-04-21 08:30:02"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_student_three", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-12-01 11:09:35", 
+            "groups": [
+                2, 
+                3
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$3cd75$d91efff1e581f6ed6a5663761ec2d997e752b6eb", 
+            "email": "", 
+            "date_joined": "2012-09-15 08:51:46"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_instructor_alt", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-12-01 11:08:08", 
+            "groups": [
+                3, 
+                4
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$1db49$7efd2133c0100e5aed24de0080c883e27aec6e29", 
+            "email": "", 
+            "date_joined": "2012-09-15 08:52:30"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_student_alt", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-09-15 08:56:21", 
+            "groups": [
+                3
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$48465$279290fe16e6e367fe7abaeece026ac628685d2d", 
+            "email": "", 
+            "date_joined": "2012-09-15 08:52:30"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_staff", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2012-10-06 13:04:16", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$11b57$1502aadc812c8cf9e671800c0e5861490bba64b1", 
+            "email": "", 
+            "date_joined": "2012-10-06 13:04:16"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_ta", 
+            "first_name": "Teacher's ", 
+            "last_name": "Assistant", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-10-06 13:05:39", 
+            "groups": [
+                2, 
+                5
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$90f6e$17aedb174d31ba3d8195fb1c6183d15ccdc7b7f0", 
+            "email": "", 
+            "date_joined": "2012-10-06 13:04:59"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "test_instructor_two", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2012-12-18 11:41:42", 
+            "groups": [
+                1, 
+                2, 
+                3, 
+                4
+            ], 
+            "user_permissions": [], 
+            "password": "sha1$38bcf$64ca5339edec9d8507b69789a0833745b94012f0", 
+            "email": "", 
+            "date_joined": "2012-11-18 09:26:19"
+        }
+    }, 
+    {
+        "pk": "01302361222c3b959782acc8c14a9ab9", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-05-26 12:26:12", 
+            "session_data": "gAJ9cQEoVRpjY25tdGwuY291cnNlYWZmaWxzLmNvdXJzZXECY2RqYW5nby5kYi5tb2RlbHMuYmFz\nZQptb2RlbF91bnBpY2tsZQpxA2Njb3Vyc2VhZmZpbHMubW9kZWxzCkNvdXJzZQpxBF1jZGphbmdv\nLmRiLm1vZGVscy5iYXNlCnNpbXBsZV9jbGFzc19mYWN0b3J5CnEFh1JxBn1xByhVFF9mYWN1bHR5\nX2dyb3VwX2NhY2hlcQhoA2NkamFuZ28uY29udHJpYi5hdXRoLm1vZGVscwpHcm91cApxCV1oBYdS\ncQp9cQsoVQZfc3RhdGVxDGNkamFuZ28uZGIubW9kZWxzLmJhc2UKTW9kZWxTdGF0ZQpxDSmBcQ59\ncQ8oVQZhZGRpbmdxEIlVAmRicRFVB2RlZmF1bHRxEnViVQJpZHETSwFVBG5hbWVxFFgVAAAAU2Ft\ncGxlX0NvdXJzZV9GYWN1bHR5cRV1YlUFdGl0bGVxFlgNAAAAU2FtcGxlIENvdXJzZXEXaAxoDSmB\ncRh9cRkoaBCJaBFoEnViVQhncm91cF9pZHEaSwJVEGZhY3VsdHlfZ3JvdXBfaWRxG0sBaBNLAXVi\nVQ1fYXV0aF91c2VyX2lkcRxLA1USX2F1dGhfdXNlcl9iYWNrZW5kcR1VKWRqYW5nby5jb250cmli\nLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kcR51LmUzMDliNWY3MDk1NTM1YzFjYWQ2N2RlMzMz\nZTI2MzA2\n"
+        }
+    }, 
+    {
+        "pk": "e65a666f05fbb1b4f92a49f2f7ec46c1", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-05-26 12:43:56", 
+            "session_data": "gAJ9cQEoVRpjY25tdGwuY291cnNlYWZmaWxzLmNvdXJzZXECY2RqYW5nby5kYi5tb2RlbHMuYmFz\nZQptb2RlbF91bnBpY2tsZQpxA2Njb3Vyc2VhZmZpbHMubW9kZWxzCkNvdXJzZQpxBF1jZGphbmdv\nLmRiLm1vZGVscy5iYXNlCnNpbXBsZV9jbGFzc19mYWN0b3J5CnEFh1JxBn1xByhVFF9mYWN1bHR5\nX2dyb3VwX2NhY2hlcQhoA2NkamFuZ28uY29udHJpYi5hdXRoLm1vZGVscwpHcm91cApxCV1oBYdS\ncQp9cQsoVQZfc3RhdGVxDGNkamFuZ28uZGIubW9kZWxzLmJhc2UKTW9kZWxTdGF0ZQpxDSmBcQ59\ncQ8oVQZhZGRpbmdxEIlVAmRicRFVB2RlZmF1bHRxEnViVQJpZHETSwFVBG5hbWVxFFgVAAAAU2Ft\ncGxlX0NvdXJzZV9GYWN1bHR5cRV1YlUFdGl0bGVxFlgNAAAAU2FtcGxlIENvdXJzZXEXaAxoDSmB\ncRh9cRkoaBCJaBFoEnViVQhncm91cF9pZHEaSwJVEGZhY3VsdHlfZ3JvdXBfaWRxG0sBaBNLAXVi\nVQ1fYXV0aF91c2VyX2lkcRxLAlUSX2F1dGhfdXNlcl9iYWNrZW5kcR1VKWRqYW5nby5jb250cmli\nLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kcR51LjU5ODY2YTYyODhkZmJmYWMwZGIxZDUxYWMz\nNjRhYTdl\n"
+        }
+    }, 
+    {
+        "pk": "f7e2fdfc9cd3dafedaf640bb0580000f", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-05-26 13:57:29", 
+            "session_data": "gAJ9cQFVCnRlc3Rjb29raWVxAlUGd29ya2VkcQNzLmYwNWYxMmE1ZGNlZWI4MmY4NTYyOWI4NTRi\nNDYxMWYw\n"
+        }
+    }, 
+    {
+        "pk": "a50eee4539abaf43565265d46377820c", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-05-26 14:05:20", 
+            "session_data": "gAJ9cQEoVRpjY25tdGwuY291cnNlYWZmaWxzLmNvdXJzZXECY2RqYW5nby5kYi5tb2RlbHMuYmFz\nZQptb2RlbF91bnBpY2tsZQpxA2Njb3Vyc2VhZmZpbHMubW9kZWxzCkNvdXJzZQpxBF1jZGphbmdv\nLmRiLm1vZGVscy5iYXNlCnNpbXBsZV9jbGFzc19mYWN0b3J5CnEFh1JxBn1xByhVFF9mYWN1bHR5\nX2dyb3VwX2NhY2hlcQhoA2NkamFuZ28uY29udHJpYi5hdXRoLm1vZGVscwpHcm91cApxCV1oBYdS\ncQp9cQsoVQZfc3RhdGVxDGNkamFuZ28uZGIubW9kZWxzLmJhc2UKTW9kZWxTdGF0ZQpxDSmBcQ59\ncQ8oVQZhZGRpbmdxEIlVAmRicRFVB2RlZmF1bHRxEnViVQJpZHETSwFVBG5hbWVxFFgVAAAAU2Ft\ncGxlX0NvdXJzZV9GYWN1bHR5cRV1YlUFdGl0bGVxFlgNAAAAU2FtcGxlIENvdXJzZXEXaAxoDSmB\ncRh9cRkoaBCJaBFoEnViVQhncm91cF9pZHEaSwJVEGZhY3VsdHlfZ3JvdXBfaWRxG0sBaBNLAXVi\nVQ1fYXV0aF91c2VyX2lkcRxLAlUSX2F1dGhfdXNlcl9iYWNrZW5kcR1VKWRqYW5nby5jb250cmli\nLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kcR51LjU5ODY2YTYyODhkZmJmYWMwZGIxZDUxYWMz\nNjRhYTdl\n"
+        }
+    }, 
+    {
+        "pk": "4df6db7774ea1f0b04af72bb39cf573b", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-08-12 09:54:27", 
+            "session_data": "MDY5ZDJmMjczMDgyNWRjY2Q1MGZlNzg0ZWFjMTMzMDRiYzYwNTA0NTqAAn1xAVUKdGVzdGNvb2tp\nZXECVQZ3b3JrZWRxA3Mu\n"
+        }
+    }, 
+    {
+        "pk": "c6379a7834dc69e713011164b78a489f", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-08-12 09:58:47", 
+            "session_data": "MDY5ZDJmMjczMDgyNWRjY2Q1MGZlNzg0ZWFjMTMzMDRiYzYwNTA0NTqAAn1xAVUKdGVzdGNvb2tp\nZXECVQZ3b3JrZWRxA3Mu\n"
+        }
+    }, 
+    {
+        "pk": "4ecaeee7441c64c49b230aa3dd114840", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-09-29 08:56:27", 
+            "session_data": "MDY5ZDJmMjczMDgyNWRjY2Q1MGZlNzg0ZWFjMTMzMDRiYzYwNTA0NTqAAn1xAVUKdGVzdGNvb2tp\nZXECVQZ3b3JrZWRxA3Mu\n"
+        }
+    }, 
+    {
+        "pk": "40d3711a5a661d44bb620736364e242b", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-10-20 13:05:39", 
+            "session_data": "NGY0YzkyZWVjNDg3MTIxMzY3NmU0ZjhmNDY5NzdiYWIwNDU5MzRlYzqAAn1xAShVGmNjbm10bC5j\nb3Vyc2VhZmZpbHMuY291cnNlcQJjZGphbmdvLmRiLm1vZGVscy5iYXNlCm1vZGVsX3VucGlja2xl\nCnEDY2NvdXJzZWFmZmlscy5tb2RlbHMKQ291cnNlCnEEXWNkamFuZ28uZGIubW9kZWxzLmJhc2UK\nc2ltcGxlX2NsYXNzX2ZhY3RvcnkKcQWHUnEGfXEHKFUUX2ZhY3VsdHlfZ3JvdXBfY2FjaGVxCGgD\nY2RqYW5nby5jb250cmliLmF1dGgubW9kZWxzCkdyb3VwCnEJXWgFh1JxCn1xCyhVBl9zdGF0ZXEM\nY2RqYW5nby5kYi5tb2RlbHMuYmFzZQpNb2RlbFN0YXRlCnENKYFxDn1xDyhVBmFkZGluZ3EQiVUC\nZGJxEVUHZGVmYXVsdHESdWJVAmlkcRNLAVUEbmFtZXEUWBUAAABTYW1wbGVfQ291cnNlX0ZhY3Vs\ndHlxFXViVQV0aXRsZXEWWA0AAABTYW1wbGUgQ291cnNlcRdoDGgNKYFxGH1xGShoEIloEWgSdWJV\nCGdyb3VwX2lkcRpLAlUQZmFjdWx0eV9ncm91cF9pZHEbSwFoE0sBdWJVDV9hdXRoX3VzZXJfaWRx\nHEsJVRJfYXV0aF91c2VyX2JhY2tlbmRxHVUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5N\nb2RlbEJhY2tlbmRxHnUu\n"
+        }
+    }, 
+    {
+        "pk": "af953f06c807c54e21721b20d4c9530d", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-12-02 09:26:58", 
+            "session_data": "MDg3NmIxNThlNGQ3MWQ2YjEwMTg5NmJjMWIwMzU3N2MzM2ZkNmYyNTqAAn1xAShVGmNjbm10bC5j\nb3Vyc2VhZmZpbHMuY291cnNlcQJjZGphbmdvLmRiLm1vZGVscy5iYXNlCm1vZGVsX3VucGlja2xl\nCnEDY2NvdXJzZWFmZmlscy5tb2RlbHMKQ291cnNlCnEEXWNkamFuZ28uZGIubW9kZWxzLmJhc2UK\nc2ltcGxlX2NsYXNzX2ZhY3RvcnkKcQWHUnEGfXEHKFUFdGl0bGVxCFgQAAAAQWx0ZXJuYXRlIENv\ndXJzZXEJVQZfc3RhdGVxCmNkamFuZ28uZGIubW9kZWxzLmJhc2UKTW9kZWxTdGF0ZQpxCymBcQx9\ncQ0oVQZhZGRpbmdxDolVAmRicQ9VB2RlZmF1bHRxEHViVQxfZ3JvdXBfY2FjaGVxEWgDY2RqYW5n\nby5jb250cmliLmF1dGgubW9kZWxzCkdyb3VwCnESXWgFh1JxE31xFChoCmgLKYFxFX1xFihoDolo\nD2gQdWJVAmlkcRdLA1UEbmFtZXEYWBgAAABBbHRlcm5hdGUgQ291cnNlIE1lbWJlcnNxGXViVQhn\ncm91cF9pZHEaSwNVEGZhY3VsdHlfZ3JvdXBfaWRxG0sEaBdLAnViVQ1fYXV0aF91c2VyX2lkcRxL\nClUSX2F1dGhfdXNlcl9iYWNrZW5kcR1VKWRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9k\nZWxCYWNrZW5kcR51Lg==\n"
+        }
+    }, 
+    {
+        "pk": "a2b4a41733a783fd6f68342a0584e709", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-12-10 13:21:55", 
+            "session_data": "Y2QxYWMyMGI0MjgwYzlkYTljOGU1OWFkMmIwZjlmYjI3YTlhY2UwNTqAAn1xAShVEl9hdXRoX3Vz\nZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHED\nVQ1fYXV0aF91c2VyX2lkcQRLAXUu\n"
+        }
+    }, 
+    {
+        "pk": "bad205ef866cf2e1744152bc23d98ff6", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-12-15 11:09:37", 
+            "session_data": "ZjIzZDhhNDliMmNiODFhOTg2MzQ0Y2E2ZWViNjhkZTJlMjY3MGJkYzqAAn1xAShVGmNjbm10bC5j\nb3Vyc2VhZmZpbHMuY291cnNlcQJjZGphbmdvLmRiLm1vZGVscy5iYXNlCm1vZGVsX3VucGlja2xl\nCnEDY2NvdXJzZWFmZmlscy5tb2RlbHMKQ291cnNlCnEEXWNkamFuZ28uZGIubW9kZWxzLmJhc2UK\nc2ltcGxlX2NsYXNzX2ZhY3RvcnkKcQWHUnEGfXEHKFUFdGl0bGVxCFgQAAAAQWx0ZXJuYXRlIENv\ndXJzZXEJVQZfc3RhdGVxCmNkamFuZ28uZGIubW9kZWxzLmJhc2UKTW9kZWxTdGF0ZQpxCymBcQx9\ncQ0oVQZhZGRpbmdxDolVAmRicQ9VB2RlZmF1bHRxEHViVQxfZ3JvdXBfY2FjaGVxEWgDY2RqYW5n\nby5jb250cmliLmF1dGgubW9kZWxzCkdyb3VwCnESXWgFh1JxE31xFChoCmgLKYFxFX1xFihoDolo\nD2gQdWJVAmlkcRdLA1UEbmFtZXEYWBgAAABBbHRlcm5hdGUgQ291cnNlIE1lbWJlcnNxGXViVQhn\ncm91cF9pZHEaSwNVEGZhY3VsdHlfZ3JvdXBfaWRxG0sEaBdLAnViVQ1fYXV0aF91c2VyX2lkcRxL\nBVUSX2F1dGhfdXNlcl9iYWNrZW5kcR1VKWRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9k\nZWxCYWNrZW5kcR51Lg==\n"
+        }
+    }, 
+    {
+        "pk": "70c2922fe8a062b5263223ae5954774b", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-12-15 11:57:24", 
+            "session_data": "NTc2YjVhZmUwNGQ5MTRlZTlkMjYwODFhMTFmYjI4MWRlNjRhZWMyZTqAAn1xAShVGmNjbm10bC5j\nb3Vyc2VhZmZpbHMuY291cnNlcQJjZGphbmdvLmRiLm1vZGVscy5iYXNlCm1vZGVsX3VucGlja2xl\nCnEDY2NvdXJzZWFmZmlscy5tb2RlbHMKQ291cnNlCnEEXWNkamFuZ28uZGIubW9kZWxzLmJhc2UK\nc2ltcGxlX2NsYXNzX2ZhY3RvcnkKcQWHUnEGfXEHKFUUX2ZhY3VsdHlfZ3JvdXBfY2FjaGVxCGgD\nY2RqYW5nby5jb250cmliLmF1dGgubW9kZWxzCkdyb3VwCnEJXWgFh1JxCn1xCyhVBl9zdGF0ZXEM\nY2RqYW5nby5kYi5tb2RlbHMuYmFzZQpNb2RlbFN0YXRlCnENKYFxDn1xDyhVBmFkZGluZ3EQiVUC\nZGJxEVUHZGVmYXVsdHESdWJVAmlkcRNLAVUEbmFtZXEUWBUAAABTYW1wbGVfQ291cnNlX0ZhY3Vs\ndHlxFXViVQV0aXRsZXEWWA0AAABTYW1wbGUgQ291cnNlcRdoDGgNKYFxGH1xGShoEIloEWgSdWJV\nCGdyb3VwX2lkcRpLAlUQZmFjdWx0eV9ncm91cF9pZHEbSwFoE0sBdWJVDV9hdXRoX3VzZXJfaWRx\nHEsCVRJfYXV0aF91c2VyX2JhY2tlbmRxHVUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5N\nb2RlbEJhY2tlbmRxHnUu\n"
+        }
+    }, 
+    {
+        "pk": "1e1ebd64d33a6075febe4af242e45964", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2012-12-28 14:53:37", 
+            "session_data": "YjE4ZTUzODY0M2U5MTcwNTk1YWY2YTVhYjJmNDFhZTQwYmFkMmU1ODqAAn1xAS4=\n"
+        }
+    }, 
+    {
+        "pk": "3d873ee00ebf5420473e79fc27cefca0", 
+        "model": "sessions.session", 
+        "fields": {
+            "expire_date": "2013-01-01 11:49:27", 
+            "session_data": "MDY5ZDJmMjczMDgyNWRjY2Q1MGZlNzg0ZWFjMTMzMDRiYzYwNTA0NTqAAn1xAVUKdGVzdGNvb2tp\nZXECVQZ3b3JrZWRxA3Mu\n"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "courseaffils.course", 
+        "fields": {
+            "faculty_group": 1, 
+            "group": 2, 
+            "title": "Sample Course"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "courseaffils.course", 
+        "fields": {
+            "faculty_group": 4, 
+            "group": 3, 
+            "title": "Alternate Course"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-12-14 14:53:28", 
+            "object_repr": "test_student_three", 
+            "object_id": "5", 
+            "change_message": "Changed groups.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2012-11-26 13:22:34", 
+            "object_repr": "[archive] The Armory - Home to CCNMTL'S CUMC Office <3> (Sample Course)", 
+            "object_id": "14", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2012-11-26 13:22:20", 
+            "object_repr": "[archive] MAAP Award Reception <2> (Sample Course)", 
+            "object_id": "9", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 25
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-11-18 09:26:25", 
+            "object_repr": "Alternate Course", 
+            "object_id": "2", 
+            "change_message": "Changed add_user.", 
+            "user": 1, 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-11-18 09:26:19", 
+            "object_repr": "Sample Course", 
+            "object_id": "1", 
+            "change_message": "Changed add_user.", 
+            "user": 1, 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-10-06 13:05:31", 
+            "object_repr": "test_ta", 
+            "object_id": "9", 
+            "change_message": "Changed groups.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-10-06 13:05:16", 
+            "object_repr": "test_ta", 
+            "object_id": "9", 
+            "change_message": "Changed first_name, last_name and groups.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-10-06 13:04:59", 
+            "object_repr": "test_ta", 
+            "object_id": "9", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-10-06 13:04:48", 
+            "object_repr": "Teacher's Assistant", 
+            "object_id": "5", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-10-06 13:04:32", 
+            "object_repr": "test_staff", 
+            "object_id": "8", 
+            "change_message": "Changed is_staff.", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-10-06 13:04:16", 
+            "object_repr": "test_staff", 
+            "object_id": "8", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 3
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-09-15 08:52:30", 
+            "object_repr": "Alternate Course", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-09-15 08:52:05", 
+            "object_repr": "Alternate Course Faculty", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-09-15 08:51:59", 
+            "object_repr": "Alternate Course Members", 
+            "object_id": "3", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 2
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 2, 
+            "action_time": "2012-09-15 08:51:46", 
+            "object_repr": "Sample Course", 
+            "object_id": "1", 
+            "change_message": "Changed add_user.", 
+            "user": 1, 
+            "content_type": 8
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2012-05-12 14:05:01", 
+            "object_repr": "You Tube <4> (Sample Course)", 
+            "object_id": "4", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 1, 
+            "action_time": "2012-05-12 13:58:45", 
+            "object_repr": "You Tube", 
+            "object_id": "1", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 26
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "admin.logentry", 
+        "fields": {
+            "action_flag": 3, 
+            "action_time": "2012-05-12 12:43:41", 
+            "object_repr": "Behind the Scenes - Marc Raymond <2> (Sample Course)", 
+            "object_id": "2", 
+            "change_message": "", 
+            "user": 1, 
+            "content_type": 24
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 2, 
+            "group": 3, 
+            "context": null, 
+            "title": "Alternate Course", 
+            "_policy": null, 
+            "object_pk": "2", 
+            "_parent": null, 
+            "user": null, 
+            "content_type": 8, 
+            "slug": "Alternate_Course"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 1, 
+            "group": 2, 
+            "context": null, 
+            "title": "Sample Course", 
+            "_policy": null, 
+            "object_pk": "1", 
+            "_parent": null, 
+            "user": null, 
+            "content_type": 8, 
+            "slug": "Sample_Course"
+        }
+    },
+    {
+        "pk": 1, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 6, 
+            "value": "true", 
+            "name": "help_item_detail_view"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 3, 
+            "value": "False", 
+            "name": "help_homepage_classwork_column"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 5, 
+            "value": "true", 
+            "name": "help_item_detail_view"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 10, 
+            "value": "False", 
+            "name": "help_homepage_classwork_column"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 10, 
+            "value": "False", 
+            "name": "help_homepage_instructor_column"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "mediathread_main.usersetting", 
+        "fields": {
+            "user": 10, 
+            "value": "true", 
+            "name": "help_item_detail_view"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-05-12 16:25:56", 
+            "app_name": "structuredcollaboration", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-05-12 16:25:56", 
+            "app_name": "projects", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-05-12 16:25:56", 
+            "app_name": "mediathread_main", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-05-12 16:25:57", 
+            "app_name": "assetmgr", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-05-12 16:25:57", 
+            "app_name": "assetmgr", 
+            "migration": "0002_auto__chg_field_source_url"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-05-12 16:25:57", 
+            "app_name": "djangosherd", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "south.migrationhistory", 
+        "fields": {
+            "applied": "2012-10-06 17:03:38", 
+            "app_name": "djangosherd", 
+            "migration": "0001_initial"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "assetmgr.asset", 
+        "fields": {
+            "added": "2012-05-12 12:31:20", 
+            "title": "Mediathread: Introduction", 
+            "metadata_blob": "{\"category\": [\"Education\"], \"description\": [\"Mediathread is CCNMTL's innovative, open-source platform for exploration, analysis, and organization of web-based multimedia content. Mediathread connects to a variety of image and video collections (such as YouTube, Flickr, library databases, and course libraries), enabling users to lift items out of these collections and into an analysis environment. In Mediathread, items can then be clipped, annotated, organized, and embedded into essays and other written analysis.\"], \"author\": [\"CCNMTL\"], \"youtube_link\": [\"http://www.youtube.com/watch?v=7KjzRG8zYYo\"], \"author_uri\": [\"http://gdata.youtube.com/feeds/api/users/CCNMTL\"], \"published\": [\"2012-02-09T00:46:25.000Z\"]}", 
+            "author": 2, 
+            "modified": "2012-05-12 12:31:20", 
+            "course": 1, 
+            "active": true
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "assetmgr.asset", 
+        "fields": {
+            "added": "2012-05-12 12:44:24", 
+            "title": "MAAP Award Reception", 
+            "metadata_blob": "", 
+            "author": 2, 
+            "modified": "2012-05-12 12:44:24", 
+            "course": 1, 
+            "active": true
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "assetmgr.asset", 
+        "fields": {
+            "added": "2012-05-12 12:58:17", 
+            "title": "The Armory - Home to CCNMTL'S CUMC Office", 
+            "metadata_blob": "", 
+            "author": 2, 
+            "modified": "2012-05-12 12:58:17", 
+            "course": 1, 
+            "active": true
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "assetmgr.asset", 
+        "fields": {
+            "added": "2012-09-15 08:53:57", 
+            "title": "Design Research", 
+            "metadata_blob": "", 
+            "author": 6, 
+            "modified": "2012-09-15 08:53:57", 
+            "course": 2, 
+            "active": true
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "assetmgr.asset", 
+        "fields": {
+            "added": "2012-12-18 11:47:04", 
+            "title": "Project Portfolio", 
+            "metadata_blob": "", 
+            "author": 10, 
+            "modified": "2012-12-18 11:47:04", 
+            "course": 1, 
+            "active": true
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://www.youtube.com/watch?v=7KjzRG8zYYo&list=%2Fwatch%3Fv%3D7KjzRG8zYYo&list=UU6Qe9fItsCXSWWwiLeN_tBA&index=0&feature=plcp", 
+            "primary": false, 
+            "label": "url", 
+            "width": 0, 
+            "asset": 1, 
+            "modified": "2012-05-12 12:31:20", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://gdata.youtube.com/feeds/api/videos/7KjzRG8zYYo", 
+            "primary": false, 
+            "label": "gdata", 
+            "width": 0, 
+            "asset": 1, 
+            "modified": "2012-05-12 12:31:20", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://www.youtube.com/v/7KjzRG8zYYo?enablejsapi=1&fs=1", 
+            "primary": true, 
+            "label": "youtube", 
+            "width": 0, 
+            "asset": 1, 
+            "modified": "2012-05-12 12:31:20", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/mediathread_introduction_thumb.jpg", 
+            "primary": false, 
+            "label": "thumb", 
+            "width": 120, 
+            "asset": 1, 
+            "modified": "2012-05-12 12:31:20", 
+            "media_type": null, 
+            "height": 90, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "bookmarklet", 
+            "primary": false, 
+            "label": "asset-source", 
+            "width": 0, 
+            "asset": 1, 
+            "modified": "2012-05-12 12:31:20", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://www.flickr.com/photos/ccnmtl/4049410921/", 
+            "primary": false, 
+            "label": "url", 
+            "width": 0, 
+            "asset": 2, 
+            "modified": "2012-05-12 12:44:24", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/maap.jpg", 
+            "primary": true, 
+            "label": "image", 
+            "width": 2816, 
+            "asset": 2, 
+            "modified": "2012-05-12 12:44:24", 
+            "media_type": null, 
+            "height": 2112, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/maap_thumb.jpg", 
+            "primary": false, 
+            "label": "thumb", 
+            "width": 0, 
+            "asset": 2, 
+            "modified": "2012-05-12 12:44:24", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "bookmarklet", 
+            "primary": false, 
+            "label": "asset-source", 
+            "width": 0, 
+            "asset": 2, 
+            "modified": "2012-05-12 12:44:24", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://www.flickr.com/photos/ccnmtl/3308199560/", 
+            "primary": false, 
+            "label": "url", 
+            "width": 0, 
+            "asset": 3, 
+            "modified": "2012-05-12 12:58:17", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/armory.jpg/", 
+            "primary": true, 
+            "label": "image", 
+            "width": 1430, 
+            "asset": 3, 
+            "modified": "2012-05-12 12:58:17", 
+            "media_type": null, 
+            "height": 703, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/armory_thumb.jpg", 
+            "primary": false, 
+            "label": "thumb", 
+            "width": 0, 
+            "asset": 3, 
+            "modified": "2012-05-12 12:58:17", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "bookmarklet", 
+            "primary": false, 
+            "label": "asset-source", 
+            "width": 0, 
+            "asset": 3, 
+            "modified": "2012-05-12 12:58:17", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://ccnmtl.columbia.edu/", 
+            "primary": false, 
+            "label": "url", 
+            "width": 0, 
+            "asset": 4, 
+            "modified": "2012-09-15 08:53:57", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/dr.jpg", 
+            "primary": true, 
+            "label": "image", 
+            "width": 768, 
+            "asset": 4, 
+            "modified": "2012-09-15 08:53:57", 
+            "media_type": null, 
+            "height": 230, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "bookmarklet", 
+            "primary": false, 
+            "label": "asset-source", 
+            "width": 0, 
+            "asset": 4, 
+            "modified": "2012-09-15 08:53:57", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://ccnmtl.columbia.edu/", 
+            "primary": false, 
+            "label": "url", 
+            "width": 0, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:47:04", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "http://localhost:8002/site_media/img/test/portfolio.jpg", 
+            "primary": true, 
+            "label": "image", 
+            "width": 768, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:47:04", 
+            "media_type": null, 
+            "height": 230, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "assetmgr.source", 
+        "fields": {
+            "url": "bookmarklet", 
+            "primary": false, 
+            "label": "asset-source", 
+            "width": 0, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:47:04", 
+            "media_type": null, 
+            "height": 0, 
+            "size": 0
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "assetmgr.supportedsource", 
+        "fields": {
+            "archive_url": "http://youtube.com", 
+            "description": "The largest collection of video on the web, where you can also upload video yourself.", 
+            "thumb_url": "/site_media/img/youtube_logo.jpg", 
+            "title": "You Tube"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 39.0, 
+            "range1": 28.0, 
+            "annotation_data": "{\"startCode\":\"00:00:28\",\"endCode\":\"00:00:39\",\"duration\":0,\"timeScale\":1,\"start\":28,\"end\":39}"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 75.0, 
+            "range1": 43.0, 
+            "annotation_data": "{\"startCode\":\"00:00:43\",\"endCode\":\"00:01:15\",\"duration\":0,\"timeScale\":1,\"start\":43,\"end\":75}"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 23.0, 
+            "range1": -4.5, 
+            "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-108,-22],[-108,68],[98.99999999999999,68],[98.99999999999999,-22],[-108,-22]]]},\"default\":false,\"x\":-4.5,\"y\":23,\"zoom\":1,\"extent\":[-120,-90,120,90]}"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 0.0, 
+            "range1": 0.0, 
+            "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-167.5,2],[-167.5,80.5],[-95.5,80.5],[-95.5,2],[-167.5,2]]]},\"default\":false,\"x\":0,\"y\":0,\"zoom\":2,\"extent\":[-180,-89,180,89]}"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 0.0, 
+            "range1": 0.0, 
+            "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-58,-90],[-58,-14],[49,-14],[49,-90],[-58,-90]]]},\"default\":false,\"x\":0,\"y\":0,\"zoom\":2,\"extent\":[-120,-90,120,90]}"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 0.0, 
+            "range1": 0.0, 
+            "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[38.5,-91],[38.5,2.5],[61.5,2.500000000000007],[61.5,-91],[38.5,-91]]]},\"default\":false,\"x\":0,\"y\":0,\"zoom\":2,\"extent\":[-120,-90,120,90]}"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": -9.25, 
+            "range1": 33.375, 
+            "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[14.249999999999993,-17.512500762939],[14.249999999999993,17.112499237061],[60.375,17.112499237061],[60.375000000000014,-17.512500762939],[14.249999999999993,-17.512500762939]]]},\"default\":false,\"x\":33.375,\"y\":-9.25,\"zoom\":4,\"extent\":[-180,-54,180,54]}"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 6.75, 
+            "range1": 116.25, 
+            "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[101,0.22499847412108664],[101,44.224998474120994],[142.25,44.22499847412101],[142.25,0.22499847412108664],[101,0.22499847412108664]]]},\"default\":false,\"x\":116.25,\"y\":6.75,\"zoom\":3,\"extent\":[-180,-54,180,54]}"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 0.0, 
+            "range1": 0.0, 
+            "annotation_data": "{\"default\":true,\"x\":0,\"y\":0,\"zoom\":1,\"extent\":[-180,-54,180,54]}"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 0.0, 
+            "range1": 0.0, 
+            "annotation_data": "{\"startCode\":\"00:00:00\",\"endCode\":\"00:00:00\",\"duration\":0,\"timeScale\":1,\"start\":0,\"end\":0}"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": 120.0, 
+            "range1": 60.0, 
+            "annotation_data": "{\"startCode\":\"00:01:00\",\"endCode\":\"00:02:00\",\"duration\":171,\"timeScale\":1,\"start\":60,\"end\":120}"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "djangosherd.annotation", 
+        "fields": {
+            "range2": null, 
+            "range1": null, 
+            "annotation_data": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "All credit to Mark and Casey", 
+            "added": "2012-05-12 12:32:07", 
+            "author": 2, 
+            "tags": ",youtube, test_instructor_item", 
+            "modified": "2012-12-01 11:57:53", 
+            "asset": 1, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-05-12 12:37:15", 
+            "author": 2, 
+            "tags": ",video", 
+            "modified": "2012-05-12 12:51:22", 
+            "asset": 1, 
+            "title": "Manage Sources"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-05-12 12:38:33", 
+            "author": 2, 
+            "tags": ",video", 
+            "modified": "2012-05-12 12:51:30", 
+            "asset": 1, 
+            "title": "Annotations"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "instructor one item note", 
+            "added": "2012-05-12 12:47:33", 
+            "author": 2, 
+            "tags": ",flickr, instructor_one", 
+            "modified": "2012-07-29 09:57:23", 
+            "asset": 2, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "instructor one selection note", 
+            "added": "2012-05-12 12:51:04", 
+            "author": 2, 
+            "tags": ",image, instructor_one_selection, ", 
+            "modified": "2012-07-29 09:57:15", 
+            "asset": 2, 
+            "title": "Our esteemed leaders"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "This is for deletion purposes", 
+            "added": "2012-05-12 12:58:33", 
+            "author": 2, 
+            "tags": ",flickr", 
+            "modified": "2012-05-12 12:58:33", 
+            "asset": 3, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "This is for deletion.", 
+            "added": "2012-05-12 12:58:49", 
+            "author": 2, 
+            "tags": ",image", 
+            "modified": "2012-05-12 12:58:49", 
+            "asset": 3, 
+            "title": "Left Corner"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "student one selection note", 
+            "added": "2012-07-29 09:56:02", 
+            "author": 3, 
+            "tags": ",student_one_selection", 
+            "modified": "2012-07-29 09:56:02", 
+            "asset": 2, 
+            "title": "The Award"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "student one item note", 
+            "added": "2012-07-29 09:56:02", 
+            "author": 3, 
+            "tags": ",student_one_item", 
+            "modified": "2012-07-29 09:56:14", 
+            "asset": 2, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "student two selection note", 
+            "added": "2012-07-29 09:58:30", 
+            "author": 4, 
+            "tags": ",student_two_selection", 
+            "modified": "2012-07-29 09:58:30", 
+            "asset": 2, 
+            "title": "Nice Tie"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "student two item note", 
+            "added": "2012-07-29 09:58:30", 
+            "author": 4, 
+            "tags": ",student_two_item", 
+            "modified": "2012-07-29 09:58:39", 
+            "asset": 2, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-09-15 08:53:57", 
+            "author": 6, 
+            "tags": "", 
+            "modified": "2012-09-15 08:53:57", 
+            "asset": 4, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", 
+            "added": "2012-09-15 08:55:29", 
+            "author": 6, 
+            "tags": ",research", 
+            "modified": "2012-09-15 08:55:29", 
+            "asset": 4, 
+            "title": "Research and Evaluation"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "Phasellus sed purus et nibh vehicula scelerisque at quis orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed dui orci, consequat in fermentum vel, congue eu nulla. ", 
+            "added": "2012-09-15 08:56:00", 
+            "author": 6, 
+            "tags": ",tag1", 
+            "modified": "2012-09-15 08:56:00", 
+            "asset": 4, 
+            "title": "Curricular Context"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-01 11:01:01", 
+            "author": 5, 
+            "tags": ",test_student_three", 
+            "modified": "2012-12-01 11:01:01", 
+            "asset": 4, 
+            "title": "Whole Item Selection"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": "student three item note", 
+            "added": "2012-12-01 11:01:01", 
+            "author": 5, 
+            "tags": ",student_three_item", 
+            "modified": "2012-12-01 11:10:47", 
+            "asset": 4, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-01 11:58:08", 
+            "author": 2, 
+            "tags": ",test_instructor_selection", 
+            "modified": "2012-12-01 11:58:08", 
+            "asset": 1, 
+            "title": "Whole Item Selection"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-18 11:47:04", 
+            "author": 10, 
+            "tags": "", 
+            "modified": "2012-12-18 11:47:04", 
+            "asset": 5, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-18 11:49:21", 
+            "author": 10, 
+            "tags": ",test_instructor_two", 
+            "modified": "2012-12-18 11:49:21", 
+            "asset": 1, 
+            "title": "Video Selection Is Time-based"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "djangosherd.sherdnote", 
+        "fields": {
+            "body": null, 
+            "added": "2012-12-18 11:49:22", 
+            "author": 10, 
+            "tags": "", 
+            "modified": "2012-12-18 11:49:22", 
+            "asset": 1, 
+            "title": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangosherd.discussionindex", 
+        "fields": {
+            "comment": null, 
+            "collaboration": 3, 
+            "participant": null, 
+            "asset": 5, 
+            "modified": "2012-12-18 11:48:16"
+        }
+    }
+]

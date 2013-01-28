@@ -1,5 +1,5 @@
 {% extends "dashboard/base_reports.html" %}
-{%load user_annotations comments coursetags %}
+{% load comments coursetags %}
 
 
 {% block js %}
@@ -8,8 +8,12 @@
 <script type="text/javascript" src="/site_media/js/reports.js"></script>
 {% endblock %}
 
+{% block dashboard_module_header %}
+    <h2>Report: Student Contributions</h2>
+{% endblock %}
+
 {% block dashboard_module %}
-    <h1>Report: Student Contributions</h1>    
+        
     <p>This report lists the number of each class member's saved selections, discussion thread posts, and compositions. To access an individual student's work, click on her name. </p>
 <table id="summary_columns">
 <tr>

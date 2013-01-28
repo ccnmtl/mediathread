@@ -33,5 +33,5 @@ if(b){
 }
 
 })('{{request.get_host}}',
-   '{%url analyze-bookmarklet "analyze.js" %}',
-   '{%url is_logged_in.js %}')
+   '{% url analyze-bookmarklet "analyze.js" %}',
+   '{% url is_logged_in.js %}')

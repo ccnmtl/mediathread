@@ -1,15 +1,44 @@
 {{#>>classwork_table}}
 <div id="classwork_table">
+
+    <div id="tour_2_content" style="display: none">
+        <p>
+            {{#is_faculty?}}
+                Create and view compositions, assignments, and instructor feedback here. 
+                Use the <b>Owner</b> field to view shared work from an individual student 
+                by choosing his or her name in the drop down menu. Use the <b>Create</b> 
+                button to begin new assignments and course information.              
+            {{/is_faculty?}}
+            {{^is_faculty}}
+                Respond to assignments posted by your instructor, review instructor feedback, and 
+                create compositions here. View compositions shared by other class members by 
+                choosing his or her name in the <b>Owner</b> drop down menu. Use the <b>Create</b> 
+                button to begin new compositions or respond to assignments.
+            {{/is_faculty}}
+        </p>
+        <p>
+           <i>
+            For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+           </i>
+        </p>       
+       
+        <div class="tour_buttons">
+            <span class="button" id="prevstep" style="">&lt; Prev</span>
+            <span class="button" id="nextstep" style="">Next &gt;</span>
+        </div>
+        <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
+    </div>
+                      
     <div class="filter-widget">
         {{#>>switcher_collection_chooser}}
         <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
             <span class="switcher-prefix">Owner: </span>
             <a class="switcher-top menuclosed" onclick="switcher(this);">
-                <span class="down-arrow" tabindex="3"></span>
                 <span class="title">{{{selected_label}}}</span>
+                <span class="down-arrow" tabindex="3"></span>                
             </a>
             
-            <ul class="switcher-options" style="left: -51px">
+            <ul class="switcher-options" style="left: -54px">
                 {{^showing_my_items}}
                 <li>
                     <ul class="switcher-sub" id="switcher-extras">
@@ -33,283 +62,175 @@
                 </li>
             </ul>
         </div>
-        {{/>>switcher_collection_chooser}}
-        
-        <div class="switcher collection-filter" tabindex="2" style="width: 160px">
-            <a class="switcher-top menuclosed" onclick="switcher(this);">
-                <span class="down-arrow" tabindex="4"></span>
-                <span class="title">Collection Filters 
-                    <span
-                        {{#active_filter_count?}}
-                            class="filter-on">: ON
-                        {{/active_filter_count?}}
-                        {{^active_filter_count}}
-                            class="filter-off">...
-                        {{/active_filter_count}}
-                    </span>
-                </span>
-            </a>
-            <ul class="switcher-options" style="right: -51px">
-                {{^showing_all_items}}
-                <li>
-                    <h3>Date Modified</h3>
-                        <p class="switcher-sub filterbydate">
-                            <a class="switcher-choice" href="today">today</a>
-                            <a class="switcher-choice" href="yesterday">yesterday</a>
-                            <a class="switcher-choice" href="lastweek">within the last week</a>
-                        </p>                
-                </li>
-                {{/showing_all_items}}
-        
-                <li>
-                    <h3>Tags</h3>
-                    <p class="switcher-sub ">
-                        {{^tags}}
-                            No tags
-                        {{/tags}}
-                        {{#tags}}
-                            <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
-                        {{/tags}}
-                    </p>
-                </li>
-                
-            </ul>
-        </div>
-        
-        <div class="visualclear"></div>
-        
-        {{#active_filter_count?}}
-            <div class="switcher-active-filters">
-                {{#active_filters}}
-                    {{#tag?}}
-                        <div class="switcher-active-filter">
-                            <span>
-                                Tag: {{tag?ellipses(10)}}
-                                <a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a>
-                            </span>
-                        </div>
-                    {{/tag?}}
-                    {{#modified?}}
-                        <div class="switcher-active-filter">
-                            <span>
-                                Date: {{modified}}
-                                <a class="switcher-choice remove" href="modified" title="Clear "{{modified}}" filter"></a>
-                            </span>
-                        </div>
-                    {{/modified?}}
-                {{/active_filters}}
-            </div>
-        {{/active_filter_count?}}
-        
+        {{/>>switcher_collection_chooser}}        
     </div> {{! end filter widget }}
+    
+    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create">Create<img src="/site_media/img/menuselect.png" /></a>
+    <div id="create-project-menu" style="display: none;">                
+        {{#is_faculty?}}
+            <form action="/project/create/" method="post">
+                <input type="hidden" name="title" />
+                <input type="hidden" name="publish" value="Assignment"/>
+                <input type="submit" value="Create Assignment" />
+            </form>
+            <form action="/project/create/" method="post">
+                <input type="hidden" name="title" />
+                <input type="submit" value="Create Composition" />                         
+            </form>            
+            <form action="/discussion/create/" method="post">
+                <input type="hidden" name="comment_html" value="Discussion Title" />
+                <input type="hidden" name="app_label" value="courseaffils" />
+                <input type="hidden" name="model" value="course" />
+                <input type="hidden" name="obj_pk" value="{{course.id}}" />
+                <input type="submit" value="Create Discussion" />
+            </form>
+        {{/is_faculty?}}
+        {{^is_faculty}}
+            {{#assignments}}
+                <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
+            {{/assignments}}        
+            <hr class="divideLinks" />
+            <form action="/project/create/" method="post">
+                <input type="hidden" name="title" />
+                <input type="submit" value="Create Composition" />                         
+            </form>            
+        {{/is_faculty}}         
+    </div>
     
     <table>
     <tbody>
         <tr>
             <td id="projects">
                 <div class="column-container projects-column-container" style="padding-bottom: 8px;">
-                    <h2>
-                        <div class="button-form inline">
-                            <form class="block project-createnew inline" method="POST" action="/project/create/">
-                                <input type="hidden" name="title" />
-                                <input class="columnbutton project createnew-button" type="submit" value="Create Composition"/>
-                            </form>
-                        </div>
-
-                        Compositions 
-                    </h2>
-                    <div class="column-contents scroll">
+                    <div class="column-contents">
                         {{#>>projects}}
                         <div id="project_table">
-                        
                             {{^compositions}}
-                                <div id="help_homepage_compositions_section" class="helpblock">
-
-                                    <h3>Available compositions appear here:</h3>
-                                    
-                                    <ul>
-                                    <li>To create your own Composition, click "New Composition" in the upper right of this box.</li>
-                                    <li>To access others' published compositions, select a name in the "Owner" menu above.</li>
+                                {{^showing_my_items}}                            
+                                <div class="homepage-column-info">                                    
+                                   No published work available.                                    
                                 </div>
+                                {{/showing_my_items}}
                             {{/compositions}}
-                            
+                        
                             {{#compositions?}}
                                 <ul id="projects">
+                                        
                                     {{#assignments}}
-                                        <li class="projectlist assignment-listitem" id="assignment-{{id}}">
+                                        <li class="projectlist assignment" id="assignment-{{id}}">
+                                            <span class="metadata-value-assignment">Assignment</span>
                                             <h3>
-                                                <a href="{{url}}"
-                                                   class="asset_title type-assignment" title='View "{{{title?default(-Untitled-)}}}"'>
+                                                <a href="{{url}}" class="asset_title type-assignment" title='View "{{{title?default(Untitled)}}}"'>
                                                   {{{title?default(-Untitled-)}}}
                                                 </a>
                                             </h3>
                                             <div class="meta">
                                                 <span class="metadata-label">Saved at:</span>
-                                                <span class="metadata-value">{{modified}}</span>
+                                                <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>
                                                 <br />
-                                              
-                                                <span class="metadata-label">Status:</span>
-                                                <span class="metadata-value metadata-value-status">Assignment</span>
-                                                <br />  
                                             </div>
+                                            
+                                            {{^is_faculty}}
+                                                <a data-id="{{id}}" class="btnRespond">Respond to Assignment</a>
+                                            {{/is_faculty}}
                                         </li>
                                     {{/assignments}}
-                                
+                                    
                                     {{#projects}}
-                                        <li class="projectlist" id="project-{{id}}">
-                                            <h3>
+                                        <li class="projectlist
+                                                   {{^display_as_assignment}}composition{{/display_as_assignment}}
+                                                   {{#display_as_assignment?}}assignment{{/display_as_assignment?}}"
+                                                   id="project-{{id}}">
+                                                   
+                                            {{^display_as_assignment}}<span class="metadata-value-composition">Composition</span>{{/display_as_assignment}}
+                                            {{#display_as_assignment?}}<span class="metadata-value-assignment">Assignment</span>{{/display_as_assignment?}}
+                                            
+                                            {{^collaboration}}
+                                                <h3>                                       
+                                                <a href="{{url}}"
+                                                   class="asset_title
+                                                          {{#display_as_assignment?}}type-assignment{{/display_as_assignment?}}
+                                                          {{^display_as_assignment}}type-project{{/display_as_assignment}}"                                                        
+                                                   title='View "{{{title?default(Untitled)}}}"'>
+                                                       {{{title?default(Untitled)}}}
+                                                </a>
+                                                
                                                 {{#editable?}}
-                                                    <a title="Delete composition" onclick="return ajaxDelete(this, 'project-{{id}}');"
+                                                    <a title="Delete this Composition"
+                                                        {{#display_as_assignment?}}
+                                                            onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'assignment' });"
+                                                        {{/display_as_assignment?}}
+                                                        {{^display_as_assignment}}
+                                                            onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'composition' });"
+                                                        {{/display_as_assignment}}"
                                                         href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
                                                         class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
-                                    
-                                                <a href="{{url}}" class="asset_title type-project" title='View "{{{title?default(-Untitled-)}}}"'>
-                                                    {{{title?default(-Untitled-)}}}
-                                                </a>
-                                        
-                                            </h3>
-                                           <div class="meta">
-                                               {{#feedback?}}
-                                                  <div><span class="metadata-label"> <a href="{{url}}feedback/">Read Instructor Feedback</a></span></div>
-                                               {{/feedback?}}
                                                 
-                                               {{#collaboration?}}
-                                                <div class="assignment-listitem response">
-                                                <span class="metadata-label">
-                                                      Response for:</span> 
-                                                      <span class="metadata-value"><a href="{{collaboration.url}}">{{collaboration.title}}</a>
-                                                </span>
-                                                </div>
-                                               {{/collaboration?}}
+                                                </h3>                                                
+                                            {{/collaboration}}                                  
+                                            {{#collaboration?}}
+                                                <h3>
+                                                <a href="{{collaboration.url}}"
+                                                   class="asset_title type-assignment"
+                                                   title='View "{{{collaboration.title?default(Untitled)}}}"'>
+                                                       {{{collaboration.title?default(Untitled)}}}
+                                                </a>
+                                                </h3>
+                                            {{/collaboration?}}                                        
                                             
-                                              <div>
-                                                  <span class="metadata-label">Author(s):</span>
+                                           <div class="meta">
+                                                {{#collaboration?}}
+                                                    <div class="assignment-listitem response">
+                                                        <span class="metadata-label">Response:</span> 
+                                                        <span class="metadata-value">
+                                                            <a class="metadata-value-response" href="{{url}}">{{title}}</a>
+                                                            {{#editable?}}
+                                                                <a href="/project/delete/{{id}}/"
+                                                                    onclick="return ajaxDelete(this,
+                                                                        'project-{{id}}',
+                                                                        { 'object_type': 'assignment response',
+                                                                          'success': function() { jQuery(window).trigger('projectlist.refresh'); }
+                                                                        });"
+                                                                    title="Delete My Response">
+                                                                    <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete" />
+                                                                </a>
+                                                            {{/editable?}}
+                                                        </span>
+                                                    </div>
+                                               {{/collaboration?}}
+                                               
+                                               <div class="metadata">
+                                                  <span class="metadata-label">by</span>
                                                   <span class="metadata-value metadata-value-author">{{#authors}}{{name}}{{^last}}, {{/last}}{{/authors}}</span>
-                                              </div>
+                                                  <span class="metadata-label">saved on</span>
+                                                  <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>                                            
+                                               </div>
+                                               {{^is_assignment}}
+                                                   <div class="metadata">
+                                                       <span class="metadata-value metadata-value-status">{{{status}}}</span>
+                                                   </div>
+                                               {{/is_assignment}}
+                                               
+                                               {{#feedback?}}
+                                                  <div class="feedback">
+                                                  <a class="btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>
+                                                  </div>
+                                               {{/feedback?}}                                            
                                               
-                                              <span class="metadata-label">Saved at:</span>
-                                              <span class="metadata-value">{{modified}}</span>
-                                              <br />
-                                              
-                                              <span class="metadata-label">Status:</span>
-                                              <span class="metadata-value metadata-value-status">{{{status}}}</span>
                                               <br />  
                                             </div>
                                         </li>
                                     {{/projects}}
                                 </ul>    
                             {{/compositions?}}
-                        
-                        </div>
+                           </div>
                         {{/>>projects}}
                     </div>
+
                 </div>
             </td>
         
-            <td class="media-column">
-                <div class="column-container media-column-container">
-                    <h2>
-                        <div class="button-form inline">
-                            <div class="collection_button">
-                                <a href="/asset/">View All Items</a>
-                            </div>
-                        </div>
-                        collection
-                    </h2>
-                    <div class="column-contents scroll">
-                        {{#>>assets}}
-                        <div id="asset_table" class="asset-table">
-                            {{^assets}}
-                                <div id="help_homepage_collections_section" class="helpblock">
-                                    {{#showing_my_items?}}
-                                        {{^active_filter_count}}
-                                            {{#is_faculty?}}
-                                                <h3>Media Items appear here:</h3>
-                                                
-                                                <p>To collect items, click the "Add to My Collection" button above.</p>
-
-                                                <p>Instructors can add sources to the "Add to My Collection" page. For more information, visit the <a href="/dashboard/">Instructor Dashboard</a>.</p>
-                                            {{/is_faculty?}}
-                                            {{^is_faculty}}    
-                                                <h5>You have not yet collected any items</h5>
-                                                <ul>
-                                                    <li>To collect items, click "Add to My Collection" above.</li>
-                                                    <li>To view items collected by others in the class, select "All Class Members" from the dropdown above.</li>
-                                                </ul>
-                                            {{/is_faculty}}
-                                        {{/active_filter_count}}
-                                        {{#active_filter_count}}
-                                            <h5>No Items</h5>
-                                        {{/active_filter_count}}
-                                    {{/showing_my_items?}}
-                                    {{^showing_my_items}}
-                                        <h4>No items found</h4>
-                                    {{/showing_my_items}}
-                               </div>
-                            {{/assets}} 
-                            {{#assets}}
-                                <div id="materials" class="column-contents homepage">
-                                    <div id="record-{{id}}" class="gallery-item-homepage record-{{primary_type}} gallery-item-{{id}}">
-                                        <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
-                                            <a class="asset-title-link"
-                                                href="{{local_url}}">
-                                                    {{#title?}}
-                                                        {{{title?ellipses(35)}}}
-                                                    {{/title?}}
-                                                    {{^title}}
-                                                        -Untitled-
-                                                    {{/title}}
-                                                    
-                                            </a>
-                                        </h4>
-                                        <div class="asset-thumb">
-                                            {{^thumbable}}
-                                                {{^thumb}}
-                                                    <img class="gallery-item-thumb" src="/site_media/img/nothumb_{{media_type_label}}.png" alt="Item Thumbnail" />
-                                                {{/thumb}}
-                                                {{#thumb?}}
-                                                    <img class="gallery-item-thumb" src="{{thumb}}" alt="Item Thumbnail" />
-                                                {{/thumb?}}
-                                            {{/thumbable}}
-                                        </div>
-                                        
-                                        <div class="actions">
-                                            {{#editable?}}
-                                                <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
-                                                </a>
-                                            {{/editable?}}
-                                            <a class="collection-choice edit-asset" href="{{local_url}}" title="Edit item attributes">
-                                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                                            </a>
-                                        </div>
-                                        
-                                        
-                                        {{#annotation_count?}}
-                                            <div class="item-annotation-count meta">
-                                                <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
-                                                <span class="metadata-value">selections</span>
-                                                | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
-                                                  <span class="metadata-value">by me</span>
-                                            </div>
-                                        {{/annotation_count?}}
-                                        {{^annotation_count}}
-                                            <div class="item-annotation-count meta">
-                                                <span class="metadata-label item-annotation-count-total">0</span>
-                                                <span class="metadata-value">selections</span>
-                                            </div>
-                                        {{/annotation_count}}
-                                    </div>
-                                    </div> {{! end id=materials, class="column-contents scroll" }} 
-                                {{/assets}}
-                            
-                        </div>
-                        {{/>>assets}}
-                    </div>
-                </div>
-            </td>
-            
         </tr>
     </tbody>
 </table>

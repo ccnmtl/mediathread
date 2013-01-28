@@ -1,0 +1,6 @@
+<input type="image"
+       class="help-tab-icon"
+       title="Help" 
+       onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;"
+       alt="Help"
+       src="/site_media/img/icons/meth_help.png" />

@@ -4,12 +4,86 @@
     Contact Us
 {% endblock %}
 
+{% block css %}
+<style>
+    div.contact_us_form {
+        width: 600px;
+    }
+    
+    div.contact_us_form h2 {
+        padding: 10px 0;
+        margin: 0 10px 10px 10px;
+        border-bottom: solid 1px #EFEFEF;
+        width: 75%;
+        min-width: 900px;
+    }
+    
+    div.contact_us_form p {
+        margin: 20px;
+    }
+    
+    div.contact_us_form form {
+        margin: 20px;
+    }
+    
+    div.contact_us_form table,
+    div.contact_us_form table tr,
+    div.contact_us_form table tr td {
+        border: none;
+    }
+    
+    div.contact_us_form table tr {
+        padding-bottom: 10px;
+    }
+    
+    div.contact_us_form label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    div.contact_us_form input,
+    div.contact_us_form select {
+        width: 50%;
+        margin-bottom: 10px;
+    }
+    
+    div.contact_us_form textarea {
+        width: 97%;
+        height: 200px;
+        margin-top: 5px;
+    }
+    
+    div.contact_us_form input#submit_feedback {
+        float: right;
+        width: 125px;
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+    
+    /* css for timepicker */
+    .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+    .ui-timepicker-div dl { text-align: left; }
+    .ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+    .ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+    .ui-timepicker-div td { font-size: 90%; }
+    .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+    
+    .ui-timepicker-rtl{ direction: rtl; }
+    .ui-timepicker-rtl dl { text-align: right; }
+    .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+</style>
+{% endblock %}
+
 {% block js %}
+<script src="/site_media/js/jquery-ui-timepicker-addon.js" type="text/javascript" language="javascript"></script>
+
 <script type="text/javascript">
     jQuery(document).ready(function() {
         {% if request.GET.msg %}
             alert("Thank you for your comments.");
         {% endif %}
+        
+        //jQuery('#time').datetimepicker();
     
         jQuery("form").submit(function() {
             var valid = true;
@@ -61,11 +135,12 @@
 
 {% block content %}
     <div class="contact_us_form">
-        <h1 class="title">Contact Us</h1>
+        <h2 class="title">Contact Us</h2>
     
         <p>
             If you have comments, suggestions, or questions about this site, or are having a problem using it, 
-            please contact us using the following form. We will do our best to respond within one business day. 
+            please contact us using the following form. We will do our best to respond within one business day.
+            For more immediate information, please visit the <a href="/help/">Mediathread Help documentation</a>.
         </p>
    
         <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback">
@@ -79,7 +154,7 @@
                 <div><input class="text" type="text" id="email" name="email" value="{{user.email}}"/></div>
                 
                 <div><label for="issue_time">Date and time issue occurred:</label></div>
-                <div><input class="text" type="text" id="time" name="time" /></div>
+                <div><input class="text" type="text" id="time" name="time" value='{% now "m/d/y H:m" %}'/></div>
                 
                 <div><label for="category">Category:</label></div>
                 <div>
@@ -118,7 +193,7 @@
             <input type="hidden" name="pid" value="514"></input>
             <input type="hidden" name="mid" value="3181"></input>
             <input type="hidden" name="type" value="bug"></input>
-            <input type="hidden" name="owner" value="markp" />
+            <input type="hidden" name="owner" value="tucker" />
             <input type="hidden" name="assigned_to"  value="agarber"></input>
             <input type="hidden" name="estimated_time" value="1h"></input>
             <input type="hidden" name="redirect_url" value="http://{{request.get_host}}/contact/?msg=submitted"></input>

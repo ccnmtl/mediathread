@@ -103,6 +103,7 @@
             'click #select-all-items': 'selectAllItems',
             'click #clear-all-items': 'clearAllItems',
             'click #import-selected': 'migrateCourseMaterials',
+            'click #clear-selected': 'clearSelectedMaterials',
             'click #switch-course': 'switchCourse',
             'click input.deselect-project': 'deselectProject',
             'click input.deselect-asset': 'deselectAsset'
@@ -113,7 +114,7 @@
                 "clickViewMaterials", "importAll", "importProjects", "importItems",
                 "selectAllItems", "clearAllItems", "selectAllProjects", "clearAllProjects",
                 "renderSelectedList", "switchCourse", "setCourse",
-                "deselectProject", "deselectAsset");
+                "deselectProject", "deselectAsset", "clearSelectedMaterials");
             
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
@@ -127,6 +128,11 @@
             this.selectedAssets.on("add remove", this.renderSelectedList);
             
             var self = this;
+            
+            jQuery(window).resize(function () {
+                self.resize();
+            });
+            
             // Setup initial state based on user's available courses
             // availableCourses are setup in the Django template
             if (this.availableCourses.length < 1) {
@@ -189,9 +195,18 @@
             if (this.selectedProjects.length > 0 ||
                 this.selectedAssets.length > 0) {
                 jQuery("#selected-for-import").show();
+                jQuery(window).trigger("resize");
             } else {
                 jQuery("#selected-for-import").hide();
             }
+        },
+        
+        resize: function () {
+            var visible = getVisibleContentHeight();
+            visible -= jQuery("div.dashboard-module-header").height();
+            visible -= jQuery("#course-title").height();
+            visible -= jQuery("#footer").height();
+            jQuery("#to_import").css('height', (visible - 20) + 'px');
         },
         
         setCourse: function (courseId) {
@@ -281,6 +296,20 @@
 
                 }
             });
+        },
+        
+        clearSelectedMaterials: function (evt) {
+            jQuery("#selected-for-import").fadeOut();
+            jQuery("#selected-for-import").html("");
+            
+            this.selectedProjects.off("add remove");
+            this.selectedAssets.off("add remove");
+
+            this.selectedProjects = new ProjectList();
+            this.selectedAssets = new AssetList();
+
+            this.selectedProjects.on("add remove", this.renderSelectedList);
+            this.selectedAssets.on("add remove", this.renderSelectedList);
         },
         
         importAll: function (evt) {

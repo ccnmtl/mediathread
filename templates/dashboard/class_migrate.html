@@ -206,6 +206,7 @@
                 <% } %>
             </div>
             <input id="import-selected" type="button" value="Migrate Selected" class="right" />
+            <input id="clear-selected" type="button" value="Clear Selected" class="right" />
         </form>
 
     </script>
@@ -240,8 +241,7 @@
         </div>
         
         <div id="course-materials-container" style="display: none">
-            <h3><span id="course-title"></span><a id="switch-course" href="#" class="metadata-value">switch course</a></h3>
-            
+            <h3><span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
             <div>
                 <div class="course-information">
                     <div id="course"></div>

@@ -17,7 +17,6 @@
                 {% endifnotequal %}
             {% endfor %}];
         
-        
         jQuery(document).ready(function () {
             var view = new CourseMaterialsView({ availableCourses: courses, el: "#block" });
         });
@@ -48,11 +47,25 @@
             <% if (info && info.year) { %>
                 <div><span class="metadata-label">Year:</span><span class="metadata-value"> <%= info.year %></span></div>
             <% } %>    
-            <div>
-                <span class="metadata-label">Faculty:</span>
-                <span class="metadata-value">
-                <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
-                    <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+            <div>                
+                <% if (is_staff) { %>
+                    <br />
+                    <span class="metadata-label">Upload on behalf of: </span>
+                    <select>
+                        <% if (role_in_course === "instructor") { %>
+                            <option value="myself">Myself</option>
+                        <% } %>
+                        <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>                            
+                            <option value="<%= faculty_group.user_set[i].id %>"><%= faculty_group.user_set[i].full_name %></option>
+                    <% } %>
+                    </select>
+                    <br /><br />
+                <% } else { %>
+                    <span class="metadata-label">Faculty:</span> 
+                    <span class="metadata-value">
+                    <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
+                        <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+                    <% } %>
                 <% } %>
             </div>
         </div>
@@ -229,32 +242,28 @@
             
     {% include "help/new_help_contentarea.html" %}
     
-    {% ifequal role_in_course "non-member" %}
-        <div id="no-materials-to-migrate">
-            You are not a member of this course. You are not authorized to migrate materials into this course.
-        </div>
-    {% else %}
+    <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
+    <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
                 
-        <div id="available-courses-selector" style="display: none">
-            <input type="text" class="default" id="available-courses" value="Type course name here">
-            <input type="submit" id="view-materials" value="View materials" class="rounded-button gray"/>        
+    <div id="available-courses-selector" style="display: none">
+        <input type="text" class="default" id="available-courses" value="Type course name here">
+        <input type="submit" id="view-materials" value="View materials" class="rounded-button gray"/>        
+    </div>
+    
+    <div id="course-materials-container" style="display: none">
+        <h3><span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
+        <div>
+            <div class="course-information">
+                <div id="course"></div>
+            </div>
+            <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
         </div>
-        
-        <div id="course-materials-container" style="display: none">
-            <h3><span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
-            <div>
-                <div class="course-information">
-                    <div id="course"></div>
-                </div>
-                <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
-            </div>                    
-        </div>
-        
-        <div id="no-materials-to-migrate" style="display: none">
-            You are not affiliated with any other courses. Please review our help materials
-            if you need to migrate course materials from a colleague's class.
-        </div>
-    {% endifequal %}    
+    </div>
+    
+    <div id="no-materials-to-migrate" style="display: none">
+        You are not affiliated with any other courses. Please review our help materials
+        if you need to migrate course materials from a colleague's class.
+    </div>
 {% endwith %}{% endwith %}
 {% endblock %}
 

@@ -76,7 +76,7 @@ ProjectList.prototype.refresh = function (config) {
         dataType: 'json',
         cache: false, // Internet Explorer has aggressive caching policies.
         success: function (the_records) {
-            self.updateAssets(the_records);
+            self.update(the_records);
             
             jQuery("a.btnRespond").bind("click", function (evt) {
                 self.createAssignmentResponse(evt);
@@ -102,7 +102,7 @@ ProjectList.prototype.selectOwner = function (username) {
     },
     false,
     function (the_records) {
-        self.updateAssets(the_records);
+        self.update(the_records);
     });
     
     return false;
@@ -123,7 +123,7 @@ ProjectList.prototype.getSpaceUrl = function (active_tag, active_modified) {
 
 ProjectList.prototype.updateSwitcher = function () {
     var self = this;
-    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items || (self.current_project && self.current_project.participants.length > 1);
+    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items;
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
     
     // hook up switcher choice owner behavior
@@ -140,7 +140,7 @@ ProjectList.prototype.updateSwitcher = function () {
 
 };
 
-ProjectList.prototype.updateAssets = function (the_records) {
+ProjectList.prototype.update = function (the_records) {
     var self = this;
     self.switcher_context.owners = the_records.owners;
     self.switcher_context.space_viewer = the_records.space_viewer;

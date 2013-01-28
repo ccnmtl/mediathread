@@ -127,6 +127,9 @@
             this.selectedProjects.on("add remove", this.renderSelectedList);
             this.selectedAssets.on("add remove", this.renderSelectedList);
             
+            this.is_staff = jQuery("#is-staff").attr("value") === "True";
+            this.role_in_course = jQuery("#role-in-course").attr("value");
+            
             var self = this;
             
             jQuery(window).resize(function () {
@@ -175,6 +178,9 @@
         
         render: function () {
             var json = this.model.toJSON();
+            json.is_staff = this.is_staff;
+            json.role_in_course = this.role_in_course;
+            
             var markup = this.courseTemplate(json);
             jQuery("#course").html(markup);
             

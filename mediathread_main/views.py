@@ -390,31 +390,19 @@ def your_records(request, record_owner_name):
         raise Http404()
 
     course = request.course
+    if (request.user.username == record_owner_name and
+        request.user.is_staff and not in_course(request.user.username,
+                                                request.course)):
+        return all_records(request)
+
     in_course_or_404(record_owner_name, course)
     record_owner = get_object_or_404(User, username=record_owner_name)
-    logged_in_user = request.user
 
     assets = annotated_by(Asset.objects.filter(course=course),
                           record_owner,
                           include_archives=False)
 
-    projects = Project.get_user_projects(
-        record_owner, course).order_by('-modified')
-    if not record_owner == logged_in_user:
-        projects = [p for p in projects if p.visible(request)]
-
-    project_type = ContentType.objects.get_for_model(Project)
-    assignments = []
-    for assignment in Project.objects.filter(course.faculty_filter):
-        if not assignment.visible(request):
-            continue
-        if assignment in projects:
-            continue
-        if is_unanswered_assignment(assignment, record_owner,
-                                    request, project_type):
-            assignments.append(assignment)
-
-    return get_records(request, record_owner, projects, assignments, assets)
+    return get_records(request, record_owner, assets)
 
 
 @allow_http("GET")
@@ -439,13 +427,10 @@ def all_records(request):
         .select_related().order_by('lower_title')
     assets = [a for a in selected_assets if a not in archives]
 
-    projects = [p for p in Project.objects.filter(
-        course=course, submitted=True).order_by('title') if p.visible(request)]
-
-    return get_records(request, None, projects, [], assets)
+    return get_records(request, None, assets)
 
 
-def get_records(request, record_owner, projects, assignments, assets):
+def get_records(request, record_owner, assets):
     course = request.course
     logged_in_user = request.user
 
@@ -488,14 +473,6 @@ def get_records(request, record_owner, projects, assignments, assets):
     for asset in assets:
         asset_json.append(homepage_asset_json(request, asset, logged_in_user,
                                               record_owner, options))
-
-    # Spew out json for the projects
-    project_json = []
-    for p in projects:
-        project_json.append(homepage_project_json(request,
-                                                  p,
-                                                  viewing_my_records))
-
     # Tags
     tags = []
     if record_owner:
@@ -525,13 +502,6 @@ def get_records(request, record_owner, projects, assignments, assets):
 
     # Assemble the context
     data = {'assets': asset_json,
-            'assignments': [{
-                'id': a.id,
-                'url': a.get_absolute_url(),
-                'title': a.title,
-                'modified': a.modified.strftime("%m/%d/%y %I:%M %p")}
-                for a in assignments],
-            'projects': project_json,
             'tags': [{'name': tag.name} for tag in tags],
             'active_filters': active_filters,
             'space_viewer': {
@@ -544,7 +514,6 @@ def get_records(request, record_owner, projects, assignments, assets):
                 'username': m.username,
                 'public_name': get_public_name(m, request)}
                 for m in request.course.members],
-            'compositions': len(projects) > 0 or len(assignments) > 0,
             'is_faculty': is_faculty, }
 
     if record_owner:

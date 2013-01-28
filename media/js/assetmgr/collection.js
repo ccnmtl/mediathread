@@ -18,8 +18,6 @@ var CollectionList = function (config) {
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
     self.create_asset_thumbs = config.create_asset_thumbs;
-    self.project_id = config.project_id;
-    self.project_version = config.project_version;
     self.parent = config.parent;
     self.selected_view = config.hasOwnProperty('selectedView') ? config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
@@ -311,26 +309,9 @@ CollectionList.prototype.createThumbs = function (assets) {
     }
 };
 
-CollectionList.prototype.updateProject = function () {
-    var self = this;
-    var url = MediaThread.urls['project-readonly'](self.project_id, self.project_version);
-    
-    // retrieve project json
-    djangosherd.storage.get({
-        type: 'project',
-        url: url
-    },
-    false,
-    function (json) {
-        self.current_project = json.panels[0].context.project;
-        self.switcher_context.project = self.current_project;
-        self.updateSwitcher();
-    });
-};
-
 CollectionList.prototype.updateSwitcher = function () {
     var self = this;
-    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items || (self.current_project && self.current_project.participants.length > 1);
+    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items;
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
     
     // hook up switcher choice owner behavior
@@ -391,11 +372,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 self.createAssetThumbs(the_records.assets);
             }
             
-            if (self.project_id && !self.current_project) {
-                self.updateProject();
-            } else {
-                self.updateSwitcher();
-            }
+            self.updateSwitcher();
             
             jQuery(elt).fadeIn("slow");
             

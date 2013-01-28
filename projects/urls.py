@@ -1,27 +1,40 @@
-from django.conf.urls.defaults import *
-from django.conf import settings
+from django.conf.urls.defaults import patterns, url
+
 
 urlpatterns = patterns(
     'projects.views',
-    
+
     url(r'^create/$', 'project_create', name="project-create"),
-    
-    url(r'^view/(?P<project_id>\d+)/$', 'project_workspace', name="project-workspace"),
-    url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$', 'project_workspace', name="project-workspace-feedback"),
-    
+
+    url(r'^view/(?P<project_id>\d+)/$',
+        'project_workspace',
+        name="project-workspace"),
+
+    url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$',
+        'project_workspace',
+        name="project-workspace-feedback"),
+
     url(r'^save/(?P<project_id>\d+)/$', 'project_save', name='project-save'),
-    url(r'^export/msword/(?P<project_id>\d+)/$', 'project_export_msword', name="project-export-msword"),
-    url(r'^export/html/(?P<project_id>\d+)/$', 'project_export_html', name="project-export-html"),
-    
-    url(r'^delete/(?P<project_id>\d+)/$', 'project_delete', name='project-delete'),
-    
-    # view versioned read only 
+
+    url(r'^export/msword/(?P<project_id>\d+)/$',
+        'project_export_msword',
+        name="project-export-msword"),
+
+    url(r'^export/html/(?P<project_id>\d+)/$',
+        'project_export_html',
+        name="project-export-html"),
+
+    url(r'^delete/(?P<project_id>\d+)/$',
+        'project_delete',
+        name='project-delete'),
+
+    # view versioned read only
     url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
         'project_view_readonly', name='project-view-readonly'),
-                       
+
     # view public url - read only view.
-    # Note: StructuredCollaboration requires 
+    # Note: StructuredCollaboration requires
     # 1. Url structure must be <classname>/<instance_id>/
-    # 2. Name must be <class>-view to do a reverse           
-    url(r'^(?P<project_id>\d+)/', 'project_view_readonly', name="project-view")    
+    # 2. Name must be <class>-view to do a reverse
+    url(r'^(?P<project_id>\d+)/', 'project_view_readonly', name="project-view")
 )

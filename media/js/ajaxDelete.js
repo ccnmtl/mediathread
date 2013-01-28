@@ -14,8 +14,12 @@ function ajaxDelete(link, container, opts) {
     jQuery(dom).addClass('about-to-delete');
     
     var msg = "Are you sure you want to delete this?";
-    if (opts && opts.item) {
-        msg = "Are you sure you want to remove this item from your collection?";
+    if (opts) {
+        if (opts.item) {
+            msg = "Are you sure you want to remove this item from your collection?";
+        } else if (opts.object_type) {
+            msg = "Are you sure you want to delete this " + opts.object_type + "?";
+        }
     }
 
     if (confirm(msg)) {

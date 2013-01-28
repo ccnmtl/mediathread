@@ -69,7 +69,7 @@ function hs_getTarget(a) {
     if (elt.length) {
         return elt.get(0);
     } else {
-        throw Error('hs.js: target id: ' + a.href + ' not found');
+        throw new Error('hs.js: target id: ' + a.href + ' not found');
     }
 }
 

@@ -15,6 +15,12 @@
             'home-space': function (username) {
                 return '/?username=' + username;
             },
+            'your-projects': function (username) {
+                return '/yourspace/projects/' + username + '/';
+            },
+            'all-projects': function () {
+                return '/yourspace/projects/';
+            },
             'your-space': function (username, tag, modified, citable) {
                 return '/yourspace/' + username + '/asset/?annotations=true' +
                     (tag ? '&tag=' + tag : '') +

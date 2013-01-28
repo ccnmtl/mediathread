@@ -13,6 +13,19 @@ RUNNING TESTS
 
 More information here...http://lettuce.it/reference/cli.html
 
+------------------
+BROWSER SELECTION
+------------------
+
+These selenium tests exercise the full stack, including javascript and UI verification.
+As such a real browser needs to be instantiated to complete the tests. 
+
+To select your browser, set the BROWSER variable in settings_test.py to Firefox or Chrome. 
+
+Please read the selenium documentation on local configuration for each browser.
+Firefox: http://code.google.com/p/selenium/wiki/FirefoxDriver
+Chrome: http://code.google.com/p/selenium/wiki/ChromeDriver 
+
 -------------------------
 BASIC LETTUCE VOCABULARY
 -------------------------
@@ -45,6 +58,7 @@ Administrator - selenium / selenium
 1. Sample Course
 
 Instructor One - test_instructor / test
+Instructor Two - test_instructor_two / test
 Student One - test_student_one / test
 Student Two - test_student_two / test
 Student Three - test_student_three / test
@@ -52,8 +66,11 @@ Student Three - test_student_three / test
 2. Alternate Course
 
 Instructor Alternate - test_instructor_alt / test
+Instructor Two - test_instructor_two / test
 Student Alternate - test_student_alt / test
 Student Three - test_student_three / test
+
+
 
 Assets
 -------

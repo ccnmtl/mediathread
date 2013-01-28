@@ -29,7 +29,7 @@ function getVisibleContentHeight() {
         viewportheight = document.getElementsByTagName('body')[0].clientHeight;
     }
 
-    return viewportheight - (10 + document.getElementById("primarynav").clientHeight + document.getElementById("header").clientHeight);
+    return viewportheight - (20 + document.getElementById("header").clientHeight);
 }
 
 function switcher(a) {
@@ -58,4 +58,30 @@ function toggleHelp(a, user, parent, help_content_id, callback) {
     if (callback) {
         callback();
     }
+}
+
+function toggleHelpOverlay(btn, user, help_content_id) {
+    
+    var overlay_id = "#" + help_content_id + "-overlay";
+    var tab_id = "#" + help_content_id + "-tab";
+    var content_id = "#" + help_content_id + "-content";
+    
+    if (jQuery(overlay_id).is(":visible")) {
+        jQuery(overlay_id).hide();
+        jQuery(tab_id).hide();
+        jQuery(content_id).hide();
+    } else {
+        jQuery(overlay_id).show();
+        jQuery(tab_id).show();
+        jQuery(content_id).show();
+    }
+    
+    var checked_id = "#" + help_content_id + "_checkbox";
+    var elts = jQuery(checked_id);
+    if (elts.length) {
+        var checked = jQuery(elts[0]).is(":checked");
+        updateHelpSetting(MediaThread.current_username, help_content_id, !checked);
+    }
+    
+    return false;
 }

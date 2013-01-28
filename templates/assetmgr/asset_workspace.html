@@ -7,7 +7,6 @@
 
 {% block css %}
     {{ block.super }}
-    <link rel="stylesheet" media="screen" href="/site_media/css/tabber.css" />
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
@@ -16,14 +15,18 @@
     <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
     
+    <!--  Mustache Templating -->
     <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/jquery.masonry.min.js"></script>
     
+    <!--  Generic Functionality -->
+    <script type="text/javascript" src="/site_media/jquery/js/jquery.masonry.min.js"></script>
+    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
+    
+    <!--  Asset related -->
+    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/assetmgr/assetpanel.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>

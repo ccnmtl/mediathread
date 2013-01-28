@@ -16,53 +16,42 @@
     
 {% endblock %}
 
-{% block dashboard_module %}
+{% block switchcourse %}{% endblock %}
 
-    <h2>Manage Course Settings</h2>
+{% block dashboard_module_header %}
+    <h2>Manage Course Settings</div></h2>    
+{% endblock %}
+
+{% block dashboard_module %}
     
-    <p>
-        This page allows you to manage various course settings.
-    </p>
-    <br />
-    
-    
-    {% with "help_public_compositions" as help_id %}
-    {% with help_public_compositions as default_help_state %}
-    <ul class="archive-gallery">
-        <li class="archive-container">
-            <h2>Public Compositions {% include "help/help_button.html" %}</h2>
-            {% include "help/help_contentarea.html" %}
+    <div class="dashboard-feature">
+    <h3>"Publish To The World" Compositions</h3>
+    <p>This feature allows authors to publish compositions at
+    a public level, via a link that does not require logging into Mediathread.</p>
         
             <form action="{% url class-settings %}" method="POST">
-                <h4>"Publish to the World" Enabled</h4>
+                <b>Enabled</b>:&nbsp; 
                 <input type="radio" name="allow_public_compositions" id="allow_public_compositions_yes" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
                 <input type="radio" name="allow_public_compositions" id="allow_public_compositions_no" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
                 <br /><br />
                 <input id="allow_public_compositions_submit" type="submit" value="Save Publish Options"></input>
             </form>
             
-        </li>
-    </ul>
-    {% endwith %}{% endwith %}
+    </div>
     
-    {% with "help_selection_visibility" as help_id %}
-    {% with help_selection_visibility as default_help_state %}
-    <ul class="archive-gallery">
-        <li class="archive-container">
-            <h2>Item Selection Visibility {% include "help/help_button.html" %}</h2>
-            {% include "help/help_contentarea.html" %}
-        
-            <form action="{% url class-settings %}" method="POST">
-                <h4>Course members can see each other's selections.</h4>
-                <input type="radio" name="selection_visibility" id="selection_visibility_yes" value="1" {% if selection_visibility %}checked{% endif %}/>Yes
-                <input type="radio" name="selection_visibility" id="selection_visibility_no" value="0" {% if not selection_visibility %}checked{% endif %}/>No
-                <br /><br />
-                <input id="selection_visibility_submit" type="submit" value="Save Visiblity Options"></input>
-            </form>
-            
-        </li>
-    </ul>
-    {% endwith %}{% endwith %}
+    <div class="dashboard-feature">
+        <h3>Item Selection Visibility</h3>
+        <p>Turning off selection visibility hides individual item selections from all
+        collections views. Faculty and students can still view a selection embedded
+        in a visible composition.</p>
     
+        <form action="{% url class-settings %}" method="POST">
+            <b>Course members can see each other's selections</b>: &nbsp;
+            <input type="radio" name="selection_visibility" id="selection_visibility_yes" value="1" {% if selection_visibility %}checked{% endif %}/>Yes
+            <input type="radio" name="selection_visibility" id="selection_visibility_no" value="0" {% if not selection_visibility %}checked{% endif %}/>No
+            <br /><br />
+            <input id="selection_visibility_submit" type="submit" value="Save Visiblity Options"></input>
+        </form>
+    </div>
 
 {% endblock %}

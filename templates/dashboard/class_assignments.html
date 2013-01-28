@@ -1,10 +1,13 @@
 {% extends "dashboard/base_reports.html" %}
 
-{%load user_annotations comments user_projects %}
+{% load comments user_projects %}
+
+{% block dashboard_module_header %}
+    <h2>Report: Assignment Responses</h2>
+{% endblock %}
 
 
 {% block dashboard_module %}
-    <h1>Report: Assignment Responses</h1>    
 
 <p>If you have published assignments to the class, this report allows you to access responses and track your feedback. </p>
 

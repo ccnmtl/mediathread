@@ -1,0 +1,107 @@
+/** Items, Selections, assignments, discussions by course **/
+select cr.id, cr.title, d.value,
+       split_part(g.name, '.', 1) as term,
+       split_part(g.name, '.', 2) as year,
+       split_part(g.name, '.', 3) as section,
+       split_part(g.name, '.', 4) as course_no,
+       split_part(g.name, '.', 5) as school
+  from courseaffils_course cr
+inner join auth_group g on cr.faculty_group_id=g.id
+    and (g.name like 't1%' or g.name like 't2%' or g.name like 't3%')
+left join courseaffils_coursedetails d on d.course_id=cr.id and d.name='instructor'
+order by cr.id desc
+
+UNION
+
+select cr.id, cr.title,
+       count(distinct a.id)
+  from courseaffils_course cr
+inner join auth_group g on cr.faculty_group_id=g.id
+    and (g.name like 't1%' or g.name like 't2%' or g.name like 't3%')
+left join assetmgr_asset a on cr.id=a.course_id
+group by cr.id, cr.title
+order by cr.id desc
+
+UNION
+
+select cr.id, cr.title,
+       count(s.annotation_ptr_id)
+  from courseaffils_course cr
+left join assetmgr_asset a on cr.id=a.course_id
+left join djangosherd_sherdnote s on a.id=s.asset_id
+ where cr.faculty_group_id in (
+        select g.id 
+          from auth_group g
+         where (g.name like 't1%' or g.name like 't2%' or g.name like 't3%'))
+group by cr.id, cr.title
+order by cr.id desc
+
+select cr.id, cr.title
+     count(s.annotation_ptr_id),
+     
+
+DISCUSSIONS
+
+select cr.id, cr.title, max(c.submit_date) as most_recent, count(th.comment_ptr_id)
+from structuredcollaboration_collaboration s, 
+     django_content_type t,
+     threadedcomments_comment th,
+     django_comments c,
+     structuredcollaboration_collaboration s1, 
+     django_content_type t1,
+     courseaffils_course cr
+where t.name='Threaded comment'       
+  and s.content_type_id=t.id 
+  and s._parent_id=s1.id 
+  and t1.name='course' 
+  and s1.content_type_id=t1.id
+  and cast(s.object_pk as int)=th.comment_ptr_id
+  and th.comment_ptr_id=c.id
+  and cast(s1.object_pk as int)=cr.id
+group by cr.id, cr.title
+order by cr.id desc
+       
+
+
+
+
+/** Discussions in the system **/
+
+select cr.title, th.title, c.submit_date
+from structuredcollaboration_collaboration s, 
+     django_content_type t,
+     threadedcomments_comment th,
+     django_comments c,
+     structuredcollaboration_collaboration s1, 
+     django_content_type t1,
+     courseaffils_course cr
+where t.name='Threaded comment'       
+  and s.content_type_id=t.id 
+  and s._parent_id=s1.id 
+  and t1.name='course' 
+  and s1.content_type_id=t1.id
+  and cast(s.object_pk as int)=th.comment_ptr_id
+  and th.comment_ptr_id=c.id
+  and cast(s1.object_pk as int)=cr.id
+order by c.submit_date desc
+
+/** Courses using discussions **/
+
+select cr.title, max(c.submit_date) as most_recent, count(th.id)
+from structuredcollaboration_collaboration s, 
+     django_content_type t,
+     threadedcomments_comment th,
+     django_comments c,
+     structuredcollaboration_collaboration s1, 
+     django_content_type t1,
+     courseaffils_course cr
+where t.name='Threaded comment'       
+  and s.content_type_id=t.id 
+  and s._parent_id=s1.id 
+  and t1.name='course' 
+  and s1.content_type_id=t1.id
+  and cast(s.object_pk as int)=th.comment_ptr_id
+  and th.comment_ptr_id=c.id
+  and cast(s1.object_pk as int)=cr.id
+group by cr.title
+order by most_recent desc

@@ -125,7 +125,7 @@ Feature: Direct Asset Access
         Then I am at the Mediathread Collection page
         Then I see "Mediathread: Introduction"
         
-        When I open the user settings menu
+        When I open the user menu
         Then there is a "Switch Course" link
         When I click the "Switch Course" link
         Then I am at the Switch Course page

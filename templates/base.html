@@ -6,7 +6,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
 
-	<link rel="stylesheet" href="/site_media/css/jquery-ui-1.8.17.custom.css" media="screen" />
+	<link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />
 	<link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
     <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
     <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
@@ -19,8 +19,8 @@
     
     {% block css %}{% endblock %}
     
-    <script type="text/javascript" src="/site_media/js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="/site_media/js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>
     
     <script src="/site_media/js/browserdetect.js" type="text/javascript" language="javascript"></script>
@@ -42,14 +42,7 @@
                 this.user_full_name = "{%public_name for request.user %}";
             {% endif %}
         })();
-
-        //Bind to the ui-widget-overlay and watch for when it is clicked
-        jQuery('.ui-widget-overlay').live("click", function() {
-           //Close the dialog
-           jQuery("#settings_menu").dialog("close");
-        });   
-    </script>
-	{% block feeds %}{% endblock %}
+    </script>	
 </head>
 {% course_role for request.user in course as role_in_course %}
 <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
@@ -58,78 +51,100 @@
     {% block masthead %}
     	<!-- ###### Site banner ###### -->
     	<div id="header">
-            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread.png" width="172" height="42" alt="mediathread logo" /></a></div>
+
+            <div id="standardnav_container">   
+            <div id="mediathread_logo"><a href="/"><img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" /></a></div>
             {% block standardnav %}            
                <ul id="standardnav">
-                    {% if request.user.is_authenticated %}
-                        <li class="settings" onclick="jQuery('#standardnav_settings_menu').toggle();">
-                            <img alt="settings_gear" src="/site_media/img/settings.png" style="height: 18px;"></img>
+                    {% if request.user.is_authenticated %}   
+                        {% ifequal role_in_course "non-member" %}
+                            <li>
+                                <div class="nonmember">You are not a class member!</div>
+                            </li>
+                        {% endifequal %}     
+                        <li>
+                            <div class="settings_menu user closed">
+                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                <div class="left settings_menu_title">{% public_name for user %}</div>                                
+                            </div>
+                            <div class="visualclear"></div>
                             <!-- Settings Menu -->
-                            <div id="standardnav_settings_menu" style="display: none">
+                            <div class="settings_submenu" style="display: none">
                                 {%if user.is_staff %}
                                     <a href="/admin/">Admin</a>
                                 {%endif%}
                                 
                                 {% num_courses for user as user_courses %}
-                                
                                 {% if user_courses > 1 or user.is_staff %}
                                     <a href="/?unset_course">Switch Course</a>
                                 {% endif %}
-                                <a href="/contact">Contact Us</a>
+                                    
                                 <a href="/accounts/logout/">Log Out</a>
                             </div>
                         </li>
-                        <li class="settings" style="margin-top: 2px;">
-                            <span id="logged_in_name" class="username" unselectable="on" onclick="jQuery('#standardnav_settings_menu').toggle();">{% public_name for user %}</span>
+                        
+                        {% if is_course_faculty %}
+                        <li>
+                            <div class="settings_menu tools closed">
+                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                <div class="left settings_menu_title">Tools</div>                                
+                            </div>
+                            <div class="visualclear"></div>
+                            <!-- Settings Menu -->
+                            <div class="settings_submenu" style="display: none">
+                                 <a href="/dashboard/settings/">Manage Settings</a>
+                                 <a href="/dashboard/addsource/">Manage Sources</a>
+                                 {% ifnotequal role_in_course "non-member" %}
+                                    <a href="/dashboard/migrate/">Migrate Materials</a>
+                                 {% endifnotequal %}
+                            </div>
                         </li>
-                        <li class="settings" style="margin-top: 2px;">
-                            <a href="#" onclick='jQuery("#standardnav_settings_menu").toggle();'>
-                                <img src="/site_media/img/down_arrow_gray.png" alt="down arrow" />
-                            </a>
+                        <li>
+                            <div class="settings_menu reports closed">
+                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                <div class="left settings_menu_title">Reports</div>                                
+                            </div>
+                            <div class="visualclear"></div>
+                            <!-- Settings Menu -->
+                            <div class="settings_submenu" style="display: none">
+                                 <a href="/reports/class_assignments/">Assignment Responses</a>
+                                 <a href="/reports/class_activity/">Class Activity</a>
+                                 <a href="/reports/class_summary/">Student Contributions</a>
+                                {%if user.is_staff %}
+                                    <hr />
+                                    <a href="/reports/activity/course/">Activity by Course</a>
+                                    <a href="/reports/activity/school/">Activity by School</a>
+                                {%endif%}     
+                            </div>
+                        </li>                        
+                        {% endif %}
+                        
+                        <li>
+                            {% block standardnav_help %}
+                                <div unselectable="on"><a href="/help/">Help</a></div>
+                            {% endblock %}
+                        </li>
+                        
+                        <li>
+                            <div unselectable="on"><a href="/contact/">Contact Us</a></div>
                         </li>
                     {% else %}
+                        <li><div unselectable="on"><a href="/help/">Help</a></div></li>
                         <li><a href="/accounts/login/">Log In</a></li>
                     {% endif %}
         
-                    <li><a href="/help/">Help</a></li>
+                    
                 </ul>
             {% endblock %}
-            <div id="course_title">{{course.title}}</div>
-
-            
-            {% block primarynav %}
-    <!-- ###### Primary navigation ###### -->
-    <div id="primarynav">
-        <div class="encase" id="{% block navalignment %}leftside{% endblock %}">
-            {% comment %}
-            ###### FOR ALIGNMENT OF TABS on the primary navigation--
-               leftside : all tabs aligning to the left, login to the right
-               rightside :  all tabs aligning to the right, login to the left
-            {% endcomment %}
-                     {% if request.course %}
-                        {% block primarynavtabs %}
-                        <ul class="{% ifequal role_in_course "non-member" %}non-member{% endifequal %}">
-                            
-                            <li class="{% active request 'Class Portal' %} home"><a href="/">HOME</a></li>
-                            
-                            {% if is_course_faculty %}
-                                <li class="{% active request 'Instructor' %} instructor"><a href="{% url dashboard-home %}">Instructor Dashboard</a></li>
-                            {% endif %}
-                            
-                            <li class="{% active request 'Notifications' %} activity"><a href="/notifications/">View Recent Activity</a></li>
-                            
-                            <li class="{% active request 'Explore' %} explore"><a href="/explore/">Add to My Collection</a></li>
-            
-                        </ul><!-- id="primarynavtabs" -->
-                        {% endblock %}
-                  {% endif %}
-                        {% block usernav %}{% endblock %}
-            
-                    </div><!-- id="leftside/rightside" -->
-                </div><!-- id="primarynav" -->
-            {% endblock %}
-    	</div><!-- id="header" -->
+        </div>
+        <div id="course_information">
+            <h1 id="course_title"><a href="/">{{course.title}}</a></h1>
+            {% block course_metadata %}{% endblock %}
+            <div class="clear: right;"></div>
+        </div>
         
+    	</div><!-- id="header" -->
+
     {% endblock %}
         
     <!-- ###### Don't touch this ###### -->
@@ -155,11 +170,11 @@
 
 				</div><!-- class="block" -->
 			</div><!-- id="squish" -->
+			<div id="clearfooter"></div>
 		</div><!-- id="content" -->
+	</div><!-- id="pagebody" -->
+</div><!-- id="container" -->
 
-
-		<!-- ###### Don't touch this ###### -->
-		<div class="visualclear"></div>
 	{% block footer %}
 	<!-- ###### Footer ###### -->
 	<div id="footer">
@@ -167,7 +182,7 @@
 	<ul id="footernav"><li><a href="/about/">About</a></li>
 			<!--<li><a href="/partners/">Partners</a></li>-->
                            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
-                           <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact</a></li>
+                           <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
                            {% endif %}
                            <li><a href="/help/">Help</a></li>
 			</ul>
@@ -175,17 +190,16 @@
 			<!-- CCNMTL title/logo --><h4 id="logo_ccnmtl"><a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a></h4> 
 			</div><!-- id="footer" -->
 {% endblock %}
-	</div><!-- id="pagebody" -->
 
 
 
 
 
-</div><!-- id="container" -->
 
 {% block js %}{% endblock %}
 <script type="text/javascript">
     jQuery(document).ready(function() {
+        // setup some ajax progress indicator
         jQuery("html").bind("ajaxStart", function(){  
            jQuery(this).addClass('busy');  
         }).bind("ajaxStop", function(){  
@@ -207,6 +221,26 @@
               var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
        {% endif %}
+       
+       jQuery("div.settings_menu").click(function(evt) {
+           evt.stopPropagation();
+           
+           // close all other menus
+           var opening = jQuery(this).hasClass("closed");
+           jQuery("div.settings_submenu").hide();
+           jQuery("div.settings_menu").removeClass("open").addClass("closed");
+
+           // open this one if needed
+           if (opening) {
+               jQuery(this).removeClass("closed").addClass("open");
+               jQuery(this).nextAll("div.settings_submenu").toggle();
+           }
+       });
+       
+       jQuery("body").click(function() {
+           jQuery("div.settings_submenu").hide();
+           jQuery("div.settings_menu").removeClass("open").addClass("closed");
+       });
       
     });
 </script>

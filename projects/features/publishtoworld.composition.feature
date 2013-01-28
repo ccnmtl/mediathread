@@ -9,8 +9,13 @@ Feature: Public Compositions
         
         # Create a project from the home page
         Given the home workspace is loaded
-            There is a Create Composition button
-            When I click the Create Composition button
+            There is a Create button
+            When I click the Create button
+            Then there is a Create Assignment button
+            And there is a Create Composition button
+            And there is a Create Discussion button
+            
+            When I click the Create Composition button        
         
         Given the composition workspace is loaded
             Then I am at the Untitled page

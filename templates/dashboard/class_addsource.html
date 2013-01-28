@@ -19,28 +19,24 @@
     
 {% endblock %}
 
+{% block switchcourse %}{% endblock %}
+
+{% block dashboard_module_header %}
+    <h2>Manage Sources</div></h2>    
+{% endblock %}
+
 {% block dashboard_module %}
 
-
-<h2>Manage Sources </h2>
-    
-  <p>
-  This page allows you to manage the resources listed on the <a href="{% url explore %}">Add to My Collection</a> page.
-  </p>
-  <br />
-
-{% with "help_video_upload" as help_id %}
-{% with help_video_upload as default_help_state %}
-<ul id="wardenclyffe" class="archive-gallery">
-<li class="upload-container">
-    <h2>Mediathread Video Uploader {% include "help/help_button.html" %}</h2>
-    {% include "help/help_contentarea.html" %}
+    <div class="dashboard-feature">
+    <h3>Mediathread Video Uploader</h3>
+    <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.
+    You may enable it for just yourself, or enable it for all members of your class.</p>
 
     {% if upload_enabled %}
-        <h4>Upload Permission Settings</h4>
-    
-        <form action="{% url class-add-source %}" method="POST" name="form-upload-permission">
         
+        <form action="{% url class-add-source %}" method="POST" name="form-upload-permission">
+            <b>Set Upload Permission Settings</b>: &nbsp;
+    
             <select name="upload_permission">
                 {% for level in permission_levels %}
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
@@ -51,17 +47,7 @@
         </form>
     {% else %}
         <form action="{% url asset-save %}" method="POST">
-            <li class="archive">
                 <input class="addtoclass" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
-                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/" class="archive-link">Mediathread Video Uploader</a>
-                <br>
-                <a href="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/"><img src="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg" alt="thumbnail image" class="archive-link">
-                </a>
-             
-                <span>
-                   <p>Upload your own source material.</p>
-                </span>
-    
                 <input type="hidden" name="title" value="Mediathread Video Upload">
                 <input type="hidden" name="metadata-description" value="Upload your own source material.">
                 <input type="hidden" name="metadata-upload" value="1">
@@ -69,41 +55,37 @@
                 <input type="hidden" name="archive" value="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
                 <input type="hidden" name="thumb" value="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg">
                 <input type="hidden" name="redirect-url" value="{% url class-add-source %}">
-            </li>
          </form>
+         <div class="visualclear"></div>
      {% endif %}
-</li>
-</ul>
-{% endwith %}{% endwith %}
+    </div>
 
-{% with "help_supported_collections" as help_id %}
-{% with help_supported_collections as default_help_state %}
-<ul id="supported_collections" class="archive-gallery">
-    <li class="archive-container">
-        <h2 id="archives">Add<!--/Remove--> Supported Sources {% include "help/help_button.html" %}</h2>
+<div class="dashboard-feature">
+    <h3>Add<!--/Remove--> Supported Sources</h3>
     
-        <ul class="archive-gallery">
-            {% include "help/help_contentarea.html" %}
-            {% for archive in supported_archives %}
-                <li class="archive">
-                    <form action="{% url asset-save %}" method="POST">
-                        {% ifincourse archive course %}
-                            <input class="addtoclass" type="submit" value="Added" id="{{archive.title|slugify}}" disabled="disabled" />
-                        {% else %}
-                            <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
-                        {% endifincourse %}
-                    
-                        <a href="{{archive.archive_url}}" class="archive-link">{{archive.title}}</a>
-                        <br />
+    <p>Mediathread allows users to import videos and images from a variety of supported websites via the Mediathread bookmarklet.
+    To select a source for your class, click the "Add to Class" button.
+    To designate a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source".</p>
+        
+        {% for archive in supported_archives %}
+                <div class="archive">
+                <form action="{% url asset-save %}" method="POST">
+                    <table>
+                    <tr>
+                    <td class="archive_thumb">
                         {% if archive.thumb_url %}
                             <a href="{{archive.archive_url}}"><img src="{{archive.thumb_url}}" alt="thumbnail image" class="archive-link" />
                             </a>
                         {% endif %}
+                    </td>
+                    <td>                    
+                        <a href="{{archive.archive_url}}" class="archive-link">{{archive.title}}</a>
+                        <br />
         
                         <span>
                             {{archive.description|safe|urlize|linebreaks}}
                         </span>
-        
+                    
                        {% include "assetmgr/pretender_select.html" %}
                        
                        <input type="hidden" name="title" value="{{archive.title}}" />
@@ -111,56 +93,60 @@
                        <input type="hidden" name="archive" value="{{archive.archive_url}}" />
                        <input type="hidden" name="thumb" value="{{archive.thumb_url}}" />
                        <input type="hidden" name="metadata-description" value="{{archive.description}}" />
-                    </form>
-                </li>
-            {%endfor%}
-        </ul>
-    </li>
-</ul>
-{% endwith %}{% endwith %}
+                     </td>
+                     <td>                        
+                        {% ifincourse archive course %}
+                            <input class="addtoclass" type="submit" value="Added" id="{{archive.title|slugify}}" disabled="disabled" />
+                        {% else %}
+                            <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
+                        {% endifincourse %}
+                     </td>
+                       </tr>
+                   </table>
+                </form>
+                </div>
+        {%endfor%}
+</div>
 
+<div class="dashboard-feature">
+    <h3>Add Your Own Collection</h3>
+    <p>Feel free to experiment with the Mediathread bookmarklet to see if it imports items from an 'unsupported' website; 
+    if it does, you may add this source to your class here. To request bookmarklet compatibility with an unsupported source, 
+    please email ccnmtl-mediathread@columbia.edu. 
+    To upload individual items to Mediathread, use the Mediathread Uploader at the top of this page.
+    
+    
+    <form action="{% url asset-save %}" method="POST">
+        {% include "assetmgr/pretender_select.html" %}
+    
+        Collection Title: <input type="text" name="title" value="" />
+        <br/>
+        Collection URL: <input type="text" name="archive" value="" />
+        <br/>
+        Collection URL (yes, again): <input type="text" name="url" value="" />
+        <br/>
+        Description:
+        <textarea cols="55" rows="5" name="metadata-description"></textarea>
+        <br/>
+        Thumb URL: <input type="text" name="thumb" value="" />
+        <br/>
+            Required Plugin
+        <select name="metadata-required">
+              <option value="">--None--</option>
+              <option value="flash">Flash</option>
+              <option value="quicktime">Quicktime</option>
+              <option value="realplayer">RealPlayer</option>
+              <option value="ogg">Ogg videotag support</option>
+            </select>
+            <br/>
+        <input type="submit" value="Add Source to Class" />
+    </form>
+</div>
 
-    {% with "help_add_custom_collection" as help_id %}
-    {% with "off" as default_help_state %}
-    <ul id="custom_collection" class="archive-gallery">
-        <li class="archive-container">
-            <h2 id="custom_archive">Add Your Own Collection {% include "help/help_button.html" %}</h2>
-            {% include "help/help_contentarea.html" %}
-            <p>Instructions</p>
-            <form action="{% url asset-save %}" method="POST">
-                {% include "assetmgr/pretender_select.html" %}
-        
-                Collection Title: <input type="text" name="title" value="" />
-                <br/>
-                Collection URL: <input type="text" name="archive" value="" />
-                <br/>
-                Collection URL (yes, again): <input type="text" name="url" value="" />
-                <br/>
-                Description:
-                <textarea cols="55" rows="5" name="metadata-description"></textarea>
-                <br/>
-                Thumb URL: <input type="text" name="thumb" value="" />
-                <br/>
-                    Required Plugin
-                <select name="metadata-required">
-                      <option value="">--None--</option>
-                      <option value="flash">Flash</option>
-                      <option value="quicktime">Quicktime</option>
-                      <option value="realplayer">RealPlayer</option>
-                      <option value="ogg">Ogg videotag support</option>
-                    </select>
-                    <br/>
-                <input type="submit" value="Add Source to Class" />
-            </form>
-        </li>
-    </ul>
-    {% endwith %}{% endwith %}
 
 {% if is_staff %} 
-
-<ul id="individual_uploads" class="archive-gallery">
-<li class="archive-container">
-     <h2 id="specific">Specific Internet Resources</h2>
+<div class="dashboard-feature">
+     <h3>Specific Internet Resources</h3>
         <ul>
         <li class="archive">
             <h3>Local Quicktime Streaming Video</h3>
@@ -347,8 +333,7 @@
             </form>
         </li>
         </ul>
-</li>
-</ul>
+</div>
 <!--            
 
 <ul id="experimental_cookie" class="archive-gallery">
@@ -376,6 +361,3 @@
       <br class="visualclear" />
 {% endif %}
 {% endblock %}
-
-
-      <a class="hs-control" href="#reports-graph"></a>

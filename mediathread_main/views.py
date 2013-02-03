@@ -44,7 +44,8 @@ def django_settings(request):
                  'FLOWPLAYER_SWF_LOCATION',
                  'DEBUG',
                  'REVISION',
-                 'DATABASE_HOST'
+                 'DATABASE_HOST',
+                 'GOOGLE_ANALYTICS_ID'
                  ]
 
     rv = {'settings': dict([(k, getattr(settings, k, None))

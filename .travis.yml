@@ -7,5 +7,7 @@ before_install:
 install:
   - ./bootstrap.py
 script:
-  - ./manage.py test reports --settings=settings_test
-  - ./manage.py test structuredcollaboration --settings=settings_test
+  - ./manage.py test djangosherd --settings=settings_test
+  - ./manage.py test assetmgr --settings=settings_test
+  - ./manage.py test projects --settings=settings_test
+  - ./manage.py test mediathread_main --settings=settings_test

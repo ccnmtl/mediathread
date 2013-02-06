@@ -290,7 +290,8 @@ iathread</a></li>
                                     
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
-                                            <div><b>For:</b>&nbsp;
+                                            <div class="upload_for">
+                                            <b>For:</b>&nbsp;
                                             <select name="as"> 
                                             {% for owner in owners %}                                
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
@@ -307,7 +308,8 @@ iathread</a></li>
                                         {% if owners %}
                                             <div class="visualclear"></div>
                                             <br /><br />
-                                            <div><b>For:</b>&nbsp;
+                                            <div class="upload_for">
+                                            <b>For:</b>&nbsp;
                                             <select id="video_owners" name="as"> 
                                             {% for owner in owners %}                                
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>

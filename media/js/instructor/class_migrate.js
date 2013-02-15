@@ -78,6 +78,7 @@
                 url += '?';
                 url += 'project_set__author__id__in=' + filters;
                 url += '&asset_set__sherdnote_set__author__id__in=' + filters;
+                url += '&order_by=title';
             }
             
             return url;
@@ -178,7 +179,9 @@
         
         render: function () {
             var json = this.model.toJSON();
-            json.is_staff = this.is_staff;
+            
+            // @todo: finish "upload on behalf of" feature
+            json.is_staff = false;
             json.role_in_course = this.role_in_course;
             
             var markup = this.courseTemplate(json);
@@ -371,13 +374,15 @@
                                             var project = self.model.get('project_set').getByDataId(id);
                                             if (jQuery(elt).is(":checked")) {
                                                 if (!self.selectedProjects.get(project)) {
-                                                    self.selectedProjects.add(project);
+                                                    self.selectedProjects.add(project, {silent: true});
                                                 }
                                             } else {
-                                                self.selectedProjects.remove(project);
+                                                self.selectedProjects.remove(project, {silent: true});
                                             }
                                         }
                                     );
+                                    
+                                    self.renderSelectedList();
                                 }
                                 jQuery(this).dialog("close");
                             }

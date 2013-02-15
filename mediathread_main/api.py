@@ -49,6 +49,7 @@ class CourseResource(ModelResource):
         excludes = ['group']
         list_allowed_methods = []
         detail_allowed_methods = ['get']
+        ordering = ['project_set__title']
 
         # User is logged into some course
         authentication = ClassLevelAuthentication()

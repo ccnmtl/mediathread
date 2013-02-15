@@ -427,6 +427,13 @@ ul#projects h3 .edit_icon {
     margin: 0 20px 0 0;
 }
 
+.upload_for {
+    display: inline;
+    float: left;
+    margin-right: 20px;
+    padding: 10px 0;
+}
+
 a.btn-primary,
 .btn-primary,
 input#uploader {

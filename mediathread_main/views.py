@@ -44,7 +44,7 @@ def django_settings(request):
                  'FLOWPLAYER_SWF_LOCATION',
                  'DEBUG',
                  'REVISION',
-                 'DATABASE_HOST',
+                 'DATABASES',
                  'GOOGLE_ANALYTICS_ID'
                  ]
 
@@ -141,7 +141,12 @@ def date_filter_for(attr):
             date = annotations[0].added
 
         elif attr == "modified":
-            annotations = SherdNote.objects.filter(asset=asset, author=user)
+            if user:
+                annotations = SherdNote.objects.filter(asset=asset,
+                                                       author=user)
+            else:
+                annotations = SherdNote.objects.filter(asset=asset)
+
             # get the date on which the most recent annotation was created
             annotations = annotations.order_by('-added')
             added_date = annotations[0].added

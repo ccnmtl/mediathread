@@ -8,7 +8,7 @@ from tastypie.bundle import Bundle
 from tastypie.constants import ALL
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
-from tastypie.exceptions import ApiFieldError, BadRequest
+from tastypie.exceptions import ApiFieldError, BadRequest, InvalidSortError
 import re
 
 
@@ -43,6 +43,11 @@ class ToManyFieldEx(ToManyField):
             raise BadRequest("Invalid resource lookup data \
             provided (mismatched type).")
 
+    def apply_sorting(self, request, object_list):
+        m2m_resource = self.get_related_resource(None)
+        sorted = m2m_resource.apply_sorting(object_list, options=request.GET)
+        return sorted
+
     def dehydrate(self, bundle):
         if not bundle.obj or not bundle.obj.pk:
             if not self.null:
@@ -71,6 +76,12 @@ class ToManyFieldEx(ToManyField):
 
                 if not the_m2ms:
                     break
+
+                try:
+                    the_m2ms = self.apply_sorting(bundle.request,
+                                                  the_m2ms.all())
+                except InvalidSortError:
+                    pass
 
         elif callable(self.attribute):
             the_m2ms = self.attribute(bundle)

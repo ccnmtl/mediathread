@@ -63,6 +63,7 @@ class ProjectResource(ModelResource):
         detail_allowed_methods = ['get']
         authentication = ClassLevelAuthentication()
         authorization = ProjectAuthorization()
+        ordering = ['id', 'title']
 
         filtering = {
             'author': ALL_WITH_RELATIONS

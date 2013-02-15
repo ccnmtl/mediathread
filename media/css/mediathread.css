@@ -4188,10 +4188,30 @@ div.selected-for-import div.results {
     padding: 5px;
 }
 
+.import-dialog div.import-stuff table tr td.spacer {
+    height: 2px;
+    padding: 0;
+}
+
 .import-dialog div.import-stuff table tr td.title {
     width: 95%;
     text-overflow: ellipsis;
     vertical-align: top;
+}
+
+.import-dialog div.import-stuff table tr td.composition {
+    width: 10px;
+    background-color: #1E77BD;
+}
+
+.import-dialog div.import-stuff table tr td.assignment {
+    width: 10px;
+    background-color: #39B54A;
+}
+
+.import-dialog div.import-stuff table tr td.asset {
+    width: 10px;
+    background-color: #A88448;
 }
 
 .import-dialog div.import-stuff table tr.odd {

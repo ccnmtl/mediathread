@@ -40,6 +40,8 @@ class AssetResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = AssetAuthorization()
 
+        ordering = ['id', 'title']
+
         filtering = {
             'author': ALL_WITH_RELATIONS,
             'sherdnote_set': ALL_WITH_RELATIONS

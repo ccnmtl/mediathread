@@ -3,10 +3,8 @@ from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce.django import django_url
-from mediathread.projects.models import Project
-from mediathread.structuredcollaboration.models import Collaboration, \
-    CollaborationPolicyRecord
 from selenium.common.exceptions import StaleElementReferenceException
+import errno
 import os
 import selenium.webdriver.support.ui as ui
 import time
@@ -19,27 +17,19 @@ except:
     pass
 
 
-@before.each_feature
-def setup_database(variables):
+@before.each_scenario
+def reset_database(variables):
+    world.using_selenium = False
+
     try:
         os.remove('lettuce.db')
-    except:
-        pass  # database doesn't exist yet. that's ok.
+    except OSError, e:
+        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
+            raise  # re-raise exception if a different error occurred
+        else:
+            pass  # database doesn't exist yet. that's okay.
 
-    os.system("echo 'create table test(idx integer primary key);' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("./manage.py syncdb --settings=settings_test --noinput "
-              "> /dev/null")
-    os.system("./manage.py migrate --settings=settings_test --noinput "
-              "> /dev/null")
-    os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db "
-              "> /dev/null")
-    os.system("./manage.py loaddata mediathread_main/fixtures/"
-              "sample_course.json --settings=settings_test > /dev/null")
-
-    # System calls are asynchronous.
-    # Give some time to complete before continuing
-    time.sleep(3)
+    os.system('cp lettuce_base.db lettuce.db')
 
 
 @before.all
@@ -83,26 +73,6 @@ def finished_selenium(step):
     world.using_selenium = False
 
 
-@before.each_scenario
-def clear_selenium(step):
-    world.using_selenium = False
-
-    Project.objects.all().delete()
-    Collaboration.objects.exclude(title="Sample Course").exclude(
-        title="Alternate Course").delete()
-    CollaborationPolicyRecord.objects.all().delete()
-    os.system("echo 'delete from projects_project_participants;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from projects_projectversion;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from threadedcomments_comment;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from django_comments;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from django_comment_flags;' | "
-              "sqlite3 lettuce.db > /dev/null")
-
-
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
     if world.using_selenium:
@@ -112,8 +82,8 @@ def access_url(step, url):
         world.dom = html.fromstring(response.content)
 
 
-@step(u'Given the ([^"]*) workspace is loaded')
-def given_the_name_workspace_is_loaded(step, name):
+@step(u'the ([^"]*) workspace is loaded')
+def the_name_workspace_is_loaded(step, name):
     id = None
     if (name == "composition" or
         name == "assignment" or
@@ -138,16 +108,20 @@ def i_am_username_in_course(step, username, course):
         world.browser.get(django_url("/accounts/logout/"))
         world.browser.get(django_url("accounts/login/?next=/"))
         username_field = world.browser.find_element_by_id("id_username")
-        password_field = world.browser.find_element_by_id("id_password")
-        form = world.browser.find_element_by_name("login_local")
         username_field.send_keys(username)
+
+        password_field = world.browser.find_element_by_id("id_password")
         password_field.send_keys("test")
+
+        form = world.browser.find_element_by_name("login_local")
         form.submit()
-        assert username in world.browser.page_source, world.browser.page_source
 
         step.given('I access the url "/"')
-        step.given('I am in the %s class' % course)
         step.given('I am at the Home page')
+        step.given('The home workspace is loaded')
+        step.given('I am in the %s class' % course)
+
+        assert username in world.browser.page_source, world.browser.page_source
     else:
         world.client.login(username=username, password='test')
 
@@ -174,7 +148,7 @@ def i_log_out(step):
 @step(u'I am at the ([^"]*) page')
 def i_am_at_the_name_page(step, name):
     if world.using_selenium:
-        wait = ui.WebDriverWait(world.browser, 2)
+        wait = ui.WebDriverWait(world.browser, 5)
         wait.until(lambda driver: world.browser.title.find(name) > -1)
 
 
@@ -272,7 +246,7 @@ def i_click_the_link(step, text):
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
     if world.using_selenium:
-        course_title = world.browser.find_element_by_id("course_title")
+        course_title = world.browser.find_element_by_id("course_title_link")
         msg = ("Expected the %s class, but found the %s class" %
                (coursename, course_title.text))
         assert course_title.text.find(coursename) > -1, msg

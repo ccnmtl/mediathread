@@ -73,12 +73,13 @@ def composition_project_json(request, project, can_edit, version_number=None):
                 'username': p.username,
                 'public_name': get_public_name(p, request),
                 'is_viewer': request.user.username == p.username,
-                'last':  idx == (len(participants) - 1)
+                'last': idx == (len(participants) - 1)
             } for idx, p in enumerate(participants)],
             'public_url': project.public_url(),
             'visibility': project.visibility_short(),
             'username': request.user.username,
             'type': 'assignment' if is_assignment else 'composition',
+            'description': project.description(),
             'current_version': version_number if version_number else None,
             'create_selection': is_assignment,
             'is_assignment': is_assignment,

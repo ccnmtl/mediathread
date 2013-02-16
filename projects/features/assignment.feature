@@ -308,6 +308,7 @@ Feature: Assignment
         Then I call the Composition "Assignment Response: Scenario 6"
         When I click the Save button
         Then I see a Save Changes dialog
-        Then I save the changes
+        Then I save the changes        
+        Then there is a "Private" link
         
         Finished using Selenium

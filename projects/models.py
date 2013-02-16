@@ -192,6 +192,14 @@ class Project(models.Model):
         project_type = ContentType.objects.get_for_model(Project)
         return self.subobjects(request, project_type)
 
+    def description(self):
+        if self.assignment():
+            return "Assignment Response"
+        elif self.visibility_short() == "Assignment":
+            return "Assignment"
+        else:
+            return "Composition"
+
     def is_assignment(self, request):
         if hasattr(self, 'is_assignment_cached'):
             return self.is_assignment_cached

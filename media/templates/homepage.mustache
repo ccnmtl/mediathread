@@ -88,8 +88,10 @@
         {{^is_faculty}}
             {{#assignments}}
                 <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
-            {{/assignments}}        
+            {{/assignments}}
+            {{#assignments?}}                    
             <hr class="divideLinks" />
+            {{/assignments?}}
             <form action="/project/create/" method="post">
                 <input type="hidden" name="title" />
                 <input type="submit" value="Create Composition" />                         

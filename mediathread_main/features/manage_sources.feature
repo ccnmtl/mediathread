@@ -4,7 +4,7 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        There is not an "Upload from Computer" link
+        There is not an "Upload from Computer" feature
         And I see 0 sources
         
         When I open the tools menu
@@ -20,7 +20,7 @@ Feature: Manage Sources
         # Under Add to My Collection        
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
         
         # On the Full Collection page
         When I access the url "/asset/"
@@ -42,7 +42,7 @@ Feature: Manage Sources
         # By default, instructors and administrators are allowed to upload
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
         
         # Student cannot see
         When I log out
@@ -51,7 +51,7 @@ Feature: Manage Sources
         When I click the Log In button
         Then I am at the Home page
         Given the home workspace is loaded
-        Then there is not an "Upload from Computer" link
+        Then there is not an "Upload from Computer" feature
 
         Finished using Selenium
         
@@ -71,7 +71,7 @@ Feature: Manage Sources
         # Instructor cannot see
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is not an "Upload from Computer" link
+        Then there is not an "Upload from Computer" feature
         
         # Student cannot see
         When I log out
@@ -80,7 +80,7 @@ Feature: Manage Sources
         When I click the Log In button
         Then I am at the Home page
         Given the home workspace is loaded
-        Then there is not an "Upload from Computer" link
+        Then there is not an "Upload from Computer" feature
         
         Finished using Selenium
         
@@ -100,7 +100,7 @@ Feature: Manage Sources
         # Instructor can see
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
         
         # Student can see
         When I log out
@@ -109,7 +109,7 @@ Feature: Manage Sources
         When I click the Log In button
         Then I am at the Home page
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
 
         Finished using Selenium
         
@@ -129,8 +129,8 @@ Feature: Manage Sources
         # Regular Instructor cannot upload on behalf of
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
         Then there is an Upload video button
         And there is an Upload audio button
         And I cannot upload on behalf of other users
@@ -138,8 +138,8 @@ Feature: Manage Sources
         # Regular student cannot upload on someone's behalf
         Given I am test_student_one in Sample Course
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
         Then there is an Upload video button
         And there is an Upload audio button        
         And I cannot upload on behalf of other users
@@ -147,8 +147,8 @@ Feature: Manage Sources
         # Student with special privileges can upload on someone's behalf
         Given I am test_ta in Sample Course
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
         Then there is an Upload video button
         And there is an Upload audio button        
         And I can upload on behalf of other users
@@ -165,8 +165,8 @@ Feature: Manage Sources
         Then I am in the Sample Course class
         
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
         Then there is not an Upload video button
         And there is not an Upload audio button        
         And I cannot upload on behalf of other users

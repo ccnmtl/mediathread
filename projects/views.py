@@ -202,7 +202,7 @@ def project_workspace(request, project_id, feedback=None):
     A multi-panel editable view for the specified project
     Legacy note: Ideally, this function would be named project_view but
     StructuredCollaboration requires the view name
-    to be  <class>-view to do a reverse
+    to be  <class>-view to do a reverse lookup
 
     Panel 1: Parent Assignment (if applicable)
     Panel 2: Project

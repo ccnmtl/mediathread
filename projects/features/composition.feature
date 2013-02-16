@@ -1,5 +1,5 @@
 Feature: Composition
-        
+
     Scenario: composition.feature 1. Instructor creates composition
         Using selenium
         Given I am test_instructor in Sample Course
@@ -152,7 +152,7 @@ Feature: Composition
         
         Finished using Selenium
 
-    Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information / Assignments
+    Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information
         Using selenium
         Given I am test_instructor in Sample Course
                 
@@ -184,9 +184,9 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                                        | status             | info_count | composition_count |
-        | Private | Private - only author(s) can view                                 | Private            | 0          | 0               |
-        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1               |
-        | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0               |
+        | Private | Private - only author(s) can view                                 | Private            | 0          | 0                 |
+        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1                 |
+        | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0                 |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
         Using selenium

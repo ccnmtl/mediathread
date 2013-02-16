@@ -68,3 +68,31 @@ def i_cannot_upload_on_behalf_of_other_users(step):
         assert False, "This user can upload on behalf of other users"
     except:
         pass  # expected
+
+
+@step(u'There is not an "Upload From Computer" feature')
+def there_is_not_an_upload_from_computer_feature(step):
+    try:
+        world.browser.find_element_by_id('upload-from-computer')
+        assert False, "Found an Upload From Computer menu link"
+    except:
+        pass  # expected
+
+
+@step(u'There is an "Upload From Computer" feature')
+def there_is_an_upload_from_computer_feature(step):
+    try:
+        world.browser.find_element_by_id('upload-from-computer')
+    except:
+        assert False, "Cannot find the Upload From Computer link"
+
+
+@step('I open the "Upload From Computer" feature')
+def i_open_the_upload_from_computer_feature(step):
+    try:
+        elt = world.browser.find_element_by_id('upload-from-computer')
+        h3 = elt.find_element_by_tag_name('h3')
+        h3.click()
+    except:
+        assert False, "Cannot find the Upload From Computer link"
+        return

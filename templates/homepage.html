@@ -15,18 +15,9 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
     <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
       
-    <!--All the annotation javascript -->
-    {% include "djangosherd/annotator_resources.html" %}
-    
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/projects/projectlist.js?version={%revision%}"></script>
-        
-
     <script type="text/javascript">
         jQuery(document).ready(function() {
             jQuery("div#classwork_table").ajaxStart(function(){

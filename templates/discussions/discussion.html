@@ -20,23 +20,14 @@
     <!--All the annotation javascript/css -->
     {% include "djangosherd/annotator_resources.html" %}
     
+    <!--  TinyMCE -->
     <script type="text/javascript">
         var tinyMCEPreInit = { query: '', suffix: '', base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce' };
     </script>
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-    <script type="text/javascript" src="/site_media/js/tiny_mce_init3.js"></script>
-    
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/app/tiny_mce_init3.js"></script>
     
     <script type="text/javascript" src="/site_media/jquery/js/jquery.colorBlend.js"></script>
-    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>    
-    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
-    
-    <script type="text/javascript" src="/site_media/js/assetmgr/assetpanel.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/discussion/discussionpanel.js?version={%revision%}"></script>
         
     <script type="text/javascript">
         jQuery(document).ready(function () {            

@@ -23,6 +23,8 @@ CHECKS = [
         'ignore_files': ['.*migrations.*', '.*management/commands.*',
                          '.*manage.py', '.*/scripts/.*', '.*/ve/.*',
                          '.*scripts/pre-commit\.py$',
+                         '.*scripts/minify-js\.py$',
+                         '.*scripts/minify-mustache\.py$',
                          '.*virtualenv\.py$'],
         'print_filename': True,
     },

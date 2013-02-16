@@ -71,8 +71,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'mediathread_main.middleware.AuthRequirementMiddleware',
-    'djangohelpers.middleware.HttpDeleteMiddleware'
+    'mediathread_main.middleware.AuthRequirementMiddleware'
 )
 
 ROOT_URLCONF = 'mediathread.urls'

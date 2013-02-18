@@ -103,7 +103,7 @@ def my_browser_resolution_is_width_x_height(step, width, height):
 
 
 @step(u'I am ([^"]*) in ([^"]*)')
-def i_am_username_in_course(step, username, course):
+def i_am_username_in_course(step, username, coursename):
     if world.using_selenium:
         world.browser.get(django_url("/accounts/logout/"))
         world.browser.get(django_url("accounts/login/?next=/"))
@@ -116,10 +116,15 @@ def i_am_username_in_course(step, username, course):
         form = world.browser.find_element_by_name("login_local")
         form.submit()
 
-        step.given('I access the url "/"')
-        step.given('I am at the Home page')
-        step.given('The home workspace is loaded')
-        step.given('I am in the %s class' % course)
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(lambda driver: world.browser.title.find("Home") > -1)
+
+        wait.until(lambda driver: world.browser.find_element_by_id("loaded"))
+
+        course_title = world.browser.find_element_by_id("course_title_link")
+        msg = ("Expected the %s class, but found the %s class" %
+               (coursename, course_title.text))
+        assert course_title.text.find(coursename) > -1, msg
 
         assert username in world.browser.page_source, world.browser.page_source
     else:

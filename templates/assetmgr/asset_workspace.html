@@ -14,6 +14,14 @@
 {% block prejs %}
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js"></script>
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
+    
+    <script type="text/javascript">
+        OpenLayers.ImgPath = '/site_media/js/sherdjs/lib/openlayers/openlayers/img/';
+        OpenLayers._getScriptLocation = function() {
+           return "/site_media/js/sherdjs/lib/openlayers/openlayers/";
+        }
+        flowplayer.swf_location = '{{settings.FLOWPLAYER_SWF_LOCATION}}';
+    </script>
 {% endblock %}
 
 {% block js %}        

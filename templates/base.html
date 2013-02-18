@@ -188,7 +188,9 @@
     
     <!--  Mustache Templating -->
     <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>    
+    <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>
+    
+    {% block prejs %}{% endblock %}    
     
     {% if settings.DEBUG %}
         <script type="text/javascript" src="/site_media/js/app/ajaxDelete.js?version={%revision%}"></script>
@@ -213,7 +215,10 @@
     {% else %}
         <script type="text/javascript" src="/site_media/js/mediathread.min.js?version={%revision%}"></script>
     {% endif %}
-
+    
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+    
     <script>
         {% if settings.DEBUG %}
         {% else %}

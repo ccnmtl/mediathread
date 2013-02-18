@@ -117,17 +117,17 @@
                         // Saved Annotations Form -- setup based on showAll/Group preferences in local storage
                         var frm = document.forms['annotation-list-filter'];
                         if (frm) {
-                            frm.elements.showall.checked = hs_DataRetrieve('annotation-list-filter__showall');
+                            frm.elements.showall.checked = retrieveData('annotation-list-filter__showall');
                             jQuery(frm.elements.groupby).val(
-                                    hs_DataRetrieve('annotation-list-filter__group') || 'author');
+                                    retrieveData('annotation-list-filter__group') || 'author');
         
                             jQuery(frm.elements.showall).change(self.showHideAnnotations);
                             jQuery(frm.elements.groupby).change(function () {
                                 var val = jQuery(this).val();
-                                hs_DataStore('annotation-list-filter__group', val);
+                                storeData('annotation-list-filter__group', val);
                                 self.groupBy(val);
                             });
-                            self.groupBy(jQuery(frm.elements.groupby).val());
+                            self.groupBy(jQuery(frm.elements.groupby).val());                            
                         }
                     }
                 );
@@ -136,7 +136,7 @@
 
         this.showHideAnnotations = function () {
             var show = document.forms['annotation-list-filter'].elements.showall.checked;
-            hs_DataStore('annotation-list-filter__showall', show || '');
+            storeData('annotation-list-filter__showall', show || '');
             if (show) {
                 self.layers[self.grouping].show();
             } else {

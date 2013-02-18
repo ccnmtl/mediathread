@@ -155,7 +155,6 @@
 	{% block footer %}
 	<!-- ###### Footer ###### -->
 	<div id="footer">
-	   <p class="printonly"><br /><img src="/site_media/img/logo_ccnmtl_sidebar.gif" class="printonly" alt="ccnmtl sidebar"/></p>
 	   <ul id="footernav"><li><a href="/about/">About</a></li>
            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
            <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
@@ -190,8 +189,6 @@
     <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
     <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>
     
-    {% block prejs %}{% endblock %}    
-    
     {% if settings.DEBUG %}
         <script type="text/javascript" src="/site_media/js/app/ajaxDelete.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/analytics.js?version={%revision%}"></script>
@@ -215,9 +212,6 @@
     {% else %}
         <script type="text/javascript" src="/site_media/js/mediathread.min.js?version={%revision%}"></script>
     {% endif %}
-    
-    <!--All the annotation javascript -->
-    {% include "djangosherd/annotator_resources.html" %}
     
     <script>
         {% if settings.DEBUG %}

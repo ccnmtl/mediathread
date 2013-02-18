@@ -96,13 +96,18 @@ ProjectList.prototype.refresh = function (config) {
 
 ProjectList.prototype.selectOwner = function (username) {
     var self = this;
-    djangosherd.storage.get({
-        type: 'asset',
-        url: username ? MediaThread.urls['your-projects'](username) : MediaThread.urls['all-projects']()
-    },
-    false,
-    function (the_records) {
-        self.update(the_records);
+    var url = username ? MediaThread.urls['your-projects'](username) : MediaThread.urls['all-projects']();
+    
+    jQuery.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
+        error: function () {
+            alert('There was an error retrieving the project list.');
+        },
+        success: function (the_records) {
+            self.update(the_records);
+        }
     });
     
     return false;

@@ -720,7 +720,7 @@ img
     color: white;
 }
 
-/* ########## jQuery UI extensions ########## */
+/* ########## jQuery UI extensions/overrides ########## */
 
 .ui-icon-reverse { 
     width: 16px; 
@@ -745,6 +745,10 @@ html.busy, html.busy * {
     background-image: url(../img/ajax-loader.gif);
     background-repeat: no-repeat;
     background-position: center center;
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: .5em 1em !important;
 }
 
 /* ########## Blocks style definitions ########## */

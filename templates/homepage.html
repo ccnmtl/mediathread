@@ -130,8 +130,8 @@
                                             <div class="actions">
                                                 {% if is_faculty %}
                                                     <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                                                        href="{% url discussion-delete disc.id %}">
-                                                    <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+                                                        href="{% url discussion-delete disc.id %}">                                                        
+                                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove this Discussion"  /></a>
                                                 {% endif %}
                                             </div>
                                             <a href="/discussion/show/{{disc.id}}">{%firstof disc.title disc.content_object.title "Untitled" %}</a>

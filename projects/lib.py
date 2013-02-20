@@ -9,6 +9,7 @@ def homepage_project_json(request, project, can_edit):
     the_json['id'] = project.id
     the_json['title'] = project.title
     the_json['url'] = project.get_absolute_url()
+    the_json['due_date'] = project.get_due_date()
 
     participants = project.attribution_list()
     the_json['authors'] = [{
@@ -29,6 +30,8 @@ def homepage_project_json(request, project, can_edit):
         the_json['collaboration'] = {}
         the_json['collaboration']['title'] = parent_assignment.title
         the_json['collaboration']['url'] = parent_assignment.get_absolute_url()
+        the_json['collaboration']['due_date'] = \
+            parent_assignment.get_due_date()
 
     is_assignment = project.is_assignment(request)
 
@@ -67,6 +70,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'id': project.pk,
             'title': project.title,
             'url': project.get_absolute_url(),
+            'due_date': project.get_due_date(),
             'body': project.body,
             'participants': [{
                 'name': p.get_full_name(),

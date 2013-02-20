@@ -156,9 +156,19 @@ class Project(models.Model):
                                     editable=False,
                                     auto_now=True)
 
+    due_date = models.DateTimeField('due date',
+                                    null=True,
+                                    blank=True)
+
     @models.permalink
     def get_absolute_url(self):
         return ('project-workspace', (), {'project_id': self.pk})
+
+    def get_due_date(self):
+        if self.due_date is None:
+            return ""
+        else:
+            return self.due_date.strftime("%m/%d/%y")
 
     def public_url(self, col=None):
         if col is None:

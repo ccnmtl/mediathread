@@ -90,15 +90,17 @@ def project_save(request, project_id):
 
             if request.META.get('HTTP_ACCEPT', '').find('json') >= 0:
                 v_num = projectform.instance.get_latest_version()
-                return HttpResponse(simplejson.dumps(
-                    {'status': 'success',
-                     'is_assignment':
-                     projectform.instance.is_assignment(request),
-                     'revision': {
-                         'id': v_num,
-                         'public_url': projectform.instance.public_url(),
-                         'visibility': project.visibility_short()}
-                     }, indent=2), mimetype='application/json')
+                return HttpResponse(simplejson.dumps({
+                    'status': 'success',
+                    'is_assignment':
+                    projectform.instance.is_assignment(request),
+                    'revision': {
+                        'id': v_num,
+                        'public_url': projectform.instance.public_url(),
+                        'visibility': project.visibility_short(),
+                        'due_date': project.get_due_date()
+                    }
+                }, indent=2), mimetype='application/json')
 
         redirect_to = '.'
         return HttpResponseRedirect(redirect_to)
@@ -114,10 +116,7 @@ def project_delete(request, project_id):
     """
     project = get_object_or_404(Project, pk=project_id, course=request.course)
 
-    if not request.method == "POST":
-        return HttpResponseForbidden("forbidden")
-
-    if not project.can_edit(request):
+    if (not request.method == "POST" or not project.can_edit(request)):
         return HttpResponseForbidden("forbidden")
 
     project.delete()
@@ -217,8 +216,6 @@ def project_workspace(request, project_id, feedback=None):
         return HttpResponseForbidden("forbidden")
 
     show_feedback = feedback == "feedback"
-    course = request.course
-    is_faculty = course.is_faculty(request.user)
     data = {'space_owner': request.user.username,
             'show_feedback': show_feedback}
 
@@ -230,6 +227,8 @@ def project_workspace(request, project_id, feedback=None):
     else:
         panels = []
 
+        course = request.course
+        is_faculty = course.is_faculty(request.user)
         is_assignment = project.is_assignment(request)
         can_edit = project.can_edit(request)
         feedback_discussion = project.feedback_discussion() \
@@ -310,7 +309,6 @@ def project_workspace(request, project_id, feedback=None):
                  'panel_state_label': "Item Details",
                  'template': 'asset_quick_edit',
                  'update_history': False,
-                 'show_colleciton': False,
                  'context': {'type': 'asset'}}
         panels.append(panel)
 

@@ -54,7 +54,7 @@
                             <option value="myself">Myself</option>
                         <% } %>
                         <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>                            
-                            <option value="<%= faculty_group.user_set[i].id %>"><%= faculty_group.user_set[i].full_name %></option>
+                            <option value="<%= faculty_group.user_set[i].id %>"><%= faculty_group.user_set[i].public_name %></option>
                     <% } %>
                     </select>
                     <br /><br />
@@ -62,7 +62,7 @@
                     <span class="metadata-label">Faculty:</span> 
                     <span class="metadata-value">
                     <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
-                        <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+                        <%= faculty_group.user_set[i].public_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
                     <% } %>
                 <% } %>
             </div>
@@ -145,7 +145,7 @@
                     <td class="title">
                         <div><b><%= asset.get('title') %></b></div>
                         <div class="meta">
-                            <div class="metadata-value">Imported by <%= asset.get('author').full_name %></div>
+                            <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
                             <div>
                                 <span class="metadata-value">Includes </span>  
                                 <span class="metadata-label item-annotation-count-total"><%=asset.get('sherdnote_set').length %></span>
@@ -212,7 +212,7 @@
                         <td class="title">
                             <div><b><%= asset.title %></b></div>
                             <div class="meta">
-                                <div class="metadata-value">Imported by <%= asset.author.full_name %></div>
+                                <div class="metadata-value">Imported by <%= asset.author.public_name %></div>
                                 <div>
                                     <span class="metadata-value">Includes </span>  
                                     <span class="metadata-label item-annotation-count-total"><%=asset.sherdnote_set.length %></span>

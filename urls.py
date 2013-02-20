@@ -101,10 +101,6 @@ urlpatterns = patterns(
     url(r'^dashboard/settings/', 'mediathread_main.views.class_settings',
         name="class-settings"),
 
-    # Recent Activity
-    url(r'^notifications/$', 'mediathread_main.views.notifications',
-        name="notifications"),
-
     # Collections Space
     (r'^asset/', include('mediathread.assetmgr.urls')),
     (r'^annotations/', include('mediathread.djangosherd.urls')),

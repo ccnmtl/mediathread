@@ -11,7 +11,7 @@ class SherdNoteResourceTest(ResourceTestCase):
     def assertNoteEquals(self, note, id, title, author, is_global_annotation):
         self.assertEquals(note['asset_id'], id)
         self.assertEquals(note['title'], title)
-        self.assertEquals(note['author']['full_name'], author)
+        self.assertEquals(note['author']['public_name'], author)
         self.assertEquals(note['is_global_annotation'], is_global_annotation)
 
     def test_student_getlist(self):

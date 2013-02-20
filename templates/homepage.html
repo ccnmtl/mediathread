@@ -77,7 +77,7 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {% if faculty_feed.show or is_faculty or discussions %}
+            {% if faculty_feed|length > 0 or is_faculty or discussions %}
             <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
@@ -113,9 +113,9 @@
                             </div>
                         
                             <ul class="instructor-list">
-                            {% if faculty_feed.projects %}
+                            {% if faculty_feed %}
                                 <h4 class="inst-header information">Information</h4>
-                                {% for project in faculty_feed.projects %}
+                                {% for project in faculty_feed %}
                                     <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
                                 {% endfor %}
                                 

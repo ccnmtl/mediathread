@@ -6,9 +6,9 @@ from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.constants import ALL
+from tastypie.exceptions import ApiFieldError, BadRequest, InvalidSortError
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
-from tastypie.exceptions import ApiFieldError, BadRequest, InvalidSortError
 import re
 
 
@@ -131,7 +131,7 @@ class UserAuthorization(Authorization):
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.none()
-        excludes = ['first_name', 'last_name', 'username', 'email',
+        excludes = ['first_name', 'last_name', 'email',
                     'password', 'is_active', 'is_staff', 'is_superuser',
                     'date_joined', 'last_login']
         allowed_methods = ['get']
@@ -141,8 +141,24 @@ class UserResource(ModelResource):
         filtering = {'id': ALL}
 
     def dehydrate(self, bundle):
-        bundle.data['full_name'] = get_public_name(bundle.obj, bundle.request)
+        bundle.data['public_name'] = get_public_name(bundle.obj,
+                                                     bundle.request)
         return bundle
+
+    def render_one(self, user, request):
+        bundle = self.build_bundle(obj=user, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+
+        return dehydrated.data
+
+    def render_list(self, lst, request):
+        data = []
+        for user in lst:
+            bundle = self.build_bundle(obj=user, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            data.append(dehydrated.data)
+
+        return data
 
 
 class GroupResource(ModelResource):

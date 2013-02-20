@@ -82,10 +82,7 @@ class HomepageTest(TestCase):
 
         json = simplejson.loads(response.content)
         assignments = json['assignments']
-        self.assertEquals(len(assignments), 1)
-        self.assertEquals(assignments[0]['title'], "Sample Course Assignment")
-        self.assertTrue(assignments[0]['display_as_assignment'])
-        self.assertFalse(assignments[0]['is_faculty'])
+        self.assertEquals(len(assignments), 0)
 
         projects = json['projects']
         self.assertEquals(len(projects), 1)
@@ -152,7 +149,7 @@ class HomepageTest(TestCase):
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         json = simplejson.loads(response.content)
-        self.assertEquals(len(json['assignments']), 1)
+        self.assertEquals(len(json['assignments']), 0)
 
         projects = json['projects']
         self.assertEquals(len(projects), 2)

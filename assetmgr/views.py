@@ -1,34 +1,30 @@
-import hmac
-import hashlib
+from courseaffils.lib import in_course, get_public_name, in_course_or_404, \
+    AUTO_COURSE_SELECT
+from courseaffils.models import CourseAccess
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.http import Http404, HttpResponse, HttpResponseForbidden, \
+    HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+from djangohelpers.lib import allow_http, rendered_with
+from djangosherd.views import create_annotation, delete_annotation, \
+    edit_annotation, update_annotation
+from mediathread.api import UserResource
+from mediathread_main import course_details
+from mediathread_main.models import UserSetting
 import datetime
+import hashlib
+import hmac
 import operator
 import re
 import simplejson
 import urllib
 import urllib2
 
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.core import serializers
-from django.core.urlresolvers import reverse
-from django.db import models
-from django.http import HttpResponse
-from django.http import HttpResponseForbidden
-from django.http import HttpResponseRedirect
-from django.http import Http404
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from djangohelpers.lib import rendered_with
-from djangohelpers.lib import allow_http
-
-from courseaffils.models import CourseAccess
-from djangosherd.views import create_annotation
-from djangosherd.views import delete_annotation
-from djangosherd.views import edit_annotation, update_annotation
-from mediathread_main import course_details
-from mediathread_main.models import UserSetting
-from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
-from courseaffils.lib import in_course, get_public_name
 
 Asset = models.get_model('assetmgr', 'asset')
 Comment = models.get_model('comments', 'comment')
@@ -408,13 +404,12 @@ def browse_sources(request):
 
     archives.sort(key=operator.itemgetter('title'))
 
+    user_resource = UserResource()
+
     owners = []
     if (in_course(user.username, request.course) and
             (user.is_staff or user.has_perm('assetmgr.can_upload_for'))):
-        owners = [{
-            'username': m.username,
-            'public_name': get_public_name(m, request)}
-            for m in request.course.members]
+        owners = user_resource.render_list(request.course.members)
 
     rv = {"archives": archives,
           "upload_archive": upload_archive,

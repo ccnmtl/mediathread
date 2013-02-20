@@ -112,14 +112,16 @@ def main(all_files):
     return_code = subprocess.call('./manage.py validate', shell=True)
     result = return_code or result
 
-    print 'Running Unit Tests...'
-    return_code = subprocess.call(
-        './manage.py test djangosherd assetmgr projects mediathread_main',
-        shell=True)
-    result = return_code or result
-
     for check in CHECKS:
+        print check['output']
         result = check_files(files, check) or result
+
+    if result == 0:
+        print 'Running Unit Tests...'
+        return_code = subprocess.call(
+            './manage.py test djangosherd assetmgr projects mediathread_main',
+            shell=True)
+        result = return_code or result
 
     # Unstash changes to the working tree that we had stashed
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'],

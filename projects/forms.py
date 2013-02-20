@@ -21,7 +21,8 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ('title', 'body', 'participants', 'submit', 'publish')
+        fields = ('title', 'body', 'participants',
+                  'submit', 'publish', 'due_date')
 
     def __init__(self, request, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)

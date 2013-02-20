@@ -550,6 +550,19 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
                   { text: "Save",
                     click: function () { self._save = true; jQuery(this).dialog("close"); }}
               ],
+        create: function () {
+            jQuery('#id_due_date').datepicker({
+                dateFormat: 'mm/dd/yy',
+                beforeShow: function (input, inst) {
+                    inst.dpDiv.css({
+                        top: (input.offsetHeight) + 'px'
+                    });
+                }
+            });
+            jQuery("input[name=publish]").bind('click', function () {
+                                
+            });
+        },
         beforeClose: function (event, ui) {
             if (self._save) {
                 self.saveProject(frm);
@@ -558,7 +571,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
             self._save = false;
             return true;
         },
-        draggable: true,
+        draggable: false,
         resizable: false,
         modal: true,
         width: 430,
@@ -623,6 +636,10 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             }
             
             jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);
+            
+            if (json.revision.due_date) {
+                jQuery(self.el).find('.project-due-date').html("Due " + json.revision.due_date);
+            }
             
             self.setDirty(false);
             self.revision = json.revision;

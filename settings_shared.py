@@ -40,6 +40,14 @@ if 'test' in sys.argv:
         }
     }
 
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+# NOSE_ARGS = [
+#     '--verbosity 2',
+#    '--with-coverage',
+#    ('--cover-package=mediathread.mediathread_main,mediathread.djangosherd,'
+#     'mediathread.assetmgr,mediathread.projects'),
+# ]
+
 CACHE_BACKEND = 'locmem:///'
 
 TIME_ZONE = 'America/New_York'
@@ -115,7 +123,8 @@ INSTALLED_APPS = (
     'mediathread_main',
     'sentry.client',
     'south',
-    'lettuce.django'
+    'lettuce.django',
+    'django_nose',
 )
 
 
@@ -197,8 +206,8 @@ CSRF_FAILURE_VIEW = no_reject
 try:
     from mediathread.deploy_specific.settings import *
     if 'EXTRA_INSTALLED_APPS' in locals():
-        INSTALLED_APPS = EXTRA_INSTALLED_APPS + INSTALLED_APPS
+        INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS
     if 'EXTRA_MIDDLEWARE_CLASSES' in locals():
-        MIDDLEWARE_CLASSES = EXTRA_MIDDLEWARE_CLASSES + MIDDLEWARE_CLASSES
+        MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + EXTRA_MIDDLEWARE_CLASSES
 except ImportError:
     pass

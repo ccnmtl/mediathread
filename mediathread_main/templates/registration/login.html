@@ -9,7 +9,8 @@
 
 <h1>Log In</h1>
 
-{%if settings.WIND_BASE %}
+{% if wind_base %}
+
 <div style="padding-bottom: 5px">
     <form method="get" action="{{ wind_base }}login">
       {% csrf_token %}

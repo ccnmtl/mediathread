@@ -374,21 +374,6 @@ def i_m_told_text(step, text):
     alert.accept()
 
 
-@step(u'the most recent notification is "([^"]*)"')
-def the_most_recent_notification_is_text(step, text):
-    list = world.browser.find_element_by_id("parent-clumper")
-
-    elts = list.find_elements_by_css_selector("div.asset_title")
-    assert len(elts) > 0, "Found 0 notifications. Expected at least one."
-
-    link = elts[0].find_element_by_tag_name("a")
-    assert link is not None, "Found no notification links. Expected 1"
-
-    msg = "Notification text is [%s]. Expected [%s]" % (link.text.strip(),
-                                                        text)
-    assert link.text.strip() == text, msg
-
-
 @step(u'I select "([^"]*)" as the owner')
 def i_select_name_as_the_owner(step, name):
     selector = "div.switcher_collection_chooser"

@@ -213,34 +213,32 @@
                                         <strong>Install Bookmarklet in Firefox</strong>
                                         <ol>
                                           <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
-                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                          <li>Drag the link below onto your browser bookmarks toolbar.</li>
                                         </ol>
                                     </div>
                                     <div id="ie" class="browser-instruction">
                                         <strong>Install Bookmarklet in Internet Explorer</strong>
                                         <ol>
-                                          <li>Right-click on the blue bookmarklet button.</li>  
-                                          <li>and choose <b>Add to Favorites</b><br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Med\
-iathread</a></li>
+                                          <li>Right-click on the blue bookmarklet button below.</li>  
+                                          <li>and choose <b>Add to Favorites</b>
+                                          </li>
                                         </ol>
                                     </div>
                                     <div id="safari" class="browser-instruction"> 
                                         <strong>Install Bookmarklet in Safari</strong>
                                         <ol>
                                          <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
-                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                          <li>Drag the link below onto your browser bookmarks toolbar</li>
                                         </ol>
                                     </div>
                                     <div id="chrome" class="browser-instruction"> 
                                         <strong>Install Bookmarklet in Chrome</strong>
                                         <ol>
                                           <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
-                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-                                          {% if EXPERIMENTAL %}
-                                          <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
-                                          {% endif %}
+                                          <li>Drag the link below onto your browser bookmarks toolbar:  <br />Analyze w/Mediathread</a></li>
                                         </ol>
                                     </div>
+                                    {% include "assetmgr/bookmarklet.html" %} 
                                     <script type="text/javascript">
                                         var u = navigator.userAgent;
                                         if (/Chrome/.test(u)) {

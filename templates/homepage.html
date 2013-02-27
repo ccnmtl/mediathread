@@ -59,6 +59,31 @@
             jQuery("div.upload_button").click(function(evt) {
                 jQuery(this).parent().submit();
             });
+
+            {% if is_faculty %}
+                jQuery("ul#instructor-information").sortable({
+                    axis: "y",
+                    cursor: "move",
+                    start: function (event, ui) {
+                        jQuery(ui.item).addClass('dragging');
+                    },
+                    update: function (event, ui) {
+                        jQuery(ui.item).removeClass("dragging");
+                        data = jQuery("ul#instructor-information").sortable("serialize", { key: "project" })
+                        jQuery.ajax({
+                            type: 'POST',
+                            data: data,
+                            url: MediaThread.urls['sort-projects'](),
+                            success: function (responseText, textStatus, xhr) {
+                            },
+                            error: function (xhr) {
+                                window.sky = xhr;
+                                alert("An error occurred when sort the projects.");
+                            }
+                        });
+                    }
+                });
+            {% endif %}
         });
     </script>
 {% endblock %}
@@ -116,15 +141,26 @@
                                 </div>
                             </div>
                         
-                            <ul class="instructor-list">
+                            
                             {% if faculty_feed %}
-                                <h4 class="inst-header information">Information</h4>
+                                <h4 class="inst-header information">
+                                    Information
+                                </h4>
+                                <ul id="instructor-information" class="instructor-list">                               
                                 {% for project in faculty_feed %}
-                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                                    <li id="project_{{project.id}}">
+                                        {% if is_faculty %}
+                                        <span title="drag to reorder information"
+                                        class="left draghandle ui-icon ui-icon-arrowthick-2-n-s"></span>
+                                        {% endif %}                                                                                                     
+                                        <a href="{{project.get_absolute_url}}">
+                                            {{project.title}}
+                                        </a>                                        
+                                    </li>
                                 {% endfor %}
-                                
-                            {% else %}{% endif %}
-                            </ul>
+                                </ul>    
+                            {% endif %}
+                            
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>

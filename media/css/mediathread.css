@@ -3586,6 +3586,21 @@ ul.instructor-list li {
     line-height: 17px;
 }
 
+ul.instructor-list span.draghandle {
+    margin-left: -5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+ul.instructor-list li.dragging {
+    border: 1px solid lightGrey;
+    background-color: #E6E6E6;
+    color: #555/*{fcDefault}*/;
+    margin: 0;
+    padding: 0.4em .185em;
+    height: 18px;    
+}
+
 td.media-column .column-contents {
 	padding: 0px;
 }

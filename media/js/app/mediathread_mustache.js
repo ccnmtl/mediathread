@@ -21,6 +21,9 @@
             'all-projects': function () {
                 return '/yourspace/projects/';
             },
+            'sort-projects': function () {
+                return '/project/sort/';
+            },
             'your-space': function (username, tag, modified, citable) {
                 return '/yourspace/' + username + '/asset/?annotations=true' +
                     (tag ? '&tag=' + tag : '') +

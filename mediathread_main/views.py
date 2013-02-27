@@ -118,7 +118,7 @@ filter_by = {
 def get_prof_feed(course, request):
     projects = []
     prof_projects = Project.objects.filter(
-        course.faculty_filter).order_by('title')
+        course.faculty_filter).order_by('ordinality', 'title')
     for project in prof_projects:
         if (project.class_visible() and
                 not project.is_assignment(request)):
@@ -186,13 +186,15 @@ def triple_homepage(request):
          logged_in_user.has_perm('assetmgr.can_upload_for'))):
         owners = UserResource().render_list(request.course.members, request)
 
+    discussions = get_course_discussions(c)
+
     context = {
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': False,
         'help_homepage_classwork_column': False,
         'faculty_feed': get_prof_feed(c, request),
         'is_faculty': c.is_faculty(logged_in_user),
-        'discussions': get_course_discussions(c),
+        'discussions': discussions,
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
         'archives': archives,

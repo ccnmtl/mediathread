@@ -160,6 +160,8 @@ class Project(models.Model):
                                     null=True,
                                     blank=True)
 
+    ordinality = models.PositiveIntegerField(default=0)
+
     @models.permalink
     def get_absolute_url(self):
         return ('project-workspace', (), {'project_id': self.pk})

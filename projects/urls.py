@@ -32,6 +32,11 @@ urlpatterns = patterns(
     url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
         'project_view_readonly', name='project-view-readonly'),
 
+    # view versioned read only
+    url(r'^sort/$',
+        'project_sort', name='project-sort'),
+
+
     # view public url - read only view.
     # Note: StructuredCollaboration requires
     # 1. Url structure must be <classname>/<instance_id>/

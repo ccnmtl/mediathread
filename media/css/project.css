@@ -93,7 +93,7 @@ div.save-publish-status {
 
 div.save-publish-status div.due-date {
     margin-left: 30px;
-    margin-top: -5px;
+    margin-top: 3px;
 }
 
 div.save-publish-status div.due-date input#id_due_date {

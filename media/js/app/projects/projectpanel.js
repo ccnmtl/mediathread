@@ -14,6 +14,12 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         var select = jQuery(self.el).find("select[name='participants']")[0];
         jQuery(select).addClass("selectfilter");
         SelectFilter.init("id_participants_" + panel.context.project.id, "participants", 0, "/media/");
+        
+        // HACK: move the save options around due to django form constraints
+        var assignment_elt = jQuery(self.el).find("label[for='id_publish_2']").parent();
+        if (assignment_elt.length > 0) {
+            jQuery(self.el).find('div.due-date').appendTo(assignment_elt);
+        }
     }
     
     self.project_type = panel.context.project.project_type;

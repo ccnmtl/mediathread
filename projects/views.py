@@ -1,4 +1,4 @@
-from courseaffils.lib import in_course_or_404
+from courseaffils.lib import in_course, in_course_or_404
 from discussions.views import threaded_comment_json
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -357,3 +357,24 @@ def project_export_msword(request, project_id):
     response['Content-Disposition'] = \
         'attachment; filename=%s.doc' % (slugify(project.title))
     return response
+
+
+@login_required
+@allow_http("POST")
+def project_sort(request):
+    if (not in_course(request.user, request.course) or
+        not request.course.is_faculty(request.user) or
+            not request.is_ajax()):
+        return HttpResponseForbidden("forbidden")
+
+    ids = request.POST.getlist("project")
+    for idx, id in enumerate(ids):
+        project = Project.objects.get(id=id)
+        if idx != project.ordinality:
+            project.ordinality = idx
+            project.save()
+
+    data = {'sorted': 'true'}
+
+    return HttpResponse(simplejson.dumps(data, indent=2),
+                        mimetype='application/json')

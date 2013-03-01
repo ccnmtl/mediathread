@@ -10,7 +10,7 @@ Feature: Instructor Dashboard
         There is no reports menu
         
         # Manage Sources
-        When I access the url "/dashboard/addsource/"
+        When I access the url "/dashboard/sources/"
         Then I do not see "Manage Sources"
         And I see "forbidden"
         

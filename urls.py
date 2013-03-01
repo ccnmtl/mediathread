@@ -94,11 +94,14 @@ urlpatterns = patterns(
     # Instructor Dashboard & reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
-    url(r'^dashboard/migrate/', 'mediathread_main.views.migrate',
+    url(r'^dashboard/migrate/',
+        'mediathread_main.views.migrate',
         name="dashboard-migrate"),
-    url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource',
-        name="class-add-source"),
-    url(r'^dashboard/settings/', 'mediathread_main.views.class_settings',
+    url(r'^dashboard/sources/',
+        'mediathread_main.views.class_manage_sources',
+        name="class-manage-sources"),
+    url(r'^dashboard/settings/',
+        'mediathread_main.views.class_settings',
         name="class-settings"),
 
     # Collections Space

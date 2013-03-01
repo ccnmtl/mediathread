@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding field 'Project.ordinality'
-        db.add_column('projects_projectversion', 'ordinality', self.gf('django.db.models.fields.PositiveIntegerField')(default=0), keep_default=False)
+        db.add_column('projects_projectversion', 'ordinality', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
 
 
     def backwards(self, orm):
@@ -71,7 +71,7 @@ class Migration(SchemaMigration):
             'feedback': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'ordinality': ('django.db.models.fields.PositiveIntegerField', [], {'default': '1'}),
+            'ordinality': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'participants': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'projects'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['auth.User']"}),
             'submitted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '1024'})

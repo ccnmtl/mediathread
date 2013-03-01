@@ -473,8 +473,8 @@ def get_records(request, record_owner, assets):
 
 
 @allow_http("GET", "POST")
-@rendered_with('dashboard/class_addsource.html')
-def class_addsource(request):
+@rendered_with('dashboard/class_manage_sources.html')
+def class_manage_sources(request):
     key = course_details.UPLOAD_PERMISSION_KEY
 
     c = request.course
@@ -497,6 +497,7 @@ def class_addsource(request):
         'space_viewer': request.user,
         'is_staff': request.user.is_staff,
         'newsrc': request.GET.get('newsrc', ''),
+        'delsrc': request.GET.get('delsrc', ''),
         'upload_enabled': upload_enabled,
         'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
         'help_video_upload': UserSetting.get_setting(

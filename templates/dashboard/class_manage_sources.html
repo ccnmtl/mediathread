@@ -8,12 +8,15 @@
     <script type="text/javascript"> 
         jQuery(document).ready(function() {
             {% if newsrc %}
-               var msg = "{{newsrc|escapejs}} has been enabled for your class.";
-               alert(msg);
+                var msg = "{{newsrc|escapejs}} has been enabled for your class.";
+                alert(msg);
+            {% else %}{% if delsrc %}
+                var msg = "{{delsrc|escapejs}} has been disabled for your class.";
+                alert(msg);
             {% else %}{% if changes_saved %}
-               var msg = "Your changes have been saved.";
-               alert(msg);
-            {% endif %}{% endif %}
+                var msg = "Your changes have been saved.";
+                alert(msg);
+            {% endif %}{% endif %}{% endif %}
         });
     </script>
     
@@ -34,7 +37,7 @@
 
     {% if upload_enabled %}
         
-        <form action="{% url class-add-source %}" method="POST" name="form-upload-permission">
+        <form action="{% url class-manage-sources %}" method="POST" name="form-upload-permission">
             <b>Set Upload Permission Settings</b>: &nbsp;
     
             <select name="upload_permission">
@@ -54,7 +57,7 @@
                 <input type="hidden" name="url" value="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
                 <input type="hidden" name="archive" value="http://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
                 <input type="hidden" name="thumb" value="http://wardenclyffe.ccnmtl.columbia.edu/site_media/img/bg_header.jpg">
-                <input type="hidden" name="redirect-url" value="{% url class-add-source %}">
+                <input type="hidden" name="redirect-url" value="{% url class-manage-sources %}">
          </form>
          <div class="visualclear"></div>
      {% endif %}
@@ -69,7 +72,7 @@
         
         {% for archive in supported_archives %}
                 <div class="archive">
-                <form action="{% url asset-save %}" method="POST">
+                <form action="{% url archive-add-or-remove %}" id="manage-archive-form" method="POST">
                     <table>
                     <tr>
                     <td class="archive_thumb">
@@ -94,11 +97,11 @@
                        <input type="hidden" name="thumb" value="{{archive.thumb_url}}" />
                        <input type="hidden" name="metadata-description" value="{{archive.description}}" />
                      </td>
-                     <td>                        
+                     <td>                       
                         {% ifincourse archive course %}
-                            <input class="addtoclass" type="submit" value="Added" id="{{archive.title|slugify}}" disabled="disabled" />
+                            <input name="remove" type="submit" value="Remove" id="{{archive.title|slugify}}" />
                         {% else %}
-                            <input class="addtoclass" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
+                            <input name="add" type="submit" value="Add to Class" id="{{archive.title|slugify}}" />
                         {% endifincourse %}
                      </td>
                        </tr>

@@ -6,7 +6,7 @@ from selenium.webdriver.support.select import Select
 @step(u'video upload is enabled')
 def video_upload_is_enabled(step):
     if world.using_selenium:
-        world.browser.get(django_url("/dashboard/addsource/"))
+        world.browser.get(django_url("/dashboard/sources/"))
         try:
             elt = world.browser.find_element_by_id("mediathread-video-upload")
             if elt:

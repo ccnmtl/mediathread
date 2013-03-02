@@ -28,10 +28,6 @@ class AssetResource(ModelResource):
         'sherdnote_set',
         blank=True, null=True, full=True)
 
-        # lambda bundle: SherdNoteAuthorization().apply_limits(
-        # bundle.request, bundle.obj.sherdnote_set.all(), bundle.obj.course).
-        # order_by('id'))
-
     class Meta:
         queryset = Asset.objects.all().order_by('id')
         excludes = ['added', 'modified', 'course', 'active', 'metadata_blob']
@@ -55,3 +51,8 @@ class AssetResource(ModelResource):
         bundle.data['thumb_url'] = bundle.obj.thumb_url
         bundle.data['primary_type'] = bundle.obj.primary.label
         return bundle
+
+    def render_one(self, request, course):
+        bundle = self.build_bundle(obj=course, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)

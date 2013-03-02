@@ -12,9 +12,9 @@ from django.shortcuts import get_object_or_404
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.api import UserResource
 from mediathread_main import course_details
+from mediathread_main.api import CourseSummaryResource
 from mediathread_main.models import UserSetting
-from projects.lib import homepage_project_json
-from reports.views import is_unanswered_assignment
+from projects.lib import homepage_project_json, homepage_assignment_json
 from tagging.models import Tag
 import datetime
 import operator
@@ -127,12 +127,14 @@ def get_prof_feed(course, request):
     return projects
 
 
-def should_show_tour(course, user):
+def should_show_tour(request, course, user):
     assets = annotated_by(Asset.objects.filter(course=course),
                           user,
                           include_archives=False)
 
-    projects = Project.get_user_projects(user, course)
+    projects = Project.objects.visible_by_course_and_user(request,
+                                                          user,
+                                                          course)
 
     return UserSetting.get_setting(user,
                                    "help_show_homepage_tour",
@@ -178,13 +180,13 @@ def triple_homepage(request):
 
     archives.sort(key=operator.itemgetter('title'))
 
-    show_tour = should_show_tour(c, logged_in_user)
+    show_tour = should_show_tour(request, c, logged_in_user)
 
     owners = []
     if (in_course(logged_in_user.username, request.course) and
         (logged_in_user.is_staff or
          logged_in_user.has_perm('assetmgr.can_upload_for'))):
-        owners = UserResource().render_list(request.course.members, request)
+        owners = UserResource().render_list(request, request.course.member)
 
     discussions = get_course_discussions(c)
 
@@ -225,44 +227,39 @@ def your_projects(request, record_owner_name):
 
     course = request.course
     in_course_or_404(record_owner_name, course)
-    record_owner = get_object_or_404(User, username=record_owner_name)
 
     logged_in_user = request.user
     is_faculty = course.is_faculty(logged_in_user)
+    record_owner = get_object_or_404(User, username=record_owner_name)
+    viewing_own_work = record_owner == logged_in_user
 
-    # Record Owner's Published Work
-    projects = Project.get_user_projects(
-        record_owner, course).order_by('-modified')
-    if not record_owner == logged_in_user:
-        projects = [p for p in projects if p.visible(request)]
+    # Record Owner's Visible Work,
+    # sorted by modified date & feedback (if applicable)
+    projects = Project.objects.visible_by_course_and_user(request,
+                                                          course,
+                                                          record_owner)
 
-    project_type = ContentType.objects.get_for_model(Project)
-
-    # Unresponded assignments visible when viewing myself OR
-    # if a faculty member is viewing a peer instructor
+    # Show unresponded assignments if viewing self & self is a student
     assignments = []
-    if ((record_owner == logged_in_user and not is_faculty) or
-        (record_owner != logged_in_user and is_faculty and
-         course.is_faculty(record_owner))):
+    if not is_faculty and viewing_own_work:
+        assignments = Project.objects.unresponded_assignments(request,
+                                                              logged_in_user)
 
-        a = list(Project.objects.filter(course.faculty_filter,
-                                        due_date__isnull=False).
-                 order_by("due_date", "-modified", "title"))
+    # Assemble the context
+    user_rez = UserResource()
+    course_rez = CourseSummaryResource()
+    data = {
+        'assignments': homepage_assignment_json(assignments, is_faculty),
+        'projects': homepage_project_json(request, projects, viewing_own_work),
+        'space_viewer': user_rez.render_one(request, logged_in_user),
+        'space_owner': user_rez.render_one(request, record_owner),
+        'editable': viewing_own_work,
+        'course': course_rez.render_one(request, course),
+        'compositions': len(projects) > 0 or len(assignments) > 0,
+        'is_faculty': is_faculty}
 
-        a.extend(Project.objects.filter(course.faculty_filter,
-                                        due_date__isnull=True).
-                 order_by("-modified", "title"))
-
-        for assignment in a:
-            if not assignment.visible(request):
-                continue
-            if assignment in projects:
-                continue
-            if is_unanswered_assignment(assignment, record_owner,
-                                        request, project_type):
-                assignments.append(assignment)
-
-    return get_projects(request, record_owner, projects, assignments)
+    json_stream = simplejson.dumps(data, indent=2)
+    return HttpResponse(json_stream, mimetype='application/json')
 
 
 @allow_http("GET")
@@ -279,54 +276,18 @@ def all_projects(request):
         in_course_or_404(request.user.username, request.course)
 
     course = request.course
-
-    projects = [p for p in Project.objects.filter(
-        course=course, submitted=True).order_by('-modified', 'title')
-        if p.visible(request)]
-
-    return get_projects(request, None, projects, [])
-
-
-def get_projects(request, record_owner, projects, assignments):
-    course = request.course
     logged_in_user = request.user
 
-    # Can the record_owner edit the records
-    viewing_my_records = (record_owner == logged_in_user)
-
-    # Is the current user faculty OR staff
-    is_faculty = course.is_faculty(logged_in_user)
-
-    # Spew out json for the projects
-    project_json = []
-    for p in projects:
-        project_json.append(homepage_project_json(request,
-                                                  p,
-                                                  viewing_my_records))
-
-    user_resource = UserResource()
-    owners = user_resource.render_list(request.course.members, request)
+    projects = Project.objects.visible_by_course(request, course)
 
     # Assemble the context
-    data = {'assignments': [{'id': a.id,
-                             'url': a.get_absolute_url(),
-                             'title': a.title,
-                             'display_as_assignment': True,
-                             'is_faculty': is_faculty,
-                             'due_date': a.get_due_date(),
-                             'modified_date': a.modified.strftime("%m/%d/%y"),
-                             'modified_time': a.modified.strftime("%I:%M %p")}
-                            for a in assignments],
-            'projects': project_json,
-            'space_viewer': user_resource.render_one(logged_in_user, request),
-            'editable': viewing_my_records,
-            'course': {'id': course.id},
-            'owners': owners,
-            'compositions': len(projects) > 0 or len(assignments) > 0,
-            'is_faculty': is_faculty, }
-
-    if record_owner:
-        user_resource.render_one(record_owner, request)
+    user_rez = UserResource()
+    course_rez = CourseSummaryResource()
+    data = {'projects': homepage_project_json(request, projects, False),
+            'space_viewer': user_rez.render_one(request, logged_in_user),
+            'course': course_rez.render_one(request, course),
+            'compositions': len(projects) > 0,
+            'is_faculty': course.is_faculty(logged_in_user)}
 
     json_stream = simplejson.dumps(data, indent=2)
     return HttpResponse(json_stream, mimetype='application/json')
@@ -387,7 +348,7 @@ def get_records(request, record_owner, assets):
     logged_in_user = request.user
 
     # Can the record_owner edit the records
-    viewing_my_records = (record_owner == logged_in_user)
+    viewing_own_work = (record_owner == logged_in_user)
     viewing_faculty_records = record_owner and course.is_faculty(record_owner)
 
     # Allow the logged in user to add assets to his composition
@@ -400,7 +361,7 @@ def get_records(request, record_owner, assets):
     # Does the course allow viewing other user selections?
     owner_selections_are_visible = (
         course_details.all_selections_are_visible(course) or
-        viewing_my_records or viewing_faculty_records or is_faculty)
+        viewing_own_work or viewing_faculty_records or is_faculty)
 
     # Filter the assets
     for fil in filter_by:
@@ -418,7 +379,7 @@ def get_records(request, record_owner, assets):
                                          owner_selections_are_visible),
         'all_selections_are_visible':
         course_details.all_selections_are_visible(course) or is_faculty,
-        'can_edit': viewing_my_records,
+        'can_edit': viewing_own_work,
         'citable': citable
     }
 
@@ -453,20 +414,20 @@ def get_records(request, record_owner, assets):
     tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
 
     user_resource = UserResource()
-    owners = user_resource.render_list(request.course.members, request)
+    owners = user_resource.render_list(request, request.course.members)
 
     # Assemble the context
     data = {'assets': asset_json,
             'tags': [{'name': tag.name} for tag in tags],
             'active_filters': active_filters,
-            'space_viewer': user_resource.render_one(logged_in_user, request),
-            'editable': viewing_my_records,
+            'space_viewer': user_resource.render_one(request, logged_in_user),
+            'editable': viewing_own_work,
             'citable': citable,
             'owners': owners,
             'is_faculty': is_faculty, }
 
     if record_owner:
-        data['space_owner'] = user_resource.render_one(record_owner, request)
+        data['space_owner'] = user_resource.render_one(request, record_owner)
 
     json_stream = simplejson.dumps(data, indent=2)
     return HttpResponse(json_stream, mimetype='application/json')

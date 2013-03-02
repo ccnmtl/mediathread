@@ -65,7 +65,7 @@
         {{/>>switcher_collection_chooser}}        
     </div> {{! end filter widget }}
     
-    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create">Create<img src="/site_media/img/menuselect.png" /></a>
+    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create">Create<img src="/site_media/img/menuselect.png" width="6" height="12" /></a>
     <div id="create-project-menu" style="display: none;">                
         {{#is_faculty?}}
             <form action="/project/create/" method="post">
@@ -175,8 +175,10 @@
                                                         {{^display_as_assignment}}
                                                             onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'composition' });"
                                                         {{/display_as_assignment}}"
-                                                        href="/project/delete/{{id}}/"><img src="/site_media/img/icons/meth_delete.png" 
-                                                        class="delete_icon" alt="Delete" /></a>
+                                                        href="/project/delete/{{id}}/">
+                                                        <img src="/site_media/img/icons/meth_delete.png"
+                                                            width="25" height="25" 
+                                                            class="delete_icon" alt="Delete" /></a>
                                                 {{/editable?}}
                                                 
                                                 </h3>                                                
@@ -212,7 +214,9 @@
                                                                           'success': function() { jQuery(window).trigger('projectlist.refresh'); }
                                                                         });"
                                                                     title="Delete My Response">
-                                                                    <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete" />
+                                                                    <img src="/site_media/img/icons/meth_delete.png"
+                                                                        class="delete_icon" alt="Delete"
+                                                                        width="25" height="25" />
                                                                 </a>
                                                             {{/editable?}}
                                                         </span>

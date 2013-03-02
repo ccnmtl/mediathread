@@ -132,8 +132,7 @@ class HomepageTest(TestCase):
 
         json = simplejson.loads(response.content)
 
-        assignments = json['assignments']
-        self.assertEquals(len(assignments), 1)
+        self.assertEquals(len(json['assignments']), 0)
         # The assignment is viewable here.
 
         self.assertEquals(len(json['projects']), 0)
@@ -191,11 +190,10 @@ class HomepageTest(TestCase):
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         json = simplejson.loads(response.content)
-        assignments = json['assignments']
-        self.assertEquals(len(assignments), 0)
+        self.assertTrue('assignments' not in json)
 
         projects = json['projects']
-        self.assertEquals(len(projects), 3)
+        self.assertEquals(len(projects), 4)
 
         self.assertProjectEquals(projects[0],
                                  'Sample Course Assignment',
@@ -212,6 +210,11 @@ class HomepageTest(TestCase):
                                  'Student One',
                                  False)
 
+        self.assertProjectEquals(projects[3],
+                                 'Private Composition',
+                                 'Student One',
+                                 False)
+
     def test_get_all_projects_as_peer(self):
         client = Client()
 
@@ -223,7 +226,7 @@ class HomepageTest(TestCase):
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         json = simplejson.loads(response.content)
-        self.assertEquals(len(json['assignments']), 0)
+        self.assertTrue('assignments' not in json)
 
         projects = json['projects']
         self.assertEquals(len(projects), 2)
@@ -247,7 +250,7 @@ class HomepageTest(TestCase):
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         json = simplejson.loads(response.content)
-        self.assertEquals(len(json['assignments']), 0)
+        self.assertTrue('assignments' not in json)
 
         projects = json['projects']
         self.assertEquals(len(projects), 3)

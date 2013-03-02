@@ -9,21 +9,6 @@
 
 <h1>Log In</h1>
 
-{% if wind_base %}
-
-<div style="padding-bottom: 5px">
-    <form method="get" action="{{ wind_base }}login">
-      {% csrf_token %}
-        <input type="hidden" name="service" value="{{ wind_service }}" />
-        <input type="hidden" name="destination" value="http://{{ request.get_host }}/accounts/windlogin/?next={{ next|urlencode }}" />
-        <h3>Columbia Users:</h3>
-        <input type="submit" value="Log In with Columbia UNI" />
-    </form>
-</div>
-<hr />
-    <h3>All Other Users: </h3>
-{% endif %}
-
 <div style="background-color: #CCCCCC; font-size: 85%; font-weight: bold; padding-left: 5px;">
     {% if form.username.errors %}
         <p>Please enter your username.</p>
@@ -50,6 +35,6 @@
 
 </div>
 
-{% include "mediathread/description.html" %}
+{% include "registration/description.html" %}
 
 {% endblock %}

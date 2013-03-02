@@ -387,7 +387,7 @@ DiscussionPanelHandler.prototype.submit = function (evt) {
     jQuery.ajax({
         type : 'POST',
         url : info.url,
-        data : form_val_array,// default will serialize?
+        data : form_val_array, // default will serialize?
         dataType : 'html',
         success : self.oncomplete,
         error : self.onfail,
@@ -399,8 +399,7 @@ DiscussionPanelHandler.prototype.submit = function (evt) {
     });
 };
 
-DiscussionPanelHandler.prototype.oncomplete = function (responseText,
-        textStatus, xhr) {
+DiscussionPanelHandler.prototype.oncomplete = function (responseText, textStatus, xhr) {
     var self = this.self;
     var form_vals = {};
     for (var i = 0; i < this.form_val_array.length; i++) {
@@ -445,21 +444,23 @@ DiscussionPanelHandler.prototype.oncomplete = function (responseText,
                 this.info.target = comp.comment;
                 break;
             }
-            // /2. decorate citations
+            // 2. decorate citations
             self.citationView.decorateElementLinks(this.info.target);
 
-            // /3. reset form and set new validation key
+            // 3. reset form and set new validation key
             self.set_comment_content();// empty it
             if (res.security_hash) {
                 self.form.elements.timestamp.value = res.timestamp;
                 self.form.elements.security_hash.value = res.security_hash;
             }
-            // /4. hide form
+            
+            // 4. hide form
             self.hide_comment_form(false);
-            // /5. show respond/edit controls again
+            
+            // 5. show respond/edit controls again
             jQuery("div.threaded_comment_text").show();
             jQuery("div.respond_to_comment_form_div").show();
-            
+
             document.location = '#comment-' + res.comment_id;
         }
     } else {

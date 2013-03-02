@@ -89,10 +89,6 @@ def discussion_create(request):
         return HttpResponseRedirect("/discussion/show/%d" %
                                     new_threaded_comment.id)
     else:
-        # Indicate there's something recent going on with the object
-        the_object.modified = datetime.now()
-        the_object.save()
-
         data = {'panel_state': 'open',
                 'panel_state_label': "Instructor Feedback",
                 'template': 'discussion',

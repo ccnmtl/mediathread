@@ -51,6 +51,12 @@ def homepage_project_json(request, projects, can_edit):
                 parent_assignment.get_due_date()
 
         is_assignment = project.is_assignment(request)
+        if is_assignment:
+            count = 0
+            for r in project.responses(request):
+                if r.can_read(request):
+                    count += 1
+            the_json['responses'] = count
 
         the_json['display_as_assignment'] = \
             is_assignment or parent_assignment is not None

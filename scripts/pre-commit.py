@@ -53,6 +53,7 @@ CHECKS = [
                          '.*/ve/.*',
                          '.*virtualenv\.py$',
                          '.*settings_production\.py$',
+                         '.*settings_stage\.py$',
                          '.*/assetmgr/supported_archives\.py$'],
         'print_filename': True,
     },

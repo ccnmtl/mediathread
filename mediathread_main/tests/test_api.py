@@ -17,7 +17,7 @@ class UserResourceTest(ResourceTestCase):
 
         student_one = User.objects.get(username='test_student_one')
 
-        member = UserResource().render_one(student_one, None)
+        member = UserResource().render_one(None, student_one)
 
         self.assertEquals(member['public_name'], "Student One")
 
@@ -28,7 +28,7 @@ class UserResourceTest(ResourceTestCase):
 
         sample_course = Course.objects.get(title="Sample Course")
 
-        members = UserResource().render_list(sample_course.members, None)
+        members = UserResource().render_list(None, sample_course.members)
 
         self.assertEquals(len(members), 6)
         self.assertEquals(members[0]['public_name'], "test_instructor_two")

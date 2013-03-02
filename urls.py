@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from djangosherd.api import SherdNoteResource
-from mediathread_main.api import CourseResource
+from mediathread_main.api import CourseResource, CourseSummaryResource
 from projects.api import ProjectResource
 from tastypie.api import Api
 import os.path
@@ -16,6 +16,7 @@ v1_api.register(SherdNoteResource())
 v1_api.register(AssetResource())
 v1_api.register(ProjectResource())
 v1_api.register(CourseResource())
+v1_api.register(CourseSummaryResource())
 
 
 admin.autodiscover()

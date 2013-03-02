@@ -120,6 +120,41 @@ class ProjectManager(models.Manager):
 
         return x
 
+    def visible_by_course(self, request, course):
+        projects = Project.objects.filter(course=course)
+        projects = projects.order_by('-modified', 'title')
+        return [p for p in projects if p.visible(request)]
+
+    def visible_by_course_and_user(self, request, course, user):
+        projects = Project.objects.filter(Q(author=user, course=course)
+                                          | Q(participants=user, course=course)
+                                          ).distinct()
+
+        projects = projects.order_by('-modified', 'title')
+        return [p for p in projects if p.visible(request)]
+
+    def unresponded_assignments(self, request, user):
+        course = request.course
+        a = list(Project.objects.filter(course.faculty_filter,
+                                        due_date__isnull=False).
+                 order_by("due_date", "-modified", "title"))
+
+        a.extend(Project.objects.filter(course.faculty_filter,
+                                        due_date__isnull=True).
+                 order_by("-modified", "title"))
+
+        assignments = []
+        project_type = ContentType.objects.get_for_model(Project)
+
+        for assignment in a:
+            if (assignment.visible(request) and
+                assignment.is_unanswered_assignment(request,
+                                                    user,
+                                                    project_type)):
+                assignments.append(assignment)
+
+        return assignments
+
 
 class Project(models.Model):
     objects = ProjectManager()  # custom manager
@@ -236,6 +271,32 @@ class Project(models.Model):
             return
         return parent.content_object
 
+    def is_unanswered_assignment(self, request, user, expected_type):
+        """
+        Returns True if this user has a response to this project
+        or None if this user has not yet created a response
+        """
+        if not self.is_assignment(request):
+            return False
+
+        collab = self.collaboration()
+        children = collab.children.all()
+        if not children:
+            # It has no responses, but it looks like an assignment
+            return True
+
+        for child in children:
+            if child.content_type != expected_type:
+                # Ignore this child, it isn't a project
+                continue
+            if getattr(child.content_object, 'author', None) == user:
+                # Aha! We've answered it already
+                return False
+
+        # We are an assignment; we have children;
+        # we haven't found a response by the target user.
+        return True
+
     def feedback_discussion(self):
         '''returns the ThreadedComment object for
          Professor feedback (assuming it's private)'''
@@ -293,13 +354,6 @@ class Project(models.Model):
             return u"Submitted"
         else:
             return u"Private"
-
-    @classmethod
-    def get_user_projects(cls, user, course):
-        # TODO: change to members of project-related group
-        return cls.objects.filter(Q(author=user, course=course)
-                                  | Q(participants=user, course=course)
-                                  ).distinct()
 
     def is_participant(self, user_or_request):
         user = getattr(user_or_request, 'user', user_or_request)

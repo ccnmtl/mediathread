@@ -19,42 +19,6 @@ Project = get_model('projects', 'project')
 ContentType = get_model('contenttypes', 'contenttype')
 
 
-def is_assignment(assignment, request):
-    collab = assignment.collaboration()
-    if not collab:
-        # Who knows what it is
-        return False
-
-    if not collab.permission_to("add_child", request):
-        # It must not be an assignment
-        return False
-
-    return True
-
-
-def is_unanswered_assignment(assignment, user, request, expected_type):
-    if not is_assignment(assignment, request):
-        return False
-
-    collab = assignment.collaboration()
-    children = collab.children.all()
-    if not children:
-        # It has no responses, but it looks like an assignment
-        return True
-
-    for child in children:
-        if child.content_type != expected_type:
-            # Ignore this child, it isn't a project
-            continue
-        if getattr(child.content_object, 'author', None) == user:
-            # Aha! We've answered it already
-            return False
-
-    # We are an assignment; we have children;
-    # we haven't found a response by the target user.
-    return True
-
-
 @allow_http("GET")
 @rendered_with('dashboard/class_assignment_report.html')
 def class_assignment_report(request, id):
@@ -77,7 +41,7 @@ def class_assignments(request):
     maybe_assignments = Project.objects.filter(
         request.course.faculty_filter)
     for assignment in maybe_assignments:
-        if is_assignment(assignment, request):
+        if assignment.is_assignment(request):
             assignments.append(assignment)
 
     num_students = users_in_course(request.course).count()

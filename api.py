@@ -145,19 +145,17 @@ class UserResource(ModelResource):
                                                      bundle.request)
         return bundle
 
-    def render_one(self, user, request):
+    def render_one(self, request, user):
         bundle = self.build_bundle(obj=user, request=request)
         dehydrated = self.full_dehydrate(bundle)
-
         return dehydrated.data
 
-    def render_list(self, lst, request):
+    def render_list(self, request, lst):
         data = []
         for user in lst:
             bundle = self.build_bundle(obj=user, request=request)
             dehydrated = self.full_dehydrate(bundle)
             data.append(dehydrated.data)
-
         return data
 
 

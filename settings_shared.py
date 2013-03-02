@@ -42,12 +42,12 @@ if 'test' in sys.argv:
         }
     }
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    '--with-coverage',
-    ('--cover-package=mediathread.mediathread_main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects'),
-]
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#NOSE_ARGS = [
+#    '--with-coverage',
+#    ('--cover-package=mediathread.mediathread_main,mediathread.djangosherd,'
+#     'mediathread.assetmgr,mediathread.projects'),
+#]
 
 CACHE_BACKEND = 'locmem:///'
 
@@ -92,6 +92,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     # Put application templates before these fallback ones:
     "/var/www/mediathread/templates/",
+    os.path.join(os.path.dirname(__file__), "deploy_specific/templates"),
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
@@ -126,8 +127,12 @@ INSTALLED_APPS = (
     'south',
     'lettuce.django',
     'django_nose',
+    'compressor',
 )
 
+COMPRESS_URL = "/site_media/"
+COMPRESS_ROOT = "media/"
+COMPRESS_PARSER = "compressor.parser.HtmlParser"
 
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mediathread] "

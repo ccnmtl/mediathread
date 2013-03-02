@@ -147,7 +147,7 @@ ProjectList.prototype.updateSwitcher = function () {
 
 ProjectList.prototype.update = function (the_records) {
     var self = this;
-    self.switcher_context.owners = the_records.owners;
+    self.switcher_context.owners = the_records.course.group.user_set;
     self.switcher_context.space_viewer = the_records.space_viewer;
     self.switcher_context.selected_view = self.selected_view;
     

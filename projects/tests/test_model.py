@@ -1,9 +1,12 @@
 from assetmgr.models import Asset
 from courseaffils.models import Course
 from django.contrib.auth.models import User
+from django.http import HttpRequest
 from django.test import TestCase
 from djangosherd.models import SherdNote
 from projects.models import Project
+from structuredcollaboration.models import Collaboration
+from django.contrib.contenttypes.models import ContentType
 import simplejson
 
 
@@ -127,3 +130,102 @@ class ProjectTest(TestCase):
                         "Mediathread: Introduction")
         self.assertEquals(citations[4].id,
                           citations[4].asset.global_annotation(user, False).id)
+
+    def test_visible_by_course(self):
+        student_one = User.objects.get(username='test_student_one')
+        student_two = User.objects.get(username='test_student_two')
+        instructor = User.objects.get(username='test_instructor')
+
+        sample_course = Course.objects.get(title="Sample Course")
+
+        request = HttpRequest()
+        request.course = sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(sample_course.pk))
+
+        request.user = student_one
+        a = Project.objects.visible_by_course(request, sample_course)
+        self.assertEquals(len(a), 4)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+        self.assertEquals(a[1].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[2].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+        self.assertEquals(a[3].__unicode__(),
+                          "Private Composition <1> by Student One")
+
+        request.user = student_two
+        a = Project.objects.visible_by_course(request, sample_course)
+        self.assertEquals(len(a), 2)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+        self.assertEquals(a[1].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+
+        request.user = instructor
+        a = Project.objects.visible_by_course(request, sample_course)
+        self.assertEquals(len(a), 3)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+        self.assertEquals(a[1].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[2].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+
+    def test_visible_by_course_and_user(self):
+        student_one = User.objects.get(username='test_student_one')
+        student_two = User.objects.get(username='test_student_two')
+        instructor = User.objects.get(username='test_instructor_two')
+
+        sample_course = Course.objects.get(title="Sample Course")
+
+        request = HttpRequest()
+        request.course = sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(sample_course.pk))
+
+        request.user = student_one
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       student_one)
+        self.assertEquals(len(a), 3)
+        self.assertEquals(a[0].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[1].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+        self.assertEquals(a[2].__unicode__(),
+                          "Private Composition <1> by Student One")
+
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       instructor)
+        self.assertEquals(len(a), 1)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+
+        request.user = student_two
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       student_one)
+        self.assertEquals(len(a), 1)
+        self.assertEquals(a[0].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+
+        request.user = instructor
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       student_one)
+        self.assertEquals(len(a), 2)
+        self.assertEquals(a[0].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[1].__unicode__(),
+                          "Instructor Shared <2> by Student One")

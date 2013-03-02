@@ -1,8 +1,11 @@
 from courseaffils.models import Course
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
@@ -470,3 +473,15 @@ class Project(models.Model):
                 author_contributions[v.author][1] -= change
             last_content = v.body
         return author_contributions
+
+
+@receiver(post_save, sender=ThreadedComment)
+def on_threaded_comment_save(sender, **kwargs):
+    instance = kwargs['instance']
+    while instance.parent is not None:
+        instance = instance.parent
+
+    an_object = instance.content_object._parent.content_object
+    if hasattr(an_object, 'modified'):
+        an_object.modified = datetime.now()
+        an_object.save()

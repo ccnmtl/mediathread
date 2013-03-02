@@ -186,7 +186,7 @@ def triple_homepage(request):
     if (in_course(logged_in_user.username, request.course) and
         (logged_in_user.is_staff or
          logged_in_user.has_perm('assetmgr.can_upload_for'))):
-        owners = UserResource().render_list(request, request.course.member)
+        owners = UserResource().render_list(request, request.course.members)
 
     discussions = get_course_discussions(c)
 

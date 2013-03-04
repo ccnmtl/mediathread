@@ -131,8 +131,8 @@ Feature: Manage Sources
         Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         When I open the "Upload from Computer" feature
-        Then there is an Upload video button
-        And there is an Upload audio button
+        Then I see "Upload video"
+        And I see "Upload audio"        
         And I cannot upload on behalf of other users
         
         # Regular student cannot upload on someone's behalf
@@ -140,8 +140,8 @@ Feature: Manage Sources
         Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         When I open the "Upload from Computer" feature
-        Then there is an Upload video button
-        And there is an Upload audio button        
+        Then I see "Upload video"
+        And I see "Upload audio"        
         And I cannot upload on behalf of other users
         
         # Student with special privileges can upload on someone's behalf
@@ -149,8 +149,8 @@ Feature: Manage Sources
         Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         When I open the "Upload from Computer" feature
-        Then there is an Upload video button
-        And there is an Upload audio button        
+        Then I see "Upload video"
+        And I see "Upload audio"        
         And I can upload on behalf of other users
         
         # Staff that are not a member of this class cannot upload on someone's behalf
@@ -167,13 +167,14 @@ Feature: Manage Sources
         Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         When I open the "Upload from Computer" feature
-        Then there is not an Upload video button
+        Then I do not see "Upload video"
+        And I do not see "Upload audio"        
         And there is not an Upload audio button        
         And I cannot upload on behalf of other users
         And I see "You must be a course member to upload media files."
         And I cannot upload on behalf of other users
         
-    Scenario: manage_sources.feature 6. Add External Source, verify navigation from Add to My Collection
+    Scenario: manage_sources.feature 6. Add & Remove External Source, verify navigation from Add to My Collection
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -185,7 +186,7 @@ Feature: Manage Sources
         # Add the YouTube Source
         When I add YouTube to the class
         Then I'm told "You Tube has been enabled for your class"
-        Then there is an Added button
+        Then there is an Remove button
 
         # Under Add to My Collection
         Given I am test_student_one in Sample Course
@@ -196,3 +197,33 @@ Feature: Manage Sources
         When I click the "You Tube" link
         Then I am at the YouTube page
         
+    Scenario: manage_sources.feature 7. Remove External Source, verify navigation from Add to My Collection
+        Using selenium
+        Given I am test_instructor in Sample Course
+        
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
+        Then I am at the Manage Sources page
+        
+        # Add the YouTube Source
+        When I add YouTube to the class
+        Then I'm told "You Tube has been enabled for your class"
+        Then there is an Remove button
+        
+        # Under Add to My Collection
+        When I click the "Sample Course" link
+        I see 1 source
+        
+        #Remove
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
+        Then I am at the Manage Sources page
+        
+        When I click the Remove button
+        Then I'm told "You Tube has been disabled for your class"
+
+        # Under Add to My Collection
+        When I click the "Sample Course" link
+        I see 0 source

@@ -63,12 +63,14 @@ def class_summary(request):
     for stud in users_in_course(request.course).order_by('last_name',
                                                          'first_name',
                                                          'username'):
+
         stud.__dict__.update({
             'annotations':
             SherdNote.objects.filter(asset__course=request.course,
                                      author=stud).count(),
             'all_projects':
-            Project.get_user_projects(stud, request.course).count(),
+            len(Project.objects.visible_by_course_and_user(
+                request, request.course, stud)),
 
             # 'project_adds':stud_work.get(stud.id,[0,0])[0],
             # 'project_deletes':stud_work.get(stud.id,[0,0])[1],

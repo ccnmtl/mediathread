@@ -98,7 +98,9 @@ TEMPLATE_DIRS = (
 
 LETTUCE_APPS = (
     'mediathread_main',
-    'projects'
+    'projects',
+    'assetmgr',
+    'djangosherd'
 )
 
 INSTALLED_APPS = (
@@ -125,7 +127,7 @@ INSTALLED_APPS = (
     'mediathread_main',
     'sentry.client',
     'south',
-    'lettuce.django',
+    #'lettuce.django',
     'django_nose',
     'compressor',
 )

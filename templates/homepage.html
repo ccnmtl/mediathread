@@ -53,7 +53,7 @@
                     jQuery(this).next("div.arrowContent").toggle();                
                 });
                 
-                jQuery("div.upload_button").click(function(evt) {
+                jQuery("a.upload_button").click(function(evt) {
                     jQuery(this).parent().submit();
                 });
     
@@ -329,7 +329,7 @@
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <input type="hidden" name="audio2" value="mp4"></input>
-                                        <div class="upload_button">Upload audio</div>                                        
+                                        <a class="btn-primary upload_button audio"><img src="/site_media/img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
                                     </form>  
                                     
                                     <form action="/explore/redirect/" method="POST">
@@ -346,7 +346,7 @@
                                             </div>
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                                        <div class="upload_button">Upload video</div>
+                                        <a class="btn-primary upload_button video"><img src="/site_media/img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
                                     </form>               
                                     
                                  </div>

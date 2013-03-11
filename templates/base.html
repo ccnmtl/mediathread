@@ -216,7 +216,7 @@
         {% else %}
             {% if settings.GOOGLE_ANALYTICS_ID %}
                 var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', 'UA-311226-32']);
+                _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
                 _gaq.push(['_trackPageview']);
         
                 (function () {

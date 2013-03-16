@@ -290,19 +290,11 @@
                     }
                     alert(msg);
                     
-
                     jQuery("#selected-for-import").fadeOut();
                     jQuery("#selected-for-import").html("");
                     
-                    self.selectedProjects.off("add remove");
-                    self.selectedAssets.off("add remove");
-
-                    self.selectedProjects = new ProjectList();
-                    self.selectedAssets = new AssetList();
-
-                    self.selectedProjects.on("add remove", this.renderSelectedList);
-                    self.selectedAssets.on("add remove", this.renderSelectedList);
-
+                    self.selectedProjects.reset();
+                    self.selectedAssets.reset();
                 }
             });
         },
@@ -310,15 +302,8 @@
         clearSelectedMaterials: function (evt) {
             jQuery("#selected-for-import").fadeOut();
             jQuery("#selected-for-import").html("");
-            
-            this.selectedProjects.off("add remove");
-            this.selectedAssets.off("add remove");
-
-            this.selectedProjects = new ProjectList();
-            this.selectedAssets = new AssetList();
-
-            this.selectedProjects.on("add remove", this.renderSelectedList);
-            this.selectedAssets.on("add remove", this.renderSelectedList);
+            this.selectedProjects.reset();
+            this.selectedAssets.reset();
         },
         
         importAll: function (evt) {
@@ -376,6 +361,7 @@
                                                 if (!self.selectedProjects.get(project)) {
                                                     self.selectedProjects.add(project, {silent: true});
                                                 }
+                                                jQuery(elt).removeAttr('checked');
                                             } else {
                                                 self.selectedProjects.remove(project, {silent: true});
                                             }
@@ -422,11 +408,14 @@
                                                 if (!self.selectedAssets.get(asset)) {
                                                     self.selectedAssets.add(asset);
                                                 }
+                                                jQuery(elt).removeAttr('checked');
                                             } else {
                                                 self.selectedAssets.remove(asset);
                                             }
                                         }
                                     );
+                                    
+                                    self.renderSelectedList();
                                 }
                                 jQuery(this).dialog("close");
                             }

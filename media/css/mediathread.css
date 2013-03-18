@@ -427,13 +427,6 @@ ul#projects h3 .edit_icon {
     margin: 0 20px 0 0;
 }
 
-.upload_for {
-    display: inline;
-    float: left;
-    margin-right: 20px;
-    padding: 10px 0;
-}
-
 a.btn-primary,
 .btn-primary,
 input#uploader {
@@ -962,7 +955,7 @@ div.column-contents {
 /* Add to My Collection Column */
 
 #bookmarklet p, #bookmarklet li {
-    font-size: .875em;
+  font-size: .875em;
 	color: #383838;
 }
 
@@ -977,6 +970,35 @@ div.column-contents {
     padding: 0px 20px 20px 20px;
     width: 95%;
 }
+
+#upload_audio, #upload_video {
+  width: 200px;
+  background-color: #fff;
+  padding: 10px 10px 15px 10px;
+  float: left;
+  margin: 0 15px 0 15px;
+}
+
+.upload_for {
+  display: block;
+  height: 35px;
+  margin: 15px 0 0 0;
+}
+
+a.btn-primary.upload_button {
+  float: left;
+  margin: 0px 0 0 35px;
+}
+
+@media screen and (max-width: 2400px) {
+  #upload_audio, #upload_video {
+    float: left;
+    display: block;
+    clear: all;
+    margin: 20px 15px 0 15px;
+   }
+}
+
 
 #recommend {
 	background-color: #F5F5F5;
@@ -2698,14 +2720,16 @@ div.gallery-item h4.asset_title {
     height: 25px;
     width: 25px;
     float: left;
-    
-}
+   }
 
 .record-image .annotation-timecode, .record-image_fpx .annotation-timecode {
     display:none;
 }
 
-
+#projects .asset_title.type-project {
+  background-image: none;
+  background-repeat: no-repeat;
+  margin-top: -3px;
 }
 
 .asset_title.type-project

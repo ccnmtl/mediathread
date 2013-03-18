@@ -299,11 +299,10 @@
                 {% if can_upload %}
                 {% if upload_archive %}
                 <div class="collection_content">
-                    <a href="#"
-                       id="upload-from-computer"
-                       class ="arrow arrowClosed">
+                    <a href="#" id="upload-from-computer" class ="arrow arrowClosed">
                         <h3 class="left">Upload from Computer</h3>
-                        <div class="arrowIcon left"></div>
+                        <div class="arrowIcon left">
+                        </div>
                     </a>
                         <div class="arrowContent" id="upload_desktop" style="display: none">                
                             {% ifequal role_in_course "non-member" %}
@@ -311,11 +310,11 @@
                                     You must be a course member to upload media files.
                                 </div>
                             {% else %}                        
-                                <div>                            
                                     <p>
                                         This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
                                     </p>
-                                    
+                                    <div id="upload_audio">
+                                     <strong>Upload Audio</strong>
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
@@ -331,11 +330,11 @@
                                         <input type="hidden" name="audio2" value="mp4"></input>
                                         <a class="btn-primary upload_button audio"><img src="/site_media/img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
                                     </form>  
-                                    
+                                    </div>
+                                    <div id="upload_video">
+                                     <strong>Upload Video</strong>
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
-                                            <div class="visualclear"></div>
-                                            <br /><br />
                                             <div class="upload_for">
                                             <b>For:</b>&nbsp;
                                             <select id="video_owners" name="as"> 
@@ -348,8 +347,7 @@
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <a class="btn-primary upload_button video"><img src="/site_media/img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
                                     </form>               
-                                    
-                                 </div>
+                                    </div>
                             {% endifequal %}
 
                         

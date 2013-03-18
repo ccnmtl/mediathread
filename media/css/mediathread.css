@@ -377,6 +377,10 @@ ul#projects li {
 	clear: both;
 }
 
+.collection_content a h3:hover {
+    text-decoration: underline;
+}
+
 .collection_content h3:after {
     content: ''
 }
@@ -3709,8 +3713,6 @@ table.selection-level-info td.selection-trash {
 
 .indexcard input.media {
     margin-top: 5px;
-    
-
 }
 
 input.media {

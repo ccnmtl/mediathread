@@ -86,7 +86,15 @@
         parse: function (response) {
             if (response) {
                 response.project_set = new ProjectList(response.project_set);
-                response.asset_set = new AssetList(response.asset_set);
+                
+                // filter archives
+                var assets = [];
+                for (var i = 0; i < response.asset_set.length; i++) {
+                    if (response.asset_set[i].primary_type !== 'archive') {
+                        assets.push(response.asset_set[i]);
+                    }
+                }
+                response.asset_set = new AssetList(assets);
             }
             return response;
         }

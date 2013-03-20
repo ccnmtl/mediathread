@@ -976,7 +976,7 @@ div.column-contents {
 }
 
 #upload_audio, #upload_video {
-  width: 200px;
+  width: 215px;
   background-color: #fff;
   padding: 10px 10px 15px 10px;
   float: left;
@@ -991,16 +991,32 @@ div.column-contents {
 
 a.btn-primary.upload_button {
   float: left;
-  margin: 0px 0 0 35px;
+  margin: 10px 0 0 35px;
 }
 
-@media screen and (max-width: 2400px) {
+@media screen and (max-width: 2435px) {
   #upload_audio, #upload_video {
     float: left;
     display: block;
     clear: all;
     margin: 20px 15px 0 15px;
    }
+}
+
+/*SmartBoard fix*/
+
+@media screen and (max-width: 1195px) {
+  #upload_audio, #upload_video {
+    width: 175px;
+    float: left;
+    display: block;
+    clear: all;
+    margin: 20px 0 0 0;
+   }
+   a.btn-primary.upload_button {
+  float: left;
+  margin: 10px 0 0 0;
+}
 }
 
 

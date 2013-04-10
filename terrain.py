@@ -43,6 +43,8 @@ def setup_browser():
         world.browser = webdriver.Firefox(ff_profile)
     elif  browser == 'Chrome':
         world.browser = webdriver.Chrome()
+    elif browser == "Headless":
+        world.browser = webdriver.PhantomJS()
 
     world.client = client.Client()
     world.using_selenium = False

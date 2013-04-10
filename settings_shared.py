@@ -127,7 +127,7 @@ INSTALLED_APPS = (
     'mediathread_main',
     'sentry.client',
     'south',
-    #'lettuce.django',
+    'lettuce.django',
     'django_nose',
     'compressor',
 )

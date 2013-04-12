@@ -230,16 +230,22 @@
                                                   <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>                                            
                                                </div>
                                                {{#is_assignment?}}
+                                                   {{#due_date?}}
+                                                       <div class="meta">
+                                                           <span class="metadata-label">Due </span>
+                                                           <span class="metadata-value">{{due_date}}</span>
+                                                           <br />
+                                                       </div>
+                                                   {{/due_date?}}                                               
                                                    <div class="metadata">
                                                        <span class="metadata-value metadata-value-status">{{{responses}}} responses</span>
-                                                   </div>
+                                                   </div>                                                   
                                                {{/is_assignment?}}
                                                {{^is_assignment}}
                                                    <div class="metadata">
                                                        <span class="metadata-value metadata-value-status">{{{status}}}</span>
                                                    </div>
                                                {{/is_assignment}}
-                                               
                                                {{#feedback?}}
                                                   <div class="feedback">
                                                   <a class="btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>

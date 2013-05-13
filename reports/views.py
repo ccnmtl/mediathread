@@ -222,7 +222,7 @@ def mediathread_activity_by_course(request):
     writer = csv.writer(response)
     headers = ['Id', 'Title', 'Instructor', 'Course String',
                'Term', 'Year', 'Section', 'Course Number', 'School',
-               'Items', 'Selections',
+               'Students', 'Items', 'Selections',
                'Compositions', 'Assignments', 'Discussions']
     writer.writerow(headers)
 
@@ -251,6 +251,7 @@ def mediathread_activity_by_course(request):
         row.append(bits[2])  # section
         row.append(bits[3])  # courseNo
         row.append(bits[4])  # school
+        row.append(len(c.students))
 
         items = Asset.objects.filter(course=c)
         row.append(len(items))

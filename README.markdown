@@ -136,3 +136,11 @@ Go to your site in a web browser.
    Install the bookmarklet from the homescreen and follow instructions there.
 
 10. For deployment, take a look at the `apache/` directory for sample apache configuration files
+
+METADATA SUPPORT
+----------------
+1. Current development on the Mediathread bookmarklet is aimed at supporting the standard set forth by Schema.org (http://schema.org/). This format includes a system of hierarchal terms and their associated values. Use of the metadata terms itemscope, itemtype, and itemprop are used to help stucture the data such that Mediathread can make sense of what metadata is assocaited to the item or items being brought into the application. Examples of this structure can be found here: http://schema.org/docs/gs.html#microdata_itemscope_itemtype.
+
+2. Use the Google Rich Snippet test tool to test your structure: http://www.google.com/webmasters/tools/richsnippets
+
+3. It is also worth noting that the LRMI (Learning Resource Metadata Initiative) has been working with Schema.org in creating a more robust set of property (itemprop) terms that have been accepted into the standard. Some of these terms may be useful in determining what might best describe a data set or collection. Here is a link to this new specification: http://www.lrmi.net/the-specification

@@ -34,6 +34,7 @@ def reset_database(variables):
 
 @before.all
 def setup_browser():
+    world.browser = None
     browser = getattr(settings, 'BROWSER', None)
     if browser is None:
         raise Exception('Please configure a browser in settings_test.py')
@@ -41,8 +42,10 @@ def setup_browser():
         ff_profile = FirefoxProfile()
         ff_profile.set_preference("webdriver_enable_native_events", False)
         world.browser = webdriver.Firefox(ff_profile)
-    elif  browser == 'Chrome':
+    elif browser == 'Chrome':
         world.browser = webdriver.Chrome()
+    elif browser == "Headless":
+        world.browser = webdriver.PhantomJS()
 
     world.client = client.Client()
     world.using_selenium = False

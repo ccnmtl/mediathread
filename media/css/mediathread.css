@@ -737,10 +737,19 @@ html.busy, html.busy * {
   cursor: wait;
 }
 
-.ajaxLoading {
-    background-image: url(../img/ajax-loader.gif);
+.ajaxloader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -55px; /* -1 * image width / 2 */
+    margin-top: -15px;  /* -1 * image height / 2 */
+    display: block;
+    background-image: url(../img/ajax-loader-3.gif);
     background-repeat: no-repeat;
     background-position: center center;
+    width: 50px;
+    height: 50px;
+    z-index: 999;
 }
 
 .ui-accordion .ui-accordion-content {
@@ -1475,6 +1484,10 @@ div.panel.asset-workspace td.panel-container.asset-details.fixed {
 td.panel-container.collection {
     background-color: #ededed;
     border: 1px solid #ccc;
+}
+
+td#asset-workspace-panel-container td.panel-container.collection.maximized {
+    background-color: #F9F6F1;
 }
 
 td.panel-container.assignment {

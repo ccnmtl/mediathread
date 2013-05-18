@@ -17,14 +17,6 @@
       
         <script type="text/javascript">
             jQuery(document).ready(function() {
-                jQuery("div#classwork_table").ajaxStart(function(){
-                    jQuery(this).addClass("ajaxLoading");
-                });
-                
-                jQuery("div#classwork_table").ajaxStop(function(){
-                    jQuery(this).removeClass("ajaxLoading");
-                });
-                
                 var projectList = new ProjectList({
                     'parent': jQuery("div#classwork_table")[0],
                     'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',

@@ -654,7 +654,7 @@
                     },
                     'range1': self.active_annotation.range1,
                     'range2': self.active_annotation.range2,
-                    'annotation_data': self.active_annotation.annotation_data,
+                    'annotation_data': self.active_annotation.annotation_data
                 }};
             
             jQuery("#asset-global-annotation, #annotations-organized").fadeOut(function () {

@@ -337,7 +337,7 @@
                                     }
                                 });
                             }
-                          },
+                          }
                 ],
                 draggable: true,
                 resizable: false,
@@ -380,7 +380,7 @@
                                 }
                                 jQuery(this).dialog("close");
                             }
-                          },
+                          }
                 ],
                 draggable: true,
                 resizable: true,
@@ -427,7 +427,7 @@
                                 }
                                 jQuery(this).dialog("close");
                             }
-                          },
+                          }
                 ],
                 draggable: true,
                 resizable: true,

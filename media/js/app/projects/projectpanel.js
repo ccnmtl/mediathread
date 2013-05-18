@@ -326,7 +326,7 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
         buttons: [{ text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }},
                   { text: "View Response",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
                  ],
         beforeClose: function (event, ui) {
             if (self._save) {
@@ -370,7 +370,7 @@ ProjectPanelHandler.prototype.showMyResponses = function (evt) {
         buttons: [{ text: "Cancel",
                     click: function () { jQuery(this).dialog("close"); }},
                   { text: "View",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }},
+                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
                  ],
         beforeClose: function (event, ui) {
             if (self._save) {

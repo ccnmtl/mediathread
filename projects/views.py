@@ -91,8 +91,8 @@ def project_save(request, project_id):
             v_num = projectform.instance.get_latest_version()
             return HttpResponse(simplejson.dumps({
                 'status': 'success',
-                'is_assignment':
-                projectform.instance.is_assignment(request),
+                'is_assignment': projectform.instance.is_assignment(request),
+                'title': projectform.instance.title,
                 'revision': {
                     'id': v_num,
                     'public_url': projectform.instance.public_url(),

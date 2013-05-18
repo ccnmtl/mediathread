@@ -655,6 +655,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                 
                 self.setDirty(false);
                 self.revision = json.revision;
+                if ("title" in json) {
+                    document.title = "Mediathread " + json.title;
+                }
             }    
             jQuery(saveButton).removeAttr("disabled")
                 .removeClass("saving", 1200, function () { jQuery(this).attr("value", "Save"); });

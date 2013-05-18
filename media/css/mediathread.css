@@ -744,7 +744,7 @@ html.busy, html.busy * {
     margin-left: -55px; /* -1 * image width / 2 */
     margin-top: -15px;  /* -1 * image height / 2 */
     display: block;
-    background-image: url(../img/ajax-loader-3.gif);
+    background-image: url(../img/ajax-loader.gif);
     background-repeat: no-repeat;
     background-position: center center;
     width: 50px;

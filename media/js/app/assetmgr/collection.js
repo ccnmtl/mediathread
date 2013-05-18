@@ -24,15 +24,6 @@ var CollectionList = function (config) {
     
     self.switcher_context = {};
     
-    // add some flair to the collection table
-    jQuery(self.parent).find(".collection_table").ajaxStart(function () {
-        jQuery(this).addClass("ajaxLoading");
-    });
-    
-    jQuery(self.parent).find(".collection_table").ajaxStop(function () {
-        jQuery(this).removeClass("ajaxLoading");
-    });
-    
     jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) {
         var self = event.data.self;
         var div = jQuery(self.parent).find("div.collection-assets");

@@ -23,10 +23,6 @@
             self.options = options;
             self.panelHandlers = [];
             self.el = jQuery("#" + options.container)[0];
-
-            jQuery(self.el).ajaxStop(function () {
-                jQuery(this).removeClass("ajaxLoading");
-            });
             
             jQuery.ajax({
                 url: options.url,

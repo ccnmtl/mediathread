@@ -80,7 +80,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             }
         });
     }
-    
+
     if (self.panel.current_asset) {
         self.showAsset(self.panel.current_asset, self.panel.current_annotation, true);
     }
@@ -152,12 +152,14 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
     self.current_asset = parseInt(asset_id, 10);
     
     if (displayNow) {
-        jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
-        jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
-        jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
-        jQuery(self.el).find('td.panel-container.asset').removeClass("closed").addClass("open");
-        jQuery(self.el).find('td.panel-container.asset').show();
-        jQuery(self.el).find('td.panel-container.asset-details').show();
+        jQuery("div.ajaxloader").hide("fast", function() {
+            jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
+            jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
+            jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
+            jQuery(self.el).find('td.panel-container.asset').removeClass("closed").addClass("open");
+            jQuery(self.el).find('td.panel-container.asset').show();
+            jQuery(self.el).find('td.panel-container.asset-details').show();            
+        });
     
         self.citationView.openCitationById(null, asset_id, annotation_id);
     }

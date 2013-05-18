@@ -19,7 +19,7 @@
     
     {% course_role for request.user in course as role_in_course %}
     <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
-
+    <div class="ajaxloader" style="display: none"></div>
     <div id="container">
         {% block masthead %}
         	<!-- ###### Site banner ###### -->
@@ -237,9 +237,11 @@
         jQuery(document).ready(function() {
             // setup some ajax progress indicator
             jQuery("html").bind("ajaxStart", function(){  
-               jQuery(this).addClass('busy');  
+               jQuery(this).addClass("busy");
+               jQuery("div.ajaxloader").show();
             }).bind("ajaxStop", function(){  
-               jQuery(this).removeClass('busy');  
+               jQuery(this).removeClass("busy");
+               jQuery("div.ajaxloader").hide();
             });
             
             /* Select from list: Chrome, Firefox, Safari, MSIE */

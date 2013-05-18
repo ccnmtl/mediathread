@@ -92,16 +92,17 @@ Feature: Instructor Dashboard
         Then I am at the Untitled page
         
         There is an open Composition panel
-        I call the Composition "Instructor Dashboard: Scenario 4"
-        And I write some text for the Composition
+        I call the Composition "Instructor Feature 4"
+        Then the Composition is called "Instructor Feature 4"
         Then I click the Save button
         And I save the changes
+        Then the Composition is called "Instructor Feature 4"
         
         When I click the "Sample Course" link
         Then I am at the Home page
         
         Given the home workspace is loaded
-        Then there is a private "Instructor Dashboard: Scenario 4" project by Instructor One
+        Then there is a private "Instructor Feature 4" project by Instructor One
         
         Finished using Selenium
         

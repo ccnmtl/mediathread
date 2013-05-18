@@ -1,5 +1,6 @@
 from lettuce import world, step
 from mediathread.projects.models import Project
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.select import Select
 from urlparse import urlparse
 import time
@@ -25,7 +26,7 @@ def there_is_not_a_state_name_panel(step, state, name):
         selector = "td.panel-container.%s.%s" % (state.lower(), name.lower())
         panel = world.browser.find_element_by_css_selector(selector)
         assert False, "Found panel named %s" % panel
-    except:
+    except NoSuchElementException:
         pass  # expected
 
 
@@ -41,7 +42,7 @@ def the_name_panel_has_a_state_subpanel(step, name, state):
     try:
         subpanel = panel.find_element_by_css_selector(selector)
         assert subpanel is not None, msg
-    except:
+    except NoSuchElementException:
         assert False, msg
 
 
@@ -52,7 +53,11 @@ def the_panel_has_a_name_button(step, panel, name):
     assert panel is not None, "Can't find panel named %s" % panel
 
     btn = world.find_button_by_value(name, panel)
-    assert btn is not None, "Can't find button named %s" % name
+    if btn is None:
+        world.browser.get_screenshot_as_file("/tmp/selenium.png")
+        assert False, "Can't find button named %s" % name
+    if btn.is_displayed() is False:
+        assert False, "Button is not visible %s" % name
 
 
 @step(u'the ([^"]*) panel does not have an? ([^"]*) button')
@@ -62,9 +67,11 @@ def the_panel_does_not_have_a_name_button(step, panel, name):
     assert panel is not None, "Can't find panel named %s" % panel
 
     try:
-        world.find_button_by_value(name, panel)
-        assert False, "Found a button named %s" % name
-    except:
+        elt = world.find_button_by_value(name, panel)
+        if elt is not None and elt.is_displayed():
+            assert False, "Found a visible button named %s. [%s]" % \
+                (name, elt.get_attribute('value'))
+    except NoSuchElementException:
         pass  # expected
 
 
@@ -211,12 +218,12 @@ def the_panelname_panel_media_window_displays_title(step, panelname, title):
     try:
         a = media_window.find_element_by_css_selector('div.annotation-title a')
         assert a.text == title
-    except:
+    except NoSuchElementException:
         try:
             selector = 'div.annotation-title'
             a = media_window.find_element_by_css_selector(selector)
             assert a.text == title
-        except:
+        except NoSuchElementException:
             msg = "Didn't find %s in the %s media window" % (title, panelname)
             assert False, msg
 

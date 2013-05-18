@@ -36,11 +36,15 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample assignment
         Given I am test_instructor in Sample Course
         
+        # This test cannot be run in HEADLESS mode
+        
         Given the home workspace is loaded
         The "Sample Assignment" project has a delete icon
         
         When I click the "Sample Assignment" project delete icon
         Then I cancel an alert dialog
+        The "Sample Assignment" project has a delete icon
+        Then there is a "Sample Assignment" link
         
         When I click the "Sample Assignment" project delete icon
         Then I ok an alert dialog
@@ -53,6 +57,8 @@ Feature: Homepage Delete Operations. Project, Item
         Using selenium
         Given there is a sample response
         Given I am test_student_one in Sample Course
+        
+        # This test cannot be run in HEADLESS mode
         
         Given the home workspace is loaded
         The "Sample Assignment Response" project has a delete icon

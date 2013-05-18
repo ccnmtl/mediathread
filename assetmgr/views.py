@@ -589,7 +589,7 @@ def detail_asset_json(request, asset_id, options):
     return rv
 
 
-def homepage_asset_json(request, asset, logged_in_user, record_owner, options):
+def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
     the_json = asset.sherd_json(request)
 
     gannotation, created = \

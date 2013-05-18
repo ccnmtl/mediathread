@@ -1,5 +1,5 @@
 from assetmgr.lib import annotated_by, get_active_filters
-from assetmgr.views import homepage_asset_json
+from assetmgr.views import gallery_asset_json
 from courseaffils.lib import in_course, in_course_or_404
 from courseaffils.views import available_courses_query
 from discussions.utils import get_course_discussions
@@ -384,8 +384,8 @@ def get_records(request, record_owner, assets):
     }
 
     for asset in assets:
-        asset_json.append(homepage_asset_json(request, asset, logged_in_user,
-                                              record_owner, options))
+        asset_json.append(gallery_asset_json(request, asset, logged_in_user,
+                                             record_owner, options))
     # Tags
     tags = []
     if record_owner:

@@ -200,6 +200,17 @@ class Project(models.Model):
 
     ordinality = models.IntegerField(default=-1)
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        dt = datetime.today()
+        this_day = datetime(dt.year, dt.month, dt.day, 0, 0)
+        if self.due_date is not None and self.due_date < this_day:
+            msg = "%s is not valid for the Due Date field.\n" % \
+                self.get_due_date()
+            msg = msg + "The date cannot be in the past.\n"
+            raise ValidationError(msg)
+
     @models.permalink
     def get_absolute_url(self):
         return ('project-workspace', (), {'project_id': self.pk})

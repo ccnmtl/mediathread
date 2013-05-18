@@ -558,6 +558,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
               ],
         create: function () {
             jQuery('#id_due_date').datepicker({
+                minDate: 0,
                 dateFormat: 'mm/dd/yy',
                 beforeShow: function (input, inst) {
                     inst.dpDiv.css({
@@ -616,40 +617,45 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
             alert('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {
-            var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
-            if (json.revision.public_url) {
-                jQuery(lastVersionPublic).attr("href", json.revision.public_url);
-                jQuery(lastVersionPublic).show();
+            if (json.status === 'error') {
+                alert(json.msg);
             } else {
-                jQuery(lastVersionPublic).attr("href", "");
-                jQuery(lastVersionPublic).hide();
-            }
-            
-            if (json.is_assignment) {
-                jQuery(self.el).removeClass("composition").addClass("assignment");
-                jQuery(self.el).find(".composition").removeClass("composition").addClass("assignment");
-                jQuery(self.el).next(".pantab-container").find(".composition").removeClass("composition").addClass("assignment");
-                jQuery(self.el).prev().removeClass("composition").addClass("assignment");
-                jQuery(self.el).prev().find("div.label").html("assignment");
-                jQuery(self.el).prev().prev().find(".composition").removeClass("composition").addClass("assignment");
-            } else {
-                jQuery(self.el).removeClass("assignment").addClass("composition");
-                jQuery(self.el).find(".assignment").removeClass("assignment").addClass("composition");
-                jQuery(self.el).next(".pantab-container").find(".assignment").removeClass("assignment").addClass("composition");
-                jQuery(self.el).prev().removeClass("assignment").addClass("composition");
-                jQuery(self.el).prev().find("div.label").html("composition");
-                jQuery(self.el).prev().prev().find(".assignment").removeClass("assignment").addClass("composition");
-            }
-            
-            jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);
-            
-            if (json.revision.due_date) {
-                jQuery(self.el).find('.project-due-date').html("Due " + json.revision.due_date);
-            }
-            
-            self.setDirty(false);
-            self.revision = json.revision;
-            
+                var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
+                if (json.revision.public_url) {
+                    jQuery(lastVersionPublic).attr("href", json.revision.public_url);
+                    jQuery(lastVersionPublic).show();
+                } else {
+                    jQuery(lastVersionPublic).attr("href", "");
+                    jQuery(lastVersionPublic).hide();
+                }
+                
+                if (json.is_assignment) {
+                    jQuery(self.el).removeClass("composition").addClass("assignment");
+                    jQuery(self.el).find(".composition").removeClass("composition").addClass("assignment");
+                    jQuery(self.el).next(".pantab-container").find(".composition").removeClass("composition").addClass("assignment");
+                    jQuery(self.el).prev().removeClass("composition").addClass("assignment");
+                    jQuery(self.el).prev().find("div.label").html("assignment");
+                    jQuery(self.el).prev().prev().find(".composition").removeClass("composition").addClass("assignment");
+                } else {
+                    jQuery(self.el).removeClass("assignment").addClass("composition");
+                    jQuery(self.el).find(".assignment").removeClass("assignment").addClass("composition");
+                    jQuery(self.el).next(".pantab-container").find(".assignment").removeClass("assignment").addClass("composition");
+                    jQuery(self.el).prev().removeClass("assignment").addClass("composition");
+                    jQuery(self.el).prev().find("div.label").html("composition");
+                    jQuery(self.el).prev().prev().find(".assignment").removeClass("assignment").addClass("composition");
+                }
+                
+                jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);
+                
+                if (json.revision.due_date) {
+                    jQuery(self.el).find('.project-due-date').html("Due " + json.revision.due_date);
+                } else {
+                    jQuery(self.el).find('.project-due-date').html("");
+                }
+                
+                self.setDirty(false);
+                self.revision = json.revision;
+            }    
             jQuery(saveButton).removeAttr("disabled")
                 .removeClass("saving", 1200, function () { jQuery(this).attr("value", "Save"); });
         }

@@ -295,7 +295,6 @@ ul#projects li {
     text-transform: uppercase;
     font-weight: bold;
     color: #39b54a;
-    clear: both;
     display: block;
     float: left;
 }

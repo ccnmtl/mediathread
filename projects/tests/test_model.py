@@ -8,6 +8,8 @@ from projects.models import Project
 from structuredcollaboration.models import Collaboration
 from django.contrib.contenttypes.models import ContentType
 import simplejson
+from datetime import datetime
+from django.core.exceptions import ValidationError
 
 
 class ProjectTest(TestCase):
@@ -41,7 +43,7 @@ class ProjectTest(TestCase):
         self.assertEquals(x.visibility_short(), "Assignment")
 
     project_set = [{"id": 5,
-                    "title":"Sample Course Assignment"}]
+                    "title": "Sample Course Assignment"}]
 
     def test_migrate_set(self):
         self.assertTrue(True)
@@ -229,3 +231,27 @@ class ProjectTest(TestCase):
                           "Public To Class Composition <3> by Student One")
         self.assertEquals(a[1].__unicode__(),
                           "Instructor Shared <2> by Student One")
+
+    def test_project_clean(self):
+        assignment = Project.objects.get(id=5)
+        try:
+            assignment.due_date = datetime(2012, 3, 13, 0, 0)
+            assignment.clean()
+            self.assertTrue(False, 'Due date is in the past')
+        except ValidationError as err:
+            self.assertTrue(
+                err.messages[0].startswith('03/13/12 is not valid'))
+
+        try:
+            dt = datetime.today()
+            this_day = datetime(dt.year, dt.month, dt.day, 0, 0)
+            assignment.due_date = this_day
+            assignment.clean()
+        except ValidationError as err:
+            self.assertTrue(False, "Due date is today. That's okay.")
+
+        try:
+            assignment.due_date = datetime(2020, 1, 1, 0, 0)
+            assignment.clean()
+        except ValidationError as err:
+            self.assertTrue(False, "Due date is in the future, that's ok")

@@ -74,36 +74,46 @@ def project_save(request, project_id):
     # verify user is in course
     in_course_or_404(project.author.username, request.course)
 
-    if request.method == "POST":
-        projectform = ProjectForm(request, instance=project, data=request.POST)
-        if projectform.is_valid():
+    projectform = ProjectForm(request, instance=project, data=request.POST)
+    if projectform.is_valid():
 
-            # legacy and for optimizing queries
-            projectform.instance.submitted = \
-                request.POST.get('publish', None) != 'PrivateEditorsAreOwners'
+        # legacy and for optimizing queries
+        projectform.instance.submitted = \
+            request.POST.get('publish', None) != 'PrivateEditorsAreOwners'
 
-            # this changes for version-tracking purposes
-            projectform.instance.author = request.user
-            projectform.save()
+        # this changes for version-tracking purposes
+        projectform.instance.author = request.user
+        projectform.save()
 
-            projectform.instance.collaboration(request, sync_group=True)
+        projectform.instance.collaboration(request, sync_group=True)
 
-            if request.META.get('HTTP_ACCEPT', '').find('json') >= 0:
-                v_num = projectform.instance.get_latest_version()
-                return HttpResponse(simplejson.dumps({
-                    'status': 'success',
-                    'is_assignment':
-                    projectform.instance.is_assignment(request),
-                    'revision': {
-                        'id': v_num,
-                        'public_url': projectform.instance.public_url(),
-                        'visibility': project.visibility_short(),
-                        'due_date': project.get_due_date()
-                    }
-                }, indent=2), mimetype='application/json')
+        if request.META.get('HTTP_ACCEPT', '').find('json') >= 0:
+            v_num = projectform.instance.get_latest_version()
+            return HttpResponse(simplejson.dumps({
+                'status': 'success',
+                'is_assignment':
+                projectform.instance.is_assignment(request),
+                'revision': {
+                    'id': v_num,
+                    'public_url': projectform.instance.public_url(),
+                    'visibility': project.visibility_short(),
+                    'due_date': project.get_due_date()
+                }
+            }, indent=2), mimetype='application/json')
+    else:
+        ctx = {'status': 'error', 'msg': ""}
+        for key, value in projectform.errors.items():
+            if key == '__all__':
+                ctx['msg'] = ctx['msg'] + value[0] + "\n"
+            else:
+                ctx['msg'] = \
+                    '%s "%s" is not valid for the %s field.\n Please %s\n' % \
+                    (ctx['msg'], projectform.data[key],
+                     projectform.fields[key].label,
+                     value[0].lower())
 
-        redirect_to = '.'
-        return HttpResponseRedirect(redirect_to)
+        return HttpResponse(simplejson.dumps(ctx, indent=2),
+                            mimetype='application/json')
 
 
 @login_required

@@ -120,27 +120,23 @@
                                         
                                     {{#assignments}}
                                         <li class="projectlist assignment" id="assignment-{{id}}">
-                                            <span class="metadata-value-assignment">Assignment</span>
+                                            <div>
+                                                <span class="metadata-value-assignment">Assignment</span>
+                                                {{#due_date?}}
+                                                    <span class="metadata-value-assignment right">due {{due_date}}</span>
+                                                {{/due_date?}}
+                                            </div>
                                             <h3>
                                                 <a href="{{url}}" class="asset_title type-assignment" title='View "{{{title?default(Untitled)}}}"'>
                                                   {{{title?default(-Untitled-)}}}
                                                 </a>
                                             </h3>
                                             
-                                            {{#due_date?}}
-                                                <div class="meta">
-                                                    <span class="metadata-label">Due </span>
-                                                    <span class="metadata-value">{{due_date}}</span>
-                                                    <br />
-                                                </div>
-                                            {{/due_date?}}
-                                            {{^due_date}}
-                                                <div class="meta">
-                                                    <span class="metadata-label">Saved at:</span>
-                                                    <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>
-                                                    <br />
-                                                </div>
-                                            {{/due_date}}
+                                            <div class="meta">
+                                                <span class="metadata-label">Saved at:</span>
+                                                <span class="metadata-value">{{modified_date}} on {{modified_time}}</span>
+                                                <br />
+                                            </div>
                                             
                                             {{^is_faculty}}
                                                 <a data-id="{{id}}" class="btnRespond">Respond to Assignment</a>
@@ -153,9 +149,21 @@
                                                    {{^display_as_assignment}}composition{{/display_as_assignment}}
                                                    {{#display_as_assignment?}}assignment{{/display_as_assignment?}}"
                                                    id="project-{{id}}">
-                                                   
-                                            {{^display_as_assignment}}<span class="metadata-value-composition">Composition</span>{{/display_as_assignment}}
-                                            {{#display_as_assignment?}}<span class="metadata-value-assignment">Assignment</span>{{/display_as_assignment?}}
+                                                
+                                            <div>   
+                                            {{^display_as_assignment}}
+                                                <span class="metadata-value-composition">Composition</span>
+                                            {{/display_as_assignment}}
+                                            {{#display_as_assignment?}}
+                                                <span class="metadata-value-assignment">Assignment</span>
+                                                {{#collaboration.due_date?}}
+                                                    <span class="metadata-value-assignment right">due {{collaboration.due_date}}</span>
+                                                {{/collaboration.due_date?}}
+                                                {{#due_date?}}
+                                                    <span class="metadata-value-assignment right">due {{due_date}}</span>
+                                                {{/due_date?}}
+                                            {{/display_as_assignment?}}
+                                            </div>
                                             
                                             {{^collaboration}}
                                                 <h3>                                       
@@ -195,13 +203,6 @@
                                             
                                            <div class="meta">                                            
                                                 {{#collaboration?}}
-                                                    {{#collaboration.due_date?}}
-                                                        <div>
-                                                            <span class="metadata-label">Due </span>
-                                                            <span class="metadata-value">{{collaboration.due_date}}</span>
-                                                            <br /><br />
-                                                        </div>
-                                                    {{/collaboration.due_date?}}                                                 
                                                     <div class="assignment-listitem response">
                                                         <span class="metadata-label">Response:</span> 
                                                         <span class="metadata-value">
@@ -230,13 +231,6 @@
                                                   <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>                                            
                                                </div>
                                                {{#is_assignment?}}
-                                                   {{#due_date?}}
-                                                       <div class="meta">
-                                                           <span class="metadata-label">Due </span>
-                                                           <span class="metadata-value">{{due_date}}</span>
-                                                           <br />
-                                                       </div>
-                                                   {{/due_date?}}                                               
                                                    <div class="metadata">
                                                        <span class="metadata-value metadata-value-status">{{{responses}}} responses</span>
                                                    </div>                                                   

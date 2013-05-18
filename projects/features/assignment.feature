@@ -19,7 +19,6 @@ Feature: Assignment
 
         # Add a title and some text
         Then I call the Composition "Assignment: Scenario 1"
-        And I write some text for the Composition
         
         # Save as an Assignment
         When I click the Save button
@@ -28,6 +27,7 @@ Feature: Assignment
         When I save the changes
         Then there is an "Assignment" link
         Then there is an open Assignment panel
+        And I write some text for the Assignment "Assignment: Scenario 1"
         
         # Toggle to preview
         When I click the Preview button
@@ -96,7 +96,6 @@ Feature: Assignment
         
         # Add a title & text
         Then I call the Composition "Sample Assignment Response"
-        And I write some text for the Composition
         
         # Save as submitted to the instructor
         When I click the Save button
@@ -104,6 +103,7 @@ Feature: Assignment
         Then I set the project visibility to "Instructor - only author(s) and instructor can view"
         When I save the changes
         Then there is a "Submitted to Instructor" link
+        And I write some text for the Composition "Sample Assignment Response"
         
         # Verify home page display
         When I click the "Sample Course" link
@@ -160,7 +160,7 @@ Feature: Assignment
         Then there is an open Composition panel
         Then there is an open Discussion panel
         
-        When I write some text for the discussion
+        Then I write some text for the discussion
         Then I click the Save Comment button
         Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
         
@@ -296,8 +296,6 @@ Feature: Assignment
         Given the composition workspace is loaded
 
         Then I am at the Untitled page
-        And there is an open Assignment panel
-        
         And there is an open Composition panel
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button

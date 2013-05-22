@@ -484,7 +484,7 @@
                 }
             }
             
-            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving...").addClass("saving");
             
             
             jQuery.ajax({
@@ -493,7 +493,7 @@
                 data: jQuery(frm).serializeArray(),
                 dataType: 'json',
                 error: function () {
-                    jQuery(saveButton).removeAttr("disabled").attr("value", "Saving").removeClass("saving");
+                    jQuery(saveButton).removeAttr("disabled").attr("value", "Save").removeClass("saving");
                     alert('There was an error saving your changes.');
                 },
                 success: function (json, textStatus, xhr) {
@@ -684,7 +684,7 @@
         //  - update list items
         //  - replace with 'new' annotation
         this.saveAnnotation = function (saveButton) {
-            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+            jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving...").addClass("saving");
             
             var frm = document.forms['edit-annotation-form'];
 

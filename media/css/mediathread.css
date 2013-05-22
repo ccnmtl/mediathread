@@ -1731,7 +1731,6 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-save
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton.saving {
     text-align: left;
-    background: url("/site_media/img/ajax-loader.gif") no-repeat 95% 50%;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
@@ -2144,7 +2143,8 @@ td#explore div.feature-help {
     width: 90%;
 }
 
-td.collection.subpanel div.feature-help {
+td.collection.subpanel div.feature-help,
+tr.discussion-content-row td.collection div.feature-help {
     position: static;
     padding: 10px;
     width: 90%;
@@ -4156,7 +4156,6 @@ div#asset-global-annotation input[type="submit"] {
 input[type="submit"].saving,
 input[type="button"].saving {
     text-align: left;
-    background: url("/site_media/img/ajax-loader.gif") no-repeat 95% 50%;
 }
 
 div#asset-references,

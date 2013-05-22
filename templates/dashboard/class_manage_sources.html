@@ -324,43 +324,9 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
-            <h3>A website</h3>
-            <form action="{% url asset-save %}" method="POST">
-            {% include "assetmgr/pretender_select.html" %}
-            Asset URL: <input type="text" name="url" value="http://slashdot.org" />
-            <br/>
-            Asset Title: <input type="text" name="title" value="SlashDot" />
-            <br/>
-            <input type="submit" />
-            </form>
-        </li>
         </ul>
 </div>
-<!--            
 
-<ul id="experimental_cookie" class="archive-gallery">
-<li class="archive-container">
-     <h2 id="experimental">Experimental Features</h2>
-        
-        <p>There are some features we're working on that are incomplete
-           and experimental.  If you want to try out these features, then
-           enable the experimental cookie here.
-        </p>
-        <ul>
-          <li id="experimental_status"></li>
-          <li><a href="#experimental" onclick="document.cookie='experimental=on; expires='+new Date(9999999999999).toGMTString()+'; path=/';experimentalStatus();">Enable</a></li>
-          <li><a href="#experimental" onclick="document.cookie='experimental=OFF; expires='+new Date().toGMTString()+'; path=/';experimentalStatus();">Disable</a></li>
-        </ul>
-        <script type="text/javascript">
-          function experimentalStatus() {
-             document.getElementById('experimental_status').innerHTML = 'Status: '
-             + ((document.cookie.match(/experimental/)) ? 'ON' : 'OFF');
-          }
-          experimentalStatus();
-        </script>
-      </li>
-      </ul>-->
       <br class="visualclear" />
 {% endif %}
 {% endblock %}

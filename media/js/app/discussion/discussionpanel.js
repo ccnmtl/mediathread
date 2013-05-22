@@ -570,7 +570,7 @@ DiscussionPanelHandler.prototype.create = function (obj, doc) {
         '<div class="comment new-comment">' +
         ' <div class="threaded_comment_header">' +
         '<span class="threaded_comment_author">{{current_comment.name}}</span>&nbsp;' +
-        '<a class="comment-anchor" href="#comment-{{current_comment.id}}">said:</a>' +
+        'said:' +
         '<div class="respond_to_comment_form_div" id="respond_to_comment_form_div_id_{{current_comment.id}}">' +
         '<span class="respond_prompt comment_action" data-comment="{{current_comment.id}}" title="Click to show or hide the comment form">' +
         'Respond<!-- to comment {{current_comment.id}}: --></span>' +

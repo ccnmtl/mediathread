@@ -13,7 +13,8 @@ CHECKS = [
     {
         'output': 'Checking for pdbs...',
         'command': 'grep -n "import pdb" %s',
-        'ignore_files': ['.*pre-commit', '.*/ve/.*'],
+        'ignore_files': ['.*pre-commit', '.*/ve/.*',
+                         '.*djangosherd/media/js/sherdjs'],
         'print_filename': True,
     },
     {

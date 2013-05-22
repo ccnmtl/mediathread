@@ -604,7 +604,7 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
     data = data.concat(jQuery(document.forms.editparticipants).serializeArray());
 
     var saveButton = jQuery(self.el).find(".project-savebutton").get(0);
-    jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving").addClass("saving");
+    jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving...").addClass("saving");
 
     
     jQuery.ajax({
@@ -613,7 +613,7 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
         data: data,
         dataType: 'json',
         error: function () {
-            jQuery(saveButton).removeAttr("disabled").attr("value", "Saving").removeClass("saving");
+            jQuery(saveButton).removeAttr("disabled").attr("value", "Save").removeClass("saving");
             alert('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {

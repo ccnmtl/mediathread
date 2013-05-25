@@ -132,7 +132,7 @@ def main(all_files):
     # Minify the .js
     if result == 0:
         print 'Minifying .js...'
-        return_code = subprocess.call('cd scripts; minify-js.py; cd ..',
+        return_code = subprocess.call('cd scripts; ./minify-js.py; cd ..',
                                       shell=True)
         result = return_code or result
 

@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import get_model
 from django.http import HttpResponse, HttpResponseRedirect, \
-    HttpResponseForbidden
+    HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
@@ -130,6 +130,28 @@ def project_delete(request, project_id):
         return HttpResponseForbidden("forbidden")
 
     project.delete()
+
+    return HttpResponseRedirect('/')
+
+
+@login_required
+def project_reparent(request, assignment_id, composition_id):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("forbidden")
+
+    try:
+        assignment = Project.objects.get(id=assignment_id)
+    except Project.DoesNotExist:
+        return HttpResponseServerError("Invalid assignment parameter")
+
+    try:
+        composition = Project.objects.get(id=composition_id)
+    except Project.DoesNotExist:
+        return HttpResponseServerError("Invalid composition parameter")
+
+    parent_collab = assignment.collaboration(request)
+    if parent_collab.permission_to("add_child", request):
+        parent_collab.append_child(composition)
 
     return HttpResponseRedirect('/')
 

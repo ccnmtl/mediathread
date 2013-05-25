@@ -46,7 +46,7 @@ CHECKS = [
     },
     {
         'output': 'Running flake8...',
-        'command': 'flake8 --max-complexity=15 --ignore=W404 %s',
+        'command': 'flake8 --max-complexity=16 --ignore=W404 %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*settings/.*',
                          '.*manage.py',

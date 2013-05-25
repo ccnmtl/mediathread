@@ -10,7 +10,6 @@ import selenium.webdriver.support.ui as ui
 import time
 from selenium.common.exceptions import WebDriverException, \
     NoSuchElementException
-from mediathread.projects.models import Project
 
 try:
     from lxml import html
@@ -1009,17 +1008,21 @@ def the_panel_is_called_title(step, panel, title):
     assert val == title, "Nope: %s" % val
 
 
-@step(u'I write some text for the ([^"]*) "([^"]*)"')
-def i_write_some_text_for_the_panel_title(step, panel, title):
-    try:
-        project = Project.objects.get(title=title)
-        project.body = """The Columbia Center for New Teaching and Learning
-                was (CCNMTL) was founded at Columbia University in 1999
-                to enhance teaching and learning through the purposeful
-                use of new media and technology"""
-        project.save()
-    except Project.DoesNotExist:
-        assert False, "%s does not exist" % title
+@step(u'I write some text for the ([^"]*)')
+def i_write_some_text_for_the_panel(step, panel):
+    selector = "td.panel-container.open.%s" % panel.lower()
+    panel = world.browser.find_element_by_css_selector(selector)
+    assert panel is not None, "Can't find panel named %s" % panel
+
+    frame = panel.find_element_by_tag_name("iframe")
+    world.browser.switch_to_frame(frame)
+    input = world.browser.find_element_by_class_name("mceContentBody")
+    input.send_keys("""The Columbia Center for New Teaching and Learning
+                     was (CCNMTL) was founded at Columbia University in 1999
+                     to enhance teaching and learning through the purposeful
+                     use of new media and technology""")
+
+    world.browser.switch_to_default_content()
 
 
 @step(u'there is an? ([^"]*) "([^"]*)" reply by ([^"]*)')
@@ -1124,7 +1127,7 @@ def i_save_the_changes(step):
     for e in elts:
         if e.get_attribute("type") == "button" and e.text == "Save":
             e.click()
-            time.sleep(1)
+            time.sleep(2)
             return
 
     assert False, "Unable to locate the dialog's save button"

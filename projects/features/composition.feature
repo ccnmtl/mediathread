@@ -28,6 +28,7 @@ Feature: Composition
         
         # Add a title and some text
         Then I call the Composition "Composition: Scenario 1"
+        And I write some text for the Composition
         
         # Save
         When I click the Save button
@@ -39,8 +40,7 @@ Feature: Composition
         And the project visibility is "Private - only author(s) can view"
         
         Then I save the changes
-        Then there is a "Private" link                
-        And I write some text for the Composition "Composition: Scenario 1"        
+        Then there is a "Private" link                        
         
         # Toggle Preview Mode
         When I click the Preview button

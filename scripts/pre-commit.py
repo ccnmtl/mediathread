@@ -120,20 +120,28 @@ def main(all_files):
 
     if result == 0:
         print 'Running Unit Tests...'
-        return_code = subprocess.call(
-            './manage.py test djangosherd assetmgr projects mediathread_main',
-            shell=True)
-        result = return_code or result
+        #return_code = subprocess.call(
+        #    './manage.py test djangosherd assetmgr projects mediathread_main',
+        #    shell=True)
+        #result = return_code or result
 
     # Unstash changes to the working tree that we had stashed
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Minify the .js
+    if result == 0:
+        print 'Minifying .js...'
+        return_code = subprocess.call('cd scripts; minify-js.py; cd ..',
+                                      shell=True)
+        result = return_code or result
 
     # Update the release id if things looks good
     if result == 0:
         print 'Updating Release Id...'
         return_code = subprocess.call('scripts/update-release-id.sh',
                                       shell=True)
+        result = return_code or result
 
     sys.exit(result)
 

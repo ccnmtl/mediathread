@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from djangosherd.api import SherdNoteResource
-from mediathread_main.api import CourseResource
+from mediathread_main.api import CourseResource, CourseSummaryResource
 from projects.api import ProjectResource
 from tastypie.api import Api
 import os.path
@@ -16,6 +16,7 @@ v1_api.register(SherdNoteResource())
 v1_api.register(AssetResource())
 v1_api.register(ProjectResource())
 v1_api.register(CourseResource())
+v1_api.register(CourseSummaryResource())
 
 
 admin.autodiscover()
@@ -94,16 +95,15 @@ urlpatterns = patterns(
     # Instructor Dashboard & reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
-    url(r'^dashboard/migrate/', 'mediathread_main.views.migrate',
+    url(r'^dashboard/migrate/',
+        'mediathread_main.views.migrate',
         name="dashboard-migrate"),
-    url(r'^dashboard/addsource/', 'mediathread_main.views.class_addsource',
-        name="class-add-source"),
-    url(r'^dashboard/settings/', 'mediathread_main.views.class_settings',
+    url(r'^dashboard/sources/',
+        'mediathread_main.views.class_manage_sources',
+        name="class-manage-sources"),
+    url(r'^dashboard/settings/',
+        'mediathread_main.views.class_settings',
         name="class-settings"),
-
-    # Recent Activity
-    url(r'^notifications/$', 'mediathread_main.views.notifications',
-        name="notifications"),
 
     # Collections Space
     (r'^asset/', include('mediathread.assetmgr.urls')),

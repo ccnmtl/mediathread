@@ -1,11 +1,110 @@
-{% extends "dashboard/base_reports.html" %}
+{% extends "dashboard/base_dashboard.html" %}
 {% load comments coursetags %}
 
-
 {% block js %}
-<script type="text/javascript" src="/site_media/js/hs.js"></script>
-<script type="text/javascript" src="/site_media/js/protovis/protovis.min.js"></script>
-<script type="text/javascript" src="/site_media/js/reports.js"></script>
+    {{ block.super }}
+    <script type="text/javascript">
+        var hs_controls = [];
+        
+        function cookie_name(el) {
+            var name = "hsstate_";
+            //across pages
+            if (/^global-/.test(el.id)) {
+                name += "#" + el.id;
+            } else {
+                name +=  document.location + "#" + el.id;
+            }
+            return name.replace(/\W/g, "_");
+        }
+        
+        function futureDate() {
+            var d = new Date();
+            d.setTime(Date.parse('October, 4 2030 07:04:11'));
+            return d;
+        }
+        
+        function hs_getTarget(a) {
+            var elt = jQuery(a.href.substr(a.href.indexOf('#')));
+            if (elt.length) {
+                return elt.get(0);
+            } else {
+                throw new Error('hs.js: target id: ' + a.href + ' not found');
+            }
+        }
+        
+        function hs_hide(e) {
+            e = (typeof e === 'number' ? this : e);
+        
+            jQuery(e)
+            .removeClass("hs-show")
+            .addClass("hs-hide");
+        
+            jQuery(hs_controls[e.id])
+            .removeClass("hs-control-show")
+            .addClass("hs-control-hide");
+        
+            if (typeof window['hs_onhide_' + e.id] === 'function') {
+                window['hs_onhide_' + e.id](e);
+            }
+        }
+        
+        function hs_show(e) {
+            jQuery(e)
+            .removeClass("hs-hide")
+            .addClass("hs-show");
+        
+            jQuery(hs_controls[e.id])
+            .removeClass("hs-control-hide")
+            .addClass("hs-control-show");
+        
+            if (typeof window['hs_onshow_' + e.id] === 'function') {
+                window['hs_onshow_' + e.id](e);
+            }
+        }
+        
+        
+        function hs_toggle() {
+            var target = hs_getTarget(this);
+            if (jQuery(target).hasClass("hs-hide")) {
+                hs_show(target);
+                storeData(cookie_name(target), "show", futureDate());
+            } else {
+                hs_hide(target);
+                storeData(cookie_name(target), "hidden", futureDate());
+            }
+            return false;
+        }
+        
+        function hs_addControlCallback() {
+            //log("adding callback to " + a);
+            jQuery(this)
+            .click(hs_toggle)
+            .addClass('hs-control-show');
+            hs_controls[hs_getTarget(this).id] = this;
+        }
+        
+        
+        function hs_lookForCookie() {
+            var e = hs_getTarget(this);
+            var s = retrieveData(cookie_name(e));
+            if (s === "hidden") {
+                hs_hide(e);
+            }
+            if (s === "show") {
+                hs_show(e);
+            }
+        }
+        
+        function hs_init(parent) {
+            parent = ((parent && parent.tagName) ? parent : document);
+            jQuery('a.hs-control', parent).each(hs_addControlCallback);
+            jQuery('.hs-init-hide', parent).each(hs_hide);
+            jQuery('a.hs-control', parent).each(hs_lookForCookie);
+        }
+        
+        jQuery(hs_init);
+    </script>
+    <script type="text/javascript" src="/site_media/js/protovis/protovis.min.js"></script>
 {% endblock %}
 
 {% block dashboard_module_header %}

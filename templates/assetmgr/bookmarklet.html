@@ -1,0 +1,38 @@
+<a class="bookmarklet" href="javascript:/*BOOKMARKLET:{{request.get_host}}*/(function(host, bookmarklet_url, user_url) {    
+    var b=document.body;
+    var sb=window.SherdBookmarkletOptions;
+    if (!sb) {
+        sb = window.SherdBookmarkletOptions = {};
+        sb['action']='jump';
+    }
+    sb['host_url']='http://'+host+'/save/?';
+    {%for k,v in bookmarklet_vars.items%}
+      sb['{{k}}']='{{v}}';
+    {%endfor%}
+    var r4=function(){return '?nocache='+Number(new Date());};
+    var t='text/javascript';
+    if(b){
+        var x=document.createElement('script'); x.type=t; x.src='http://'+host+user_url+r4();
+        b.appendChild(x);
+        var z=document.createElement('script'); z.type=t; z.src='http://'+host+bookmarklet_url+r4();
+        b.appendChild(z);
+        if (typeof jQuery=='undefined') {
+            var y=document.createElement('script');
+            y.type=t;
+            y.src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js';
+            var onload = (/MSIE/.test(navigator.userAgent))?'onreadystatechange':'onload';        
+            y[onload]=function(){
+                var jQ = sb.jQuery = jQuery.noConflict(true);
+                if (sb && sb.onJQuery) {
+                    sb.onJQuery(jQ);
+                }
+            };
+            b.appendChild(y);
+        }
+    }
+    
+    })('{{request.get_host}}',
+       '/bookmarklets/analyze.js',
+       '/accounts/logged_in.js')">
+Analyze w/Mediathread
+</a> 

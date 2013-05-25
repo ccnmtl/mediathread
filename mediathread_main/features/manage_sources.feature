@@ -4,7 +4,7 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        There is not an "Upload from Computer" link
+        There is not an "Upload from Computer" feature
         And I see 0 sources
         
         When I open the tools menu
@@ -20,7 +20,7 @@ Feature: Manage Sources
         # Under Add to My Collection        
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
         
         # On the Full Collection page
         When I access the url "/asset/"
@@ -42,7 +42,7 @@ Feature: Manage Sources
         # By default, instructors and administrators are allowed to upload
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
         
         # Student cannot see
         When I log out
@@ -51,7 +51,7 @@ Feature: Manage Sources
         When I click the Log In button
         Then I am at the Home page
         Given the home workspace is loaded
-        Then there is not an "Upload from Computer" link
+        Then there is not an "Upload from Computer" feature
 
         Finished using Selenium
         
@@ -71,7 +71,7 @@ Feature: Manage Sources
         # Instructor cannot see
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is not an "Upload from Computer" link
+        Then there is not an "Upload from Computer" feature
         
         # Student cannot see
         When I log out
@@ -80,7 +80,7 @@ Feature: Manage Sources
         When I click the Log In button
         Then I am at the Home page
         Given the home workspace is loaded
-        Then there is not an "Upload from Computer" link
+        Then there is not an "Upload from Computer" feature
         
         Finished using Selenium
         
@@ -100,7 +100,7 @@ Feature: Manage Sources
         # Instructor can see
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
         
         # Student can see
         When I log out
@@ -109,7 +109,7 @@ Feature: Manage Sources
         When I click the Log In button
         Then I am at the Home page
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
+        Then there is an "Upload from Computer" feature
 
         Finished using Selenium
         
@@ -129,28 +129,28 @@ Feature: Manage Sources
         # Regular Instructor cannot upload on behalf of
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
-        Then there is an Upload video button
-        And there is an Upload audio button
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
+        Then I see "Upload video"
+        And I see "Upload audio"        
         And I cannot upload on behalf of other users
         
         # Regular student cannot upload on someone's behalf
         Given I am test_student_one in Sample Course
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
-        Then there is an Upload video button
-        And there is an Upload audio button        
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
+        Then I see "Upload video"
+        And I see "Upload audio"        
         And I cannot upload on behalf of other users
         
         # Student with special privileges can upload on someone's behalf
         Given I am test_ta in Sample Course
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
-        Then there is an Upload video button
-        And there is an Upload audio button        
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
+        Then I see "Upload video"
+        And I see "Upload audio"        
         And I can upload on behalf of other users
         
         # Staff that are not a member of this class cannot upload on someone's behalf
@@ -165,15 +165,16 @@ Feature: Manage Sources
         Then I am in the Sample Course class
         
         Given the home workspace is loaded
-        Then there is an "Upload from Computer" link
-        When I click the "Upload from Computer" link
-        Then there is not an Upload video button
+        Then there is an "Upload from Computer" feature
+        When I open the "Upload from Computer" feature
+        Then I do not see "Upload video"
+        And I do not see "Upload audio"        
         And there is not an Upload audio button        
         And I cannot upload on behalf of other users
         And I see "You must be a course member to upload media files."
         And I cannot upload on behalf of other users
         
-    Scenario: manage_sources.feature 6. Add External Source, verify navigation from Add to My Collection
+    Scenario: manage_sources.feature 6. Add & Remove External Source, verify navigation from Add to My Collection
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -185,7 +186,7 @@ Feature: Manage Sources
         # Add the YouTube Source
         When I add YouTube to the class
         Then I'm told "You Tube has been enabled for your class"
-        Then there is an Added button
+        Then there is an Remove button
 
         # Under Add to My Collection
         Given I am test_student_one in Sample Course
@@ -196,3 +197,33 @@ Feature: Manage Sources
         When I click the "You Tube" link
         Then I am at the YouTube page
         
+    Scenario: manage_sources.feature 7. Remove External Source, verify navigation from Add to My Collection
+        Using selenium
+        Given I am test_instructor in Sample Course
+        
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
+        Then I am at the Manage Sources page
+        
+        # Add the YouTube Source
+        When I add YouTube to the class
+        Then I'm told "You Tube has been enabled for your class"
+        Then there is an Remove button
+        
+        # Under Add to My Collection
+        When I click the "Sample Course" link
+        I see 1 source
+        
+        #Remove
+        When I open the tools menu
+        Then there is a "Manage Sources" link
+        When I click the "Manage Sources" link
+        Then I am at the Manage Sources page
+        
+        When I click the Remove button
+        Then I'm told "You Tube has been disabled for your class"
+
+        # Under Add to My Collection
+        When I click the "Sample Course" link
+        I see 0 source

@@ -3,7 +3,7 @@
     </td>
     
     <td class="panhandle-stripe {{context.project.type}}">
-        <div class="label">{{panel_state_label}} {{context.project.type}}</div>
+        <div class="label">{{panel_state_label}} {{context.project.description}}</div>
     </td>
 
     <td id="{{context.project.id}}-panel-container" class="panel-container {{panel_state}} {{context.project.type}} parent">
@@ -14,15 +14,23 @@
                         <td colspan="4">
                             {{#context.project.visibility?}}
                                 <div class="project-visibility">
-                                    {{#context.can_edit?}}<a href="#" class="project-visibility-link">{{/context.can_edit?}}
-                                        <span class="project-visibility-description">{{context.project.visibility}}</span>{{#context.can_edit?}}</a>{{/context.can_edit?}}
+                                    {{#context.can_edit?}}
+                                        <a href="#" class="project-visibility-link">
+                                    {{/context.can_edit?}}
+                                        <span class="project-visibility-description">
+                                            {{context.project.visibility}}
+                                        </span>                                    
+                                        <span class="project-due-date">
+                                            {{#context.project.due_date?}}Due {{context.project.due_date}}{{/context.project.due_date?}}
+                                        </span>                                                                        
+                                    {{#context.can_edit?}}</a>{{/context.can_edit?}}
                                     &nbsp;
                                     <a class="last-version-public"
                                         style="display: {{#context.project.public_url?}}inline{{{/context.project.public_url?}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
                                     {{#context.project.current_version?}}
-                                    <span class="project-current-version" style="display: inline">
-                                        | Version {{context.project.current_version}}
-                                    </span>
+                                        <span class="project-current-version" style="display: inline">
+                                            | Version {{context.project.current_version}}
+                                        </span>
                                     {{/context.project.current_version?}}
                                     
                                     {{^context.project.is_assignment}}
@@ -51,7 +59,13 @@
                                                 <div><b>IMPORTANT:</b> Select who can see your work before saving.<br/><br /></div>
                                                 <div>
                                                     {{{context.form.publish}}}
-                                                </div> 
+                                                </div>
+                                                {{#is_faculty?}}
+                                                <div class="due-date">
+                                                    <label for="due_date">Due Date:</label>&nbsp;
+                                                    <input type="text" name="due_date" value="{{context.project.due_date}}" id="id_due_date">
+                                                </div>
+                                                {{/is_faculty?}}
                                             </div>  
                                     
                                         <input class="{{context.project.type}} project project-previewbutton" 

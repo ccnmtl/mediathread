@@ -1,34 +1,28 @@
-import hmac
-import hashlib
+from courseaffils.lib import in_course, get_public_name, in_course_or_404, \
+    AUTO_COURSE_SELECT
+from courseaffils.models import CourseAccess
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.http import Http404, HttpResponse, HttpResponseForbidden, \
+    HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+from djangohelpers.lib import allow_http
+from djangosherd.views import create_annotation, delete_annotation, \
+    edit_annotation, update_annotation
+from mediathread_main import course_details
+from mediathread_main.models import UserSetting
 import datetime
-import operator
+import hashlib
+import hmac
 import re
 import simplejson
 import urllib
 import urllib2
 
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.core import serializers
-from django.core.urlresolvers import reverse
-from django.db import models
-from django.http import HttpResponse
-from django.http import HttpResponseForbidden
-from django.http import HttpResponseRedirect
-from django.http import Http404
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from djangohelpers.lib import rendered_with
-from djangohelpers.lib import allow_http
-
-from courseaffils.models import CourseAccess
-from djangosherd.views import create_annotation
-from djangosherd.views import delete_annotation
-from djangosherd.views import edit_annotation, update_annotation
-from mediathread_main import course_details
-from mediathread_main.models import UserSetting
-from courseaffils.lib import in_course_or_404, AUTO_COURSE_SELECT
-from courseaffils.lib import in_course, get_public_name
 
 Asset = models.get_model('assetmgr', 'asset')
 Comment = models.get_model('comments', 'comment')
@@ -36,6 +30,26 @@ DiscussionIndex = models.get_model('djangosherd', 'discussionindex')
 Source = models.get_model('assetmgr', 'source')
 SherdNote = models.get_model('djangosherd', 'sherdnote')
 User = models.get_model('auth', 'user')
+
+
+@login_required
+@allow_http("POST")
+def archive_add_or_remove(request):
+
+    in_course_or_404(request.user.username, request.course)
+
+    if 'remove' in request.POST.keys():
+        title = request.POST.get('title')
+        lst = Asset.objects.filter(title=title, course=request.course)
+        for asset in lst:
+            if asset.primary and asset.primary.is_archive():
+                redirect = request.POST.get('redirect-url',
+                                            reverse('class-manage-sources'))
+                url = "%s?delsrc=%s" % (redirect, asset.title)
+                asset.delete()
+                return HttpResponseRedirect(url)
+    else:
+        return asset_create(request)
 
 
 @login_required
@@ -213,7 +227,7 @@ def asset_create(request):
                             mimetype="application/json")
     elif "archive" == asset.primary.label:
         redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-add-source'))
+                                        reverse('class-manage-sources'))
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
     else:
@@ -375,70 +389,6 @@ def annotation_delete(request, asset_id, annot_id):
         return delete_annotation(request, annot_id)  # djangosherd.views
     except SherdNote.DoesNotExist:
         return HttpResponseForbidden("forbidden")
-
-
-@rendered_with('assetmgr/add_to_my_collection.html')
-def browse_sources(request):
-    c = request.course
-
-    user = request.user
-    archives = []
-    upload_archive = None
-    for a in c.asset_set.archives().order_by('title'):
-        archive = a.sources['archive']
-        thumb = a.sources.get('thumb', None)
-        description = a.metadata().get('description', '')
-        uploader = a.metadata().get('upload', 0)
-
-        archive_context = {
-            "id": a.id,
-            "title": a.title,
-            "thumb": (None if not thumb else {"id": thumb.id,
-                                              "url": thumb.url}),
-            "archive": {"id": archive.id, "url": archive.url},
-            # is description a list or a string?
-            "metadata": (description[0]
-                         if hasattr(description, 'append') else description)
-        }
-
-        if (uploader[0] if hasattr(uploader, 'append') else uploader):
-            upload_archive = archive_context
-        else:
-            archives.append(archive_context)
-
-    archives.sort(key=operator.itemgetter('title'))
-
-    owners = []
-    if (in_course(user.username, request.course) and
-            (user.is_staff or user.has_perm('assetmgr.can_upload_for'))):
-        owners = [{
-            'username': m.username,
-            'public_name': get_public_name(m, request)}
-            for m in request.course.members]
-
-    rv = {"archives": archives,
-          "upload_archive": upload_archive,
-          "is_faculty": c.is_faculty(user),
-          "space_viewer": user,
-          'newsrc': request.GET.get('newsrc', ''),
-          'can_upload': course_details.can_upload(
-          request.user, request.course),
-          'upload_service': getattr(settings, 'UPLOAD_SERVICE', None),
-          "help_browse_sources":
-          UserSetting.get_setting(user, "help_browse_sources", True),
-          "help_no_sources":
-          UserSetting.get_setting(user, "help_no_sources", True),
-          'msg': request.GET.get('msg', ''),
-          'owners': owners, }
-
-    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
-        # MUST only contain string values for now!!
-        # (see templates/assetmgr/bookmarklet.js to see why or fix)
-        rv['bookmarklet_vars'] = {
-            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
-        }
-
-    return rv
 
 
 @login_required
@@ -639,7 +589,7 @@ def detail_asset_json(request, asset_id, options):
     return rv
 
 
-def homepage_asset_json(request, asset, logged_in_user, record_owner, options):
+def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
     the_json = asset.sherd_json(request)
 
     gannotation, created = \

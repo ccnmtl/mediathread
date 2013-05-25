@@ -6,6 +6,11 @@ media_root = os.path.join(os.path.dirname(__file__), "media")
 urlpatterns = patterns(
     'assetmgr.views',
 
+    # Archive save or delete
+    url(r'^archive/$',
+        'archive_add_or_remove',
+        name="archive-add-or-remove"),
+
     # Asset workspace variations
     url(r'^$',
         'asset_workspace',
@@ -20,7 +25,8 @@ urlpatterns = patterns(
         name='annotation-view'),
 
     url(r'^delete/(?P<asset_id>\d+)/$',
-        'asset_delete'),
+        'asset_delete',
+        name='asset-delete'),
 
     url(r'^json/(?P<asset_id>\d+)/$',
         'asset_json',

@@ -1,5 +1,5 @@
 Feature: Composition
-        
+
     Scenario: composition.feature 1. Instructor creates composition
         Using selenium
         Given I am test_instructor in Sample Course
@@ -23,13 +23,11 @@ Feature: Composition
         
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button
-        And the Composition panel does not have a Preview button
         And the Composition panel has a Save button
         And the Composition panel has a +/- Author button
         
         # Add a title and some text
         Then I call the Composition "Composition: Scenario 1"
-        And I write some text for the Composition
         
         # Save
         When I click the Save button
@@ -41,10 +39,12 @@ Feature: Composition
         And the project visibility is "Private - only author(s) can view"
         
         Then I save the changes
-        Then there is a "Private" link
+        Then there is a "Private" link                
+        And I write some text for the Composition "Composition: Scenario 1"        
         
         # Toggle Preview Mode
         When I click the Preview button
+        Then I take a picture
         The Composition panel has a Revisions button
         And the Composition panel has an Edit button
         And the Composition panel does not have a Preview button
@@ -152,7 +152,7 @@ Feature: Composition
         
         Finished using Selenium
 
-    Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information / Assignments
+    Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information
         Using selenium
         Given I am test_instructor in Sample Course
                 
@@ -184,9 +184,9 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                                        | status             | info_count | composition_count |
-        | Private | Private - only author(s) can view                                 | Private            | 0          | 0               |
-        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1               |
-        | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0               |
+        | Private | Private - only author(s) can view                                 | Private            | 0          | 0                 |
+        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1                 |
+        | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0                 |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
         Using selenium

@@ -1,11 +1,11 @@
-from courseaffils.lib import in_course_or_404
+from courseaffils.lib import in_course, in_course_or_404
 from discussions.views import threaded_comment_json
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import get_model
 from django.http import HttpResponse, HttpResponseRedirect, \
-    HttpResponseForbidden
+    HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
@@ -74,34 +74,46 @@ def project_save(request, project_id):
     # verify user is in course
     in_course_or_404(project.author.username, request.course)
 
-    if request.method == "POST":
-        projectform = ProjectForm(request, instance=project, data=request.POST)
-        if projectform.is_valid():
+    projectform = ProjectForm(request, instance=project, data=request.POST)
+    if projectform.is_valid():
 
-            # legacy and for optimizing queries
-            projectform.instance.submitted = \
-                request.POST.get('publish', None) != 'PrivateEditorsAreOwners'
+        # legacy and for optimizing queries
+        projectform.instance.submitted = \
+            request.POST.get('publish', None) != 'PrivateEditorsAreOwners'
 
-            # this changes for version-tracking purposes
-            projectform.instance.author = request.user
-            projectform.save()
+        # this changes for version-tracking purposes
+        projectform.instance.author = request.user
+        projectform.save()
 
-            projectform.instance.collaboration(request, sync_group=True)
+        projectform.instance.collaboration(request, sync_group=True)
 
-            if request.META.get('HTTP_ACCEPT', '').find('json') >= 0:
-                v_num = projectform.instance.get_latest_version()
-                return HttpResponse(simplejson.dumps(
-                    {'status': 'success',
-                     'is_assignment':
-                     projectform.instance.is_assignment(request),
-                     'revision': {
-                         'id': v_num,
-                         'public_url': projectform.instance.public_url(),
-                         'visibility': project.visibility_short()}
-                     }, indent=2), mimetype='application/json')
+        if request.META.get('HTTP_ACCEPT', '').find('json') >= 0:
+            v_num = projectform.instance.get_latest_version()
+            return HttpResponse(simplejson.dumps({
+                'status': 'success',
+                'is_assignment': projectform.instance.is_assignment(request),
+                'title': projectform.instance.title,
+                'revision': {
+                    'id': v_num,
+                    'public_url': projectform.instance.public_url(),
+                    'visibility': project.visibility_short(),
+                    'due_date': project.get_due_date()
+                }
+            }, indent=2), mimetype='application/json')
+    else:
+        ctx = {'status': 'error', 'msg': ""}
+        for key, value in projectform.errors.items():
+            if key == '__all__':
+                ctx['msg'] = ctx['msg'] + value[0] + "\n"
+            else:
+                ctx['msg'] = \
+                    '%s "%s" is not valid for the %s field.\n Please %s\n' % \
+                    (ctx['msg'], projectform.data[key],
+                     projectform.fields[key].label,
+                     value[0].lower())
 
-        redirect_to = '.'
-        return HttpResponseRedirect(redirect_to)
+        return HttpResponse(simplejson.dumps(ctx, indent=2),
+                            mimetype='application/json')
 
 
 @login_required
@@ -114,13 +126,32 @@ def project_delete(request, project_id):
     """
     project = get_object_or_404(Project, pk=project_id, course=request.course)
 
-    if not request.method == "POST":
-        return HttpResponseForbidden("forbidden")
-
-    if not project.can_edit(request):
+    if (not request.method == "POST" or not project.can_edit(request)):
         return HttpResponseForbidden("forbidden")
 
     project.delete()
+
+    return HttpResponseRedirect('/')
+
+
+@login_required
+def project_reparent(request, assignment_id, composition_id):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("forbidden")
+
+    try:
+        assignment = Project.objects.get(id=assignment_id)
+    except Project.DoesNotExist:
+        return HttpResponseServerError("Invalid assignment parameter")
+
+    try:
+        composition = Project.objects.get(id=composition_id)
+    except Project.DoesNotExist:
+        return HttpResponseServerError("Invalid composition parameter")
+
+    parent_collab = assignment.collaboration(request)
+    if parent_collab.permission_to("add_child", request):
+        parent_collab.append_child(composition)
 
     return HttpResponseRedirect('/')
 
@@ -202,7 +233,7 @@ def project_workspace(request, project_id, feedback=None):
     A multi-panel editable view for the specified project
     Legacy note: Ideally, this function would be named project_view but
     StructuredCollaboration requires the view name
-    to be  <class>-view to do a reverse
+    to be  <class>-view to do a reverse lookup
 
     Panel 1: Parent Assignment (if applicable)
     Panel 2: Project
@@ -217,8 +248,6 @@ def project_workspace(request, project_id, feedback=None):
         return HttpResponseForbidden("forbidden")
 
     show_feedback = feedback == "feedback"
-    course = request.course
-    is_faculty = course.is_faculty(request.user)
     data = {'space_owner': request.user.username,
             'show_feedback': show_feedback}
 
@@ -230,6 +259,8 @@ def project_workspace(request, project_id, feedback=None):
     else:
         panels = []
 
+        course = request.course
+        is_faculty = course.is_faculty(request.user)
         is_assignment = project.is_assignment(request)
         can_edit = project.can_edit(request)
         feedback_discussion = project.feedback_discussion() \
@@ -310,7 +341,6 @@ def project_workspace(request, project_id, feedback=None):
                  'panel_state_label': "Item Details",
                  'template': 'asset_quick_edit',
                  'update_history': False,
-                 'show_colleciton': False,
                  'context': {'type': 'asset'}}
         panels.append(panel)
 
@@ -359,3 +389,24 @@ def project_export_msword(request, project_id):
     response['Content-Disposition'] = \
         'attachment; filename=%s.doc' % (slugify(project.title))
     return response
+
+
+@login_required
+@allow_http("POST")
+def project_sort(request):
+    if (not in_course(request.user, request.course) or
+        not request.course.is_faculty(request.user) or
+            not request.is_ajax()):
+        return HttpResponseForbidden("forbidden")
+
+    ids = request.POST.getlist("project")
+    for idx, id in enumerate(ids):
+        project = Project.objects.get(id=id)
+        if idx != project.ordinality:
+            project.ordinality = idx
+            project.save()
+
+    data = {'sorted': 'true'}
+
+    return HttpResponse(simplejson.dumps(data, indent=2),
+                        mimetype='application/json')

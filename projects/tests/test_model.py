@@ -1,10 +1,15 @@
 from assetmgr.models import Asset
 from courseaffils.models import Course
 from django.contrib.auth.models import User
+from django.http import HttpRequest
 from django.test import TestCase
 from djangosherd.models import SherdNote
 from projects.models import Project
+from structuredcollaboration.models import Collaboration
+from django.contrib.contenttypes.models import ContentType
 import simplejson
+from datetime import datetime
+from django.core.exceptions import ValidationError
 
 
 class ProjectTest(TestCase):
@@ -38,7 +43,7 @@ class ProjectTest(TestCase):
         self.assertEquals(x.visibility_short(), "Assignment")
 
     project_set = [{"id": 5,
-                    "title":"Sample Course Assignment"}]
+                    "title": "Sample Course Assignment"}]
 
     def test_migrate_set(self):
         self.assertTrue(True)
@@ -127,3 +132,126 @@ class ProjectTest(TestCase):
                         "Mediathread: Introduction")
         self.assertEquals(citations[4].id,
                           citations[4].asset.global_annotation(user, False).id)
+
+    def test_visible_by_course(self):
+        student_one = User.objects.get(username='test_student_one')
+        student_two = User.objects.get(username='test_student_two')
+        instructor = User.objects.get(username='test_instructor')
+
+        sample_course = Course.objects.get(title="Sample Course")
+
+        request = HttpRequest()
+        request.course = sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(sample_course.pk))
+
+        request.user = student_one
+        a = Project.objects.visible_by_course(request, sample_course)
+        self.assertEquals(len(a), 4)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+        self.assertEquals(a[1].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[2].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+        self.assertEquals(a[3].__unicode__(),
+                          "Private Composition <1> by Student One")
+
+        request.user = student_two
+        a = Project.objects.visible_by_course(request, sample_course)
+        self.assertEquals(len(a), 2)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+        self.assertEquals(a[1].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+
+        request.user = instructor
+        a = Project.objects.visible_by_course(request, sample_course)
+        self.assertEquals(len(a), 3)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+        self.assertEquals(a[1].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[2].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+
+    def test_visible_by_course_and_user(self):
+        student_one = User.objects.get(username='test_student_one')
+        student_two = User.objects.get(username='test_student_two')
+        instructor = User.objects.get(username='test_instructor_two')
+
+        sample_course = Course.objects.get(title="Sample Course")
+
+        request = HttpRequest()
+        request.course = sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(sample_course.pk))
+
+        request.user = student_one
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       student_one)
+        self.assertEquals(len(a), 3)
+        self.assertEquals(a[0].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[1].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+        self.assertEquals(a[2].__unicode__(),
+                          "Private Composition <1> by Student One")
+
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       instructor)
+        self.assertEquals(len(a), 1)
+        self.assertEquals(a[0].__unicode__(),
+                          "Sample Course Assignment <5> "
+                          "by test_instructor_two")
+
+        request.user = student_two
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       student_one)
+        self.assertEquals(len(a), 1)
+        self.assertEquals(a[0].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+
+        request.user = instructor
+        a = Project.objects.visible_by_course_and_user(request,
+                                                       sample_course,
+                                                       student_one)
+        self.assertEquals(len(a), 2)
+        self.assertEquals(a[0].__unicode__(),
+                          "Public To Class Composition <3> by Student One")
+        self.assertEquals(a[1].__unicode__(),
+                          "Instructor Shared <2> by Student One")
+
+    def test_project_clean(self):
+        assignment = Project.objects.get(id=5)
+        try:
+            assignment.due_date = datetime(2012, 3, 13, 0, 0)
+            assignment.clean()
+            self.assertTrue(False, 'Due date is in the past')
+        except ValidationError as err:
+            self.assertTrue(
+                err.messages[0].startswith('03/13/12 is not valid'))
+
+        try:
+            dt = datetime.today()
+            this_day = datetime(dt.year, dt.month, dt.day, 0, 0)
+            assignment.due_date = this_day
+            assignment.clean()
+        except ValidationError as err:
+            self.assertTrue(False, "Due date is today. That's okay.")
+
+        try:
+            assignment.due_date = datetime(2020, 1, 1, 0, 0)
+            assignment.clean()
+        except ValidationError as err:
+            self.assertTrue(False, "Due date is in the future, that's ok")

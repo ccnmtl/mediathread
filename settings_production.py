@@ -8,6 +8,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_DIRS = (
+    "/var/www/mediathread/mediathread/deploy_specific/templates",
     "/var/www/mediathread/mediathread/templates",
 )
 

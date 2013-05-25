@@ -9,63 +9,73 @@
     {{ block.super }}
     
     <link rel="stylesheet" href="/site_media/jquery/css/jquery.websitetour.css" media="screen" />
-    
-    <!--All the annotation css -->
-    {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
-    <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
+        <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
+        <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
       
-    <!--All the annotation javascript -->
-    {% include "djangosherd/annotator_resources.html" %}
-    
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/project/projectlist.js?version={%revision%}"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                var projectList = new ProjectList({
+                    'parent': jQuery("div#classwork_table")[0],
+                    'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
+                    'template': 'homepage',
+                    'template_label': 'classwork_table',
+                    'view': "{{request.GET.view}}"
+                });
+                
+                jQuery(window).resize(function () {  
+                    var visible = getVisibleContentHeight();
+                    jQuery('.ui-widget-overlay').css('height', visible + "px");
+                });
         
-
-    <script type="text/javascript">
-        jQuery(document).ready(function() {
-            jQuery("div#classwork_table").ajaxStart(function(){
-                jQuery(this).addClass("ajaxLoading");
-            });
-            
-            jQuery("div#classwork_table").ajaxStop(function(){
-                jQuery(this).removeClass("ajaxLoading");
-            });
-            
-            var projectList = new ProjectList({
-                'parent': jQuery("div#classwork_table")[0],
-                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
-                'template': 'homepage',
-                'template_label': 'classwork_table',
-                'view': "{{request.GET.view}}"
-            });
-            
-            jQuery(window).resize(function () {  
                 var visible = getVisibleContentHeight();
                 jQuery('.ui-widget-overlay').css('height', visible + "px");
-            });
+                
+                {% ifequal msg "upload" %}
+                    var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
+                    alert(msg);
+                {% else %}{% if show_tour %}
+                    jQuery(window).trigger('tour.start');
+                {% endif %}
+                {% endifequal %}
+                
+                jQuery("a.arrow").click(function(evt) {
+                    jQuery(this).next("div.arrowContent").toggle();                
+                });
+                
+                jQuery("a.upload_button").click(function(evt) {
+                    jQuery(this).parent().submit();
+                });
     
-            var visible = getVisibleContentHeight();
-            jQuery('.ui-widget-overlay').css('height', visible + "px");
-            
-            {% ifequal msg "upload" %}
-                var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
-                alert(msg);
-            {% else %}{% if show_tour %}
-                jQuery(window).trigger('tour.start');
-            {% endif %}
-            {% endifequal %}
-            
-            jQuery("a.arrow").click(function(evt) {
-                jQuery(this).next("div.arrowContent").toggle();                
+                {% if is_faculty %}
+                    jQuery("ul#instructor-information").sortable({
+                        axis: "y",
+                        cursor: "move",
+                        start: function (event, ui) {
+                            jQuery(ui.item).addClass('dragging');
+                        },
+                        update: function (event, ui) {
+                            jQuery(ui.item).removeClass("dragging");
+                            data = jQuery("ul#instructor-information").sortable("serialize", { key: "project" })
+                            jQuery.ajax({
+                                type: 'POST',
+                                data: data,
+                                url: MediaThread.urls['sort-projects'](),
+                                success: function (responseText, textStatus, xhr) {
+                                },
+                                error: function (xhr) {
+                                    window.sky = xhr;
+                                    alert("An error occurred when sort the projects.");
+                                }
+                            });
+                        }
+                    });
+                {% endif %}
             });
-        });
-    </script>
+        </script>
+    
 {% endblock %}
 
 {% block standardnav_help %}
@@ -86,7 +96,7 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {% if faculty_feed.show or is_faculty or discussions %}
+            {% if faculty_feed|length > 0 or is_faculty or discussions %}
             <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
@@ -121,15 +131,26 @@
                                 </div>
                             </div>
                         
-                            <ul class="instructor-list">
-                            {% if faculty_feed.projects %}
-                                <h4 class="inst-header information">Information</h4>
-                                {% for project in faculty_feed.projects %}
-                                    <li><a href="{{project.get_absolute_url}}">{{project.title}}</a></li>
+                            
+                            {% if faculty_feed %}
+                                <h4 class="inst-header information">
+                                    Information
+                                </h4>
+                                <ul id="instructor-information" class="instructor-list">                               
+                                {% for project in faculty_feed %}
+                                    <li id="project_{{project.id}}">
+                                        {% if is_faculty %}
+                                        <span title="drag to reorder information"
+                                        class="left draghandle ui-icon ui-icon-arrowthick-2-n-s"></span>
+                                        {% endif %}                                                                                                     
+                                        <a href="{{project.get_absolute_url}}">
+                                            {{project.title}}
+                                        </a>                                        
+                                    </li>
                                 {% endfor %}
-                                
-                            {% else %}{% endif %}
-                            </ul>
+                                </ul>    
+                            {% endif %}
+                            
                         
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>
@@ -139,8 +160,8 @@
                                             <div class="actions">
                                                 {% if is_faculty %}
                                                     <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                                                        href="{% url discussion-delete disc.id %}">
-                                                    <img src="/site_media/img/Trashcan.gif"  class="delete_icon" alt="Remove this Discussion"  /></a>
+                                                        href="{% url discussion-delete disc.id %}">                                                        
+                                                    <img src="/site_media/img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  /></a>
                                                 {% endif %}
                                             </div>
                                             <a href="/discussion/show/{{disc.id}}">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
@@ -183,7 +204,7 @@
             
             	<div class="column-container">
                 	<h2 class="tour_3">Collection<div class="actions">{% include "help/new_help_button.html" %}</div></h2>
-                	<a class="btn-primary collection" href="/asset/"><img src="/site_media/img/viewfullcollection.png" />View Full Collection</a> 
+                	<a class="btn-primary collection" href="/asset/"><img src="/site_media/img/viewfullcollection.png" width="12" height="12" />View Full Collection</a> 
                     
                     <div id="tour_3_content" style="display: none">
                         <p>
@@ -222,34 +243,32 @@
                                         <strong>Install Bookmarklet in Firefox</strong>
                                         <ol>
                                           <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
-                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                          <li>Drag the link below onto your browser bookmarks toolbar.</li>
                                         </ol>
                                     </div>
                                     <div id="ie" class="browser-instruction">
                                         <strong>Install Bookmarklet in Internet Explorer</strong>
                                         <ol>
-                                          <li>Right-click on the blue bookmarklet button.</li>  
-                                          <li>and choose <b>Add to Favorites</b><br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Med\
-iathread</a></li>
+                                          <li>Right-click on the blue bookmarklet button below.</li>  
+                                          <li>and choose <b>Add to Favorites</b>
+                                          </li>
                                         </ol>
                                     </div>
                                     <div id="safari" class="browser-instruction"> 
                                         <strong>Install Bookmarklet in Safari</strong>
                                         <ol>
                                          <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
-                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
+                                          <li>Drag the link below onto your browser bookmarks toolbar</li>
                                         </ol>
                                     </div>
                                     <div id="chrome" class="browser-instruction"> 
                                         <strong>Install Bookmarklet in Chrome</strong>
                                         <ol>
                                           <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
-                                          <li>Drag this link onto your browser bookmarks toolbar:  <br /><a class="bookmarklet" href="{% include "assetmgr/bookmarklet.js" %}">Analyze w/Mediathread</a></li>
-                                          {% if EXPERIMENTAL %}
-                                          <li>EXPERIMENTAL: Alternatively, you can try our <a href="/uploads/mediathread.crx">Google Chrome Mediathread Extension</a></li>
-                                          {% endif %}
+                                          <li>Drag the link below onto your browser bookmarks toolbar:  <br />Analyze w/Mediathread</a></li>
                                         </ol>
                                     </div>
+                                    {% include "assetmgr/bookmarklet.html" %} 
                                     <script type="text/javascript">
                                         var u = navigator.userAgent;
                                         if (/Chrome/.test(u)) {
@@ -272,10 +291,10 @@ iathread</a></li>
                 {% if can_upload %}
                 {% if upload_archive %}
                 <div class="collection_content">
-                    <a href="#"
-                       class ="arrow arrowClosed">
+                    <a href="#" id="upload-from-computer" class ="arrow arrowClosed">
                         <h3 class="left">Upload from Computer</h3>
-                        <div class="arrowIcon left"></div>
+                        <div class="arrowIcon left">
+                        </div>
                     </a>
                         <div class="arrowContent" id="upload_desktop" style="display: none">                
                             {% ifequal role_in_course "non-member" %}
@@ -283,14 +302,15 @@ iathread</a></li>
                                     You must be a course member to upload media files.
                                 </div>
                             {% else %}                        
-                                <div>                            
                                     <p>
                                         This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
                                     </p>
-                                    
+                                    <div id="upload_audio">
+                                     <strong>Upload Audio</strong>
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
-                                            <div><b>For:</b>&nbsp;
+                                            <div class="upload_for">
+                                            <b>For:</b>&nbsp;
                                             <select name="as"> 
                                             {% for owner in owners %}                                
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
@@ -300,14 +320,15 @@ iathread</a></li>
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <input type="hidden" name="audio2" value="mp4"></input>
-                                        <input id="uploader" type="submit" value="Upload audio" />
+                                        <a class="btn-primary upload_button audio"><img src="/site_media/img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
                                     </form>  
-                                    
+                                    </div>
+                                    <div id="upload_video">
+                                     <strong>Upload Video</strong>
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
-                                            <div class="visualclear"></div>
-                                            <br /><br />
-                                            <div><b>For:</b>&nbsp;
+                                            <div class="upload_for">
+                                            <b>For:</b>&nbsp;
                                             <select id="video_owners" name="as"> 
                                             {% for owner in owners %}                                
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
@@ -316,17 +337,16 @@ iathread</a></li>
                                             </div>
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                                        <input id="uploader" type="submit" value="Upload video" />
+                                        <a class="btn-primary upload_button video"><img src="/site_media/img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
                                     </form>               
-                                    
-                                 </div>
+                                    </div>
                             {% endifequal %}
 
                         
                     </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
             {% endif %}
-            {% endif %}
+            {% endif %}            
 
                     {% if archives %}
                     <div id="recommend">

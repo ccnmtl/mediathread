@@ -1,6 +1,7 @@
 from mediathread.settings import *
 
 TEMPLATE_DIRS = (
+    "/usr/local/share/sandboxes/common/mediathread/mediathread/deploy_specific/templates",
     "/usr/local/share/sandboxes/common/mediathread/mediathread/templates",
 )
 

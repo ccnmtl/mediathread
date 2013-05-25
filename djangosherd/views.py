@@ -18,11 +18,13 @@ annotationfields = set("title range1 range2".split())
 
 class AnnotationForm(forms.ModelForm):
     body = forms.CharField(label='Notes',
-        widget=forms.widgets.Textarea(attrs={'rows': 7, 'cols': 51}))
+                           widget=forms.widgets.Textarea(attrs={'rows': 7,
+                                                                'cols': 51}))
     range1 = forms.FloatField(widget=forms.widgets.HiddenInput, initial=0)
     range2 = forms.FloatField(widget=forms.widgets.HiddenInput, initial=0)
     annotation_data = forms.CharField(widget=forms.widgets.HiddenInput)
-    tags = forms.CharField(label="Tag(s)",
+    tags = forms.CharField(
+        label="Tag(s)",
         help_text="<span class='helptext'>Use commas between tags.</span>")
     title = forms.CharField(label="Title")
 
@@ -40,9 +42,11 @@ class AnnotationForm(forms.ModelForm):
 
 
 class GlobalAnnotationForm(forms.ModelForm):
-    body = forms.CharField(label='My Item Notes',
+    body = forms.CharField(
+        label='My Item Notes',
         widget=forms.widgets.Textarea(attrs={'rows': 7, 'cols': 51}))
-    tags = forms.CharField(label='My Item Tags',
+    tags = forms.CharField(
+        label='My Item Tags',
         help_text="<span class='helptext'>Use commas to separate tags. \
             Example: tag 1, tag 2, tag 3</span>")
 
@@ -68,7 +72,7 @@ def create_annotation(request):
 
     form = dict((key[len('annotation-'):], val)
                 for key, val in request.POST.items()
-                    if key.startswith('annotation-'))
+                if key.startswith('annotation-'))
 
     del form['context_pk']
 
@@ -96,9 +100,9 @@ def create_annotation(request):
 
     if request.is_ajax():
         response = {'asset': {'id': asset.id},
-            'annotation': {'id': annotation.id}}
+                    'annotation': {'id': annotation.id}}
         return HttpResponse(simplejson.dumps(response),
-            mimetype="application/json")
+                            mimetype="application/json")
     else:
         #new annotations should redirect 'back' to the asset
         # at the endpoint of the last annotation
@@ -107,8 +111,8 @@ def create_annotation(request):
         if annotation.range2:
             url_fragment = '#start=%s' % str(annotation.range2)
 
-        redirect_to = request.GET.get('next',
-            annotation.asset.get_absolute_url() + url_fragment)
+        next_url = annotation.asset.get_absolute_url() + url_fragment
+        redirect_to = request.GET.get('next', next_url)
 
         return HttpResponseRedirect(redirect_to)
 
@@ -144,9 +148,9 @@ def edit_annotation(request, annot_id):
 
     if request.is_ajax():
         response = {'asset': {'id': annotation.asset_id},
-            'annotation': {'id': annotation.id}}
+                    'annotation': {'id': annotation.id}}
         return HttpResponse(simplejson.dumps(response),
-            mimetype="application/json")
+                            mimetype="application/json")
     else:
         redirect_to = request.GET.get('next', '.')
         return HttpResponseRedirect(redirect_to)
@@ -157,7 +161,7 @@ def update_annotation(request, annotation):
 
     form = dict((key[len('annotation-'):], val)
                 for key, val in request.POST.items()
-                    if key.startswith('annotation-'))
+                if key.startswith('annotation-'))
 
     ## @todo -- figure out how the clipform gets into the
     # annotations.mustache form

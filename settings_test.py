@@ -1,3 +1,4 @@
+# flake8: noqa
 from settings_shared import *
 
 DATABASES = {
@@ -12,7 +13,7 @@ DATABASES = {
 
 LETTUCE_SERVER_PORT = 8002
 STATSD_HOST = '127.0.0.1'
-BROWSER = 'Chrome'
+BROWSER = 'Headless'
 
 # Full run
 # time(./manage.py harvest --settings=settings_test \

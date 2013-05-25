@@ -13,7 +13,8 @@ CHECKS = [
     {
         'output': 'Checking for pdbs...',
         'command': 'grep -n "import pdb" %s',
-        'ignore_files': ['.*pre-commit', '.*/ve/.*'],
+        'ignore_files': ['.*pre-commit', '.*/ve/.*',
+                         '.*djangosherd/media/js/sherdjs'],
         'print_filename': True,
     },
     {
@@ -23,6 +24,8 @@ CHECKS = [
         'ignore_files': ['.*migrations.*', '.*management/commands.*',
                          '.*manage.py', '.*/scripts/.*', '.*/ve/.*',
                          '.*scripts/pre-commit\.py$',
+                         '.*scripts/minify-js\.py$',
+                         '.*scripts/minify-mustache\.py$',
                          '.*virtualenv\.py$'],
         'print_filename': True,
     },
@@ -43,7 +46,7 @@ CHECKS = [
     },
     {
         'output': 'Running flake8...',
-        'command': 'flake8 --max-complexity=15 --ignore=W404 %s',
+        'command': 'flake8 --max-complexity=16 --ignore=W404 %s',
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*settings/.*',
                          '.*manage.py',
@@ -51,6 +54,7 @@ CHECKS = [
                          '.*/ve/.*',
                          '.*virtualenv\.py$',
                          '.*settings_production\.py$',
+                         '.*settings_stage\.py$',
                          '.*/assetmgr/supported_archives\.py$'],
         'print_filename': True,
     },
@@ -110,24 +114,34 @@ def main(all_files):
     return_code = subprocess.call('./manage.py validate', shell=True)
     result = return_code or result
 
-    print 'Running Unit Tests...'
-    return_code = subprocess.call(
-        './manage.py test djangosherd assetmgr projects mediathread_main',
-        shell=True)
-    result = return_code or result
-
     for check in CHECKS:
+        print check['output']
         result = check_files(files, check) or result
+
+    if result == 0:
+        print 'Running Unit Tests...'
+        #return_code = subprocess.call(
+        #    './manage.py test djangosherd assetmgr projects mediathread_main',
+        #    shell=True)
+        #result = return_code or result
 
     # Unstash changes to the working tree that we had stashed
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Minify the .js
+    if result == 0:
+        print 'Minifying .js...'
+        return_code = subprocess.call('cd scripts; ./minify-js.py; cd ..',
+                                      shell=True)
+        result = return_code or result
 
     # Update the release id if things looks good
     if result == 0:
         print 'Updating Release Id...'
         return_code = subprocess.call('scripts/update-release-id.sh',
                                       shell=True)
+        result = return_code or result
 
     sys.exit(result)
 

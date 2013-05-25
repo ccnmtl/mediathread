@@ -29,9 +29,11 @@ requirements/src/psycopg2-2.4-no-mx.tar.gz
 #for djangosherd xmeml final cut pro support
 requirements/src/xmeml-0.9.tar.gz
 
-requirements/src/selenium-2.29.0.tar.gz
+requirements/src/lxml-2.2.8.tar.gz
 requirements/src/nose-1.1.2.tar.gz
+requirements/src/nose-exclude-0.1.5.tar.gz
 requirements/src/lettuce-0.1.34.tar.gz
+requirements/src/selenium-2.31.0.tar.gz
 
 requirements/src/statsd-0.5.1.tar.gz
 
@@ -39,4 +41,6 @@ requirements/src/six-1.1.0.tar.gz
 requirements/src/python-dateutil-2.1.tar.gz
 requirements/src/mimeparse-0.1.3.tar.gz 
 requirements/src/django-tastypie-0.9.12-alpha.tar.gz
+
+requirements/src/coverage-3.5.3.tar.gz
 

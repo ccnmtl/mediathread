@@ -11,3 +11,6 @@ local_settings.py
 start_server.sh
 .settings
 lettuce.db
+chromedriver.log
+ghostdriver.log
+.coverage

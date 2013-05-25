@@ -49,6 +49,7 @@ class CourseResource(ModelResource):
         excludes = ['group']
         list_allowed_methods = []
         detail_allowed_methods = ['get']
+        ordering = ['project_set__title']
 
         # User is logged into some course
         authentication = ClassLevelAuthentication()
@@ -60,3 +61,32 @@ class CourseResource(ModelResource):
             'project_set': ALL_WITH_RELATIONS,
             'asset_set': ALL_WITH_RELATIONS
         }
+
+
+class CourseSummaryResource(ModelResource):
+    faculty_group = fields.ForeignKey(GroupResource,
+                                      'faculty_group',
+                                      full=True)
+    group = fields.ForeignKey(GroupResource,
+                              'group',
+                              full=True)
+
+    info = fields.ForeignKey(CourseInfoResource, 'info',
+                             full=True, blank=True, null=True)
+
+    class Meta:
+        queryset = Course.objects.all()
+        resource_name = "course_summary"
+        list_allowed_methods = []
+        detail_allowed_methods = ['get']
+
+        # User is logged into some course
+        authentication = ClassLevelAuthentication()
+
+        # User is a member of this course
+        authorization = CourseMemberAuthorization()
+
+    def render_one(self, request, course):
+        bundle = self.build_bundle(obj=course, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)

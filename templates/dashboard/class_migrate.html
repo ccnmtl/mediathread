@@ -2,8 +2,6 @@
 {% block title %}Migrate Course Materials{% endblock %}
 
 {% block js %}
-    {{ block.super }}
-    
     <script type="text/javascript"> 
         var courses =
             [{% for c in available_courses %}
@@ -17,7 +15,6 @@
                 {% endifnotequal %}
             {% endfor %}];
         
-        
         jQuery(document).ready(function () {
             var view = new CourseMaterialsView({ availableCourses: courses, el: "#block" });
         });
@@ -27,7 +24,7 @@
     <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
     <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
-    <script type="text/javascript" src="/site_media/js/instructor/class_migrate.js"></script>
+    <script type="text/javascript" src="/site_media/js/app/dashboard/class_migrate.js"></script>
     
     <script type="text/template" id="course-template">
         <div class="meta">
@@ -48,11 +45,25 @@
             <% if (info && info.year) { %>
                 <div><span class="metadata-label">Year:</span><span class="metadata-value"> <%= info.year %></span></div>
             <% } %>    
-            <div>
-                <span class="metadata-label">Faculty:</span>
-                <span class="metadata-value">
-                <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
-                    <%= faculty_group.user_set[i].full_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+            <div>                
+                <% if (is_staff) { %>
+                    <br />
+                    <span class="metadata-label">Upload on behalf of: </span>
+                    <select>
+                        <% if (role_in_course === "instructor") { %>
+                            <option value="myself">Myself</option>
+                        <% } %>
+                        <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>                            
+                            <option value="<%= faculty_group.user_set[i].id %>"><%= faculty_group.user_set[i].public_name %></option>
+                    <% } %>
+                    </select>
+                    <br /><br />
+                <% } else { %>
+                    <span class="metadata-label">Faculty:</span> 
+                    <span class="metadata-value">
+                    <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
+                        <%= faculty_group.user_set[i].public_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+                    <% } %>
                 <% } %>
             </div>
         </div>
@@ -85,14 +96,16 @@
                 <% for (var i = 0; i < project_set.length; i++) { %>
                     <% var project = project_set.at(i) %>
                     <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
+                        <td class="composition <% if (project.get('is_assignment')) { %>assignment<% } %>">
+                        </td>
                         <td class="title">
-                            <b>
-                                <% if (project.get('is_assignment')) { %>
-                                    Assignment:                             
-                                <% } %>
-                                <%= project.get('title') %>
-                            </b>
-                            <br />
+                            <% if (project.get('is_assignment')) { %>
+                                <div class="metadata-value-assignment">Assignment</div>
+                            <% } else { %>
+                                <div class="metadata-value-composition">Composition</div>
+                            <% } %>
+                            <div class="visualclear"></div>
+                            <h5><%= project.get('title') %></h5>
                             by <%= project.get('attribution') %>
                             
                             <% if (project.get('sherdnote_set').length > 0) { %>
@@ -102,6 +115,7 @@
                         </td>
                         <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
                     </tr>
+                    <tr><td class="spacer" colspan="3"></td></tr>
                 <% } %>
                 </table>
                 </div>
@@ -121,7 +135,8 @@
             <table>
             <% for (var j = 0; j < asset_set.length; j++) { %>
                 <% var asset = asset_set.at(j) %>
-                <tr  <% if (j % 2 === 0) { %> class="odd" <% } %> >                    
+                <tr  <% if (j % 2 === 0) { %> class="odd" <% } %> >
+                    <td class="asset"></td>                    
                     <td class="record">
                         <% if (asset.get('thumb_url')) { %>
                             <img class="asset-thumb" src="<%=asset.get('thumb_url') %>" alt="Item Thumbnail" />                        
@@ -130,7 +145,7 @@
                     <td class="title">
                         <div><b><%= asset.get('title') %></b></div>
                         <div class="meta">
-                            <div class="metadata-value">Imported by <%= asset.get('author').full_name %></div>
+                            <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
                             <div>
                                 <span class="metadata-value">Includes </span>  
                                 <span class="metadata-label item-annotation-count-total"><%=asset.get('sherdnote_set').length %></span>
@@ -142,6 +157,7 @@
                         <input class="asset" type="checkbox" value="<%= asset.get('id') %>" />
                     </td>
                 </tr>
+                <tr><td class="spacer" colspan="4"></td></tr>
             <% } %>
             </table>
             </div>
@@ -158,13 +174,16 @@
                     <% for (var i = 0; i < project_set.length; i++) { %>
                         <% var project = project_set[i] %>
                         <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
-                            <td class="title"><b>
+                            <td class="composition <% if (project.is_assignment) { %>assignment<% } %>">
+                            </td>
+                            <td class="title">
                                 <% if (project.is_assignment) { %>
-                                    Assignment:                             
+                                    <div class="metadata-value-assignment">Assignment</div>
                                 <% } else { %>
-                                    Composition:
+                                    <div class="metadata-value-composition">Composition</div>
                                 <% } %>
-                                <%= project.title %></b><br />
+                                <div class="visualclear"></div>
+                                <h5><%= project.title %></h5>
                                 by <%= project.attribution %>
                             
                                 <% if (project.sherdnote_set.length > 0) { %>
@@ -174,6 +193,7 @@
                             </td>
                             <td class="deselect"><input type="button" name="<%= project.id %>" value="X" class="deselect-project"/></td>
                         </tr>
+                        <tr><td class="spacer" colspan="3"></td></tr>
                     <% } %>
                     </table>
                 <% } %>
@@ -181,7 +201,8 @@
                 <% if (asset_set.length) { %>
                     <table>
                     <% for (var i = 0; i < asset_set.length; i++) { %>
-                        <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>    
+                        <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
+                        <td class="asset"></td>    
                         <% var asset = asset_set[i] %>
                         <td class="record">
                             <% if (asset.thumb_url) { %>
@@ -191,7 +212,7 @@
                         <td class="title">
                             <div><b><%= asset.title %></b></div>
                             <div class="meta">
-                                <div class="metadata-value">Imported by <%= asset.author.full_name %></div>
+                                <div class="metadata-value">Imported by <%= asset.author.public_name %></div>
                                 <div>
                                     <span class="metadata-value">Includes </span>  
                                     <span class="metadata-label item-annotation-count-total"><%=asset.sherdnote_set.length %></span>
@@ -201,11 +222,13 @@
                         </td>
                         <td class="deselect"><input type="button" name="<%= asset.id %>" value="X" class="deselect-asset <%=asset.required %>"/></td>
                         </tr>
+                        <tr><td class="spacer" colspan="4"></td></tr>
                     <% } %>
                     </table>
                 <% } %>
             </div>
             <input id="import-selected" type="button" value="Migrate Selected" class="right" />
+            <input id="clear-selected" type="button" value="Clear Selected" class="right" />
         </form>
 
     </script>
@@ -230,31 +253,33 @@
     
     {% ifequal role_in_course "non-member" %}
         <div id="no-materials-to-migrate">
-            You are not a member of this course. You are not authorized to migrate materials into this course.
+            You are not a class member. Please add yourself to this course via the admin console before attempting to migrate materials.
         </div>
     {% else %}
-                
+        <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
+        <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
+                    
         <div id="available-courses-selector" style="display: none">
             <input type="text" class="default" id="available-courses" value="Type course name here">
             <input type="submit" id="view-materials" value="View materials" class="rounded-button gray"/>        
         </div>
         
         <div id="course-materials-container" style="display: none">
-            <h3><span id="course-title"></span><a id="switch-course" href="#" class="metadata-value">switch course</a></h3>
-            
+            <h3><span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
             <div>
                 <div class="course-information">
                     <div id="course"></div>
                 </div>
                 <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
-            </div>                    
+            </div>
         </div>
         
         <div id="no-materials-to-migrate" style="display: none">
             You are not affiliated with any other courses. Please review our help materials
             if you need to migrate course materials from a colleague's class.
-        </div>
-    {% endifequal %}    
+        </div>    
+    {% endifequal %}
+    
 {% endwith %}{% endwith %}
 {% endblock %}
 

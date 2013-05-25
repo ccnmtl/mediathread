@@ -12,7 +12,7 @@ class AssetResourceTest(ResourceTestCase):
                           primary_type, selection_ids, thumb_url):
 
         self.assertEquals(asset['title'], title)
-        self.assertEquals(asset['author']['full_name'], author)
+        self.assertEquals(asset['author']['public_name'], author)
         self.assertEquals(asset['primary_type'], primary_type)
         self.assertEquals(asset['thumb_url'], thumb_url)
 

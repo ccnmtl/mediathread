@@ -1,25 +1,22 @@
 from datetime import datetime
-from random import choice
-from string import letters
-import simplejson
-
+from discussions.utils import pretty_date
 from django.conf import settings
 from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from djangohelpers.lib import rendered_with, allow_http
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden, \
+    HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-
+from djangohelpers.lib import rendered_with, allow_http
+from random import choice
+from string import letters
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
-
 from threadedcomments import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
-from discussions.utils import pretty_date
+import simplejson
 
 
 @allow_http("POST")

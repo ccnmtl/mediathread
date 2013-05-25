@@ -42,6 +42,13 @@ if 'test' in sys.argv:
         }
     }
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',
+    ('--cover-package=mediathread.mediathread_main,mediathread.djangosherd,'
+     'mediathread.assetmgr,mediathread.projects'),
+]
+
 CACHE_BACKEND = 'locmem:///'
 
 TIME_ZONE = 'America/New_York'
@@ -73,8 +80,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'mediathread_main.middleware.AuthRequirementMiddleware',
-    'djangohelpers.middleware.HttpDeleteMiddleware'
+    'mediathread_main.middleware.AuthRequirementMiddleware'
 )
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -86,12 +92,15 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     # Put application templates before these fallback ones:
     "/var/www/mediathread/templates/",
+    os.path.join(os.path.dirname(__file__), "deploy_specific/templates"),
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
 LETTUCE_APPS = (
     'mediathread_main',
-    'projects'
+    'projects',
+    'assetmgr',
+    'djangosherd'
 )
 
 INSTALLED_APPS = (
@@ -118,9 +127,14 @@ INSTALLED_APPS = (
     'mediathread_main',
     'sentry.client',
     'south',
-    'lettuce.django'
+    'lettuce.django',
+    'django_nose',
+    'compressor',
 )
 
+COMPRESS_URL = "/site_media/"
+COMPRESS_ROOT = "media/"
+COMPRESS_PARSER = "compressor.parser.HtmlParser"
 
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mediathread] "
@@ -157,7 +171,6 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                        '/comments/',
                        '/reports/',
                        '/discussion/',
-                       '/notifications/',
                        '/archive/',
                        '/assignment/',
                        '/dashboard/',
@@ -200,8 +213,8 @@ CSRF_FAILURE_VIEW = no_reject
 try:
     from mediathread.deploy_specific.settings import *
     if 'EXTRA_INSTALLED_APPS' in locals():
-        INSTALLED_APPS = EXTRA_INSTALLED_APPS + INSTALLED_APPS
+        INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS
     if 'EXTRA_MIDDLEWARE_CLASSES' in locals():
-        MIDDLEWARE_CLASSES = EXTRA_MIDDLEWARE_CLASSES + MIDDLEWARE_CLASSES
+        MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + EXTRA_MIDDLEWARE_CLASSES
 except ImportError:
     pass

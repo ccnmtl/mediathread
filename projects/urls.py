@@ -28,9 +28,19 @@ urlpatterns = patterns(
         'project_delete',
         name='project-delete'),
 
+    url(r'^reparent/(?P<assignment_id>\d+)/(?P<composition_id>\d+)/$',
+        'project_reparent',
+        name="project-reparent"),
+
+
     # view versioned read only
     url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
         'project_view_readonly', name='project-view-readonly'),
+
+    # view versioned read only
+    url(r'^sort/$',
+        'project_sort', name='project-sort'),
+
 
     # view public url - read only view.
     # Note: StructuredCollaboration requires

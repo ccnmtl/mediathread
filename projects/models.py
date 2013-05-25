@@ -1,8 +1,11 @@
 from courseaffils.models import Course
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
@@ -120,6 +123,41 @@ class ProjectManager(models.Manager):
 
         return x
 
+    def visible_by_course(self, request, course):
+        projects = Project.objects.filter(course=course)
+        projects = projects.order_by('-modified', 'title')
+        return [p for p in projects if p.visible(request)]
+
+    def visible_by_course_and_user(self, request, course, user):
+        projects = Project.objects.filter(Q(author=user, course=course)
+                                          | Q(participants=user, course=course)
+                                          ).distinct()
+
+        projects = projects.order_by('-modified', 'title')
+        return [p for p in projects if p.visible(request)]
+
+    def unresponded_assignments(self, request, user):
+        course = request.course
+        a = list(Project.objects.filter(course.faculty_filter,
+                                        due_date__isnull=False).
+                 order_by("due_date", "-modified", "title"))
+
+        a.extend(Project.objects.filter(course.faculty_filter,
+                                        due_date__isnull=True).
+                 order_by("-modified", "title"))
+
+        assignments = []
+        project_type = ContentType.objects.get_for_model(Project)
+
+        for assignment in a:
+            if (assignment.visible(request) and
+                assignment.is_unanswered_assignment(request,
+                                                    user,
+                                                    project_type)):
+                assignments.append(assignment)
+
+        return assignments
+
 
 class Project(models.Model):
     objects = ProjectManager()  # custom manager
@@ -156,9 +194,32 @@ class Project(models.Model):
                                     editable=False,
                                     auto_now=True)
 
+    due_date = models.DateTimeField('due date',
+                                    null=True,
+                                    blank=True)
+
+    ordinality = models.IntegerField(default=-1)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        dt = datetime.today()
+        this_day = datetime(dt.year, dt.month, dt.day, 0, 0)
+        if self.due_date is not None and self.due_date < this_day:
+            msg = "%s is not valid for the Due Date field.\n" % \
+                self.get_due_date()
+            msg = msg + "The date cannot be in the past.\n"
+            raise ValidationError(msg)
+
     @models.permalink
     def get_absolute_url(self):
         return ('project-workspace', (), {'project_id': self.pk})
+
+    def get_due_date(self):
+        if self.due_date is None:
+            return ""
+        else:
+            return self.due_date.strftime("%m/%d/%y")
 
     def public_url(self, col=None):
         if col is None:
@@ -192,6 +253,14 @@ class Project(models.Model):
         project_type = ContentType.objects.get_for_model(Project)
         return self.subobjects(request, project_type)
 
+    def description(self):
+        if self.assignment():
+            return "Assignment Response"
+        elif self.visibility_short() == "Assignment":
+            return "Assignment"
+        else:
+            return "Composition"
+
     def is_assignment(self, request):
         if hasattr(self, 'is_assignment_cached'):
             return self.is_assignment_cached
@@ -215,6 +284,32 @@ class Project(models.Model):
         if not parent:
             return
         return parent.content_object
+
+    def is_unanswered_assignment(self, request, user, expected_type):
+        """
+        Returns True if this user has a response to this project
+        or None if this user has not yet created a response
+        """
+        if not self.is_assignment(request):
+            return False
+
+        collab = self.collaboration()
+        children = collab.children.all()
+        if not children:
+            # It has no responses, but it looks like an assignment
+            return True
+
+        for child in children:
+            if child.content_type != expected_type:
+                # Ignore this child, it isn't a project
+                continue
+            if getattr(child.content_object, 'author', None) == user:
+                # Aha! We've answered it already
+                return False
+
+        # We are an assignment; we have children;
+        # we haven't found a response by the target user.
+        return True
 
     def feedback_discussion(self):
         '''returns the ThreadedComment object for
@@ -273,13 +368,6 @@ class Project(models.Model):
             return u"Submitted"
         else:
             return u"Private"
-
-    @classmethod
-    def get_user_projects(cls, user, course):
-        # TODO: change to members of project-related group
-        return cls.objects.filter(Q(author=user, course=course)
-                                  | Q(participants=user, course=course)
-                                  ).distinct()
 
     def is_participant(self, user_or_request):
         user = getattr(user_or_request, 'user', user_or_request)
@@ -396,3 +484,15 @@ class Project(models.Model):
                 author_contributions[v.author][1] -= change
             last_content = v.body
         return author_contributions
+
+
+@receiver(post_save, sender=ThreadedComment)
+def on_threaded_comment_save(sender, **kwargs):
+    instance = kwargs['instance']
+    while instance.parent is not None:
+        instance = instance.parent
+
+    an_object = instance.content_object._parent.content_object
+    if hasattr(an_object, 'modified'):
+        an_object.modified = datetime.now()
+        an_object.save()

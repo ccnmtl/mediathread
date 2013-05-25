@@ -3,13 +3,14 @@ from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce.django import django_url
-from mediathread.projects.models import Project
-from mediathread.structuredcollaboration.models import Collaboration, \
-    CollaborationPolicyRecord
 from selenium.common.exceptions import StaleElementReferenceException
+import errno
 import os
 import selenium.webdriver.support.ui as ui
 import time
+from selenium.common.exceptions import WebDriverException, \
+    NoSuchElementException
+from mediathread.projects.models import Project
 
 try:
     from lxml import html
@@ -19,31 +20,24 @@ except:
     pass
 
 
-@before.each_feature
-def setup_database(variables):
+@before.each_scenario
+def reset_database(variables):
+    world.using_selenium = False
+
     try:
         os.remove('lettuce.db')
-    except:
-        pass  # database doesn't exist yet. that's ok.
+    except OSError, e:
+        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
+            raise  # re-raise exception if a different error occurred
+        else:
+            pass  # database doesn't exist yet. that's okay.
 
-    os.system("echo 'create table test(idx integer primary key);' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("./manage.py syncdb --settings=settings_test --noinput "
-              "> /dev/null")
-    os.system("./manage.py migrate --settings=settings_test --noinput "
-              "> /dev/null")
-    os.system("echo 'delete from django_content_type;' | sqlite3 lettuce.db "
-              "> /dev/null")
-    os.system("./manage.py loaddata mediathread_main/fixtures/"
-              "sample_course.json --settings=settings_test > /dev/null")
-
-    # System calls are asynchronous.
-    # Give some time to complete before continuing
-    time.sleep(3)
+    os.system('cp lettuce_base.db lettuce.db')
 
 
 @before.all
 def setup_browser():
+    world.browser = None
     browser = getattr(settings, 'BROWSER', None)
     if browser is None:
         raise Exception('Please configure a browser in settings_test.py')
@@ -51,8 +45,13 @@ def setup_browser():
         ff_profile = FirefoxProfile()
         ff_profile.set_preference("webdriver_enable_native_events", False)
         world.browser = webdriver.Firefox(ff_profile)
-    elif  browser == 'Chrome':
+    elif browser == 'Chrome':
         world.browser = webdriver.Chrome()
+    elif browser == "Headless":
+        world.browser = webdriver.PhantomJS(
+            desired_capabilities={'handlesAlerts': True})
+        cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (1024, 768)
+        world.browser.execute_script(cmd)
 
     world.client = client.Client()
     world.using_selenium = False
@@ -83,26 +82,6 @@ def finished_selenium(step):
     world.using_selenium = False
 
 
-@before.each_scenario
-def clear_selenium(step):
-    world.using_selenium = False
-
-    Project.objects.all().delete()
-    Collaboration.objects.exclude(title="Sample Course").exclude(
-        title="Alternate Course").delete()
-    CollaborationPolicyRecord.objects.all().delete()
-    os.system("echo 'delete from projects_project_participants;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from projects_projectversion;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from threadedcomments_comment;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from django_comments;' | "
-              "sqlite3 lettuce.db > /dev/null")
-    os.system("echo 'delete from django_comment_flags;' | "
-              "sqlite3 lettuce.db > /dev/null")
-
-
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
     if world.using_selenium:
@@ -112,8 +91,8 @@ def access_url(step, url):
         world.dom = html.fromstring(response.content)
 
 
-@step(u'Given the ([^"]*) workspace is loaded')
-def given_the_name_workspace_is_loaded(step, name):
+@step(u'the ([^"]*) workspace is loaded')
+def the_name_workspace_is_loaded(step, name):
     id = None
     if (name == "composition" or
         name == "assignment" or
@@ -133,21 +112,30 @@ def my_browser_resolution_is_width_x_height(step, width, height):
 
 
 @step(u'I am ([^"]*) in ([^"]*)')
-def i_am_username_in_course(step, username, course):
+def i_am_username_in_course(step, username, coursename):
     if world.using_selenium:
         world.browser.get(django_url("/accounts/logout/"))
         world.browser.get(django_url("accounts/login/?next=/"))
         username_field = world.browser.find_element_by_id("id_username")
-        password_field = world.browser.find_element_by_id("id_password")
-        form = world.browser.find_element_by_name("login_local")
         username_field.send_keys(username)
-        password_field.send_keys("test")
-        form.submit()
-        assert username in world.browser.page_source, world.browser.page_source
 
-        step.given('I access the url "/"')
-        step.given('I am in the %s class' % course)
-        step.given('I am at the Home page')
+        password_field = world.browser.find_element_by_id("id_password")
+        password_field.send_keys("test")
+
+        form = world.browser.find_element_by_name("login_local")
+        form.submit()
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(lambda driver: world.browser.title.find("Home") > -1)
+
+        wait.until(lambda driver: world.browser.find_element_by_id("loaded"))
+
+        course_title = world.browser.find_element_by_id("course_title_link")
+        msg = ("Expected the %s class, but found the %s class" %
+               (coursename, course_title.text))
+        assert course_title.text.find(coursename) > -1, msg
+
+        assert username in world.browser.page_source, world.browser.page_source
     else:
         world.client.login(username=username, password='test')
 
@@ -174,7 +162,7 @@ def i_log_out(step):
 @step(u'I am at the ([^"]*) page')
 def i_am_at_the_name_page(step, name):
     if world.using_selenium:
-        wait = ui.WebDriverWait(world.browser, 2)
+        wait = ui.WebDriverWait(world.browser, 5)
         wait.until(lambda driver: world.browser.title.find(name) > -1)
 
 
@@ -224,7 +212,7 @@ def there_is_not_a_text_link(step, text):
         try:
             world.browser.find_element_by_partial_link_text(text)
             assert False, "found the '%s' link" % text
-        except:
+        except NoSuchElementException:
             pass  # expected
 
 
@@ -243,7 +231,7 @@ def there_is_a_text_link(step, text):
         try:
             link = world.browser.find_element_by_partial_link_text(text)
             assert link.is_displayed()
-        except:
+        except NoSuchElementException:
             world.browser.get_screenshot_as_file("/tmp/selenium.png")
             assert False, "Cannot find link %s" % text
 
@@ -264,7 +252,7 @@ def i_click_the_link(step, text):
             link = world.browser.find_element_by_partial_link_text(text)
             assert link.is_displayed()
             link.click()
-        except:
+        except NoSuchElementException:
             world.browser.get_screenshot_as_file("/tmp/selenium.png")
             assert False, link.location
 
@@ -272,7 +260,7 @@ def i_click_the_link(step, text):
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
     if world.using_selenium:
-        course_title = world.browser.find_element_by_id("course_title")
+        course_title = world.browser.find_element_by_id("course_title_link")
         msg = ("Expected the %s class, but found the %s class" %
                (coursename, course_title.text))
         assert course_title.text.find(coursename) > -1, msg
@@ -299,11 +287,10 @@ def then_i_wait_count_seconds(step, count):
 @step(u'I see "([^"]*)"')
 def i_see_text(step, text):
     try:
-        assert text in world.browser.page_source, world.browser.page_source
-    except:
+        assert text in world.browser.page_source
+    except AssertionError:
         time.sleep(1)
-        msg = "I did not see %s in this page" % text
-        assert text in world.browser.page_source, msg
+        assert text in world.browser.page_source, world.browser.page_source
 
 
 @step(u'I do not see "([^"]*)"')
@@ -314,16 +301,14 @@ def i_do_not_see_text(step, text):
 @step(u'I cancel an alert dialog')
 def i_cancel_an_alert_dialog(step):
     time.sleep(1)
-    alert = world.browser.switch_to_alert()
-    alert.dismiss()
+    dismiss_alert()
     time.sleep(1)
 
 
 @step(u'I ok an alert dialog')
 def i_ok_an_alert_dialog(step):
     time.sleep(1)
-    alert = world.browser.switch_to_alert()
-    alert.accept()
+    accept_alert()
     time.sleep(1)
 
 
@@ -340,7 +325,7 @@ def there_is_no_title_menu(step, title):
         selector = "div.settings_menu.%s" % title
         world.browser.find_element_by_css_selector(selector)
         assert False, "Found %s menu" % title
-    except:
+    except NoSuchElementException:
         pass  # expected
 
 
@@ -384,30 +369,22 @@ def there_is_no_help_for_the_title_column(step, title):
                 e.parent.find_element_by_css_selector(
                     "div.actions input.help-tab-icon")
                 assert False, "Help found for %s" % title
-            except:
+            except NoSuchElementException:
                 return  # Expected outcome
 
 
 @step(u'I\'m told ([^"]*)')
 def i_m_told_text(step, text):
-    alert = world.browser.switch_to_alert()
-    assert alert.text.startswith(text), "Alert text invalid: %s" % alert.text
-    alert.accept()
-
-
-@step(u'the most recent notification is "([^"]*)"')
-def the_most_recent_notification_is_text(step, text):
-    list = world.browser.find_element_by_id("parent-clumper")
-
-    elts = list.find_elements_by_css_selector("div.asset_title")
-    assert len(elts) > 0, "Found 0 notifications. Expected at least one."
-
-    link = elts[0].find_element_by_tag_name("a")
-    assert link is not None, "Found no notification links. Expected 1"
-
-    msg = "Notification text is [%s]. Expected [%s]" % (link.text.strip(),
-                                                        text)
-    assert link.text.strip() == text, msg
+    try:
+        alert = world.browser.switch_to_alert()
+        assert alert.text.startswith(text), \
+            "Alert text invalid: %s" % alert.text
+        alert.accept()
+    except WebDriverException, e:
+        if getattr(settings, 'BROWSER', None) == "Headless":
+            pass
+        else:
+            raise e
 
 
 @step(u'I select "([^"]*)" as the owner')
@@ -628,11 +605,11 @@ def the_title_item_has_no_selections(step, title):
     for i in items:
         elt = i.find_element_by_css_selector('a.asset-title-link')
         if elt.text == title:
-            try:
-                selections = i.find_elements_by_css_selector(select)
-                assert False, "Item %s has %s selections" % (title,
-                                                             len(selections))
-            except:
+            selections = i.find_elements_by_css_selector(select)
+            if len(selections) > 0:
+                assert False, "Item %s has %s selections" % (
+                    title, len(selections))
+            else:
                 return
 
     assert False, "Unable to find item [%s] in the collection panel" % title
@@ -656,7 +633,7 @@ def the_title_item_has_no_notes(step, title):
             try:
                 i.find_element_by_css_selector(select)
                 assert False, "Item %s has notes" % title
-            except:
+            except NoSuchElementException:
                 return
 
     assert False, "Unable to find item [%s] in the collection panel" % title
@@ -679,7 +656,7 @@ def the_title_item_has_no_tags(step, title):
             try:
                 i.find_element_by_css_selector(select)
                 assert False, "Item %s has tags" % title
-            except:
+            except NoSuchElementException:
                 return
 
     assert False, "Unable to find item [%s] in the collection panel" % title
@@ -746,7 +723,7 @@ def the_title_item_has_a_type_icon(step, title, type):
     for item in items:
         try:
             item.find_element_by_partial_link_text(title)
-        except:
+        except NoSuchElementException:
             continue
 
         try:
@@ -756,7 +733,7 @@ def the_title_item_has_a_type_icon(step, title, type):
             try:
                 item.find_element_by_css_selector("a.%s-asset-inplace" % type)
                 return  # found the link & the icon
-            except:
+            except NoSuchElementException:
                 assert False, \
                     "Item %s does not have a %s icon." % (title, type)
 
@@ -770,13 +747,13 @@ def the_title_item_has_no_type_icon(step, title, type):
     for item in items:
         try:
             item.find_element_by_partial_link_text(title)
-        except:
+        except NoSuchElementException:
             continue
 
         try:
             item.find_element_by_css_selector("a.%s-asset" % type)
             assert False, "Item %s has a %s icon." % (title, type)
-        except:
+        except NoSuchElementException:
             assert True, "Item %s does not have a %s icon" % (title, type)
             return
 
@@ -791,7 +768,7 @@ def i_click_the_title_item_type_icon(step, title, type):
     for item in items:
         try:
             item.find_element_by_partial_link_text(title)
-        except:
+        except NoSuchElementException:
             continue
 
         try:
@@ -803,7 +780,7 @@ def i_click_the_title_item_type_icon(step, title, type):
 
             icon.click()
             return  # found the link & the icon
-        except:
+        except NoSuchElementException:
             assert False, "Item %s does not have a %s icon." % (title, type)
 
     assert False, "Unable to find the %s item" % title
@@ -875,23 +852,25 @@ def i_clear_the_filter_in_the_title_column(step, title):
 @step(u'Given publish to world is ([^"]*)')
 def given_publish_to_world_is_value(step, value):
     if world.using_selenium:
-        ff = world.browser
         world.browser.get(django_url("/dashboard/settings/"))
 
         if value == "enabled":
-            elt = ff.find_element_by_id('allow_public_compositions_yes')
+            elt = world.browser.find_element_by_id(
+                "allow_public_compositions_yes")
             elt.click()
         else:
-            elt = ff.find_element_by_id('allow_public_compositions_no')
+            elt = world.browser.find_element_by_id(
+                "allow_public_compositions_no")
             elt.click()
 
-        elt = ff.find_element_by_id("allow_public_compositions_submit")
+        elt = world.browser.find_element_by_id(
+            "allow_public_compositions_submit")
+
         if elt:
             elt.click()
-            alert = ff.switch_to_alert()
-            alert.accept()
+            accept_alert()
 
-            ff.get(django_url("/"))
+            world.browser.get(django_url("/"))
 
 
 @step(u'Then publish to world is ([^"]*)')
@@ -919,12 +898,12 @@ def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     filter_menu.click()
 
     try:
-        tags = filter_menu.find_element_by_css_selector(
+        tags = filter_menu.find_elements_by_css_selector(
             "a.switcher-choice.filterbytag")
         for t in tags:
             if t.text == tag:
                 assert False, "Found %s tag" % tag
-    except:
+    except NoSuchElementException:
         # pass - there may be no tags
         return
 
@@ -936,7 +915,7 @@ def the_title_project_has_no_delete_icon(step, title):
     try:
         link.parent.find_element_by_css_selector(".delete_icon")
         assert False, "%s does have a delete icon" % title
-    except:
+    except NoSuchElementException:
         assert True, "Item does not have a delete icon"
 
 
@@ -1019,21 +998,28 @@ def i_call_the_panel_title(step, panel, title):
     input.send_keys(title)
 
 
-@step(u'I write some text for the ([^"]*)')
-def i_write_some_text_for_the_panel(step, panel):
+@step(u'the ([^"]*) is called "([^"]*)"')
+def the_panel_is_called_title(step, panel, title):
     selector = "td.panel-container.open.%s" % panel.lower()
     panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
-    frame = panel.find_element_by_tag_name("iframe")
-    world.browser.switch_to_frame(frame)
-    input = world.browser.find_element_by_class_name("mceContentBody")
-    input.send_keys("""The Columbia Center for New Teaching and Learning
-                     was (CCNMTL) was founded at Columbia University in 1999
-                     to enhance teaching and learning through the purposeful
-                     use of new media and technology""")
+    input = panel.find_element_by_name("title")
+    val = input.get_attribute("value")
+    assert val == title, "Nope: %s" % val
 
-    world.browser.switch_to_default_content()
+
+@step(u'I write some text for the ([^"]*) "([^"]*)"')
+def i_write_some_text_for_the_panel_title(step, panel, title):
+    try:
+        project = Project.objects.get(title=title)
+        project.body = """The Columbia Center for New Teaching and Learning
+                was (CCNMTL) was founded at Columbia University in 1999
+                to enhance teaching and learning through the purposeful
+                use of new media and technology"""
+        project.save()
+    except Project.DoesNotExist:
+        assert False, "%s does not exist" % title
 
 
 @step(u'there is an? ([^"]*) "([^"]*)" reply by ([^"]*)')
@@ -1046,7 +1032,7 @@ def there_is_a_status_title_reply_by_author(step, status, title, author):
         title_elt = e.find_element_by_css_selector("a.metadata-value-response")
         title_parent = title_elt.parent
 
-        if title_elt.text.strip() == title:
+        if title_elt.text.strip().startswith(title):
             # author
             author_elt = title_parent.find_element_by_css_selector(
                 "span.metadata-value-author")
@@ -1076,12 +1062,16 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
         try:
             title_elt = e.find_element_by_css_selector(
                 "a.asset_title.type-project")
-        except:
-            title_elt = e.find_element_by_css_selector(
-                "a.asset_title.type-assignment")
-            assignment = True
+        except NoSuchElementException:
+            try:
+                title_elt = e.find_element_by_css_selector(
+                    "a.asset_title.type-assignment")
+                assignment = True
+            except NoSuchElementException:
+                world.browser.get_screenshot_as_file("/tmp/selenium.png")
+                assert False, "Cannot find the title %s css selector"
 
-        if title_elt.text.strip() == title:
+        if title_elt.text.strip().startswith(title):
             # type
             if assignment:
                 type_elt = e.find_element_by_css_selector(
@@ -1110,6 +1100,11 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
             return
 
     assert False, "Unable to find project named %s" % title
+
+
+@step(u'I take a picture')
+def i_take_a_picture(step):
+    world.browser.get_screenshot_as_file("/tmp/selenium.png")
 
 
 @step(u'The ([^"]*) title is "([^"]*)"')
@@ -1150,9 +1145,7 @@ def given_the_selection_visibility_is_value(step, value):
         elt = world.browser.find_element_by_id("selection_visibility_submit")
         if elt:
             elt.click()
-            alert = world.browser.switch_to_alert()
-            alert.accept()
-
+            accept_alert()
             world.browser.get(django_url("/"))
 
 
@@ -1167,6 +1160,30 @@ def get_column(title):
             continue
 
     return None
+
+
+def dismiss_alert():
+    try:
+        alert = world.browser.switch_to_alert()
+        alert.dismiss()
+    except WebDriverException, e:
+        if getattr(settings, 'BROWSER', None) == "Headless":
+            pass
+        else:
+            raise e
+
+
+def accept_alert():
+    try:
+        alert = world.browser.switch_to_alert()
+        alert.accept()
+    except WebDriverException, e:
+        if getattr(settings, 'BROWSER', None) == "Headless":
+            pass
+        else:
+            raise e
+
+world.accept_alert = accept_alert
 
 
 def find_button_by_value(value, parent=None):

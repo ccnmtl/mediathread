@@ -12,24 +12,11 @@
 {% endblock %}
 
 {% block js %}
-    <!--All the annotation javascript/css -->
+    <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
-    
-    <!--  Mustache Templating -->
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/mediathread_mustache.js?version={%revision%}"></script>
-    
+            
     <!--  Generic Functionality -->
     <script type="text/javascript" src="/site_media/jquery/js/jquery.masonry.min.js"></script>
-    <script type="text/javascript" src="/site_media/js/hs.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/ajaxDelete.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/panel.js?version={%revision%}"></script>
-    
-    <!--  Asset related -->
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/assetpanel.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/collection.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/assetmgr/asset.js?version={%revision%}"></script>
     
     <script type="text/javascript">
         jQuery(document).ready(function () {
@@ -46,10 +33,9 @@
 {% block content %}
     {{ block.super }}
     
-    <table id="sliding-content-container" class="ajaxLoading">
+    <table id="sliding-content-container">
         <tr id="sliding-content-row" class="sliding-content-row">
             <td id="sliding-content-last-column" class="filler"></td>
         </tr>
     </table>
-
 {% endblock %}    

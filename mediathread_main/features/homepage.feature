@@ -64,6 +64,7 @@ Feature: Homepage
         Given there is a sample response
         Given I am test_student_one in Sample Course
         
+        Given the home workspace is loaded
         There is not a From Your Instructor column
         The composition panel has 1 projects named "Sample Assignment"
         Then the composition panel has 1 response named "Sample Assignment Response"
@@ -73,13 +74,14 @@ Feature: Homepage
         And there is an open Composition panel
         And the Composition title is "Sample Assignment Response"  
         
-        Finished using Selenium   
+        Finished using Selenium
         
         
     Scenario Outline: homepage.feature 5. User Settings menu
         Using selenium
         Given I am <user_name> in Sample Course
         
+        Given the home workspace is loaded
         When I open the user menu
         Then there is a "Log Out" link
         There is not a "Switch Course" link

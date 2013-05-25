@@ -1,6 +1,42 @@
 from courseaffils.models import Course
 from mediathread_main import course_details
+from mediathread.api import UserResource
 from tastypie.test import ResourceTestCase
+from django.contrib.auth.models import User
+
+
+class UserResourceTest(ResourceTestCase):
+    # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
+    # documentation for the gory details.
+    fixtures = ['unittest_sample_course.json']
+
+    def test_render_one(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        student_one = User.objects.get(username='test_student_one')
+
+        member = UserResource().render_one(None, student_one)
+
+        self.assertEquals(member['public_name'], "Student One")
+
+    def test_render_list(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        sample_course = Course.objects.get(title="Sample Course")
+
+        members = UserResource().render_list(None, sample_course.members)
+
+        self.assertEquals(len(members), 6)
+        self.assertEquals(members[0]['public_name'], "test_instructor_two")
+        self.assertEquals(members[1]['public_name'], "test_student_three")
+        self.assertEquals(members[2]['public_name'], "Instructor One")
+        self.assertEquals(members[3]['public_name'], "Student One")
+        self.assertEquals(members[4]['public_name'], "Student Two")
+        self.assertEquals(members[5]['public_name'], "Teacher's  Assistant")
 
 
 class CourseResourceTest(ResourceTestCase):
@@ -13,7 +49,7 @@ class CourseResourceTest(ResourceTestCase):
                           primary_type, selection_ids, thumb_url):
 
         self.assertEquals(asset['title'], title)
-        self.assertEquals(asset['author']['full_name'], author)
+        self.assertEquals(asset['author']['public_name'], author)
         self.assertEquals(asset['primary_type'], primary_type)
         self.assertEquals(asset['thumb_url'], thumb_url)
 
@@ -44,10 +80,10 @@ class CourseResourceTest(ResourceTestCase):
 
         faculty = ['Instructor One', 'test_instructor_two']
 
-        self.assertTrue(json['faculty_group']['user_set'][0]['full_name']
+        self.assertTrue(json['faculty_group']['user_set'][0]['public_name']
                         in faculty)
 
-        self.assertTrue(json['faculty_group']['user_set'][1]['full_name']
+        self.assertTrue(json['faculty_group']['user_set'][1]['public_name']
                         in faculty)
 
     def test_student_getobject(self):

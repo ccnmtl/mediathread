@@ -6,9 +6,9 @@ from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.constants import ALL
+from tastypie.exceptions import ApiFieldError, BadRequest, InvalidSortError
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
-from tastypie.exceptions import ApiFieldError, BadRequest
 import re
 
 
@@ -43,6 +43,11 @@ class ToManyFieldEx(ToManyField):
             raise BadRequest("Invalid resource lookup data \
             provided (mismatched type).")
 
+    def apply_sorting(self, request, object_list):
+        m2m_resource = self.get_related_resource(None)
+        sorted = m2m_resource.apply_sorting(object_list, options=request.GET)
+        return sorted
+
     def dehydrate(self, bundle):
         if not bundle.obj or not bundle.obj.pk:
             if not self.null:
@@ -71,6 +76,12 @@ class ToManyFieldEx(ToManyField):
 
                 if not the_m2ms:
                     break
+
+                try:
+                    the_m2ms = self.apply_sorting(bundle.request,
+                                                  the_m2ms.all())
+                except InvalidSortError:
+                    pass
 
         elif callable(self.attribute):
             the_m2ms = self.attribute(bundle)
@@ -120,7 +131,7 @@ class UserAuthorization(Authorization):
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.none()
-        excludes = ['first_name', 'last_name', 'username', 'email',
+        excludes = ['first_name', 'last_name', 'email',
                     'password', 'is_active', 'is_staff', 'is_superuser',
                     'date_joined', 'last_login']
         allowed_methods = ['get']
@@ -130,8 +141,22 @@ class UserResource(ModelResource):
         filtering = {'id': ALL}
 
     def dehydrate(self, bundle):
-        bundle.data['full_name'] = get_public_name(bundle.obj, bundle.request)
+        bundle.data['public_name'] = get_public_name(bundle.obj,
+                                                     bundle.request)
         return bundle
+
+    def render_one(self, request, user):
+        bundle = self.build_bundle(obj=user, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return dehydrated.data
+
+    def render_list(self, request, lst):
+        data = []
+        for user in lst:
+            bundle = self.build_bundle(obj=user, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            data.append(dehydrated.data)
+        return data
 
 
 class GroupResource(ModelResource):

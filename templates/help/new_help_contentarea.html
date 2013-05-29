@@ -194,22 +194,22 @@
         {% if is_faculty %}
             <strong>How do I build my collection?</strong>
             <div class="feature-help-instructions">
-                <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
-                bookmarking items from sites such as YouTube or Flickr.
-                To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
-                in this column and follow directions.
-                </li>
-                
-                <li style="margin-bottom: 4px">
-                    <b>Upload</b>: Video and audio files may be uploaded 
-                    into Mediathread. Enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>. 
-                    To upload, click the 
-                    <b>Upload from Computer</b> link in this column.</li>                
-                <li>
-                    <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>.
-                </li>
-                
-            </ul>
+                <ul>
+                    <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
+                    bookmarking items from sites such as YouTube or Flickr.
+                    To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
+                    in this column and follow directions.
+                    </li>
+                    
+                    <li style="margin-bottom: 4px">
+                        <b>Upload</b>: Video and audio files may be uploaded 
+                        into Mediathread. Enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>. 
+                        To upload, click the 
+                        <b>Upload from Computer</b> link in this column.</li>                
+                    <li>
+                        <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>.
+                    </li>                
+                </ul>
             </div>
             
             <strong>How do I see my collection?</strong>
@@ -245,7 +245,7 @@
         <a href="/help/" style="margin-top: 3px;" class="more-help left">View More Help</a>        
         <input class="media right" type="button" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
-            value="Close">
+            value="Close" />
     </div>
 </div>
 <div class="visualclear"></div>

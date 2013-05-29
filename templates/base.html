@@ -152,10 +152,11 @@
 
 	{% block footer %}
 	<!-- ###### Footer ###### -->
-	<div id="footer">
-	   <ul id="footernav"><li><a href="/about/">About</a></li>
+    <div id="footer">
+	   <ul id="footernav">
+           <li><a href="/about/">About</a></li>
            {% if settings.PUBLIC_CONTACT_EMAIL %}                          
-           <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
+               <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
            {% endif %}
            <li><a href="/help/">Help</a></li>
         </ul>

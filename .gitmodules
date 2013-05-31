@@ -1,3 +1,0 @@
-[submodule "djangosherd/media/js/sherdjs"]
-	path = djangosherd/media/js/sherdjs
-	url = git://github.com/ccnmtl/SherdJS.git

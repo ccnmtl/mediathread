@@ -14,3 +14,4 @@ lettuce.db
 chromedriver.log
 ghostdriver.log
 .coverage
+media/js/sherdjs/

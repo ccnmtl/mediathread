@@ -6,7 +6,7 @@
 
 {% block content %}
   <h1>{% trans "Thank you for your comment" %}.</h1>
-  <a href="/discussion/show/{{comment.root_path.0.id}}#comment-{{comment.id}}">Back</a>
+  <a href="/discussion/{{comment.root_path.0.id}}#comment-{{comment.id}}">Back</a>
 
 
   {% get_comment_form for comment.content_object as current_comment_form with comment.id %}

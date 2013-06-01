@@ -31,7 +31,7 @@ def reset_database(variables):
         else:
             pass  # database doesn't exist yet. that's okay.
 
-    os.system('cp lettuce_base.db lettuce.db')
+    os.system('cp scripts/lettuce_base.db lettuce.db')
 
 
 @before.all
@@ -92,16 +92,16 @@ def access_url(step, url):
 
 @step(u'the ([^"]*) workspace is loaded')
 def the_name_workspace_is_loaded(step, name):
-    id = None
+    workspace_id = None
     if (name == "composition" or
         name == "assignment" or
             name == "home" or name == "collection"):
-        id = "loaded"
+        workspace_id = "loaded"
     else:
         assert False, "No selector configured for %s" % name
 
     wait = ui.WebDriverWait(world.browser, 5)
-    wait.until(lambda driver: world.browser.find_element_by_id(id))
+    wait.until(lambda driver: world.browser.find_element_by_id(workspace_id))
 
 
 @step(u'my browser resolution is ([^"]*) x ([^"]*)')
@@ -167,16 +167,17 @@ def i_am_at_the_name_page(step, name):
 
 @step(u'there is a sample assignment')
 def there_is_a_sample_assignment(step):
-    os.system("./manage.py loaddata main/fixtures/"
-              "sample_assignment.json --settings=settings_test > /dev/null")
+    os.system("./manage.py loaddata mediathread/main/fixtures/"
+              "sample_assignment.json "
+              "--settings=mediathread.settings_test > /dev/null")
     time.sleep(2)
 
 
 @step(u'there is a sample response')
 def there_is_a_sample_response(step):
-    os.system("./manage.py loaddata main/fixtures/"
+    os.system("./manage.py loaddata mediathread/main/fixtures/"
               "sample_assignment_and_response.json "
-              "--settings=settings_test > /dev/null")
+              "--settings=mediathread.settings_test > /dev/null")
     time.sleep(2)
 
 
@@ -184,9 +185,9 @@ def there_is_a_sample_response(step):
 def i_type_value_for_field(step, value, field):
     if world.using_selenium:
         selector = "input[name=%s]" % field
-        input = world.browser.find_element_by_css_selector(selector)
-        assert input is not None, "Cannot locate input field named %s" % field
-        input.send_keys(value)
+        elt = world.browser.find_element_by_css_selector(selector)
+        assert elt is not None, "Cannot locate input field named %s" % field
+        elt.send_keys(value)
 
 
 @step(u'I click the ([^"]*) button')

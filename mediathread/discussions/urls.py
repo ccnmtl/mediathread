@@ -9,15 +9,11 @@ urlpatterns = patterns(
         'discussion_delete',
         name='discussion-delete'),
 
+    url(r'^comment/(?P<comment_id>\d+)/$',
+        'comment_save',
+        name='comment-save'),
+
     url(r'^(?P<discussion_id>\d+)/$',
         'discussion_view',
         name='discussion-view'),
-
-    url(r'^show/(?P<discussion_id>\d+)/$',
-        'discussion_view',
-        name='discussion-show'),
-
-    url(r'^comment/(?P<comment_id>\d+)$',
-        'comment_save',
-        name='comment-save'),
 )

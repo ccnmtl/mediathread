@@ -71,7 +71,7 @@
                 return '/asset/save/' + asset_id + '/annotations/' + annotation_id + '/';
             },
             'annotation-delete': function (asset_id, annotation_id) {
-                return '/asset/delete/' + asset_id + '/annotations/' + annotation_id;
+                return '/asset/delete/' + asset_id + '/annotations/' + annotation_id + '/';
             },
             'project-view': function (project_id) {
                 return '/project/view/' + project_id + '/';
@@ -86,13 +86,13 @@
                 return '/project/create/';
             },
             'discussion-view': function (discussion_id) {
-                return '/discussion/show/' + discussion_id + "/";
+                return '/discussion/' + discussion_id + "/";
             },
             'discussion-create': function () {
                 return '/discussion/create/';
             },
             'comment-edit': function (comment_id) {
-                return '/discussion/comment/' + comment_id;
+                return '/discussion/comment/' + comment_id + '/';
             },
             'comment-create': function () {
                 return '/comments/post/';

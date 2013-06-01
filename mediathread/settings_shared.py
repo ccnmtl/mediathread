@@ -59,6 +59,9 @@ MEDIA_ROOT = "uploads/"
 MEDIA_URL = '/uploads/'
 STATIC_URL = '/media/'
 
+#appends a slash if nothing is found without a slash.
+APPEND_SLASH = True
+
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader'

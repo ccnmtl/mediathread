@@ -130,11 +130,11 @@ def main(all_files):
         result = return_code or result
 
     # Update the release id if things looks good
-    #if result == 0:
-    #    print 'Updating Release Id...'
-    #    return_code = subprocess.call('scripts/update-release-id.sh',
-    #                                  shell=True)
-    #    result = return_code or result
+    if result == 0:
+        print 'Updating Release Id...'
+        return_code = subprocess.call('scripts/update-release-id.sh',
+                                      shell=True)
+        result = return_code or result
 
     sys.exit(result)
 

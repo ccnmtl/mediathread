@@ -12,8 +12,8 @@ from django.template import RequestContext
 from djangohelpers.lib import allow_http
 from mediathread.djangosherd.views import create_annotation, \
     delete_annotation, edit_annotation, update_annotation
-from mediathread.mediathread_main import course_details
-from mediathread.mediathread_main.models import UserSetting
+from mediathread.main import course_details
+from mediathread.main.models import UserSetting
 import datetime
 import hashlib
 import hmac

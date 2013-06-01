@@ -10,19 +10,19 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding model 'UserSetting'
-        db.create_table('mediathread_main_usersetting', (
+        db.create_table('main_usersetting', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
             ('value', self.gf('django.db.models.fields.CharField')(max_length=255)),
         ))
-        db.send_create_signal('mediathread_main', ['UserSetting'])
+        db.send_create_signal('main', ['UserSetting'])
 
 
     def backwards(self, orm):
         
         # Deleting model 'UserSetting'
-        db.delete_table('mediathread_main_usersetting')
+        db.delete_table('main_usersetting')
 
 
     models = {
@@ -62,7 +62,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'mediathread_main.usersetting': {
+        'main.usersetting': {
             'Meta': {'object_name': 'UserSetting'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
@@ -71,4 +71,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['mediathread_main']
+    complete_apps = ['main']

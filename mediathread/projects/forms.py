@@ -1,7 +1,7 @@
 from courseaffils.lib import get_public_name
 from django import forms
 from django.forms.widgets import RadioSelect
-from mediathread.mediathread_main import course_details
+from mediathread.main import course_details
 from mediathread.projects.models import PUBLISH_OPTIONS_PUBLIC, \
     PUBLISH_OPTIONS_STUDENT_ASSIGNMENT, PUBLISH_OPTIONS_STUDENT_COMPOSITION, \
     PUBLISH_OPTIONS, PUBLISH_OPTIONS_FACULTY

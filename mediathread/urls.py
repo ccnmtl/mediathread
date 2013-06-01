@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from djangosherd.api import SherdNoteResource
-from mediathread.mediathread_main.api import CourseResource, \
+from mediathread.main.api import CourseResource, \
     CourseSummaryResource
 from mediathread.projects.api import ProjectResource
 from tastypie.api import Api
@@ -59,10 +59,10 @@ urlpatterns = patterns(
     auth_urls,  # see above
 
     (r'^contact/', login_required(direct_to_template),
-     {'template': 'mediathread_main/contact.html'}),
+     {'template': 'main/contact.html'}),
 
     (r'^_stats/', direct_to_template,
-     {'template': 'mediathread_main/stats.html'}),
+     {'template': 'main/stats.html'}),
 
     (r'^admin/', admin.site.urls),
 
@@ -89,21 +89,21 @@ urlpatterns = patterns(
      {'document_root': settings.MEDIA_ROOT}),
 
     # Homepage
-    (r'^$', 'mediathread.mediathread_main.views.triple_homepage'),
-    (r'^yourspace/', include('mediathread.mediathread_main.urls')),
+    (r'^$', 'mediathread.main.views.triple_homepage'),
+    (r'^yourspace/', include('mediathread.main.urls')),
     (r'^_main/api/', include(v1_api.urls)),
 
     # Instructor Dashboard & reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
     url(r'^dashboard/migrate/',
-        'mediathread.mediathread_main.views.migrate',
+        'mediathread.main.views.migrate',
         name="dashboard-migrate"),
     url(r'^dashboard/sources/',
-        'mediathread.mediathread_main.views.class_manage_sources',
+        'mediathread.main.views.class_manage_sources',
         name="class-manage-sources"),
     url(r'^dashboard/settings/',
-        'mediathread.mediathread_main.views.class_settings',
+        'mediathread.main.views.class_settings',
         name="class-settings"),
 
     # Collections Space

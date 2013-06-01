@@ -97,7 +97,7 @@ class Migration(DataMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'mediathread_main.usersetting': {
+        'main.usersetting': {
             'Meta': {'object_name': 'UserSetting'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
@@ -106,4 +106,4 @@ class Migration(DataMigration):
         }
     }
 
-    complete_apps = ['mediathread_main']
+    complete_apps = ['main']

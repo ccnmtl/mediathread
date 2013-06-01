@@ -45,5 +45,5 @@ SECRET_KEY = ''
 # External url for issue reporting system or e-mail notification
 # Accepts a post string with various bits of information collected
 # from a Contact Us form.
-# See templates/mediathread_main/contact.html for specific form fields
+# See templates/main/contact.html for specific form fields
 # CONTACT_US_DESTINATION = ""

@@ -1,5 +1,5 @@
 from courseaffils.models import Course
-from mediathread.mediathread_main import course_details
+from mediathread.main import course_details
 from mediathread.api import UserResource
 from tastypie.test import ResourceTestCase
 from django.contrib.auth.models import User

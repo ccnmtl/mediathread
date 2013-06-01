@@ -43,21 +43,7 @@ CHECKS = [
         'command': 'grep -n debugger %s',
         'match_files': ['.*\.js$', '.*/media/CACHE/.*'],
         'print_filename': True,
-    },
-    {
-        'output': 'Running flake8...',
-        'command': 'flake8 --max-complexity=16 --ignore=W404 %s',
-        'match_files': ['.*\.py$'],
-        'ignore_files': ['.*settings/.*',
-                         '.*manage.py',
-                         '.*migrations.*',
-                         '.*/ve/.*',
-                         '.*virtualenv\.py$',
-                         '.*settings_production\.py$',
-                         '.*settings_stage\.py$',
-                         '.*/assetmgr/supported_archives\.py$'],
-        'print_filename': True,
-    },
+    }
 ]
 
 
@@ -119,9 +105,16 @@ def main(all_files):
         result = check_files(files, check) or result
 
     if result == 0:
+        print 'Running Flake8...'
+        return_code = subprocess.call(
+            'flake8 --exclude=ve,media --ignore=F403 .',
+            shell=True)
+        result = return_code or result
+
+    if result == 0:
         print 'Running Unit Tests...'
         return_code = subprocess.call(
-            './manage.py test djangosherd assetmgr projects mediathread_main',
+            './manage.py test',
             shell=True)
         result = return_code or result
 

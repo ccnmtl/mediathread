@@ -8,7 +8,7 @@ from djangohelpers.lib import allow_http, rendered_with
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
-from mediathread.mediathread_main.clumper import Clumper
+from mediathread.main.clumper import Clumper
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
 import csv

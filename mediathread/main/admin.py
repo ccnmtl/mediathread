@@ -1,5 +1,5 @@
 from django.contrib import admin
-from mediathread.mediathread_main.models import UserSetting
+from mediathread.main.models import UserSetting
 
 
 class UserSettingAdmin(admin.ModelAdmin):

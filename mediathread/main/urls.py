@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns(
-    'mediathread.mediathread_main.views',
+    'mediathread.main.views',
     # urls prefix 'yourspace/'
 
     # Collections box: View All Class Members' assets & work

@@ -21,5 +21,5 @@ BROWSER = 'Chrome'
 
 # Run a particular file + scenario
 # ./manage.py harvest \
-# mediathread_main/features/manage_selection_visibility.feature \
+# mediathread/main/features/manage_selection_visibility.feature \
 # -d --settings=settings_test -s 1

@@ -45,7 +45,7 @@ if 'test' in sys.argv:
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
-    ('--cover-package=mediathread.mediathread_main,mediathread.djangosherd,'
+    ('--cover-package=mediathread.main,mediathread.djangosherd,'
      'mediathread.assetmgr,mediathread.projects'),
 ]
 
@@ -70,7 +70,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
-    'mediathread.mediathread_main.views.django_settings',
+    'mediathread.main.views.django_settings',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,7 +80,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'mediathread.mediathread_main.middleware.AuthRequirementMiddleware',
+    'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware'
 )
 
@@ -98,7 +98,7 @@ TEMPLATE_DIRS = (
 )
 
 LETTUCE_APPS = (
-    'mediathread.mediathread_main',
+    'mediathread.main',
     'mediathread.projects',
     'mediathread.assetmgr',
     'mediathread.djangosherd'
@@ -126,7 +126,7 @@ INSTALLED_APPS = (
     'threadedcomments',
     'djangohelpers',
     'mediathread.reports',
-    'mediathread.mediathread_main',
+    'mediathread.main',
     'sentry.client',
     'south',
     'lettuce.django',

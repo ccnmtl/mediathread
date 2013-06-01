@@ -111,12 +111,12 @@ def main(all_files):
             shell=True)
         result = return_code or result
 
-    if result == 0:
-        print 'Running Unit Tests...'
-        return_code = subprocess.call(
-            './manage.py test',
-            shell=True)
-        result = return_code or result
+    #if result == 0:
+    #    print 'Running Unit Tests...'
+    #    return_code = subprocess.call(
+    #        './manage.py test',
+    #        shell=True)
+    #    result = return_code or result
 
     # Unstash changes to the working tree that we had stashed
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'],
@@ -130,11 +130,11 @@ def main(all_files):
         result = return_code or result
 
     # Update the release id if things looks good
-    if result == 0:
-        print 'Updating Release Id...'
-        return_code = subprocess.call('scripts/update-release-id.sh',
-                                      shell=True)
-        result = return_code or result
+    #if result == 0:
+    #    print 'Updating Release Id...'
+    #    return_code = subprocess.call('scripts/update-release-id.sh',
+    #                                  shell=True)
+    #    result = return_code or result
 
     sys.exit(result)
 

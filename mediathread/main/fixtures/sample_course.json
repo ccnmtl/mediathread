@@ -257,7 +257,7 @@
         "fields": {
             "model": "usersetting", 
             "name": "user setting", 
-            "app_label": "mediathread_main"
+            "app_label": "main"
         }
     },
     {
@@ -852,7 +852,7 @@
     },
     {
         "pk": 1, 
-        "model": "mediathread_main.usersetting", 
+        "model": "main.usersetting", 
         "fields": {
             "user": 6, 
             "value": "true", 
@@ -861,7 +861,7 @@
     }, 
     {
         "pk": 2, 
-        "model": "mediathread_main.usersetting", 
+        "model": "main.usersetting", 
         "fields": {
             "user": 3, 
             "value": "False", 
@@ -870,7 +870,7 @@
     }, 
     {
         "pk": 3, 
-        "model": "mediathread_main.usersetting", 
+        "model": "main.usersetting", 
         "fields": {
             "user": 5, 
             "value": "true", 
@@ -879,7 +879,7 @@
     }, 
     {
         "pk": 4, 
-        "model": "mediathread_main.usersetting", 
+        "model": "main.usersetting", 
         "fields": {
             "user": 10, 
             "value": "False", 
@@ -888,7 +888,7 @@
     }, 
     {
         "pk": 5, 
-        "model": "mediathread_main.usersetting", 
+        "model": "main.usersetting", 
         "fields": {
             "user": 10, 
             "value": "False", 
@@ -897,7 +897,7 @@
     }, 
     {
         "pk": 6, 
-        "model": "mediathread_main.usersetting", 
+        "model": "main.usersetting", 
         "fields": {
             "user": 10, 
             "value": "true", 
@@ -927,7 +927,7 @@
         "model": "south.migrationhistory", 
         "fields": {
             "applied": "2012-05-12 16:25:56", 
-            "app_name": "mediathread_main", 
+            "app_name": "main", 
             "migration": "0001_initial"
         }
     }, 

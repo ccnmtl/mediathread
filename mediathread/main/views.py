@@ -13,9 +13,9 @@ from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.assetmgr.views import gallery_asset_json
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
-from mediathread.mediathread_main import course_details
-from mediathread.mediathread_main.api import CourseSummaryResource
-from mediathread.mediathread_main.models import UserSetting
+from mediathread.main import course_details
+from mediathread.main.api import CourseSummaryResource
+from mediathread.main.models import UserSetting
 from mediathread.projects.lib import homepage_project_json, \
     homepage_assignment_json
 from mediathread.projects.models import Project

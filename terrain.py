@@ -167,14 +167,14 @@ def i_am_at_the_name_page(step, name):
 
 @step(u'there is a sample assignment')
 def there_is_a_sample_assignment(step):
-    os.system("./manage.py loaddata mediathread_main/fixtures/"
+    os.system("./manage.py loaddata main/fixtures/"
               "sample_assignment.json --settings=settings_test > /dev/null")
     time.sleep(2)
 
 
 @step(u'there is a sample response')
 def there_is_a_sample_response(step):
-    os.system("./manage.py loaddata mediathread_main/fixtures/"
+    os.system("./manage.py loaddata main/fixtures/"
               "sample_assignment_and_response.json "
               "--settings=settings_test > /dev/null")
     time.sleep(2)

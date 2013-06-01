@@ -1,7 +1,7 @@
 from django.db.models import Q
 from mediathread.djangosherd.models import SherdNote
 from mediathread.api import UserResource, ClassLevelAuthentication
-from mediathread.mediathread_main import course_details
+from mediathread.main import course_details
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL_WITH_RELATIONS

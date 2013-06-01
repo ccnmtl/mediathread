@@ -131,10 +131,10 @@ class Collaboration(models.Model):
             result = result.get_parent()
         return result
 
-    def append_child(self, object=None):
+    def append_child(self, obj=None):
         coll, created = Collaboration.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(type(object)),
-            object_pk=str(object.pk), )
+            content_type=ContentType.objects.get_for_model(type(obj)),
+            object_pk=str(obj.pk), )
         coll._parent = self
         coll.save()
         return coll

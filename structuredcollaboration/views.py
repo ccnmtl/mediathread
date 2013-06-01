@@ -13,11 +13,11 @@ from django.contrib.contenttypes.models import ContentType
 def view_collab_by_obj(request, context_slug, obj_type, obj_id):
     context = get_object_or_404(Collaboration, slug=context_slug)
     request.collaboration_context = context
-    collab = get_object_or_404(Collaboration,
-                               context=context,
-                               content_type=
-                               ContentType.objects.get(model=obj_type),
-                               object_pk=obj_id)
+    collab = get_object_or_404(
+        Collaboration,
+        context=context,
+        content_type=ContentType.objects.get(model=obj_type),
+        object_pk=obj_id)
     return serve_collaboration(request, collab)
 
 

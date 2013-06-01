@@ -1,3 +1,5 @@
+# flake8: noqa
+#!/usr/bin/env python
 """Create a "virtual" Python installation
 """
 
@@ -51,7 +53,7 @@ else:
 
 
 REQUIRED_MODULES = ['os', 'posix', 'posixpath', 'nt', 'ntpath', 'genericpath',
-                    'fnmatch', 'locale', 'encodings', 'codecs',
+                    'fnpass', 'locale', 'encodings', 'codecs',
                     'stat', 'UserDict', 'readline', 'copy_reg', 'types',
                     're', 'sre', 'sre_parse', 'sre_constants', 'sre_compile',
                     'zlib']
@@ -274,7 +276,7 @@ class Logger(object):
         args = args or kw
         rendered = None
         for consumer_level, consumer in self.consumers:
-            if self.level_matches(level, consumer_level):
+            if self.level_passes(level, consumer_level):
                 if (self.in_progress_hanging
                     and consumer in (sys.stdout, sys.stderr)):
                     self.in_progress_hanging = False
@@ -295,7 +297,7 @@ class Logger(object):
         assert not self.in_progress, (
             "Tried to start_progress(%r) while in_progress %r"
             % (msg, self.in_progress))
-        if self.level_matches(self.NOTIFY, self._stdout_level()):
+        if self.level_passes(self.NOTIFY, self._stdout_level()):
             sys.stdout.write(msg)
             sys.stdout.flush()
             self.in_progress_hanging = True
@@ -306,7 +308,7 @@ class Logger(object):
     def end_progress(self, msg='done.'):
         assert self.in_progress, (
             "Tried to end_progress without start_progress")
-        if self.stdout_level_matches(self.NOTIFY):
+        if self.stdout_level_passes(self.NOTIFY):
             if not self.in_progress_hanging:
                 # Some message has been printed out since start_progress
                 sys.stdout.write('...' + self.in_progress + msg + '\n')
@@ -324,9 +326,9 @@ class Logger(object):
             sys.stdout.write('.')
             sys.stdout.flush()
 
-    def stdout_level_matches(self, level):
+    def stdout_level_passes(self, level):
         """Returns true if a message at this level will go to stdout"""
-        return self.level_matches(level, self._stdout_level())
+        return self.level_passes(level, self._stdout_level())
 
     def _stdout_level(self):
         """Returns the level that stdout runs at"""
@@ -335,20 +337,20 @@ class Logger(object):
                 return level
         return self.FATAL
 
-    def level_matches(self, level, consumer_level):
+    def level_passes(self, level, consumer_level):
         """
         >>> l = Logger()
-        >>> l.level_matches(3, 4)
+        >>> l.level_passes(3, 4)
         False
-        >>> l.level_matches(3, 2)
+        >>> l.level_passes(3, 2)
         True
-        >>> l.level_matches(slice(None, 3), 3)
+        >>> l.level_passes(slice(None, 3), 3)
         False
-        >>> l.level_matches(slice(None, 3), 2)
+        >>> l.level_passes(slice(None, 3), 2)
         True
-        >>> l.level_matches(slice(1, 3), 1)
+        >>> l.level_passes(slice(1, 3), 1)
         True
-        >>> l.level_matches(slice(2, 3), 1)
+        >>> l.level_passes(slice(2, 3), 1)
         False
         """
         if isinstance(level, slice):
@@ -459,6 +461,10 @@ def _find_file(filename, dirs):
 
 def _install_req(py_executable, unzip=False, distribute=False,
                  search_dirs=None, never_download=False):
+
+    if search_dirs is None:
+        search_dirs = file_search_dirs()
+
     if not distribute:
         setup_fn = 'setuptools-0.6c11-py%s.egg' % sys.version[:3]
         project_name = 'setuptools'
@@ -500,7 +506,7 @@ def _install_req(py_executable, unzip=False, distribute=False,
         cmd.append('--always-unzip')
     env = {}
     remove_from_env = []
-    if logger.stdout_level_matches(logger.DEBUG):
+    if logger.stdout_level_passes(logger.DEBUG):
         cmd.append('-v')
 
     old_chdir = os.getcwd()
@@ -588,7 +594,10 @@ def install_distribute(py_executable, unzip=False,
                  search_dirs=search_dirs, never_download=never_download)
 
 _pip_re = re.compile(r'^pip-.*(zip|tar.gz|tar.bz2|tgz|tbz)$', re.I)
-def install_pip(py_executable, search_dirs=None, never_download=False):
+def install_pip(py_executable, search_dirs=None, never_download=False):    
+    if search_dirs is None:
+        search_dirs = file_search_dirs()
+
     filenames = []
     for dir in search_dirs:
         filenames.extend([join(dir, fn) for fn in os.listdir(dir)
@@ -639,7 +648,7 @@ def filter_ez_setup(line, project_name='setuptools'):
             if line.startswith(prefix):
                 return Logger.DEBUG
         return Logger.DEBUG
-    for prefix in ['Reading ', 'Best match', 'Processing setuptools',
+    for prefix in ['Reading ', 'Best pass', 'Processing setuptools',
                    'Copying setuptools', 'Adding setuptools',
                    'Installing ', 'Installed ']:
         if line.startswith(prefix):
@@ -838,7 +847,7 @@ def call_subprocess(cmd, show_stdout=True,
                 if isinstance(level, tuple):
                     level, line = level
                 logger.log(level, line)
-                if not logger.stdout_level_matches(level):
+                if not logger.stdout_level_passes(level):
                     logger.show_progress()
             else:
                 logger.info(line)

@@ -292,7 +292,7 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
                 self._save = false;
                 var opts = jQuery(self.el).find("select[name='revisions'] option:selected");
                 if (opts.length < 1) {
-                    alert("Please select a revision");
+                    showMessage("Please select a revision");
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -334,7 +334,7 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
                 self._save = false;
                 var opts = jQuery(self.el).find("select[name='responses'] option:selected");
                 if (opts.length < 1) {
-                    alert("Please select a response");
+                    showMessage("Please select a response");
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -378,7 +378,7 @@ ProjectPanelHandler.prototype.showMyResponses = function (evt) {
                 self._save = false;
                 var opts = jQuery(self.el).find("select[name='my-responses'] option:selected");
                 if (opts.length < 1) {
-                    alert("Please select a response");
+                    showMessage("Please select a response");
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -615,11 +615,11 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
         dataType: 'json',
         error: function () {
             jQuery(saveButton).removeAttr("disabled").attr("value", "Save").removeClass("saving");
-            alert('There was an error saving your project.');
+            showMessage('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {
             if (json.status === 'error') {
-                alert(json.msg);
+                showMessage(json.msg);
             } else {
                 var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
                 if (json.revision.public_url) {
@@ -718,7 +718,7 @@ ProjectPanelHandler.prototype._validAuthors = function () {
     // Make sure there's at least one author
     var options = jQuery(self.el).find("select[name='participants'] option");
     if (options.length < 1) {
-        alert("This project has no authors. Please select at least one author.");
+        showMessage("This project has no authors. Please select at least one author.");
         return false;
     } else {
         return true;
@@ -731,11 +731,11 @@ ProjectPanelHandler.prototype._validTitle = function () {
     var title = jQuery(self.el).find("input.project-title");
     var value = title.val();
     if (!value || value.length < 1) {
-        alert("Please specify a project title.");
+        showMessage("Please specify a project title.");
         title.focus();
         return false;
     } else if (value === "Untitled") {
-        alert('Please update your "Untitled" project title.');
+        showMessage('Please update your "Untitled" project title.');
         title.focus();
         return false;
     } else {

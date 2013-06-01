@@ -42,12 +42,12 @@ Feature: Homepage Delete Operations. Project, Item
         The "Sample Assignment" project has a delete icon
         
         When I click the "Sample Assignment" project delete icon
-        Then I cancel an alert dialog
+        Then I cancel the action
         The "Sample Assignment" project has a delete icon
         Then there is a "Sample Assignment" link
         
         When I click the "Sample Assignment" project delete icon
-        Then I ok an alert dialog
+        Then I confirm the action
         
         Then there is not a "Sample Assignment" link
         
@@ -64,10 +64,10 @@ Feature: Homepage Delete Operations. Project, Item
         The "Sample Assignment Response" project has a delete icon
         
         When I click the "Sample Assignment Response" project delete icon
-        Then I cancel an alert dialog
+        Then I cancel the action
         
         When I click the "Sample Assignment Response" project delete icon
-        Then I ok an alert dialog
+        Then I confirm the action
         
         Then there is not a "Sample Assignment Response" link
         Then the composition panel has 1 project named "Sample Assignment"

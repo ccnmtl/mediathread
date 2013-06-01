@@ -35,7 +35,7 @@
                 
                 {% ifequal msg "upload" %}
                     var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
-                    alert(msg);
+                    showMessage(msg);
                 {% else %}{% if show_tour %}
                     jQuery(window).trigger('tour.start');
                 {% endif %}
@@ -67,7 +67,7 @@
                                 },
                                 error: function (xhr) {
                                     window.sky = xhr;
-                                    alert("An error occurred when sort the projects.");
+                                    showMessage("An error occurred when sort the projects.");
                                 }
                             });
                         }

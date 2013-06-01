@@ -14,7 +14,8 @@ Feature: Manage Sources
         
         # Enable Video Upload
         When I click the Enable Video Upload button
-        Then I'm told "Mediathread Video Upload has been enabled for your class"
+        Then I'm told "Mediathread Video Upload has been enabled for your class"       
+        Then I confirm the action
         And I see "Upload Permission Settings"
         
         # Under Add to My Collection        
@@ -67,6 +68,7 @@ Feature: Manage Sources
         Then I am at the Manage Sources page
         When I allow Administrators to upload videos
         Then I'm told "Your changes have been saved"
+        Then I confirm the action
         
         # Instructor cannot see
         When I click the "Sample Course" link
@@ -96,6 +98,7 @@ Feature: Manage Sources
         Then I am at the Manage Sources page
         When I allow Students to upload videos
         Then I'm told "Your changes have been saved"
+        Then I confirm the action
         
         # Instructor can see
         When I click the "Sample Course" link
@@ -125,6 +128,7 @@ Feature: Manage Sources
         Then I am at the Manage Sources page
         When I allow Students to upload videos
         Then I'm told "Your changes have been saved"
+        Then I confirm the action
         
         # Regular Instructor cannot upload on behalf of
         When I click the "Sample Course" link
@@ -186,6 +190,7 @@ Feature: Manage Sources
         # Add the YouTube Source
         When I add YouTube to the class
         Then I'm told "You Tube has been enabled for your class"
+        Then I confirm the action
         Then there is an Remove button
 
         # Under Add to My Collection
@@ -209,6 +214,7 @@ Feature: Manage Sources
         # Add the YouTube Source
         When I add YouTube to the class
         Then I'm told "You Tube has been enabled for your class"
+        Then I confirm the action
         Then there is an Remove button
         
         # Under Add to My Collection
@@ -223,6 +229,7 @@ Feature: Manage Sources
         
         When I click the Remove button
         Then I'm told "You Tube has been disabled for your class"
+        Then I confirm the action
 
         # Under Add to My Collection
         When I click the "Sample Course" link

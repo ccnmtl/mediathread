@@ -477,7 +477,7 @@
                 var tags = tag_field.value.split(',');
                 for (var i = 0; i < tags.length; i++) {
                     if (tags[i].trim().length > 25) {
-                        alert('The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
+                        showMessage('The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
                               'And, be sure to separate your tags with commas.');
                         return false;
                     }
@@ -494,7 +494,7 @@
                 dataType: 'json',
                 error: function () {
                     jQuery(saveButton).removeAttr("disabled").attr("value", "Save").removeClass("saving");
-                    alert('There was an error saving your changes.');
+                    showMessage('There was an error saving your changes.');
                 },
                 success: function (json, textStatus, xhr) {
                     // Repopulate the cache & refresh the asset view
@@ -706,18 +706,26 @@
                 var tags = tag_field.value.split(',');
                 for (var i = 0; i < tags.length; i++) {
                     if (tags[i].trim().length > 25) {
-                        alert('The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
-                              'And, be sure to separate your tags with commas.');
+                        var msg = 'The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
+                            'And, be sure to separate your tags with commas.';
+                        showMessage(msg,
+                              function() {
+                                jQuery(saveButton).removeAttr("disabled");
+                                jQuery(saveButton).removeClass("saving");
+                                jQuery(saveButton).attr("value", "Save");
+                        });
                         return;
                     }
                 }
             }
             
             if (frm.elements['annotation-title'].value === '') {
-                alert('Please specify a selection title');
-                jQuery(saveButton).removeAttr("disabled");
-                jQuery(saveButton).removeClass("saving");
-                jQuery(saveButton).attr("value", "Save");
+                showMessage('Please specify a selection title',
+                        function() {
+                            jQuery(saveButton).removeAttr("disabled");
+                            jQuery(saveButton).removeClass("saving");
+                            jQuery(saveButton).attr("value", "Save");
+                });
                 return;
             }
             

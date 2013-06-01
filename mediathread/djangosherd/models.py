@@ -365,11 +365,11 @@ class DiscussionIndex(models.Model):
 
     def get_parent_url(self):
         if self.comment and self.comment.threadedcomment:
-            return '/discussion/show/%s' % self.comment.threadedcomment.root_id
+            return '/discussion/%s' % self.comment.threadedcomment.root_id
 
     def get_absolute_url(self):
         if self.comment and self.comment.threadedcomment:
-            return '/discussion/show/%s#comment-%s' % \
+            return '/discussion/%s#comment-%s' % \
                 (self.comment.threadedcomment.root_id, self.comment.id)
         elif self.collaboration.content_object:
             return self.collaboration.content_object.get_absolute_url()

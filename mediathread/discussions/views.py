@@ -86,7 +86,7 @@ def discussion_create(request):
     disc_sc.save()
 
     if not request.is_ajax():
-        return HttpResponseRedirect("/discussion/show/%d" %
+        return HttpResponseRedirect("/discussion/%d/" %
                                     new_threaded_comment.id)
     else:
         data = {'panel_state': 'open',

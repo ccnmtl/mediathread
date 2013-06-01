@@ -111,12 +111,12 @@ def main(all_files):
             shell=True)
         result = return_code or result
 
-    #if result == 0:
-    #    print 'Running Unit Tests...'
-    #    return_code = subprocess.call(
-    #        './manage.py test',
-    #        shell=True)
-    #    result = return_code or result
+    if result == 0:
+        print 'Running Unit Tests...'
+        return_code = subprocess.call(
+            './manage.py test',
+            shell=True)
+        result = return_code or result
 
     # Unstash changes to the working tree that we had stashed
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'],

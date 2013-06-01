@@ -281,28 +281,26 @@
                 dataType: 'json',
                 error: function () {
                     // Remove overlay & progress indicator
-                    alert('There was an error migrating these course materials.');
+                    showMessage('There was an error migrating these course materials.');
                 },
                 success: function (json, textStatus, xhr) {
-                    var msg = "Success! \n";
+                    var msg = "";
                     if (json.asset_count) {
-                        msg += json.asset_count + " items imported";
+                        msg += json.asset_count + " items imported<br />";
                         if (json.note_count) {
-                            msg += " with " + json.note_count + " selections";
+                            msg += " with " + json.note_count + " selection(s)<br />";
                         }
-                        
-                        msg += "\n";
                     }
                     if (json.project_count) {
                         msg += json.project_count + " projects imported";
                     }
-                    alert(msg);
-                    
-                    jQuery("#selected-for-import").fadeOut();
-                    jQuery("#selected-for-import").html("");
-                    
-                    self.selectedProjects.reset();
-                    self.selectedAssets.reset();
+                    showMessage(msg, function() {                        
+                        jQuery("#selected-for-import").fadeOut();
+                        jQuery("#selected-for-import").html("");
+                        
+                        self.selectedProjects.reset();
+                        self.selectedAssets.reset();
+                    });
                 }
             });
         },

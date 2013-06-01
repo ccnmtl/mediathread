@@ -7,7 +7,7 @@ function ajaxDelete(link, container, opts) {
     } else if (opts && opts.href) {
         postUrl = opts.href;
     } else {
-        alert("An error occurred. Unable to delete this item.");
+        showMessage("An error occurred. Unable to delete this item.");
     }    
     
     var dom = document.getElementById(container);
@@ -24,7 +24,7 @@ function ajaxDelete(link, container, opts) {
     
     jQuery("#dialog-confirm").html(msg);
     
-    jQuery("#dialog-confirm" ).dialog({
+    jQuery("#dialog-confirm").dialog({
         resizable: false,
         height: 140,
         modal: true,
@@ -47,7 +47,7 @@ function ajaxDelete(link, container, opts) {
                                 jQuery(dom).remove();
                             });
                         } else {
-                            alert("Error: " + textStatus);
+                            showMessage("Error: " + textStatus);
                         }
                         if (opts && opts.success) {
                             opts.success();
@@ -55,7 +55,7 @@ function ajaxDelete(link, container, opts) {
                     },
                     error: function (xhr) {
                         window.sky = xhr;
-                        alert("Error!");
+                        showMessage("Error!");
                     }
                 });                    
             }

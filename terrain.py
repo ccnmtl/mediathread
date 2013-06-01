@@ -8,8 +8,7 @@ import errno
 import os
 import selenium.webdriver.support.ui as ui
 import time
-from selenium.common.exceptions import WebDriverException, \
-    NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 
 try:
     from lxml import html
@@ -298,18 +297,33 @@ def i_do_not_see_text(step, text):
     assert text not in world.browser.page_source, world.browser.page_source
 
 
-@step(u'I cancel an alert dialog')
-def i_cancel_an_alert_dialog(step):
-    time.sleep(1)
-    dismiss_alert()
-    time.sleep(1)
+@step(u'I cancel the action')
+def i_cancel_the_action(step):
+    dialog = world.browser.find_element_by_id("dialog-confirm").parent
+    btns = dialog.find_elements_by_tag_name("button")
+    for btn in btns:
+        span = btn.find_element_by_css_selector("span.ui-button-text")
+        if span.text == "Cancel":
+            btn.click()
+            time.sleep(2)
+            return
+
+    world.browser.get_screenshot_as_file("/tmp/selenium.png")
+    assert False, "Unable to locate the dialog's Cancel button"
 
 
-@step(u'I ok an alert dialog')
-def i_ok_an_alert_dialog(step):
-    time.sleep(1)
-    accept_alert()
-    time.sleep(1)
+@step(u'I confirm the action')
+def i_confirm_the_action(step):
+    dialog = world.browser.find_element_by_id("dialog-confirm").parent
+    btns = dialog.find_elements_by_tag_name("button")
+    for btn in btns:
+        span = btn.find_element_by_css_selector("span.ui-button-text")
+        if span.text == "OK":
+            btn.click()
+            time.sleep(2)
+            return
+
+    assert False, "Unable to locate the dialog's OK button"
 
 
 @step(u'I open the ([^"]*) menu')
@@ -373,18 +387,10 @@ def there_is_no_help_for_the_title_column(step, title):
                 return  # Expected outcome
 
 
-@step(u'I\'m told ([^"]*)')
+@step(u'I\'m told "([^"]*)"')
 def i_m_told_text(step, text):
-    try:
-        alert = world.browser.switch_to_alert()
-        assert alert.text.startswith(text), \
-            "Alert text invalid: %s" % alert.text
-        alert.accept()
-    except WebDriverException, e:
-        if getattr(settings, 'BROWSER', None) == "Headless":
-            pass
-        else:
-            raise e
+    dlg = world.browser.find_element_by_id("dialog-confirm")
+    assert dlg.text.startswith(text), "Alert text invalid: %s" % dlg.text
 
 
 @step(u'I select "([^"]*)" as the owner')
@@ -868,8 +874,6 @@ def given_publish_to_world_is_value(step, value):
 
         if elt:
             elt.click()
-            accept_alert()
-
             world.browser.get(django_url("/"))
 
 
@@ -1149,7 +1153,6 @@ def given_the_selection_visibility_is_value(step, value):
         elt = world.browser.find_element_by_id("selection_visibility_submit")
         if elt:
             elt.click()
-            accept_alert()
             world.browser.get(django_url("/"))
 
 
@@ -1164,30 +1167,6 @@ def get_column(title):
             continue
 
     return None
-
-
-def dismiss_alert():
-    try:
-        alert = world.browser.switch_to_alert()
-        alert.dismiss()
-    except WebDriverException, e:
-        if getattr(settings, 'BROWSER', None) == "Headless":
-            pass
-        else:
-            raise e
-
-
-def accept_alert():
-    try:
-        alert = world.browser.switch_to_alert()
-        alert.accept()
-    except WebDriverException, e:
-        if getattr(settings, 'BROWSER', None) == "Headless":
-            pass
-        else:
-            raise e
-
-world.accept_alert = accept_alert
 
 
 def find_button_by_value(value, parent=None):

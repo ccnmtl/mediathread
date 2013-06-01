@@ -9,13 +9,13 @@
         jQuery(document).ready(function() {
             {% if newsrc %}
                 var msg = "{{newsrc|escapejs}} has been enabled for your class.";
-                alert(msg);
+                showMessage(msg);
             {% else %}{% if delsrc %}
                 var msg = "{{delsrc|escapejs}} has been disabled for your class.";
-                alert(msg);
+                showMessage(msg);
             {% else %}{% if changes_saved %}
                 var msg = "Your changes have been saved.";
-                alert(msg);
+                showMessage(msg);
             {% endif %}{% endif %}{% endif %}
         });
     </script>

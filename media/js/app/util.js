@@ -128,3 +128,23 @@ function retrieveData(name) {
         return getCookie(name);
     }
 }
+
+function showMessage(msg, onclose) {
+    jQuery("#dialog-confirm").html(msg);
+    jQuery("#dialog-confirm").dialog({
+        resizable: false,
+        modal: true,
+        title: "Success",
+        close: function() {
+            if (onclose) {
+                onclose();
+                jQuery("#dialog-confirm").html("");
+            }            
+        },
+        buttons: {
+            "OK": function() {
+                jQuery(this).dialog("close");
+            }
+        }
+    });    
+}

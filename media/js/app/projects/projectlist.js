@@ -103,7 +103,7 @@ ProjectList.prototype.selectOwner = function (username) {
         url: url,
         dataType: 'json',
         error: function () {
-            alert('There was an error retrieving the project list.');
+            showMessage('There was an error retrieving the project list.');
         },
         success: function (the_records) {
             self.update(the_records);

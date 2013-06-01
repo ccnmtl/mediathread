@@ -574,8 +574,8 @@
             var self = this;
             if (annotation_id === self.active_annotation.id) {
                 var url = MediaThread.urls['annotation-delete'](self.active_asset.id, annotation_id);
-                ajaxDelete(null, "annotation-body-" + annotation_id,
-                        { 'href': url, 'success': this.deleteAnnotationComplete });
+                ajaxDelete(null, "accordion-" + annotation_id,
+                    {'href': url, 'success': this.deleteAnnotationComplete });
             }
             return false;
         };

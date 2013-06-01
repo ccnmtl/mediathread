@@ -20,6 +20,7 @@
     {% course_role for request.user in course as role_in_course %}
     <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
     <div class="ajaxloader" style="display: none"></div>
+    <div id="dialog-confirm" style="display: none"></div>    
     <div id="container">
         {% block masthead %}
         	<!-- ###### Site banner ###### -->

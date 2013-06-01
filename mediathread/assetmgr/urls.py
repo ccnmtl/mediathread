@@ -24,10 +24,6 @@ urlpatterns = patterns(
         'asset_workspace',
         name='annotation-view'),
 
-    url(r'^delete/(?P<asset_id>\d+)/$',
-        'asset_delete',
-        name='asset-delete'),
-
     url(r'^json/(?P<asset_id>\d+)/$',
         'asset_json',
         name="asset-json"),
@@ -45,6 +41,10 @@ urlpatterns = patterns(
     url(r'^delete/(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
         'annotation_delete',
         name="annotation-delete"),
+
+    url(r'^delete/(?P<asset_id>\d+)/$',
+        'asset_delete',
+        name='asset-delete'),
 
     url(r'^xmeml/(?P<asset_id>\w+)/$',
         'final_cut_pro_xml',

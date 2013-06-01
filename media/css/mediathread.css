@@ -4183,12 +4183,12 @@ form[name="annotation-list-filter"] {
 
 input.annotation-listitem-icon {
     float: right;
-    margin-top: -35px;
+    margin-top: -5px;
     border: none;    
 }
 
 input.annotation-listitem-icon.delete {
-    margin-right: 24px;
+    margin-right: 0px;
 }
 
 /** Migrate Course Materials **/

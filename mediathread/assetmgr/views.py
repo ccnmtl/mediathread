@@ -366,7 +366,7 @@ def annotation_save(request, asset_id, annot_id):
 
 
 @login_required
-@allow_http("GET", "DELETE")
+@allow_http("POST")
 def annotation_delete(request, asset_id, annot_id):
     try:
         # Verify annotation exists

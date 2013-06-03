@@ -44,3 +44,9 @@ requirements/src/django-tastypie-0.9.12-alpha.tar.gz
 
 requirements/src/coverage-3.5.3.tar.gz
 
+requirements/src/logilab-common-0.59.0.tar.gz
+requirements/src/logilab-astng-0.24.1.tar.gz
+requirements/src/pylint-0.26.0.tar.gz
+requirements/src/pep8-1.4.tar.gz
+requirements/src/pyflakes-0.5.0.tar.gz
+requirements/src/flake8-1.7.0.tar.gz

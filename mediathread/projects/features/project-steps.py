@@ -3,7 +3,6 @@ from mediathread.projects.models import Project
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.select import Select
 from urlparse import urlparse
-import time
 
 
 @step(u'There are no projects')
@@ -148,25 +147,15 @@ def i_select_username_s_response(step, username):
     assert False, "Unable to find a response for %s" % username
 
 
-@step(u'there is a comment that begins "([^"]*)"')
-def there_is_a_comment_that_begins_text(step, text):
-    selector = "div.threaded_comment_text"
-    elts = world.browser.find_elements_by_css_selector(selector)
-    assert len(elts) > 0, "Expected >= 1 div.threaded_comment_text. Found 0"
-
-    for e in elts:
-        if e.text.startswith(text):
-            return
-
-    time.sleep(1)
-
-    selector = "div.threaded_comment_text"
+@step(u'there is a comment from "([^"]*)"')
+def there_is_a_comment_from_username(step, username):
+    selector = "span.threaded_comment_author"
     elts = world.browser.find_elements_by_css_selector(selector)
     for e in elts:
-        if e.text.startswith(text):
+        if e.text == username:
             return
 
-    assert False, "Could not find a comment that begins with %s" % text
+    assert False, 'Cannot find comment from %s' % username
 
 
 @step(u'I insert "([^"]*)" into the text')

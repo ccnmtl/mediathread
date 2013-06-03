@@ -1,7 +1,7 @@
 Feature: Public Compositions
         
         
-    Scenario: publishtoworld.composition.feature 1. Instructor creates public to world composition - verify visibility 
+    Scenario Outline: publishtoworld.composition.feature 1. Instructor creates public to world composition - verify visibility 
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
@@ -23,15 +23,12 @@ Feature: Public Compositions
             And I see "Private"
         
             # Add a title and some text
-            Then I call the Composition "Composition Public: Scenario 1"
+            Then I call the Composition "<project_name>"
             And I write some text for the Composition
             
             # Insert an asset
-            Then I insert "MAAP Award Reception" into the text
+            Then I insert "<item_name>" into the text
             
-            # Insert an annotation
-            Then I insert "Left Corner" into the text
-        
             # Save
             When I click the Save button
             Then I see a Save Changes dialog        
@@ -48,22 +45,23 @@ Feature: Public Compositions
         Given the composition workspace is loaded
             There is an open Composition panel
             I see "Instructor One"
-            And I see "Composition Public: Scenario 1"
+            And I see "<project_name>"
             And there is a "permalink" link
-        
+            
             The Composition panel does not have a Revisions button
             And the Composition panel does not have an Edit button
             And the Composition panel does not have a Preview button
             And the Composition panel does not have a Save button
             And the Composition panel does not have a +/- Author button
             
-            When I click the "MAAP Award Reception" citation in the Composition panel
-            Then the Composition panel media window displays "MAAP Award Reception"
-            When I click the "Left Corner" citation in the Composition panel
-            Then the Composition panel media window displays "Left Corner"
+            When I click the "<item_name>" citation in the Composition panel
+            Then the Composition panel media window displays "<item_name>"
         
         Finished using Selenium
 
-
+      Examples:
+        | project_name                    | item_name             |
+        | Composition Public: Scenario 1A | MAAP Award Reception  |
+        | Composition Public: Scenario 1B | Left Corner           |
         
         

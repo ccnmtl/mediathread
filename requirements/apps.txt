@@ -20,4 +20,4 @@ requirements/src/django_courseaffils-0.4.tar.gz
 requirements/src/django-statsd-mozilla-0.3.3.tar.gz
 requirements/src/django-appconf-0.4.1.tar.gz 
 requirements/src/django_compressor-1.1.1.tar.gz
-
+requirements/src/django-jenkins-0.14.0.tar.gz

@@ -3,12 +3,13 @@ from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce.django import django_url
-from selenium.common.exceptions import StaleElementReferenceException
+from mediathread.projects.models import Project
+from selenium.common.exceptions import NoSuchElementException, \
+    StaleElementReferenceException
 import errno
 import os
 import selenium.webdriver.support.ui as ui
 import time
-from selenium.common.exceptions import NoSuchElementException
 
 try:
     from lxml import html
@@ -48,15 +49,12 @@ def setup_browser():
     elif browser == "Headless":
         world.browser = webdriver.PhantomJS(
             desired_capabilities={'handlesAlerts': True})
-        cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (1024, 768)
-        world.browser.execute_script(cmd)
 
     world.client = client.Client()
     world.using_selenium = False
 
-    # Make the browser size at least 1024x768
-    world.browser.execute_script("window.moveTo(0, 1); "
-                                 "window.resizeTo(1024, 768);")
+    world.browser.set_window_position(0, 0)
+    world.browser.set_window_size(1024, 768)
 
     # Wait implicitly for 2 seconds
     world.browser.implicitly_wait(5)
@@ -105,8 +103,7 @@ def the_name_workspace_is_loaded(step, name):
 
 @step(u'my browser resolution is ([^"]*) x ([^"]*)')
 def my_browser_resolution_is_width_x_height(step, width, height):
-    cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (width, height)
-    world.browser.execute_script(cmd)
+    world.browser.set_window_size(int(width), int(height))
 
 
 @step(u'I am ([^"]*) in ([^"]*)')
@@ -193,8 +190,14 @@ def i_type_value_for_field(step, value, field):
 def i_click_the_value_button(step, value):
     if world.using_selenium:
         elt = find_button_by_value(value)
-        assert elt, "Cannot locate button named %s" % value
-        elt.click()
+        if elt is None:
+            assert False, "Cannot locate button named %s" % value
+        elif not elt.is_displayed():
+            time.sleep(1)
+            elt = find_button_by_value(value)
+            elt.click()
+        else:
+            elt.click()
 
 
 @step(u'there is not an? "([^"]*)" link')
@@ -278,7 +281,7 @@ def there_is_not_a_value_button(step, value):
 
 
 @step(u'I wait (\d+) seconds?')
-def then_i_wait_count_seconds(step, count):
+def i_wait_count_seconds(step, count):
     n = int(count)
     time.sleep(n)
 
@@ -723,7 +726,7 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
 
 
 @step(u'the "([^"]*)" item has an? ([^"]*) icon')
-def the_title_item_has_a_type_icon(step, title, type):
+def the_title_item_has_a_name_icon(step, title, name):
     select = "div.gallery-item"
     items = world.browser.find_elements_by_css_selector(select)
     for item in items:
@@ -733,21 +736,21 @@ def the_title_item_has_a_type_icon(step, title, type):
             continue
 
         try:
-            item.find_element_by_css_selector("a.%s-asset" % type)
+            item.find_element_by_css_selector("a.%s-asset" % name)
             return  # found the link & the icon
         except:
             try:
-                item.find_element_by_css_selector("a.%s-asset-inplace" % type)
+                item.find_element_by_css_selector("a.%s-asset-inplace" % name)
                 return  # found the link & the icon
             except NoSuchElementException:
                 assert False, \
-                    "Item %s does not have a %s icon." % (title, type)
+                    "Item %s does not have a %s icon." % (title, name)
 
     assert False, "Unable to find the %s item" % title
 
 
 @step(u'the "([^"]*)" item has no ([^"]*) icon')
-def the_title_item_has_no_type_icon(step, title, type):
+def the_title_item_has_no_name_icon(step, title, name):
     select = "div.gallery-item"
     items = world.browser.find_elements_by_css_selector(select)
     for item in items:
@@ -757,17 +760,17 @@ def the_title_item_has_no_type_icon(step, title, type):
             continue
 
         try:
-            item.find_element_by_css_selector("a.%s-asset" % type)
-            assert False, "Item %s has a %s icon." % (title, type)
+            item.find_element_by_css_selector("a.%s-asset" % name)
+            assert False, "Item %s has a %s icon." % (title, name)
         except NoSuchElementException:
-            assert True, "Item %s does not have a %s icon" % (title, type)
+            assert True, "Item %s does not have a %s icon" % (title, name)
             return
 
     assert False, "Unable to find the %s item" % title
 
 
 @step(u'I click the "([^"]*)" item ([^"]*) icon')
-def i_click_the_title_item_type_icon(step, title, type):
+def i_click_the_title_item_name_icon(step, title, name):
     time.sleep(1)
     select = "div.gallery-item"
     items = world.browser.find_elements_by_css_selector(select)
@@ -778,16 +781,16 @@ def i_click_the_title_item_type_icon(step, title, type):
             continue
 
         try:
-            if type == "delete":
-                icon = item.find_element_by_css_selector(".%s_icon" % type)
-            elif type == "edit":
-                s = "a.%s-asset-inplace" % type
+            if name == "delete":
+                icon = item.find_element_by_css_selector(".%s_icon" % name)
+            elif name == "edit":
+                s = "a.%s-asset-inplace" % name
                 icon = item.find_element_by_css_selector(s)
 
             icon.click()
             return  # found the link & the icon
         except NoSuchElementException:
-            assert False, "Item %s does not have a %s icon." % (title, type)
+            assert False, "Item %s does not have a %s icon." % (title, name)
 
     assert False, "Unable to find the %s item" % title
 
@@ -997,9 +1000,9 @@ def i_call_the_panel_title(step, panel, title):
     panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
-    input = panel.find_element_by_name("title")
-    input.clear()
-    input.send_keys(title)
+    elt = panel.find_element_by_name("title")
+    elt.clear()
+    elt.send_keys(title)
 
 
 @step(u'the ([^"]*) is called "([^"]*)"')
@@ -1008,26 +1011,40 @@ def the_panel_is_called_title(step, panel, title):
     panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
-    input = panel.find_element_by_name("title")
-    val = input.get_attribute("value")
+    elt = panel.find_element_by_name("title")
+    val = elt.get_attribute("value")
     assert val == title, "Nope: %s" % val
 
 
 @step(u'I write some text for the ([^"]*)')
 def i_write_some_text_for_the_panel(step, panel):
-    selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.browser.find_element_by_css_selector(selector)
-    assert panel is not None, "Can't find panel named %s" % panel
+    if getattr(settings, 'BROWSER', None) != "Headless":
+        selector = "td.panel-container.open.%s" % panel.lower()
+        panel = world.browser.find_element_by_css_selector(selector)
+        assert panel is not None, "Can't find panel named %s" % panel
 
-    frame = panel.find_element_by_tag_name("iframe")
-    world.browser.switch_to_frame(frame)
-    input = world.browser.find_element_by_class_name("mceContentBody")
-    input.send_keys("""The Columbia Center for New Teaching and Learning
-                     was (CCNMTL) was founded at Columbia University in 1999
-                     to enhance teaching and learning through the purposeful
-                     use of new media and technology""")
+        frame = panel.find_element_by_tag_name("iframe")
+        world.browser.switch_to_frame(frame)
+        elt = world.browser.find_element_by_class_name("mceContentBody")
+        elt.send_keys(
+            """The Columbia Center for New Teaching and Learning
+            was (CCNMTL) was founded at Columbia University in 1999
+            to enhance teaching and learning through the purposeful
+            use of new media and technology""")
 
-    world.browser.switch_to_default_content()
+        world.browser.switch_to_default_content()
+
+
+@step(u'the composition "([^"]*)" has text')
+def the_composition_title_has_text(step, title):
+    project = Project.objects.get(title=title)
+
+    if len(project.body) < 1:
+        project.body = """The Columbia Center for New Teaching and Learning
+            was (CCNMTL) was founded at Columbia University in 1999
+            to enhance teaching and learning through the purposeful
+            use of new media and technology"""
+        project.save()
 
 
 @step(u'there is an? ([^"]*) "([^"]*)" reply by ([^"]*)')

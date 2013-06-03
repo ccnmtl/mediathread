@@ -28,6 +28,7 @@ Feature: Assignment
         When I save the changes
         Then there is an "Assignment" link
         Then there is an open Assignment panel
+        And the composition "Assignment: Scenario 1" has text        
         
         # Toggle to preview
         When I click the Preview button
@@ -96,7 +97,6 @@ Feature: Assignment
         
         # Add a title & text
         Then I call the Composition "Sample Assignment Response"
-        And I write some text for the Composition
         
         # Save as submitted to the instructor
         When I click the Save button
@@ -109,23 +109,6 @@ Feature: Assignment
         When I click the "Sample Course" link
         Given the home workspace is loaded
         Then there is a submitted to instructor "Sample Assignment Response" reply by Student One
-        
-        # View the project - it should reappear in "Preview" mode
-        When I click the "Sample Assignment Response" link
-        Then I am at the Sample Assignment Response page
-        
-        Then there is a closed Assignment panel
-        
-        And there is an open Composition panel
-        The Composition panel has a Revisions button
-        And the Composition panel has an Edit button
-        And the Composition panel does not have a Preview button
-        And the Composition panel has a Save button
-        And the Composition panel has a Revisions button
-        And the Composition panel does not have a +/- Author button
-        And there is a "Submitted to Instructor" link 
-        
-        Finished using Selenium 
 
     Scenario: assignment.feature 3. Instructor provides response feedback
         Using selenium
@@ -154,15 +137,10 @@ Feature: Assignment
         
         # Create Instructor Feedback
         When I click the Create Instructor Feedback button
-        
-        # BUG -- the assignment panel should close not the composition
-        Then there is a closed Assignment panel
-        Then there is an open Composition panel
-        Then there is an open Discussion panel
-        
+        Then there is an open Discussion panel        
         Then I write some text for the discussion
         Then I click the Save Comment button
-        Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
+        Then there is a comment from "Instructor One"
         
         # View as Student One
         Give I am test_student_one in Sample Course
@@ -171,7 +149,7 @@ Feature: Assignment
         
         Then I am at the Sample Assignment Response page
         Then there is an open Discussion panel
-        Then there is a comment that begins "The Columbia Center for New Teaching and Learning"
+        Then there is a comment from "Instructor One"
         
         Give I am test_student_two in Sample Course
         When I select "Student One" as the owner in the Composition column
@@ -199,7 +177,16 @@ Feature: Assignment
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page
         
-        Then there is an open Composition panel
+        Then there is a closed Assignment panel
+        And there is an open Composition panel
+        
+        The Composition panel has a Revisions button
+        And the Composition panel has an Edit button
+        And the Composition panel does not have a Preview button
+        And the Composition panel has a Save button
+        And the Composition panel has a Revisions button
+        And the Composition panel does not have a +/- Author button
+        And there is a "Submitted to Instructor" link 
         
         When I click the Save button
         Then I see a Save Changes dialog

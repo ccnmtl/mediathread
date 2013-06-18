@@ -876,7 +876,7 @@ ul#standardnav
 {
     display: block;
     clear: right;
-    float: right;
+    float: left;
     width: 119px;
     height: 26px;
     overflow: hidden;

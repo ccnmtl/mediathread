@@ -67,7 +67,8 @@
                                 },
                                 error: function (xhr) {
                                     window.sky = xhr;
-                                    showMessage("An error occurred when sort the projects.");
+                                    showMessage("An error occurred while reordering your projects. Please check your network connection and try again.",
+                                                undefined, "Error");
                                 }
                             });
                         }

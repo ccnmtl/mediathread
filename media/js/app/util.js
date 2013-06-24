@@ -129,12 +129,13 @@ function retrieveData(name) {
     }
 }
 
-function showMessage(msg, onclose) {
+function showMessage(msg, onclose, customTitle) {
+    var title = customTitle ? customTitle : "Success";
     jQuery("#dialog-confirm").html(msg);
     jQuery("#dialog-confirm").dialog({
         resizable: false,
         modal: true,
-        title: "Success",
+        title: title,
         close: function() {
             if (onclose) {
                 onclose();

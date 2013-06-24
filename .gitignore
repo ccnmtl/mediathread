@@ -15,3 +15,4 @@ chromedriver.log
 ghostdriver.log
 .coverage
 media/js/sherdjs/
+reports

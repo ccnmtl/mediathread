@@ -122,13 +122,6 @@ def main(all_files):
     subprocess.call(['git', 'stash', 'pop', '--quiet', '--index'],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Minify the .js
-    if result == 0:
-        print 'Minifying .js...'
-        return_code = subprocess.call('cd scripts; ./minify-js.py; cd ..',
-                                      shell=True)
-        result = return_code or result
-
     # Update the release id if things looks good
     if result == 0:
         print 'Updating Release Id...'

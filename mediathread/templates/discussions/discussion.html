@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif revision %}
+{% load smartif revision compress %}
 
 {% block title %}
     {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
@@ -7,8 +7,11 @@
 
 {% block css %}
     {{ block.super }}
+    
+    {% compress css %}
     <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
     <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+    {% endcompress %}
     
     <script type="text/javascript" src="/jsi18n"></script>
     

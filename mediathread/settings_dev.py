@@ -16,8 +16,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mediathread',
-        'HOST': '',
-        'PORT': 6432,  # see /etc/pgbouncer/pgbouncer.ini
+        'HOST': 'localhost',
+        'PORT': '5432',
         'USER': '',
         'PASSWORD': '',
     }
@@ -26,8 +26,10 @@ DATABASES = {
 COMPRESS_ROOT = "/var/www/mediathread/mediathread/media/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+QA_ENV = True
 
-SENTRY_SITE = 'mediathread'
+STATSD_PREFIX = 'mediathread-qa'
+SENTRY_SITE = 'mediathread-qa'
 SENTRY_SERVERS = ['http://sentry.ccnmtl.columbia.edu/sentry/store/']
 
 if 'migrate' not in sys.argv:

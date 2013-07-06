@@ -26,8 +26,10 @@ DATABASES = {
 COMPRESS_ROOT = "/var/www/mediathread/mediathread/media/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+STAGING_ENV = True
 
-SENTRY_SITE = 'mediathread'
+STATSD_PREFIX = 'mediathread-staging'
+SENTRY_SITE = 'mediathread-staging'
 SENTRY_SERVERS = ['http://sentry.ccnmtl.columbia.edu/sentry/store/']
 
 if 'migrate' not in sys.argv:

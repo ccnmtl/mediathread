@@ -1,10 +1,12 @@
 {% extends "base.html" %}
-{% load comments %}
+{% load comments compress %}
 
 {% block title %}Instructor Dashboard{% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/app/dashboard/reports.js"></script>
+    {% compress js %}
+        <script type="text/javascript" src="/site_media/js/app/dashboard/reports.js"></script>
+    {% endcompress %}
 {% endblock %}
 
 {% block content %}

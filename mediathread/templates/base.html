@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-{% load cache user_projects coursetags revision %}
+{% load cache user_projects coursetags revision compress %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 {% with request.collaboration_context.content_object as course %}
@@ -8,13 +8,16 @@
     	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
     
     	<link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />
+        <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
+        
+        {% compress css %}
     	<link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
         <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
+        {% endcompress %}
+        
         <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
         {% block css %}{% endblock %}
-
-        <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>        
     </head>
     
     {% course_role for request.user in course as role_in_course %}
@@ -187,9 +190,9 @@
     
     <!--  Mustache Templating -->
     <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/sherdjs/lib/json2.js"></script>
     
-    {% if settings.DEBUG %}
+    {% compress js %}
+        <script type="text/javascript" src="/site_media/js/app/json2.js"></script>    
         <script type="text/javascript" src="/site_media/js/app/util.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/ajaxDelete.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/analytics.js?version={%revision%}"></script>
@@ -209,68 +212,65 @@
         <!--  Project related -->
         <script type="text/javascript" src="/site_media/js/app/projects/projectpanel.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/projects/projectlist.js?version={%revision%}"></script>
-    {% else %}
-        <script type="text/javascript" src="/site_media/js/mediathread.min.js?version={%revision%}"></script>
-    {% endif %}
     
-    <script>
-        {% if settings.DEBUG %}
-        {% else %}
-            {% if settings.GOOGLE_ANALYTICS_ID %}
-                var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
-                _gaq.push(['_trackPageview']);
-        
-                (function () {
-                    var ga = document.createElement('script');
-                    ga.type = 'text/javascript';
-                    ga.async = true;
-                    ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                    var s = document.getElementsByTagName('script')[0];
-                    s.parentNode.insertBefore(ga, s);
-                })();
+        <script>
+            {% if settings.DEBUG %}
+            {% else %}
+                {% if settings.GOOGLE_ANALYTICS_ID %}
+                    var _gaq = _gaq || [];
+                    _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
+                    _gaq.push(['_trackPageview']);
             
-                var analytics = new MediathreadAnalytics(_gaq);
-            {% endif %}
-        {% endif %}        
-    </script>   
-
-    <script type="text/javascript">
-        jQuery(document).ready(function() {
-            // setup some ajax progress indicator
-            jQuery("html").bind("ajaxStart", function(){  
-               jQuery(this).addClass("busy");
-               jQuery("div.ajaxloader").show();
-            }).bind("ajaxStop", function(){  
-               jQuery(this).removeClass("busy");
-               jQuery("div.ajaxloader").hide();
-            });
-            
-            /* Select from list: Chrome, Firefox, Safari, MSIE */
-            shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 8 });
-           
-            jQuery("div.settings_menu").click(function(evt) {
-                evt.stopPropagation();
+                    (function () {
+                        var ga = document.createElement('script');
+                        ga.type = 'text/javascript';
+                        ga.async = true;
+                        ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                        var s = document.getElementsByTagName('script')[0];
+                        s.parentNode.insertBefore(ga, s);
+                    })();
+                
+                    var analytics = new MediathreadAnalytics(_gaq);
+                {% endif %}
+            {% endif %}        
+        </script>   
+    
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                // setup some ajax progress indicator
+                jQuery("html").bind("ajaxStart", function(){  
+                   jQuery(this).addClass("busy");
+                   jQuery("div.ajaxloader").show();
+                }).bind("ajaxStop", function(){  
+                   jQuery(this).removeClass("busy");
+                   jQuery("div.ajaxloader").hide();
+                });
+                
+                /* Select from list: Chrome, Firefox, Safari, MSIE */
+                shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 8 });
                
-                // close all other menus
-                var opening = jQuery(this).hasClass("closed");
-                jQuery("div.settings_submenu").hide();
-                jQuery("div.settings_menu").removeClass("open").addClass("closed");
-    
-                // open this one if needed
-                if (opening) {
-                    jQuery(this).removeClass("closed").addClass("open");
-                    jQuery(this).nextAll("div.settings_submenu").toggle();
-                }
+                jQuery("div.settings_menu").click(function(evt) {
+                    evt.stopPropagation();
+                   
+                    // close all other menus
+                    var opening = jQuery(this).hasClass("closed");
+                    jQuery("div.settings_submenu").hide();
+                    jQuery("div.settings_menu").removeClass("open").addClass("closed");
+        
+                    // open this one if needed
+                    if (opening) {
+                        jQuery(this).removeClass("closed").addClass("open");
+                        jQuery(this).nextAll("div.settings_submenu").toggle();
+                    }
+                });
+               
+                jQuery("body").click(function() {
+                   jQuery("div.settings_submenu").hide();
+                   jQuery("div.settings_menu").removeClass("open").addClass("closed");
+                });      
             });
-           
-            jQuery("body").click(function() {
-               jQuery("div.settings_submenu").hide();
-               jQuery("div.settings_menu").removeClass("open").addClass("closed");
-            });      
-        });
-    </script>
-
+        </script>
+    {% endcompress %}
     {% block js %}{% endblock %}
 </body>
 {% endwith %}

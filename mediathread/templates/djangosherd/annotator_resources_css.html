@@ -1,4 +1,6 @@
+{% load compress %}  
   <!---JUST IMAGE-->
+  {% compress css %}
   <link rel="stylesheet" type="text/css" href="/site_media/js/sherdjs/lib/openlayers/openlayers/theme/default/style.css" />
   <style type="text/css">
     img.olImageLoadError { 
@@ -22,3 +24,5 @@
        width:25px;
     }
   </style>
+    {% endcompress %}
+  

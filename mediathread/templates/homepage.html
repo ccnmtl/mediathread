@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load tagging_tags smartif user_projects helpful_tags coursetags comments collaborations revision %}
+{% load tagging_tags smartif user_projects helpful_tags coursetags comments collaborations revision compress %}
 
 {% block title %}
     Home
@@ -8,13 +8,16 @@
 {% block css %}
     {{ block.super }}
     
+    {% compress css %}
     <link rel="stylesheet" href="/site_media/jquery/css/jquery.websitetour.css" media="screen" />
+    {% endcompress %}
 {% endblock %}
 
 {% block js %}
+    {% compress js %}
         <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
-        <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>
-      
+        <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>    
+          
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 var projectList = new ProjectList({
@@ -76,6 +79,7 @@
                 {% endif %}
             });
         </script>
+    {% endcompress %}
     
 {% endblock %}
 

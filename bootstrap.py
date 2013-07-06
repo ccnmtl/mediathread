@@ -32,7 +32,6 @@ else:
          "-E", vedir,
          os.path.join(pwd, "requirements/src/Pillow-1.7.8.zip")])
 
-
 if sys.version.startswith('2.6'):
     # have to do seperately or it breaks in 2.7
     ret = subprocess.call(
@@ -62,3 +61,17 @@ if ret:
 ret = subprocess.call(["python", "virtualenv.py", "--relocatable", vedir])
 # --relocatable always complains about activate.csh, which we don't really
 # care about. but it means we need to ignore its error messages
+
+if ret:
+    exit(ret)
+
+# install javascript libraries
+libs = [l.strip() for l in open(os.path.join(pwd, "requirements/js.txt"))]
+jsdir = os.path.abspath(os.path.join(pwd, "media/js/"))
+os.chdir(jsdir)
+for lib in libs:
+    ret = subprocess.call(["tar",
+                           "xvzf",
+                           "../../%s" % lib])
+    if ret:
+        exit(ret)

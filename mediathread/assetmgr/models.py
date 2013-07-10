@@ -1,14 +1,11 @@
+from courseaffils.models import Course
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.html import strip_tags
+from tagging.models import Tag
 import re
 import simplejson
-
-
-Tag = models.get_model('tagging', 'tag')
-User = models.get_model('auth', 'user')
-Group = models.get_model('auth', 'group')
-Course = models.get_model('courseaffils', 'course')
 
 
 def default_url_processor(source, request):
@@ -206,12 +203,6 @@ class Asset(models.Model):
         if SherdNote:
             return SherdNote.objects.global_annotation(
                 self, user, auto_create=auto_create)[0]
-
-    # def annotations(self, authors):
-        # SherdNotes - global & other for course faculty
-    #    qs = self.sherdnote_set.filter(author__in=authors)
-    #    qs = qs.filter(range1__isnull=False)
-    #    return qs
 
     def media_type(self):
         label = 'video'

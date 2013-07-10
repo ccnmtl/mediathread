@@ -16,8 +16,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mediathread',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': '',
+        'PORT': '',
         'USER': '',
         'PASSWORD': '',
     }

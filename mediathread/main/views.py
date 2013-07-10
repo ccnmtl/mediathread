@@ -571,11 +571,10 @@ def migrate(request):
                 if c.is_faculty(request.user):
                     courses.append(c)
 
-        if request.method == "GET":
-            return {
-                "available_courses": courses,
-                "help_migrate_materials": False
-            }
+        return {
+            "available_courses": courses,
+            "help_migrate_materials": False
+        }
     elif request.method == "POST":
         # maps old ids to new objects
         object_map = {'assets': {}, 'notes': {}, 'projects': {}}

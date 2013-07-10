@@ -1,0 +1,82 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load compress %}
+
+{% block title %}Taxonomy Workspace{% endblock %}
+
+{% block js %}{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block dashboard_module_header %}
+    {% with "help_taxonomy" as help_id %}
+    {% with help_taxonomy as default_help_state %}
+
+    <h2>Course Taxonomy <div class="actions">{% include "help/new_help_button.html" %}</div></h2>    
+    
+    {% endwith %}{% endwith %}
+{% endblock %}
+
+{% block dashboard_module %}
+    {% with "help_taxonomy" as help_id %}
+    {% with help_taxonomy as default_help_state %}
+            
+    {% include "help/new_help_contentarea.html" %}
+    
+    {% ifequal role_in_course "non-member" %}
+        <div id="no-materials-to-migrate">
+            You are not a class member. Please add yourself to this course via the admin console before attempting to create taxonomies.
+        </div>
+    {% else %}{% if vocabularies %}
+        {% for v in vocabularies %}
+            
+        {% endfor %}
+    {% else %}
+        <form action="/taxonomy/create/" method="post" class="taxonomy">
+            {% if vocabulary_form.non_field_errors %}
+                <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                    {{ vocabulary_form.non_field_errors }}</p>
+                </div>            
+            {% endif %}
+            <div>
+                <p class="required">
+                    {% if vocabulary_form.display_name.errors %}
+                        <div class="ui-state-error" style="padding: 0 .7em;">
+                            <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                            {{ vocabulary_form.display_name.errors }}
+                        </div>
+                    {% endif %}
+                    <label for="id_display_name"><b>Name</b>:</label>
+                    <input id="id_display_name" type="text" name="display_name" maxlength="50">
+                </p>
+                
+                <p>
+                    <label for="id_description">Description:</label>
+                    <textarea id="id_description" rows="10" cols="40" name="description"></textarea>
+                    {% if vocabulary_form.description.errors %}
+                        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                            <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                            {{ vocabulary_form.description.errors }}
+                        </div>
+                    {% endif %}
+                </p>
+
+                <p>
+                    <label for="id_single_select">Single select:</label>
+                    <input type="checkbox" name="single_select" id="id_single_select">
+                </p>
+                
+                <input type="hidden" id="id_name" name="name" value="temporary"></input>
+                <input type="hidden" id="id_content_type" name="content_type" value="{{course_type.id}}"></input>
+                <input type="hidden" id="id_object_id" name="object_id" value="{{course.id}}"></input>
+                
+                <p><input type="submit" value="Create Taxonomy" /></p>
+            </div>
+        </form> 
+    {% endif %}{% endifequal %}
+    
+{% endwith %}{% endwith %}
+{% endblock %}
+
+
+

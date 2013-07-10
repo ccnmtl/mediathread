@@ -2957,6 +2957,25 @@ div.gallery-item h4.asset_title {
     text-align: left;
 }
 
+form.taxonomy div.ui-state-error {
+    border: none;
+    background: none;
+    padding: 0 !important;
+}
+
+form.taxonomy label {
+    vertical-align: top;
+    width: 100px;
+    float: left;    
+}
+
+form.taxonomy div.ui-state-error ul.errorlist {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   width: 100%;
+}
+
 .manage-archive {
     float:right;
 }

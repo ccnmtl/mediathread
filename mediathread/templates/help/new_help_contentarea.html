@@ -16,6 +16,25 @@
     class="ui-widget-content feature-help"
     {% if not default_help_state %}style="display: none"{% endif %}>
     
+        {% ifequal help_id "help_taxonomy" %}
+        <strong>Course Taxonomies</strong>        
+        <div class="feature-help-instructions">
+        </div>
+        
+        <strong>Creating a Taxonomy</strong>
+        <div class="feature-help-instructions">   
+        </div> 
+        
+        <strong>Editing a Taxonomy</strong>
+        <div class="feature-help-instructions">   
+        </div>
+
+        <strong>Deleting a Taxonomy</strong>
+        <div class="feature-help-instructions">   
+        </div>
+            
+    {% endifequal %}
+    
     {% ifequal help_id "help_migrate_materials" %}
         <strong>
             How To Migrate Course Materials

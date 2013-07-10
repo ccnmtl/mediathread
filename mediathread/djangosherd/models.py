@@ -1,21 +1,17 @@
+from django.contrib.auth.models import User
+from django.contrib.comments.models import Comment
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.db.models.signals import post_save
+from structuredcollaboration.models import Collaboration
+from tagging.fields import TagField
+from tagging.models import Tag
 import datetime
 import re
 import simplejson
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
-from django.db import models
-from django.db.models.loading import get_model
-
-from tagging.models import Tag
-from tagging.fields import TagField
-
-from structuredcollaboration.models import Collaboration
-from django.db.models.signals import post_save
-
 Asset = models.get_model('assetmgr', 'asset')
-User = models.get_model('auth', 'user')
-Comment = get_model('comments', 'comment')
 
 NULL_FIELDS = dict((i, None) for i in
                    'range1 range2 title'.split())

@@ -16,6 +16,13 @@ class ProjectTest(TestCase):
     fixtures = ['unittest_sample_course.json',
                 'unittest_sample_projects.json']
 
+    def test_verify_testdata(self):
+        course = Course.objects.get(id=1)
+        self.assertEquals(course.title, "Sample Course")
+
+        alt_course = Course.objects.get(id=2)
+        self.assertEquals(alt_course.title, "Alternate Course")
+
     def test_migrate_one(self):
         alt_course = Course.objects.get(id=2)
         self.assertEquals(alt_course.title, "Alternate Course")

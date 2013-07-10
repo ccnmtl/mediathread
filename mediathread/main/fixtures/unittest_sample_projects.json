@@ -135,7 +135,7 @@
             "object_pk": "2", 
             "_parent": null, 
             "user": 3, 
-            "content_type": 17, 
+            "content_type": 20, 
             "slug": null
         }
     }, 
@@ -151,7 +151,7 @@
             "object_pk": "1", 
             "_parent": null, 
             "user": 3, 
-            "content_type": 17, 
+            "content_type": 20, 
             "slug": null
         }
     }, 
@@ -167,7 +167,7 @@
             "object_pk": "4", 
             "_parent": null, 
             "user": 5, 
-            "content_type": 17, 
+            "content_type": 20, 
             "slug": null
         }
     }, 
@@ -183,7 +183,7 @@
             "object_pk": "3", 
             "_parent": null, 
             "user": 3, 
-            "content_type": 17, 
+            "content_type": 20, 
             "slug": null
         }
     }, 
@@ -215,7 +215,7 @@
             "object_pk": "5", 
             "_parent": null, 
             "user": 10, 
-            "content_type": 17,
+            "content_type": 20,
             "slug": null
         }
     }

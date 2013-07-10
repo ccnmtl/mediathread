@@ -150,7 +150,8 @@ INSTALLED_APPS = (
     'lettuce.django',
     'django_nose',
     'compressor',
-    'django_jenkins'
+    'django_jenkins',
+    'mediathread.taxonomy'
 )
 
 COMPRESS_URL = "/site_media/"
@@ -197,6 +198,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                        '/dashboard/',
                        '/_main/',
                        '/analysis/',
+                       '/taxonomy/',
                        re.compile(r'^/$'),
                        )
 

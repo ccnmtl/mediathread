@@ -24,7 +24,7 @@ admin.autodiscover()
 
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),
-                                "media",
+                                "../media",
                                 "bookmarklets")
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
@@ -105,6 +105,8 @@ urlpatterns = patterns(
     url(r'^dashboard/settings/',
         'mediathread.main.views.class_settings',
         name="class-settings"),
+
+    url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
     # Collections Space
     (r'^asset/', include('mediathread.assetmgr.urls')),

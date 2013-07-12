@@ -117,7 +117,6 @@ a:hover {
 	text-decoration: underline;
 }
 
-
 /* ---- block elements ---------- */
 
 #container
@@ -190,6 +189,10 @@ h1#course_title a:hover {
     font-size: .875em;
     font-weight: normal;
     color: #383838;
+}
+
+a.icon-link:hover {
+    text-decoration: none;
 }
 
 /* ---- Sitewide menu ---------- */
@@ -3057,7 +3060,7 @@ input.videoplay:hover,
 .project-print-icon:hover {
     opacity:0.75;
     -moz-opacity:0.75;
-    filter:alpha(opacity=75);    
+    filter:alpha(opacity=75);
 }
 
 .record {
@@ -3765,6 +3768,7 @@ table.selection-level-info td.selection-trash {
 input.media {
     background-image: url("../img/buttons/collections_button_bg.jpg");
     border-color: #c89345;
+    cursor: pointer;
 }
 
 input.media.annotate-button {

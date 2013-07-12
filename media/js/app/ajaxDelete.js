@@ -15,7 +15,9 @@ function ajaxDelete(link, container, opts) {
     
     var msg = "Are you sure you want to delete this?";
     if (opts) {
-        if (opts.item) {
+        if (opts.msg) {
+            msg = opts.msg;
+        } else if (opts.item) {
             msg = "Are you sure you want to remove this item from your collection?";            
         } else if (opts.object_type) {
             msg = "Are you sure you want to delete this " + opts.object_type + "?";
@@ -26,7 +28,6 @@ function ajaxDelete(link, container, opts) {
     
     jQuery("#dialog-confirm").dialog({
         resizable: false,
-        height: 140,
         modal: true,
         title: "Confirm action",
         close: function(event, ui) {

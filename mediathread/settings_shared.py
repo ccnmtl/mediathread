@@ -122,7 +122,7 @@ LETTUCE_APPS = (
     'mediathread.djangosherd'
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -152,7 +152,7 @@ INSTALLED_APPS = (
     'compressor',
     'django_jenkins',
     'mediathread.taxonomy'
-)
+]
 
 COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"

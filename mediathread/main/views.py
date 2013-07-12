@@ -374,8 +374,11 @@ def get_records(request, record_owner, assets):
     }
 
     for asset in assets:
-        asset_json.append(gallery_asset_json(request, asset, logged_in_user,
+        asset_json.append(gallery_asset_json(request,
+                                             asset,
+                                             logged_in_user,
                                              record_owner, options))
+
     # Tags
     tags = []
     if record_owner:

@@ -13,7 +13,17 @@ DATABASES = {
 
 LETTUCE_SERVER_PORT = 8002
 STATSD_HOST = '127.0.0.1'
-BROWSER = 'Chrome'
+BROWSER = 'Headless'
+
+LETTUCE_APPS = (
+    'mediathread_main',
+    'projects',
+    'assetmgr',
+    'djangosherd'
+)
+
+LETTUCE_DJANGO_APP = ('lettuce.django',)
+INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
 
 # Full run
 # time(./manage.py harvest --settings=settings_test \

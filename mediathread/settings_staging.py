@@ -2,7 +2,7 @@
 from mediathread.settings import *
 
 TEMPLATE_DIRS = (
-    "/var/www/mediathread/mediathread/deploy_specific/templates",
+    "/var/www/mediathread/mediathread/mediathread/deploy_specific/templates",
     "/var/www/mediathread/mediathread/mediathread/templates",
 )
 

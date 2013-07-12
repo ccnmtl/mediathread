@@ -8,10 +8,11 @@ urlpatterns = patterns(
 
     url(r'^create/$',
         'vocabulary_create'),
-#     url(r'^delete/(?P<vocabulary_id>\d+)/$',
-#         'vocabulary_delete'),
-#     url(r'^save/(?P<vocabulary_id>\d+)/$',
-#         'vocabulary_save'),
+    url(r'^delete/(?P<vocabulary_id>\d+)/$',
+        'vocabulary_delete',
+        name='vocabulary-delete'),
+#    url(r'^save/(?P<vocabulary_id>\d+)/$',
+#        'vocabulary_save'),
 #
 #     url(r'term/create/^(?P<vocabulary_id>\d+)/$',
 #         'term_create'),

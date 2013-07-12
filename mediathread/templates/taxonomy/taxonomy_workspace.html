@@ -1,9 +1,24 @@
 {% extends "dashboard/base_dashboard.html" %}
-{% load compress %}
+{% load compress render_forms %}
 
-{% block title %}Taxonomy Workspace{% endblock %}
+{% block title %}Course Vocabulary Workspace{% endblock %}
 
-{% block js %}{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("a.delete-vocabulary").click(function() {
+                var msg = "Are you sure you want to delete this course vocabulary?" +
+                    " Deleting this vocabulary will remove all terms from all items throughout the course."; 
+                
+                return ajaxDelete(this, 'vocabulary-{{v.id}}', {
+                    'msg': msg,
+                    'success': function() { document.location.reload(true); }
+                });
+            });
+        });
+    </script>
+ onclick=")
+{% endblock %}
 
 {% block switchcourse %}{% endblock %}
 
@@ -11,7 +26,7 @@
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
 
-    <h2>Course Taxonomy <div class="actions">{% include "help/new_help_button.html" %}</div></h2>    
+    <h2>Course Vocabulary <div class="actions">{% include "help/new_help_button.html" %}</div></h2>    
     
     {% endwith %}{% endwith %}
 {% endblock %}
@@ -27,10 +42,97 @@
             You are not a class member. Please add yourself to this course via the admin console before attempting to create taxonomies.
         </div>
     {% else %}{% if vocabularies %}
+        {{ vocabulary_form2.as_p }}
+    
         {% for v in vocabularies %}
-            
-        {% endfor %}
+            <div id="vocabulary-{{v.id}}">
+                <h3>
+                    {{v.display_name}}
+                    <a class="icon-link" onclick="return jQuery('#update-vocabulary-form').toggle('fast');"
+                        href="#">                                                     
+                        <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit this vocabulary"  />
+                    </a>
+                    <a class="icon-link delete-vocabulary"
+                        href="/taxonomy/delete/{{v.id}}/">                                                
+                        <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete this vocabulary"  />
+                    </a>
+                </h3>
+                <form id="update-vocabulary-form" action="/taxonomy/save/" method="post" class="taxonomy" style="display: none">
+                    {% if vocabulary_form.non_field_errors %}
+                        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                            <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                            {{ vocabulary_form.non_field_errors }}</p>
+                        </div>            
+                    {% endif %}
+                    <div>
+                        <p class="required">
+                            {% if vocabulary_form.display_name.errors %}
+                                <div class="ui-state-error" style="padding: 0 .7em;">
+                                    <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                    {{ vocabulary_form.display_name.errors }}
+                                </div>
+                            {% endif %}
+                            <label for="id_display_name"><b>Name</b>:</label>
+                            <input id="id_display_name" type="text" name="display_name" maxlength="50" value="{{v.display_name}}">
+                        </p>
+                        
+                        <p>
+                            <label for="id_description">Description:</label>
+                            <textarea id="id_description" rows="10" cols="40" name="description">{{v.description}}</textarea>
+                            {% if vocabulary_form.description.errors %}
+                                <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                                    <span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                    {{ vocabulary_form.description.errors }}
+                                </div>
+                            {% endif %}
+                        </p>
+        
+                        <p>
+                            <label for="id_single_select">Single select:</label>
+                            <input type="checkbox" name="single_select" id="id_single_select" value="{{v.single_select}}">
+                        </p>
+                        
+                        <input type="hidden" id="id_name" name="name" value="temporary"></input>
+                        <input type="hidden" id="id_content_type" name="content_type" value="{{course_type.id}}"></input>
+                        <input type="hidden" id="id_object_id" name="object_id" value="{{course.id}}"></input>
+                        <input type="hidden" id="id_vocabulary" name="vocabulary" value="{{v.id}}"></input>
+                        
+                        <p><input type="submit" value="Update Vocabulary" /></p>
+                    </div>
+                
+                </form>
+                <h4>Terms</h4>
+                    <table>
+                        <tr>
+                            <th><label for="id_ordinality">Order</label></th>
+                            <th><label for="id_display_name">Name</label></th>
+                            <th><label for="id_description">Description</label></th>
+                            <th />
+                        </tr>
+                        {% for term in v.term_set.all %}
+                        {% endfor %}
+                        <tr>
+                            <form action="/taxonomy/term/create/{{v.id}}/" method="post">
+                                <td>
+                                    <input id="id_name" type="hidden" name="name" maxlength="50" value="temporary">
+                                    <input id="id_ordinality" type="hidden" name="ordinality" value="0">
+                                    <input id="id_vocabulary" type="hidden" name="vocabulary" value="{{v.id}}">                                    
+                                </td>
+                                <td>
+                                    <input id="id_display_name" type="text" name="display_name" maxlength="50">
+                                </td>
+                                <td><input id="id_description" type="text" name="description" maxlength="256"></td>
+                                <td><input type="submit" value="Add Term"></td>
+                            </form>
+                        </tr>
+                    </table>                    
+                </form>
+            </div>
+        {% endfor %}    
     {% else %}
+        <p>
+            Explain & Create
+        </p>
         <form action="/taxonomy/create/" method="post" class="taxonomy">
             {% if vocabulary_form.non_field_errors %}
                 <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
@@ -70,7 +172,7 @@
                 <input type="hidden" id="id_content_type" name="content_type" value="{{course_type.id}}"></input>
                 <input type="hidden" id="id_object_id" name="object_id" value="{{course.id}}"></input>
                 
-                <p><input type="submit" value="Create Taxonomy" /></p>
+                <p><input type="submit" value="Create Vocabulary" /></p>
             </div>
         </form> 
     {% endif %}{% endifequal %}

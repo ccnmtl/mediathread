@@ -42,7 +42,7 @@ class Term(models.Model):
     name = models.SlugField()
     vocabulary = models.ForeignKey(Vocabulary)
     display_name = models.CharField(max_length=50)
-    description = models.TextField(null=True, blank=True)
+    description = models.CharField(null=True, blank=True, max_length=256)
     ordinality = models.IntegerField()
 
     class Meta:
@@ -54,6 +54,11 @@ class Term(models.Model):
     def save(self, force_insert=False, force_update=False):
         self.name = slugify(self.display_name)
         super(Term, self).save(force_insert, force_update)
+
+
+class TermForm(forms.ModelForm):
+    class Meta:
+        model = Term
 
 
 class TermRelationship(models.Model):

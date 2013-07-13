@@ -289,7 +289,7 @@ ul#projects li {
 	clear: both;
     display: block;
     float: left;
-    width: 95%;
+    width: 93%;
 }
 
 .metadata-value-assignment {
@@ -440,7 +440,7 @@ input#uploader {
   font-weight: normal;
   color: #2f2f2f;
   padding: 10px 15px;
-  margin: -12px 15px 21px;
+  margin: -12px 0px 21px;
   border: solid 1px;
   border-radius: 4px;
   -moz-border-radius: 4px;
@@ -1266,10 +1266,6 @@ table#sliding-content-container tr td.panel-container div.panel.composition {
     border: 1px solid #3A84BE;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.asset-workspace {
-    border: 1px solid #A88448;
-}
-
 table#sliding-content-container tr td.panel-container div.panel.feedback,
 table#sliding-content-container tr td.panel-container div.panel.discussion {
         border: 1px solid black;
@@ -1474,9 +1470,19 @@ div.panel.asset-workspace td.panel-container.collection.minimized div.media_gall
     width: 250px;
 }
 
+div.panel.asset-workspace td.panel-container.collection {
+    border: none;
+    background-color: white;
+}
+
+div.panel.asset-workspace td.panel-container.collection.maximized {
+    border: 1px solid #A88448 !important;
+    background-color: #ededed;    
+}
 div.panel.asset-workspace td.panel-container.collection.minimized {
+    border: 1px solid #A88448 !important;
     width: 250px;
-    border-right: 1px solid #A88448 !important;    
+    background-color: #ededed;
 }
 
 div.panel.asset-workspace td.panel-container.asset-details.fixed {
@@ -1487,10 +1493,6 @@ div.panel.asset-workspace td.panel-container.asset-details.fixed {
 td.panel-container.collection {
     background-color: #ededed;
     border: 1px solid #ccc;
-}
-
-td#asset-workspace-panel-container td.panel-container.collection.maximized {
-    background-color: #F9F6F1;
 }
 
 td.panel-container.assignment {
@@ -1506,13 +1508,22 @@ td.panel-container.composition {
 }
 
 td.panel-container.asset-workspace {
-    background-color: #F9F6F1 !important;
+    background-color: white !important;
     min-width: 330px;
     width: 100%;
     height: 100%;
     border-top: 1px solid #A88448;
     border-bottom: 1px solid #A88448;
-    border-left: 1px solid #A88448;
+    border-left: 1px solid #A88448;    
+}
+
+td.panel-container.asset-workspace .column-container {
+    margin-left: 5px;
+}
+
+td.panel-container.asset-workspace .column-container h2 {
+    margin-bottom: 10px;
+    margin-top: 0;
 }
 
 .asset-workspace-dialog {
@@ -1634,7 +1645,7 @@ div.panhandle-left.discussion {
 }
 
 div.panhandle-left.asset-workspace {
-    background-color: #F9F6F1 !important;
+    background-color: white !important;
     border: 1px solid #A88448;
 }
 
@@ -2169,13 +2180,12 @@ div.homepage-column-info {
 
 /** Switcher CSS **/
 .filter-widget {
-    padding: 2px;
-    padding-top: 4px;
+    padding: 0 2px 2px 0px;
     /*margin-bottom here causes a firefox bug to push down the top instead
       so put the margin-bottom on div.switcher
      */
-    margin-bottom:0px;
-    position:relative;
+    margin-bottom: 0px;
+    position: relative;
 }
 
 .filter-widget h4 {
@@ -2191,12 +2201,12 @@ div.homepage-column-info {
     float:left;    
     z-index:9999;/*IE z-index bug workaround*/
     outline:none;
-    margin-bottom: 12px;
+    margin-bottom: 5px;
 }
 
 div.collection-filter {
-    float:right;
-    width:80px;
+    width: 80px;
+    margin-left: 10px;
 }
 
 div#media_gallery div.collection-filter {
@@ -2208,18 +2218,9 @@ div.collection-chooser {
     width:235px;
 }
 
-span.switcher-prefix {
-    font-size: .875em;
-    text-transform: uppercase;
-    color: #777;
-    font-weight: bold;
-    padding: 4px 10px 0 0;
-    float: left;
-}
-
 div.collection-chooser a.switcher-top {
-    font-size: 80%;
-    font-weight:normal;
+    font-weight: normal;
+    background-color: white;
 }
 
 div a.switcher-top {
@@ -2227,15 +2228,27 @@ div a.switcher-top {
     overflow:hidden;
 }
 
+span.switcher-prefix {
+    text-transform: uppercase;
+    color: #777;
+    font-weight: bold;
+    float: left;
+    border-right: 1px solid #CCCCCC;
+    background-color: #DEDEDE;
+    height: 20px;
+    padding: 3px 5px 0 5px;
+    font-size: .85em;    
+}
+
+
 div.collection-filter ul.switcher-options {  
-    width:233px; /*width -2px for border */
-     
+    width:233px; /*width -2px for border */     
     right:0px;
     left:auto;
 }
+
 div.collection-chooser ul.switcher-options {  
-    width:233px; /*width -2px for border plus whatever the switcher-prefix adds */
-     
+    width: 225px; /*width -2px for border plus whatever the switcher-prefix adds */
 }
 
 .switcher ul.switcher-options h3 {
@@ -2244,49 +2257,46 @@ div.collection-chooser ul.switcher-options {
    margin:0 0 6px 0;
 }
 
-.switcher ul.switcher-options > li {
-    padding-top:10px;
-}
-
 .switcher ul.switcher-options {
     position:absolute;
     display:none;
-    background-color:#999;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     z-index:9999;
     width:inherit;
     left: -10px;
-    border-left:1px solid rgb(204, 204, 204);
-    border-right:1px solid rgb(204, 204, 204);
-    border-bottom:1px solid rgb(204, 204, 204);
-    padding-bottom:10px;    
     list-style: none;
-    
+    padding: 4px;    
+    margin-top: 5px;
+    max-height: 300px;
+    overflow-y: auto;    
 }
+
 .switcher ul.switcher-options ul {
     margin:0;
 }
+
 .switcher ul.switcher-options li {
-    margin:0 10px;
+    margin: 0;
     line-height:16px;
-    
 }
+
 .switcher ul.switcher-options p.switcher-sub {
     padding:10px;
-    /*font-size:14px;*/
     background-color: #f5f5f5;
     margin:0;
     max-height:350px;
     overflow-y:auto;
     overflow-x: hidden;
+}
 
-}
 .switcher ul.switcher-options .switcher-sub li {
-    line-height:20px
-    
+    line-height: 20px;       
 }
+
 .switcher ul.switcher-options .switcher-sub {
-    background-color: #f5f5f5;
-    padding:5px 5px;
+    background-color: white;
     list-style: none;
 }
 
@@ -2297,16 +2307,21 @@ div.collection-chooser ul.switcher-options {
 }
 
 .switcher ul.switcher-options a {
-    text-decoration:none;
-    padding-right:4px;
-    display:inline-block;
-    font-size:80%;
+    text-decoration: none;
+    padding-right: 4px;
+    display: inline-block;
+    margin-left: 10px;
+    color: #666666; 
+    font-weight: normal;
 }
+
+.switcher ul.switcher-options a:hover {
+    text-decoration: underline;
+}
+
 .switcher ul.switcher-options .switcher-sub a:hover {
-    /*color:white;*/
-    text-decoration:underline;
+    text-decoration: underline;
     color:black;
-    
 }
 
 .switcher ul.switcher-options h4 {
@@ -2316,9 +2331,7 @@ div.collection-chooser ul.switcher-options {
 .switcher ul.switcher-options h4 a {
     color:black
 }
-.switcher ul.switcher-options a:hover {
-    color:white;
-}
+
 
 
 .switcher ul.switcher-options:hover,
@@ -2326,6 +2339,7 @@ div.collection-chooser ul.switcher-options {
     display:block;
 }
 
+.switcher a.menuopen,
 .switcher a.menuclosed {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -2333,141 +2347,19 @@ div.collection-chooser ul.switcher-options {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
-    /*firefox*/
-    border: 1px solid rgb(204, 204, 204); 
-    padding: 0px 3px 3px 8px; 
-    /*rgb(238, 238, 238) url(http://jqueryui.com/themeroller/themeswitchertool/images/buttonbg.png)*/
-    background: #DEDEDE  repeat-x scroll 50% 50%; 
-    /*font-family: Trebuchet MS,Verdana,sans-serif; */
-    font-size: 11px; 
-    color: rgb(102, 102, 102); 
-    -moz-background-clip: border; 
-    -moz-background-origin: padding; 
-    -moz-background-inline-policy: continuous; 
-    -moz-border-radius-topleft: 10px; 
-    -moz-border-radius-topright: 10px; 
-    -moz-border-radius-bottomright: 10px; 
-    -moz-border-radius-bottomleft: 10px; 
-    text-decoration: none; 
-    /*width: 139px; */
-    width:auto;
-    display: block; 
-    height: 14px; 
-    outline-color: -moz-use-text-color; 
-    outline-style: none; 
-    outline-width: 0pt; 
-    cursor: pointer;
     
-
-    /*webkit*/
-    border-top-width: 1px; 
-    border-right-width: 1px; 
-    border-bottom-width: 1px; 
-    border-left-width: 1px; 
-    border-top-style: solid; 
-    border-right-style: solid; 
-    border-bottom-style: solid; 
-    border-left-style: solid; 
-    border-top-left-radius: 10px 10px; 
-    border-top-right-radius: 10px 10px; 
-    border-bottom-right-radius: 10px 10px; 
-    border-bottom-left-radius: 10px 10px; 
+    border: 1px solid #CCCCCC; 
+    padding: 0 3px 0 0; 
+    border-radius: 4px;
     text-decoration: none; 
-    padding-top: 3px; 
-    padding-right: 3px; 
-    padding-bottom: 3px; 
-    padding-left: 8px; 
+    background-color: white;
+
+    color: #666666; 
+    width: auto;
     display: block; 
-    height: 14px; 
-    outline-width: 0px; 
-    outline-style: initial; 
-    outline-color: initial; 
-    border-top-color: rgb(187, 187, 187); 
-    border-right-color: rgb(187, 187, 187); 
-    border-bottom-color: rgb(187, 187, 187); 
-    border-left-color: rgb(187, 187, 187); 
-    background-image: initial; 
-    background-attachment: initial; 
-    background-origin: initial; 
-    background-clip: initial; 
-    background-color: rgb(240, 240, 240); 
-    cursor: pointer; 
-    color: rgb(68, 68, 68); 
-    background-position: initial initial; 
-    background-repeat: initial initial; 
-
-}
-
-.switcher a.menuopen {
-    font-size: 11px; 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-
-    /*firefox*/
-    border-style: solid solid none; 
-    
-    border-color: rgb(204, 204, 204) rgb(204, 204, 204) -moz-use-text-color; 
-
-    border-width: 1px 1px 0px; 
-    padding: 3px 3px 3px 8px; 
-    background: #999 none repeat scroll 0% 0%; 
-    color: white; 
-    -moz-background-clip: border; 
-    -moz-background-origin: padding; 
-    -moz-background-inline-policy: continuous; 
-    -moz-border-radius-topleft: 10px; 
-    -moz-border-radius-topright: 10px; 
-    -moz-border-radius-bottomright: 0px; 
-    -moz-border-radius-bottomleft: 0px; 
-    text-decoration: none; 
-    display: block; 
-    height: 14px; 
-    outline-color: -moz-use-text-color; 
-    outline-style: none; 
-    outline-width: 0pt; 
+    height: 20px; 
     cursor: pointer;
-
-    /*webkit*/
-    border-top-left-radius: 10px 10px; 
-    border-top-right-radius: 10px 10px; 
-    text-decoration: none; 
-    padding-top: 3px; 
-    padding-right: 3px; 
-    padding-bottom: 4px; 
-    padding-left: 8px; 
-    display: block; 
-    height: 14px; 
-    cursor: pointer; 
-    background-image: initial; 
-    background-attachment: initial; 
-    background-origin: initial; 
-    background-clip: initial; 
-    border-top-width: 1px; 
-    border-right-width: 1px; 
-    border-left-width: 1px; 
-    border-top-style: solid; 
-    border-right-style: solid; 
-    border-left-style: solid; 
-    border-top-color: rgb(204, 204, 204); 
-    border-right-color: rgb(204, 204, 204); 
-    border-left-color: rgb(204, 204, 204); 
-    border-bottom-width: 0px; 
-    border-bottom-style: initial; 
-    border-bottom-color: initial; 
-    border-bottom-left-radius: 0px 0px; 
-    border-bottom-right-radius: 0px 0px; 
-    outline-width: 0px; 
-    outline-style: initial; 
-    outline-color: initial; 
-    background-position: initial initial; 
-    background-repeat: initial initial;
 }
-
 
 div.switcher-active-filters {
     width: 100%;
@@ -2492,10 +2384,10 @@ div.switcher-active-filter span {
     overflow:hidden;
     
     /*firefox*/
-    border: 1px solid rgb(204, 204, 204); 
+    border: 1px solid #CCCCCC; 
     padding: 0px 3px 3px 8px; 
     font-size: 11px; 
-    color: rgb(102, 102, 102); 
+    color: #666666; 
     -moz-background-clip: border; 
     -moz-background-origin: padding; 
     -moz-background-inline-policy: continuous; 
@@ -2573,20 +2465,28 @@ span.down-arrow {
 
 a.switcher-top.menuopen span.title {
     float: left;
+    margin-top: 3px;
+    padding-left: 5px;
+    font-size: 1em;
+}
+
+a.switcher-top.menuclosed span.title {
+    float: left;
+    margin-top: 3px;
+    padding-left: 5px;
+    font-size: 1em;
 }
 
 a.switcher-top.menuopen span.down-arrow {
     background-image: url(../img/switcher/icon_x_hover.png);
     float: right;
-}
-
-a.switcher-top.menuclosed span.title {
-    float: left;
+    margin-top: 2px;
 }
 
 a.switcher-top.menuclosed span.down-arrow {
     background-image: url(../img/switcher/icon_down_arrow.png);
-    float: right; 
+    float: right;
+    margin-top: 2px; 
 }
 
 a.switcher-top.menuclosed span.down-arrow:hover {

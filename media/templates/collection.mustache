@@ -3,11 +3,9 @@
     <div class="media-column" >
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
-            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
-                <span class="switcher-prefix">
-                    Owner: 
-                </span>
+            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">                
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="switcher-prefix">Owner</span>                
                     <span class="title">{{{selected_label}}}</span>
                     <span class="down-arrow" tabindex="3"></span>                    
                 </a>

@@ -2313,6 +2313,7 @@ div.collection-chooser ul.switcher-options {
     margin-left: 10px;
     color: #666666; 
     font-weight: normal;
+    margin-top: 2px;
 }
 
 .switcher ul.switcher-options a:hover {

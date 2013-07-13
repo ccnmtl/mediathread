@@ -3,64 +3,71 @@
     <div class="media-column">
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
-            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
-                <span class="switcher-prefix">Owner: </span>
+            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">                
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="switcher-prefix">Owner </span>
                     <span class="down-arrow" tabindex="3"></span>
                     <span class="title">{{{selected_label?ellipses(30)}}}</span>
                 </a>
                 
-                <ul class="switcher-options" style="left: -54px">
-                    <div>
-                        {{#display_switcher_extras?}}
-                            <li style="padding-top:10px;">
-                                <ul class="switcher-sub">
-                                    {{^showing_my_items}}
-                                        <li class="choice_my_items">
-                                            <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
-                                        </li>
-                                    {{/showing_my_items}}
-                                    
-                                    {{#project.participants}}
-                                        {{^is_viewer}}
-                                            <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
-                                        {{/is_viewer}}   
-                                    {{/project.participants}}
-                                </ul>
+                <ul class="switcher-options" style="left: -56px">                    
+                    {{#display_switcher_extras?}}
+                        {{^showing_my_items}}
+                            <li class="choice_my_items">
+                                <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
                             </li>
-                        {{/display_switcher_extras?}}
-                    </div>
-                    <li>
-                        <ul class="scroll switcher-sub">
-                            {{^showing_all_items}}
-                                <li class="choice_all_items">
-                                    <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
-                                </li>
-                            {{/showing_all_items}}                        
-                            {{#owners}}                            
-                                <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
-                            {{/owners}}
-                        </ul>
-                    </li>
+                        {{/showing_my_items}}
+                        
+                        {{#project.participants}}
+                            {{^is_viewer}}
+                                <li><a class="switcher-choice owner" href="{{username}}">&mdash; {{public_name}} &mdash;</a></li>
+                            {{/is_viewer}}   
+                        {{/project.participants}}
+                    {{/display_switcher_extras?}}                        
+                    {{^showing_all_items}}
+                        <li class="choice_all_items">
+                            <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
+                        </li>
+                    {{/showing_all_items}}                        
+                    {{#owners}}                            
+                        <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
+                    {{/owners}}                        
                 </ul>
             </div>
             {{/>>switcher_collection_chooser}}
             
             <div class="switcher collection-filter" tabindex="2" style="width: 135px">
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="switcher-prefix">Date </span>
+                    <span class="down-arrow" tabindex="4"></span>
+                    
+                    {{#active_filter_count?}}
+                        {{#active_filters}}
+                            {{#modified?}}
+                                <span class="title">{{modified}}</span>
+                            {{/modified?}}
+                        {{/active_filters}}
+                    {{/active_filter_count?}}
+                    
+                    {{^active_filter_count}}
+                        <span class="title">All</span>
+                    {{/active_filter_count}}
+                </a>
+                <ul class="switcher-options" style="left: 188px">
+                    <li><a class="switcher-choice" href="all">all</a></li>
+                    <li><a class="switcher-choice" href="today">today</a></li>
+                    <li><a class="switcher-choice" href="yesterday">yesterday</a></li>
+                    <li><a class="switcher-choice" href="lastweek">within the last week</a></li>
+                </ul>
+            </div>
+            
+            <div class="switcher collection-filter" tabindex="2" style="width: 135px">
+                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="switcher-prefix">Date </span>
                     <span class="down-arrow" tabindex="4"></span>
                     <span class="title">Filters...</span>
                 </a>
-                <ul class="switcher-options" style="right: -43px">
-                    <li>
-                        <h3>Date Modified</h3>
-                        <p class="switcher-sub filterbydate">
-                            <a class="switcher-choice" href="today">today</a>
-                            <a class="switcher-choice" href="yesterday">yesterday</a>
-                            <a class="switcher-choice" href="lastweek">within the last week</a>
-                        </p>
-                    </li>
-            
+                <ul class="switcher-options" style="right: -43px">            
                     <li>
                         <h3>Tags</h3>
                         <p class="switcher-sub">
@@ -71,8 +78,7 @@
                                 <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
                             {{/tags}}
                         </p>
-                    </li>
-                    
+                    </li>                    
                 </ul>
             </div>
             

@@ -43,7 +43,7 @@ class Term(models.Model):
     vocabulary = models.ForeignKey(Vocabulary)
     display_name = models.CharField(max_length=50)
     description = models.CharField(null=True, blank=True, max_length=256)
-    ordinality = models.IntegerField()
+    ordinality = models.IntegerField(null=True, blank=True, default=0)
 
     class Meta:
         unique_together = ('name', 'vocabulary')
@@ -54,6 +54,13 @@ class Term(models.Model):
     def save(self, force_insert=False, force_update=False):
         self.name = slugify(self.display_name)
         super(Term, self).save(force_insert, force_update)
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'display_name': self.display_name,
+            'description': self.description
+        }
 
 
 class TermForm(forms.ModelForm):

@@ -2960,23 +2960,78 @@ div.gallery-item h4.asset_title {
     text-align: left;
 }
 
-form.taxonomy div.ui-state-error {
-    border: none;
-    background: none;
-    padding: 0 !important;
-}
-
 form.taxonomy label {
     vertical-align: top;
-    width: 100px;
+    width: 120px;
     float: left;    
 }
 
-form.taxonomy div.ui-state-error ul.errorlist {
+div.terms ul.errorlist,
+form.taxonomy ul.errorlist {
    list-style-type: none;
    margin: 0;
    padding: 0;
    width: 100%;
+}
+
+div.terms ul.errorlist li {
+    color: red;
+}
+
+form.taxonomy ul.errorlist li {
+    color: red;
+    margin-bottom: -10px;
+}
+
+form.taxonomy ul.errorlist li:before {
+    content: "* ";    
+}
+    
+form.taxonomy label[for=id_name],
+form.taxonomy #id_name,
+form.taxonomy label[for=id_content_type],
+form.taxonomy #id_content_type,
+form.taxonomy label[for=id_object_id],
+form.taxonomy #id_object_id {
+    display: none;
+}
+
+form.taxonomy label[for=id_display_name] {
+    font-weight: bold;
+}
+
+form.taxonomy #id_display_name {
+    width: 300px;
+}
+
+div.terms {
+    width: 700px;
+}
+
+div.term {
+    margin: 10px 0px;
+}
+
+div.terms div.terms-header {
+    font-weight: bold;
+}
+
+div.terms div.description,
+div.terms div.name {
+    float: left;
+    width: 315px;
+}
+
+div.terms #id_display_name,
+div.terms #id_description {
+    width: 300px;
+    float: left;
+    margin: 15px 10px 20px 0
+}
+
+div.terms input[type="submit"].create-term {
+    margin-top: 12px;
+    width: 72px;
 }
 
 .manage-archive {

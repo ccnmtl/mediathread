@@ -185,15 +185,14 @@
             {% endif %}
         })();
     </script>
-    
-    
-    {% compress js %}
-        <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
+        
+    <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
 
-        <!--  Mustache Templating -->    
-        <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
+    <!--  Mustache Templating -->    
+    <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
     
+    {% compress js %}    
         <script type="text/javascript" src="/site_media/js/app/json2.js"></script>    
         <script type="text/javascript" src="/site_media/js/app/util.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/ajaxDelete.js?version={%revision%}"></script>

@@ -1,6 +1,8 @@
 # flake8: noqa
 from settings_shared import *
 
+STATSD_HOST = '127.0.0.1'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -12,8 +14,18 @@ DATABASES = {
 }
 
 LETTUCE_SERVER_PORT = 8002
-STATSD_HOST = '127.0.0.1'
-BROWSER = 'Headless'
+BROWSER = 'Chrome'
+
+LETTUCE_APPS = (
+    'mediathread.main',
+    'mediathread.projects',
+    'mediathread.assetmgr',
+    'mediathread.djangosherd'
+)
+
+LETTUCE_DJANGO_APP = ['lettuce.django']
+INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
+
 
 # Full run
 # time(./manage.py harvest --settings=mediathread.settings_test \

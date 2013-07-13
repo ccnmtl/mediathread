@@ -115,13 +115,6 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), "templates"),
 )
 
-LETTUCE_APPS = (
-    'mediathread.main',
-    'mediathread.projects',
-    'mediathread.assetmgr',
-    'mediathread.djangosherd'
-)
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -147,7 +140,6 @@ INSTALLED_APPS = [
     'mediathread.main',
     'sentry.client',
     'south',
-    'lettuce.django',
     'django_nose',
     'compressor',
     'django_jenkins',

@@ -34,32 +34,26 @@
         <div class="switcher collection-chooser" tabindex="1">            
             <a class="switcher-top menuclosed" onclick="switcher(this);">
                 <span class="switcher-prefix">Author </span>
-                <span class="title">{{{selected_label}}}</span>
+                <span class="title">{{{selected_label?ellipses(22)}}}</span>
                 <span class="down-arrow" tabindex="3"></span>                
             </a>
             
-            <ul class="switcher-options" style="left: -54px">
+            <ul class="switcher-options" style="left: -56px">
                 {{^showing_my_items}}
                 <li>
-                    <ul class="switcher-sub" id="switcher-extras">
-                        <li class="choice_my_items" id="choice_my_items">
-                            <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
-                        </li>
-                    </ul>
+                    <li class="choice_my_items" id="choice_my_items">
+                        <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                    </li>
                 </li>
                 {{/showing_my_items}}
-                <li>
-                    <ul class="scroll switcher-sub">
-                        {{^showing_all_items}}
-                        <li class="choice_all_items" id="choice_all_items">
-                            <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
-                        </li>
-                        {{/showing_all_items}}
-                        {{#owners}}                            
-                            <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
-                        {{/owners}}
-                    </ul>
+                {{^showing_all_items}}
+                <li class="choice_all_items" id="choice_all_items">
+                    <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
                 </li>
+                {{/showing_all_items}}
+                {{#owners}}                            
+                    <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
+                {{/owners}}
             </ul>
         </div>
         {{/>>switcher_collection_chooser}}        

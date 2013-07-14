@@ -124,7 +124,7 @@
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
 
-    <h2>Course Vocabulary <div class="actions">{% include "help/new_help_button.html" %}</div></h2>    
+    <h2>Course Vocabulary <div class="actions">{% include "help/help_button.html" %}</div></h2>    
     
     {% endwith %}{% endwith %}
 {% endblock %}
@@ -133,7 +133,7 @@
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
             
-    {% include "help/new_help_contentarea.html" %}
+    {% include "help/help_contentarea.html" %}
     
     {% ifequal role_in_course "non-member" %}
         <div id="no-materials-to-migrate">

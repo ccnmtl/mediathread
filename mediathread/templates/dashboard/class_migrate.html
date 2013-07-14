@@ -3,27 +3,9 @@
 
 {% block title %}Migrate Course Materials{% endblock %}
 
-{% block js %}
-    <script type="text/javascript"> 
-        var courses =
-            [{% for c in available_courses %}
-                {% ifnotequal c.id request.course.id %}
-                    { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
-                      value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
-                      id: "{{c.id}}",
-                      faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"  
-                    }
-                    {% if forloop.last %}{% else %},{% endif %}
-                {% endifnotequal %}
-            {% endfor %}];
-        
-        jQuery(document).ready(function () {
-            var view = new CourseMaterialsView({ availableCourses: courses, el: "#block" });
-        });
-    </script>
-    
-    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
-    <script type="text/javascript" src="/site_media/js/app/dashboard/class_migrate.js"></script>
+{% block extrahead %}
+    <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
     
     <script type="text/template" id="course-template">
         <div class="meta">
@@ -230,6 +212,30 @@
             <input id="clear-selected" type="button" value="Clear Selected" class="right" />
         </form>
 
+    </script>    
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+    <script type="text/javascript" src="/site_media/js/app/dashboard/class_migrate.js"></script>
+    
+    <script type="text/javascript"> 
+        var courses =
+            [{% for c in available_courses %}
+                {% ifnotequal c.id request.course.id %}
+                    { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                      value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                      id: "{{c.id}}",
+                      faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"  
+                    }
+                    {% if forloop.last %}{% else %},{% endif %}
+                {% endifnotequal %}
+            {% endfor %}];
+        
+        jQuery(document).ready(function () {
+            var view = new CourseMaterialsView({ availableCourses: courses, el: "#block" });
+        });
     </script>
 {% endblock %}
 
@@ -239,7 +245,7 @@
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
 
-    <h2>Migrate Course Materials <div class="actions">{% include "help/new_help_button.html" %}</div></h2>    
+    <h2>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h2>    
     
     {% endwith %}{% endwith %}
 {% endblock %}
@@ -248,7 +254,7 @@
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
             
-    {% include "help/new_help_contentarea.html" %}
+    {% include "help/help_contentarea.html" %}
     
     {% ifequal role_in_course "non-member" %}
         <div id="no-materials-to-migrate">
@@ -259,8 +265,8 @@
         <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
                     
         <div id="available-courses-selector" style="display: none">
-            <input type="text" class="default" id="available-courses" value="Type course name here">
-            <input type="submit" id="view-materials" value="View materials" class="rounded-button gray"/>        
+            <input type="text" class="default autocomplete" id="available-courses" value="Type course name here">
+            <input type="submit" id="view-materials" value="View materials" class="btn-primary"/>        
         </div>
         
         <div id="course-materials-container" style="display: none">

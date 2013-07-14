@@ -26,16 +26,6 @@
         margin: 20px;
     }
     
-    div.contact_us_form table,
-    div.contact_us_form table tr,
-    div.contact_us_form table tr td {
-        border: none;
-    }
-    
-    div.contact_us_form table tr {
-        padding-bottom: 10px;
-    }
-    
     div.contact_us_form label {
         font-weight: bold;
         margin-bottom: 5px;
@@ -132,48 +122,47 @@
         </p>
    
         <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback">
-                <div><label for="name">Name</label></div>
-                <div><input class="text" type="text" id="name" name="name" value="{{ user.get_full_name }}"/></div>
-                
-                <div><label for="name">UNI or Username</label></div>
-                <div><input class="text" type="text" id="name" name="name" value="{{ user.username }}"/></div>                
-                
-                <div><label for="email">Email address</label></div>
-                <div><input class="text" type="text" id="email" name="email" value="{{user.email}}"/></div>
-                
-                <div><label for="issue_time">Date and time issue occurred:</label></div>
-                <div><input class="text" type="text" id="time" name="time" value='{% now "m/d/y H:m" %}'/></div>
-                
-                <div><label for="category">Category:</label></div>
-                <div>
-                    <select id="category" name="category">
-                        <option value="-----">Please select a category...</option>
-                        <option value="finding">Finding Media</option>
-                        <option value="importing">Adding Media to the Collection</option>
-                        <option value="uploading">Uploading Media</option>
-                        <option value="video">Video playback/clipping</option>
-                        <option value="audio">Audio playback/clipping</option>
-                        <option value="image">Image view/clipping</option>
-                        <option value="composition">Composition Workspace</option>
-                        <option value="assignment">Assignment Workspace</option>
-                        <option value="discussion">Discussion Workspace</option>
-                        <option value="course_mgmt">Course management (roster list, for example)</option>
-                        <option value="browser">Browser Issues (garbled layout, for example)</option>
-                        <option value="http_404">"HTTP Status 404" error</option>
-                        <option value="http_500">"HTTP Status 500" error</option>
-                        <option value="internal_server_error">Internal Server Error</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <br />
-                <div><label for="description">Comment or Problem</label></div>
-                <div><textarea rows="4" cols="35" id="user_description" name="user_description"></textarea></div>
-                
-                <input type="submit" id="submit_feedback" name="add item" value="Send Feedback"/>
-                
-                <div class="visualclear"/>
-            </table>
+            <div><label for="name">Name</label></div>
+            <div><input class="text" type="text" id="name" name="name" value="{{ user.get_full_name }}"/></div>
+            
+            <div><label for="name">UNI or Username</label></div>
+            <div><input class="text" type="text" id="name" name="name" value="{{ user.username }}"/></div>                
+            
+            <div><label for="email">Email address</label></div>
+            <div><input class="text" type="text" id="email" name="email" value="{{user.email}}"/></div>
+            
+            <div><label for="issue_time">Date and time issue occurred:</label></div>
+            <div><input class="text" type="text" id="time" name="time" value='{% now "m/d/y H:m" %}'/></div>
+            
+            <div><label for="category">Category:</label></div>
+            <div>
+                <select id="category" name="category">
+                    <option value="-----">Please select a category...</option>
+                    <option value="finding">Finding Media</option>
+                    <option value="importing">Adding Media to the Collection</option>
+                    <option value="uploading">Uploading Media</option>
+                    <option value="video">Video playback/clipping</option>
+                    <option value="audio">Audio playback/clipping</option>
+                    <option value="image">Image view/clipping</option>
+                    <option value="composition">Composition Workspace</option>
+                    <option value="assignment">Assignment Workspace</option>
+                    <option value="discussion">Discussion Workspace</option>
+                    <option value="course_mgmt">Course management (roster list, for example)</option>
+                    <option value="browser">Browser Issues (garbled layout, for example)</option>
+                    <option value="http_404">"HTTP Status 404" error</option>
+                    <option value="http_500">"HTTP Status 500" error</option>
+                    <option value="internal_server_error">Internal Server Error</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <br />
+            <div><label for="description">Comment or Problem</label></div>
+            <div><textarea rows="4" cols="35" id="user_description" name="user_description"></textarea></div>
+            
+            <input type="submit" id="submit_feedback" name="add item" value="Send Feedback"/>
+            
+            <div class="visualclear"/>
             
             <input type="hidden" name="course" value="{{request.course}}"></input>
             

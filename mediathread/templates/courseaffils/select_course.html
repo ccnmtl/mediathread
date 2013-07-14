@@ -30,7 +30,6 @@
 {% block content %}
 
 <div id="course-list">
-
     <div id="coursefilter">
         <div class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left" role="button" aria-disabled="true">
             <span class="ui-button-text">View courses from:</span>
@@ -39,14 +38,13 @@
         <input type="radio" id="thisyear" name="view-choice" {% if not list_all_link %}checked=checked{% endif %} value="?{{next_redirect}}" /><label for="thisyear">This Year</label>
         <input type="radio" id="allyears" name="view-choice" {% if list_all_link %}checked=checked{% endif %} value="?list_all=true{{next_redirect}}"/><label for="allyears">All Years</label>
     </div>
-
     <div id="create-course-container">
         {% if add_privilege %}
             <a id="create-course" class="create-course" href="{%url admin:courseaffils_course_add %}">Create new course</a>            
         {% endif %}
-        <div class="visualclear"></div>
     </div>
 </div>
+<div class="visualclear"></div>
 
 
 <table class="course-choices">

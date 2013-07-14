@@ -5,7 +5,4 @@ python:
 install:
   - ./bootstrap.py
 script:
-  - ./manage.py test mediathread.djangosherd
-  - ./manage.py test mediathread.assetmgr
-  - ./manage.py test mediathread.projects
-  - ./manage.py test mediathread.main
+  - ./manage.py test

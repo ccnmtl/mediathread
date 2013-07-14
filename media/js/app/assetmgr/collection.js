@@ -378,15 +378,16 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return self.clearFilter(filterName);
             });
             
-            jQuery(self.parent).find("p.filterbydate a.switcher-choice").unbind('click').click(function (evt) {
+            jQuery(self.parent).find("a.switcher-choice.filterbydate").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.href.split("/");
                 var filterName = bits[bits.length - 1];
                 
-                if (filterName === "both") {
-                    filterName = null;
+                if (filterName === "all") {
+                    return self.clearFilter("modified");
+                } else {
+                    return self.filterByDate(filterName);
                 }
-                return self.filterByDate(filterName);
             });
 
             jQuery(self.parent).find("a.switcher-choice.filterbytag").unbind('click').click(function (evt) {

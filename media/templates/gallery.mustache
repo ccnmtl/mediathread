@@ -7,7 +7,7 @@
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="switcher-prefix">Owner </span>
                     <span class="down-arrow" tabindex="3"></span>
-                    <span class="title">{{{selected_label?ellipses(30)}}}</span>
+                    <span class="title">{{{selected_label?ellipses(20)}}}</span>
                 </a>
                 
                 <ul class="switcher-options" style="left: -56px">                    
@@ -36,54 +36,34 @@
             </div>
             {{/>>switcher_collection_chooser}}
             
-            <div class="switcher collection-filter" tabindex="2" style="width: 135px">
+            <div class="switcher collection-date-filter" tabindex="2">
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="switcher-prefix">Date </span>
                     <span class="down-arrow" tabindex="4"></span>
                     
-                    {{#active_filter_count?}}
-                        {{#active_filters}}
-                            {{#modified?}}
-                                <span class="title">{{modified}}</span>
-                            {{/modified?}}
-                        {{/active_filters}}
-                    {{/active_filter_count?}}
+                    {{#active_filters.modified?}}
+                        <span class="title">{{active_filters.modified}}</span>
+                    {{/active_filters.modified?}}
                     
-                    {{^active_filter_count}}
-                        <span class="title">All</span>
-                    {{/active_filter_count}}
+                    {{^active_filters.modified}}
+                        <span class="title">all</span>
+                    {{/active_filters.modified}}
                 </a>
-                <ul class="switcher-options" style="left: 188px">
-                    <li><a class="switcher-choice" href="all">all</a></li>
-                    <li><a class="switcher-choice" href="today">today</a></li>
-                    <li><a class="switcher-choice" href="yesterday">yesterday</a></li>
-                    <li><a class="switcher-choice" href="lastweek">within the last week</a></li>
+                <ul class="switcher-options" style="left: 189px">
+                    <li><a class="switcher-choice filterbydate" href="all">all</a></li>
+                    <li><a class="switcher-choice filterbydate" href="today">today</a></li>
+                    <li><a class="switcher-choice filterbydate" href="yesterday">yesterday</a></li>
+                    <li><a class="switcher-choice filterbydate" href="lastweek">within the last week</a></li>
                 </ul>
             </div>
             
-            <div class="switcher collection-filter" tabindex="2" style="width: 135px">
-                <a class="switcher-top menuclosed" onclick="switcher(this);">
-                    <span class="switcher-prefix">Date </span>
-                    <span class="down-arrow" tabindex="4"></span>
-                    <span class="title">Filters...</span>
-                </a>
-                <ul class="switcher-options" style="right: -43px">            
-                    <li>
-                        <h3>Tags</h3>
-                        <p class="switcher-sub">
-                            {{^tags}}
-                                No tags
-                            {{/tags}}
-                            {{#tags}}
-                                <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
-                            {{/tags}}
-                        </p>
-                    </li>                    
-                </ul>
+            <div class="switcher collection-filter" tabindex="3">
+                <a class="switcher-top menuclosed">
+                    <span class="switcher-prefix">Filters </span>
+                    <span class="down-arrow" tabindex="4"></span>        
+                    <input type="text" class="autocomplete default" id="available-filters" value="Type your tag or term here">                    
+                </a>        
             </div>
-            
-            <div class="visualclear"></div>
-            
             
             {{#active_filter_count?}}
                 <div class="switcher-active-filters">
@@ -93,14 +73,14 @@
                                 <span>Tag: {{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
                             </div>
                         {{/tag?}}
-                        {{#modified?}}
-                            <div class="switcher-active-filter">
-                                <span>Date: {{modified}}<a class="switcher-choice remove" href="modified" title="Clear "{{modified}}" filter"></a></span>
-                            </div>
-                        {{/modified?}}
                     {{/active_filters}}
                 </div>
             {{/active_filter_count?}}
+            
+            
+            
+            <div class="visualclear"></div>
+            
             
         </div> {{! end filter widget }}
             

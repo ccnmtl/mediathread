@@ -100,11 +100,11 @@
             <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% with help_homepage_instructor_column as default_help_state %}
-                {% include "help/new_help_contentarea.html" %}
+                {% include "help/help_contentarea.html" %}
                 <div class="column-container">
                    <h2 class="tour_1">
                         From Your Instructor                     
-                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                        <div class="actions">{% include "help/help_button.html" %}</div>
                    </h2>                   
                    <div class="column-contents">
                         <div id="instructor-column">                        
@@ -182,12 +182,12 @@
             <td id="classwork">
                 {% with "help_homepage_classwork_column" as help_id %}
                 {% with help_homepage_classwork_column as default_help_state %}
-                {% include "help/new_help_contentarea.html" %}
+                {% include "help/help_contentarea.html" %}
             
                 <div class="column-container parent-column-container">
                     <h2 class="tour_2">
                         Composition
-                        <div class="actions">{% include "help/new_help_button.html" %}</div>
+                        <div class="actions">{% include "help/help_button.html" %}</div>
                     </h2>
                     <div id="classwork_table"></div>
                 </div>
@@ -198,10 +198,10 @@
             <td id="explore">
                 {% with "help_homepage_explore_column" as help_id %}
                 {% with help_homepage_explore_column as default_help_state %}
-                {% include "help/new_help_contentarea.html" %}
+                {% include "help/help_contentarea.html" %}
             
             	<div class="column-container">
-                	<h2 class="tour_3">Collection<div class="actions">{% include "help/new_help_button.html" %}</div></h2>
+                	<h2 class="tour_3">Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
                 	<a class="btn-primary collection" href="/asset/">
                         <img src="/site_media/img/viewfullcollection.png" width="12" height="12" alt="view full collection icon" />View Full Collection</a> 
                     

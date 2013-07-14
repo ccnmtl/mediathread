@@ -1,9 +1,0 @@
-{% if default_help_state %}
-<span class="helptoggle on">
-{% else %}
-<span class="helptoggle off">
-{% endif %}
-
-    <a class="togglebutton {% if default_help_state %}open{%endif%}" onclick="var rc = toggleHelp(this, '{{request.user.username}}', this.parentNode, '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;"></a>
-
-</span>

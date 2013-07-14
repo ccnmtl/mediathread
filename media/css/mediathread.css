@@ -1087,12 +1087,18 @@ a.btn-primary.upload_button {
 }
 
 #coursefilter {
+    width: 50%;
+    margin: 10px 0;
+    float: left;
+}
+
+#coursefilter .ui-state-active {
+    font-weight: bold !important;
+}
+
+#create-course-container {
     float: right;
-    width: 325px;
-    background-color: #dedede;
-    padding: 8px 10px;
-    display: block;
-    margin: 5px 10px 10px;
+    margin-top: 10px;
 }
 
 table.course-choices {
@@ -1101,11 +1107,15 @@ table.course-choices {
     width: 960px;
 }
 
+table.course-choices th {
+    padding: 6px;
+}
+
 td.course-choice {
     max-width:500px;
     min-width:400px;
     list-style-type:none;
-    padding:5px;
+    padding:6px;
 }
 
 td.manage-course {
@@ -2452,17 +2462,6 @@ div.switcher-active-filter span a.remove:hover {
     height: 16px;
 }
 
-span.down-arrow {
-    right: 4px;
-    width: 16px; 
-    height: 16px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none; 
-}
 
 a.switcher-top.menuopen span.title {
     float: left;
@@ -2478,21 +2477,33 @@ a.switcher-top.menuclosed span.title {
     font-size: 1em;
 }
 
+span.down-arrow {
+    right: 4px;
+    width: 16px; 
+    height: 16px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none; 
+    outline: 0;
+    float: right;
+    background-color: white;
+    margin-top: 2px;     
+}
+
 a.switcher-top.menuopen span.down-arrow {
     background-image: url(../img/switcher/icon_x_hover.png);
-    float: right;
-    margin-top: 2px;
 }
 
 a.switcher-top.menuclosed span.down-arrow {
     background-image: url(../img/switcher/icon_down_arrow.png);
-    float: right;
-    margin-top: 2px; 
 }
 
 a.switcher-top.menuclosed span.down-arrow:hover {
     background-image: url(../img/switcher/icon_down_arrow_hover.png);
-    float: right;
 }
 
 
@@ -3140,7 +3151,6 @@ text-align: left;
 }
 
 #external-archives,
-#course-list,
 #updates {
     border: 1px solid #ccc;
     margin: 1em;
@@ -3150,6 +3160,10 @@ text-align: left;
     -moz-border-radius-topright: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    width: 980px;
+}
+
+#course-list {
     width: 980px;
 }
 
@@ -3253,7 +3267,6 @@ text-align: left;
 }
 
 #external-archives h2,
-#course-list h2,
 #updates h2 {
 
     background-color: #666;

@@ -7,14 +7,28 @@
     	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
     	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
         
+        <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
+        
+        <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
+        <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
+        <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
+        <script type="text/javascript" src="/site_media/js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js"></script>
+        <script type="text/javascript" src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
+        <script type="text/javascript" src="/jsi18n"></script>
+        
+        <link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />            
+        <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
+        
         {% compress css %}                        
-            <link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />        
             <link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
             <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
+            {% block css %}{% endblock %}
         {% endcompress %}
-          
-        <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
-        {% block css %}{% endblock %}
+        
+        {% block extrahead %}
+            <!--  For uncompress-able resources -->
+        {% endblock %}        
     </head>
     
     {% course_role for request.user in course as role_in_course %}
@@ -116,7 +130,9 @@
             </div>
             <div id="course_information">
                 <h1 id="course_title">
-                <a href="/" id="course_title_link">{{course.title}}</a></h1>
+                {% block coursetitle %}
+                    <a href="/" id="course_title_link">{{course.title}}</a></h1>
+                {% endblock %}
                 <div class="clear: right;"></div>
             </div>
             
@@ -170,29 +186,26 @@
 		</div><!-- id="footer" -->
     {% endblock %}
     
-    <script type="text/javascript">
-        var lt = String.fromCharCode(60);
-        if (window.jQuery) {
-            jQuery.noConflict();
-        }
-         
-        var MediaThread = new (function() {
-            this.templates = {};
-            {% if request.user.is_authenticated %}
-                this.current_user = {{request.user.id}};
-                this.current_username = "{{request.user.username}}";
-                this.user_full_name = "{%public_name for request.user %}";
-            {% endif %}
-        })();
-    </script>
-        
-    <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
-
-    <!--  Mustache Templating -->    
-    <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
     
-    {% compress js %}    
+    
+    
+    {% compress js %}
+        <script type="text/javascript">
+            var lt = String.fromCharCode(60);
+            if (window.jQuery) {
+                jQuery.noConflict();
+            }
+             
+            var MediaThread = new (function() {
+                this.templates = {};
+                {% if request.user.is_authenticated %}
+                    this.current_user = {{request.user.id}};
+                    this.current_username = "{{request.user.username}}";
+                    this.user_full_name = "{%public_name for request.user %}";
+                {% endif %}
+            })();
+        </script>
+
         <script type="text/javascript" src="/site_media/js/app/json2.js"></script>    
         <script type="text/javascript" src="/site_media/js/app/util.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/ajaxDelete.js?version={%revision%}"></script>
@@ -271,8 +284,9 @@
                 });      
             });
         </script>
-    {% endcompress %}
-    {% block js %}{% endblock %}
+        
+        {% block js %}{% endblock %}
+    {% endcompress %}    
 </body>
 {% endwith %}
 </html>

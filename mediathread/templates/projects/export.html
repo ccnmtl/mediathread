@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif coursetags revision compress %}
+{% load smartif coursetags revision %}
 
 {% block title %}
     {% if project.title %}{{project.title}}{% else %}Print View{% endif %}
@@ -8,11 +8,9 @@
 {% block css %}
     {{ block.super }}
     
-    {% compress css %}
     <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}"  media="screen" />
     <link rel="stylesheet" href="/site_media/css/project.print.css?version={%revision%}"  media="print" />
     <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
-    {% endcompress %}
 {% endblock %}
 
 {% block content %}

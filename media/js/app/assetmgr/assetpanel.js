@@ -63,7 +63,6 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'parent': self.el,
             'template': 'gallery',
             'template_label': "media_gallery",
-            'create_annotation_thumbs': false,
             'create_asset_thumbs': true,
             'space_owner': self.space_owner,
             'view_callback': function () {

@@ -14,7 +14,7 @@ all_archives = [
                        'url': 'http://www.youtube.com/',
                        },
             'thumb':{'label': 'thumb',
-                     'url': '/site_media/img/youtube_logo.jpg',
+                     'url': '/site_media/img/thumbs/youtube.jpg',
                      },
             },
      },
@@ -47,7 +47,7 @@ all_archives = [
                        'url': 'http://www.flickr.com/',
                        },
             'thumb':{'label': 'thumb',
-                     'url': '/site_media/img/flickr_logo.png',
+                     'url': '/site_media/img/thumbs/flickr.png',
                      },
             },
      },
@@ -65,9 +65,6 @@ all_archives = [
             'thumb':{'label': 'thumb',
                      'url': 'http://digitaltibet.ccnmtl.columbia.edu/sites/digitaltibet.ccnmtl.columbia.edu/themes/tibetan/ccnmtl_images/portfolio_image.jpg',
                      },
-            'bookmarklet_button':{'label': 'bookmarklet_button',
-                                  'url': '/site_media/img/analyze_button.jpg',
-                                  },
             },
      },
     {'title': 'Vanderbilt Television News Archive',
@@ -153,7 +150,7 @@ When you find an image you want to analyze in an ARTstor collection list, click 
      },
     {'title': 'William Blake Archive',
      'metadata':{'description':
-                     "A hypermedia archive of prints, paintings, and poems by William Blake (1757-1827) sponsored by the Library of Congress"
+                     "A hypermedia archive of paintings and poems by William Blake (1757-1827) sponsored by the Library of Congress"
                  },
      'sources':{
             'url':{'label': 'url',
@@ -180,7 +177,7 @@ When you find an image you want to analyze in an ARTstor collection list, click 
                        'url': 'http://www.vimeo.com/',
                        },
             'thumb':{'label': 'thumb',
-                     'url': '/site_media/img/vimeo_logo.png',
+                     'url': '/site_media/img/thumbs/vimeo.png',
                      },
             },
      },

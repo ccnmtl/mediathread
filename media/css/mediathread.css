@@ -1110,6 +1110,7 @@ table#sliding-content-container tr td.panhandle-stripe div.label {
     text-transform: uppercase;
     padding: 1px 0 1px;
     width: 17px;
+    margin: 21px 2px 0 0;
 }
 
 table#sliding-content-container tr td.panel-container {
@@ -1321,35 +1322,6 @@ td.panel-container.collection.fluid div.collection-materials {
 td.panel-container.collection.fixed,
 td.panel-container.collection.fixed div.collection-materials {
     width: 380px;
-}
-
-div.panel.asset-workspace table.panel-subcontainer {
-    margin: 0;
-    width: 100%;
-}
-
-div.panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
-    width: 250px;
-}
-
-div.panel.asset-workspace td.panel-container.collection {
-    border: none;
-    background-color: white;
-}
-
-div.panel.asset-workspace td.panel-container.collection.maximized {
-    border: 1px solid #A88448 !important;
-    background-color: #ededed;    
-}
-div.panel.asset-workspace td.panel-container.collection.minimized {
-    border: 1px solid #A88448 !important;
-    width: 250px;
-    background-color: #ededed;
-}
-
-div.panel.asset-workspace td.panel-container.asset-details.fixed {
-    width: 350px;
-    padding: 10px;    
 }
 
 td.panel-container.collection {
@@ -1965,7 +1937,7 @@ div.homepage-column-info {
 }
 
 div.collection-date-filter {
-    width: 155px;
+    width: 144px;
 }
 
 div.collection-date-filter ul.switcher-options {  
@@ -1980,7 +1952,6 @@ div.collection-chooser ul.switcher-options {
     width: 260px;
 }
 
-div.collection-date-filter ul.switcher-options
 div.collection-filter ul.switcher-options {  
     width: 150px;     
     right: 0px;
@@ -2186,7 +2157,7 @@ div.switcher-active-filter span a.remove:hover {
 a.switcher-top.menuopen span.title {
     float: left;
     margin-top: 6px;
-    padding: 0 7px;
+    padding: 0 0 0 7px;
     font-size: 1em;
     display: inline-block;
 }
@@ -2194,14 +2165,14 @@ a.switcher-top.menuopen span.title {
 a.switcher-top.menuclosed span.title {
     float: left;
     margin-top: 6px;
-    padding: 0 7px;
+    padding: 0 0 0 7px;
     font-size: 1em;
     display: inline-block;
 }
 
 span.down-arrow {
     right: 4px;
-    width: 16px; 
+    width: 14px; 
     height: 16px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -2783,10 +2754,6 @@ a.hs-control.hs-control-show.plist.float
 }
 
 .collection_button {
-    width: 90px !important;
-}
-
-.collection_button {
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
@@ -2795,7 +2762,7 @@ a.hs-control.hs-control-show.plist.float
    height: 14px;
    font-size: 12px;
    text-align: center;
-   margin: -2px 0px;
+   margin: -2px -10px 0 0;
 }
 
 
@@ -3848,22 +3815,48 @@ div.feature-help div.feature-help-instructions img {
 
 /* Full Collection View styles and overrides */
 
+div.panel.asset-workspace table.panel-subcontainer {
+    margin: 0;
+    width: 100%;
+}
+
+div.panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
+    width: 250px;
+}
+
+div.panel.asset-workspace td.panel-container.collection {
+    border: none;
+    background-color: white;
+}
+
+div.panel.asset-workspace td.panel-container.collection.maximized {
+    border: 1px solid #A88448 !important;
+    background-color: #ededed;
+    padding: 5px !important;    
+}
+div.panel.asset-workspace td.panel-container.collection.minimized {
+    border: 1px solid #A88448 !important;
+    width: 250px;
+    background-color: #ededed;
+    padding: 5px !important;
+}
+
+div.panel.asset-workspace td.panel-container.asset-details.fixed {
+    width: 350px;
+    padding: 10px;    
+}
+
 td#asset-workspace-panel-container div.collection-chooser {
-    width: 235px;
-    margin-right: 10px;    
+    width: 240px;
+    margin-right: 12px;    
 }
 
 td#asset-workspace-panel-container div.collection-chooser ul.switcher-options {  
-    width: 220px;
+    width: 230px;
 }
 
-td#asset-workspace-panel-container div.collection-chooser ul.switcher-options {  
-    width: 220px;
-}
-
-td#asset-workspace-panel-container div.collection-date-filter,
-td#asset-workspace-panel-container div.collection-filter {
-    margin-right: 15px;
+td#asset-workspace-panel-container div.collection-date-filter {
+    margin-right: 12px;
 }
 
 td#asset-workspace-panel-container input.autocomplete {
@@ -3872,4 +3865,16 @@ td#asset-workspace-panel-container input.autocomplete {
     border: none;
     outline: 0;
     width: 350px;
+}
+
+div.panel.asset-workspace td.panel-container.collection.minimized a.switcher-top input.autocomplete {
+    display: none;
+}
+
+div.panel.asset-workspace td.panel-container.collection div.collection-date-filter ul.switcher-options {
+    left: 195px;
+}
+
+div.panel.asset-workspace td.panel-container.collection.minimized div.collection-date-filter ul.switcher-options {
+    left: -56px;
 }

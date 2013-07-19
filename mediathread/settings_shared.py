@@ -146,9 +146,6 @@ INSTALLED_APPS = [
     'mediathread.taxonomy'
 ]
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
 COMPRESS_URL = "/site_media/"
 COMPRESS_ROOT = "media/"
 COMPRESS_PARSER = "compressor.parser.HtmlParser"

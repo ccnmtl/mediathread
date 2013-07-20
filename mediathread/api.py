@@ -45,8 +45,7 @@ class ToManyFieldEx(ToManyField):
 
     def apply_sorting(self, request, object_list):
         m2m_resource = self.get_related_resource(None)
-        sorted = m2m_resource.apply_sorting(object_list, options=request.GET)
-        return sorted
+        return m2m_resource.apply_sorting(object_list, options=request.GET)
 
     def dehydrate(self, bundle):
         if not bundle.obj or not bundle.obj.pk:

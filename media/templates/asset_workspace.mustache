@@ -277,15 +277,14 @@
                                                                              </a>
                                                                              
                                                                              {{#editable?}}
-                                                                                 <input style="display: none" type="image" title="Delete Selection" 
-                                                                                    onclick="return AnnotationList.deleteAnnotation(event, this, {{id}});" 
-                                                                                    alt="Delete" src="/site_media/img/icons/meth_delete.png" 
-                                                                                    class="annotation-listitem-icon delete" />
-                                                                                                                                                                      
                                                                                  <input style="display: none" type="image" title="Edit Selection" 
                                                                                      onclick="return AnnotationList.editAnnotation(this);" 
                                                                                      alt="Edit" src="/site_media/img/icons/meth_edit.png" 
                                                                                      class="annotation-listitem-icon edit" />
+                                                                                 <input style="display: none" type="image" title="Delete Selection" 
+                                                                                    onclick="return AnnotationList.deleteAnnotation(event, this, {{id}});" 
+                                                                                    alt="Delete" src="/site_media/img/icons/meth_delete.png" 
+                                                                                    class="annotation-listitem-icon delete" />
                                                                              {{/editable?}}
                                                         
                                                                              {{^editable}}

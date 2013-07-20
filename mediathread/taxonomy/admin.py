@@ -1,6 +1,20 @@
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from django.contrib import admin
 
-admin.site.register(Vocabulary)
-admin.site.register(Term)
+
+def term_vocabulary_name(obj):
+    return obj.vocabulary.display_name
+
+term_vocabulary_name.short_description = 'Vocabulary'
+
+
+class TermAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Term
+
+    search_fields = ("display_name", "vocabulary__display_name")
+    list_display = ("display_name", term_vocabulary_name)
+
+admin.site.register(Term, TermAdmin)
 admin.site.register(TermRelationship)
+admin.site.register(Vocabulary)

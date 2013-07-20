@@ -3,10 +3,10 @@
     <div class="media-column">
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
-            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">                
+            <div class="switcher_collection_chooser switcher collection-chooser">                
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="switcher-prefix">Owner </span>
-                    <span class="down-arrow" tabindex="3"></span>
+                    <span class="down-arrow"></span>
                     <span class="title">{{{selected_label?ellipses(20)}}}</span>
                 </a>
                 
@@ -36,10 +36,10 @@
             </div>
             {{/>>switcher_collection_chooser}}
             
-            <div class="switcher collection-date-filter" tabindex="2">
+            <div class="switcher collection-date-filter">
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="switcher-prefix">Date </span>
-                    <span class="down-arrow" tabindex="4"></span>
+                    <span class="down-arrow"></span>
                     
                     {{#active_filters.modified?}}
                         <span class="title">{{active_filters.modified}}</span>
@@ -57,25 +57,40 @@
                 </ul>
             </div>
             
-            <div class="switcher collection-filter" tabindex="3">
-                <a class="switcher-top menuclosed">
+            <div class="switcher collection-filter">
+                <a class="switcher-top menuclosed"">                
                     <span class="switcher-prefix">Filters </span>
-                    <span class="down-arrow" tabindex="4"></span>        
-                    <input type="text" class="autocomplete default" id="available-filters" value="Type your tag or term here">                    
-                </a>        
+                    <span class="down-arrow"  onclick="switcher(this.parentNode)"></span>
+                    <input type="text" class="autocomplete default" id="available-filters" value="Search for a tag or term here"></input>
+                </a>
+                <div class="switcher-options">
+                    {{^tags}}
+                        No tags
+                    {{/tags}}
+                    {{#tags}}
+                        <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
+                    {{/tags}}
+                </div>
+                
+                {{#active_filter_count?}}
+                    <div class="switcher-active-filters">
+                        {{#active_filters}}
+                            {{#tag?}}
+                                <div class="switcher-active-filter">
+                                    <span>{{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
+                                </div>
+                            {{/tag?}}
+                        {{/active_filters}}
+                    </div>
+                {{/active_filter_count?}}
             </div>
             
-            {{#active_filter_count?}}
-                <div class="switcher-active-filters">
-                    {{#active_filters}}
-                        {{#tag?}}
-                            <div class="switcher-active-filter">
-                                <span>Tag: {{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
-                            </div>
-                        {{/tag?}}
-                    {{/active_filters}}
-                </div>
-            {{/active_filter_count?}}
+            <div class="switcher collection-filter-activate">
+                <span class="search">
+                    <img src="/site_media/img/icons/meth_search.png" alt="filter collection" />
+                </span>                
+            </div>
+            
             <div class="visualclear"></div>
         </div> {{! end filter widget }}
             
@@ -165,34 +180,58 @@
                             {{/thumbable}}
                         </div>
                         
-                        <div class="actions">
-                            {{#editable?}}
-                                <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                    <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
+                        <div>
+                            <div class="actions">
+                                {{#editable?}}
+                                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
+                                        <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
+                                    </a>
+                                {{/editable?}}
+                                
+                                <a class="collection-choice edit-asset-inplace" href="{{local_url}}" title="Edit item attributes">
+                                    <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
                                 </a>
-                            {{/editable?}}
-                            
-                            <a class="collection-choice edit-asset-inplace" href="{{local_url}}" title="Edit item attributes">
-                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                            </a>
-                        </div>
-
-                        
-                        
-                        {{#annotation_count?}}
-                            <div class="item-annotation-count meta">
-                                <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
-                                <span class="metadata-value">selections</span>
-                                | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
-                                  <span class="metadata-value">by me</span>
                             </div>
-                        {{/annotation_count?}}
-                        {{^annotation_count}}
-                            <div class="item-annotation-count meta">
-                                <span class="metadata-label item-annotation-count-total">0</span>
-                                <span class="metadata-value">selections</span>
-                            </div>
-                        {{/annotation_count}}
+                        
+                            {{#annotation_count?}}
+                                <div class="item-annotation-count meta">
+                                    <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>
+                                    <span class="metadata-value">selections</span>
+                                    | <span class="metadata-label item-annotation-count-user">{{my_annotation_count}}</span>
+                                      <span class="metadata-value">by me</span>
+                                </div>
+                            {{/annotation_count?}}
+                            {{^annotation_count}}
+                                <div class="item-annotation-count meta">
+                                    <span class="metadata-label item-annotation-count-total">0</span>
+                                    <span class="metadata-value">selections</span>
+                                </div>
+                            {{/annotation_count}}
+                        </div>                        
+                        
+                                                        
+                        {{#global_annotation}}
+                            {{#metadata}}
+                                <ul class="record-metadata-list">
+                                    {{#tags?}}
+                                        <li class="annotation-global-tags meta">
+                                        <span class="metadata-label">Item Tags:</span>
+                                            <span class="metadata-value">
+                                                {{#tags}}
+                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                {{/tags}}
+                                            </span>
+                                        </li>
+                                    {{/tags?}} 
+                                
+                                    {{#body?}}
+                                        <li class="annotation-global-body meta">
+                                            <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{body}}</span> 
+                                        </li>
+                                    {{/body?}}
+                                </ul>
+                            {{/metadata}}   
+                        {{/global_annotation}}
                     </div>
                 {{/assets}}
                   

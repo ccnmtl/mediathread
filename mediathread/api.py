@@ -172,4 +172,4 @@ class GroupResource(ModelResource):
 class FacultyAuthorization(Authorization):
 
     def is_authorized(self, request, obj=None):
-        return request.user.is_staff
+        return request.course.is_faculty(request.user)

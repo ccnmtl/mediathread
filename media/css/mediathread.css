@@ -4058,8 +4058,3 @@ div#taxonomy div.term-container div.term-edit {
 div#taxonomy div.term-container div.term:hover {
     background-color: #f5f5f5;
 }
-
-div#taxonomy div.term-container div.term:hover div.term-display div.actions {
-    display: block;
-}
-

@@ -78,8 +78,8 @@
             'blur input[name="term_name"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
             'click a.edit-term-submit': 'updateTerm',
-            'click a.edit-term-open': 'toggleEditTerm',
-            'click a.edit-term-close': 'toggleEditTerm',            
+            'click a.edit-term-open': 'showEditTerm',
+            'click a.edit-term-close': 'hideEditTerm',            
             'click a.delete-term': 'deleteTerm'
         },
         initialize: function(options) {
@@ -122,9 +122,8 @@
             jQuery(this.el).find("div.vocabularies li").removeClass("ui-corner-top").addClass( "ui-corner-left");
             
             if (this.selected !== undefined) {
-                var sel = jQuery("#vocabulary-wrapper-" + this.selected.get('id'));
-                var tabIndex = jQuery(sel).attr('tabindex');
-                jQuery(elt).tabs("option", "active", tabIndex);
+                var idx = this.collection.indexOf(this.selected);
+                jQuery(elt).tabs("option", "active", idx);
             } else {
                 this.selected = this.collection.at(0);
             }            
@@ -247,11 +246,23 @@
                 jQuery(evt.currentTarget).attr("value", "Type concept name here");
             }
         },
-        toggleEditTerm: function(evt) {
+        showEditTerm: function(evt) {
+            evt.preventDefault();
+            var container = jQuery(evt.currentTarget).parents("div.terms");
+            jQuery(container).find("div.term-display").show();
+            jQuery(container).find("div.term-edit").hide();
+            
+            var parent = jQuery(evt.currentTarget).parents("div.term")[0];
+            jQuery(parent).find("div.term-display").hide();
+            jQuery(parent).find("div.term-edit").show();
+            jQuery(parent).find("input[name='display_name']").focus();
+            return false;    
+        },        
+        hideEditTerm: function(evt) {
             evt.preventDefault();
             var parent = jQuery(evt.currentTarget).parents("div.term")[0];
-            jQuery(parent).find("div.term-display, div.term-edit").toggle();
-            jQuery(parent).find("input[name='display_name']").focus();
+            jQuery(parent).find("div.term-display").show();
+            jQuery(parent).find("div.term-edit").hide();
             return false;    
         },        
         createTerm: function(evt) {

@@ -222,9 +222,8 @@
         <script type="text/javascript" src="/site_media/js/app/projects/projectpanel.js?version={%revision%}"></script>
         <script type="text/javascript" src="/site_media/js/app/projects/projectlist.js?version={%revision%}"></script>
     
-        <script>
-            {% if settings.DEBUG %}
-            {% else %}
+        {% if not settings.DEBUG %}
+            <script>                
                 {% if settings.GOOGLE_ANALYTICS_ID %}
                     var _gaq = _gaq || [];
                     _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
@@ -241,8 +240,9 @@
                 
                     var analytics = new MediathreadAnalytics(_gaq);
                 {% endif %}
-            {% endif %}        
-        </script>   
+            </script>
+        {% endif %}        
+           
     
         <script type="text/javascript">
             jQuery(document).ready(function() {
@@ -281,7 +281,7 @@
         </script>
         
         {% block js %}{% endblock %}
-    {% comment %}{% endcompress %} {% endcomment %}   
+    {% comment %}{% endcompress %}{% endcomment %}   
 </body>
 {% endwith %}
 </html>

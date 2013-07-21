@@ -1,8 +1,8 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
-from mediathread.api import ClassLevelAuthentication, ToManyFieldEx
+from mediathread.api import ClassLevelAuthentication, ToManyFieldEx, \
+    FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term
-from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 
 
@@ -10,12 +10,22 @@ class TermResource(ModelResource):
 
     class Meta:
         queryset = Term.objects.all().order_by('id')
-        list_allowed_methods = ['get']
-        detail_allowed_methods = ['get']
+        list_allowed_methods = ['get', 'post']
+        detail_allowed_methods = ['get', 'put', 'delete']
         authentication = ClassLevelAuthentication()
+        authorization = FacultyAuthorization()
+
+    def dehydrate(self, bundle):
+        bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
+        return bundle
+
+    def hydrate(self, bundle):
+        bundle.obj.vocabulary = Vocabulary.objects.get(
+            id=bundle.data['vocabulary_id'])
+        return bundle
 
 
-class VocabularyAuthorization(Authorization):
+class VocabularyAuthorization(FacultyAuthorization):
 
     def apply_limits(self, request, object_list):
         course_type = ContentType.objects.get_for_model(request.course)
@@ -38,13 +48,14 @@ class VocabularyResource(ModelResource):
     class Meta:
         queryset = Vocabulary.objects.all().order_by('id')
         list_allowed_methods = ['get', 'post']
-        detail_allowed_methods = ['get', 'post', 'delete']
+        detail_allowed_methods = ['get', 'put', 'delete']
         authentication = ClassLevelAuthentication()
         authorization = VocabularyAuthorization()
 
         ordering = ['id', 'title']
 
     def dehydrate(self, bundle):
+        bundle.data['content_type_id'] = bundle.obj.content_type.id
         return bundle
 
     def hydrate(self, bundle):

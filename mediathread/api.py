@@ -167,3 +167,9 @@ class GroupResource(ModelResource):
         queryset = Group.objects.none()
         allowed_methods = ['get']
         authentication = ClassLevelAuthentication()
+
+
+class FacultyAuthorization(Authorization):
+
+    def is_authorized(self, request, obj=None):
+        return request.user.is_staff

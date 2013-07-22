@@ -186,10 +186,12 @@ AssetPanelHandler.prototype.resize = function () {
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||
             jQuery(self.el).find('td.panel-container.collection').hasClass('maximized')) {
         
-        var visible = getVisibleContentHeight() - 65;
+        var visible = getVisibleContentHeight();
+        visible -= jQuery("#collection-column-container-title").outerHeight();
+        visible -= 30; // about half the footer size
     
         // Resize the collections box, subtracting its header elements
-        var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
+        var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height() + 23;
         jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
         
         jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
@@ -204,8 +206,8 @@ AssetPanelHandler.prototype.resize = function () {
         jQuery(self.el).find('div#annotations-organized').css('height', (visible - 5) + "px");
         
         visible -= jQuery("div#annotations-organized h2").outerHeight() +
-            jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 50;
-        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible + 39) + "px");
+            jQuery("div#annotations-organized div.ui-widget-header").outerHeight();
+        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible - 10) + "px");
         jQuery("div.accordion").accordion("resize");
     }
 };

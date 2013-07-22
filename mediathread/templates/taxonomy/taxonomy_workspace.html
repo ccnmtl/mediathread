@@ -1,5 +1,5 @@
 {% extends "dashboard/base_dashboard.html" %}
-{% load compress %}
+{% load compress static %}
 
 {% block title %}Course Vocabulary Workspace{% endblock %}
 
@@ -146,11 +146,11 @@
                     {{v.display_name}}
                     <a class="icon-link" onclick="return jQuery('#update-vocabulary-{{v.id}}').toggle('fast');"
                         href="#">                                                     
-                        <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit this vocabulary"  />
+                        <img src="{% static 'img/icons/meth_edit.png' %}" class="edit_icon" alt="Edit this vocabulary"  />
                     </a>
                     <a class="icon-link delete-vocabulary"
                         href="/taxonomy/delete/{{v.id}}/">                                                
-                        <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete this vocabulary"  />
+                        <img src="{% static 'img/icons/meth_delete.png' %}" class="delete_icon" alt="Delete this vocabulary"  />
                     </a>
                 </h3>
                 <form id="update-vocabulary-{{v.id}}"
@@ -191,10 +191,10 @@
                         <input class="edit" type="text" name="description" maxlength="256" style="display: none">     
                         <div class="actions">
                             <a class="icon-link" onclick="" href="/taxonomy/term/edit/">                                                     
-                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit this term"  />
+                                <img src="{% static 'img/icons/meth_edit.png' %}" class="edit_icon" alt="Edit this term"  />
                             </a>
                             <a class="icon-link delete-term" href="/taxonomy/term/delete/">                                                
-                                <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete this term"  />
+                                <img src="{% static 'img/icons/meth_delete.png' %}" class="delete_icon" alt="Delete this term"  />
                             </a>                                    
                         </div>
                         <input class="edit" type="submit" value="Save" style="display: none"></input>

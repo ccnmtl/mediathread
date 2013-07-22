@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% load comments %}
+{% load comments static %}
 
 {% block title %}Instructor Dashboard{% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/app/dashboard/reports.js"></script>
+    <script type="text/javascript" src="{% static 'js/app/dashboard/reports.js' %}"></script>
 {% endblock %}
 
 {% block content %}

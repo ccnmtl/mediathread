@@ -207,31 +207,7 @@
                                     <span class="metadata-value">selections</span>
                                 </div>
                             {{/annotation_count}}
-                        </div>                        
-                        
-                                                        
-                        {{#global_annotation}}
-                            {{#metadata}}
-                                <ul class="record-metadata-list">
-                                    {{#tags?}}
-                                        <li class="annotation-global-tags meta">
-                                        <span class="metadata-label">Item Tags:</span>
-                                            <span class="metadata-value">
-                                                {{#tags}}
-                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                {{/tags}}
-                                            </span>
-                                        </li>
-                                    {{/tags?}} 
-                                
-                                    {{#body?}}
-                                        <li class="annotation-global-body meta">
-                                            <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{body}}</span> 
-                                        </li>
-                                    {{/body?}}
-                                </ul>
-                            {{/metadata}}   
-                        {{/global_annotation}}
+                        </div>
                     </div>
                 {{/assets}}
                   

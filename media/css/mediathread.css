@@ -3830,7 +3830,7 @@ div.panel.asset-workspace td.panel-container.collection.minimized {
     border: 1px solid #A88448 !important;
     width: 250px;
     background-color: #ededed;
-    padding: 5px !important;
+    padding: 5px 0 0 5px !important;
 }
 
 div.panel.asset-workspace td.panel-container.asset-details.fixed {

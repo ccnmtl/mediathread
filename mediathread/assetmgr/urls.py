@@ -24,9 +24,20 @@ urlpatterns = patterns(
         'asset_workspace',
         name='annotation-view'),
 
+    # json render all assets for a cource
+    url(r'^json/course/$',
+        'assets_by_course',
+        name='assets-by-course'),
+
+    # json render all assets for a specific user
+    url(r'^json/user/(?P<record_owner_name>\w[^/]*)/$',
+        'assets_by_user',
+        name='assets-by-user'),
+
+    # json render for a specific asset
     url(r'^json/(?P<asset_id>\d+)/$',
-        'asset_json',
-        name="asset-json"),
+        'asset_detail',
+        name="asset-detail"),
 
     url(r'^create/(?P<asset_id>\d+)/annotations/$',
         'annotation_create'),

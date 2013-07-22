@@ -1359,6 +1359,15 @@ td.panel-container.asset-workspace .column-container h2 {
     margin-top: 0;
 }
 
+td.panel-container.asset-workspace .parent-column-container h2 a {
+    color: #777;
+    font-weight: normal;
+}
+
+td.panel-container.asset-workspace .parent-column-container h2 a:hover {
+    text-decoration: none;
+}
+
 .asset-workspace-dialog {
     background-color: white !important;
     width: 100%;
@@ -3167,7 +3176,6 @@ input.media.secondary {
     height: 20px;
     margin-left: 5px;
     margin-top: 5px;
-    font-size: .8em;
 } 
 
 input.media.newselection-button {
@@ -3465,6 +3473,7 @@ div.asset-view-container div.asset-view-tabs {
     padding-top: 0;
     padding-bottom: 0;
     padding-right: 0;
+    font-size: .9em;
 }
 
 div.asset-view-container div.asset-view-tabs .ui-tabs-nav {
@@ -3515,8 +3524,7 @@ div#asset-view-details {
 }
 
 #annotations-organized { 
-    margin-right: -11px;
-    font-size: .9em;
+    margin-right: -10px;
 }
 
 #annotations-organized h2 {
@@ -4047,6 +4055,14 @@ div#taxonomy div.vocabulary-create a.create-vocabulary-close {
     margin: 0 5px 0 5px;
 }
 
+div#taxonomy div.term-container a.edit-term-close,
+div#taxonomy div.term-container a.edit-term-submit {
+    padding: 3px 2px 0 2px;
+    margin-top: 5px;
+    height: 20px;
+    margin-bottom: 0;
+}
+
 div#taxonomy div.vocabulary-display a.edit-vocabulary-open {
     margin-right: 1em; 
 }
@@ -4084,6 +4100,7 @@ div#taxonomy div.term-container div.term {
     font-weight: normal;
     color: #212121;
     border-top: 1px solid #dddddd;
+    height: 38px;
 }
 
 div#taxonomy div.term-container div.term-display {
@@ -4092,9 +4109,17 @@ div#taxonomy div.term-container div.term-display {
 
 div#taxonomy div.term-container div.term-edit {
     background-color: #f5f5f5;
-    padding-top: 3px;
+    height: 38px;
 }
 
 div#taxonomy div.term-container div.term:hover {
     background-color: #f5f5f5;
+}
+
+div#taxonomy div.term-container div.term div.term-display div.actions {
+    display: none;
+}
+
+div#taxonomy div.term-container div.term:hover div.term-display div.actions {
+    display: inline-block;
 }

@@ -80,7 +80,8 @@
             </ul>       
             <% for (var i=0; i < vocabularies.length; i++) { %>
                 <div id="vocabulary-<%=vocabularies[i].id%>">
-                    <h2><%=vocabularies[i].display_name%> Terms</h2>
+                    <h2><%=vocabularies[i].display_name%> Concept</h2>
+                    <h3>Terms</h3>
                     <div class="terms">
                         <input type="text" name="term_name" class="left default" value="Type new term name here"/>
                         <a class="btn-primary create-term-submit left" href="#">
@@ -104,7 +105,6 @@
                                                 <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete term"  />
                                             </a>
                                         </div>
-                                        <div class="visualclear"></div>
                                     </div>
                                     <div class="term-edit" style="display: none">
                                         <input id="id_display_name" type="text" name="term_name"
@@ -115,10 +115,9 @@
                                         <a class="btn-primary edit-term-submit" href="#" data-id="<%=vocabularies[i].term_set[j].id%>">
                                             <span class="ui-icon ui-icon-check">close</span>
                                         </a>
-                                        <div class="visualclear"></div> 
-                                    </div>                                
+                                    </div>
                                 </div>
-                            
+
                             <% } %>
                             </div>
                         <% } %>

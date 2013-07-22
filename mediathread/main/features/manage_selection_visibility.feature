@@ -5,9 +5,9 @@ Feature: Manage Selection Visibility
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "Yes"
 
-        When I open the tools menu
-        Then there is a "Manage Settings" link
-        When I click the "Manage Settings" link
+        When I open the manage menu
+        Then there is a "Settings" link
+        When I click the "Settings" link
         Then I am at the Manage Course Settings page
      
         The selection visibility is "Yes"
@@ -19,9 +19,9 @@ Feature: Manage Selection Visibility
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "No"
         
-        When I open the tools menu
-        Then there is a "Manage Settings" link
-        When I click the "Manage Settings" link
+        When I open the manage menu
+        Then there is a "Settings" link
+        When I click the "Settings" link
         Then I am at the Manage Course Settings page
      
         The selection visibility is "No"

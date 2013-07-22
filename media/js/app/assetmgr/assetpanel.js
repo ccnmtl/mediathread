@@ -197,6 +197,8 @@ AssetPanelHandler.prototype.resize = function () {
         jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
         
         jQuery(self.el).find('div.asset-view-published').css('height', (visible) + "px");
+        
+        visible += 2;
         jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
         
         visible -= jQuery('ul.ui-tabs-nav').outerHeight();

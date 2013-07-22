@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% load smartif revision %}
+{% load smartif revision static %}
 
 {% block title %}
     {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}"  media="screen" />
-    <link rel="stylesheet" href="/site_media/css/project.print.css?version={%revision%}"  media="print" />
-    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+    <link rel="stylesheet" href="{% static 'css/project.css' %}"  media="screen" />
+    <link rel="stylesheet" href="{% static 'css/project.print.css' %}"  media="print" />
+    <link rel="stylesheet" href="{% static 'js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css' %}" />
     
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
@@ -31,10 +31,10 @@
     
     <!--  TinyMCE -->
     <script type="text/javascript">
-        var tinyMCEPreInit = {query:'',suffix:'',base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+        var tinyMCEPreInit = {query:'',suffix:'',base:'{% static "js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce" %}'};
     </script>
-    <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-    <script type="text/javascript" src="/site_media/js/app/tiny_mce_init3.js"></script>
+    <script type="text/javascript" src="{% static 'js/sherdjs/lib/tiny_mce3_min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/app/tiny_mce_init3.js' %}"></script>
     
     <script src="/site_media/jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
     <script type="text/javascript">

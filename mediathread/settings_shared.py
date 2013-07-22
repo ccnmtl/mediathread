@@ -87,7 +87,7 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(PROJECT_ROOT, 'media'),
 )
 
 #appends a slash if nothing is found without a slash.

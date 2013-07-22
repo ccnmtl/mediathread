@@ -4,10 +4,11 @@ Feature: Homepage
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I open the tools menu
-        Then there is a "Manage Settings" link
-        Then there is a "Manage Sources" link
-        Then there is a "Migrate Materials" link
+        When I open the manage menu
+        Then there is a "Settings" link
+        Then there is a "Sources" link
+        Then there is a "Migrations" link
+        Then there is a "Vocabulary" link
         
         When I open the reports menu
         Then there is an "Assignment Responses" link
@@ -26,7 +27,7 @@ Feature: Homepage
     Scenario: homepage.feature 2. Student view w/o assignment
         Using selenium
         Given I am test_student_one in Sample Course
-        Then there is no tools menu
+        Then there is no manage menu
         And there is no reports menu
         
         And there is not a From Your Instructor column

@@ -186,8 +186,7 @@ AssetPanelHandler.prototype.resize = function () {
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||
             jQuery(self.el).find('td.panel-container.collection').hasClass('maximized')) {
         
-        var visible = getVisibleContentHeight();
-        visible -= 18; // IE9 requires this small margin
+        var visible = getVisibleContentHeight() - 65;
     
         // Resize the collections box, subtracting its header elements
         var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
@@ -195,19 +194,18 @@ AssetPanelHandler.prototype.resize = function () {
         
         jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
         
-        visible -= jQuery("div.asset-view-title").outerHeight();
         jQuery(self.el).find('div.asset-view-published').css('height', (visible) + "px");
         jQuery(self.el).find('div.asset-view-tabs').css('height', (visible) + "px");
         
-        visible -= jQuery('ul.ui-tabs-nav').outerHeight() + 2;
-        jQuery(self.el).find('.ui-tabs-panel').css('height', (visible) + "px");
+        visible -= jQuery('ul.ui-tabs-nav').outerHeight();
+        jQuery(self.el).find('.ui-tabs-panel').css('height', (visible - 10) + "px");
         
         visible -= jQuery("div#asset-global-annotation").outerHeight();
-        jQuery(self.el).find('div#annotations-organized').css('height', (visible - 25) + "px");
+        jQuery(self.el).find('div#annotations-organized').css('height', (visible - 5) + "px");
         
         visible -= jQuery("div#annotations-organized h2").outerHeight() +
             jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 50;
-        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
+        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible + 39) + "px");
         jQuery("div.accordion").accordion("resize");
     }
 };

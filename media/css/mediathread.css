@@ -1357,7 +1357,6 @@ td.panel-container.asset-workspace .column-container {
 td.panel-container.asset-workspace .column-container h2 {
     margin-bottom: 10px;
     margin-top: 0;
-    border: 0;
 }
 
 .asset-workspace-dialog {
@@ -1938,8 +1937,8 @@ div.homepage-column-info {
 
 div.collection-filter .switcher-options {  
     width: 364px;
-    left: 420px;
-    width: 358px;    
+    left: 473px;
+    width: 367px;
 }
 
 div.collection-filter-activate {
@@ -2979,16 +2978,14 @@ div#materials {
     background-color: #EDEDED;
 }
 
-li.annotation-group
-{
-    margin: 5px 5px 10px;
+li.annotation-group {
+    margin: 5px 5px 10px 0;
     overflow-x: hidden;
     box-shadow: none;
     border: none;
     background-color: #fff;
     border-radius: 5px;
     border: solid 1px #ccc;
-
 }
 
 div#materials h4 {
@@ -3385,14 +3382,14 @@ div#asset-view-header div {
 
 div.asset-view-title {
     margin: 0px 10px 5px 10px;
-    width: 100%;
+    width: 98%;
     line-height: 20px;
 }
 
 div.asset-view-title h1 {
     font-size: 150%;
     font-weight: bold;
-    margin: 5px 10px 5px 0;
+    margin: 0 10px 5px 0;
 }
 
 div#asset-view-overlay {
@@ -3455,22 +3452,56 @@ div.asset-view-container div.asset-view-published {
     min-width: 475px;
     width: 65%;
     float: left;
-    border: none;
-    border-top: 1px solid #CCC;
-    border-left: 1px solid #CCC;
-    border-right: 1px solid #CCC;
-}
-
-#tabs-1.ui-tabs-panel {
-    padding: .75em .75em !important;
+    border: 1px solid #CCC;
 }
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
-    width: 32%;
+    width: 33%;
     float: left;
+    border: 0;
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0;
 }
 
+div.asset-view-container div.asset-view-tabs .ui-tabs-nav {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    background: none;
+    outline: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    padding: 0 .5em 0;
+}
+
+div.asset-view-container div.asset-view-tabs .ui-tabs-nav li {
+    margin-right: .5em;
+    margin-top: 0;
+}
+
+div.asset-view-container div.asset-view-tabs a.ui-tabs-anchor {
+    outline: 0;
+}
+
+div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
+    border: 1px solid #ccc;
+    border-top: 0;
+    border-left: 0;
+    padding: .75em .75em 0 .75em !important;
+    border-radius: 0;
+    -moz-border-radius: 0; 
+    -webkit-border-radius: 0;
+}
+
+ul#asset-details-annotations-list h3.ui-accordion-header-active {
+    border-bottom: 0;
+}
 
 div.asset-view-container div.asset-view-details h1 {
     font-size: 1.25em;
@@ -3482,14 +3513,19 @@ div#asset-view-details {
     height: 100%;    
 }
 
-div#annotations-organized {
-    border: 1px solid #CCC;
-    background-color: #F7F7F7;
+#annotations-organized { 
+    margin-right: -11px;
+    font-size: .9em;
 }
 
-div#annotations-organized h2 {
-    font-size: 1.1em;
-    margin-left: 10px;    
+#annotations-organized h2 {
+    margin-bottom: 0px;
+}
+
+#annotations-organized .ui-widget-header {
+    background: #ededed;
+    border: 1px solid #ededed;
+    font-size: .9em;
 }
 
 #annotations-organized ul {
@@ -3538,12 +3574,11 @@ input[type="button"].saving {
     text-align: left;
 }
 
-div#asset-references,
-div#asset-sources {
+.ui-tab-asset-sources,
+.ui-tab-asset-references
+{
     overflow-x: hidden;
     overflow-y: auto;
-    padding-left: 10px;
-    height: 94%;
 }
 
 form[name="annotation-list-filter"] {

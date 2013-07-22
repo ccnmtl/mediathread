@@ -191,8 +191,7 @@
             var id = jQuery(parent).find('input[name="vocabulary_id"]').attr("value").trim();
             var v = this.collection.getByDataId(id);
             if (v.get('display_name') !== 'display_name') {
-                v.set('display_name', display_name);
-                v.save({}, {
+                v.save({'display_name': display_name}, {
                     success: function() {
                         self.render();
                     }

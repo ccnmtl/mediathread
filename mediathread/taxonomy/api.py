@@ -43,7 +43,7 @@ class VocabularyResource(ModelResource):
     term_set = ToManyFieldEx(
         'mediathread.taxonomy.api.TermResource',
         'term_set',
-        blank=True, null=True, full=True)
+        blank=True, null=True, full=True, readonly=True)
 
     class Meta:
         queryset = Vocabulary.objects.all().order_by('id')

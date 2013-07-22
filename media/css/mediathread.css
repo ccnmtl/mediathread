@@ -3167,6 +3167,7 @@ input.media.secondary {
     height: 20px;
     margin-left: 5px;
     margin-top: 5px;
+    font-size: .8em;
 } 
 
 input.media.newselection-button {
@@ -3490,7 +3491,7 @@ div.asset-view-container div.asset-view-tabs a.ui-tabs-anchor {
 }
 
 div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
     border-top: 0;
     border-left: 0;
     padding: .75em .75em 0 .75em !important;
@@ -3538,7 +3539,11 @@ div#asset-view-details {
 }
 
 #annotations-organized ul li {
-    padding: 7px;
+    padding: 7px 7px 7px 0
+}
+
+#annotations-organized ul li.annotation-group {
+    border: 0;
 }
 
 div#asset-global-annotation div.metadata-value {

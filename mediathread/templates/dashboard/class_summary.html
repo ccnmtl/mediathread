@@ -1,5 +1,5 @@
 {% extends "dashboard/base_dashboard.html" %}
-{% load comments coursetags %}
+{% load comments coursetags static %}
 
 {% block js %}
     {{ block.super }}
@@ -104,7 +104,7 @@
         
         jQuery(hs_init);
     </script>
-    <script type="text/javascript" src="/site_media/js/protovis/protovis.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/protovis/protovis.min.js' %}"></script>
 {% endblock %}
 
 {% block dashboard_module_header %}

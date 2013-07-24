@@ -13,7 +13,7 @@ import simplejson
 
 @login_required
 @allow_http("GET")
-@rendered_with('taxonomy/taxonomy_workspace.html')
+@rendered_with('taxonomy/taxonomy.html')
 def taxonomy_workspace(request):
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")

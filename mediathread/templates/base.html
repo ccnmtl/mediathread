@@ -75,7 +75,7 @@
                             
                             {% if is_course_faculty %}
                             <li>
-                                <div class="settings_menu tools closed">
+                                <div class="settings_menu manage closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
                                     <div class="left settings_menu_title">Manage</div>                                
                                 </div>
@@ -222,9 +222,8 @@
         <script type="text/javascript" src="{% static 'js/app/projects/projectpanel.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/app/projects/projectlist.js' %}"></script>
     
-        <script>
-            {% if settings.DEBUG %}
-            {% else %}
+        {% if not settings.DEBUG %}
+            <script>                
                 {% if settings.GOOGLE_ANALYTICS_ID %}
                     var _gaq = _gaq || [];
                     _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
@@ -241,8 +240,9 @@
                 
                     var analytics = new MediathreadAnalytics(_gaq);
                 {% endif %}
-            {% endif %}        
-        </script>   
+            </script>
+        {% endif %}        
+           
     
         <script type="text/javascript">
             jQuery(document).ready(function() {
@@ -281,7 +281,7 @@
         </script>
         
         {% block js %}{% endblock %}
-    {% endcompress %}    
+    {% endcompress %}   
 </body>
 {% endwith %}
 </html>

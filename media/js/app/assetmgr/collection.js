@@ -434,7 +434,40 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 jQuery(window).trigger('annotation.edit', [ asset_id, annotation_id ]);
                 return false;
             });
+            
+            jQuery(self.parent).find("input.autocomplete").unbind('focus').focus(function (evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                if (jQuery(srcElement).attr("value") === "Search for a tag or term here") {
+                    jQuery(srcElement).attr("value", "");
+                    jQuery(srcElement).removeClass("default");
+                }
+            });
+            
+            jQuery(self.parent).find("input.autocomplete").unbind('blur').blur(function (evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                if (jQuery(srcElement).attr("value") === "") {
+                    jQuery(srcElement).attr("value", "Search for a tag or term here");
+                    jQuery(srcElement).addClass("default");
+                }
+            });
+            
+            jQuery(self.parent).find("div.switcher.collection-filter-activate").unbind('click').click(function (evt) {
+                var tag = jQuery("input.autocomplete").attr("value");
+                if (jQuery("input.autocomplete").hasClass("default") || tag === undefined || tag === null || tag.length < 1) {
+                    showMessage("Please select or type in a tag or term.");
+                } else {
+                    self.filterByTag(tag);
+                }
+            });
 
+            
+            var tags = [];
+            for (var i=0; i < the_records.tags.length; i++) {
+                tags.push(the_records.tags[i].name);
+            }            
+            jQuery(self.parent).find("input.autocomplete").autocomplete({                
+                source: tags
+            });
             
             if (self.view_callback) {
                 self.view_callback();

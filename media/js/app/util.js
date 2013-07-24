@@ -36,10 +36,10 @@ function switcher(a) {
     if (jQuery(a).hasClass("menuclosed")) {
         // we're going to open. make sure everyone else is CLOSED
         jQuery(".menuopen").toggleClass("menuopen menuclosed");
-        jQuery("ul.switcher-options").hide();
+        jQuery(".switcher-options").hide();
     }
     jQuery(a).toggleClass('menuclosed menuopen');
-    jQuery(a).parent().children('ul.switcher-options').toggle();
+    jQuery(a).parent().children('.switcher-options').toggle();
 }
 
 function updateHelpSetting(user, help_content_id, value) {

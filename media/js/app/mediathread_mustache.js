@@ -25,13 +25,13 @@
                 return '/project/sort/';
             },
             'your-space': function (username, tag, modified, citable) {
-                return '/yourspace/' + username + '/asset/?annotations=true' +
+                return '/asset/json/user/' + username + '/?annotations=true' +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');
             },
             'all-space': function (tag, modified, citable) {
-                return '/yourspace/all/asset/?' +
+                return '/asset/json/course/?' +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');

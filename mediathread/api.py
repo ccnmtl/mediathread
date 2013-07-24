@@ -1,6 +1,7 @@
 from courseaffils.lib import get_public_name
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from tagging.models import Tag
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
@@ -45,8 +46,7 @@ class ToManyFieldEx(ToManyField):
 
     def apply_sorting(self, request, object_list):
         m2m_resource = self.get_related_resource(None)
-        sorted = m2m_resource.apply_sorting(object_list, options=request.GET)
-        return sorted
+        return m2m_resource.apply_sorting(object_list, options=request.GET)
 
     def dehydrate(self, bundle):
         if not bundle.obj or not bundle.obj.pk:
@@ -109,6 +109,12 @@ class ToManyFieldEx(ToManyField):
         return m2m_dehydrated
 
 
+class FacultyAuthorization(Authorization):
+
+    def is_authorized(self, request, obj=None):
+        return request.course.is_faculty(request.user)
+
+
 class ClassLevelAuthentication(Authentication):
     # All users must be logged into a specific class
     # before accessing the json API
@@ -168,3 +174,28 @@ class GroupResource(ModelResource):
         queryset = Group.objects.none()
         allowed_methods = ['get']
         authentication = ClassLevelAuthentication()
+
+
+class TagResource(ModelResource):
+    class Meta:
+        queryset = Tag.objects.none()
+        allowed_methods = []
+
+    def dehydrate(self, bundle):
+        if hasattr(bundle.obj, "count"):
+            bundle.data['count'] = int(bundle.obj.count)
+        bundle.data['last'] = hasattr(bundle.obj, "last")
+        return bundle
+
+    def render_list(self, request, tags):
+        tag_last = len(tags) - 1
+        data = []
+        for idx, tag in enumerate(tags):
+            if idx == tag_last:
+                setattr(tag, 'last', idx == tag_last)
+
+            bundle = self.build_bundle(obj=tag, request=request)
+
+            dehydrated = self.full_dehydrate(bundle)
+            data.append(dehydrated.data)
+        return data

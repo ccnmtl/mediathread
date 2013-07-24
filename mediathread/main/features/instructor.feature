@@ -6,7 +6,7 @@ Feature: Instructor Dashboard
         
         # No Instructor Menus
         Then I am at the Home page
-        There is no tools menu
+        There is no manage menu
         There is no reports menu
         
         # Manage Sources

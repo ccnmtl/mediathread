@@ -1,4 +1,4 @@
-Feature: Manage Sources
+Feature: Sources
 
     Scenario: manage_sources.feature 1. View Add to My Collection, Add Sources, Enable Upload 
         Using selenium
@@ -7,10 +7,10 @@ Feature: Manage Sources
         There is not an "Upload from Computer" feature
         And I see 0 sources
         
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         
         # Enable Video Upload
         When I click the Enable Video Upload button
@@ -62,10 +62,10 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # Set for administrators
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         When I allow Administrators to upload videos
         Then I'm told "Your changes have been saved"
         Then I confirm the action
@@ -92,10 +92,10 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # Set for students
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         When I allow Students to upload videos
         Then I'm told "Your changes have been saved"
         Then I confirm the action
@@ -122,10 +122,10 @@ Feature: Manage Sources
         Given video upload is enabled
         
         # Set for students
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         When I allow Students to upload videos
         Then I'm told "Your changes have been saved"
         Then I confirm the action
@@ -182,10 +182,10 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         
         # Add the YouTube Source
         When I add YouTube to the class
@@ -206,10 +206,10 @@ Feature: Manage Sources
         Using selenium
         Given I am test_instructor in Sample Course
         
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         
         # Add the YouTube Source
         When I add YouTube to the class
@@ -222,10 +222,10 @@ Feature: Manage Sources
         I see 1 source
         
         #Remove
-        When I open the tools menu
-        Then there is a "Manage Sources" link
-        When I click the "Manage Sources" link
-        Then I am at the Manage Sources page
+        When I open the manage menu
+        Then there is a "Sources" link
+        When I click the "Sources" link
+        Then I am at the Sources page
         
         When I click the Remove button
         Then I'm told "You Tube has been disabled for your class"

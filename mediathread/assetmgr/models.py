@@ -2,7 +2,6 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.html import strip_tags
 from tagging.models import Tag
 import re
 import simplejson
@@ -35,6 +34,20 @@ class AssetManager(models.Manager):
 
     def archives(self):
         return self.filter(source__primary=True, source__label='archive')
+
+    def annotated_by(self, course, user, include_archives=False):
+        assets = Asset.objects.filter(course=course)
+        fassets = assets.filter(
+            sherdnote_set__author=user, sherdnote_set__range1=None).distinct()\
+            .order_by('-sherdnote_set__modified').select_related()
+        if include_archives:
+            return fassets
+        else:
+            to_return = []
+            for asset in fassets:
+                if asset.primary.label != 'archive':
+                    to_return.append(asset)
+            return to_return
 
     def migrate(self, asset_set, course, user, object_map):
         SherdNote = models.get_model('djangosherd', 'sherdnote')
@@ -230,39 +243,6 @@ class Asset(models.Model):
             return created
 
     request = None
-
-    def sherd_json(self, request=None):
-        sources = {}
-        for s in self.source_set.all():
-            sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(request),
-                                'width': s.width,
-                                'height': s.height,
-                                'primary': s.primary}
-
-        try:
-            metadata = simplejson.loads(self.metadata_blob)
-
-            # convert to an array for mustache
-            metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
-
-        except ValueError:
-            metadata = None
-
-        tags = Tag.objects.usage_for_queryset(self.sherdnote_set.all(),
-                                              counts=True)
-        tag_last = len(tags) - 1
-        return {
-            'sources': sources,
-            'primary_type': self.primary.label,
-            'title': strip_tags(self.title),
-            'metadata': metadata,
-            'local_url': self.get_absolute_url(),
-            'id': self.pk,
-            'media_type_label': self.media_type(),
-            'tags': [{'name': tag.name,
-                      'last': idx == tag_last,
-                      'count': tag.count} for idx, tag in enumerate(tags)]}
 
     def update_references_in_string(self, text, old_asset):
         # substitute my id for an old asset id

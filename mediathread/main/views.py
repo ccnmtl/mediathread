@@ -8,11 +8,8 @@ from django.http import Http404, HttpResponseForbidden, HttpResponse, \
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.api import UserResource
-from mediathread.assetmgr.lib import annotated_by, get_active_filters
 from mediathread.assetmgr.models import Asset, SupportedSource
-from mediathread.assetmgr.views import gallery_asset_json
 from mediathread.discussions.utils import get_course_discussions
-from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.api import CourseSummaryResource
 from mediathread.main.models import UserSetting
@@ -20,8 +17,6 @@ from mediathread.projects.lib import homepage_project_json, \
     homepage_assignment_json
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-from tagging.models import Tag
-import datetime
 import operator
 import simplejson
 
@@ -34,7 +29,7 @@ def django_settings(request):
                  'DEBUG',
                  'REVISION',
                  'DATABASES',
-                 'GOOGLE_ANALYTICS_ID'
+                 'GOOGLE_ANALYTICS_ID',
                  ]
 
     rv = {'settings': dict([(k, getattr(settings, k, None))
@@ -45,64 +40,6 @@ def django_settings(request):
         rv['is_course_faculty'] = request.course.is_faculty(request.user)
 
     return rv
-
-
-def date_filter_for(attr):
-
-    def date_filter(asset, date_range, user):
-        """
-        we want the added/modified date *for the user*, ie when the
-        user first/last edited/created an annotation on the asset --
-        not when the asset itself was created/modified.
-
-        this is really really ugly.  wouldn't be bad in sql but i don't
-        trust my sql well enough. after i write some tests maybe?
-        """
-        if attr == "added":
-            annotations = SherdNote.objects.filter(asset=asset, author=user)
-            annotations = annotations.order_by('added')
-            # get the date on which the earliest annotation was created
-            date = annotations[0].added
-
-        elif attr == "modified":
-            if user:
-                annotations = SherdNote.objects.filter(asset=asset,
-                                                       author=user)
-            else:
-                annotations = SherdNote.objects.filter(asset=asset)
-
-            # get the date on which the most recent annotation was created
-            annotations = annotations.order_by('-added')
-            added_date = annotations[0].added
-            # also get the most recent modification date of any annotation
-            annotations = annotations.order_by('-modified')
-            modified_date = annotations[0].modified
-
-            if added_date > modified_date:
-                date = added_date
-            else:
-                date = modified_date
-
-        date = datetime.date(date.year, date.month, date.day)
-
-        today = datetime.date.today()
-
-        if date_range == 'today':
-            return date == today
-        if date_range == 'yesterday':
-            before_yesterday = today + datetime.timedelta(-2)
-            return date > before_yesterday and date < today
-        if date_range == 'lastweek':
-            over_a_week_ago = today + datetime.timedelta(-8)
-            return date > over_a_week_ago
-    return date_filter
-
-filter_by = {
-    'tag': lambda asset, tag, user: filter(lambda x: x.name == tag,
-                                           asset.tags()),
-    'added': date_filter_for('added'),
-    'modified': date_filter_for('modified')
-}
 
 
 def get_prof_feed(course, request):
@@ -118,9 +55,9 @@ def get_prof_feed(course, request):
 
 
 def should_show_tour(request, course, user):
-    assets = annotated_by(Asset.objects.filter(course=course),
-                          user,
-                          include_archives=False)
+    assets = Asset.objects.annotated_by(course,
+                                        user,
+                                        include_archives=False)
 
     projects = Project.objects.visible_by_course_and_user(request,
                                                           user,
@@ -278,149 +215,6 @@ def all_projects(request):
             'course': course_rez.render_one(request, course),
             'compositions': len(projects) > 0,
             'is_faculty': course.is_faculty(logged_in_user)}
-
-    json_stream = simplejson.dumps(data, indent=2)
-    return HttpResponse(json_stream, mimetype='application/json')
-
-
-@allow_http("GET")
-def your_records(request, record_owner_name):
-    """
-    An ajax-only request to retrieve a specified user's projects,
-    assignment responses and selections
-    """
-    if not request.is_ajax():
-        raise Http404()
-
-    course = request.course
-    if (request.user.username == record_owner_name and
-        request.user.is_staff and not in_course(request.user.username,
-                                                request.course)):
-        return all_records(request)
-
-    in_course_or_404(record_owner_name, course)
-    record_owner = get_object_or_404(User, username=record_owner_name)
-
-    assets = annotated_by(Asset.objects.filter(course=course),
-                          record_owner,
-                          include_archives=False)
-
-    return get_records(request, record_owner, assets)
-
-
-@allow_http("GET")
-def all_records(request):
-    """
-    An ajax-only request to retrieve a course's projects,
-    assignment responses and selections
-    """
-
-    if not request.is_ajax():
-        raise Http404()
-
-    if not request.user.is_staff:
-        in_course_or_404(request.user.username, request.course)
-
-    course = request.course
-    archives = list(request.course.asset_set.archives())
-
-    selected_assets = Asset.objects \
-        .filter(course=course) \
-        .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
-        .select_related().order_by('lower_title')
-    assets = [a for a in selected_assets if a not in archives]
-
-    return get_records(request, None, assets)
-
-
-def get_records(request, record_owner, assets):
-    course = request.course
-    logged_in_user = request.user
-
-    # Can the record_owner edit the records
-    viewing_own_work = (record_owner == logged_in_user)
-    viewing_faculty_records = record_owner and course.is_faculty(record_owner)
-
-    # Allow the logged in user to add assets to his composition
-    citable = ('citable' in request.GET and
-               request.GET.get('citable') == 'true')
-
-    # Is the current user faculty OR staff
-    is_faculty = course.is_faculty(logged_in_user)
-
-    # Does the course allow viewing other user selections?
-    owner_selections_are_visible = (
-        course_details.all_selections_are_visible(course) or
-        viewing_own_work or viewing_faculty_records or is_faculty)
-
-    # Filter the assets
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value, record_owner)]
-
-    active_filters = get_active_filters(request, filter_by)
-
-    # Spew out json for the assets
-    asset_json = []
-    options = {
-        'owner_selections_are_visible': ('annotations' in request.GET and
-                                         owner_selections_are_visible),
-        'all_selections_are_visible':
-        course_details.all_selections_are_visible(course) or is_faculty,
-        'can_edit': viewing_own_work,
-        'citable': citable
-    }
-
-    for asset in assets:
-        asset_json.append(gallery_asset_json(request,
-                                             asset,
-                                             logged_in_user,
-                                             record_owner, options))
-
-    # Tags
-    tags = []
-    if record_owner:
-        if owner_selections_are_visible:
-            # Tags for selected user
-            tags = Tag.objects.usage_for_queryset(
-                record_owner.sherdnote_set.filter(asset__course=course),
-                counts=True)
-    else:
-        if owner_selections_are_visible:
-            # Tags for the whole class
-            tags = Tag.objects.usage_for_queryset(
-                SherdNote.objects.filter(asset__course=course),
-                counts=True)
-        else:
-            # Tags for myself and faculty members
-            tags = Tag.objects.usage_for_queryset(
-                logged_in_user.sherdnote_set.filter(asset__course=course),
-                counts=True)
-
-            for f in course.faculty:
-                tags.extend(Tag.objects.usage_for_queryset(
-                            f.sherdnote_set.filter(asset__course=course),
-                            counts=True))
-
-    tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-
-    user_resource = UserResource()
-    owners = user_resource.render_list(request, request.course.members)
-
-    # Assemble the context
-    data = {'assets': asset_json,
-            'tags': [{'name': tag.name} for tag in tags],
-            'active_filters': active_filters,
-            'space_viewer': user_resource.render_one(request, logged_in_user),
-            'editable': viewing_own_work,
-            'citable': citable,
-            'owners': owners,
-            'is_faculty': is_faculty, }
-
-    if record_owner:
-        data['space_owner'] = user_resource.render_one(request, record_owner)
 
     json_stream = simplejson.dumps(data, indent=2)
     return HttpResponse(json_stream, mimetype='application/json')

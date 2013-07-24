@@ -10,10 +10,10 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils.html import strip_tags
 from djangohelpers.lib import allow_http
-from mediathread.api import UserResource
-from mediathread.assetmgr.lib import annotated_by, filter_by, \
-    get_active_filters
+from mediathread.api import UserResource, TagResource
+from mediathread.assetmgr.lib import filter_by, get_active_filters
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, \
@@ -458,8 +458,8 @@ def final_cut_pro_xml(request, asset_id):
 @login_required
 @allow_http("GET")
 def asset_detail(request, asset_id):
-    if not request.is_ajax():
-        raise Http404()
+#    if not request.is_ajax():
+#        raise Http404()
 
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
@@ -488,8 +488,8 @@ def assets_by_user(request, record_owner_name):
     An ajax-only request to retrieve a specified user's projects,
     assignment responses and selections
     """
-    if not request.is_ajax():
-        raise Http404()
+#    if not request.is_ajax():
+#        raise Http404()
 
     course = request.course
     if (request.user.username == record_owner_name and
@@ -500,9 +500,9 @@ def assets_by_user(request, record_owner_name):
     in_course_or_404(record_owner_name, course)
     record_owner = get_object_or_404(User, username=record_owner_name)
 
-    assets = annotated_by(Asset.objects.filter(course=course),
-                          record_owner,
-                          include_archives=False)
+    assets = Asset.objects.annotated_by(course,
+                                        record_owner,
+                                        include_archives=False)
 
     return get_assets(request, record_owner, assets)
 
@@ -514,8 +514,8 @@ def assets_by_course(request):
     assignment responses and selections
     """
 
-    if not request.is_ajax():
-        raise Http404()
+#    if not request.is_ajax():
+#        raise Http404()
 
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
@@ -530,6 +530,51 @@ def assets_by_course(request):
     assets = [a for a in selected_assets if a not in archives]
 
     return get_assets(request, None, assets)
+
+
+'''
+    Refactoring plan
+    1. create a single, parameterized function to render an asset to json
+    2. create a single, parameterized function to render an asset list to json
+
+    - TagResource & render list for tag json needs
+    - Combine detail_asset_json with gallery_asset_json
+    - Merge in asset_sherd_json
+    - Use the resultant function in get_assets.
+    - Try to merge the whole shebang into the AssetResource - render methods
+      so that it's all in the same place
+'''
+
+
+def asset_sherd_json(asset, request=None):
+    sources = {}
+    for s in asset.source_set.all():
+        sources[s.label] = {'label': s.label,
+                            'url': s.url_processed(request),
+                            'width': s.width,
+                            'height': s.height,
+                            'primary': s.primary}
+
+    try:
+        metadata = simplejson.loads(asset.metadata_blob)
+
+        # convert to an array for mustache
+        metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
+
+    except ValueError:
+        metadata = None
+
+    tags = Tag.objects.usage_for_queryset(asset.sherdnote_set.all(),
+                                          counts=True)
+    return {
+        'sources': sources,
+        'primary_type': asset.primary.label,
+        'title': strip_tags(asset.title),
+        'metadata': metadata,
+        'local_url': asset.get_absolute_url(),
+        'id': asset.pk,
+        'media_type_label': asset.media_type(),
+        'tags': TagResource().render_list(request, tags)}
 
 
 def get_assets(request, record_owner, assets):
@@ -625,14 +670,6 @@ def get_assets(request, record_owner, assets):
     return HttpResponse(json_stream, mimetype='application/json')
 
 
-###############
-# # JSON renderings of asset w/its annotations
-# # @todo: add tests for this & gallery json function
-# # @todo: refactor the json renderings together
-# # Take into account: asset.sherd_json in the model
-# # AND any references in project_json & discussion_json renderings
-# # Possibly use something like TastyPie to
-# provide a nice REST interface for this.
 def detail_asset_json(request, asset_id, options):
     asset = get_object_or_404(Asset, pk=asset_id)
 
@@ -640,7 +677,17 @@ def detail_asset_json(request, asset_id, options):
         (course_details.all_selections_are_visible(request.course) or
          request.course.is_faculty(request.user))
 
-    asset_json = asset.sherd_json(request)
+    asset_json = asset_sherd_json(asset, request)
+
+    sources = {}
+    for s in asset.source_set.all():
+        sources[s.label] = {'label': s.label,
+                            'url': s.url_processed(request),
+                            'width': s.width,
+                            'height': s.height,
+                            'primary': s.primary}
+    asset_json['sources'] = sources
+
     asset_key = 'x_%s' % asset.pk
 
     asset_json['user_analysis'] = 0
@@ -649,7 +696,8 @@ def detail_asset_json(request, asset_id, options):
     if ga:
         asset_json['global_annotation_id'] = ga.id
         asset_json['notes'] = ga.body
-        asset_json['user_tags'] = tag_json(ga.tags_split())
+        asset_json['user_tags'] = TagResource.render_list(request,
+                                                          ga.tags_split())
 
         if (asset_json['notes'] and len(asset_json['notes']) > 0) or \
                 (asset_json['user_tags'] and len(asset_json['user_tags']) > 0):
@@ -658,7 +706,8 @@ def detail_asset_json(request, asset_id, options):
     if not selections_visible:
         owners = [request.user]
         owners.extend(request.course.faculty)
-        asset_json['tags'] = tag_json(asset.filter_tags_by_users(owners, True))
+        asset_json['tags'] = TagResource.render_list(
+            request, asset.filter_tags_by_users(owners, True))
 
     # DiscussionIndex is misleading. Objects returned are
     # projects & discussions title, object_pk, content_type, modified
@@ -729,7 +778,7 @@ def detail_asset_json(request, asset_id, options):
 
 
 def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
-    the_json = asset.sherd_json(request)
+    the_json = asset_sherd_json(asset, request)
 
     gannotation, created = \
         SherdNote.objects.global_annotation(asset,
@@ -775,7 +824,8 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
     else:
         owners = [request.user]
         owners.extend(request.course.faculty)
-        the_json['tags'] = tag_json(asset.filter_tags_by_users(owners))
+        the_json['tags'] = TagResource.render_list(
+            request, asset.filter_tags_by_users(owners))
 
     if options['all_selections_are_visible']:
         # count is for all annotations
@@ -787,17 +837,3 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
             len(all_annotations.filter(author__in=owners))
 
     return the_json
-
-
-def tag_json(tags):
-    tag_last = len(tags) - 1
-    rv = []
-    for idx, tag in enumerate(tags):
-        t = {}
-        t['name'] = tag.name
-        t['last'] = idx == tag_last
-
-        if hasattr(tag, 'count'):
-            t['count'] = tag.count
-        rv.append(t)
-    return rv

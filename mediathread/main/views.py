@@ -8,7 +8,6 @@ from django.http import Http404, HttpResponseForbidden, HttpResponse, \
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.api import UserResource
-from mediathread.assetmgr.lib import annotated_by
 from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.main import course_details
@@ -56,9 +55,9 @@ def get_prof_feed(course, request):
 
 
 def should_show_tour(request, course, user):
-    assets = annotated_by(Asset.objects.filter(course=course),
-                          user,
-                          include_archives=False)
+    assets = Asset.objects.annotated_by(course,
+                                        user,
+                                        include_archives=False)
 
     projects = Project.objects.visible_by_course_and_user(request,
                                                           user,

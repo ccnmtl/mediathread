@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif revision compress %}
+{% load smartif revision static compress %}
 
 {% block title %}
     Collection
@@ -16,7 +16,7 @@
     {% include "djangosherd/annotator_resources.html" %}
             
     <!--  Generic Functionality -->
-    <script type="text/javascript" src="/site_media/jquery/js/jquery.masonry.min.js"></script>
+    <script type="text/javascript" src="{% static 'jquery/js/jquery.masonry.min.js' %}"></script>
     
     <script type="text/javascript">
         jQuery(document).ready(function () {

@@ -1,32 +1,31 @@
-{% load revision %}
+{% load revision static %}
 
 <script type="text/javascript">
-    OpenLayers.ImgPath = '/site_media/js/sherdjs/lib/openlayers/openlayers/img/';
+    OpenLayers.ImgPath = '{% static "js/sherdjs/lib/openlayers/openlayers/img/" %}';
     OpenLayers._getScriptLocation = function() {
-       return "/site_media/js/sherdjs/lib/openlayers/openlayers/";
+       return "{% static 'js/sherdjs/lib/openlayers/openlayers/' %}";
     }
     flowplayer.swf_location = '{{settings.FLOWPLAYER_SWF_LOCATION}}';
 </script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/base.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/assets.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/video.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/quicktime.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/realplayer.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/videotag.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/youtube.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/flowplayer.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/vimeo.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/views/kaltura.js' %}"></script>
 
-<script type="text/javascript" src="/site_media/js/sherdjs/src/base.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/assets.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/video.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/quicktime.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/realplayer.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/videotag.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/youtube.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/flowplayer.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/vimeo.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/views/kaltura.js"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/annotators/clipform.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/video/annotators/clipstrip.js' %}"></script>
 
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipform.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/video/annotators/clipstrip.js"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/image/views/openlayers.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/image/annotators/openlayers.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/image/views/fsiviewer.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/image/annotators/fsiviewer.js' %}"></script>
 
-<script type="text/javascript" src="/site_media/js/sherdjs/src/image/views/openlayers.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/image/annotators/openlayers.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/image/views/fsiviewer.js"></script>
-<script type="text/javascript" src="/site_media/js/sherdjs/src/image/annotators/fsiviewer.js"></script>
-
-<script type="text/javascript" src="/site_media/js/sherdjs/src/configs/djangosherd.js?version={%revision%}"></script>
+<script type="text/javascript" src="{% static 'js/sherdjs/src/configs/djangosherd.js' %}"></script>
     
 

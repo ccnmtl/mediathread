@@ -32,6 +32,9 @@ class Vocabulary(models.Model):
         self.name = slugify(self.display_name)
         super(Vocabulary, self).save(force_insert, force_update)
 
+    def __unicode__(self):
+        return self.display_name
+
 
 class VocabularyForm(forms.ModelForm):
     class Meta:
@@ -49,7 +52,7 @@ class Term(models.Model):
         unique_together = ('name', 'vocabulary')
 
     def __unicode__(self):
-        return self.name
+        return "%s, %s" % (self.vocabulary, self.display_name)
 
     def save(self, force_insert=False, force_update=False):
         self.name = slugify(self.display_name)

@@ -227,11 +227,11 @@ class Project(models.Model):
         if col and col._policy.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
-    def subobjects(self, request, type):
+    def subobjects(self, request, child_type):
         col = self.collaboration()
         if not col:
             return []
-        children = col.children.filter(content_type=type)
+        children = col.children.filter(content_type=child_type)
         viewable_children = []
         for child in children:
             if child.permission_to("read", request) and child.content_object:

@@ -1,13 +1,13 @@
-from mediathread.assetmgr.api import AssetResource
 from django.conf import settings
 from django.conf.urls.defaults import url, patterns, include
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from djangosherd.api import SherdNoteResource
-from mediathread.main.api import CourseResource, \
-    CourseSummaryResource
+from mediathread.assetmgr.api import AssetResource
+from mediathread.main.api import CourseResource, CourseSummaryResource
 from mediathread.projects.api import ProjectResource
+from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
 import os.path
 
@@ -18,6 +18,8 @@ v1_api.register(AssetResource())
 v1_api.register(ProjectResource())
 v1_api.register(CourseResource())
 v1_api.register(CourseSummaryResource())
+v1_api.register(TermResource())
+v1_api.register(VocabularyResource())
 
 
 admin.autodiscover()

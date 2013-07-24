@@ -1,4 +1,5 @@
 from courseaffils.lib import get_public_name
+from mediathread.assetmgr.views import asset_sherd_json
 from mediathread.projects.forms import ProjectForm
 from random import choice
 from string import letters
@@ -115,7 +116,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'course_title': course.title
         },
         'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-                        ann.asset.sherd_json(request))
+                        asset_sherd_json(ann.asset, request))
                         for ann in project.citations()
                         if (ann.title != "Annotation Deleted" and
                         ann.title != 'Asset Deleted')]),

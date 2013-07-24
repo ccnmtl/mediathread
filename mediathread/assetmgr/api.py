@@ -52,7 +52,15 @@ class AssetResource(ModelResource):
         bundle.data['primary_type'] = bundle.obj.primary.label
         return bundle
 
-    def render_one(self, request, course):
-        bundle = self.build_bundle(obj=course, request=request)
+    def render_one(self, request, item):
+        bundle = self.build_bundle(obj=item, request=request)
         dehydrated = self.full_dehydrate(bundle)
         return self._meta.serializer.to_simple(dehydrated, None)
+
+    def render_list(self, request, lst):
+        data = []
+        for item in lst:
+            bundle = self.build_bundle(obj=item, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            data.append(dehydrated.data)
+        return data

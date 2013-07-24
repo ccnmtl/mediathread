@@ -1,5 +1,4 @@
 from datetime import datetime
-from mediathread.discussions.utils import pretty_date
 from django.conf import settings
 from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
@@ -10,6 +9,8 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
+from mediathread.assetmgr.views import asset_sherd_json
+from mediathread.discussions.utils import pretty_date
 from random import choice
 from string import letters
 from structuredcollaboration.models import Collaboration
@@ -235,7 +236,8 @@ def threaded_comment_json(request, comment):
                        for obj in all_comments]
         },
         'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-                        ann.asset.sherd_json(request)) for ann in citations
+                        asset_sherd_json(ann.asset, request))
+                        for ann in citations
                        if (ann.title != "Annotation Deleted" and
                            ann.title != 'Asset Deleted')]),
         'annotations': [ann.sherd_json(request, rand, ('title', 'author'))

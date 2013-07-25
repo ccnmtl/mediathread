@@ -104,8 +104,11 @@
         
         jQuery(hs_init);
     </script>
-    <script type="text/javascript" src="{% static 'js/protovis/protovis.min.js' %}"></script>
 {% endblock %}
+
+{% block extrehad %}
+    <script type="text/javascript" src="{% static 'js/protovis/protovis.min.js' %}"></script>
+{% endblock extrehad %}
 
 {% block dashboard_module_header %}
     <h2>Report: Student Contributions</h2>

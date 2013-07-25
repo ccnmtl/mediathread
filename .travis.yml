@@ -6,4 +6,3 @@ install:
   - ./bootstrap.py
 script:
   - ./manage.py test
-  - ./manage.py harvest --settings=mediathread.settings_test --debug-mode

@@ -1,3 +1,4 @@
+from courseaffils.lib import get_public_name
 from mediathread.djangosherd.models import SherdNote
 import datetime
 
@@ -65,3 +66,9 @@ def get_active_filters(request, filter_by=filter_by):
     return dict((filter, request.GET.get(filter))
                 for filter in filter_by
                 if filter in request.GET)
+
+
+def annotation_author_name(request, annotation, key):
+    if not annotation.author_id:
+        return None
+    return 'author_name', get_public_name(annotation.author, request)

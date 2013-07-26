@@ -23,7 +23,8 @@ class SherdNoteAuthorization(Authorization):
             if not course.is_member(request.user):
                 invisible.append(note.id)
             elif (not course.is_faculty(request.user) and
-                  not course_details.all_selections_are_visible(course)):
+                  not course_details.all_selections_are_visible(
+                    course, request.user)):
                 # apply per course limitations
                 # the user or a faculty member must be the selection author
                 authorized = list(course.faculty)

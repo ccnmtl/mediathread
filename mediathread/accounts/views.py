@@ -6,7 +6,7 @@ from .forms import InviteStudentsForm
 
 class RegistrationFormView(FormView):
     form_class = RegistrationForm
-    template_name = 'account/registration_form.html'
+    template_name = 'accounts/registration_form.html'
 
 registration_form = RegistrationFormView.as_view()
 

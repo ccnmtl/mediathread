@@ -81,6 +81,8 @@ class Annotation(models.Model):
                 metadata[m] = self.modified.strftime("%m/%d/%y %I:%M %p")
             elif m == 'timecode':
                 metadata[m] = self.range_as_timecode()
+            elif m == 'primary_type':
+                metadata[m] = self.asset.primary.label
             elif callable(m):
                 key, val = m(request, self, m)
                 metadata[key] = val

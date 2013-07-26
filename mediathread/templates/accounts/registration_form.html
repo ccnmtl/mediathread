@@ -3,7 +3,7 @@
 {% block title %}Invite Students{% endblock title %}
 
 {% block content %}
-<form action="/registration_form/" method="post">{% csrf_token %}
+<form action="/accounts/registration_form/" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />
 </form>

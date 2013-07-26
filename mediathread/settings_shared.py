@@ -174,6 +174,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'mediathread.accounts',
+
 ]
 
 COMPRESS_PARSER = "compressor.parser.HtmlParser"

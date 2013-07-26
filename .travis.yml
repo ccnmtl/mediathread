@@ -7,5 +7,5 @@ install:
 script:
   - ./manage.py test
 branches:
-	except:
-		- /feature\/*/
+    except:
+        - /feature\/*/

@@ -58,8 +58,8 @@ urlpatterns = patterns(
 
     (r'^comments/', include('django.contrib.comments.urls')),
 
-    (r'^accounts/', include('mediathread.accounts.urls')),
 
+    auth_urls,
     logout_page,
 
 

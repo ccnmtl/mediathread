@@ -31,7 +31,7 @@ bookmarklet_root = os.path.join(os.path.dirname(__file__),
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 
-auth_urls = (r'^accounts/', include('django.contrib.auth.urls'))
+auth_urls = (r'^accounts/', include('allauth.urls'))
 logout_page = (r'^accounts/logout/$',
                'django.contrib.auth.views.logout',
                {'next_page': redirect_after_logout})

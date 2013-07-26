@@ -41,6 +41,9 @@ if hasattr(settings, 'WIND_BASE'):
     logout_page = (r'^accounts/logout/$', 'djangowind.views.logout',
                    {'next_page': redirect_after_logout})
 
+## for testing
+auth_urls = (r'^accounts/', include('mediathread.accounts.urls'))
+
 
 urlpatterns = patterns(
     '',

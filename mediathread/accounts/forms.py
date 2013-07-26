@@ -1,10 +1,5 @@
 from django import forms
 
- 
-class InviteStudentsForm(forms.Form):
-    pass
-
-
 class RegistrationForm(forms.Form):
     HOW_DID_YOU_HEAR_CHOICES = (
         ('GA', 'Google Ads'),
@@ -24,3 +19,7 @@ class RegistrationForm(forms.Form):
     i_agree_to_terms_of_service = forms.BooleanField(required=True)
 
 
+
+class InviteStudentsForm(forms.Form):
+    student_emails = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 80, 'rows': 20}))

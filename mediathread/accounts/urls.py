@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import include, patterns, url
 from .views import *
 
 urlpatterns = patterns('',
@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^registration_form/$',
         registration_form,
         name='registration-form'),
+    (r'', include('allauth.urls'))
 )

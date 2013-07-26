@@ -1,17 +1,18 @@
 from django.views.generic.edit import FormView
 from django.shortcuts import render
 from .forms import RegistrationForm
-def invite_students(request):
-    pass
+from .forms import InviteStudentsForm
 
-def registration_form(request):
-    if request.method == 'POST':
-        pass
-        #redirect to result page
-    else:
-        form = RegistrationForm()
 
-    return render(request, 'account/registration_form.html', {
-        'form': form
-        })
+class RegistrationFormView(FormView):
+    form_class = RegistrationForm
+    template_name = 'account/registration_form.html'
 
+registration_form = RegistrationFormView.as_view()
+
+
+class InviteStudents(FormView):
+    form_class = InviteStudentsForm
+    template_name = 'accounts/invite_students.html'
+
+invite_students = InviteStudents.as_view()

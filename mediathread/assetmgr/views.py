@@ -1,5 +1,4 @@
-from courseaffils.lib import in_course, in_course_or_404, \
-    AUTO_COURSE_SELECT
+from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -10,9 +9,9 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.html import strip_tags
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
+from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.lib import filter_by, get_active_filters, \
     annotation_author_name
 from mediathread.assetmgr.models import Asset, Source
@@ -540,7 +539,6 @@ def assets_by_course(request):
 
     X TagResource & render list for tag json needs
     - Combine detail_asset_json with gallery_asset_json
-    - Merge in asset_sherd_json
     - Use the resultant function in get_assets.
     - Try to merge the whole shebang into the AssetResource - render methods
     -- render_one
@@ -548,37 +546,6 @@ def assets_by_course(request):
     - Oh, and don't forget Annotation.sherd_json
     - Go have a very large drink
 '''
-
-
-def asset_sherd_json(asset, request=None):
-    sources = {}
-    for s in asset.source_set.all():
-        sources[s.label] = {'label': s.label,
-                            'url': s.url_processed(request),
-                            'width': s.width,
-                            'height': s.height,
-                            'primary': s.primary}
-
-    try:
-        metadata = simplejson.loads(asset.metadata_blob)
-
-        # convert to an array for mustache
-        metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
-
-    except ValueError:
-        metadata = None
-
-    tags = Tag.objects.usage_for_queryset(asset.sherdnote_set.all(),
-                                          counts=True)
-    return {
-        'sources': sources,
-        'primary_type': asset.primary.label,
-        'title': strip_tags(asset.title),
-        'metadata': metadata,
-        'local_url': asset.get_absolute_url(),
-        'id': asset.pk,
-        'media_type_label': asset.media_type(),
-        'tags': TagResource().render_list(request, tags)}
 
 
 def get_assets(request, record_owner, assets):
@@ -676,7 +643,7 @@ def detail_asset_json(request, asset):
     all_selections_visible = course_details.all_selections_are_visible(
         request.course, request.user)
 
-    the_json = asset_sherd_json(asset, request)
+    the_json = AssetResource().render_one(request, asset)
     the_json['user_analysis'] = 0
 
     ga = asset.global_annotation(request.user, False)
@@ -759,8 +726,7 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
         'citable',
         'all_selections_are_visible'
     '''
-
-    the_json = asset_sherd_json(asset, request)
+    the_json = AssetResource().render_one(request, asset)
 
     gannotation, created = \
         SherdNote.objects.global_annotation(asset,

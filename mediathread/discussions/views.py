@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
-from mediathread.assetmgr.views import asset_sherd_json
+from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from random import choice
 from string import letters
@@ -215,6 +215,8 @@ def threaded_comment_json(request, comment):
     rand = ''.join([choice(letters) for i in range(5)])
     citations = threaded_comment_citations(all_comments, viewer)
 
+    asset_resource = AssetResource()
+
     return {
         'type': 'discussion',
         'form': comments.get_form()(comment.content_object).__unicode__(),
@@ -236,7 +238,7 @@ def threaded_comment_json(request, comment):
                        for obj in all_comments]
         },
         'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-                        asset_sherd_json(ann.asset, request))
+                        asset_resource.render_one(request, ann.asset))
                         for ann in citations
                        if (ann.title != "Annotation Deleted" and
                            ann.title != 'Asset Deleted')]),

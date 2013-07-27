@@ -1,5 +1,5 @@
 from courseaffils.lib import get_public_name
-from mediathread.assetmgr.views import asset_sherd_json
+from mediathread.assetmgr.api import AssetResource
 from mediathread.projects.forms import ProjectForm
 from random import choice
 from string import letters
@@ -91,6 +91,8 @@ def composition_project_json(request, project, can_edit, version_number=None):
     course = request.course if request.course \
         else request.collaboration_context.content_object
 
+    asset_resource = AssetResource()
+
     data = {
         'project': {
             'id': project.pk,
@@ -116,7 +118,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'course_title': course.title
         },
         'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-                        asset_sherd_json(ann.asset, request))
+                        asset_resource.render_one(request, ann.asset))
                         for ann in project.citations()
                         if (ann.title != "Annotation Deleted" and
                         ann.title != 'Asset Deleted')]),

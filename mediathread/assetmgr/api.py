@@ -1,10 +1,12 @@
+from mediathread.api import ClassLevelAuthentication, UserResource, \
+    ToManyFieldEx, TagResource
 from mediathread.assetmgr.models import Asset
-from mediathread.api import ClassLevelAuthentication, UserResource
-from mediathread.api import ToManyFieldEx
+from tagging.models import Tag
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
+import simplejson
 
 
 class AssetAuthorization(Authorization):
@@ -50,6 +52,29 @@ class AssetResource(ModelResource):
     def dehydrate(self, bundle):
         bundle.data['thumb_url'] = bundle.obj.thumb_url
         bundle.data['primary_type'] = bundle.obj.primary.label
+        bundle.data['local_url'] = bundle.obj.get_absolute_url()
+        bundle.data['media_type_label'] = bundle.obj.media_type()
+
+        try:
+            metadata = simplejson.loads(bundle.obj.metadata_blob)
+            metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
+            bundle.data['metadata'] = metadata
+        except ValueError:
+            pass
+
+        sources = {}
+        for s in bundle.obj.source_set.all():
+            sources[s.label] = {'label': s.label,
+                                'url': s.url_processed(bundle.request),
+                                'width': s.width,
+                                'height': s.height,
+                                'primary': s.primary}
+        bundle.data['sources'] = sources
+
+        tags = Tag.objects.usage_for_queryset(bundle.obj.sherdnote_set.all(),
+                                              counts=True)
+        bundle.data['tags'] = TagResource().render_list(bundle.request, tags)
+
         return bundle
 
     def render_one(self, request, item):

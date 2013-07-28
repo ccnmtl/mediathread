@@ -44,7 +44,6 @@ Feature: Composition
         
         # Toggle Preview Mode
         When I click the Preview button
-        Then I take a picture
         The Composition panel has a Revisions button
         And the Composition panel has an Edit button
         And the Composition panel does not have a Preview button

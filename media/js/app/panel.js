@@ -83,7 +83,11 @@
                     lastCell.before(Mustache.tmpl(panel.template, panel));
                     
                     var newCell = jQuery(lastCell).prev().prev()[0];
-                    var handler = PanelFactory.create(newCell, self.el, self.panels[i].context.type, self.panels[i], self.space_owner);
+                    var handler = PanelFactory.create(newCell,
+                            self.el,
+                            self.panels[i].context.type,
+                            self.panels[i],
+                            self.space_owner);
                     self.panelHandlers.push(handler);
                     
                     // enable open/close controls on subpanel

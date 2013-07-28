@@ -38,5 +38,4 @@ SELECTION_VISIBILITY_DEFAULT = 1
 def all_selections_are_visible(course):
     value = int(course.get_detail(SELECTION_VISIBILITY_KEY,
                                   SELECTION_VISIBILITY_DEFAULT))
-    b = bool(value)
-    return b
+    return bool(value)

@@ -805,7 +805,7 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter a.switcher-top")
+        "div.switcher.collection-filter a.switcher-top span.down-arrow")
     filter_menu.click()
 
     tags = column.find_elements_by_css_selector(
@@ -829,7 +829,7 @@ def i_filter_by_tag_in_the_title_column(step, tag, title):
     assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter a.switcher-top")
+        "div.switcher.collection-filter a.switcher-top span.down-arrow")
     filter_menu.click()
 
     tags = column.find_elements_by_css_selector(

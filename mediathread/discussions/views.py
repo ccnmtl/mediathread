@@ -11,6 +11,7 @@ from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
+from mediathread.djangosherd.api import SherdNoteResource
 from random import choice
 from string import letters
 from structuredcollaboration.models import Collaboration
@@ -216,6 +217,7 @@ def threaded_comment_json(request, comment):
     citations = threaded_comment_citations(all_comments, viewer)
 
     asset_resource = AssetResource()
+    sherd_resource = SherdNoteResource()
 
     return {
         'type': 'discussion',
@@ -240,8 +242,8 @@ def threaded_comment_json(request, comment):
         'assets': dict([('%s_%s' % (rand, ann.asset.pk),
                         asset_resource.render_one(request, ann.asset))
                         for ann in citations
-                       if (ann.title != "Annotation Deleted" and
-                           ann.title != 'Asset Deleted')]),
-        'annotations': [ann.sherd_json(request, rand, ('title', 'author'))
+                        if (ann.title != "Annotation Deleted" and
+                        ann.title != 'Asset Deleted')]),
+        'annotations': [sherd_resource.render_one(request, ann, rand)
                         for ann in citations],
     }

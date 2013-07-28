@@ -207,7 +207,7 @@
                 break;
             case 'author':
                 this.layers[grouping].color_by = function (ann) {
-                    return [ann.metadata.author_name];
+                    return [ann.author.public_name];
                 };
                 break;
             }

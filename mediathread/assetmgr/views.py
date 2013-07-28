@@ -12,9 +12,9 @@ from django.template import RequestContext
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.lib import filter_by, get_active_filters, \
-    annotation_author_name
+from mediathread.assetmgr.lib import filter_by, get_active_filters
 from mediathread.assetmgr.models import Asset, Source
+from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, \
     delete_annotation, edit_annotation, update_annotation
@@ -564,7 +564,7 @@ def get_assets(request, record_owner, assets):
 
     # Does the course allow viewing other user selections?
     owner_selections_are_visible = (
-        course_details.all_selections_are_visible(course, logged_in_user) or
+        course_details.all_selections_are_visible(course) or
         viewing_own_work or viewing_faculty_records or is_faculty)
 
     # Filter the assets
@@ -641,7 +641,7 @@ def get_assets(request, record_owner, assets):
 
 def detail_asset_json(request, asset):
     all_selections_visible = course_details.all_selections_are_visible(
-        request.course, request.user)
+        request.course) or request.course.is_faculty(request.user)
 
     the_json = AssetResource().render_one(request, asset)
     the_json['user_analysis'] = 0
@@ -687,6 +687,7 @@ def detail_asset_json(request, asset):
         'id': 'asset-%s' % asset.pk,
         'asset_id': asset.pk, }]
 
+    sherd_resource = SherdNoteResource()
     for ann in asset.sherdnote_set.filter(range1__isnull=False):
         visible = (all_selections_visible or
                    request.user == ann.author or
@@ -695,14 +696,7 @@ def detail_asset_json(request, asset):
         if visible:
             if request.user == ann.author:
                 the_json['user_analysis'] += 1
-            ann_json = ann.sherd_json(request, 'x', ('title',
-                                                     'author',
-                                                     'tags',
-                                                     annotation_author_name,
-                                                     'body',
-                                                     'modified',
-                                                     'timecode',
-                                                     'primary_type'))
+            ann_json = sherd_resource.render_one(request, ann, "x")
             annotations.append(ann_json)
 
     help_setting = \
@@ -727,6 +721,7 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
         'all_selections_are_visible'
     '''
     the_json = AssetResource().render_one(request, asset)
+    sherd_resource = SherdNoteResource()
 
     gannotation, created = \
         SherdNote.objects.global_annotation(asset,
@@ -737,7 +732,7 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
         ('owner_selections_are_visible' in options and
          options['owner_selections_are_visible']):
         the_json['global_annotation'] = \
-            gannotation.sherd_json(request, 'x', ('tags', 'body'))
+            sherd_resource.render_one(request, gannotation, 'x')
 
     all_annotations = asset.sherdnote_set.filter(range1__isnull=False)
     the_json['editable'] = options['can_edit']
@@ -748,15 +743,7 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
     if options['owner_selections_are_visible']:
         annotations = []
         for ann in all_annotations.filter(author=record_owner):
-            ann_json = ann.sherd_json(request, 'x', ('title',
-                                                     'author',
-                                                     'tags',
-                                                     annotation_author_name,
-                                                     'body',
-                                                     'modified',
-                                                     'timecode',
-                                                     'primary_type'))
-
+            ann_json = sherd_resource.render_one(request, ann, "x")
             ann_json['citable'] = options['citable']
             annotations.append(ann_json)
         the_json['annotations'] = annotations
@@ -766,8 +753,10 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
         the_json['tags'] = TagResource().render_list(
             request, asset.filter_tags_by_users(owners))
 
-    if course_details.all_selections_are_visible(
-            request.course, logged_in_user):
+    all_selections_visible = course_details.all_selections_are_visible(
+        request.course) or request.course.is_faculty(request.user)
+
+    if (all_selections_visible):
         # count is for all annotations
         the_json['annotation_count'] = len(all_annotations)
     else:

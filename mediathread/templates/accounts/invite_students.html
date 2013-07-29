@@ -3,8 +3,30 @@
 {% block title %}Invite Students{% endblock title %}
 
 {% block content %}
-    <form action="." method="post">
-        {{ form.as_p }}
-        <input type="submit" value="Invite students"/>
-    </form>
+    <div class="invite-students-form">
+        <h2 class="title">Invite students to your course</h2>
+        <p>Invite students to your course, enter the email addresses
+        in separate lines.</p>
+        <form action="." method="post" id="invite-students-form">
+            <div>
+                {{ form.email_from.label_tag }}
+            </div>
+            <div>
+                {{ form.email_from }}
+            </div>
+            <div>
+                {{ form.student_emails.label_tag }}
+            </div>
+            <div>
+                {{ form.student_emails }}
+            </div>
+            <div>
+                {{ form.message.label_tag }}
+            </div>
+            <div>
+                {{ form.message}}
+            </div>
+            <input type="submit" value="Invite students"/>
+        </form>
+    </div>
 {% endblock content %}

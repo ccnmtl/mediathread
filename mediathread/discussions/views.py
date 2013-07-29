@@ -12,6 +12,7 @@ from djangohelpers.lib import rendered_with, allow_http
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
+from mediathread.main.decorators import faculty_only
 from random import choice
 from string import letters
 from structuredcollaboration.models import Collaboration
@@ -22,9 +23,8 @@ import simplejson
 
 
 @allow_http("POST")
+@faculty_only
 def discussion_create(request):
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
 
     """Start a discussion of an arbitrary model instance."""
     rp = request.POST

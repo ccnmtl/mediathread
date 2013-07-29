@@ -2,11 +2,10 @@ from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseForbidden, HttpResponseRedirect, Http404, \
-    HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http, rendered_with
-from mediathread.main.decorators import ajax_required
+from mediathread.main.decorators import ajax_required, faculty_only
 from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
     Term
 import simplejson
@@ -15,10 +14,8 @@ import simplejson
 @login_required
 @allow_http("GET")
 @rendered_with('taxonomy/taxonomy.html')
+@faculty_only
 def taxonomy_workspace(request):
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     vocabularies = Vocabulary.objects.get_for_object(request.course)
     for v in vocabularies:
         v.form = VocabularyForm(instance=v)
@@ -40,10 +37,8 @@ def taxonomy_workspace(request):
 @login_required
 @allow_http("POST")
 @rendered_with('taxonomy/taxonomy_workspace.html')
+@faculty_only
 def vocabulary_create(request):
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     in_course_or_404(request.user.username, request.course)
 
     form = VocabularyForm(request.POST)
@@ -61,10 +56,8 @@ def vocabulary_create(request):
 @login_required
 @allow_http("POST")
 @ajax_required
+@faculty_only
 def vocabulary_save(request, vocabulary_id):
-    if not request.course.is_faculty(request.user):
-        raise Http404()
-
     in_course_or_404(request.user.username, request.course)
 
     vocabulary = get_object_or_404(Vocabulary, id=vocabulary_id)
@@ -82,10 +75,8 @@ def vocabulary_save(request, vocabulary_id):
 @login_required
 @allow_http("POST")
 @ajax_required
+@faculty_only
 def vocabulary_delete(request, vocabulary_id):
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     in_course_or_404(request.user.username, request.course)
 
     vocabulary = get_object_or_404(Vocabulary, id=vocabulary_id)
@@ -97,10 +88,8 @@ def vocabulary_delete(request, vocabulary_id):
 @login_required
 @allow_http("POST")
 @ajax_required
+@faculty_only
 def term_create(request, vocabulary_id):
-    if not request.course.is_faculty(request.user):
-        raise Http404()
-
     in_course_or_404(request.user.username, request.course)
 
     vocabulary = get_object_or_404(Vocabulary, id=vocabulary_id)
@@ -125,10 +114,8 @@ def term_create(request, vocabulary_id):
 @login_required
 @allow_http("POST")
 @ajax_required
+@faculty_only
 def term_delete(request, term_id):
-    if not request.course.is_faculty(request.user):
-        raise Http404()
-
     in_course_or_404(request.user.username, request.course)
 
     term = get_object_or_404(Term, id=term_id)

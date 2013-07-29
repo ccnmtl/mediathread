@@ -9,6 +9,7 @@ from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main.clumper import Clumper
+from mediathread.main.decorators import faculty_only
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
 import csv
@@ -18,10 +19,8 @@ import simplejson as json
 
 @allow_http("GET")
 @rendered_with('dashboard/class_assignment_report.html')
+@faculty_only
 def class_assignment_report(request, project_id):
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     assignment = get_object_or_404(Project, id=project_id)
     responses = assignment.responses(request)
     return {'assignment': assignment,
@@ -30,10 +29,8 @@ def class_assignment_report(request, project_id):
 
 @allow_http("GET")
 @rendered_with('dashboard/class_assignments.html')
+@faculty_only
 def class_assignments(request):
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     assignments = []
     maybe_assignments = Project.objects.filter(
         request.course.faculty_filter)
@@ -50,11 +47,8 @@ def class_assignments(request):
 
 @allow_http("GET")
 @rendered_with('dashboard/class_summary.html')
+@faculty_only
 def class_summary(request):
-    """FACULTY ONLY reporting of entire class activity """
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     collab_context = request.collaboration_context
     students = []
     for stud in users_in_course(request.course).order_by('last_name',
@@ -85,10 +79,8 @@ def class_summary(request):
 
 
 @allow_http("GET")
+@faculty_only
 def class_summary_graph(request):
-    """FACULTY ONLY reporting of class activity graph """
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
 
     # groups: 1=domains,2=assets,3=projects
     rv = {'nodes': [], 'links': []}
@@ -184,11 +176,8 @@ def class_summary_graph(request):
 
 @allow_http("GET")
 @rendered_with('dashboard/class_activity.html')
+@faculty_only
 def class_activity(request):
-    """FACULTY ONLY reporting of entire class activity """
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     collab_context = request.collaboration_context
 
     my_feed = Clumper(

@@ -30,6 +30,7 @@ import urllib
 import urllib2
 from django.template import loader
 
+
 @login_required
 @allow_http("POST")
 def archive_add_or_remove(request):
@@ -167,9 +168,8 @@ def asset_create(request):
                 for t in metadata["tag"]:
                     asset.save_tag(user, t)
 
-            if len(metadata):
-                asset.metadata_blob = simplejson.dumps(metadata)
-                asset.save()
+            asset.metadata_blob = simplejson.dumps(metadata)
+            asset.save()
         except:
             # we'll make it here if someone doesn't submit
             # any primary_labels as arguments
@@ -180,10 +180,10 @@ def asset_create(request):
     asset.global_annotation(user, True)
 
     asset_url = reverse('asset-view', args=[asset.id])
-    
+
     source = request.POST.get('asset-source', "")
     action = request.POST.get('button')
-    
+
     if source == 'bookmarklet':
         asset_url += "?level=item"
 
@@ -205,14 +205,15 @@ def asset_create(request):
         return HttpResponseRedirect(asset_url)
     else:
         template = loader.get_template('assetmgr/analyze.html')
-        
+
         context = RequestContext(request, {
             'request': request,
             'user': user,
-            'action':action,
+            'action': action,
             'asset_url': asset_url
         })
     return HttpResponse(template.render(context))
+
 
 @login_required
 @allow_http("GET", "POST")

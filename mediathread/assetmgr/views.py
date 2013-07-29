@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponse, HttpResponseForbidden, \
+from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.template import RequestContext, loader
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -19,6 +19,7 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, \
     delete_annotation, edit_annotation, update_annotation
 from mediathread.main import course_details
+from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
 from tagging.models import Tag
 import datetime
@@ -28,7 +29,6 @@ import re
 import simplejson
 import urllib
 import urllib2
-from django.template import loader
 
 
 @login_required
@@ -52,26 +52,31 @@ def archive_add_or_remove(request):
 
 
 @login_required
+def asset_switch_course(request, asset_id):
+    asset = Asset.objects.get(pk=asset_id)
+    in_course_or_404(request.user.username, asset.course)
+
+    # the user is logged into the wrong class?
+    rv = {}
+    rv['switch_to'] = asset.course
+    rv['switch_from'] = request.course
+    rv['redirect'] = reverse('asset-view', args=[asset_id])
+    return render_to_response('assetmgr/asset_not_found.html',
+                              rv,
+                              context_instance=RequestContext(request))
+
+
+@login_required
 @allow_http("GET")
 def asset_workspace(request, asset_id=None, annot_id=None):
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
 
-    try:
-        if asset_id:
+    if asset_id:
+        try:
             asset = Asset.objects.get(pk=asset_id, course=request.course)
-    except Asset.DoesNotExist:
-        asset = Asset.objects.get(pk=asset_id)
-        in_course_or_404(request.user.username, asset.course)
-
-        # the user is logged into the wrong class?
-        rv = {}
-        rv['switch_to'] = asset.course
-        rv['switch_from'] = request.course
-        rv['redirect'] = reverse('asset-view', args=[asset_id])
-        return render_to_response('assetmgr/asset_not_found.html',
-                                  rv,
-                                  context_instance=RequestContext(request))
+        except Asset.DoesNotExist:
+            asset_switch_course(request, asset_id)
 
     data = {'space_owner': request.user.username,
             'asset_id': asset_id,
@@ -217,10 +222,8 @@ def asset_create(request):
 
 @login_required
 @allow_http("GET", "POST")
+@ajax_required
 def asset_delete(request, asset_id):
-    if not request.is_ajax():
-        raise Http404()
-
     in_course_or_404(request.user.username, request.course)
 
     # Remove all annotations by this user
@@ -310,10 +313,8 @@ def annotation_create(request, asset_id):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def annotation_create_global(request, asset_id):
-    if not request.is_ajax():
-        return HttpResponseForbidden("forbidden")
-
     try:
         asset = get_object_or_404(Asset,
                                   pk=asset_id,
@@ -469,10 +470,8 @@ def final_cut_pro_xml(request, asset_id):
 
 @login_required
 @allow_http("GET")
+@ajax_required
 def asset_detail(request, asset_id):
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
 
@@ -482,27 +481,15 @@ def asset_detail(request, asset_id):
         return HttpResponse(simplejson.dumps(the_json, indent=2),
                             mimetype='application/json')
     except Asset.DoesNotExist:
-        asset = Asset.objects.get(pk=asset_id)
-        in_course_or_404(request.user.username, asset.course)
-
-        # the user is logged into the wrong class?
-        rv = {}
-        rv['switch_to'] = asset.course
-        rv['switch_from'] = request.course
-        rv['redirect'] = reverse('asset-view', args=[asset_id])
-        return render_to_response('assetmgr/asset_not_found.html',
-                                  rv, context_instance=RequestContext(request))
+        asset_switch_course(request, asset_id)
 
 
 @allow_http("GET")
+@ajax_required
 def assets_by_user(request, record_owner_name):
     """
-    An ajax-only request to retrieve a specified user's projects,
-    assignment responses and selections
+    An ajax-only request to retrieve a specified user's assets
     """
-    if not request.is_ajax():
-        raise Http404()
-
     course = request.course
     if (request.user.username == record_owner_name and
         request.user.is_staff and
@@ -520,15 +507,12 @@ def assets_by_user(request, record_owner_name):
 
 
 @allow_http("GET")
+@ajax_required
 def assets_by_course(request):
     """
     An ajax-only request to retrieve a course's projects,
     assignment responses and selections
     """
-
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
 

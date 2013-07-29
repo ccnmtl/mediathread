@@ -10,6 +10,7 @@ from django.template.defaultfilters import slugify
 from djangohelpers.lib import allow_http
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.decorators import ajax_required
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.lib import composition_project_json
 from mediathread.projects.models import Project
@@ -391,15 +392,15 @@ def project_export_msword(request, project_id):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def project_sort(request):
     if (not in_course(request.user, request.course) or
-        not request.course.is_faculty(request.user) or
-            not request.is_ajax()):
+            not request.course.is_faculty(request.user)):
         return HttpResponseForbidden("forbidden")
 
     ids = request.POST.getlist("project")
-    for idx, id in enumerate(ids):
-        project = Project.objects.get(id=id)
+    for idx, project_id in enumerate(ids):
+        project = Project.objects.get(id=project_id)
         if idx != project.ordinality:
             project.ordinality = idx
             project.save()

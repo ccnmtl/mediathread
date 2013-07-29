@@ -3,7 +3,7 @@ from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseForbidden, HttpResponse, \
+from django.http import HttpResponseForbidden, HttpResponse, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import rendered_with, allow_http
@@ -12,6 +12,7 @@ from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.main import course_details
 from mediathread.main.api import CourseSummaryResource
+from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
 from mediathread.projects.lib import homepage_project_json, \
     homepage_assignment_json
@@ -144,14 +145,12 @@ def triple_homepage(request):
 
 
 @allow_http("GET")
+@ajax_required
 def your_projects(request, record_owner_name):
     """
     An ajax-only request to retrieve a specified user's projects,
     assignment responses and selections
     """
-    if not request.is_ajax():
-        raise Http404()
-
     course = request.course
     in_course_or_404(record_owner_name, course)
 
@@ -190,15 +189,12 @@ def your_projects(request, record_owner_name):
 
 
 @allow_http("GET")
+@ajax_required
 def all_projects(request):
     """
     An ajax-only request to retrieve a course's projects,
     assignment responses and selections
     """
-
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
 
@@ -335,10 +331,8 @@ def class_settings(request):
 
 @allow_http("POST")
 @rendered_with('dashboard/class_settings.html')
+@ajax_required
 def set_user_setting(request, user_name):
-    if not request.is_ajax():
-        raise Http404()
-
     user = get_object_or_404(User, username=user_name)
     name = request.POST.get("name")
     value = request.POST.get("value")

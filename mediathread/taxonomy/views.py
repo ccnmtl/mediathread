@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect, Http404, \
     HttpResponse
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http, rendered_with
+from mediathread.main.decorators import ajax_required
 from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
     Term
 import simplejson
@@ -59,10 +60,8 @@ def vocabulary_create(request):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def vocabulary_save(request, vocabulary_id):
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.course.is_faculty(request.user):
         raise Http404()
 
@@ -82,10 +81,8 @@ def vocabulary_save(request, vocabulary_id):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def vocabulary_delete(request, vocabulary_id):
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.course.is_faculty(request.user):
         return HttpResponseForbidden("forbidden")
 
@@ -99,10 +96,8 @@ def vocabulary_delete(request, vocabulary_id):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def term_create(request, vocabulary_id):
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.course.is_faculty(request.user):
         raise Http404()
 
@@ -129,10 +124,8 @@ def term_create(request, vocabulary_id):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def term_delete(request, term_id):
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.course.is_faculty(request.user):
         raise Http404()
 

@@ -1,1 +1,1 @@
-../../../sherdjs/src/bookmarklets/sherd.js
+../js/sherdjs/src/bookmarklets/sherd.js

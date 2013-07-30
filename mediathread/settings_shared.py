@@ -224,7 +224,7 @@ FORCE_LOWERCASE_TAGS = True
 # if you set this to a string, then bookmarklet can import from flickr
 DJANGOSHERD_FLICKR_APIKEY = None
 FLOWPLAYER_SWF_LOCATION = \
-    "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf"
+    "https://releases.flowplayer.org/swf/flowplayer-3.2.16.swf"
 
 DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
 

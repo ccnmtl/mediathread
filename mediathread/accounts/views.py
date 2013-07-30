@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.views.generic.edit import FormView
+from django.contrib.auth import authenticate, login
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
 from .forms import InviteStudentsForm, RegistrationForm
+
 
 ## DEBUG:
 from pprint import pprint
@@ -11,7 +13,7 @@ from pprint import pprint
 class RegistrationFormView(FormView):
     form_class = RegistrationForm
     template_name = 'accounts/registration_form.html'
-    success_url = '/accounts/registration_done'
+    success_url = '/'
 
     def form_invalid(self, form):
         return super(RegistrationFormView, self).form_invalid(form)
@@ -29,6 +31,7 @@ class RegistrationFormView(FormView):
             'password2': form.cleaned_data['password']
             })
 
+        # save registration form for saving registration information
         if signup_form.is_valid():
             signup_form.save(self.request)
             form.save()
@@ -36,8 +39,18 @@ class RegistrationFormView(FormView):
             print "signup form is not valid"
             return super(RegistrationFormView, self).form_invalid(form)
 
+        # login user and redirect to '/'
+        
+        from allauth.utils import get_user_model
 
-        # save registration form for saving registration information
+        user_email = form.cleaned_data['email']
+        user_model = get_user_model()
+        user_obj = user_model.objects.get(email = user_email)
+
+        login_username=user_obj.username
+        login_password=form.cleaned_data['password']
+        user_authentication_session = authenticate(username= login_username, password= login_password)
+        login(self.request, user_authentication_session)
 
         return super(RegistrationFormView, self).form_valid(form)
 

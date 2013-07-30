@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User
+from django.views.generic.edit import FormView
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
-from django.views.generic.edit import FormView
-from django.shortcuts import render
 from .forms import InviteStudentsForm, RegistrationForm
 
 ## DEBUG:
@@ -45,8 +44,27 @@ class RegistrationFormView(FormView):
 registration_form = RegistrationFormView.as_view()
 
 
-class InviteStudents(FormView):
+class InviteStudentsView(FormView):
     form_class = InviteStudentsForm
     template_name = 'accounts/invite_students.html'
+    success_url = '/'
 
-invite_students = InviteStudents.as_view()
+    def form_valid(self, form):
+        course = self.request.session['ccnmtl.courseaffils.course']
+        emails = form.cleaned_data['student_emails']
+        for email in emails:
+            password = User.objects.make_random_password()
+            signup_form = SignupForm({
+                'username': '',
+                'email': email,
+                'password1': password,
+                'password2': password,
+            })
+            if signup_form.is_valid():
+                user = signup_form.save(self.request)
+                course.group.user_set.add(user)
+                self.request.session['user_password'] = password
+                send_email_confirmation(self.request, user, True)
+        return super(InviteStudentsView, self).form_valid(form)
+
+invite_students = InviteStudentsView.as_view()

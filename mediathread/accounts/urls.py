@@ -2,7 +2,7 @@ from django.conf.urls import include, patterns, url
 from .views import *
 
 urlpatterns = patterns('',
-    url(r'^invite-students/$',
+    url(r'^invite_students/$',
         invite_students,
         name="invite-students"),
     url(r'^registration_form/$',

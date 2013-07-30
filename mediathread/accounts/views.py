@@ -62,7 +62,7 @@ class InviteStudentsView(FormView):
         course = self.request.session['ccnmtl.courseaffils.course']
         emails = form.cleaned_data['student_emails']
         for email in emails:
-            password = User.objects.make_random_password()
+            password = "dummypass"
             signup_form = SignupForm({
                 'username': '',
                 'email': email,

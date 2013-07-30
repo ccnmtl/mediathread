@@ -3,6 +3,7 @@ from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
+from allauth.utils import get_user_model
 from .forms import InviteStudentsForm, RegistrationForm
 
 
@@ -19,10 +20,6 @@ class RegistrationFormView(FormView):
         return super(RegistrationFormView, self).form_invalid(form)
 
     def form_valid(self, form):
-        # TODO: create an account for it and send out a registration confirmation mail
-
-        pprint(form)
-
         # another form for creating user in allauth
         signup_form = SignupForm({
             'username': '',
@@ -37,11 +34,8 @@ class RegistrationFormView(FormView):
             form.save()
         else:
             print "signup form is not valid"
+            print signup_form.errors
             return super(RegistrationFormView, self).form_invalid(form)
-
-        # login user and redirect to '/'
-        
-        from allauth.utils import get_user_model
 
         user_email = form.cleaned_data['email']
         user_model = get_user_model()
@@ -51,6 +45,8 @@ class RegistrationFormView(FormView):
         login_password=form.cleaned_data['password']
         user_authentication_session = authenticate(username= login_username, password= login_password)
         login(self.request, user_authentication_session)
+
+        # TODO: add user to a specified course group
 
         return super(RegistrationFormView, self).form_valid(form)
 

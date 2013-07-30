@@ -3,10 +3,15 @@
 {% block title %}Registration{% endblock title %}
 
 {% block content %}
-<h1>Welcome!</h1>
-<p>Register below to create your account.</p>
-<form action="/accounts/registration_form/" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-</form>
+<div class="invite-students-form">
+    <h2 class="title">Welcome</h2>
+    <p>Register below to create your account.</p>
+    
+    <form action="." method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create my account" />
+    </form>
+
+</div>
+
 {% endblock content %}

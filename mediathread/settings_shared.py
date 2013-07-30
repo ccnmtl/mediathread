@@ -243,6 +243,11 @@ FLOWPLAYER_SWF_LOCATION = \
 
 DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
 
 # this gets around Django 1.2's stupidity for commenting
 # we're already checking that the request is from someone in the class

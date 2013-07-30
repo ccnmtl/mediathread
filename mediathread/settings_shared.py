@@ -174,7 +174,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'mediathread.accounts',
+    'mediathread.user_accounts',
 
 ]
 
@@ -199,7 +199,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # users. we need to allow anonymous access to the login
 # page, and to static resources.
 
-ANONYMOUS_PATHS = ('/site_media/',
+ANONYMOUS_PATHS = ('/user_accounts/registration_form/',
+                   '/site_media/',
                    '/accounts/',
                    '/admin/',
                    '/api/',

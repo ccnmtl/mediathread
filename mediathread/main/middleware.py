@@ -21,7 +21,7 @@ try:
         def process_request(self, request):
             path = urlquote(request.get_full_path())
             if request.user.is_authenticated():
-                if request.user.check_password("dummypass") and not match_path(path, 'ANONYMOUS_PATHS'):
+                if request.user.check_password("dummypass") and match_path(path, "NON_ANONYMOUS_PATHS"):
                     return redirect('set_password')
                 else:
                     return None

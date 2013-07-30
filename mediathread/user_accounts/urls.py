@@ -8,7 +8,7 @@ urlpatterns = patterns('',
         password_change, {
             'password_change_form': SetPasswordForm,
             'post_change_redirect': '/',
-            'template_name': 'accounts/set_password.html',
+            'template_name': 'user_accounts/set_password.html',
         },
         name="set_password"),
     url(r'^invite_students/$',

@@ -8,8 +8,6 @@ Feature: Sliding Panels in the Asset View
         # Full Collection
         When I click the "View Full Collection" link
         Then I am at the Collection page
-        There is a maximized Collection panel
-        And there is a closed Asset panel
         
         # View an individual asset
         When I click the "MAAP Award Reception" link

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
 from allauth.account.forms import SignupForm
@@ -9,13 +8,9 @@ from allauth.account import app_settings
 from .forms import InviteStudentsForm, RegistrationForm
 
 
-## DEBUG:
-from pprint import pprint
-## DEBUG
-
 class RegistrationFormView(FormView):
     form_class = RegistrationForm
-    template_name = 'accounts/registration_form.html'
+    template_name = 'user_accounts/registration_form.html'
     success_url = '/'
 
     def form_invalid(self, form):
@@ -57,7 +52,7 @@ registration_form = RegistrationFormView.as_view()
 
 class InviteStudentsView(FormView):
     form_class = InviteStudentsForm
-    template_name = 'accounts/invite_students.html'
+    template_name = 'user_accounts/invite_students.html'
     success_url = '/'
 
     def form_valid(self, form):

@@ -41,7 +41,7 @@ if hasattr(settings, 'WIND_BASE'):
                    {'next_page': redirect_after_logout})
 
 ## for testing
-auth_urls = (r'^accounts/', include('mediathread.accounts.urls'))
+auth_urls = (r'^accounts/', include('allauth.urls'))
 
 
 urlpatterns = patterns(
@@ -57,7 +57,7 @@ urlpatterns = patterns(
       'show_indexes': True}),
 
     (r'^comments/', include('django.contrib.comments.urls')),
-
+    (r'^user_accounts/', include('mediathread.user_accounts.urls')),
 
     auth_urls,
     logout_page,

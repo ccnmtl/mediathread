@@ -1,11 +1,13 @@
 from django import forms
 from .models import RegistrationModel
+import autocomplete_light
 
 class RegistrationForm(forms.ModelForm):
     agree_to_term = forms.BooleanField(required=True)
 
     class Meta:
         model = RegistrationModel
+        widgets = autocomplete_light.get_widgets_dict(RegistrationModel)
 
 
 class InviteStudentsForm(forms.Form):

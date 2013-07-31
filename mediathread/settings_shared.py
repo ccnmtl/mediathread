@@ -175,6 +175,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'mediathread.user_accounts',
+    'autocomplete_light',
 
 ]
 

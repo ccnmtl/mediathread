@@ -27,6 +27,7 @@
             <script type="text/javascript" src="/jsi18n"></script>
             <!--  For uncompress-able resources -->
         {% endblock %}        
+        {% include 'autocomplete_light/static.html' %}
     </head>
     
     {% course_role for request.user in course as role_in_course %}

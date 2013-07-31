@@ -10,6 +10,7 @@ from mediathread.projects.api import ProjectResource
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
 import os.path
+import autocomplete_light
 
 
 v1_api = Api(api_name='v1')
@@ -21,7 +22,7 @@ v1_api.register(CourseSummaryResource())
 v1_api.register(TermResource())
 v1_api.register(VocabularyResource())
 
-
+autocomplete_light.autodiscover()
 admin.autodiscover()
 
 site_media_root = os.path.join(os.path.dirname(__file__), "../media")
@@ -133,6 +134,8 @@ urlpatterns = patterns(
     url(r'^explore/redirect/$',
         'mediathread.assetmgr.views.source_redirect',
         name="source_redirect"),
+
+    url(r'^autocomplete/$', include('autocomplete_light.urls')),
 
     ### Public Access ###
     (r'', include('structuredcollaboration.urls')),

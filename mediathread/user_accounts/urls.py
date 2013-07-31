@@ -17,5 +17,8 @@ urlpatterns = patterns('',
     url(r'^registration_form/$',
         registration_form,
         name='registration-form'),
+    url(r'^confirm_email/(?P<key>\w+)/$',
+        confirm_email_view,
+        name='account_confirm_email'),
     (r'', include('allauth.urls'))
 )

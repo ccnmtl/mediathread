@@ -57,11 +57,11 @@ urlpatterns = patterns(
       'show_indexes': True}),
 
     (r'^comments/', include('django.contrib.comments.urls')),
-    (r'^user_accounts/', include('mediathread.user_accounts.urls')),
 
     auth_urls,
     logout_page,
 
+    (r'^user_accounts/', include('mediathread.user_accounts.urls')),
 
     (r'^contact/', login_required(direct_to_template),
      {'template': 'main/contact.html'}),

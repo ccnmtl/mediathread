@@ -1,20 +1,51 @@
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.conf import settings
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
 from allauth.utils import get_user_model
 from allauth.account.utils import complete_signup
 from allauth.account import app_settings
+from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
 from .forms import InviteStudentsForm, RegistrationForm
+
+
+from pprint import pprint
+
+
+
+def login_user(request, user):
+    """
+        Log in a user without requiring credentials (using ``login`` from
+        ``django.contrib.auth``, first finding a matching backend).
+    """
+    from django.contrib.auth import load_backend, login
+    if not hasattr(user, 'backend'):
+        for backend in settings.AUTHENTICATION_BACKENDS:
+            if user == load_backend(backend).get_user(user.pk):
+                user.backend = backend
+                break
+    if hasattr(user, 'backend'):
+        return login(request, user)
+
+class ConfirmEmailView(AllauthConfirmEmailView):
+    def post(self, *args, **kwargs):
+        # perform login
+        email_address = self.get_object().email_address
+
+        user_to_login = User.objects.get(email=email_address.email)
+        login_user(self.request, user_to_login)
+
+        return super(ConfirmEmailView, self).post(*args, **kwargs)
+
+confirm_email_view = ConfirmEmailView.as_view()
 
 
 class RegistrationFormView(FormView):
     form_class = RegistrationForm
     template_name = 'user_accounts/registration_form.html'
     success_url = '/'
-
-    def form_invalid(self, form):
-        return super(RegistrationFormView, self).form_invalid(form)
 
     def form_valid(self, form):
         # another form for creating user in allauth

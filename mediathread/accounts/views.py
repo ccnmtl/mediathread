@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
 from allauth.utils import get_user_model
+from allauth.account.utils import complete_signup
+from allauth.account import app_settings
 from .forms import InviteStudentsForm, RegistrationForm
 
 
@@ -30,7 +32,7 @@ class RegistrationFormView(FormView):
 
         # save registration form for saving registration information
         if signup_form.is_valid():
-            signup_form.save(self.request)
+            signup_user = signup_form.save(self.request)
             form.save()
         else:
             print "signup form is not valid"
@@ -44,11 +46,11 @@ class RegistrationFormView(FormView):
         login_username=user_obj.username
         login_password=form.cleaned_data['password']
         user_authentication_session = authenticate(username= login_username, password= login_password)
-        login(self.request, user_authentication_session)
+        #login(self.request, user_authentication_session)
 
         # TODO: add user to a specified course group
 
-        return super(RegistrationFormView, self).form_valid(form)
+        return complete_signup(self.request, signup_user, app_settings.EMAIL_VERIFICATION, self.get_success_url())
 
 registration_form = RegistrationFormView.as_view()
 

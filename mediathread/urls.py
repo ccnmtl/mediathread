@@ -135,7 +135,7 @@ urlpatterns = patterns(
         'mediathread.assetmgr.views.source_redirect',
         name="source_redirect"),
 
-    url(r'^autocomplete/$', include('autocomplete_light.urls')),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
 
     ### Public Access ###
     (r'', include('structuredcollaboration.urls')),

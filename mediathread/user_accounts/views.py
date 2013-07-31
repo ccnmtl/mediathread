@@ -9,6 +9,7 @@ from allauth.account.utils import complete_signup
 from allauth.account import app_settings
 from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
 from .forms import InviteStudentsForm, RegistrationForm
+from .models import OrganizationModel
 
 
 from pprint import pprint
@@ -59,6 +60,11 @@ class RegistrationFormView(FormView):
         # save registration form for saving registration information
         if signup_form.is_valid():
             signup_user = signup_form.save(self.request)
+
+            organization, org_created = OrganizationModel.objects.get_or_create(name=form.cleaned_data['organization'])
+            if org_created:
+                organization.save()
+            form.instance.organization = organization
             form.save()
         else:
             print "signup form is not valid"
@@ -67,6 +73,7 @@ class RegistrationFormView(FormView):
 
         user_email = form.cleaned_data['email']
         user_model = get_user_model()
+        
         user_obj = user_model.objects.get(email = user_email)
 
         login_username=user_obj.username

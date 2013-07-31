@@ -1,7 +1,14 @@
 import autocomplete_light
-from .models import RegistrationModel
+from .models import RegistrationModel, OrganizationModel
 
-autocomplete_light.register(RegistrationModel,
-        search_fields = ['^organization'],
-        autocomplete_js_attributes={},
-        )
+class OrganizationAutocomplete(autocomplete_light.AutocompleteModelBase):
+    autocomplete_js_attributes = {
+            'placeholder': 'Organization name...',
+            }
+
+    search_fields = ['name']
+
+
+
+
+autocomplete_light.register(OrganizationModel, OrganizationAutocomplete, name="OrganizationAutocomplete")

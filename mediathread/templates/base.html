@@ -10,6 +10,7 @@
         <script type="text/javascript" src="{% static 'jquery/js/jquery-1.8.3.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'jquery/js/jquery-ui-1.9.1.custom.min.js' %}"></script>
         
+        
         <script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
@@ -27,7 +28,13 @@
             <script type="text/javascript" src="/jsi18n"></script>
             <!--  For uncompress-able resources -->
         {% endblock %}        
-        {% include 'autocomplete_light/static.html' %}
+
+        <script type="text/javascript">
+            jQuery(function(){
+                $ = jQuery;
+                    });
+        </script>
+        {% include "autocomplete_light/static.html" %}
     </head>
     
     {% course_role for request.user in course as role_in_course %}

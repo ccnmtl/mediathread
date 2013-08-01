@@ -21,7 +21,17 @@ class RegistrationModel(models.Model):
     email = models.EmailField()
     password = models.CharField(max_length=16)
     fullname = models.CharField(max_length=30)
-    organization = models.CharField(max_length=50)
+    organization = models.ForeignKey('OrganizationModel')
     hear_mediathread_from = models.CharField(max_length=2, choices=HEAR_CHOICES)
     position_title = models.CharField(max_length=2, choices=POSITION_CHOICES)
     subscribe_to_newsletter = models.BooleanField()
+
+    def __unicode__(self):
+        return self.fullname + " from " + self.organization.name
+
+
+class OrganizationModel(models.Model):
+    name = models.CharField(max_length = 50)
+
+    def __unicode__(self):
+        return self.name

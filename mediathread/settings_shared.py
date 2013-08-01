@@ -156,9 +156,7 @@ INSTALLED_APPS = [
     'mediathread.main',
     'sentry.client',
     'south',
-    'django_nose',
     'compressor',
-    'django_jenkins',
     'mediathread.taxonomy',
     'django.contrib.staticfiles',
 ]

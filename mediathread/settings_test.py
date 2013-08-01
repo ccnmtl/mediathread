@@ -23,8 +23,11 @@ LETTUCE_APPS = (
     'mediathread.djangosherd'
 )
 
-LETTUCE_DJANGO_APP = ['lettuce.django']
-INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
+EXTRA_APPS = [
+    'lettuce.django',
+    'django-nose'
+]
+INSTALLED_APPS = INSTALLED_APPS + EXTRA_APPS
 
 
 # Full run

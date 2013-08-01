@@ -1,0 +1,20 @@
+-r base.txt
+
+requirements/src/lxml-2.2.8.tar.gz
+requirements/src/nose-1.1.2.tar.gz
+requirements/src/nose-exclude-0.1.5.tar.gz
+requirements/src/fuzzywuzzy-0.1.tar.gz
+requirements/src/sure-1.1.7.tar.gz
+requirements/src/ipython-0.13.1.tar.gz
+requirements/src/ipdb-0.7.tar.gz
+requirements/src/lettuce-0.2.14.tar.gz
+requirements/src/selenium-2.31.0.tar.gz
+requirements/src/coverage-3.5.3.tar.gz
+requirements/src/logilab-common-0.59.0.tar.gz
+requirements/src/logilab-astng-0.24.1.tar.gz
+requirements/src/pylint-0.26.0.tar.gz
+requirements/src/pep8-1.4.tar.gz
+requirements/src/pyflakes-0.5.0.tar.gz
+requirements/src/flake8-1.7.0.tar.gz
+requirements/src/django-nose-0.1.3.tar.gz
+requirements/src/django-jenkins-0.14.0.tar.gz

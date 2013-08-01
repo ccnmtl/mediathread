@@ -1,0 +1,57 @@
+requirements/src/Django-1.4.5.tar.gz
+requirements/src/resolver-0.2.1.tar.gz
+requirements/src/selector-0.8.11.tar.gz
+requirements/src/Paste-1.7.2.tar.gz
+requirements/src/PasteDeploy-1.3.3.tar.gz
+requirements/src/PasteScript-1.7.3.tar.gz
+requirements/src/cdap-1.0.tar.gz
+requirements/src/httplib2-0.6.0.tar.gz
+requirements/src/restclient-0.9.9.tar.gz
+requirements/src/feedparser-4.1.tar.gz
+#requirements/src/imageuploader-0.1.tar.gz
+requirements/src/Markdown-2.0.tar.gz
+# anders modified this to remove the stupid ez_setup requirement from setup.py
+requirements/src/pyenchant-1.5.1.tar.gz
+requirements/src/simplejson-2.0.9.tar.gz
+requirements/src/smartypants-1.6.0.2.tar.gz
+requirements/src/uuid-1.30.tar.gz
+
+# these will probably be installed globally, but i'll list them anyway for completeness
+# ..actually it's because i'm using py2.6 on ubuntu 9.04, where virtualenv's use of site
+# packages is kind of broken since lib/python/site-packages has apparently been renamed
+# to dist-packages. so on my system i'm actually downloading and installing them locally
+# during bootstrap
+requirements/src/psycopg2-2.4-no-mx.tar.gz
+#psycopg2
+
+#MySQLdb #this doesn't seem to work--just make sure it's in site-packages globally
+
+#for djangosherd xmeml final cut pro support
+requirements/src/xmeml-0.9.tar.gz
+
+requirements/src/six-1.1.0.tar.gz
+requirements/src/python-dateutil-2.1.tar.gz
+requirements/src/mimeparse-0.1.3.tar.gz
+requirements/src/django-tastypie-0.9.12-alpha.tar.gz
+
+requirements/src/django-smartif-0.1.tar.gz
+requirements/src/djangowind-0.10.3.tar.gz
+requirements/src/sorl-3.1.tar.gz
+#requirements/src/django-survey-0.0.2.tar.gz
+requirements/src/django-tagging-0.3.1.tar.gz
+requirements/src/template_utils-0.4p2.tar.gz
+requirements/src/typogrify-1.0.tar.gz
+requirements/src/django-modelversions-1.0.tar.gz
+requirements/src/djangohelpers-0.3dev.tar.gz
+requirements/src/django-indexer-0.2.1.tar.gz
+requirements/src/django-templatetag-sugar-0.1.tar.gz
+requirements/src/django-paging-0.2.2.tar.gz
+requirements/src/django-sentry-1.5.4.tar.gz
+requirements/src/South-0.7.3.tar.gz
+requirements/src/django-annoying-0.7.6.tar.gz
+requirements/src/django-threadedcomments-0.9.tar.gz
+requirements/src/django_courseaffils-0.4.tar.gz
+requirements/src/django-statsd-mozilla-0.3.3.tar.gz
+requirements/src/raven-0.7.0.tar.gz
+requirements/src/django-appconf-0.4.1.tar.gz
+requirements/src/django_compressor-1.1.1.tar.gz

@@ -14,8 +14,8 @@ class RegistrationForm(forms.ModelForm):
                 'email',
                 'password',
                 'fullname',
-                'hear_mediathread_from',
                 'position_title',
+                'hear_mediathread_from',
                 'subscribe_to_newsletter']
         labels = {
                 'email': 'Email',

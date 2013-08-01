@@ -176,6 +176,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'mediathread.user_accounts',
     'autocomplete_light',
+    'mediathread.course',
 
 ]
 

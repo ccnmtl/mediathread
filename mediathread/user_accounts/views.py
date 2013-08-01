@@ -1,6 +1,7 @@
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.conf import settings
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
@@ -8,6 +9,7 @@ from allauth.utils import get_user_model
 from allauth.account.utils import complete_signup
 from allauth.account import app_settings
 from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
+from customerio import CustomerIO
 from .forms import InviteStudentsForm, RegistrationForm
 from .models import OrganizationModel
 
@@ -96,19 +98,53 @@ class InviteStudentsView(FormView):
     def form_valid(self, form):
         course = self.request.session['ccnmtl.courseaffils.course']
         emails = form.cleaned_data['student_emails']
+        cio = CustomerIO(settings.CUSTOMERIO_SITE_ID, settings.CUSTOMERIO_API_KEY)
+        cio.identify(
+            id=self.request.user.email,
+            email=self.request.user.email,
+            type="Teacher",
+            first_name=self.request.user.first_name,
+            last_name=self.request.user.last_name,
+        )
+        cio.track(
+            customer_id=self.request.user.email,
+            name="invited_student"
+        )
         for email in emails:
-            password = "dummypass"
-            signup_form = SignupForm({
-                'username': '',
-                'email': email,
-                'password1': password,
-                'password2': password,
-            })
-            if signup_form.is_valid():
-                user = signup_form.save(self.request)
+            try:
+                user = User.objects.get(email=email)
                 course.group.user_set.add(user)
-                self.request.session['user_password'] = password
-                send_email_confirmation(self.request, user, True)
+                cio.identify(
+                    id=email,
+                    email=email,
+                    type="Student"
+                )
+                cio.track(
+                    customer_id=user.email,
+                    name='course_invite',
+                    course_name=course.title,
+                    invitor_name=self.request.user.get_full_name(),
+                    invitor_email=form.cleaned_data['email_from'],
+                    message=form.cleaned_data['message'],
+                )
+            except User.DoesNotExist:
+                password = "dummypass"
+                signup_form = SignupForm({
+                    'username': '',
+                    'email': email,
+                    'password1': password,
+                    'password2': password,
+                })
+                if signup_form.is_valid():
+                    user = signup_form.save(self.request)
+                    cio.identify(
+                        id=email,
+                        email=email,
+                        type="Student"
+                    )
+                    send_email_confirmation(self.request, user, True)
+        messages.success(self.request, "You've successfully invited {0} students.".format(
+            len(emails)))
         return super(InviteStudentsView, self).form_valid(form)
 
 invite_students = InviteStudentsView.as_view()

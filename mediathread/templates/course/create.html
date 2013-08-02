@@ -5,10 +5,29 @@
 {% block content %}
 <div class="invite-students-form">
     <h2 class="title">Create a course</h2>
-    <p>create a course by filling following fields.</p>
-
+    <p>Create a course by filling following fields.</p>
     <form action="." method="post">{% csrf_token %}
-        {{ form.as_p }}
+        <div>
+            {{ form.title.errors }}
+            {{ form.title.label_tag }}
+        </div>
+        <div>
+            {{ form.title }}
+        </div>
+        <div>
+            {{ form.organization.errors }}
+            {{ form.organization.label_tag }}
+        </div>
+        <div>
+            {{ form.organization }}
+        </div>
+        <div>
+            {{ form.student_amount.errors }}
+            {{ form.student_amount.label_tag }}
+        </div>
+        <div>
+            {{ form.student_amount }}
+        </div>
         <input type="submit" value="Create a course"/>
     </form>
 

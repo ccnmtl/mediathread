@@ -9,10 +9,10 @@ class RegistrationAdmin(admin.ModelAdmin):
 
     form = autocomplete_light.modelform_factory(RegistrationModel)
 
+
 class OrganizationAdmin(admin.ModelAdmin):
     class Meta:
         model = OrganizationModel
-
 
 
 admin.site.register(RegistrationModel, RegistrationAdmin)

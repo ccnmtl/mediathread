@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -18,6 +19,7 @@ class RegistrationModel(models.Model):
         ('OT', 'Other')
     )
 
+    user = models.ForeignKey(User, editable=True, null=True)
     email = models.EmailField()
     password = models.CharField(max_length=16)
     fullname = models.CharField(max_length=30)

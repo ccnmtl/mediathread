@@ -11,10 +11,9 @@ from allauth.account import app_settings
 from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
 from customerio import CustomerIO
 from .forms import InviteStudentsForm, RegistrationForm
-from .models import OrganizationModel
+from .models import OrganizationModel, RegistrationModel
 
 
-from pprint import pprint
 
 
 
@@ -38,6 +37,9 @@ class ConfirmEmailView(AllauthConfirmEmailView):
         email_address = self.get_object().email_address
 
         user_to_login = User.objects.get(email=email_address.email)
+        registration_model = RegistrationModel.objects.get(email=email_address.email)
+        registration_model.user = user_to_login
+        registration_model.save()
         login_user(self.request, user_to_login)
 
         return super(ConfirmEmailView, self).post(*args, **kwargs)
@@ -64,8 +66,6 @@ class RegistrationFormView(FormView):
             signup_user = signup_form.save(self.request)
 
             organization, org_created = OrganizationModel.objects.get_or_create(name=form.cleaned_data['organization'])
-            if org_created:
-                organization.save()
             form.instance.organization = organization
             form.save()
         else:

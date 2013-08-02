@@ -63,6 +63,7 @@ urlpatterns = patterns(
     logout_page,
 
     (r'^user_accounts/', include('mediathread.user_accounts.urls')),
+    (r'^course/', include('mediathread.course.urls')),
 
     (r'^contact/', login_required(direct_to_template),
      {'template': 'main/contact.html'}),

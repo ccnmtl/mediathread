@@ -143,8 +143,11 @@ class InviteStudentsView(FormView):
                         type="Student"
                     )
                     send_email_confirmation(self.request, user, True)
-        messages.success(self.request, "You've successfully invited {0} students.".format(
-            len(emails)))
         return super(InviteStudentsView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(InviteStudentsView, self).get_context_data(**kwargs)
+        context['course_name'] = self.request.session['ccnmtl.courseaffils.course']
+        return context
 
 invite_students = InviteStudentsView.as_view()

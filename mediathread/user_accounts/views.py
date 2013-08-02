@@ -141,6 +141,7 @@ class InviteStudentsView(FormView):
                         email=email,
                         type="Student"
                     )
+                    course.group.user_set.add(user)
                     send_email_confirmation(self.request, user, True)
         return super(InviteStudentsView, self).form_valid(form)
 

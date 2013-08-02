@@ -60,3 +60,5 @@ requirements/src/python-openid-2.2.5.zip
 requirements/src/requests-1.2.3.tar.gz
 requirements/src/requests-oauthlib-0.3.2.tar.gz
 
+requirements/src/mock-1.0.1.zip
+requirements/src/customerio-0.1.2.tar.gz

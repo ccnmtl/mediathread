@@ -64,7 +64,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
     ('--cover-package=mediathread.main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects'),
+     'mediathread.assetmgr,mediathread.projects,mediathread.user_accounts'),
 ]
 
 CACHE_BACKEND = 'locmem:///'
@@ -224,6 +224,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                        '/_main/',
                        '/analysis/',
                        '/taxonomy/',
+                       '/user_accounts/',
                        re.compile(r'^/$'),
                        )
 
@@ -251,6 +252,10 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
+
+# Customer.io keys
+CUSTOMERIO_SITE_ID = ''
+CUSTOMERIO_API_KEY = ''
 
 # this gets around Django 1.2's stupidity for commenting
 # we're already checking that the request is from someone in the class

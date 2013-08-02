@@ -14,7 +14,9 @@ DATABASES = {
 }
 
 LETTUCE_SERVER_PORT = 8002
-BROWSER = 'Headless'
+BROWSER = 'Firefox'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LETTUCE_APPS = (
     'mediathread.main',
@@ -26,6 +28,13 @@ LETTUCE_APPS = (
 LETTUCE_DJANGO_APP = ['lettuce.django']
 INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
 
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+
+
+CUSTOMERIO_SITE_ID = ''
+CUSTOMERIO_API_KEY = ''
 
 # Full run
 # time(./manage.py harvest --settings=mediathread.settings_test \

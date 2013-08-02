@@ -7,7 +7,7 @@
         <h2 class="title">Invite students to your course</h2>
         <p>Invite students to your course, enter the email addresses
         in separate lines.</p>
-        <form action="." method="post" id="invite-students-form">
+        <form action="." method="post" id="invite-students-form">{% csrf_token %}
             <div>
                 {{ form.email_from.errors }}
                 {{ form.email_from.label_tag }}

@@ -1,7 +1,6 @@
 from django.views.generic.edit import FormView
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.conf import settings
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
@@ -14,15 +13,13 @@ from .forms import InviteStudentsForm, RegistrationForm
 from .models import OrganizationModel, RegistrationModel
 
 
-
-
-
 def login_user(request, user):
     """
         Log in a user without requiring credentials (using ``login`` from
         ``django.contrib.auth``, first finding a matching backend).
     """
     from django.contrib.auth import load_backend, login
+
     if not hasattr(user, 'backend'):
         for backend in settings.AUTHENTICATION_BACKENDS:
             if user == load_backend(backend).get_user(user.pk):
@@ -30,6 +27,7 @@ def login_user(request, user):
                 break
     if hasattr(user, 'backend'):
         return login(request, user)
+
 
 class ConfirmEmailView(AllauthConfirmEmailView):
     def post(self, *args, **kwargs):
@@ -43,6 +41,7 @@ class ConfirmEmailView(AllauthConfirmEmailView):
         login_user(self.request, user_to_login)
 
         return super(ConfirmEmailView, self).post(*args, **kwargs)
+
 
 confirm_email_view = ConfirmEmailView.as_view()
 
@@ -59,7 +58,7 @@ class RegistrationFormView(FormView):
             'email': form.cleaned_data['email'],
             'password1': form.cleaned_data['password'],
             'password2': form.cleaned_data['password']
-            })
+        })
 
         # save registration form for saving registration information
         if signup_form.is_valid():
@@ -75,17 +74,18 @@ class RegistrationFormView(FormView):
 
         user_email = form.cleaned_data['email']
         user_model = get_user_model()
-        
-        user_obj = user_model.objects.get(email = user_email)
 
-        login_username=user_obj.username
-        login_password=form.cleaned_data['password']
-        user_authentication_session = authenticate(username= login_username, password= login_password)
+        user_obj = user_model.objects.get(email=user_email)
+
+        login_username = user_obj.username
+        login_password = form.cleaned_data['password']
+        user_authentication_session = authenticate(username=login_username, password=login_password)
         #login(self.request, user_authentication_session)
 
         # TODO: add user to a specified course group
 
         return complete_signup(self.request, signup_user, app_settings.EMAIL_VERIFICATION, self.get_success_url())
+
 
 registration_form = RegistrationFormView.as_view()
 
@@ -143,8 +143,12 @@ class InviteStudentsView(FormView):
                         type="Student"
                     )
                     send_email_confirmation(self.request, user, True)
-        messages.success(self.request, "You've successfully invited {0} students.".format(
-            len(emails)))
         return super(InviteStudentsView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(InviteStudentsView, self).get_context_data(**kwargs)
+        context['course_name'] = self.request.session['ccnmtl.courseaffils.course']
+        return context
+
 
 invite_students = InviteStudentsView.as_view()

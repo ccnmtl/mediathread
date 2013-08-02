@@ -2,6 +2,7 @@ from django import forms
 from .models import RegistrationModel
 import autocomplete_light
 
+
 class RegistrationForm(forms.ModelForm):
     agree_to_term = forms.BooleanField(required=True)
     organization = forms.CharField(widget=autocomplete_light.TextWidget('OrganizationAutocomplete'))
@@ -11,21 +12,20 @@ class RegistrationForm(forms.ModelForm):
         model = RegistrationModel
         widget = autocomplete_light.get_widgets_dict(RegistrationModel)
         fields = [
-                'email',
-                'password',
-                'fullname',
-                'position_title',
-                'hear_mediathread_from',
-                'subscribe_to_newsletter']
+            'email',
+            'password',
+            'fullname',
+            'position_title',
+            'hear_mediathread_from',
+            'subscribe_to_newsletter']
         labels = {
-                'email': 'Email',
-                'fullname': 'Full',
-                'password': 'Password',
-                'hear_mediathread_from': 'Where did you hear Mediathread from?',
-                'subscribe_to_newsletter': 'Subscribe our newsletter?',
-                'agree_to_term': 'Agree to the Term of Service'
-                }
-
+            'email': 'Email',
+            'fullname': 'Full',
+            'password': 'Password',
+            'hear_mediathread_from': 'Where did you hear Mediathread from?',
+            'subscribe_to_newsletter': 'Subscribe our newsletter?',
+            'agree_to_term': 'Agree to the Term of Service'
+        }
 
 
 class InviteStudentsForm(forms.Form):

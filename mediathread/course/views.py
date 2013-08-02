@@ -1,5 +1,3 @@
-# Create your views here.
-
 # Django
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
@@ -14,6 +12,7 @@ from .forms import *
 
 # libs
 from uuid import uuid4
+
 
 class CourseCreateFormView(FormView):
     form_class = CourseForm
@@ -40,16 +39,16 @@ class CourseCreateFormView(FormView):
         faculty_group = Group.objects.create(name="faculty_%s" % uuid4())
 
         # get user instance in session
-        user = self.request.user # TODO
-        
+        user = self.request.user  # TODO
+
         # faculties should join faculty group
         user.groups.add(faculty_group)
         user.groups.add(student_group)
         user.save()
         created_course = Course.objects.create(
-                group = student_group,
-                faculty_group = faculty_group,
-                title = course_title)
+            group=student_group,
+            faculty_group=faculty_group,
+            title=course_title)
         created_course.save()
 
         # create an information record for operations
@@ -63,5 +62,5 @@ class CourseCreateFormView(FormView):
 
         return super(CourseCreateFormView, self).form_valid(form)
 
-course_create = CourseCreateFormView.as_view()
 
+course_create = CourseCreateFormView.as_view()

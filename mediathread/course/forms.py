@@ -10,12 +10,12 @@ STUDENT_AMOUNT_CHOICES = (
         (500, '100+')
         )
 
+
 class CourseForm(forms.Form):
     title = forms.CharField(required=True)
     student_amount = forms.ChoiceField(choices=STUDENT_AMOUNT_CHOICES)
     organization = forms.CharField(widget=autocomplete_light.TextWidget('OrganizationAutocomplete'))
+
     class Meta:
         widget = autocomplete_light.get_widgets_dict(CourseInformation)
-
-
 

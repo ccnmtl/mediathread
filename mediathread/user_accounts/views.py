@@ -1,3 +1,4 @@
+import customerio
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -8,7 +9,6 @@ from allauth.utils import get_user_model
 from allauth.account.utils import complete_signup
 from allauth.account import app_settings
 from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
-from customerio import CustomerIO
 from .forms import InviteStudentsForm, RegistrationForm
 from .models import OrganizationModel, RegistrationModel
 
@@ -98,7 +98,7 @@ class InviteStudentsView(FormView):
     def form_valid(self, form):
         course = self.request.session['ccnmtl.courseaffils.course']
         emails = form.cleaned_data['student_emails']
-        cio = CustomerIO(settings.CUSTOMERIO_SITE_ID, settings.CUSTOMERIO_API_KEY)
+        cio = customerio.CustomerIO(settings.CUSTOMERIO_SITE_ID, settings.CUSTOMERIO_API_KEY)
         cio.identify(
             id=self.request.user.email,
             email=self.request.user.email,

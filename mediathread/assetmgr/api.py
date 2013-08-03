@@ -1,7 +1,7 @@
 from mediathread.api import ClassLevelAuthentication, UserResource, \
-    ToManyFieldEx, TagResource
+    ToManyFieldEx
 from mediathread.assetmgr.models import Asset
-from tagging.models import Tag
+from mediathread.djangosherd.api import SherdNoteResource
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL_WITH_RELATIONS
@@ -23,6 +23,20 @@ class AssetAuthorization(Authorization):
 
 
 class AssetResource(ModelResource):
+    def __init__(self,
+                 include_annotations=True,
+                 owner_selections_are_visible=False,
+                 record_owner=None,
+                 extras={}):
+        super(ModelResource, self).__init__(None)
+
+        self.options = {
+            'include_annotations': include_annotations,
+            'owner_selections_are_visible': owner_selections_are_visible,
+            'record_owner': record_owner
+        }
+        self.extras = extras
+
     author = fields.ForeignKey(UserResource, 'author', full=True)
 
     sherdnote_set = ToManyFieldEx(
@@ -71,10 +85,42 @@ class AssetResource(ModelResource):
                                 'primary': s.primary}
         bundle.data['sources'] = sources
 
-        tags = Tag.objects.usage_for_queryset(bundle.obj.sherdnote_set.all(),
-                                              counts=True)
-        bundle.data['tags'] = TagResource().render_list(bundle.request, tags)
+        bundle.data['annotations'] = []
+        bundle.data['annotation_count'] = len(bundle.data['sherdnote_set'])
+        bundle.data['my_annotation_count'] = 0
 
+        # the sherdnote_set authorization has been applied
+        # I'm filtering here rather than directly on the sherdnote resource
+        # As counts need to be displayed for all, then the subset
+        for note in bundle.data['sherdnote_set']:
+            if note.obj.author == bundle.request.user:
+                bundle.data['my_annotation_count'] += 1
+
+            if self.options['include_annotations']:
+                if self.options['record_owner']:
+                    if note.obj.author == self.options['record_owner']:
+                        bundle.data['annotations'].append(note.data)
+                else:
+                    bundle.data['annotations'].append(note.data)
+
+        # include the global_annotation for the user as well
+        if self.options['include_annotations']:
+            if (self.options['record_owner'] and
+                    self.options['owner_selections_are_visible']):
+                ga = bundle.obj.global_annotation(
+                    self.options['record_owner'], auto_create=False)
+            else:
+                ga = bundle.obj.global_annotation(bundle.request.user,
+                                                  auto_create=False)
+
+            if ga:
+                bundle.data['global_annotation'] = \
+                    SherdNoteResource().render_one(bundle.request, ga, '')
+
+        for key, value in self.extras.items():
+            bundle.data[key] = self.extras[key]
+
+        bundle.data.pop('sherdnote_set')
         return bundle
 
     def render_one(self, request, item):
@@ -83,9 +129,8 @@ class AssetResource(ModelResource):
         return self._meta.serializer.to_simple(dehydrated, None)
 
     def render_list(self, request, lst):
-        data = []
-        for item in lst:
-            bundle = self.build_bundle(obj=item, request=request)
-            dehydrated = self.full_dehydrate(bundle)
-            data.append(dehydrated.data)
-        return data
+        asset_json = []
+        for asset in lst:
+            the_json = self.render_one(request, asset)
+            asset_json.append(the_json)
+        return asset_json

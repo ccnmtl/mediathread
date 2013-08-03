@@ -11,12 +11,12 @@
 
     var Asset = Backbone.Model.extend({
         defaults: {
-            sherdnote_set: new SherdNoteList()
+            annotations: new SherdNoteList()
             
         },
         initialize: function (attrs) {
-            if (attrs.hasOwnProperty("sherdnote_set")) {
-                this.set("sherdnote_set", new SherdNoteList(attrs.sherdnote_set));
+            if (attrs.hasOwnProperty("annotations")) {
+                this.set("annotations", new SherdNoteList(attrs.annotations));
             }
         }
     });
@@ -27,7 +27,7 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('sherdnote_set').length;
+                count += obj.get('annotations').length;
             });
             return count;
         },
@@ -39,11 +39,11 @@
 
     var Project = Backbone.Model.extend({
         defaults: {
-            sherdnote_set: new SherdNoteList()
+            annotations: new SherdNoteList()
         },
         initialize: function (attrs) {
-            if (attrs.hasOwnProperty("sherdnote_set")) {
-                this.set("sherdnote_set", new SherdNoteList(attrs.sherdnote_set));
+            if (attrs.hasOwnProperty("annotations")) {
+                this.set("annotations", new SherdNoteList(attrs.annotations));
             }
         }
     });
@@ -54,7 +54,7 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('sherdnote_set').length;
+                count += obj.get('annotations').length;
             });
             return count;
         },

@@ -8,7 +8,6 @@
 
             this.active_annotation = null;
             this.active_asset = null;
-            this.active_asset_annotations = null;
             this.config = config;
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ? config.update_history : true;
@@ -70,6 +69,20 @@
             }
         };
         
+        this.processAsset = function(asset_full) {
+            self.asset_full_json = asset_full;
+            self.user_settings = asset_full.user_settings;
+            
+            var theAsset;
+            for (var key in asset_full.assets) {
+                if (asset_full.assets.hasOwnProperty(key)) {
+                    theAsset = asset_full.assets[key];
+                    break;
+                }
+            }
+            self.active_asset = theAsset;
+        };
+        
         this.refresh = function (config) {
             if (config.asset_id) {
                 this.grouping = null;
@@ -83,18 +96,7 @@
                     },
                     false,
                     function (asset_full) {
-                        self.asset_full_json = asset_full;
-                        self.user_settings = asset_full.user_settings;
-                        
-                        var theAsset;
-                        for (var key in asset_full.assets) {
-                            if (asset_full.assets.hasOwnProperty(key)) {
-                                theAsset = asset_full.assets[key];
-                                break;
-                            }
-                        }
-                        self.active_asset = theAsset;
-                        self.active_asset_annotations = asset_full.annotations;
+                        self.processAsset(asset_full);
                         
                         // window.location.hash
                         // #annotation_id=xxxx
@@ -220,15 +222,15 @@
             if (!frm) {
                 return;
             }
-            var asset_full = self.asset_full_json;
+            
             var grouping = self.grouping;
             var context = {'annotation_list': []};
             var cats = {};
             var user_listing = false;
             self.layers[grouping].removeAll();
             DjangoSherd_Colors.reset(grouping);
-            for (var i = 0; i < asset_full.annotations.length; i++) {
-                var ann = asset_full.annotations[i];
+            for (var i = 0; i < self.active_asset.annotations.length; i++) {
+                var ann = self.active_asset.annotations[i];
                 ///TODO: WILL BREAK when we ajax this
                 if (self.active_annotation) {
                     ann.active_annotation = (ann.id === self.active_annotation.id);
@@ -372,9 +374,9 @@
             var list  = jQuery(element).find("ul.selections")[0];
             jQuery(list).find('li').remove();
             
-            if (this.hasOwnProperty('active_asset_annotations')) {
-                for (var i = 0; i < this.active_asset_annotations.length; i++) {
-                    var ann = this.active_asset_annotations[i];
+            if (this.hasOwnProperty('active_asset')) {
+                for (var i = 0; i < this.active_asset.annotations.length; i++) {
+                    var ann = this.active_asset.annotations[i];
                     if (ann.annotation) {
                         var li = "<li>" +
                             "<span class='ui-icon-reverse ui-icon-arrowthick-2-n-s'></span>" +
@@ -513,17 +515,8 @@
                         } else {
                             jQuery(window).trigger("annotation.on_save", []);
                         }
-
-                        self.asset_full_json = asset_full;
-                        var theAsset;
-                        for (var key in asset_full.assets) {
-                            if (asset_full.assets.hasOwnProperty(key)) {
-                                theAsset = asset_full.assets[key];
-                                break;
-                            }
-                        }
-                        self.active_asset = theAsset;
-                        self.active_asset_annotations = asset_full.annotations;
+                        
+                        self.processAsset(asset_full);
                         
                         jQuery(saveButton).removeAttr("disabled");
                         jQuery(saveButton).removeClass("saving");
@@ -764,16 +757,7 @@
                             jQuery(window).trigger("annotation.on_save", []);
                         }
                         
-                        self.asset_full_json = asset_full;
-                        var theAsset;
-                        for (var key in asset_full.assets) {
-                            if (asset_full.assets.hasOwnProperty(key)) {
-                                theAsset = asset_full.assets[key];
-                                break;
-                            }
-                        }
-                        self.active_asset = theAsset;
-                        self.active_asset_annotations = asset_full.annotations;
+                        self.processAsset(asset_full);
                         
                         jQuery(saveButton).removeAttr("disabled");
                         jQuery(saveButton).removeClass("saving");
@@ -832,8 +816,8 @@
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);
 
-                for (var i = 0; i < self.active_asset_annotations.length; i++) {
-                    var ann = self.active_asset_annotations[i];
+                for (var i = 0; i < self.active_asset.annotations.length; i++) {
+                    var ann = self.active_asset.annotations[i];
                     if (ann.id === annotation_id) {
                         self.active_annotation = ann;
                         break;
@@ -871,7 +855,7 @@
             context.show_help_checked = !self.user_settings.help_item_detail_view;
             
             if (context.annotation) {
-                context.annotation.showCancel = self.active_asset_annotations.length > 1;
+                context.annotation.showCancel = self.active_asset.annotations.length > 1;
             }
             
             Mustache.update(template_label, context, {

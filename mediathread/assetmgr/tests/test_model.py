@@ -219,3 +219,25 @@ class AssetTest(TestCase):
 
         self.assertEquals(citations[4].id, 0)
         self.assertEquals(citations[5].id, 0)
+
+    def test_user_analysis_count(self):
+        asset1 = Asset.objects.get(id=1)
+        asset2 = Asset.objects.get(id=2)
+        asset3 = Asset.objects.get(id=3)
+        asset5 = Asset.objects.get(id=5)
+
+        test_instructor = User.objects.get(username='test_instructor')
+        self.assertEquals(asset1.user_analysis_count(test_instructor), 6)
+        self.assertEquals(asset2.user_analysis_count(test_instructor), 4)
+        self.assertEquals(asset3.user_analysis_count(test_instructor), 3)
+        self.assertEquals(asset5.user_analysis_count(test_instructor), 0)
+
+        test_instructor_two = User.objects.get(username='test_instructor_two')
+        self.assertEquals(asset1.user_analysis_count(test_instructor_two), 1)
+        self.assertEquals(asset2.user_analysis_count(test_instructor_two), 0)
+        self.assertEquals(asset5.user_analysis_count(test_instructor_two), 0)
+
+        test_student_one = User.objects.get(username='test_student_one')
+        self.assertEquals(asset1.user_analysis_count(test_student_one), 0)
+        self.assertEquals(asset2.user_analysis_count(test_student_one), 3)
+        self.assertEquals(asset3.user_analysis_count(test_student_one), 0)

@@ -252,6 +252,22 @@ class Asset(models.Model):
         sub = r'\g<1>\g<2>%s\g<4>' % (self.id)
         return re.sub(regex_string, sub, text)
 
+    def user_analysis_count(self, user):
+        # global notes y/n + global tag count + annotation count
+        count = 0
+        ga = self.global_annotation(user, False)
+        annotations = self.sherdnote_set.filter(author=user)
+        if ga:
+            if ga.body and len(ga.body) > 0:
+                count += 1
+            if ga.tags and len(ga.tags) > 0:
+                count += len(ga.tags_split())
+
+            annotations = annotations.exclude(id=ga.id)
+
+        count += len(annotations)
+        return count
+
 
 class Source(models.Model):
     asset = models.ForeignKey(Asset)

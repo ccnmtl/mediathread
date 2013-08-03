@@ -16,9 +16,9 @@ class AssetResourceTest(ResourceTestCase):
         self.assertEquals(asset['primary_type'], primary_type)
         self.assertEquals(asset['thumb_url'], thumb_url)
 
-        self.assertEquals(len(asset['sherdnote_set']), len(selection_ids))
+        self.assertEquals(len(asset['annotations']), len(selection_ids))
 
-        for idx, s in enumerate(asset['sherdnote_set']):
+        for idx, s in enumerate(asset['annotations']):
             self.assertEquals(int(s['id']), selection_ids[idx])
 
     def test_student_getlist(self):
@@ -41,7 +41,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 9, 10],
+            'Instructor One', 'image', [5, 8, 10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
@@ -80,7 +80,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 9],
+            'Instructor One', 'image', [5, 8],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
@@ -107,7 +107,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(
             json, 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 9, 10],
+            'Instructor One', 'image', [5, 8, 10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
     def test_student_getobject_restricted(self):
@@ -126,7 +126,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(
             json, 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 9],
+            'Instructor One', 'image', [5, 8],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
     def test_instructor_getlist(self):
@@ -143,19 +143,19 @@ class AssetResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [1, 2, 3, 17, 19],
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
                                'http://localhost:8002/site_media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
-            'Instructor One', 'image', [4, 5, 8, 10],
+            'Instructor One', 'image', [5, 8, 10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[2],
             'The Armory - Home to CCNMTL\'S CUMC Office',
-            'Instructor One', 'image', [6, 7],
+            'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
 
         self.assertAssetEquals(
@@ -182,7 +182,7 @@ class AssetResourceTest(ResourceTestCase):
         json = self.deserialize(response)
 
         self.assertAssetEquals(json, 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [1, 2, 3, 17, 19],
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
                                'http://localhost:8002/site_media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
@@ -264,7 +264,7 @@ class AssetResourceTest(ResourceTestCase):
         json = self.deserialize(response)
         self.assertAssetEquals(json, 'Design Research',
                                'test_instructor_alt', 'image',
-                               [13, 14, 15, 16],
+                               [13, 14, 15],
                                None)
 
     def test_getlist_multiple_class_member(self):
@@ -311,7 +311,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[3], 'Design Research',
                                'test_instructor_alt', 'image',
-                               [13, 14, 15, 16], None)
+                               [13, 14, 15], None)
 
         self.assertAssetEquals(objects[4], 'Project Portfolio',
                                'test_instructor_two', 'image', [], None)

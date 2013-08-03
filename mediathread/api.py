@@ -14,7 +14,6 @@ import re
 
 
 class ToManyFieldEx(ToManyField):
-
     def build_m2m_filters(self, resource, filters, related_field_name):
         related_filters = {}
         pattern = '^.*%s__' % related_field_name
@@ -26,7 +25,7 @@ class ToManyFieldEx(ToManyField):
 
         return resource.build_filters(related_filters)
 
-    def apply_m2m_filters(self, request, related_field_name, base_object_list):
+    def apply_m2m_filters(self, request, related_field_name, object_list):
         m2m_resource = self.get_related_resource(None)
 
         applicable_filters = self.build_m2m_filters(m2m_resource,
@@ -35,11 +34,11 @@ class ToManyFieldEx(ToManyField):
 
         try:
             if applicable_filters:
-                base_object_list = base_object_list.filter(
+                object_list = object_list.filter(
                     **applicable_filters).distinct()
 
             return m2m_resource.apply_authorization_limits(request,
-                                                           base_object_list)
+                                                           object_list)
         except ValueError:
             raise BadRequest("Invalid resource lookup data \
             provided (mismatched type).")
@@ -144,7 +143,8 @@ class UserResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = UserAuthorization()
         ordering = 'id'
-        filtering = {'id': ALL}
+        filtering = {'id': ALL,
+                     'username': ALL}
 
     def dehydrate(self, bundle):
         bundle.data['public_name'] = get_public_name(bundle.obj,

@@ -83,11 +83,11 @@
                                                 {{#asset-current}}
                                                     <h2>Item
                                                         <div class="actions">
-                                                            {{#global_annotation_id?}}       
+                                                            {{#global_annotation.id?}}     
                                                             <input type="image" title="Remove item from collection" 
                                                                 onclick="return AnnotationList.deleteItem(event, this, {{id}});" 
                                                                 alt="Delete" src="/site_media/img/icons/meth_delete.png" />
-                                                            {{/global_annotation_id?}}                                                           
+                                                            {{/global_annotation.id?}}                                                           
                                                             
                                                             <input type="image" title="Edit item" 
                                                                onclick="return AnnotationList.editItem(this);" 
@@ -104,26 +104,26 @@
                                                     </h2>
                                                     
                                                     <form id="edit-global-annotation-form" method="post"
-                                                        {{#global_annotation_id?}}
-                                                        action="/asset/save/{{id}}/annotations/{{global_annotation_id}}/"
-                                                        {{/global_annotation_id?}}
+                                                        {{#global_annotation.id?}}
+                                                        action="/asset/save/{{id}}/annotations/{{global_annotation.id}}/"
+                                                        {{/global_annotation.id?}}
                                                         
-                                                        {{^global_annotation_id}}
+                                                        {{^global_annotation.id}}
                                                             action="/asset/create/{{id}}/global/"
-                                                        {{/global_annotation_id}}
+                                                        {{/global_annotation.id}}
                                                         >                                                    
                                                     
                                                         <div class="metadata">
                                                             <div class="metadata-label">My Tags: 
                                                             </div> 
                                                             <div class="metadata-value global-annotation-tags">
-                                                                {{#user_tags}}
+                                                                {{#global_annotation.metadata.tags}}
                                                                     {{name}}{{^last}}, {{/last}}
-                                                                {{/user_tags}}
+                                                                {{/global_annotation.metadata.tags}}
                                                             </div>
                                                             <div class="metadata-value-edit" style="display: none">
                                                                 <input type="text" name="annotation-tags" id="id_annotation-tags" 
-                                                                    value="{{#user_tags}}{{name}}{{^last}}, {{/last}}{{/user_tags}}"></input>
+                                                                    value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"></input>
                                                                 <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
                                                             </div>
                                                         </div>
@@ -131,11 +131,11 @@
                                                             <div class="metadata-label">My Notes:
                                                             </div>
                                                             <div class="metadata-value global-annotation-notes">
-                                                                {{notes}}
+                                                                {{global_annotation.metadata.body}}
                                                             </div>
                                                             <div class="metadata-value-edit" style="display: none">
                                                                 <textarea id="id_annotation-body" rows="7" cols="51"
-                                                                    name="annotation-body" value="{{notes}}">{{notes}}</textarea>
+                                                                    name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
                                                             </div>
                                                         </div>
                                                         

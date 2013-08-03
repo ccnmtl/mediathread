@@ -8,6 +8,7 @@ from djangohelpers.lib import allow_http, rendered_with
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
+from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
 from mediathread.main.decorators import faculty_only
 from mediathread.projects.models import Project
@@ -209,7 +210,9 @@ def mediathread_activity_by_course(request):
     headers = ['Id', 'Title', 'Instructor', 'Course String',
                'Term', 'Year', 'Section', 'Course Number', 'School',
                'Students', 'Items', 'Selections',
-               'Compositions', 'Assignments', 'Discussions']
+               'Compositions', 'Assignments', 'Discussions',
+               'Public To World Compositions',
+               'All Selections Visible']
     writer.writerow(headers)
 
     rows = []
@@ -261,6 +264,9 @@ def mediathread_activity_by_course(request):
             row.append(len(get_course_discussions(c)))
         except Collaboration.DoesNotExist:
             row.append(0)
+
+        row.append(course_details.allow_public_compositions(c))
+        row.append(course_details.all_selections_are_visible(c))
 
         rows.append(row)
 

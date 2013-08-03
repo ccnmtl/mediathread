@@ -1,4 +1,3 @@
-from django.db.models import Q
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
@@ -12,9 +11,7 @@ class SherdNoteAuthorization(Authorization):
 
     def apply_limits(self, request, object_list):
         if request.user.is_authenticated():
-            # only request user's global annotations
-            object_list = object_list.exclude(~Q(author=request.user),
-                                              range1__isnull=True)
+            object_list = object_list.exclude(range1__isnull=True)
 
             # Make sure the requesting user is allowed to see this note
             invisible = []
@@ -34,6 +31,8 @@ class SherdNoteAuthorization(Authorization):
 
             return object_list.exclude(id__in=invisible).order_by('id')
         elif request.public:
+            # attribute "public" set on request when requesting a
+            # public_to_world essay. all notes are public by default
             return object_list.order_by('id')
         else:
             return []
@@ -58,7 +57,7 @@ class SherdNoteResource(ModelResource):
     def dehydrate(self, bundle):
         bundle.data['asset_id'] = str(bundle.obj.asset.id)
         bundle.data['is_global_annotation'] = \
-            str(bundle.obj.is_global_annotation())
+            bundle.obj.is_global_annotation()
         bundle.data['is_null'] = bundle.obj.is_null()
         bundle.data['annotation'] = bundle.obj.annotation()
         bundle.data['editable'] = (bundle.request.user.id ==
@@ -68,7 +67,7 @@ class SherdNoteResource(ModelResource):
         bundle.data['metadata'] = {
             'tags': TagResource().render_list(bundle.request,
                                               bundle.obj.tags_split()),
-            'body': bundle.obj.body,
+            'body': bundle.obj.body.strip() if bundle.obj.body else '',
             'primary_type': bundle.obj.asset.primary.label,
             'modified': bundle.obj.modified.strftime("%m/%d/%y %I:%M %p"),
             'timecode': bundle.obj.range_as_timecode(),

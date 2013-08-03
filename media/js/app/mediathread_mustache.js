@@ -25,7 +25,8 @@
                 return '/project/sort/';
             },
             'your-space': function (username, tag, modified, citable) {
-                return '/asset/json/user/' + username + '/?annotations=true' +
+                return '/asset/json/user/' + username + '/?' +
+                    (citable ? '&annotations=true' : '') +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');

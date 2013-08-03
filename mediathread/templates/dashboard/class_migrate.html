@@ -89,9 +89,9 @@
                             <h5><%= project.get('title') %></h5>
                             by <%= project.get('attribution') %>
                             
-                            <% if (project.get('sherdnote_set').length > 0) { %>
+                            <% if (project.get('annotations').length > 0) { %>
                                 <br />
-                                <i>includes <%= project.get('sherdnote_set').length %> selection(s)</i>
+                                <i>includes <%= project.get('annotations').length %> selection(s)</i>
                             <% } %>
                         </td>
                         <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
@@ -129,7 +129,7 @@
                             <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
                             <div>
                                 <span class="metadata-value">Includes </span>  
-                                <span class="metadata-label item-annotation-count-total"><%=asset.get('sherdnote_set').length %></span>
+                                <span class="metadata-label item-annotation-count-total"><%=asset.get('annotations').length %></span>
                                 <span class="metadata-value">selections</span>                        
                             </div>
                         </div>
@@ -167,9 +167,9 @@
                                 <h5><%= project.title %></h5>
                                 by <%= project.attribution %>
                             
-                                <% if (project.sherdnote_set.length > 0) { %>
+                                <% if (project.annotations.length > 0) { %>
                                     <br />
-                                    <i>Includes <%= project.sherdnote_set.length %> selections</i>
+                                    <i>Includes <%= project.annotations.length %> selections</i>
                                 <% } %>
                             </td>
                             <td class="deselect"><input type="button" name="<%= project.id %>" value="X" class="deselect-project"/></td>
@@ -196,7 +196,7 @@
                                 <div class="metadata-value">Imported by <%= asset.author.public_name %></div>
                                 <div>
                                     <span class="metadata-value">Includes </span>  
-                                    <span class="metadata-label item-annotation-count-total"><%=asset.sherdnote_set.length %></span>
+                                    <span class="metadata-label item-annotation-count-total"><%=asset.annotations.length %></span>
                                     <span class="metadata-value">selections</span>                        
                                 </div>
                             </div>

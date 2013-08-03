@@ -214,23 +214,6 @@
                                             </ul>
                                         {{/metadata}}   
                                     {{/global_annotation}}
-                                      
-                                    {{^global_annotation}}
-                                         {{^space_owner}} {{! All Class Items. Is this really necessary? }}
-                                             {{#tags?}}
-                                                <div class="meta">
-                                                    <div class="meta"> 
-                                                        <span class="metadata-label">Selection Tags:</span>
-                                                        <span class="metadata-value">
-                                                            {{#tags}}
-                                                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                            {{/tags}}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                             {{/tags?}}
-                                        {{/space_owner}}
-                                    {{/global_annotation}}
                                 </td>
                             </tr>
                         </table>
@@ -238,7 +221,7 @@
                         <div id="record-{{id}}-metadata" class="record-metadata">
                             {{#annotations?}}
                                 <div class="asset-clips">
-                                    {{#annotations}} 
+                                    {{#annotations}}
                                         {{^is_null}}
                                             <div id="annotation-{{id}}">
                                                 <table class="selection-level-info">
@@ -286,9 +269,15 @@
                                                     <tr>
                                                         <td class="selection-meta" colspan="4">
                                                             <div class="metadata-container">
+                                                                <div class="meta">                                                                    
+                                                                    <span class="metadata-label">Author:</span>
+                                                                    <span class="metadata-value">{{author.public_name}}</span></div>
+                                                                </div>
                                                                 {{#metadata}}
                                                                     {{#timecode?}}
-                                                                    <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
+                                                                    <div class="annotation-timecode meta">
+                                                                        <span class="metadata-label">Time code:</span>
+                                                                        <span class="metadata-value">{{timecode}}</span></div>
                                                                     {{/timecode?}}
                                                                 {{/metadata}}
                                                                 

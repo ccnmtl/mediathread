@@ -59,15 +59,24 @@ class AssetManager(models.Manager):
                                                       user)
                 object_map['assets'][old_asset.id] = new_asset
 
-                if "sherdnote_set" in asset_json:
-                    for note_json in asset_json["sherdnote_set"]:
-                        if note_json["id"] not in object_map['notes']:
-                            old_note = SherdNote.objects.get(
-                                id=note_json["id"])
-                            new_note = SherdNote.objects.migrate_one(old_note,
-                                                                     new_asset,
-                                                                     user)
-                            object_map['notes'][old_note.id] = new_note
+                annotations = []
+
+                if "annotations" in asset_json:
+                    annotations = annotations + asset_json["annotations"]
+                if "global_annotation" in asset_json:
+                    annotations.append(asset_json["global_annotation"])
+
+                for note_json in annotations:
+                    if note_json["id"] not in object_map['notes']:
+                        old_note = SherdNote.objects.get(
+                            id=note_json["id"])
+                        new_note = SherdNote.objects.migrate_one(old_note,
+                                                                 new_asset,
+                                                                 user)
+                        # Don't count global annotations
+                        object_map['notes'][old_note.id] = new_note
+                        if not note_json["is_global_annotation"]:
+                            object_map['note_count'] += 1
 
         return object_map
 

@@ -12,7 +12,6 @@
     var Asset = Backbone.Model.extend({
         defaults: {
             annotations: new SherdNoteList()
-            
         },
         initialize: function (attrs) {
             if (attrs.hasOwnProperty("annotations")) {
@@ -188,8 +187,7 @@
         render: function () {
             var json = this.model.toJSON();
             
-            // @todo: finish "upload on behalf of" feature
-            json.is_staff = false;
+            json.is_staff = this.is_staff;
             json.role_in_course = this.role_in_course;
             
             var markup = this.courseTemplate(json);
@@ -270,6 +268,7 @@
             
             var data = {
                 'fromCourse': this.model.get('id'),
+                'on_behalf_of': jQuery("#on_behalf_of").attr("value"),
                 'project_set': JSON.stringify(this.selectedProjects.toJSON()),
                 'asset_set': JSON.stringify(this.selectedAssets.toJSON())
             };

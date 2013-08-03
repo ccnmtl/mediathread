@@ -1,5 +1,5 @@
 {% extends "dashboard/base_dashboard.html" %}
-{% load %}
+{% load coursetags %}
 
 {% block title %}Migrate Course Materials{% endblock %}
 
@@ -26,25 +26,11 @@
             <% if (info && info.year) { %>
                 <div><span class="metadata-label">Year:</span><span class="metadata-value"> <%= info.year %></span></div>
             <% } %>    
-            <div>                
-                <% if (is_staff) { %>
-                    <br />
-                    <span class="metadata-label">Upload on behalf of: </span>
-                    <select>
-                        <% if (role_in_course === "instructor") { %>
-                            <option value="myself">Myself</option>
-                        <% } %>
-                        <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>                            
-                            <option value="<%= faculty_group.user_set[i].id %>"><%= faculty_group.user_set[i].public_name %></option>
-                    <% } %>
-                    </select>
-                    <br /><br />
-                <% } else { %>
-                    <span class="metadata-label">Faculty:</span> 
-                    <span class="metadata-value">
-                    <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
-                        <%= faculty_group.user_set[i].public_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
-                    <% } %>
+            <div>   
+                <span class="metadata-label">Faculty:</span> 
+                <span class="metadata-value">
+                <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
+                    <%= faculty_group.user_set[i].public_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
                 <% } %>
             </div>
         </div>
@@ -227,7 +213,7 @@
                     { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
                       value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
                       id: "{{c.id}}",
-                      faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"  
+                      faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"
                     }
                     {% if forloop.last %}{% else %},{% endif %}
                 {% endifnotequal %}
@@ -256,34 +242,43 @@
             
     {% include "help/help_contentarea.html" %}
     
-    {% ifequal role_in_course "non-member" %}
-        <div id="no-materials-to-migrate">
-            You are not a class member. Please add yourself to this course via the admin console before attempting to migrate materials.
-        </div>
-    {% else %}
-        <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
-        <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
-                    
-        <div id="available-courses-selector" style="display: none">
-            <input type="text" class="default autocomplete" id="available-courses" value="Type course name here">
-            <input type="submit" id="view-materials" value="View materials" class="btn-primary"/>        
-        </div>
-        
-        <div id="course-materials-container" style="display: none">
-            <h3><span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
-            <div>
-                <div class="course-information">
-                    <div id="course"></div>
+    <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
+    <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
+                
+    <div id="available-courses-selector" style="display: none">
+        <input type="text" class="default autocomplete" id="available-courses" value="Type course name here">
+        <input type="submit" id="view-materials" value="View materials" class="btn-primary"/>        
+    </div>
+    
+    <div id="course-materials-container" style="display: none">
+        <div>
+            <div class="course-information">
+                <h3>from <span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
+                <div id="course"></div>
+                                
+                <div>
+                    <br /><br />
+                    {% if user.is_staff %}
+                        <span class="metadata-label">Upload on behalf of: </span>
+                        <select id="on_behalf_of">
+                            {% ifequal role_in_course "instructor" %}
+                                <option value="myself">Myself</option>
+                            {% endifequal %}
+                            {% for faculty in current_course_faculty %}                            
+                                <option value="{{faculty.id}}">{% public_name for faculty %}</option>
+                            {% endfor %} 
+                        </select>
+                    {% endif %}
                 </div>
-                <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
             </div>
+            <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
         </div>
-        
-        <div id="no-materials-to-migrate" style="display: none">
-            You are not affiliated with any other courses. Please review our help materials
-            if you need to migrate course materials from a colleague's class.
-        </div>    
-    {% endifequal %}
+    </div>
+    
+    <div id="no-materials-to-migrate" style="display: none">
+        You are not affiliated with any other courses. Please review our help materials
+        if you need to migrate course materials from a colleague's class.
+    </div>    
     
 {% endwith %}{% endwith %}
 {% endblock %}

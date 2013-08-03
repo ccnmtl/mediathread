@@ -357,30 +357,38 @@ def migrate(request):
                     courses.append(c)
 
         return {
+            "current_course_faculty": request.course.faculty.all(),
             "available_courses": courses,
             "help_migrate_materials": False
         }
     elif request.method == "POST":
         # maps old ids to new objects
-        object_map = {'assets': {}, 'notes': {}, 'projects': {}}
+        object_map = {'assets': {},
+                      'notes': {},
+                      'note_count': 0,
+                      'projects': {}}
+
+        owner = request.user
+        if 'on_behalf_of' in request.POST:
+            owner = User.objects.get(id=request.POST.get('on_behalf_of'))
 
         if 'asset_set' in request.POST:
             asset_set = simplejson.loads(request.POST.get('asset_set'))
             object_map = Asset.objects.migrate(asset_set,
                                                request.course,
-                                               request.user,
+                                               owner,
                                                object_map)
 
         if 'project_set' in request.POST:
             project_set = simplejson.loads(request.POST.get('project_set'))
             object_map = Project.objects.migrate(project_set,
                                                  request.course,
-                                                 request.user,
+                                                 owner,
                                                  object_map)
 
         json_stream = simplejson.dumps({
             'success': True,
             'asset_count': len(object_map['assets']),
             'project_count': len(object_map['projects']),
-            'note_count': len(object_map['notes'])})
+            'note_count': object_map['note_count']})
         return HttpResponse(json_stream, mimetype='application/json')

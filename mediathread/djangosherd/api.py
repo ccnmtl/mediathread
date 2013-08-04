@@ -62,6 +62,8 @@ class SherdNoteResource(ModelResource):
         bundle.data['annotation'] = bundle.obj.annotation()
         bundle.data['editable'] = (bundle.request.user.id ==
                                    getattr(bundle.obj, 'author_id', -1))
+        bundle.data['citable'] = bundle.request.GET.get(
+            'citable', '') == 'true'
         bundle.data['url'] = bundle.obj.get_absolute_url()
 
         bundle.data['metadata'] = {

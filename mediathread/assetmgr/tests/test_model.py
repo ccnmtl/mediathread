@@ -82,13 +82,12 @@ class AssetTest(TestCase):
         self.assertEquals(len(course.asset_set.all()), 1)
 
         user = User.objects.get(username='test_instructor_two')
-
         asset_json = simplejson.dumps(self.asset_set)
         assets = simplejson.loads(asset_json)
 
         object_map = {'assets': {}, 'notes': {}}
-        object_map = Asset.objects.migrate(assets,
-                                           course, user, object_map)
+        object_map = Asset.objects.migrate(
+            assets, course, user, object_map)
 
         self.assertEquals(len(course.asset_set.all()), 3)
         asset = object_map['assets'][1]
@@ -98,12 +97,22 @@ class AssetTest(TestCase):
         self.assertEquals(asset.author, user)
         self.assertEquals(len(asset.sherdnote_set.all()), 3)
 
+        ga = asset.global_annotation(user, False)
+        self.assertTrue(ga is not None)
+        self.assertEquals(ga.tags, ',test_instructor_two')
+        self.assertEquals(ga.body, 'test_instructor_two notes')
+
         asset = object_map['assets'][2]
         self.assertNotEquals(asset.id, 2)
         self.assertEquals(asset.title, "MAAP Award Reception")
         self.assertEquals(asset.course, course)
         self.assertEquals(asset.author, user)
         self.assertEquals(len(asset.sherdnote_set.all()), 1)
+
+        ga = asset.global_annotation(user, False)
+        self.assertTrue(ga is not None)
+        self.assertEquals(ga.tags, '')
+        self.assertEquals(ga.body, None)
 
     def test_migrate_one(self):
         asset = Asset.objects.get(id=1)
@@ -234,7 +243,7 @@ class AssetTest(TestCase):
         self.assertEquals(asset5.user_analysis_count(test_instructor), 0)
 
         test_instructor_two = User.objects.get(username='test_instructor_two')
-        self.assertEquals(asset1.user_analysis_count(test_instructor_two), 1)
+        self.assertEquals(asset1.user_analysis_count(test_instructor_two), 3)
         self.assertEquals(asset2.user_analysis_count(test_instructor_two), 0)
         self.assertEquals(asset5.user_analysis_count(test_instructor_two), 0)
 

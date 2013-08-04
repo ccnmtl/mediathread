@@ -63,8 +63,6 @@ class AssetManager(models.Manager):
 
                 if "annotations" in asset_json:
                     annotations = annotations + asset_json["annotations"]
-                if "global_annotation" in asset_json:
-                    annotations.append(asset_json["global_annotation"])
 
                 for note_json in annotations:
                     if note_json["id"] not in object_map['notes']:
@@ -75,8 +73,12 @@ class AssetManager(models.Manager):
                                                                  user)
                         # Don't count global annotations
                         object_map['notes'][old_note.id] = new_note
-                        if not note_json["is_global_annotation"]:
-                            object_map['note_count'] += 1
+
+                # migrate the requesting user's global annotation
+                # on this asset, if it exists
+                ga = old_asset.global_annotation(user, False)
+                if ga:
+                    SherdNote.objects.migrate_one(ga, new_asset, user)
 
         return object_map
 

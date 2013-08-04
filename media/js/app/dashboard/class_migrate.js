@@ -293,6 +293,9 @@
                     if (json.project_count) {
                         msg += json.project_count + " projects imported";
                     }
+                    if (json.error) {
+                        msg = msg;
+                    }
                     showMessage(msg, function() {                        
                         jQuery("#selected-for-import").fadeOut();
                         jQuery("#selected-for-import").html("");

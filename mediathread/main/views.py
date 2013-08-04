@@ -356,8 +356,14 @@ def migrate(request):
                 if c.is_faculty(request.user):
                     courses.append(c)
 
+        # Only send down the real faculty. Not all us staff members
+        faculty = []
+        for u in request.course.faculty.all():
+            if u in request.course.members:
+                faculty.append(u)
+
         return {
-            "current_course_faculty": request.course.faculty.all(),
+            "current_course_faculty": faculty,
             "available_courses": courses,
             "help_migrate_materials": False
         }
@@ -371,6 +377,13 @@ def migrate(request):
         owner = request.user
         if 'on_behalf_of' in request.POST:
             owner = User.objects.get(id=request.POST.get('on_behalf_of'))
+
+        if (not in_course(owner.username, request.course) or
+                not request.course.is_faculty(owner)):
+            json_stream = simplejson.dumps({
+                'success': False,
+                'message': '%s is not a course member or faculty member'})
+            return HttpResponse(json_stream, mimetype='application/json')
 
         if 'asset_set' in request.POST:
             asset_set = simplejson.loads(request.POST.get('asset_set'))

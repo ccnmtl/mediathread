@@ -110,12 +110,13 @@ class ProjectTest(TestCase):
         self.assertEquals(citations[0].body, 'student two selection note')
         self.assertEquals(citations[0].author, user)
 
-        # Another user's global annotation
+        # Migrated global annotation
         self.assertTrue(citations[1].asset.title,
                         "Mediathread: Introduction")
         self.assertEquals(citations[1].id,
                           citations[1].asset.global_annotation(user, False).id)
-        self.assertEquals(citations[1].tags, '')
+        self.assertEquals(citations[1].tags, ',test_instructor_two')
+        self.assertEquals(citations[1].body, 'test_instructor_two notes')
 
         # Own selection
         self.assertEquals(citations[2].title, "Video Selection Is Time-based")
@@ -128,7 +129,7 @@ class ProjectTest(TestCase):
         self.assertEquals(citations[2].tags, ',test_instructor_two')
         self.assertEquals(citations[2].author, user)
 
-        # Onw asset
+        # Own asset
         self.assertTrue(citations[3].asset.title, "Project Portfolio")
         self.assertTrue(citations[3].is_global_annotation())
         self.assertEquals(citations[3].id,

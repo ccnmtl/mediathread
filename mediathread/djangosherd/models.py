@@ -144,10 +144,10 @@ class SherdNoteManager(models.Manager):
 
         return rv
 
-    def migrate_one(self, note, new_asset, user):
+    def migrate_one(self, old_note, new_asset, user):
         n = None
 
-        if (note.is_global_annotation() and
+        if (old_note.is_global_annotation() and
                 new_asset.global_annotation(user, False)):
             # A global annotation already exists
             # from this user
@@ -155,25 +155,26 @@ class SherdNoteManager(models.Manager):
             n = new_asset.global_annotation(user, False)
         else:
             try:
-                n = SherdNote.objects.get(asset=new_asset,
-                                          range1=note.range1,
-                                          range2=note.range2,
-                                          annotation_data=note.annotation_data,
-                                          title=note.title,
-                                          author=user)
+                n = SherdNote.objects.get(
+                    asset=new_asset,
+                    range1=old_note.range1,
+                    range2=old_note.range2,
+                    annotation_data=old_note.annotation_data,
+                    title=old_note.title,
+                    author=user)
             except SherdNote.DoesNotExist:
                 n = SherdNote(asset=new_asset,
-                              range1=note.range1,
-                              range2=note.range2,
-                              annotation_data=note.annotation_data,
-                              title=note.title,
+                              range1=old_note.range1,
+                              range2=old_note.range2,
+                              annotation_data=old_note.annotation_data,
+                              title=old_note.title,
                               author=user)
 
-        if (note.author == user or not note.is_global_annotation()):
-            if note.body:
-                n.body = note.body
-            if note.tags:
-                n.tags = note.tags
+        if (old_note.author == user or not old_note.is_global_annotation()):
+            if old_note.body:
+                n.body = old_note.body
+            if old_note.tags:
+                n.tags = old_note.tags
 
         n.save()
 

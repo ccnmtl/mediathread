@@ -34,24 +34,7 @@
                 <% } %>
             </div>
         </div>
-        <br /><br />
-        <input id="import-all" class="rounded-button green" type="button" value="Select Complete Course">
-        <div id="import-all-dialog" style="display: none" title="Import">
-            <h3><%= title %></h3>
-            <% if (project_set && project_set.length > 0) { %>
-                <div><%= project_set.length %> Compositions & Assignments</div>
-            <% } else { %>
-                <div>No compositions or assignments</div>
-            <% } %>
-            <% if (asset_set && asset_set.length > 0) { %>
-                <div><%= asset_set.length %> items and <%= asset_set.total_sherdnotes()  %> selections</div>
-            <% } else { %>
-                <div>No items or selections</div>
-            <% } %>
-            <br />
-            <div>Are you sure you want to select the entire course?</div>                                                              
-        </div> 
-        <br /><br />
+        
         <% if (project_set && project_set.length > 0) { %>
             <div class="metadata-value"><%= project_set.length %> Compositions &amp; Assignments</div>
             <div><input id="import-projects" type="button" class="rounded-button blue" value="Select Compositions &amp; Assignments"></div>
@@ -65,6 +48,7 @@
                     <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
                         <td class="composition <% if (project.get('is_assignment')) { %>assignment<% } %>">
                         </td>
+                        <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
                         <td class="title">
                             <% if (project.get('is_assignment')) { %>
                                 <div class="metadata-value-assignment">Assignment</div>
@@ -80,9 +64,9 @@
                                 <i>includes <%= project.get('annotations').length %> selection(s)</i>
                             <% } %>
                         </td>
-                        <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
+                        
                     </tr>
-                    <tr><td class="spacer" colspan="3"></td></tr>
+                    <tr class="spacer-row"><td class="spacer" colspan="3"></td></tr>
                 <% } %>
                 </table>
                 </div>
@@ -93,42 +77,61 @@
 
         <% if (asset_set && asset_set.length > 0) { %>             
             <div class="metadata-value"><%= asset_set.length %> Items with <%= asset_set.total_sherdnotes() %> selection(s)</div>
-            <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items"></div>
+            <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items"/></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
-            <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
-            <div class="visualclear"/>
-            <div class="import-stuff">
-            <table>
-            <% for (var j = 0; j < asset_set.length; j++) { %>
-                <% var asset = asset_set.at(j) %>
-                <tr  <% if (j % 2 === 0) { %> class="odd" <% } %> >
-                    <td class="asset"></td>                    
-                    <td class="record">
-                        <% if (asset.get('thumb_url')) { %>
-                            <img class="asset-thumb" src="<%=asset.get('thumb_url') %>" alt="Item Thumbnail" />                        
+                <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
+                <div class="visualclear"/>
+                <div class="import-stuff">
+                    <table>
+                        <% for (var j = 0; j < asset_set.length; j++) { %>
+                            <% var asset = asset_set.at(j) %>
+                            <tr  <% if (j % 2 === 0) { %> class="odd" <% } %> >
+                                <td class="asset"></td>
+                                <td>
+                                    <input class="asset" type="checkbox" value="<%= asset.get('id') %>" />
+                                </td>
+                                <td class="record">
+                                    <% if (asset.get('thumb_url')) { %>
+                                        <img class="asset-thumb" src="<%=asset.get('thumb_url') %>" alt="Item Thumbnail" />                        
+                                    <% } %>
+                                </td>
+                                <td class="title">
+                                    <div><b><%= asset.get('title') %></b></div>
+                                    <div class="meta">
+                                        <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
+                                        <div>
+                                            <span class="metadata-value">Includes </span>  
+                                            <span class="metadata-label item-annotation-count-total"><%=asset.get('annotations').length %></span>
+                                            <span class="metadata-value">selections</span>                        
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="spacer-row"><td class="spacer" colspan="4"></td></tr>
                         <% } %>
-                    </td>
-                    <td class="title">
-                        <div><b><%= asset.get('title') %></b></div>
-                        <div class="meta">
-                            <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
-                            <div>
-                                <span class="metadata-value">Includes </span>  
-                                <span class="metadata-label item-annotation-count-total"><%=asset.get('annotations').length %></span>
-                                <span class="metadata-value">selections</span>                        
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <input class="asset" type="checkbox" value="<%= asset.get('id') %>" />
-                    </td>
-                </tr>
-                <tr><td class="spacer" colspan="4"></td></tr>
-            <% } %>
-            </table>
+                     </table>
+                </div>
             </div>
         <% } %>
+
+        <br /><br />
+        <input id="import-all" class="rounded-button green" type="button" value="Select Everything" />
+        <div id="import-all-dialog" style="display: none" title="Import">
+            <h3><%= title %></h3>
+            <% if (project_set && project_set.length > 0) { %>
+                <div><%= project_set.length %> Compositions & Assignments</div>
+            <% } else { %>
+                <div>No compositions or assignments</div>
+            <% } %>
+            <% if (asset_set && asset_set.length > 0) { %>
+                <div><%= asset_set.length %> items and <%= asset_set.total_sherdnotes()  %> selections</div>
+            <% } else { %>
+                <div>No items or selections</div>
+            <% } %>
+            <br />
+            <div>Are you sure you want to select the entire course?</div>                                                              
+        </div> 
     </script>
     
     <script type="text/template" id="selected-template">
@@ -160,7 +163,7 @@
                             </td>
                             <td class="deselect"><input type="button" name="<%= project.id %>" value="X" class="deselect-project"/></td>
                         </tr>
-                        <tr><td class="spacer" colspan="3"></td></tr>
+                        <tr class="spacer-row"><td class="spacer" colspan="3"></td></tr>
                     <% } %>
                     </table>
                 <% } %>
@@ -189,7 +192,7 @@
                         </td>
                         <td class="deselect"><input type="button" name="<%= asset.id %>" value="X" class="deselect-asset <%=asset.required %>"/></td>
                         </tr>
-                        <tr><td class="spacer" colspan="4"></td></tr>
+                        <tr class="spacer-row"><td class="spacer" colspan="4"></td></tr>
                     <% } %>
                     </table>
                 <% } %>
@@ -250,25 +253,45 @@
         <input type="submit" id="view-materials" value="View materials" class="btn-primary"/>        
     </div>
     
-    <div id="course-materials-container" style="display: none">
+    <div id="course-materials-container" style="display: none">       
         <div>
-            <div class="course-information">
-                <h3>from <span id="course-title"></span> {% if available_courses|length > 2 %}<a id="switch-course" href="#" class="metadata-value">switch course</a>{% endif %}</h3>
-                <div id="course"></div>
-                                
-                <div>
-                    <br /><br />
-                    {% if user.is_staff %}
-                        <span class="metadata-label">Upload on behalf of: </span>
+            <div class="course-information-container">
+                {% if user.is_staff %}
+                    <div class="on-behalf-of-container">
+                        <div class="helptext right" style="margin-top: -4px;">CCNMTL staff only</div>
+                        <h4>Migrate As</h4>
                         <select id="on_behalf_of">
-                            {% ifequal role_in_course "instructor" %}
-                                <option value="myself">Myself</option>
-                            {% endifequal %}
-                            {% for faculty in current_course_faculty %}                            
-                                <option value="{{faculty.id}}">{% public_name for faculty %}</option>
-                            {% endfor %} 
+                            {% for faculty in current_course_faculty %}
+                                {% ifequal user.id faculty.id %}
+                                    <option value="{{faculty.id}}" selected="selected">
+                                        {% public_name for faculty %} (Me)
+                                    </option>
+                                {% else %}                            
+                                    <option value="{{faculty.id}}">
+                                        {% public_name for faculty %}
+                                    </option>
+                                {% endifequal %}
+                            {% endfor %}
                         </select>
+                        
+                        {% ifequal role_in_course "non-member" %}
+                            <div class="helptext">
+                                You are not a member of this course.<br />
+                                You must migrate on behalf of an instructor.
+                            </div>
+                        {% endifequal %}
+                    </div>
+                    <br />
+                {% endif %}
+                <div class="course-information">
+                    {% if available_courses|length > 2 %}
+                        <div class="right">
+                            <a id="switch-course" href="#" class="metadata-value">switch course</a>
+                        </div>
                     {% endif %}
+                    <div class="visualclear"></div>
+                    <h3><span id="course-title"></span></h3>
+                    <div id="course"></div>
                 </div>
             </div>
             <div id="selected-for-import" class="selected-for-import" style="display: none"></div>

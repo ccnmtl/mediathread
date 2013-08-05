@@ -14,7 +14,7 @@ DATABASES = {
 }
 
 LETTUCE_SERVER_PORT = 8002
-BROWSER = 'Firefox'
+BROWSER = 'Firefox' # ["Chrome", "Firefox", "Headless"]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

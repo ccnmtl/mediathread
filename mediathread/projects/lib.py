@@ -1,5 +1,6 @@
 from courseaffils.lib import get_public_name
-from mediathread.assetmgr.views import asset_sherd_json
+from mediathread.assetmgr.api import AssetResource
+from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.projects.forms import ProjectForm
 from random import choice
 from string import letters
@@ -91,6 +92,10 @@ def composition_project_json(request, project, can_edit, version_number=None):
     course = request.course if request.course \
         else request.collaboration_context.content_object
 
+    asset_resource = AssetResource()
+    sherd_resource = SherdNoteResource()
+    citations = project.citations()
+
     data = {
         'project': {
             'id': project.pk,
@@ -116,12 +121,12 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'course_title': course.title
         },
         'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-                        asset_sherd_json(ann.asset, request))
-                        for ann in project.citations()
+                        asset_resource.render_one(request, ann.asset))
+                        for ann in citations
                         if (ann.title != "Annotation Deleted" and
                         ann.title != 'Asset Deleted')]),
-        'annotations': [ann.sherd_json(request, rand, ('title', 'author'))
-                        for ann in project.citations()],
+        'annotations': [sherd_resource.render_one(request, ann, rand)
+                        for ann in citations],
         'type': 'project',
         'can_edit': can_edit,
     }

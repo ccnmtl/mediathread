@@ -5,6 +5,9 @@ from customerio import CustomerIO
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 
+from mediathread.user_accounts import autocomplete_light_registry
+from mediathread.user_accounts import forms
+
 mock_customerio = MagicMock(spec=CustomerIO)
 
 
@@ -89,3 +92,30 @@ class InviteStudentsTest(TestCase):
         self.assertEquals(course.user_set.filter(email__contains="@example.com").count(), 4)
         self.assertEqual(len(mail.outbox), 0)
         self.assertTrue(mock_customerio.called)
+
+
+class RegistrationTest(TestCase):
+    def setUp(self):
+        self.post_params = {
+                'email': 'testmediathread@appsembler.com',
+                'password': 'testpassword',
+                'fullname': 'Appsembler Rocks',
+                'position_title': 'PF',
+                'hear_mediathread_from': 'OT',
+                'subscribe_to_newsletter': 'on',
+                'agree_to_term': 'on',
+                'organization': 'TestCompany Inc.'
+                }
+
+    def test_registration_get(self):
+        response = self.client.get('/user_accounts/registration_form/')
+        self.assertTrue(response.context['form'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_registration_post(self):
+        response = self.client.post('/user_accounts/registration_form/', self.post_params)
+        self.assertEqual(response.status_code, 200)
+
+
+
+

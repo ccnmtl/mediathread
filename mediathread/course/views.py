@@ -26,7 +26,6 @@ class CourseCreateFormView(FormView):
 
     def form_valid(self, form):
         # preparing data
-        registration_record = RegistrationModel.objects.get(user=self.request.user)
         course_title = form.cleaned_data['title']
         course_student_amount = form.cleaned_data['student_amount']
 

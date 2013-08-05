@@ -1,9 +1,10 @@
-from django.core import mail
-from mock import patch, MagicMock
-from django.test import TestCase
 from customerio import CustomerIO
-from courseaffils.models import Course
+from mock import patch, MagicMock
 from django.contrib.auth.models import User
+from django.core import mail
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+from courseaffils.models import Course
 
 from mediathread.user_accounts import autocomplete_light_registry
 from mediathread.user_accounts import forms
@@ -23,19 +24,16 @@ class InviteStudentsTest(TestCase):
         session['ccnmtl.courseaffils.course'] = course
         session.save()
 
-    def test_page_shows_for_instructor(self):
-        print "nesto"
-        response = self.client.get("/user_accounts/invite_students/")
-        print self.client.session['ccnmtl.courseaffils.course']
-
-        self.assertEqual(response.status_code, 200)
+    def test_page_shows_the_form(self):
+        response = self.client.get(reverse("invite-students"))
+        self.assertContains(response, "form", status_code=200)
 
     def test_invite_new_student(self):
         """
         Invite a student that does not have an existing user account
         """
         course = self.client.session['ccnmtl.courseaffils.course']
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test@student.com',
             'message': 'Welcome!'
@@ -49,7 +47,7 @@ class InviteStudentsTest(TestCase):
         Invite mulitple students that do not have an existing user account
         """
         course = self.client.session['ccnmtl.courseaffils.course']
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test@student.com' + '\n' +
                               'test2@student.com' + '\n' +
@@ -65,7 +63,7 @@ class InviteStudentsTest(TestCase):
         test_student = User.objects.get(username="test_student_one")
         test_student.email = "test_student_one@example.com"
         test_student.save()
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test_student_one@example.com',
             'message': 'Welcome!'
@@ -80,7 +78,7 @@ class InviteStudentsTest(TestCase):
         for s in User.objects.filter(username__contains="test_student"):
             s.email = "{0}@example.com".format(s.username)
             s.save()
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test_student_one@example.com' + '\n' +
                               'test_student_two@example.com' + '\n' +
@@ -92,6 +90,29 @@ class InviteStudentsTest(TestCase):
         self.assertEquals(course.user_set.filter(email__contains="@example.com").count(), 4)
         self.assertEqual(len(mail.outbox), 0)
         self.assertTrue(mock_customerio.called)
+
+    def test_redirect_unregistered_users(self):
+        self.client.logout()
+        response = self.client.get(reverse("invite-students"))
+        self.assertRedirects(response, reverse("account_login") + '?next=' + reverse("invite-students"))
+
+    def test_incorrect_email_address(self):
+        response = self.client.post(reverse("invite-students"), {
+            'email_from': 'test@instructor.com',
+            'student_emails': 'wrongemail.com',
+            'message': 'Welcome!'
+        }, follow=True)
+        self.assertFormError(response, 'form', 'student_emails', 'Error in an email address')
+
+    def test_missing_form_fields(self):
+        response = self.client.post(reverse("invite-students"), {
+            'email_from': '',
+            'student_emails': '',
+            'message': ''
+        }, follow=True)
+        self.assertFormError(response, 'form', 'email_from', 'This field is required.')
+        self.assertFormError(response, 'form', 'student_emails', 'This field is required.')
+        self.assertFormError(response, 'form', 'message', 'This field is required.')
 
 
 class RegistrationTest(TestCase):
@@ -115,7 +136,4 @@ class RegistrationTest(TestCase):
     def test_registration_post(self):
         response = self.client.post('/user_accounts/registration_form/', self.post_params)
         self.assertEqual(response.status_code, 200)
-
-
-
 

@@ -64,7 +64,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
     ('--cover-package=mediathread.main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects,mediathread.user_accounts'),
+     'mediathread.assetmgr,mediathread.projects,mediathread.user_accounts,mediathread.course'),
 ]
 
 CACHE_BACKEND = 'locmem:///'

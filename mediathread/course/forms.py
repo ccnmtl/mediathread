@@ -18,4 +18,3 @@ class CourseForm(forms.Form):
 
     class Meta:
         widget = autocomplete_light.get_widgets_dict(CourseInformation)
-

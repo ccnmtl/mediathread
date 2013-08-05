@@ -10,7 +10,6 @@ import errno
 import os
 import selenium.webdriver.support.ui as ui
 import time
-
 try:
     from lxml import html
     from selenium import webdriver
@@ -111,7 +110,7 @@ def i_am_username_in_course(step, username, coursename):
     if world.using_selenium:
         world.browser.get(django_url("/accounts/logout/"))
         world.browser.get(django_url("accounts/login/?next=/"))
-        username_field = world.browser.find_element_by_id("id_username")
+        username_field = world.browser.find_element_by_id("id_login")
         username_field.send_keys(username)
 
         password_field = world.browser.find_element_by_id("id_password")

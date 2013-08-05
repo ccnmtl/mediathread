@@ -20,5 +20,4 @@ urlpatterns = patterns('',
     url(r'^confirm_email/(?P<key>\w+)/$',
         confirm_email_view,
         name='account_confirm_email'),
-    (r'', include('allauth.urls'))
 )

@@ -23,14 +23,14 @@ class CourseCreateFormView(FormView):
     def get(self, *args, **kwargs):
         return super(CourseCreateFormView, self).get(*args, **kwargs)
 
-
     def form_valid(self, form):
         # preparing data
         course_title = form.cleaned_data['title']
         course_student_amount = form.cleaned_data['student_amount']
 
         # ensure the organization
-        course_organization, org_created = OrganizationModel.objects.get_or_create(name=form.cleaned_data['organization'])
+        course_organization, org_created = OrganizationModel.objects.get_or_create(
+            name=form.cleaned_data['organization'])
 
         ## the following code are for creating a course, should be refactored later into utils.py
         # create both student and facultu group for the course to be created
@@ -52,9 +52,9 @@ class CourseCreateFormView(FormView):
 
         # create an information record for operations
         course_info = CourseInformation.objects.create(
-                course=created_course,
-                organization = course_organization,
-                student_amount = course_student_amount)
+            course=created_course,
+            organization=course_organization,
+            student_amount=course_student_amount)
         course_info.save()
 
         self.request.session['ccnmtl.courseaffils.course'] = created_course

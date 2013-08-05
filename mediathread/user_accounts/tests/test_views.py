@@ -6,6 +6,9 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from courseaffils.models import Course
 
+from mediathread.user_accounts import autocomplete_light_registry
+from mediathread.user_accounts import forms
+
 mock_customerio = MagicMock(spec=CustomerIO)
 
 
@@ -110,3 +113,27 @@ class InviteStudentsTest(TestCase):
         self.assertFormError(response, 'form', 'email_from', 'This field is required.')
         self.assertFormError(response, 'form', 'student_emails', 'This field is required.')
         self.assertFormError(response, 'form', 'message', 'This field is required.')
+
+
+class RegistrationTest(TestCase):
+    def setUp(self):
+        self.post_params = {
+                'email': 'testmediathread@appsembler.com',
+                'password': 'testpassword',
+                'fullname': 'Appsembler Rocks',
+                'position_title': 'PF',
+                'hear_mediathread_from': 'OT',
+                'subscribe_to_newsletter': 'on',
+                'agree_to_term': 'on',
+                'organization': 'TestCompany Inc.'
+                }
+
+    def test_registration_get(self):
+        response = self.client.get('/user_accounts/registration_form/')
+        self.assertTrue(response.context['form'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_registration_post(self):
+        response = self.client.post('/user_accounts/registration_form/', self.post_params)
+        self.assertEqual(response.status_code, 200)
+

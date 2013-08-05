@@ -14,7 +14,7 @@ DATABASES = {
 }
 
 LETTUCE_SERVER_PORT = 8002
-BROWSER = 'Firefox' # ["Chrome", "Firefox", "Headless"]
+BROWSER = 'Headless' # ["Chrome", "Firefox", "Headless"]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -35,6 +35,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 CUSTOMERIO_SITE_ID = ''
 CUSTOMERIO_API_KEY = ''
+ACCOUNT_LOGOUT_ON_GET = True
 
 # Full run
 # time(./manage.py harvest --settings=mediathread.settings_test \

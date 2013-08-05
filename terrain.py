@@ -179,6 +179,8 @@ def there_is_a_sample_response(step):
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):
     if world.using_selenium:
+        if field == "username":
+            field = "login"
         selector = "input[name=%s]" % field
         elt = world.browser.find_element_by_css_selector(selector)
         assert elt is not None, "Cannot locate input field named %s" % field

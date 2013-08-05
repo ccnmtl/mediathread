@@ -4158,6 +4158,10 @@ div.invite-students-form textarea {
     width: 97%;
 }
 
+div.invite-students-form select {
+    margin-bottom: 10px;
+}
+
 div.invite-students-form input[type=submit] {
     float: left;
     margin-right: 10px;

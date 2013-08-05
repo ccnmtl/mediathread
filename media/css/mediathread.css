@@ -1950,32 +1950,6 @@ div.collection-filter .switcher-options {
     width: 367px;
 }
 
-div.collection-filter-activate {
-    float: left;
-    width: 30px;
-    color: #2f2f2f;
-    padding: 1px 0 2px 7px;
-    margin: 0 0 0 5px;
-    border: solid 1px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;    
-    background-color: #efefef;
-    *background-color: #efefef;
-    background-image: -moz-linear-gradient(top, #fcfcfc, #efefef);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfcfc), to(#efefef));
-    background-image: -webkit-linear-gradient(top, #fcfcfc, #efefef);
-    background-image: -o-linear-gradient(top, #fcfcfc, #efefef);
-    background-image: linear-gradient(to bottom, #fcfcfc, #efefef);
-    background-repeat: repeat-x;
-    border-color: #0044cc #0044cc #002a80;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-    cursor: pointer;    
-}
-
-
 div.collection-date-filter {
     width: 144px;
 }
@@ -3857,19 +3831,6 @@ td#asset-workspace-panel-container div.collection-chooser .switcher-options {
 
 td#asset-workspace-panel-container div.collection-date-filter {
     margin-right: 12px;
-}
-
-td#asset-workspace-panel-container input.autocomplete {
-    margin: 0;
-    height: 20px;
-    border: none;
-    outline: 0;
-    width: 350px;
-}
-
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-filter-activate,
-div.panel.asset-workspace td.panel-container.collection.minimized a.switcher-top input.autocomplete {
-    display: none;
 }
 
 div.panel.asset-workspace td.panel-container.collection div.collection-date-filter .switcher-options {

@@ -1,5 +1,4 @@
-from courseaffils.lib import in_course, get_public_name, in_course_or_404, \
-    AUTO_COURSE_SELECT
+from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -10,11 +9,12 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.html import strip_tags
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
+from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.lib import filter_by, get_active_filters
 from mediathread.assetmgr.models import Asset, Source
+from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, \
     delete_annotation, edit_annotation, update_annotation
@@ -28,6 +28,7 @@ import re
 import simplejson
 import urllib
 import urllib2
+from django.template import loader
 
 
 @login_required
@@ -82,8 +83,8 @@ def asset_workspace(request, asset_id=None, annot_id=None):
                                   context_instance=RequestContext(request))
     else:
         if asset_id:
-            asset_workspace_context = detail_asset_json(
-                request, asset_id, {'include_annotations': True})
+            asset = get_object_or_404(Asset, pk=asset_id)
+            asset_workspace_context = detail_asset_json(request, asset)
         else:
             asset_workspace_context = {'type': 'asset'}
 
@@ -167,9 +168,8 @@ def asset_create(request):
                 for t in metadata["tag"]:
                     asset.save_tag(user, t)
 
-            if len(metadata):
-                asset.metadata_blob = simplejson.dumps(metadata)
-                asset.save()
+            asset.metadata_blob = simplejson.dumps(metadata)
+            asset.save()
         except:
             # we'll make it here if someone doesn't submit
             # any primary_labels as arguments
@@ -182,6 +182,8 @@ def asset_create(request):
     asset_url = reverse('asset-view', args=[asset.id])
 
     source = request.POST.get('asset-source', "")
+    action = request.POST.get('button')
+
     if source == 'bookmarklet':
         asset_url += "?level=item"
 
@@ -199,8 +201,18 @@ def asset_create(request):
                                         reverse('class-manage-sources'))
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
-    else:
+    elif "analyze" == action:
         return HttpResponseRedirect(asset_url)
+    else:
+        template = loader.get_template('assetmgr/analyze.html')
+
+        context = RequestContext(request, {
+            'request': request,
+            'user': user,
+            'action': action,
+            'asset_url': asset_url
+        })
+    return HttpResponse(template.render(context))
 
 
 @login_required
@@ -458,15 +470,15 @@ def final_cut_pro_xml(request, asset_id):
 @login_required
 @allow_http("GET")
 def asset_detail(request, asset_id):
-#    if not request.is_ajax():
-#        raise Http404()
+    if not request.is_ajax():
+        raise Http404()
 
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
 
     try:
         asset = Asset.objects.get(pk=asset_id, course=request.course)
-        the_json = detail_asset_json(request, asset_id, {})
+        the_json = detail_asset_json(request, asset)
         return HttpResponse(simplejson.dumps(the_json, indent=2),
                             mimetype='application/json')
     except Asset.DoesNotExist:
@@ -488,8 +500,8 @@ def assets_by_user(request, record_owner_name):
     An ajax-only request to retrieve a specified user's projects,
     assignment responses and selections
     """
-#    if not request.is_ajax():
-#        raise Http404()
+    if not request.is_ajax():
+        raise Http404()
 
     course = request.course
     if (request.user.username == record_owner_name and
@@ -514,8 +526,8 @@ def assets_by_course(request):
     assignment responses and selections
     """
 
-#    if not request.is_ajax():
-#        raise Http404()
+    if not request.is_ajax():
+        raise Http404()
 
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
@@ -537,44 +549,15 @@ def assets_by_course(request):
     1. create a single, parameterized function to render an asset to json
     2. create a single, parameterized function to render an asset list to json
 
-    - TagResource & render list for tag json needs
+    X TagResource & render list for tag json needs
     - Combine detail_asset_json with gallery_asset_json
-    - Merge in asset_sherd_json
     - Use the resultant function in get_assets.
     - Try to merge the whole shebang into the AssetResource - render methods
-      so that it's all in the same place
+    -- render_one
+    -- render_list
+    - Oh, and don't forget Annotation.sherd_json
+    - Go have a very large drink
 '''
-
-
-def asset_sherd_json(asset, request=None):
-    sources = {}
-    for s in asset.source_set.all():
-        sources[s.label] = {'label': s.label,
-                            'url': s.url_processed(request),
-                            'width': s.width,
-                            'height': s.height,
-                            'primary': s.primary}
-
-    try:
-        metadata = simplejson.loads(asset.metadata_blob)
-
-        # convert to an array for mustache
-        metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
-
-    except ValueError:
-        metadata = None
-
-    tags = Tag.objects.usage_for_queryset(asset.sherdnote_set.all(),
-                                          counts=True)
-    return {
-        'sources': sources,
-        'primary_type': asset.primary.label,
-        'title': strip_tags(asset.title),
-        'metadata': metadata,
-        'local_url': asset.get_absolute_url(),
-        'id': asset.pk,
-        'media_type_label': asset.media_type(),
-        'tags': TagResource().render_list(request, tags)}
 
 
 def get_assets(request, record_owner, assets):
@@ -586,8 +569,7 @@ def get_assets(request, record_owner, assets):
     viewing_faculty_records = record_owner and course.is_faculty(record_owner)
 
     # Allow the logged in user to add assets to his composition
-    citable = ('citable' in request.GET and
-               request.GET.get('citable') == 'true')
+    citable = request.GET.get('citable', '') == 'true'
 
     # Is the current user faculty OR staff
     is_faculty = course.is_faculty(logged_in_user)
@@ -611,8 +593,6 @@ def get_assets(request, record_owner, assets):
     options = {
         'owner_selections_are_visible': ('annotations' in request.GET and
                                          owner_selections_are_visible),
-        'all_selections_are_visible':
-        course_details.all_selections_are_visible(course) or is_faculty,
         'can_edit': viewing_own_work,
         'citable': citable
     }
@@ -621,7 +601,8 @@ def get_assets(request, record_owner, assets):
         asset_json.append(gallery_asset_json(request,
                                              asset,
                                              logged_in_user,
-                                             record_owner, options))
+                                             record_owner,
+                                             options))
 
     # Tags
     tags = []
@@ -655,7 +636,7 @@ def get_assets(request, record_owner, assets):
 
     # Assemble the context
     data = {'assets': asset_json,
-            'tags': [{'name': tag.name} for tag in tags],
+            'tags': TagResource().render_list(request, tags),
             'active_filters': active_filters,
             'space_viewer': user_resource.render_one(request, logged_in_user),
             'editable': viewing_own_work,
@@ -670,43 +651,28 @@ def get_assets(request, record_owner, assets):
     return HttpResponse(json_stream, mimetype='application/json')
 
 
-def detail_asset_json(request, asset_id, options):
-    asset = get_object_or_404(Asset, pk=asset_id)
+def detail_asset_json(request, asset):
+    all_selections_visible = course_details.all_selections_are_visible(
+        request.course) or request.course.is_faculty(request.user)
 
-    selections_visible = \
-        (course_details.all_selections_are_visible(request.course) or
-         request.course.is_faculty(request.user))
-
-    asset_json = asset_sherd_json(asset, request)
-
-    sources = {}
-    for s in asset.source_set.all():
-        sources[s.label] = {'label': s.label,
-                            'url': s.url_processed(request),
-                            'width': s.width,
-                            'height': s.height,
-                            'primary': s.primary}
-    asset_json['sources'] = sources
-
-    asset_key = 'x_%s' % asset.pk
-
-    asset_json['user_analysis'] = 0
+    the_json = AssetResource().render_one(request, asset)
+    the_json['user_analysis'] = 0
 
     ga = asset.global_annotation(request.user, False)
     if ga:
-        asset_json['global_annotation_id'] = ga.id
-        asset_json['notes'] = ga.body
-        asset_json['user_tags'] = TagResource.render_list(request,
+        the_json['global_annotation_id'] = ga.id
+        the_json['notes'] = ga.body
+        the_json['user_tags'] = TagResource().render_list(request,
                                                           ga.tags_split())
 
-        if (asset_json['notes'] and len(asset_json['notes']) > 0) or \
-                (asset_json['user_tags'] and len(asset_json['user_tags']) > 0):
-            asset_json['user_analysis'] += 1
+        if (the_json['notes'] and len(the_json['notes']) > 0) or \
+                (the_json['user_tags'] and len(the_json['user_tags']) > 0):
+            the_json['user_analysis'] += 1
 
-    if not selections_visible:
+    if not all_selections_visible:
         owners = [request.user]
         owners.extend(request.course.faculty)
-        asset_json['tags'] = TagResource.render_list(
+        the_json['tags'] = TagResource().render_list(
             request, asset.filter_tags_by_users(owners, True))
 
     # DiscussionIndex is misleading. Objects returned are
@@ -716,7 +682,7 @@ def detail_asset_json(request, asset_id, options):
                                         DiscussionIndex.objects.filter(
                                         asset=asset).order_by('-modified'))
 
-    asset_json['references'] = [{
+    the_json['references'] = [{
         'id': obj.collaboration.object_pk,
         'title': obj.collaboration.title,
         'type': obj.get_type_label(),
@@ -724,6 +690,7 @@ def detail_asset_json(request, asset_id, options):
         'modified': obj.modified.strftime("%m/%d/%y %I:%M %p")}
         for obj in collaboration_items]
 
+    asset_key = 'x_%s' % asset.pk
     annotations = [{
         'asset_key': asset_key,
         'range1': None,
@@ -732,37 +699,17 @@ def detail_asset_json(request, asset_id, options):
         'id': 'asset-%s' % asset.pk,
         'asset_id': asset.pk, }]
 
-    if ('annotations' in request.GET or
-        (options and
-         ('include_annotations' in options) and
-         options['include_annotations'])):
+    sherd_resource = SherdNoteResource()
+    for ann in asset.sherdnote_set.filter(range1__isnull=False):
+        visible = (all_selections_visible or
+                   request.user == ann.author or
+                   request.course.is_faculty(ann.author))
 
-        # @todo: refactor this serialization into a common place.
-        def author_name(request, annotation, key):
-            if not annotation.author_id:
-                return None
-            return 'author_name', get_public_name(annotation.author, request)
-
-        def primary_type(request, annotation, key):
-            return "primary_type", asset.primary.label
-
-        for ann in asset.sherdnote_set.filter(range1__isnull=False):
-            visible = (selections_visible or
-                       request.user == ann.author or
-                       request.course.is_faculty(ann.author))
-
-            if visible:
-                if request.user == ann.author:
-                    asset_json['user_analysis'] += 1
-                ann_json = ann.sherd_json(request, 'x', ('title',
-                                                         'author',
-                                                         'tags',
-                                                         author_name,
-                                                         'body',
-                                                         'modified',
-                                                         'timecode',
-                                                         primary_type))
-                annotations.append(ann_json)
+        if visible:
+            if request.user == ann.author:
+                the_json['user_analysis'] += 1
+            ann_json = sherd_resource.render_one(request, ann, "x")
+            annotations.append(ann_json)
 
     help_setting = \
         UserSetting.get_setting(request.user, "help_item_detail_view", True)
@@ -770,7 +717,7 @@ def detail_asset_json(request, asset_id, options):
     rv = {'type': 'asset',
           # we make assets plural here to be
           # compatible with the project JSON structure
-          'assets': {asset_key: asset_json},
+          'assets': {asset_key: the_json},
           'annotations': annotations,
           'user_settings': {'help_item_detail_view': help_setting}}
 
@@ -778,7 +725,15 @@ def detail_asset_json(request, asset_id, options):
 
 
 def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
-    the_json = asset_sherd_json(asset, request)
+    '''
+        options:
+        'owner_selections_are_visible',
+        'can_edit',
+        'citable',
+        'all_selections_are_visible'
+    '''
+    the_json = AssetResource().render_one(request, asset)
+    sherd_resource = SherdNoteResource()
 
     gannotation, created = \
         SherdNote.objects.global_annotation(asset,
@@ -789,7 +744,7 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
         ('owner_selections_are_visible' in options and
          options['owner_selections_are_visible']):
         the_json['global_annotation'] = \
-            gannotation.sherd_json(request, 'x', ('tags', 'body'))
+            sherd_resource.render_one(request, gannotation, 'x')
 
     all_annotations = asset.sherdnote_set.filter(range1__isnull=False)
     the_json['editable'] = options['can_edit']
@@ -798,36 +753,22 @@ def gallery_asset_json(request, asset, logged_in_user, record_owner, options):
         len(all_annotations.filter(author=request.user))
 
     if options['owner_selections_are_visible']:
-        # @todo: refactor this serialization into a common place.
-        def author_name(request, annotation, key):
-            if not annotation.author_id:
-                return None
-            return 'author_name', get_public_name(annotation.author, request)
-
-        def primary_type(request, annotation, key):
-            return "primary_type", asset.primary.label
-
         annotations = []
         for ann in all_annotations.filter(author=record_owner):
-            ann_json = ann.sherd_json(request, 'x', ('title',
-                                                     'author',
-                                                     'tags',
-                                                     author_name,
-                                                     'body',
-                                                     'modified',
-                                                     'timecode',
-                                                     primary_type))
-
+            ann_json = sherd_resource.render_one(request, ann, "x")
             ann_json['citable'] = options['citable']
             annotations.append(ann_json)
         the_json['annotations'] = annotations
     else:
         owners = [request.user]
         owners.extend(request.course.faculty)
-        the_json['tags'] = TagResource.render_list(
+        the_json['tags'] = TagResource().render_list(
             request, asset.filter_tags_by_users(owners))
 
-    if options['all_selections_are_visible']:
+    all_selections_visible = course_details.all_selections_are_visible(
+        request.course) or request.course.is_faculty(request.user)
+
+    if (all_selections_visible):
         # count is for all annotations
         the_json['annotation_count'] = len(all_annotations)
     else:

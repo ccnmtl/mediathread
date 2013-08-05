@@ -208,6 +208,7 @@ def project_view_readonly(request, project_id, version_number=None):
         panels = []
 
         # Requested project, either assignment or composition
+        request.public = True
         project_context = composition_project_json(request,
                                                    project,
                                                    False,

@@ -63,42 +63,6 @@ class Annotation(models.Model):
             tc_range += " - %s" % self.secondsToCode(self.range2)
         return tc_range
 
-    def sherd_json(self, request=None, asset_key='', metadata_keys=tuple()):
-        user_id = getattr(getattr(request, 'user', None), 'id', None)
-        metadata = {}
-        for m in metadata_keys:
-            if m == 'author':
-                metadata[m] = {
-                    'id': getattr(self, 'author_id', None),
-                    'username': self.author.username if self.author else ''
-                }
-            elif m == 'tags':
-                tags = self.tags_split()
-                tag_last = len(tags) - 1
-                metadata[m] = [{'name': tag.name, 'last': idx == tag_last}
-                               for idx, tag in enumerate(tags)]
-            elif m == 'modified':
-                metadata[m] = self.modified.strftime("%m/%d/%y %I:%M %p")
-            elif m == 'timecode':
-                metadata[m] = self.range_as_timecode()
-            elif callable(m):
-                key, val = m(request, self, m)
-                metadata[key] = val
-            else:
-                metadata[m] = getattr(self, m, None)
-        return {
-            'asset_key': '%s_%s' % (asset_key, self.asset_id),
-            'id': self.pk,
-            'range1': self.range1,
-            'range2': self.range2,
-            'annotation_data': self.annotation_data,
-            'annotation': self.annotation(),
-            'editable': user_id == getattr(self, 'author_id', -1),
-            'metadata': metadata,
-            'url': self.get_absolute_url(),
-            'is_null': self.is_null()
-        }
-
 
 class SherdNoteManager(models.Manager):
 

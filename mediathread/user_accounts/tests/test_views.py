@@ -91,3 +91,11 @@ class InviteStudentsTest(TestCase):
         self.client.logout()
         response = self.client.get("/user_accounts/invite_students/")
         self.assertRedirects(response, '/accounts/login/?next=/user_accounts/invite_students/')
+
+    def test_incorrect_email_address(self):
+        response = self.client.post("/user_accounts/invite_students/", {
+            'email_from': 'test@instructor.com',
+            'student_emails': 'wrongemail.com',
+            'message': 'Welcome!'
+        }, follow=True)
+        self.assertFormError(response, 'form', 'student_emails', 'Error in an email address')

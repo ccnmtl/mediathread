@@ -982,6 +982,11 @@ a.btn-primary.upload_button {
     margin-top: 10px;
 }
 
+a#create-course {
+    font-weight: normal;
+    color: #555;
+}
+
 table.course-choices {
     padding:5px;
     margin-left: 10px;

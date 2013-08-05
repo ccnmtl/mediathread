@@ -99,3 +99,13 @@ class InviteStudentsTest(TestCase):
             'message': 'Welcome!'
         }, follow=True)
         self.assertFormError(response, 'form', 'student_emails', 'Error in an email address')
+
+    def test_missing_form_fields(self):
+        response = self.client.post("/user_accounts/invite_students/", {
+            'email_from': '',
+            'student_emails': '',
+            'message': ''
+        }, follow=True)
+        self.assertFormError(response, 'form', 'email_from', 'This field is required.')
+        self.assertFormError(response, 'form', 'student_emails', 'This field is required.')
+        self.assertFormError(response, 'form', 'message', 'This field is required.')

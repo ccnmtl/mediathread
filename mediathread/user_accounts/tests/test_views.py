@@ -1,9 +1,10 @@
-from django.core import mail
-from mock import patch, MagicMock
-from django.test import TestCase
 from customerio import CustomerIO
-from courseaffils.models import Course
+from mock import patch, MagicMock
 from django.contrib.auth.models import User
+from django.core import mail
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+from courseaffils.models import Course
 
 mock_customerio = MagicMock(spec=CustomerIO)
 
@@ -21,7 +22,7 @@ class InviteStudentsTest(TestCase):
         session.save()
 
     def test_page_shows_the_form(self):
-        response = self.client.get("/user_accounts/invite_students/")
+        response = self.client.get(reverse("invite-students"))
         self.assertContains(response, "form", status_code=200)
 
     def test_invite_new_student(self):
@@ -29,7 +30,7 @@ class InviteStudentsTest(TestCase):
         Invite a student that does not have an existing user account
         """
         course = self.client.session['ccnmtl.courseaffils.course']
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test@student.com',
             'message': 'Welcome!'
@@ -43,7 +44,7 @@ class InviteStudentsTest(TestCase):
         Invite mulitple students that do not have an existing user account
         """
         course = self.client.session['ccnmtl.courseaffils.course']
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test@student.com' + '\n' +
                               'test2@student.com' + '\n' +
@@ -59,7 +60,7 @@ class InviteStudentsTest(TestCase):
         test_student = User.objects.get(username="test_student_one")
         test_student.email = "test_student_one@example.com"
         test_student.save()
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test_student_one@example.com',
             'message': 'Welcome!'
@@ -74,7 +75,7 @@ class InviteStudentsTest(TestCase):
         for s in User.objects.filter(username__contains="test_student"):
             s.email = "{0}@example.com".format(s.username)
             s.save()
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'test_student_one@example.com' + '\n' +
                               'test_student_two@example.com' + '\n' +
@@ -89,11 +90,11 @@ class InviteStudentsTest(TestCase):
 
     def test_redirect_unregistered_users(self):
         self.client.logout()
-        response = self.client.get("/user_accounts/invite_students/")
-        self.assertRedirects(response, '/accounts/login/?next=/user_accounts/invite_students/')
+        response = self.client.get(reverse("invite-students"))
+        self.assertRedirects(response, reverse("account_login") + '?next=' + reverse("invite-students"))
 
     def test_incorrect_email_address(self):
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': 'test@instructor.com',
             'student_emails': 'wrongemail.com',
             'message': 'Welcome!'
@@ -101,7 +102,7 @@ class InviteStudentsTest(TestCase):
         self.assertFormError(response, 'form', 'student_emails', 'Error in an email address')
 
     def test_missing_form_fields(self):
-        response = self.client.post("/user_accounts/invite_students/", {
+        response = self.client.post(reverse("invite-students"), {
             'email_from': '',
             'student_emails': '',
             'message': ''

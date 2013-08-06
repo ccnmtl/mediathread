@@ -5,6 +5,7 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from courseaffils.models import Course
+from allauth.account.models import EmailAddress, EmailConfirmation
 
 from mediathread.user_accounts import autocomplete_light_registry
 from mediathread.user_accounts import forms
@@ -118,22 +119,25 @@ class InviteStudentsTest(TestCase):
 class RegistrationTest(TestCase):
     def setUp(self):
         self.post_params = {
-                'email': 'testmediathread@appsembler.com',
-                'password': 'testpassword',
-                'fullname': 'Appsembler Rocks',
-                'position_title': 'PF',
-                'hear_mediathread_from': 'OT',
-                'subscribe_to_newsletter': 'on',
-                'agree_to_term': 'on',
-                'organization': 'TestCompany Inc.'
-                }
+            'email': 'testmediathread@appsembler.com',
+            'password': 'testpassword',
+            'fullname': 'Appsembler Rocks',
+            'position_title': 'PF',
+            'hear_mediathread_from': 'OT',
+            'subscribe_to_newsletter': 'on',
+            'agree_to_term': 'on',
+            'organization': 'TestCompany Inc.'
+        }
 
     def test_registration_get(self):
-        response = self.client.get('/user_accounts/registration_form/')
+        response = self.client.get(reverse("registration-form"))
         self.assertTrue(response.context['form'])
         self.assertEqual(response.status_code, 200)
 
     def test_registration_post(self):
-        response = self.client.post('/user_accounts/registration_form/', self.post_params)
+        response = self.client.post(reverse("registration-form"), self.post_params)
         self.assertEqual(response.status_code, 200)
-
+        self.assertEquals(User.objects.filter(email="testmediathread@appsembler.com").count(), 1)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEquals(EmailConfirmation.objects.filter(email_address__email="testmediathread@appsembler.com").count(), 1)
+        self.assertEquals(EmailAddress.objects.filter(email="testmediathread@appsembler.com", verified=False).count(), 1)

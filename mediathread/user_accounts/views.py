@@ -75,6 +75,11 @@ class RegistrationFormView(FormView):
         user_email = form.cleaned_data['email']
         user_model = get_user_model()
 
+        # subscribe in mailchimp
+        if form.cleaned_data['subscribe_to_newsletter']:
+            from .utils import add_email_to_mailchimp_list
+            add_email_to_mailchimp_list(user_email, settings.MAILCHIMP_REGISTRATION_LIST_ID)
+
         user_obj = user_model.objects.get(email=user_email)
 
         login_username = user_obj.username

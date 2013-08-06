@@ -30,6 +30,9 @@
         <tr><td style="border: hidden"><label for="id_password">Password:</label></td><td style="border: hidden">{{ form.password }}</td></tr>
     </table>
     <input type="submit" value="Log In" />
+    <a href="/user_accounts/registration_form">
+        <input type="button" value="Sign Up" />
+    </a>
     <input type="hidden" name="next" value="{{ next|urlencode }}" />
 </form>
 

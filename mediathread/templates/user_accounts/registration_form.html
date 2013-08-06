@@ -8,6 +8,7 @@
     <p>Register below to create your account.</p>
     
     <form action="." method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
         <div>
             {{ form.email.errors }}
             {{ form.email.label_tag }}
@@ -55,9 +56,9 @@
             {{ form.subscribe_to_newsletter }}
         </div>
         <div>
-            {{ form.agree_to_term.errors }}
             {{ form.agree_to_term.label_tag }}
             {{ form.agree_to_term }}
+            {{ form.agree_to_term.errors }}
         </div>
         <input type="submit" value="Create my account" />
     </form>

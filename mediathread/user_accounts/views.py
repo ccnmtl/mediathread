@@ -11,6 +11,7 @@ from allauth.account import app_settings
 from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
 from .forms import InviteStudentsForm, RegistrationForm
 from .models import OrganizationModel, RegistrationModel
+from .utils import add_email_to_mailchimp_list
 
 
 def login_user(request, user):
@@ -68,16 +69,14 @@ class RegistrationFormView(FormView):
             form.instance.organization = organization
             form.save()
         else:
-            print "signup form is not valid"
-            print signup_form.errors
-            return super(RegistrationFormView, self).form_invalid(form)
+            form.errors.update(signup_form.errors)
+            return self.form_invalid(form)
 
         user_email = form.cleaned_data['email']
         user_model = get_user_model()
 
         # subscribe in mailchimp
         if form.cleaned_data['subscribe_to_newsletter']:
-            from .utils import add_email_to_mailchimp_list
             add_email_to_mailchimp_list(user_email, settings.MAILCHIMP_REGISTRATION_LIST_ID)
 
         user_obj = user_model.objects.get(email=user_email)

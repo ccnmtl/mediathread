@@ -36,9 +36,12 @@ class ConfirmEmailView(AllauthConfirmEmailView):
         email_address = self.get_object().email_address
 
         user_to_login = User.objects.get(email=email_address.email)
-        registration_model = RegistrationModel.objects.get(email=email_address.email)
-        registration_model.user = user_to_login
-        registration_model.save()
+        try:
+            registration_model = RegistrationModel.objects.get(email=email_address.email)
+            registration_model.user = user_to_login
+            registration_model.save()
+        except:
+            pass
         login_user(self.request, user_to_login)
 
         return super(ConfirmEmailView, self).post(*args, **kwargs)

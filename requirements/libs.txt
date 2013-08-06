@@ -62,3 +62,4 @@ requirements/src/requests-oauthlib-0.3.2.tar.gz
 
 requirements/src/mock-1.0.1.zip
 requirements/src/customerio-0.1.2.tar.gz
+requirements/src/mailsnake-1.6.2.tar.gz

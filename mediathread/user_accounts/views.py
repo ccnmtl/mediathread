@@ -111,22 +111,15 @@ class InviteStudentsView(FormView):
             name="invited_student"
         )
         for email in emails:
+            user = None
+            cio.identify(
+                id=email,
+                email=email,
+                type="Student"
+            )
             try:
                 user = User.objects.get(email=email)
                 course.group.user_set.add(user)
-                cio.identify(
-                    id=email,
-                    email=email,
-                    type="Student"
-                )
-                cio.track(
-                    customer_id=user.email,
-                    name='course_invite',
-                    course_name=course.title,
-                    invitor_name=self.request.user.get_full_name(),
-                    invitor_email=form.cleaned_data['email_from'],
-                    message=form.cleaned_data['message'],
-                )
             except User.DoesNotExist:
                 password = "dummypass"
                 signup_form = SignupForm({
@@ -137,13 +130,17 @@ class InviteStudentsView(FormView):
                 })
                 if signup_form.is_valid():
                     user = signup_form.save(self.request)
-                    cio.identify(
-                        id=email,
-                        email=email,
-                        type="Student"
-                    )
                     course.group.user_set.add(user)
                     send_email_confirmation(self.request, user, True)
+            if user:
+                cio.track(
+                    customer_id=user.email,
+                    name='course_invite',
+                    course_name=course.title,
+                    invitor_name=self.request.user.get_full_name(),
+                    invitor_email=form.cleaned_data['email_from'],
+                    message=form.cleaned_data['message'],
+                )
         return super(InviteStudentsView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):

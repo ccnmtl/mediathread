@@ -4112,6 +4112,10 @@ div.invite-students-form input {
     width: 50%;
 }
 
+div.invite-students-form input[type=checkbox] {
+    width: 10%;
+}
+
 div.invite-students-form textarea {
     height: 200px;
     margin-top: 5px;

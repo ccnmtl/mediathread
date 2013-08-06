@@ -12,8 +12,9 @@ STUDENT_AMOUNT_CHOICES = (
 
 
 class CourseForm(forms.Form):
-    title = forms.CharField(required=True)
-    student_amount = forms.ChoiceField(choices=STUDENT_AMOUNT_CHOICES)
+    title = forms.CharField(required=True, label="Course title")
+    student_amount = forms.ChoiceField(choices=STUDENT_AMOUNT_CHOICES,
+                                       label="How many students do you expect will enroll?")
     organization = forms.CharField(widget=autocomplete_light.TextWidget('OrganizationAutocomplete'))
 
     class Meta:

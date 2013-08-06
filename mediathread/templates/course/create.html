@@ -5,7 +5,7 @@
 {% block content %}
 <div class="invite-students-form">
     <h2 class="title">Create a course</h2>
-    <p>Create a course by filling following fields.</p>
+    <p>Create a course by filling the following fields.</p>
     <form action="." method="post">{% csrf_token %}
         <div>
             {{ form.title.errors }}

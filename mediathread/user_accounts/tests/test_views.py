@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from courseaffils.models import Course
 from allauth.account.models import EmailAddress, EmailConfirmation
-
 from mediathread.user_accounts import autocomplete_light_registry
 from mediathread.user_accounts import forms
 

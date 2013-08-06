@@ -46,7 +46,6 @@ class ConfirmEmailView(AllauthConfirmEmailView):
 confirm_email_view = ConfirmEmailView.as_view()
 
 
-# noinspection PyUnusedLocal
 class RegistrationFormView(FormView):
     form_class = RegistrationForm
     template_name = 'user_accounts/registration_form.html'

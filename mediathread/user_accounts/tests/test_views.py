@@ -6,11 +6,12 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from courseaffils.models import Course
 from allauth.account.models import EmailAddress, EmailConfirmation
+from mediathread.user_accounts import autocomplete_light_registry
+from mediathread.user_accounts import forms
 
 mock_customerio = MagicMock(spec=CustomerIO)
 
 
-# noinspection PyUnusedLocal
 @patch("customerio.CustomerIO", mock_customerio)
 class InviteStudentsTest(TestCase):
     fixtures = ['unittest_sample_course.json']

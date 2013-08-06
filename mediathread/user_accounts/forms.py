@@ -1,10 +1,12 @@
-from django import forms
-from .models import RegistrationModel
 import autocomplete_light
+from django import forms
+from django.utils.safestring import mark_safe
+from .models import RegistrationModel
 
 
 class RegistrationForm(forms.ModelForm):
-    agree_to_term = forms.BooleanField(required=True, label="I agree to Terms of Service")
+    agree_to_term = forms.BooleanField(required=True,
+                                       label=mark_safe('I agree to the <a href="/terms-of-use">Terms of Service</a>'))
     organization = forms.CharField(widget=autocomplete_light.TextWidget('OrganizationAutocomplete'))
     password = forms.CharField(widget=forms.PasswordInput())
 

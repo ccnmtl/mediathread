@@ -1,7 +1,9 @@
 from allauth.account.models import EmailAddress, EmailConfirmation
 from customerio import CustomerIO
+from django.test.utils import override_settings
 from mock import patch, MagicMock
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -118,6 +120,8 @@ class InviteStudentsTest(TestCase):
 
 
 class RegistrationTest(TestCase):
+    fixtures = ['unittest_sample_course.json']
+
     def setUp(self):
         self.post_params = {
             'email': 'testmediathread@appsembler.com',
@@ -136,6 +140,7 @@ class RegistrationTest(TestCase):
         self.assertTrue(response.context['form'])
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(SAMPLE_COURSE_ID=1)
     def test_registration_post(self):
         response = self.client.post(reverse("registration-form"), self.post_params)
         self.assertEqual(response.status_code, 200)
@@ -145,3 +150,5 @@ class RegistrationTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEquals(EmailConfirmation.objects.filter(email_address__email="testmediathread@appsembler.com").count(), 1)
         self.assertEquals(EmailAddress.objects.filter(email="testmediathread@appsembler.com", verified=False).count(), 1)
+        sample_course = Course.objects.get(id=settings.SAMPLE_COURSE_ID)
+        self.assertTrue(user.id in sample_course.group.user_set.values_list('id', flat=True))

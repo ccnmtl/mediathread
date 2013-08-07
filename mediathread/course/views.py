@@ -49,14 +49,12 @@ class CourseCreateFormView(FormView):
             group=student_group,
             faculty_group=faculty_group,
             title=course_title)
-        created_course.save()
 
         # create an information record for operations
         course_info = CourseInformation.objects.create(
             course=created_course,
             organization=course_organization,
             student_amount=course_student_amount)
-        course_info.save()
 
         self.request.session['ccnmtl.courseaffils.course'] = created_course
 

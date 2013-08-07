@@ -17,5 +17,3 @@ class CourseInformation(models.Model):
     def __unicode__(self):
         if self.course:
             return self.course.title
-        else:
-            return "Unknown Course"

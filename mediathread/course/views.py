@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import Group
 
-from mediathread.user_accounts.models import OrganizationModel
+from mediathread.user_accounts.models import OrganizationModel, RegistrationModel
 from courseaffils.models import Course
 from .models import CourseInformation
 from .forms import CourseForm
@@ -64,7 +64,10 @@ class CourseCreateFormView(FormView):
 
     def get_initial(self):
         initial = self.initial.copy()
-        initial['organization'] = self.request.user.registration_model.organization
+        try:
+            initial['organization'] = self.request.user.registration_model.organization
+        except RegistrationModel.DoesNotExist:
+            pass
         return initial
 
 

@@ -43,7 +43,7 @@ class RegistrationModel(models.Model):
             'email': email,
             'password1': password,
             'password2': password,
-            })
+        })
 
         if signup_form.is_valid():
             signup_user = signup_form.save(request)

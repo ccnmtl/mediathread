@@ -1,8 +1,10 @@
-from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import models
 
 from allauth.account.forms import SignupForm
 
+from courseaffils.models import Course
 from .utils import add_email_to_mailchimp_list
 
 
@@ -48,6 +50,9 @@ class RegistrationModel(models.Model):
             signup_user.first_name = first_name
             signup_user.last_name = last_name
             signup_user.save()
+
+            sample_course = Course.objects.get(id=settings.SAMPLE_COURSE_ID)
+            sample_course.user_set.add(signup_user)
 
             organization, created = OrganizationModel.objects.get_or_create(name=organization)
             self.organization = organization

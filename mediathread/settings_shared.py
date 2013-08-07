@@ -261,6 +261,9 @@ CUSTOMERIO_API_KEY = ''
 MAILCHIMP_API_KEY = ''
 MAILCHIMP_REGISTRATION_LIST_ID = ''
 
+
+SAMPLE_COURSE_ID = 4
+
 # this gets around Django 1.2's stupidity for commenting
 # we're already checking that the request is from someone in the class
 def no_reject(request, reason):

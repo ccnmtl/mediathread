@@ -1,20 +1,21 @@
-# Django
+from uuid import uuid4
+
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 
-# app
-from mediathread.user_accounts.models import *
+from mediathread.user_accounts.models import OrganizationModel
 from courseaffils.models import Course
-from .models import *
-from .forms import *
-
-# libs
-from uuid import uuid4
+from .models import CourseInformation
+from .forms import CourseForm
 
 
 class CourseCreateFormView(FormView):
+    """
+    View that handles the creation of a new course by a logged in user.
+    It stores the extra info in the CourseInformation model.
+    """
     form_class = CourseForm
     template_name = 'course/create.html'
     success_url = '/'

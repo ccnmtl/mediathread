@@ -61,5 +61,10 @@ class CourseCreateFormView(FormView):
 
         return super(CourseCreateFormView, self).form_valid(form)
 
+    def get_initial(self):
+        initial = self.initial.copy()
+        initial['organization'] = self.request.user.registration_model.organization
+        return initial
+
 
 course_create = CourseCreateFormView.as_view()

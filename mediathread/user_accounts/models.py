@@ -18,15 +18,12 @@ class RegistrationModel(models.Model):
         ('OT', 'Other')
     )
 
-    user = models.ForeignKey(User, editable=True, null=True)
+    user = models.OneToOneField(User, editable=True, null=True, related_name="registration_model")
     organization = models.ForeignKey('OrganizationModel')
     hear_mediathread_from = models.CharField("How did you hear about Mediathread?",
                                              max_length=2, choices=HEAR_CHOICES)
     position_title = models.CharField("Which best describes you?", max_length=2, choices=POSITION_CHOICES)
     subscribe_to_newsletter = models.BooleanField("Yes, subscribe me to the Mediathread newsletter.")
-
-    def __unicode__(self):
-        return self.fullname + " from " + self.organization.name
 
 
 class OrganizationModel(models.Model):

@@ -34,14 +34,7 @@ class ConfirmEmailView(AllauthConfirmEmailView):
     def post(self, *args, **kwargs):
         # perform login
         email_address = self.get_object().email_address
-
         user_to_login = User.objects.get(email=email_address.email)
-        try:
-            registration_model = RegistrationModel.objects.get(email=email_address.email)
-            registration_model.user = user_to_login
-            registration_model.save()
-        except:
-            pass
         login_user(self.request, user_to_login)
 
         return super(ConfirmEmailView, self).post(*args, **kwargs)
@@ -77,19 +70,21 @@ class RegistrationFormView(FormView):
 
         user_email = form.cleaned_data['email']
         user_model = get_user_model()
+        user_obj = user_model.objects.get(email=user_email)
+        user_obj.first_name = form.cleaned_data['first_name']
+        user_obj.last_name = form.cleaned_data['last_name']
+        user_obj.save()
+
+        form.instance.user = user_obj
+        form.instance.save()
 
         # subscribe in mailchimp
         if form.cleaned_data['subscribe_to_newsletter']:
             add_email_to_mailchimp_list(user_email, settings.MAILCHIMP_REGISTRATION_LIST_ID)
 
-        user_obj = user_model.objects.get(email=user_email)
-
         login_username = user_obj.username
         login_password = form.cleaned_data['password']
         user_authentication_session = authenticate(username=login_username, password=login_password)
-        #login(self.request, user_authentication_session)
-
-        # TODO: add user to a specified course group
 
         return complete_signup(self.request, signup_user, app_settings.EMAIL_VERIFICATION, self.get_success_url())
 

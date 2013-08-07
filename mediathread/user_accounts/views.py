@@ -3,6 +3,7 @@ from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils.html import linebreaks
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
 from allauth.utils import get_user_model
@@ -44,6 +45,11 @@ confirm_email_view = ConfirmEmailView.as_view()
 
 
 class RegistrationFormView(FormView):
+    """
+    View for registering new users to the application. Once the user enters
+    the required data, he'll get an email with the activation link he needs to
+    visit in order to activate his account.
+    """
     form_class = RegistrationForm
     template_name = 'user_accounts/registration_form.html'
     success_url = '/'
@@ -71,7 +77,7 @@ registration_form = RegistrationFormView.as_view()
 
 class InviteStudentsView(FormView):
     """
-    A view that handles the inviting of students to a currently active class.
+    View that handles the inviting of students to a currently active class.
     Student will get an email notifying him that he is enrolled in a class, as well
     as an activation email if he doesn't already have an account in the system.
     """
@@ -123,7 +129,7 @@ class InviteStudentsView(FormView):
                     course_name=course.title,
                     invitor_name=self.request.user.get_full_name(),
                     invitor_email=form.cleaned_data['email_from'],
-                    message=form.cleaned_data['message'],
+                    message=linebreaks(form.cleaned_data['message']),
                 )
         return super(InviteStudentsView, self).form_valid(form)
 

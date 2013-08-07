@@ -140,6 +140,8 @@ class RegistrationTest(TestCase):
         response = self.client.post(reverse("registration-form"), self.post_params)
         self.assertEqual(response.status_code, 200)
         self.assertEquals(User.objects.filter(email="testmediathread@appsembler.com").count(), 1)
+        user = User.objects.get(email="testmediathread@appsembler.com")
+        self.assertEquals(user.get_full_name(), "Appsembler Rocks")
         self.assertEqual(len(mail.outbox), 1)
         self.assertEquals(EmailConfirmation.objects.filter(email_address__email="testmediathread@appsembler.com").count(), 1)
         self.assertEquals(EmailAddress.objects.filter(email="testmediathread@appsembler.com", verified=False).count(), 1)

@@ -5,6 +5,7 @@ from allauth.account.forms import SignupForm
 
 from .utils import add_email_to_mailchimp_list
 
+
 class RegistrationModel(models.Model):
     HEAR_CHOICES = (
         ('conference', 'Conference'),
@@ -40,7 +41,7 @@ class RegistrationModel(models.Model):
             'email': email,
             'password1': password,
             'password2': password,
-            })
+        })
 
         if signup_form.is_valid():
             signup_user = signup_form.save(request)
@@ -55,7 +56,6 @@ class RegistrationModel(models.Model):
         else:
             self.signupform_error_msg = signup_form.errors
             return False
-
 
         return signup_user
 

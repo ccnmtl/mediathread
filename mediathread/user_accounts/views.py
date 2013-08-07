@@ -1,18 +1,14 @@
 import customerio
 from django.views.generic.edit import FormView
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.html import linebreaks
 from allauth.account.forms import SignupForm
 from allauth.account.utils import send_email_confirmation
-from allauth.utils import get_user_model
 from allauth.account.utils import complete_signup
 from allauth.account import app_settings
 from allauth.account.views import ConfirmEmailView as AllauthConfirmEmailView
 from .forms import InviteStudentsForm, RegistrationForm
-from .models import OrganizationModel, RegistrationModel
-from .utils import add_email_to_mailchimp_list
 
 
 def login_user(request, user):
@@ -59,12 +55,12 @@ class RegistrationFormView(FormView):
 
     def form_valid(self, form):
         signup_params = {
-                'email': form.cleaned_data['email'],
-                'password': form.cleaned_data['password'],
-                'organization': form.cleaned_data['organization'],
-                'first_name': form.cleaned_data['first_name'],
-                'last_name': form.cleaned_data['last_name']
-                }
+            'email': form.cleaned_data['email'],
+            'password': form.cleaned_data['password'],
+            'organization': form.cleaned_data['organization'],
+            'first_name': form.cleaned_data['first_name'],
+            'last_name': form.cleaned_data['last_name']
+        }
         registration = form.instance
         success = registration.do_signup(self.request, **signup_params)
         if not success:
@@ -75,9 +71,12 @@ class RegistrationFormView(FormView):
 
         # subscribe in mailchimp
         if registration.subscribe_to_newsletter:
-            registration.subscribe_mailchimp_list(settings.MAILCHIMP_REGISTRATION_LIST_ID)
+            registration.subscribe_mailchimp_list(
+                settings.MAILCHIMP_REGISTRATION_LIST_ID)
 
-        return complete_signup(self.request, registration.get_user(), app_settings.EMAIL_VERIFICATION, self.get_success_url())
+        return complete_signup(self.request, registration.get_user(),
+                               app_settings.EMAIL_VERIFICATION,
+                               self.get_success_url())
 
 
 registration_form = RegistrationFormView.as_view()
@@ -86,8 +85,9 @@ registration_form = RegistrationFormView.as_view()
 class InviteStudentsView(FormView):
     """
     View that handles the inviting of students to a currently active class.
-    Student will get an email notifying him that he is enrolled in a class, as well
-    as an activation email if he doesn't already have an account in the system.
+    Student will get an email notifying him that he is enrolled in a class,
+    as well as an activation email if he doesn't already have an account
+    in the system.
     """
     form_class = InviteStudentsForm
     template_name = 'user_accounts/invite_students.html'
@@ -96,7 +96,8 @@ class InviteStudentsView(FormView):
     def form_valid(self, form):
         course = self.request.session['ccnmtl.courseaffils.course']
         emails = form.cleaned_data['student_emails']
-        cio = customerio.CustomerIO(settings.CUSTOMERIO_SITE_ID, settings.CUSTOMERIO_API_KEY)
+        cio = customerio.CustomerIO(settings.CUSTOMERIO_SITE_ID,
+                                    settings.CUSTOMERIO_API_KEY)
         cio.identify(
             id=self.request.user.email,
             email=self.request.user.email,

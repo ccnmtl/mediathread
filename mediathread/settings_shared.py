@@ -260,8 +260,6 @@ CUSTOMERIO_API_KEY = ''
 # Mailchimp arguments
 MAILCHIMP_API_KEY = ''
 MAILCHIMP_REGISTRATION_LIST_ID = ''
-MAILCHIMP_FNAME = 'Mediathread'
-MAILCHIMP_LNAME = 'User'
 
 # this gets around Django 1.2's stupidity for commenting
 # we're already checking that the request is from someone in the class

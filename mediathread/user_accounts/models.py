@@ -60,7 +60,7 @@ class RegistrationModel(models.Model):
         return signup_user
 
     def subscribe_mailchimp_list(self, list_id):
-        add_email_to_mailchimp_list(self.user.email, list_id)
+        add_email_to_mailchimp_list(self.user.email, list_id, fname=self.user.first_name, lname=self.user.last_name)
 
     def get_user(self):
         return self.user

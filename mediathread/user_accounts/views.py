@@ -32,6 +32,9 @@ def login_user(request, user):
 
 
 class ConfirmEmailView(AllauthConfirmEmailView):
+    """
+    View for comfirming user's email address and automatically login user
+    """
     def post(self, *args, **kwargs):
         # perform login
         email_address = self.get_object().email_address
@@ -63,7 +66,12 @@ class RegistrationFormView(FormView):
                 'last_name': form.cleaned_data['last_name']
                 }
         registration = form.instance
-        registration.do_signup(self.request, **signup_params)
+        success = registration.do_signup(self.request, **signup_params)
+        if not success:
+            signup_error = registration.get_form_errors()
+            form.errors.update(signup_error)
+            return self.form_invalid(form)
+        registration.save()
 
         # subscribe in mailchimp
         if registration.subscribe_to_newsletter:

@@ -19,9 +19,6 @@ class RegistrationModel(models.Model):
     )
 
     user = models.ForeignKey(User, editable=True, null=True)
-    email = models.EmailField("Email address")
-    password = models.CharField(max_length=16)
-    fullname = models.CharField("Full name", max_length=30)
     organization = models.ForeignKey('OrganizationModel')
     hear_mediathread_from = models.CharField("How did you hear about Mediathread?",
                                              max_length=2, choices=HEAR_CHOICES)

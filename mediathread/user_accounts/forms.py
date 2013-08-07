@@ -5,29 +5,22 @@ from .models import RegistrationModel
 
 
 class RegistrationForm(forms.ModelForm):
+    email = forms.EmailField(required=True)
     agree_to_term = forms.BooleanField(required=True,
                                        label=mark_safe('I agree to the <a href="/terms-of-use">Terms of Service</a>'))
     organization = forms.CharField(widget=autocomplete_light.TextWidget('OrganizationAutocomplete'))
     password = forms.CharField(widget=forms.PasswordInput())
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    
 
     class Meta:
         model = RegistrationModel
         widget = autocomplete_light.get_widgets_dict(RegistrationModel)
         fields = [
-            'email',
-            'password',
-            'fullname',
             'position_title',
             'hear_mediathread_from',
             'subscribe_to_newsletter']
-        labels = {
-            'email': 'Email',
-            'fullname': 'Full',
-            'password': 'Password',
-            'hear_mediathread_from': 'Where did you hear Mediathread from?',
-            'subscribe_to_newsletter': 'Subscribe our newsletter?',
-            'agree_to_term': 'Agree to the Term of Service'
-        }
 
 
 class InviteStudentsForm(forms.Form):

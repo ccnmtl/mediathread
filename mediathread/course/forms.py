@@ -1,15 +1,6 @@
 from django import forms
 import autocomplete_light
-from .models import CourseInformation
-
-STUDENT_AMOUNT_CHOICES = (
-        (10, '1-9'),
-        (20, '10-19'),
-        (50, '20-49'),
-        (100, '50-99'),
-        (500, '100+')
-        )
-
+from .models import CourseInformation, STUDENT_AMOUNT_CHOICES
 
 class CourseForm(forms.Form):
     title = forms.CharField(required=True, label="Course title")

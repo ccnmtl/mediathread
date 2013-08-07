@@ -24,11 +24,18 @@
             {{ form.password }}
         </div>
         <div>
-            {{ form.fullname.errors }}
-            {{ form.fullname.label_tag }}
+            {{ form.first_name.errors }}
+            {{ form.first_name.label_tag }}
         </div>
         <div>
-            {{ form.fullname }}
+            {{ form.first_name }}
+        </div>
+        <div>
+            {{ form.last_name.errors }}
+            {{ form.last_name.label_tag }}
+        </div>
+        <div>
+            {{ form.last_name }}
         </div>
         <div>
             {{ form.position_title.errors }}

@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from allauth.account.forms import SignupForm
+
+from .utils import add_email_to_mailchimp_list
 
 class RegistrationModel(models.Model):
     HEAR_CHOICES = (
@@ -24,6 +27,45 @@ class RegistrationModel(models.Model):
                                              max_length=30, choices=HEAR_CHOICES)
     position_title = models.CharField("Which best describes you?", max_length=30, choices=POSITION_CHOICES)
     subscribe_to_newsletter = models.BooleanField("Yes, subscribe me to the Mediathread newsletter.")
+
+    def do_signup(self, request, **kwargs):
+        email = kwargs['email']
+        password = kwargs['password']
+        organization = kwargs['organization']
+        first_name = kwargs['first_name']
+        last_name = kwargs['last_name']
+
+        signup_form = SignupForm({
+            'username': '',
+            'email': email,
+            'password1': password,
+            'password2': password
+            })
+
+        if signup_form.is_valid():
+            signup_user = signup_form.save(request)
+            organization, created = OrganizationModel.objects.get_or_create(name=organization)
+            self.organization = organization
+            self.user = signup_user
+            self.save()
+        else:
+            self.signupform_error_msg = signup_form.errors
+            return False
+
+        signup_user.first_name = first_name
+        signup_user.last_name = last_name
+        signup_user.save()
+
+        return signup_user
+
+    def subscribe_mailchimp_list(self, list_id):
+        add_email_to_mailchimp_list(self.user.email, list_id)
+
+    def get_user(self):
+        return self.user
+
+    def get_form_errors(self):
+        return self.signupform_error_msg
 
 
 class OrganizationModel(models.Model):

@@ -49,44 +49,21 @@ class RegistrationFormView(FormView):
     success_url = '/'
 
     def form_valid(self, form):
-        # another form for creating user in allauth
-        signup_form = SignupForm({
-            'username': '',
-            'email': form.cleaned_data['email'],
-            'password1': form.cleaned_data['password'],
-            'password2': form.cleaned_data['password']
-        })
-
-        # save registration form for saving registration information
-        if signup_form.is_valid():
-            signup_user = signup_form.save(self.request)
-
-            organization, org_created = OrganizationModel.objects.get_or_create(name=form.cleaned_data['organization'])
-            form.instance.organization = organization
-            form.save()
-        else:
-            form.errors.update(signup_form.errors)
-            return self.form_invalid(form)
-
-        user_email = form.cleaned_data['email']
-        user_model = get_user_model()
-        user_obj = user_model.objects.get(email=user_email)
-        user_obj.first_name = form.cleaned_data['first_name']
-        user_obj.last_name = form.cleaned_data['last_name']
-        user_obj.save()
-
-        form.instance.user = user_obj
-        form.instance.save()
+        signup_params = {
+                'email': form.cleaned_data['email'],
+                'password': form.cleaned_data['password'],
+                'organization': form.cleaned_data['organization'],
+                'first_name': form.cleaned_data['first_name'],
+                'last_name': form.cleaned_data['last_name']
+                }
+        registration = form.instance
+        registration.do_signup(self.request, **signup_params)
 
         # subscribe in mailchimp
-        if form.cleaned_data['subscribe_to_newsletter']:
-            add_email_to_mailchimp_list(user_email, settings.MAILCHIMP_REGISTRATION_LIST_ID)
+        if registration.subscribe_to_newsletter:
+            registration.subscribe_mailchimp_list(settings.MAILCHIMP_REGISTRATION_LIST_ID)
 
-        login_username = user_obj.username
-        login_password = form.cleaned_data['password']
-        user_authentication_session = authenticate(username=login_username, password=login_password)
-
-        return complete_signup(self.request, signup_user, app_settings.EMAIL_VERIFICATION, self.get_success_url())
+        return complete_signup(self.request, registration.get_user(), app_settings.EMAIL_VERIFICATION, self.get_success_url())
 
 
 registration_form = RegistrationFormView.as_view()

@@ -52,6 +52,11 @@ confirm_email_view = ConfirmEmailView.as_view()
 
 
 class RegistrationFormView(FormView):
+    """
+    View for registering new users to the application. Once the user enters
+    the required data, he'll get an email with the activation link he needs to
+    visit in order to activate his account.
+    """
     form_class = RegistrationForm
     template_name = 'user_accounts/registration_form.html'
     success_url = '/'
@@ -100,7 +105,7 @@ registration_form = RegistrationFormView.as_view()
 
 class InviteStudentsView(FormView):
     """
-    A view that handles the inviting of students to a currently active class.
+    View that handles the inviting of students to a currently active class.
     Student will get an email notifying him that he is enrolled in a class, as well
     as an activation email if he doesn't already have an account in the system.
     """

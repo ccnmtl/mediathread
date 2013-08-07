@@ -14,11 +14,12 @@ class RegistrationFormTest(TestCase):
         self.valid_form_params = {
             'email': 'testmediathread@appsembler.com',
             'password': 'testpassword',
-            'fullname': 'Appsembler Rocks',
-            'position_title': 'PF',
-            'hear_mediathread_from': 'OT',
-            'subscribe_to_newsletter': True,
-            'agree_to_term': True,
+            'first_name': 'Appsembler',
+            'last_name': 'Rocks',
+            'position_title': 'professor',
+            'hear_mediathread_from': 'conference',
+            'subscribe_to_newsletter': 'on',
+            'agree_to_term': 'on',
             'organization': 'TestCompany Inc.'
         }
 

@@ -39,11 +39,15 @@ class RegistrationModel(models.Model):
             'username': '',
             'email': email,
             'password1': password,
-            'password2': password
+            'password2': password,
             })
 
         if signup_form.is_valid():
             signup_user = signup_form.save(request)
+            signup_user.first_name = first_name
+            signup_user.last_name = last_name
+            signup_user.save()
+
             organization, created = OrganizationModel.objects.get_or_create(name=organization)
             self.organization = organization
             self.user = signup_user
@@ -52,9 +56,6 @@ class RegistrationModel(models.Model):
             self.signupform_error_msg = signup_form.errors
             return False
 
-        signup_user.first_name = first_name
-        signup_user.last_name = last_name
-        signup_user.save()
 
         return signup_user
 

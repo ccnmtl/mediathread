@@ -109,7 +109,7 @@ class InviteStudentsView(FormView):
         cio.identify(
             id=self.request.user.email,
             email=self.request.user.email,
-            type="Teacher",
+            type="Instructor",
             first_name=self.request.user.first_name,
             last_name=self.request.user.last_name,
         )

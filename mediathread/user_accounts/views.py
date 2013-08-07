@@ -93,6 +93,11 @@ registration_form = RegistrationFormView.as_view()
 
 
 class InviteStudentsView(FormView):
+    """
+    A view that handles the inviting of students to a currently active class.
+    Student will get an email notifying him that he is enrolled in a class, as well
+    as an activation email if he doesn't already have an account in the system.
+    """
     form_class = InviteStudentsForm
     template_name = 'user_accounts/invite_students.html'
     success_url = '/'

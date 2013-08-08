@@ -1,4 +1,5 @@
 from django.db import models
+from mediathread.user_accounts.models import OrganizationModel
 
 STUDENT_AMOUNT_CHOICES = (
     (10, '1-9'),
@@ -11,7 +12,7 @@ STUDENT_AMOUNT_CHOICES = (
 
 class CourseInformation(models.Model):
     student_amount = models.IntegerField(choices=STUDENT_AMOUNT_CHOICES)
-    organization = models.ForeignKey('user_accounts.OrganizationModel')
+    organization = models.ForeignKey(OrganizationModel)
     course = models.ForeignKey('courseaffils.Course')
 
     def __unicode__(self):

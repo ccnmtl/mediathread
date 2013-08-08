@@ -55,3 +55,7 @@ requirements/src/django-statsd-mozilla-0.3.3.tar.gz
 requirements/src/raven-0.7.0.tar.gz
 requirements/src/django-appconf-0.4.1.tar.gz
 requirements/src/django_compressor-1.1.1.tar.gz
+requirements/src/customerio-0.1.2.tar.gz
+requirements/src/mailsnake-1.6.2.tar.gz
+requirements/src/django-allauth-0.12.0.tar.gz
+requirements/src/django-autocomplete-light-1.2.3.tar.gz

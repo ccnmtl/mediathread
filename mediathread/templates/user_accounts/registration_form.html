@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Registration{% endblock title %}
+
+{% block content %}
+<div class="invite-students-form">
+    <h2 class="title">Welcome</h2>
+    <p>Register below to create your account.</p>
+    
+    <form action="." method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+        <div>
+            {{ form.email.errors }}
+            {{ form.email.label_tag }}
+        </div>
+        <div>
+            {{ form.email }}
+        </div>
+        <div>
+            {{ form.password.errors }}
+            {{ form.password.label_tag }}
+        </div>
+        <div>
+            {{ form.password }}
+        </div>
+        <div>
+            {{ form.first_name.errors }}
+            {{ form.first_name.label_tag }}
+        </div>
+        <div>
+            {{ form.first_name }}
+        </div>
+        <div>
+            {{ form.last_name.errors }}
+            {{ form.last_name.label_tag }}
+        </div>
+        <div>
+            {{ form.last_name }}
+        </div>
+        <div>
+            {{ form.position_title.errors }}
+            {{ form.position_title.label_tag }}
+        </div>
+        <div>
+            {{ form.position_title }}
+        </div>
+        <div>
+            {{ form.organization.errors }}
+            {{ form.organization.label_tag }}
+        </div>
+        <div>
+            {{ form.organization }}
+        </div>
+        <div>
+            {{ form.hear_mediathread_from.errors }}
+            {{ form.hear_mediathread_from.label_tag }}
+        </div>
+        <div>
+            {{ form.hear_mediathread_from }}
+        </div>
+        <div>
+            {{ form.subscribe_to_newsletter }}
+            {{ form.subscribe_to_newsletter.label_tag }}
+        </div>
+        <div>
+            {{ form.agree_to_term.errors }}
+            {{ form.agree_to_term }}
+            {{ form.agree_to_term.label_tag }}
+        </div>
+        <input type="submit" value="Create my account" />
+    </form>
+
+</div>
+
+{% endblock content %}

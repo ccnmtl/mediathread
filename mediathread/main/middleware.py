@@ -5,6 +5,8 @@ try:
     from django.contrib.auth import REDIRECT_FIELD_NAME
     from django.utils.http import urlquote
     from django.http import HttpResponseRedirect
+    from django.shortcuts import redirect
+    from django.core.urlresolvers import reverse
 
     def match_path(path, config_string):
         config_list = getattr(settings, config_string, [])
@@ -19,7 +21,10 @@ try:
         def process_request(self, request):
             path = urlquote(request.get_full_path())
             if request.user.is_authenticated():
-                return None
+                if request.user.check_password("dummypass") and match_path(path, "NON_ANONYMOUS_PATHS"):
+                    return redirect('set_password')
+                else:
+                    return None
 
             if match_path(path, 'ANONYMOUS_PATHS'):
                 return None

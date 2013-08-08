@@ -54,3 +54,12 @@ requirements/src/pylint-0.26.0.tar.gz
 requirements/src/pep8-1.4.tar.gz
 requirements/src/pyflakes-0.5.0.tar.gz
 requirements/src/flake8-1.7.0.tar.gz
+
+requirements/src/oauthlib-0.5.0.tar.gz
+requirements/src/python-openid-2.2.5.zip
+requirements/src/requests-1.2.3.tar.gz
+requirements/src/requests-oauthlib-0.3.2.tar.gz
+
+requirements/src/mock-1.0.1.zip
+requirements/src/customerio-0.1.2.tar.gz
+requirements/src/mailsnake-1.6.2.tar.gz

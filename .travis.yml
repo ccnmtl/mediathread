@@ -6,3 +6,6 @@ install:
   - ./bootstrap.py
 script:
   - ./manage.py test
+branches:
+    except:
+        - /feature\/*/

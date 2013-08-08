@@ -64,7 +64,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
     ('--cover-package=mediathread.main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects'),
+     'mediathread.assetmgr,mediathread.projects,mediathread.user_accounts,mediathread.course'),
 ]
 
 CACHE_BACKEND = 'locmem:///'
@@ -105,6 +105,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
     'mediathread.main.views.django_settings',
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -116,6 +118,14 @@ MIDDLEWARE_CLASSES = (
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware'
+)
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -156,9 +166,18 @@ INSTALLED_APPS = [
     'mediathread.main',
     'sentry.client',
     'south',
+    'django_nose',
     'compressor',
+    'django_jenkins',
     'mediathread.taxonomy',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'mediathread.user_accounts',
+    'autocomplete_light',
+    'mediathread.course',
+
 ]
 
 COMPRESS_PARSER = "compressor.parser.HtmlParser"
@@ -182,14 +201,16 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # users. we need to allow anonymous access to the login
 # page, and to static resources.
 
-ANONYMOUS_PATHS = ('/site_media/',
+ANONYMOUS_PATHS = ('/user_accounts/'
+                   '/site_media/',
                    '/accounts/',
                    '/admin/',
                    '/api/',
                    '/help/'
                    )
 
-NON_ANONYMOUS_PATHS = ('/asset/',
+NON_ANONYMOUS_PATHS = ('/user_accounts/invite_students/',
+                       '/asset/',
                        '/annotations/',
                        '/contact/',
                        '/yourspace/',
@@ -226,6 +247,22 @@ FLOWPLAYER_SWF_LOCATION = \
 
 DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'
+
+# Customer.io keys
+CUSTOMERIO_SITE_ID = ''
+CUSTOMERIO_API_KEY = ''
+
+# Mailchimp arguments
+MAILCHIMP_API_KEY = ''
+MAILCHIMP_REGISTRATION_LIST_ID = ''
+
+
+SAMPLE_COURSE_ID = 2
 
 # this gets around Django 1.2's stupidity for commenting
 # we're already checking that the request is from someone in the class

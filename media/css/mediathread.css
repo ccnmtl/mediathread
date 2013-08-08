@@ -4084,3 +4084,52 @@ div#taxonomy div.term-container div.term div.term-display div.actions {
 div#taxonomy div.term-container div.term:hover div.term-display div.actions {
     display: inline-block;
 }
+
+/** User registration/invitation **/
+div.invite-students-form {
+    width: 600px;
+}
+
+div.invite-students-form h2 {
+    border-bottom: 1px solid #EFEFEF;
+    margin: 0 10px 10px;
+    min-width: 900px;
+    padding: 10px 0;
+    width: 75%;
+}
+
+div.invite-students-form p, div.invite-students-form form {
+    margin: 20px;
+}
+
+div.invite-students-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+div.invite-students-form input {
+    margin-bottom: 10px;
+    width: 50%;
+}
+
+div.invite-students-form input[type=checkbox] {
+    width: 3%;
+}
+
+div.invite-students-form textarea {
+    height: 200px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: 97%;
+}
+
+div.invite-students-form select {
+    margin-bottom: 10px;
+}
+
+div.invite-students-form input[type=submit] {
+    float: left;
+    margin-right: 10px;
+    margin-top: 10px;
+    width: 125px;
+}

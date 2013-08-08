@@ -26,10 +26,13 @@
 <form name="login_local" method="post" action=".">
   {% csrf_token %}
     <table>
-        <tr><td style="border: hidden"><label for="id_username">Username:</label></td><td style="border: hidden">{{ form.username }}</td></tr>
+        <tr><td style="border: hidden"><label for="id_username">Username:</label></td><td style="border: hidden">{{ form.login }}</td></tr>
         <tr><td style="border: hidden"><label for="id_password">Password:</label></td><td style="border: hidden">{{ form.password }}</td></tr>
     </table>
     <input type="submit" value="Log In" />
+    <a href="{% url registration-form %}">
+        <input type="button" value="Sign Up" />
+    </a>
     <input type="hidden" name="next" value="{{ next|urlencode }}" />
 </form>
 

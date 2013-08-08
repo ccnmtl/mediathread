@@ -182,7 +182,7 @@ def asset_create(request):
     asset_url = reverse('asset-view', args=[asset.id])
 
     source = request.POST.get('asset-source', "")
-    action = request.POST.get('button')
+    action = request.POST.get('button', 'analyze')
 
     if source == 'bookmarklet':
         asset_url += "?level=item"

@@ -54,7 +54,7 @@ ret = subprocess.call(
      "-E", vedir,
      "--index-url=''",
      "--requirement",
-     os.path.join(pwd, "requirements/apps.txt")])
+     os.path.join(pwd, "requirements/local.txt")])
 if ret:
     exit(ret)
 

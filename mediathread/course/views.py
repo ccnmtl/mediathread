@@ -1,12 +1,8 @@
-from uuid import uuid4
-
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth.models import Group
 
-from mediathread.user_accounts.models import OrganizationModel, RegistrationModel
-from courseaffils.models import Course
+from mediathread.user_accounts.models import RegistrationModel
 from .models import CourseInformation
 from .forms import CourseForm
 
@@ -28,35 +24,19 @@ class CourseCreateFormView(FormView):
         # preparing data
         course_title = form.cleaned_data['title']
         course_student_amount = form.cleaned_data['student_amount']
+        course_organization_name = form.cleaned_data['organization']
 
-        # ensure the organization
-        course_organization, org_created = OrganizationModel.objects.get_or_create(
-            name=form.cleaned_data['organization'])
-
-        ## the following code are for creating a course, should be refactored later into utils.py
-        # create both student and facultu group for the course to be created
-        student_group = Group.objects.create(name="student_%s" % uuid4())
-        faculty_group = Group.objects.create(name="faculty_%s" % uuid4())
-
-        # get user instance in session
-        user = self.request.user  # TODO
-
-        # faculties should join faculty group
-        user.groups.add(faculty_group)
-        user.groups.add(student_group)
-        user.save()
-        created_course = Course.objects.create(
-            group=student_group,
-            faculty_group=faculty_group,
-            title=course_title)
-
-        # create an information record for operations
-        course_info = CourseInformation.objects.create(
-            course=created_course,
-            organization=course_organization,
+        # creating course
+        course = CourseInformation(
+            title=course_title,
+            organization_name=course_organization_name,
             student_amount=course_student_amount)
+        course.save()
 
-        self.request.session['ccnmtl.courseaffils.course'] = created_course
+        # add user to that class as a faculty
+        course.add_member(self.request.user, faculty=True)
+
+        self.request.session['ccnmtl.courseaffils.course'] = course.course
 
         return super(CourseCreateFormView, self).form_valid(form)
 

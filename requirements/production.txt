@@ -1,4 +1,1 @@
 -r base.txt
-
-requirements/src/statsd-0.5.1.tar.gz
-requirements/src/django-jenkins-0.14.0.tar.gz

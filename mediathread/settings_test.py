@@ -25,6 +25,7 @@ LETTUCE_APPS = (
     'mediathread.djangosherd'
 )
 
+
 LETTUCE_DJANGO_APP = ['lettuce.django']
 INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
 

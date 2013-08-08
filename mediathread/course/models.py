@@ -31,7 +31,7 @@ class GroupTypeIncorrectException(Exception):
 
 class CourseInformation(models.Model):
     student_amount = models.IntegerField(choices=STUDENT_AMOUNT_CHOICES)
-    organization = models.ForeignKey('user_accounts.OrganizationModel', null=True)
+    organization = models.ForeignKey(OrganizationModel, null=True)
     course = models.ForeignKey('courseaffils.Course', null=True)
     sample_course = models.BooleanField(default=False)
 

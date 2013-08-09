@@ -42,67 +42,51 @@ class CourseInformation(models.Model):
         if self.course:
             return self.course.title
 
-    def __init__(self, title="Unknown Course", organization_name=None, **kwargs):
-        if not organization_name:
+    def __init__(self, *args, **kwargs):
+        if not 'organization_name' in kwargs:
             raise OrganizationIsEmptyException("must specify course_name in CourseInformation")
+        else:
+            self.organization_name = kwargs.pop('organization_name')
+        if 'title' in kwargs:
+            self.title = kwargs.pop('title')
+        super(CourseInformation, self).__init__(*args, **kwargs)
 
-        super(CourseInformation, self).__init__(**kwargs)
-        self.create_course(title, organization_name)
-
-    def create_course(self, title, organization):
+    def create_course(self):
         """
-            method to create a course instance in courseaffils
-            title: string, the title of the course,
-            organization: string, the name of the organization
+        Method to create a Course instance in from courseaffils.models
         """
-        # ensure the organization
-        c_organization, org_created = OrganizationModel.objects.get_or_create(
-            name=organization)
 
         # create both member and faculty groups with the same uuid
-        course_uuid = self.course_uuid
-        member_group = Group.objects.create(name="member_%s" % course_uuid)
-        faculty_group = Group.objects.create(name="faculty_%s" % course_uuid)
+        if not self.course_uuid:
+            self.course_uuid = uuid4()
+        member_group = Group.objects.create(name="member_%s" % self.course_uuid)
+        faculty_group = Group.objects.create(name="faculty_%s" % self.course_uuid)
 
         # create course instance in courseaffils
         course = Course.objects.create(
             group=member_group,
             faculty_group=faculty_group,
-            title=title)
+            title=self.title)
         course.save()
 
-        # assigning data
-        self.course = course
-        self.organization = c_organization
-        self.save()
-
-    def get_group(self, membership_type="member"):
-        """
-        Method for getting member or faculty group.
-        type :: "member" | "faculty"
-        """
-        if membership_type == "member":
-            return self.course.group
-        elif membership_type == "faculty":
-            return self.course.faculty_group
-        else:
-            raise GroupTypeIncorrectException("Group type is incorrect.")
+        return course
 
     def add_member(self, user, faculty=False):
         """
         method for adding user into groups
         """
-        member_group = self.get_group(membership_type="member")
-        faculty_group = self.get_group(membership_type="faculty")
+        member_group = self.course.group
+        faculty_group = self.course.faculty_group
 
-        user.groups.add(member_group)
+        member_group.user_set.add(user)
         if faculty:
             # if faculty is True, add user to faculty group
-            user.groups.add(faculty_group)
-
-        user.save()
+            faculty_group.user_set.add(user)
 
     def save(self, force_insert=False, force_update=False, using=None):
-        if not self.course_uuid:
-            self.course_uuid = uuid4()
-        return super(CourseInformation, self).save(force_insert=False, force_update=False, using=None)
+        course = self.create_course()
+        c_organization, org_created = OrganizationModel.objects.get_or_create(
+            name=self.organization_name)
+        self.course = course
+        self.organization = c_organization
+        super(CourseInformation, self).save(force_insert, force_update, using)

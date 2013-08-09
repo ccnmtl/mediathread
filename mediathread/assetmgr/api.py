@@ -116,6 +116,11 @@ class AssetResource(ModelResource):
             if ga:
                 bundle.data['global_annotation'] = \
                     SherdNoteResource().render_one(bundle.request, ga, '')
+                bundle.data['global_annotation_analysis'] = (
+                    (ga.tags is not None and len(ga.tags) > 0) or
+                    (ga.body is not None and len(ga.body) > 0))
+            else:
+                bundle.data['global_annotation_analysis'] = False
 
         for key, value in self.extras.items():
             bundle.data[key] = self.extras[key]

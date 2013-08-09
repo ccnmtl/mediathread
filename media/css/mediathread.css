@@ -760,7 +760,6 @@ ul#standardnav
 /* ---- Footer block elements ---------- */
 #footer
 {
-    position: relative;
     width: 100%;
     height: 60px;
     padding: 6px 0 0 0;
@@ -776,11 +775,11 @@ ul#standardnav
 {
     display: block;
     clear: right;
-    float: right;
+    float: left;
     width: 119px;
     height: 26px;
     overflow: hidden;
-    margin: 1px 10px 0 0;
+    margin: 1px 10px 0 10px;
     padding: 0;
     border: 0;
     background: transparent url('../img/logo_ccnmtl.gif') left top no-repeat;
@@ -2247,7 +2246,7 @@ ul li {
 }
 
 #id_annotation-body { 
-    height: 150px;
+    height: 100px;
     width: 98%;
 }
 
@@ -3412,13 +3411,20 @@ div.asset-view-title h1 {
 
 div#asset-view-overlay {
     z-index:  10001;
+    margin-top: -5px;
+    padding-bottom: 5px;
+}
+
+input#asset-view-help-button {
+    margin-right: 10px;
+    margin-top: 5px;
 }
 
 div.asset-view-help {
     position: absolute;
     display: block;
     z-index: 10002;
-    margin: 15px 3px 6px 0;
+    margin: -30px 2px 6px 0;
     padding: 10px;
     -webkit-border-top-left-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -3448,7 +3454,7 @@ div.asset-view-help-tab {
     position: absolute;
     display: block;
     z-index: 10002;
-    margin: 4px 3px 0 0;
+    margin: -1px 2px 0 0;
     padding: 2px;
     right: 0;
     -webkit-border-top-left-radius: 10px;
@@ -3532,12 +3538,54 @@ div#asset-view-details {
     height: 100%;    
 }
 
-#annotations-organized { 
-    margin-right: -10px;
+div#asset-view-details div.metadata {
+    color: #333;
+    float: none;
+    background: #ededed;
+    border: 1px solid #d3d3d3;   
+    margin: 5px 0;
+    width: 97%;
+    padding: 5px;
 }
 
-#annotations-organized h2 {
-    margin-bottom: 0px;
+div#asset-view-details label {
+    font-weight: bold;
+}
+
+div#asset-header table {
+    width: 100%;
+}
+
+div#asset-header table tr td.thumbnail {
+    width: 100px;
+}
+
+div#asset-header table tr td img {
+    width: 100px;
+    height: auto;
+}
+
+div#asset-header div.global-annotation-analysis {
+    margin-left: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+div#asset-header div.global-annotation-analysis a.btn-primary {
+    padding: 5px 10px 3px 5px;
+    margin: 10px 0px 21px;
+}
+
+div#asset-header div.global-annotation-analysis a.btn-primary img {
+    vertical-align: middle;
+    margin-top: -2px;
+    padding-right: 0;
+    width: 20px;
+    height: 20px;
+}
+
+#annotations-organized { 
+    margin-right: -10px;
 }
 
 #annotations-organized .ui-widget-header {
@@ -3562,24 +3610,7 @@ div#asset-view-details {
 #annotations-organized ul li.annotation-group {
     border: 0;
 }
-
-div#asset-global-annotation div.metadata-value {
-    padding: 5px 5px 5px 0;
-    border: 1px solid white;
-}
-
-div#asset-global-annotation div.metadata-value.global-annotation-notes {
-    padding: 5px 5px 5px 0;
-    border: 1px solid white;
-    max-height: 100px;
-    overflow-x: auto;
-}
-
-div#asset-global-annotation div.metadata {
-    margin: 5px 0;
-    width: 100%;
-}
-
+ 
 div#asset-global-annotation textarea,
 div#asset-global-annotation input[type="text"] {
     width: 98%;

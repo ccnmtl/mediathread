@@ -14,6 +14,7 @@ class TermResource(ModelResource):
         detail_allowed_methods = ['get', 'put', 'delete']
         authentication = ClassLevelAuthentication()
         authorization = FacultyAuthorization()
+        excludes = ['description', 'ordinality']
 
     def dehydrate(self, bundle):
         bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
@@ -51,7 +52,7 @@ class VocabularyResource(ModelResource):
         detail_allowed_methods = ['get', 'put', 'delete']
         authentication = ClassLevelAuthentication()
         authorization = VocabularyAuthorization()
-
+        excludes = ['description', 'single_select']
         ordering = ['id', 'title']
 
     def dehydrate(self, bundle):
@@ -63,3 +64,16 @@ class VocabularyResource(ModelResource):
             id=bundle.data['content_type_id'])
         bundle.obj.course = Course.objects.get(id=bundle.data['object_id'])
         return bundle
+
+    def render_one(self, request, item):
+        bundle = self.build_bundle(obj=item, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)
+
+    def render_list(self, request, lst):
+        a = []
+        for o in lst:
+            if len(o.term_set.all()) > 0:
+                the_json = self.render_one(request, o)
+                a.append(the_json)
+        return a

@@ -44,7 +44,7 @@ class VocabularyForm(forms.ModelForm):
 class Term(models.Model):
     name = models.SlugField()
     vocabulary = models.ForeignKey(Vocabulary)
-    display_name = models.CharField(max_length=50)
+    display_name = models.CharField(max_length=20)
     description = models.CharField(null=True, blank=True, max_length=256)
     ordinality = models.IntegerField(null=True, blank=True, default=0)
 

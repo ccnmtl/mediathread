@@ -3,6 +3,7 @@ from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
@@ -15,11 +16,13 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.lib import filter_by, get_active_filters
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
-from mediathread.djangosherd.views import create_annotation, \
-    delete_annotation, edit_annotation, update_annotation
+from mediathread.djangosherd.views import create_annotation, edit_annotation, \
+    delete_annotation, update_annotation
 from mediathread.main import course_details
 from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary
 from tagging.models import Tag
 import datetime
 import hashlib
@@ -86,13 +89,13 @@ def asset_workspace(request, asset_id=None, annot_id=None):
                                   data,
                                   context_instance=RequestContext(request))
     elif asset_id:
-        asset_workspace_context = detail_asset_json(request, asset)
+        context = detail_asset_json(request, asset)
     else:
-        asset_workspace_context = {'type': 'asset'}
+        context = {'type': 'asset'}
 
     data['panels'] = [{'panel_state': 'open',
                        'panel_state_label': "Annotate Media",
-                       'context': asset_workspace_context,
+                       'context': context,
                        'template': 'asset_workspace',
                        'current_asset': asset_id,
                        'current_annotation': annot_id,
@@ -530,43 +533,22 @@ def assets_by_course(request):
     return render_assets(request, None, assets)
 
 
-def render_assets(request, record_owner, assets):
+def render_tags_by_course(request, record_owner):
     course = request.course
     logged_in_user = request.user
-
-    # Can the record_owner edit the records
-    viewing_own_records = (record_owner == logged_in_user)
-    viewing_faculty_records = record_owner and course.is_faculty(record_owner)
-
-    # Allow the logged in user to add assets to his composition
-    citable = request.GET.get('citable', '') == 'true'
 
     # Is the current user faculty OR staff
     is_faculty = course.is_faculty(logged_in_user)
 
-    # Filter the assets
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value, record_owner)]
-
-    active_filters = get_active_filters(request, filter_by)
+    # Can the record_owner edit the records
+    viewing_own_records = (record_owner == logged_in_user)
+    viewing_faculty_records = record_owner and course.is_faculty(record_owner)
 
     # Does the course allow viewing other user selections?
     owner_selections_are_visible = (
         course_details.all_selections_are_visible(course) or
         viewing_own_records or viewing_faculty_records or is_faculty)
 
-    # Spew out json for the assets
-    resource = AssetResource(request.GET.get('annotations', '') == 'true',
-                             owner_selections_are_visible,
-                             record_owner,
-                             {'editable': viewing_own_records,
-                              'citable': citable})
-    asset_json = resource.render_list(request, assets)
-
-    # Tags -- used for the filtering box.
     tags = []
     if record_owner:
         if owner_selections_are_visible:
@@ -593,18 +575,64 @@ def render_assets(request, record_owner, assets):
 
     tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
 
+    return TagResource().render_list(request, tags)
+
+
+def render_assets(request, record_owner, assets):
+    course = request.course
+    logged_in_user = request.user
+
+    # Allow the logged in user to add assets to his composition
+    citable = request.GET.get('citable', '') == 'true'
+
+    # Is the current user faculty OR staff
+    is_faculty = course.is_faculty(logged_in_user)
+
+    # Filter the assets
+    for fil in filter_by:
+        filter_value = request.GET.get(fil)
+        if filter_value:
+            assets = [asset for asset in assets
+                      if filter_by[fil](asset, filter_value, record_owner)]
+
+    active_filters = get_active_filters(request, filter_by)
+
+    # Can the record_owner edit the records
+    viewing_own_records = (record_owner == logged_in_user)
+    viewing_faculty_records = record_owner and course.is_faculty(record_owner)
+
+    # Does the course allow viewing other user selections?
+    owner_selections_are_visible = (
+        course_details.all_selections_are_visible(course) or
+        viewing_own_records or viewing_faculty_records or is_faculty)
+
+    # Spew out json for the assets
+    resource = AssetResource(request.GET.get('annotations', '') == 'true',
+                             owner_selections_are_visible,
+                             record_owner,
+                             {'editable': viewing_own_records,
+                              'citable': citable})
+    asset_json = resource.render_list(request, assets)
+
+    tags = render_tags_by_course(request, record_owner)
+
     user_resource = UserResource()
     owners = user_resource.render_list(request, request.course.members)
 
+    course_type = ContentType.objects.get_for_model(request.course)
+    concepts = Vocabulary.objects.filter(content_type=course_type,
+                                         object_id=request.course.id)
+
     # Assemble the context
     data = {'assets': asset_json,
-            'tags': TagResource().render_list(request, tags),
+            'tags': tags,
+            'concepts': VocabularyResource().render_list(request, concepts),
             'active_filters': active_filters,
             'space_viewer': user_resource.render_one(request, logged_in_user),
             'editable': viewing_own_records,
             'citable': citable,
             'owners': owners,
-            'is_faculty': is_faculty, }
+            'is_faculty': is_faculty}
 
     if record_owner:
         data['space_owner'] = user_resource.render_one(request, record_owner)
@@ -645,6 +673,14 @@ def detail_asset_json(request, asset):
 
     help_setting = \
         UserSetting.get_setting(request.user, "help_item_detail_view", True)
+
+    course_type = ContentType.objects.get_for_model(request.course)
+    concepts = Vocabulary.objects.filter(content_type=course_type,
+                                         object_id=request.course.id)
+
+    the_json['concepts'] = VocabularyResource().render_list(request,
+                                                            concepts)
+    the_json['course_tags'] = render_tags_by_course(request, request.user)
 
     rv = {'type': 'asset',
           'assets': {asset.pk: the_json},

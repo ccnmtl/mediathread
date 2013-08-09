@@ -65,6 +65,8 @@ class RegistrationFormView(FormView):
         success = registration.do_signup(self.request, **signup_params)
         if not success:
             signup_error = registration.get_form_errors()
+            if signup_error.has_key('password1'):
+                signup_error['password'] = signup_error['password1']
             form.errors.update(signup_error)
             return self.form_invalid(form)
         registration.save()

@@ -1,6 +1,9 @@
+from django.contrib.contenttypes.models import ContentType
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary, TermRelationship
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL_WITH_RELATIONS
@@ -60,11 +63,36 @@ class SherdNoteResource(ModelResource):
             bundle.obj.is_global_annotation()
         bundle.data['is_null'] = bundle.obj.is_null()
         bundle.data['annotation'] = bundle.obj.annotation()
+
+        # todo - remove the request reliance here
         bundle.data['editable'] = (bundle.request.user.id ==
                                    getattr(bundle.obj, 'author_id', -1))
-        bundle.data['citable'] = bundle.request.GET.get(
-            'citable', '') == 'true'
+
+        if bundle.request.GET.get('citable', '') == 'true':
+            bundle.data['citable'] = True
+
         bundle.data['url'] = bundle.obj.get_absolute_url()
+
+        concepts = Vocabulary.objects.get_for_object(bundle.request.course)
+
+        note_type = ContentType.objects.get_for_model(bundle.obj)
+        bundle.data['concepts'] = []
+        for concept in concepts:
+            if len(concept.term_set.all()) > 0:
+                the_json = VocabularyResource().render_one(bundle.request,
+                                                           concept)
+                lst = list(TermRelationship.objects.filter(
+                    content_type=note_type, object_id=bundle.obj.id,
+                    term__vocabulary__id=concept.id))
+
+                if len(lst) > 0:
+                    the_json['selected'] = ''
+                    for r in lst[:-1]:
+                        the_json['selected'] += r.term.display_name + ', '
+                    else:
+                        the_json['selected'] += lst[-1].term.display_name
+
+                bundle.data['concepts'].append(the_json)
 
         bundle.data['metadata'] = {
             'tags': TagResource().render_list(bundle.request,

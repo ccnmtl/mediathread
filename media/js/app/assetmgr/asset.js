@@ -822,11 +822,21 @@
         };
         
         this._initConcepts = function(elt) {
-            if (self.active_asset.concepts.length > 0) {
-                for (i=0; i < self.active_asset.concepts.length; i++) {
-                    jQuery("select.concept-" + self.active_asset.concepts[i].id).select2();
+            jQuery('select.concept').each(function(idx, select_box) {
+                var value = jQuery(select_box).data("value");
+                if (value !== null && value.length > 0) {
+                    var values = value.split(",");
+                    for (var i=0; i < values.length; i++) {
+                        jQuery(select_box).children('option').filter(function() {
+                            return jQuery(this).text() === values[i].trim(); 
+                       }).each(function(idx, opt) {
+                           jQuery(opt).attr('selected', 'selected');
+                       });
+                    }
                 }
-            }
+                
+                jQuery(select_box).select2();
+            });
         };
         
         this._initTags = function(elt) {            
@@ -893,7 +903,6 @@
             
             if (context.annotation) {
                 context.annotation.showCancel = self.active_asset.annotations.length > 1;
-                context.annotation.concepts = self.active_asset.concepts.slice(0);
             }
             
             Mustache.update(template_label, context, {

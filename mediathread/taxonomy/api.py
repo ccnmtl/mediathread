@@ -69,11 +69,3 @@ class VocabularyResource(ModelResource):
         bundle = self.build_bundle(obj=item, request=request)
         dehydrated = self.full_dehydrate(bundle)
         return self._meta.serializer.to_simple(dehydrated, None)
-
-    def render_list(self, request, lst):
-        a = []
-        for o in lst:
-            if len(o.term_set.all()) > 0:
-                the_json = self.render_one(request, o)
-                a.append(the_json)
-        return a

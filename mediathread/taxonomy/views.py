@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http, rendered_with
 from mediathread.main.decorators import ajax_required, faculty_only
 from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
-    Term
+    Term, TermRelationship
 import simplejson
 
 
@@ -124,3 +124,29 @@ def term_delete(request, term_id):
     data = {'status': 'success'}
     json_stream = simplejson.dumps(data, indent=2)
     return HttpResponse(json_stream, mimetype='application/json')
+
+
+def update_concepts(request, content_object):
+    concepts = dict((key[len('concept-'):], request.POST.getlist(key))
+                    for key, val in request.POST.items()
+                    if key.startswith('concept-'))
+
+    # Retrieve concepts/terms that this object is currently associated with
+    associations = TermRelationship.objects.get_for_object(content_object)
+
+    # Remove any unmentioned associations
+    for a in associations:
+        concept_id = str(a.term.vocabulary.id)
+        term_id = str(a.term.id)
+        if (not concept_id in concepts or
+                not term_id in concepts[concept_id]):
+            a.delete()
+
+    content_type = ContentType.objects.get_for_model(content_object)
+    for name, terms in concepts.items():
+        for term_id in concepts[name]:
+            term = Term.objects.get(id=int(term_id))
+            TermRelationship.objects.get_or_create(
+                term=term,
+                content_type=content_type,
+                object_id=content_object.id)

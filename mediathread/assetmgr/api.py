@@ -91,7 +91,7 @@ class AssetResource(ModelResource):
 
         # the sherdnote_set authorization has been applied
         # I'm filtering here rather than directly on the sherdnote resource
-        # As counts need to be displayed for all, then the subset
+        # As counts need to be displayed for all, then the user subset
         for note in bundle.data['sherdnote_set']:
             if note.obj.author == bundle.request.user:
                 bundle.data['my_annotation_count'] += 1

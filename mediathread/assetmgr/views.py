@@ -3,7 +3,6 @@ from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
@@ -21,8 +20,6 @@ from mediathread.djangosherd.views import create_annotation, edit_annotation, \
 from mediathread.main import course_details
 from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
-from mediathread.taxonomy.api import VocabularyResource
-from mediathread.taxonomy.models import Vocabulary
 from tagging.models import Tag
 import datetime
 import hashlib
@@ -619,14 +616,9 @@ def render_assets(request, record_owner, assets):
     user_resource = UserResource()
     owners = user_resource.render_list(request, request.course.members)
 
-    course_type = ContentType.objects.get_for_model(request.course)
-    concepts = Vocabulary.objects.filter(content_type=course_type,
-                                         object_id=request.course.id)
-
     # Assemble the context
     data = {'assets': asset_json,
             'tags': tags,
-            'concepts': VocabularyResource().render_list(request, concepts),
             'active_filters': active_filters,
             'space_viewer': user_resource.render_one(request, logged_in_user),
             'editable': viewing_own_records,
@@ -674,12 +666,6 @@ def detail_asset_json(request, asset):
     help_setting = \
         UserSetting.get_setting(request.user, "help_item_detail_view", True)
 
-    course_type = ContentType.objects.get_for_model(request.course)
-    concepts = Vocabulary.objects.filter(content_type=course_type,
-                                         object_id=request.course.id)
-
-    the_json['concepts'] = VocabularyResource().render_list(request,
-                                                            concepts)
     the_json['course_tags'] = render_tags_by_course(request, request.user)
 
     rv = {'type': 'asset',

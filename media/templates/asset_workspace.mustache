@@ -142,7 +142,18 @@
                                                                 {{name}}{{^last}}, {{/last}}
                                                             {{/global_annotation.metadata.tags}}
                                                         </div>
-                                                        {{/global_annotation.metadata.tags?}}                 
+                                                        {{/global_annotation.metadata.tags?}}
+                                                        
+                                                        {{#global_annotation.concepts?}}
+                                                            {{#global_annotation.concepts}}
+                                                                {{#selected?}}
+                                                                    <div class="metadata global-annotation-concept">
+                                                                        <label>{{display_name}}: </label>
+                                                                        {{selected}}
+                                                                    </div>
+                                                                {{/selected?}}
+                                                            {{/global_annotation.concepts}}
+                                                        {{/global_annotation.concepts?}}
                                                     </div>
                                                     
                                                     <form id="edit-global-annotation-form" method="post"
@@ -156,12 +167,14 @@
                                                         
                                                         style="display: none">
                                                         
-                                                        {{#concepts?}}
-                                                            {{#concepts}}
+                                                        {{#global_annotation.concepts?}}
+                                                            {{#global_annotation.concepts}}
                                                             <div>
                                                                 <label>{{display_name}}</label>
                                                                 <div>
-                                                                    <select class="concept-{{id}}" name="concept-{{display_name}}" multiple="multiple">
+                                                                    <select class="concept" name="concept-{{id}}"
+                                                                        multiple="multiple"
+                                                                        data-value="{{selected}}">
                                                                         {{#term_set}}
                                                                             <option value="{{id}}">{{display_name}}</option>
                                                                         {{/term_set}}
@@ -169,8 +182,8 @@
                                                                 </div>
                                                             </div>
                                                             <br />
-                                                            {{/concepts}}
-                                                        {{/concepts?}}
+                                                            {{/global_annotation.concepts}}
+                                                        {{/global_annotation.concepts?}}
                                                         
                                                         <div>
                                                             <label>Tags</label>
@@ -256,7 +269,7 @@
                                                                         <div class="concepts">
                                                                             <label>{{display_name}}</label>
                                                                             <div>
-                                                                                <select class="concept-{{id}}" name="concept-{{display_name}}" multiple="multiple">
+                                                                                <select class="concept" name="concept-{{id}}" multiple="multiple" data-value="{{selected}}">
                                                                                     {{#term_set}}
                                                                                         <option value="{{id}}">{{display_name}}</option>
                                                                                     {{/term_set}}
@@ -378,6 +391,17 @@
                                                                                     <div><label for="">Author:</label> <a href="{{home-space?url(author.username)}}">{{author.public_name}}</a></div>
                                                                                     {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags?}}
                                                                                     {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
+                                                                                    
+                                                                                    {{#concepts?}}
+                                                                                        {{#concepts}}
+                                                                                            {{#selected?}}
+                                                                                                <div class="concepts">
+                                                                                                    <label>{{display_name}}: </label>
+                                                                                                    {{selected}}
+                                                                                                </div>
+                                                                                            {{/selected?}}
+                                                                                        {{/concepts}}
+                                                                                    {{/concepts?}}
                                                                                 </div>
                                                                             </div>
                                                                          </div>

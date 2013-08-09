@@ -73,18 +73,17 @@ class CourseInformation(models.Model):
 
         # assigning data
         self.course = course
-        self.organization, created = OrganizationModel.objects.get_or_create(
-            name=organization)
+        self.organization = c_organization
         self.save()
 
-    def get_group(self, type="member"):
+    def get_group(self, membership_type="member"):
         """
         Method for getting member or faculty group.
         type :: "member" | "faculty"
         """
-        if type == "member":
+        if membership_type == "member":
             return self.course.group
-        elif type == "faculty":
+        elif membership_type == "faculty":
             return self.course.faculty_group
         else:
             raise GroupTypeIncorrectException("Group type is incorrect.")
@@ -93,8 +92,8 @@ class CourseInformation(models.Model):
         """
         method for adding user into groups
         """
-        member_group = self.get_group(type="member")
-        faculty_group = self.get_group(type="faculty")
+        member_group = self.get_group(membership_type="member")
+        faculty_group = self.get_group(membership_type="faculty")
 
         user.groups.add(member_group)
         if faculty:
@@ -103,7 +102,7 @@ class CourseInformation(models.Model):
 
         user.save()
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False, using=None):
         if not self.course_uuid:
             self.course_uuid = uuid4()
-        return super(CourseInformation, self).save()
+        return super(CourseInformation, self).save(force_insert=False, force_update=False, using=None)

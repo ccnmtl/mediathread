@@ -2732,20 +2732,6 @@ a.hs-control.hs-control-show.plist.float
    margin: -2px -10px 0 0;
 }
 
-
-.create-selection {
-   background-image: url("../img/buttons/collections_button_bg.jpg");
-   border: 1px solid #C89345;
-   float: right;
-   padding: 0px 5px 3px;
-   width: 100px;
-   height: 14px;
-   font-size: .9em;
-   text-align: center;
-   margin: 0px 10px;
-}
-
-.create-selection a,
 .collection_button a {
     text-decoration: none;
     color: #000;
@@ -2758,10 +2744,6 @@ a.hs-control.hs-control-show.plist.float
 .collection_button a {
     margin-left: 5px;
     font-size: .95em;
-}
-
-.create-selection a { 
-    padding-top: 1px;
 }
 
 ul.clumper {
@@ -3186,13 +3168,6 @@ input.media.secondary {
     margin-top: 5px;
 } 
 
-input.media.newselection-button {
-    float: right;
-    margin: 7px 5px 0 0;
-    width: 100px;
-    font-size: .9em;
-}
-
 ul.record-metadata-list {
     list-style-type: none;
     margin: 0;
@@ -3570,12 +3545,14 @@ div#asset-header div.global-annotation-analysis {
     overflow-y: auto;
 }
 
-div#asset-header div.global-annotation-analysis a.btn-primary {
+div#asset-view-details input.btn-primary,
+div#asset-view-details a.btn-primary {
     padding: 5px 10px 3px 5px;
-    margin: 10px 0px 21px;
+    margin: 0px 0px 21px;
 }
 
-div#asset-header div.global-annotation-analysis a.btn-primary img {
+div#asset-view-details input.btn-primary img,
+div#asset-view-details a.btn-primary img {
     vertical-align: middle;
     margin-top: -2px;
     padding-right: 0;

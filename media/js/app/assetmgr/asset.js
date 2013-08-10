@@ -636,6 +636,9 @@
                         
                         djangosherd.assetview.setState({});
                         djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
+                        
+                        self._initTags();
+                        self._initConcepts();
                         jQuery("#asset-details-annotations-current").fadeIn();
                     }});
             });
@@ -726,25 +729,6 @@
                 }
             }
             
-            // Validate the tag fields...should be in djangosherd?
-            var tag_field = frm.elements['annotation-tags'];
-            if (tag_field) {//is this null?
-                var tags = tag_field.value.split(',');
-                for (var i = 0; i < tags.length; i++) {
-                    if (tags[i].trim().length > 25) {
-                        var msg = 'The ' + tags[i] + ' is too long. Tags should be less than 25 characters. ' +
-                            'And, be sure to separate your tags with commas.';
-                        showMessage(msg,
-                              function() {
-                                jQuery(saveButton).removeAttr("disabled");
-                                jQuery(saveButton).removeClass("saving");
-                                jQuery(saveButton).attr("value", "Save");
-                        });
-                        return;
-                    }
-                }
-            }
-            
             if (frm.elements['annotation-title'].value === '') {
                 showMessage('Please specify a selection title',
                         function() {
@@ -790,20 +774,8 @@
                             jQuery(window).trigger("annotation.on_save", []);
                         }
                         
-                        self.processAsset(asset_full);
-                        
-                        jQuery(saveButton).removeAttr("disabled");
-                        jQuery(saveButton).removeClass("saving");
-                        jQuery(saveButton).attr("value", "Save");
-                         
-                        jQuery("#asset-details-annotations-current").fadeOut(function () {
-                            jQuery("#asset-details-annotations-current").hide();
-                            self._update({ 'annotation_id': json.annotation.id, 'editing': false }, "annotation-current");
-                            self.updateAnnotationList();
-                            self._addHistory(/*replace=*/false);
-                            jQuery("#asset-global-annotation, #annotations-organized").fadeIn();
-                            window.onbeforeunload = null;
-                        });
+                        self.refresh({asset_id: self.active_asset.id,
+                                      annotation_id: json.annotation.id});
                     });
                 }
             });
@@ -840,9 +812,11 @@
         this._initConcepts = function() {
             jQuery("select.vocabulary").select2({});
             
-            var elt = jQuery("#edit-global-annotation-form");
-            self._selectConcepts(elt,
-                self.active_asset.global_annotation.vocabulary);
+            if (self.active_asset && self.active_asset.global_annotation) {
+                var elt = jQuery("#edit-global-annotation-form");
+                self._selectConcepts(elt,
+                    self.active_asset.global_annotation.vocabulary);
+            }
             
             if (self.active_annotation) {
                 elt = jQuery("#edit-annotation-form");

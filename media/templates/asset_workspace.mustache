@@ -114,7 +114,7 @@
                                                                     {{^global_annotation_analysis}}
                                                                         <center>
                                                                             <div>You currently have no notes or tags for this item.</div>
-                                                                            
+                                                                            <br />
                                                                             <a class="btn-primary edit-item"
                                                                                 onclick="return AnnotationList.editItem(this);">
                                                                                 <img src="/site_media/img/icons/meth_edit.png"
@@ -221,15 +221,16 @@
                                             {{#>>annotation-current}}
                                                 <div id="annotation-current">
                                                     <div id="asset-details-annotations-current"
-                                                        {{#annotation}} 
-                                                        {{#editing?}}
+                                                        {{#annotation.editing?}}
                                                             style="display: block"
-                                                        {{/editing?}}
+                                                        {{/annotation.editing?}}
                                                         
-                                                        {{^editing}}
+                                                        {{^annotation.editing}}
                                                             style="display: none"
-                                                        {{/editing}}
-                                                        >        
+                                                        {{/annotation.editing}}
+                                                        >
+                                                        
+                                                        {{#annotation}}
                                                         <div id="original-annotation" class="annotation-data" 
                                                              data-begin="{{range1}}" 
                                                              data-end="{{range2}}"
@@ -317,30 +318,44 @@
                                                 </div>
                                             {{/>>annotation-current}}                                                        
                                         
-                                            {{#>>annotations-organized}}
-                                                <div id="annotations-organized-container">
+                                            <div id="annotations-organized-container">
                                                 <div id="annotations-organized"
                                                     {{#annotation.editing?}}
                                                         style="display: none"
                                                     {{/annotation.editing?}}>
-                                                    <input class="media newselection-button" type="button" 
-                                                        onclick="javascript:AnnotationList.newAnnotation()" 
-                                                        value="Create Selection">
-                                                
                                                     <h2>
                                                         Selections
                                                     </h2>
-                                                    <div class="ui-helper-clearfix ui-widget-header">
-                                                        <form name="annotation-list-filter">
-                                                            <div id="annotation-list-filter-groupby">
-                                                                Group by: <select name="groupby"><option>author</option><option>tag</option></select>
+                                                         
+                                                    {{#asset-current}}                  
+                                                        {{^annotations}}
+                                                            <center>
+                                                                <div>You currently have no selections on this item.</div>
+                                                                <br />
+                                                                <input class="btn-primary create-selection" type="button" 
+                                                                    onclick="javascript:AnnotationList.newAnnotation()" 
+                                                                    value="Create Selection">
+                                                           </center>                                                    
+                                                        {{/annotations}}
+                                                               
+                                                        {{#annotations?}}                                         
+                                                            <div class="ui-helper-clearfix ui-widget-header" style="display: none">
+                                                                <form name="annotation-list-filter">
+                                                                    <div id="annotation-list-filter-groupby">
+                                                                        Group by: <select name="groupby"><option>author</option><option>tag</option></select>
+                                                                    </div>
+                                                                    <div id="annotation-list-filter-showall">
+                                                                        <input type="checkbox" name="showall" />
+                                                                        Show all selections
+                                                                        </div>
+                                                                </form>
                                                             </div>
-                                                            <div id="annotation-list-filter-showall">
-                                                                <input type="checkbox" name="showall" />
-                                                                Show all selections
-                                                                </div>
-                                                        </form>
-                                                    </div>
+                                                            
+                                                            <input class="btn-primary create-selection" type="button" 
+                                                                onclick="javascript:AnnotationList.newAnnotation()" 
+                                                                value="Create Selection"></input>                                                                
+                                                        {{/annotations?}}
+                                                    {{/asset-current}}
                                                   
                                                     {{#>>annotation-list}}
                                                     <ul id="asset-details-annotations-list">
@@ -416,8 +431,7 @@
                                                     </ul>
                                                     {{/>>annotation-list}}
                                                 </div>
-                                                </div>
-                                            {{/>>annotations-organized}}
+                                            </div>
                                         </div> 
                                         {{/>>asset-view-details}}
                                     </div>

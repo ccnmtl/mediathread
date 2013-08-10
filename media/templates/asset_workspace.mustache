@@ -144,84 +144,84 @@
                                                         </div>
                                                         {{/global_annotation.metadata.tags?}}
                                                         
-                                                        {{#global_annotation.concepts?}}
-                                                            {{#global_annotation.concepts}}
-                                                                {{#selected?}}
-                                                                    <div class="metadata global-annotation-concept">
-                                                                        <label>{{display_name}}: </label>
-                                                                        {{selected}}
-                                                                    </div>
-                                                                {{/selected?}}
-                                                            {{/global_annotation.concepts}}
-                                                        {{/global_annotation.concepts?}}
-                                                    </div>
-                                                    
-                                                    <form id="edit-global-annotation-form" method="post"
-                                                        {{#global_annotation.id?}}
-                                                        action="/asset/save/{{id}}/annotations/{{global_annotation.id}}/"
-                                                        {{/global_annotation.id?}}
-                                                        
-                                                        {{^global_annotation.id}}
-                                                            action="/asset/create/{{id}}/global/"
-                                                        {{/global_annotation.id}}
-                                                        
-                                                        style="display: none">
-                                                        
-                                                        {{#global_annotation.concepts?}}
-                                                            {{#global_annotation.concepts}}
-                                                            <div>
-                                                                <label>{{display_name}}</label>
-                                                                <div>
-                                                                    <select class="concept" name="concept-{{id}}"
-                                                                        multiple="multiple"
-                                                                        data-value="{{selected}}">
-                                                                        {{#term_set}}
-                                                                            <option value="{{id}}">{{display_name}}</option>
-                                                                        {{/term_set}}
-                                                                    </select>
+                                                        {{#global_annotation.vocabulary?}}
+                                                            {{#global_annotation.vocabulary}}
+                                                                <div class="metadata">
+                                                                    <label>{{display_name}}: </label>
+                                                                    {{#terms}}
+                                                                        {{display_name}}
+                                                                    {{/terms}}
                                                                 </div>
-                                                            </div>
-                                                            <br />
-                                                            {{/global_annotation.concepts}}
-                                                        {{/global_annotation.concepts?}}
-                                                        
-                                                        <div>
-                                                            <label>Tags</label>
-                                                            <div>
-                                                                <input class="global-annotation-tags"
-                                                                    type="text"
-                                                                    name="annotation-tags"
-                                                                    value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"
-                                                                    id="id_annotation-tags"></input>
-                                                                <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
-                                                            </div>
-                                                        </div>
-                                                        <br />
-                                                        <div>
-                                                            <label>Notes</label>
-                                                            <div>
-                                                                <textarea id="id_annotation-body" rows="7" cols="51"
-                                                                    name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
-                                                            </div>
-                                                        </div>
-                                                        <br />
-                                                        <input class="media"
-                                                            type="submit" name="submit_notes" value="Save" 
-                                                            onclick="return AnnotationList.saveItem(this)"></input>
-                                                            
-                                                        <input class="media"
-                                                            type="submit" name="submit_notes_cancel" value="Cancel" 
-                                                            onclick="return AnnotationList.cancelItem(this)"></input>
-                                                        <div class="visualclear"></div>
-                                                    </form>
+                                                            {{/global_annotation.vocabulary}}
+                                                        {{/global_annotation.vocabulary?}}
+                                                    </div>
                                                 {{/asset-current}}
+                                                
+                                                <form id="edit-global-annotation-form" method="post"
+                                                    {{#asset-current.global_annotation.id?}}
+                                                    action="/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
+                                                    {{/asset-current.global_annotation.id?}}
+                                                    
+                                                    {{^asset-current.global_annotation.id}}
+                                                        action="/asset/create/{{asset-current.id}}/global/"
+                                                    {{/asset-current.global_annotation.id}}
+                                                    
+                                                    style="display: none">
+                                                    
+                                                    {{#vocabulary}}
+                                                    <div>
+                                                        <label>{{display_name}}</label>
+                                                        <div>
+                                                            <select class="vocabulary" name="vocabulary-{{id}}" multiple="multiple"">
+                                                                {{#term_set}}
+                                                                    <option value="{{id}}">{{display_name}}</option>
+                                                                {{/term_set}}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    {{/vocabulary}}
+
+                                                    
+                                                    {{#asset-current}}
+                                                    <div>
+                                                        <label>Tags</label>
+                                                        <div>
+                                                            <input class="global-annotation-tags"
+                                                                type="text"
+                                                                name="annotation-tags"
+                                                                value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"
+                                                                id="id_annotation-tags"></input>
+                                                            <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div>
+                                                        <label>Notes</label>
+                                                        <div>
+                                                            <textarea id="id_annotation-body" rows="7" cols="51"
+                                                                name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    {{/asset-current}}
+                                                    
+                                                    <input class="media"
+                                                        type="submit" name="submit_notes" value="Save" 
+                                                        onclick="return AnnotationList.saveItem(this)"></input>
+                                                        
+                                                    <input class="media"
+                                                        type="submit" name="submit_notes_cancel" value="Cancel" 
+                                                        onclick="return AnnotationList.cancelItem(this)"></input>
+                                                    <div class="visualclear"></div>
+                                                </form>
                                             </div>
                                             {{/>>asset-global-annotation}}
                                             
                                             {{#>>annotation-current}}
                                                 <div id="annotation-current">
-                                                {{#annotation}}
-                                                    <div id="asset-details-annotations-current" 
+                                                    <div id="asset-details-annotations-current"
+                                                        {{#annotation}} 
                                                         {{#editing?}}
                                                             style="display: block"
                                                         {{/editing?}}
@@ -254,32 +254,34 @@
                                                                 {{/copying}}
                                                              {{/id}}
                                                         </h2>
+                                                        {{/annotation}}
                                                         
-                                                        <form name="edit-annotation-form" onsubmit="return false;">                                                        
+                                                        <form id="edit-annotation-form" name="edit-annotation-form" onsubmit="return false;">                                                        
                                                             <div class="asset-annotator">
                                                                 <div id="clipform-display"></div>
                                                             </div>
                                                             <div id="annotation-body">
+                                                                {{#annotation}}
                                                                 <label for="annotation-title">Title:</label>
                                                                 <input style="width: 75%" type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/>
                                                                 <br /><br />
+                                                                {{/annotation}}
                                                                 
-                                                                {{#concepts?}}
-                                                                    {{#concepts}}
-                                                                        <div class="concepts">
-                                                                            <label>{{display_name}}</label>
-                                                                            <div>
-                                                                                <select class="concept" name="concept-{{id}}" multiple="multiple" data-value="{{selected}}">
-                                                                                    {{#term_set}}
-                                                                                        <option value="{{id}}">{{display_name}}</option>
-                                                                                    {{/term_set}}
-                                                                                </select>
-                                                                            </div>
+                                                                {{#vocabulary}}
+                                                                    <div class="vocabulary">
+                                                                        <label>{{display_name}}</label>
+                                                                        <div>
+                                                                            <select class="vocabulary" name="vocabulary-{{id}}" multiple="multiple">
+                                                                                {{#term_set}}
+                                                                                    <option value="{{id}}">{{display_name}}</option>
+                                                                                {{/term_set}}
+                                                                            </select>
                                                                         </div>
-                                                                        <br />
-                                                                    {{/concepts}}
-                                                                {{/concepts?}}
+                                                                    </div>
+                                                                    <br />
+                                                                {{/vocabulary}}
                                         
+                                                                {{#annotation}}
                                                                 <label for="annotation-tags">Tags:</label> 
                                                                 <input style="width: 75%" type="text" id="id_annotation-tags"
                                                                     class="annotation-tags"
@@ -306,12 +308,12 @@
                                                                 {{#id?}} <!-- Editing existing annotation -->
                                                                 <input type="hidden" name="annotation-id" value="{{id}}" />
                                                                 {{/id?}}
+                                                                {{/annotation}}
                                                                 
                                                                 <div class="visualclear"></div>
                                                             </div>
                                                         </form>
                                                     </div>                                                    
-                                                {{/annotation}}
                                                 </div>
                                             {{/>>annotation-current}}                                                        
                                         
@@ -392,16 +394,16 @@
                                                                                     {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags?}}
                                                                                     {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
                                                                                     
-                                                                                    {{#concepts?}}
-                                                                                        {{#concepts}}
-                                                                                            {{#selected?}}
-                                                                                                <div class="concepts">
-                                                                                                    <label>{{display_name}}: </label>
-                                                                                                    {{selected}}
-                                                                                                </div>
-                                                                                            {{/selected?}}
-                                                                                        {{/concepts}}
-                                                                                    {{/concepts?}}
+                                                                                    {{#vocabulary?}}
+                                                                                        {{#vocabulary}}
+                                                                                            <div>
+                                                                                                <label>{{display_name}}: </label>
+                                                                                                {{#terms}}
+                                                                                                    {{display_name}}
+                                                                                                {{/terms}}
+                                                                                            </div>
+                                                                                        {{/vocabulary}}
+                                                                                    {{/vocabulary?}}
                                                                                 </div>
                                                                             </div>
                                                                          </div>

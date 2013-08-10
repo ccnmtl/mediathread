@@ -57,7 +57,7 @@ def setup_browser():
     world.browser.set_window_size(1024, 768)
 
     # Wait implicitly for 2 seconds
-    world.browser.implicitly_wait(5)
+    world.browser.implicitly_wait(2)
 
     # stash
     world.memory = {}

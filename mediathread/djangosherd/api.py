@@ -1,9 +1,8 @@
-from django.contrib.contenttypes.models import ContentType
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
-from mediathread.taxonomy.api import VocabularyResource
-from mediathread.taxonomy.models import Vocabulary, TermRelationship
+from mediathread.taxonomy.api import TermResource
+from mediathread.taxonomy.models import TermRelationship
 from tastypie import fields
 from tastypie.authorization import Authorization
 from tastypie.constants import ALL_WITH_RELATIONS
@@ -74,35 +73,24 @@ class SherdNoteResource(ModelResource):
             'title': bundle.obj.title
         }
 
-        # todo - remove the request reliance here
         bundle.data['editable'] = (bundle.request.user.id ==
                                    getattr(bundle.obj, 'author_id', -1))
 
         if bundle.request.GET.get('citable', '') == 'true':
             bundle.data['citable'] = True
 
-        if bundle.request.course:
-            concepts = Vocabulary.objects.get_for_object(bundle.request.course)
-
-            note_type = ContentType.objects.get_for_model(bundle.obj)
-            bundle.data['concepts'] = []
-            for concept in concepts:
-                if len(concept.term_set.all()) > 0:
-                    the_json = VocabularyResource().render_one(bundle.request,
-                                                               concept)
-                    lst = list(TermRelationship.objects.filter(
-                        content_type=note_type, object_id=bundle.obj.id,
-                        term__vocabulary__id=concept.id))
-
-                    if len(lst) > 0:
-                        the_json['selected'] = ''
-                        for r in lst[:-1]:
-                            the_json['selected'] += r.term.display_name + ', '
-                        else:
-                            the_json['selected'] += lst[-1].term.display_name
-
-                    bundle.data['concepts'].append(the_json)
-
+        vocabulary = {}
+        related = list(TermRelationship.objects.get_for_object(bundle.obj))
+        for r in related:
+            if r.term.vocabulary.id not in vocabulary:
+                vocabulary[r.term.vocabulary.id] = {
+                    'id': r.term.vocabulary.id,
+                    'display_name': r.term.vocabulary.display_name,
+                    'terms': []
+                }
+            vocabulary[r.term.vocabulary.id]['terms'].append(
+                TermResource().render_one(bundle.request, r.term))
+        bundle.data['vocabulary'] = [val for key, val in vocabulary.items()]
         return bundle
 
     def render_one(self, request, selection, asset_key):

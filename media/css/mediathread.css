@@ -1408,7 +1408,7 @@ td.panel-container.asset-workspace .parent-column-container h2 a:hover {
     height: 100%;
     border: none;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important;
 }
 
 div.panel.asset-workspace-dialog table.panel-subcontainer {
@@ -3531,7 +3531,6 @@ ul#asset-details-annotations-list h3.ui-accordion-header-active {
 div.asset-view-container div.asset-view-details h1 {
     font-size: 1.25em;
     font-weight: bold;
-    margin: 0;
 }
 
 div#asset-view-details {

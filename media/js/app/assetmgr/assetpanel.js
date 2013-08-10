@@ -121,6 +121,8 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
                 "annotation_id": annotationId,
                 "edit_state": event.type + "." + event.namespace,
                 "update_history": false,
+                "vocabulary": self.panel.vocabulary,
+                "course_tags": self.panel.course_tags,
                 "view_callback": function () {
                     if (self.dialogWindow) {
                         jQuery(elt).fadeIn("slow");
@@ -133,10 +135,10 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
         },
         title: title,
         draggable: true,
-        resizable: false,
+        resizable: true,
         modal: true,
         width: 825,
-        height: 520,
+        height: 600,
         position: "top",
         zIndex: 10000
     });
@@ -169,6 +171,8 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
         "asset_id": asset_id,
         "annotation_id": annotation_id,
         "update_history": self.panel.update_history,
+        "vocabulary": self.panel.vocabulary,
+        "course_tags": self.panel.course_tags,
         "view_callback": function () {
             jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
             

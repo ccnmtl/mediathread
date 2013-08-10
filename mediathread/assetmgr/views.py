@@ -18,9 +18,11 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main import course_details
+from mediathread.main.course_details import render_tags_by_course
 from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
-from tagging.models import Tag
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary
 import datetime
 import hashlib
 import hmac
@@ -86,13 +88,21 @@ def asset_workspace(request, asset_id=None, annot_id=None):
                                   data,
                                   context_instance=RequestContext(request))
     elif asset_id:
+        # @todo - refactor this context out of the mix
+        # ideally, the client would simply request the json
         context = detail_asset_json(request, asset)
     else:
         context = {'type': 'asset'}
 
+    vocabulary = VocabularyResource().render_list(
+        request, Vocabulary.objects.get_for_object(request.course))
+    course_tags = render_tags_by_course(request, request.user)
+
     data['panels'] = [{'panel_state': 'open',
                        'panel_state_label': "Annotate Media",
                        'context': context,
+                       'vocabulary': vocabulary,
+                       'course_tags': course_tags,
                        'template': 'asset_workspace',
                        'current_asset': asset_id,
                        'current_annotation': annot_id,
@@ -530,51 +540,6 @@ def assets_by_course(request):
     return render_assets(request, None, assets)
 
 
-def render_tags_by_course(request, record_owner):
-    course = request.course
-    logged_in_user = request.user
-
-    # Is the current user faculty OR staff
-    is_faculty = course.is_faculty(logged_in_user)
-
-    # Can the record_owner edit the records
-    viewing_own_records = (record_owner == logged_in_user)
-    viewing_faculty_records = record_owner and course.is_faculty(record_owner)
-
-    # Does the course allow viewing other user selections?
-    owner_selections_are_visible = (
-        course_details.all_selections_are_visible(course) or
-        viewing_own_records or viewing_faculty_records or is_faculty)
-
-    tags = []
-    if record_owner:
-        if owner_selections_are_visible:
-            # Tags for selected user
-            tags = Tag.objects.usage_for_queryset(
-                record_owner.sherdnote_set.filter(asset__course=course),
-                counts=True)
-    else:
-        if owner_selections_are_visible:
-            # Tags for the whole class
-            tags = Tag.objects.usage_for_queryset(
-                SherdNote.objects.filter(asset__course=course),
-                counts=True)
-        else:
-            # Tags for myself and faculty members
-            tags = Tag.objects.usage_for_queryset(
-                logged_in_user.sherdnote_set.filter(asset__course=course),
-                counts=True)
-
-            for f in course.faculty:
-                tags.extend(Tag.objects.usage_for_queryset(
-                            f.sherdnote_set.filter(asset__course=course),
-                            counts=True))
-
-    tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-
-    return TagResource().render_list(request, tags)
-
-
 def render_assets(request, record_owner, assets):
     course = request.course
     logged_in_user = request.user
@@ -665,8 +630,6 @@ def detail_asset_json(request, asset):
 
     help_setting = \
         UserSetting.get_setting(request.user, "help_item_detail_view", True)
-
-    the_json['course_tags'] = render_tags_by_course(request, request.user)
 
     rv = {'type': 'asset',
           'assets': {asset.pk: the_json},

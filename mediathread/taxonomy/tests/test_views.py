@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from mediathread.djangosherd.models import SherdNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
-from mediathread.taxonomy.views import update_concepts
+from mediathread.taxonomy.views import update_vocabulary_terms
 
 
 class TaxonomyViewTest(TestCase):
@@ -35,14 +35,14 @@ class TaxonomyViewTest(TestCase):
     def test_simple_association(self):
         concept = Vocabulary.objects.get(display_name="Shapes")
         term = Term.objects.get(display_name="Square")
-        post_data = {'concept-%s' % str(concept.id): [str(term.id)]}
+        post_data = {'vocabulary-%s' % str(concept.id): [str(term.id)]}
 
         sherd_note = SherdNote.objects.get(id=1)
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 0)
 
         request = self.factory.post('/', post_data)
-        update_concepts(request, sherd_note)
+        update_vocabulary_terms(request, sherd_note)
 
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 1)
@@ -62,7 +62,7 @@ class TaxonomyViewTest(TestCase):
         self.assertEquals(len(related_terms), 1)
 
         request = self.factory.post('/', {})
-        update_concepts(request, sherd_note)
+        update_vocabulary_terms(request, sherd_note)
 
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 0)
@@ -81,9 +81,9 @@ class TaxonomyViewTest(TestCase):
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 1)
 
-        post_data = {'concept-%s' % str(concept.id): [str(circle.id)]}
+        post_data = {'vocabulary-%s' % str(concept.id): [str(circle.id)]}
         request = self.factory.post('/', post_data)
-        update_concepts(request, sherd_note)
+        update_vocabulary_terms(request, sherd_note)
 
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 1)
@@ -116,11 +116,11 @@ class TaxonomyViewTest(TestCase):
         self.assertEquals(related_terms[1].object_id, sherd_note.id)
 
         post_data = {
-            'concept-%s' % str(shapes.id): [str(circle.id)],
-            'concept-%s' % str(colors.id): [str(blue.id)],
+            'vocabulary-%s' % str(shapes.id): [str(circle.id)],
+            'vocabulary-%s' % str(colors.id): [str(blue.id)],
         }
         request = self.factory.post('/', post_data)
-        update_concepts(request, sherd_note)
+        update_vocabulary_terms(request, sherd_note)
 
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 2)

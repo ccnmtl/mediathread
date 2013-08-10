@@ -25,6 +25,11 @@ class TermResource(ModelResource):
             id=bundle.data['vocabulary_id'])
         return bundle
 
+    def render_one(self, request, term):
+        bundle = self.build_bundle(obj=term, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)
+
 
 class VocabularyAuthorization(FacultyAuthorization):
 
@@ -65,7 +70,13 @@ class VocabularyResource(ModelResource):
         bundle.obj.course = Course.objects.get(id=bundle.data['object_id'])
         return bundle
 
-    def render_one(self, request, item):
-        bundle = self.build_bundle(obj=item, request=request)
+    def render_one(self, request, v):
+        bundle = self.build_bundle(obj=v, request=request)
         dehydrated = self.full_dehydrate(bundle)
         return self._meta.serializer.to_simple(dehydrated, None)
+
+    def render_list(self, request, vocabulary):
+        data = []
+        for v in vocabulary:
+            data.append(self.render_one(request, v))
+        return data

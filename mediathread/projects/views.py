@@ -10,10 +10,13 @@ from django.template.defaultfilters import slugify
 from djangohelpers.lib import allow_http
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.course_details import render_tags_by_course
 from mediathread.main.decorators import ajax_required
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.lib import composition_project_json
 from mediathread.projects.models import Project
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary
 import simplejson
 
 
@@ -336,11 +339,17 @@ def project_workspace(request, project_id, feedback=None):
                                                       feedback_discussion)}
             panels.append(panel)
 
+        vocabulary = VocabularyResource().render_list(
+            request, Vocabulary.objects.get_for_object(request.course))
+        course_tags = render_tags_by_course(request, request.user)
+
         # Create a place for asset editing
         panel = {'panel_state': 'closed',
                  'panel_state_label': "Item Details",
                  'template': 'asset_quick_edit',
                  'update_history': False,
+                 'vocabulary': vocabulary,
+                 'course_tags': course_tags,
                  'context': {'type': 'asset'}}
         panels.append(panel)
 

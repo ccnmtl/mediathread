@@ -8,6 +8,8 @@
 
             this.active_annotation = null;
             this.active_asset = null;
+            this.vocabulary = config.vocabulary;
+            this.course_tags = config.course_tags;
             this.config = config;
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ? config.update_history : true;
@@ -72,7 +74,7 @@
         this.processAsset = function(asset_full) {
             self.asset_full_json = asset_full;
             self.user_settings = asset_full.user_settings;
-            
+             
             var theAsset;
             for (var key in asset_full.assets) {
                 if (asset_full.assets.hasOwnProperty(key)) {
@@ -81,6 +83,7 @@
                 }
             }
             self.active_asset = theAsset;
+            
         };
         
         this.refresh = function (config) {
@@ -440,7 +443,8 @@
                 .fadeOut()
                 .promise()
                 .done(function () {
-                    jQuery("#edit-global-annotation-form").fadeIn();
+                    var elt = jQuery("#edit-global-annotation-form");
+                    jQuery(elt).fadeIn();
                 });
         };
         
@@ -524,7 +528,10 @@
                         jQuery(saveButton).removeClass("saving");
                         jQuery(saveButton).attr("value", "Save");
                         
-                        var context = { 'asset-current': self.active_asset };
+                        var context = {
+                            'asset-current': self.active_asset,
+                            'vocabulary': self.vocabulary
+                        };
                          
                         Mustache.update("asset-global-annotation", context, {
                             pre: function (elt) { jQuery(elt).hide(); },
@@ -607,12 +614,14 @@
         ///Annotation Add Form
         //  - author === current_user
         this.newAnnotation = function () {
-            var context = { 'annotation': {
-                'editing': true,
-                'showCancel': true,
-                'metadata': {
-                    'author': { 'id': MediaThread.current_user },
-                    'author_name': MediaThread.user_full_name
+            var context = {
+                'vocabulary': self.vocabulary,
+                'annotation': {
+                    'editing': true,
+                    'showCancel': true,
+                    'metadata': {
+                        'author': { 'id': MediaThread.current_user },
+                        'author_name': MediaThread.user_full_name
                 }
             }};
             
@@ -639,7 +648,10 @@
                 .fadeOut()
                 .promise()
                 .done(function () {
-                    self._update({ 'annotation_id': self.active_annotation.id, 'editing': true }, "annotation-current");
+                    self._update({
+                        'annotation_id': self.active_annotation.id,
+                        'editing': true },
+                        "annotation-current");
                 });
             return false;
         };
@@ -648,7 +660,9 @@
         // - new annotation with properties of current annotation minus id
         this.copyAnnotation = function () {
             // Add template...but with all the properties of this annotation.
-            var context = { 'annotation': {
+            var context = {
+                'vocabulary': self.vocabulary,
+                'annotation': {
                     'editing': true,
                     'copying': true,
                     'showCancel': true,
@@ -681,6 +695,8 @@
                                 djangosherd.assetview.setState(self.active_annotation.annotation);
                                 djangosherd.assetview.clipform.setState(self.active_annotation.annotation, { 'mode': 'copy' });
                                 
+                                self._initTags();
+                                self._initConcepts();
                                 jQuery(elt).fadeIn();
                             }
                         }
@@ -821,28 +837,35 @@
             }
         };
         
-        this._initConcepts = function(elt) {
-            jQuery('select.concept').each(function(idx, select_box) {
-                var value = jQuery(select_box).data("value");
-                if (value !== null && value.length > 0) {
-                    var values = value.split(",");
-                    for (var i=0; i < values.length; i++) {
-                        jQuery(select_box).children('option').filter(function() {
-                            return jQuery(this).text() === values[i].trim(); 
-                       }).each(function(idx, opt) {
-                           jQuery(opt).attr('selected', 'selected');
-                       });
-                    }
-                }
-                
-                jQuery(select_box).select2();
-            });
+        this._initConcepts = function() {
+            jQuery("select.vocabulary").select2({});
+            
+            var elt = jQuery("#edit-global-annotation-form");
+            self._selectConcepts(elt,
+                self.active_asset.global_annotation.vocabulary);
+            
+            if (self.active_annotation) {
+                elt = jQuery("#edit-annotation-form");
+                self._selectConcepts(elt, self.active_annotation.vocabulary);
+            }
         };
         
-        this._initTags = function(elt) {            
+        this._selectConcepts = function(elt, vocabulary) {
+            for (var i=0; i < vocabulary.length; i++) {
+                var selector = 'select[name="vocabulary-' + vocabulary[i].id + '"]'; 
+                var selectBox = jQuery(elt).find(selector)[0];
+                var terms = [];
+                for (var j=0; j < vocabulary[i].terms.length; j++) {
+                    terms.push(vocabulary[i].terms[j].id);
+                }
+                jQuery(selectBox).select2("val", terms);
+            }
+        };
+        
+        this._initTags = function() {            
             var tags = [];
-            for (i=0; i < self.active_asset.course_tags.length; i++) {
-                tags.push(self.active_asset.course_tags[i].name);
+            for (i=0; i < self.course_tags.length; i++) {
+                tags.push(self.course_tags[i].name);
             }
             jQuery("input[name='annotation-tags']").select2({
                 tags: tags,
@@ -857,7 +880,8 @@
             self.xywh = null;
             
             var context = {
-                'asset-current': self.active_asset
+                'asset-current': self.active_asset,
+                'vocabulary': self.vocabulary
             };
             
             if (config.annotation_id) {
@@ -932,8 +956,8 @@
                         djangosherd.assetview.setState();
                     }
                     
-                    self._initConcepts(elt);
-                    self._initTags(elt);
+                    self._initConcepts();
+                    self._initTags();
                     
                     jQuery(elt).fadeIn("slow", function () {
                         if (self.active_annotation) {

@@ -126,20 +126,20 @@ def term_delete(request, term_id):
     return HttpResponse(json_stream, mimetype='application/json')
 
 
-def update_concepts(request, content_object):
-    concepts = dict((key[len('concept-'):], request.POST.getlist(key))
+def update_vocabulary_terms(request, content_object):
+    concepts = dict((key[len('vocabulary-'):], request.POST.getlist(key))
                     for key, val in request.POST.items()
-                    if key.startswith('concept-'))
+                    if key.startswith('vocabulary-'))
 
     # Retrieve concepts/terms that this object is currently associated with
     associations = TermRelationship.objects.get_for_object(content_object)
 
     # Remove any unmentioned associations
     for a in associations:
-        concept_id = str(a.term.vocabulary.id)
+        vocabulary_id = str(a.term.vocabulary.id)
         term_id = str(a.term.id)
-        if (not concept_id in concepts or
-                not term_id in concepts[concept_id]):
+        if (not vocabulary_id in concepts or
+                not term_id in concepts[vocabulary_id]):
             a.delete()
 
     content_type = ContentType.objects.get_for_model(content_object)

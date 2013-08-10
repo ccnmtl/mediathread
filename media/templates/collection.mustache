@@ -193,26 +193,37 @@
                             <tr>
                                 <td class="item-meta">
                                     {{#global_annotation}}
-                                        {{#metadata}}
-                                            <ul class="record-metadata-list">
-                                                {{#tags?}}
-                                                    <li class="annotation-global-tags meta">
-                                                    <span class="metadata-label">Item Tags:</span>
+                                        <ul class="record-metadata-list">
+                                            {{#vocabulary?}}
+                                                {{#vocabulary}}
+                                                     <li class="annotation-global-body meta">
+                                                        <span class="metadata-label">{{display_name}}: </span>
                                                         <span class="metadata-value">
-                                                            {{#tags}}
-                                                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                            {{/tags}}
+                                                            {{#terms}}
+                                                                {{display_name}}
+                                                            {{/terms}}
                                                         </span>
                                                     </li>
-                                                {{/tags?}} 
-                                            
-                                                {{#body?}}
-                                                    <li class="annotation-global-body meta">
-                                                        <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{body}}</span> 
-                                                    </li>
-                                                {{/body?}}
-                                            </ul>
-                                        {{/metadata}}   
+                                                {{/vocabulary}}
+                                            {{/vocabulary?}}
+                                                                                        
+                                            {{#metadata.tags?}}
+                                                <li class="annotation-global-tags meta">
+                                                <span class="metadata-label">Item Tags:</span>
+                                                    <span class="metadata-value">
+                                                        {{#metadata.tags}}
+                                                            <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                        {{/metadata.tags}}
+                                                    </span>
+                                                </li>
+                                            {{/metadata.tags?}} 
+                                        
+                                            {{#metadata.body?}}
+                                                <li class="annotation-global-body meta">
+                                                    <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{metadata.body}}</span> 
+                                                </li>
+                                            {{/metadata.body?}}
+                                        </ul>
                                     {{/global_annotation}}
                                 </td>
                             </tr>
@@ -282,6 +293,18 @@
                                                                 {{/metadata}}
                                                                 
                                                                 <div id="annotation-body-{{id}}" class="meta">
+                                                                
+                                                                    {{#vocabulary?}}
+                                                                        {{#vocabulary}}
+                                                                            <div>
+                                                                                <label>{{display_name}}: </label>
+                                                                                {{#terms}}
+                                                                                    {{display_name}}
+                                                                                {{/terms}}
+                                                                            </div>
+                                                                        {{/vocabulary}}
+                                                                    {{/vocabulary?}}
+                                                                
                                                                     {{#metadata}}
                                                                         {{#tags?}}       
                                                                             <div><span class="metadata-label">Tags:</span>

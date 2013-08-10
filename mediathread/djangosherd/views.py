@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http
 from mediathread.djangosherd.models import Asset, SherdNote, NULL_FIELDS
-from mediathread.taxonomy.views import update_concepts
+from mediathread.taxonomy.views import update_vocabulary_terms
 import simplejson
 
 formfields = "tags title range1 range2 body annotation_data".split()
@@ -41,7 +41,7 @@ def create_annotation(request):
     annotation = SherdNote(**data)
     annotation.save()
 
-    update_concepts(request, annotation)
+    update_vocabulary_terms(request, annotation)
 
     #need to create global annotation if it doesn't exist already
     #so it appears in the user's list
@@ -131,4 +131,4 @@ def update_annotation(request, annotation):
 
     annotation.save()
 
-    update_concepts(request, annotation)
+    update_vocabulary_terms(request, annotation)

@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext, loader
+from django.template import RequestContext
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -194,7 +194,6 @@ def asset_create(request):
     asset_url = reverse('asset-view', args=[asset.id])
 
     source = request.POST.get('asset-source', "")
-    action = request.POST.get('button')
 
     if source == 'bookmarklet':
         asset_url += "?level=item"
@@ -208,23 +207,8 @@ def asset_create(request):
     elif request.is_ajax():
         return HttpResponse(serializers.serialize('json', asset),
                             mimetype="application/json")
-    elif asset.primary.label == "archive":
-        redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-manage-sources'))
-        url = "%s?newsrc=%s" % (redirect_url, asset.title)
-        return HttpResponseRedirect(url)
-    elif action and action == "analyze":
-        return HttpResponseRedirect(asset_url)
     else:
-        template = loader.get_template('assetmgr/analyze.html')
-
-        context = RequestContext(request, {
-            'request': request,
-            'user': user,
-            'action': action,
-            'asset_url': asset_url
-        })
-    return HttpResponse(template.render(context))
+        return HttpResponseRedirect(asset_url)
 
 
 @login_required
@@ -615,10 +599,9 @@ def detail_asset_json(request, asset):
 
     # DiscussionIndex is misleading. Objects returned are
     # projects & discussions title, object_pk, content_type, modified
-    collaboration_items = \
-        DiscussionIndex.with_permission(request,
-                                        DiscussionIndex.objects.filter(
-                                        asset=asset).order_by('-modified'))
+    collaboration_items = DiscussionIndex.with_permission(
+        request,
+        DiscussionIndex.objects.filter(asset=asset).order_by('-modified'))
 
     the_json['references'] = [{
         'id': obj.collaboration.object_pk,

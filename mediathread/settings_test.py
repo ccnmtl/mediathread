@@ -3,15 +3,18 @@ from settings_shared import *
 
 STATSD_HOST = '127.0.0.1'
 
+DEBUG = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'lettuce.db',
+        'NAME': '/Users/sdreher/workspace/mediathread/lettuce.db',
         'OPTIONS': {
             'timeout': 30,
         }
     }
 }
+
 
 LETTUCE_SERVER_PORT = 8002
 BROWSER = 'Headless'  # ["Chrome", "Firefox", "Headless"}

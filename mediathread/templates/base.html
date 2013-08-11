@@ -18,11 +18,11 @@
         <link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />            
         <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
         
-        {% compress css %}                    
+        {% comment %}{% compress css %}{% endcomment %}                    
             <link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
             <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
             {% block css %}{% endblock %}
-        {% endcompress %}
+        {% comment %}{% endcompress %}{% endcomment %}   
         
         {% block extrahead %}
             <!--  For uncompress-able resources -->
@@ -167,24 +167,25 @@
     </div><!-- id="container" -->
 
 	{% block footer %}
-	<!-- ###### Footer ###### -->
-    <div id="footer">
-	   <ul id="footernav">
-           <li><a href="/about/">About</a></li>
-           {% if settings.PUBLIC_CONTACT_EMAIL %}                          
-               <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
-           {% endif %}
-           <li><a href="/help/">Help</a></li>
-        </ul>
-			
-		<!-- CCNMTL title/logo -->
-        <h4 id="logo_ccnmtl">
-            <a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a>
-        </h4> 
-		</div><!-- id="footer" -->
+    	<!-- ###### Footer ###### -->
+        <div id="footer">
+                
+            <!-- CCNMTL title/logo -->
+            <h4 id="logo_ccnmtl">
+                <a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a>
+            </h4> 
+    
+    	   <ul id="footernav">
+               <li><a href="/about/">About</a></li>
+               {% if settings.PUBLIC_CONTACT_EMAIL %}                          
+                   <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
+               {% endif %}
+               <li><a href="/help/">Help</a></li>
+            </ul>
+        </div><!-- id="footer" -->
     {% endblock %}
     
-    {% compress js %}
+    {% comment %}{% compress js %}{% endcomment %}   
         <script type="text/javascript">
             var lt = String.fromCharCode(60);
             if (window.jQuery) {
@@ -281,7 +282,7 @@
         </script>
         
         {% block js %}{% endblock %}
-    {% endcompress %}  
+    {% comment %}{% endcompress %} {% endcomment %}    
 </body>
 {% endwith %}
 </html>

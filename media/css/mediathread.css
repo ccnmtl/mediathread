@@ -10,7 +10,7 @@ body
     padding: 0;
     border: 0;
     background-color: #fff;
-    font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif;
+    font: .875em/1.125em 'helvetica neue', helvetica, arial, sans-serif !important;
     color: #383838;
     width: 100% auto;
 }
@@ -1393,6 +1393,10 @@ td.panel-container.asset-workspace .column-container h2 {
     margin-top: 0;
 }
 
+td.panel-container.asset-workspace div#annotations-organized h2 {
+    margin-bottom: 0;
+}
+
 td.panel-container.asset-workspace .parent-column-container h2 a {
     color: #777;
     font-weight: normal;
@@ -2616,6 +2620,7 @@ img.materialCitation:hover,
 input.delete:hover,
 input.edit:hover,
 input.videoplay:hover,
+input.create-selection:hover,
 .project-export-icon:hover,
 .project-print-icon:hover {
     opacity:0.75;
@@ -3526,6 +3531,13 @@ div#asset-view-details label {
     font-weight: bold;
 }
 
+div#asset-view-details input.create-selection {
+    float: right;
+    margin-right: 8px;
+    border: 0;
+    margin-top: 3px;
+}
+
 div#asset-header table {
     width: 100%;
 }
@@ -3545,13 +3557,11 @@ div#asset-header div.global-annotation-analysis {
     overflow-y: auto;
 }
 
-div#asset-view-details input.btn-primary,
 div#asset-view-details a.btn-primary {
     padding: 5px 10px 3px 5px;
-    margin: 0px 0px 21px;
+    margin: 0px 0px 10px;
 }
 
-div#asset-view-details input.btn-primary img,
 div#asset-view-details a.btn-primary img {
     vertical-align: middle;
     margin-top: -2px;
@@ -3560,8 +3570,18 @@ div#asset-view-details a.btn-primary img {
     height: 20px;
 }
 
+div#asset-view-details a.btn-primary.visibility {
+    float: right;
+}
+
+div#asset-view-details div#annotation-list-filter-container {
+    position: absolute;
+    margin-right: 10;
+}
+
 #annotations-organized { 
     margin-right: -10px;
+    padding-top: 10px;
 }
 
 #annotations-organized .ui-widget-header {
@@ -3907,6 +3927,25 @@ div.panel.asset-workspace td.panel-container.collection.minimized div.collection
     left: 5px;
     width: 225px;
 }
+
+div.switcher.annotation-filter {
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 0;
+    margin-top: 3px;
+}
+
+div.switcher.annotation-filter .switcher-options {
+    left: 95px;
+    width: 200px;
+    padding: 10px;
+    line-height: 1.5em;
+}
+
+div.switcher.annotation-filter .switcher-options select {
+    width: 100%;
+}
+
 
 /** Taxonomy **/
 

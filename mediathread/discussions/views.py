@@ -243,7 +243,7 @@ def threaded_comment_json(request, comment):
                         asset_resource.render_one(request, ann.asset))
                         for ann in citations
                         if (ann.title != "Annotation Deleted" and
-                        ann.title != 'Asset Deleted')]),
+                            ann.title != 'Asset Deleted')]),
         'annotations': [sherd_resource.render_one(request, ann, rand)
                         for ann in citations],
     }

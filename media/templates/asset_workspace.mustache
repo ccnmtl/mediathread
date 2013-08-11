@@ -118,7 +118,6 @@
                                                                             <a class="btn-primary edit-item"
                                                                                 onclick="return AnnotationList.editItem(this);">
                                                                                 <img src="/site_media/img/icons/meth_edit.png"
-                                                                                    width="20" height="20"
                                                                                     alt="Edit this item"></img>
                                                                                 Edit this item
                                                                             </a>
@@ -323,37 +322,65 @@
                                                     {{#annotation.editing?}}
                                                         style="display: none"
                                                     {{/annotation.editing?}}>
-                                                    <h2>
-                                                        Selections
-                                                    </h2>
+
                                                          
-                                                    {{#asset-current}}                  
+                                                    {{#asset-current}}
+                                                        {{#annotations?}}
+                                                            
+                                                            <input class="create-selection"
+                                                                type="image" title="Create Selection" 
+                                                                onclick="return AnnotationList.newAnnotation();" 
+                                                                src="/site_media/img/icons/meth_addselection.png" />
+                                                                                                                       
+                                                            <div class="switcher annotation-filter">
+                                                                <a class="switcher-top menuclosed">                
+                                                                    <span class="switcher-prefix">Visibility </span>
+                                                                    <span class="down-arrow" onclick="switcher(this.parentNode)"></span>
+                                                                </a>
+                                                                <div class="switcher-options">
+                                                                    <form name="annotation-list-filter">
+                                                                        <div>
+                                                                            <div>Group selections by</div>
+                                                                            <select name="groupby">
+                                                                                <option>author</option>
+                                                                                <option>tag</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <br />
+                                                                        <div>
+                                                                            <input type="checkbox" name="showall" />
+                                                                                Display all selections
+                                                                            <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>                                                                        </div>
+                                                                    </form>                                                        
+                                                                </div>
+                                                            </div>
+
+                                                        {{/annotations?}}
+                                                        <h2>
+                                                            Selections
+                                                        </h2>                  
                                                         {{^annotations}}
                                                             <center>
                                                                 <div>You currently have no selections on this item.</div>
                                                                 <br />
-                                                                <input class="btn-primary create-selection" type="button" 
-                                                                    onclick="javascript:AnnotationList.newAnnotation()" 
-                                                                    value="Create Selection">
+                                                                
+                                                                <a class="btn-primary create-selection"
+                                                                    onclick="return AnnotationList.newAnnotation();">
+                                                                    <img src="/site_media/img/icons/meth_addselection.png"
+                                                                        alt="Create Selection"></img>
+                                                                    Create Selection
+                                                                </a>
                                                            </center>                                                    
                                                         {{/annotations}}
                                                                
-                                                        {{#annotations?}}                                         
-                                                            <div class="ui-helper-clearfix ui-widget-header" style="display: none">
-                                                                <form name="annotation-list-filter">
-                                                                    <div id="annotation-list-filter-groupby">
-                                                                        Group by: <select name="groupby"><option>author</option><option>tag</option></select>
-                                                                    </div>
-                                                                    <div id="annotation-list-filter-showall">
-                                                                        <input type="checkbox" name="showall" />
-                                                                        Show all selections
-                                                                        </div>
-                                                                </form>
-                                                            </div>
-                                                            
-                                                            <input class="btn-primary create-selection" type="button" 
-                                                                onclick="javascript:AnnotationList.newAnnotation()" 
-                                                                value="Create Selection"></input>                                                                
+                                                        {{#annotations?}}
+                                                            <a style="display: none"
+                                                                class="btn-primary create-selection"
+                                                                onclick="return AnnotationList.newAnnotation();">
+                                                                <img src="/site_media/img/icons/meth_addselection.png"
+                                                                    alt="Create Selection"></img>
+                                                                Create Selection
+                                                            </a>                                                                
                                                         {{/annotations?}}
                                                     {{/asset-current}}
                                                   

@@ -164,8 +164,8 @@ def class_summary_graph(request):
                     int(di.collaboration._parent.object_pk) in projects):
                 rv['links'].append({
                     'source': d_ind,
-                    'target': projects[
-                    int(di.collaboration._parent.object_pk)]['index'], })
+                    'target': projects[int(
+                        di.collaboration._parent.object_pk)]['index'], })
 
         # comment --> asset
         if di.asset_id:
@@ -186,10 +186,10 @@ def class_activity(request):
             asset__course=request.course).order_by('-added')[:40],
         Project.objects.filter(course=request.course,
                                submitted=True).order_by('-modified')[:40],
-        DiscussionIndex.with_permission(request,
-                                        DiscussionIndex.objects.filter(
-                                        collaboration__context=collab_context)
-                                        .order_by('-modified')[:40],))
+        DiscussionIndex.with_permission(
+            request, DiscussionIndex.objects.filter(
+                collaboration__context=collab_context)
+            .order_by('-modified')[:40],))
 
     rv = {'my_feed': my_feed, 'submenu': 'activity', }
     if request.user.is_staff:

@@ -16,8 +16,6 @@ urlpatterns = patterns(
 
     url(r'term/create/(?P<vocabulary_id>\d+)/$',
         'term_create'),
-#     url(r'term/save/(?P<term_id>\d+)/$',
-#         'term_save'),
     url(r'term/delete/(?P<term_id>\d+)/$',
         'term_delete'),
 

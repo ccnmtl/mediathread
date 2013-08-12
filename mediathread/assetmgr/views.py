@@ -96,7 +96,7 @@ def asset_workspace(request, asset_id=None, annot_id=None):
 
     vocabulary = VocabularyResource().render_list(
         request, Vocabulary.objects.get_for_object(request.course))
-    course_tags = render_tags_by_course(request, request.user)
+    course_tags = render_tags_by_course(request)
 
     data['panels'] = [{'panel_state': 'open',
                        'panel_state_label': "Annotate Media",
@@ -528,9 +528,6 @@ def render_assets(request, record_owner, assets):
     course = request.course
     logged_in_user = request.user
 
-    # Allow the logged in user to add assets to his composition
-    citable = request.GET.get('citable', '') == 'true'
-
     # Is the current user faculty OR staff
     is_faculty = course.is_faculty(logged_in_user)
 
@@ -547,27 +544,30 @@ def render_assets(request, record_owner, assets):
     viewing_own_records = (record_owner == logged_in_user)
     viewing_faculty_records = record_owner and course.is_faculty(record_owner)
 
+    # Allow the logged in user to add assets to his composition
+    citable = request.GET.get('citable', '') == 'true'
+
+    # include the asset annotations
+    include_annotations = request.GET.get('annotations', '') == 'true'
+
     # Does the course allow viewing other user selections?
     owner_selections_are_visible = (
         course_details.all_selections_are_visible(course) or
         viewing_own_records or viewing_faculty_records or is_faculty)
 
     # Spew out json for the assets
-    resource = AssetResource(request.GET.get('annotations', '') == 'true',
+    resource = AssetResource(include_annotations,
                              owner_selections_are_visible,
                              record_owner,
                              {'editable': viewing_own_records,
                               'citable': citable})
     asset_json = resource.render_list(request, assets)
 
-    tags = render_tags_by_course(request, record_owner)
-
     user_resource = UserResource()
     owners = user_resource.render_list(request, request.course.members)
 
     # Assemble the context
     data = {'assets': asset_json,
-            'tags': tags,
             'active_filters': active_filters,
             'space_viewer': user_resource.render_one(request, logged_in_user),
             'editable': viewing_own_records,

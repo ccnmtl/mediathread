@@ -65,6 +65,8 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'template_label': "media_gallery",
             'create_asset_thumbs': true,
             'space_owner': self.space_owner,
+            'vocabulary': self.panel.vocabulary,
+            'course_tags': self.panel.course_tags,            
             'view_callback': function () {
                 jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
                 jQuery(self.el).find("a.edit-asset-inplace").bind("click", { self: self }, self.editItem);

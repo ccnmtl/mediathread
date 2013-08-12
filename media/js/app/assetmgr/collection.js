@@ -21,6 +21,8 @@ var CollectionList = function (config) {
     self.parent = config.parent;
     self.selected_view = config.hasOwnProperty('selectedView') ? config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
+    self.vocabulary = config.vocabulary;
+    self.course_tags = config.course_tags;
     
     self.switcher_context = {};
     
@@ -345,6 +347,9 @@ CollectionList.prototype.updateAssets = function (the_records) {
         self.switcher_context.showing_all_items = false;
         self.switcher_context.selected_label = the_records.space_owner.public_name;
     }
+    
+    the_records.tags = self.course_tags;
+    the_records.vocabulary = self.vocabulary;
     
     self.current_records = the_records;
     

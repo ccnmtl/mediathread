@@ -44,46 +44,28 @@ def all_selections_are_visible(course):
     return bool(value)
 
 
-def render_tags_by_course(request, record_owner):
+def render_tags_by_course(request):
     course = request.course
     logged_in_user = request.user
 
     # Is the current user faculty OR staff
     is_faculty = course.is_faculty(logged_in_user)
 
-    # Can the record_owner edit the records
-    viewing_own_records = (record_owner == logged_in_user)
-    viewing_faculty_records = record_owner and course.is_faculty(record_owner)
-
-    # Does the course allow viewing other user selections?
-    owner_selections_are_visible = (
-        all_selections_are_visible(course) or
-        viewing_own_records or viewing_faculty_records or is_faculty)
-
-    tags = []
-    if record_owner:
-        if owner_selections_are_visible:
-            # Tags for selected user
-            tags = Tag.objects.usage_for_queryset(
-                record_owner.sherdnote_set.filter(asset__course=course),
-                counts=True)
+    if all_selections_are_visible(course) or is_faculty:
+        # Tags for the whole class
+        tags = Tag.objects.usage_for_queryset(
+            SherdNote.objects.filter(asset__course=course),
+            counts=True)
     else:
-        if owner_selections_are_visible:
-            # Tags for the whole class
-            tags = Tag.objects.usage_for_queryset(
-                SherdNote.objects.filter(asset__course=course),
-                counts=True)
-        else:
-            # Tags for myself and faculty members
-            tags = Tag.objects.usage_for_queryset(
-                logged_in_user.sherdnote_set.filter(asset__course=course),
-                counts=True)
+        # Show only tags for myself and faculty members
+        tags = Tag.objects.usage_for_queryset(
+            logged_in_user.sherdnote_set.filter(asset__course=course),
+            counts=True)
 
-            for f in course.faculty:
-                tags.extend(Tag.objects.usage_for_queryset(
-                            f.sherdnote_set.filter(asset__course=course),
-                            counts=True))
+        for f in course.faculty:
+            tags.extend(Tag.objects.usage_for_queryset(
+                        f.sherdnote_set.filter(asset__course=course),
+                        counts=True))
 
     tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-
     return TagResource().render_list(request, tags)

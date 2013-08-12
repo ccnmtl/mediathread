@@ -1,5 +1,14 @@
 from mediathread.djangosherd.models import SherdNote
+from tagging.models import TaggedItem
 import datetime
+
+
+def tag_filter_for():
+    def tag_filter(asset, tag_string, user):
+        notes = TaggedItem.objects.get_union_by_model(asset.sherdnote_set,
+                                                      tag_string)
+        return len(notes) > 0
+    return tag_filter
 
 
 def date_filter_for(attr):
@@ -52,9 +61,9 @@ def date_filter_for(attr):
             return date > over_a_week_ago
     return date_filter
 
+
 filter_by = {
-    'tag': lambda asset, tag, user: filter(lambda x: x.name == tag,
-                                           asset.tags()),
+    'tag': tag_filter_for(),
     'added': date_filter_for('added'),
     'modified': date_filter_for('modified')
 }

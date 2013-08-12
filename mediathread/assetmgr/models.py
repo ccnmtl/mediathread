@@ -214,6 +214,7 @@ class Asset(models.Model):
         return self._thumb_url
 
     def tags(self):
+        # returns all tags for this instance's notes
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
 
     def filter_tags_by_users(self, users, counts=False):

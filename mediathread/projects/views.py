@@ -341,7 +341,7 @@ def project_workspace(request, project_id, feedback=None):
 
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
-        course_tags = render_tags_by_course(request, request.user)
+        course_tags = render_tags_by_course(request)
 
         # Create a place for asset editing
         panel = {'panel_state': 'closed',

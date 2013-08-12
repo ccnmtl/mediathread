@@ -71,6 +71,7 @@ class VocabularyValidation(Validation):
 class VocabularyAuthorization(FacultyAuthorization):
 
     def apply_limits(self, request, object_list):
+        '''Limit vocabulary list to the current course'''
         course_type = ContentType.objects.get_for_model(request.course)
         invisible = []
         for vocabulary in object_list:

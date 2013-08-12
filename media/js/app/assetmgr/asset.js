@@ -15,6 +15,13 @@
             this.update_history = config.update_history !== undefined ? config.update_history : true;
             this.user_settings = { 'help_item_detail_view': true };
             
+            this.eltsAssetDisplay = "#asset-header, #annotation-current, " +
+                "#annotations-organized-container, " +
+                "#asset-view-help-button," +
+                "#asset-global-annotation div.actions";
+            this.eltsAnnotationDisplay = "#asset-view-help-button," +
+                "#asset-global-annotation, #annotations-organized";            
+            
             if (String(window.location.hash).match(/edit_state=new/)) {
                 self.config.edit_state = "annotation.create";
                 window.location.hash = '';
@@ -439,7 +446,7 @@
 
         ///Item Edit -- global annotation
         this.editItem = function () {
-            jQuery("#asset-header, #annotations-organized-container, #annotation-current, #asset-global-annotation div.actions")
+            jQuery(self.eltsAssetDisplay)
                 .fadeOut()
                 .promise()
                 .done(function () {
@@ -454,7 +461,7 @@
             var form = jQuery("#edit-global-annotation-form");
             
             jQuery(form).fadeOut(function () {
-                jQuery("#annotations-organized-container, #annotation-current,  #asset-global-annotation div.actions, div#asset-header").fadeIn();
+                jQuery(self.eltsAssetDisplay).fadeIn();
             });
             
             return false;
@@ -625,7 +632,7 @@
                 }
             }};
             
-            jQuery("#asset-global-annotation, #annotations-organized")
+            jQuery(self.eltsAnnotationDisplay)
                 .fadeOut()
                 .promise()
                 .done(function () {
@@ -647,7 +654,7 @@
         ///Annotation Edit
         // - new annotation with properties of current annotation minus id
         this.editAnnotation = function () {
-            jQuery("#asset-global-annotation, #annotations-organized")
+            jQuery(self.eltsAnnotationDisplay)
                 .fadeOut()
                 .promise()
                 .done(function () {
@@ -681,7 +688,7 @@
                     'annotation_data': self.active_annotation.annotation_data
                 }};
             
-            jQuery("#asset-global-annotation, #annotations-organized")
+            jQuery(self.eltsAnnotationDisplay)
                 .fadeOut()
                 .promise()
                 .done(function () {

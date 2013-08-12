@@ -4,6 +4,24 @@ from mediathread.api import ClassLevelAuthentication, ToManyFieldEx, \
     FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term
 from tastypie.resources import ModelResource
+from tastypie.validation import Validation
+
+
+class TermValidation(Validation):
+    def is_valid(self, bundle, request=None):
+        errors = {}
+
+        a = Term.objects.filter(
+            display_name=bundle.data['display_name'],
+            vocabulary_id=bundle.data['vocabulary_id'])
+
+        if len(a) > 0:  # vocabulary exists with this name
+            if not 'pk' in bundle.data or a[0].pk != int(bundle.data['pk']):
+                # a vocabulary already exists with this name
+                msg = 'A %s term already exists. Please choose another name' \
+                    % bundle.data['display_name']
+                errors['error_message'] = [msg]
+        return errors
 
 
 class TermResource(ModelResource):
@@ -15,6 +33,7 @@ class TermResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = FacultyAuthorization()
         excludes = ['description', 'ordinality']
+        validation = TermValidation()
 
     def dehydrate(self, bundle):
         bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
@@ -29,6 +48,24 @@ class TermResource(ModelResource):
         bundle = self.build_bundle(obj=term, request=request)
         dehydrated = self.full_dehydrate(bundle)
         return self._meta.serializer.to_simple(dehydrated, None)
+
+
+class VocabularyValidation(Validation):
+    def is_valid(self, bundle, request=None):
+        errors = {}
+
+        a = Vocabulary.objects.filter(
+            content_type_id=bundle.data['content_type_id'],
+            display_name=bundle.data['display_name'],
+            object_id=bundle.data['object_id'])
+
+        if len(a) > 0:  # vocabulary exists with this name
+            if not 'pk' in bundle.data or a[0].pk != int(bundle.data['pk']):
+                # a vocabulary already exists with this name
+                msg = 'A %s concept exists. Please choose another name' \
+                    % bundle.data['display_name']
+                errors['error_message'] = [msg]
+        return errors
 
 
 class VocabularyAuthorization(FacultyAuthorization):
@@ -59,6 +96,7 @@ class VocabularyResource(ModelResource):
         authorization = VocabularyAuthorization()
         excludes = ['description', 'single_select']
         ordering = ['id', 'title']
+        validation = VocabularyValidation()
 
     def dehydrate(self, bundle):
         bundle.data['content_type_id'] = bundle.obj.content_type.id

@@ -167,6 +167,10 @@
                 success: function() {
                     self.selected = v;
                     self.collection.add(v);
+                },
+                error: function(model, response) {
+                    var responseText = jQuery.parseJSON(response.responseText);
+                    showMessage(responseText.vocabulary.error_message, undefined, "Error");
                 }
             });
             return false;
@@ -194,6 +198,10 @@
                 v.save({'display_name': display_name}, {
                     success: function() {
                         self.render();
+                    },
+                    error: function(model, response) {
+                        var responseText = jQuery.parseJSON(response.responseText);
+                        showMessage(responseText.vocabulary.error_message, undefined, "Error");
                     }
                 });
             }
@@ -287,6 +295,10 @@
                 success: function() {
                     self.selected.get('term_set').add(t);
                     self.render();
+                },
+                error: function(model, response) {
+                    var responseText = jQuery.parseJSON(response.responseText);
+                    showMessage(responseText.term.error_message, undefined, "Error");
                 }
             });
             return false;            
@@ -314,6 +326,10 @@
                 term.save({}, {
                     success: function() {
                         self.render();
+                    },
+                    error: function(model, response) {
+                        var responseText = jQuery.parseJSON(response.responseText);
+                        showMessage(responseText.term.error_message, undefined, "Error");
                     }
                 });
             }

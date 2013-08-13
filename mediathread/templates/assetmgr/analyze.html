@@ -9,17 +9,24 @@ window.jQ.ajax({
 */
 -->
 {{ user }}
+{% ifequal action "collection" %}
+	<script>
+		window.close()
+	</script>
+{% endifequal %}
+
+{% ifequal action "cont" %}
+	<script>
+		window.close()
+	</script>
+{% endifequal %}
+
+{% ifequal action "analyze" %}
+	<script>
+		alert('analizing')
+	</script>
+{% endifequal %}
+
 <h1>{{ action }}, {{ asset_url }}</h1>
 asdasdas
 
-<script>
-function cont(){
-	window.close();
-}
-
-function goto_asset_url(){
-	window
-}
-
-var action ={{action}}();
-</script>

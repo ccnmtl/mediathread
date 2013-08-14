@@ -23,7 +23,15 @@ window.jQ.ajax({
 
 {% ifequal action "analyze" %}
 	<script>
-		alert('analizing')
+		//alert('{{ analyze }}')
+		window.reTab = {{ analyze }}
+		window.location.replace('{{ analyze }}')
+	</script>
+{% endifequal %}
+
+{% ifequal action None %}
+	<script>
+		window.location.replace('{{ asset_url }}')
 	</script>
 {% endifequal %}
 

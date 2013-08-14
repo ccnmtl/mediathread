@@ -183,7 +183,6 @@ def asset_create(request):
 
     source = request.POST.get('asset-source', "")
     action = request.POST.get('button')
-
     if source == 'bookmarklet':
         asset_url += "?level=item"
 
@@ -202,7 +201,18 @@ def asset_create(request):
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
     elif "analyze" == action:
-        return HttpResponseRedirect(asset_url)
+        import pdb
+        pdb.set_trace()
+        template = loader.get_template('assetmgr/analyze.html')
+
+        context = RequestContext(request, {
+            'request': request,
+            'user': user,
+            'action': action,
+            'analyze': asset_url,
+            'asset_url': 'asset'
+        })
+        #return HttpResponse(asset_url)
     else:
         template = loader.get_template('assetmgr/analyze.html')
 
@@ -212,6 +222,8 @@ def asset_create(request):
             'action': action,
             'asset_url': asset_url
         })
+    
+
     return HttpResponse(template.render(context))
 
 

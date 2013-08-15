@@ -202,21 +202,7 @@ def asset_create(request):
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
     elif "analyze" == action:
-        #import pdb
-        #pdb.set_trace()
-        window = request.POST['window']
-        template = loader.get_template('assetmgr/analyze.html')
-
-        context = RequestContext(request, {
-            'request': request,
-            'user': user,
-            'action': action,
-            'analyze': asset_url,
-            'asset_url': asset_url,
-            'window': window
-        })
-        
-        #return HttpResponse(asset_url)
+        return HttpResponseRedirect(asset_url)
     else:
         template = loader.get_template('assetmgr/analyze.html')
 

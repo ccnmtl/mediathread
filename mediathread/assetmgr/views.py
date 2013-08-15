@@ -132,6 +132,15 @@ def _parse_user(request):
     return user
 
 
+@login_required
+@allow_http("GET", "POST")
+def most_recent(request):
+    import pdb
+    pdb.set_trace()
+    return HttpResponseRedirect('/asset/')
+
+
+
 # @login_required #no login, so server2server interface is possible
 @allow_http("POST")
 def asset_create(request):

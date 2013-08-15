@@ -16,6 +16,11 @@ urlpatterns = patterns(
         'asset_workspace',
         name='asset-collection-view'),
 
+    # Goto the most recently created asset by user
+    url(r'^most_recent/$',
+        'most_recent',
+        name='asset-most-recent'),
+
     url(r'^(?P<asset_id>\d+)/$',
         'asset_workspace',
         name="asset-view"),

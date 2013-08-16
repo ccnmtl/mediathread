@@ -65,6 +65,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'template_label': "media_gallery",
             'create_asset_thumbs': true,
             'space_owner': self.space_owner,
+            'owners': self.panel.owners,
             'vocabulary': self.panel.vocabulary,
             'course_tags': self.panel.course_tags,            
             'view_callback': function () {

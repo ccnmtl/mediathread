@@ -10,7 +10,7 @@
                     <span class="title">{{{selected_label?ellipses(18)}}}</span>
                 </a>
                 
-                <ul class="switcher-options" style="left: -56px">                    
+                <ul class="switcher-options">                    
                     {{#display_switcher_extras?}}
                         {{^showing_my_items}}
                             <li class="choice_my_items">
@@ -57,33 +57,30 @@
                 </ul>
             </div>
             
-            <div class="switcher collection-filter">
-                <a class="switcher-top menuclosed"">                
-                    <span class="switcher-prefix">Tags </span>
-                    <span class="down-arrow"  onclick="switcher(this.parentNode)"></span>
-                </a>
-                <div class="switcher-options">
-                    {{^tags}}
-                        No tags
-                    {{/tags}}
+            
+            <div>
+                <span class="course-tags-prefix">Tags </span>
+                <select class="course-tags"
+                    data-placeholder="Select tags" 
+                    multiple="multiple">
                     {{#tags}}
-                        <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
+                        <option value="{{name}}">{{name}}</option>
                     {{/tags}}
-                </div>
-                
-                {{#active_filter_count?}}
-                    <div class="switcher-active-filters">
-                        {{#active_filters}}
-                            {{#tag?}}
-                                <div class="switcher-active-filter">
-                                    <span>{{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
-                                </div>
-                            {{/tag?}}
-                        {{/active_filters}}
-                    </div>
-                {{/active_filter_count?}}
+                </select>
             </div>
-            <div class="visualclear"></div>
+            
+            {{#vocabulary}}
+            <div>
+                <span class="concept-prefix">{{display_name}}</span>
+                <select class="vocabulary" name="vocabulary-{{id}}"
+                    data-placeholder="Select {{display_name?lower()}}" multiple="multiple">
+                    {{#term_set}}
+                        <option value="{{id}}">{{display_name}}</option>
+                    {{/term_set}}
+                </select>
+            </div>
+            {{/vocabulary}}
+                        
         </div> {{! end filter widget }}
             
         <div class="collection-assets scroll annotation-embedding">

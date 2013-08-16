@@ -77,6 +77,7 @@
                 url += '?';
                 url += 'project_set__author__id__in=' + filters;
                 url += '&asset_set__sherdnote_set__author__id__in=' + filters;
+                /* @TODOurl += '&asset_set__sherdnote_set__range1__isnull=False';*/
                 url += '&order_by=title';
             }
             

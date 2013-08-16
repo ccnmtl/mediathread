@@ -25,7 +25,7 @@ class SherdNoteResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 8)
+        self.assertEquals(len(objects), 9)
 
         self.assertNoteEquals(objects[0], '1', 'Manage Sources',
                               'Instructor One', False)
@@ -42,16 +42,16 @@ class SherdNoteResourceTest(ResourceTestCase):
         self.assertNoteEquals(objects[4], '2', 'The Award',
                               'Student One', False)
 
-        #self.assertNoteEquals(objects[5], '2', None,
-        #                      'Student One', True)
+        self.assertNoteEquals(objects[5], '2', None,
+                              'Student One', True)
 
-        self.assertNoteEquals(objects[5], '2', 'Nice Tie',
+        self.assertNoteEquals(objects[6], '2', 'Nice Tie',
                               'Student Two', False)
 
-        self.assertNoteEquals(objects[6], '1', 'Whole Item Selection',
+        self.assertNoteEquals(objects[7], '1', 'Whole Item Selection',
                               'Instructor One', False)
 
-        self.assertNoteEquals(objects[7], '1',
+        self.assertNoteEquals(objects[8], '1',
                               'Video Selection Is Time-based',
                               'test_instructor_two', False)
 
@@ -72,7 +72,7 @@ class SherdNoteResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 7)
+        self.assertEquals(len(objects), 8)
 
         self.assertNoteEquals(objects[0], '1', 'Manage Sources',
                               'Instructor One', False)
@@ -89,12 +89,12 @@ class SherdNoteResourceTest(ResourceTestCase):
         self.assertNoteEquals(objects[4], '2', 'The Award',
                               'Student One', False)
 
-        #self.assertNoteEquals(objects[5], '2', None, 'Student One', True)
+        self.assertNoteEquals(objects[5], '2', None, 'Student One', True)
 
-        self.assertNoteEquals(objects[5], '1', 'Whole Item Selection',
+        self.assertNoteEquals(objects[6], '1', 'Whole Item Selection',
                               'Instructor One', False)
 
-        self.assertNoteEquals(objects[6], '1',
+        self.assertNoteEquals(objects[7], '1',
                               'Video Selection Is Time-based',
                               'test_instructor_two', False)
 
@@ -153,10 +153,9 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Own Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/9/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
-#         self.assertValidJSONResponse(response)
-#         json = self.deserialize(response)
-#         self.assertNoteEquals(json, '2', None, 'Student One', True)
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+        self.assertNoteEquals(json, '2', None, 'Student One', True)
 
         # Instructor Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/5/',
@@ -202,10 +201,9 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Own Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/9/',
                                        format='json')
-#         self.assertValidJSONResponse(response)
-#         json = self.deserialize(response)
-#         self.assertNoteEquals(json, '2', None, 'Student One', True)
-        self.assertEqual(response.status_code, 404)
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+        self.assertNoteEquals(json, '2', None, 'Student One', True)
 
         # Instructor Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/5/',
@@ -240,39 +238,39 @@ class SherdNoteResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 8)
+        self.assertEquals(len(objects), 11)
 
-#       self.assertNoteEquals(objects[0], '1', None,
-#                             'Instructor One', True)
+        self.assertNoteEquals(objects[0], '1', None,
+                              'Instructor One', True)
 
-        self.assertNoteEquals(objects[0], '1', 'Manage Sources',
+        self.assertNoteEquals(objects[1], '1', 'Manage Sources',
                               'Instructor One', False)
 
-        self.assertNoteEquals(objects[1], '1', 'Annotations',
+        self.assertNoteEquals(objects[2], '1', 'Annotations',
                               'Instructor One', False)
 
-        #self.assertNoteEquals(objects[3], '2', None,
-        #                      'Instructor One', True)
+        self.assertNoteEquals(objects[3], '2', None,
+                              'Instructor One', True)
 
-        self.assertNoteEquals(objects[2], '2', 'Our esteemed leaders',
+        self.assertNoteEquals(objects[4], '2', 'Our esteemed leaders',
                               'Instructor One', False)
 
-        #self.assertNoteEquals(objects[5], '3', None,
-        #                      'Instructor One', True)
+        self.assertNoteEquals(objects[5], '3', None,
+                              'Instructor One', True)
 
-        self.assertNoteEquals(objects[3], '3', 'Left Corner',
+        self.assertNoteEquals(objects[6], '3', 'Left Corner',
                               'Instructor One', False)
 
-        self.assertNoteEquals(objects[4], '2', 'The Award',
+        self.assertNoteEquals(objects[7], '2', 'The Award',
                               'Student One', False)
 
-        self.assertNoteEquals(objects[5], '2', 'Nice Tie',
+        self.assertNoteEquals(objects[8], '2', 'Nice Tie',
                               'Student Two', False)
 
-        self.assertNoteEquals(objects[6], '1', 'Whole Item Selection',
+        self.assertNoteEquals(objects[9], '1', 'Whole Item Selection',
                               'Instructor One', False)
 
-        self.assertNoteEquals(objects[7], '1',
+        self.assertNoteEquals(objects[10], '1',
                               'Video Selection Is Time-based',
                               'test_instructor_two', False)
 
@@ -313,10 +311,9 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Instructor's Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/4/',
                                        format='json')
-#         self.assertValidJSONResponse(response)
-#         json = self.deserialize(response)
-#         self.assertNoteEquals(json, '2', None, 'Instructor One', True)
-        self.assertEqual(response.status_code, 404)
+        self.assertValidJSONResponse(response)
+        json = self.deserialize(response)
+        self.assertNoteEquals(json, '2', None, 'Instructor One', True)
 
         # Peer Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/10/',
@@ -484,7 +481,7 @@ class SherdNoteResourceTest(ResourceTestCase):
 
         json = self.deserialize(response)
         objects = json['objects']
-        self.assertEquals(len(objects), 11)
+        self.assertEquals(len(objects), 12)
 
         self.assertNoteEquals(objects[0], '1', 'Manage Sources',
                               'Instructor One', False)
@@ -513,12 +510,12 @@ class SherdNoteResourceTest(ResourceTestCase):
         self.assertNoteEquals(objects[8], '4', 'Whole Item Selection',
                               'test_student_three', False)
 
-        #self.assertNoteEquals(objects[9], '4', None,
-        #                      'test_student_three', True)
+        self.assertNoteEquals(objects[9], '4', None,
+                              'test_student_three', True)
 
-        self.assertNoteEquals(objects[9], '1', 'Whole Item Selection',
+        self.assertNoteEquals(objects[10], '1', 'Whole Item Selection',
                               'Instructor One', False)
 
-        self.assertNoteEquals(objects[10], '1',
+        self.assertNoteEquals(objects[11], '1',
                               'Video Selection Is Time-based',
                               'test_instructor_two', False)

@@ -1,3 +1,4 @@
+from django.db.models.query_utils import Q
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
@@ -13,11 +14,13 @@ class SherdNoteAuthorization(Authorization):
 
     def apply_limits(self, request, object_list):
         if request.user.is_authenticated():
-            object_list = object_list.exclude(range1__isnull=True)
+            # only request user's global annotations
+            object_list = object_list.exclude(~Q(author=request.user),
+                                              range1__isnull=True)
 
             # Make sure the requesting user is allowed to see this note
             invisible = []
-            for note in object_list:
+            for note in object_list.all():
                 course = note.asset.course
 
                 if not course.is_member(request.user):
@@ -48,7 +51,10 @@ class SherdNoteResource(ModelResource):
         excludes = ['tags', 'body', 'added', 'modified']
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        filtering = {'author': ALL_WITH_RELATIONS}
+        filtering = {
+            'author': ALL_WITH_RELATIONS,
+            'range1': ALL_WITH_RELATIONS,
+        }
 
         # User is logged into some course
         authentication = ClassLevelAuthentication()

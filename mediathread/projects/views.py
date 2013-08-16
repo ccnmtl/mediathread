@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from djangohelpers.lib import allow_http
+from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import render_tags_by_course
@@ -343,11 +344,15 @@ def project_workspace(request, project_id, feedback=None):
             request, Vocabulary.objects.get_for_object(request.course))
         course_tags = render_tags_by_course(request)
 
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
         # Create a place for asset editing
         panel = {'panel_state': 'closed',
                  'panel_state_label': "Item Details",
                  'template': 'asset_quick_edit',
                  'update_history': False,
+                 'owners': owners,
                  'vocabulary': vocabulary,
                  'course_tags': course_tags,
                  'context': {'type': 'asset'}}

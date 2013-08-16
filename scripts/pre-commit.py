@@ -23,6 +23,7 @@ CHECKS = [
         'match_files': ['.*\.py$'],
         'ignore_files': ['.*migrations.*', '.*management/commands.*',
                          '.*manage.py', '.*/scripts/.*', '.*/ve/.*',
+                         '.*settings_test.py',
                          '.*scripts/pre-commit\.py$',
                          '.*scripts/minify-js\.py$',
                          '.*scripts/minify-mustache\.py$',

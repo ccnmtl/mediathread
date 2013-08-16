@@ -117,6 +117,10 @@
             var value = String(this.get_object(name, context, this.context) || '');
             return value.toUpperCase();
         };
+        Mustache.Renderer.prototype.filters_supported.lower = function (name, context, args) {
+            var value = String(this.get_object(name, context, this.context) || '');
+            return value.toLowerCase();
+        };
         Mustache.Renderer.prototype.filters_supported['default'] = function (name, context, args) {
             var lookup = this.get_object(name, context, this.context);
             if (lookup) {

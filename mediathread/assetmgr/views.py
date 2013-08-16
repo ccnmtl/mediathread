@@ -12,7 +12,6 @@ from django.template import RequestContext
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.lib import filter_by, get_active_filters
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
@@ -98,9 +97,13 @@ def asset_workspace(request, asset_id=None, annot_id=None):
         request, Vocabulary.objects.get_for_object(request.course))
     course_tags = render_tags_by_course(request)
 
+    user_resource = UserResource()
+    owners = user_resource.render_list(request, request.course.members)
+
     data['panels'] = [{'panel_state': 'open',
                        'panel_state_label': "Annotate Media",
                        'context': context,
+                       'owners': owners,
                        'vocabulary': vocabulary,
                        'course_tags': course_tags,
                        'template': 'asset_workspace',
@@ -207,6 +210,11 @@ def asset_create(request):
     elif request.is_ajax():
         return HttpResponse(serializers.serialize('json', asset),
                             mimetype="application/json")
+    elif "archive" == asset.primary.label:
+        redirect_url = request.POST.get('redirect-url',
+                                        reverse('class-manage-sources'))
+        url = "%s?newsrc=%s" % (redirect_url, asset.title)
+        return HttpResponseRedirect(url)
     else:
         return HttpResponseRedirect(asset_url)
 
@@ -453,15 +461,6 @@ def final_cut_pro_xml(request, asset_id):
         return HttpResponse('Not Implemented: No Final Cut Pro Xmeml support',
                             status=503)
 
-'''
-    Refactoring
-    - Remove detail_asset_json rendering from asset_workplace.
-        It shouldn't need it
-    - Verify get_assets list for gallery.mustache & collection.mustache.
-    (assets_by_user, assets_by_course calls from Full Collection View AND
-     from Project Edit View)
-'''
-
 
 @login_required
 @allow_http("GET")
@@ -498,7 +497,7 @@ def assets_by_user(request, record_owner_name):
 
     assets = Asset.objects.annotated_by(course,
                                         record_owner,
-                                        include_archives=False)
+                                        include_archives=True)
 
     return render_assets(request, record_owner, assets)
 
@@ -518,9 +517,6 @@ def assets_by_course(request):
         .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
         .select_related().order_by('lower_title')
 
-    archives = list(request.course.asset_set.archives())
-    assets = [a for a in assets if a not in archives]
-
     return render_assets(request, None, assets)
 
 
@@ -530,15 +526,6 @@ def render_assets(request, record_owner, assets):
 
     # Is the current user faculty OR staff
     is_faculty = course.is_faculty(logged_in_user)
-
-    # Filter the assets
-    for fil in filter_by:
-        filter_value = request.GET.get(fil)
-        if filter_value:
-            assets = [asset for asset in assets
-                      if filter_by[fil](asset, filter_value, record_owner)]
-
-    active_filters = get_active_filters(request, filter_by)
 
     # Can the record_owner edit the records
     viewing_own_records = (record_owner == logged_in_user)
@@ -557,14 +544,21 @@ def render_assets(request, record_owner, assets):
 
     # Spew out json for the assets
     resource = AssetResource(include_annotations,
+                             False,  # include archives
                              owner_selections_are_visible,
                              record_owner,
                              {'editable': viewing_own_records,
                               'citable': citable})
     asset_json = resource.render_list(request, assets)
 
+    active_filters = {}
+    for key, val in request.GET.items():
+        if (key == 'tag' or
+            key == 'modified' or
+                key.startswith('vocabulary-')):
+            active_filters[key] = val
+
     user_resource = UserResource()
-    owners = user_resource.render_list(request, request.course.members)
 
     # Assemble the context
     data = {'assets': asset_json,
@@ -572,7 +566,6 @@ def render_assets(request, record_owner, assets):
             'space_viewer': user_resource.render_one(request, logged_in_user),
             'editable': viewing_own_records,
             'citable': citable,
-            'owners': owners,
             'is_faculty': is_faculty}
 
     if record_owner:

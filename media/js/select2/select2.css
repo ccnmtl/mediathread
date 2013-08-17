@@ -159,7 +159,6 @@ Version: 3.4.1 Timestamp: Thu Jun 27 18:02:10 PDT 2013
     top: 100%;
 
     background: #fff;
-    color: #000;
     border: 1px solid #ccc;
     border-top: 0;
 
@@ -433,7 +432,7 @@ Version: 3.4.1 Timestamp: Thu Jun 27 18:02:10 PDT 2013
 disabled look for disabled choices in the results dropdown
 */
 .select2-results .select2-disabled.select2-highlighted {
-    color: #666;
+    color: #777;
     background: #f4f4f4;
     display: list-item;
     cursor: default;
@@ -531,7 +530,7 @@ disabled look for disabled choices in the results dropdown
 
     font-family: sans-serif;
     font-size: 100%;
-    color: #666;
+    color: #777;
     outline: 0;
     border: 0;
     -webkit-box-shadow: none;
@@ -554,7 +553,6 @@ disabled look for disabled choices in the results dropdown
     position: relative;
 
     line-height: 13px;
-    color: #333;
     cursor: default;
     border: 1px solid #cccccc;
 

@@ -612,8 +612,7 @@
                     var parent = jQuery(active).parents("div.accordion");
                     jQuery(parent).accordion("activate", active);
                 }
-                
-                jQuery("#asset-global-annotation, #annotations-organized").fadeIn();
+                jQuery(self.eltsAnnotationDisplay).fadeIn();
             });
             return false;
         };
@@ -661,7 +660,7 @@
                     self._update({
                         'annotation_id': self.active_annotation.id,
                         'editing': true },
-                        "annotation-current");
+                        "annotation-current");                    
                 });
             return false;
         };

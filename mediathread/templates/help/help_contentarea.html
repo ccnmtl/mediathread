@@ -6,7 +6,7 @@
 <div id="{{help_id}}-tab"
     class="ui-widget-content help-tab"
     {% if not default_help_state %}style="display: none"{% endif %}>
-        <input class="dismiss-help" type="image" title="Dismiss help" 
+        <input class="btn-primary right" type="image" title="Dismiss help" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
             alt="Dismiss Help"
             src="/site_media/img/icons/meth_help.png" />

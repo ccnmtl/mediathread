@@ -190,17 +190,26 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
 AssetPanelHandler.prototype.resize = function () {
     var self = this;
     
+    if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized')) {
+        jQuery("td.asset-view-header").show();
+    } else {
+        jQuery("td.asset-view-header").hide();
+    }
+    
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||
             jQuery(self.el).find('td.panel-container.collection').hasClass('maximized')) {
         
         var visible = getVisibleContentHeight();
-        visible -= jQuery("#collection-column-container-title").outerHeight();
-        visible -= 30; // about half the footer size
+        visible -= jQuery("tr.asset-workspace-title-row").outerHeight();
     
         // Resize the collections box, subtracting its header elements
-        var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height() + 23;
+        var collectionHeight = visible;
+        if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized')) {
+            collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
+        }
         jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
         
+        visible += 10;
         jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
         
         jQuery(self.el).find('div.asset-view-published').css('height', (visible) + "px");
@@ -215,8 +224,8 @@ AssetPanelHandler.prototype.resize = function () {
         jQuery(self.el).find('div#annotations-organized').css('height', (visible - 5) + "px");
         
         visible -= jQuery("div#annotations-organized h2").outerHeight() +
-            jQuery("div#annotations-organized div.ui-widget-header").outerHeight();
-        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible - 10) + "px");
+            jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 36;
+        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
         jQuery("div.accordion").accordion("resize");
     }
 };

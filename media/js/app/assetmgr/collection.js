@@ -411,6 +411,16 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return false;
             });
             
+            jQuery("#collection-help-button").unbind('click').click(function() {
+                jQuery("#collection-overlay, #collection-help, #collection-help-tab").show();
+                return false;
+            });
+            
+            jQuery(self.el).find(".dismiss-help").unbind('click').click(function() {
+                jQuery("#collection-overlay, #collection-help, #collection-help-tab").hide();
+                return false;
+            });            
+            
             if (self.view_callback) {
                 self.view_callback();
             }

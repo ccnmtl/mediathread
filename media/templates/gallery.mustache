@@ -1,6 +1,58 @@
 {{#>>media_gallery}}
 <div class="media_gallery">
     <div class="media-column">
+        <div id="collection-overlay" class="ui-widget-overlay help-overlay" style="display: none"></div>
+        
+        <div id="collection-help-tab" class="ui-widget-content collection-help-tab" style="display: none">
+                <input class="dismiss-help" type="image" title="Dismiss help" 
+                    alt="Dismiss Help" src="/site_media/img/icons/meth_help.png" />
+        </div>
+        
+        
+        <div id="collection-help" class="ui-widget-content collection-help" style="display: none">
+            <h5>Mediathread collection</h5>
+            <div class="feature-help-instructions">
+                A collection is a set of images, video and/or audio brought into Mediathread that 
+                can be annotated, organized, and embedded into essays and other written analysis.
+            </div>
+            <br />
+            <h5>How do I build my collection?</h5>
+            <div class="feature-help-instructions">
+                <ul>
+                    {{#is_faculty?}}
+                        <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
+                        bookmarking items from sites such as YouTube or Flickr.
+                        To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
+                        on the <a href="/">home</a> page and follow the directions. <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>
+                        </li>
+                        
+                        <li style="margin-bottom: 4px">
+                            <b>Upload</b>: Video and audio files may be uploaded 
+                            into Mediathread when you enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>.
+                            An <b>Upload from Computer</b> link and directions then appear on the <a href="/">home</a> page.  
+                        </li>
+                    {{/is_faculty?}}
+                    {{^is_faculty}}                                            
+                            <li style="margin-bottom: 4px"><b>Import</b>: Build your collection 
+                            by bookmarking items from sites such as YouTube or Flickr.
+                            To install the bookmarklet into your browser, click the <b>Import into Collection</b> 
+                            on the <a href="/">home</a> page and follow directions. Your instructor also may list 
+                            recommended sites on the home page.</li>
+                            <li><b>Upload</b>: If this feature is enabled, 
+                            you may upload video and audio files from your computer. Click the 
+                            <b>Upload from Computer</b> on the <a href="/">home</a> page and 
+                            follow directions.</li>                                            
+                    {{/is_faculty}}
+               </ul>                                     
+            </div>
+            <div class="visualclear"></div>
+            <div style="float: right">    
+                <input class="btn-primary right dismiss-help" type="button" 
+                    onclick="javascript:CollectionList.dismissHelp(this)" 
+                    value="Dismiss Help">
+            </div>                         
+        </div>
+    
         <div class="filter-widget">
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser">                
@@ -89,42 +141,8 @@
                 {{^assets}}
                     <div class="default-content intro-text feature-help"">
                         {{^active_filter_count}}
-                            {{#showing_my_items?}}                                                              
-                                <strong>Mediathread collection</strong>
-                                <div class="feature-help-instructions">
-                                    A collection is a set of images, video and/or audio brought into Mediathread that 
-                                    can be annotated, organized, and embedded into essays and other written analysis.
-                                </div>
-                                
-                                <strong>How do I build my collection?</strong><br />
-                                <div class="feature-help-instructions">
-                                    <ul>
-                                        {{#is_faculty?}}
-                                            <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
-                                            bookmarking items from sites such as YouTube or Flickr.
-                                            To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
-                                            on the <a href="/">home</a> page and follow directions. <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>
-                                            </li>
-                                            
-                                            <li style="margin-bottom: 4px">
-                                                <b>Upload</b>: Video and audio files may be uploaded 
-                                                into Mediathread when you enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>.
-                                                An <b>Upload from Computer</b> link and directions then appear on the home page.  
-                                            </li>
-                                        {{/is_faculty?}}
-                                        {{^is_faculty}}                                            
-                                                <li style="margin-bottom: 4px"><b>Import</b>: Build your collection 
-                                                by bookmarking items from sites such as YouTube or Flickr.
-                                                To install the bookmarklet into your browser, click the <b>Import into Collection</b> 
-                                                on the <a href="/">home</a> page and follow directions. Your instructor also may list 
-                                                recommended sites on the home page.</li>
-                                                <li><b>Upload</b>: If this feature is enabled, 
-                                                you may upload video and audio files from your computer. Click the 
-                                                <b>Upload from Computer</b> on the <a href="/">home</a> page and 
-                                                follow directions.</li>                                            
-                                        {{/is_faculty}}
-                                   </ul>                                     
-                                </div>                         
+                            {{#showing_my_items?}}
+                                <h5>You have not collected any items. Click the ? mark above to learn how to collect items</h5>                                                               
                             {{/showing_my_items?}}
                             {{^showing_my_items}}
                                 <h5>This class participant has not collected any materials yet.</h5>                                

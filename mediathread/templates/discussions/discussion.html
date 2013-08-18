@@ -8,11 +8,17 @@
 {% block css %}
     {{ block.super }}
     
+    <link rel="stylesheet" href="/site_media/js/select2/select2.css" media="screen" />
+    
     <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
     <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
     
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block extrahead %}    
+    <script type="text/javascript" src="/site_media/js/select2/select2.min.js"></script>    
 {% endblock %}
 
 {% block js %}

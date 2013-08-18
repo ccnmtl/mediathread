@@ -288,7 +288,7 @@ CollectionList.prototype.updateSwitcher = function () {
         if (name in self.current_records.active_filters &&
                 self.current_records.active_filters[name].length > 0) {
            
-            jQuery("select[name='" + name + "']").select2("val",
+            jQuery(self.el).find("select[name='" + name + "']").select2("val",
                    self.current_records.active_filters[name].split(","));
         }
     });

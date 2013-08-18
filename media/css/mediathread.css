@@ -1589,6 +1589,8 @@ div.panhandle-left.asset-workspace {
     border: 1px solid #A88448;
 }
 
+tr.discussion-content-row div.pantab.collection,
+tr.discussion-content-row td.panhandle-stripe.collection,
 tr.project-content-row div.pantab.collection,
 tr.project-content-row td.panhandle-stripe.collection {
         background-color: #A88448;
@@ -4094,13 +4096,15 @@ div.ui-dialog div.asset-view-details h2 {
     margin-top: 0;
 }
     
-
+div.panel.discussion .filter-widget,
 div.panel.composition .filter-widget,
 div.panel.assignment .filter-widget {
     margin: 6px 0 0 6px;
 }
 
-
+div.panel.discussion td.panel-container.collection div.collection-date-filter,
+div.panel.discussion td.panel-container.collection div.collection-filter,
+div.panel.discussion td.panel-container.collection div.collection-chooser,
 div.panel.assignment td.panel-container.collection div.collection-date-filter,
 div.panel.assignment td.panel-container.collection div.collection-filter,
 div.panel.assignment td.panel-container.collection div.collection-chooser,
@@ -4111,19 +4115,23 @@ div.panel.composition td.panel-container.collection div.collection-chooser {
     margin-right: 12px;    
 }
 
+div.panel.discussion td.panel-container.collection div.collection-date-filter .switcher-options,
 div.panel.composition td.panel-container.collection div.collection-date-filter .switcher-options,
 div.panel.assignment td.panel-container.collection div.collection-date-filter .switcher-options {
     left: -9px;
     width: 308px;    
 }
 
+div.panel.discussion div.collection-chooser .switcher-options,
 div.panel.composition div.collection-chooser .switcher-options,
 div.panel.assignment div.collection-chooser .switcher-options {  
     width: 294px;
     left: 5px;
 }
 
-
+div.panel.discussion div.vocabulary,
+div.panel.discussion div.course-tags,
+div.panel.discussion div.collection-filter select,
 div.panel.composition div.vocabulary,
 div.panel.composition div.course-tags,
 div.panel.composition div.collection-filter select,

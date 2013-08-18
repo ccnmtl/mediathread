@@ -816,10 +816,12 @@
         };
         
         this._initConcepts = function() {
+            var elt;
+            
             jQuery("select.vocabulary").select2({});
             
             if (self.active_asset && self.active_asset.global_annotation) {
-                var elt = jQuery("#edit-global-annotation-form");
+                elt = jQuery("#edit-global-annotation-form");
                 self._selectConcepts(elt,
                     self.active_asset.global_annotation.vocabulary);
             }

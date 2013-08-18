@@ -9,10 +9,14 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
+from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
+from mediathread.main.course_details import render_tags_by_course
 from mediathread.main.decorators import faculty_only
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary
 from random import choice
 from string import letters
 from structuredcollaboration.models import Collaboration
@@ -91,9 +95,19 @@ def discussion_create(request):
         return HttpResponseRedirect("/discussion/%d/" %
                                     new_threaded_comment.id)
     else:
+        vocabulary = VocabularyResource().render_list(
+            request, Vocabulary.objects.get_for_object(request.course))
+        course_tags = render_tags_by_course(request)
+
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
         data = {'panel_state': 'open',
                 'panel_state_label': "Instructor Feedback",
                 'template': 'discussion',
+                'owners': owners,
+                'vocabulary': vocabulary,
+                'course_tags': course_tags,
                 'context': threaded_comment_json(request,
                                                  new_threaded_comment)}
 
@@ -137,11 +151,21 @@ def discussion_view(request, discussion_id):
         return render_to_response('discussions/discussion.html', data,
                                   context_instance=RequestContext(request))
     else:
+        vocabulary = VocabularyResource().render_list(
+            request, Vocabulary.objects.get_for_object(request.course))
+        course_tags = render_tags_by_course(request)
+
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
         data['panels'] = [{
             'panel_state': 'open',
             'subpanel_state': 'open',
             'panel_state_label': "Discussion",
             'template': 'discussion',
+            'owners': owners,
+            'vocabulary': vocabulary,
+            'course_tags': course_tags,
             'title': root_comment.title,
             'can_edit_title': my_course.is_faculty(request.user),
             'root_comment_id': root_comment.id,
@@ -153,7 +177,10 @@ def discussion_view(request, discussion_id):
                  'panel_state_label': "Item Details",
                  'template': 'asset_quick_edit',
                  'update_history': False,
-                 'show_colleciton': False,
+                 'show_collection': False,
+                 'owners': owners,
+                 'vocabulary': vocabulary,
+                 'course_tags': course_tags,
                  'context': {'type': 'asset'}}
 
         data['panels'].append(panel)

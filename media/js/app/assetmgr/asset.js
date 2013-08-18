@@ -900,7 +900,7 @@
                     }
                 };
             } else if (self.active_asset && (self.active_asset.user_analysis === undefined ||
-                        self.active_asset.user_analysis < 1)) {
+                       self.active_asset.user_analysis < 1)) {
                 context.show_help = self.user_settings.help_item_detail_view;
             }
             context.show_help_checked = !self.user_settings.help_item_detail_view;
@@ -919,6 +919,7 @@
                         asset: {}
                     });
                     
+                    Mustache.update("asset-view-help", context);
                     Mustache.update("asset-view-header", context);
                     Mustache.update("asset-global-annotation", context);
                     Mustache.update("asset-references", context);

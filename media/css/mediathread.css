@@ -1092,7 +1092,8 @@ div.button-form form, div.button-form.inline form {
 
 /* LOGIN PAGE */
 #id_username, #id_password {
-    width: 125px;    
+    width: 125px;
+    border: 1px solid #333333;    
 }
 
 #introduction {
@@ -3034,7 +3035,8 @@ p.sherd-instructions {
 div#clipform-tools input.videoplay {
     margin-top: -3px;
     width: 20px;
-    height: 20px;    
+    height: 20px;
+    border: 0;    
 }
 
 .sherd-clipform-editing td {

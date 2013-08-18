@@ -56,7 +56,8 @@
                                 </div>
                                 
                                 <div class="tabs asset-view-tabs" style="display: none">
-    
+                                    {{#>>asset-view-help}}
+                                    <div id="asset-view-help">
                                     <div id="asset-view-overlay" class="ui-widget-overlay ui-widget-overlay-dark" {{^show_help}}style="display: none"{{/show_help}}></div>
     
                                     <div id="asset-view-help-tab" class="ui-widget-content asset-view-help-tab" {{^show_help}}style="display: none"{{/show_help}}>
@@ -88,6 +89,8 @@
                                                 value="Dismiss Help">
                                         </div>
                                     </div>
+                                    </div>
+                                    {{/>>asset-view-help}}
                                     
                                     <ul>
                                         <li><a href="#tabs-1">Item</a></li>

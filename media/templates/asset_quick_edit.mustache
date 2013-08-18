@@ -6,7 +6,7 @@
                         {{#>>asset-view-header}}
                             <div id="asset-view-header">
                                 {{#asset-current}}
-                                     <div class="asset-view-title"><h1>{{title}}</h1></div>
+                                     <div class="asset-view-title"><h3>{{title}}</h3></div>
                                 {{/asset-current}}                             
                              </div>
                         {{/>>asset-view-header}}
@@ -28,7 +28,7 @@
                                         style="display: none"
                                     {{/annotation.editing?}}>
                                         
-                                    <h1>Edit Item</h1>
+                                    <h2>Edit Item</h2>
                                     <form id="edit-global-annotation-form" method="post"
                                         {{#asset-current.global_annotation.id?}}
                                         action="/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
@@ -75,11 +75,11 @@
                                             </div>
                                             <br />
                                         {{/asset-current}}
-                                        <input class="metadata-value-edit media"
+                                        <input class="btn-primary right"
                                             type="submit" name="submit_notes" value="Save Item" 
                                             onclick="return AnnotationList.saveItem(this)"></input>
                                             
-                                        <input class="metadata-value-edit media"
+                                        <input class="btn-primary right"
                                             type="submit" name="submit_notes_cancel" value="Cancel" 
                                             onclick="return AnnotationList.cancelItem(this)"></input>
                                         <div class="visualclear"></div>
@@ -111,7 +111,7 @@
                                                  {{/annotation_data}}> 
                                             </div>
                                         
-                                            <h1>
+                                            <h2>
                                                 {{#id?}}
                                                     Edit Selection
                                                 {{/id?}}
@@ -123,7 +123,7 @@
                                                         Create Selection
                                                     {{/copying}}
                                                  {{/id}}
-                                            </h1>
+                                            </h2>
                                             {{/annotation}}
                                             
                                             <form name="edit-annotation-form" onsubmit="return false;">
@@ -134,7 +134,7 @@
                                                 <div id="annotation-body">
                                                 <label for="annotation-title">Title:</label>
                                                 <div>
-                                                <input style="width: 75%" type="text" id="id_annotation-title"
+                                                <input type="text" id="id_annotation-title"
                                                     name="annotation-title" value="{{annotation.metadata.title}}"/>
                                                 </div>
                                                 <br />
@@ -155,7 +155,7 @@
                         
                                                 {{#annotation}}
                                                     <label for="annotation-tags">Tags</label> 
-                                                    <div><input style="width: 75%" type="text" id="id_annotation-tags" 
+                                                    <div><input type="text" id="id_annotation-tags" 
                                                         name="annotation-tags" 
                                                         value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
                                                     <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
@@ -167,10 +167,10 @@
                                                     <input type="hidden" name="annotation-range2" value="{{range2}}" />
                                                     <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
                                                     
-                                                    <input class="media secondary" type="button" name="Save" value="Save Selection" 
+                                                    <input class="btn-primary right" type="button" name="Save" value="Save Selection" 
                                                         onclick="javascript:AnnotationList.saveAnnotation(this)" />
                                                         
-                                                    <input class="media secondary" type="button" name="Cancel" value="Cancel" 
+                                                    <input class="btn-primary right" type="button" name="Cancel" value="Cancel" 
                                                         onclick="javascript:AnnotationList.cancelAnnotation()" />
                                                     
                                                     {{#id?}} <!-- Editing existing annotation -->

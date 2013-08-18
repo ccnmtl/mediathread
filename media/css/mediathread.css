@@ -201,6 +201,10 @@ a.btn-primary img,
     padding: 0 10px 0 0;
 }
 
+div.ui-dialog div.asset-view-details input.btn-primary {
+    padding: 4px 8px;
+    margin: 5px 0px 0px 6px;            
+}
 
 div.asset-workspace input.btn-primary {
     padding: 4px 8px;
@@ -1486,7 +1490,7 @@ div.panel.asset-workspace-dialog div.asset-view-published {
 }
 
 div.panel.asset-workspace-dialog div.asset-view-tabs {
-    margin-left: 15px;
+    margin-left: 5px;
     height: 450px;
     width: 285px;
 }
@@ -1673,6 +1677,7 @@ td.collection div.collection-help {
     width: 400px;
     top: 30px;
     right: 0px; 
+    font-size: .875em;    
 }
 
 td.collection.minimized div.collection-help {
@@ -2054,8 +2059,12 @@ div#media_gallery div.intro-text {
 td.panel-container.collection.minimized div.feature-help {
     text-align: left !important;
     width: 90% !important;
-    border: 0 !important;
     margin-left: 0 !important;
+}
+
+td.panel-container.collection.minimized div.intro-text {
+    border: 0 !important;
+    padding: 0 !important;    
 }
 
 td.panel-container.collection.minimized div.intro-text ul {
@@ -3019,6 +3028,7 @@ p.sherd-instructions {
 .sherd-clipform-editing input.videoplay {
     width: 25px;
     margin: -2px 0 0 -5px;
+    border: 0;
 }
 
 div#clipform-tools input.videoplay {
@@ -3041,6 +3051,17 @@ div#clipform-tools input.videoplay {
 }
 
 /** Intermame CSS **/
+
+input[type="text"],
+textarea {
+    border: 1px solid #ccc;
+}
+
+input {
+    border: 1px solid #333333;
+}
+
+border: 1px solid #333333;
 
 input[type="checkbox"] {
     border: none; /* IE 8,9 look very very odd with a border */
@@ -3507,10 +3528,6 @@ div#asset-view-overlay {
     padding-right: 10px;
 }
 
-td.panel-container.asset-workspace input.help-button {
-    
-}
-
 input#collection-help-button {
     margin-top: 10px;
     opacity: 0.5;
@@ -3571,7 +3588,7 @@ div.asset-view-help-tab {
     border: none;
 }
 
-div.asset-view-help-tab input.dismiss-help {
+input[type=image].dismiss-help {
      border: none;
 }
 
@@ -3634,7 +3651,7 @@ ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
 }
 
-div.asset-view-container div.asset-view-details h1 {
+div.asset-view-con  tainer div.asset-view-details h1 {
     font-size: 1.25em;
     font-weight: bold;
 }
@@ -4066,6 +4083,15 @@ div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
     background-color: #175D35;
     color: white;
 }
+
+div.ui-dialog div.asset-view-details {
+    font-size: .875em;
+}
+
+div.ui-dialog div.asset-view-details h2 {
+    margin-top: 0;
+}
+    
 
 div.panel.composition .filter-widget,
 div.panel.assignment .filter-widget {

@@ -1,6 +1,9 @@
 from courseaffils.models import Course
+#from django.contrib.auth.models import User
+#from mediathread.assetmgr.models import Asset
 from mediathread.main import course_details
 from tastypie.test import ResourceTestCase
+#import datetime
 
 
 class AssetResourceTest(ResourceTestCase):
@@ -335,3 +338,27 @@ class AssetResourceTest(ResourceTestCase):
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+#     def test_student_getlist_bymodified(self):
+#         self.assertTrue(
+#             self.api_client.client.login(username="test_student_one",
+#                                          password="test"))
+#
+#         user = User.objects.get(username="test_student_one")
+#         asset = Asset.objects.get(id=1)
+#         ga = asset.global_annotation(user, False)
+#         ga.modified = datetime.today()
+#         ga.save()
+#
+#         response = self.api_client.get('/_main/api/v1/asset/?modified=today',
+#                                        format='json')
+#         self.assertValidJSONResponse(response)
+#
+#         json = self.deserialize(response)
+#         objects = json['objects']
+#         self.assertEquals(len(objects), 4)
+#
+#         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
+#                                'Instructor One', 'youtube', [2, 3, 17, 19],
+#                                'http://localhost:8002/site_media/img/test/'
+#                                'mediathread_introduction_thumb.jpg')

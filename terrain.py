@@ -804,58 +804,55 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
 
     assert column, "Unable to find a column entitled %s" % title
 
-    filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter a.switcher-top span.down-arrow")
+    filter_menu = column.find_element_by_css_selector("div.course-tags input")
     filter_menu.click()
 
-    tags = column.find_elements_by_css_selector(
-        "div.switcher.collection-filter a.switcher-choice.filterbytag")
-
-    for t in tags:
-        if t.text == tag:
-            filter_menu.click()
-            return
-
-    filter_menu.click()
-    assert False, "Unable to filter by %s tag" % tag
-
-
-@step(u'I filter by "([^"]*)" in the ([^"]*) column')
-def i_filter_by_tag_in_the_title_column(step, tag, title):
-    column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-    assert column, "Unable to find a column entitled %s" % title
-
-    filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter a.switcher-top span.down-arrow")
-    filter_menu.click()
-
-    tags = column.find_elements_by_css_selector(
-        "div.switcher.collection-filter a.switcher-choice.filterbytag")
+    tags = world.browser.find_elements_by_css_selector("ul.select2-results li")
 
     for t in tags:
         if t.text == tag:
             t.click()
-            time.sleep(2)
+            time.sleep(1)
             return
 
     filter_menu.click()
     assert False, "Unable to filter by %s tag" % tag
 
 
-@step(u'I clear the filter in the ([^"]*) column')
-def i_clear_the_filter_in_the_title_column(step, title):
+@step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
+def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
         column = world.browser.find_element_by_css_selector(selector)
+
     assert column, "Unable to find a column entitled %s" % title
 
-    elt = column.find_element_by_css_selector("a.switcher-choice.remove")
-    elt.click()
-    time.sleep(2)
+    filter_menu = column.find_element_by_css_selector("div.course-tags input")
+    filter_menu.click()
+
+    tags = world.browser.find_elements_by_css_selector("ul.select2-results li")
+
+    for t in tags:
+        if t.text == tag:
+            assert False, "Found %s tag" % tag
+
+    # close the menu
+    world.browser.find_element_by_css_selector("body").click()
+
+
+@step(u'I clear all tags')
+def i_clear_all_tags(step):
+    selector = "a.select2-search-choice-close"
+    tag_count = len(world.browser.find_elements_by_css_selector(selector))
+
+    for x in range(0, tag_count):
+        tag = world.browser.find_element_by_css_selector(selector)
+        tag.click()
+        time.sleep(2)
+
+    tag_count = world.browser.find_elements_by_css_selector(selector)
+    assert True, tag_count == 0
 
 
 @step(u'Given publish to world is ([^"]*)')
@@ -889,30 +886,6 @@ def then_publish_to_world_is_value(step, value):
 
     msg = "The checked attribute was %s" % elt.get_attribute("checked")
     assert elt.get_attribute('checked'), msg
-
-
-@step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
-def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
-    column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-    assert column, "Unable to find a column entitled %s" % title
-
-    filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter")
-    assert filter_menu
-    filter_menu.click()
-
-    try:
-        tags = filter_menu.find_elements_by_css_selector(
-            "a.switcher-choice.filterbytag")
-        for t in tags:
-            if t.text == tag:
-                assert False, "Found %s tag" % tag
-    except NoSuchElementException:
-        # pass - there may be no tags
-        return
 
 
 @step(u'The "([^"]*)" project has no delete icon')

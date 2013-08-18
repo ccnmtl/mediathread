@@ -68,15 +68,19 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'owners': self.panel.owners,
             'vocabulary': self.panel.vocabulary,
             'course_tags': self.panel.course_tags,            
-            'view_callback': function () {
+            'view_callback': function (assetCount) {
                 jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
                 jQuery(self.el).find("a.edit-asset-inplace").bind("click", { self: self }, self.editItem);
                 
-                var container = jQuery(self.el).find('div.asset-table')[0];
-                jQuery(container).masonry({
-                    itemSelector : '.gallery-item',
-                    columnWidth: 25
-                });
+                if (assetCount > 0) {
+                    var container = jQuery(self.el).find('div.asset-table')[0];
+                    jQuery(container).masonry({
+                        itemSelector : '.gallery-item',
+                        columnWidth: 25
+                    });
+                } else {
+                    jQuery('div.asset-table').css('height', '400px');
+                }
                 
                 jQuery(window).trigger("resize");
             }

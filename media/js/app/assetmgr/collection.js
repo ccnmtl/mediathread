@@ -422,7 +422,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
             });            
             
             if (self.view_callback) {
-                self.view_callback();
+                self.view_callback(the_records.assets.length);
             }
             
             jQuery(window).trigger("resize");

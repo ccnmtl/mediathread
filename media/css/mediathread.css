@@ -1242,10 +1242,6 @@ table#sliding-content-container tr td.pantab-container {
     padding-right: 8px;
 }
 
-#asset_table .intro-text {
-    padding: 7px;
-}
-
 div.pantab {
     width: 18px;
     height: 25px;
@@ -1588,6 +1584,11 @@ div.panhandle-left.asset-workspace {
     border: 1px solid #A88448;
 }
 
+tr.project-content-row div.pantab.collection,
+tr.project-content-row td.panhandle-stripe.collection {
+        background-color: #A88448;
+}
+
 div.pantab.collection,
 td.panhandle-stripe.collection {
     background-color: #CCC;
@@ -1638,7 +1639,7 @@ div.collection-help-tab {
     z-index: 10002;
     padding: 2px;
     right: 0;
-    top: -6px;
+    top: 4px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -1668,10 +1669,9 @@ td.collection div.collection-help {
     -webkit-border-bottom-right-radius: 10px;    
     -moz-border-radius-bottomright: 10px;    
     border-bottom-right-radius: 10px;
-    top: 10px;
     border: none;
     width: 400px;
-    top: 20px;
+    top: 30px;
     right: 0px; 
 }
 
@@ -1760,20 +1760,6 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-r
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {
     float: right;
     width: 170px;    
-}
-
-/** Project Dialogs **/
-
-div.panel.composition form div.ui-dialog div.ui-dialog-titlebar {
-    background-image: none;
-    background-color: #3A84BF;
-    color: white;
-}
-
-div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
-    background-image: none;
-    background-color: #175D35;
-    color: white;
 }
 
 /** Shield Box **/
@@ -2054,6 +2040,26 @@ tr.discussion-content-row td.collection div.feature-help {
 div#media_gallery div.feature-help {
     position: static;
     width: 50%;
+    margin-left: 20px;
+}
+
+div#media_gallery div.intro-text {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;        
+}
+
+td.panel-container.collection.minimized div.feature-help {
+    text-align: left !important;
+    width: 90% !important;
+    border: 0 !important;
+    margin-left: 0 !important;
+}
+
+td.panel-container.collection.minimized div.intro-text ul {
+    margin: 0 1em 0.7em 1em;
 }
 
 div.homepage-column-info {
@@ -2103,7 +2109,7 @@ div.collection-chooser {
 }
 
 div.collection-chooser .switcher-options {  
-    width: 260px;
+    width: 225px;
 }
 
 div.collection-chooser a.switcher-top {
@@ -2185,7 +2191,7 @@ div.media-column .select2-container-multi .select2-choices {
     border: 1px solid #ccc;
     z-index: 9998;
     width:inherit;
-    left: -10px;
+    left: 5px;
     list-style: none;
     padding: 4px;    
     margin-top: -1px;
@@ -3501,13 +3507,19 @@ div#asset-view-overlay {
     padding-right: 10px;
 }
 
-input#asset-collection-help-button {
-    margin-top: 5px;
+td.panel-container.asset-workspace input.help-button {
+    
+}
+
+input#collection-help-button {
+    margin-top: 10px;
+    opacity: 0.5;
 }
 
 input#asset-view-help-button {
     margin-right: 10px;
-    margin-top: 5px;
+    margin-top: 10px;
+    opacity: 0.5;
 }
 
 div.asset-view-help {
@@ -3525,7 +3537,7 @@ div.asset-view-help {
     -webkit-border-bottom-right-radius: 10px;    
     -moz-border-radius-bottomright: 10px;    
     border-bottom-right-radius: 10px;
-    top: 10px;
+    top: 14px;
     border: none;
 }
 
@@ -3548,7 +3560,7 @@ div.asset-view-help-tab {
     margin: -1px 2px 0 0;
     padding: 2px;
     right: -10px;
-    top: -46px;
+    top: -41px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -4022,7 +4034,7 @@ div.panel.asset-workspace td.panel-container.collection.minimized div.collection
 
 div.panel.asset-workspace td.panel-container.collection div.collection-date-filter .switcher-options {
     left: -9px;
-    width: 243px;    
+    width: 239px;    
 }
 
 div.panel.asset-workspace td.panel-container.collection.minimized div.collection-date-filter .switcher-options {
@@ -4038,6 +4050,61 @@ div.panel.asset-workspace td.panel-container.collection.minimized div.collection
     width: 174px;
 }
 
+/* Project View overrides */
+
+
+/** Project Dialogs **/
+
+div.panel.composition form div.ui-dialog div.ui-dialog-titlebar {
+    background-image: none;
+    background-color: #3A84BF;
+    color: white;
+}
+
+div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
+    background-image: none;
+    background-color: #175D35;
+    color: white;
+}
+
+div.panel.composition .filter-widget,
+div.panel.assignment .filter-widget {
+    margin: 6px 0 0 6px;
+}
+
+
+div.panel.assignment td.panel-container.collection div.collection-date-filter,
+div.panel.assignment td.panel-container.collection div.collection-filter,
+div.panel.assignment td.panel-container.collection div.collection-chooser,
+div.panel.composition td.panel-container.collection div.collection-date-filter,
+div.panel.composition td.panel-container.collection div.collection-filter,
+div.panel.composition td.panel-container.collection div.collection-chooser {
+    width: 365px;
+    margin-right: 12px;    
+}
+
+div.panel.composition td.panel-container.collection div.collection-date-filter .switcher-options,
+div.panel.assignment td.panel-container.collection div.collection-date-filter .switcher-options {
+    left: -9px;
+    width: 308px;    
+}
+
+div.panel.composition div.collection-chooser .switcher-options,
+div.panel.assignment div.collection-chooser .switcher-options {  
+    width: 294px;
+    left: 5px;
+}
+
+
+div.panel.composition div.vocabulary,
+div.panel.composition div.course-tags,
+div.panel.composition div.collection-filter select,
+div.panel.assignment div.vocabulary,
+div.panel.assignment div.course-tags,
+div.panel.assignment div.collection-filter select {
+    width: 256px;
+    margin-bottom: 10px;
+}
 
 /** Taxonomy **/
 

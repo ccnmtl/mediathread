@@ -263,6 +263,13 @@ def project_workspace(request, project_id, feedback=None):
     else:
         panels = []
 
+        vocabulary = VocabularyResource().render_list(
+            request, Vocabulary.objects.get_for_object(request.course))
+        course_tags = render_tags_by_course(request)
+
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
         course = request.course
         is_faculty = course.is_faculty(request.user)
         is_assignment = project.is_assignment(request)
@@ -287,6 +294,9 @@ def project_workspace(request, project_id, feedback=None):
                      'panel_state': display,
                      'subpanel_state': 'closed',
                      'context': assignment_context,
+                     'owners': owners,
+                     'vocabulary': vocabulary,
+                     'course_tags': course_tags,
                      'template': 'project'}
             panels.append(panel)
 
@@ -303,8 +313,10 @@ def project_workspace(request, project_id, feedback=None):
         panel = {'is_faculty': is_faculty,
                  'panel_state': 'closed' if show_feedback else 'open',
                  'context': project_context,
-                 'template': 'project'}
-
+                 'template': 'project',
+                 'owners': owners,
+                 'vocabulary': vocabulary,
+                 'course_tags': course_tags}
         panels.append(panel)
 
         # Project Response -- if the requested project is an assignment
@@ -322,7 +334,10 @@ def project_workspace(request, project_id, feedback=None):
                 panel = {'is_faculty': is_faculty,
                          'panel_state': 'closed',
                          'context': response_context,
-                         'template': 'project'}
+                         'template': 'project',
+                         'owners': owners,
+                         'vocabulary': vocabulary,
+                         'course_tags': course_tags}
                 panels.append(panel)
 
                 if not feedback_discussion and response_can_edit:
@@ -336,16 +351,12 @@ def project_workspace(request, project_id, feedback=None):
             panel = {'panel_state': 'open' if show_feedback else 'closed',
                      'panel_state_label': "Instructor Feedback",
                      'template': 'discussion',
+                     'owners': owners,
+                     'vocabulary': vocabulary,
+                     'course_tags': course_tags,
                      'context': threaded_comment_json(request,
                                                       feedback_discussion)}
             panels.append(panel)
-
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
-        course_tags = render_tags_by_course(request)
-
-        user_resource = UserResource()
-        owners = user_resource.render_list(request, request.course.members)
 
         # Create a place for asset editing
         panel = {'panel_state': 'closed',

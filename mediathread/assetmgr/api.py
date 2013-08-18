@@ -29,6 +29,8 @@ class SourceResource(ModelResource):
 class AssetAuthorization(Authorization):
 
     def has_vocabulary(self, notes, vocabulary):
+        # OR'd within vocabulary, AND'd across vocabulary
+        has_relationships = True
         content_type = ContentType.objects.get_for_model(SherdNote)
         for vocabulary_id in vocabulary:
             relationships = TermRelationship.objects.filter(
@@ -36,9 +38,8 @@ class AssetAuthorization(Authorization):
                 object_id__in=[n.id for n in notes],
                 term__id__in=vocabulary[vocabulary_id],
                 term__vocabulary__id=vocabulary_id)
-            if len(relationships) > 0:
-                return True
-        return False
+            has_relationships = len(relationships) > 0 and has_relationships
+        return has_relationships
 
     def is_tagged(self, notes, tag_string):
         items = TaggedItem.objects.get_union_by_model(notes, tag_string)

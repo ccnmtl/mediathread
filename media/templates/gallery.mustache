@@ -139,25 +139,56 @@
             {{#>>assets}}
             <div id="asset_table" class="asset-table">
                 {{^assets}}
-                    <div class="default-content intro-text feature-help"">
+                    <div class="default-content feature-help">
                         {{^active_filter_count}}
                             {{#showing_my_items?}}
-                                <h5>You have not collected any items. Click the ? mark above to learn how to collect items</h5>                                                               
+                                <div class="intro-text">
+                                You have not collected any materials.<br /><br />
+                                
+                                <h5>What is a collection?</h5>
+                                <div>
+                                    A collection is a set of images, video and/or audio brought into Mediathread that 
+                                    can be annotated, organized, and embedded into essays and other written analysis.
+                                </div>
+                                <br />
+                                
+                                <h5>How do I build my collection?</h5>
+                                <div>
+                                    <ul>
+                                        {{#is_faculty?}}
+                                            <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
+                                            bookmarking items from sites such as YouTube or Flickr.
+                                            To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
+                                            on the <a href="/">home</a> page and follow the directions. <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>
+                                            </li>
+                                            
+                                            <li style="margin-bottom: 4px">
+                                                <b>Upload</b>: Video and audio files may be uploaded 
+                                                into Mediathread when you enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>.
+                                                An <b>Upload from Computer</b> link and directions then appear on the <a href="/">home</a> page.  
+                                            </li>
+                                        {{/is_faculty?}}
+                                        {{^is_faculty}}                                            
+                                                <li style="margin-bottom: 4px"><b>Import</b>: Build your collection 
+                                                by bookmarking items from sites such as YouTube or Flickr.
+                                                To install the bookmarklet into your browser, click the <b>Import into Collection</b> 
+                                                on the <a href="/">home</a> page and follow directions. Your instructor also may list 
+                                                recommended sites on the home page.</li>
+                                                <li><b>Upload</b>: If this feature is enabled, 
+                                                you may upload video and audio files from your computer. Click the 
+                                                <b>Upload from Computer</b> on the <a href="/">home</a> page and 
+                                                follow directions.</li>                                            
+                                        {{/is_faculty}}
+                                   </ul>                                     
+                                </div>
+                                </div>                                                               
                             {{/showing_my_items?}}
                             {{^showing_my_items}}
-                                <h5>This class participant has not collected any materials yet.</h5>                                
+                                {{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.                                
                             {{/showing_my_items}}
                         {{/active_filter_count}}
                         {{#active_filter_count}}
-                            {{#active_filters}}
-                                {{#tag?}}
-                                    <h5>Filtered by "{{tag}}"</h5>
-                                {{/tag?}}
-                                {{#modified?}}
-                                    <h5>Filtered by "{{modified}}"</h5>
-                                {{/modified?}}
-                            {{/active_filters}}
-                            <p>No items meet this critieria.</p>      
+                            No items matched your search.<br /><br />Please try again.      
                         {{/active_filter_count}}                         
                    </div>
                 {{/assets}} 

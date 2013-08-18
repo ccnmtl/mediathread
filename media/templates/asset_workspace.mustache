@@ -7,15 +7,17 @@
                             <div class="actions">
                                 <input id="collection-help-button"
                                     type="image" title="Help" 
-                                     alt="Help"
-                                     src="/site_media/img/icons/meth_help.png" />                                                             
+                                    alt="Help"
+                                    class="help-button"
+                                    src="/site_media/img/icons/meth_help.png" />                                                             
                             </div>                        
                             <h2><a href="/asset">Collection</a></h2>
                         </td>
                         <td />
                         <td class="asset-view-header">                                    
                             <div class="actions">
-                                <input id="asset-view-help-button" type="image" title="Help" 
+                                <input id="asset-view-help-button" type="image" title="Help"
+                                    class="help-button" 
                                      onclick="return AnnotationList.showHelp();" 
                                      alt="Help" src="/site_media/img/icons/meth_help.png" />                                                             
                             </div>  
@@ -129,7 +131,7 @@
                                                                     <div class="global-annotation-analysis">                                                            
                                                                     {{^global_annotation_analysis}}
                                                                         <center>
-                                                                            <div>You currently have no notes or tags for this item.</div>
+                                                                            <div>You have no notes or tags for this item.</div>
                                                                             <br />
                                                                             <a class="btn-primary edit-item"
                                                                                 onclick="return AnnotationList.editItem(this);">
@@ -384,14 +386,15 @@
                                                         </h2>                  
                                                         {{^annotations}}
                                                             <center>
-                                                                <div>You currently have no selections on this item.</div>
+                                                                <br />
+                                                                <div>You have no selections on this item.</div>
                                                                 <br />
                                                                 
                                                                 <a class="btn-primary create-selection"
                                                                     onclick="return AnnotationList.newAnnotation();">
                                                                     <img src="/site_media/img/icons/meth_addselection.png"
                                                                         alt="Create Selection"></img>
-                                                                    Create Selection
+                                                                    Create a selection
                                                                 </a>
                                                            </center>                                                    
                                                         {{/annotations}}

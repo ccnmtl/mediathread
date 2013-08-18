@@ -6,7 +6,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.projectModified = false;
     self.parentContainer = parent;
     self.space_owner = space_owner;
-    self.tiny_mce_settings = tiny_mce_settings;
+    self.tiny_mce_settings = tiny_mce_settings;    
 
     djangosherd.storage.json_update(panel.context);
     
@@ -102,6 +102,9 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
+            'owners': self.panel.owners,
+            'vocabulary': self.panel.vocabulary,
+            'course_tags': self.panel.course_tags,            
             'citable': true,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();

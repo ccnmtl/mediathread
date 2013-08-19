@@ -135,9 +135,11 @@ def _parse_user(request):
 @login_required
 @allow_http("GET", "POST")
 def most_recent(request):
-    import pdb
-    pdb.set_trace()
-    return HttpResponseRedirect('/asset/')
+    user = request.user
+    user_id = user.id
+    asset = Asset.objects.filter(author_id=user_id).order_by('-modified')[0]
+    asset_id = str(asset.id)
+    return HttpResponseRedirect('/asset/'+asset_id+'/')
 
 
 
@@ -155,7 +157,10 @@ def asset_create(request):
     req_dict = getattr(request, request.method)
     user = _parse_user(request)
     metadata = _parse_metadata(req_dict)
-
+    try:
+        refer = request.META['HTTP_REFERER']
+    except:
+        refer = None
     title = req_dict.get('title', '')
     asset = Asset.objects.get_by_args(req_dict, asset__course=request.course)
 
@@ -211,18 +216,28 @@ def asset_create(request):
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
     elif "analyze" == action:
-        return HttpResponseRedirect(asset_url)
-    else:
+
+        asset_id= most_recent(request)
+        
         template = loader.get_template('assetmgr/analyze.html')
 
         context = RequestContext(request, {
             'request': request,
             'user': user,
             'action': action,
+            'asset_id': asset_id
+        })
+        return HttpResponse(template.render(context))
+        return HttpResponseRedirect('/assets/'+asset_id+'/')
+    else:
+        template = loader.get_template('assetmgr/analyze.html')
+        context = RequestContext(request, {
+            'request': request,
+            'refer': refer,
+            'user': user,
+            'action': action,
             'asset_url': asset_url
         })
-    
-
     return HttpResponse(template.render(context))
 
 

@@ -1,7 +1,7 @@
 {{ user }}
 {% ifequal action "collection" %}
 	<script>
-		window.close()
+		window.location.replace('/asset/')
 	</script>
 {% endifequal %}
 
@@ -12,21 +12,14 @@
 {% endifequal %}
 
 {% ifequal action "analyze" %}
-	{%comment%}
 	<script>
-		console.log('{{ analyze }}')
-		window.reTab = '{{ analyze }}'
-		console.log({{window}}.location);
+		window.location.replace('/asset/most_recent/')
 	</script>
-	{%endcomment%}
 {% endifequal %}
 
 {% ifequal action None %}
+The action was none!!
 	<script>
 		window.location.replace('{{ asset_url }}')
 	</script>
 {% endifequal %}
-
-<h1>action = {{ action }}, asset_url ={{ asset_url }}, window = {{window}}</h1>
-asdasdas
-

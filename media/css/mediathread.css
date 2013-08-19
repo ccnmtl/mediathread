@@ -21,8 +21,9 @@ body
 }
 
 .ui-widget-overlay-dark {
-    opacity: .6;
-    filter:Alpha(Opacity=60); 
+    opacity:0.60;
+    -moz-opacity:0.60;
+    filter:alpha(opacity=60);
 }
 
 h1, h2, h3, h4, h5, h6
@@ -1989,7 +1990,9 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-bu
 
 td#instructor input.help-tab-icon {
     margin-right: 5px;
-    opacity: 0.5;
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
 }
 
 td#instructor div.help-tab {
@@ -2006,7 +2009,9 @@ td#instructor div.feature-help {
 
 td#classwork input.help-tab-icon {
     margin-right: 15px;
-    opacity: 0.5;
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
 }
 
 td#classwork div.help-tab {
@@ -2023,7 +2028,9 @@ td#classwork div.feature-help {
 
 td#explore input.help-tab-icon {
     margin-right: 15px;
-    opacity: 0.5;
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
 }
 
 td#explore div.help-tab {
@@ -3009,7 +3016,7 @@ p.sherd-instructions {
 
 .sherd-clipform table {
     border: none;
-    margin: 10px 0 20px 0;
+    margin: 10px 0 10px 0;
 }
 
 .sherd-clipform-play {
@@ -3534,13 +3541,23 @@ div#asset-view-overlay {
 
 input#collection-help-button {
     margin-top: 10px;
-    opacity: 0.5;
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
+}
+
+#annotation-view-help-button {
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
 }
 
 input#asset-view-help-button {
     margin-right: 10px;
     margin-top: 10px;
-    opacity: 0.5;
+    opacity:0.50;
+    -moz-opacity:0.50;
+    filter:alpha(opacity=50);
 }
 
 div.asset-view-help {

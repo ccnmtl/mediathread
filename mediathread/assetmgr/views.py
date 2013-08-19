@@ -11,7 +11,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
-from mediathread.assetmgr.api import AssetResource
+from mediathread.assetmgr.api import AssetResource, AssetSummaryResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
@@ -543,12 +543,15 @@ def render_assets(request, record_owner, assets):
         viewing_own_records or viewing_faculty_records or is_faculty)
 
     # Spew out json for the assets
-    resource = AssetResource(include_annotations,
-                             False,  # include archives
-                             owner_selections_are_visible,
-                             record_owner,
-                             {'editable': viewing_own_records,
-                              'citable': citable})
+    if include_annotations:
+        resource = AssetResource(owner_selections_are_visible,
+                                 record_owner,
+                                 {'editable': viewing_own_records,
+                                  'citable': citable})
+    else:
+        resource = AssetSummaryResource({'editable': viewing_own_records,
+                                         'citable': citable})
+
     asset_json = resource.render_list(request, assets)
 
     active_filters = {}
@@ -576,7 +579,7 @@ def render_assets(request, record_owner, assets):
 
 
 def detail_asset_json(request, asset):
-    the_json = AssetResource(True).render_one(request, asset)
+    the_json = AssetResource().render_one(request, asset)
     the_json['user_analysis'] = asset.user_analysis_count(request.user)
 
     # References Page

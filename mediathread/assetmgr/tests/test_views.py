@@ -21,8 +21,6 @@ class AssetViewTest(TestCase):
         self.assertFalse(json['citable'])
         self.assertFalse(json['is_faculty'])
         self.assertEquals(len(json['assets']), 1)
-        self.assertEquals(json['assets'][0]['annotation_count'], 3)
-        self.assertEquals(json['assets'][0]['my_annotation_count'], 1)
         self.assertEquals(len(json['assets'][0]['annotations']), 1)
 
 

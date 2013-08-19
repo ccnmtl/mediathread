@@ -90,26 +90,18 @@ class AssetAuthorization(Authorization):
 
 class AssetResource(ModelResource):
     def __init__(self,
-                 include_annotations=True,
-                 include_archives=False,
                  owner_selections_are_visible=False,
                  record_owner=None,
                  extras={}):
         super(ModelResource, self).__init__(None)
 
         self.options = {
-            'include_annotations': include_annotations,
             'owner_selections_are_visible': owner_selections_are_visible,
             'record_owner': record_owner
         }
         self.extras = extras
 
     author = fields.ForeignKey(UserResource, 'author', full=True)
-
-#     source = fields.ToManyFieldEx(
-#         'mediathread.assetmgr.api.SourceResource',
-#         'source_set',
-#         blank=True, null=True, full=True)
 
     sherdnote_set = ToManyFieldEx(
         'mediathread.djangosherd.api.SherdNoteResource',
@@ -166,13 +158,7 @@ class AssetResource(ModelResource):
         # As counts need to be displayed for all, then the user subset
         # and global annotation display logic is a bit intricate
         for note in bundle.data['sherdnote_set']:
-            if not note.data['is_global_annotation']:
-                bundle.data['annotation_count'] += 1
-                if note.obj.author == bundle.request.user:
-                    bundle.data['my_annotation_count'] += 1
-
-            if (self.options['include_annotations'] and
-                    not note.data['is_global_annotation']):
+            if (not note.data['is_global_annotation']):
                 if self.options['record_owner']:
                     if note.obj.author == self.options['record_owner']:
                         bundle.data['annotations'].append(note.data)
@@ -180,23 +166,90 @@ class AssetResource(ModelResource):
                     bundle.data['annotations'].append(note.data)
 
         # include the global_annotation for the user as well
-        if self.options['include_annotations']:
-            if (self.options['record_owner'] and
-                    self.options['owner_selections_are_visible']):
-                ga = bundle.obj.global_annotation(
-                    self.options['record_owner'], auto_create=False)
-            else:
-                ga = bundle.obj.global_annotation(bundle.request.user,
-                                                  auto_create=False)
+        if (self.options['record_owner'] and
+                self.options['owner_selections_are_visible']):
+            ga = bundle.obj.global_annotation(
+                self.options['record_owner'], auto_create=False)
+        else:
+            ga = bundle.obj.global_annotation(bundle.request.user,
+                                              auto_create=False)
 
-            if ga:
-                bundle.data['global_annotation'] = \
-                    SherdNoteResource().render_one(bundle.request, ga, '')
-                bundle.data['global_annotation_analysis'] = (
-                    (ga.tags is not None and len(ga.tags) > 0) or
-                    (ga.body is not None and len(ga.body) > 0))
-            else:
-                bundle.data['global_annotation_analysis'] = False
+        if ga:
+            bundle.data['global_annotation'] = \
+                SherdNoteResource().render_one(bundle.request, ga, '')
+            bundle.data['global_annotation_analysis'] = (
+                (ga.tags is not None and len(ga.tags) > 0) or
+                (ga.body is not None and len(ga.body) > 0))
+        else:
+            bundle.data['global_annotation_analysis'] = False
+
+        for key, value in self.extras.items():
+            bundle.data[key] = self.extras[key]
+
+        bundle.data.pop('sherdnote_set')
+        return bundle
+
+    def render_one(self, request, item):
+        bundle = self.build_bundle(obj=item, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)
+
+    def render_list(self, request, object_list):
+        object_list = self.apply_authorization_limits(request, object_list)
+        asset_json = []
+        for asset in object_list:
+            the_json = self.render_one(request, asset)
+            asset_json.append(the_json)
+        return asset_json
+
+
+class AssetSummaryResource(ModelResource):
+    def __init__(self, extras={}):
+        super(ModelResource, self).__init__(None)
+        self.extras = extras
+
+    author = fields.ForeignKey(UserResource, 'author', full=True)
+
+    sherdnote_set = ToManyFieldEx(
+        'mediathread.djangosherd.api.SherdNoteSummaryResource',
+        'sherdnote_set',
+        blank=True, null=True, full=True)
+
+    class Meta:
+        queryset = Asset.objects.none()
+        excludes = ['added', 'modified', 'course', 'active', 'metadata_blob']
+        authentication = ClassLevelAuthentication()
+        authorization = AssetAuthorization()
+        ordering = ['id', 'title']
+
+    def dehydrate(self, bundle):
+        bundle.data['thumb_url'] = bundle.obj.thumb_url
+        bundle.data['primary_type'] = bundle.obj.primary.label
+        bundle.data['local_url'] = bundle.obj.get_absolute_url()
+        bundle.data['media_type_label'] = bundle.obj.media_type()
+
+        sources = {}
+        for s in bundle.obj.source_set.all():
+            sources[s.label] = {'label': s.label,
+                                'url': s.url_processed(bundle.request),
+                                'width': s.width,
+                                'height': s.height,
+                                'primary': s.primary}
+        bundle.data['sources'] = sources
+
+        bundle.data['annotations'] = []
+        bundle.data['annotation_count'] = 0
+        bundle.data['my_annotation_count'] = 0
+
+        # the sherdnote_set authorization has been applied
+        # I'm filtering here rather than directly on the sherdnote resource
+        # As counts need to be displayed for all, then the user subset
+        # and global annotation display logic is a bit intricate
+        for note in bundle.data['sherdnote_set']:
+            if not note.data['is_global_annotation']:
+                bundle.data['annotation_count'] += 1
+                if note.obj.author == bundle.request.user:
+                    bundle.data['my_annotation_count'] += 1
 
         for key, value in self.extras.items():
             bundle.data[key] = self.extras[key]

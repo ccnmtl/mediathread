@@ -63,9 +63,9 @@ class SherdNoteResource(ModelResource):
         authorization = SherdNoteAuthorization()
 
     def dehydrate(self, bundle):
+        bundle.data['is_global_annotation'] = bundle.obj.is_global_annotation()
+
         bundle.data['asset_id'] = str(bundle.obj.asset.id)
-        bundle.data['is_global_annotation'] = \
-            bundle.obj.is_global_annotation()
         bundle.data['is_null'] = bundle.obj.is_null()
         bundle.data['annotation'] = bundle.obj.annotation()
         bundle.data['url'] = bundle.obj.get_absolute_url()
@@ -114,3 +114,21 @@ class SherdNoteResource(ModelResource):
             dehydrated = self.full_dehydrate(bundle)
             data.append(dehydrated.data)
         return data
+
+
+class SherdNoteSummaryResource(ModelResource):
+    author = fields.ForeignKey(UserResource, 'author', full=True)
+
+    class Meta:
+        queryset = SherdNote.objects.none()
+        excludes = ['tags', 'body', 'added', 'modified', 'title']
+
+        # User is logged into some course
+        authentication = ClassLevelAuthentication()
+
+        # User is authorized to look at this particular SherdNote
+        authorization = SherdNoteAuthorization()
+
+    def dehydrate(self, bundle):
+        bundle.data['is_global_annotation'] = bundle.obj.is_global_annotation()
+        return bundle

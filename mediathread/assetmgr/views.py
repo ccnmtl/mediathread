@@ -3,6 +3,7 @@ from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
@@ -17,11 +18,13 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main import course_details
-from mediathread.main.course_details import render_tags_by_course
+from mediathread.main.course_details import render_tags_by_course, \
+    all_selections_are_visible, cached_course_is_faculty
 from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
-from mediathread.taxonomy.api import VocabularyResource
-from mediathread.taxonomy.models import Vocabulary
+from mediathread.taxonomy.api import VocabularyResource, TermResource
+from mediathread.taxonomy.models import Vocabulary, TermRelationship
+from tagging.models import Tag
 import datetime
 import hashlib
 import hmac
@@ -525,7 +528,7 @@ def render_assets(request, record_owner, assets):
     logged_in_user = request.user
 
     # Is the current user faculty OR staff
-    is_faculty = course.is_faculty(logged_in_user)
+    is_faculty = cached_course_is_faculty(course, logged_in_user)
 
     # Can the record_owner edit the records
     viewing_own_records = (record_owner == logged_in_user)
@@ -558,9 +561,59 @@ def render_assets(request, record_owner, assets):
 
     user_resource = UserResource()
 
+    # Collate tag set & vocabulary set for the result set.
+    # Get all visible notes for the returned asset set
+    # These notes may include global annotations for all users,
+    # whereas the rendered set will not
+    active_asset_ids = [a['id'] for a in asset_json]
+
+    if record_owner:
+        if owner_selections_are_visible:
+            active_notes = SherdNote.objects.filter(
+                asset__course=course, asset__id__in=active_asset_ids,
+                author__id=record_owner.id)
+    else:
+        if all_selections_are_visible(course) or is_faculty:
+            # Display all tags for the asset set including globals
+            active_notes = SherdNote.objects.filter(
+                asset__course=course, asset__id__in=active_asset_ids)
+        else:
+            whitelist = [f.id for f in course.faculty]
+            whitelist.append(request.user.id)
+            active_notes = SherdNote.objects.filter(
+                asset__course=course,
+                asset__id__in=active_asset_ids,
+                author__id__in=whitelist)
+
+    tags = []
+    if len(active_notes) > 0:
+        tags = Tag.objects.usage_for_queryset(active_notes)
+        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+
+    active_vocabulary = []
+    note_ids = [n.id for n in active_notes]
+    content_type = ContentType.objects.get_for_model(SherdNote)
+    term_resource = TermResource()
+    for v in Vocabulary.objects.get_for_object(request.course):
+        vocabulary = {
+            'id': v.id,
+            'display_name': v.display_name,
+            'term_set': []
+        }
+        related = TermRelationship.objects.filter(term__vocabulary=v,
+                                                  content_type=content_type,
+                                                  object_id__in=note_ids)
+        for r in related:
+            the_term = term_resource.render_one(request, r.term)
+            vocabulary['term_set'].append(the_term)
+
+        active_vocabulary.append(vocabulary)
+
     # Assemble the context
     data = {'assets': asset_json,
+            'active_tags': TagResource().render_list(request, tags),
             'active_filters': active_filters,
+            'active_vocabulary': active_vocabulary,
             'space_viewer': user_resource.render_one(request, logged_in_user),
             'editable': viewing_own_records,
             'citable': citable,
@@ -570,7 +623,6 @@ def render_assets(request, record_owner, assets):
         data['space_owner'] = user_resource.render_one(request, record_owner)
 
     json_stream = simplejson.dumps(data, indent=2)
-
     return HttpResponse(json_stream, mimetype='application/json')
 
 

@@ -50,24 +50,19 @@ def render_tags_by_course(request):
     course = request.course
     logged_in_user = request.user
 
-    # Is the current user faculty OR staff
-    is_faculty = course.is_faculty(logged_in_user)
-
-    if all_selections_are_visible(course) or is_faculty:
+    if (all_selections_are_visible(course) or
+            cached_course_is_faculty(course, logged_in_user)):
         # Tags for the whole class
         tags = Tag.objects.usage_for_queryset(
-            SherdNote.objects.filter(asset__course=course),
-            counts=True)
+            SherdNote.objects.filter(asset__course=course))
     else:
         # Show only tags for myself and faculty members
         tags = Tag.objects.usage_for_queryset(
-            logged_in_user.sherdnote_set.filter(asset__course=course),
-            counts=True)
+            logged_in_user.sherdnote_set.filter(asset__course=course))
 
         for f in course.faculty:
             tags.extend(Tag.objects.usage_for_queryset(
-                        f.sherdnote_set.filter(asset__course=course),
-                        counts=True))
+                        f.sherdnote_set.filter(asset__course=course)))
 
     tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
     return TagResource().render_list(request, tags)

@@ -21,8 +21,6 @@ var CollectionList = function (config) {
     self.parent = config.parent;
     self.selected_view = config.hasOwnProperty('selectedView') ? config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
-    self.vocabulary = config.vocabulary;
-    self.course_tags = config.course_tags;
     self.owners = config.owners;
     
     self.el = jQuery(self.parent).find("div." + self.template_label)[0];
@@ -264,6 +262,7 @@ CollectionList.prototype.updateSwitcher = function () {
         if (username === "all-class-members") {
             self.current_records.space_owner = null;
         } else {
+            self.current_records.space_owner = {'username': {}};
             self.current_records.space_owner.username.id = "";
             self.current_records.space_owner.username.public_name = ""; 
             self.current_records.space_owner.username = username;                 
@@ -321,9 +320,6 @@ CollectionList.prototype.updateAssets = function (the_records) {
         self.switcher_context.selected_label = the_records.space_owner.public_name;
     }
     
-    the_records.tags = self.course_tags;
-    the_records.vocabulary = self.vocabulary;
-        
     self.current_records = the_records;
     
     var n = _propertyCount(the_records.active_filters);

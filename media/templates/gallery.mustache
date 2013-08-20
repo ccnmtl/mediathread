@@ -113,13 +113,13 @@
                 <select class="course-tags"
                     data-placeholder="Select tags" 
                     multiple="multiple">
-                    {{#tags}}
+                    {{#active_tags}}
                         <option value="{{name}}">{{name}}</option>
-                    {{/tags}}
+                    {{/active_tags}}
                 </select>
             </div>
             
-            {{#vocabulary}}
+            {{#active_vocabulary}}
             <div>
                 <span class="concept-prefix">{{display_name}}</span>
                 <select class="vocabulary" name="vocabulary-{{id}}"
@@ -129,7 +129,7 @@
                     {{/term_set}}
                 </select>
             </div>
-            {{/vocabulary}}
+            {{/active_vocabulary}}
                         
         </div> {{! end filter widget }}
             

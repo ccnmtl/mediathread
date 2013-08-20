@@ -77,6 +77,7 @@
             'focus input[name="term_name"]': 'focusTermName',
             'blur input[name="term_name"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
+            'keypress input[name="term_name"]': 'keypressTermName',
             'click a.edit-term-submit': 'updateTerm',
             'click a.edit-term-open': 'showEditTerm',
             'click a.edit-term-close': 'hideEditTerm',            
@@ -89,6 +90,7 @@
                     "updateVocabulary",
                     "deleteVocabulary",
                     "createTerm",
+                    "keypressTermName",
                     "updateTerm",
                     "deleteTerm",
                     "activateTab");
@@ -272,6 +274,13 @@
             jQuery(parent).find("div.term-edit").hide();
             return false;    
         },        
+        keypressTermName: function(evt) {
+            var self = this;
+            if (evt.which == 13) {
+                evt.preventDefault();                
+                jQuery(evt.currentTarget).next().click();
+            }
+        },
         createTerm: function(evt) {
             evt.preventDefault();
             var self = this;

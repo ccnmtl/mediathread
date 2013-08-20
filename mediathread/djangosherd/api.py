@@ -14,11 +14,12 @@ from tastypie.resources import ModelResource
 
 class SherdNoteAuthorization(Authorization):
 
-    def apply_limits(self, request, object_list):
+    def apply_limits(self, request, object_list, exclude_global=True):
         if request.user.is_authenticated():
-            # only request user's global annotations
-            object_list = object_list.exclude(~Q(author=request.user),
-                                              range1__isnull=True)
+            if exclude_global:
+                # only request user's global annotations
+                object_list = object_list.exclude(~Q(author=request.user),
+                                                  range1__isnull=True)
 
             # Make sure the requesting user is allowed to see this note
             invisible = []

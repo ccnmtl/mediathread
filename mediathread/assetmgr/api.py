@@ -73,8 +73,9 @@ class AssetAuthorization(Authorization):
                           if key.startswith('vocabulary-'))
         invisible = []
         for asset in object_list:
-            notes = SherdNoteResource().apply_authorization_limits(
-                request, asset.sherdnote_set)
+            # Hack -- call the authorization layer directly
+            notes = SherdNoteResource()._meta.authorization.apply_limits(
+                request, asset.sherdnote_set, False)
 
             if not cached_course_is_member(asset.course, request.user):
                 invisible.append(asset.id)

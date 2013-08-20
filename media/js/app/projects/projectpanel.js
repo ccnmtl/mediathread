@@ -103,8 +103,6 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
             'owners': self.panel.owners,
-            'vocabulary': self.panel.vocabulary,
-            'course_tags': self.panel.course_tags,            
             'citable': true,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();

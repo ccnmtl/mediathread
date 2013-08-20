@@ -6,6 +6,7 @@ from mediathread.api import ClassLevelAuthentication, UserResource, \
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.course_details import cached_course_is_member
 from mediathread.taxonomy.models import TermRelationship
 from tagging.models import TaggedItem
 from tastypie import fields
@@ -60,22 +61,22 @@ class AssetAuthorization(Authorization):
         return len(items) > 0
 
     def apply_limits(self, request, object_list):
-        invisible = []
-        archives = list(request.course.asset_set.archives())
+        # Exclude archives from these lists
+        archives = object_list.filter(source__primary=True,
+                                      source__label='archive')
+        object_list = object_list.exclude(id__in=[a.id for a in archives])
 
         tag_string = request.GET.get('tag', '')
         modified = request.GET.get('modified', '')
         vocabulary = dict((key[len('vocabulary-'):], val.split(","))
                           for key, val in request.GET.items()
                           if key.startswith('vocabulary-'))
-
+        invisible = []
         for asset in object_list:
             notes = SherdNoteResource().apply_authorization_limits(
                 request, asset.sherdnote_set)
 
-            if not asset.course.is_member(request.user):
-                invisible.append(asset.id)
-            elif asset in archives:
+            if not cached_course_is_member(asset.course, request.user):
                 invisible.append(asset.id)
             elif len(tag_string) > 0 and not self.is_tagged(notes, tag_string):
                 invisible.append(asset.id)
@@ -264,6 +265,11 @@ class AssetSummaryResource(ModelResource):
 
     def render_list(self, request, object_list):
         object_list = self.apply_authorization_limits(request, object_list)
+
+        #from django.core.paginator import Paginator
+        #p = Paginator(object_list, 10)
+        #object_list = p.page(1).object_list
+
         asset_json = []
         for asset in object_list:
             the_json = self.render_one(request, asset)

@@ -1,8 +1,10 @@
 from mediathread.api import TagResource
 from mediathread.djangosherd.models import SherdNote
 from tagging.models import Tag
-UPLOAD_PERMISSION_KEY = "upload_permission"
+from django.core.cache import cache
 
+
+UPLOAD_PERMISSION_KEY = "upload_permission"
 UPLOAD_PERMISSION_ADMINISTRATOR = 0
 UPLOAD_PERMISSION_INSTRUCTOR = 1
 UPLOAD_PERMISSION_STUDENT = 2
@@ -69,3 +71,17 @@ def render_tags_by_course(request):
 
     tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
     return TagResource().render_list(request, tags)
+
+
+def cached_course_is_member(course, user):
+    key = "%s:%s:is_member" % (course.id, user.id)
+    if not key in cache:
+        cache.set(key, course.is_member(user), 3)
+    return cache.get(key)
+
+
+def cached_course_is_faculty(course, user):
+    key = "%s:%s:is_faculty" % (course.id, user.id)
+    if not key in cache:
+        cache.set(key, course.is_faculty(user), 3)
+    return cache.get(key)

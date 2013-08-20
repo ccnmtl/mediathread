@@ -487,8 +487,8 @@ def assets_by_user(request, record_owner_name):
         /asset/json/user/sld2131/
     """
     course = request.course
-    if (request.user.username == record_owner_name and
-        request.user.is_staff and
+    if (request.user.is_staff and
+        request.user.username == record_owner_name and
             not in_course(request.user.username, request.course)):
         return assets_by_course(request)
 
@@ -534,16 +534,13 @@ def render_assets(request, record_owner, assets):
     # Allow the logged in user to add assets to his composition
     citable = request.GET.get('citable', '') == 'true'
 
-    # include the asset annotations
-    include_annotations = request.GET.get('annotations', '') == 'true'
-
     # Does the course allow viewing other user selections?
     owner_selections_are_visible = (
         course_details.all_selections_are_visible(course) or
         viewing_own_records or viewing_faculty_records or is_faculty)
 
     # Spew out json for the assets
-    if include_annotations:
+    if request.GET.get('annotations', '') == 'true':
         resource = AssetResource(owner_selections_are_visible,
                                  record_owner,
                                  {'editable': viewing_own_records,
@@ -555,11 +552,9 @@ def render_assets(request, record_owner, assets):
     asset_json = resource.render_list(request, assets)
 
     active_filters = {}
-    for key, val in request.GET.items():
-        if (key == 'tag' or
-            key == 'modified' or
-                key.startswith('vocabulary-')):
-            active_filters[key] = val
+    for k, val in request.GET.items():
+        if (k == 'tag' or k == 'modified' or k.startswith('vocabulary-')):
+            active_filters[k] = val
 
     user_resource = UserResource()
 
@@ -575,6 +570,7 @@ def render_assets(request, record_owner, assets):
         data['space_owner'] = user_resource.render_one(request, record_owner)
 
     json_stream = simplejson.dumps(data, indent=2)
+
     return HttpResponse(json_stream, mimetype='application/json')
 
 

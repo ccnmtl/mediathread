@@ -2,6 +2,8 @@ from django.db.models.query_utils import Q
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
+from mediathread.main.course_details import cached_course_is_member, \
+    cached_course_is_faculty
 from mediathread.taxonomy.api import TermResource
 from mediathread.taxonomy.models import TermRelationship
 from tastypie import fields
@@ -20,19 +22,26 @@ class SherdNoteAuthorization(Authorization):
 
             # Make sure the requesting user is allowed to see this note
             invisible = []
+            courses = {}
             for note in object_list.all():
                 course = note.asset.course
 
-                if not course.is_member(request.user):
+                # Cache this out per course/user. It's just too slow otherwise
+                if not course.id in courses.keys():
+                    courses[course.id] = {'whitelist': None}
+                    is_faculty = cached_course_is_faculty(course, request.user)
+                    if (not course_details.all_selections_are_visible(course)
+                            and not is_faculty):
+                        courses[course.id]['whitelist'] = list(course.faculty)
+                        courses[course.id]['whitelist'].append(request.user)
+
+                if not cached_course_is_member(course, request.user):
                     invisible.append(note.id)
-                elif (not course.is_faculty(request.user) and
-                      not course_details.all_selections_are_visible(course)):
+                elif (courses[course.id]['whitelist'] and
+                        not note.author in courses[course.id]['whitelist']):
                     # apply per course limitations
                     # the user or a faculty member must be the selection author
-                    authorized = list(course.faculty)
-                    authorized.append(request.user)
-                    if not note.author in authorized:
-                        invisible.append(note.id)
+                    invisible.append(note.id)
 
             return object_list.exclude(id__in=invisible).order_by('id')
         elif request.public:

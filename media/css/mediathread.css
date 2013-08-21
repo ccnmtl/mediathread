@@ -2131,6 +2131,11 @@ div.collection-chooser .switcher-options {
     width: 225px;
 }
 
+table#home-columns td#classwork div.collection-chooser .switcher-options {
+    left: 10px;
+    width: 194px;
+}
+
 div.collection-chooser a.switcher-top {
     font-weight: normal;
     background-color: white;

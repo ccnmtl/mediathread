@@ -127,6 +127,9 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
 CollectionList.prototype.filter = function () {
     var self = this;
     var filters = {};
+    
+    jQuery(self.el).find("select.course-tags, select.vocabulary")
+        .select2("enable", false);    
 
     var url = self.getSpaceUrl();
     
@@ -270,7 +273,7 @@ CollectionList.prototype.updateSwitcher = function () {
         return self.filter();
     });
     
-    jQuery("select.course-tags")
+    jQuery(self.el).find("select.course-tags")
         .select2({
             placeholder: "Select tag",
         });    

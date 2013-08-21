@@ -205,6 +205,13 @@ AssetPanelHandler.prototype.resize = function () {
         jQuery("td.collection-view-header").hide();
     }
     
+    var pantab = jQuery(self.el).find('div.pantab.collection:visible');
+    if (pantab.length > 0) {
+        jQuery("td.panhandle-stripe.collection").show();
+    } else {
+        jQuery("td.panhandle-stripe.collection").hide();
+    }
+    
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||
             jQuery(self.el).find('td.panel-container.collection').hasClass('maximized')) {
         

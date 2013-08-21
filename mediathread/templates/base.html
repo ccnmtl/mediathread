@@ -18,11 +18,11 @@
         <link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />            
         <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
         
-        {% comment %}{% compress css %}{% endcomment %}                    
+        {% compress css %}                    
             <link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
             <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
             {% block css %}{% endblock %}
-        {% comment %}{% endcompress %}{% endcomment %}   
+        {% endcompress %}   
         
         {% block extrahead %}
             <!--  For uncompress-able resources -->
@@ -185,7 +185,7 @@
         </div><!-- id="footer" -->
     {% endblock %}
     
-    {% comment %}{% compress js %}{% endcomment %}   
+    {% compress js %}   
         <script type="text/javascript">
             var lt = String.fromCharCode(60);
             if (window.jQuery) {
@@ -282,7 +282,7 @@
         </script>
         
         {% block js %}{% endblock %}
-    {% comment %}{% endcompress %}{% endcomment %}    
+    {% endcompress %}    
 </body>
 {% endwith %}
 </html>

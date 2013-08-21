@@ -380,7 +380,7 @@ ul#projects li {
     display: block;
     padding: 10px;
     position: absolute;
-    right: 17px;
+    right: 2px;
     top: 105px;
 }
 
@@ -2100,6 +2100,11 @@ div.homepage-column-info {
     position: relative;
 }
 
+.filter-widget h3 {
+    margin: 10px 0 12px 3px;
+    color: #777;
+}
+
 .filter-widget h4 {
     font-size: 80%;
     font-weight: bold;
@@ -3684,6 +3689,12 @@ div.asset-view-con  tainer div.asset-view-details h1 {
 
 div.asset-view-container div.asset-view-details label {
     font-weight: bold;
+}
+
+form#edit-annotation-form label,
+form#edit-global-annotation-form label {
+    display: block;
+    margin-bottom: 2px;
 }
 
 div#asset-view-details {

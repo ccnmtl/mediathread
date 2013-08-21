@@ -2,7 +2,7 @@ from datetime import date
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query_utils import Q
 from mediathread.api import ClassLevelAuthentication, UserResource, \
-    ToManyFieldEx
+    ToManyFieldEx, TagResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import SherdNote
@@ -43,6 +43,9 @@ class AssetAuthorization(Authorization):
         return has_relationships
 
     def is_tagged(self, notes, tag_string):
+        if not tag_string.endswith(','):
+            tag_string += ','
+
         items = TaggedItem.objects.get_union_by_model(notes, tag_string)
         return len(items) > 0
 
@@ -151,6 +154,14 @@ class AssetResource(ModelResource):
                                 'primary': s.primary}
         bundle.data['sources'] = sources
 
+        if not self.options['owner_selections_are_visible']:
+            owners = [bundle.request.user]
+            owners.extend(bundle.obj.course.faculty)
+            tags = bundle.obj.filter_tags_by_users(owners, True)
+        else:
+            tags = bundle.obj.tags()
+        bundle.data['tags'] = TagResource().render_list(bundle.request, tags)
+
         bundle.data['annotations'] = []
         bundle.data['annotation_count'] = 0
         bundle.data['my_annotation_count'] = 0
@@ -181,12 +192,13 @@ class AssetResource(ModelResource):
                 SherdNoteResource().render_one(bundle.request, ga, '')
             bundle.data['global_annotation_analysis'] = (
                 (ga.tags is not None and len(ga.tags) > 0) or
-                (ga.body is not None and len(ga.body) > 0))
+                (ga.body is not None and len(ga.body) > 0) or
+                len(bundle.data['global_annotation']['vocabulary']) > 0)
         else:
             bundle.data['global_annotation_analysis'] = False
 
         for key, value in self.extras.items():
-            bundle.data[key] = self.extras[key]
+            bundle.data[key] = value
 
         bundle.data.pop('sherdnote_set')
         return bundle
@@ -254,7 +266,7 @@ class AssetSummaryResource(ModelResource):
                     bundle.data['my_annotation_count'] += 1
 
         for key, value in self.extras.items():
-            bundle.data[key] = self.extras[key]
+            bundle.data[key] = value
 
         bundle.data.pop('sherdnote_set')
         return bundle

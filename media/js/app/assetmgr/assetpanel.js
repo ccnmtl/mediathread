@@ -205,11 +205,11 @@ AssetPanelHandler.prototype.resize = function () {
         jQuery("td.collection-view-header").hide();
     }
     
-    var pantab = jQuery(self.el).find('div.pantab.collection:visible');
+    var pantab = jQuery(self.el).find("div.panel.asset-workspace div.pantab.collection:visible");
     if (pantab.length > 0) {
-        jQuery("td.panhandle-stripe.collection").show();
+        jQuery("div.panel.asset-workspace td.panhandle-stripe.collection").show();
     } else {
-        jQuery("td.panhandle-stripe.collection").hide();
+        jQuery("div.panel.asset-workspace td.panhandle-stripe.collection").hide();
     }
     
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||

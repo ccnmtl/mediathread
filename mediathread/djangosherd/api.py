@@ -1,5 +1,6 @@
 from django.db.models.query_utils import Q
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
+from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_member, \
@@ -54,7 +55,8 @@ class SherdNoteAuthorization(Authorization):
 
 
 class SherdNoteResource(ModelResource):
-    author = fields.ForeignKey(UserResource, 'author', full=True)
+    author = fields.ForeignKey(UserResource, 'author',
+                               full=True, null=True, blank=True)
 
     class Meta:
         queryset = SherdNote.objects.all().order_by("id")
@@ -73,46 +75,55 @@ class SherdNoteResource(ModelResource):
         authorization = SherdNoteAuthorization()
 
     def dehydrate(self, bundle):
-        bundle.data['is_global_annotation'] = bundle.obj.is_global_annotation()
+        try:
+            bundle.data['is_global_annotation'] = \
+                bundle.obj.is_global_annotation()
+            bundle.data['asset_id'] = str(bundle.obj.asset.id)
+            bundle.data['is_null'] = bundle.obj.is_null()
+            bundle.data['annotation'] = bundle.obj.annotation()
+            bundle.data['url'] = bundle.obj.get_absolute_url()
 
-        bundle.data['asset_id'] = str(bundle.obj.asset.id)
-        bundle.data['is_null'] = bundle.obj.is_null()
-        bundle.data['annotation'] = bundle.obj.annotation()
-        bundle.data['url'] = bundle.obj.get_absolute_url()
-        bundle.data['metadata'] = {
-            'tags': TagResource().render_list(bundle.request,
-                                              bundle.obj.tags_split()),
-            'body': bundle.obj.body.strip() if bundle.obj.body else '',
-            'primary_type': bundle.obj.asset.primary.label,
-            'modified': bundle.obj.modified.strftime("%m/%d/%y %I:%M %p"),
-            'timecode': bundle.obj.range_as_timecode(),
-            'title': bundle.obj.title
-        }
+            modified = bundle.obj.modified.strftime("%m/%d/%y %I:%M %p") \
+                if bundle.obj.modified else ''
 
-        bundle.data['editable'] = (bundle.request.user.id ==
-                                   getattr(bundle.obj, 'author_id', -1))
+            bundle.data['metadata'] = {
+                'tags': TagResource().render_list(bundle.request,
+                                                  bundle.obj.tags_split()),
+                'body': bundle.obj.body.strip() if bundle.obj.body else '',
+                'primary_type': bundle.obj.asset.primary.label,
+                'modified': modified,
+                'timecode': bundle.obj.range_as_timecode(),
+                'title': bundle.obj.title
+            }
 
-        if bundle.request.GET.get('citable', '') == 'true':
-            bundle.data['citable'] = True
+            bundle.data['editable'] = (bundle.request.user.id ==
+                                       getattr(bundle.obj, 'author_id', -1))
 
-        vocabulary = {}
-        related = list(TermRelationship.objects.get_for_object(bundle.obj))
-        for r in related:
-            if r.term.vocabulary.id not in vocabulary:
-                vocabulary[r.term.vocabulary.id] = {
-                    'id': r.term.vocabulary.id,
-                    'display_name': r.term.vocabulary.display_name,
-                    'terms': []
-                }
-            vocabulary[r.term.vocabulary.id]['terms'].append(
-                TermResource().render_one(bundle.request, r.term))
-        bundle.data['vocabulary'] = [val for key, val in vocabulary.items()]
+            if bundle.request.GET.get('citable', '') == 'true':
+                bundle.data['citable'] = True
+
+            vocabulary = {}
+            related = list(TermRelationship.objects.get_for_object(bundle.obj))
+            for r in related:
+                if r.term.vocabulary.id not in vocabulary:
+                    vocabulary[r.term.vocabulary.id] = {
+                        'id': r.term.vocabulary.id,
+                        'display_name': r.term.vocabulary.display_name,
+                        'terms': []
+                    }
+                vocabulary[r.term.vocabulary.id]['terms'].append(
+                    TermResource().render_one(bundle.request, r.term))
+            bundle.data['vocabulary'] = [val for k, val in vocabulary.items()]
+        except Asset.DoesNotExist:
+            bundle.data['asset_id'] = ''
+            bundle.data['metadata'] = {'title': 'Item Deleted'}
         return bundle
 
     def render_one(self, request, selection, asset_key):
         bundle = self.build_bundle(obj=selection, request=request)
         dehydrated = self.full_dehydrate(bundle)
-        bundle.data['asset_key'] = '%s_%s' % (asset_key, bundle.obj.asset.id)
+        bundle.data['asset_key'] = '%s_%s' % (asset_key,
+                                              bundle.data['asset_id'])
         return self._meta.serializer.to_simple(dehydrated, None)
 
     def render_list(self, request, lst, asset_key):

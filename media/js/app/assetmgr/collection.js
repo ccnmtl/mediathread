@@ -122,6 +122,20 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
     return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
 };
 
+CollectionList.prototype.filterByClassTag = function (tag) {
+    var self = this;
+    djangosherd.storage.get({
+        type: 'asset',
+        url: MediaThread.urls['all-space'](tag, null, self.citable)
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
+
+    return false;
+};
+
 CollectionList.prototype.filter = function () {
     var self = this;
     var filters = {};

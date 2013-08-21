@@ -90,7 +90,6 @@
                 }
             }
             self.active_asset = theAsset;
-            
         };
         
         this.refresh = function (config) {
@@ -644,7 +643,7 @@
                         djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
                         
                         self._initTags();
-                        self._initConcepts();
+                        jQuery("select.vocabulary").select2({});
                         jQuery("#asset-details-annotations-current").fadeIn();
                     }});
             });
@@ -737,11 +736,15 @@
             
             if (frm.elements['annotation-title'].value === '') {
                 showMessage('Please specify a selection title',
-                        function() {
-                            jQuery(saveButton).removeAttr("disabled");
-                            jQuery(saveButton).removeClass("saving");
-                            jQuery(saveButton).attr("value", "Save");
-                });
+                    function() {
+                        jQuery(saveButton).removeAttr("disabled");
+                        jQuery(saveButton).removeClass("saving");
+                        jQuery(saveButton).attr("value", "Save");
+                    },
+                    'Error',
+                    {my: "center",
+                     at: "center",
+                     of: jQuery("div.asset-view-tabs")});
                 return;
             }
             
@@ -816,16 +819,14 @@
         };
         
         this._initConcepts = function() {
-            var elt;
-            
             jQuery("select.vocabulary").select2({});
-            
+
+            var elt;
             if (self.active_asset && self.active_asset.global_annotation) {
                 elt = jQuery("#edit-global-annotation-form");
                 self._selectConcepts(elt,
                     self.active_asset.global_annotation.vocabulary);
             }
-            
             if (self.active_annotation) {
                 elt = jQuery("#edit-annotation-form");
                 self._selectConcepts(elt, self.active_annotation.vocabulary);

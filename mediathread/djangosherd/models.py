@@ -193,7 +193,8 @@ class SherdNote(Annotation):
     modified = models.DateTimeField('date modified', editable=False)
 
     def __unicode__(self):
-        return "[%s] %s for (%s) in (%s)" % (self.author.username,
+        username = self.author.username if self.author else ''
+        return "[%s] %s for (%s) in (%s)" % (username,
                                              self.title,
                                              self.asset.title,
                                              self.asset.course.title)

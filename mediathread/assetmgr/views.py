@@ -603,9 +603,13 @@ def render_assets(request, record_owner, assets):
         related = TermRelationship.objects.filter(term__vocabulary=v,
                                                   content_type=content_type,
                                                   object_id__in=note_ids)
+
+        terms = []
         for r in related:
-            the_term = term_resource.render_one(request, r.term)
-            vocabulary['term_set'].append(the_term)
+            if r.term.display_name not in terms:
+                the_term = term_resource.render_one(request, r.term)
+                vocabulary['term_set'].append(the_term)
+                terms.append(r.term.display_name)
 
         active_vocabulary.append(vocabulary)
 

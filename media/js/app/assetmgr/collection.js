@@ -49,10 +49,8 @@ var CollectionList = function (config) {
     });
     jQuery(window).bind('annotation.on_save', { 'self': self }, function (event) {
         var self = event.data.self;
-        if (self.citable) {
-            self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
-            event.data.self.refresh();
-        }
+        self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
+        event.data.self.refresh();
     });
     
     jQuery.ajax({

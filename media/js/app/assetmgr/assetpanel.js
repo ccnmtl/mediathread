@@ -198,6 +198,13 @@ AssetPanelHandler.prototype.resize = function () {
         jQuery("td.asset-view-header").hide();
     }
     
+    var collection = jQuery(self.el).find('td.panel-container.collection.subpanel:visible'); 
+    if (collection.length > 0) {
+        jQuery("td.collection-view-header").show();
+    } else {
+        jQuery("td.collection-view-header").hide();
+    }
+    
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||
             jQuery(self.el).find('td.panel-container.collection').hasClass('maximized')) {
         

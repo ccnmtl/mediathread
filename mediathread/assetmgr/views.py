@@ -602,7 +602,7 @@ def render_assets(request, record_owner, assets):
     # These notes may include global annotations for all users,
     # whereas the rendered set will not
     active_asset_ids = [a['id'] for a in asset_json]
-
+    active_notes = []
     if record_owner:
         if owner_selections_are_visible:
             active_notes = SherdNote.objects.filter(

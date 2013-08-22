@@ -127,7 +127,6 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
                 "edit_state": event.type + "." + event.namespace,
                 "update_history": false,
                 "vocabulary": self.panel.vocabulary,
-                "course_tags": self.panel.course_tags,
                 "view_callback": function () {
                     if (self.dialogWindow) {
                         jQuery(elt).fadeIn("slow");
@@ -158,7 +157,6 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
     self.current_asset = parseInt(asset_id, 10);
     
     if (displayNow) {
-        jQuery("div.ajaxloader").hide();
         jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
         jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
         jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
@@ -177,7 +175,6 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
         "annotation_id": annotation_id,
         "update_history": self.panel.update_history,
         "vocabulary": self.panel.vocabulary,
-        "course_tags": self.panel.course_tags,
         "view_callback": function () {
             jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
             

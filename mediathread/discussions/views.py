@@ -13,7 +13,6 @@ from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
-from mediathread.main.course_details import render_tags_by_course
 from mediathread.main.decorators import faculty_only
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
@@ -97,7 +96,6 @@ def discussion_create(request):
     else:
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
-        course_tags = render_tags_by_course(request)
 
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
@@ -107,7 +105,6 @@ def discussion_create(request):
                 'template': 'discussion',
                 'owners': owners,
                 'vocabulary': vocabulary,
-                'course_tags': course_tags,
                 'context': threaded_comment_json(request,
                                                  new_threaded_comment)}
 
@@ -153,7 +150,6 @@ def discussion_view(request, discussion_id):
     else:
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
-        course_tags = render_tags_by_course(request)
 
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
@@ -165,7 +161,6 @@ def discussion_view(request, discussion_id):
             'template': 'discussion',
             'owners': owners,
             'vocabulary': vocabulary,
-            'course_tags': course_tags,
             'title': root_comment.title,
             'can_edit_title': my_course.is_faculty(request.user),
             'root_comment_id': root_comment.id,
@@ -180,7 +175,6 @@ def discussion_view(request, discussion_id):
                  'show_collection': False,
                  'owners': owners,
                  'vocabulary': vocabulary,
-                 'course_tags': course_tags,
                  'context': {'type': 'asset'}}
 
         data['panels'].append(panel)

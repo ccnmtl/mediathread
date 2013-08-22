@@ -720,21 +720,6 @@ html.busy, html.busy * {
   cursor: wait;
 }
 
-.ajaxloader {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -55px; /* -1 * image width / 2 */
-    margin-top: -15px;  /* -1 * image height / 2 */
-    display: block;
-    background-image: url(../img/ajax-loader.gif);
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 50px;
-    height: 50px;
-    z-index: 999;
-}
-
 .ui-accordion .ui-accordion-content {
     padding: 0 .5em .5em 1em !important;
 }
@@ -1634,6 +1619,37 @@ div#collection-overlay {
     padding-bottom: 8px;
 }
 
+div.ajaxloader {
+    position: absolute;
+    display: block;
+    height: 100%;
+    z-index: 10001;
+    background-color: #ededed;
+    text-align: center;
+    opacity:0.85;
+    -moz-opacity:0.85;
+    filter:alpha(opacity=85);    
+}
+
+div.ajaxloader div.message {
+    margin-top: 25px;
+    font-weight: bold;
+}
+
+tr.asset-workspace-content-row div.ajaxloader {
+    top: 46px;    
+    width: 95%;    
+}
+
+tr.asset-workspace-content-row td.collection.minimized div.ajaxloader {
+    width: 250px;
+}
+
+tr.discussion-content-row div.ajaxloader,
+tr.project-content-row div.ajaxloader {
+    width: 380px;
+}
+
 td.collection.minimized div#collection-overlay {
     z-index:  10001;
     width: 280px;
@@ -2156,7 +2172,7 @@ div.vocabulary,
 div.course-tags,
 div.collection-filter select {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 div a.switcher-top {

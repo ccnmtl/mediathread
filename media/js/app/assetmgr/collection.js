@@ -24,6 +24,12 @@ var CollectionList = function (config) {
     self.owners = config.owners;
     
     self.el = jQuery(self.parent).find("div." + self.template_label)[0];
+    // setup some ajax progress indicator
+    jQuery(self.el).bind("ajaxStart", function(){
+        jQuery("div.ajaxloader").show();
+     }).bind("ajaxStop", function(){  
+        jQuery("div.ajaxloader").hide();
+     });
     
     self.switcher_context = {};
     

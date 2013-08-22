@@ -18,8 +18,8 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main import course_details
-from mediathread.main.course_details import render_tags_by_course, \
-    all_selections_are_visible, cached_course_is_faculty
+from mediathread.main.course_details import all_selections_are_visible, \
+    cached_course_is_faculty
 from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
 from mediathread.taxonomy.api import VocabularyResource, TermResource
@@ -98,7 +98,6 @@ def asset_workspace(request, asset_id=None, annot_id=None):
 
     vocabulary = VocabularyResource().render_list(
         request, Vocabulary.objects.get_for_object(request.course))
-    course_tags = render_tags_by_course(request)
 
     user_resource = UserResource()
     owners = user_resource.render_list(request, request.course.members)
@@ -108,7 +107,6 @@ def asset_workspace(request, asset_id=None, annot_id=None):
                        'context': context,
                        'owners': owners,
                        'vocabulary': vocabulary,
-                       'course_tags': course_tags,
                        'template': 'asset_workspace',
                        'current_asset': asset_id,
                        'current_annotation': annot_id,
@@ -481,6 +479,43 @@ def asset_detail(request, asset_id):
         return asset_switch_course(request, asset_id)
 
 
+@login_required
+@allow_http("GET")
+@ajax_required
+def asset_references(request, asset_id):
+    if not request.user.is_staff:
+        in_course_or_404(request.user.username, request.course)
+
+    try:
+        the_json = {}
+        asset = Asset.objects.get(pk=asset_id, course=request.course)
+
+        filters = {
+            'assets': [asset.id],
+            'counts': True
+        }
+        the_json['tags'] = TagResource(request.course).filter(request, filters)
+
+        # DiscussionIndex is misleading. Objects returned are
+        # projects & discussions title, object_pk, content_type, modified
+        collaboration_items = DiscussionIndex.with_permission(
+            request,
+            DiscussionIndex.objects.filter(asset=asset).order_by('-modified'))
+
+        the_json['references'] = [{
+            'id': obj.collaboration.object_pk,
+            'title': obj.collaboration.title,
+            'type': obj.get_type_label(),
+            'url': obj.get_absolute_url(),
+            'modified': obj.modified.strftime("%m/%d/%y %I:%M %p")}
+            for obj in collaboration_items]
+
+        return HttpResponse(simplejson.dumps(the_json, indent=2),
+                            mimetype='application/json')
+    except Asset.DoesNotExist:
+        return asset_switch_course(request, asset_id)
+
+
 @allow_http("GET")
 @ajax_required
 def assets_by_user(request, record_owner_name):
@@ -561,6 +596,7 @@ def render_assets(request, record_owner, assets):
 
     user_resource = UserResource()
 
+    # #todo -- figure out a cleaner way to do this. Ugli-ness
     # Collate tag set & vocabulary set for the result set.
     # Get all visible notes for the returned asset set
     # These notes may include global annotations for all users,
@@ -633,31 +669,6 @@ def render_assets(request, record_owner, assets):
 def detail_asset_json(request, asset):
     the_json = AssetResource().render_one(request, asset)
     the_json['user_analysis'] = asset.user_analysis_count(request.user)
-
-    # References Page
-    # Class tags for the References page
-    all_selections_visible = course_details.all_selections_are_visible(
-        request.course) or request.course.is_faculty(request.user)
-
-    if not all_selections_visible:
-        owners = [request.user]
-        owners.extend(request.course.faculty)
-        the_json['tags'] = TagResource().render_list(
-            request, asset.filter_tags_by_users(owners, True))
-
-    # DiscussionIndex is misleading. Objects returned are
-    # projects & discussions title, object_pk, content_type, modified
-    collaboration_items = DiscussionIndex.with_permission(
-        request,
-        DiscussionIndex.objects.filter(asset=asset).order_by('-modified'))
-
-    the_json['references'] = [{
-        'id': obj.collaboration.object_pk,
-        'title': obj.collaboration.title,
-        'type': obj.get_type_label(),
-        'url': obj.get_absolute_url(),
-        'modified': obj.modified.strftime("%m/%d/%y %I:%M %p")}
-        for obj in collaboration_items]
 
     help_setting = \
         UserSetting.get_setting(request.user, "help_item_detail_view", True)

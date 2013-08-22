@@ -1,6 +1,3 @@
-from mediathread.api import TagResource
-from mediathread.djangosherd.models import SherdNote
-from tagging.models import Tag
 from django.core.cache import cache
 
 
@@ -44,28 +41,6 @@ def all_selections_are_visible(course):
     value = int(course.get_detail(SELECTION_VISIBILITY_KEY,
                                   SELECTION_VISIBILITY_DEFAULT))
     return bool(value)
-
-
-def render_tags_by_course(request):
-    course = request.course
-    logged_in_user = request.user
-
-    if (all_selections_are_visible(course) or
-            cached_course_is_faculty(course, logged_in_user)):
-        # Tags for the whole class
-        tags = Tag.objects.usage_for_queryset(
-            SherdNote.objects.filter(asset__course=course))
-    else:
-        # Show only tags for myself and faculty members
-        tags = Tag.objects.usage_for_queryset(
-            logged_in_user.sherdnote_set.filter(asset__course=course))
-
-        for f in course.faculty:
-            tags.extend(Tag.objects.usage_for_queryset(
-                        f.sherdnote_set.filter(asset__course=course)))
-
-    tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-    return TagResource().render_list(request, tags)
 
 
 def cached_course_is_member(course, user):

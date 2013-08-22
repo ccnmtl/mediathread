@@ -132,6 +132,8 @@ ProjectPanelHandler.prototype.resize = function () {
     visible -= jQuery(self.el).find(".project-participant-row").height();
     visible -= jQuery("#footer").height(); // padding
     
+    visible += 30;
+    
     if (self.tinyMCE) {
         var editorHeight = visible;
         // tinyMCE project editing window. Make sure we only resize ourself.
@@ -141,9 +143,10 @@ ProjectPanelHandler.prototype.resize = function () {
     
     jQuery(self.el).find("div.essay-space").css('height', (visible + 20) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
+    jQuery(self.el).find('div.ajaxloader').css('height', visible + 'px');
     
-    // Resize the collections box, subtracting its header elements
-    visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
+    // Resize the collections box, subtracting its header elements    
+    visible -= jQuery(self.el).find("div.filter-widget").outerHeight() + 10;
     jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
     
     // For IE

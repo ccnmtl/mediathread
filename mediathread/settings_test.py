@@ -55,3 +55,5 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'mediathread.settings_test.ExceptionLoggingMiddleware'
 )
+
+#COMPRESS_ROOT = '/Users/sdreher/workspace/mediathread/media'

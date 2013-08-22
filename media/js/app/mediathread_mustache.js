@@ -97,6 +97,12 @@
             },
             'comment-create': function () {
                 return '/comments/post/';
+            },
+            'tags': function () {
+                return '/_main/api/v1/tag/';
+            },
+            'references': function (asset) {
+                return '/asset/references/' + asset.id + '/';
             }
         };
 

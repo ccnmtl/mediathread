@@ -1,8 +1,8 @@
-from datetime import date
+#from datetime import date
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.query_utils import Q
+#from django.db.models.query_utils import Q
 from mediathread.api import ClassLevelAuthentication, UserResource, \
-    ToManyFieldEx, TagResource
+    ToManyFieldEx
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import SherdNote
@@ -50,18 +50,19 @@ class AssetAuthorization(Authorization):
         return len(items) > 0
 
     def in_date_range(self, notes, date_range):
-        enddate = date.today()
-        if date_range == 'today':
-            startdate = enddate + date.timedelta(-1)
-        elif date_range == 'yesterday':
-            startdate = enddate + date.timedelta(-2)
-        elif date_range == 'lastweek':
-            startdate = enddate + date.timedelta(-7)
-
-        items = notes.filter(Q(added__range=[startdate, enddate]) |
-                             Q(modified__range=[startdate, enddate]))
-
-        return len(items) > 0
+#         enddate = date.today()
+#         if date_range == 'today':
+#             startdate = enddate + date.timedelta(-1)
+#         elif date_range == 'yesterday':
+#             startdate = enddate + date.timedelta(-2)
+#         elif date_range == 'lastweek':
+#             startdate = enddate + date.timedelta(-7)
+#
+#         items = notes.filter(Q(added__range=[startdate, enddate]) |
+#                              Q(modified__range=[startdate, enddate]))
+#
+#         return len(items) > 0
+        return False
 
     def apply_limits(self, request, object_list):
         # Exclude archives from these lists
@@ -153,14 +154,6 @@ class AssetResource(ModelResource):
                                 'height': s.height,
                                 'primary': s.primary}
         bundle.data['sources'] = sources
-
-        if not self.options['owner_selections_are_visible']:
-            owners = [bundle.request.user]
-            owners.extend(bundle.obj.course.faculty)
-            tags = bundle.obj.filter_tags_by_users(owners, True)
-        else:
-            tags = bundle.obj.tags()
-        bundle.data['tags'] = TagResource().render_list(bundle.request, tags)
 
         bundle.data['annotations'] = []
         bundle.data['annotation_count'] = 0

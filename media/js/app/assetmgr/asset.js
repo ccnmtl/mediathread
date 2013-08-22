@@ -9,7 +9,6 @@
             this.active_annotation = null;
             this.active_asset = null;
             this.vocabulary = config.vocabulary;
-            this.course_tags = config.course_tags;
             this.config = config;
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ? config.update_history : true;
@@ -547,8 +546,9 @@
                                     .fadeIn()
                                     .promise()
                                     .done(function() {
-                                        self._initConcepts(elt);
-                                        self._initTags(elt);
+                                        self._initTags();
+                                        self._initConcepts();
+                                        self._initReferences();
                                         jQuery(window).trigger("resize");
                                     });                                    
                                 });
@@ -643,6 +643,7 @@
                         djangosherd.assetview.clipform.setState({ 'start': 0, 'end': 0 }, { 'mode': 'create' });
                         
                         self._initTags();
+                        self._initReferences();
                         jQuery("select.vocabulary").select2({});
                         jQuery("#asset-details-annotations-current").fadeIn();
                     }});
@@ -705,6 +706,7 @@
                                 
                                 self._initTags();
                                 self._initConcepts();
+                                self._initReferences();
                                 jQuery(elt).fadeIn();
                             }
                         }
@@ -845,15 +847,35 @@
             }
         };
         
-        this._initTags = function() {            
-            var tags = [];
-            for (i=0; i < self.course_tags.length; i++) {
-                tags.push(self.course_tags[i].name);
-            }
-            jQuery("input[name='annotation-tags']").select2({
-                tags: tags,
-                tokenSeparators: [","],
-                maximumInputLength: 20
+        this._initReferences = function() {
+            jQuery.ajax({
+                type: 'GET',
+                url: MediaThread.urls.references(self.active_asset),
+                dataType: 'json',
+                error: function () {},
+                success: function (json, textStatus, xhr) {
+                    Mustache.update("asset-references", json);                
+                }
+            });
+        };
+        
+        this._initTags = function() {
+            jQuery.ajax({
+                type: 'GET',
+                url: MediaThread.urls.tags(),
+                dataType: 'json',
+                error: function () {},
+                success: function (json, textStatus, xhr) {
+                    var tags = [];
+                    for (i=0; i < json.objects.length; i++) {
+                        tags.push(json.objects[i].name);
+                    }
+                    jQuery("input[name='annotation-tags']").select2({
+                        tags: tags,
+                        tokenSeparators: [","],
+                        maximumInputLength: 20
+                    });            
+                }
             });            
         };
 
@@ -924,8 +946,7 @@
                     
                     Mustache.update("asset-view-help", context);
                     Mustache.update("asset-view-header", context);
-                    Mustache.update("asset-global-annotation", context);
-                    Mustache.update("asset-references", context);
+                    Mustache.update("asset-global-annotation", context);                    
                     
                     if (template_label === "asset-view-details") {
                         Mustache.update("asset-sources", context);
@@ -940,8 +961,9 @@
                         djangosherd.assetview.setState();
                     }
                     
-                    self._initConcepts();
                     self._initTags();
+                    self._initConcepts();
+                    self._initReferences();
                     
                     jQuery(elt).fadeIn("slow", function () {
                         if (self.active_annotation) {

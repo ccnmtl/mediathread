@@ -11,7 +11,6 @@ from djangohelpers.lib import allow_http
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
-from mediathread.main.course_details import render_tags_by_course
 from mediathread.main.decorators import ajax_required
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.lib import composition_project_json
@@ -265,7 +264,6 @@ def project_workspace(request, project_id, feedback=None):
 
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
-        course_tags = render_tags_by_course(request)
 
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
@@ -296,7 +294,6 @@ def project_workspace(request, project_id, feedback=None):
                      'context': assignment_context,
                      'owners': owners,
                      'vocabulary': vocabulary,
-                     'course_tags': course_tags,
                      'template': 'project'}
             panels.append(panel)
 
@@ -315,8 +312,7 @@ def project_workspace(request, project_id, feedback=None):
                  'context': project_context,
                  'template': 'project',
                  'owners': owners,
-                 'vocabulary': vocabulary,
-                 'course_tags': course_tags}
+                 'vocabulary': vocabulary}
         panels.append(panel)
 
         # Project Response -- if the requested project is an assignment
@@ -336,8 +332,7 @@ def project_workspace(request, project_id, feedback=None):
                          'context': response_context,
                          'template': 'project',
                          'owners': owners,
-                         'vocabulary': vocabulary,
-                         'course_tags': course_tags}
+                         'vocabulary': vocabulary}
                 panels.append(panel)
 
                 if not feedback_discussion and response_can_edit:
@@ -353,7 +348,6 @@ def project_workspace(request, project_id, feedback=None):
                      'template': 'discussion',
                      'owners': owners,
                      'vocabulary': vocabulary,
-                     'course_tags': course_tags,
                      'context': threaded_comment_json(request,
                                                       feedback_discussion)}
             panels.append(panel)
@@ -365,7 +359,6 @@ def project_workspace(request, project_id, feedback=None):
                  'update_history': False,
                  'owners': owners,
                  'vocabulary': vocabulary,
-                 'course_tags': course_tags,
                  'context': {'type': 'asset'}}
         panels.append(panel)
 

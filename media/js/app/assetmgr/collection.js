@@ -128,6 +128,25 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
     return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
 };
 
+// Linkable tags within the Project-level composition view
+CollectionList.prototype.filterByTag = function (tag) {
+    var self = this;
+    var active_modified = ('modified' in self.current_records.active_filters) ? 
+            self.current_records.active_filters.modified
+            : null;
+    djangosherd.storage.get({
+        type: 'asset',
+        url: self.getSpaceUrl(tag, active_modified, self.citable)
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
+
+    return false;
+};
+
+// Linkable tags within the Item View/References page
 CollectionList.prototype.filterByClassTag = function (tag) {
     var self = this;
     djangosherd.storage.get({
@@ -388,6 +407,11 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return self.filter();
             });
             
+            jQuery(self.parent).find("a.switcher-choice.filterbytag").unbind('click').click(function (evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                var bits = srcElement.href.split("/");
+                return self.filterByTag(bits[bits.length - 1]);
+            });
             
             jQuery(self.el).find("a.collection-choice.edit-asset").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;

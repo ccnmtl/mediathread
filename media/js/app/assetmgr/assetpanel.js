@@ -77,7 +77,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
                         columnWidth: 25
                     });
                 } else {
-                    jQuery('div.asset-table').css('height', '400px');
+                    jQuery('div.asset-table').css('height', '500px');
                 }
                 
                 jQuery(window).trigger("resize");

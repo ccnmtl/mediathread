@@ -120,6 +120,8 @@
             jQuery(elt).tabs({
                 'activate': this.activateTab
             });
+            // remove the default tabs key processing
+            jQuery(elt).find('li').off('keydown');
             jQuery(elt).addClass("ui-tabs-vertical ui-helper-clearfix");
             jQuery(this.el).find("div.vocabularies li").removeClass("ui-corner-top").addClass( "ui-corner-left");
             

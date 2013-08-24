@@ -646,6 +646,7 @@
                         self._initReferences();
                         jQuery("select.vocabulary").select2({});
                         jQuery("#asset-details-annotations-current").fadeIn();
+                        jQuery(window).trigger("resize");
                     }});
             });
         };
@@ -660,7 +661,8 @@
                     self._update({
                         'annotation_id': self.active_annotation.id,
                         'editing': true },
-                        "annotation-current");                    
+                        "annotation-current"); 
+                    jQuery(window).trigger("resize");
                 });
             return false;
         };
@@ -708,6 +710,7 @@
                                 self._initConcepts();
                                 self._initReferences();
                                 jQuery(elt).fadeIn();
+                                jQuery(window).trigger("resize");
                             }
                         }
                     });

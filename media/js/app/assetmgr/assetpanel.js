@@ -233,6 +233,8 @@ AssetPanelHandler.prototype.resize = function () {
         visible -= jQuery('ul.ui-tabs-nav').outerHeight();
         jQuery(self.el).find('.ui-tabs-panel').css('height', (visible - 10) + "px");
         
+        jQuery(self.el).find('form#edit-annotation-form').css('height', (visible - 56) + "px");
+        
         visible -= jQuery("div#asset-global-annotation").outerHeight();
         jQuery(self.el).find('div#annotations-organized').css('height', (visible - 5) + "px");
         

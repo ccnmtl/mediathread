@@ -6,7 +6,7 @@
 <div id="{{help_id}}-tab"
     class="ui-widget-content help-tab"
     {% if not default_help_state %}style="display: none"{% endif %}>
-        <input class="btn-primary right" type="image" title="Dismiss help" 
+        <input class="dismiss-help" type="image" title="Dismiss help" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
             alt="Dismiss Help"
             src="/site_media/img/icons/meth_help.png" />
@@ -17,22 +17,25 @@
     {% if not default_help_state %}style="display: none"{% endif %}>
     
         {% ifequal help_id "help_taxonomy" %}
-        <strong>Course Vocabulary</strong>        
-        <div class="feature-help-instructions">
-        </div>
-        
-        <strong>Creating a Vocabulary</strong>
-        <div class="feature-help-instructions">   
-        </div> 
-        
-        <strong>Editing a Vocabulary</strong>
-        <div class="feature-help-instructions">   
-        </div>
-
-        <strong>Deleting a Vocabulary</strong>
-        <div class="feature-help-instructions">   
-        </div>
-            
+    <strong>About Course Vocabularies</strong>    
+    <div class="feature-help-instructions">A Mediathread course vocabulary is a set of concepts and associated terms chosen by a course instructor. 
+    This is a good way to designate metadata for students to apply to items they analyze in Mediathread.</div>
+    <br />
+    <strong>Creating a Vocabulary</strong>
+    <div class="feature-help-instructions">
+    <div>A course vocabulary is made up of up to three concepts and an unlimited number of associated terms.</div><br />
+    <div>A concept is a category or theme that you will connect with associated terms. Example: "Religion"</div><br />
+    <div>A term is a subset or component of a concept. Example: A "Religion" concept might have associated terms like "Buddhism", "Hindusim", "Sikhism", etc.</div><br />
+    </div>
+    <strong>Editing a Vocabulary</strong>
+    <div class="feature-help-instructions">After concepts and their associated terms are created, their names can be updated by instructors. 
+    To edit a name, click the pencil item, type in the updated name, and then click the check box to save. 
+    If an item in Mediathread has been associated with an term that is subsequently updated, that updated term will apply to the Item.</div>
+    <br />
+    <strong>Deleting a Concept or Term</strong>
+    <div class="feature-help-instructions">Instructors may delete concepts and terms by clicking on the trash icon. If a term is deleted, all of its 
+    associations with Items in Mediathread are also deleted and cannot be restored. If a concept is deleted, 
+    all of its associated terms are also deleted and cannot be restored.</div>            
     {% endifequal %}
     
     {% ifequal help_id "help_migrate_materials" %}
@@ -260,9 +263,10 @@
     
     
     <div class="visualclear"></div>
+    <br />
     <div>
         <a href="/help/" style="margin-top: 3px;" class="more-help left">View More Help</a>        
-        <input class="media right" type="button" 
+        <input class="btn-primary right" type="button" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
             value="Close" />
     </div>

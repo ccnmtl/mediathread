@@ -1,6 +1,5 @@
-#from datetime import date
+from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
-#from django.db.models.query_utils import Q
 from mediathread.api import ClassLevelAuthentication, UserResource, \
     ToManyFieldEx
 from mediathread.assetmgr.models import Asset, Source
@@ -14,6 +13,7 @@ from tastypie.authorization import Authorization
 from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
 import simplejson
+from django.db.models.query_utils import Q
 
 
 class SourceResource(ModelResource):
@@ -50,18 +50,21 @@ class AssetAuthorization(Authorization):
         return len(items) > 0
 
     def in_date_range(self, notes, date_range):
-#         enddate = date.today()
-#         if date_range == 'today':
-#             startdate = enddate + date.timedelta(-1)
-#         elif date_range == 'yesterday':
-#             startdate = enddate + date.timedelta(-2)
-#         elif date_range == 'lastweek':
-#             startdate = enddate + date.timedelta(-7)
-#
-#         items = notes.filter(Q(added__range=[startdate, enddate]) |
-#                              Q(modified__range=[startdate, enddate]))
-#
-#         return len(items) > 0
+        tomorrow = datetime.today() + timedelta(1)
+        # Tomorrow at midnight
+        enddate = datetime(tomorrow.year, tomorrow.month, tomorrow.day)
+        if date_range == 'today':
+            startdate = enddate + timedelta(-1)
+        elif date_range == 'yesterday':
+            startdate = enddate + timedelta(-2)
+            enddate = enddate + timedelta(-1)
+        elif date_range == 'lastweek':
+            startdate = enddate + timedelta(-7)
+
+        items = notes.filter(Q(added__range=[startdate, enddate]) |
+                             Q(modified__range=[startdate, enddate]))
+
+        return len(items) > 0
         return False
 
     def apply_limits(self, request, object_list):

@@ -144,7 +144,7 @@ Version: 3.4.1 Timestamp: Thu Jun 27 18:02:10 PDT 2013
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 9998;
+    z-index: 10002;
     /* styles required for IE to work */
     background-color: #fff;
     opacity: 0;

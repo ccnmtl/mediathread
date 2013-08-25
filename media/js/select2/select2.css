@@ -537,6 +537,7 @@ disabled look for disabled choices in the results dropdown
        -moz-box-shadow: none;
             box-shadow: none;
     background: transparent !important;
+    min-width: 155px;
 }
 
 .select2-container-multi .select2-choices .select2-search-field input.select2-active {

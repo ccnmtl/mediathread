@@ -3035,6 +3035,10 @@ p.sherd-instructions {
     font: 0.875em/1.25em helvetica neue,helvetica;
 }
 
+div.asset-annotator {
+    margin-top: 10px;
+}
+
 .sherd-clipform {
     padding: 0 0 0 0;
     margin-bottom: 10px;
@@ -3042,7 +3046,7 @@ p.sherd-instructions {
 
 .sherd-clipform table {
     border: none;
-    margin: 10px 0 10px 0;
+    margin: 0 0 10px 0;
 }
 
 .sherd-clipform-play {
@@ -3721,7 +3725,9 @@ form#edit-annotation-form {
     overflow-y: auto;
     overflow-x: hidden;
     margin-right: -10px;
-    padding-right: 20px;    
+    padding-right: 20px;
+    margin-top: -10px;
+    padding-bottom: 10px;
 }
 
 div#asset-view-details div#asset-global-annotation {

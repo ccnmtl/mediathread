@@ -22,7 +22,8 @@ from mediathread.main.course_details import all_selections_are_visible, \
     cached_course_is_faculty
 from mediathread.main.decorators import ajax_required
 from mediathread.main.models import UserSetting
-from mediathread.taxonomy.api import VocabularyResource, TermResource
+from mediathread.taxonomy.api import VocabularyResource, TermResource, \
+    TermRelationshipResource
 from mediathread.taxonomy.models import Vocabulary, TermRelationship
 from tagging.models import Tag
 import datetime
@@ -495,6 +496,15 @@ def asset_references(request, asset_id):
             'counts': True
         }
         the_json['tags'] = TagResource(request.course).filter(request, filters)
+
+        the_json['vocabulary'] = []
+        for v in Vocabulary.objects.get_for_object(request.course):
+            filters['vocabulary'] = v.id
+            concepts = TermRelationshipResource(request.course).filter(request,
+                                                                       filters)
+            if len(concepts):
+                the_json['vocabulary'].append({'display_name': v.display_name,
+                                               'term_set': concepts})
 
         # DiscussionIndex is misleading. Objects returned are
         # projects & discussions title, object_pk, content_type, modified

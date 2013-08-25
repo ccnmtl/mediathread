@@ -161,6 +161,24 @@ CollectionList.prototype.filterByClassTag = function (tag) {
     return false;
 };
 
+//Linkable vocabulary within the Item View/References page
+CollectionList.prototype.filterByVocabulary = function (srcElement) {
+    var self = this;
+    var url = MediaThread.urls['all-space'](null, null, self.citable);
+    url += jQuery(srcElement).data("vocabulary-id") + "=" + 
+        jQuery(srcElement).data("term-id");
+    djangosherd.storage.get({
+        type: 'asset',
+        url: url
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
+
+    return false;
+};
+
 CollectionList.prototype.filter = function () {
     var self = this;
     var filters = {};

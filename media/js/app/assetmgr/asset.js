@@ -623,7 +623,6 @@
                 'vocabulary': self.vocabulary,
                 'annotation': {
                     'editing': true,
-                    'showCancel': true,
                     'metadata': {
                         'author': { 'id': MediaThread.current_user },
                         'author_name': MediaThread.user_full_name
@@ -678,7 +677,6 @@
                 'annotation': {
                     'editing': true,
                     'copying': true,
-                    'showCancel': true,
                     'metadata': {
                         'body': self.active_annotation.metadata.body,
                         'tags': self.active_annotation.metadata.tags,
@@ -934,10 +932,6 @@
                 context.show_help = self.user_settings.help_item_detail_view;
             }
             context.show_help_checked = !self.user_settings.help_item_detail_view;
-            
-            if (context.annotation) {
-                context.annotation.showCancel = self.active_asset.annotations.length > 1;
-            }
             
             Mustache.update(template_label, context, {
                 pre: function (elt) { jQuery(elt).hide(); },

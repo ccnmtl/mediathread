@@ -1,10 +1,64 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.aggregates import Count
 from mediathread.api import ClassLevelAuthentication, ToManyFieldEx, \
-    FacultyAuthorization
-from mediathread.taxonomy.models import Vocabulary, Term
+    FacultyAuthorization, RestrictedCourseResource
+from mediathread.djangosherd.models import SherdNote
+from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
+
+
+class TermRelationshipResource(RestrictedCourseResource):
+    def __init__(self, course=None):
+        super(TermRelationshipResource, self).__init__(None)
+        self.filters = {}
+
+    class Meta:
+        queryset = TermRelationship.objects.none()
+        authentication = ClassLevelAuthentication()
+        limit = 1000
+        max_limit = 1000
+
+    def _filter_terms(self, request, note_set):
+        if 'assets' in self.filters:
+            note_set = note_set.filter(asset__id__in=self.filters['assets'])
+
+        related = TermRelationship.objects.filter(
+            term__vocabulary__id=self.filters['vocabulary'],
+            content_type=ContentType.objects.get_for_model(SherdNote),
+            object_id__in=[n.id for n in note_set])
+
+        terms = list(related.values('term__id',
+                                    'term__vocabulary__id',
+                                    'term__display_name').annotate(
+            count=Count('term__id')))
+
+        terms.sort(lambda a, b: cmp(a['term__display_name'].lower(),
+                                    b['term__display_name'].lower()))
+        return terms
+
+    def get_unrestricted(self, request, object_list, course):
+        notes = SherdNote.objects.filter(asset__course=course)
+        return self._filter_terms(request, notes)
+
+    def get_restricted(self, request, object_list, course):
+        whitelist = [f.id for f in course.faculty]
+        whitelist.append(request.user.id)
+
+        notes = SherdNote.objects.filter(asset__course=course,
+                                         author__id__in=whitelist)
+        return self._filter_terms(request, notes)
+
+    def filter(self, request, filters):
+        self.filters = filters
+        objects = self.obj_get_list(request=request)
+
+        last = len(objects) - 1
+        for idx, term in enumerate(objects):
+            term['last'] = idx == last
+
+        return objects
 
 
 class TermValidation(Validation):
@@ -37,6 +91,8 @@ class TermResource(ModelResource):
 
     def dehydrate(self, bundle):
         bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
+        if hasattr(bundle.obj, "count"):
+            bundle.data['count'] = int(bundle.obj.count)
         return bundle
 
     def hydrate(self, bundle):

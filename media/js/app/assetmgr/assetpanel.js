@@ -168,6 +168,7 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
     }
     
     jQuery(self.el).find("a.filterbyclasstag").unbind();
+    jQuery(self.el).find("a.filterbyvocabulary").unbind();
     
     // Setup the edit view
     AnnotationList.init({
@@ -176,8 +177,10 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
         "update_history": self.panel.update_history,
         "vocabulary": self.panel.vocabulary,
         "view_callback": function () {
-            jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
-            
+            jQuery(self.el).find("a.filterbyclasstag").bind("click",
+                    { self: self }, self.onFilterByClassTag);
+            jQuery(self.el).find("a.filterbyvocabulary").bind("click",
+                    { self: self }, self.onFilterByVocabulary);            
             jQuery(self.el).find("div.tabs").fadeIn("fast", function () {
                 PanelManager.verifyLayout(self.el);
                 jQuery(window).trigger("resize");
@@ -284,5 +287,12 @@ AssetPanelHandler.prototype.onFilterByClassTag = function (evt) {
     
     self.collectionList.filterByClassTag(bits[bits.length - 1]);
     
+    return false;
+};
+
+AssetPanelHandler.prototype.onFilterByVocabulary = function (evt) {
+    var self = evt.data.self;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    self.collectionList.filterByVocabulary(srcElement);
     return false;
 };

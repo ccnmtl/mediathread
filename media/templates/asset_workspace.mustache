@@ -349,10 +349,8 @@
                                                                 <input class="btn-primary right" type="button" name="Save" value="Save" 
                                                                     onclick="javascript:AnnotationList.saveAnnotation(this)" />
                                                                     
-                                                                {{#showCancel?}}
                                                                 <input class="btn-primary right" type="button" name="Cancel" value="Cancel" 
                                                                     onclick="javascript:AnnotationList.cancelAnnotation()" />
-                                                                {{/showCancel?}}
                                                                 
                                                                 {{#id?}} <!-- Editing existing annotation -->
                                                                 <input type="hidden" name="annotation-id" value="{{id}}" />
@@ -572,9 +570,25 @@
                                                             {{/tags}}
                                                         </span>
                                                     </div>
+                                                    <br />
+                                                    <br />
                                                 {{/tags?}}
+                                                {{#vocabulary}}
+                                                    <h2>{{display_name}}</h2>
+                                                    <div>
+                                                        <span>
+                                                            {{#term_set}}
+                                                                <a href="#" class="switcher-choice filterbyvocabulary" 
+                                                                    data-vocabulary-id="vocabulary-{{term__vocabulary__id}}"
+                                                                    data-term-id="{{term__id}}">
+                                                                    {{term__display_name}} ({{count}})</a> {{^last}}, {{/last}} 
+                                                            {{/term_set}}
+                                                        </span>
+                                                    </div>
                                                 <br />
-                                                <br />
+                                                <br />                                                
+                                                {{/vocabulary}}
+
                                                 
                                                 {{#references?}}                                                
                                                     <h2>Class References</h2>

@@ -3583,7 +3583,7 @@ input#asset-view-help-button {
     margin-top: 10px;
     opacity:0.50;
     -moz-opacity:0.50;
-    filter:alpha(opacity=50);
+    /* Opacity looks bad in IE filter:alpha(opacity=50); */
 }
 
 div.asset-view-help {

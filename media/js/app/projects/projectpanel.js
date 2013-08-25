@@ -571,8 +571,17 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
                     });
                 }
             });
+        },
+        open: function( event, ui ) {
+            if (!jQuery('#id_publish_2').is(":checked")) {
+                jQuery("#id_due_date").attr("disabled", "disabled");
+            }            
             jQuery("input[name=publish]").bind('click', function () {
-                                
+                if (jQuery('#id_publish_2').is(":checked")) {
+                    jQuery("#id_due_date").removeAttr("disabled");
+                } else {
+                    jQuery("#id_due_date").attr("disabled", "disabled");
+                }           
             });
         },
         beforeClose: function (event, ui) {
@@ -641,6 +650,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).prev().removeClass("composition").addClass("assignment");
                     jQuery(self.el).prev().find("div.label").html("assignment");
                     jQuery(self.el).prev().prev().find(".composition").removeClass("composition").addClass("assignment");
+                    
+                    jQuery(self.el).find('a.project-export').hide();
+                    jQuery(self.el).find('a.project-print').hide();
                 } else {
                     jQuery(self.el).removeClass("assignment").addClass("composition");
                     jQuery(self.el).find(".assignment").removeClass("assignment").addClass("composition");
@@ -648,6 +660,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).prev().removeClass("assignment").addClass("composition");
                     jQuery(self.el).prev().find("div.label").html("composition");
                     jQuery(self.el).prev().prev().find(".assignment").removeClass("assignment").addClass("composition");
+                    
+                    jQuery(self.el).find('a.project-export').show();
+                    jQuery(self.el).find('a.project-print').show();                    
                 }
                 
                 jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);

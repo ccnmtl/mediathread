@@ -2819,7 +2819,6 @@ img.materialCitation:hover,
 input.delete:hover,
 input.edit:hover,
 input.videoplay:hover,
-input.create-selection:hover,
 .project-export-icon:hover,
 .project-print-icon:hover {
     opacity:0.75;
@@ -3734,10 +3733,12 @@ div#asset-view-details div#asset-global-annotation {
     margin-bottom: 15px;
 }
 
-div#asset-view-details input.create-selection {
-    float: right;
+div#asset-view-details a.create-selection {
     margin: 1px 8px 0px 8px;
-    border: 0;
+}
+
+div#asset-view-details a.filter-selections {
+    margin: 1px 0 0 0;
 }
 
 div#asset-header table {
@@ -3817,7 +3818,6 @@ form[name="annotation-list-filter"] {
 
 div#annotation-filter-menu {
     position: absolute;
-    margin: 30px 0 0 94px;
     width: 200px;
     padding: 10px;
     line-height: 1.5em;
@@ -3826,7 +3826,9 @@ div#annotation-filter-menu {
     z-index: 9998;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
-    border-radius: 4px;   
+    border-radius: 4px;
+    left: 46px;
+    top: 255px;
 }
 
 div#annotation-filter-menu select {

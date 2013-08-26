@@ -91,7 +91,7 @@
                                         <div class="asset-view-help-instructions">
                                             <div>Click the [<img alt="Create Selection" src="/site_media/img/icons/meth_addselection.png" />] icon to add a selection.</div>
                                             <div>Click the [<img alt="Pencil Icon" src="/site_media/img/icons/meth_edit.png" />] icon to edit a selection.</div>
-                                            <div>Click the Visibility menu to group selections by author or tag.</div>
+                                            <div>Click the View button to group selections by author or tag.</div>
                                         </div>
                                         <br />
                                         <div style="float: right">
@@ -374,16 +374,16 @@
                                                     {{#asset-current}}
                                                         {{#annotations?}}
                                                             
-                                                            <input class="create-selection"
-                                                                type="image" title="Create Selection" 
-                                                                onclick="return AnnotationList.newAnnotation();" 
-                                                                src="/site_media/img/icons/meth_addselection.png" />
+                                                            <a class="btn-primary create-selection right"
+                                                               title="Create Selection" 
+                                                               onclick="return AnnotationList.newAnnotation();">                                                                
+                                                                <img src="/site_media/img/icons/meth_addselection.png" />
+                                                                Create</a>
                                                                                                             
-                                                            <a class="btn-primary create right"
+                                                            <a class="btn-primary filter-selections right"
                                                                 onclick='return jQuery("#annotation-filter-menu").toggle();'>
-                                                                Visibility
-                                                                <img src="/site_media/img/menuselect.png"
-                                                                    alt="Filter selections"></img>
+                                                                <img src="/site_media/img/icons/meth_addselection.png" />
+                                                                View
                                                             </a>
                                                             <div id="annotation-filter-menu" style="display: none">
                                                                 <form name="annotation-list-filter">

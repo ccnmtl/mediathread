@@ -1,0 +1,310 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load coursetags %}
+
+{% block title %}Migrate Course Materials{% endblock %}
+
+{% block extrahead %}
+    <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
+    
+    <script type="text/template" id="course-template">
+        <div class="meta">
+            <% if (info && info.term) { %> 
+                <div>
+                <span class="metadata-label">Term:</span>
+                    <span class="metadata-value">
+                        <% if (info.term === 1) { %>
+                            Spring 
+                        <% } else if (info.term === 2) { %>
+                            Summer
+                        <% } else if (info.term === 3) { %>
+                            Fall
+                        <% } %>
+                    </span>
+                </div>
+            <% } %>
+            <% if (info && info.year) { %>
+                <div><span class="metadata-label">Year:</span><span class="metadata-value"> <%= info.year %></span></div>
+            <% } %>    
+            <div>   
+                <span class="metadata-label">Faculty:</span> 
+                <span class="metadata-value">
+                <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
+                    <%= faculty_group.user_set[i].public_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+                <% } %>
+            </div>
+        </div>
+        
+        <% if (project_set && project_set.length > 0) { %>
+            <div class="metadata-value"><%= project_set.length %> Compositions &amp; Assignments</div>
+            <div><input id="import-projects" type="button" class="rounded-button blue" value="Select Compositions &amp; Assignments"></div>
+            <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Compositions & Assignments To Migrate">
+                <div class="right"><a href="#" id="select-all-projects">Select All</a> | <a href="#" id="clear-all-projects">Clear All</a></div>
+                <div class="visualclear"/>
+                <div class="import-stuff">
+                <table>
+                <% for (var i = 0; i < project_set.length; i++) { %>
+                    <% var project = project_set.at(i) %>
+                    <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
+                        <td class="composition <% if (project.get('is_assignment')) { %>assignment<% } %>">
+                        </td>
+                        <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
+                        <td class="title">
+                            <% if (project.get('is_assignment')) { %>
+                                <div class="metadata-value-assignment">Assignment</div>
+                            <% } else { %>
+                                <div class="metadata-value-composition">Composition</div>
+                            <% } %>
+                            <div class="visualclear"></div>
+                            <h5><%= project.get('title') %></h5>
+                            by <%= project.get('attribution') %>
+                            
+                            <% if (project.get('annotations').length > 0) { %>
+                                <br />
+                                <i>includes <%= project.get('annotations').length %> selection(s)</i>
+                            <% } %>
+                        </td>
+                        
+                    </tr>
+                    <tr class="spacer-row"><td class="spacer" colspan="3"></td></tr>
+                <% } %>
+                </table>
+                </div>
+                <div><i>Note: Items and selections associated with a project are automatically imported.</i></div>                              
+            </div>
+        <% } %>
+        <br />
+
+        <% if (asset_set && asset_set.length > 0) { %>             
+            <div class="metadata-value"><%= asset_set.length %> Items with <%= asset_set.total_sherdnotes() %> selection(s)</div>
+            <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items"/></div>
+
+            <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
+                <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
+                <div class="visualclear"/>
+                <div class="import-stuff">
+                    <table>
+                        <% for (var j = 0; j < asset_set.length; j++) { %>
+                            <% var asset = asset_set.at(j) %>
+                            <tr  <% if (j % 2 === 0) { %> class="odd" <% } %> >
+                                <td class="asset"></td>
+                                <td>
+                                    <input class="asset" type="checkbox" value="<%= asset.get('id') %>" />
+                                </td>
+                                <td class="record">
+                                    <% if (asset.get('thumb_url')) { %>
+                                        <img class="asset-thumb" src="<%=asset.get('thumb_url') %>" alt="Item Thumbnail" />                        
+                                    <% } %>
+                                </td>
+                                <td class="title">
+                                    <div><b><%= asset.get('title') %></b></div>
+                                    <div class="meta">
+                                        <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
+                                        <div>
+                                            <span class="metadata-value">Includes </span>  
+                                            <span class="metadata-label item-annotation-count-total"><%=asset.get('annotations').length %></span>
+                                            <span class="metadata-value">selections</span>                        
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="spacer-row"><td class="spacer" colspan="4"></td></tr>
+                        <% } %>
+                     </table>
+                </div>
+            </div>
+        <% } %>
+
+        <br /><br />
+        <input id="import-all" class="rounded-button green" type="button" value="Select Everything" />
+        <div id="import-all-dialog" style="display: none" title="Import">
+            <h3><%= title %></h3>
+            <% if (project_set && project_set.length > 0) { %>
+                <div><%= project_set.length %> Compositions & Assignments</div>
+            <% } else { %>
+                <div>No compositions or assignments</div>
+            <% } %>
+            <% if (asset_set && asset_set.length > 0) { %>
+                <div><%= asset_set.length %> items and <%= asset_set.total_sherdnotes()  %> selections</div>
+            <% } else { %>
+                <div>No items or selections</div>
+            <% } %>
+            <br />
+            <div>Are you sure you want to select the entire course?</div>                                                              
+        </div> 
+    </script>
+    
+    <script type="text/template" id="selected-template">
+        <form class="import-dialog">
+            <div><div class="left">Selected Materials</div><div class="right">Remove</div></div>
+            <div class="visualclear"/>
+            <div id="to_import" class="import-stuff scroll">
+                <% if (project_set.length) { %>
+                    <table>
+                    <% for (var i = 0; i < project_set.length; i++) { %>
+                        <% var project = project_set[i] %>
+                        <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
+                            <td class="composition <% if (project.is_assignment) { %>assignment<% } %>">
+                            </td>
+                            <td class="title">
+                                <% if (project.is_assignment) { %>
+                                    <div class="metadata-value-assignment">Assignment</div>
+                                <% } else { %>
+                                    <div class="metadata-value-composition">Composition</div>
+                                <% } %>
+                                <div class="visualclear"></div>
+                                <h5><%= project.title %></h5>
+                                by <%= project.attribution %>
+                            
+                                <% if (project.annotations.length > 0) { %>
+                                    <br />
+                                    <i>Includes <%= project.annotations.length %> selections</i>
+                                <% } %>
+                            </td>
+                            <td class="deselect"><input type="button" name="<%= project.id %>" value="X" class="deselect-project"/></td>
+                        </tr>
+                        <tr class="spacer-row"><td class="spacer" colspan="3"></td></tr>
+                    <% } %>
+                    </table>
+                <% } %>
+                
+                <% if (asset_set.length) { %>
+                    <table>
+                    <% for (var i = 0; i < asset_set.length; i++) { %>
+                        <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
+                        <td class="asset"></td>    
+                        <% var asset = asset_set[i] %>
+                        <td class="record">
+                            <% if (asset.thumb_url) { %>
+                                <img class="asset-thumb left" src="<%=asset.thumb_url %>" alt="Item Thumbnail" />                        
+                            <% } %>
+                        </td>
+                        <td class="title">
+                            <div><b><%= asset.title %></b></div>
+                            <div class="meta">
+                                <div class="metadata-value">Imported by <%= asset.author.public_name %></div>
+                                <div>
+                                    <span class="metadata-value">Includes </span>  
+                                    <span class="metadata-label item-annotation-count-total"><%=asset.annotations.length %></span>
+                                    <span class="metadata-value">selections</span>                        
+                                </div>
+                            </div>
+                        </td>
+                        <td class="deselect"><input type="button" name="<%= asset.id %>" value="X" class="deselect-asset <%=asset.required %>"/></td>
+                        </tr>
+                        <tr class="spacer-row"><td class="spacer" colspan="4"></td></tr>
+                    <% } %>
+                    </table>
+                <% } %>
+            </div>
+            <input id="import-selected" type="button" value="Migrate Selected" class="right" />
+            <input id="clear-selected" type="button" value="Clear Selected" class="right" />
+        </form>
+
+    </script>    
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+    <script type="text/javascript" src="/site_media/js/app/dashboard/class_migrate.js"></script>
+    
+    <script type="text/javascript"> 
+        var courses =
+            [{% for c in available_courses %}
+                {% ifnotequal c.id request.course.id %}
+                    { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                      value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                      id: "{{c.id}}",
+                      faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"
+                    }
+                    {% if forloop.last %}{% else %},{% endif %}
+                {% endifnotequal %}
+            {% endfor %}];
+        
+        jQuery(document).ready(function () {
+            var view = new CourseMaterialsView({ availableCourses: courses, el: "#block" });
+        });
+    </script>
+{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block dashboard_module_header %}
+    {% with "help_migrate_materials" as help_id %}
+    {% with help_migrate_materials as default_help_state %}
+
+    <h2>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h2>    
+    
+    {% endwith %}{% endwith %}
+{% endblock %}
+
+{% block dashboard_module %}
+    {% with "help_migrate_materials" as help_id %}
+    {% with help_migrate_materials as default_help_state %}
+            
+    {% include "help/help_contentarea.html" %}
+    
+    <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
+    <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
+                
+    <div id="available-courses-selector" style="display: none">
+        <input type="text" class="default autocomplete" id="available-courses" value="Type course name here">
+        <input type="submit" id="view-materials" value="View materials" class="btn-primary"/>        
+    </div>
+    
+    <div id="course-materials-container" style="display: none">       
+        <div>
+            <div class="course-information-container">
+                {% if user.is_staff %}
+                    <div class="on-behalf-of-container">
+                        <div class="helptext right" style="margin-top: -4px;">CCNMTL staff only</div>
+                        <h4>Migrate As</h4>
+                        <select id="on_behalf_of">
+                            {% for faculty in current_course_faculty %}
+                                {% ifequal user.id faculty.id %}
+                                    <option value="{{faculty.id}}" selected="selected">
+                                        {% public_name for faculty %} (Me)
+                                    </option>
+                                {% else %}                            
+                                    <option value="{{faculty.id}}">
+                                        {% public_name for faculty %}
+                                    </option>
+                                {% endifequal %}
+                            {% endfor %}
+                        </select>
+                        
+                        {% ifequal role_in_course "non-member" %}
+                            <div class="helptext">
+                                You are not a member of this course.<br />
+                                You must migrate on behalf of an instructor.
+                            </div>
+                        {% endifequal %}
+                    </div>
+                    <br />
+                {% endif %}
+                <div class="course-information">
+                    {% if available_courses|length > 2 %}
+                        <div class="right">
+                            <a id="switch-course" href="#" class="metadata-value">switch course</a>
+                        </div>
+                    {% endif %}
+                    <div class="visualclear"></div>
+                    <h3><span id="course-title"></span></h3>
+                    <div id="course"></div>
+                </div>
+            </div>
+            <div id="selected-for-import" class="selected-for-import" style="display: none"></div>
+        </div>
+    </div>
+    
+    <div id="no-materials-to-migrate" style="display: none">
+        You are not affiliated with any other courses. Please review our help materials
+        if you need to migrate course materials from a colleague's class.
+    </div>    
+    
+{% endwith %}{% endwith %}
+{% endblock %}
+
+
+

@@ -1,0 +1,193 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load revision %}
+
+{% block title %}Course Vocabulary Workspace{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="/site_media/js/app/taxonomy/taxonomy.js?version={%revision%}"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+    
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            var view = new VocabularyListView({
+                el: jQuery("#taxonomy"),
+                course_id: "{{course.id}}",
+                content_type_id: "{{course_type.id}}"
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block extrahead %}
+    <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
+    
+    <script type="text/template" id="vocabulary-template">
+        <div class="vocabularies">           
+            <ul>
+                <% for (var i=0; i < vocabularies.length; i++) { %>
+                    <li id="vocabulary-wrapper-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
+                        <div class="arrow"></div>
+                        <div class="vocabulary-display">
+                            <a class="display-name" href="#vocabulary-<%=vocabularies[i].id%>"><%=vocabularies[i].display_name%></a>
+                            
+                          <div class="actions">
+                                <a class="icon-link edit-vocabulary-open" href="#">                                                     
+                                    <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit vocabulary"  />
+                                </a>
+                                <a class="icon-link delete-vocabulary"
+                                    href="<%=vocabularies[i].id%>">                                                
+                                    <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete vocabulary"  />
+                                </a>
+                            </div>                        
+                        </div>
+                        <div class="vocabulary-edit" style="display: none">
+                            <input id="id_display_name" type="text" name="display_name"
+                                maxlength="50" value="<%=vocabularies[i].display_name%>"></input>
+                            <input type="hidden" name="vocabulary_id" value="<%=vocabularies[i].id%>"/>
+                            <a class="btn-primary edit-vocabulary-close" href="#">
+                                <span class="ui-icon ui-icon-closethick">close</span>
+                            </a>
+                            <a class="btn-primary edit-vocabulary-submit" href="#">
+                                <span class="ui-icon ui-icon-check">close</span>
+                            </a>
+                        </div>
+                    </li>
+                <% } %>
+
+                <% if (vocabularies.length < 3) { %>
+                    <li class="create-vocabulary">
+                        <div class="vocabulary-display">
+                            <a href="#new-vocabulary" class="icon-link create-vocabulary-open">
+                                Create Concept
+                                <img src="/site_media/img/icons/meth_addselection.png" alt="Create vocabulary" />
+                            </a>
+                        </div>
+                        <div class="vocabulary-create" style="display: none">
+                            <input id="id_display_name" type="text" name="display_name"
+                                maxlength="50" value="Type concept name here" class="default">
+                            <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
+                            <input type="hidden" name="object_id" value="<%=course_id%>"/>
+                            <a class="btn-primary create-vocabulary-close" href="#">
+                                <span class="ui-icon ui-icon-closethick">close</span>
+                            </a>
+                            <a class="btn-primary create-vocabulary-submit" href="#">
+                                <span class="ui-icon ui-icon-check">close</span>
+                            </a>
+                        </div>
+                    </li>
+                <% } %>
+            </ul>       
+            <% for (var i=0; i < vocabularies.length; i++) { %>
+                <div id="vocabulary-<%=vocabularies[i].id%>">
+                    <h2><%=vocabularies[i].display_name%> Concept</h2>
+                    <h3>Terms</h3>
+                    <div class="terms">
+                        <input type="text" name="term_name" class="left default" value="Type new term name here"/>
+                        <a class="btn-primary create-term-submit left" href="#">
+                            <img src="/site_media/img/icons/meth_addselection.png" alt="Create term" />
+                        </a>
+                        
+                        <div class="visualclear"></div>
+                        <% if (vocabularies[i].term_set.length > 0) { %>
+                            <div class="term-container">
+                            <% for (var j=0; j < vocabularies[i].term_set.length; j++) { %>
+                                <div class="term <% if (j%2 === 0) { %>even<% } else { %>odd<% } %>">
+                                    <div class="term-display">
+                                        <h5><%= vocabularies[i].term_set[j].display_name %></h5>
+                                    
+                                        <div class="actions">
+                                            <a class="icon-link edit-term-open" href="#">                                                     
+                                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit term"  />
+                                            </a>
+                                            <a class="icon-link delete-term"
+                                                href="<%=vocabularies[i].term_set[j].id%>">                                                
+                                                <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete term"  />
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="term-edit" style="display: none">
+                                        <input id="id_display_name" type="text" name="term_name"
+                                            maxlength="50" value="<%=vocabularies[i].term_set[j].display_name%>">
+                                        <a class="btn-primary edit-term-close" href="#">
+                                            <span class="ui-icon ui-icon-closethick">close</span>
+                                        </a>
+                                        <a class="btn-primary edit-term-submit" href="#" data-id="<%=vocabularies[i].term_set[j].id%>">
+                                            <span class="ui-icon ui-icon-check">close</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+
+            <% if (vocabularies.length < 3) { %>
+                <div id="new-vocabulary"></div>
+            <% } %>
+        </div>
+    </script>
+{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block dashboard_module_header %}
+    {% with "help_taxonomy" as help_id %}
+    {% with help_taxonomy as default_help_state %}
+
+    <h2>Course Vocabulary <div class="actions">{% include "help/help_button.html" %}</div></h2>    
+    
+    {% endwith %}{% endwith %}
+{% endblock %}
+
+{% block dashboard_module %}
+    {% with "help_taxonomy" as help_id %}
+    {% with help_taxonomy as default_help_state %}
+            
+    {% include "help/help_contentarea.html" %}
+    
+    
+    
+    <div id="taxonomy">
+    </div>    
+    
+    
+ {% comment %}
+    
+    <div class="taxonomy">
+        <div class="taxonomy-header">
+        <h3>Concepts</h3>    
+        <a href="#" class="btn-primary">Create Concept</a>
+        </div>
+        <div class="visualclear"></div>
+    
+    {% ifequal role_in_course "non-member" %}
+        <div id="no-materials-to-migrate">
+            You are not a class member. Please add yourself to this course via the admin console before attempting to create taxonomies.
+        </div>
+    {% endifequal %}
+    
+        {% for v in vocabularies %}
+            <h3>
+                {{v.display_name}}
+                
+                </div>                
+            </h3>
+            <div style="display: none"> 
+                <p>
+                    <h5 style="display: inline">Add a term:</h5> <input type="text"> <input type="button" value="Add"></input>
+                    
+                    <h5>Terms</h5>
+                    {% for term in v.term_set.all %}
+                        <div><input type="text" value="{{term.display_name}}" style="display: none">{{term.display_name}}</div>
+                    {% endfor %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+{% endcomment %}    
+{% endwith %}{% endwith %}      
+{% endblock %}

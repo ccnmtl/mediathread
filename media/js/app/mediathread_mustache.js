@@ -25,13 +25,14 @@
                 return '/project/sort/';
             },
             'your-space': function (username, tag, modified, citable) {
-                return '/yourspace/' + username + '/asset/?annotations=true' +
+                return '/asset/json/user/' + username + '/?' +
+                    (citable ? '&annotations=true' : '') +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');
             },
             'all-space': function (tag, modified, citable) {
-                return '/yourspace/all/asset/?' +
+                return '/asset/json/course/?' +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');
@@ -71,7 +72,7 @@
                 return '/asset/save/' + asset_id + '/annotations/' + annotation_id + '/';
             },
             'annotation-delete': function (asset_id, annotation_id) {
-                return '/asset/delete/' + asset_id + '/annotations/' + annotation_id;
+                return '/asset/delete/' + asset_id + '/annotations/' + annotation_id + '/';
             },
             'project-view': function (project_id) {
                 return '/project/view/' + project_id + '/';
@@ -86,16 +87,22 @@
                 return '/project/create/';
             },
             'discussion-view': function (discussion_id) {
-                return '/discussion/show/' + discussion_id + "/";
+                return '/discussion/' + discussion_id + "/";
             },
             'discussion-create': function () {
                 return '/discussion/create/';
             },
             'comment-edit': function (comment_id) {
-                return '/discussion/comment/' + comment_id;
+                return '/discussion/comment/' + comment_id + '/';
             },
             'comment-create': function () {
                 return '/comments/post/';
+            },
+            'tags': function () {
+                return '/_main/api/v1/tag/';
+            },
+            'references': function (asset) {
+                return '/asset/references/' + asset.id + '/';
             }
         };
 
@@ -115,6 +122,10 @@
         Mustache.Renderer.prototype.filters_supported.upper = function (name, context, args) {
             var value = String(this.get_object(name, context, this.context) || '');
             return value.toUpperCase();
+        };
+        Mustache.Renderer.prototype.filters_supported.lower = function (name, context, args) {
+            var value = String(this.get_object(name, context, this.context) || '');
+            return value.toLowerCase();
         };
         Mustache.Renderer.prototype.filters_supported['default'] = function (name, context, args) {
             var lookup = this.get_object(name, context, this.context);

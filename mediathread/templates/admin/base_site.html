@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style type="text/css">
+  /*for remove users in Course admin view*/
+  ul li {
+    padding:1em 0 0;
+    clear:both;
+  } 
+  .aligned li label {
+    width:auto;
+  }
+  ul {
+     max-height:300px;
+     overflow-y:auto;
+  }
+  #id_groups {
+    height: 300px;
+  }
+</style>
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name"><a href="/">{% trans 'Back to Mediathread' %}</a></h1>
+    {% if settings.DATABASES %}
+    <div style="float: right; font-size: 11px; padding: 0 10px 5px 10px">
+        Database: {{settings.DATABASES.default.NAME}}@{{settings.DATABASES.default.HOST}}{% if settings.DATABASES.default.PORT %}:{{settings.DATABASES.default.PORT}}{% endif %}
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load coursetags %}
+
+{% block coursetitle %}
+    Select a Course
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("#coursefilter").buttonset();
+            jQuery('label[for="thisyear"]').removeClass("ui-corner-left");
+            jQuery('label[for="thisyear"]').css("margin-right", "-.4em");
+            
+            jQuery("#create-course").button();
+            
+            jQuery("#thisyear").click(function(evt) {
+                document.body.style.cursor = 'wait';
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget; 
+                window.location.href = jQuery(srcElement).attr("value");
+            });
+            
+            jQuery("#allyears").click(function(evt) {
+                document.body.style.cursor = 'wait';
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget; 
+                window.location.href = jQuery(srcElement).attr("value");                
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div id="course-list">
+    <div id="coursefilter">
+        <div style="width: 200px" class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left" role="button" aria-disabled="true">
+            <span class="ui-button-text">View courses from:</span>
+        </div>
+        
+        <input type="radio" id="thisyear" name="view-choice" {% if not list_all_link %}checked=checked{% endif %} value="?{{next_redirect}}" />
+        <label style="width: 100px" for="thisyear">This Year</label>
+        <input type="radio" id="allyears" name="view-choice" {% if list_all_link %}checked=checked{% endif %} value="?list_all=true{{next_redirect}}"/>
+        <label style="width: 100px" for="allyears">All Years</label>
+    </div>
+    <div id="create-course-container">
+        {% if add_privilege %}
+            <a id="create-course" class="create-course" href="{%url admin:courseaffils_course_add %}">Create new course</a>            
+        {% endif %}
+    </div>
+</div>
+<div class="visualclear"></div>
+
+
+<table class="course-choices">
+  <thead>
+    <tr>
+      <th>Course Titles
+      </th>
+      <th>Term</th>
+      <th>Instructor</th>
+      <th>Role</th> 
+      {% if add_privilege %} 
+        <th>Actions</th>
+      {% endif %}    
+    </tr>
+  </thead>
+  <tbody>
+{% for course in courses %}
+ <tr><td class="course-choice">
+  <a class="choose-course" href="?set_course={{course.group.name|urlencode}}{{next_redirect}}">{{course.title}}</a>
+  </td>
+  <td>{{course.info.termyear}}</td>
+  <td>{% if course.details.instructor %}{{course.details.instructor.value}}{% endif %}</td>
+  <td>{% course_role for request.user in course as foo %}{{foo}}</td>
+  {% if add_privilege %}
+     <td class="manage-course">  
+       <a class="project" href="{%url admin:courseaffils_course_change course.id %}">manage</a>
+     </td>
+
+  {% endif %}
+ </tr>
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+{% if user.is_staff %}
+    <h3>Mediathread Demo (Staff only)</h3>
+    <p>To demo a class you can (mostly) anonymize the class, by setting this cookie:</p>
+    <ul>
+        <li>
+            <span id="anonymize_status"></span>
+            <a href="#anonymize" onclick="document.cookie='ANONYMIZE=on; path=/';anonymizeStatus();">Enable</a>
+            <a href="#anonymize" onclick="document.cookie='ANONYMIZE=OFF; expires='+new Date().toGMTString()+'; path=/';anonymizeStatus();">Disable</a>
+        </li>
+    </ul>
+    <script type="text/javascript">
+        function anonymizeStatus() {
+            document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: '
+                + ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
+        }
+        anonymizeStatus();
+    </script>
+{% endif %}
+
+
+{% endblock %}

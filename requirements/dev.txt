@@ -1,5 +1,0 @@
-# some libraries that are really only needed for development
-# we separate them to avoid having to deploy them to production
-# where they won't be used anyway
-# required by lettuce
-requirements/src/lxml-2.2.8.tar.gz

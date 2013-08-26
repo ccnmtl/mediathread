@@ -1,0 +1,49 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load comments user_projects coursetags %}
+
+{% block dashboard_module_header %}
+    <h2>Assignment Report: {{assignment.title}}</h2>
+{% endblock %}
+
+{% block dashboard_module %}    
+
+<table>
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Title</th>
+      <th>Saved at</th>
+      <th>Status</th>
+      <th>Faculty Feedback</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for response in responses %}
+  <tr>
+    <td>
+      {% public_name for response.attribution_list %}
+    </td>
+    <td>
+      <a href="{{response.get_absolute_url}}">{{response.title}}</a>
+    </td>
+    <td>
+      {{response.modified|date}}
+    </td>
+    <td>
+      {{response.status}}
+    </td>
+    <td>
+      {% with response.feedback_discussion as feedback %}
+      {% if feedback %}
+      <a href="/discussion/{{feedback.id}}">Feedback</a>
+      {% else %}
+      No feedback
+      {% endif %}
+      {% endwith %}
+    </td>
+  </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

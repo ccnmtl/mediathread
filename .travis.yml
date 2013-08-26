@@ -2,12 +2,7 @@ language: python
 python:
   - "2.6"
   - "2.7"
-before_install:
-  - git submodule update --init --recursive
 install:
   - ./bootstrap.py
 script:
-  - ./manage.py test djangosherd
-  - ./manage.py test assetmgr
-  - ./manage.py test projects
-  - ./manage.py test mediathread_main
+  - ./manage.py test

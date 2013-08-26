@@ -111,6 +111,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'create_annotation_thumbs' : true,
             'space_owner' : self.space_owner,
             'citable': true,
+            'owners': self.panel.owners,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
@@ -362,7 +363,7 @@ DiscussionPanelHandler.prototype.submit = function (evt) {
 
     if (self.max_comment_length &&
         self.form.elements.comment.value.length > self.max_comment_length) {
-        alert('Your comment is above the allowed maximum length of ' +
+        showMessage('Your comment is above the allowed maximum length of ' +
               self.max_comment_length +
               ' characters (which includes HTML).  Your comment is ' +
               self.form.elements.comment.value.length + ' characters long.');
@@ -469,7 +470,7 @@ DiscussionPanelHandler.prototype.oncomplete = function (responseText, textStatus
 };
 
 DiscussionPanelHandler.prototype.onfail = function (xhr, textStatus, errorThrown) {
-    alert("There was an error submitting your comment!  Please report this to the system administrator: " +
+    showMessage("There was an error submitting your comment!  Please report this to the system administrator: " +
           errorThrown);
 };
 

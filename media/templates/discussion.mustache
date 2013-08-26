@@ -86,11 +86,18 @@
                             <h2>
                                 <div class="button-form inline">
                                     <form class="block annotate-media inline" method="GET" action="/asset/">
-                                        <input class="columnbutton media annotate-button" type="submit" value="View All Items"/>
+                                        <input class="columnbutton media annotate-button" type="submit" value="View Full Collection"/>
                                     </form>
                                 </div>                            
                                 Collection
                             </h2>
+                            <div class="ajaxloader">
+                                <div class="message">
+                                <img alt="Loading..." src="/site_media/img/ajax-loader.gif">
+                                <br /><br />
+                                <div>Refreshing the collection</div>
+                                </div>
+                            </div>                            
                             <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                         </div>
                         {{/context.can_edit}}

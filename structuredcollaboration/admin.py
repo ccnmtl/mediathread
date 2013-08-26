@@ -1,4 +1,5 @@
-from models import Collaboration, CollaborationPolicyRecord
+from structuredcollaboration.models import Collaboration, \
+    CollaborationPolicyRecord
 from django.contrib import admin
 
 admin.site.register(CollaborationPolicyRecord)

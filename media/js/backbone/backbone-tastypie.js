@@ -38,7 +38,7 @@
 
 		if ( ( method === 'create' && Backbone.Tastypie.doGetOnEmptyPostResponse ) ||
 			( method === 'update' && Backbone.Tastypie.doGetOnEmptyPutResponse ) ) {
-			var dfd = new $.Deferred();
+			var dfd = new jQuery.Deferred();
 			
 			// Set up 'success' handling
 			dfd.done( options.success );
@@ -47,7 +47,7 @@
 				// Otherwise, resolve the deferred (which triggers the original 'success' callbacks).
 				if ( !resp && ( xhr.status === 201 || xhr.status === 202 || xhr.status === 204 ) ) { // 201 CREATED, 202 ACCEPTED or 204 NO CONTENT; response null or empty.
 					var location = xhr.getResponseHeader( 'Location' ) || model.id;
-					return $.ajax( {
+					return jQuery.ajax( {
 						   url: location,
 						   headers: headers,
 						   success: dfd.resolve,

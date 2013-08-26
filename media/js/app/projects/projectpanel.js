@@ -6,14 +6,15 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.projectModified = false;
     self.parentContainer = parent;
     self.space_owner = space_owner;
-    self.tiny_mce_settings = tiny_mce_settings;
+    self.tiny_mce_settings = tiny_mce_settings;    
 
     djangosherd.storage.json_update(panel.context);
     
     if (panel.context.can_edit) {
         var select = jQuery(self.el).find("select[name='participants']")[0];
         jQuery(select).addClass("selectfilter");
-        SelectFilter.init("id_participants_" + panel.context.project.id, "participants", 0, "/media/");
+        SelectFilter.init("id_participants_" + panel.context.project.id,
+            "participants", 0, "/media/admin/");
         
         // HACK: move the save options around due to django form constraints
         var assignment_elt = jQuery(self.el).find("label[for='id_publish_2']").parent();
@@ -101,6 +102,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
+            'owners': self.panel.owners,
             'citable': true,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
@@ -130,6 +132,8 @@ ProjectPanelHandler.prototype.resize = function () {
     visible -= jQuery(self.el).find(".project-participant-row").height();
     visible -= jQuery("#footer").height(); // padding
     
+    visible += 30;
+    
     if (self.tinyMCE) {
         var editorHeight = visible;
         // tinyMCE project editing window. Make sure we only resize ourself.
@@ -139,9 +143,10 @@ ProjectPanelHandler.prototype.resize = function () {
     
     jQuery(self.el).find("div.essay-space").css('height', (visible + 20) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
+    jQuery(self.el).find('div.ajaxloader').css('height', visible + 'px');
     
-    // Resize the collections box, subtracting its header elements
-    visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
+    // Resize the collections box, subtracting its header elements    
+    visible -= jQuery(self.el).find("div.filter-widget").outerHeight() + 10;
     jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
     
     // For IE
@@ -260,7 +265,7 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
         draggable: true,
         resizable: false,
         modal: true,
-        width: 425,
+        width: 600,
         position: "top",
         zIndex: 10000
     });
@@ -291,7 +296,7 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
                 self._save = false;
                 var opts = jQuery(self.el).find("select[name='revisions'] option:selected");
                 if (opts.length < 1) {
-                    alert("Please select a revision");
+                    showMessage("Please select a revision");
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -333,7 +338,7 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
                 self._save = false;
                 var opts = jQuery(self.el).find("select[name='responses'] option:selected");
                 if (opts.length < 1) {
-                    alert("Please select a response");
+                    showMessage("Please select a response");
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -377,7 +382,7 @@ ProjectPanelHandler.prototype.showMyResponses = function (evt) {
                 self._save = false;
                 var opts = jQuery(self.el).find("select[name='my-responses'] option:selected");
                 if (opts.length < 1) {
-                    alert("Please select a response");
+                    showMessage("Please select a response");
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -566,8 +571,17 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
                     });
                 }
             });
+        },
+        open: function( event, ui ) {
+            if (!jQuery('#id_publish_2').is(":checked")) {
+                jQuery("#id_due_date").attr("disabled", "disabled");
+            }            
             jQuery("input[name=publish]").bind('click', function () {
-                                
+                if (jQuery('#id_publish_2').is(":checked")) {
+                    jQuery("#id_due_date").removeAttr("disabled");
+                } else {
+                    jQuery("#id_due_date").attr("disabled", "disabled");
+                }           
             });
         },
         beforeClose: function (event, ui) {
@@ -614,11 +628,11 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
         dataType: 'json',
         error: function () {
             jQuery(saveButton).removeAttr("disabled").attr("value", "Save").removeClass("saving");
-            alert('There was an error saving your project.');
+            showMessage('There was an error saving your project.');
         },
         success: function (json, textStatus, xhr) {
             if (json.status === 'error') {
-                alert(json.msg);
+                showMessage(json.msg);
             } else {
                 var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
                 if (json.revision.public_url) {
@@ -636,6 +650,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).prev().removeClass("composition").addClass("assignment");
                     jQuery(self.el).prev().find("div.label").html("assignment");
                     jQuery(self.el).prev().prev().find(".composition").removeClass("composition").addClass("assignment");
+                    
+                    jQuery(self.el).find('a.project-export').hide();
+                    jQuery(self.el).find('a.project-print').hide();
                 } else {
                     jQuery(self.el).removeClass("assignment").addClass("composition");
                     jQuery(self.el).find(".assignment").removeClass("assignment").addClass("composition");
@@ -643,6 +660,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).prev().removeClass("assignment").addClass("composition");
                     jQuery(self.el).prev().find("div.label").html("composition");
                     jQuery(self.el).prev().prev().find(".assignment").removeClass("assignment").addClass("composition");
+                    
+                    jQuery(self.el).find('a.project-export').show();
+                    jQuery(self.el).find('a.project-print').show();                    
                 }
                 
                 jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);
@@ -717,7 +737,7 @@ ProjectPanelHandler.prototype._validAuthors = function () {
     // Make sure there's at least one author
     var options = jQuery(self.el).find("select[name='participants'] option");
     if (options.length < 1) {
-        alert("This project has no authors. Please select at least one author.");
+        showMessage("This project has no authors. Please select at least one author.");
         return false;
     } else {
         return true;
@@ -730,11 +750,11 @@ ProjectPanelHandler.prototype._validTitle = function () {
     var title = jQuery(self.el).find("input.project-title");
     var value = title.val();
     if (!value || value.length < 1) {
-        alert("Please specify a project title.");
+        showMessage("Please specify a project title.");
         title.focus();
         return false;
     } else if (value === "Untitled") {
-        alert('Please update your "Untitled" project title.');
+        showMessage('Please update your "Untitled" project title.');
         title.focus();
         return false;
     } else {

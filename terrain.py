@@ -3,13 +3,13 @@ from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce.django import django_url
-from selenium.common.exceptions import StaleElementReferenceException
+from mediathread.projects.models import Project
+from selenium.common.exceptions import NoSuchElementException, \
+    StaleElementReferenceException
 import errno
 import os
 import selenium.webdriver.support.ui as ui
 import time
-from selenium.common.exceptions import WebDriverException, \
-    NoSuchElementException
 
 try:
     from lxml import html
@@ -31,7 +31,7 @@ def reset_database(variables):
         else:
             pass  # database doesn't exist yet. that's okay.
 
-    os.system('cp lettuce_base.db lettuce.db')
+    os.system('cp scripts/lettuce_base.db lettuce.db')
 
 
 @before.all
@@ -49,18 +49,15 @@ def setup_browser():
     elif browser == "Headless":
         world.browser = webdriver.PhantomJS(
             desired_capabilities={'handlesAlerts': True})
-        cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (1024, 768)
-        world.browser.execute_script(cmd)
 
     world.client = client.Client()
     world.using_selenium = False
 
-    # Make the browser size at least 1024x768
-    world.browser.execute_script("window.moveTo(0, 1); "
-                                 "window.resizeTo(1024, 768);")
+    world.browser.set_window_position(0, 0)
+    world.browser.set_window_size(1024, 768)
 
     # Wait implicitly for 2 seconds
-    world.browser.implicitly_wait(5)
+    world.browser.implicitly_wait(2)
 
     # stash
     world.memory = {}
@@ -92,22 +89,21 @@ def access_url(step, url):
 
 @step(u'the ([^"]*) workspace is loaded')
 def the_name_workspace_is_loaded(step, name):
-    id = None
+    workspace_id = None
     if (name == "composition" or
         name == "assignment" or
             name == "home" or name == "collection"):
-        id = "loaded"
+        workspace_id = "loaded"
     else:
         assert False, "No selector configured for %s" % name
 
     wait = ui.WebDriverWait(world.browser, 5)
-    wait.until(lambda driver: world.browser.find_element_by_id(id))
+    wait.until(lambda driver: world.browser.find_element_by_id(workspace_id))
 
 
 @step(u'my browser resolution is ([^"]*) x ([^"]*)')
 def my_browser_resolution_is_width_x_height(step, width, height):
-    cmd = "window.moveTo(0, 1); window.resizeTo(%s, %s);" % (width, height)
-    world.browser.execute_script(cmd)
+    world.browser.set_window_size(int(width), int(height))
 
 
 @step(u'I am ([^"]*) in ([^"]*)')
@@ -167,16 +163,17 @@ def i_am_at_the_name_page(step, name):
 
 @step(u'there is a sample assignment')
 def there_is_a_sample_assignment(step):
-    os.system("./manage.py loaddata mediathread_main/fixtures/"
-              "sample_assignment.json --settings=settings_test > /dev/null")
+    os.system("./manage.py loaddata mediathread/main/fixtures/"
+              "sample_assignment.json "
+              "--settings=mediathread.settings_test > /dev/null")
     time.sleep(2)
 
 
 @step(u'there is a sample response')
 def there_is_a_sample_response(step):
-    os.system("./manage.py loaddata mediathread_main/fixtures/"
+    os.system("./manage.py loaddata mediathread/main/fixtures/"
               "sample_assignment_and_response.json "
-              "--settings=settings_test > /dev/null")
+              "--settings=mediathread.settings_test > /dev/null")
     time.sleep(2)
 
 
@@ -184,17 +181,23 @@ def there_is_a_sample_response(step):
 def i_type_value_for_field(step, value, field):
     if world.using_selenium:
         selector = "input[name=%s]" % field
-        input = world.browser.find_element_by_css_selector(selector)
-        assert input is not None, "Cannot locate input field named %s" % field
-        input.send_keys(value)
+        elt = world.browser.find_element_by_css_selector(selector)
+        assert elt is not None, "Cannot locate input field named %s" % field
+        elt.send_keys(value)
 
 
 @step(u'I click the ([^"]*) button')
 def i_click_the_value_button(step, value):
     if world.using_selenium:
         elt = find_button_by_value(value)
-        assert elt, "Cannot locate button named %s" % value
-        elt.click()
+        if elt is None:
+            assert False, "Cannot locate button named %s" % value
+        elif not elt.is_displayed():
+            time.sleep(1)
+            elt = find_button_by_value(value)
+            elt.click()
+        else:
+            elt.click()
 
 
 @step(u'there is not an? "([^"]*)" link')
@@ -278,7 +281,7 @@ def there_is_not_a_value_button(step, value):
 
 
 @step(u'I wait (\d+) seconds?')
-def then_i_wait_count_seconds(step, count):
+def i_wait_count_seconds(step, count):
     n = int(count)
     time.sleep(n)
 
@@ -297,18 +300,33 @@ def i_do_not_see_text(step, text):
     assert text not in world.browser.page_source, world.browser.page_source
 
 
-@step(u'I cancel an alert dialog')
-def i_cancel_an_alert_dialog(step):
-    time.sleep(1)
-    dismiss_alert()
-    time.sleep(1)
+@step(u'I cancel the action')
+def i_cancel_the_action(step):
+    dialog = world.browser.find_element_by_id("dialog-confirm").parent
+    btns = dialog.find_elements_by_tag_name("button")
+    for btn in btns:
+        span = btn.find_element_by_css_selector("span.ui-button-text")
+        if span.text == "Cancel":
+            btn.click()
+            time.sleep(2)
+            return
+
+    world.browser.get_screenshot_as_file("/tmp/selenium.png")
+    assert False, "Unable to locate the dialog's Cancel button"
 
 
-@step(u'I ok an alert dialog')
-def i_ok_an_alert_dialog(step):
-    time.sleep(1)
-    accept_alert()
-    time.sleep(1)
+@step(u'I confirm the action')
+def i_confirm_the_action(step):
+    dialog = world.browser.find_element_by_id("dialog-confirm").parent
+    btns = dialog.find_elements_by_tag_name("button")
+    for btn in btns:
+        span = btn.find_element_by_css_selector("span.ui-button-text")
+        if span.text == "OK":
+            btn.click()
+            time.sleep(2)
+            return
+
+    assert False, "Unable to locate the dialog's OK button"
 
 
 @step(u'I open the ([^"]*) menu')
@@ -372,18 +390,10 @@ def there_is_no_help_for_the_title_column(step, title):
                 return  # Expected outcome
 
 
-@step(u'I\'m told ([^"]*)')
+@step(u'I\'m told "([^"]*)"')
 def i_m_told_text(step, text):
-    try:
-        alert = world.browser.switch_to_alert()
-        assert alert.text.startswith(text), \
-            "Alert text invalid: %s" % alert.text
-        alert.accept()
-    except WebDriverException, e:
-        if getattr(settings, 'BROWSER', None) == "Headless":
-            pass
-        else:
-            raise e
+    dlg = world.browser.find_element_by_id("dialog-confirm")
+    assert dlg.text.startswith(text), "Alert text invalid: %s" % dlg.text
 
 
 @step(u'I select "([^"]*)" as the owner')
@@ -716,7 +726,7 @@ def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
 
 
 @step(u'the "([^"]*)" item has an? ([^"]*) icon')
-def the_title_item_has_a_type_icon(step, title, type):
+def the_title_item_has_a_name_icon(step, title, name):
     select = "div.gallery-item"
     items = world.browser.find_elements_by_css_selector(select)
     for item in items:
@@ -726,21 +736,21 @@ def the_title_item_has_a_type_icon(step, title, type):
             continue
 
         try:
-            item.find_element_by_css_selector("a.%s-asset" % type)
+            item.find_element_by_css_selector("a.%s-asset" % name)
             return  # found the link & the icon
         except:
             try:
-                item.find_element_by_css_selector("a.%s-asset-inplace" % type)
+                item.find_element_by_css_selector("a.%s-asset-inplace" % name)
                 return  # found the link & the icon
             except NoSuchElementException:
                 assert False, \
-                    "Item %s does not have a %s icon." % (title, type)
+                    "Item %s does not have a %s icon." % (title, name)
 
     assert False, "Unable to find the %s item" % title
 
 
 @step(u'the "([^"]*)" item has no ([^"]*) icon')
-def the_title_item_has_no_type_icon(step, title, type):
+def the_title_item_has_no_name_icon(step, title, name):
     select = "div.gallery-item"
     items = world.browser.find_elements_by_css_selector(select)
     for item in items:
@@ -750,17 +760,17 @@ def the_title_item_has_no_type_icon(step, title, type):
             continue
 
         try:
-            item.find_element_by_css_selector("a.%s-asset" % type)
-            assert False, "Item %s has a %s icon." % (title, type)
+            item.find_element_by_css_selector("a.%s-asset" % name)
+            assert False, "Item %s has a %s icon." % (title, name)
         except NoSuchElementException:
-            assert True, "Item %s does not have a %s icon" % (title, type)
+            assert True, "Item %s does not have a %s icon" % (title, name)
             return
 
     assert False, "Unable to find the %s item" % title
 
 
 @step(u'I click the "([^"]*)" item ([^"]*) icon')
-def i_click_the_title_item_type_icon(step, title, type):
+def i_click_the_title_item_name_icon(step, title, name):
     time.sleep(1)
     select = "div.gallery-item"
     items = world.browser.find_elements_by_css_selector(select)
@@ -771,16 +781,16 @@ def i_click_the_title_item_type_icon(step, title, type):
             continue
 
         try:
-            if type == "delete":
-                icon = item.find_element_by_css_selector(".%s_icon" % type)
-            elif type == "edit":
-                s = "a.%s-asset-inplace" % type
+            if name == "delete":
+                icon = item.find_element_by_css_selector(".%s_icon" % name)
+            elif name == "edit":
+                s = "a.%s-asset-inplace" % name
                 icon = item.find_element_by_css_selector(s)
 
             icon.click()
             return  # found the link & the icon
         except NoSuchElementException:
-            assert False, "Item %s does not have a %s icon." % (title, type)
+            assert False, "Item %s does not have a %s icon." % (title, name)
 
     assert False, "Unable to find the %s item" % title
 
@@ -794,58 +804,55 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
 
     assert column, "Unable to find a column entitled %s" % title
 
-    filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter a.switcher-top")
+    filter_menu = column.find_element_by_css_selector("div.course-tags input")
     filter_menu.click()
 
-    tags = column.find_elements_by_css_selector(
-        "div.switcher.collection-filter a.switcher-choice.filterbytag")
-
-    for t in tags:
-        if t.text == tag:
-            filter_menu.click()
-            return
-
-    filter_menu.click()
-    assert False, "Unable to filter by %s tag" % tag
-
-
-@step(u'I filter by "([^"]*)" in the ([^"]*) column')
-def i_filter_by_tag_in_the_title_column(step, tag, title):
-    column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-    assert column, "Unable to find a column entitled %s" % title
-
-    filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter a.switcher-top")
-    filter_menu.click()
-
-    tags = column.find_elements_by_css_selector(
-        "div.switcher.collection-filter a.switcher-choice.filterbytag")
+    tags = world.browser.find_elements_by_css_selector("ul.select2-results li")
 
     for t in tags:
         if t.text == tag:
             t.click()
-            time.sleep(2)
+            time.sleep(1)
             return
 
     filter_menu.click()
     assert False, "Unable to filter by %s tag" % tag
 
 
-@step(u'I clear the filter in the ([^"]*) column')
-def i_clear_the_filter_in_the_title_column(step, title):
+@step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
+def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
     if not column:
         selector = "td.panel-container.%s" % title.lower()
         column = world.browser.find_element_by_css_selector(selector)
+
     assert column, "Unable to find a column entitled %s" % title
 
-    elt = column.find_element_by_css_selector("a.switcher-choice.remove")
-    elt.click()
-    time.sleep(2)
+    filter_menu = column.find_element_by_css_selector("div.course-tags input")
+    filter_menu.click()
+
+    tags = world.browser.find_elements_by_css_selector("ul.select2-results li")
+
+    for t in tags:
+        if t.text == tag:
+            assert False, "Found %s tag" % tag
+
+    # close the menu
+    world.browser.find_element_by_css_selector("body").click()
+
+
+@step(u'I clear all tags')
+def i_clear_all_tags(step):
+    selector = "a.select2-search-choice-close"
+    tag_count = len(world.browser.find_elements_by_css_selector(selector))
+
+    for x in range(0, tag_count):
+        tag = world.browser.find_element_by_css_selector(selector)
+        tag.click()
+        time.sleep(2)
+
+    tag_count = world.browser.find_elements_by_css_selector(selector)
+    assert True, tag_count == 0
 
 
 @step(u'Given publish to world is ([^"]*)')
@@ -867,8 +874,6 @@ def given_publish_to_world_is_value(step, value):
 
         if elt:
             elt.click()
-            accept_alert()
-
             world.browser.get(django_url("/"))
 
 
@@ -881,30 +886,6 @@ def then_publish_to_world_is_value(step, value):
 
     msg = "The checked attribute was %s" % elt.get_attribute("checked")
     assert elt.get_attribute('checked'), msg
-
-
-@step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
-def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
-    column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-    assert column, "Unable to find a column entitled %s" % title
-
-    filter_menu = column.find_element_by_css_selector(
-        "div.switcher.collection-filter")
-    assert filter_menu
-    filter_menu.click()
-
-    try:
-        tags = filter_menu.find_elements_by_css_selector(
-            "a.switcher-choice.filterbytag")
-        for t in tags:
-            if t.text == tag:
-                assert False, "Found %s tag" % tag
-    except NoSuchElementException:
-        # pass - there may be no tags
-        return
 
 
 @step(u'The "([^"]*)" project has no delete icon')
@@ -992,9 +973,9 @@ def i_call_the_panel_title(step, panel, title):
     panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
-    input = panel.find_element_by_name("title")
-    input.clear()
-    input.send_keys(title)
+    elt = panel.find_element_by_name("title")
+    elt.clear()
+    elt.send_keys(title)
 
 
 @step(u'the ([^"]*) is called "([^"]*)"')
@@ -1003,26 +984,40 @@ def the_panel_is_called_title(step, panel, title):
     panel = world.browser.find_element_by_css_selector(selector)
     assert panel is not None, "Can't find panel named %s" % panel
 
-    input = panel.find_element_by_name("title")
-    val = input.get_attribute("value")
+    elt = panel.find_element_by_name("title")
+    val = elt.get_attribute("value")
     assert val == title, "Nope: %s" % val
 
 
 @step(u'I write some text for the ([^"]*)')
 def i_write_some_text_for_the_panel(step, panel):
-    selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.browser.find_element_by_css_selector(selector)
-    assert panel is not None, "Can't find panel named %s" % panel
+    if getattr(settings, 'BROWSER', None) != "Headless":
+        selector = "td.panel-container.open.%s" % panel.lower()
+        panel = world.browser.find_element_by_css_selector(selector)
+        assert panel is not None, "Can't find panel named %s" % panel
 
-    frame = panel.find_element_by_tag_name("iframe")
-    world.browser.switch_to_frame(frame)
-    input = world.browser.find_element_by_class_name("mceContentBody")
-    input.send_keys("""The Columbia Center for New Teaching and Learning
-                     was (CCNMTL) was founded at Columbia University in 1999
-                     to enhance teaching and learning through the purposeful
-                     use of new media and technology""")
+        frame = panel.find_element_by_tag_name("iframe")
+        world.browser.switch_to_frame(frame)
+        elt = world.browser.find_element_by_class_name("mceContentBody")
+        elt.send_keys(
+            """The Columbia Center for New Teaching and Learning
+            was (CCNMTL) was founded at Columbia University in 1999
+            to enhance teaching and learning through the purposeful
+            use of new media and technology""")
 
-    world.browser.switch_to_default_content()
+        world.browser.switch_to_default_content()
+
+
+@step(u'the composition "([^"]*)" has text')
+def the_composition_title_has_text(step, title):
+    project = Project.objects.get(title=title)
+
+    if len(project.body) < 1:
+        project.body = """The Columbia Center for New Teaching and Learning
+            was (CCNMTL) was founded at Columbia University in 1999
+            to enhance teaching and learning through the purposeful
+            use of new media and technology"""
+        project.save()
 
 
 @step(u'there is an? ([^"]*) "([^"]*)" reply by ([^"]*)')
@@ -1148,7 +1143,6 @@ def given_the_selection_visibility_is_value(step, value):
         elt = world.browser.find_element_by_id("selection_visibility_submit")
         if elt:
             elt.click()
-            accept_alert()
             world.browser.get(django_url("/"))
 
 
@@ -1163,30 +1157,6 @@ def get_column(title):
             continue
 
     return None
-
-
-def dismiss_alert():
-    try:
-        alert = world.browser.switch_to_alert()
-        alert.dismiss()
-    except WebDriverException, e:
-        if getattr(settings, 'BROWSER', None) == "Headless":
-            pass
-        else:
-            raise e
-
-
-def accept_alert():
-    try:
-        alert = world.browser.switch_to_alert()
-        alert.accept()
-    except WebDriverException, e:
-        if getattr(settings, 'BROWSER', None) == "Headless":
-            pass
-        else:
-            raise e
-
-world.accept_alert = accept_alert
 
 
 def find_button_by_value(value, parent=None):

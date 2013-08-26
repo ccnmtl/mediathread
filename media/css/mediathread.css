@@ -3828,7 +3828,7 @@ div#annotation-filter-menu {
     -moz-border-radius: 4px;
     border-radius: 4px;
     left: 46px;
-    top: 255px;
+    margin-top: 32px;
 }
 
 div#annotation-filter-menu select {

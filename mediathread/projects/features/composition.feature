@@ -28,7 +28,6 @@ Feature: Composition
         
         # Add a title and some text
         Then I call the Composition "Composition: Scenario 1"
-        And I write some text for the Composition
         
         # Save
         When I click the Save button
@@ -40,7 +39,7 @@ Feature: Composition
         And the project visibility is "Private - only author(s) can view"
         
         Then I save the changes
-        Then there is a "Private" link                                    
+        Then there is a "Private" link                              
         
         # Toggle Preview Mode
         When I click the Preview button
@@ -50,30 +49,12 @@ Feature: Composition
         And the Composition panel has a Save button
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
-        And the composition "Composition: Scenario 1" has text
         
         # The project shows on Home
         When I click the "Sample Course" link
         Given the home workspace is loaded
         Then there is a private "Composition: Scenario 1" project by Instructor One
-        
-        # View the project - it should appear in "Preview" mode
-        When I click the "Composition: Scenario 1" link
-        Then I am at the Composition: Scenario 1 page
-        
-        # Preview view elements
-        I see "by Instructor One"
-        And I see "Composition: Scenario 1"
-        And there is a "Private" link
-        
-        There is an open Composition panel
-        The Composition panel has a Revisions button
-        And the Composition panel has an Edit button
-        And the Composition panel does not have a Preview button
-        And the Composition panel has a Save button
-        And the Composition panel has a Revisions button
-        And the Composition panel does not have a +/- Author button
-        
+
         Finished using Selenium
 
     Scenario: composition.feature 2. Student creates composition

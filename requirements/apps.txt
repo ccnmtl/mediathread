@@ -22,3 +22,5 @@ requirements/src/raven-0.7.0.tar.gz
 requirements/src/django-appconf-0.4.1.tar.gz 
 requirements/src/django_compressor-1.1.1.tar.gz
 requirements/src/django-jenkins-0.14.0.tar.gz
+requirements/src/django-stagingcontext-0.1.0.tar.gz
+requirements/src/django-smoketest-0.1.3.tar.gz

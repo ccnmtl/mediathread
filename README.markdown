@@ -14,12 +14,8 @@ FORUM: http://groups.google.com/group/mediathread
 
 REQUIREMENTS
 ------------
-Python 2.6 (or 2.5)
+Python 2.7 (Python 2.6 is still supported, but we encourage you to upgrade.)
 Postgres (or MySQL)
-
-In Ubuntu (for postgres 8.4, but just change version numbers):
-
-    $ sudo aptitude install postgres-8.4 postgresql-client-8.4 postgresql-server-dev-8.4 python-psycopg2 gcc python2.6 python-dev libc6-dev 
 
 
 INSTALLATION
@@ -27,7 +23,7 @@ INSTALLATION
 
 1. Clone Mediathread
 
-    git clone --recursive https://github.com/ccnmtl/mediathread.git
+    git clone https://github.com/ccnmtl/mediathread.git
 
 2. Build the database
    For Postgres:
@@ -43,12 +39,9 @@ INSTALLATION
 
    For Both:
      Edit the variables in `settings_shared.py` that you need to customize for your local installation.
-     At a minimum, you will need to custimze your the `DATABASES` dictionary as appropriate.
-
-     If you are not running a statsd server, you should disable the 'django_statsd' application by removing 
-     it from the INSTALLED_APPS list.
+     At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
      
-     Even better would be:
+     For more extensive customization, you can create a deploy_specific directory to house a site-specific settings.py file:
 
          $ mkdir deploy_specific
          $ touch deploy_specific/__init__.py
@@ -59,11 +52,9 @@ INSTALLATION
          be included in the open-sourced distribution
 
 
-
 3. Bootstrap uses virtualenv to build a contained library in `ve/`
 
     ./bootstrap.py
-    NOTE: if you're using python2.5 use ./bootstrap-python25.py instead
 
 The rest of the instructions work like standard Django.  See:
  http://docs.djangoproject.com/en/1.1/ for more details.
@@ -73,7 +64,7 @@ The rest of the instructions work like standard Django.  See:
     ./manage.py syncdb
     ./manage.py migrate # to complete the south migration setup
 
-5. Run locally (during development)
+5. Run locally (during development only)
     ./manage.py runserver myhost.example.com:8000
 
 6. For deployment to Apache, see our sample configuration in `apache/prod.conf`

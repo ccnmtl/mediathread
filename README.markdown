@@ -25,8 +25,7 @@ In Ubuntu (for postgres 8.4, but just change version numbers):
 INSTALLATION
 ------------
 
-1. Mediathread relies on several submodules.  The easiest way to download
-   it all is to run with git 1.6.5+ is:
+1. Clone Mediathread
 
     git clone --recursive https://github.com/ccnmtl/mediathread.git
 

@@ -8,7 +8,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/Users/sdreher/workspace/mediathread/lettuce.db',
+        'NAME': 'lettuce.db',
         'OPTIONS': {
             'timeout': 30,
         }
@@ -55,5 +55,3 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'mediathread.settings_test.ExceptionLoggingMiddleware'
 )
-
-#COMPRESS_ROOT = '/Users/sdreher/workspace/mediathread/media'

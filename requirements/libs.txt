@@ -1,4 +1,4 @@
-requirements/src/Django-1.4.5.tar.gz
+requirements/src/Django-1.4.6.tar.gz
 requirements/src/resolver-0.2.1.tar.gz
 requirements/src/selector-0.8.11.tar.gz
 requirements/src/Paste-1.7.2.tar.gz

@@ -14,19 +14,28 @@
 
 var CollectionList = function (config) {
     var self = this;
-    self.template_label = config.template_label;
+    self.template_label = config.template_label;    
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
     self.create_asset_thumbs = config.create_asset_thumbs;
     self.parent = config.parent;
     self.selected_view = config.hasOwnProperty('selectedView') ? config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
+    self.owners = config.owners;
+    
+    self.el = jQuery(self.parent).find("div." + self.template_label)[0];
+    // setup some ajax progress indicator
+    jQuery(self.el).bind("ajaxStart", function(){
+        jQuery("div.ajaxloader").show();
+     }).bind("ajaxStop", function(){  
+        jQuery("div.ajaxloader").hide();
+     });
     
     self.switcher_context = {};
     
     jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) {
         var self = event.data.self;
-        var div = jQuery(self.parent).find("div.collection-assets");
+        var div = jQuery(self.el).find("div.collection-assets");
         if (!self.citable && div.length > 0) {
             self.scrollTop = jQuery(div[0]).scrollTop();
             event.data.self.refresh();
@@ -34,22 +43,20 @@ var CollectionList = function (config) {
     });
     jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) {
         var self = event.data.self;
-        self.scrollTop = jQuery(self.parent).find("div.collection-assets").scrollTop();
+        self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
         event.data.self.refresh();
     });
     jQuery(window).bind('annotation.on_delete', { 'self': self }, function (event) {
         var self = event.data.self;
         if (!self.citable) {
-            self.scrollTop = jQuery(self.parent).find("div.collection-assets").scrollTop();
+            self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
             event.data.self.refresh();
         }
     });
     jQuery(window).bind('annotation.on_save', { 'self': self }, function (event) {
         var self = event.data.self;
-        if (self.citable) {
-            self.scrollTop = jQuery(self.parent).find("div.collection-assets").scrollTop();
-            event.data.self.refresh();
-        }
+        self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
+        event.data.self.refresh();
     });
     
     jQuery.ajax({
@@ -96,20 +103,6 @@ CollectionList.prototype.refresh = function (config) {
     });
 };
 
-CollectionList.prototype.selectOwner = function (username) {
-    var self = this;
-    djangosherd.storage.get({
-        type: 'asset',
-        url: username ? MediaThread.urls['your-space'](username, null, null, self.citable) : MediaThread.urls['all-space'](null, null, self.citable)
-    },
-    false,
-    function (the_records) {
-        self.updateAssets(the_records);
-    });
-    
-    return false;
-};
-
 CollectionList.prototype.editAsset = function (asset_id) {
     var self = this;
 };
@@ -135,59 +128,25 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
     return ajaxDelete(null, 'annotation-' + annotation_id, { 'href': url });
 };
 
-CollectionList.prototype.clearFilter = function (filterName) {
-    var self = this;
-    var active_tag = null;
-    var active_modified = null;
-        
-    if (filterName === 'tag') {
-        active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
-    } else if (filterName === 'modified') {
-        active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
-    }
-    
-    djangosherd.storage.get({
-        type: 'asset',
-        url: self.getSpaceUrl(active_tag, active_modified)
-    },
-    false,
-    function (the_records) {
-        self.updateAssets(the_records);
-    });
-    
-    return false;
-};
-
-CollectionList.prototype.filterByDate = function (modified) {
-    var self = this;
-    var active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
-    djangosherd.storage.get({
-        type: 'asset',
-        url: self.getSpaceUrl(active_tag, modified)
-    },
-    false,
-    function (the_records) {
-        self.updateAssets(the_records);
-    });
-    
-    return false;
-};
-
+// Linkable tags within the Project-level composition view
 CollectionList.prototype.filterByTag = function (tag) {
     var self = this;
-    var active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
+    var active_modified = ('modified' in self.current_records.active_filters) ? 
+            self.current_records.active_filters.modified
+            : null;
     djangosherd.storage.get({
         type: 'asset',
-        url: self.getSpaceUrl(tag, active_modified)
+        url: self.getSpaceUrl(tag, active_modified, self.citable)
     },
     false,
     function (the_records) {
         self.updateAssets(the_records);
     });
-    
+
     return false;
 };
 
+// Linkable tags within the Item View/References page
 CollectionList.prototype.filterByClassTag = function (tag) {
     var self = this;
     djangosherd.storage.get({
@@ -198,12 +157,59 @@ CollectionList.prototype.filterByClassTag = function (tag) {
     function (the_records) {
         self.updateAssets(the_records);
     });
+
+    return false;
+};
+
+//Linkable vocabulary within the Item View/References page
+CollectionList.prototype.filterByVocabulary = function (srcElement) {
+    var self = this;
+    var url = MediaThread.urls['all-space'](null, null, self.citable);
+    url += jQuery(srcElement).data("vocabulary-id") + "=" + 
+        jQuery(srcElement).data("term-id");
+    djangosherd.storage.get({
+        type: 'asset',
+        url: url
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
+
+    return false;
+};
+
+CollectionList.prototype.filter = function () {
+    var self = this;
+    var filters = {};
+    
+    jQuery(self.el).find("select.course-tags, select.vocabulary")
+        .select2("enable", false);    
+
+    var url = self.getSpaceUrl();
+    
+    for (var filter in self.current_records.active_filters) {
+        if (self.current_records.active_filters.hasOwnProperty(filter)) {
+            var val = self.current_records.active_filters[filter];
+            if (val !== null && val.length > 0) {
+                url += "&" + filter + "=" + val.toString();
+            }
+        }
+    }
+    djangosherd.storage.get({
+        type: 'asset',
+        url: url
+    },
+    false,
+    function (the_records) {
+        self.updateAssets(the_records);
+    });
     
     return false;
 };
 
 CollectionList.prototype.getShowingAllItems = function (json) {
-    return !json.hasOwnProperty('space_owner');
+    return !json.hasOwnProperty('space_owner') || json.space_owner === null;
 };
 
 CollectionList.prototype.getSpaceUrl = function (active_tag, active_modified) {
@@ -222,7 +228,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
         
-        var target_parent = jQuery(self.parent).find(".gallery-item-" + asset.id)[0];
+        var target_parent = jQuery(self.el).find(".gallery-item-" + asset.id)[0];
         
         if (!asset.thumbable) {
             if (jQuery(target_parent).hasClass("static-height")) {
@@ -287,7 +293,7 @@ CollectionList.prototype.createThumbs = function (assets) {
                 var obj_div = document.createElement('div');
                 obj_div.setAttribute('class', 'annotation-thumb');
 
-                var target_div = jQuery(self.parent).find(".annotation-thumb-" + ann.id)[0];
+                var target_div = jQuery(self.el).find(".annotation-thumb-" + ann.id)[0];
                 target_div.appendChild(obj_div);
                 // should probably be in .view
                 asset.presentation = 'thumb';
@@ -306,27 +312,53 @@ CollectionList.prototype.updateSwitcher = function () {
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
     
     // hook up switcher choice owner behavior
-    jQuery(self.parent).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
+    jQuery(self.el).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
         var username = bits[bits.length - 1];
         
         if (username === "all-class-members") {
-            username = null;
-        }
-        return self.selectOwner(username);
+            self.current_records.space_owner = null;
+        } else {
+            self.current_records.space_owner = {'username': {}};
+            self.current_records.space_owner.username.id = "";
+            self.current_records.space_owner.username.public_name = ""; 
+            self.current_records.space_owner.username = username;                 
+        } 
+        return self.filter();
     });
+    
+    jQuery(self.el).find("select.course-tags")
+        .select2({
+            placeholder: "Select tag",
+        });    
+    if ('tag' in self.current_records.active_filters &&
+            self.current_records.active_filters.tag.length > 0) {
 
+        jQuery(self.el).find("select.course-tags").select2("val",
+            self.current_records.active_filters.tag.split(","));
+    }
+    
+    jQuery(self.el).find("select.vocabulary").select2({});
+    jQuery(self.el).find("select.vocabulary").each(function(idx, elt) {
+        var name = jQuery(elt).attr("name");
+        if (name in self.current_records.active_filters &&
+                self.current_records.active_filters[name].length > 0) {
+           
+            jQuery(self.el).find("select[name='" + name + "']").select2("val",
+                   self.current_records.active_filters[name].split(","));
+        }
+    });
 };
 
 CollectionList.prototype.getAssets = function () {
     var self = this;
-    return jQuery(self.parent).find('.asset-table').get(0);
+    return jQuery(self.el).find('.asset-table').get(0);
 };
 
 CollectionList.prototype.updateAssets = function (the_records) {
     var self = this;
-    self.switcher_context.owners = the_records.owners;
+    self.switcher_context.owners = self.owners;
     self.switcher_context.space_viewer = the_records.space_viewer;
     self.switcher_context.selected_view = self.selected_view;
     
@@ -367,36 +399,39 @@ CollectionList.prototype.updateAssets = function (the_records) {
             
             jQuery(elt).fadeIn("slow");
             
-            jQuery(self.parent).find("a.switcher-choice.remove").unbind('click').click(function (evt) {
-                var href = jQuery(this).attr("href");
-                var bits = href.split("/");
-                var filterName = bits[bits.length - 1];
-                
-                if (filterName === "both") {
-                    filterName = null;
-                }
-                return self.clearFilter(filterName);
-            });
-            
-            jQuery(self.parent).find("a.switcher-choice.filterbydate").unbind('click').click(function (evt) {
+            jQuery(self.el).find("a.switcher-choice.filterbydate").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.href.split("/");
                 var filterName = bits[bits.length - 1];
                 
                 if (filterName === "all") {
-                    return self.clearFilter("modified");
+                    self.current_records.active_filters.modified = "";
                 } else {
-                    return self.filterByDate(filterName);
+                    self.current_records.active_filters.modified = filterName;
                 }
+                return self.filter();
+            });
+            
+            jQuery(self.el).find("select.vocabulary").on('change select2-removed', function(evt) {
+                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+                var name = jQuery(srcElement).attr("name");
+                self.current_records.active_filters[name] = jQuery(srcElement).val();
+                return self.filter();
             });
 
+            jQuery(self.el).find("select.course-tags").on('change select2-removed', function() {
+                var elt = jQuery(self.el).find("select.course-tags");
+                self.current_records.active_filters.tag = jQuery(elt).val();
+                return self.filter();
+            });
+            
             jQuery(self.parent).find("a.switcher-choice.filterbytag").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.href.split("/");
                 return self.filterByTag(bits[bits.length - 1]);
             });
             
-            jQuery(self.parent).find("a.collection-choice.edit-asset").unbind('click').click(function (evt) {
+            jQuery(self.el).find("a.collection-choice.edit-asset").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
                 var asset_id = bits[bits.length - 1];
@@ -404,7 +439,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return false;
             });
             
-            jQuery(self.parent).find("a.collection-choice.delete-asset").unbind('click').click(function (evt) {
+            jQuery(self.el).find("a.collection-choice.delete-asset").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
                 var asset_id = bits[bits.length - 1];
@@ -412,13 +447,13 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return false;
             });
             
-            jQuery(self.parent).find("a.collection-choice.delete-annotation").unbind('click').click(function (evt) {
+            jQuery(self.el).find("a.collection-choice.delete-annotation").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
                 return self.deleteAnnotation(bits[bits.length - 1]);
             });
             
-            jQuery(self.parent).find("a.collection-choice.create-annotation").unbind('click').click(function (evt) {
+            jQuery(self.el).find("a.collection-choice.create-annotation").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
                 var asset_id = bits[bits.length - 1];
@@ -426,7 +461,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return false;
             });
             
-            jQuery(self.parent).find("a.collection-choice.edit-annotation").unbind('click').click(function (evt) {
+            jQuery(self.el).find("a.collection-choice.edit-annotation").unbind('click').click(function (evt) {
                 var srcElement = evt.srcElement || evt.target || evt.originalTarget;
                 var bits = srcElement.parentNode.href.split("/");
                 var annotation_id = bits[bits.length - 1];
@@ -435,14 +470,24 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 return false;
             });
             
+            jQuery("#collection-help-button").unbind('click').click(function() {
+                jQuery("#collection-overlay, #collection-help, #collection-help-tab").show();
+                return false;
+            });
+            
+            jQuery(self.el).find(".dismiss-help").unbind('click').click(function() {
+                jQuery("#collection-overlay, #collection-help, #collection-help-tab").hide();
+                return false;
+            });            
+            
             if (self.view_callback) {
-                self.view_callback();
+                self.view_callback(the_records.assets.length);
             }
             
             jQuery(window).trigger("resize");
             
             if (self.scrollTop) {
-                jQuery(self.parent).find("div.collection-assets").scrollTop(self.scrollTop);
+                jQuery(self.el).find("div.collection-assets").scrollTop(self.scrollTop);
                 self.scrollTop = undefined;
             }
         }

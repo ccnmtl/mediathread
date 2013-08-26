@@ -1323,7 +1323,7 @@
         "fields": {
             "archive_url": "http://youtube.com", 
             "description": "The largest collection of video on the web, where you can also upload video yourself.", 
-            "thumb_url": "/site_media/img/youtube_logo.jpg", 
+            "thumb_url": "/site_media/img/thumbs/youtube.jpg", 
             "title": "You Tube"
         }
     }, 

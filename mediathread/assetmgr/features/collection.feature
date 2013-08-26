@@ -52,6 +52,7 @@ Feature: Collection View
         
         # Student One
         When I select "Student One" as the owner
+        And I clear all tags
         Then the owner is "<student_one_relationship>" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has <total_selections> selections, 1 by me
@@ -61,6 +62,7 @@ Feature: Collection View
         
         # All Class Members
         When I select "All Class Members" as the owner
+        And I clear all tags
         Then the owner is "All Class Members" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has <total_selections> selections, 1 by me
@@ -75,6 +77,9 @@ Feature: Collection View
         And I can filter by "student_one_item" in the asset-workspace column
         And I can filter by "student_two_selection" in the asset-workspace column
         And I can filter by "student_two_item" in the asset-workspace column
+        
+        Then the Collection panel has a "MAAP Award Reception" item
+        And the "MAAP Award Reception" item has <total_selections> selections, 1 by me        
         
         Finished using Selenium
         
@@ -113,6 +118,7 @@ Feature: Collection View
         
         # Student One
         When I select "Student One" as the owner
+        And I clear all tags
         Then the owner is "Me" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 2 selections, 1 by me
@@ -130,6 +136,7 @@ Feature: Collection View
         
         # All Class Members
         When I select "All Class Members" as the owner
+        And I clear all tags        
         Then the owner is "All Class Members" in the asset-workspace column
         
         Then the Collection panel has a "MAAP Award Reception" item
@@ -164,17 +171,17 @@ Feature: Collection View
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item
         
-        When I filter by "flickr" in the asset-workspace column
+        And I can filter by "flickr" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has no "Mediathread: Introduction" item
         
-        When I clear the filter in the asset-workspace column
+        When I clear all tags
         Then the Collection panel has a "MAAP Award Reception" item
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item
         
-        When I filter by "video" in the asset-workspace column
+        And I can filter by "video" in the asset-workspace column
         Then the Collection panel has no "MAAP Award Reception" item
         And the Collection panel has no "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item

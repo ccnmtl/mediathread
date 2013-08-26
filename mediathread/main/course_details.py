@@ -1,5 +1,7 @@
-UPLOAD_PERMISSION_KEY = "upload_permission"
+from django.core.cache import cache
 
+
+UPLOAD_PERMISSION_KEY = "upload_permission"
 UPLOAD_PERMISSION_ADMINISTRATOR = 0
 UPLOAD_PERMISSION_INSTRUCTOR = 1
 UPLOAD_PERMISSION_STUDENT = 2
@@ -39,3 +41,17 @@ def all_selections_are_visible(course):
     value = int(course.get_detail(SELECTION_VISIBILITY_KEY,
                                   SELECTION_VISIBILITY_DEFAULT))
     return bool(value)
+
+
+def cached_course_is_member(course, user):
+    key = "%s:%s:is_member" % (course.id, user.id)
+    if not key in cache:
+        cache.set(key, course.is_member(user), 3)
+    return cache.get(key)
+
+
+def cached_course_is_faculty(course, user):
+    key = "%s:%s:is_faculty" % (course.id, user.id)
+    if not key in cache:
+        cache.set(key, course.is_faculty(user), 3)
+    return cache.get(key)

@@ -1,32 +1,90 @@
 {{#>>media_gallery}}
 <div class="media_gallery">
     <div class="media-column">
+        <div id="collection-overlay" class="ui-widget-overlay help-overlay" style="display: none"></div>
+        
+        <div id="collection-help-tab" class="ui-widget-content collection-help-tab" style="display: none">
+                <input class="dismiss-help" type="image" title="Dismiss help" 
+                    alt="Dismiss Help" src="/site_media/img/icons/meth_help.png" />
+        </div>
+        
+        
+        <div id="collection-help" class="ui-widget-content collection-help" style="display: none">
+            <h5>Mediathread collection</h5>
+            <div class="feature-help-instructions">
+                <p>A collection is a set of items (images, video, and/or audio) imported into Mediathread.
+                These items can be annotated and embedded into your written analysis.</p>
+        
+                <p>By default, this page will display all the items that you have imported into Mediathread.</p>
+
+                <p>To see items imported and analyzed by others in the course, select a person's name (or All Class Members)
+                in the Owner drop down menu. Items displayed here can also be filtered by user tags, 
+                course vocabulary terms (if any), and date last modified.</p>            
+            </div>
+            
+            <h5>How do I build my collection?</h5>
+            <div class="feature-help-instructions">
+                <ul>
+                    {{#is_faculty?}}
+                        <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
+                        bookmarking items from sites such as YouTube or Flickr.
+                        To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
+                        on the <a href="/">home</a> page and follow the directions. <b>Recommend Sites</b> to students 
+                        via <b>Tools</b> menu / <b><a href="/dashboard/sources/">Manage Sources</a></b>
+                        </li>
+                        <li style="margin-bottom: 4px">
+                            <b>Upload</b>: Video and audio files may be uploaded 
+                            into Mediathread when you enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>.
+                            An <b>Upload from Computer</b> link and directions then appear on the <a href="/">home</a> page.  
+                        </li>
+                    {{/is_faculty?}}
+                    {{^is_faculty}}                                            
+                            <li style="margin-bottom: 4px"><b>Import</b>: Build your collection 
+                            by bookmarking items from sites such as YouTube or Flickr.
+                            To install the bookmarklet into your browser, click the <b>Import into Collection</b> 
+                            on the <a href="/">home</a> page and follow directions. Your instructor also may list 
+                            recommended sites on the home page.</li>
+                            <li><b>Upload</b>: If this feature is enabled, 
+                            you may upload video and audio files from your computer. Click the 
+                            <b>Upload from Computer</b> on the <a href="/">home</a> page and 
+                            follow directions.</li>                                            
+                    {{/is_faculty}}
+               </ul>                                     
+            </div>
+            <div class="visualclear"></div>
+            <div style="float: right">    
+                <input class="btn-primary right dismiss-help" type="button" value="Dismiss Help">
+            </div>                         
+        </div>
+
         <div class="filter-widget">
+            <h3>FILTER BY...</h3>    
+        
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser">                
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
                     <span class="switcher-prefix">Owner </span>
                     <span class="down-arrow"></span>
-                    <span class="title">{{{selected_label?ellipses(20)}}}</span>
+                    <span class="title">{{{selected_label?ellipses(18)}}}</span>
                 </a>
                 
-                <ul class="switcher-options" style="left: -56px">                    
+                <ul class="switcher-options">                    
                     {{#display_switcher_extras?}}
                         {{^showing_my_items}}
                             <li class="choice_my_items">
-                                <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                                <a class="switcher-choice owner" href="{{space_viewer.username}}" style="font-weight: bold">Me</a>
                             </li>
                         {{/showing_my_items}}
                         
                         {{#project.participants}}
                             {{^is_viewer}}
-                                <li><a class="switcher-choice owner" href="{{username}}">&mdash; {{public_name}} &mdash;</a></li>
+                                <li><a class="switcher-choice owner" href="{{username}}" style="font-weight: bold">{{public_name}}</a></li>
                             {{/is_viewer}}   
                         {{/project.participants}}
                     {{/display_switcher_extras?}}                        
                     {{^showing_all_items}}
                         <li class="choice_all_items">
-                            <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
+                            <a class="switcher-choice owner" href="all-class-members" style="font-weight: bold">All Class Members</a>
                         </li>
                     {{/showing_all_items}}                        
                     {{#owners}}                            
@@ -57,62 +115,68 @@
                 </ul>
             </div>
             
-            <div class="switcher collection-filter">
-                <a class="switcher-top menuclosed"">                
-                    <span class="switcher-prefix">Tags </span>
-                    <span class="down-arrow"  onclick="switcher(this.parentNode)"></span>
-                </a>
-                <div class="switcher-options">
-                    {{^tags}}
-                        No tags
-                    {{/tags}}
-                    {{#tags}}
-                        <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
-                    {{/tags}}
-                </div>
-                
-                {{#active_filter_count?}}
-                    <div class="switcher-active-filters">
-                        {{#active_filters}}
-                            {{#tag?}}
-                                <div class="switcher-active-filter">
-                                    <span>{{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
-                                </div>
-                            {{/tag?}}
-                        {{/active_filters}}
-                    </div>
-                {{/active_filter_count?}}
+            
+            <div>
+                <span class="course-tags-prefix">Tags </span>
+                <select class="course-tags"
+                    data-placeholder="Select tags" 
+                    multiple="multiple">
+                    {{#active_tags}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/active_tags}}
+                </select>
             </div>
-            <div class="visualclear"></div>
+            
+            {{#active_vocabulary}}
+            <div>
+                <span class="concept-prefix">{{display_name}}</span>
+                <select class="vocabulary" name="vocabulary-{{id}}"
+                    data-placeholder="Select {{display_name?lower()}}" multiple="multiple">
+                    {{#term_set}}
+                        <option value="{{id}}">{{display_name}}</option>
+                    {{/term_set}}
+                </select>
+            </div>
+            {{/active_vocabulary}}
+                        
         </div> {{! end filter widget }}
             
         <div class="collection-assets scroll annotation-embedding">
             {{#>>assets}}
             <div id="asset_table" class="asset-table">
                 {{^assets}}
-                    <div class="default-content intro-text feature-help"">
+                    <div class="default-content feature-help">
                         {{^active_filter_count}}
-                            {{#showing_my_items?}}                                                              
-                                <strong>Mediathread collection</strong>
-                                <div class="feature-help-instructions">
-                                    A collection is a set of images, video and/or audio brought into Mediathread that 
-                                    can be annotated, organized, and embedded into essays and other written analysis.
+                            {{#showing_my_items?}}
+                                <div class="intro-text">
+                                You have not collected any materials.<br /><br />
+                                
+                                <h5>What is a collection?</h5>
+                                <div>
+                                    <p>A collection is a set of items (images, video, and/or audio) imported into Mediathread.
+                                    These items can be annotated and embedded into your written analysis.</p>
+                            
+                                    <p>By default, this page will display all the items that you have imported into Mediathread.</p>
+                    
+                                    <p>To see items imported and analyzed by others in the course, select a person's name (or All Class Members)
+                                    in the Owner drop down menu. Items displayed here can also be filtered by user tags, 
+                                    course vocabulary terms (if any), and date last modified.</p>            
                                 </div>
                                 
-                                <strong>How do I build my collection?</strong><br />
-                                <div class="feature-help-instructions">
+                                <h5>How do I build my collection?</h5>
+                                <div>
                                     <ul>
                                         {{#is_faculty?}}
                                             <li style="margin-bottom: 4px"><b>Import</b>: Build your collection by 
                                             bookmarking items from sites such as YouTube or Flickr.
                                             To install the bookmarklet into your browser, click the <b>Import into Collection</b> link 
-                                            on the <a href="/">home</a> page and follow directions. <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>
+                                            on the <a href="/">home</a> page and follow the directions. <b>Recommend Sites</b> to students via <b>Tools</b> menu / <b>Manage Sources</b>
                                             </li>
                                             
                                             <li style="margin-bottom: 4px">
                                                 <b>Upload</b>: Video and audio files may be uploaded 
                                                 into Mediathread when you enable this feature in <b>Tools</b> menu / <b>Manage Sources</b>.
-                                                An <b>Upload from Computer</b> link and directions then appear on the home page.  
+                                                An <b>Upload from Computer</b> link and directions then appear on the <a href="/">home</a> page.  
                                             </li>
                                         {{/is_faculty?}}
                                         {{^is_faculty}}                                            
@@ -127,22 +191,15 @@
                                                 follow directions.</li>                                            
                                         {{/is_faculty}}
                                    </ul>                                     
-                                </div>                         
+                                </div>
+                                </div>                                                               
                             {{/showing_my_items?}}
                             {{^showing_my_items}}
-                                <h5>This class participant has not collected any materials yet.</h5>                                
+                                {{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.                                
                             {{/showing_my_items}}
                         {{/active_filter_count}}
                         {{#active_filter_count}}
-                            {{#active_filters}}
-                                {{#tag?}}
-                                    <h5>Filtered by "{{tag}}"</h5>
-                                {{/tag?}}
-                                {{#modified?}}
-                                    <h5>Filtered by "{{modified}}"</h5>
-                                {{/modified?}}
-                            {{/active_filters}}
-                            <p>No items meet this critieria.</p>      
+                            No items matched your search.<br /><br />Please try again.      
                         {{/active_filter_count}}                         
                    </div>
                 {{/assets}} 

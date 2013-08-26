@@ -8,7 +8,6 @@ from tastypie.resources import ModelResource
 
 
 class CourseMemberAuthorization(Authorization):
-
     def apply_limits(self, request, object_list):
         # User must be a member of all courses in the request list
         for course in object_list:

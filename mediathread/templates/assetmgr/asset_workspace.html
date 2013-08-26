@@ -5,8 +5,15 @@
     Collection
 {% endblock %}
 
+{% block extrahead %}
+    {{ block.super }}
+    
+    <script type="text/javascript" src="/site_media/js/select2/select2.min.js"></script>
+{% endblock %}
+
 {% block css %}
     {{ block.super }}
+    <link rel="stylesheet" href="/site_media/js/select2/select2.css" media="screen" />
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}

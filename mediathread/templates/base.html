@@ -22,7 +22,7 @@
             <link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
             <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
             {% block css %}{% endblock %}
-        {% endcompress %}
+        {% endcompress %}   
         
         {% block extrahead %}
             <!--  For uncompress-able resources -->
@@ -30,8 +30,7 @@
     </head>
     
     {% course_role for request.user in course as role_in_course %}
-    <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
-    <div class="ajaxloader" style="display: none"></div>
+    <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
     <div id="dialog-confirm" style="display: none"></div>    
     <div id="container">
         {% block masthead %}
@@ -129,8 +128,9 @@
             <div id="course_information">
                 <h1 id="course_title">
                 {% block coursetitle %}
-                    <a href="/" id="course_title_link">{{course.title}}</a></h1>
+                    <a href="/" id="course_title_link">{{course.title}}</a>
                 {% endblock %}
+                </h1>
                 <div class="clear: right;"></div>
             </div>
             
@@ -167,24 +167,25 @@
     </div><!-- id="container" -->
 
 	{% block footer %}
-	<!-- ###### Footer ###### -->
-    <div id="footer">
-	   <ul id="footernav">
-           <li><a href="/about/">About</a></li>
-           {% if settings.PUBLIC_CONTACT_EMAIL %}                          
-               <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
-           {% endif %}
-           <li><a href="/help/">Help</a></li>
-        </ul>
-			
-		<!-- CCNMTL title/logo -->
-        <h4 id="logo_ccnmtl">
-            <a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a>
-        </h4> 
-		</div><!-- id="footer" -->
+    	<!-- ###### Footer ###### -->
+        <div id="footer">
+                
+            <!-- CCNMTL title/logo -->
+            <h4 id="logo_ccnmtl">
+                <a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a>
+            </h4> 
+    
+    	   <ul id="footernav">
+               <li><a href="/about/">About</a></li>
+               {% if settings.PUBLIC_CONTACT_EMAIL %}                          
+                   <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">E-Mail Us</a></li>
+               {% endif %}
+               <li><a href="/help/">Help</a></li>
+            </ul>
+        </div><!-- id="footer" -->
     {% endblock %}
     
-    {% compress js %}
+    {% compress js %}   
         <script type="text/javascript">
             var lt = String.fromCharCode(60);
             if (window.jQuery) {
@@ -249,10 +250,8 @@
                 // setup some ajax progress indicator
                 jQuery("html").bind("ajaxStart", function(){  
                    jQuery(this).addClass("busy");
-                   jQuery("div.ajaxloader").show();
                 }).bind("ajaxStop", function(){  
                    jQuery(this).removeClass("busy");
-                   jQuery("div.ajaxloader").hide();
                 });
                 
                 /* Select from list: Chrome, Firefox, Safari, MSIE */
@@ -281,7 +280,7 @@
         </script>
         
         {% block js %}{% endblock %}
-    {% endcompress %}  
+    {% endcompress %}    
 </body>
 {% endwith %}
 </html>

@@ -3,8 +3,7 @@ from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseForbidden, HttpResponse, \
-    HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.api import UserResource
@@ -12,6 +11,7 @@ from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.main import course_details
 from mediathread.main.api import CourseSummaryResource
+from mediathread.main.decorators import ajax_required, faculty_only
 from mediathread.main.models import UserSetting
 from mediathread.projects.lib import homepage_project_json, \
     homepage_assignment_json
@@ -144,14 +144,12 @@ def triple_homepage(request):
 
 
 @allow_http("GET")
+@ajax_required
 def your_projects(request, record_owner_name):
     """
     An ajax-only request to retrieve a specified user's projects,
     assignment responses and selections
     """
-    if not request.is_ajax():
-        raise Http404()
-
     course = request.course
     in_course_or_404(record_owner_name, course)
 
@@ -190,15 +188,12 @@ def your_projects(request, record_owner_name):
 
 
 @allow_http("GET")
+@ajax_required
 def all_projects(request):
     """
     An ajax-only request to retrieve a course's projects,
     assignment responses and selections
     """
-
-    if not request.is_ajax():
-        raise Http404()
-
     if not request.user.is_staff:
         in_course_or_404(request.user.username, request.course)
 
@@ -222,13 +217,12 @@ def all_projects(request):
 
 @allow_http("GET", "POST")
 @rendered_with('dashboard/class_manage_sources.html')
+@faculty_only
 def class_manage_sources(request):
     key = course_details.UPLOAD_PERMISSION_KEY
 
     c = request.course
     user = request.user
-    if not request.course.is_faculty(user):
-        return HttpResponseForbidden("forbidden")
 
     upload_enabled = False
     for a in c.asset_set.archives().order_by('title'):
@@ -273,11 +267,10 @@ def class_manage_sources(request):
 @allow_http("GET", "POST")
 @login_required
 @rendered_with('dashboard/class_settings.html')
+@faculty_only
 def class_settings(request):
     c = request.course
     user = request.user
-    if not request.course.is_faculty(user):
-        return HttpResponseForbidden("forbidden")
 
     context = {
         'asset_request': request.GET,
@@ -335,10 +328,8 @@ def class_settings(request):
 
 @allow_http("POST")
 @rendered_with('dashboard/class_settings.html')
+@ajax_required
 def set_user_setting(request, user_name):
-    if not request.is_ajax():
-        raise Http404()
-
     user = get_object_or_404(User, username=user_name)
     name = request.POST.get("name")
     value = request.POST.get("value")
@@ -352,11 +343,8 @@ def set_user_setting(request, user_name):
 @allow_http("GET", "POST")
 @rendered_with('dashboard/class_migrate.html')
 @login_required
+@faculty_only
 def migrate(request):
-
-    if not request.course.is_faculty(request.user):
-        return HttpResponseForbidden("forbidden")
-
     if request.method == "GET":
         # Only show courses for which the user is an instructor
         available_courses = available_courses_query(request.user)
@@ -368,31 +356,52 @@ def migrate(request):
                 if c.is_faculty(request.user):
                     courses.append(c)
 
+        # Only send down the real faculty. Not all us staff members
+        faculty = []
+        for u in request.course.faculty.all():
+            if u in request.course.members:
+                faculty.append(u)
+
         return {
+            "current_course_faculty": faculty,
             "available_courses": courses,
             "help_migrate_materials": False
         }
     elif request.method == "POST":
         # maps old ids to new objects
-        object_map = {'assets': {}, 'notes': {}, 'projects': {}}
+        object_map = {'assets': {},
+                      'notes': {},
+                      'note_count': 0,
+                      'projects': {}}
+
+        owner = request.user
+        if 'on_behalf_of' in request.POST:
+            owner = User.objects.get(id=request.POST.get('on_behalf_of'))
+
+        if (not in_course(owner.username, request.course) or
+                not request.course.is_faculty(owner)):
+            json_stream = simplejson.dumps({
+                'success': False,
+                'message': '%s is not a course member or faculty member'})
+            return HttpResponse(json_stream, mimetype='application/json')
 
         if 'asset_set' in request.POST:
             asset_set = simplejson.loads(request.POST.get('asset_set'))
             object_map = Asset.objects.migrate(asset_set,
                                                request.course,
-                                               request.user,
+                                               owner,
                                                object_map)
 
         if 'project_set' in request.POST:
             project_set = simplejson.loads(request.POST.get('project_set'))
             object_map = Project.objects.migrate(project_set,
                                                  request.course,
-                                                 request.user,
+                                                 owner,
                                                  object_map)
 
         json_stream = simplejson.dumps({
             'success': True,
             'asset_count': len(object_map['assets']),
             'project_count': len(object_map['projects']),
-            'note_count': len(object_map['notes'])})
+            'note_count': object_map['note_count']})
         return HttpResponse(json_stream, mimetype='application/json')

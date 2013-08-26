@@ -8,11 +8,15 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from djangohelpers.lib import allow_http
+from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.decorators import ajax_required
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.lib import composition_project_json
 from mediathread.projects.models import Project
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary
 import simplejson
 
 
@@ -258,6 +262,12 @@ def project_workspace(request, project_id, feedback=None):
     else:
         panels = []
 
+        vocabulary = VocabularyResource().render_list(
+            request, Vocabulary.objects.get_for_object(request.course))
+
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
         course = request.course
         is_faculty = course.is_faculty(request.user)
         is_assignment = project.is_assignment(request)
@@ -282,6 +292,8 @@ def project_workspace(request, project_id, feedback=None):
                      'panel_state': display,
                      'subpanel_state': 'closed',
                      'context': assignment_context,
+                     'owners': owners,
+                     'vocabulary': vocabulary,
                      'template': 'project'}
             panels.append(panel)
 
@@ -298,8 +310,9 @@ def project_workspace(request, project_id, feedback=None):
         panel = {'is_faculty': is_faculty,
                  'panel_state': 'closed' if show_feedback else 'open',
                  'context': project_context,
-                 'template': 'project'}
-
+                 'template': 'project',
+                 'owners': owners,
+                 'vocabulary': vocabulary}
         panels.append(panel)
 
         # Project Response -- if the requested project is an assignment
@@ -317,7 +330,9 @@ def project_workspace(request, project_id, feedback=None):
                 panel = {'is_faculty': is_faculty,
                          'panel_state': 'closed',
                          'context': response_context,
-                         'template': 'project'}
+                         'template': 'project',
+                         'owners': owners,
+                         'vocabulary': vocabulary}
                 panels.append(panel)
 
                 if not feedback_discussion and response_can_edit:
@@ -331,6 +346,8 @@ def project_workspace(request, project_id, feedback=None):
             panel = {'panel_state': 'open' if show_feedback else 'closed',
                      'panel_state_label': "Instructor Feedback",
                      'template': 'discussion',
+                     'owners': owners,
+                     'vocabulary': vocabulary,
                      'context': threaded_comment_json(request,
                                                       feedback_discussion)}
             panels.append(panel)
@@ -340,6 +357,8 @@ def project_workspace(request, project_id, feedback=None):
                  'panel_state_label': "Item Details",
                  'template': 'asset_quick_edit',
                  'update_history': False,
+                 'owners': owners,
+                 'vocabulary': vocabulary,
                  'context': {'type': 'asset'}}
         panels.append(panel)
 
@@ -391,15 +410,15 @@ def project_export_msword(request, project_id):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def project_sort(request):
     if (not in_course(request.user, request.course) or
-        not request.course.is_faculty(request.user) or
-            not request.is_ajax()):
+            not request.course.is_faculty(request.user)):
         return HttpResponseForbidden("forbidden")
 
     ids = request.POST.getlist("project")
-    for idx, id in enumerate(ids):
-        project = Project.objects.get(id=id)
+    for idx, project_id in enumerate(ids):
+        project = Project.objects.get(id=project_id)
         if idx != project.ordinality:
             project.ordinality = idx
             project.save()

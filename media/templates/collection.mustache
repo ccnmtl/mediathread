@@ -2,6 +2,7 @@
 <div class="collection_table">
     <div class="media-column" >
         <div class="filter-widget">
+            <h3>FILTER BY...</h3>
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">                
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
@@ -10,24 +11,24 @@
                     <span class="down-arrow" tabindex="3"></span>                    
                 </a>
                 
-                <ul class="switcher-options" style="left: -54px">
+                <ul class="switcher-options">
                     {{#display_switcher_extras?}}
                         {{^showing_my_items}}
                             <li class="choice_my_items">
-                                <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                                <a class="switcher-choice owner" href="{{space_viewer.username}}" style="font-weight: bold">Me</a>
                             </li>
                         {{/showing_my_items}}
                         
                         {{#project.participants}}
                             {{^is_viewer}}
-                                <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
+                                <li><a class="switcher-choice owner" href="{{username}}" style="font-weight: bold">{{public_name}}</a></li>
                             {{/is_viewer}}   
                         {{/project.participants}}
                     {{/display_switcher_extras?}}
                 
                     {{^showing_all_items}}
                         <li class="choice_all_items">
-                            <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
+                            <a class="switcher-choice owner" href="all-class-members" style="font-weight: bold">All Class Members</a>
                         </li>
                     {{/showing_all_items}}                        
                     {{#owners}}                            
@@ -37,57 +38,50 @@
             </div>
             {{/>>switcher_collection_chooser}}
             
-            <div class="switcher collection-filter" tabindex="2" style="width: 135px">
+            <div class="switcher collection-date-filter">
                 <a class="switcher-top menuclosed" onclick="switcher(this);">
-                    <span class="title">Filters...</span>
-                    <span class="down-arrow" tabindex="4"></span>                                        
+                    <span class="switcher-prefix">Date </span>
+                    <span class="down-arrow"></span>
+                    
+                    {{#active_filters.modified?}}
+                        <span class="title">{{active_filters.modified}}</span>
+                    {{/active_filters.modified?}}
+                    
+                    {{^active_filters.modified}}
+                        <span class="title">all</span>
+                    {{/active_filters.modified}}
                 </a>
-                <ul class="switcher-options" style="right: -54px">
-                    {{^showing_all_items}}
-                    <li>
-                        <h3>Date Modified</h3>
-                        <p class="switcher-sub filterbydate">
-                            <a class="switcher-choice" href="today">today</a>
-                            <a class="switcher-choice" href="yesterday">yesterday</a>
-                            <a class="switcher-choice" href="lastweek">within the last week</a>
-                        </p>
-                    </li>
-                    {{/showing_all_items}}
-            
-                    <li>
-                        <h3>Tags</h3>
-                        <p class="switcher-sub">
-                            {{^tags}}
-                                No tags
-                            {{/tags}}
-                            {{#tags}}
-                                <a class="switcher-choice filterbytag" href="{{name}}">{{name}}</a>
-                            {{/tags}}
-                        </p>
-                    </li>
+                <ul class="switcher-options">
+                    <li><a class="switcher-choice filterbydate" href="all">all</a></li>
+                    <li><a class="switcher-choice filterbydate" href="today">today</a></li>
+                    <li><a class="switcher-choice filterbydate" href="yesterday">yesterday</a></li>
+                    <li><a class="switcher-choice filterbydate" href="lastweek">within the last week</a></li>
                 </ul>
             </div>
             
-            <div class="visualclear"></div>
             
+            <div>
+                <span class="course-tags-prefix">Tags </span>
+                <select class="course-tags"
+                    data-placeholder="Select tags" 
+                    multiple="multiple">
+                    {{#active_tags}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/active_tags}}
+                </select>
+            </div>
             
-            {{#active_filter_count?}}
-                <div class="switcher-active-filters">
-                    {{#active_filters}}
-                        {{#tag?}}
-                            <div class="switcher-active-filter">
-                                <span>Tag: {{tag?ellipses(8)}}<a class="switcher-choice remove" href="tag" title="Clear "{{tag}}" filter"></a></span>
-                            </div>
-                        {{/tag?}}
-                        {{#modified?}}
-                            <div class="switcher-active-filter">
-                                <span>Date: {{modified}}<a class="switcher-choice remove" href="modified" title="Clear "{{modified}}" filter"></a></span>
-                            </div>
-                        {{/modified?}}
-                    {{/active_filters}}
-                </div>
-            {{/active_filter_count?}}
-            
+            {{#active_vocabulary}}
+            <div>
+                <span class="concept-prefix">{{display_name}}</span>
+                <select class="vocabulary" name="vocabulary-{{id}}"
+                    data-placeholder="Select {{display_name?lower()}}" multiple="multiple">
+                    {{#term_set}}
+                        <option value="{{id}}">{{display_name}}</option>
+                    {{/term_set}}
+                </select>
+            </div>
+            {{/active_vocabulary}}            
         </div> {{! end filter widget }}
 
             
@@ -97,8 +91,9 @@
                 {{^assets}}
                     <div class="default-content intro-text feature-help"">
                         {{^active_filter_count}}
-                            {{#showing_my_items?}}                                                              
-                                <strong>Mediathread collection</strong>
+                            {{#showing_my_items?}}
+                                You have not collected any materials.<br /><br />                                                              
+                                <strong>What is a collection?</strong>
                                 <div class="feature-help-instructions">
                                     A collection is a set of images, video and/or audio brought into Mediathread that 
                                     can be annotated, organized, and embedded into essays and other written analysis.
@@ -135,19 +130,11 @@
                                 </div>                         
                             {{/showing_my_items?}}
                             {{^showing_my_items}}
-                                <h5>This class participant has not collected any materials yet.</h5>                                
+                                <center>{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</center>                                
                             {{/showing_my_items}}
                         {{/active_filter_count}}
                         {{#active_filter_count}}
-                            {{#active_filters}}
-                                {{#tag?}}
-                                    <h5>Filtered by "{{tag}}"</h5>
-                                {{/tag?}}
-                                {{#modified?}}
-                                    <h5>Filtered by "{{modified}}"</h5>
-                                {{/modified?}}
-                            {{/active_filters}}
-                            <p>No items meet this critieria.</p>      
+                            <center>No items matched your search. Please try again.</center>      
                         {{/active_filter_count}}                         
                    </div>
                 {{/assets}} 
@@ -193,43 +180,37 @@
                             <tr>
                                 <td class="item-meta">
                                     {{#global_annotation}}
-                                        {{#metadata}}
-                                            <ul class="record-metadata-list">
-                                                {{#tags?}}
-                                                    <li class="annotation-global-tags meta">
-                                                    <span class="metadata-label">Item Tags:</span>
+                                        <ul class="record-metadata-list">
+                                            {{#vocabulary?}}
+                                                {{#vocabulary}}
+                                                     <li class="annotation-global-body meta">
+                                                        <span class="metadata-label">{{display_name}}: </span>
                                                         <span class="metadata-value">
-                                                            {{#tags}}
-                                                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                            {{/tags}}
+                                                            {{#terms}}
+                                                                {{display_name}}
+                                                            {{/terms}}
                                                         </span>
                                                     </li>
-                                                {{/tags?}} 
-                                            
-                                                {{#body?}}
-                                                    <li class="annotation-global-body meta">
-                                                        <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{body}}</span> 
-                                                    </li>
-                                                {{/body?}}
-                                            </ul>
-                                        {{/metadata}}   
-                                    {{/global_annotation}}
-                                      
-                                    {{^global_annotation}}
-                                         {{^space_owner}} {{! All Class Items. Is this really necessary? }}
-                                             {{#tags?}}
-                                                <div class="meta">
-                                                    <div class="meta"> 
-                                                        <span class="metadata-label">Selection Tags:</span>
-                                                        <span class="metadata-value">
-                                                            {{#tags}}
-                                                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                            {{/tags}}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                             {{/tags?}}
-                                        {{/space_owner}}
+                                                {{/vocabulary}}
+                                            {{/vocabulary?}}
+                                                                                        
+                                            {{#metadata.tags?}}
+                                                <li class="annotation-global-tags meta">
+                                                <span class="metadata-label">Item Tags:</span>
+                                                    <span class="metadata-value">
+                                                        {{#metadata.tags}}
+                                                            <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                        {{/metadata.tags}}
+                                                    </span>
+                                                </li>
+                                            {{/metadata.tags?}} 
+                                        
+                                            {{#metadata.body?}}
+                                                <li class="annotation-global-body meta">
+                                                    <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{metadata.body}}</span> 
+                                                </li>
+                                            {{/metadata.body?}}
+                                        </ul>
                                     {{/global_annotation}}
                                 </td>
                             </tr>
@@ -238,7 +219,7 @@
                         <div id="record-{{id}}-metadata" class="record-metadata">
                             {{#annotations?}}
                                 <div class="asset-clips">
-                                    {{#annotations}} 
+                                    {{#annotations}}
                                         {{^is_null}}
                                             <div id="annotation-{{id}}">
                                                 <table class="selection-level-info">
@@ -286,13 +267,31 @@
                                                     <tr>
                                                         <td class="selection-meta" colspan="4">
                                                             <div class="metadata-container">
+                                                                <div class="meta">                                                                    
+                                                                    <span class="metadata-label">Author:</span>
+                                                                    <span class="metadata-value">{{author.public_name}}</span></div>
+                                                                </div>
                                                                 {{#metadata}}
                                                                     {{#timecode?}}
-                                                                    <div class="annotation-timecode meta"><span class="metadata-label">Time code:</span> <span class="metadata-value">{{timecode}}</span></div>
+                                                                    <div class="annotation-timecode meta">
+                                                                        <span class="metadata-label">Time code:</span>
+                                                                        <span class="metadata-value">{{timecode}}</span></div>
                                                                     {{/timecode?}}
                                                                 {{/metadata}}
                                                                 
                                                                 <div id="annotation-body-{{id}}" class="meta">
+                                                                
+                                                                    {{#vocabulary?}}
+                                                                        {{#vocabulary}}
+                                                                            <div>
+                                                                                <label>{{display_name}}: </label>
+                                                                                {{#terms}}
+                                                                                    {{display_name}}
+                                                                                {{/terms}}
+                                                                            </div>
+                                                                        {{/vocabulary}}
+                                                                    {{/vocabulary?}}
+                                                                
                                                                     {{#metadata}}
                                                                         {{#tags?}}       
                                                                             <div><span class="metadata-label">Tags:</span>

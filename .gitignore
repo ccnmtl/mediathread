@@ -15,6 +15,5 @@ chromedriver.log
 ghostdriver.log
 .coverage
 media/js/sherdjs/
-reports
 media/CACHE
 libpeerconnection.log

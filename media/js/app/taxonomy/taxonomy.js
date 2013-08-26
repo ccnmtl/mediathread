@@ -77,6 +77,7 @@
             'focus input[name="term_name"]': 'focusTermName',
             'blur input[name="term_name"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
+            'keypress input[name="term_name"]': 'keypressTermName',
             'click a.edit-term-submit': 'updateTerm',
             'click a.edit-term-open': 'showEditTerm',
             'click a.edit-term-close': 'hideEditTerm',            
@@ -89,6 +90,7 @@
                     "updateVocabulary",
                     "deleteVocabulary",
                     "createTerm",
+                    "keypressTermName",
                     "updateTerm",
                     "deleteTerm",
                     "activateTab");
@@ -118,6 +120,8 @@
             jQuery(elt).tabs({
                 'activate': this.activateTab
             });
+            // remove the default tabs key processing
+            jQuery(elt).find('li').off('keydown');
             jQuery(elt).addClass("ui-tabs-vertical ui-helper-clearfix");
             jQuery(this.el).find("div.vocabularies li").removeClass("ui-corner-top").addClass( "ui-corner-left");
             
@@ -167,6 +171,10 @@
                 success: function() {
                     self.selected = v;
                     self.collection.add(v);
+                },
+                error: function(model, response) {
+                    var responseText = jQuery.parseJSON(response.responseText);
+                    showMessage(responseText.vocabulary.error_message, undefined, "Error");
                 }
             });
             return false;
@@ -194,6 +202,10 @@
                 v.save({'display_name': display_name}, {
                     success: function() {
                         self.render();
+                    },
+                    error: function(model, response) {
+                        var responseText = jQuery.parseJSON(response.responseText);
+                        showMessage(responseText.vocabulary.error_message, undefined, "Error");
                     }
                 });
             }
@@ -264,6 +276,13 @@
             jQuery(parent).find("div.term-edit").hide();
             return false;    
         },        
+        keypressTermName: function(evt) {
+            var self = this;
+            if (evt.which == 13) {
+                evt.preventDefault();                
+                jQuery(evt.currentTarget).next().click();
+            }
+        },
         createTerm: function(evt) {
             evt.preventDefault();
             var self = this;
@@ -287,6 +306,10 @@
                 success: function() {
                     self.selected.get('term_set').add(t);
                     self.render();
+                },
+                error: function(model, response) {
+                    var responseText = jQuery.parseJSON(response.responseText);
+                    showMessage(responseText.term.error_message, undefined, "Error");
                 }
             });
             return false;            
@@ -314,6 +337,10 @@
                 term.save({}, {
                     success: function() {
                         self.render();
+                    },
+                    error: function(model, response) {
+                        var responseText = jQuery.parseJSON(response.responseText);
+                        showMessage(responseText.term.error_message, undefined, "Error");
                     }
                 });
             }

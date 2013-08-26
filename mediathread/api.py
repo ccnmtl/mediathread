@@ -1,6 +1,9 @@
 from courseaffils.lib import get_public_name
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from mediathread.djangosherd.models import SherdNote
+from mediathread.main.course_details import all_selections_are_visible, \
+    cached_course_is_faculty
 from tagging.models import Tag
 from tastypie import fields
 from tastypie.authentication import Authentication
@@ -14,7 +17,6 @@ import re
 
 
 class ToManyFieldEx(ToManyField):
-
     def build_m2m_filters(self, resource, filters, related_field_name):
         related_filters = {}
         pattern = '^.*%s__' % related_field_name
@@ -26,7 +28,7 @@ class ToManyFieldEx(ToManyField):
 
         return resource.build_filters(related_filters)
 
-    def apply_m2m_filters(self, request, related_field_name, base_object_list):
+    def apply_m2m_filters(self, request, related_field_name, object_list):
         m2m_resource = self.get_related_resource(None)
 
         applicable_filters = self.build_m2m_filters(m2m_resource,
@@ -35,11 +37,11 @@ class ToManyFieldEx(ToManyField):
 
         try:
             if applicable_filters:
-                base_object_list = base_object_list.filter(
+                object_list = object_list.filter(
                     **applicable_filters).distinct()
 
             return m2m_resource.apply_authorization_limits(request,
-                                                           base_object_list)
+                                                           object_list)
         except ValueError:
             raise BadRequest("Invalid resource lookup data \
             provided (mismatched type).")
@@ -109,10 +111,12 @@ class ToManyFieldEx(ToManyField):
         return m2m_dehydrated
 
 
-class FacultyAuthorization(Authorization):
-
-    def is_authorized(self, request, obj=None):
-        return request.course.is_faculty(request.user)
+'''From the TastyPie Docs:
+Authentication is the component needed to verify who a certain user
+is and to validate their access to the API.
+Authentication answers the question "Who is this person?"
+This usually involves requiring credentials, such as an API key or
+username/password or oAuth tokens.'''
 
 
 class ClassLevelAuthentication(Authentication):
@@ -122,6 +126,21 @@ class ClassLevelAuthentication(Authentication):
         return (request.user.is_authenticated() and
                 request.course and
                 request.course.is_member(request.user))
+
+
+'''From the TastyPie Docs:
+Authorization is the component needed to verify what someone
+can do with the resources within an API.
+
+Authorization answers the question "Is permission granted for this user
+to take this action?" This usually involves checking permissions such as
+Create/Read/Update/Delete access, or putting limits on
+what data the user can access.'''
+
+
+class FacultyAuthorization(Authorization):
+    def is_authorized(self, request, obj=None):
+        return request.course.is_faculty(request.user)
 
 
 class UserAuthorization(Authorization):
@@ -144,7 +163,8 @@ class UserResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = UserAuthorization()
         ordering = 'id'
-        filtering = {'id': ALL}
+        filtering = {'id': ALL,
+                     'username': ALL}
 
     def dehydrate(self, bundle):
         bundle.data['public_name'] = get_public_name(bundle.obj,
@@ -172,20 +192,71 @@ class GroupResource(ModelResource):
 
     class Meta:
         queryset = Group.objects.none()
-        allowed_methods = ['get']
         authentication = ClassLevelAuthentication()
 
 
-class TagResource(ModelResource):
+class RestrictedCourseResource(ModelResource):
+    def __init__(self, course=None):
+        super(RestrictedCourseResource, self).__init__(None)
+        self.course = course
+
+    def get_unrestricted(self, request, object_list, course):
+        return object_list
+
+    def get_restricted(self, request, object_list, course):
+        return []
+
+    def apply_authorization_limits(self, request, object_list):
+        course = self.course or request.course
+
+        if (all_selections_are_visible(course) or
+                cached_course_is_faculty(course, request.user)):
+            return self.get_unrestricted(request, object_list, course)
+        else:
+            return self.get_restricted(request, object_list, course)
+
+
+class TagResource(RestrictedCourseResource):
+    def __init__(self, course=None):
+        super(TagResource, self).__init__(None)
+        self.filters = {}
+
     class Meta:
         queryset = Tag.objects.none()
-        allowed_methods = []
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
+        authentication = ClassLevelAuthentication()
+        limit = 1000
+        max_limit = 1000
 
     def dehydrate(self, bundle):
         if hasattr(bundle.obj, "count"):
             bundle.data['count'] = int(bundle.obj.count)
         bundle.data['last'] = hasattr(bundle.obj, "last")
         return bundle
+
+    def _filter_tags(self, note_set):
+        if 'assets' in self.filters:
+            note_set = note_set.filter(asset__id__in=self.filters['assets'])
+        if 'record_owner' in self.filters:
+            note_set = note_set.filter(author=self.filters['record_owner'])
+
+        counts = 'counts' in self.filters
+        tags = Tag.objects.usage_for_queryset(note_set, counts=counts)
+        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+        return tags
+
+    def get_unrestricted(self, request, object_list, course):
+        notes = SherdNote.objects.filter(asset__course=course)
+        return self._filter_tags(notes)
+
+    def get_restricted(self, request, object_list, course):
+        whitelist = [f.id for f in course.faculty]
+        whitelist.append(request.user.id)
+
+        notes = SherdNote.objects.filter(asset__course=course,
+                                         author__id__in=whitelist)
+        return self._filter_tags(notes)
 
     def render_list(self, request, tags):
         tag_last = len(tags) - 1
@@ -195,7 +266,11 @@ class TagResource(ModelResource):
                 setattr(tag, 'last', idx == tag_last)
 
             bundle = self.build_bundle(obj=tag, request=request)
-
             dehydrated = self.full_dehydrate(bundle)
             data.append(dehydrated.data)
         return data
+
+    def filter(self, request, filters):
+        self.filters = filters
+        objects = self.obj_get_list(request=request)
+        return self.render_list(request, objects)

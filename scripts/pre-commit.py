@@ -115,7 +115,7 @@ def main(all_files):
     if result == 0:
         print 'Running Unit Tests...'
         return_code = subprocess.call(
-            './manage.py test',
+            './manage.py jenkins',
             shell=True)
         result = return_code or result
 

@@ -1,25 +1,23 @@
-{{ user }}
 {% ifequal action "collection" %}
-	<script>
+	<script type="text/javascript">
 		window.location.replace('/asset/')
 	</script>
 {% endifequal %}
 
 {% ifequal action "cont" %}
-	<script>
+	<script type="text/javascript">
 		window.close()
 	</script>
 {% endifequal %}
 
 {% ifequal action "analyze" %}
-	<script>
+	<script type="text/javascript">
 		window.location.replace('/asset/most_recent/')
 	</script>
 {% endifequal %}
 
 {% ifequal action None %}
-The action was none!!
-	<script>
+	<script type="text/javascript">
 		window.location.replace('{{ asset_url }}')
 	</script>
 {% endifequal %}

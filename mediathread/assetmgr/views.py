@@ -173,10 +173,6 @@ def asset_create(request):
     req_dict = getattr(request, request.method)
     user = _parse_user(request)
     metadata = _parse_metadata(req_dict)
-    try:
-        refer = request.META['HTTP_REFERER']
-    except:
-        refer = None
     title = req_dict.get('title', '')
     asset = Asset.objects.get_by_args(req_dict, asset__course=request.course)
 
@@ -208,11 +204,8 @@ def asset_create(request):
 
     # create a global annotation
     asset.global_annotation(user, True)
-
     asset_url = reverse('asset-view', args=[asset.id])
-
     source = request.POST.get('asset-source', "")
-    action = request.POST.get('button')
 
     if source == 'bookmarklet':
         asset_url += "?level=item"
@@ -231,27 +224,15 @@ def asset_create(request):
                                         reverse('class-manage-sources'))
         url = "%s?newsrc=%s" % (redirect_url, asset.title)
         return HttpResponseRedirect(url)
-    elif "analyze" == action:
-        asset_id = most_recent(request)
-        template = loader.get_template('assetmgr/analyze.html')
-        context = RequestContext(request, {
-            'request': request,
-            'user': user,
-            'action': action,
-            'asset_id': asset_id
-        })
-        return HttpResponse(template.render(context))
-        return HttpResponseRedirect('/assets/' + asset_id + '/')
     else:
         template = loader.get_template('assetmgr/analyze.html')
         context = RequestContext(request, {
             'request': request,
-            'refer': refer,
             'user': user,
-            'action': action,
+            'action': request.POST.get('button', None),
             'asset_url': asset_url
         })
-    return HttpResponse(template.render(context))
+        return HttpResponse(template.render(context))
 
 
 @login_required

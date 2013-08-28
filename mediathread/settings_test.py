@@ -8,7 +8,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/Users/sdreher/workspace/mediathread/lettuce.db',
+        'NAME': 'lettuce.db',
         'OPTIONS': {
             'timeout': 30,
         }

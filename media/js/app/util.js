@@ -129,7 +129,7 @@ function retrieveData(name) {
     }
 }
 
-function showMessage(msg, onclose, customTitle) {
+function showMessage(msg, onclose, customTitle, position) {
     var title = customTitle ? customTitle : "Success";
     jQuery("#dialog-confirm").html(msg);
     jQuery("#dialog-confirm").dialog({
@@ -146,6 +146,11 @@ function showMessage(msg, onclose, customTitle) {
             "OK": function() {
                 jQuery(this).dialog("close");
             }
-        }
-    });    
+        } 
+    });
+    
+    // position newly opened dialog (using its parent container) below $div.
+    if (position) {
+        jQuery("#dialog-confirm").dialog('widget').position(position);
+    }
 }

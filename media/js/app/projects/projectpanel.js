@@ -6,7 +6,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.projectModified = false;
     self.parentContainer = parent;
     self.space_owner = space_owner;
-    self.tiny_mce_settings = tiny_mce_settings;
+    self.tiny_mce_settings = tiny_mce_settings;    
 
     djangosherd.storage.json_update(panel.context);
     
@@ -102,6 +102,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'template_label': "collection_table",
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
+            'owners': self.panel.owners,
             'citable': true,
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
@@ -131,6 +132,8 @@ ProjectPanelHandler.prototype.resize = function () {
     visible -= jQuery(self.el).find(".project-participant-row").height();
     visible -= jQuery("#footer").height(); // padding
     
+    visible += 30;
+    
     if (self.tinyMCE) {
         var editorHeight = visible;
         // tinyMCE project editing window. Make sure we only resize ourself.
@@ -140,9 +143,10 @@ ProjectPanelHandler.prototype.resize = function () {
     
     jQuery(self.el).find("div.essay-space").css('height', (visible + 20) + "px");
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
+    jQuery(self.el).find('div.ajaxloader').css('height', visible + 'px');
     
-    // Resize the collections box, subtracting its header elements
-    visible -= jQuery(self.el).find("div.filter-widget").outerHeight();
+    // Resize the collections box, subtracting its header elements    
+    visible -= jQuery(self.el).find("div.filter-widget").outerHeight() + 10;
     jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
     
     // For IE
@@ -567,8 +571,17 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
                     });
                 }
             });
+        },
+        open: function( event, ui ) {
+            if (!jQuery('#id_publish_2').is(":checked")) {
+                jQuery("#id_due_date").attr("disabled", "disabled");
+            }            
             jQuery("input[name=publish]").bind('click', function () {
-                                
+                if (jQuery('#id_publish_2').is(":checked")) {
+                    jQuery("#id_due_date").removeAttr("disabled");
+                } else {
+                    jQuery("#id_due_date").attr("disabled", "disabled");
+                }           
             });
         },
         beforeClose: function (event, ui) {
@@ -637,6 +650,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).prev().removeClass("composition").addClass("assignment");
                     jQuery(self.el).prev().find("div.label").html("assignment");
                     jQuery(self.el).prev().prev().find(".composition").removeClass("composition").addClass("assignment");
+                    
+                    jQuery(self.el).find('a.project-export').hide();
+                    jQuery(self.el).find('a.project-print').hide();
                 } else {
                     jQuery(self.el).removeClass("assignment").addClass("composition");
                     jQuery(self.el).find(".assignment").removeClass("assignment").addClass("composition");
@@ -644,6 +660,9 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).prev().removeClass("assignment").addClass("composition");
                     jQuery(self.el).prev().find("div.label").html("composition");
                     jQuery(self.el).prev().prev().find(".assignment").removeClass("assignment").addClass("composition");
+                    
+                    jQuery(self.el).find('a.project-export').show();
+                    jQuery(self.el).find('a.project-print').show();                    
                 }
                 
                 jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);

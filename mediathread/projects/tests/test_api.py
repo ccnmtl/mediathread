@@ -11,8 +11,8 @@ class ProjectResourceTest(ResourceTestCase):
         self.assertEquals(project['title'], title)
         self.assertEquals(project['attribution'], author)
 
-        self.assertEquals(len(project['sherdnote_set']), len(selection_ids))
-        for idx, s in enumerate(project['sherdnote_set']):
+        self.assertEquals(len(project['annotations']), len(selection_ids))
+        for idx, s in enumerate(project['annotations']):
             self.assertEquals(int(s['id']), selection_ids[idx])
 
     def test_student_one_getlist(self):

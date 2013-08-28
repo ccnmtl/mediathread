@@ -28,71 +28,75 @@
         </div>
         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
     </div>
-                      
-    <div class="filter-widget">
-        {{#>>switcher_collection_chooser}}
-        <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">            
-            <a class="switcher-top menuclosed" onclick="switcher(this);">
-                <span class="switcher-prefix">Author </span>
-                <span class="title">{{{selected_label?ellipses(22)}}}</span>
-                <span class="down-arrow" tabindex="3"></span>                
-            </a>
-            
-            <ul class="switcher-options" style="left: -56px">
-                {{^showing_my_items}}
-                <li>
-                    <li class="choice_my_items" id="choice_my_items">
-                        <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                
+    <div>      
+        <div class="filter-widget left">
+            {{#>>switcher_collection_chooser}}
+            <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">            
+                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                    <span class="switcher-prefix">Author </span>
+                    <span class="title">{{{selected_label?ellipses(22)}}}</span>
+                    <span class="down-arrow" tabindex="3"></span>                
+                </a>
+                
+                <ul class="switcher-options">
+                    {{^showing_my_items}}
+                    <li>
+                        <li class="choice_my_items" id="choice_my_items">
+                            <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                        </li>
                     </li>
-                </li>
-                {{/showing_my_items}}
-                {{^showing_all_items}}
-                <li class="choice_all_items" id="choice_all_items">
-                    <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
-                </li>
-                {{/showing_all_items}}
-                {{#owners}}                            
-                    <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
-                {{/owners}}
-            </ul>
+                    {{/showing_my_items}}
+                    {{^showing_all_items}}
+                    <li class="choice_all_items" id="choice_all_items">
+                        <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
+                    </li>
+                    {{/showing_all_items}}
+                    {{#owners}}                            
+                        <li><a class="switcher-choice owner" href="{{username}}">{{public_name}}</a></li>
+                    {{/owners}}
+                </ul>
+            </div>
+            {{/>>switcher_collection_chooser}}        
+        </div> {{! end filter widget }}
+        
+        <a href="#" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create right">
+            Create<img src="/site_media/img/menuselect.png" width="6" height="12" />
+        </a>
+        <div id="create-project-menu" style="display: none;">                
+            {{#is_faculty?}}
+                <form action="/project/create/" method="post">
+                    <input type="hidden" name="title" />
+                    <input type="hidden" name="publish" value="Assignment"/>
+                    <input type="submit" value="Create Assignment" />
+                </form>
+                <form action="/project/create/" method="post">
+                    <input type="hidden" name="title" />
+                    <input type="submit" value="Create Composition" />                         
+                </form>            
+                <form action="/discussion/create/" method="post">
+                    <input type="hidden" name="comment_html" value="Discussion Title" />
+                    <input type="hidden" name="app_label" value="courseaffils" />
+                    <input type="hidden" name="model" value="course" />
+                    <input type="hidden" name="obj_pk" value="{{course.id}}" />
+                    <input type="submit" value="Create Discussion" />
+                </form>
+            {{/is_faculty?}}
+            {{^is_faculty}}
+                {{#assignments}}
+                    <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
+                {{/assignments}}
+                {{#assignments?}}                    
+                <hr class="divideLinks" />
+                {{/assignments?}}
+                <form action="/project/create/" method="post">
+                    <input type="hidden" name="title" />
+                    <input type="submit" value="Create Composition" />                         
+                </form>            
+            {{/is_faculty}}         
         </div>
-        {{/>>switcher_collection_chooser}}        
-    </div> {{! end filter widget }}
-    
-    <a href="#" style="float: right" onclick='jQuery("#create-project-menu").toggle();' class="btn-primary create">Create<img src="/site_media/img/menuselect.png" width="6" height="12" /></a>
-    <div id="create-project-menu" style="display: none;">                
-        {{#is_faculty?}}
-            <form action="/project/create/" method="post">
-                <input type="hidden" name="title" />
-                <input type="hidden" name="publish" value="Assignment"/>
-                <input type="submit" value="Create Assignment" />
-            </form>
-            <form action="/project/create/" method="post">
-                <input type="hidden" name="title" />
-                <input type="submit" value="Create Composition" />                         
-            </form>            
-            <form action="/discussion/create/" method="post">
-                <input type="hidden" name="comment_html" value="Discussion Title" />
-                <input type="hidden" name="app_label" value="courseaffils" />
-                <input type="hidden" name="model" value="course" />
-                <input type="hidden" name="obj_pk" value="{{course.id}}" />
-                <input type="submit" value="Create Discussion" />
-            </form>
-        {{/is_faculty?}}
-        {{^is_faculty}}
-            {{#assignments}}
-                <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
-            {{/assignments}}
-            {{#assignments?}}                    
-            <hr class="divideLinks" />
-            {{/assignments?}}
-            <form action="/project/create/" method="post">
-                <input type="hidden" name="title" />
-                <input type="submit" value="Create Composition" />                         
-            </form>            
-        {{/is_faculty}}         
     </div>
-    
+    <div class="visualclear"></div>
     <table>
     <tbody>
         <tr>

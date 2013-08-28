@@ -124,7 +124,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
                         asset_resource.render_one(request, ann.asset))
                         for ann in citations
                         if (ann.title != "Annotation Deleted" and
-                        ann.title != 'Asset Deleted')]),
+                            ann.title != 'Asset Deleted')]),
         'annotations': [sherd_resource.render_one(request, ann, rand)
                         for ann in citations],
         'type': 'project',

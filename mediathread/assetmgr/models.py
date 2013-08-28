@@ -59,15 +59,26 @@ class AssetManager(models.Manager):
                                                       user)
                 object_map['assets'][old_asset.id] = new_asset
 
-                if "sherdnote_set" in asset_json:
-                    for note_json in asset_json["sherdnote_set"]:
-                        if note_json["id"] not in object_map['notes']:
-                            old_note = SherdNote.objects.get(
-                                id=note_json["id"])
-                            new_note = SherdNote.objects.migrate_one(old_note,
-                                                                     new_asset,
-                                                                     user)
-                            object_map['notes'][old_note.id] = new_note
+                annotations = []
+
+                if "annotations" in asset_json:
+                    annotations = annotations + asset_json["annotations"]
+
+                for note_json in annotations:
+                    if note_json["id"] not in object_map['notes']:
+                        old_note = SherdNote.objects.get(
+                            id=note_json["id"])
+                        new_note = SherdNote.objects.migrate_one(old_note,
+                                                                 new_asset,
+                                                                 user)
+                        # Don't count global annotations
+                        object_map['notes'][old_note.id] = new_note
+
+                # migrate the requesting user's global annotation
+                # on this asset, if it exists
+                ga = old_asset.global_annotation(user, False)
+                if ga:
+                    SherdNote.objects.migrate_one(ga, new_asset, user)
 
         return object_map
 
@@ -203,6 +214,7 @@ class Asset(models.Model):
         return self._thumb_url
 
     def tags(self):
+        # returns all tags for this instance's notes
         return Tag.objects.usage_for_queryset(self.sherdnote_set.all())
 
     def filter_tags_by_users(self, users, counts=False):
@@ -251,6 +263,22 @@ class Asset(models.Model):
              % (old_asset.id))
         sub = r'\g<1>\g<2>%s\g<4>' % (self.id)
         return re.sub(regex_string, sub, text)
+
+    def user_analysis_count(self, user):
+        # global notes y/n + global tag count + annotation count
+        count = 0
+        ga = self.global_annotation(user, False)
+        annotations = self.sherdnote_set.filter(author=user)
+        if ga:
+            if ga.body and len(ga.body) > 0:
+                count += 1
+            if ga.tags and len(ga.tags) > 0:
+                count += len(ga.tags_split())
+
+            annotations = annotations.exclude(id=ga.id)
+
+        count += len(annotations)
+        return count
 
 
 class Source(models.Model):

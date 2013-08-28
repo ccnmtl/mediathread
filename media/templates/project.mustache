@@ -19,10 +19,10 @@
                                     {{/context.can_edit?}}
                                         <span class="project-visibility-description">
                                             {{context.project.visibility}}
-                                        </span>                                    
+                                        </span>
                                         <span class="project-due-date">
                                             {{#context.project.due_date?}}Due {{context.project.due_date}}{{/context.project.due_date?}}
-                                        </span>                                                                        
+                                        </span>
                                     {{#context.can_edit?}}</a>{{/context.can_edit?}}
                                     &nbsp;
                                     <a class="last-version-public"
@@ -33,15 +33,16 @@
                                         </span>
                                     {{/context.project.current_version?}}
                                     
-                                    {{^context.project.is_assignment}}
-                                        <a class="project-export" href="/project/export/msword/{{context.project.id}}">
-                                            <img class="project-export-icon" src="/site_media/img/export.jpeg"/>
-                                        </a>
-                                                                        
-                                        <a class="project-print" href="/project/export/html/{{context.project.id}}" target="_blank">
-                                            <img class="project-print-icon" src="/site_media/img/printer.png"/>
-                                        </a>
-                                    {{/context.project.is_assignment}}                            
+                                    
+                                    <a class="project-export" href="/project/export/msword/{{context.project.id}}"
+                                        {{#context.project.is_assignment?}}style="display: none"{{/context.project.is_assignment?}}>
+                                        <img class="project-export-icon" src="/site_media/img/export.jpeg"/>
+                                    </a>
+                                                                    
+                                    <a class="project-print" href="/project/export/html/{{context.project.id}}" target="_blank"
+                                        {{#context.project.is_assignment?}}style="display: none"{{/context.project.is_assignment?}}>
+                                        <img class="project-print-icon" src="/site_media/img/printer.png"/>
+                                    </a>
                                 </div>
                             {{/context.project.visibility?}}
                         </td>
@@ -209,7 +210,13 @@
                                     </div>                            
                                     Collection
                                 </h2>
-                                
+                                <div class="ajaxloader">
+                                    <div class="message">
+                                    <img alt="Loading..." src="/site_media/img/ajax-loader.gif">
+                                    <br /><br />
+                                    <div>Refreshing the collection</div>
+                                    </div>
+                                </div>                                
                                 <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                             </div>
                             {{/context.can_edit}}

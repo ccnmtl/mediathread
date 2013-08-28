@@ -138,12 +138,12 @@ INSTALLED_APPS = [
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
-    'sentry.client',
     'south',
     'django_nose',
     'compressor',
     'django_jenkins',
-    'mediathread.taxonomy'
+    'mediathread.taxonomy',
+    'smoketest'
 ]
 
 COMPRESS_URL = "/site_media/"

@@ -74,4 +74,5 @@ class ProjectResource(ModelResource):
             bundle.obj.visibility_short() == 'Assignment'
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()
+        bundle.data['annotations'] = bundle.data.pop('sherdnote_set')
         return bundle

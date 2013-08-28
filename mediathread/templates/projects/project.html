@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block css %}
+    <link rel="stylesheet" href="/site_media/js/select2/select2.css" media="screen" />
+    
     <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}"  media="screen" />
     <link rel="stylesheet" href="/site_media/css/project.print.css?version={%revision%}"  media="print" />
     <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
@@ -22,7 +24,9 @@
     <script type="text/javascript" src="/media/admin/js/jquery.init.js"></script>
     <script type="text/javascript" src="/media/admin/js/core.js"></script>
     <script type="text/javascript" src="/media/admin/js/SelectFilter2.js"></script>
-    <script type="text/javascript" src="/media/admin/js/SelectBox.js"></script>    
+    <script type="text/javascript" src="/media/admin/js/SelectBox.js"></script>
+    
+    <script type="text/javascript" src="/site_media/js/select2/select2.min.js"></script>    
 {% endblock %}
 
 {% block js %}

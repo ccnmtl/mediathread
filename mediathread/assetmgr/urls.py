@@ -11,6 +11,11 @@ urlpatterns = patterns(
         'archive_add_or_remove',
         name="archive-add-or-remove"),
 
+    # Archive save or delete
+    url(r'^references/(?P<asset_id>\d+)/$',
+        'asset_references',
+        name="asset-references"),
+
     # Asset workspace variations
     url(r'^$',
         'asset_workspace',

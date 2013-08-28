@@ -3,6 +3,8 @@ from settings_shared import *
 
 STATSD_HOST = '127.0.0.1'
 
+DEBUG = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -12,6 +14,7 @@ DATABASES = {
         }
     }
 }
+
 
 LETTUCE_SERVER_PORT = 8002
 BROWSER = 'Headless'  # ["Chrome", "Firefox", "Headless"}
@@ -35,3 +38,20 @@ INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
 # ./manage.py harvest \
 # mediathread/main/features/manage_selection_visibility.feature \
 # -d --settings=mediathread.settings_test -s 1
+
+class ExceptionLoggingMiddleware(object):
+    def process_exception(self, request, exception):
+        import traceback
+        print traceback.format_exc()
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+    'courseaffils.middleware.CourseManagerMiddleware',
+    'mediathread.main.middleware.AuthRequirementMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'mediathread.settings_test.ExceptionLoggingMiddleware'
+)

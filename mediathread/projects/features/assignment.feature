@@ -296,4 +296,7 @@ Feature: Assignment
         Then I save the changes        
         Then there is a "Private" link
         
+        When I log out
+        Then I am at the Login page
+        
         Finished using Selenium

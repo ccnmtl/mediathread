@@ -1,67 +1,14 @@
-from django import forms
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.http import HttpResponseForbidden
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, \
+    HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-
-from mediathread.djangosherd.models import Asset, SherdNote
-from mediathread.djangosherd.models import NULL_FIELDS
-
 from djangohelpers.lib import allow_http
-
+from mediathread.djangosherd.models import Asset, SherdNote, NULL_FIELDS
+from mediathread.taxonomy.views import update_vocabulary_terms
 import simplejson
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
-
-
-class AnnotationForm(forms.ModelForm):
-    body = forms.CharField(label='Notes',
-                           widget=forms.widgets.Textarea(attrs={'rows': 7,
-                                                                'cols': 51}))
-    range1 = forms.FloatField(widget=forms.widgets.HiddenInput, initial=0)
-    range2 = forms.FloatField(widget=forms.widgets.HiddenInput, initial=0)
-    annotation_data = forms.CharField(widget=forms.widgets.HiddenInput)
-    tags = forms.CharField(
-        label="Tag(s)",
-        help_text="<span class='helptext'>Use commas between tags.</span>")
-    title = forms.CharField(label="Title")
-
-    class Meta:
-        model = SherdNote
-        exclude = ('author', 'asset')
-
-    def __init__(self, *args, **kw):
-        forms.ModelForm.__init__(self, *args, **kw)
-        # second part of tag 'space' hack (see models.py::SherdNote.save)
-        #to avoid 'American Revolution' being tagged as
-        #"American", "Revolution"
-        if self.initial.get('tags', '').startswith(','):
-            self.initial['tags'] = self.initial['tags'][1:]
-
-
-class GlobalAnnotationForm(forms.ModelForm):
-    body = forms.CharField(
-        label='My Item Notes',
-        widget=forms.widgets.Textarea(attrs={'rows': 7, 'cols': 51}))
-    tags = forms.CharField(
-        label='My Item Tags',
-        help_text="<span class='helptext'>Use commas to separate tags. \
-            Example: tag 1, tag 2, tag 3</span>")
-
-    class Meta:
-        model = SherdNote
-        exclude = ('annotation_data', 'author', 'asset',
-                   'range1', 'range2', 'title')
-
-    def __init__(self, *args, **kw):
-        forms.ModelForm.__init__(self, *args, **kw)
-        # second part of tag 'space' hack (see models.py::SherdNote.save)
-        #to avoid 'American Revolution' being tagged as
-        #"American", "Revolution"
-        if self.initial.get('tags', '').startswith(','):
-            self.initial['tags'] = self.initial['tags'][1:]
 
 
 @login_required
@@ -93,6 +40,8 @@ def create_annotation(request):
 
     annotation = SherdNote(**data)
     annotation.save()
+
+    update_vocabulary_terms(request, annotation)
 
     #need to create global annotation if it doesn't exist already
     #so it appears in the user's list
@@ -181,3 +130,5 @@ def update_annotation(request, annotation):
                 form[field] or default)
 
     annotation.save()
+
+    update_vocabulary_terms(request, annotation)

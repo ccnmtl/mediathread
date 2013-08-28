@@ -11,12 +11,11 @@
 
     var Asset = Backbone.Model.extend({
         defaults: {
-            sherdnote_set: new SherdNoteList()
-            
+            annotations: new SherdNoteList()
         },
         initialize: function (attrs) {
-            if (attrs.hasOwnProperty("sherdnote_set")) {
-                this.set("sherdnote_set", new SherdNoteList(attrs.sherdnote_set));
+            if (attrs.hasOwnProperty("annotations")) {
+                this.set("annotations", new SherdNoteList(attrs.annotations));
             }
         }
     });
@@ -27,7 +26,7 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('sherdnote_set').length;
+                count += obj.get('annotations').length;
             });
             return count;
         },
@@ -39,11 +38,11 @@
 
     var Project = Backbone.Model.extend({
         defaults: {
-            sherdnote_set: new SherdNoteList()
+            annotations: new SherdNoteList()
         },
         initialize: function (attrs) {
-            if (attrs.hasOwnProperty("sherdnote_set")) {
-                this.set("sherdnote_set", new SherdNoteList(attrs.sherdnote_set));
+            if (attrs.hasOwnProperty("annotations")) {
+                this.set("annotations", new SherdNoteList(attrs.annotations));
             }
         }
     });
@@ -54,7 +53,7 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('sherdnote_set').length;
+                count += obj.get('annotations').length;
             });
             return count;
         },
@@ -78,6 +77,7 @@
                 url += '?';
                 url += 'project_set__author__id__in=' + filters;
                 url += '&asset_set__sherdnote_set__author__id__in=' + filters;
+                /* @TODOurl += '&asset_set__sherdnote_set__range1__isnull=False';*/
                 url += '&order_by=title';
             }
             
@@ -188,8 +188,7 @@
         render: function () {
             var json = this.model.toJSON();
             
-            // @todo: finish "upload on behalf of" feature
-            json.is_staff = false;
+            json.is_staff = this.is_staff;
             json.role_in_course = this.role_in_course;
             
             var markup = this.courseTemplate(json);
@@ -270,6 +269,7 @@
             
             var data = {
                 'fromCourse': this.model.get('id'),
+                'on_behalf_of': jQuery("#on_behalf_of").attr("value"),
                 'project_set': JSON.stringify(this.selectedProjects.toJSON()),
                 'asset_set': JSON.stringify(this.selectedAssets.toJSON())
             };
@@ -293,6 +293,9 @@
                     }
                     if (json.project_count) {
                         msg += json.project_count + " projects imported";
+                    }
+                    if (json.error) {
+                        msg = msg;
                     }
                     showMessage(msg, function() {                        
                         jQuery("#selected-for-import").fadeOut();

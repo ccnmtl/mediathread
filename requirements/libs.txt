@@ -1,4 +1,4 @@
-requirements/src/Django-1.4.5.tar.gz
+requirements/src/Django-1.4.6.tar.gz
 requirements/src/resolver-0.2.1.tar.gz
 requirements/src/selector-0.8.11.tar.gz
 requirements/src/Paste-1.7.2.tar.gz
@@ -32,7 +32,11 @@ requirements/src/xmeml-0.9.tar.gz
 requirements/src/lxml-2.2.8.tar.gz
 requirements/src/nose-1.1.2.tar.gz
 requirements/src/nose-exclude-0.1.5.tar.gz
-requirements/src/lettuce-0.1.34.tar.gz
+requirements/src/fuzzywuzzy-0.1.tar.gz
+requirements/src/sure-1.1.7.tar.gz
+requirements/src/ipython-0.13.1.tar.gz
+requirements/src/ipdb-0.7.tar.gz
+requirements/src/lettuce-0.2.14.tar.gz
 requirements/src/selenium-2.31.0.tar.gz
 
 requirements/src/statsd-0.5.1.tar.gz

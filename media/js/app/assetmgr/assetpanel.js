@@ -65,15 +65,20 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'template_label': "media_gallery",
             'create_asset_thumbs': true,
             'space_owner': self.space_owner,
-            'view_callback': function () {
+            'owners': self.panel.owners,
+            'view_callback': function (assetCount) {
                 jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
                 jQuery(self.el).find("a.edit-asset-inplace").bind("click", { self: self }, self.editItem);
                 
-                var container = jQuery(self.el).find('div.asset-table')[0];
-                jQuery(container).masonry({
-                    itemSelector : '.gallery-item',
-                    columnWidth: 25
-                });
+                if (assetCount > 0) {
+                    var container = jQuery(self.el).find('div.asset-table')[0];
+                    jQuery(container).masonry({
+                        itemSelector : '.gallery-item',
+                        columnWidth: 25
+                    });
+                } else {
+                    jQuery('div.asset-table').css('height', '500px');
+                }
                 
                 jQuery(window).trigger("resize");
             }
@@ -121,6 +126,7 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
                 "annotation_id": annotationId,
                 "edit_state": event.type + "." + event.namespace,
                 "update_history": false,
+                "vocabulary": self.panel.vocabulary,
                 "view_callback": function () {
                     if (self.dialogWindow) {
                         jQuery(elt).fadeIn("slow");
@@ -133,10 +139,10 @@ AssetPanelHandler.prototype.dialog = function (event, assetId, annotationId) {
         },
         title: title,
         draggable: true,
-        resizable: false,
+        resizable: true,
         modal: true,
         width: 825,
-        height: 520,
+        height: 600,
         position: "top",
         zIndex: 10000
     });
@@ -151,7 +157,6 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
     self.current_asset = parseInt(asset_id, 10);
     
     if (displayNow) {
-        jQuery("div.ajaxloader").hide();
         jQuery(self.el).find('td.panel-container.collection').removeClass('maximized').addClass('minimized');
         jQuery(self.el).find('td.pantab-container').removeClass('maximized').addClass('minimized');
         jQuery(self.el).find('div.pantab.collection').removeClass('maximized').addClass('minimized');
@@ -163,15 +168,19 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
     }
     
     jQuery(self.el).find("a.filterbyclasstag").unbind();
+    jQuery(self.el).find("a.filterbyvocabulary").unbind();
     
     // Setup the edit view
     AnnotationList.init({
         "asset_id": asset_id,
         "annotation_id": annotation_id,
         "update_history": self.panel.update_history,
+        "vocabulary": self.panel.vocabulary,
         "view_callback": function () {
-            jQuery(self.el).find("a.filterbyclasstag").bind("click", { self: self }, self.onFilterByClassTag);
-            
+            jQuery(self.el).find("a.filterbyclasstag").bind("click",
+                    { self: self }, self.onFilterByClassTag);
+            jQuery(self.el).find("a.filterbyvocabulary").bind("click",
+                    { self: self }, self.onFilterByVocabulary);            
             jQuery(self.el).find("div.tabs").fadeIn("fast", function () {
                 PanelManager.verifyLayout(self.el);
                 jQuery(window).trigger("resize");
@@ -183,17 +192,40 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
 AssetPanelHandler.prototype.resize = function () {
     var self = this;
     
+    if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized')) {
+        jQuery("td.asset-view-header").show();
+    } else {
+        jQuery("td.asset-view-header").hide();
+    }
+    
+    var collection = jQuery(self.el).find('td.panel-container.collection.subpanel:visible'); 
+    if (collection.length > 0) {
+        jQuery("td.collection-view-header").show();
+    } else {
+        jQuery("td.collection-view-header").hide();
+    }
+    
+    var pantab = jQuery(self.el).find("div.panel.asset-workspace div.pantab.collection:visible");
+    if (pantab.length > 0) {
+        jQuery("div.panel.asset-workspace td.panhandle-stripe.collection").show();
+    } else {
+        jQuery("div.panel.asset-workspace td.panhandle-stripe.collection").hide();
+    }
+    
     if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized') ||
             jQuery(self.el).find('td.panel-container.collection').hasClass('maximized')) {
         
         var visible = getVisibleContentHeight();
-        visible -= jQuery("#collection-column-container-title").outerHeight();
-        visible -= 30; // about half the footer size
+        visible -= jQuery("tr.asset-workspace-title-row").outerHeight();
     
         // Resize the collections box, subtracting its header elements
-        var collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height() + 23;
+        var collectionHeight = visible;
+        if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized')) {
+            collectionHeight = visible - jQuery(self.el).find("div.filter-widget").height();
+        }
         jQuery(self.el).find('div.collection-assets').css('height', collectionHeight + "px");
         
+        visible += 10;
         jQuery(self.el).find('div.asset-view-container').css('height', (visible) + "px");
         
         jQuery(self.el).find('div.asset-view-published').css('height', (visible) + "px");
@@ -204,12 +236,14 @@ AssetPanelHandler.prototype.resize = function () {
         visible -= jQuery('ul.ui-tabs-nav').outerHeight();
         jQuery(self.el).find('.ui-tabs-panel').css('height', (visible - 10) + "px");
         
+        jQuery(self.el).find('form#edit-annotation-form').css('height', (visible - 56) + "px");
+        
         visible -= jQuery("div#asset-global-annotation").outerHeight();
         jQuery(self.el).find('div#annotations-organized').css('height', (visible - 5) + "px");
         
         visible -= jQuery("div#annotations-organized h2").outerHeight() +
-            jQuery("div#annotations-organized div.ui-widget-header").outerHeight();
-        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible - 10) + "px");
+            jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 36;
+        jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
         jQuery("div.accordion").accordion("resize");
     }
 };
@@ -253,5 +287,12 @@ AssetPanelHandler.prototype.onFilterByClassTag = function (evt) {
     
     self.collectionList.filterByClassTag(bits[bits.length - 1]);
     
+    return false;
+};
+
+AssetPanelHandler.prototype.onFilterByVocabulary = function (evt) {
+    var self = evt.data.self;
+    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    self.collectionList.filterByVocabulary(srcElement);
     return false;
 };

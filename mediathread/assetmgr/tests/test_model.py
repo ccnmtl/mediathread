@@ -33,7 +33,18 @@ class AssetTest(TestCase):
                   "primary_type": "youtube",
                   "thumb_url": "http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg",
                   "title": "Mediathread: Introduction",
-                  "sherdnote_set": [{
+                  "global_annotation": {
+                      "asset_id": "1",
+                      "author": {"full_name": "test_instructor_two",
+                                 "id": 10,
+                                 "resource_uri": ""},
+                      "id": 20,
+                      "is_global_annotation": "True",
+                      "resource_uri": "/_main/api/v1/sherdnote/20/",
+                      "title": None,
+                      "tags": ",ccnmtl,foo",
+                      "body": "test instructor two notes"},
+                  "annotations": [{
                       "id": 2,
                       "asset_id": "1",
                       "author": {"full_name": "Instructor One",
@@ -49,17 +60,7 @@ class AssetTest(TestCase):
                        "id": 19,
                        "is_global_annotation": "False",
                        "resource_uri": "/_main/api/v1/sherdnote/19/",
-                       "title": "Video Selection Is Time-based"},
-                      {"asset_id": "1",
-                       "author": {"full_name": "test_instructor_two",
-                                  "id": 10,
-                                  "resource_uri": ""},
-                       "id": 20,
-                       "is_global_annotation": "True",
-                       "resource_uri": "/_main/api/v1/sherdnote/20/",
-                       "title": None,
-                       "tags": ",ccnmtl,foo",
-                       "body": "test instructor two notes"}]},
+                       "title": "Video Selection Is Time-based"}]},
                  {"author": {"full_name": "Instructor One",
                              "id": 2,
                              "resource_uri": ""},
@@ -81,13 +82,12 @@ class AssetTest(TestCase):
         self.assertEquals(len(course.asset_set.all()), 1)
 
         user = User.objects.get(username='test_instructor_two')
-
         asset_json = simplejson.dumps(self.asset_set)
         assets = simplejson.loads(asset_json)
 
         object_map = {'assets': {}, 'notes': {}}
-        object_map = Asset.objects.migrate(assets,
-                                           course, user, object_map)
+        object_map = Asset.objects.migrate(
+            assets, course, user, object_map)
 
         self.assertEquals(len(course.asset_set.all()), 3)
         asset = object_map['assets'][1]
@@ -97,12 +97,22 @@ class AssetTest(TestCase):
         self.assertEquals(asset.author, user)
         self.assertEquals(len(asset.sherdnote_set.all()), 3)
 
+        ga = asset.global_annotation(user, False)
+        self.assertTrue(ga is not None)
+        self.assertEquals(ga.tags, ',test_instructor_two')
+        self.assertEquals(ga.body, 'test_instructor_two notes')
+
         asset = object_map['assets'][2]
         self.assertNotEquals(asset.id, 2)
         self.assertEquals(asset.title, "MAAP Award Reception")
         self.assertEquals(asset.course, course)
         self.assertEquals(asset.author, user)
         self.assertEquals(len(asset.sherdnote_set.all()), 1)
+
+        ga = asset.global_annotation(user, False)
+        self.assertTrue(ga is not None)
+        self.assertEquals(ga.tags, '')
+        self.assertEquals(ga.body, None)
 
     def test_migrate_one(self):
         asset = Asset.objects.get(id=1)
@@ -219,3 +229,25 @@ class AssetTest(TestCase):
 
         self.assertEquals(citations[4].id, 0)
         self.assertEquals(citations[5].id, 0)
+
+    def test_user_analysis_count(self):
+        asset1 = Asset.objects.get(id=1)
+        asset2 = Asset.objects.get(id=2)
+        asset3 = Asset.objects.get(id=3)
+        asset5 = Asset.objects.get(id=5)
+
+        test_instructor = User.objects.get(username='test_instructor')
+        self.assertEquals(asset1.user_analysis_count(test_instructor), 6)
+        self.assertEquals(asset2.user_analysis_count(test_instructor), 4)
+        self.assertEquals(asset3.user_analysis_count(test_instructor), 3)
+        self.assertEquals(asset5.user_analysis_count(test_instructor), 0)
+
+        test_instructor_two = User.objects.get(username='test_instructor_two')
+        self.assertEquals(asset1.user_analysis_count(test_instructor_two), 3)
+        self.assertEquals(asset2.user_analysis_count(test_instructor_two), 0)
+        self.assertEquals(asset5.user_analysis_count(test_instructor_two), 0)
+
+        test_student_one = User.objects.get(username='test_student_one')
+        self.assertEquals(asset1.user_analysis_count(test_student_one), 0)
+        self.assertEquals(asset2.user_analysis_count(test_student_one), 3)
+        self.assertEquals(asset3.user_analysis_count(test_student_one), 0)

@@ -30,16 +30,14 @@ STAGING_ENV = True
 
 STATSD_PREFIX = 'mediathread-staging'
 SENTRY_SITE = 'mediathread-staging'
-SENTRY_SERVERS = ['http://sentry.ccnmtl.columbia.edu/sentry/store/']
 
 if 'migrate' not in sys.argv:
-    INSTALLED_APPS.append('raven.contrib.django')
+    INSTALLED_APPS.append('sentry.client')
 
     import logging
-    from raven.contrib.django.handlers import SentryHandler
+    from sentry.client.handlers import SentryHandler
     logger = logging.getLogger()
-    # ensure we havent already registered the handler
-    if SentryHandler not in map(type, logger.handlers):
+    if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
         logger.addHandler(SentryHandler())
         logger = logging.getLogger('sentry.errors')
         logger.propagate = False

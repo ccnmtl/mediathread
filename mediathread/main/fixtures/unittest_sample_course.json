@@ -800,7 +800,7 @@
         "fields": {
             "archive_url": "http://youtube.com", 
             "description": "The largest collection of video on the web, where you can also upload video yourself.", 
-            "thumb_url": "/site_media/img/youtube_logo.jpg", 
+            "thumb_url": "/site_media/img/thumbs/youtube.jpg", 
             "title": "You Tube"
         }
     }, 
@@ -1235,10 +1235,10 @@
         "pk": 20, 
         "model": "djangosherd.sherdnote", 
         "fields": {
-            "body": null, 
+            "body": "test_instructor_two notes", 
             "added": "2012-12-18 11:49:22", 
             "author": 10, 
-            "tags": "", 
+            "tags": ",test_instructor_two", 
             "modified": "2012-12-18 11:49:22", 
             "asset": 1, 
             "title": null

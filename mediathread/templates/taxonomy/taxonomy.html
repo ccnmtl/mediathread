@@ -1,11 +1,11 @@
 {% extends "dashboard/base_dashboard.html" %}
-{% load revision %}
+{% load revision static %}
 
 {% block title %}Course Vocabulary Workspace{% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/js/app/taxonomy/taxonomy.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+    <script type="text/javascript" src="{% static 'js/app/taxonomy/taxonomy.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/backbone/backbone-tastypie.js' %}"></script>
     
     <script type="text/javascript">
         jQuery(document).ready(function () {
@@ -19,8 +19,8 @@
 {% endblock %}
 
 {% block extrahead %}
-    <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
-    <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="{% static 'js/underscore/underscore-min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/backbone/backbone-min.js' %}"></script>
     
     <script type="text/template" id="vocabulary-template">
         <div class="vocabularies">           
@@ -33,11 +33,11 @@
                             
                           <div class="actions">
                                 <a class="icon-link edit-vocabulary-open" href="#">                                                     
-                                    <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit vocabulary"  />
+                                    <img src="{% static 'img/icons/meth_edit.png' %}" class="edit_icon" alt="Edit vocabulary"  />
                                 </a>
                                 <a class="icon-link delete-vocabulary"
                                     href="<%=vocabularies[i].id%>">                                                
-                                    <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete vocabulary"  />
+                                    <img src="{% static 'img/icons/meth_delete.png' %}" class="delete_icon" alt="Delete vocabulary"  />
                                 </a>
                             </div>                        
                         </div>
@@ -60,7 +60,7 @@
                         <div class="vocabulary-display">
                             <a href="#new-vocabulary" class="icon-link create-vocabulary-open">
                                 Create Concept
-                                <img src="/site_media/img/icons/meth_addselection.png" alt="Create vocabulary" />
+                                <img src="{% static 'img/icons/meth_addselection.png' %}" alt="Create vocabulary" />
                             </a>
                         </div>
                         <div class="vocabulary-create" style="display: none">
@@ -85,7 +85,7 @@
                     <div class="terms">
                         <input type="text" name="term_name" class="left default" value="Type new term name here"/>
                         <a class="btn-primary create-term-submit left" href="#">
-                            <img src="/site_media/img/icons/meth_addselection.png" alt="Create term" />
+                            <img src="{% static 'img/icons/meth_addselection.png' %}" alt="Create term" />
                         </a>
                         
                         <div class="visualclear"></div>
@@ -98,11 +98,11 @@
                                     
                                         <div class="actions">
                                             <a class="icon-link edit-term-open" href="#">                                                     
-                                                <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit term"  />
+                                                <img src="{% static 'img/icons/meth_edit.png' %}" class="edit_icon" alt="Edit term"  />
                                             </a>
                                             <a class="icon-link delete-term"
                                                 href="<%=vocabularies[i].term_set[j].id%>">                                                
-                                                <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Delete term"  />
+                                                <img src="{% static 'img/icons/meth_delete.png' %}" class="delete_icon" alt="Delete term"  />
                                             </a>
                                         </div>
                                     </div>

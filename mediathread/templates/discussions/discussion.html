@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif revision %}
+{% load smartif revision static %}
 
 {% block title %}
     {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
@@ -8,10 +8,8 @@
 {% block css %}
     {{ block.super }}
     
-    <link rel="stylesheet" href="/site_media/js/select2/select2.css" media="screen" />
-    
-    <link rel="stylesheet" href="/site_media/css/project.css?version={%revision%}" />
-    <link rel="stylesheet" href="/site_media/js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css?version={%revision%}" />
+    <link rel="stylesheet" href="{% static 'css/project.css' %}" />
+    <link rel="stylesheet" href="{% static 'js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css' %}" />
     
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
@@ -27,10 +25,10 @@
     
     <!--  TinyMCE -->
     <script type="text/javascript">
-        var tinyMCEPreInit = { query: '', suffix: '', base:'/site_media/js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce' };
+        var tinyMCEPreInit = { query: '', suffix: '', base:'{% static "js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce" %}' };
     </script>
-    <script type="text/javascript" src="/site_media/js/sherdjs/lib/tiny_mce3_min.js"></script>
-    <script type="text/javascript" src="/site_media/js/app/tiny_mce_init3.js"></script>
+    <script type="text/javascript" src="{% static 'js/sherdjs/lib/tiny_mce3_min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/app/tiny_mce_init3.js' %}"></script>
         
     <script type="text/javascript">
         jQuery(document).ready(function () {            

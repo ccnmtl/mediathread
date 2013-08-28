@@ -1,5 +1,6 @@
+  {% load static %}
   <!---JUST IMAGE-->
-  <link rel="stylesheet" type="text/css" href="/site_media/js/sherdjs/lib/openlayers/openlayers/theme/default/style.css" />
+  <link rel="stylesheet" type="text/css" href="{% static 'js/sherdjs/lib/openlayers/openlayers/theme/default/style.css' %}" />
   <style type="text/css">
     img.olImageLoadError { 
        /*override to fix bug where olImageLoadError style lingers past the image load*/
@@ -8,14 +9,14 @@
        *display:none; 
     }
     div.olControlDrawFeatureSquareItemInactive {
-       background-image:url(/site_media/js/sherdjs/media/images/square_tool.png);
+       background-image:url({% static 'js/sherdjs/media/images/square_tool.png' %});
        background-repeat: no-repeat;
        height:23px;
        width:25px;
     }
     
     div.olControlDrawFeatureSquareItemActive {
-       background-image:url(/site_media/js/sherdjs/media/images/square_tool.png);
+       background-image:url({% static 'js/sherdjs/media/images/square_tool.png' %});
        background-repeat: no-repeat;
        background-position: 0px -23px;
        height:23px;

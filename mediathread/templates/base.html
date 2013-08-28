@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-{% load cache user_projects coursetags revision compress %}
+{% load cache user_projects coursetags revision static compress %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 {% with request.collaboration_context.content_object as course %}
@@ -7,22 +7,22 @@
     	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
     	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
         
-        <script type="text/javascript" src="/site_media/jquery/js/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="/site_media/jquery/js/jquery-ui-1.9.1.custom.min.js"></script>
+        <script type="text/javascript" src="{% static 'jquery/js/jquery-1.8.3.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'jquery/js/jquery-ui-1.9.1.custom.min.js' %}"></script>
         
-        <script type="text/javascript" src="/site_media/js/mustache/mustache.min.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js"></script>
-        <script type="text/javascript" src="/site_media/js/sherdjs/lib/OpenLayers-min.js"></script>
+        <script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
         
-        <link rel="stylesheet" href="/site_media/jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" />            
-        <link rel="shortcut icon" href="/site_media/img/mediathread_favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui-1.9.1.custom.min.css' %}" media="screen" />            
+        <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon" />
         
-        {% compress css %}                    
-            <link rel="stylesheet" href="/site_media/css/print.css?version={%revision%}" media="print" />
-            <link rel="stylesheet" href="/site_media/css/mediathread.css?version={%revision%}" media="screen" />
+        {% compress css %}                        
+            <link rel="stylesheet" href="{% static 'css/print.css' %}" media="print" />
+            <link rel="stylesheet" href="{% static 'css/mediathread.css' %}" media="screen" />
             {% block css %}{% endblock %}
-        {% endcompress %}   
+        {% endcompress %}
         
         {% block extrahead %}
             <!--  For uncompress-able resources -->
@@ -40,7 +40,7 @@
                 <div id="standardnav_container">   
                 <div id="mediathread_logo">
                     <a href="/">
-                        <img src="/site_media/img/logo_mediathread_new.png" alt="mediathread logo" width="156" height="45"/>
+                        <img src="{% static 'img/logo_mediathread_new.png' %}" alt="mediathread logo" width="156" height="45"/>
                     </a>
                 </div>
                 {% block standardnav %}            
@@ -185,7 +185,7 @@
         </div><!-- id="footer" -->
     {% endblock %}
     
-    {% compress js %}   
+    {% compress js %}
         <script type="text/javascript">
             var lt = String.fromCharCode(60);
             if (window.jQuery) {
@@ -202,26 +202,26 @@
             })();
         </script>
 
-        <script type="text/javascript" src="/site_media/js/app/json2.js"></script>    
-        <script type="text/javascript" src="/site_media/js/app/util.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/app/ajaxDelete.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/app/analytics.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/app/browserdetect.js"></script>
-        <script type="text/javascript" src="/site_media/js/app/mediathread_mustache.js"></script>
-        <script type="text/javascript" src="/site_media/js/app/panel.js?version={%revision%}"></script>
-        <script  type="text/javascript" src="/site_media/js/app/shield.js?version={%revision%}"></script>        
+        <script type="text/javascript" src="{% static 'js/app/json2.js' %}"></script>    
+        <script type="text/javascript" src="{% static 'js/app/util.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/ajaxDelete.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/analytics.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/browserdetect.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/mediathread_mustache.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/panel.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/shield.js' %}"></script>        
         
         <!--  Asset related -->
-        <script type="text/javascript" src="/site_media/js/app/assetmgr/asset.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/app/assetmgr/assetpanel.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/app/assetmgr/collection.js?version={%revision%}"></script>
+        <script type="text/javascript" src="{% static 'js/app/assetmgr/asset.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/assetmgr/assetpanel.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/assetmgr/collection.js' %}"></script>
         
         <!--  Discussion related -->
-        <script type="text/javascript" src="/site_media/js/app/discussion/discussionpanel.js?version={%revision%}"></script>
+        <script type="text/javascript" src="{% static 'js/app/discussion/discussionpanel.js' %}"></script>
         
         <!--  Project related -->
-        <script type="text/javascript" src="/site_media/js/app/projects/projectpanel.js?version={%revision%}"></script>
-        <script type="text/javascript" src="/site_media/js/app/projects/projectlist.js?version={%revision%}"></script>
+        <script type="text/javascript" src="{% static 'js/app/projects/projectpanel.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/app/projects/projectlist.js' %}"></script>
     
         {% if not settings.DEBUG %}
             <script>                
@@ -280,7 +280,7 @@
         </script>
         
         {% block js %}{% endblock %}
-    {% endcompress %}    
+    {% endcompress %}   
 </body>
 {% endwith %}
 </html>

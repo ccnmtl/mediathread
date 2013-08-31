@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from tastypie.test import ResourceTestCase
 
 
@@ -7,13 +8,16 @@ class ProjectResourceTest(ResourceTestCase):
     fixtures = ['unittest_sample_course.json',
                 'unittest_sample_projects.json']
 
+    def get_credentials(self):
+        return None
+
     def assertProjectEquals(self, project, title, author, selection_ids):
         self.assertEquals(project['title'], title)
         self.assertEquals(project['attribution'], author)
 
         self.assertEquals(len(project['annotations']), len(selection_ids))
-        for idx, s in enumerate(project['annotations']):
-            self.assertEquals(int(s['id']), selection_ids[idx])
+        for idx, selection in enumerate(project['annotations']):
+            self.assertEquals(int(selection['id']), selection_ids[idx])
 
     def test_student_one_getlist(self):
         self.assertTrue(

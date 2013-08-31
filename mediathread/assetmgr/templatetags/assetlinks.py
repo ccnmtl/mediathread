@@ -3,7 +3,7 @@ from django import template
 
 
 def source_url(source, request):
-        return source.url_processed(request)
+    return source.url_processed(request)
 
 register = template.Library()
 register.filter(source_url)
@@ -18,10 +18,10 @@ class InCourseNode(template.Node):
         self.course_key = course_key
 
     def render(self, context):
-        a = context[self.archive_key]
-        c = context[self.course_key]
+        archive_key = context[self.archive_key]
+        course_key = context[self.course_key]
 
-        lst = Asset.objects.filter(title=a.title, course=c)
+        lst = Asset.objects.filter(title=archive_key.title, course=course_key)
         for asset in lst:
             if asset.primary and asset.primary.is_archive():
                 return self.nodelist_true.render(context)

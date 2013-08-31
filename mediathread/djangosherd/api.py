@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from django.db.models.query_utils import Q
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.assetmgr.models import Asset
@@ -104,16 +105,16 @@ class SherdNoteResource(ModelResource):
 
             vocabulary = {}
             related = list(TermRelationship.objects.get_for_object(bundle.obj))
-            for r in related:
-                if r.term.vocabulary.id not in vocabulary:
-                    vocabulary[r.term.vocabulary.id] = {
-                        'id': r.term.vocabulary.id,
-                        'display_name': r.term.vocabulary.display_name,
+            for rel in related:
+                if rel.term.vocabulary.id not in vocabulary:
+                    vocabulary[rel.term.vocabulary.id] = {
+                        'id': rel.term.vocabulary.id,
+                        'display_name': rel.term.vocabulary.display_name,
                         'terms': []
                     }
-                vocabulary[r.term.vocabulary.id]['terms'].append(
-                    TermResource().render_one(bundle.request, r.term))
-            bundle.data['vocabulary'] = [val for k, val in vocabulary.items()]
+                vocabulary[rel.term.vocabulary.id]['terms'].append(
+                    TermResource().render_one(bundle.request, rel.term))
+            bundle.data['vocabulary'] = [val for val in vocabulary.values()]
         except Asset.DoesNotExist:
             bundle.data['asset_id'] = ''
             bundle.data['metadata'] = {'title': 'Item Deleted'}

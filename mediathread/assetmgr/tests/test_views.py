@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from django.test import TestCase
 import simplejson
 
@@ -11,7 +12,7 @@ class AssetViewTest(TestCase):
         self.assert_(self.client.login(username=username, password=password))
 
         response = self.client.get(
-            """/asset/json/user/test_student_one/?annotations=true""",
+            "/asset/json/user/test_student_one/?annotations=true",
             {},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -23,14 +24,35 @@ class AssetViewTest(TestCase):
         self.assertEquals(len(json['assets']), 1)
         self.assertEquals(len(json['assets'][0]['annotations']), 1)
 
+    def test_student_get_peer_assets(self):
+        username = "test_student_one"
+        password = "test"
+        self.assert_(self.client.login(username=username, password=password))
 
-#     def test_student_get_peer_assets(self):
-#         username = "test_student_one"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = 'test_student_two'
-#
+        record_owner = 'test_student_two'
+        response = self.client.get(
+            "/asset/json/user/%s/?annotations=true" % record_owner,
+            {},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        json = simplejson.loads(response.content)
+
+        self.assertFalse(json['editable'])
+        self.assertFalse(json['citable'])
+        self.assertFalse(json['is_faculty'])
+        self.assertEquals(len(json['assets']), 1)
+        self.assertEquals(len(json['assets'][0]['annotations']), 1)
+
+        ann = json['assets'][0]['annotations'][0]
+        self.assertEquals(len(ann['metadata']['tags']), 1)
+        self.assertEquals(ann['metadata']['body'],
+                          "student two selection note")
+
+        self.assertTrue('global_annotation' in json['assets'][0])
+        gla = json['assets'][0]['global_annotation']
+        self.assertEquals(len(gla['metadata']['tags']), 1)
+        self.assertEquals(gla['metadata']['body'],
+                          "student two item note")
 #     def test_student_get_peer_assets_restricted(self):
 #         username = "test_student_one"
 #         password = "test"

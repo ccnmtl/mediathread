@@ -61,12 +61,12 @@ def asset_switch_course(request, asset_id):
     in_course_or_404(request.user.username, asset.course)
 
     # the user is logged into the wrong class?
-    rv = {}
-    rv['switch_to'] = asset.course
-    rv['switch_from'] = request.course
-    rv['redirect'] = reverse('asset-view', args=[asset_id])
+    context = {}
+    context['switch_to'] = asset.course
+    context['switch_from'] = request.course
+    context['redirect'] = reverse('asset-view', args=[asset_id])
     return render_to_response('assetmgr/asset_not_found.html',
-                              rv,
+                              context,
                               context_instance=RequestContext(request))
 
 
@@ -191,8 +191,8 @@ def asset_create(request):
                     source.save()
 
             if "tag" in metadata:
-                for t in metadata["tag"]:
-                    asset.save_tag(user, t)
+                for each_tag in metadata["tag"]:
+                    asset.save_tag(user, each_tag)
 
             asset.metadata_blob = simplejson.dumps(metadata)
             asset.save()
@@ -284,13 +284,13 @@ def sources_from_args(request, asset=None):
             src_metadata = args.get(key + '-metadata', None)
             if src_metadata:
                 # w{width}h{height};{mimetype} (with mimetype and w+h optional)
-                m = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
-                             src_metadata).groups()
-                if m[1]:
-                    source.width = int(m[1])
-                    source.height = int(m[2])
-                if m[4]:
-                    source.media_type = m[4]
+                the_match = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
+                                     src_metadata).groups()
+                if the_match[1]:
+                    source.width = int(the_match[1])
+                    source.height = int(the_match[2])
+                if the_match[4]:
+                    source.media_type = the_match[4]
             sources[key] = source
 
     for lbl in Asset.primary_labels:
@@ -436,8 +436,7 @@ def source_specialauth(request, url, key):
 
 
 def final_cut_pro_xml(request, asset_id):
-    user = request.user
-    if not user.is_staff:
+    if not request.user.is_staff:
         return HttpResponseForbidden()
 
     "support for http://developer.apple.com/mac/library/documentation/ \
@@ -452,22 +451,21 @@ def final_cut_pro_xml(request, asset_id):
             return HttpResponse("Not Found: This annotation's asset does not \
             have a Final Cut Pro source XML associated with it", status=404)
 
-        f = urllib2.urlopen(xmeml.url)
-        assert f.code == 200
-        v = VideoSequence(xml_string=f.read())
+        the_file = urllib2.urlopen(xmeml.url)
+        assert the_file.code == 200
+        the_video = VideoSequence(xml_string=the_file.read())
 
         clips = []
-
         keys = request.POST.keys()
         keys.sort(key=lambda x: int(x))
         for key in keys:
-            sherd_id = request.POST.get(key)
-            ann = asset.sherdnote_set.get(id=sherd_id, range1__isnull=False)
+            ann = asset.sherdnote_set.get(id=request.POST.get(key),
+                                          range1__isnull=False)
             if ann:
-                clip = v.clip(ann.range1, ann.range2, units='seconds')
+                clip = the_video.clip(ann.range1, ann.range2, units='seconds')
                 clips.append(clip)
 
-        xmldom, dumb_uuid = v.clips2dom(clips)
+        xmldom, dumb_uuid = the_video.clips2dom(clips)
         res = HttpResponse(xmldom.toxml(), mimetype='application/xml')
         res['Content-Disposition'] = \
             'attachment; filename="%s.xml"' % asset.title
@@ -512,13 +510,14 @@ def asset_references(request, asset_id):
         the_json['tags'] = TagResource(request.course).filter(request, filters)
 
         the_json['vocabulary'] = []
-        for v in Vocabulary.objects.get_for_object(request.course):
-            filters['vocabulary'] = v.id
+        for vocab in Vocabulary.objects.get_for_object(request.course):
+            filters['vocabulary'] = vocab.id
             concepts = TermRelationshipResource(request.course).filter(request,
                                                                        filters)
             if len(concepts):
-                the_json['vocabulary'].append({'display_name': v.display_name,
-                                               'term_set': concepts})
+                the_json['vocabulary'].append(
+                    {'display_name': vocab.display_name,
+                     'term_set': concepts})
 
         # DiscussionIndex is misleading. Objects returned are
         # projects & discussions title, object_pk, content_type, modified
@@ -614,9 +613,11 @@ def render_assets(request, record_owner, assets):
     asset_json = resource.render_list(request, assets)
 
     active_filters = {}
-    for k, val in request.GET.items():
-        if (k == 'tag' or k == 'modified' or k.startswith('vocabulary-')):
-            active_filters[k] = val
+    for key, val in request.GET.items():
+        if (key == 'tag' or
+                key == 'modified' or
+                key.startswith('vocabulary-')):
+            active_filters[key] = val
 
     user_resource = UserResource()
 
@@ -654,22 +655,22 @@ def render_assets(request, record_owner, assets):
     note_ids = [n.id for n in active_notes]
     content_type = ContentType.objects.get_for_model(SherdNote)
     term_resource = TermResource()
-    for v in Vocabulary.objects.get_for_object(request.course):
+    for vocab in Vocabulary.objects.get_for_object(request.course):
         vocabulary = {
-            'id': v.id,
-            'display_name': v.display_name,
+            'id': vocab.id,
+            'display_name': vocab.display_name,
             'term_set': []
         }
-        related = TermRelationship.objects.filter(term__vocabulary=v,
+        related = TermRelationship.objects.filter(term__vocabulary=vocab,
                                                   content_type=content_type,
                                                   object_id__in=note_ids)
 
         terms = []
-        for r in related:
-            if r.term.display_name not in terms:
-                the_term = term_resource.render_one(request, r.term)
+        for rel in related:
+            if rel.term.display_name not in terms:
+                the_term = term_resource.render_one(request, rel.term)
                 vocabulary['term_set'].append(the_term)
-                terms.append(r.term.display_name)
+                terms.append(rel.term.display_name)
 
         active_vocabulary.append(vocabulary)
 
@@ -697,8 +698,6 @@ def detail_asset_json(request, asset):
     help_setting = \
         UserSetting.get_setting(request.user, "help_item_detail_view", True)
 
-    rv = {'type': 'asset',
-          'assets': {asset.pk: the_json},
-          'user_settings': {'help_item_detail_view': help_setting}}
-
-    return rv
+    return {'type': 'asset',
+            'assets': {asset.pk: the_json},
+            'user_settings': {'help_item_detail_view': help_setting}}

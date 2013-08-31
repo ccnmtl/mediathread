@@ -8,10 +8,10 @@ try:
 
     def match_path(path, config_string):
         config_list = getattr(settings, config_string, [])
-        for p in config_list:
-            if isinstance(p, str) and path.startswith(p):
+        for pth in config_list:
+            if isinstance(pth, str) and path.startswith(pth):
                 return True
-            elif hasattr(p, 'match') and p.match(path):
+            elif hasattr(pth, 'match') and pth.match(path):
                 return True
         return False
 

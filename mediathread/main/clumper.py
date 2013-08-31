@@ -1,19 +1,13 @@
-from django.db import models
-
-Collaboration = models.get_model('structuredcollaboration', 'collaboration')
-Asset = models.get_model('assetmgr', 'asset')
-SherdNote = models.get_model('djangosherd', 'sherdnote')
-DiscussionIndex = models.get_model('djangosherd', 'discussionindex')
-Project = models.get_model('projects', 'project')
-User = models.get_model('auth', 'user')
-# for portal
-Comment = models.get_model('comments', 'comment')
-ContentType = models.get_model('contenttypes', 'contenttype')
+from django.contrib.comments.models import Comment
+from mediathread.assetmgr.models import Asset
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from mediathread.projects.models import Project
+from structuredcollaboration.models import Collaboration
 
 
-def adapt_date(b):
+def adapt_date(obj):
     date_fields = ('submit_date', 'modified', 'added',)
-    return [getattr(b, d) for d in date_fields if hasattr(b, d)][0]
+    return [getattr(obj, d) for d in date_fields if hasattr(obj, d)][0]
 
 
 class Clumper():
@@ -24,8 +18,8 @@ class Clumper():
     def __init__(self, *feeds, **kwargs):
         self.items = {}
         group_by = kwargs.get('group_by', None)
-        for f in feeds:
-            for item in f:
+        for feed in feeds:
+            for item in feed:
                 parent = self.ClumpItem.parent_object(item, group_by)
                 if parent in self.items:
                     self.items[parent].append(item)
@@ -64,10 +58,10 @@ class Clumper():
                     self.things.sort(self.order_by)
 
         @staticmethod
-        def order_by(a, b):
+        def order_by(obj_a, obj_b):
             """newest first w/support for Comment and SherdNote, Project"""
-            a_date = adapt_date(a)
-            b_date = adapt_date(b)
+            a_date = adapt_date(obj_a)
+            b_date = adapt_date(obj_b)
             return cmp(b_date, a_date)
 
         @property

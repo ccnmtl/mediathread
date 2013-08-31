@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from mediathread.assetmgr.models import Asset
 from courseaffils.models import Course
 from django.contrib.auth.models import User
@@ -97,10 +98,10 @@ class AssetTest(TestCase):
         self.assertEquals(asset.author, user)
         self.assertEquals(len(asset.sherdnote_set.all()), 3)
 
-        ga = asset.global_annotation(user, False)
-        self.assertTrue(ga is not None)
-        self.assertEquals(ga.tags, ',test_instructor_two')
-        self.assertEquals(ga.body, 'test_instructor_two notes')
+        gann = asset.global_annotation(user, False)
+        self.assertTrue(gann is not None)
+        self.assertEquals(gann.tags, ',test_instructor_two')
+        self.assertEquals(gann.body, 'test_instructor_two notes')
 
         asset = object_map['assets'][2]
         self.assertNotEquals(asset.id, 2)
@@ -109,10 +110,10 @@ class AssetTest(TestCase):
         self.assertEquals(asset.author, user)
         self.assertEquals(len(asset.sherdnote_set.all()), 1)
 
-        ga = asset.global_annotation(user, False)
-        self.assertTrue(ga is not None)
-        self.assertEquals(ga.tags, '')
-        self.assertEquals(ga.body, None)
+        gann = asset.global_annotation(user, False)
+        self.assertTrue(gann is not None)
+        self.assertEquals(gann.tags, '')
+        self.assertEquals(gann.body, None)
 
     def test_migrate_one(self):
         asset = Asset.objects.get(id=1)

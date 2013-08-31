@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from courseaffils.models import Course
 from datetime import datetime
 from django.contrib.auth.models import User
@@ -30,24 +31,24 @@ class ProjectTest(TestCase):
         alt_instructor = User.objects.get(username='test_instructor_alt')
 
         private_essay = Project.objects.get(id=1)
-        x = Project.objects.migrate_one(private_essay,
-                                        alt_course,
-                                        alt_instructor)
+        new_project = Project.objects.migrate_one(private_essay,
+                                                  alt_course,
+                                                  alt_instructor)
 
-        self.assertEquals(x.title, "Private Composition")
-        self.assertEquals(x.author, alt_instructor)
-        self.assertEquals(x.course, alt_course)
-        self.assertEquals(x.visibility_short(), "Private")
+        self.assertEquals(new_project.title, "Private Composition")
+        self.assertEquals(new_project.author, alt_instructor)
+        self.assertEquals(new_project.course, alt_course)
+        self.assertEquals(new_project.visibility_short(), "Private")
 
         assignment = Project.objects.get(id=5)
-        x = Project.objects.migrate_one(assignment,
-                                        alt_course,
-                                        alt_instructor)
+        new_project = Project.objects.migrate_one(assignment,
+                                                  alt_course,
+                                                  alt_instructor)
 
-        self.assertEquals(x.title, "Sample Course Assignment")
-        self.assertEquals(x.author, alt_instructor)
-        self.assertEquals(x.course, alt_course)
-        self.assertEquals(x.visibility_short(), "Assignment")
+        self.assertEquals(new_project.title, "Sample Course Assignment")
+        self.assertEquals(new_project.author, alt_instructor)
+        self.assertEquals(new_project.course, alt_course)
+        self.assertEquals(new_project.visibility_short(), "Assignment")
 
     project_set = [{"id": 5,
                     "title": "Sample Course Assignment"}]
@@ -156,36 +157,39 @@ class ProjectTest(TestCase):
                 object_pk=str(sample_course.pk))
 
         request.user = student_one
-        a = Project.objects.visible_by_course(request, sample_course)
-        self.assertEquals(len(a), 4)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course(request,
+                                                             sample_course)
+        self.assertEquals(len(visible_projects), 4)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Sample Course Assignment <5> "
                           "by test_instructor_two")
-        self.assertEquals(a[1].__unicode__(),
+        self.assertEquals(visible_projects[1].__unicode__(),
                           "Public To Class Composition <3> by Student One")
-        self.assertEquals(a[2].__unicode__(),
+        self.assertEquals(visible_projects[2].__unicode__(),
                           "Instructor Shared <2> by Student One")
-        self.assertEquals(a[3].__unicode__(),
+        self.assertEquals(visible_projects[3].__unicode__(),
                           "Private Composition <1> by Student One")
 
         request.user = student_two
-        a = Project.objects.visible_by_course(request, sample_course)
-        self.assertEquals(len(a), 2)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course(request,
+                                                             sample_course)
+        self.assertEquals(len(visible_projects), 2)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Sample Course Assignment <5> "
                           "by test_instructor_two")
-        self.assertEquals(a[1].__unicode__(),
+        self.assertEquals(visible_projects[1].__unicode__(),
                           "Public To Class Composition <3> by Student One")
 
         request.user = instructor
-        a = Project.objects.visible_by_course(request, sample_course)
-        self.assertEquals(len(a), 3)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course(request,
+                                                             sample_course)
+        self.assertEquals(len(visible_projects), 3)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Sample Course Assignment <5> "
                           "by test_instructor_two")
-        self.assertEquals(a[1].__unicode__(),
+        self.assertEquals(visible_projects[1].__unicode__(),
                           "Public To Class Composition <3> by Student One")
-        self.assertEquals(a[2].__unicode__(),
+        self.assertEquals(visible_projects[2].__unicode__(),
                           "Instructor Shared <2> by Student One")
 
     def test_visible_by_course_and_user(self):
@@ -203,41 +207,37 @@ class ProjectTest(TestCase):
                 object_pk=str(sample_course.pk))
 
         request.user = student_one
-        a = Project.objects.visible_by_course_and_user(request,
-                                                       sample_course,
-                                                       student_one)
-        self.assertEquals(len(a), 3)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course_and_user(
+            request, sample_course, student_one)
+        self.assertEquals(len(visible_projects), 3)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Public To Class Composition <3> by Student One")
-        self.assertEquals(a[1].__unicode__(),
+        self.assertEquals(visible_projects[1].__unicode__(),
                           "Instructor Shared <2> by Student One")
-        self.assertEquals(a[2].__unicode__(),
+        self.assertEquals(visible_projects[2].__unicode__(),
                           "Private Composition <1> by Student One")
 
-        a = Project.objects.visible_by_course_and_user(request,
-                                                       sample_course,
-                                                       instructor)
-        self.assertEquals(len(a), 1)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course_and_user(
+            request, sample_course, instructor)
+        self.assertEquals(len(visible_projects), 1)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Sample Course Assignment <5> "
                           "by test_instructor_two")
 
         request.user = student_two
-        a = Project.objects.visible_by_course_and_user(request,
-                                                       sample_course,
-                                                       student_one)
-        self.assertEquals(len(a), 1)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course_and_user(
+            request, sample_course, student_one)
+        self.assertEquals(len(visible_projects), 1)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Public To Class Composition <3> by Student One")
 
         request.user = instructor
-        a = Project.objects.visible_by_course_and_user(request,
-                                                       sample_course,
-                                                       student_one)
-        self.assertEquals(len(a), 2)
-        self.assertEquals(a[0].__unicode__(),
+        visible_projects = Project.objects.visible_by_course_and_user(
+            request, sample_course, student_one)
+        self.assertEquals(len(visible_projects), 2)
+        self.assertEquals(visible_projects[0].__unicode__(),
                           "Public To Class Composition <3> by Student One")
-        self.assertEquals(a[1].__unicode__(),
+        self.assertEquals(visible_projects[1].__unicode__(),
                           "Instructor Shared <2> by Student One")
 
     def test_project_clean(self):
@@ -251,8 +251,8 @@ class ProjectTest(TestCase):
                 err.messages[0].startswith('03/13/12 is not valid'))
 
         try:
-            dt = datetime.today()
-            this_day = datetime(dt.year, dt.month, dt.day, 0, 0)
+            today = datetime.today()
+            this_day = datetime(today.year, today.month, today.day, 0, 0)
             assignment.due_date = this_day
             assignment.clean()
         except ValidationError as err:

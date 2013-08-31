@@ -1,9 +1,7 @@
-from django.db.models import get_model
-from django.contrib.contenttypes.models import ContentType
 from courseaffils.models import Course
-
-ThreadedComment = get_model('threadedcomments', 'threadedcomment')
-Collaboration = get_model('structuredcollaboration', 'collaboration')
+from django.contrib.contenttypes.models import ContentType
+from structuredcollaboration.models import Collaboration
+from threadedcomments.models import ThreadedComment
 
 
 def get_discussions(arbitrary_object):
@@ -11,10 +9,12 @@ def get_discussions(arbitrary_object):
     discussions = []
     comments = ThreadedComment.objects.filter(parent=None, content_type=coll)
 
-    for d in comments:
-        if d.content_object and d.content_object._parent_id and \
-                arbitrary_object == d.content_object._parent.content_object:
-            discussions.append(d)
+    for comment in comments:
+        parent_content_object = comment.content_object._parent.content_object
+        if (comment.content_object and
+                comment.content_object._parent_id and
+                arbitrary_object == parent_content_object):
+            discussions.append(comment)
     return discussions
 
 
@@ -28,7 +28,8 @@ def get_course_discussions(course):
     colls = Collaboration.objects.filter(_parent=parent,
                                          content_type=content_type,
                                          object_pk__isnull=False)
-    return [c.content_object for c in colls if c.content_object is not None]
+    return [col.content_object for col in colls
+            if col.content_object is not None]
 
 
 def pretty_date(timestamp):

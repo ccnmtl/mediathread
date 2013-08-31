@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from courseaffils.models import Course
 #from django.contrib.auth.models import User
 #from mediathread.assetmgr.models import Asset
@@ -11,6 +12,9 @@ class AssetResourceTest(ResourceTestCase):
     # documentation for the gory details.
     fixtures = ['unittest_sample_course.json']
 
+    def get_credentials(self):
+        return None
+
     def assertAssetEquals(self, asset, title, author,
                           primary_type, selection_ids, thumb_url):
 
@@ -21,8 +25,8 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertEquals(len(asset['annotations']), len(selection_ids))
 
-        for idx, s in enumerate(asset['annotations']):
-            self.assertEquals(int(s['id']), selection_ids[idx])
+        for idx, selection in enumerate(asset['annotations']):
+            self.assertEquals(int(selection['id']), selection_ids[idx])
 
     def test_student_getlist(self):
         self.assertTrue(

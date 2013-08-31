@@ -73,10 +73,10 @@ def class_summary(request):
         })
         students.append(stud)
 
-    rv = {'students': students, 'submenu': 'summary', }
+    context = {'students': students, 'submenu': 'summary', }
     if request.user.is_staff:
-        rv['courses'] = Course.objects.all()
-    return rv
+        context['courses'] = Course.objects.all()
+    return context
 
 
 @allow_http("GET")
@@ -84,95 +84,100 @@ def class_summary(request):
 def class_summary_graph(request):
 
     # groups: 1=domains,2=assets,3=projects
-    rv = {'nodes': [], 'links': []}
+    the_context = {'nodes': [], 'links': []}
 
-    assets = {}  # [a.id] = index
-    projects = {}  # [p.id] = {index:0}
+    assets = {}  # [ann_asset.id] = index
+    projects = {}  # [a_project.id] = {index:0}
     users = {}  # {projects:[],assets:[]}
     discussions = {}
 
     # domains --> assets
-    for a in Asset.objects.filter(course=request.course):
+    for ann_asset in Asset.objects.filter(course=request.course):
         try:
-            domain = re.search('://([^/]+)/', a.primary.url).groups()[0]
+            domain = re.search('://([^/]+)/',
+                               ann_asset.primary.url).groups()[0]
         except:
             continue
 
-        rv['nodes'].append({'nodeName': "%s (%s)" % (a.title, domain),
-                            'group': 2,
-                            'href': a.get_absolute_url(),
-                            'domain': domain, })
-        assets[a.id] = len(rv['nodes']) - 1
+        the_context['nodes'].append({'nodeName': "%s (%s)" % (ann_asset.title,
+                                                              domain),
+                                     'group': 2,
+                                     'href': ann_asset.get_absolute_url(),
+                                     'domain': domain, })
+        assets[ann_asset.id] = len(the_context['nodes']) - 1
 
     # projects
-    for p in Project.objects.filter(course=request.course):
-        p_users = p.participants.all()
-        p_node = {'nodeName': p.title,
+    for a_project in Project.objects.filter(course=request.course):
+        p_users = a_project.participants.all()
+        p_node = {'nodeName': a_project.title,
                   'group': 3,
-                  'href': p.get_absolute_url(),
-                  'users': dict([(u.username, 1) for u in p_users]), }
-        rv['nodes'].append(p_node)
-        projects[p.id] = {'index': len(rv['nodes']) - 1, 'assets': {}, }
+                  'href': a_project.get_absolute_url(),
+                  'users': dict([(user.username, 1) for user in p_users]), }
+        the_context['nodes'].append(p_node)
+        projects[a_project.id] = {'index': len(the_context['nodes']) - 1,
+                                  'assets': {}, }
 
-        for u in p_users:
-            if request.course.is_faculty(u):
+        for user in p_users:
+            if request.course.is_faculty(user):
                 p_node['faculty'] = True
-            users.setdefault(u.username,
-                             {'projects': []})['projects'].append(p.id)
+            users.setdefault(user.username,
+                             {'projects': []})['projects'].append(a_project.id)
 
         # projects-->assets
-        for ann in p.citations():
-            a = projects[p.id]['assets'].setdefault(ann.asset_id,
-                                                    {'str': 2, 'bare': False})
-            a['str'] = a['str'] + 1
-            a['bare'] = (a['bare'] or ann.is_null())
-        for a_id, v in projects[p.id]['assets'].items():
+        for ann in a_project.citations():
+            ann_asset = projects[a_project.id]['assets'].setdefault(
+                ann.asset_id, {'str': 2, 'bare': False})
+            ann_asset['str'] = ann_asset['str'] + 1
+            ann_asset['bare'] = (ann_asset['bare'] or ann.is_null())
+        for a_id, val in projects[a_project.id]['assets'].items():
             if not a_id in assets:
                 continue
 
-            rv['links'].append({'source': projects[p.id]['index'],
-                                'target': assets[a_id],
-                                'value': v['str'],
-                                'bare': v['bare'], })
+            the_context['links'].append({
+                'source': projects[a_project.id]['index'],
+                'target': assets[a_id],
+                'value': val['str'],
+                'bare': val['bare'], })
     # comments
-    c = request.collaboration_context
+    collaboration_context = request.collaboration_context
     proj_type = ContentType.objects.get_for_model(Project)
 
-    for di in DiscussionIndex.objects.filter(
-        collaboration__context=c,
+    for didx in DiscussionIndex.objects.filter(
+        collaboration__context=collaboration_context,
             participant__isnull=False).order_by('-modified'):
-        rv['nodes'].append({
+        the_context['nodes'].append({
             'nodeName': 'Comment: %s' %
-            (di.participant.get_full_name() or di.participant.username),
-            'users': {di.participant.username: 1},
+            (didx.participant.get_full_name() or didx.participant.username),
+            'users': {didx.participant.username: 1},
             'group': 4,
-            'href': di.get_absolute_url(),
-            'faculty': request.course.is_faculty(di.participant),
+            'href': didx.get_absolute_url(),
+            'faculty': request.course.is_faculty(didx.participant),
         })
 
-        d_ind = len(rv['nodes']) - 1
-        # linking discussions in a chain
-        if di.collaboration_id in discussions:
-            rv['links'].append({'source': d_ind,
-                                'target': discussions[di.collaboration_id][-1],
-                                })
-            discussions[di.collaboration_id].append(d_ind)
+        d_ind = len(the_context['nodes']) - 1
+        # linking discussions in ann_asset chain
+        if didx.collaboration_id in discussions:
+            the_context['links'].append({
+                'source': d_ind,
+                'target': discussions[didx.collaboration_id][-1]})
+            discussions[didx.collaboration_id].append(d_ind)
         else:
-            discussions[di.collaboration_id] = [d_ind]
-            if (di.collaboration._parent_id and
-                di.collaboration._parent.content_type == proj_type and
-                    int(di.collaboration._parent.object_pk) in projects):
-                rv['links'].append({
+            discussions[didx.collaboration_id] = [d_ind]
+            if (didx.collaboration._parent_id and
+                didx.collaboration._parent.content_type == proj_type and
+                    int(didx.collaboration._parent.object_pk) in projects):
+                the_context['links'].append({
                     'source': d_ind,
                     'target': projects[int(
-                        di.collaboration._parent.object_pk)]['index'], })
+                        didx.collaboration._parent.object_pk)]['index'], })
 
         # comment --> asset
-        if di.asset_id:
-            rv['links'].append({'source': d_ind,
-                                'target': assets[di.asset_id], })
+        if didx.asset_id:
+            the_context['links'].append({'source': d_ind,
+                                         'target': assets[didx.asset_id], })
 
-    return HttpResponse(json.dumps(rv, indent=2), mimetype='application/json')
+    return HttpResponse(json.dumps(the_context, indent=2),
+                        mimetype='application/json')
 
 
 @allow_http("GET")
@@ -191,10 +196,10 @@ def class_activity(request):
                 collaboration__context=collab_context)
             .order_by('-modified')[:40],))
 
-    rv = {'my_feed': my_feed, 'submenu': 'activity', }
+    context = {'my_feed': my_feed, 'submenu': 'activity', }
     if request.user.is_staff:
-        rv['courses'] = Course.objects.all()
-    return rv
+        context['courses'] = Course.objects.all()
+    return context
 
 
 @login_required
@@ -216,44 +221,44 @@ def mediathread_activity_by_course(request):
     writer.writerow(headers)
 
     rows = []
-    for c in Course.objects.all().order_by('-id'):
-        if not (c.faculty_group.name.startswith('t1') or
-                c.faculty_group.name.startswith('t2') or
-                c.faculty_group.name.startswith('t3')):
+    for the_course in Course.objects.all().order_by('-id'):
+        if not (the_course.faculty_group.name.startswith('t1') or
+                the_course.faculty_group.name.startswith('t2') or
+                the_course.faculty_group.name.startswith('t3')):
             continue
 
         row = []
-        row.append(c.id)
-        row.append(c.title)
+        row.append(the_course.id)
+        row.append(the_course.title)
 
-        if 'instructor' in c.details():
-            row.append(c.details()['instructor'].value)
+        if 'instructor' in the_course.details():
+            row.append(the_course.details()['instructor'].value)
         else:
             row.append('')
 
-        course_string = c.faculty_group.name
+        course_string = the_course.faculty_group.name
         row.append(course_string)
 
-        bits = c.faculty_group.name.split('.')
+        bits = the_course.faculty_group.name.split('.')
         row.append(bits[0])  # term
         row.append(bits[1][1:])  # year
         row.append(bits[2])  # section
         row.append(bits[3])  # courseNo
         row.append(bits[4])  # school
-        row.append(len(c.students))
+        row.append(len(the_course.students))
 
-        items = Asset.objects.filter(course=c)
+        items = Asset.objects.filter(course=the_course)
         row.append(len(items))
 
-        selections = SherdNote.objects.filter(asset__course=c)
+        selections = SherdNote.objects.filter(asset__course=the_course)
         row.append(len(selections))
 
         compositions = 0
         assignments = 0
 
-        projects = Project.objects.filter(course=c)
-        for p in projects:
-            if p.visibility_short() == 'Assignment':
+        projects = Project.objects.filter(course=the_course)
+        for project in projects:
+            if project.visibility_short() == 'Assignment':
                 assignments += 1
             else:
                 compositions += 1
@@ -261,12 +266,12 @@ def mediathread_activity_by_course(request):
         row.append(compositions)
         row.append(assignments)
         try:
-            row.append(len(get_course_discussions(c)))
+            row.append(len(get_course_discussions(the_course)))
         except Collaboration.DoesNotExist:
             row.append(0)
 
-        row.append(course_details.allow_public_compositions(c))
-        row.append(course_details.all_selections_are_visible(c))
+        row.append(course_details.allow_public_compositions(the_course))
+        row.append(course_details.all_selections_are_visible(the_course))
 
         rows.append(row)
 
@@ -294,31 +299,31 @@ def mediathread_activity_by_school(request):
     writer.writerow(headers)
 
     rows = {}
-    for c in Course.objects.all().order_by('-id'):
-        if not (c.faculty_group.name.startswith('t1') or
-                c.faculty_group.name.startswith('t2') or
-                c.faculty_group.name.startswith('t3')):
+    for the_course in Course.objects.all().order_by('-id'):
+        if not (the_course.faculty_group.name.startswith('t1') or
+                the_course.faculty_group.name.startswith('t2') or
+                the_course.faculty_group.name.startswith('t3')):
             continue
 
-        bits = c.faculty_group.name.split('.')
+        bits = the_course.faculty_group.name.split('.')
         school = bits[4]
 
         if not school in rows:
             row = [school, 0, 0, 0, 0, 0]
             rows[school] = row
 
-        items = Asset.objects.filter(course=c)
+        items = Asset.objects.filter(course=the_course)
         rows[school][1] += len(items)
 
-        selections = SherdNote.objects.filter(asset__course=c)
+        selections = SherdNote.objects.filter(asset__course=the_course)
         rows[school][2] += len(selections)
 
         compositions = 0
         assignments = 0
 
-        projects = Project.objects.filter(course=c)
-        for p in projects:
-            if p.visibility_short() == 'Assignment':
+        projects = Project.objects.filter(course=the_course)
+        for project in projects:
+            if project.visibility_short() == 'Assignment':
                 assignments += 1
             else:
                 compositions += 1
@@ -326,7 +331,7 @@ def mediathread_activity_by_school(request):
         rows[school][3] += compositions
         rows[school][4] += assignments
         try:
-            rows[school][5] += len(get_course_discussions(c))
+            rows[school][5] += len(get_course_discussions(the_course))
         except Collaboration.DoesNotExist:
             pass  # no discussions exist, that's ok
 

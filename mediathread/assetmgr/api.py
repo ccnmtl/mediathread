@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
 from mediathread.api import ClassLevelAuthentication, UserResource, \
@@ -65,7 +66,6 @@ class AssetAuthorization(Authorization):
                              Q(modified__range=[startdate, enddate]))
 
         return len(items) > 0
-        return False
 
     def apply_limits(self, request, object_list):
         # Exclude archives from these lists
@@ -102,7 +102,7 @@ class AssetResource(ModelResource):
                  owner_selections_are_visible=False,
                  record_owner=None,
                  extras={}):
-        super(ModelResource, self).__init__(None)
+        super(AssetResource, self).__init__(None)
 
         self.options = {
             'owner_selections_are_visible': owner_selections_are_visible,
@@ -150,12 +150,13 @@ class AssetResource(ModelResource):
             pass
 
         sources = {}
-        for s in bundle.obj.source_set.all():
-            sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(bundle.request),
-                                'width': s.width,
-                                'height': s.height,
-                                'primary': s.primary}
+        for source in bundle.obj.source_set.all():
+            sources[source.label] = {
+                'label': source.label,
+                'url': source.url_processed(bundle.request),
+                'width': source.width,
+                'height': source.height,
+                'primary': source.primary}
         bundle.data['sources'] = sources
 
         bundle.data['annotations'] = []
@@ -177,18 +178,18 @@ class AssetResource(ModelResource):
         # include the global_annotation for the user as well
         if (self.options['record_owner'] and
                 self.options['owner_selections_are_visible']):
-            ga = bundle.obj.global_annotation(
+            gann = bundle.obj.global_annotation(
                 self.options['record_owner'], auto_create=False)
         else:
-            ga = bundle.obj.global_annotation(bundle.request.user,
-                                              auto_create=False)
+            gann = bundle.obj.global_annotation(bundle.request.user,
+                                                auto_create=False)
 
-        if ga:
+        if gann:
             bundle.data['global_annotation'] = \
-                SherdNoteResource().render_one(bundle.request, ga, '')
+                SherdNoteResource().render_one(bundle.request, gann, '')
             bundle.data['global_annotation_analysis'] = (
-                (ga.tags is not None and len(ga.tags) > 0) or
-                (ga.body is not None and len(ga.body) > 0) or
+                (gann.tags is not None and len(gann.tags) > 0) or
+                (gann.body is not None and len(gann.body) > 0) or
                 len(bundle.data['global_annotation']['vocabulary']) > 0)
         else:
             bundle.data['global_annotation_analysis'] = False
@@ -215,7 +216,7 @@ class AssetResource(ModelResource):
 
 class AssetSummaryResource(ModelResource):
     def __init__(self, extras={}):
-        super(ModelResource, self).__init__(None)
+        super(AssetSummaryResource, self).__init__(None)
         self.extras = extras
 
     author = fields.ForeignKey(UserResource, 'author', full=True)
@@ -239,12 +240,13 @@ class AssetSummaryResource(ModelResource):
         bundle.data['media_type_label'] = bundle.obj.media_type()
 
         sources = {}
-        for s in bundle.obj.source_set.all():
-            sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(bundle.request),
-                                'width': s.width,
-                                'height': s.height,
-                                'primary': s.primary}
+        for source in bundle.obj.source_set.all():
+            sources[source.label] = {
+                'label': source.label,
+                'url': source.url_processed(bundle.request),
+                'width': source.width,
+                'height': source.height,
+                'primary': source.primary}
         bundle.data['sources'] = sources
 
         bundle.data['annotations'] = []

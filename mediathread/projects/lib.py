@@ -55,8 +55,8 @@ def homepage_project_json(request, projects, can_edit):
         is_assignment = project.is_assignment(request)
         if is_assignment:
             count = 0
-            for r in project.responses(request):
-                if r.can_read(request):
+            for response in project.responses(request):
+                if response.can_read(request):
                     count += 1
             the_json['responses'] = count
 
@@ -85,7 +85,6 @@ def composition_project_json(request, project, can_edit, version_number=None):
 
     rand = ''.join([choice(letters) for i in range(5)])
 
-    versions = project.versions.order_by('-change_time')
     participants = project.attribution_list()
     is_assignment = project.is_assignment(request)
 
@@ -132,34 +131,34 @@ def composition_project_json(request, project, can_edit, version_number=None):
     }
 
     data['responses'] = []
-    for r in project.responses(request):
-        if r.can_read(request):
-            obj = {'url': r.get_absolute_url(),
-                   'title': r.title,
-                   'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
+    for response in project.responses(request):
+        if response.can_read(request):
+            obj = {'url': response.get_absolute_url(),
+                   'title': response.title,
+                   'modified': response.modified.strftime("%m/%d/%y %I:%M %p"),
                    'attribution_list': []}
 
-            x = len(r.attribution_list()) - 1
-            for idx, author in enumerate(r.attribution_list()):
+            last = len(response.attribution_list()) - 1
+            for idx, author in enumerate(response.attribution_list()):
                 obj['attribution_list'].append({
                     'name': get_public_name(author, request),
-                    'last': idx == x})
+                    'last': idx == last})
 
             data['responses'].append(obj)
     data['response_count'] = len(data['responses'])
 
     my_responses = []
-    for r in project.responses_by(request, request.user):
-        obj = {'url': r.get_absolute_url(),
-               'title': r.title,
-               'modified': r.modified.strftime("%m/%d/%y %I:%M %p"),
+    for response in project.responses_by(request, request.user):
+        obj = {'url': response.get_absolute_url(),
+               'title': response.title,
+               'modified': response.modified.strftime("%m/%d/%y %I:%M %p"),
                'attribution_list': []}
 
-        x = len(r.attribution_list()) - 1
-        for idx, author in enumerate(r.attribution_list()):
+        last = len(response.attribution_list()) - 1
+        for idx, author in enumerate(response.attribution_list()):
             obj['attribution_list'].append({'name': get_public_name(author,
                                                                     request),
-                                            'last': idx == x})
+                                            'last': idx == last})
 
         my_responses.append(obj)
 
@@ -175,7 +174,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'versioned_id': v.versioned_id,
             'author': get_public_name(v.instance().author, request),
             'modified': v.modified.strftime("%m/%d/%y %I:%M %p")}
-            for v in versions]
+            for v in project.versions.order_by('-change_time')]
 
     if can_edit:
         projectform = ProjectForm(request, instance=project)

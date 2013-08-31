@@ -30,8 +30,7 @@ ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
 def allow_public_compositions(course):
     value = int(course.get_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY,
                                   ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
-    b = bool(value)
-    return b
+    return bool(value)
 
 SELECTION_VISIBILITY_KEY = "selection_visibility"
 SELECTION_VISIBILITY_DEFAULT = 1

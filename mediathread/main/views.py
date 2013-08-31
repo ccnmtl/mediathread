@@ -32,14 +32,14 @@ def django_settings(request):
                  'GOOGLE_ANALYTICS_ID',
                  ]
 
-    rv = {'settings': dict([(k, getattr(settings, k, None))
-                            for k in whitelist]),
-          'EXPERIMENTAL': 'experimental' in request.COOKIES, }
+    context = {'settings': dict([(k, getattr(settings, k, None))
+                                 for k in whitelist]),
+               'EXPERIMENTAL': 'experimental' in request.COOKIES, }
 
     if request.course:
-        rv['is_course_faculty'] = request.course.is_faculty(request.user)
+        context['is_course_faculty'] = request.course.is_faculty(request.user)
 
-    return rv
+    return context
 
 
 def get_prof_feed(course, request):
@@ -80,19 +80,19 @@ def triple_homepage(request):
         in_course_or_404(user_name, request.course)
         classwork_owner = get_object_or_404(User, username=user_name)
 
-    c = request.course
+    course = request.course
 
     archives = []
     upload_archive = None
-    for a in c.asset_set.archives().order_by('title'):
-        archive = a.sources['archive']
-        thumb = a.sources.get('thumb', None)
-        description = a.metadata().get('description', '')
-        uploader = a.metadata().get('upload', 0)
+    for item in course.asset_set.archives().order_by('title'):
+        archive = item.sources['archive']
+        thumb = item.sources.get('thumb', None)
+        description = item.metadata().get('description', '')
+        uploader = item.metadata().get('upload', 0)
 
         archive_context = {
-            "id": a.id,
-            "title": a.title,
+            "id": item.id,
+            "title": item.title,
             "thumb": (None if not thumb else {"id": thumb.id,
                                               "url": thumb.url}),
             "archive": {"id": archive.id, "url": archive.url},
@@ -107,29 +107,25 @@ def triple_homepage(request):
 
     archives.sort(key=operator.itemgetter('title'))
 
-    show_tour = should_show_tour(request, c, logged_in_user)
-
     owners = []
     if (in_course(logged_in_user.username, request.course) and
         (logged_in_user.is_staff or
          logged_in_user.has_perm('assetmgr.can_upload_for'))):
         owners = UserResource().render_list(request, request.course.members)
 
-    discussions = get_course_discussions(c)
-
     context = {
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': False,
         'help_homepage_classwork_column': False,
-        'faculty_feed': get_prof_feed(c, request),
-        'is_faculty': c.is_faculty(logged_in_user),
-        'discussions': discussions,
+        'faculty_feed': get_prof_feed(course, request),
+        'is_faculty': course.is_faculty(logged_in_user),
+        'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
         'archives': archives,
         'upload_archive': upload_archive,
         'can_upload': course_details.can_upload(request.user, request.course),
-        'show_tour': show_tour,
+        'show_tour': should_show_tour(request, course, logged_in_user),
         'owners': owners
     }
 
@@ -221,12 +217,12 @@ def all_projects(request):
 def class_manage_sources(request):
     key = course_details.UPLOAD_PERMISSION_KEY
 
-    c = request.course
+    course = request.course
     user = request.user
 
     upload_enabled = False
-    for a in c.asset_set.archives().order_by('title'):
-        attribute = a.metadata().get('upload', 0)
+    for item in course.asset_set.archives().order_by('title'):
+        attribute = item.metadata().get('upload', 0)
         value = attribute[0] if hasattr(attribute, 'append') else attribute
         if value and int(value) == 1:
             upload_enabled = True
@@ -234,7 +230,7 @@ def class_manage_sources(request):
 
     context = {
         'asset_request': request.GET,
-        'course': c,
+        'course': course,
         'supported_archives': SupportedSource.objects.all().order_by("title"),
         'space_viewer': request.user,
         'is_staff': request.user.is_staff,
@@ -253,7 +249,7 @@ def class_manage_sources(request):
     }
 
     if request.method == "GET":
-        context[key] = int(c.get_detail(
+        context[key] = int(course.get_detail(
             key, course_details.UPLOAD_PERMISSION_DEFAULT))
     else:
         upload_permission = request.POST.get(key)
@@ -269,12 +265,12 @@ def class_manage_sources(request):
 @rendered_with('dashboard/class_settings.html')
 @faculty_only
 def class_settings(request):
-    c = request.course
+    course = request.course
     user = request.user
 
     context = {
         'asset_request': request.GET,
-        'course': c,
+        'course': course,
         'space_viewer': request.user,
         'is_staff': request.user.is_staff,
         'help_public_compositions': UserSetting.get_setting(
@@ -284,14 +280,14 @@ def class_settings(request):
     }
 
     public_composition_key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
-    context[course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY] = \
-        int(c.get_detail(public_composition_key,
-                         course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
+    context[course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY] = int(
+        course.get_detail(public_composition_key,
+                          course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
 
     selection_visibility_key = course_details.SELECTION_VISIBILITY_KEY
-    context[course_details.SELECTION_VISIBILITY_KEY] = \
-        int(c.get_detail(selection_visibility_key,
-                         course_details.SELECTION_VISIBILITY_DEFAULT))
+    context[course_details.SELECTION_VISIBILITY_KEY] = int(
+        course.get_detail(selection_visibility_key,
+                          course_details.SELECTION_VISIBILITY_DEFAULT))
 
     if request.method == "POST":
         if selection_visibility_key in request.POST:
@@ -311,10 +307,10 @@ def class_settings(request):
             if public_composition_value == 0:
                 # Check any existing projects -- if they are
                 # world publishable, turn this feature OFF
-                projects = Project.objects.filter(course=c)
-                for p in projects:
+                projects = Project.objects.filter(course=course)
+                for project in projects:
                     try:
-                        col = Collaboration.get_associated_collab(p)
+                        col = Collaboration.get_associated_collab(project)
                         if col._policy.policy_name == 'PublicEditorsAreOwners':
                             col.policy = 'CourseProtected'
                             col.save()
@@ -352,15 +348,15 @@ def migrate(request):
         if request.user.is_superuser:
             courses = available_courses
         else:
-            for c in available_courses:
-                if c.is_faculty(request.user):
-                    courses.append(c)
+            for course in available_courses:
+                if course.is_faculty(request.user):
+                    courses.append(course)
 
         # Only send down the real faculty. Not all us staff members
         faculty = []
-        for u in request.course.faculty.all():
-            if u in request.course.members:
-                faculty.append(u)
+        for user in request.course.faculty.all():
+            if user in request.course.members:
+                faculty.append(user)
 
         return {
             "current_course_faculty": faculty,

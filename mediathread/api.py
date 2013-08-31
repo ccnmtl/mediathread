@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from courseaffils.lib import get_public_name
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist

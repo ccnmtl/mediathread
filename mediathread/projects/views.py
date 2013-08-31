@@ -265,12 +265,9 @@ def project_workspace(request, project_id, feedback=None):
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
 
-        user_resource = UserResource()
-        owners = user_resource.render_list(request, request.course.members)
+        owners = UserResource().render_list(request, request.course.members)
 
-        course = request.course
-        is_faculty = course.is_faculty(request.user)
-        is_assignment = project.is_assignment(request)
+        is_faculty = request.course.is_faculty(request.user)
         can_edit = project.can_edit(request)
         feedback_discussion = project.feedback_discussion() \
             if is_faculty or can_edit else None
@@ -285,11 +282,10 @@ def project_workspace(request, project_id, feedback=None):
 
             assignment_context['create_selection'] = True
 
-            display = "open" if (project.title == "Untitled" and
-                                 len(project.body) == 0) else "closed"
-
             panel = {'is_faculty': is_faculty,
-                     'panel_state': display,
+                     'panel_state': "open" if (project.title == "Untitled" and
+                                               len(project.body) == 0)
+                     else "closed",
                      'subpanel_state': 'closed',
                      'context': assignment_context,
                      'owners': owners,
@@ -318,7 +314,7 @@ def project_workspace(request, project_id, feedback=None):
         # Project Response -- if the requested project is an assignment
         # This is primarily a student view. The student's response should
         # pop up automatically when the parent assignment is viewed.
-        if is_assignment:
+        if project.is_assignment(request):
             responses = project.responses_by(request, request.user)
             if len(responses) > 0:
                 response = responses[0]

@@ -8,7 +8,7 @@ class UserSetting(models.Model):
     value = models.CharField(max_length=255)
 
     @classmethod
-    def get_setting(self, user, setting_id, default_value):
+    def get_setting(cls, user, setting_id, default_value):
         try:
             user_setting = UserSetting.objects.get(user=user, name=setting_id)
 
@@ -24,7 +24,7 @@ class UserSetting(models.Model):
             return default_value
 
     @classmethod
-    def set_setting(self, user, setting_id, value):
+    def set_setting(cls, user, setting_id, value):
         try:
             user_setting = UserSetting.objects.get(user=user, name=setting_id)
             user_setting.value = str(value)

@@ -43,14 +43,14 @@ class Annotation(models.Model):
         hrs = seconds / 3600
         mins = (seconds % 3600) / 60
         secs = seconds % 60
-        rv = "%02d" % secs
+        ret_val = "%02d" % secs
         if mins or long_format:
-            rv = "%02d:" % mins + rv
+            ret_val = "%02d:" % mins + ret_val
         elif not hrs:
-            rv = "0:" + rv
+            ret_val = "0:" + ret_val
         if hrs or long_format:
-            rv = "%02d:" % hrs + rv
-        return rv
+            ret_val = "%02d:" % hrs + ret_val
+        return ret_val
 
     def range_as_timecode(self):
         tc_range = ""
@@ -112,7 +112,7 @@ class SherdNoteManager(models.Manager):
         # "'s to escape openCitation() duplicates
         regex_string = \
             r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/annotations/(\d+)'
-        rv = []
+        ret_val = []
         for ann in re.findall(regex_string, text):
             note_id = int(ann[2])
             try:
@@ -124,7 +124,7 @@ class SherdNoteManager(models.Manager):
                                   title="Annotation Deleted",
                                   asset_id=int(ann[1]),
                                   )
-            rv.append(note)
+            ret_val.append(note)
 
         if user:
             regex_string = \
@@ -140,22 +140,22 @@ class SherdNoteManager(models.Manager):
                     note = self.model(id=0,
                                       title="Asset Deleted",
                                       asset_id=asset_id)
-                rv.append(note)
+                ret_val.append(note)
 
-        return rv
+        return ret_val
 
     def migrate_one(self, old_note, new_asset, user):
-        n = None
+        new_note = None
 
         if (old_note.is_global_annotation() and
                 new_asset.global_annotation(user, False)):
             # A global annotation already exists
             # from this user
             # Return the existing global_annotation
-            n = new_asset.global_annotation(user, False)
+            new_note = new_asset.global_annotation(user, False)
         else:
             try:
-                n = SherdNote.objects.get(
+                new_note = SherdNote.objects.get(
                     asset=new_asset,
                     range1=old_note.range1,
                     range2=old_note.range2,
@@ -163,22 +163,22 @@ class SherdNoteManager(models.Manager):
                     title=old_note.title,
                     author=user)
             except SherdNote.DoesNotExist:
-                n = SherdNote(asset=new_asset,
-                              range1=old_note.range1,
-                              range2=old_note.range2,
-                              annotation_data=old_note.annotation_data,
-                              title=old_note.title,
-                              author=user)
+                new_note = SherdNote(asset=new_asset,
+                                     range1=old_note.range1,
+                                     range2=old_note.range2,
+                                     annotation_data=old_note.annotation_data,
+                                     title=old_note.title,
+                                     author=user)
 
         if (old_note.author == user or not old_note.is_global_annotation()):
             if old_note.body:
-                n.body = old_note.body
+                new_note.body = old_note.body
             if old_note.tags:
-                n.tags = old_note.tags
+                new_note.tags = old_note.tags
 
-        n.save()
+        new_note.save()
 
-        return n
+        return new_note
 
 
 class SherdNote(Annotation):
@@ -387,12 +387,12 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
 
     for ann in sherds:
         try:
-            di, c = DiscussionIndex.objects.get_or_create(
+            disc, created = DiscussionIndex.objects.get_or_create(
                 participant=participant,
                 collaboration=collaboration,
                 asset=ann.asset)
-            di.comment = comment
-            di.save()
+            disc.comment = comment
+            disc.save()
         except:
             # some things may be deleted. pass
             pass

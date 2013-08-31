@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
 from mediathread.djangosherd.models import SherdNote

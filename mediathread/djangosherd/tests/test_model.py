@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from mediathread.assetmgr.models import Asset
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -57,49 +58,49 @@ class SherdNoteTest(TestCase):
         asset = Asset.objects.get(id=1)
         author = User.objects.get(username="test_instructor")
 
-        a, created = SherdNote.objects.global_annotation(asset, author)
+        ann, created = SherdNote.objects.global_annotation(asset, author)
         self.assertFalse(created)
-        self.assertEquals(a.title, None)
-        self.assertEquals(a.body, "All credit to Mark and Casey")
-        self.assertEquals(a.tags, ",youtube, test_instructor_item")
+        self.assertEquals(ann.title, None)
+        self.assertEquals(ann.body, "All credit to Mark and Casey")
+        self.assertEquals(ann.tags, ",youtube, test_instructor_item")
 
         author = User.objects.get(username="test_student_one")
-        a, created = SherdNote.objects.global_annotation(asset, author)
+        ann, created = SherdNote.objects.global_annotation(asset, author)
         self.assertTrue(created)
-        self.assertEquals(a.title, None)
-        self.assertEquals(a.body, None)
-        self.assertEquals(a.tags, '')
+        self.assertEquals(ann.title, None)
+        self.assertEquals(ann.body, None)
+        self.assertEquals(ann.tags, '')
 
     def test_tags_split(self):
         asset = Asset.objects.get(id=1)
         author = User.objects.get(username="test_instructor")
 
-        a, created = SherdNote.objects.global_annotation(asset, author)
-        tags = a.tags_split()
+        ann, created = SherdNote.objects.global_annotation(asset, author)
+        tags = ann.tags_split()
         self.assertEquals(len(tags), 2)
         self.assertEquals(tags[0].name, 'test_instructor_item')
         self.assertEquals(tags[1].name, 'youtube')
 
         # Alternate course, student 3
-        a = SherdNote.objects.get(id=15)
-        tags = a.tags_split()
+        ann = SherdNote.objects.get(id=15)
+        tags = ann.tags_split()
         self.assertEquals(len(tags), 1)
         self.assertEquals(tags[0].name, 'test_student_three')
 
         # Sample course, student on3
         author = User.objects.get(username="test_student_one")
-        a, created = SherdNote.objects.global_annotation(asset, author)
+        ann, created = SherdNote.objects.global_annotation(asset, author)
         self.assertTrue(created)
-        tags = a.tags_split()
+        tags = ann.tags_split()
         self.assertEquals(len(tags), 0)
 
     def test_add_tag(self):
-        a = SherdNote.objects.get(id=15)
-        a.add_tag("foo")
-        a.add_tag("bar")
-        a.save()
+        ann = SherdNote.objects.get(id=15)
+        ann.add_tag("foo")
+        ann.add_tag("bar")
+        ann.save()
 
-        tags = a.tags_split()
+        tags = ann.tags_split()
         self.assertEquals(len(tags), 3)
         self.assertEquals(tags[0].name, 'bar')
         self.assertEquals(tags[1].name, 'foo')

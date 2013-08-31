@@ -217,9 +217,10 @@ def mediathread_activity_by_course(request):
 
     rows = []
     for c in Course.objects.all().order_by('-id'):
-        if not (c.faculty_group.name.startswith('t1') or
+        if (c.faculty_group is None or
+            (not (c.faculty_group.name.startswith('t1') or
                 c.faculty_group.name.startswith('t2') or
-                c.faculty_group.name.startswith('t3')):
+                c.faculty_group.name.startswith('t3')))):
             continue
 
         row = []

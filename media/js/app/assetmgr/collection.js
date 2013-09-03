@@ -338,7 +338,7 @@ CollectionList.prototype.updateSwitcher = function () {
     
     jQuery(self.el).find("select.course-tags")
         .select2({
-            placeholder: "Select tag",
+            placeholder: "Select tag"
         });    
     if ('tag' in self.current_records.active_filters &&
             self.current_records.active_filters.tag.length > 0) {

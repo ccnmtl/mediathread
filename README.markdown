@@ -16,8 +16,8 @@ REQUIREMENTS
 ------------
 Python 2.7 (Python 2.6 is still supported, but we encourage you to upgrade.)  
 Postgres (or MySQL)  
-Flowplayer installation for your site (See below for detailed instructions)
-Flickr API Key if you want to bookmark from FLICKR  
+Flowplayer installation for your site (See below for detailed instructions)  
+Flickr API Key if you want to bookmark from FLICKR    
 
 
 INSTALLATION

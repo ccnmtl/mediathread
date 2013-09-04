@@ -16,6 +16,7 @@ REQUIREMENTS
 ------------
 Python 2.7 (Python 2.6 is still supported, but we encourage you to upgrade.)
 Postgres (or MySQL)
+Flowplayer installation for your site (See below for detailed instructions)
 
 
 INSTALLATION
@@ -90,6 +91,26 @@ Go to your site in a web browser.
    http://myhost.example.com:8000/save/
 
 10. For deployment, take a look at the `apache/` directory for sample apache configuration files
+
+FLOWPLAYER
+----------------
+Mediathread instantiates a Flowplayer .swf to play many video flavors.
+Flowplayer now requires you to have a local installation and will not
+allow you to serve the player off their site. Here are the basic instructions
+to install Flowplayer on your systems and point Mediathread at it.
+
+1. http://flash.flowplayer.org/download/ # Version 3.2.15 or higher
+2. Install on a public server on your site.
+3. In the same directory, install:
+    http://flash.flowplayer.org/plugins/streaming/rtmp.html - flowplayer.rtmp-3.2.12.swf
+    http://flash.flowplayer.org/plugins/streaming/pseudostreaming.html - flowplayer.pseudostreaming-3.2.12.swf
+    http://flash.flowplayer.org/plugins/streaming/audio.html - flowplayer.audio-3.2.10.swf
+    
+4. In your local_settings.py or (better) deploy_specific/settings.py set FLOWPLAYER_SWF_LOCATION, like so:
+FLOWPLAYER_SWF_LOCATION=http://<servername>/<directory>/flowplayer-3.2.15.swf
+
+The plugins are picked up automatically from the same directory.
+
 
 METADATA SUPPORT
 ----------------

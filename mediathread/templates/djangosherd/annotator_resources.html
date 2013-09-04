@@ -6,6 +6,9 @@
        return "{% static 'js/sherdjs/lib/openlayers/openlayers/' %}";
     }
     flowplayer.swf_location = '{{settings.FLOWPLAYER_SWF_LOCATION}}';
+    flowplayer.audio_plugin = '{{settings.FLOWPLAYER_AUDIO_PLUGIN}}';
+    flowplayer.pseudostreaming_plugin = '{{settings.FLOWPLAYER_PSEUDOSTREAMING_PLUGIN}}';
+    flowplayer.rtmp_plugin = '{{settings.FLOWPLAYER_RTMP_PLUGIN}}';
 </script>
 <script type="text/javascript" src="{% static 'js/sherdjs/src/base.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/sherdjs/src/assets.js' %}"></script>

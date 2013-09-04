@@ -195,7 +195,12 @@
                                 </div>                                                               
                             {{/showing_my_items?}}
                             {{^showing_my_items}}
-                                {{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.                                
+                                {{#showing_all_items?}}
+                                    This class currently has no materials.
+                                {{/showing_all_items?}}                            
+                                {{^showing_all_items}}
+                                    {{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.
+                                {{/showing_all_items}}                                
                             {{/showing_my_items}}
                         {{/active_filter_count}}
                         {{#active_filter_count}}

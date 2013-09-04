@@ -108,14 +108,14 @@ to install Flowplayer on your systems and point Mediathread at it.
     http://flash.flowplayer.org/plugins/streaming/audio.html - flowplayer.audio-3.2.10.swf  
     
 4. In your local_settings.py or (better) deploy_specific/settings.py set FLOWPLAYER_SWF_LOCATION, like so:
-FLOWPLAYER_SWF_LOCATION=http://<servername>/<directory>/flowplayer-3.2.15.swf
+FLOWPLAYER_SWF_LOCATION=http://servername/directory/flowplayer-3.2.15.swf
 
 The plugins are picked up automatically from the same directory.
 
 FLICKR
 ----------------
 In your local_settings.py or (better) deploy_specific/settings.py specify your Flickr api key.  
-DJANGOSHERD_FLICKR_APIKEY='<your key here>'
+DJANGOSHERD_FLICKR_APIKEY='your key here'
 
 
 METADATA SUPPORT

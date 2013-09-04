@@ -101,7 +101,7 @@ to install Flowplayer on your systems and point Mediathread at it.
 
 1. http://flash.flowplayer.org/download/ # Version 3.2.15 or higher
 2. Install on a public server on your site.
-3. In the same directory, install:
+3. In the same directory, install:  
     http://flash.flowplayer.org/plugins/streaming/rtmp.html - flowplayer.rtmp-3.2.12.swf  
     http://flash.flowplayer.org/plugins/streaming/pseudostreaming.html - flowplayer.pseudostreaming-3.2.12.swf  
     http://flash.flowplayer.org/plugins/streaming/audio.html - flowplayer.audio-3.2.10.swf  

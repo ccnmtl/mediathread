@@ -4,7 +4,7 @@
         <div class="filter-widget left">
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">            
-                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                     <span class="switcher-prefix">Author </span>
                     <span class="title">{{{selected_label?ellipses(22)}}}</span>
                     <span class="down-arrow" tabindex="3"></span>                
@@ -14,13 +14,13 @@
                     {{^showing_my_items}}
                     <li>
                         <li class="choice_my_items" id="choice_my_items">
-                            <a class="switcher-choice owner" href="{{space_viewer.username}}">&mdash; Me &mdash;</a>
+                            <a class="switcher-choice owner" href="{{space_viewer.username}}" style="font-weight: bold">Me</a>
                         </li>
                     </li>
                     {{/showing_my_items}}
                     {{^showing_all_items}}
                     <li class="choice_all_items" id="choice_all_items">
-                        <a class="switcher-choice owner" href="all-class-members">&mdash; All Class Members &mdash;</a>
+                        <a class="switcher-choice owner" href="all-class-members" style="font-weight: bold">All Class Members</a>
                     </li>
                     {{/showing_all_items}}
                     {{#owners}}                            

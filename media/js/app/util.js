@@ -32,7 +32,9 @@ function getVisibleContentHeight() {
     return viewportheight - (20 + document.getElementById("header").clientHeight);
 }
 
-function switcher(a) {
+function switcher(event, a) {
+    event.preventDefault();
+    event.stopPropagation();
     if (jQuery(a).hasClass("menuclosed")) {
         // we're going to open. make sure everyone else is CLOSED
         jQuery(".menuopen").toggleClass("menuopen menuclosed");
@@ -40,6 +42,7 @@ function switcher(a) {
     }
     jQuery(a).toggleClass('menuclosed menuopen');
     jQuery(a).parent().children('.switcher-options').toggle();
+    return false;
 }
 
 function updateHelpSetting(user, help_content_id, value) {

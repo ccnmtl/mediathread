@@ -5,7 +5,7 @@
             <h3>FILTER BY...</h3>
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">                
-                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                     <span class="switcher-prefix">Owner</span>                
                     <span class="title">{{{selected_label?ellipses(22)}}}</span>
                     <span class="down-arrow" tabindex="3"></span>                    
@@ -39,7 +39,7 @@
             {{/>>switcher_collection_chooser}}
             
             <div class="switcher collection-date-filter">
-                <a class="switcher-top menuclosed" onclick="switcher(this);">
+                <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                     <span class="switcher-prefix">Date </span>
                     <span class="down-arrow"></span>
                     

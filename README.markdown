@@ -109,8 +109,12 @@ to install Flowplayer on your systems and point Mediathread at it.
     
 4. In your local_settings.py or (better) deploy_specific/settings.py set FLOWPLAYER_SWF_LOCATION, like so:
 FLOWPLAYER_SWF_LOCATION=http://servername/directory/flowplayer-3.2.15.swf
+FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.10.swf'
+FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.11.swf'
+FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.11.swf'
 
-The plugins are picked up automatically from the same directory.
+The plugins are picked up automatically from the same directory, so don't need the full path.  
+These are the versions we are currently using in production here at CU.
 
 FLICKR
 ----------------

@@ -128,7 +128,6 @@ a:hover {
     padding: 0;
     border-collapse: collapse;
     border-top: none;
-    margin-bottom: -60px;
 }
 
 /* ---- Structure ---------- */
@@ -814,7 +813,7 @@ ul#standardnav
 }
 
 #clearfooter {
-	height: 60px;
+	height: 10px;
 	clear: both;
 }
 

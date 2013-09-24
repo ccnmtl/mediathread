@@ -25,7 +25,7 @@ class SherdNoteAuthorization(Authorization):
             # Make sure the requesting user is allowed to see this note
             invisible = []
             courses = {}
-            for note in object_list.all():
+            for note in object_list.select_related('asset__course'):
                 course = note.asset.course
 
                 # Cache this out per course/user. It's just too slow otherwise
@@ -59,7 +59,7 @@ class SherdNoteResource(ModelResource):
                                full=True, null=True, blank=True)
 
     class Meta:
-        queryset = SherdNote.objects.all().order_by("id")
+        queryset = SherdNote.objects.select_related('asset').order_by("id")
         excludes = ['tags', 'body', 'added', 'modified']
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']

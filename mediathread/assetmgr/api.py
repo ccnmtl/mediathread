@@ -118,7 +118,7 @@ class AssetResource(ModelResource):
         blank=True, null=True, full=True)
 
     class Meta:
-        queryset = Asset.objects.all().order_by('id')
+        queryset = Asset.objects.select_related('author').order_by('id')
         excludes = ['added', 'modified', 'course', 'active', 'metadata_blob']
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']

@@ -1,5 +1,5 @@
 from courseaffils.lib import get_public_name
-from mediathread.assetmgr.api import AssetResource
+from mediathread.assetmgr.api import AssetSummaryResource
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.projects.forms import ProjectForm
 from random import choice
@@ -91,7 +91,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
     course = request.course if request.course \
         else request.collaboration_context.content_object
 
-    asset_resource = AssetResource()
+    asset_resource = AssetSummaryResource()
     sherd_resource = SherdNoteResource()
     citations = project.citations()
 
@@ -119,16 +119,19 @@ def composition_project_json(request, project, can_edit, version_number=None):
             'is_assignment': is_assignment,
             'course_title': course.title
         },
-        'assets': dict([('%s_%s' % (rand, ann.asset.pk),
-                        asset_resource.render_one(request, ann.asset))
-                        for ann in citations
-                        if (ann.title != "Annotation Deleted" and
-                            ann.title != 'Asset Deleted')]),
-        'annotations': [sherd_resource.render_one(request, ann, rand)
-                        for ann in citations],
         'type': 'project',
         'can_edit': can_edit,
+        'annotations': [sherd_resource.render_one(request, ann, rand)
+                        for ann in citations],
     }
+
+    assets = {}
+    for ann in citations:
+        if ann.title != "Annotation Deleted" and ann.title != 'Asset Deleted':
+            key = '%s_%s' % (rand, ann.asset.pk)
+            if key not in assets:
+                assets[key] = asset_resource.render_one(request, ann.asset)
+    data['assets'] = assets
 
     data['responses'] = []
     for response in project.responses(request):

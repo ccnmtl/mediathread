@@ -1091,7 +1091,11 @@ div.button-form form, div.button-form.inline form {
     float: right;
     height: 265px;
     margin-top: 10px;
-}        
+}
+
+.loginbox-container.columbia {
+    height: 300px;
+}
 
 .loginbox
 {

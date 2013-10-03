@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from mediathread.assetmgr.models import Asset
 from django.contrib.auth.models import User
 from django.test import TestCase

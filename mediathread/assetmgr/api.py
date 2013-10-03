@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
 from mediathread.api import ClassLevelAuthentication, UserResource, \

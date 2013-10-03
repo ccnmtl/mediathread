@@ -1,3 +1,3 @@
 # flake8: noqa
-from test_model import *
-from test_api import *
+from mediathread.djangosherd.tests.test_model import *
+from mediathread.djangosherd.tests.test_api import *

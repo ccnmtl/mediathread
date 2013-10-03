@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from courseaffils.models import Course, CourseInfo
 from mediathread.api import ClassLevelAuthentication
 from mediathread.api import GroupResource, ToManyFieldEx

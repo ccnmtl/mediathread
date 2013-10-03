@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from django.test import TestCase
 import simplejson
 

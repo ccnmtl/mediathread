@@ -1,3 +1,4 @@
+#pylint: disable-msg=R0904
 from django.db.models.query_utils import Q
 from mediathread.api import UserResource, ClassLevelAuthentication, TagResource
 from mediathread.assetmgr.models import Asset

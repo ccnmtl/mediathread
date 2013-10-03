@@ -1,2 +1,2 @@
 # flake8: noqa
-from test_views import *
+from mediathread.taxonomy.tests.test_views import *

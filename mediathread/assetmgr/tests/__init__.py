@@ -1,4 +1,4 @@
 # flake8: noqa
-from test_model import *
-from test_api import *
-from test_views import *
+from mediathread.assetmgr.tests.test_model import *
+from mediathread.assetmgr.tests.test_api import *
+from mediathread.assetmgr.tests.test_views import *

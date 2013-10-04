@@ -1,4 +1,5 @@
 #pylint: disable-msg=R0904
+#pylint: disable-msg=E1103
 from tastypie.test import ResourceTestCase
 
 

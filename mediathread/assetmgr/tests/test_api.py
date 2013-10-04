@@ -1,4 +1,5 @@
 #pylint: disable-msg=R0904
+#pylint: disable-msg=E1103
 from courseaffils.models import Course
 #from django.contrib.auth.models import User
 #from mediathread.assetmgr.models import Asset

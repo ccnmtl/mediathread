@@ -82,7 +82,11 @@ div.mce_editorwindow {
  
 input.participants_toggle {
     margin: 0px 10px 5px 0px;
-    font-size: .7em;
+    font-size: .8em;
+}
+
+tr.project-participant-row h5 {
+    font-weight: normal;
 }
 
 #id_participants {*height: 15em;}
@@ -108,6 +112,20 @@ div.save-publish-status ul {
 div.save-publish-status li {
     list-style-type: none;
 }
+
+.panel-subcontainer-title {
+    text-align: left;
+    margin: 5px;
+}
+
+.panel-subcontainer-title label {
+    margin-bottom: 2px;
+}
+
+div.panel input.btn-primary {
+    padding: 4px 8px;
+}
+
 
 /* ---- Threaded comments ---------- */
 

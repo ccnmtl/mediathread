@@ -363,9 +363,9 @@ def migrate(request):
 
         # Only send down the real faculty. Not all us staff members
         faculty = []
-        for u in request.course.faculty.all():
-            if u in request.course.members:
-                faculty.append(u)
+        for fac in request.course.faculty.all():
+            if fac in request.course.members:
+                faculty.append(fac)
 
         return {
             "current_course_faculty": faculty,

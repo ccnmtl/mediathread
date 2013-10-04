@@ -1,3 +1,4 @@
+#pylint: disable-msg=C0302
 from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
 from django.conf import settings
@@ -439,8 +440,8 @@ def final_cut_pro_xml(request, asset_id):
     if not request.user.is_staff:
         return HttpResponseForbidden()
 
-    "support for http://developer.apple.com/mac/library/documentation/ \
-    AppleApplications/Reference/FinalCutPro_XML/Topics/Topics.html"
+    '''support for http://developer.apple.com/mac/library/documentation/ \
+    AppleApplications/Reference/FinalCutPro_XML/Topics/Topics.html'''
     try:
         from xmeml import VideoSequence
         # http://github.com/ccnmtl/xmeml

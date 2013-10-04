@@ -1,3 +1,4 @@
+#pylint: disable-msg=E1101
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.core.exceptions import ObjectDoesNotExist

@@ -1,5 +1,6 @@
 #pylint: disable-msg=R0904
 #pylint: disable-msg=E1103
+#pylint: disable-msg=C0302
 from courseaffils.models import Course
 from mediathread.main import course_details
 from tastypie.test import ResourceTestCase

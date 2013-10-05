@@ -109,6 +109,7 @@ Feature: Direct Asset Access
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "test_student_three" for username
         When I type "test" for password
         When I click the Log In button
@@ -147,6 +148,7 @@ Feature: Direct Asset Access
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "test_student_three" for username
         When I type "test" for password
         When I click the Log In button

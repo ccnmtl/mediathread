@@ -5,6 +5,7 @@ Feature: Login
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "foo" for username
         When I type "foo" for password
         When I click the Log In button
@@ -16,6 +17,7 @@ Feature: Login
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "test_student_one" for username
         When I type "test" for password
         When I click the Log In button
@@ -29,6 +31,7 @@ Feature: Login
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "test_instructor" for username
         When I type "test" for password
         When I click the Log In button
@@ -42,6 +45,7 @@ Feature: Login
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "test_student_three" for username
         When I type "test" for password
         When I click the Log In button

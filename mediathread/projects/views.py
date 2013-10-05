@@ -1,4 +1,4 @@
-from courseaffils.lib import in_course, in_course_or_404
+from courseaffils.lib import in_course, in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
@@ -155,6 +155,25 @@ def project_reparent(request, assignment_id, composition_id):
         parent_collab.append_child(composition)
 
     return HttpResponseRedirect('/')
+
+
+@login_required
+def project_revisions(request, project_id):
+    project = get_object_or_404(Project, pk=project_id, course=request.course)
+
+    if not project.is_participant(request.user):
+        return HttpResponseForbidden("forbidden")
+
+    data = {}
+    data['revisions'] = [{
+        'version_number': v.version_number,
+        'versioned_id': v.versioned_id,
+        'author': get_public_name(v.instance().author, request),
+        'modified': v.modified.strftime("%m/%d/%y %I:%M %p")}
+        for v in project.versions.order_by('-change_time')]
+
+    return HttpResponse(simplejson.dumps(data, indent=2),
+                        mimetype='application/json')
 
 
 @allow_http("GET")

@@ -32,6 +32,9 @@ urlpatterns = patterns(
         'project_reparent',
         name="project-reparent"),
 
+    url(r'^revisions/(?P<project_id>\d+)/$',
+        'project_revisions',
+        name="project-revisions"),
 
     # view versioned read only
     url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',

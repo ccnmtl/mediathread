@@ -6,7 +6,8 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.projectModified = false;
     self.parentContainer = parent;
     self.space_owner = space_owner;
-    self.tiny_mce_settings = tiny_mce_settings;    
+    self.tiny_mce_settings = tiny_mce_settings;
+    jQuery(self.el).find('.project-savebutton').attr("value", "Saved");
 
     djangosherd.storage.json_update(panel.context);
     
@@ -87,6 +88,10 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
     if (instance && instance.id === self.panel.context.project.id + "-project-content" && !self.tinyMCE) {
     
         self.tinyMCE = instance;
+        
+        self.tinyMCE.onChange.add(function(args) {
+            self.setDirty(true); 
+        });
         
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
@@ -604,22 +609,27 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     return false;
 };
 
-ProjectPanelHandler.prototype.saveProject = function (frm) {
+ProjectPanelHandler.prototype.saveProject = function (frm, skipValidation) {
     var self = this;
     
     tinyMCE.activeEditor.save();
     
-    if (!self._validTitle() || !self._validAuthors()) {
-        return false;
+    if (skipValidation === undefined) {
+        if (!self._validTitle() || !self._validAuthors()) {
+            return false;
+        }
     }
 
-    jQuery(self.el).find("select[name='participants'] option").attr("selected", "selected");
+    jQuery(self.el).find("select[name='participants'] option")
+        .attr("selected", "selected");
     var data = jQuery(frm).serializeArray();
-    data = data.concat(jQuery(document.forms.editparticipants).serializeArray());
+    data = data.concat(jQuery(document.forms.editparticipants)
+        .serializeArray());
 
     var saveButton = jQuery(self.el).find(".project-savebutton").get(0);
-    jQuery(saveButton).attr("disabled", "disabled").attr("value", "Saving...").addClass("saving");
-
+    jQuery(saveButton).attr("disabled", "disabled")
+        .attr("value", "Saving...")
+        .addClass("saving");
     
     jQuery.ajax({
         type: 'POST',
@@ -673,14 +683,16 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
                     jQuery(self.el).find('.project-due-date').html("");
                 }
                 
-                self.setDirty(false);
                 self.revision = json.revision;
                 if ("title" in json) {
                     document.title = "Mediathread " + json.title;
                 }
+                self.setDirty(false);
+                self.updateRevisions();
             }    
             jQuery(saveButton).removeAttr("disabled")
-                .removeClass("saving", 1200, function () { jQuery(this).attr("value", "Save"); });
+                .removeClass("saving", 1200, function () {
+                    jQuery(this).attr("value", "Saved"); });
         }
     });
     
@@ -689,11 +701,58 @@ ProjectPanelHandler.prototype.saveProject = function (frm) {
 
 ProjectPanelHandler.prototype.setDirty = function (isDirty) {
     var self = this;
-    self.projectModified = isDirty;
     
-    if (!isDirty && self.tinyMCE) {
-        self.tinyMCE.isNotDirty = 1; // clear the tinymce dirty flags
+    if (self.projectModified !== isDirty) {
+        self.projectModified = isDirty;
+        
+        if (!isDirty && self.tinyMCE) {
+            self.tinyMCE.isNotDirty = 1; // clear the tinymce dirty flags
+        }
+        
+        if (isDirty) {
+            jQuery(self.el).find('.project-savebutton').attr("value", "Save");
+            // Set a single timer to kick off a save event.
+            // If the timer is already active, don't set another one
+            // Clear the timer variable at the end
+            if (self.dirtyTimer === undefined) {                
+                self.dirtyTimer = window.setTimeout(function() {
+                    var frm = jQuery(self.el).find('form[name=editproject]')[0];
+                    self.saveProject(frm, true);
+                    self.dirtyTimer = undefined;
+                }, 30000);
+            }
+        } else {
+            jQuery(self.el).find('.project-savebutton').attr("value", "Saved");
+            if (self.dirtyTimer !== undefined) {
+                window.clearTimeout(self.dirtyTimer);
+                self.dirtyTimer = undefined;
+            }
+        }
     }
+};
+
+ProjectPanelHandler.prototype.isDirty = function() {
+    var self = this;
+    return self.projectModified ||
+        self.tinyMCE.isDirty() ||
+        (self.tinyMCE.editorId === tinyMCE.activeEditor.editorId &&
+                tinyMCE.activeEditor.isDirty())
+};
+
+ProjectPanelHandler.prototype.updateRevisions = function() {
+    var self =  this;
+    
+    jQuery.ajax({
+        type: 'GET',
+        url: MediaThread.urls['project-revisions'](
+                self.panel.context.project.id),
+        dataType: 'json',
+        error: function () {},
+        success: function (json, textStatus, xhr) {
+            Mustache.update("revisions", {'context': json});
+        }
+    });            
+    
 };
 
 ProjectPanelHandler.prototype.beforeUnload = function () {
@@ -701,8 +760,7 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
     var msg = null;
     
     // Check tinyMCE dirty state. For some reason, the instance we're holding is not always current
-    if (self.projectModified || self.tinyMCE.isDirty() ||
-        (self.tinyMCE.editorId === tinyMCE.activeEditor.editorId && tinyMCE.activeEditor.isDirty())) {
+    if (self.isDirty()) {
         msg = "Changes to your project have not been saved.";
     } else {
         var title = jQuery(self.el).find("input[name=title]");

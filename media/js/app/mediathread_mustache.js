@@ -86,6 +86,9 @@
             'project-create': function () {
                 return '/project/create/';
             },
+            'project-revisions': function (project_id) {
+                return '/project/revisions/' + project_id + '/';
+            },
             'discussion-view': function (discussion_id) {
                 return '/discussion/' + discussion_id + "/";
             },

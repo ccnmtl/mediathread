@@ -47,6 +47,7 @@ Feature: Sources
         
         # Student cannot see
         When I log out
+        When I click the Guest Log In button
         When I type "test_student_one" for username
         When I type "test" for password
         When I click the Log In button
@@ -77,6 +78,7 @@ Feature: Sources
         
         # Student cannot see
         When I log out
+        When I click the Guest Log In button
         When I type "test_student_one" for username
         When I type "test" for password
         When I click the Log In button
@@ -107,6 +109,7 @@ Feature: Sources
         
         # Student can see
         When I log out
+        When I click the Guest Log In button
         When I type "test_student_one" for username
         When I type "test" for password
         When I click the Log In button
@@ -161,6 +164,7 @@ Feature: Sources
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
+        When I click the Guest Log In button
         When I type "test_staff" for username
         When I type "test" for password
         When I click the Log In button        

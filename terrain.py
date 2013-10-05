@@ -111,6 +111,10 @@ def i_am_username_in_course(step, username, coursename):
     if world.using_selenium:
         world.browser.get(django_url("/accounts/logout/"))
         world.browser.get(django_url("accounts/login/?next=/"))
+
+        elt = find_button_by_value("Guest Log In")
+        elt.click()
+
         username_field = world.browser.find_element_by_id("id_username")
         username_field.send_keys(username)
 

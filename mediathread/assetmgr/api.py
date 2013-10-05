@@ -141,6 +141,9 @@ class AssetResource(ModelResource):
         bundle.data['primary_type'] = bundle.obj.primary.label
         bundle.data['local_url'] = bundle.obj.get_absolute_url()
         bundle.data['media_type_label'] = bundle.obj.media_type()
+        bundle.data['editable_title'] = (
+            bundle.request.user.is_staff or
+            bundle.obj.author == bundle.request.user)
 
         try:
             metadata = simplejson.loads(bundle.obj.metadata_blob)

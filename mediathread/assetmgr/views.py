@@ -353,9 +353,15 @@ def annotation_create_global(request, asset_id):
 def annotation_save(request, asset_id, annot_id):
     try:
         # Verify annotation exists
-        SherdNote.objects.get(pk=annot_id,
-                              asset=asset_id,
-                              asset__course=request.course)
+        ann = SherdNote.objects.get(pk=annot_id,
+                                    asset=asset_id,
+                                    asset__course=request.course)
+
+        if (ann.is_global_annotation() and
+            'asset-title' in request.POST and
+                (request.user.is_staff or request.user == ann.asset.author)):
+            ann.asset.title = request.POST.get('asset-title')
+            ann.asset.save()
 
         form = request.GET.copy()
         form['next'] = '.'

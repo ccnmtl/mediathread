@@ -1628,6 +1628,7 @@ div.panel.asset-workspace-dialog div.asset-view-tabs {
     width: 285px;
 }
 
+form#edit-global-annotation-form input[name="asset-title"],
 #id_annotation-title {
     height: 24px;
     width: 98%;

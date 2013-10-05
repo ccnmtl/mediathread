@@ -207,6 +207,15 @@
                                                     
                                                     style="display: none">
                                                     
+                                                    {{#asset-current.editable_title?}}
+                                                        <div>
+                                                            <label>Title</label>
+                                                            <div>
+                                                                <input type="text" name="asset-title" value="{{asset-current.title}}"/>                                                                
+                                                            </div>                                                            
+                                                        </div>
+                                                    {{/asset-current.editable_title?}}
+                                                    
                                                     {{#vocabulary}}
                                                     <div>
                                                         <label>{{display_name}}</label>

@@ -484,6 +484,21 @@
         this.saveItem = function (saveButton) {
             var frm = jQuery(saveButton).parents('form')[0];
             
+            // Validate the title, if it is editable
+            var newTitle = null;
+            if ('asset-title' in frm.elements) {
+                newTitle = frm.elements['asset-title'].value;
+                if (newTitle.length < 1) {
+                    showMessage('Please specify an item title',
+                                undefined,
+                                'Error',
+                                {my: "center",
+                                 at: "center",
+                                 of: jQuery("div.asset-view-tabs")});
+                    return false;
+                }
+            }                    
+            
             // Validate the tag fields...should be in djangosherd?
             var tag_field = frm.elements['annotation-tags'];
             if (tag_field) {//is this null?
@@ -537,6 +552,8 @@
                             'asset-current': self.active_asset,
                             'vocabulary': self.vocabulary
                         };
+                        
+                        Mustache.update("asset-view-header", context);
                          
                         Mustache.update("asset-global-annotation", context, {
                             pre: function (elt) { jQuery(elt).hide(); },

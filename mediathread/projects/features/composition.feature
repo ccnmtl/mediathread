@@ -23,7 +23,7 @@ Feature: Composition
         
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button
-        And the Composition panel has a Save button
+        And the Composition panel has a Saved button
         And the Composition panel has a +/- Author button
         
         # Add a title and some text
@@ -39,14 +39,15 @@ Feature: Composition
         And the project visibility is "Private - only author(s) can view"
         
         Then I save the changes
-        Then there is a "Private" link                              
+        Then there is a "Private" link
+        And the Composition panel has a Saved button              
         
         # Toggle Preview Mode
         When I click the Preview button
         The Composition panel has a Revisions button
         And the Composition panel has an Edit button
         And the Composition panel does not have a Preview button
-        And the Composition panel has a Save button
+        And the Composition panel has a Saved button
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         
@@ -81,7 +82,7 @@ Feature: Composition
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button
         And the Composition panel does not have an Edit button
-        And the Composition panel has a Save button
+        And the Composition panel has a Saved button
         And the Composition panel has a +/- Author button
         
         # Add a title and some text
@@ -105,7 +106,7 @@ Feature: Composition
         The Composition panel has a Revisions button
         And the Composition panel has an Edit button
         And the Composition panel does not have a Preview button
-        And the Composition panel has a Save button
+        And the Composition panel has a Saved button
         And the Composition panel has a Revisions button
         And the Composition panel does not have a +/- Author button
         

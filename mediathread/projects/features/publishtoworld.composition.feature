@@ -51,7 +51,7 @@ Feature: Public Compositions
             The Composition panel does not have a Revisions button
             And the Composition panel does not have an Edit button
             And the Composition panel does not have a Preview button
-            And the Composition panel does not have a Save button
+            And the Composition panel does not have a Saved button
             And the Composition panel does not have a +/- Author button
             
             When I click the "<item_name>" citation in the Composition panel

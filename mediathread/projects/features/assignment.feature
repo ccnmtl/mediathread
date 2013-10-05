@@ -82,7 +82,7 @@ Feature: Assignment
         And there is an open Assignment panel
         And the Assignment panel does not have an Edit button
         And the Assignment panel does not have a Preview button
-        And the Assignment panel does not have a Save button
+        And the Assignment panel does not have a Saved button
         And the Assignment panel does not have a Revisions button
         And the Assignment panel does not have a +/- Author button
         And there is not an "Assignment" link
@@ -191,7 +191,7 @@ Feature: Assignment
         And the Composition panel does not have a +/- Author button
         And there is a "Submitted to Instructor" link 
         
-        When I click the Save button
+        When I click the Saved button
         Then I see a Save Changes dialog
         Then I set the project visibility to "<visibility>"
         When I save the changes
@@ -254,7 +254,7 @@ Feature: Assignment
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page
         Then there is an open Composition panel
-        When I click the Save button
+        When I click the Saved button
         Then I see a Save Changes dialog
         Then I set the project visibility to "Whole Class - all class members can view"
         When I save the changes

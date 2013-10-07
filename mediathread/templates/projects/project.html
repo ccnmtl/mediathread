@@ -13,10 +13,17 @@
     
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
+    
+    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}" media="screen" />
 {% endblock %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}" media="screen" />
+    <script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>    
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
     
     <!--  admin functionality for the select box -->
     <script type="text/javascript" src="{% static 'admin/js/jquery.js' %}"></script>
@@ -24,13 +31,6 @@
     <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/SelectFilter2.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/SelectBox.js' %}"></script>
-    
-    <script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>    
-{% endblock %}
-
-{% block js %}
-    <!--All the annotation javascript -->
-    {% include "djangosherd/annotator_resources.html" %}
     
     <!--  TinyMCE -->
     <script type="text/javascript">

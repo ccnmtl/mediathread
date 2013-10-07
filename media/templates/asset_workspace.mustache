@@ -211,7 +211,8 @@
                                                         <div>
                                                             <label>Title</label>
                                                             <div>
-                                                                <input type="text" name="asset-title" value="{{asset-current.title}}"/>                                                                
+                                                                <input data-label="Title" type="text" name="asset-title"
+                                                                    value="{{asset-current.title}}"/>                                                                
                                                             </div>                                                            
                                                         </div>
                                                     {{/asset-current.editable_title?}}
@@ -237,7 +238,7 @@
                                                     <div>
                                                         <label>Tags</label>
                                                         <div>
-                                                            <input class="global-annotation-tags"
+                                                            <input data-label="Tags" class="global-annotation-tags"
                                                                 type="text"
                                                                 name="annotation-tags"
                                                                 data-placeholder="select or create tags"
@@ -250,7 +251,8 @@
                                                     <div>
                                                         <label>Notes</label>
                                                         <div>
-                                                            <textarea id="id_annotation-body" rows="7" cols="51"
+                                                            <textarea data-label="Notes"
+                                                                id="id_annotation-body" rows="7" cols="51"
                                                                 name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
                                                         </div>
                                                     </div>
@@ -630,6 +632,7 @@
                 </table>
             </div>
         </div>
+        <div id="asset-loaded"></div>
     </td>
     
     <td class="pantab-container">

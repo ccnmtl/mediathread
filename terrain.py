@@ -90,10 +90,11 @@ def access_url(step, url):
 @step(u'the ([^"]*) workspace is loaded')
 def the_name_workspace_is_loaded(step, name):
     workspace_id = None
-    if (name == "composition" or
-        name == "assignment" or
+    if (name == "composition" or name == "assignment" or
             name == "home" or name == "collection"):
         workspace_id = "loaded"
+    elif name == "asset":
+        workspace_id = "asset-loaded"
     else:
         assert False, "No selector configured for %s" % name
 

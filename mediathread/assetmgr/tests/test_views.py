@@ -1,10 +1,67 @@
 #pylint: disable-msg=R0904
 from django.test import TestCase
+from mediathread.assetmgr.models import Asset
+from mediathread.djangosherd.models import SherdNote
 import simplejson
 
 
 class AssetViewTest(TestCase):
     fixtures = ['unittest_sample_course.json']
+
+    def test_annotation_save(self):
+        asset = Asset.objects.get(id=2)
+
+        # Update as the asset's non-original author. This should fail
+        username = "test_student_one"
+        self.assert_(self.client.login(username=username, password="test"))
+        post_data = {'asset-title': "My MAAP Award Reception"}
+        gann = SherdNote.objects.get(id=9)  # student one global ann
+        url = "/asset/save/%s/annotations/%s/" % (asset.id, gann.id)
+        response = self.client.post(url,
+                                    post_data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        asset = Asset.objects.get(id=2)
+        self.assertEquals(asset.title, "MAAP Award Reception")
+
+        # Switch to the asset's original author
+        username = "test_instructor"
+        self.client.logout()
+        self.assert_(self.client.login(username=username, password="test"))
+
+        # Update as the asset's original author, this should succeed
+        gann = SherdNote.objects.get(id=4)
+        url = "/asset/save/%s/annotations/%s/" % (asset.id, gann.id)
+        post_data = {'asset-title': "Updated MAAP Award Reception"}
+        response = self.client.post(url,
+                                    post_data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        asset = Asset.objects.get(id=2)
+        self.assertEquals(asset.title, "Updated MAAP Award Reception")
+
+        # Update passing in a non-global annotation. This should fail
+        ann = SherdNote.objects.get(id=5)
+        url = "/asset/save/%s/annotations/%s/" % (asset.id, ann.id)
+        post_data = {'asset-title': "The New and Improved MAAP",
+                     'annotation-range1': -4.5,
+                     'annotation-range2': 23.0}
+        response = self.client.post(url,
+                                    post_data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        asset = Asset.objects.get(id=2)
+        self.assertEquals(asset.title, "Updated MAAP Award Reception")
+
+        # Test "no annotation" exception path
+        url = "/asset/save/%s/annotations/%s/" % (asset.id, 42)
+        post_data = {'asset-title': "The New and Improved Armory"}
+        response = self.client.post(url,
+                                    post_data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 403)
+
+        # The remainder of the annotation update is tested in djangosherd
 
     def test_student_get_my_assets(self):
         username = "test_student_one"
@@ -53,6 +110,7 @@ class AssetViewTest(TestCase):
         self.assertEquals(len(gla['metadata']['tags']), 1)
         self.assertEquals(gla['metadata']['body'],
                           "student two item note")
+
 #     def test_student_get_peer_assets_restricted(self):
 #         username = "test_student_one"
 #         password = "test"

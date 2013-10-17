@@ -145,7 +145,9 @@ class AssetResource(ModelResource):
 
         try:
             metadata = simplejson.loads(bundle.obj.metadata_blob)
-            metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
+            metadata = [{'key': k, 'value': v}
+                        for k, v in metadata.items()
+                        if k not in bundle.obj.hidden_metadata]
             bundle.data['metadata'] = metadata
         except ValueError:
             pass
@@ -153,7 +155,8 @@ class AssetResource(ModelResource):
         sources = {}
         for s in bundle.obj.source_set.all():
             sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(bundle.request),
+                                'url': s.url_processed(bundle.request,
+                                                       bundle.obj),
                                 'width': s.width,
                                 'height': s.height,
                                 'primary': s.primary}

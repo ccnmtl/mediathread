@@ -245,7 +245,8 @@ class AssetSummaryResource(ModelResource):
         sources = {}
         for s in bundle.obj.source_set.all():
             sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(bundle.request),
+                                'url': s.url_processed(bundle.request,
+                                                       bundle.obj),
                                 'width': s.width,
                                 'height': s.height,
                                 'primary': s.primary}

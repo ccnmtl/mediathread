@@ -202,27 +202,6 @@
         })();
     </script>
     
-    {% if not settings.DEBUG %}
-        <script>                
-            {% if settings.GOOGLE_ANALYTICS_ID %}
-                var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
-                _gaq.push(['_trackPageview']);
-        
-                (function () {
-                    var ga = document.createElement('script');
-                    ga.type = 'text/javascript';
-                    ga.async = true;
-                    ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                    var s = document.getElementsByTagName('script')[0];
-                    s.parentNode.insertBefore(ga, s);
-                })();
-            
-                var analytics = new MediathreadAnalytics(_gaq);
-            {% endif %}
-        </script>
-    {% endif %}            
-    
     {% compress js %}   
         <script type="text/javascript" src="/site_media/js/app/json2.js"></script>    
         <script type="text/javascript" src="/site_media/js/app/util.js"></script>
@@ -282,8 +261,29 @@
         {% block js %}{% endblock %}
     {% endcompress %}
     
-    {% block uncompressable_js %}{% endblock %}        
     
+    {% if not settings.DEBUG %}
+        <script>                
+            {% if settings.GOOGLE_ANALYTICS_ID %}
+                var _gaq = _gaq || [];
+                _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
+                _gaq.push(['_trackPageview']);
+        
+                (function () {
+                    var ga = document.createElement('script');
+                    ga.type = 'text/javascript';
+                    ga.async = true;
+                    ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(ga, s);
+                })();
+            
+                var analytics = new MediathreadAnalytics(_gaq);
+            {% endif %}
+        </script>
+    {% endif %}        
+    
+    {% block uncompressable_js %}{% endblock %}        
     
 {% if STAGING_ENV %}
 <div class="alert alert-error"

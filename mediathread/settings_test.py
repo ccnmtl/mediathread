@@ -1,6 +1,8 @@
 # flake8: noqa
 from settings_shared import *
 
+COMPRESS_ENABLED = True
+
 STATSD_HOST = '127.0.0.1'
 
 DEBUG = True

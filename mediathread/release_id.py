@@ -1,1 +1,0 @@
-LAST_GIT_HEAD = "e3340ac549e59f465e9a3cc700bfa0cdb31cbb52"

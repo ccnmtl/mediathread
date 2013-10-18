@@ -2,9 +2,7 @@
 {% load assetlinks %}
 {% block title %}Manage Sources{% endblock %}
 
-{% block js %}
-    {{ block.super }}
-    
+{% block uncompressable_js %}
     <script type="text/javascript"> 
         jQuery(document).ready(function() {
             {% if newsrc %}
@@ -19,7 +17,6 @@
             {% endif %}{% endif %}{% endif %}
         });
     </script>
-    
 {% endblock %}
 
 {% block switchcourse %}{% endblock %}
@@ -29,7 +26,6 @@
 {% endblock %}
 
 {% block dashboard_module %}
-
     <div class="dashboard-feature">
     <h3>Mediathread Video Uploader</h3>
     <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.

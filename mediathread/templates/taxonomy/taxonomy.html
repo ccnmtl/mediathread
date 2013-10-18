@@ -1,24 +1,8 @@
 {% extends "dashboard/base_dashboard.html" %}
-{% load revision %}
 
 {% block title %}Course Vocabulary Workspace{% endblock %}
 
-{% block js %}
-    <script type="text/javascript" src="/site_media/js/app/taxonomy/taxonomy.js?version={%revision%}"></script>
-    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
-    
-    <script type="text/javascript">
-        jQuery(document).ready(function () {
-            var view = new VocabularyListView({
-                el: jQuery("#taxonomy"),
-                course_id: "{{course.id}}",
-                content_type_id: "{{course_type.id}}"
-            });
-        });
-    </script>
-{% endblock %}
-
-{% block extrahead %}
+{% block uncompressable_css %}
     <script type="text/javascript" src="/site_media/js/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="/site_media/js/backbone/backbone-min.js"></script>
     
@@ -132,6 +116,23 @@
     </script>
 {% endblock %}
 
+{% block js %}
+    <script type="text/javascript" src="/site_media/js/app/taxonomy/taxonomy.js"></script>
+    <script type="text/javascript" src="/site_media/js/backbone/backbone-tastypie.js"></script>
+{% endblock %}
+
+{% block uncompressable_js %}
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            var view = new VocabularyListView({
+                el: jQuery("#taxonomy"),
+                course_id: "{{course.id}}",
+                content_type_id: "{{course_type.id}}"
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block switchcourse %}{% endblock %}
 
 {% block dashboard_module_header %}
@@ -149,45 +150,7 @@
             
     {% include "help/help_contentarea.html" %}
     
-    
-    
     <div id="taxonomy">
-    </div>    
-    
-    
- {% comment %}
-    
-    <div class="taxonomy">
-        <div class="taxonomy-header">
-        <h3>Concepts</h3>    
-        <a href="#" class="btn-primary">Create Concept</a>
-        </div>
-        <div class="visualclear"></div>
-    
-    {% ifequal role_in_course "non-member" %}
-        <div id="no-materials-to-migrate">
-            You are not a class member. Please add yourself to this course via the admin console before attempting to create taxonomies.
-        </div>
-    {% endifequal %}
-    
-        {% for v in vocabularies %}
-            <h3>
-                {{v.display_name}}
-                
-                </div>                
-            </h3>
-            <div style="display: none"> 
-                <p>
-                    <h5 style="display: inline">Add a term:</h5> <input type="text"> <input type="button" value="Add"></input>
-                    
-                    <h5>Terms</h5>
-                    {% for term in v.term_set.all %}
-                        <div><input type="text" value="{{term.display_name}}" style="display: none">{{term.display_name}}</div>
-                    {% endfor %}
-                </p>
-            </div>
-        {% endfor %}
     </div>
-{% endcomment %}    
 {% endwith %}{% endwith %}      
 {% endblock %}

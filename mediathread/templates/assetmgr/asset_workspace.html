@@ -1,33 +1,33 @@
 {% extends "base.html" %}
-{% load smartif revision compress %}
+{% load smartif compress %}
 
 {% block title %}
     Collection
 {% endblock %}
 
-{% block extrahead %}
-    {{ block.super }}
-    
-    <script type="text/javascript" src="/site_media/js/select2/select2.min.js"></script>
-{% endblock %}
-
 {% block css %}
-    {{ block.super }}
     <link rel="stylesheet" href="/site_media/js/select2/select2.css" media="screen" />
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
+{% block uncompressable_css %}
+    <script type="text/javascript" src="/site_media/js/select2/select2.min.js"></script>
+{% endblock %}
+
 {% block js %}
     <!--All the annotation javascript -->
-    {% include "djangosherd/annotator_resources.html" %}
-            
+    {% include "djangosherd/annotator_resources.html" %}            
+{% endblock %}
+
+{% block uncompressable_js %}
     <!--  Generic Functionality -->
     <script type="text/javascript" src="/site_media/jquery/js/jquery.masonry.min.js"></script>
     
+    <!--  Panel Manage initialization -->
     <script type="text/javascript">
         jQuery(document).ready(function () {
-            PanelManager.init({ 
+            PanelManager.init({
                 'container': 'sliding-content-container',
                 'url': MediaThread.urls['asset-workspace'](
                      {% if asset_id %}{{asset_id}}{% endif %}

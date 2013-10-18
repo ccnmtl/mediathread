@@ -90,10 +90,11 @@ def access_url(step, url):
 @step(u'the ([^"]*) workspace is loaded')
 def the_name_workspace_is_loaded(step, name):
     workspace_id = None
-    if (name == "composition" or
-        name == "assignment" or
+    if (name == "composition" or name == "assignment" or
             name == "home" or name == "collection"):
         workspace_id = "loaded"
+    elif name == "asset":
+        workspace_id = "asset-loaded"
     else:
         assert False, "No selector configured for %s" % name
 
@@ -113,6 +114,9 @@ def i_am_username_in_course(step, username, coursename):
         world.browser.get(django_url("accounts/login/?next=/"))
 
         elt = find_button_by_value("Guest Log In")
+        if elt is None:
+            time.sleep(1)
+            elt = find_button_by_value("Guest Log In")
         elt.click()
 
         username_field = world.browser.find_element_by_id("id_username")

@@ -3,7 +3,7 @@
 
 {% block title %}Instructor Dashboard{% endblock %}
 
-{% block js %}
+{% block js %}    
     <script type="text/javascript" src="/site_media/js/app/dashboard/reports.js"></script>
 {% endblock %}
 
@@ -12,32 +12,28 @@
     
     <div class="dashboard-module-header">
         {% block dashboard_module_header %}
-            
-            
         {% endblock %}
     </div>
 
     {% block switchcourse %}
-    {%if request.user.is_staff and courses %}
-       <div id="staff-switchcourse">
-         <form>
-           <label>Switch course (Staff Only):</label>
-           <select onchange="document.location=this.value;">
-             {% for c in courses %}
-             <option value="?set_course={{c.group.name|urlencode}}"
-                     {% ifequal c request.course %}selected="selected"{%endifequal%}
-               >{{c.title}}</option>
-               {% endfor %}
-             </select>
-           </form>
-       </div>
-    {% endif %}
+        {%if request.user.is_staff and courses %}
+           <div id="staff-switchcourse">
+             <form>
+               <label>Switch course (Staff Only):</label>
+               <select onchange="document.location=this.value;">
+                 {% for c in courses %}
+                 <option value="?set_course={{c.group.name|urlencode}}"
+                         {% ifequal c request.course %}selected="selected"{%endifequal%}
+                   >{{c.title}}</option>
+                   {% endfor %}
+                 </select>
+               </form>
+           </div>
+        {% endif %}
     {% endblock %} 
-
-
      
     <div id="dashboard-module-body">
         {% block dashboard_module %}{% endblock %}
     </div>
-    
- {% endblock %}   
+        
+{% endblock %}   

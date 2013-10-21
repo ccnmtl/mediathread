@@ -8,6 +8,7 @@ def the_item_header_is_name(step, name):
     if world.using_selenium:
         selector = "span.asset-view-title"
         elt = world.browser.find_element_by_css_selector(selector)
+
         if elt.text.strip() != name:
             time.sleep(2)
             assert elt.text.strip() == name, \
@@ -63,3 +64,7 @@ def there_is_not_a_label_type_field(step, label, type):
         for elt in elts:
             if elt.get_attribute('data-label') == label:
                 assert False, "Found a %s %s field" % (label, type)
+
+        assert elt.text.strip() == name, \
+            "The title was %s. Expected %s" % (elt.text, name)
+

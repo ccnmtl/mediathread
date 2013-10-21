@@ -44,6 +44,7 @@ class ExceptionLoggingMiddleware(object):
         import traceback
         print traceback.format_exc()
 
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,5 +54,10 @@ MIDDLEWARE_CLASSES = (
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'mediathread.settings_test.ExceptionLoggingMiddleware'
+    'mediathread.settings_test.ExceptionLoggingMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False
+}

@@ -1077,6 +1077,12 @@ div.button-form form, div.button-form.inline form {
 
 
 /* LOGIN PAGE */
+
+.login-wrap {
+	max-width: 960px;
+	margin: 0 auto;
+}
+
 .login-description {
     margin: 30px 30px 15px 30px;
     text-align: center;

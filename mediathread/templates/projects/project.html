@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif revision static %}
+{% load smartif static %}
 
 {% block title %}
     {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
@@ -10,36 +10,40 @@
     <link rel="stylesheet" href="{% static 'css/project.css' %}"  media="screen" />
     <link rel="stylesheet" href="{% static 'css/project.print.css' %}"  media="print" />
     <link rel="stylesheet" href="{% static 'js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css' %}" />
-    
+
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
-    
-    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}" media="screen" />
 {% endblock %}
 
-{% block extrahead %}
-    <script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>    
+{% block uncompressable_css %}
+    <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}" media="screen" />
 {% endblock %}
 
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
-    
+        
+    <!--  TinyMCE -->
+    <script type="text/javascript">
+        var tinyMCEPreInit = {query:'',suffix:'',base:'{% static "js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce" %}'};
+    </script>
+    <script src="{% static 'jquery/js/jquery-ui-timepicker-addon.js' %}" type="text/javascript"></script>
+    <script src="/site_media/jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block uncompressable_js %}
     <!--  admin functionality for the select box -->
     <script type="text/javascript" src="{% static 'admin/js/jquery.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/SelectFilter2.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/SelectBox.js' %}"></script>
-    
-    <!--  TinyMCE -->
-    <script type="text/javascript">
-        var tinyMCEPreInit = {query:'',suffix:'',base:'{% static "js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce" %}'};
-    </script>
+
+    <!-- required project functionality -->
+    <script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/sherdjs/lib/tiny_mce3_min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/app/tiny_mce_init3.js' %}"></script>
     
-    <script src="{% static 'jquery/js/jquery-ui-timepicker-addon.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
         jQuery(document).ready(function () {
             PanelManager.init({ 

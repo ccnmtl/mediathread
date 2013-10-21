@@ -7,7 +7,7 @@ import re
 import simplejson
 
 
-def default_url_processor(source, request):
+def default_url_processor(source, request, obj=None):
     return source.url
 
 # Override in deploy_specific/settings.py
@@ -145,6 +145,8 @@ class Asset(models.Model):
         the description, etc, and is easy to format incorrectly. \
         Make sure not to add any "'s.""")
 
+    hidden_metadata = ['artstor-id']
+
     # labels which determine the saving of an asset
     # in order of priority for which label is marked primary
     # an asset must have at least one source label from this list
@@ -155,7 +157,7 @@ class Asset(models.Model):
                      'ogg', 'vimeo', 'kaltura',
                      'video_pseudo', 'video_rtmp', 'video',
                      'mp3', 'mp4_audio',
-                     'image_fpx',  # artstor.org and FSI flash image viewer
+                     'image_fpx',  # artstor.org
                      'image')
 
     # not good for uniqueness
@@ -330,8 +332,8 @@ class Source(models.Model):
     def is_archive(self):
         return self.label == 'archive'
 
-    def url_processed(self, request):
-        return url_processor(self, request)
+    def url_processed(self, request, obj=None):
+        return url_processor(self, request, obj)
 
 
 class SupportedSource(models.Model):

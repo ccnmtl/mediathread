@@ -1,13 +1,11 @@
 {% extends "base.html" %}
-{% load smartif coursetags revision static %}
+{% load smartif coursetags static %}
 
 {% block title %}
     {% if project.title %}{{project.title}}{% else %}Print View{% endif %}
 {% endblock %}
 
 {% block css %}
-    {{ block.super }}
-    
     <link rel="stylesheet" href="{% static 'css/project.css' %}"  media="screen" />
     <link rel="stylesheet" href="{% static 'css/project.print.css' %}"  media="print" />
     <link rel="stylesheet" href="{% static 'js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css' %}" />

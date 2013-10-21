@@ -54,3 +54,4 @@ requirements/src/pylint-0.26.0.tar.gz
 requirements/src/pep8-1.4.tar.gz
 requirements/src/pyflakes-0.5.0.tar.gz
 requirements/src/flake8-1.7.0.tar.gz
+requirements/src/requests-2.0.0.tar.gz

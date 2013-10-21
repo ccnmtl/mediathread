@@ -147,19 +147,21 @@ class AssetResource(ModelResource):
 
         try:
             metadata = simplejson.loads(bundle.obj.metadata_blob)
-            metadata = [{'key': k, 'value': v} for k, v in metadata.items()]
+            metadata = [{'key': k, 'value': v}
+                        for k, v in metadata.items()
+                        if k not in bundle.obj.hidden_metadata]
             bundle.data['metadata'] = metadata
         except ValueError:
             pass
 
         sources = {}
-        for source in bundle.obj.source_set.all():
-            sources[source.label] = {
-                'label': source.label,
-                'url': source.url_processed(bundle.request),
-                'width': source.width,
-                'height': source.height,
-                'primary': source.primary}
+        for s in bundle.obj.source_set.all():
+            sources[s.label] = {'label': s.label,
+                                'url': s.url_processed(bundle.request,
+                                                       bundle.obj),
+                                'width': s.width,
+                                'height': s.height,
+                                'primary': s.primary}
         bundle.data['sources'] = sources
 
         bundle.data['annotations'] = []
@@ -243,13 +245,13 @@ class AssetSummaryResource(ModelResource):
         bundle.data['media_type_label'] = bundle.obj.media_type()
 
         sources = {}
-        for source in bundle.obj.source_set.all():
-            sources[source.label] = {
-                'label': source.label,
-                'url': source.url_processed(bundle.request),
-                'width': source.width,
-                'height': source.height,
-                'primary': source.primary}
+        for s in bundle.obj.source_set.all():
+            sources[s.label] = {'label': s.label,
+                                'url': s.url_processed(bundle.request,
+                                                       bundle.obj),
+                                'width': s.width,
+                                'height': s.height,
+                                'primary': s.primary}
         bundle.data['sources'] = sources
 
         bundle.data['annotations'] = []

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-{% load cache user_projects coursetags revision static compress %}
+{% load cache user_projects coursetags static compress %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 {% with request.collaboration_context.content_object as course %}
@@ -13,6 +13,7 @@
         <script type="text/javascript" src="{% static 'js/mustache/mustache.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
+
         <script type="text/javascript" src="/jsi18n"></script>
         
         <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui-1.9.1.custom.min.css' %}" media="screen" />            
@@ -24,8 +25,7 @@
             {% block css %}{% endblock %}
         {% endcompress %}
         
-        {% block extrahead %}
-            <!--  For uncompress-able resources -->
+        {% block uncompressable_css %}            
         {% endblock %}        
     </head>
     
@@ -186,24 +186,24 @@
             </ul>
         </div><!-- id="footer" -->
     {% endblock %}
+
+    <script type="text/javascript">
+        var lt = String.fromCharCode(60);
+        if (window.jQuery) {
+            jQuery.noConflict();
+        }
+         
+        var MediaThread = new (function() {
+            this.templates = {};
+            {% if request.user.is_authenticated %}
+                this.current_user = {{request.user.id}};
+                this.current_username = "{{request.user.username}}";
+                this.user_full_name = "{%public_name for request.user %}";
+            {% endif %}
+        })();
+    </script>
     
     {% compress js %}
-        <script type="text/javascript">
-            var lt = String.fromCharCode(60);
-            if (window.jQuery) {
-                jQuery.noConflict();
-            }
-             
-            var MediaThread = new (function() {
-                this.templates = {};
-                {% if request.user.is_authenticated %}
-                    this.current_user = {{request.user.id}};
-                    this.current_username = "{{request.user.username}}";
-                    this.user_full_name = "{%public_name for request.user %}";
-                {% endif %}
-            })();
-        </script>
-
         <script type="text/javascript" src="{% static 'js/app/json2.js' %}"></script>    
         <script type="text/javascript" src="{% static 'js/app/util.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/app/ajaxDelete.js' %}"></script>
@@ -224,28 +224,6 @@
         <!--  Project related -->
         <script type="text/javascript" src="{% static 'js/app/projects/projectpanel.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/app/projects/projectlist.js' %}"></script>
-    
-        {% if not settings.DEBUG %}
-            <script>                
-                {% if settings.GOOGLE_ANALYTICS_ID %}
-                    var _gaq = _gaq || [];
-                    _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
-                    _gaq.push(['_trackPageview']);
-            
-                    (function () {
-                        var ga = document.createElement('script');
-                        ga.type = 'text/javascript';
-                        ga.async = true;
-                        ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                        var s = document.getElementsByTagName('script')[0];
-                        s.parentNode.insertBefore(ga, s);
-                    })();
-                
-                    var analytics = new MediathreadAnalytics(_gaq);
-                {% endif %}
-            </script>
-        {% endif %}        
-           
     
         <script type="text/javascript">
             jQuery(document).ready(function() {
@@ -284,6 +262,29 @@
         
         {% block js %}{% endblock %}
     {% endcompress %}
+    
+    {% if not settings.DEBUG %}
+        <script>                
+            {% if settings.GOOGLE_ANALYTICS_ID %}
+                var _gaq = _gaq || [];
+                _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
+                _gaq.push(['_trackPageview']);
+        
+                (function () {
+                    var ga = document.createElement('script');
+                    ga.type = 'text/javascript';
+                    ga.async = true;
+                    ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(ga, s);
+                })();
+            
+                var analytics = new MediathreadAnalytics(_gaq);
+            {% endif %}
+        </script>
+    {% endif %}        
+    
+    {% block uncompressable_js %}{% endblock %}        
     
 {% if STAGING_ENV %}
 <div class="alert alert-error"

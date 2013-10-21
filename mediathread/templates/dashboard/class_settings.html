@@ -2,9 +2,7 @@
 {% load assetlinks %}
 {% block title %}Manage Course Settings{% endblock %}
 
-{% block js %}
-    {{ block.super }}
-    
+{% block uncompressable_js %}
     <script type="text/javascript"> 
         jQuery(document).ready(function() {
             {% if changes_saved %}

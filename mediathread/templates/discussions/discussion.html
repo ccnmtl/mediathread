@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load smartif revision static %}
+{% load smartif static %}
 
 {% block title %}
     {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
@@ -15,14 +15,16 @@
     {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
-{% block extrahead %}    
+{% block uncompressable_css %}    
     <script type="text/javascript" src="{% static 'js/select2/select2.min.js' %}"></script>
 {% endblock %}
 
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
-    
+{% endblock %}
+
+{% block uncompressable_js %}    
     <!--  TinyMCE -->
     <script type="text/javascript">
         var tinyMCEPreInit = { query: '', suffix: '', base:'{% static "js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce" %}' };

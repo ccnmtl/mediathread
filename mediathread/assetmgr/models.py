@@ -145,8 +145,6 @@ class Asset(models.Model):
         the description, etc, and is easy to format incorrectly. \
         Make sure not to add any "'s.""")
 
-    hidden_metadata = ['artstor-id']
-
     # labels which determine the saving of an asset
     # in order of priority for which label is marked primary
     # an asset must have at least one source label from this list
@@ -157,7 +155,7 @@ class Asset(models.Model):
                      'ogg', 'vimeo', 'kaltura',
                      'video_pseudo', 'video_rtmp', 'video',
                      'mp3', 'mp4_audio',
-                     'image_fpx',  # artstor.org
+                     'image_fpx', 'image_fpxid',  # artstor.org
                      'image')
 
     # not good for uniqueness

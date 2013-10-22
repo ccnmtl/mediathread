@@ -1086,14 +1086,21 @@ div.button-form form, div.button-form.inline form {
 	display: inline;
 	float: left;
 	padding: 35px;
-	width: 45%;
+	width: 56%;
 	height: 450px;
     background: url("../img/login_bg.jpg") center no-repeat;
 }
 
-.login-description h2 {
-    line-height: 1.3em;
-    display: block;
+.login-description h1 {
+    font-weight: 200;
+    line-height: 1.5em;
+    margin-top: 0;
+}
+
+.login-description p {
+	font-size: 1.25em;
+	font-weight: 200;
+	line-height: 2em;
 }
 
 .loginbox-container {
@@ -1103,7 +1110,7 @@ div.button-form form, div.button-form.inline form {
 }
 
 .loginbox-container.columbia {
-    height: 300px;
+    float: left;
 }
 
 .loginbox
@@ -1111,21 +1118,19 @@ div.button-form form, div.button-form.inline form {
     display: block;
     width: 300px;
     margin: 0 30px 0 20px;
-    padding: 0;
-    border: 1px solid #999;
-    background-color: #fff;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    font-size: 12px;
-}
+    padding: 0 0 20px 0;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    background-color: #b3d3eb;
+    }
 
 .loginbox h2
 {
     margin: 0 !important;
-    padding: 5px 10px !important;
-    -moz-border-radius: 10px 10px 0 0;
-    -webkit-border-radius: 10px 10px 0 0;
-    background: #e0e0e0;
+    padding: 10px 20px !important;
+    background: #a7cae6;
+     border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
     font-weight: bold !important;
     font-size: 14px !important;
     color: black;
@@ -1135,8 +1140,12 @@ div.button-form form, div.button-form.inline form {
 .loginbox .content
 {
     margin: 0;
-    padding: 10px 10px 0 10px;
+    padding: 0 25px 0 25px;
     border: 0;
+}
+
+.loginbox .content .btn-primary {
+	margin: 0;
 }
 
 .loginbox .seperator
@@ -1144,8 +1153,8 @@ div.button-form form, div.button-form.inline form {
     margin: 20px 0;
     padding: 0;
     border: 0;
-    border-top: 1px dotted #999;
-    background-color: #fff;
+    border-top: 1px dotted #d9e3eb;
+    background-color: #d9e3eb;
 }
 
 .loginbox .fieldwrapper
@@ -1164,7 +1173,8 @@ div.button-form form, div.button-form.inline form {
 }
 
 .loginbox .fieldwrapper input {
-    width: 250px;
+    width: 200px;
+    height: 25px;
     margin: 2px 0;
     padding: 3px;
     border: 0;

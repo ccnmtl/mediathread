@@ -1,4 +1,3 @@
-{% load static %}
 <div id="{{help_id}}-overlay"
     class="ui-widget-overlay help-overlay"
     {% if not default_help_state %}style="display: none"{% endif %}>
@@ -10,7 +9,7 @@
         <input class="dismiss-help" type="image" title="Dismiss help" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
             alt="Dismiss Help"
-            src="{% static 'img/icons/meth_help.png' %}" />
+            src="/site_media/img/icons/meth_help.png" />
 </div>
 
 <div id="{{help_id}}-content"

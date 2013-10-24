@@ -5,12 +5,9 @@
 # (see bottom)
 
 from courseaffils import policies
-import os
+import os.path
 import re
 import sys
-
-APP_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-PROJECT_ROOT = os.path.join(APP_ROOT, '..')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -77,18 +74,7 @@ USE_I18N = False
 MEDIA_ROOT = "uploads/"
 MEDIA_URL = '/uploads/'
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'collected_static')
-STATIC_URL = '/site_media/'
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # other finders..
-    'compressor.finders.CompressorFinder',
-)
-
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'media'),
-)
+STATIC_URL = '/media/'
 
 #appends a slash if nothing is found without a slash.
 APPEND_SLASH = True
@@ -161,7 +147,6 @@ INSTALLED_APPS = [
     'compressor',
     'django_jenkins',
     'mediathread.taxonomy',
-    'django.contrib.staticfiles',
     'smoketest',
     'debug_toolbar',
 ]

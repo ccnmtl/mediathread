@@ -64,7 +64,3 @@ def there_is_not_a_label_type_field(step, label, type):
         for elt in elts:
             if elt.get_attribute('data-label') == label:
                 assert False, "Found a %s %s field" % (label, type)
-
-        assert elt.text.strip() == name, \
-            "The title was %s. Expected %s" % (elt.text, name)
-

@@ -148,8 +148,7 @@ class AssetResource(ModelResource):
         try:
             metadata = simplejson.loads(bundle.obj.metadata_blob)
             metadata = [{'key': k, 'value': v}
-                        for k, v in metadata.items()
-                        if k not in bundle.obj.hidden_metadata]
+                        for k, v in metadata.items()]
             bundle.data['metadata'] = metadata
         except ValueError:
             pass

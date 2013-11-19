@@ -5,7 +5,7 @@ COMPRESS_ENABLED = True
 
 STATSD_HOST = '127.0.0.1'
 
-DEBUG = True
+DEBUG = False
 
 DATABASES = {
     'default': {

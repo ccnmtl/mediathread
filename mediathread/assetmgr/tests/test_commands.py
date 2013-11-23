@@ -32,7 +32,10 @@ class AssetCommandsTest(TestCase):
 
         management.call_command("migrate_artstor_assets")
 
-        s = Source.objects.get(asset=asset, label='image_fpx')
+        s = Source.objects.filter(asset=asset, label='image_fpx')
+        self.assertEquals(len(s), 0)
+
+        s = Source.objects.get(asset=asset, label='deprecated_image_fpx')
         self.assertFalse(s.primary)
 
         s = Source.objects.get(asset=asset, label='image_fpxid')

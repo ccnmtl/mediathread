@@ -12,6 +12,7 @@ class Command(BaseCommand):
             old_image_fpx = Source.objects.get(asset=asset,
                                                label='image_fpx')
             old_image_fpx.primary = False
+            old_image_fpx.label = "deprecated_image_fpx"
             old_image_fpx.save()
 
             source = Source(asset=asset,

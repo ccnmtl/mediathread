@@ -291,11 +291,8 @@
     {% block uncompressable_js %}{% endblock %}        
     
 {% if STAGING_ENV %}
-<div class="alert alert-error"
- style="position: fixed; bottom: 0px; background-color: #fee; border: #f00 solid 1px;">
-<h4>Warning: Staging Site</h4>
-<p>You are viewing a staging version of this site, not the production site.</p>
-<p>This site was last updated on: <b>{{STAGING_DEPLOY_TIME}}</b></p>
+<div class="alert alert-error" style="position: fixed; bottom: 0px; background-color: #fee; border: #f00 solid 1px; width: 100%;">
+<h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <b>{{STAGING_DEPLOY_TIME}}</b></h4>
 </div>
 {% endif %}
 </body>

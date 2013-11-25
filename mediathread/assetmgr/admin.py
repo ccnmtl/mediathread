@@ -4,6 +4,8 @@ from django.contrib import admin
 
 
 class AssetAdmin(admin.ModelAdmin):
+    readonly_fields = ('course', 'author')
+
     class Meta:
         model = Asset
 
@@ -13,6 +15,12 @@ class AssetAdmin(admin.ModelAdmin):
 
 
 class SourceAdmin(admin.ModelAdmin):
+    readonly_fields = ('asset',)
+
+    def queryset(self, request):
+        return super(SourceAdmin, self).queryset(
+            request).select_related('asset')
+
     def course_title(self, obj):
         return obj.asset.course.title
 

@@ -23,9 +23,6 @@ import simplejson
 @login_required
 @allow_http("POST")
 def project_create(request):
-    if request.method != "POST":
-        return HttpResponseForbidden("forbidden")
-
     user = request.user
     course = request.course
     in_course_or_404(user, course)
@@ -66,10 +63,11 @@ def project_create(request):
 
 @login_required
 @allow_http("POST")
+@ajax_required
 def project_save(request, project_id):
     project = get_object_or_404(Project, pk=project_id, course=request.course)
 
-    if not project.can_edit(request) or not request.method == "POST":
+    if not project.can_edit(request):
         return HttpResponseRedirect(project.get_absolute_url())
 
     # verify user is in course
@@ -88,19 +86,18 @@ def project_save(request, project_id):
 
         projectform.instance.collaboration(request, sync_group=True)
 
-        if request.META.get('HTTP_ACCEPT', '').find('json') >= 0:
-            v_num = projectform.instance.get_latest_version()
-            return HttpResponse(simplejson.dumps({
-                'status': 'success',
-                'is_assignment': projectform.instance.is_assignment(request),
-                'title': projectform.instance.title,
-                'revision': {
-                    'id': v_num,
-                    'public_url': projectform.instance.public_url(),
-                    'visibility': project.visibility_short(),
-                    'due_date': project.get_due_date()
-                }
-            }, indent=2), mimetype='application/json')
+        v_num = projectform.instance.get_latest_version()
+        return HttpResponse(simplejson.dumps({
+            'status': 'success',
+            'is_assignment': projectform.instance.is_assignment(request),
+            'title': projectform.instance.title,
+            'revision': {
+                'id': v_num,
+                'public_url': projectform.instance.public_url(),
+                'visibility': project.visibility_short(),
+                'due_date': project.get_due_date()
+            }
+        }, indent=2), mimetype='application/json')
     else:
         ctx = {'status': 'error', 'msg': ""}
         for key, value in projectform.errors.items():
@@ -108,7 +105,7 @@ def project_save(request, project_id):
                 ctx['msg'] = ctx['msg'] + value[0] + "\n"
             else:
                 ctx['msg'] = \
-                    '%s "%s" is not valid for the %s field.\n Please %s\n' % \
+                    '%s "%s" is not valid for the %s field.\n %s\n' % \
                     (ctx['msg'], projectform.data[key],
                      projectform.fields[key].label,
                      value[0].lower())

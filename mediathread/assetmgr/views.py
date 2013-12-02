@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
-    HttpResponseRedirect
+    HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from djangohelpers.lib import allow_http
@@ -57,17 +57,20 @@ def archive_add_or_remove(request):
 
 @login_required
 def asset_switch_course(request, asset_id):
-    asset = Asset.objects.get(pk=asset_id)
-    in_course_or_404(request.user.username, asset.course)
+    try:
+        asset = Asset.objects.get(pk=asset_id)
+        in_course_or_404(request.user.username, asset.course)
 
-    # the user is logged into the wrong class?
-    rv = {}
-    rv['switch_to'] = asset.course
-    rv['switch_from'] = request.course
-    rv['redirect'] = reverse('asset-view', args=[asset_id])
-    return render_to_response('assetmgr/asset_not_found.html',
-                              rv,
-                              context_instance=RequestContext(request))
+        # the user is logged into the wrong class?
+        rv = {}
+        rv['switch_to'] = asset.course
+        rv['switch_from'] = request.course
+        rv['redirect'] = reverse('asset-view', args=[asset_id])
+        return render_to_response('assetmgr/asset_not_found.html',
+                                  rv,
+                                  context_instance=RequestContext(request))
+    except Asset.DoesNotExist:
+        raise Http404("This item does not exist.")
 
 
 @login_required

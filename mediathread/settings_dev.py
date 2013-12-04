@@ -28,7 +28,6 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 DEV_ENV = True
 
-STATSD_PREFIX = 'mediathread-dev'
 SENTRY_SITE = 'mediathread-dev'
 SENTRY_SERVERS = ['http://sentry.ccnmtl.columbia.edu/sentry/store/']
 

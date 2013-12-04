@@ -1,7 +1,7 @@
 # flake8: noqa
 from mediathread.settings import *
 
-USE_X_FORWARDED_HOST=True
+USE_X_FORWARDED_HOST = True
 
 TEMPLATE_DIRS = (
     "/var/www/mediathread/mediathread/mediathread/deploy_specific/templates",

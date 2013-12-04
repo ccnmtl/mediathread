@@ -39,7 +39,7 @@ requirements/src/ipdb-0.7.tar.gz
 requirements/src/lettuce-0.2.14.tar.gz
 requirements/src/selenium-2.31.0.tar.gz
 
-requirements/src/statsd-0.5.1.tar.gz
+requirements/src/statsd-2.0.3.tar.gz
 
 requirements/src/six-1.1.0.tar.gz
 requirements/src/python-dateutil-2.1.tar.gz

@@ -1,6 +1,7 @@
 # flake8: noqa
 from settings_shared import *
 
+COMPRESS_ROOT = '/Users/sdreher/workspace/mediathread/media'
 COMPRESS_ENABLED = True
 
 STATSD_HOST = '127.0.0.1'

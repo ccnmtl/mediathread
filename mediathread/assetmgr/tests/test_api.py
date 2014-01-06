@@ -1,10 +1,13 @@
 #pylint: disable-msg=R0904
 #pylint: disable-msg=E1103
 from courseaffils.models import Course
-#from django.contrib.auth.models import User
-#from mediathread.assetmgr.models import Asset
+from datetime import datetime, timedelta
+from mediathread.assetmgr.models import Asset
+from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from tastypie.test import ResourceTestCase
+#from django.contrib.auth.models import User
+#from mediathread.assetmgr.models import Asset
 #import datetime
 
 
@@ -48,21 +51,75 @@ class AssetResourceTest(ResourceTestCase):
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[1], 'MAAP Award Reception',
+            objects[1],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
+
+        self.assertAssetEquals(
+            objects[2], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[2],
+            objects[3],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
 
+    def test_student_getlist_sorted(self):
+        asset = Asset.objects.get(title='MAAP Award Reception')
+        asset.modified = datetime.now() + timedelta(days=1)
+        asset.save()
+
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        response = self.api_client.get('/_main/api/v1/asset/',
+                                       format='json')
+        self.assertValidJSONResponse(response)
+
+        json = self.deserialize(response)
+        objects = json['objects']
+        self.assertEquals(len(objects), 4)
+
         self.assertAssetEquals(
-            objects[3],
-            'Project Portfolio',
-            'test_instructor_two', 'image', [],
-            None)
+            objects[0], 'MAAP Award Reception',
+            'Instructor One', 'image', [5, 8, 10],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+        self.assertAssetEquals(objects[1], 'Mediathread: Introduction',
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
+
+    def test_student_getlist_sorted_two(self):
+        annotation = SherdNote.objects.get(id=5)
+        annotation.modified = datetime.now() + timedelta(days=1)
+        annotation.save()
+
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        response = self.api_client.get('/_main/api/v1/asset/',
+                                       format='json')
+        self.assertValidJSONResponse(response)
+
+        json = self.deserialize(response)
+        objects = json['objects']
+        self.assertEquals(len(objects), 4)
+
+        self.assertAssetEquals(
+            objects[0], 'MAAP Award Reception',
+            'Instructor One', 'image', [5, 8, 10],
+            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+
+        self.assertAssetEquals(objects[1], 'Mediathread: Introduction',
+                               'Instructor One', 'youtube', [2, 3, 17, 19],
+                               'http://localhost:8002/site_media/img/test/'
+                               'mediathread_introduction_thumb.jpg')
 
     def test_student_getlist_restricted(self):
         # Set course details to restricted
@@ -87,21 +144,21 @@ class AssetResourceTest(ResourceTestCase):
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[1], 'MAAP Award Reception',
+            objects[1],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
+
+        self.assertAssetEquals(
+            objects[2], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[2],
+            objects[3],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
-
-        self.assertAssetEquals(
-            objects[3],
-            'Project Portfolio',
-            'test_instructor_two', 'image', [],
-            None)
 
     def test_student_getobject(self):
         self.assertTrue(
@@ -156,21 +213,21 @@ class AssetResourceTest(ResourceTestCase):
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[1], 'MAAP Award Reception',
+            objects[1],
+            'Project Portfolio',
+            'test_instructor_two', 'image', [],
+            None)
+
+        self.assertAssetEquals(
+            objects[2], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[2],
+            objects[3],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
-
-        self.assertAssetEquals(
-            objects[3],
-            'Project Portfolio',
-            'test_instructor_two', 'image', [],
-            None)
 
     def test_instructor_getlist_restricted(self):
         # Set course details to restricted
@@ -306,23 +363,23 @@ class AssetResourceTest(ResourceTestCase):
                                'http://localhost:8002/site_media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
+        self.assertAssetEquals(objects[1], 'Project Portfolio',
+                               'test_instructor_two', 'image', [], None)
+
+        self.assertAssetEquals(objects[2], 'Design Research',
+                               'test_instructor_alt', 'image',
+                               [13, 14, 15], None)
+
         self.assertAssetEquals(
-            objects[1], 'MAAP Award Reception',
+            objects[3], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
             'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
-            objects[2],
+            objects[4],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
             'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
-
-        self.assertAssetEquals(objects[3], 'Design Research',
-                               'test_instructor_alt', 'image',
-                               [13, 14, 15], None)
-
-        self.assertAssetEquals(objects[4], 'Project Portfolio',
-                               'test_instructor_two', 'image', [], None)
 
     def test_student_getlist_filtered(self):
         self.assertTrue(

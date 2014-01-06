@@ -124,8 +124,7 @@ class AssetResource(ModelResource):
         detail_allowed_methods = ['get']
         authentication = ClassLevelAuthentication()
         authorization = AssetAuthorization()
-
-        ordering = ['id', 'title']
+        ordering = ['modified', 'id', 'title']
 
         filtering = {
             'author': ALL_WITH_RELATIONS,
@@ -226,6 +225,13 @@ class AssetResource(ModelResource):
                             reverse=True)
         return asset_json
 
+    def alter_list_data_to_serialize(self, request, to_be_serialized):
+        to_be_serialized['objects'] = sorted(
+            to_be_serialized['objects'],
+            key=lambda bundle: bundle.data['modified'],
+            reverse=True)
+        return to_be_serialized
+
 
 class AssetSummaryResource(ModelResource):
     def __init__(self, extras={}):
@@ -238,6 +244,8 @@ class AssetSummaryResource(ModelResource):
         'mediathread.djangosherd.api.SherdNoteSummaryResource',
         'sherdnote_set',
         blank=True, null=True, full=True)
+
+    ordering = ['modified', 'id', 'title']
 
     class Meta:
         queryset = Asset.objects.none()
@@ -307,3 +315,10 @@ class AssetSummaryResource(ModelResource):
                             key=lambda asset: asset['modified'],
                             reverse=True)
         return asset_json
+
+    def alter_list_data_to_serialize(self, request, to_be_serialized):
+        to_be_serialized['objects'] = sorted(
+            to_be_serialized['objects'],
+            key=lambda bundle: bundle.data['modified'],
+            reverse=True)
+        return to_be_serialized

@@ -93,7 +93,7 @@
                        <input type="hidden" name="thumb" value="{{archive.thumb_url}}" />
                        <input type="hidden" name="metadata-description" value="{{archive.description}}" />
                      </td>
-                     <td>                       
+                     <td style="text-align: right">                       
                         {% ifincourse archive course %}
                             <input name="remove" type="submit" value="Remove" id="{{archive.title|slugify}}" />
                         {% else %}

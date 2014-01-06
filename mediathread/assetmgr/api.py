@@ -171,6 +171,7 @@ class AssetResource(ModelResource):
         # I'm filtering here rather than directly on the sherdnote resource
         # As counts need to be displayed for all, then the user subset
         # and global annotation display logic is a bit intricate
+        modified = bundle.obj.modified
         for note in bundle.data['sherdnote_set']:
             if (not note.data['is_global_annotation']):
                 if self.options['record_owner']:
@@ -178,6 +179,10 @@ class AssetResource(ModelResource):
                         bundle.data['annotations'].append(note.data)
                 else:
                     bundle.data['annotations'].append(note.data)
+            if note.obj.modified > modified:
+                modified = note.obj.modified
+
+        bundle.data['modified'] = modified
 
         # include the global_annotation for the user as well
         if (self.options['record_owner'] and
@@ -215,6 +220,10 @@ class AssetResource(ModelResource):
         for asset in object_list:
             the_json = self.render_one(request, asset)
             asset_json.append(the_json)
+
+        asset_json = sorted(asset_json,
+                            key=lambda asset: asset['modified'],
+                            reverse=True)
         return asset_json
 
 
@@ -261,11 +270,16 @@ class AssetSummaryResource(ModelResource):
         # I'm filtering here rather than directly on the sherdnote resource
         # As counts need to be displayed for all, then the user subset
         # and global annotation display logic is a bit intricate
+        modified = bundle.obj.modified
         for note in bundle.data['sherdnote_set']:
             if not note.data['is_global_annotation']:
                 bundle.data['annotation_count'] += 1
                 if note.obj.author == bundle.request.user:
                     bundle.data['my_annotation_count'] += 1
+            if note.obj.modified > modified:
+                modified = note.obj.modified
+
+        bundle.data['modified'] = modified
 
         for key, value in self.extras.items():
             bundle.data[key] = value
@@ -289,4 +303,7 @@ class AssetSummaryResource(ModelResource):
         for asset in object_list:
             the_json = self.render_one(request, asset)
             asset_json.append(the_json)
+        asset_json = sorted(asset_json,
+                            key=lambda asset: asset['modified'],
+                            reverse=True)
         return asset_json

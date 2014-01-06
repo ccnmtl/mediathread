@@ -1,7 +1,6 @@
 # flake8: noqa
 from settings_shared import *
 
-COMPRESS_ROOT = '/Users/sdreher/workspace/mediathread/media'
 COMPRESS_ENABLED = True
 
 STATSD_HOST = '127.0.0.1'
@@ -11,7 +10,7 @@ DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/Users/sdreher/workspace/mediathread/lettuce.db',
+        'NAME': 'lettuce.db',
         'OPTIONS': {
             'timeout': 30,
         }

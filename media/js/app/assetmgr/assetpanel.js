@@ -1,5 +1,6 @@
 /**
  * Listens For:
+ * assets.refresh > trigger a resize/masonry event
  * asset.edit > open asset edit dialog
  * asset.on_delete > update annotation view if required
  *
@@ -7,6 +8,7 @@
  * annotation.create > open create annotation dialog
  * annotation.on_cancel > close create/save dialog
  * annotation.on_save > close create/save dialog
+ *
  *
  * Signals:
  * Nothing
@@ -29,6 +31,18 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     });
     
     // Fired by CollectionList & AnnotationList
+    jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
+        var self = event.data.self;
+        
+        var container = jQuery(self.el).find('div.asset-table')[0];
+        jQuery(container).masonry('appended', html, true);
+
+        jQuery(self.el).find("a.asset-title-link").unbind("click").bind("click", { self: self }, self.onClickAssetTitle);
+        jQuery(self.el).find("a.edit-asset-inplace").unbind("click").bind("click", { self: self }, self.editItem);
+
+        jQuery(window).trigger("resize");   
+    });
+    
     jQuery(window).bind('asset.on_delete', { 'self': self },
         function (event, asset_id) { event.data.self.onDeleteItem(asset_id); });
 
@@ -38,7 +52,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     
     jQuery(window).bind('annotation.on_cancel', { 'self': self }, self.closeDialog);
     jQuery(window).bind('annotation.on_save', { 'self': self }, self.closeDialog);
-    jQuery(window).bind('annotation.on_create', { 'self': self }, self.closeDialog);
+    jQuery(window).bind('annotation.on_create', { 'self': self }, self.closeDialog);    
     
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -66,7 +80,10 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'create_asset_thumbs': true,
             'space_owner': self.space_owner,
             'owners': self.panel.owners,
+            'current_asset': self.panel.current_asset,
             'view_callback': function (assetCount) {
+                var self = this;
+                
                 jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
                 jQuery(self.el).find("a.edit-asset-inplace").bind("click", { self: self }, self.editItem);
                 
@@ -80,7 +97,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
                     jQuery('div.asset-table').css('height', '500px');
                 }
                 
-                jQuery(window).trigger("resize");
+                jQuery(window).trigger("resize");            
             }
         });
     }

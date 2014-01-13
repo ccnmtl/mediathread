@@ -116,7 +116,7 @@ def asset_workspace(request, asset_id=None, annot_id=None):
                        'current_asset': asset_id,
                        'current_annotation': annot_id,
                        'update_history': True,
-                       'show_collection': True, }]
+                       'show_collection': True}]
 
     return HttpResponse(simplejson.dumps(data, indent=2),
                         mimetype='application/json')
@@ -610,6 +610,18 @@ def render_assets(request, record_owner, assets):
         course_details.all_selections_are_visible(course) or
         viewing_own_records or viewing_faculty_records or is_faculty)
 
+    # Setup the context
+    user_resource = UserResource()
+
+    # Assemble the context
+    data = {'space_viewer': user_resource.render_one(request, logged_in_user),
+            'editable': viewing_own_records,
+            'citable': citable,
+            'is_faculty': is_faculty}
+
+    if record_owner:
+        data['space_owner'] = user_resource.render_one(request, record_owner)
+
     # Spew out json for the assets
     if request.GET.get('annotations', '') == 'true':
         resource = AssetResource(owner_selections_are_visible,
@@ -620,82 +632,76 @@ def render_assets(request, record_owner, assets):
         resource = AssetSummaryResource({'editable': viewing_own_records,
                                          'citable': citable})
 
+    offset = int(request.GET.get("offset", 0))
+    limit = int(request.GET.get("limit", 20))
     asset_json = resource.render_list(request, assets)
 
-    active_filters = {}
-    for key, val in request.GET.items():
-        if (key == 'tag' or
-                key == 'modified' or
-                key.startswith('vocabulary-')):
-            active_filters[key] = val
+    if offset == 0:
+        active_filters = {}
+        for key, val in request.GET.items():
+            if (key == 'tag' or
+                    key == 'modified' or
+                    key.startswith('vocabulary-')):
+                active_filters[key] = val
+        data['active_filters'] = active_filters
 
-    user_resource = UserResource()
-
-    # #todo -- figure out a cleaner way to do this. Ugli-ness
-    # Collate tag set & vocabulary set for the result set.
-    # Get all visible notes for the returned asset set
-    # These notes may include global annotations for all users,
-    # whereas the rendered set will not
-    active_asset_ids = [a['id'] for a in asset_json]
-    active_notes = []
-    if record_owner:
-        if owner_selections_are_visible:
-            active_notes = SherdNote.objects.filter(
-                asset__course=course, asset__id__in=active_asset_ids,
-                author__id=record_owner.id)
-    else:
-        if all_selections_are_visible(course) or is_faculty:
-            # Display all tags for the asset set including globals
-            active_notes = SherdNote.objects.filter(
-                asset__course=course, asset__id__in=active_asset_ids)
+        # #todo -- figure out a cleaner way to do this. Ugli-ness
+        # Collate tag set & vocabulary set for the result set.
+        # Get all visible notes for the returned asset set
+        # These notes may include global annotations for all users,
+        # whereas the rendered set will not
+        active_asset_ids = [a['id'] for a in asset_json]
+        active_notes = []
+        if record_owner:
+            if owner_selections_are_visible:
+                active_notes = SherdNote.objects.filter(
+                    asset__course=course, asset__id__in=active_asset_ids,
+                    author__id=record_owner.id)
         else:
-            whitelist = [f.id for f in course.faculty]
-            whitelist.append(request.user.id)
-            active_notes = SherdNote.objects.filter(
-                asset__course=course,
-                asset__id__in=active_asset_ids,
-                author__id__in=whitelist)
+            if all_selections_are_visible(course) or is_faculty:
+                # Display all tags for the asset set including globals
+                active_notes = SherdNote.objects.filter(
+                    asset__course=course, asset__id__in=active_asset_ids)
+            else:
+                whitelist = [f.id for f in course.faculty]
+                whitelist.append(request.user.id)
+                active_notes = SherdNote.objects.filter(
+                    asset__course=course,
+                    asset__id__in=active_asset_ids,
+                    author__id__in=whitelist)
 
-    tags = []
-    if len(active_notes) > 0:
-        tags = Tag.objects.usage_for_queryset(active_notes)
-        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+        tags = []
+        if len(active_notes) > 0:
+            tags = Tag.objects.usage_for_queryset(active_notes)
+            tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+        data['active_tags'] = TagResource().render_list(request, tags)
 
-    active_vocabulary = []
-    note_ids = [n.id for n in active_notes]
-    content_type = ContentType.objects.get_for_model(SherdNote)
-    term_resource = TermResource()
-    for vocab in Vocabulary.objects.get_for_object(request.course):
-        vocabulary = {
-            'id': vocab.id,
-            'display_name': vocab.display_name,
-            'term_set': []
-        }
-        related = TermRelationship.objects.filter(term__vocabulary=vocab,
-                                                  content_type=content_type,
-                                                  object_id__in=note_ids)
+        active_vocabulary = []
+        note_ids = [n.id for n in active_notes]
+        content_type = ContentType.objects.get_for_model(SherdNote)
+        term_resource = TermResource()
+        for vocab in Vocabulary.objects.get_for_object(request.course):
+            vocabulary = {
+                'id': vocab.id,
+                'display_name': vocab.display_name,
+                'term_set': []
+            }
+            related = TermRelationship.objects.filter(
+                term__vocabulary=vocab, content_type=content_type,
+                object_id__in=note_ids)
 
-        terms = []
-        for rel in related:
-            if rel.term.display_name not in terms:
-                the_term = term_resource.render_one(request, rel.term)
-                vocabulary['term_set'].append(the_term)
-                terms.append(rel.term.display_name)
+            terms = []
+            for rel in related:
+                if rel.term.display_name not in terms:
+                    the_term = term_resource.render_one(request, rel.term)
+                    vocabulary['term_set'].append(the_term)
+                    terms.append(rel.term.display_name)
 
-        active_vocabulary.append(vocabulary)
+            active_vocabulary.append(vocabulary)
+        data['active_vocabulary'] = active_vocabulary
 
-    # Assemble the context
-    data = {'assets': asset_json,
-            'active_tags': TagResource().render_list(request, tags),
-            'active_filters': active_filters,
-            'active_vocabulary': active_vocabulary,
-            'space_viewer': user_resource.render_one(request, logged_in_user),
-            'editable': viewing_own_records,
-            'citable': citable,
-            'is_faculty': is_faculty}
-
-    if record_owner:
-        data['space_owner'] = user_resource.render_one(request, record_owner)
+    # Add in the assets
+    data['assets'] = asset_json[offset:offset + limit]
 
     json_stream = simplejson.dumps(data, indent=2)
     return HttpResponse(json_stream, mimetype='application/json')

@@ -176,6 +176,11 @@
             }
           }
         };
+        Renderer.prototype.render_partial = function(context, opts) {
+            if (this.inner_index) {
+                return this.compiled[this.inner_index].compiled.render(context);
+            }
+        };        
         Renderer.prototype.css_selector = function() {
           if (this.partial_unique_id)
             return '#'+this.partial_unique_id;
@@ -187,6 +192,12 @@
           if (template && template.update_partial)
             return template.update_partial(context, opts);
         };
+        PublicMustache.prototype.render_partial = function(template_name, context, opts) {
+            var template = Renderer.prototype.partials[template_name];
+            if (template && template.update_partial) {
+                return template.render_partial(context, opts);
+            }
+        };                
         PublicMustache.prototype.css_selector = function(template_name) {
           var template = Renderer.prototype.partials[template_name];
           if (template)

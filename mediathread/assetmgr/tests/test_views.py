@@ -1,4 +1,6 @@
 #pylint: disable-msg=R0904
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.test import TestCase
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
@@ -170,6 +172,7 @@ class AssetViewTest(TestCase):
         self.assertEquals(gla['metadata']['body'],
                           "student two item note")
 
+# Commented
 #     def test_student_get_peer_assets(self):
 #         username = "test_student_one"
 #         password = "test"
@@ -221,3 +224,45 @@ class AssetViewTest(TestCase):
 #         self.assert_(self.client.login(username=username, password=password))
 #
 #         record_owner = ''
+
+    def test_save_server2server(self):
+        setattr(settings,
+                'SERVER_ADMIN_SECRETKEYS', {'http://localhost': 'testing'})
+
+        post_data = {'set_course': "Sample_Course_Students",
+                     'secret': 'testing',
+                     'as': 'test_student_one',
+                     'title': "Test Video",
+                     "metadata-creator": "test_student_one",
+                     "metadata-description": "a description",
+                     "metadata-subject": "a subject",
+                     "metadata-license": "video.license",
+                     "metadata-language": "english",
+                     "metadata-uuid": "26d62ca0-844f-11e3-a7ed-0002a5d5c51b",
+                     "metadata-wardenclyffe-id": str(1234),
+                     "metadata-tag": "upload",
+                     "mp4-metadata": "w%dh%d" % (256, 256),
+                     "mp4_pseudo": "http://stream.ccnmtl.columbia.edu/"
+                     "secvideos/SECURE/d75ebcfa-8444-11e3-a075-00163e3b1544-"
+                     "No_training_wheels-mp4-aac-480w-850kbps-ffmpeg.mp4"}
+
+        response = self.client.post("/save/", post_data, follow=True)
+        asset = Asset.objects.get(title="Test Video")
+        self.assertRedirects(response,
+                             "http://testserver/accounts/login/?next=/asset/" +
+                             str(asset.id) + "/",
+                             status_code=302,
+                             target_status_code=200)
+        self.assertEquals(asset.author.username, "test_student_one")
+        self.assertEquals(asset.course.title, "Sample Course")
+        user = User.objects.get(username='test_student_one')
+        self.assertIsNotNone(asset.global_annotation(user, auto_create=False))
+
+        # Repeat the post with a different user, verify there's no duplication
+        post_data['as'] = 'test_instructor'
+        response = self.client.post("/save/", post_data, follow=True)
+
+        # There should only be one asset. This will raise if there are multiple
+        asset = Asset.objects.get(title="Test Video")
+        user = User.objects.get(username="test_instructor")
+        self.assertIsNotNone(asset.global_annotation(user, auto_create=False))

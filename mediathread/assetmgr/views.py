@@ -212,23 +212,9 @@ def asset_create(request):
     source = request.POST.get('asset-source', "")
 
     if source == 'bookmarklet':
+        # bookmarklet create
         asset_url += "?level=item"
 
-    # for bookmarklet mass-adding
-    if request.REQUEST.get('noui', '').startswith('postMessage'):
-        return render_to_response('assetmgr/interface_iframe.html',
-                                  {'message': ('%s|%s' %
-                                   (request.build_absolute_uri(asset_url)),
-                                   request.REQUEST['noui']), })
-    elif request.is_ajax():
-        return HttpResponse(serializers.serialize('json', asset),
-                            mimetype="application/json")
-    elif "archive" == asset.primary.label:
-        redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-manage-sources'))
-        url = "%s?newsrc=%s" % (redirect_url, asset.title)
-        return HttpResponseRedirect(url)
-    else:
         template = loader.get_template('assetmgr/analyze.html')
         context = RequestContext(request, {
             'request': request,
@@ -237,6 +223,24 @@ def asset_create(request):
             'asset_url': asset_url
         })
         return HttpResponse(template.render(context))
+    elif request.REQUEST.get('noui', '').startswith('postMessage'):
+        # for bookmarklet mass-adding
+        return render_to_response('assetmgr/interface_iframe.html',
+                                  {'message': ('%s|%s' %
+                                   (request.build_absolute_uri(asset_url)),
+                                   request.REQUEST['noui']), })
+    elif request.is_ajax():
+        # unsure when asset_create is called via ajax
+        return HttpResponse(serializers.serialize('json', asset),
+                            mimetype="application/json")
+    elif "archive" == asset.primary.label:
+        redirect_url = request.POST.get('redirect-url',
+                                        reverse('class-manage-sources'))
+        url = "%s?newsrc=%s" % (redirect_url, asset.title)
+        return HttpResponseRedirect(url)
+    else:
+        # server2server create
+        return HttpResponseRedirect(asset_url)
 
 
 @login_required

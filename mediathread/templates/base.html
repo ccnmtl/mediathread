@@ -114,9 +114,11 @@
                             </li>
                             
                             <li>
-                                <div unselectable="on">
-                                  <a href="/contact/">Contact Us</a>
-                                </div>
+			      {% if request.user.is_authenticated and course %}
+			          <div unselectable="on"><a href="/contact/">Contact Us</a></div>
+                              {% else %}{% if settings.PUBLIC_CONTACT_EMAIL %}
+                                  <div unselectable="on"><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact Us</a></div>
+                              {% endif %}{% endif %}
                             </li>
                         {% else %}
                             <li><div unselectable="on"><a href="/help/">Help</a></div></li>
@@ -181,9 +183,11 @@
     
     	   <ul id="footernav">
                <li><a href="http://ccnmtl.columbia.edu/our_services/tools/mediathread/" target="_blank">About</a></li>
-               {% if settings.PUBLIC_CONTACT_EMAIL %}                          
+               {% if request.user.is_authenticated and course %}
+                   <li><a href="/contact/">Contact Us</a></li>
+               {% else %}{% if settings.PUBLIC_CONTACT_EMAIL %}                          
                    <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact Us</a></li>
-               {% endif %}
+               {% endif %}{% endif %}
                <li><a href="/help/">Help</a></li>
             </ul>
         </div><!-- id="footer" -->

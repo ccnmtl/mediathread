@@ -68,13 +68,18 @@ class AssetAuthorization(Authorization):
 
         return len(items) > 0
 
+    def read_detail(self, object_list, bundle):
+        lst = self.read_list(object_list, bundle)
+        return len(lst) > 0
+
     def read_list(self, object_list, bundle):
         request = bundle.request
 
         # Exclude archives from these lists
         archives = object_list.filter(source__primary=True,
                                       source__label='archive')
-        object_list = object_list.exclude(id__in=[a.id for a in archives])
+        object_list = object_list.exclude(
+            id__in=archives.values_list('id', flat=True))
 
         tag_string = request.GET.get('tag', '')
         modified = request.GET.get('modified', '')

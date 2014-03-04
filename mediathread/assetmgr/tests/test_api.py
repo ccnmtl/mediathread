@@ -268,7 +268,7 @@ class AssetResourceTest(ResourceTestCase):
         # Student One Selection
         response = self.api_client.get('/_main/api/v1/asset/1/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_post_list(self):
         self.assertTrue(
@@ -303,14 +303,14 @@ class AssetResourceTest(ResourceTestCase):
         response = self.api_client.get('/_main/api/v1/asset/1/',
                                        format='json')
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name,
+        self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
 
         # No dice, login to Alternate Course
         response = self.api_client.client.get(
             '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name, "homepage.html")
+        self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Let's try this again -- Student One Selection from Sample Course
         response = self.api_client.get('/_main/api/v1/asset/1/',
@@ -341,14 +341,14 @@ class AssetResourceTest(ResourceTestCase):
         response = self.api_client.get('/_main/api/v1/asset/',
                                        format='json')
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name,
+        self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
 
         # No dice, login to Alternate Course
         response = self.api_client.client.get(
             '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name, "homepage.html")
+        self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Let's try this again -- asset list
         response = self.api_client.get('/_main/api/v1/asset/',

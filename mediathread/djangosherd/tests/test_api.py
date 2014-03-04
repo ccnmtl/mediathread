@@ -174,7 +174,7 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Instructor's Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Peer Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/10/',
@@ -186,7 +186,7 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Peer Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/11/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_student_getobject_restricted(self):
         # Set course details to restricted
@@ -222,17 +222,17 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Instructor's Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Peer Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/10/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Peer Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/11/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_instructor_getlist(self):
         self.assertTrue(self.api_client.client.login(
@@ -304,7 +304,7 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Student One Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/9/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Instructor Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/5/',
@@ -331,7 +331,7 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Peer Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/11/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_instructor_getobject_restricted(self):
         # Set course details to restricted
@@ -350,22 +350,22 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Student One Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/8/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Student One Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/9/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Instructor Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/5/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Instructor's Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Instructor in Alternate Course attempts
         # to retrieve selections from Sample Course
@@ -376,22 +376,22 @@ class SherdNoteResourceTest(ResourceTestCase):
         # Student One Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/8/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Student One Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/9/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Instructor Selection
         response = self.api_client.get('/_main/api/v1/sherdnote/5/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Instructor's Global Annotation
         response = self.api_client.get('/_main/api/v1/sherdnote/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_post_list(self):
         self.assertTrue(
@@ -429,20 +429,20 @@ class SherdNoteResourceTest(ResourceTestCase):
         response = self.api_client.get('/_main/api/v1/sherdnote/8/',
                                        format='json')
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name,
+        self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
 
         # No dice, login to Alternate Course
         response = self.api_client.client.get(
             '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name, "homepage.html")
+        self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Let's try this again --
         # Student One Public Selection from Sample Course
         response = self.api_client.get('/_main/api/v1/sherdnote/9/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         response = self.api_client.get('/_main/api/v1/sherdnote/8/',
                                        format='json')
@@ -472,14 +472,14 @@ class SherdNoteResourceTest(ResourceTestCase):
         response = self.api_client.get('/_main/api/v1/sherdnote/',
                                        format='json')
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name,
+        self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
 
         # No dice, login to Alternate Course
         response = self.api_client.client.get(
             '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name, "homepage.html")
+        self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Let's try this again -- asset list please
         response = self.api_client.get('/_main/api/v1/sherdnote/',

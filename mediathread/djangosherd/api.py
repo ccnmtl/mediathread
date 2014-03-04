@@ -16,6 +16,10 @@ from tastypie.resources import ModelResource
 
 class SherdNoteAuthorization(Authorization):
 
+    def read_detail(self, object_list, bundle):
+        lst = self.read_list(object_list, bundle)
+        return len(lst) > 0
+
     def read_list(self, object_list, bundle, exclude_global=True):
         request = bundle.request
 

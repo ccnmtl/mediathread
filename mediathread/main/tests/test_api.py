@@ -346,7 +346,7 @@ class CourseResourceTest(ResourceTestCase):
         response = self.api_client.get('/_main/api/v1/course/2/',
                                        format='json')
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_student_multiple_class_getobject_filtered(self):
         # Test Student Three is a member of both Sample Course + Alt Course
@@ -358,7 +358,7 @@ class CourseResourceTest(ResourceTestCase):
         response = self.api_client.client.get(
             '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name, "homepage.html")
+        self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Request Sample Course information
         # Projects & Assets w/sherdnotes from Student One
@@ -391,7 +391,7 @@ class CourseResourceTest(ResourceTestCase):
         response = self.api_client.client.get(
             '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
         self.assertHttpOK(response)
-        self.assertEquals(response.template[0].name, "homepage.html")
+        self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Request Sample Course information
         # Projects & Assets w/sherdnotes from Test Instructor Two

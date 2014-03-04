@@ -117,7 +117,7 @@ class ProjectResourceTest(ResourceTestCase):
         # Student three composition in alt course
         response = self.api_client.get('/_main/api/v1/project/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_student_two_getobject(self):
         self.assertTrue(
@@ -127,12 +127,12 @@ class ProjectResourceTest(ResourceTestCase):
         # Student one private composition
         response = self.api_client.get('/_main/api/v1/project/1/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Student one instructor shared composition
         response = self.api_client.get('/_main/api/v1/project/2/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Student one public to class composition
         response = self.api_client.get('/_main/api/v1/project/3/',
@@ -145,7 +145,7 @@ class ProjectResourceTest(ResourceTestCase):
         # Student three composition in alt course
         response = self.api_client.get('/_main/api/v1/project/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_instructor_getobject(self):
         self.assertTrue(
@@ -155,7 +155,7 @@ class ProjectResourceTest(ResourceTestCase):
         # Student one private composition
         response = self.api_client.get('/_main/api/v1/project/1/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
         # Student one instructor shared composition
         response = self.api_client.get('/_main/api/v1/project/2/',
@@ -176,7 +176,7 @@ class ProjectResourceTest(ResourceTestCase):
         # Student three composition in alt course
         response = self.api_client.get('/_main/api/v1/project/4/',
                                        format='json')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_post_list(self):
         self.assertTrue(

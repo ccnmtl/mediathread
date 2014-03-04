@@ -1,22 +1,23 @@
 # flake8: noqa
 from settings_shared import *
+import os
 
-COMPRESS_ENABLED = True
 
-STATSD_HOST = '127.0.0.1'
+DEBUG = True
 
-DEBUG = False
+COMPRESS_ROOT = "/Users/sdreher/workspace/mediathread.develop/media/"
+
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'lettuce.db',
+        'NAME': os.path.join(PROJECT_PATH, '../lettuce.db'),
         'OPTIONS': {
             'timeout': 30,
         }
     }
 }
-
 
 LETTUCE_SERVER_PORT = 8002
 BROWSER = 'Headless'  # ["Chrome", "Firefox", "Headless"}
@@ -46,19 +47,19 @@ class ExceptionLoggingMiddleware(object):
         import traceback
         print traceback.format_exc()
 
-
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
+    'django_statsd.middleware.GraphiteRequestTimingMiddleware',
+    'django_statsd.middleware.GraphiteMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread.main.middleware.AuthRequirementMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'mediathread.settings_test.ExceptionLoggingMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
+    'mediathread.local_settings.ExceptionLoggingMiddleware'
+]
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False

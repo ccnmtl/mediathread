@@ -9,6 +9,11 @@ from tastypie.resources import ModelResource
 
 
 class CourseMemberAuthorization(Authorization):
+
+    def read_detail(self, object_list, bundle):
+        lst = self.read_list(object_list, bundle)
+        return len(lst) > 0
+
     def read_list(self, object_list, bundle):
         # User must be a member of all courses in the request list
         for course in object_list:

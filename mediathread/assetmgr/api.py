@@ -1,6 +1,7 @@
 #pylint: disable-msg=R0904
 from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.query_utils import Q
 from mediathread.api import ClassLevelAuthentication, UserResource, \
     ToManyFieldEx
 from mediathread.assetmgr.models import Asset, Source
@@ -11,10 +12,10 @@ from mediathread.taxonomy.models import TermRelationship
 from tagging.models import TaggedItem
 from tastypie import fields
 from tastypie.authorization import Authorization
+from tastypie.bundle import Bundle
 from tastypie.constants import ALL_WITH_RELATIONS
 from tastypie.resources import ModelResource
 import simplejson
-from django.db.models.query_utils import Q
 
 
 class SourceResource(ModelResource):
@@ -216,7 +217,9 @@ class AssetResource(ModelResource):
         return self._meta.serializer.to_simple(dehydrated, None)
 
     def render_list(self, request, object_list):
-        object_list = self.apply_authorization_limits(request, object_list)
+        bundle = Bundle(request=request)
+
+        object_list = self.authorized_read_list(object_list, bundle)
         asset_json = []
         for asset in object_list:
             the_json = self.render_one(request, asset)
@@ -303,7 +306,8 @@ class AssetSummaryResource(ModelResource):
         return self._meta.serializer.to_simple(dehydrated, None)
 
     def render_list(self, request, object_list):
-        object_list = self.apply_authorization_limits(request, object_list)
+        bundle = Bundle(request=request)
+        object_list = self.authorized_read_list(object_list, bundle)
 
         #from django.core.paginator import Paginator
         #p = Paginator(object_list, 10)

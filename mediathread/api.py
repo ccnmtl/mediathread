@@ -29,11 +29,11 @@ class ToManyFieldEx(ToManyField):
 
         return resource.build_filters(related_filters)
 
-    def apply_m2m_filters(self, request, related_field_name, object_list):
+    def apply_m2m_filters(self, bundle, related_field_name, object_list):
         m2m_resource = self.get_related_resource(None)
 
         applicable_filters = self.build_m2m_filters(m2m_resource,
-                                                    request.GET.copy(),
+                                                    bundle.request.GET.copy(),
                                                     related_field_name)
 
         try:
@@ -41,8 +41,7 @@ class ToManyFieldEx(ToManyField):
                 object_list = object_list.filter(
                     **applicable_filters).distinct()
 
-            return m2m_resource.apply_authorization_limits(request,
-                                                           object_list)
+            return m2m_resource.authorized_read_list(object_list, bundle)
         except ValueError:
             raise BadRequest("Invalid resource lookup data \
             provided (mismatched type).")
@@ -51,7 +50,7 @@ class ToManyFieldEx(ToManyField):
         m2m_resource = self.get_related_resource(None)
         return m2m_resource.apply_sorting(object_list, options=request.GET)
 
-    def dehydrate(self, bundle):
+    def dehydrate(self, bundle, for_list=True):
         if not bundle.obj or not bundle.obj.pk:
             if not self.null:
                 raise ApiFieldError("The model '%r' does not have a primary \
@@ -71,7 +70,7 @@ class ToManyFieldEx(ToManyField):
                 previous_obj = the_m2ms
                 try:
                     the_m2ms = getattr(the_m2ms, attr, None)
-                    the_m2ms = self.apply_m2m_filters(bundle.request,
+                    the_m2ms = self.apply_m2m_filters(bundle,
                                                       attr,
                                                       the_m2ms.all())
                 except ObjectDoesNotExist:
@@ -209,7 +208,8 @@ class RestrictedCourseResource(ModelResource):
     def get_restricted(self, request, object_list, course):
         return []
 
-    def apply_authorization_limits(self, request, object_list):
+    def authorized_read_list(self, object_list, bundle):
+        request = bundle.request
         course = self.course or request.course
 
         if (all_selections_are_visible(course) or

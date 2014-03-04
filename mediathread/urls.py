@@ -1,8 +1,8 @@
 from django.conf import settings
-from django.conf.urls.defaults import url, patterns, include
+from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 from djangosherd.api import SherdNoteResource
 from mediathread.api import TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -26,7 +26,6 @@ v1_api.register(TagResource())
 
 admin.autodiscover()
 
-site_media_root = os.path.join(os.path.dirname(__file__), "../media")
 bookmarklet_root = os.path.join(os.path.dirname(__file__),
                                 "../media/",
                                 "bookmarklets")
@@ -62,20 +61,16 @@ urlpatterns = patterns(
 
     auth_urls,  # see above
 
-    (r'^contact/', login_required(direct_to_template),
-     {'template': 'main/contact.html'}),
+    (r'^contact/', login_required(
+        TemplateView.as_view(template_name="main/contact.html"))),
 
-    (r'^_stats/', direct_to_template,
-     {'template': 'main/stats.html'}),
+    (r'^stats/', TemplateView.as_view(template_name="stats.html")),
 
     (r'^smoketest/', include('smoketest.urls')),
 
     (r'^admin/', admin.site.urls),
 
     (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
-
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': site_media_root}),
 
     # Bookmarklet + cache defeating
     url(r'^bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve',

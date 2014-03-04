@@ -66,7 +66,7 @@ var CollectionList = function (config) {
     });
     
     jQuery.ajax({
-        url: '/site_media/templates/' + config.template + '.mustache?nocache=v2',
+        url: '/media/templates/' + config.template + '.mustache?nocache=v2',
         dataType: 'text',
         cache: false, // Chrome && Internet Explorer has aggressive caching policies.
         success: function (text) {

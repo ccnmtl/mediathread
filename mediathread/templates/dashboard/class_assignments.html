@@ -27,7 +27,7 @@
       <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
     </td>
     <td>
-      <a href="{% url class-assignment-report assignment.id %}">
+      <a href="{% url 'class-assignment-report' assignment.id %}">
 	{{assignment|assignment_responses:request|length}} / {{num_students}}
       </a>
     </td>

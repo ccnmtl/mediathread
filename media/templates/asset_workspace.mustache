@@ -9,7 +9,7 @@
                                     type="image" title="Help" 
                                     alt="Help"
                                     class="help-button"
-                                    src="/site_media/img/icons/meth_help.png" />                                                             
+                                    src="/media/img/icons/meth_help.png" />                                                             
                             </div>                        
                             <h2><a href="/asset">Collection</a></h2>
                         </td>
@@ -20,7 +20,7 @@
                                 <input id="asset-view-help-button" type="image" title="Help"
                                     class="help-button" 
                                      onclick="return AnnotationList.showHelp();" 
-                                     alt="Help" src="/site_media/img/icons/meth_help.png" />                                                             
+                                     alt="Help" src="/media/img/icons/meth_help.png" />                                                             
                             </div>  
                         
                             <div class="asset-view-header">
@@ -40,7 +40,7 @@
                         <td class="panel-container collection subpanel">
                             <div class="ajaxloader">
                                 <div class="message">
-                                <img alt="Loading..." src="/site_media/img/ajax-loader.gif">
+                                <img alt="Loading..." src="/media/img/ajax-loader.gif">
                                 <br /><br />
                                 <div>Refreshing the collection</div>
                                 </div>
@@ -75,7 +75,7 @@
                                     <div id="asset-view-help-tab" class="ui-widget-content asset-view-help-tab" {{^show_help}}style="display: none"{{/show_help}}>
                                             <input class="dismiss-help" type="image" title="Dismiss help" 
                                                 onclick="return AnnotationList.dismissHelp(this);" 
-                                                alt="Dismiss Help" src="/site_media/img/icons/meth_help.png" />
+                                                alt="Dismiss Help" src="/media/img/icons/meth_help.png" />
                                     </div>
                                     
                                     <div id="asset-view-help" class="ui-widget-content asset-view-help" {{^show_help}}style="display: none"{{/show_help}}>
@@ -83,14 +83,14 @@
                                             How to analyze this item
                                         </h3>                                            
                                         <div class="asset-view-help-instructions">
-                                            Click the [<img alt="Pencil Icon" src="/site_media/img/icons/meth_edit.png" />] icon to add tags and notes to whole items. 
+                                            Click the [<img alt="Pencil Icon" src="/media/img/icons/meth_edit.png" />] icon to add tags and notes to whole items. 
                                         </div>
                                         <h3>
                                             How to work with item selections
                                         </h3>
                                         <div class="asset-view-help-instructions">
-                                            <div>Click the [<img alt="Create Selection" src="/site_media/img/icons/meth_addselection.png" />] icon to add a selection.</div>
-                                            <div>Click the [<img alt="Pencil Icon" src="/site_media/img/icons/meth_edit.png" />] icon to edit a selection.</div>
+                                            <div>Click the [<img alt="Create Selection" src="/media/img/icons/meth_addselection.png" />] icon to add a selection.</div>
+                                            <div>Click the [<img alt="Pencil Icon" src="/media/img/icons/meth_edit.png" />] icon to edit a selection.</div>
                                             <div>Click the View button to group selections by author or tag.</div>
                                         </div>
                                         <br />
@@ -130,12 +130,12 @@
                                                             {{#global_annotation.id?}}     
                                                             <input type="image" title="Remove item from collection" 
                                                                 onclick="return AnnotationList.deleteItem(event, this, {{id}});" 
-                                                                alt="Delete" src="/site_media/img/icons/meth_delete.png" />
+                                                                alt="Delete" src="/media/img/icons/meth_delete.png" />
                                                             {{/global_annotation.id?}}                                                           
                                                             
                                                             <input type="image" title="Edit item" 
                                                                onclick="return AnnotationList.editItem(this);" 
-                                                               alt="Edit" src="/site_media/img/icons/meth_edit.png" />
+                                                               alt="Edit" src="/media/img/icons/meth_edit.png" />
                                                         </div>                                                
                                                     </h2>
                                                         
@@ -155,7 +155,7 @@
                                                                             <br />
                                                                             <a class="btn-primary edit-item"
                                                                                 onclick="return AnnotationList.editItem(this);">
-                                                                                <img src="/site_media/img/icons/meth_edit.png"
+                                                                                <img src="/media/img/icons/meth_edit.png"
                                                                                     alt="Edit this item"></img>
                                                                                 Edit this item
                                                                             </a>
@@ -297,7 +297,7 @@
                                                         <div class="actions">
                                                             <input id="annotation-view-help-button" type="image" title="Help" 
                                                                  onclick="return jQuery('#instructions').toggle();" 
-                                                                 alt="Help" src="/site_media/img/icons/meth_help.png" />                                                             
+                                                                 alt="Help" src="/media/img/icons/meth_help.png" />                                                             
                                                         </div>                                                        
                                                     
                                                         <h2>
@@ -388,12 +388,12 @@
                                                             <a class="btn-primary create-selection right"
                                                                title="Create Selection" 
                                                                onclick="return AnnotationList.newAnnotation();">                                                                
-                                                                <img src="/site_media/img/icons/meth_addselection.png" />
+                                                                <img src="/media/img/icons/meth_addselection.png" />
                                                                 Create</a>
                                                                                                             
                                                             <a class="btn-primary filter-selections right"
                                                                 onclick='return jQuery("#annotation-filter-menu").toggle();'>
-                                                                <img src="/site_media/img/icons/meth_view.png" />
+                                                                <img src="/media/img/icons/meth_view.png" />
                                                                 View
                                                             </a>
                                                             <div id="annotation-filter-menu" style="display: none">
@@ -426,7 +426,7 @@
                                                                 
                                                                 <a class="btn-primary create-selection"
                                                                     onclick="return AnnotationList.newAnnotation();">
-                                                                    <img src="/site_media/img/icons/meth_addselection.png"
+                                                                    <img src="/media/img/icons/meth_addselection.png"
                                                                         alt="Create Selection"></img>
                                                                     Create a selection
                                                                 </a>
@@ -437,7 +437,7 @@
                                                             <a style="display: none"
                                                                 class="btn-primary create-selection"
                                                                 onclick="return AnnotationList.newAnnotation();">
-                                                                <img src="/site_media/img/icons/meth_addselection.png"
+                                                                <img src="/media/img/icons/meth_addselection.png"
                                                                     alt="Create Selection"></img>
                                                                 Create Selection
                                                             </a>                                                                
@@ -466,18 +466,18 @@
                                                                              {{#editable?}}
                                                                                  <input style="display: none" type="image" title="Edit Selection" 
                                                                                      onclick="return AnnotationList.editAnnotation(this);" 
-                                                                                     alt="Edit" src="/site_media/img/icons/meth_edit.png" 
+                                                                                     alt="Edit" src="/media/img/icons/meth_edit.png" 
                                                                                      class="annotation-listitem-icon edit" />
                                                                                  <input style="display: none" type="image" title="Delete Selection" 
                                                                                     onclick="return AnnotationList.deleteAnnotation(event, this, {{id}});" 
-                                                                                    alt="Delete" src="/site_media/img/icons/meth_delete.png" 
+                                                                                    alt="Delete" src="/media/img/icons/meth_delete.png" 
                                                                                     class="annotation-listitem-icon delete" />
                                                                              {{/editable?}}
                                                         
                                                                              {{^editable}}
                                                                                  <input style="display: none" type="image" title="Copy Selection" 
                                                                                      onclick="return AnnotationList.copyAnnotation(this);" 
-                                                                                     alt="Copy" src="/site_media/img/icons/meth_copy.png"
+                                                                                     alt="Copy" src="/media/img/icons/meth_copy.png"
                                                                                      class="annotation-listitem-icon" />
                                                                              {{/editable}}
                                                                          </h3>
@@ -494,7 +494,7 @@
                                                                                             <input type="image" title="Play Clip" 
                                                                                                 class="regButton videoplay left"
                                                                                                 alt="Play Clip"
-                                                                                                src="/site_media/img/icons/meth_video_play.png" />
+                                                                                                src="/media/img/icons/meth_video_play.png" />
                                                                                         </div>
                                                                                         <div class="visualclear"></div>
                                                                                     {{/annotation.startCode?}}

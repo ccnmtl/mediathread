@@ -146,20 +146,20 @@
                             <div class="actions">
                                 {{#editable?}}
                                     <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                        <img src="/site_media/img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
+                                        <img src="/media/img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
                                     </a>
                                     <a class="collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
-                                        <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
+                                        <img src="/media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
                                     </a>
                                 {{/editable?}}
                                 <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
-                                    <img src="/site_media/img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                                    <img src="/media/img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
                                 </a>                                
                             </div>
                             {{#citable?}}
                             <span class="citationTemplate">
                                 <img class="materialCitation" alt="" 
-                                    src="/site_media/img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
+                                    src="/media/img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0" 
                                     onclick="addMaterialCitation(event)" 
                                     title="Add item to the composition" 
                                     name="{{local_url}}"/>
@@ -228,7 +228,7 @@
                                                             {{#citable?}}
                                                             <span class="citationTemplate">
                                                                 <img class="materialCitation" alt="" 
-                                                                    src="/site_media/img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}" 
+                                                                    src="/media/img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}" 
                                                                     onclick="addMaterialCitation(event)" 
                                                                     title="Add selection to the composition" 
                                                                     name="{{url}}"/>
@@ -249,10 +249,10 @@
                                                             <td class="selection-trash">
                                                                 <div class="actions">
                                                                     <a class="collection-choice delete-annotation" href="{{id}}" title="Delete selection">
-                                                                        <img src="/site_media/img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
+                                                                        <img src="/media/img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
                                                                     </a>
                                                                     <a class="collection-choice edit-annotation" href="{{id}}" title="Quick edit selection attributes">
-                                                                        <img src="/site_media/img/icons/meth_edit.png" class="edit_icon" alt="Edit selection attributes"  />
+                                                                        <img src="/media/img/icons/meth_edit.png" class="edit_icon" alt="Edit selection attributes"  />
                                                                     </a>
                                                                 </div>
                                                             </td>

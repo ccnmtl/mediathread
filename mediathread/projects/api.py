@@ -13,7 +13,9 @@ from tastypie.resources import ModelResource
 
 class ProjectAuthorization(Authorization):
 
-    def apply_limits(self, request, object_list):
+    def read_list(self, object_list, bundle):
+        request = bundle.request
+
         # collaboration context for the parent course
         save_course = request.course
         save_context = request.collaboration_context

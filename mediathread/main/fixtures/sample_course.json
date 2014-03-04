@@ -1081,7 +1081,7 @@
         "pk": 4, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/mediathread_introduction_thumb.jpg", 
+            "url": "http://localhost:8002/media/img/test/mediathread_introduction_thumb.jpg", 
             "primary": false, 
             "label": "thumb", 
             "width": 120, 
@@ -1126,7 +1126,7 @@
         "pk": 7, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/maap.jpg", 
+            "url": "http://localhost:8002/media/img/test/maap.jpg", 
             "primary": true, 
             "label": "image", 
             "width": 2816, 
@@ -1141,7 +1141,7 @@
         "pk": 8, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/maap_thumb.jpg", 
+            "url": "http://localhost:8002/media/img/test/maap_thumb.jpg", 
             "primary": false, 
             "label": "thumb", 
             "width": 0, 
@@ -1186,7 +1186,7 @@
         "pk": 12, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/armory.jpg/", 
+            "url": "http://localhost:8002/media/img/test/armory.jpg/", 
             "primary": true, 
             "label": "image", 
             "width": 1430, 
@@ -1201,7 +1201,7 @@
         "pk": 13, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/armory_thumb.jpg", 
+            "url": "http://localhost:8002/media/img/test/armory_thumb.jpg", 
             "primary": false, 
             "label": "thumb", 
             "width": 0, 
@@ -1246,7 +1246,7 @@
         "pk": 17, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/dr.jpg", 
+            "url": "http://localhost:8002/media/img/test/dr.jpg", 
             "primary": true, 
             "label": "image", 
             "width": 768, 
@@ -1291,7 +1291,7 @@
         "pk": 20, 
         "model": "assetmgr.source", 
         "fields": {
-            "url": "http://localhost:8002/site_media/img/test/portfolio.jpg", 
+            "url": "http://localhost:8002/media/img/test/portfolio.jpg", 
             "primary": true, 
             "label": "image", 
             "width": 768, 
@@ -1323,7 +1323,7 @@
         "fields": {
             "archive_url": "http://youtube.com", 
             "description": "The largest collection of video on the web, where you can also upload video yourself.", 
-            "thumb_url": "/site_media/img/thumbs/youtube.jpg", 
+            "thumb_url": "/media/img/thumbs/youtube.jpg", 
             "title": "You Tube"
         }
     }, 

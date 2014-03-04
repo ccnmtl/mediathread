@@ -67,7 +67,9 @@ class AssetAuthorization(Authorization):
 
         return len(items) > 0
 
-    def apply_limits(self, request, object_list):
+    def read_list(self, object_list, bundle):
+        request = bundle.request
+
         # Exclude archives from these lists
         archives = object_list.filter(source__primary=True,
                                       source__label='archive')
@@ -81,8 +83,8 @@ class AssetAuthorization(Authorization):
         invisible = []
         for asset in object_list:
             # Hack -- call the authorization layer directly
-            notes = SherdNoteResource()._meta.authorization.apply_limits(
-                request, asset.sherdnote_set, False)
+            notes = SherdNoteResource()._meta.authorization.read_list(
+                asset.sherdnote_set, bundle, False)
 
             if not cached_course_is_member(asset.course, request.user):
                 invisible.append(asset.id)

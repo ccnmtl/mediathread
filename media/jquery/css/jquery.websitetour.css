@@ -53,7 +53,7 @@ div.tooltip-highlighted-content h2 input {
 .tooltip_arrow_TR,
 .tooltip_arrow_BL,
 .tooltip_arrow_BR{
-	background-image:url(/site_media/img/topbottom.png);
+	background-image:url(/media/img/topbottom.png);
 	width:13px;
 	height:7px;
 }
@@ -63,7 +63,7 @@ div.tooltip-highlighted-content h2 input {
 .tooltip_arrow_LB,
 .tooltip_arrow_RT,
 .tooltip_arrow_RB{
-	background-image:url(/site_media/img/leftright.png);
+	background-image:url(/media/img/leftright.png);
 	width:7px;
 	height:13px;
 }

@@ -47,7 +47,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
@@ -59,13 +59,13 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[2], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[3],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
     def test_student_getlist_sorted(self):
         asset = Asset.objects.get(title='MAAP Award Reception')
@@ -87,11 +87,11 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(objects[1], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
     def test_student_getlist_sorted_two(self):
@@ -114,11 +114,11 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(objects[1], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
     def test_student_getlist_restricted(self):
@@ -140,7 +140,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
@@ -152,13 +152,13 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[2], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[3],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
     def test_student_getobject(self):
         self.assertTrue(
@@ -173,7 +173,7 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             json, 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
     def test_student_getobject_restricted(self):
         # Set course details to restricted
@@ -192,7 +192,7 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             json, 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
     def test_instructor_getlist(self):
         self.assertTrue(
@@ -209,7 +209,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
@@ -221,13 +221,13 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[2], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[3],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
     def test_instructor_getlist_restricted(self):
         # Set course details to restricted
@@ -248,7 +248,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(json, 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
     def test_instructor_getobject_restricted(self):
@@ -319,7 +319,7 @@ class AssetResourceTest(ResourceTestCase):
         json = self.deserialize(response)
         self.assertAssetEquals(json, 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         # Now ask for one from Alternate Course
@@ -360,7 +360,7 @@ class AssetResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(objects[1], 'Project Portfolio',
@@ -373,13 +373,13 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[3], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[4],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
     def test_student_getlist_filtered(self):
         self.assertTrue(
@@ -399,7 +399,7 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
 #     def test_student_getlist_bymodified(self):
 #         self.assertTrue(
@@ -422,5 +422,5 @@ class AssetResourceTest(ResourceTestCase):
 #
 #         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
 #                                'Instructor One', 'youtube', [2, 3, 17, 19],
-#                                'http://localhost:8002/site_media/img/test/'
+#                                'http://localhost:8002/media/img/test/'
 #                                'mediathread_introduction_thumb.jpg')

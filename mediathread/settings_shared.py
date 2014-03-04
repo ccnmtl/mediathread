@@ -66,15 +66,16 @@ NOSE_ARGS = [
 
 CACHE_BACKEND = 'locmem:///'
 
+USE_TZ = True
 TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = False
+MEDIA_ROOT = "/var/www/mediathread/uploads/"
+MEDIA_URL = "/uploads/"
+STATIC_URL = "/media/"
 
-MEDIA_ROOT = "uploads/"
-MEDIA_URL = '/uploads/'
-
-STATIC_URL = '/media/'
+SECRET_KEY = ')ng#)ef_u@_^zvvu@dxm7ql-yb^_!a6%v3v^j3b(mp+)l+5%@h'
 
 #appends a slash if nothing is found without a slash.
 APPEND_SLASH = True
@@ -84,26 +85,26 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader'
 )
 
-# ## be careful: if you add/remove something here
-# ## do the same with settings_production.py
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.request',
-    'mediathread.main.views.django_settings',
     'stagingcontext.staging_processor',
+    'django.core.context_processors.static',
+    'mediathread.main.views.django_settings',
 )
 
 MIDDLEWARE_CLASSES = [
+    'django_statsd.middleware.GraphiteRequestTimingMiddleware',
+    'django_statsd.middleware.GraphiteMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread.main.middleware.AuthRequirementMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -125,6 +126,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.flatpages',
     'django.contrib.markup',
+    'django.contrib.staticfiles',
+    'django.contrib.messages',
     'sorl.thumbnail',
     'courseaffils',
     'django.contrib.sites',
@@ -164,10 +167,19 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
 )
 
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), "../media")
+STATICFILES_DIRS = (
+)
 
-COMPRESS_URL = "/site_media/"
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_URL = "/media/"
 COMPRESS_ROOT = "media/"
-COMPRESS_PARSER = "compressor.parser.HtmlParser"
+
 
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mediathread] "
@@ -188,7 +200,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # users. we need to allow anonymous access to the login
 # page, and to static resources.
 
-ANONYMOUS_PATHS = ('/site_media/',
+ANONYMOUS_PATHS = ('/media/',
                    '/accounts/',
                    '/admin/',
                    '/api/',
@@ -251,6 +263,11 @@ def no_reject(request, reason):
 
 CSRF_FAILURE_VIEW = no_reject
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+}
+
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there
 try:
@@ -259,5 +276,6 @@ try:
         INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS
     if 'EXTRA_MIDDLEWARE_CLASSES' in locals():
         MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + EXTRA_MIDDLEWARE_CLASSES
-except ImportError:
-    pass
+except:
+    import traceback
+    print traceback.format_exc()

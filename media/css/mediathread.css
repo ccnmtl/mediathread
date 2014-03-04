@@ -322,7 +322,7 @@ div.arrowIcon {
 }
 
 a.arrowClosed div.arrowIcon {
-    background-image: url(/site_media/img/arrowOpen.png);
+    background-image: url(/media/img/arrowOpen.png);
 }
 
 
@@ -703,7 +703,7 @@ input.autocomplete.default {
 .ui-icon-reverse { 
     width: 16px; 
     height: 16px; 
-    background-image: url(/site_media/jquery/css/images/ui-icons_ffffff_256x240.png); 
+    background-image: url(/media/jquery/css/images/ui-icons_ffffff_256x240.png); 
 }
 
 .help-overlay {
@@ -1231,7 +1231,7 @@ div.button-form form, div.button-form.inline form {
 }
 
 .errornote {
-    background: url("/site_media/img/icon_alert.png") no-repeat 5px 5px #FFEBE8;
+    background: url("/media/img/icon_alert.png") no-repeat 5px 5px #FFEBE8;
     border: 1px solid #c00 !important;
     display: block;
     font-size: 11px !important;
@@ -3615,7 +3615,7 @@ div.collection_table {
     padding:0 0 0 7px;
     margin:0;
     position:absolute;
-    background:url('/site_media/img/bookendleft.gif') top left no-repeat ;
+    background:url('/media/img/bookendleft.gif') top left no-repeat ;
     z-index:0;
 }
 
@@ -3636,7 +3636,7 @@ div.collection_table {
     width:0px;
     height:7px;
     padding:0 6px 0 0;
-    background:url('/site_media/img/bookendright.gif') top right no-repeat;
+    background:url('/media/img/bookendright.gif') top right no-repeat;
     position:absolute;
     z-index:0;
 }

@@ -139,19 +139,19 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[2],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
         self.assertAssetEquals(
             objects[3],
@@ -192,7 +192,7 @@ class CourseResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         objects = json['project_set']
         self.assertEquals(len(objects), 0)
@@ -217,7 +217,7 @@ class CourseResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [8],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         objects = json['project_set']
         self.assertEquals(len(objects), 3)
@@ -250,19 +250,19 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[2],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
         self.assertAssetEquals(
             objects[3],
@@ -300,19 +300,19 @@ class CourseResourceTest(ResourceTestCase):
         self.assertEquals(len(objects), 4)
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(
             objects[1], 'MAAP Award Reception',
             'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         self.assertAssetEquals(
             objects[2],
             'The Armory - Home to CCNMTL\'S CUMC Office',
             'Instructor One', 'image', [7],
-            'http://localhost:8002/site_media/img/test/armory_thumb.jpg')
+            'http://localhost:8002/media/img/test/armory_thumb.jpg')
 
         self.assertAssetEquals(
             objects[3],
@@ -375,7 +375,7 @@ class CourseResourceTest(ResourceTestCase):
         self.assertAssetEquals(
             objects[0], 'MAAP Award Reception',
             'Instructor One', 'image', [8],
-            'http://localhost:8002/site_media/img/test/maap_thumb.jpg')
+            'http://localhost:8002/media/img/test/maap_thumb.jpg')
 
         objects = json['project_set']
         self.assertEquals(len(objects), 1)
@@ -408,7 +408,7 @@ class CourseResourceTest(ResourceTestCase):
 
         self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
                                'Instructor One', 'youtube', [19],
-                               'http://localhost:8002/site_media/img/test/'
+                               'http://localhost:8002/media/img/test/'
                                'mediathread_introduction_thumb.jpg')
 
         self.assertAssetEquals(objects[1], 'Project Portfolio',

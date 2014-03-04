@@ -27,7 +27,7 @@
     <p>This feature allows authors to publish compositions at
     a public level, via a link that does not require logging into Mediathread.</p>
         
-            <form action="{% url class-settings %}" method="POST">
+            <form action="{% url 'class-settings' %}" method="POST">
                 <b>Enabled</b>:&nbsp; 
                 <input type="radio" name="allow_public_compositions" id="allow_public_compositions_yes" value="1" {% if allow_public_compositions %}checked{% endif %}>Yes</input>
                 <input type="radio" name="allow_public_compositions" id="allow_public_compositions_no" value="0" {% if not allow_public_compositions %}checked{% endif %}>No</input>
@@ -43,7 +43,7 @@
         collections views. Faculty and students can still view a selection embedded
         in a visible composition.</p>
     
-        <form action="{% url class-settings %}" method="POST">
+        <form action="{% url 'class-settings' %}" method="POST">
             <b>Course members can see each other's selections</b>: &nbsp;
             <input type="radio" name="selection_visibility" id="selection_visibility_yes" value="1" {% if selection_visibility %}checked{% endif %}/>Yes
             <input type="radio" name="selection_visibility" id="selection_visibility_no" value="0" {% if not selection_visibility %}checked{% endif %}/>No

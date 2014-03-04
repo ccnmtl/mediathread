@@ -60,7 +60,7 @@
             } else {
                 // pull it off the wire
                 jQuery.ajax({
-                    url: '/site_media/templates/' + self.panels[idx].template + '.mustache?nocache=v3',
+                    url: '/media/templates/' + self.panels[idx].template + '.mustache?nocache=v3',
                     dataType: 'text',
                     cache: false, // Chrome && Internet Explorer have aggressive caching policies.
                     success: function (text) {

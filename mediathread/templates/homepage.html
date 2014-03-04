@@ -6,12 +6,12 @@
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="/site_media/jquery/css/jquery.websitetour.css" media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}jquery/css/jquery.websitetour.css" media="screen" />
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/site_media/jquery/js/jquery.easing.1.3.js"></script>
-    <script type="text/javascript" src="/site_media/jquery/js/jquery.websitetour.js"></script>    
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.websitetour.js"></script>    
 {% endblock %}
 
 {% block uncompressable_js %}      
@@ -160,8 +160,8 @@
                                             <div class="actions">
                                                 {% if is_faculty %}
                                                     <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                                                        href="{% url discussion-delete disc.id %}">                                                        
-                                                    <img src="/site_media/img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  /></a>
+                                                        href="{% url 'discussion-delete' disc.id %}">                                                        
+                                                    <img src="{{STATIC_URL}}img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  /></a>
                                                 {% endif %}
                                             </div>
                                             <a href="/discussion/{{disc.id}}">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
@@ -229,7 +229,7 @@
             	<div class="column-container">
                 	<h2 class="tour_3">Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
                 	<a class="btn-primary collection" href="/asset/">
-                        <img src="/site_media/img/viewfullcollection.png" width="12" height="12" alt="view full collection icon" />View Full Collection</a> 
+                        <img src="{{STATIC_URL}}img/viewfullcollection.png" width="12" height="12" alt="view full collection icon" />View Full Collection</a> 
                     
                     <div id="tour_3_content" style="display: none">
                         <p>
@@ -344,7 +344,7 @@
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <input type="hidden" name="audio2" value="mp4"></input>
-                                        <a class="btn-primary upload_button audio"><img src="/site_media/img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
+                                        <a class="btn-primary upload_button audio"><img src="{{STATIC_URL}}img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
                                     </form>  
                                     </div>
                                     <div id="upload_video">
@@ -361,7 +361,7 @@
                                             </div>
                                         {% endif %}
                                         <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                                        <a class="btn-primary upload_button video"><img src="/site_media/img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
+                                        <a class="btn-primary upload_button video"><img src="{{STATIC_URL}}img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
                                     </form>               
                                     </div>
                             {% endifequal %}
@@ -381,7 +381,7 @@
                             {% for archive in archives %}
                                 {% if space_viewer.is_staff %}
                                     <div class="manage-archive">
-                                        <a class="manage-archive-link" href="{%url admin:assetmgr_asset_change archive.id %}">Manage</a>
+                                        <a class="manage-archive-link" href="{%url 'admin:assetmgr_asset_change' archive.id %}">Manage</a>
                                     </div>
                                 {% endif %}
                             <div class="recommend_source">

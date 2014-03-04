@@ -145,7 +145,9 @@ class FacultyAuthorization(Authorization):
 
 
 class UserAuthorization(Authorization):
-    def apply_limits(self, request, object_list):
+    def read_list(self, object_list, bundle):
+        request = bundle.request
+
         if request.user.is_staff:
             return object_list
 

@@ -32,7 +32,7 @@ def django_settings(request):
                  'DEBUG',
                  'REVISION',
                  'DATABASES',
-                 'GOOGLE_ANALYTICS_ID',
+                 'GOOGLE_ANALYTICS_ID'
                  ]
 
     context = {'settings': dict([(k, getattr(settings, k, None))

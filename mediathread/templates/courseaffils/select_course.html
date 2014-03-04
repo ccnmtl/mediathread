@@ -43,7 +43,7 @@
         </div>
         <div id="create-course-container">
             {% if add_privilege %}
-                <a id="create-course" class="create-course" href="{%url admin:courseaffils_course_add %}">Create new course</a>            
+                <a id="create-course" class="create-course" href="{%url 'admin:courseaffils_course_add' %}">Create new course</a>            
             {% endif %}
         </div>
     </div>
@@ -73,7 +73,7 @@
       <td>{% course_role for request.user in course as foo %}{{foo}}</td>
       {% if add_privilege %}
          <td class="manage-course">  
-           <a class="project" href="{%url admin:courseaffils_course_change course.id %}">manage</a>
+           <a class="project" href="{%url 'admin:courseaffils_course_change' course.id %}">manage</a>
          </td>
     
       {% endif %}

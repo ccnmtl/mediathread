@@ -1,6 +1,6 @@
 var tiny_mce_settings = {
         theme: "advanced",
-        content_css: "/site_media/css/project.css",
+        content_css: "/media/css/project.css",
         mode: "specific_textareas",
         editor_selector: "mceEditor",
         entity_encoding : "numeric",
@@ -133,8 +133,8 @@ var tiny_mce_settings = {
             "ul[class|compact<compact|id|title|type]"
     };
 
-tinymce.PluginManager.load('citation', '/site_media/js/sherdjs/lib/mcePlugin_citation/editor_plugin.js');
-tinymce.PluginManager.load('editorwindow', '/site_media/js/sherdjs/lib/mcePlugin_editorwindow/editor_plugin.js');
+tinymce.PluginManager.load('citation', '/media/js/sherdjs/lib/mcePlugin_citation/editor_plugin.js');
+tinymce.PluginManager.load('editorwindow', '/media/js/sherdjs/lib/mcePlugin_editorwindow/editor_plugin.js');
 tinyMCE.init(tiny_mce_settings);
 
 

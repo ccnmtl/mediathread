@@ -16,7 +16,9 @@ from tastypie.resources import ModelResource
 
 class SherdNoteAuthorization(Authorization):
 
-    def apply_limits(self, request, object_list, exclude_global=True):
+    def read_list(self, object_list, bundle, exclude_global=True):
+        request = bundle.request
+
         if request.user.is_authenticated():
             if exclude_global:
                 # only request user's global annotations

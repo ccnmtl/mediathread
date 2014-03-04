@@ -66,12 +66,12 @@ if ret:
     exit(ret)
 
 # install javascript libraries
-libs = [l.strip() for l in open(os.path.join(pwd, "requirements/js.txt"))]
-jsdir = os.path.abspath(os.path.join(pwd, "media/js/"))
-os.chdir(jsdir)
-for lib in libs:
-    ret = subprocess.call(["tar",
-                           "xvzf",
-                           "../../%s" % lib])
-    if ret:
-        exit(ret)
+# libs = [l.strip() for l in open(os.path.join(pwd, "requirements/js.txt"))]
+# jsdir = os.path.abspath(os.path.join(pwd, "media/js/"))
+# os.chdir(jsdir)
+# for lib in libs:
+#     ret = subprocess.call(["tar",
+#                            "xvzf",
+#                            "../../%s" % lib])
+#     if ret:
+#         exit(ret)

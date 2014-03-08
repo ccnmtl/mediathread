@@ -44,10 +44,9 @@ class Collaboration(models.Model):
     slug = models.SlugField(max_length=50, null=True, default=None, blank=True)
 
     # Content-object field
-    content_type = models.ForeignKey(ContentType,
-                                     related_name=
-                                     "collaboration_set_for_%(class)s",
-                                     null=True, blank=True)
+    content_type = models.ForeignKey(
+        ContentType, related_name="collaboration_set_for_%(class)s",
+        null=True, blank=True)
 
     object_pk = models.CharField(_('object ID'),
                                  max_length=255,
@@ -157,9 +156,9 @@ class Collaboration(models.Model):
         collaboration, if any, associated with this object:
         Collaboration.get_associated_collabs(my_course)
         """
-        ct = ContentType.objects.get_for_model(type(obj))
+        content_type = ContentType.objects.get_for_model(type(obj))
         return Collaboration.objects.get(
-            content_type=ct,
+            content_type=content_type,
             object_pk=str(obj.pk)
         )
 

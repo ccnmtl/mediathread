@@ -131,5 +131,5 @@ urlpatterns = patterns(
         name="source_redirect"),
 
     ### Public Access ###
-    (r'', include('structuredcollaboration.urls')),
+    (r'^s/', include('structuredcollaboration.urls')),
 )

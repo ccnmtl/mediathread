@@ -2,10 +2,7 @@
 from settings_shared import *
 import os
 
-
 DEBUG = True
-
-COMPRESS_ROOT = "/Users/sdreher/workspace/mediathread.develop/media/"
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 

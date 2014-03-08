@@ -66,7 +66,6 @@ NOSE_ARGS = [
 
 CACHE_BACKEND = 'locmem:///'
 
-USE_TZ = True
 TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
@@ -128,12 +127,10 @@ INSTALLED_APPS = [
     'django.contrib.markup',
     'django.contrib.staticfiles',
     'django.contrib.messages',
-    'sorl.thumbnail',
     'courseaffils',
     'django.contrib.sites',
     'django.contrib.admin',
     'tagging',
-    'smartif',
     'modelversions',
     'structuredcollaboration',
     'mediathread.djangosherd',

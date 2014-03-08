@@ -370,7 +370,10 @@
             "object_pk": "2", 
             "_parent": null, 
             "user": null, 
-            "content_type": 7, 
+            "content_type": [
+                "courseaffils", 
+                "course"
+            ],  
             "slug": "Alternate_Course"
         }
     }, 
@@ -386,7 +389,10 @@
             "object_pk": "1", 
             "_parent": null, 
             "user": null, 
-            "content_type": 7, 
+            "content_type": [
+                "courseaffils", 
+                "course"
+            ], 
             "slug": "Sample_Course"
         }
     },

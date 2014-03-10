@@ -53,7 +53,8 @@ class TermRelationshipResource(RestrictedCourseResource):
 
     def filter(self, request, filters):
         self.filters = filters
-        objects = self.obj_get_list(request=request)
+        base_bundle = self.build_bundle(request=request)
+        objects = self.obj_get_list(bundle=base_bundle)
 
         last = len(objects) - 1
         for idx, term in enumerate(objects):
@@ -155,7 +156,7 @@ class VocabularyResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = VocabularyAuthorization()
         excludes = ['description', 'single_select']
-        ordering = ['id', 'title']
+        ordering = ['display_name']
         validation = VocabularyValidation()
 
     def dehydrate(self, bundle):
@@ -168,13 +169,19 @@ class VocabularyResource(ModelResource):
         bundle.obj.course = Course.objects.get(id=bundle.data['object_id'])
         return bundle
 
-    def render_one(self, request, v):
-        bundle = self.build_bundle(obj=v, request=request)
+    def render_one(self, request, vocabulary):
+        bundle = self.build_bundle(obj=vocabulary, request=request)
         dehydrated = self.full_dehydrate(bundle)
         return self._meta.serializer.to_simple(dehydrated, None)
 
-    def render_list(self, request, vocabulary):
+    def render_list(self, request, vocabularies):
         data = []
-        for v in vocabulary:
-            data.append(self.render_one(request, v))
+        for vocabulary in vocabularies:
+            data.append(self.render_one(request, vocabulary))
         return data
+
+    def alter_list_data_to_serialize(self, request, to_be_serialized):
+        to_be_serialized['objects'] = sorted(
+            to_be_serialized['objects'],
+            key=lambda bundle: bundle.data['display_name'])
+        return to_be_serialized

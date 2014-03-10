@@ -1,5 +1,4 @@
 from courseaffils.models import Course
-from django.contrib.contenttypes.models import ContentType
 from django.test.testcases import TestCase
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration

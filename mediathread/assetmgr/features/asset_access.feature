@@ -157,7 +157,7 @@ Feature: Direct Asset Access
         When I click the "Sample Course" link
         Then I am in the Sample Course class
         
-        # Try to access an asset from the Alternate Course
+        # Try to access an asset from the Sample Course
         When I access the url "/asset/4/"
         Then I see "Oops!"
         Then there is a "Go to Alternate Course" link

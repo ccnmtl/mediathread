@@ -2,6 +2,7 @@
 #pylint: disable-msg=E1103
 from courseaffils.models import Course
 from django.contrib.auth.models import User
+from django.http.request import HttpRequest
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.main import course_details
@@ -34,6 +35,89 @@ class TagResourceTest(ResourceTestCase):
         self.assertEquals(lst[4]['count'], 1)
         self.assertEquals(lst[4]['last'], True)
         self.assertEquals(lst[4]['name'], 'youtube')
+
+    def test_filter_by_asset(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        asset = Asset.objects.get(id=1)
+        filters = {
+            'assets': [asset.id],
+        }
+        request = HttpRequest()
+        request.course = asset.course
+
+        lst = TagResource(asset.course).filter(request, filters)
+
+        self.assertEquals(len(lst), 5)
+
+        for item in lst:
+            self.assertFalse('count' in item)
+
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'test_instructor_item')
+
+        self.assertFalse('count' in lst[4])
+        self.assertEquals(lst[4]['last'], True)
+        self.assertEquals(lst[4]['name'], 'youtube')
+
+    def test_filter_by_record_owner(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        asset = Asset.objects.get(id=1)
+        filters = {
+            'record_owner': User.objects.get(username='test_student_one'),
+            'counts': True
+        }
+        request = HttpRequest()
+        request.course = asset.course
+
+        lst = TagResource(asset.course).filter(request, filters)
+
+        self.assertEquals(len(lst), 2)
+        self.assertEquals(lst[0]['count'], 1)
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'student_one_item')
+
+        self.assertEquals(lst[1]['count'], 1)
+        self.assertEquals(lst[1]['last'], True)
+        self.assertEquals(lst[1]['name'], 'student_one_selection')
+
+    def test_filter_by_both(self):
+        self.assertTrue(
+            self.api_client.client.login(username="test_student_one",
+                                         password="test"))
+
+        asset = Asset.objects.get(id=1)
+        filters = {
+            'assets': [asset.id],
+            'record_owner': User.objects.get(username='test_instructor'),
+            'counts': True
+        }
+        request = HttpRequest()
+        request.course = asset.course
+
+        lst = TagResource(asset.course).filter(request, filters)
+
+        self.assertEquals(len(lst), 4)
+        self.assertEquals(lst[0]['count'], 1)
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'test_instructor_item')
+
+        self.assertEquals(lst[1]['count'], 1)
+        self.assertEquals(lst[1]['last'], False)
+        self.assertEquals(lst[1]['name'], 'test_instructor_selection')
+
+        self.assertEquals(lst[2]['count'], 2)
+        self.assertEquals(lst[2]['last'], False)
+        self.assertEquals(lst[2]['name'], 'video')
+
+        self.assertEquals(lst[3]['count'], 1)
+        self.assertEquals(lst[3]['last'], True)
+        self.assertEquals(lst[3]['name'], 'youtube')
 
 
 class UserResourceTest(ResourceTestCase):

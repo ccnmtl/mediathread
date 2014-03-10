@@ -275,5 +275,6 @@ class TagResource(RestrictedCourseResource):
 
     def filter(self, request, filters):
         self.filters = filters
-        objects = self.obj_get_list(request=request)
+        base_bundle = self.build_bundle(request=request)
+        objects = self.obj_get_list(bundle=base_bundle)
         return self.render_list(request, objects)

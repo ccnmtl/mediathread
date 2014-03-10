@@ -28,6 +28,9 @@ class Vocabulary(models.Model):
 
     objects = GenericRelationshipManager()
 
+    class Meta:
+        ordering = ['display_name', 'id']
+
     def save(self, force_insert=False, force_update=False):
         self.name = slugify(self.display_name)
         super(Vocabulary, self).save(force_insert, force_update)

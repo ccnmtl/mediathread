@@ -43,7 +43,10 @@
                                         <div>
                                             <label>{{display_name}}</label>
                                             <div>
-                                                <select class="vocabulary" name="vocabulary-{{id}}" multiple="multiple"">
+                                                <select class="vocabulary"
+                                                    name="vocabulary-{{id}}"
+                                                    data-placeholder="select {{display_name?lower()}}"
+                                                    multiple="multiple"">
                                                     {{#term_set}}
                                                         <option value="{{id}}">{{display_name}}</option>
                                                     {{/term_set}}
@@ -59,6 +62,7 @@
                                                     <input class="global-annotation-tags"
                                                         type="text"
                                                         name="annotation-tags"
+                                                        data-placeholder="select or create tags"
                                                         value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"
                                                         id="id_annotation-tags"></input>
                                                     <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
@@ -142,7 +146,10 @@
                                                     <div>
                                                         <label>{{display_name}}</label>
                                                         <div>
-                                                            <select class="vocabulary" name="vocabulary-{{id}}" multiple="multiple"">
+                                                            <select class="vocabulary"
+                                                                name="vocabulary-{{id}}"
+                                                                data-placeholder="select {{display_name?lower()}}"
+                                                                multiple="multiple"">
                                                                 {{#term_set}}
                                                                     <option value="{{id}}">{{display_name}}</option>
                                                                 {{/term_set}}
@@ -154,7 +161,7 @@
                                                 {{#annotation}}
                                                     <label for="annotation-tags">Tags</label> 
                                                     <div><input type="text" id="id_annotation-tags" 
-                                                        name="annotation-tags" 
+                                                        name="annotation-tags" data-placeholder="select or create tags"
                                                         value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
                                                     <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
                                                     

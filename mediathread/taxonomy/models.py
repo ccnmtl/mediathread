@@ -53,6 +53,7 @@ class Term(models.Model):
 
     class Meta:
         unique_together = ('name', 'vocabulary')
+        ordering = ['display_name', 'id']
 
     def __unicode__(self):
         return "%s, %s" % (self.vocabulary, self.display_name)
@@ -84,3 +85,4 @@ class TermRelationship(models.Model):
 
     class Meta:
         unique_together = ('term', 'content_type', 'object_id')
+        ordering = ['term__display_name', 'id']

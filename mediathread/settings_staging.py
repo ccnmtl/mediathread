@@ -29,19 +29,10 @@ TEMPLATE_DEBUG = DEBUG
 STAGING_ENV = True
 
 STATSD_PREFIX = 'mediathread-staging'
-SENTRY_SITE = 'mediathread-staging'
 
 if 'migrate' not in sys.argv:
-    INSTALLED_APPS.append('sentry.client')
+    INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
-    import logging
-    from sentry.client.handlers import SentryHandler
-    logger = logging.getLogger()
-    if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
-        logger.addHandler(SentryHandler())
-        logger = logging.getLogger('sentry.errors')
-        logger.propagate = False
-        logger.addHandler(logging.StreamHandler())
 
 try:
     from local_settings import *

@@ -11,6 +11,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
+from django.views.generic.simple import direct_to_template
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource, AssetSummaryResource
@@ -83,8 +84,13 @@ def asset_workspace(request, asset_id=None, annot_id=None):
     if asset_id:
         try:
             asset = Asset.objects.get(pk=asset_id, course=request.course)
+            asset.primary
         except Asset.DoesNotExist:
             return asset_switch_course(request, asset_id)
+        except Source.DoesNotExist:
+            response = direct_to_template(request, "500.html", {})
+            response.status_code = 500
+            return response
 
     data = {'space_owner': request.user.username,
             'asset_id': asset_id,

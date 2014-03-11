@@ -28,6 +28,9 @@ class Vocabulary(models.Model):
 
     objects = GenericRelationshipManager()
 
+    class Meta:
+        ordering = ['display_name', 'id']
+
     def save(self, force_insert=False, force_update=False):
         self.name = slugify(self.display_name)
         super(Vocabulary, self).save(force_insert, force_update)
@@ -50,6 +53,7 @@ class Term(models.Model):
 
     class Meta:
         unique_together = ('name', 'vocabulary')
+        ordering = ['display_name', 'id']
 
     def __unicode__(self):
         return "%s, %s" % (self.vocabulary, self.display_name)
@@ -81,3 +85,4 @@ class TermRelationship(models.Model):
 
     class Meta:
         unique_together = ('term', 'content_type', 'object_id')
+        ordering = ['term__display_name', 'id']

@@ -209,16 +209,20 @@ class AssetResource(ModelResource):
         return bundle
 
     def render_one(self, request, item):
-        bundle = self.build_bundle(obj=item, request=request)
-        dehydrated = self.full_dehydrate(bundle)
-        return self._meta.serializer.to_simple(dehydrated, None)
+        try:
+            bundle = self.build_bundle(obj=item, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            return self._meta.serializer.to_simple(dehydrated, None)
+        except Source.DoesNotExist:
+            return None
 
     def render_list(self, request, object_list):
         object_list = self.apply_authorization_limits(request, object_list)
         asset_json = []
         for asset in object_list:
             the_json = self.render_one(request, asset)
-            asset_json.append(the_json)
+            if the_json:
+                asset_json.append(the_json)
 
         asset_json = sorted(asset_json,
                             key=lambda asset: asset['modified'],
@@ -296,9 +300,12 @@ class AssetSummaryResource(ModelResource):
         return bundle
 
     def render_one(self, request, item):
-        bundle = self.build_bundle(obj=item, request=request)
-        dehydrated = self.full_dehydrate(bundle)
-        return self._meta.serializer.to_simple(dehydrated, None)
+        try:
+            bundle = self.build_bundle(obj=item, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            return self._meta.serializer.to_simple(dehydrated, None)
+        except Source.DoesNotExist:
+            return None
 
     def render_list(self, request, object_list):
         object_list = self.apply_authorization_limits(request, object_list)
@@ -310,7 +317,9 @@ class AssetSummaryResource(ModelResource):
         asset_json = []
         for asset in object_list:
             the_json = self.render_one(request, asset)
-            asset_json.append(the_json)
+            if the_json:
+                asset_json.append(the_json)
+
         asset_json = sorted(asset_json,
                             key=lambda asset: asset['modified'],
                             reverse=True)

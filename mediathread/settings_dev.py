@@ -24,25 +24,9 @@ DATABASES = {
 }
 
 COMPRESS_ROOT = "/var/www/mediathread/mediathread/media/"
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 DEV_ENV = True
-
-SENTRY_SITE = 'mediathread-dev'
-SENTRY_SERVERS = ['http://sentry.ccnmtl.columbia.edu/sentry/store/']
-
-if 'migrate' not in sys.argv:
-    INSTALLED_APPS.append('raven.contrib.django')
-
-    import logging
-    from raven.contrib.django.handlers import SentryHandler
-    logger = logging.getLogger()
-    # ensure we havent already registered the handler
-    if SentryHandler not in map(type, logger.handlers):
-        logger.addHandler(SentryHandler())
-        logger = logging.getLogger('sentry.errors')
-        logger.propagate = False
-        logger.addHandler(logging.StreamHandler())
 
 try:
     from local_settings import *

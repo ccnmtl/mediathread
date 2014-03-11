@@ -29,19 +29,10 @@ COMPRESS_ROOT = "/var/www/mediathread/mediathread/media/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-SENTRY_SITE = 'mediathread'
+STATSD_PREFIX = 'mediathread'
 
 if 'migrate' not in sys.argv:
-    INSTALLED_APPS.append('sentry.client')
-
-    import logging
-    from sentry.client.handlers import SentryHandler
-    logger = logging.getLogger()
-    if SentryHandler not in map(lambda x: x.__class__, logger.handlers):
-        logger.addHandler(SentryHandler())
-        logger = logging.getLogger('sentry.errors')
-        logger.propagate = False
-        logger.addHandler(logging.StreamHandler())
+    INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
 try:
     from local_settings import *

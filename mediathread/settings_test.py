@@ -20,7 +20,7 @@ DATABASES = {
 
 
 LETTUCE_SERVER_PORT = 8002
-BROWSER = 'Headless'  # ["Chrome", "Firefox", "Headless"}
+BROWSER = 'Firefox'  # ["Chrome", "Firefox", "Headless"}
 
 LETTUCE_APPS = (
     'mediathread.main',

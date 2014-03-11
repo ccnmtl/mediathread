@@ -37,7 +37,7 @@ requirements/src/sure-1.1.7.tar.gz
 requirements/src/ipython-0.13.1.tar.gz
 requirements/src/ipdb-0.7.tar.gz
 requirements/src/lettuce-0.2.14.tar.gz
-requirements/src/selenium-2.31.0.tar.gz
+requirements/src/selenium-2.40.0.tar.gz
 
 requirements/src/statsd-2.0.3.tar.gz
 

@@ -45,8 +45,11 @@ class AssetManager(models.Manager):
         else:
             to_return = []
             for asset in fassets:
-                if asset.primary.label != 'archive':
-                    to_return.append(asset)
+                try:
+                    if asset.primary.label != 'archive':
+                        to_return.append(asset)
+                except Source.DoesNotExist:
+                    pass  # ignore this error
             return to_return
 
     def migrate(self, asset_set, course, user, object_map):

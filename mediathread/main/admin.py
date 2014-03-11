@@ -7,6 +7,7 @@ class UserSettingAdmin(admin.ModelAdmin):
         model = UserSetting
 
     list_display = ("user", "name", "value")
+    search_fields = ("user__username",)
 
 
 admin.site.register(UserSetting, UserSettingAdmin)

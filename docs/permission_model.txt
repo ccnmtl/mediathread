@@ -1,5 +1,6 @@
 This document describes how MediaThread manages permissions of objects in the system.
 
+
 Generally, Django comes with its own authorization management.  This model breaks up
 users into:
 

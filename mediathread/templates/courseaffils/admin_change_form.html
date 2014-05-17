@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_modify admin_static coursetags course_submit_row %}
+{% load i18n admin_modify admin_static coursetags %}
 
 {% block extrahead %}{{ block.super }}
 
@@ -59,29 +59,29 @@
       <ul>
         <li>Info: 
         {% if adminform.form.instance.info %}
-           {{adminform.form.instance.info.display}} <a href="{%url admin:courseaffils_courseinfo_change adminform.form.instance.info.id %}">[Edit]</a>
+           {{adminform.form.instance.info.display}} <a href="{%url 'admin:courseaffils_courseinfo_change' adminform.form.instance.info.id %}">[Edit]</a>
         {% else %}
-           (Term, course times) <a href="{%url admin:courseaffils_courseinfo_add %}?course={{adminform.form.instance.id}}">[Create]</a>
+           (Term, course times) <a href="{%url 'admin:courseaffils_courseinfo_add' %}?course={{adminform.form.instance.id}}">[Create]</a>
         {% endif %}
         </li>
     
         <li>Settings: 
         {% if adminform.form.instance.settings %}
-           {{adminform.form.instance.settings}} <a href="{%url admin:courseaffils_coursesettings_change adminform.form.instance.settings.id %}">[Edit]</a>
+           {{adminform.form.instance.settings}} <a href="{%url 'admin:courseaffils_coursesettings_change' adminform.form.instance.settings.id %}">[Edit]</a>
         {% else %}
-           (custom headers for style and javascript) <a href="{%url admin:courseaffils_coursesettings_add %}?course={{adminform.form.instance.id}}">[Create]</a>
+           (custom headers for style and javascript) <a href="{%url 'admin:courseaffils_coursesettings_add' %}?course={{adminform.form.instance.id}}">[Create]</a>
         {% endif %}
         </li>
     
-        <li>Metadata (instructor, etc.): <a href="{%url admin:courseaffils_coursedetails_add %}?course={{adminform.form.instance.id}}">[Add]</a>
+        <li>Metadata (instructor, etc.): <a href="{%url 'admin:courseaffils_coursedetails_add' %}?course={{adminform.form.instance.id}}">[Add]</a>
           <ul>
             {% for d in adminform.form.instance.coursedetails_set.all %}
-            <li><a href="{%url admin:courseaffils_coursedetails_change d.id %}">{{d.name}}: {{d.value}}</a></li>
+            <li><a href="{%url 'admin:courseaffils_coursedetails_change' d.id %}">{{d.name}}: {{d.value}}</a></li>
             {% endfor %}
           </ul>
         </li>
       </ul>
-      {% course_submit_row %}
+      {% submit_row %}
     {% else %}
         {% submit_row %}        
     {% endif %}

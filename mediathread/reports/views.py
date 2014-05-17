@@ -2,6 +2,8 @@ from courseaffils.lib import users_in_course
 from courseaffils.models import Course
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.aggregates import Count
+from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http, rendered_with
@@ -12,7 +14,9 @@ from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
 from mediathread.main.decorators import faculty_only
 from mediathread.projects.models import Project
+from mediathread.taxonomy.models import Vocabulary, TermRelationship
 from structuredcollaboration.models import Collaboration
+from tagging.models import Tag
 import csv
 import re
 import simplejson as json
@@ -214,14 +218,20 @@ def mediathread_activity_by_course(request):
     writer = csv.writer(response)
     headers = ['Id', 'Title', 'Instructor', 'Course String',
                'Term', 'Year', 'Section', 'Course Number', 'School',
-               'Students', 'Items', 'Selections',
+               'Students', '% Active Students',
+               'Items', 'Selections',
                'Compositions', 'Assignments', 'Discussions',
-               'Public To World Compositions',
-               'All Selections Visible']
+               #'# of Discussion Items', '% participating in Discussions',
+               'Public To World Compositions', 'All Selections Visible',
+               '# of Active Tags', '% Using Tags',
+               '% Items Tagged', '% Selections Tagged',
+               '# of Active Vocabulary Terms', '% Using Vocabulary',
+               '% Items Classified', '% Selections Classified']
     writer.writerow(headers)
 
     rows = []
     for the_course in Course.objects.all().order_by('-id'):
+    #for the_course in Course.objects.filter(id=84):  # ccnmtl internal
         if (the_course.faculty_group is None or
             (not (the_course.faculty_group.name.startswith('t1') or
                   the_course.faculty_group.name.startswith('t2') or
@@ -246,7 +256,19 @@ def mediathread_activity_by_course(request):
         row.append(bits[2])  # section
         row.append(bits[3])  # courseNo
         row.append(bits[4])  # school
-        row.append(len(the_course.students))
+
+        students = the_course.group.user_set.all()
+        if the_course.faculty_group:
+            ids = the_course.faculty_group.user_set.values('id')
+            students = students.exclude(id__in=ids)
+        row.append(len(students))
+
+        if len(students) > 0:
+            active = students.filter(Q(projects__isnull=False) |
+                                     Q(sherdnote__isnull=False)).distinct()
+            row.append(float(len(active)) / len(students) * 100)
+        else:
+            row.append(0)
 
         items = Asset.objects.filter(course=the_course)
         row.append(len(items))
@@ -267,12 +289,64 @@ def mediathread_activity_by_course(request):
         row.append(compositions)
         row.append(assignments)
         try:
-            row.append(len(get_course_discussions(the_course)))
+            discussions = get_course_discussions(the_course)
+            row.append(len(discussions))
+            '# of Discussion Items', '% participating in Discussions',
         except Collaboration.DoesNotExist:
             row.append(0)
 
         row.append(course_details.allow_public_compositions(the_course))
         row.append(course_details.all_selections_are_visible(the_course))
+
+        # Breakdown tags & vocabulary terms by item & selection
+        if len(selections) > 0:
+            item_notes = selections.filter(range1=None, range2=None)
+            sel_notes = selections.exclude(range1=None, range2=None)
+
+            tags = Tag.objects.usage_for_queryset(selections)
+            row.append(len(tags))  # # of Active Tags',
+            tag_users = len(
+                selections.filter(tags__isnull=False).distinct('author'))
+            if len(students) > 0:
+                # % users using tags
+                row.append(float(tag_users) / len(students) * 100)
+            else:
+                row.append(0)
+
+            #'% Items Tagged', '% Selections Tagged'
+            t = item_notes.filter(tags__isnull=False).exclude(tags__exact='')
+            row.append(float(len(t)) / len(selections) * 100)
+            t = sel_notes.filter(tags__isnull=False).exclude(tags__exact='')
+            row.append(float(len(t)) / len(selections) * 100)
+
+            # Vocabulary
+            vocab = Vocabulary.objects.get_for_object(the_course)
+            content_type = ContentType.objects.get_for_model(SherdNote)
+            related = TermRelationship.objects.filter(
+                term__vocabulary__in=vocab,
+                content_type=content_type,
+                object_id__in=selections.values_list('id'))
+
+            # '# of Active Vocabulary Terms'
+            q = related.aggregate(Count('term', distinct=True))
+            active_terms = q['term__count']
+            vocab_users = len(SherdNote.objects.filter(
+                id__in=related.values_list('object_id')).distinct(
+                'author'))
+
+            row.append(active_terms)
+            if len(students) > 0:
+                row.append(float(vocab_users) / len(students) * 100)  # % users
+            else:
+                row.append(0)
+
+            related_ids = related.values_list('object_id')
+            items = len(SherdNote.objects.filter(id__in=related_ids,
+                                                 range1=None, range2=None))
+            row.append(float(items) / len(selections) * 100)  # % Items
+            sel = len(SherdNote.objects.filter(id__in=related_ids).exclude(
+                range1=None, range2=None))
+            row.append(float(sel) / len(selections) * 100)  # % Selections
 
         rows.append(row)
 

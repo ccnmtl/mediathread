@@ -57,20 +57,6 @@ def get_prof_feed(course, request):
     return projects
 
 
-def should_show_tour(request, course, user):
-    assets = Asset.objects.annotated_by(course,
-                                        user,
-                                        include_archives=False)
-
-    projects = Project.objects.visible_by_course_and_user(request,
-                                                          user,
-                                                          course)
-
-    return UserSetting.get_setting(user,
-                                   "help_show_homepage_tour",
-                                   len(assets) < 1 and len(projects) < 1)
-
-
 @rendered_with('homepage.html')
 def triple_homepage(request):
     if not request.course:
@@ -128,7 +114,6 @@ def triple_homepage(request):
         'archives': archives,
         'upload_archive': upload_archive,
         'can_upload': course_details.can_upload(request.user, request.course),
-        'show_tour': should_show_tour(request, course, logged_in_user),
         'owners': owners
     }
 

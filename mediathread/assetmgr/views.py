@@ -232,7 +232,8 @@ def asset_create(request):
         return render_to_response('assetmgr/interface_iframe.html',
                                   {'message': ('%s|%s' %
                                    (request.build_absolute_uri(asset_url)),
-                                   request.REQUEST['noui']), })
+                                   request.REQUEST['noui']), },
+                                  context_instance=RequestContext(request))
     elif request.is_ajax():
         # unsure when asset_create is called via ajax
         return HttpResponse(serializers.serialize('json', asset),

@@ -41,7 +41,7 @@ class AssetAuthorization(Authorization):
                 object_id__in=[n.id for n in notes],
                 term__id__in=vocabulary[vocabulary_id],
                 term__vocabulary__id=vocabulary_id)
-            has_relationships = len(relationships) > 0 and has_relationships
+            has_relationships = relationships.count() > 0 and has_relationships
         return has_relationships
 
     def is_tagged(self, notes, tag_string):
@@ -49,7 +49,7 @@ class AssetAuthorization(Authorization):
             tag_string += ','
 
         items = TaggedItem.objects.get_union_by_model(notes, tag_string)
-        return len(items) > 0
+        return items.count() > 0
 
     def in_date_range(self, notes, date_range):
         tomorrow = datetime.today() + timedelta(1)
@@ -66,7 +66,7 @@ class AssetAuthorization(Authorization):
         items = notes.filter(Q(added__range=[startdate, enddate]) |
                              Q(modified__range=[startdate, enddate]))
 
-        return len(items) > 0
+        return items.count() > 0
 
     def read_detail(self, object_list, bundle):
         lst = self.read_list(object_list, bundle)
@@ -234,10 +234,9 @@ class AssetResource(ModelResource):
             if the_json:
                 asset_json.append(the_json)
 
-        asset_json = sorted(asset_json,
-                            key=lambda asset: asset['modified'],
-                            reverse=True)
-        return asset_json
+        return sorted(asset_json,
+                      key=lambda asset: asset['modified'],
+                      reverse=True)
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(
@@ -331,10 +330,9 @@ class AssetSummaryResource(ModelResource):
             if the_json:
                 asset_json.append(the_json)
 
-        asset_json = sorted(asset_json,
-                            key=lambda asset: asset['modified'],
-                            reverse=True)
-        return asset_json
+        return sorted(asset_json,
+                      key=lambda asset: asset['modified'],
+                      reverse=True)
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(

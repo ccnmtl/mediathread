@@ -575,9 +575,7 @@ def assets_by_user(request, record_owner_name):
     in_course_or_404(record_owner_name, course)
     record_owner = get_object_or_404(User, username=record_owner_name)
 
-    assets = Asset.objects.annotated_by(course,
-                                        record_owner,
-                                        include_archives=True)
+    assets = Asset.objects.annotated_by(course, record_owner)
 
     return render_assets(request, record_owner, assets)
 
@@ -689,7 +687,8 @@ def render_assets(request, record_owner, assets):
         note_ids = [n.id for n in active_notes]
         content_type = ContentType.objects.get_for_model(SherdNote)
         term_resource = TermResource()
-        for vocab in Vocabulary.objects.get_for_object(request.course):
+        for vocab in Vocabulary.objects.get_for_object(
+                course).select_related():
             vocabulary = {
                 'id': vocab.id,
                 'display_name': vocab.display_name,
@@ -697,7 +696,7 @@ def render_assets(request, record_owner, assets):
             }
             related = TermRelationship.objects.filter(
                 term__vocabulary=vocab, content_type=content_type,
-                object_id__in=note_ids)
+                object_id__in=note_ids).select_related()
 
             terms = []
             for rel in related:

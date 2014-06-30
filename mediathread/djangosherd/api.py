@@ -32,7 +32,7 @@ class SherdNoteAuthorization(Authorization):
             # Make sure the requesting user is allowed to see this note
             invisible = []
             courses = {}
-            for note in object_list.select_related('asset__course'):
+            for note in object_list.all():
                 course = note.asset.course
 
                 # Cache this out per course/user. It's just too slow otherwise

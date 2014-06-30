@@ -90,5 +90,39 @@ Alternate Course
    2 annotations
    
    
+   
+   
+# Creating test database for alias 'default'...
+# Course: [Sample Course], Asset Mediathread: Introduction [1]
+# Primary: youtube
+#     Note test_instructor_two None
+#     Note test_instructor_two Video Selection Is Time-based
+#     Note test_instructor Whole Item Selection
+#     Note test_instructor Annotations
+#     Note test_instructor Manage Sources
+#     Note test_instructor None
+# Course: [Sample Course], Asset MAAP Award Reception [2]
+# Primary: image
+#     Note test_student_two None
+#     Note test_student_two Nice Tie
+#     Note test_student_one None
+#     Note test_student_one The Award
+#     Note test_instructor Our esteemed leaders
+#     Note test_instructor None
+# Course: [Sample Course], Asset The Armory - Home to CCNMTL'S CUMC Office [3]
+# Primary: image
+#     Note test_instructor Left Corner
+#     Note test_instructor None
+# Course: [Alternate Course], Asset Design Research [4]
+# Primary: image
+#     Note test_student_three None
+#     Note test_student_three Whole Item Selection
+#     Note test_instructor_alt Curricular Context
+#     Note test_instructor_alt Research and Evaluation
+#     Note test_instructor_alt None
+# Course: [Sample Course], Asset Project Portfolio [5]
+# Primary: image
+#     Note test_instructor_two None
+   
 
 

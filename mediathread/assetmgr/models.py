@@ -35,22 +35,11 @@ class AssetManager(models.Manager):
     def archives(self):
         return self.filter(source__primary=True, source__label='archive')
 
-    def annotated_by(self, course, user, include_archives=False):
+    def annotated_by(self, course, user):
         assets = Asset.objects.filter(course=course)
-        fassets = assets.filter(
+        return assets.filter(
             sherdnote_set__author=user, sherdnote_set__range1=None).distinct()\
             .order_by('-sherdnote_set__modified').select_related()
-        if include_archives:
-            return fassets
-        else:
-            to_return = []
-            for asset in fassets:
-                try:
-                    if asset.primary.label != 'archive':
-                        to_return.append(asset)
-                except Source.DoesNotExist:
-                    pass  # ignore this error
-            return to_return
 
     def migrate(self, asset_set, course, user, object_map):
         note_model = models.get_model('djangosherd', 'sherdnote')

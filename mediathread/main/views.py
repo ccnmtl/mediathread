@@ -11,7 +11,7 @@ from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.main import course_details
 from mediathread.main.api import CourseSummaryResource
-from mediathread.main.decorators import ajax_required, faculty_only
+from mediathread.main.mixins import ajax_required, faculty_only
 from mediathread.main.models import UserSetting
 from mediathread.projects.lib import homepage_project_json, \
     homepage_assignment_json
@@ -343,14 +343,7 @@ def migrate(request):
         # Only send down the real faculty. Not all us staff members
         faculty = []
         for user in request.course.faculty.all():
-            if user in request.course.members:
-                faculty.append(user)
-
-        # Only send down the real faculty. Not all us staff members
-        faculty = []
-        for fac in request.course.faculty.all():
-            if fac in request.course.members:
-                faculty.append(fac)
+            faculty.append(user)
 
         return {
             "current_course_faculty": faculty,

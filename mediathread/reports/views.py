@@ -12,7 +12,7 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
-from mediathread.main.decorators import faculty_only
+from mediathread.main.mixins import faculty_only
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, TermRelationship
 from structuredcollaboration.models import Collaboration

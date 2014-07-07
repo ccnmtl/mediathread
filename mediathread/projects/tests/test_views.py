@@ -38,7 +38,7 @@ class ProjectViewTest(TestCase):
             self.client.login(username='test_student_one', password='test'))
 
         response = self.client.post('/project/save/1/')
-        self.assertEquals(response.status_code, 404)
+        self.assertEquals(response.status_code, 405)
 
     def test_project_save_valid(self):
         user = User.objects.get(username="test_student_one")

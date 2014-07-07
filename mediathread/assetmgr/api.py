@@ -8,6 +8,7 @@ from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_member
+from mediathread.main.models import UserSetting
 from mediathread.taxonomy.models import TermRelationship
 from tagging.models import TaggedItem
 from tastypie import fields
@@ -220,7 +221,15 @@ class AssetResource(ModelResource):
         try:
             bundle = self.build_bundle(obj=item, request=request)
             dehydrated = self.full_dehydrate(bundle)
-            return self._meta.serializer.to_simple(dehydrated, None)
+            the_json = self._meta.serializer.to_simple(dehydrated, None)
+
+            help_setting = UserSetting.get_setting(
+                request.user, "help_item_detail_view", True)
+
+            return {'type': 'asset',
+                    'assets': {item.pk: the_json},
+                    'user_settings': {'help_item_detail_view': help_setting}}
+
         except Source.DoesNotExist:
             return None
 
@@ -230,7 +239,9 @@ class AssetResource(ModelResource):
         object_list = self.authorized_read_list(object_list, bundle)
         asset_json = []
         for asset in object_list:
-            the_json = self.render_one(request, asset)
+            bundle = self.build_bundle(obj=asset, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            the_json = self._meta.serializer.to_simple(dehydrated, None)
             if the_json:
                 asset_json.append(the_json)
 

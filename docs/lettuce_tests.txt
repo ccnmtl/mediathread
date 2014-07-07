@@ -7,9 +7,8 @@ RUNNING TESTS
 --------------
 
 1. Required in path: sqlite3 and Firefox.
-2. Run ./bootstrap.py --full to ensure necessary lxml dependencies are built
-3. ./manage.py harvest --settings=settings_test --debug-mode
-4. The server runs on port 8002
+2. ./manage.py harvest --settings=mediathread.settings_test --debug-mode
+3. The server runs on port 8002
 
 More information here...http://lettuce.it/reference/cli.html
 

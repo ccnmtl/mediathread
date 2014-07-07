@@ -21,8 +21,8 @@ fuzzywuzzy==0.2
 sure==1.2.2
 ipython==0.13.2
 ipdb==0.7
-lettuce==0.2.19
-selenium==2.40.0
+requirements/src/lettuce-0.2.19_ccnmtl-py2-none-any.whl
+selenium==2.42.1
 six==1.3.0
 python-mimeparse==0.1.4
 mimeparse==0.1.3

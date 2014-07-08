@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-import simplejson
+import json
 
 
 class AssetViewTest(TestCase):
@@ -22,13 +22,13 @@ class AssetViewTest(TestCase):
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
-        self.assertEquals(json["asset_id"], "1")
-        self.assertIsNone(json["annotation_id"])
-        self.assertEquals(json["space_owner"], "test_instructor_two")
-        self.assertEquals(len(json["panels"]), 1)
+        the_json = json.loads(response.content)
+        self.assertEquals(the_json["asset_id"], "1")
+        self.assertIsNone(the_json["annotation_id"])
+        self.assertEquals(the_json["space_owner"], "test_instructor_two")
+        self.assertEquals(len(the_json["panels"]), 1)
 
-        panel = json["panels"][0]
+        panel = the_json["panels"][0]
         self.assertIsNone(panel["current_annotation"])
         self.assertEquals(panel["current_asset"], "1")
         self.assertEquals(panel["panel_state"], "open")
@@ -134,13 +134,13 @@ class AssetViewTest(TestCase):
             {},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
+        the_json = json.loads(response.content)
 
-        self.assertTrue(json['editable'])
-        self.assertFalse(json['citable'])
-        self.assertFalse(json['is_faculty'])
-        self.assertEquals(len(json['assets']), 1)
-        self.assertEquals(len(json['assets'][0]['annotations']), 1)
+        self.assertTrue(the_json['editable'])
+        self.assertFalse(the_json['citable'])
+        self.assertFalse(the_json['is_faculty'])
+        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
 
     def test_student_get_peer_assets(self):
         username = "test_student_one"
@@ -153,21 +153,21 @@ class AssetViewTest(TestCase):
             {},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
+        the_json = json.loads(response.content)
 
-        self.assertFalse(json['editable'])
-        self.assertFalse(json['citable'])
-        self.assertFalse(json['is_faculty'])
-        self.assertEquals(len(json['assets']), 1)
-        self.assertEquals(len(json['assets'][0]['annotations']), 1)
+        self.assertFalse(the_json['editable'])
+        self.assertFalse(the_json['citable'])
+        self.assertFalse(the_json['is_faculty'])
+        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
 
-        ann = json['assets'][0]['annotations'][0]
+        ann = the_json['assets'][0]['annotations'][0]
         self.assertEquals(len(ann['metadata']['tags']), 1)
         self.assertEquals(ann['metadata']['body'],
                           "student two selection note")
 
-        self.assertTrue('global_annotation' in json['assets'][0])
-        gla = json['assets'][0]['global_annotation']
+        self.assertTrue('global_annotation' in the_json['assets'][0])
+        gla = the_json['assets'][0]['global_annotation']
         self.assertEquals(len(gla['metadata']['tags']), 1)
         self.assertEquals(gla['metadata']['body'],
                           "student two item note")

@@ -1,3 +1,4 @@
+from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
@@ -38,16 +39,27 @@ def faculty_only(func):
     return wrap
 
 
-class JSONResponseMixin(object):
+class CourseRequiredMixin(object):
+
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_staff:
+            in_course_or_404(self.request.user.username, self.request.course)
+
+        return super(CourseRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class AjaxRequiredMixin(object):
     @method_decorator(ajax_required)
     def dispatch(self, *args, **kwargs):
         return super(JSONResponseMixin, self).dispatch(*args, **kwargs)
 
+
+class JSONResponseMixin(object):
     def render_to_json_response(self, context, **response_kwargs):
         """
         Returns a JSON response, transforming 'context' to make the payload.
         """
-        return HttpResponse(json.dumps(context),
+        return HttpResponse(json.dumps(context, indent=2),
                             content_type='application/json',
                             **response_kwargs)
 

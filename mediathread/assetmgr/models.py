@@ -41,6 +41,15 @@ class AssetManager(models.Manager):
             sherdnote_set__author=user, sherdnote_set__range1=None).distinct()\
             .order_by('-sherdnote_set__modified').select_related()
 
+    def assets_by_course(self, course):
+        assets = Asset.objects.filter(course=course) \
+            .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
+            .select_related().order_by('lower_title')
+
+        # Exclude archives from these lists
+        archives = assets.filter(source__primary=True, source__label='archive')
+        return assets.exclude(id__in=archives.values_list('id', flat=True))
+
     def migrate(self, asset_set, course, user, object_map):
         note_model = models.get_model('djangosherd', 'sherdnote')
         for asset_json in asset_set:

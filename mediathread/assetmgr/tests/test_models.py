@@ -1,8 +1,8 @@
 #pylint: disable-msg=R0904
-from mediathread.assetmgr.models import Asset
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.test import TestCase
+from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote
 import simplejson
 
@@ -78,8 +78,7 @@ class AssetTest(TestCase):
                   "title": "MAAP Award Reception"}]
 
     def test_migrate_many(self):
-        course = Course.objects.get(id=2)
-        self.assertEquals(course.title, "Alternate Course")
+        course = Course.objects.get(title="Alternate Course")
         self.assertEquals(len(course.asset_set.all()), 1)
 
         user = User.objects.get(username='test_instructor_two')
@@ -119,8 +118,7 @@ class AssetTest(TestCase):
         asset = Asset.objects.get(id=1)
         self.assertEquals(asset.title, "Mediathread: Introduction")
 
-        new_course = Course.objects.get(id=2)
-        self.assertEquals(new_course.title, "Alternate Course")
+        new_course = Course.objects.get(title="Alternate Course")
 
         new_user = User.objects.get(username='test_instructor_alt')
 
@@ -166,8 +164,7 @@ class AssetTest(TestCase):
         asset = Asset.objects.get(id=1)
         self.assertEquals(asset.title, "Mediathread: Introduction")
 
-        new_course = Course.objects.get(id=2)
-        self.assertEquals(new_course.title, "Alternate Course")
+        new_course = Course.objects.get(title="Alternate Course")
 
         new_user = User.objects.get(username='test_instructor_alt')
 
@@ -252,3 +249,22 @@ class AssetTest(TestCase):
         self.assertEquals(asset1.user_analysis_count(test_student_one), 0)
         self.assertEquals(asset2.user_analysis_count(test_student_one), 3)
         self.assertEquals(asset3.user_analysis_count(test_student_one), 0)
+
+    def test_assets_by_course(self):
+        course = Course.objects.get(title='Sample Course')
+        user = User.objects.get(username='test_instructor')
+        archive = Asset.objects.create(title="Sample Archive",
+                                       course=course, author=user)
+        primary = Source.objects.create(asset=archive, label='archive',
+                                        primary=True,
+                                        url="http://ccnmtl.columbia.edu")
+        archive.source_set.add(primary)
+
+        assets = Asset.objects.filter(course=course)
+        self.assertEquals(assets.count(), 5)
+
+        assets = Asset.objects.assets_by_course(course=course)
+        self.assertEquals(assets.count(), 4)
+
+        # make sure the archive isn't in there
+        self.assertEquals(assets.filter(title="Sample Archive").count(), 0)

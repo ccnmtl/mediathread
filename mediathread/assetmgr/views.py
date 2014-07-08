@@ -23,7 +23,7 @@ from mediathread.main import course_details
 from mediathread.main.course_details import all_selections_are_visible, \
     cached_course_is_faculty
 from mediathread.main.mixins import LoggedInMixin, JSONResponseMixin, \
-    ajax_required
+    ajax_required, CourseRequiredMixin
 from mediathread.taxonomy.api import VocabularyResource, TermResource, \
     TermRelationshipResource
 from mediathread.taxonomy.models import Vocabulary, TermRelationship
@@ -559,7 +559,8 @@ def asset_references(request, asset_id):
         return asset_switch_course(request, asset_id)
 
 
-class AssetCollectionView(LoggedInMixin, JSONResponseMixin, View):
+class AssetCollectionView(LoggedInMixin, CourseRequiredMixin,
+                          JSONResponseMixin, View):
     """
     An ajax-only request to retrieve a specified user's assets
     Example:
@@ -683,36 +684,18 @@ class AssetCollectionView(LoggedInMixin, JSONResponseMixin, View):
         # Add in the assets
         data['assets'] = asset_json[offset:offset + limit]
 
-        json_stream = simplejson.dumps(data, indent=2)
-        return HttpResponse(json_stream, mimetype='application/json')
-
-    def assets_by_user(self, request, record_owner_name):
-        record_owner = get_object_or_404(User, username=record_owner_name)
-
-        assets = Asset.objects.annotated_by(request.course, record_owner)
-
-        return self.render_assets(request, assets, record_owner)
-
-    def assets_by_course(self, request):
-        """
-        An ajax-only request to retrieve a course's projects,
-        assignment responses and selections
-        """
-        assets = Asset.objects.filter(course=request.course) \
-            .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
-            .select_related().order_by('lower_title')
-
-        return self.render_assets(request, assets, None)
+        return data
 
     def get(self, request, record_owner_name=None):
         self.course = request.course
-        if record_owner_name is None:
-            in_course_or_404(request.user.username, request.course)
-            return self.assets_by_course(request)
-        elif (request.user.is_staff and
-              request.user.username == record_owner_name and
-              not in_course(request.user.username, request.course)):
-            return self.assets_by_course(request, record_owner_name)
+
+        if (record_owner_name is None):
+            self.record_owner = None
+            assets = Asset.objects.assets_by_course(self.course)
         else:
-            in_course_or_404(record_owner_name, request.course)
-            return self.assets_by_user(request, record_owner_name)
+            self.record_owner = get_object_or_404(User,
+                                                  username=record_owner_name)
+            assets = Asset.objects.annotated_by(self.course, self.record_owner)
+
+        context = self.render_assets(request, assets, self.record_owner)
+        return self.render_to_json_response(context)

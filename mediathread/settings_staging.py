@@ -12,17 +12,6 @@ STATICMEDIA_MOUNTS = (
     ('/sitemedia', '/var/www/mediathread/mediathread/sitemedia'),
 )
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mediathread',
-        'HOST': '',
-        'PORT': 6432,  # see /etc/pgbouncer/pgbouncer.ini
-        'USER': '',
-        'PASSWORD': '',
-    }
-}
-
 COMPRESS_ROOT = "/var/www/mediathread/mediathread/media/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG

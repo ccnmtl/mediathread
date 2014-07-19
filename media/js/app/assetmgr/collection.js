@@ -266,11 +266,11 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         
         if (!asset.thumbable) {
             if (jQuery(target_parent).hasClass("static-height")) {
-                if (asset.sources.hasOwnProperty("thumb") &&
-                    asset.sources.thumb.hasOwnProperty("height") && 
-                        asset.sources.thumb.height > 240) {
+                var thumbs = jQuery.grep(asset.sources, function(s) {
+                   return s.label == 'thumb'; }); 
+                if (thumbs.length && thumbs[0].height > 240) {
                     jQuery(target_parent).css({
-                        height: (asset.sources.thumb.height + 75) + 'px'
+                        height: (thumbs[0].height + 75) + 'px'
                     });
                 } else {
                     jQuery(target_parent).css({height: '240px'});
@@ -304,7 +304,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
             asset.zoom = 1;
 
             try {
-                view.html.push(obj_div, { asset: asset });
+                view.html.push(obj_div, {asset: asset});
                 view.setState(asset);
             } catch (e) {
             }
@@ -460,7 +460,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
                         self.appendItems(self.current_records);
                     }
                 });
-            }            
+            }
             
             jQuery(elt).fadeIn("slow");
             
@@ -549,12 +549,13 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 self.view_callback(the_records.assets.length);
             }
             
-            jQuery(window).trigger("resize");
-            
             if (self.scrollTop) {
                 jQuery(self.el).find("div.collection-assets").scrollTop(self.scrollTop);
                 self.scrollTop = undefined;
             }
+
+            jQuery(window).trigger("resize");
+
         }
     });    
 };

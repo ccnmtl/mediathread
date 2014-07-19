@@ -36,10 +36,14 @@ class AssetManager(models.Manager):
         return self.filter(source__primary=True, source__label='archive')
 
     def annotated_by(self, course, user):
-        assets = Asset.objects.filter(course=course)
-        return assets.filter(
-            sherdnote_set__author=user, sherdnote_set__range1=None).distinct()\
-            .order_by('-sherdnote_set__modified').select_related()
+        # returns the assets in a user's "collection"
+        assets = Asset.objects.filter(course=course,
+                                      sherdnote_set__author=user,
+                                      sherdnote_set__range1=None).distinct()
+
+        # Exclude archives from these lists
+        assets = assets.exclude(source__primary=True, source__label='archive')
+        return assets.order_by('-sherdnote_set__modified').select_related()
 
     def assets_by_course(self, course):
         assets = Asset.objects.filter(course=course) \

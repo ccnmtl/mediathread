@@ -11,7 +11,7 @@ from djangohelpers.lib import allow_http
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
-from mediathread.main.mixins import ajax_required
+from mediathread.mixins import ajax_required
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.lib import composition_project_json
 from mediathread.projects.models import Project

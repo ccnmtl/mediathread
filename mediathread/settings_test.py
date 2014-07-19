@@ -4,6 +4,8 @@ import os
 
 DEBUG = True
 
+COMPRESS_ROOT = "/Users/sdreher/workspace/mediathread/media/"
+
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 DATABASES = {

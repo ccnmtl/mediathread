@@ -102,7 +102,7 @@
                 return '/comments/post/';
             },
             'tags': function () {
-                return '/_main/api/v1/tag/';
+                return '/tag/json/';
             },
             'references': function (asset) {
                 return '/asset/references/' + asset.id + '/';

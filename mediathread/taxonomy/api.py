@@ -1,66 +1,11 @@
 #pylint: disable-msg=R0904
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.aggregates import Count
 from mediathread.api import ClassLevelAuthentication, ToManyFieldEx, \
-    FacultyAuthorization, RestrictedCourseResource
-from mediathread.djangosherd.models import SherdNote
+    FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
-
-
-class TermRelationshipResource(RestrictedCourseResource):
-    def __init__(self, course=None):
-        super(TermRelationshipResource, self).__init__(None)
-        self.filters = {}
-
-    class Meta:
-        queryset = TermRelationship.objects.none()
-        authentication = ClassLevelAuthentication()
-        limit = 1000
-        max_limit = 1000
-
-    def _filter_terms(self, request, note_set):
-        if 'assets' in self.filters:
-            note_set = note_set.filter(asset__id__in=self.filters['assets'])
-
-        related = TermRelationship.objects.filter(
-            term__vocabulary__id=self.filters['vocabulary'],
-            content_type=ContentType.objects.get_for_model(SherdNote),
-            object_id__in=[n.id for n in note_set])
-
-        terms = list(related.values('term__id',
-                                    'term__vocabulary__id',
-                                    'term__display_name').annotate(
-            count=Count('term__id')))
-
-        terms.sort(lambda a, b: cmp(a['term__display_name'].lower(),
-                                    b['term__display_name'].lower()))
-        return terms
-
-    def get_unrestricted(self, request, object_list, course):
-        notes = SherdNote.objects.filter(asset__course=course)
-        return self._filter_terms(request, notes)
-
-    def get_restricted(self, request, object_list, course):
-        whitelist = [f.id for f in course.faculty]
-        whitelist.append(request.user.id)
-
-        notes = SherdNote.objects.filter(asset__course=course,
-                                         author__id__in=whitelist)
-        return self._filter_terms(request, notes)
-
-    def filter(self, request, filters):
-        self.filters = filters
-        base_bundle = self.build_bundle(request=request)
-        objects = self.obj_get_list(bundle=base_bundle)
-
-        last = len(objects) - 1
-        for idx, term in enumerate(objects):
-            term['last'] = idx == last
-
-        return objects
 
 
 class TermValidation(Validation):
@@ -131,15 +76,10 @@ class VocabularyAuthorization(FacultyAuthorization):
     def read_list(self, object_list, bundle):
         request = bundle.request
 
-        '''Limit vocabulary list to the current course'''
         course_type = ContentType.objects.get_for_model(request.course)
-        invisible = []
-        for vocabulary in object_list:
-            if (vocabulary.content_type == course_type and
-                    not vocabulary.content_object == request.course):
-                invisible.append(vocabulary.id)
+        object_list = object_list.filter(content_type=course_type,
+                                         object_id=request.course.id)
 
-        object_list = object_list.exclude(id__in=invisible)
         return object_list.order_by('id')
 
 
@@ -185,3 +125,21 @@ class VocabularyResource(ModelResource):
             to_be_serialized['objects'],
             key=lambda bundle: bundle.data['display_name'])
         return to_be_serialized
+
+    def render_related(self, request, related):
+        ctx = {}
+        terms = []
+
+        for rel in related:
+            if rel.term.vocabulary.id not in ctx:
+                vocab_ctx = {'id': rel.term.vocabulary.id,
+                             'display_name': rel.term.vocabulary.display_name,
+                             'term_set': []}
+                ctx[rel.term.vocabulary.id] = vocab_ctx
+
+                if rel.term.id not in terms:
+                    the_term = term_resource.render_one(request, rel.term)
+                    ctx[rel.term.vocabulary.id]['term_set'].append(the_term)
+                    terms.append(rel.term.id)
+
+        return ctx

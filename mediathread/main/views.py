@@ -5,18 +5,22 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.views.generic.base import View
 from djangohelpers.lib import rendered_with, allow_http
-from mediathread.api import UserResource
+from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
+from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.api import CourseSummaryResource
-from mediathread.main.mixins import ajax_required, faculty_only
 from mediathread.main.models import UserSetting
+from mediathread.mixins import LoggedInCourseMixin, RestrictedCourseMixin, \
+    AjaxRequiredMixin, JSONResponseMixin, ajax_required, faculty_only
 from mediathread.projects.lib import homepage_project_json, \
     homepage_assignment_json
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
+from tagging.models import Tag
 import operator
 import simplejson
 
@@ -388,3 +392,19 @@ def migrate(request):
             'project_count': len(object_map['projects']),
             'note_count': object_map['note_count']})
         return HttpResponse(json_stream, mimetype='application/json')
+
+
+class TagCollectionView(LoggedInCourseMixin, RestrictedCourseMixin,
+                        AjaxRequiredMixin, JSONResponseMixin, View):
+
+    def get(self, request):
+        # Retrieve tags for this course
+        assets = Asset.objects.filter(course=request.course)
+
+        tags = SherdNote.objects.get_related_tags(
+            assets, self.record_owner or None, self.visible_authors)
+
+        context = {}
+        if len(tags) > 0:
+            context = {'tags': TagResource().render_list(request, tags)}
+        return self.render_to_json_response(context)

@@ -44,7 +44,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     });
     
     jQuery(window).bind('asset.on_delete', { 'self': self },
-        function (event, asset_id) { event.data.self.onDeleteItem(asset_id); });
+        function (event, asset_id) {event.data.self.onDeleteItem(asset_id); });
 
     jQuery(window).bind('asset.edit', { 'self': self }, self.dialog);
     jQuery(window).bind('annotation.create', { 'self': self }, self.dialog);
@@ -96,8 +96,6 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
                 } else {
                     jQuery('div.asset-table').css('height', '500px');
                 }
-                
-                jQuery(window).trigger("resize");            
             }
         });
     }

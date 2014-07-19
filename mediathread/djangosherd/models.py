@@ -1,16 +1,19 @@
 #pylint: disable-msg=E1101
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.query_utils import Q
 from django.db.models.signals import post_save
+from mediathread.taxonomy.models import TermRelationship
 from structuredcollaboration.models import Collaboration
 from tagging.fields import TagField
-from tagging.models import Tag
-import datetime
+from tagging.models import Tag, TaggedItem
+from datetime import datetime, timedelta
 import re
-import simplejson
+import json
 
 Asset = models.get_model('assetmgr', 'asset')
 
@@ -25,7 +28,7 @@ class Annotation(models.Model):
 
     def annotation(self):
         if self.annotation_data:
-            return simplejson.loads(self.annotation_data)
+            return json.loads(self.annotation_data)
         else:
             return None
 
@@ -65,7 +68,103 @@ class Annotation(models.Model):
         return tc_range
 
 
+class SherdNoteQuerySet(models.query.QuerySet):
+
+    def filter_by_vocabulary(self, vocabulary):
+        if vocabulary is None:
+            return self
+
+        # OR'd within vocabulary, AND'd across vocabulary
+        content_type = ContentType.objects.get_for_model(SherdNote)
+        for vocabulary_id in vocabulary:
+            items = TermRelationship.objects.filter(
+                content_type_id=content_type,
+                object_id__in=self.values_list('id', flat=True),
+                term__id__in=vocabulary[vocabulary_id],
+                term__vocabulary__id=vocabulary_id)
+            if items.count() > 0:
+                iids = items.values_list('object_id', flat=True)
+                self = self.filter(id__in=iids)
+            else:
+                self = SherdNote.objects.none()  # nothing matched
+        return self
+
+    def filter_by_tags(self, tag_string):
+        if tag_string is None or len(tag_string) < 1:
+            return self
+
+        if not tag_string.endswith(','):
+            tag_string += ','
+
+        return TaggedItem.objects.get_union_by_model(self, tag_string)
+
+    def filter_by_date(self, date_range):
+        if date_range is None or len(date_range) < 1:
+            return self
+
+        tomorrow = datetime.today() + timedelta(1)
+        # Tomorrow at midnight
+        enddate = datetime(tomorrow.year, tomorrow.month, tomorrow.day)
+        if date_range == 'today':
+            startdate = enddate + timedelta(-1)
+        elif date_range == 'yesterday':
+            startdate = enddate + timedelta(-2)
+            enddate = enddate + timedelta(-1)
+        elif date_range == 'lastweek':
+            startdate = enddate + timedelta(-7)
+
+        return self.filter(Q(added__range=[startdate, enddate]) |
+                           Q(modified__range=[startdate, enddate]))
+
+    def get_related_notes(self, assets, record_owner, visible_authors,
+                          tag_string=None, modified=None, vocabulary=None):
+
+        # For efficiency purposes, retrieve all related notes
+        self = self.filter(asset__in=assets).order_by(
+            'asset__id', 'id').select_related()
+
+        # filter by visible authors
+        if record_owner:
+            # only return original author's global annotations
+            self = self.exclude(~Q(author=record_owner), range1__isnull=True)
+
+        # only return notes that are authored by certain people
+        if len(visible_authors) > 0:
+            self = self.filter(author__id__in=visible_authors)
+
+        # filter by tag string, date, vocabulary
+        self = self.filter_by_tags(tag_string)
+        self = self.filter_by_date(modified)
+        self = self.filter_by_vocabulary(vocabulary)
+        return self
+
+
 class SherdNoteManager(models.Manager):
+    def __init__(self, fields=None, *args, **kwargs):
+        super(SherdNoteManager, self).__init__(*args, **kwargs)
+        self._fields = fields
+
+    def get_query_set(self):
+        return SherdNoteQuerySet(self.model, self._fields)
+
+    def filter_by_authors(self, author, visible_authors):
+        return self.get_query_set().filter_by_authors(author, visible_authors)
+
+    def filter_by_date(self, date_range):
+        return self.get_query_set().filter_by_date(date_range)
+
+    def filter_by_tags(self, tag_string):
+        return self.get_query_set().filter_by_tags(tag_string)
+
+    def filter_by_vocabulary(self, vocabulary):
+        return self.get_query_set().filter_by_vocabulary(vocabulary)
+
+    def get_related_notes(self, assets, record_owner, visible_authors,
+                          tag_string=None, modified=None, vocabulary=None):
+        return self.get_query_set().get_related_notes(assets, record_owner,
+                                                      visible_authors,
+                                                      tag_string, modified,
+                                                      vocabulary)
 
     def global_annotation(self, asset, author, auto_create=True):
         """
@@ -231,8 +330,8 @@ class SherdNote(Annotation):
         """
 
         if not self.pk:
-            self.added = datetime.datetime.today()
-        self.modified = datetime.datetime.today()
+            self.added = datetime.today()
+        self.modified = datetime.today()
 
         # stupid hack to get around stupid parsing
         # if someone makes a single tag with spaces

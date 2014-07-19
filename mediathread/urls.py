@@ -3,26 +3,18 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
-from djangosherd.api import SherdNoteResource
-from mediathread.api import TagResource
-from mediathread.assetmgr.api import AssetResource
-from mediathread.main.api import CourseResource, CourseSummaryResource
+from mediathread.main.api import CourseResource
+from mediathread.main.views import TagCollectionView
 from mediathread.projects.api import ProjectResource
-from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
 import os.path
 
 
 v1_api = Api(api_name='v1')
-v1_api.register(SherdNoteResource())
-v1_api.register(AssetResource())
 v1_api.register(ProjectResource())
 v1_api.register(CourseResource())
-v1_api.register(CourseSummaryResource())
 v1_api.register(TermResource())
 v1_api.register(VocabularyResource())
-v1_api.register(TagResource())
-
 
 admin.autodiscover()
 
@@ -92,6 +84,7 @@ urlpatterns = patterns(
     # Homepage
     (r'^$', 'mediathread.main.views.triple_homepage'),
     (r'^yourspace/', include('mediathread.main.urls')),
+    (r'^tag/json/', TagCollectionView.as_view(), {}, 'tags-by-course'),
     (r'^_main/api/', include(v1_api.urls)),
 
     # Instructor Dashboard & reporting

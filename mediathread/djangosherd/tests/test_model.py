@@ -1,12 +1,45 @@
 #pylint: disable-msg=R0904
-from mediathread.assetmgr.models import Asset
+from courseaffils.models import Course
+from datetime import datetime
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
+from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
+from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 
 
 class SherdNoteTest(TestCase):
     fixtures = ['unittest_sample_course.json']
+
+    def create_vocabularies(self, course, taxonomy):
+        course_type = ContentType.objects.get_for_model(course)
+
+        for name, terms in taxonomy.items():
+            concept = Vocabulary(display_name=name,
+                                 content_type=course_type,
+                                 object_id=course.id)
+            concept.save()
+            for term_name in terms:
+                term = Term(display_name=term_name,
+                            vocabulary=concept)
+                term.save()
+
+    def create_term_relationship(self, content_object, term):
+        # Add some tags to a few notes
+        content_type = ContentType.objects.get_for_model(content_object)
+        TermRelationship.objects.get_or_create(
+            term=term,
+            content_type=content_type,
+            object_id=content_object.id)
+
+    def setUp(self):
+        course = Course.objects.get(title="Sample Course")
+        taxonomy = {
+            'Shapes': ['Square', 'Triangle'],
+            'Colors': ['Red', 'Blue', 'Green']
+        }
+        self.create_vocabularies(course, taxonomy)
 
     def test_is_global_annotation(self):
         # Alternate Course, test_student_three
@@ -153,3 +186,123 @@ class SherdNoteTest(TestCase):
 
         self.assertEquals(citations[1].id, 19)
         self.assertEquals(citations[1].asset.id, 1)
+
+    def test_filter_by_authors(self):
+        qs = Asset.objects.filter(title='MAAP Award Reception')
+        author = User.objects.get(username='test_student_one')
+
+        names = ['test_instructor', 'test_instructor_two', 'test_student_one']
+        users = User.objects.filter(username__in=names).values_list('id')
+        visible_authors = users.values_list('id', flat=True)
+
+        notes = SherdNote.objects.get_related_notes(qs,
+                                                    author,
+                                                    visible_authors)
+        self.assertEquals(notes.count(), 3)
+
+        self.assertEquals(notes[0].author.username, "test_instructor")
+        self.assertFalse(notes[0].is_global_annotation())
+        self.assertEquals(notes[0].title, 'Our esteemed leaders')
+
+        self.assertEquals(notes[1].author, author)
+        self.assertEquals(notes[1].title, "The Award")
+        self.assertFalse(notes[1].is_global_annotation())
+
+        self.assertEquals(notes[2].author, author)
+        self.assertTrue(notes[2].is_global_annotation())
+
+    def test_filter_by_date(self):
+        notes = SherdNote.objects.filter_by_date('today')
+        self.assertEquals(notes.count(), 0)
+
+        notes = SherdNote.objects.filter_by_date('yesterday')
+        self.assertEquals(notes.count(), 0)
+
+        notes = SherdNote.objects.filter_by_date('lastweek')
+        self.assertEquals(notes.count(), 0)
+
+        today_note = SherdNote.objects.get(title='Nice Tie')
+        today_note.modified = datetime.today()
+        today_note.save()
+
+        notes = SherdNote.objects.filter_by_date('today')
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0].title, 'Nice Tie')
+
+    def test_filter_by_tags(self):
+        notes = SherdNote.objects.filter_by_tags('student_one_selection')
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0].title, 'The Award')
+
+        notes = SherdNote.objects.filter(asset__title='MAAP Award Reception')
+        self.assertEquals(notes.count(), 6)
+
+        notes = notes.filter_by_tags('student_two_selection,image')
+        self.assertEquals(notes.count(), 2)
+        self.assertEquals(notes[0].title, 'Nice Tie')
+        self.assertEquals(notes[1].title, 'Our esteemed leaders')
+
+    def test_filter_by_vocabulary(self):
+        # OR'd within vocabulary, AND'd across vocabulary
+        shapes = Vocabulary.objects.get(name='shapes')
+        colors = Vocabulary.objects.get(name='colors')
+
+        red = Term.objects.get(name='red')
+        blue = Term.objects.get(name='blue')
+        green = Term.objects.get(name='green')
+        square = Term.objects.get(name='square')
+        triangle = Term.objects.get(name='triangle')
+
+        note1 = SherdNote.objects.get(title='The Award')
+        self.create_term_relationship(note1, red)
+        note2 = SherdNote.objects.get(title='Nice Tie')
+        self.create_term_relationship(note2, blue)
+
+        note3 = SherdNote.objects.get(title='Our esteemed leaders')
+        self.create_term_relationship(note3, red)
+        self.create_term_relationship(note3, square)
+
+        # get all notes that are tagged red or blue
+        ctx = {'%s' % colors.id: [red.id]}
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 2)
+
+        ctx = {'%s' % colors.id: [blue.id]}
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 1)
+
+        ctx = {'%s' % colors.id: [red.id, blue.id]}
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 3)
+
+        ctx = {'%s' % shapes.id: [square.id]}
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 1)
+
+        ctx = {
+            '%s' % colors.id: [blue.id],
+            '%s' % shapes.id: [square.id]
+        }
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 0)
+
+        ctx = {
+            '%s' % colors.id: [red.id],
+            '%s' % shapes.id: [square.id]
+        }
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0].title, "Our esteemed leaders")
+
+        ctx = {
+            '%s' % shapes.id: [triangle.id]
+        }
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 0)
+
+        ctx = {
+            '%s' % colors.id: [green.id],
+            '%s' % shapes.id: [triangle.id]
+        }
+        notes = SherdNote.objects.filter_by_vocabulary(ctx)
+        self.assertEquals(notes.count(), 0)

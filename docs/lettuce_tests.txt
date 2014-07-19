@@ -103,10 +103,11 @@ Alternate Course
 # Course: [Sample Course], Asset MAAP Award Reception [2]
 # Primary: image
 #     Note test_student_two None
-#     Note test_student_two Nice Tie
+#     Note test_student_two Nice Tie, tags: u',student_two_selection'
 #     Note test_student_one None
-#     Note test_student_one The Award
-#     Note test_instructor Our esteemed leaders
+#     Note test_student_one The Award, tags: u',student_one_selection'
+#     Note test_instructor Our esteemed leaders,
+          tags: u',image, instructor_one_selection, '
 #     Note test_instructor None
 # Course: [Sample Course], Asset The Armory - Home to CCNMTL'S CUMC Office [3]
 # Primary: image

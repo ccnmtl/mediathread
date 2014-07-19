@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.aggregates import Count
 from django.template.defaultfilters import slugify
 
 
@@ -75,13 +76,33 @@ class TermForm(forms.ModelForm):
         model = Term
 
 
+class TermRelationshipManager(GenericRelationshipManager):
+
+    def get_related_terms(self, content_type, object_list):
+        ids = object_list.values_list('id', flat=True)
+        related = TermRelationship.objects.filter(
+            content_type=content_type,
+            object_id__in=ids)
+
+        values = related.values('term__id',
+                                'term__vocabulary__id',
+                                'term__display_name')
+        values.annotate(count=Count('term__id'))
+
+        terms = list(values)
+
+        terms.sort(lambda a, b: cmp(a['term__display_name'].lower(),
+                                    b['term__display_name'].lower()))
+        return terms
+
+
 class TermRelationship(models.Model):
     term = models.ForeignKey(Term)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    objects = GenericRelationshipManager()
+    objects = TermRelationshipManager()
 
     class Meta:
         unique_together = ('term', 'content_type', 'object_id')

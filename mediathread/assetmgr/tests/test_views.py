@@ -124,107 +124,6 @@ class AssetViewTest(TestCase):
 
         # The remainder of the annotation update is tested in djangosherd
 
-    def test_student_get_my_assets(self):
-        username = "test_student_one"
-        password = "test"
-        self.assert_(self.client.login(username=username, password=password))
-
-        response = self.client.get(
-            "/asset/json/user/test_student_one/?annotations=true",
-            {},
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        the_json = json.loads(response.content)
-
-        self.assertTrue(the_json['editable'])
-        self.assertFalse(the_json['citable'])
-        self.assertFalse(the_json['is_faculty'])
-        self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
-
-    def test_student_get_peer_assets(self):
-        username = "test_student_one"
-        password = "test"
-        self.assert_(self.client.login(username=username, password=password))
-
-        record_owner = 'test_student_two'
-        response = self.client.get(
-            "/asset/json/user/%s/?annotations=true" % record_owner,
-            {},
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        the_json = json.loads(response.content)
-
-        self.assertFalse(the_json['editable'])
-        self.assertFalse(the_json['citable'])
-        self.assertFalse(the_json['is_faculty'])
-        self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
-
-        ann = the_json['assets'][0]['annotations'][0]
-        self.assertEquals(len(ann['metadata']['tags']), 1)
-        self.assertEquals(ann['metadata']['body'],
-                          "student two selection note")
-
-        self.assertTrue('global_annotation' in the_json['assets'][0])
-        gla = the_json['assets'][0]['global_annotation']
-        self.assertEquals(len(gla['metadata']['tags']), 1)
-        self.assertEquals(gla['metadata']['body'],
-                          "student two item note")
-
-# Commented
-#     def test_student_get_peer_assets(self):
-#         username = "test_student_one"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = 'test_student_two'
-#
-#     def test_student_get_peer_assets_restricted(self):
-#         username = "test_student_one"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = 'test_student_two'
-#
-#     def test_student_get_instructor_assets(self):
-#         username = "test_student_one"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = 'test_instructor'
-#
-#     def test_student_get_all_assets(self):
-#         username = "test_student_one"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#        record_owner = ''
-#
-#     def test_instructor_get_my_assets(self):
-#         username = "test_instructor"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = 'test_instructor'
-#
-#     def test_instructor_get_student_assets(self):
-#         username = "test_instructor"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = 'test_student_one'
-#
-#     def test_instructor_get_student_assets_restricted(self):
-#         return self.test_instructor_get_student_assets()
-#
-#     def test_instructor_get_assets_by_course(self):
-#         username = "test_instructor"
-#         password = "test"
-#         self.assert_(self.client.login(username=username, password=password))
-#
-#         record_owner = ''
-
     def test_save_server2server(self):
         setattr(settings,
                 'SERVER_ADMIN_SECRETKEYS', {'http://localhost': 'testing'})
@@ -266,3 +165,34 @@ class AssetViewTest(TestCase):
         asset = Asset.objects.get(title="Test Video")
         user = User.objects.get(username="test_instructor")
         self.assertIsNotNone(asset.global_annotation(user, auto_create=False))
+
+
+class TagCollectionViewTest(TestCase):
+    fixtures = ['unittest_sample_course.json']
+
+    def get_credentials(self):
+        return None
+
+    def test_tag_collection_view(self):
+        self.assertTrue(
+            self.client.login(username="test_student_one",
+                              password="test"))
+
+        response = self.client.get('/tag/json/', {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        self.assertValidJSONResponse(response)
+        the_json = self.deserialize(response)
+        lst = the_json['tags']
+
+        self.assertEquals(len(lst), 5)
+
+        for item in lst:
+            self.assertFalse('count' in item)
+
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'test_instructor_item')
+
+        self.assertFalse('count' in lst[4])
+        self.assertEquals(lst[4]['last'], True)
+        self.assertEquals(lst[4]['name'], 'youtube')

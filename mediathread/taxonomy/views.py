@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from djangohelpers.lib import allow_http, rendered_with
-from mediathread.main.mixins import faculty_only
+from mediathread.mixins import faculty_only
 from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
     Term, TermRelationship
 

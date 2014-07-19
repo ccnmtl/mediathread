@@ -1,5 +1,5 @@
 from courseaffils.lib import get_public_name
-from mediathread.assetmgr.api import AssetSummaryResource
+from mediathread.assetmgr.api import AssetResource
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.projects.forms import ProjectForm
 from random import choice
@@ -91,7 +91,7 @@ def composition_project_json(request, project, can_edit, version_number=None):
     course = request.course if request.course \
         else request.collaboration_context.content_object
 
-    asset_resource = AssetSummaryResource()
+    asset_resource = AssetResource()
     sherd_resource = SherdNoteResource()
     citations = project.citations()
 

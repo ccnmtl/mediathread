@@ -14,25 +14,21 @@ from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 from mediathread.api import UserResource, TagResource
-from mediathread.assetmgr.api import AssetResource, AssetSummaryResource
+from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source
+from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
-from mediathread.main import course_details
-from mediathread.main.course_details import all_selections_are_visible, \
-    cached_course_is_faculty
-from mediathread.main.mixins import LoggedInMixin, JSONResponseMixin, \
-    ajax_required, CourseRequiredMixin
-from mediathread.taxonomy.api import VocabularyResource, TermResource, \
-    TermRelationshipResource
-from mediathread.taxonomy.models import Vocabulary, TermRelationship
-from tagging.models import Tag
+from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
+    JSONResponseMixin, AjaxRequiredMixin, RestrictedCourseMixin
+from mediathread.taxonomy.api import VocabularyResource
+from mediathread.taxonomy.models import Vocabulary
 import datetime
 import hashlib
 import hmac
+import json
 import re
-import simplejson
 import urllib
 import urllib2
 
@@ -75,66 +71,12 @@ def asset_switch_course(request, asset_id):
         raise Http404("This item does not exist.")
 
 
-@login_required
-@allow_http("GET")
-def asset_workspace(request, asset_id=None, annot_id=None):
-    if not request.user.is_staff:
-        in_course_or_404(request.user.username, request.course)
-
-    if asset_id:
-        try:
-            asset = Asset.objects.get(pk=asset_id, course=request.course)
-            asset.primary
-        except Asset.DoesNotExist:
-            return asset_switch_course(request, asset_id)
-        except Source.DoesNotExist:
-            return render_to_response('500.html', {},
-                                      context_instance=RequestContext(request))
-
-    data = {'space_owner': request.user.username,
-            'asset_id': asset_id,
-            'annotation_id': annot_id}
-
-    if not request.is_ajax():
-        return render_to_response('assetmgr/asset_workspace.html',
-                                  data,
-                                  context_instance=RequestContext(request))
-    elif asset_id:
-        # @todo - refactor this context out of the mix
-        # ideally, the client would simply request the json
-        context = AssetResource().render_one(request, asset)
-    else:
-        context = {'type': 'asset'}
-
-    vocabulary = VocabularyResource().render_list(
-        request, Vocabulary.objects.get_for_object(request.course))
-
-    user_resource = UserResource()
-    owners = user_resource.render_list(request, request.course.members)
-
-    data['panels'] = [{'panel_state': 'open',
-                       'panel_state_label': "Annotate Media",
-                       'context': context,
-                       'owners': owners,
-                       'vocabulary': vocabulary,
-                       'template': 'asset_workspace',
-                       'current_asset': asset_id,
-                       'current_annotation': annot_id,
-                       'update_history': True,
-                       'show_collection': True}]
-
-    return HttpResponse(simplejson.dumps(data, indent=2),
-                        mimetype='application/json')
-
-
 def asset_workspace_courselookup(asset_id=None, annot_id=None):
     """lookup function corresponding to asset_workspace
     if an asset is being requested then we can guess the course
     """
     if asset_id:
         return Asset.objects.get(pk=asset_id).course
-
-AUTO_COURSE_SELECT[asset_workspace] = asset_workspace_courselookup
 
 
 def _parse_metadata(req_dict):
@@ -203,7 +145,7 @@ def asset_create(request):
                 for each_tag in metadata["tag"]:
                     asset.save_tag(user, each_tag)
 
-            asset.metadata_blob = simplejson.dumps(metadata)
+            asset.metadata_blob = json.dumps(metadata)
             asset.save()
         except:
             # we'll make it here if someone doesn't submit
@@ -262,7 +204,7 @@ def asset_delete(request, asset_id):
     annotations = asset.sherdnote_set.filter(author=request.user)
     annotations.delete()
 
-    json_stream = simplejson.dumps({})
+    json_stream = json.dumps({})
     return HttpResponse(json_stream, mimetype='application/json')
 
 
@@ -354,7 +296,7 @@ def annotation_create_global(request, asset_id):
                 'creating': True
             }
         }
-        return HttpResponse(simplejson.dumps(response),
+        return HttpResponse(json.dumps(response),
                             mimetype="application/json")
 
     except SherdNote.DoesNotExist:
@@ -496,71 +438,104 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 
-@login_required
-@allow_http("GET")
-@ajax_required
-def asset_detail(request, asset_id):
-    if not request.user.is_staff:
-        in_course_or_404(request.user.username, request.course)
+class AssetReferenceView(LoggedInCourseMixin, RestrictedCourseMixin,
+                        AjaxRequiredMixin, JSONResponseMixin, View):
 
-    try:
-        asset = Asset.objects.get(pk=asset_id, course=request.course)
-        the_json = AssetResource().render_one(request, asset)
-        return HttpResponse(simplejson.dumps(the_json, indent=2),
-                            mimetype='application/json')
-    except Asset.DoesNotExist:
-        return asset_switch_course(request, asset_id)
+    def get(self, request, asset_id):
+        try:
+            ctx = {}
+            asset = Asset.objects.filter(pk=asset_id, course=request.course)
+            notes = SherdNote.objects.get_related_notes(
+                asset, self.record_owner, self.visible_authors)
 
+            # tags
+            ctx['tags'] = TagResource().render_related(request, notes)
 
-@login_required
-@allow_http("GET")
-@ajax_required
-def asset_references(request, asset_id):
-    if not request.user.is_staff:
-        in_course_or_404(request.user.username, request.course)
+            # vocabulary
+            content_type = ContentType.objects.get_for_model(SherdNote)
+            ctx['vocabulary'] = VocabularyResource().render_related(
+                request, content_type, notes)
 
-    try:
-        the_json = {}
-        asset = Asset.objects.get(pk=asset_id, course=request.course)
+            # DiscussionIndex is misleading. Objects returned are
+            # projects & discussions title, object_pk, content_type, modified
+            indicies = DiscussionIndex.objects.filter(
+                asset=asset).order_by('-modified')
+            ctx['references'] = DiscussionIndexResource().render_list(request,
+                                                                      indicies)
 
-        filters = {
-            'assets': [asset.id],
-            'counts': True
-        }
-        the_json['tags'] = TagResource(request.course).filter(request, filters)
-
-        the_json['vocabulary'] = []
-        for vocab in Vocabulary.objects.get_for_object(request.course):
-            filters['vocabulary'] = vocab.id
-            concepts = TermRelationshipResource(request.course).filter(request,
-                                                                       filters)
-            if len(concepts):
-                the_json['vocabulary'].append(
-                    {'display_name': vocab.display_name,
-                     'term_set': concepts})
-
-        # DiscussionIndex is misleading. Objects returned are
-        # projects & discussions title, object_pk, content_type, modified
-        collaboration_items = DiscussionIndex.with_permission(
-            request,
-            DiscussionIndex.objects.filter(asset=asset).order_by('-modified'))
-
-        the_json['references'] = [{
-            'id': obj.collaboration.object_pk,
-            'title': obj.collaboration.title,
-            'type': obj.get_type_label(),
-            'url': obj.get_absolute_url(),
-            'modified': obj.modified.strftime("%m/%d/%y %I:%M %p")}
-            for obj in collaboration_items]
-
-        return HttpResponse(simplejson.dumps(the_json, indent=2),
-                            mimetype='application/json')
-    except Asset.DoesNotExist:
-        return asset_switch_course(request, asset_id)
+            return self.render_to_json_response(ctx)
+        except Asset.DoesNotExist:
+            return asset_switch_course(request, asset_id)
 
 
-class AssetCollectionView(LoggedInMixin, CourseRequiredMixin,
-                          JSONResponseMixin, View):
+class AssetWorkspaceView(LoggedInCourseMixin, RestrictedCourseMixin,
+                         JSONResponseMixin, View):
+
+    def get(self, request, asset_id=None, annot_id=None):
+
+        if asset_id:
+            try:
+                asset = Asset.objects.get(pk=asset_id, course=request.course)
+                asset.primary
+            except Asset.DoesNotExist:
+                return asset_switch_course(request, asset_id)
+            except Source.DoesNotExist:
+                ctx = RequestContext(request)
+                return render_to_response('500.html', {}, context_instance=ctx)
+
+        data = {'space_owner': request.user.username,
+                'asset_id': asset_id,
+                'annotation_id': annot_id}
+
+        if not request.is_ajax():
+            return render_to_response('assetmgr/asset_workspace.html',
+                                      data,
+                                      context_instance=RequestContext(request))
+        elif asset_id:
+            # @todo - refactor this context out of the mix
+            # ideally, the client would simply request the json
+            ares = AssetResource(record_owner=request.user,
+                                 visible_authors=self.visible_authors)
+            context = ares.render_one(request, asset)
+        else:
+            context = {'type': 'asset'}
+
+        vocabulary = VocabularyResource().render_list(
+            request, Vocabulary.objects.get_for_object(request.course))
+
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
+        data['panels'] = [{'panel_state': 'open',
+                           'panel_state_label': "Annotate Media",
+                           'context': context,
+                           'owners': owners,
+                           'vocabulary': vocabulary,
+                           'template': 'asset_workspace',
+                           'current_asset': asset_id,
+                           'current_annotation': annot_id,
+                           'update_history': True,
+                           'show_collection': True}]
+
+        return self.render_to_json_response(data)
+
+
+class AssetDetailView(LoggedInCourseMixin, RestrictedCourseMixin,
+                      AjaxRequiredMixin, JSONResponseMixin, View):
+
+    def get(self, request, asset_id):
+        try:
+            asset = Asset.objects.get(pk=asset_id, course=request.course)
+            ares = AssetResource(record_owner=request.user,
+                                 visible_authors=self.visible_authors)
+            context = ares.render_one(request, asset)
+            return self.render_to_json_response(context)
+        except Asset.DoesNotExist:
+            return asset_switch_course(request, asset_id)
+
+
+class AssetCollectionView(LoggedInCourseMixin, RestrictedCourseMixin,
+                          AjaxRequiredMixin, JSONResponseMixin, View):
     """
     An ajax-only request to retrieve a specified user's assets
     Example:
@@ -568,134 +543,62 @@ class AssetCollectionView(LoggedInMixin, CourseRequiredMixin,
         /asset/json/course/
     """
 
-    def render_assets(self, request, assets, record_owner):
-        course = request.course
-        record_viewer = request.user
-
-        # Is the current user faculty OR staff
-        is_faculty = cached_course_is_faculty(course, record_viewer)
-
-        # Can the record_owner edit the records
-        viewing_own_records = (record_owner == record_viewer)
-        viewing_faculty_records = (record_owner and
-                                   course.is_faculty(record_owner))
-
+    def get_context(self, request, assets):
         # Allow the logged in user to add assets to his composition
         citable = request.GET.get('citable', '') == 'true'
+        include_annotations = request.GET.get('annotations', '') == 'true'
 
-        # Does the course allow viewing other user selections?
-        owner_selections_are_visible = (
-            course_details.all_selections_are_visible(course) or
-            viewing_own_records or viewing_faculty_records or is_faculty)
+        # Initialize the context
+        user_res = UserResource()
+        context = {
+            'space_viewer': user_res.render_one(request, self.record_viewer),
+            'is_faculty': self.is_viewer_faculty}
 
-        # Setup the context
-        user_resource = UserResource()
+        if self.record_owner:
+            context['space_owner'] = \
+                user_res.render_one(request, self.record_owner)
 
-        # Assemble the context
-        data = {'space_viewer': user_resource.render_one(request,
-                                                         record_viewer),
-                'editable': viewing_own_records,
-                'citable': citable,
-                'is_faculty': is_faculty}
+        active_filters = {}
+        for key, val in request.GET.items():
+            if (key == 'tag' or key == 'modified' or
+                    key.startswith('vocabulary-')):
+                active_filters[key] = val
+        context['active_filters'] = active_filters
 
-        if record_owner:
-            data['space_owner'] = user_resource.render_one(request,
-                                                           record_owner)
-
-        # Spew out json for the assets
-        if request.GET.get('annotations', '') == 'true':
-            resource = AssetResource(owner_selections_are_visible,
-                                     record_owner,
-                                     {'editable': viewing_own_records,
-                                      'citable': citable})
-        else:
-            resource = AssetSummaryResource({'editable': viewing_own_records,
-                                             'citable': citable})
+        context['editable'] = self.viewing_own_records
+        context['citable'] = citable
 
         offset = int(request.GET.get("offset", 0))
         limit = int(request.GET.get("limit", 20))
-        asset_json = resource.render_list(request, assets)
+
+        ares = AssetResource(record_owner=self.record_owner,
+                             visible_authors=self.visible_authors,
+                             include_annotations=include_annotations,
+                             extras={'editable': self.viewing_own_records,
+                                     'citable': citable},
+                             offset=offset,
+                             limit=limit)
+        context['assets'] = ares.render_list(request, assets)
 
         if offset == 0:
-            active_filters = {}
-            for key, val in request.GET.items():
-                if (key == 'tag' or
-                        key == 'modified' or
-                        key.startswith('vocabulary-')):
-                    active_filters[key] = val
-            data['active_filters'] = active_filters
+            notes = ares.visible_notes
 
-            # #todo -- figure out a cleaner way to do this. Ugli-ness
-            # Collate tag set & vocabulary set for the result set.
-            # Get all visible notes for the returned asset set
-            # These notes may include global annotations for all users,
-            # whereas the rendered set will not
-            active_asset_ids = [a['id'] for a in asset_json]
-            active_notes = []
-            if record_owner:
-                if owner_selections_are_visible:
-                    active_notes = SherdNote.objects.filter(
-                        asset__course=course, asset__id__in=active_asset_ids,
-                        author__id=record_owner.id)
-            else:
-                if all_selections_are_visible(course) or is_faculty:
-                    # Display all tags for the asset set including globals
-                    active_notes = SherdNote.objects.filter(
-                        asset__course=course, asset__id__in=active_asset_ids)
-                else:
-                    whitelist = [f.id for f in course.faculty]
-                    whitelist.append(request.user.id)
-                    active_notes = SherdNote.objects.filter(
-                        asset__course=course,
-                        asset__id__in=active_asset_ids,
-                        author__id__in=whitelist)
+            context['active_tags'] = \
+                TagResource().render_related(request, notes)
 
-            tags = []
-            if len(active_notes) > 0:
-                tags = Tag.objects.usage_for_queryset(active_notes)
-                tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-            data['active_tags'] = TagResource().render_list(request, tags)
+            context['active_vocabulary'] = \
+                VocabularyResource().render_related(request, notes)
 
-            active_vocabulary = []
-            note_ids = [n.id for n in active_notes]
-            content_type = ContentType.objects.get_for_model(SherdNote)
-            term_resource = TermResource()
-            for vocab in Vocabulary.objects.get_for_object(
-                    course).select_related():
-                vocabulary = {
-                    'id': vocab.id,
-                    'display_name': vocab.display_name,
-                    'term_set': []
-                }
-                related = TermRelationship.objects.filter(
-                    term__vocabulary=vocab, content_type=content_type,
-                    object_id__in=note_ids).select_related()
-
-                terms = []
-                for rel in related:
-                    if rel.term.display_name not in terms:
-                        the_term = term_resource.render_one(request, rel.term)
-                        vocabulary['term_set'].append(the_term)
-                        terms.append(rel.term.display_name)
-
-                active_vocabulary.append(vocabulary)
-            data['active_vocabulary'] = active_vocabulary
-
-        # Add in the assets
-        data['assets'] = asset_json[offset:offset + limit]
-
-        return data
+        return context
 
     def get(self, request, record_owner_name=None):
-        self.course = request.course
-
-        if (record_owner_name is None):
-            self.record_owner = None
-            assets = Asset.objects.assets_by_course(self.course)
+        if (self.record_owner):
+            assets = Asset.objects.annotated_by(request.course,
+                                                self.record_owner)
         else:
-            self.record_owner = get_object_or_404(User,
-                                                  username=record_owner_name)
-            assets = Asset.objects.annotated_by(self.course, self.record_owner)
+            assets = Asset.objects.assets_by_course(request.course)
 
-        context = self.render_assets(request, assets, self.record_owner)
+        context = self.get_context(request, assets)
         return self.render_to_json_response(context)
+
+AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup

@@ -2,7 +2,6 @@
 from courseaffils.lib import get_public_name
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
-from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import all_selections_are_visible, \
     cached_course_is_faculty
 from tagging.models import Tag
@@ -219,15 +218,11 @@ class RestrictedCourseResource(ModelResource):
             return self.get_restricted(request, object_list, course)
 
 
-class TagResource(RestrictedCourseResource):
-    def __init__(self, course=None):
-        super(TagResource, self).__init__(None)
-        self.filters = {}
-
+class TagResource(ModelResource):
     class Meta:
         queryset = Tag.objects.none()
-        list_allowed_methods = ['get']
-        detail_allowed_methods = ['get']
+        list_allowed_methods = []
+        detail_allowed_methods = []
         authentication = ClassLevelAuthentication()
         limit = 1000
         max_limit = 1000
@@ -238,30 +233,10 @@ class TagResource(RestrictedCourseResource):
         bundle.data['last'] = hasattr(bundle.obj, "last")
         return bundle
 
-    def _filter_tags(self, note_set):
-        if 'assets' in self.filters:
-            note_set = note_set.filter(asset__id__in=self.filters['assets'])
-        if 'record_owner' in self.filters:
-            note_set = note_set.filter(author=self.filters['record_owner'])
-
-        counts = 'counts' in self.filters
-        tags = Tag.objects.usage_for_queryset(note_set, counts=counts)
+    def render_related(self, request, object_list):
+        tags = Tag.objects.usage_for_queryset(object_list, counts=True)
         tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-        return tags
 
-    def get_unrestricted(self, request, object_list, course):
-        notes = SherdNote.objects.filter(asset__course=course)
-        return self._filter_tags(notes)
-
-    def get_restricted(self, request, object_list, course):
-        whitelist = [f.id for f in course.faculty]
-        whitelist.append(request.user.id)
-
-        notes = SherdNote.objects.filter(asset__course=course,
-                                         author__id__in=whitelist)
-        return self._filter_tags(notes)
-
-    def render_list(self, request, tags):
         tag_last = len(tags) - 1
         data = []
         for idx, tag in enumerate(tags):
@@ -272,9 +247,3 @@ class TagResource(RestrictedCourseResource):
             dehydrated = self.full_dehydrate(bundle)
             data.append(dehydrated.data)
         return data
-
-    def filter(self, request, filters):
-        self.filters = filters
-        base_bundle = self.build_bundle(request=request)
-        objects = self.obj_get_list(bundle=base_bundle)
-        return self.render_list(request, objects)

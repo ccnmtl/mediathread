@@ -268,3 +268,29 @@ class AssetTest(TestCase):
 
         # make sure the archive isn't in there
         self.assertEquals(assets.filter(title="Sample Archive").count(), 0)
+
+    def test_annotated_by(self):
+        course = Course.objects.get(title='Sample Course')
+        user = User.objects.get(username='test_instructor_two')
+        archive = Asset.objects.create(title="Sample Archive",
+                                       course=course, author=user)
+        primary = Source.objects.create(asset=archive, label='archive',
+                                        primary=True,
+                                        url="http://ccnmtl.columbia.edu")
+        archive.source_set.add(primary)
+
+        assets = Asset.objects.annotated_by(course, user)
+        self.assertEquals(assets.count(), 2)
+        self.assertIsNotNone(assets.get(title='Project Portfolio'))
+        self.assertIsNotNone(assets.get(title='Mediathread: Introduction'))
+
+        # make sure the archive isn't in there
+        self.assertEquals(assets.filter(title="Sample Archive").count(), 0)
+
+        user = User.objects.get(username='test_instructor')
+        assets = Asset.objects.annotated_by(course, user)
+        self.assertEquals(assets.count(), 3)
+        self.assertIsNotNone(assets.get(title='Mediathread: Introduction'))
+        self.assertIsNotNone(assets.get(title='MAAP Award Reception'))
+        self.assertIsNotNone(assets.get(
+            title="The Armory - Home to CCNMTL'S CUMC Office"))

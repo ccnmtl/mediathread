@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http
 from mediathread.djangosherd.models import Asset, SherdNote, NULL_FIELDS
 from mediathread.taxonomy.views import update_vocabulary_terms
-import simplejson
+import json
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
@@ -50,7 +50,7 @@ def create_annotation(request):
     if request.is_ajax():
         response = {'asset': {'id': asset.id},
                     'annotation': {'id': annotation.id}}
-        return HttpResponse(simplejson.dumps(response),
+        return HttpResponse(json.dumps(response),
                             mimetype="application/json")
     else:
         #new annotations should redirect 'back' to the asset
@@ -98,7 +98,7 @@ def edit_annotation(request, annot_id):
     if request.is_ajax():
         response = {'asset': {'id': annotation.asset_id},
                     'annotation': {'id': annotation.id}}
-        return HttpResponse(simplejson.dumps(response),
+        return HttpResponse(json.dumps(response),
                             mimetype="application/json")
     else:
         redirect_to = request.GET.get('next', '.')

@@ -233,6 +233,18 @@ class TagResource(ModelResource):
         bundle.data['last'] = hasattr(bundle.obj, "last")
         return bundle
 
+    def render_list(self, request, tags):
+        tag_last = len(tags) - 1
+        data = []
+        for idx, tag in enumerate(tags):
+            if idx == tag_last:
+                setattr(tag, 'last', idx == tag_last)
+
+            bundle = self.build_bundle(obj=tag, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            data.append(dehydrated.data)
+        return data
+
     def render_related(self, request, object_list):
         tags = Tag.objects.usage_for_queryset(object_list, counts=True)
         tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))

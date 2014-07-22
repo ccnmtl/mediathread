@@ -22,7 +22,7 @@ from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
 from threadedcomments import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
-import simplejson
+import json
 
 
 @allow_http("POST")
@@ -107,7 +107,7 @@ def discussion_create(request):
                 'context': threaded_comment_json(request,
                                                  new_threaded_comment)}
 
-        return HttpResponse(simplejson.dumps(data, indent=2),
+        return HttpResponse(json.dumps(data, indent=2),
                             mimetype='application/json')
 
 
@@ -178,7 +178,7 @@ def discussion_view(request, discussion_id):
 
         data['panels'].append(panel)
 
-        return HttpResponse(simplejson.dumps(data, indent=2),
+        return HttpResponse(json.dumps(data, indent=2),
                             mimetype='application/json')
 
 

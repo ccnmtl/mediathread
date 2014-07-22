@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import patterns, url
-from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
-    AssetWorkspaceView, AssetReferenceView
+from mediathread.assetmgr.views import AssetWorkspaceView, AssetReferenceView
 import os.path
 
 media_root = os.path.join(os.path.dirname(__file__), "media")
@@ -24,19 +23,7 @@ urlpatterns = patterns(
         {}, 'asset-view'),
 
     url(r'^(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
-         AssetWorkspaceView.as_view(), {}, 'annotation-view'),
-
-    # json render all assets for a cource
-    url(r'^json/course/$', AssetCollectionView.as_view(),
-        {}, 'assets-by-course'),
-
-    # json render all assets for a specific user
-    url(r'^json/user/(?P<record_owner_name>\w[^/]*)/$',
-        AssetCollectionView.as_view(), {}, 'assets-by-user'),
-
-    # json render for a specific asset
-    url(r'^json/(?P<asset_id>\d+)/$', AssetDetailView.as_view(),
-        {}, 'asset-detail'),
+        AssetWorkspaceView.as_view(), {}, 'annotation-view'),
 
     url(r'^create/(?P<asset_id>\d+)/annotations/$', 'annotation_create'),
 

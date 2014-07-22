@@ -6,6 +6,7 @@ from mediathread.api import ClassLevelAuthentication, ToManyFieldEx, \
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
+from django.db.models import Count
 
 
 class TermValidation(Validation):
@@ -126,20 +127,32 @@ class VocabularyResource(ModelResource):
             key=lambda bundle: bundle.data['display_name'])
         return to_be_serialized
 
-    def render_related(self, request, related):
+    def render_related(self, request, object_list):
         ctx = {}
-        terms = []
+        term_resource = TermResource()
+
+        related = TermRelationship.objects.get_for_object_list(object_list)
+        term_counts = related.values('term').annotate(count=Count('id'))
 
         for rel in related:
             if rel.term.vocabulary.id not in ctx:
                 vocab_ctx = {'id': rel.term.vocabulary.id,
                              'display_name': rel.term.vocabulary.display_name,
-                             'term_set': []}
+                             'term_set': [],
+                             'terms': []}
                 ctx[rel.term.vocabulary.id] = vocab_ctx
 
-                if rel.term.id not in terms:
-                    the_term = term_resource.render_one(request, rel.term)
-                    ctx[rel.term.vocabulary.id]['term_set'].append(the_term)
-                    terms.append(rel.term.id)
+            # have we seen this term before?
+            try:
+                ctx[rel.term.vocabulary.id]['terms'].index(rel.term.id)
+            except ValueError:
+                the_term = term_resource.render_one(request, rel.term)
+                the_term['count'] = term_counts.get(term=rel.term.id)['count']
+                ctx[rel.term.vocabulary.id]['term_set'].append(the_term)
+                ctx[rel.term.vocabulary.id]['terms'].append(rel.term.id)
 
-        return ctx
+        values = ctx.values()
+        values.sort(lambda a, b: cmp(a['display_name'].lower(),
+                    b['display_name'].lower()))
+
+        return values

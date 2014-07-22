@@ -3,7 +3,7 @@
 from tastypie.test import ResourceTestCase
 
 
-class ProjectResourceTest(ResourceTestCase):
+class ProjectApiTest(ResourceTestCase):
     # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
     # documentation for the gory details.
     fixtures = ['unittest_sample_course.json',
@@ -12,12 +12,13 @@ class ProjectResourceTest(ResourceTestCase):
     def get_credentials(self):
         return None
 
-    def assertProjectEquals(self, project, title, author, selection_ids):
+    def assertProjectEquals(self, project, title, author, selection_ids=None):
         self.assertEquals(project['title'], title)
         self.assertEquals(project['attribution'], author)
 
-        self.assertEquals(len(project['annotations']), len(selection_ids))
-        for idx, selection in enumerate(project['annotations']):
+    def assertSelectionsEqual(self, selections, selection_ids):
+        self.assertEquals(len(selections), len(selection_ids))
+        for idx, selection in enumerate(selections):
             self.assertEquals(int(selection['id']), selection_ids[idx])
 
     def test_student_one_getlist(self):
@@ -25,79 +26,81 @@ class ProjectResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        response = self.api_client.get('/_main/api/v1/project/',
-                                       format='json')
+        response = self.api_client.get('/api/project/', format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
 
         json = self.deserialize(response)
-        objects = json['objects']
-        self.assertEquals(len(objects), 4)
+        projects = json['projects']
+        self.assertEquals(len(projects), 4)
 
-        self.assertProjectEquals(objects[0], 'Private Composition',
-                                 'Student One', [8, 10])
+        self.assertProjectEquals(projects[0], 'Sample Course Assignment',
+                                 'test_instructor_two')
 
-        self.assertProjectEquals(objects[1], 'Instructor Shared',
-                                 'Student One', [])
+        self.assertProjectEquals(projects[1], 'Public To Class Composition',
+                                 'Student One')
 
-        self.assertProjectEquals(objects[2], 'Public To Class Composition',
-                                 'Student One', [2, 5, 7])
+        self.assertProjectEquals(projects[2], 'Instructor Shared',
+                                 'Student One')
 
-        self.assertProjectEquals(objects[3], 'Sample Course Assignment',
-                                 'test_instructor_two', [1, 10, 18, 19, 20])
+        self.assertProjectEquals(projects[3], 'Private Composition',
+                                 'Student One')
 
     def test_student_two_getlist(self):
         self.assertTrue(
             self.api_client.client.login(username="test_student_two",
                                          password="test"))
 
-        response = self.api_client.get('/_main/api/v1/project/',
-                                       format='json')
+        response = self.api_client.get('/api/project/', format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
 
         json = self.deserialize(response)
-        objects = json['objects']
-        self.assertEquals(len(objects), 2)
+        projects = json['projects']
+        self.assertEquals(len(projects), 2)
 
-        self.assertProjectEquals(objects[0], 'Public To Class Composition',
-                                 'Student One', [2, 5, 7])
+        self.assertProjectEquals(projects[0], 'Sample Course Assignment',
+                                 'test_instructor_two')
 
-        self.assertProjectEquals(objects[1], 'Sample Course Assignment',
-                                 'test_instructor_two', [1, 10, 18, 19, 20])
+        self.assertProjectEquals(projects[1], 'Public To Class Composition',
+                                 'Student One')
 
     def test_student_two_getlist_filtered(self):
         self.assertTrue(
             self.api_client.client.login(username="test_student_two",
                                          password="test"))
 
-        response = self.api_client.get('/_main/api/v1/project/?author__id=4',
-                                       format='json')
+        response = self.api_client.get('/api/project/user/test_student_two/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
 
         json = self.deserialize(response)
-        objects = json['objects']
-        self.assertEquals(len(objects), 0)
+        projects = json['projects']
+        self.assertEquals(len(projects), 0)
 
     def test_instructor_getlist(self):
         self.assertTrue(
             self.api_client.client.login(username="test_instructor",
                                          password="test"))
 
-        response = self.api_client.get('/_main/api/v1/project/',
-                                       format='json')
+        response = self.api_client.get('/api/project/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
 
         json = self.deserialize(response)
-        objects = json['objects']
-        self.assertEquals(len(objects), 3)
+        projects = json['projects']
+        self.assertEquals(len(projects), 3)
 
-        self.assertProjectEquals(objects[0], 'Instructor Shared',
-                                 'Student One', [])
+        self.assertProjectEquals(projects[0], 'Sample Course Assignment',
+                                 'test_instructor_two')
 
-        self.assertProjectEquals(objects[1], 'Public To Class Composition',
-                                 'Student One', [2, 5, 7])
+        self.assertProjectEquals(projects[1], 'Public To Class Composition',
+                                 'Student One')
 
-        self.assertProjectEquals(objects[2], 'Sample Course Assignment',
-                                 'test_instructor_two', [1, 10, 18, 19, 20])
+        self.assertProjectEquals(projects[2], 'Instructor Shared',
+                                 'Student One')
 
     def test_student_one_getobject(self):
         self.assertTrue(
@@ -105,19 +108,22 @@ class ProjectResourceTest(ResourceTestCase):
                                          password="test"))
 
         # My own private composition
-        response = self.api_client.get('/_main/api/v1/project/1/',
-                                       format='json')
+        response = self.api_client.get('/api/project/1/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
 
         json = self.deserialize(response)
 
-        self.assertProjectEquals(json, 'Private Composition',
-                                 'Student One', [8, 10])
+        self.assertProjectEquals(json['project'], 'Private Composition',
+                                 'Student One')
+        self.assertSelectionsEqual(json['annotations'], [10, 8])
 
         # Student three composition in alt course
-        response = self.api_client.get('/_main/api/v1/project/4/',
-                                       format='json')
-        self.assertEqual(response.status_code, 401)
+        response = self.api_client.get('/api/project/4/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
 
     def test_student_two_getobject(self):
         self.assertTrue(
@@ -125,27 +131,33 @@ class ProjectResourceTest(ResourceTestCase):
                                          password="test"))
 
         # Student one private composition
-        response = self.api_client.get('/_main/api/v1/project/1/',
-                                       format='json')
-        self.assertEqual(response.status_code, 401)
+        response = self.api_client.get('/api/project/1/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
 
         # Student one instructor shared composition
-        response = self.api_client.get('/_main/api/v1/project/2/',
-                                       format='json')
-        self.assertEqual(response.status_code, 401)
+        response = self.api_client.get('/api/project/2/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
 
         # Student one public to class composition
-        response = self.api_client.get('/_main/api/v1/project/3/',
-                                       format='json')
+        response = self.api_client.get('/api/project/3/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
         json = self.deserialize(response)
-        self.assertProjectEquals(json, 'Public To Class Composition',
-                                 'Student One', [2, 5, 7])
+        self.assertProjectEquals(json['project'],
+                                 'Public To Class Composition',
+                                 'Student One')
+        self.assertSelectionsEqual(json['annotations'], [2, 5, 7])
 
         # Student three composition in alt course
-        response = self.api_client.get('/_main/api/v1/project/4/',
-                                       format='json')
-        self.assertEqual(response.status_code, 401)
+        response = self.api_client.get('/api/project/4/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
 
     def test_instructor_getobject(self):
         self.assertTrue(
@@ -153,30 +165,36 @@ class ProjectResourceTest(ResourceTestCase):
                                          password="test"))
 
         # Student one private composition
-        #response = self.api_client.get('/_main/api/v1/project/1/',
-        #                               format='json')
-        #self.assertEqual(response.status_code, 401)
+        response = self.api_client.get('/api/project/1/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
 
         # Student one instructor shared composition
-        response = self.api_client.get('/_main/api/v1/project/2/',
-                                       format='json')
+        response = self.api_client.get('/api/project/2/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
         json = self.deserialize(response)
-        self.assertProjectEquals(json, 'Instructor Shared',
-                                 'Student One', [])
+        self.assertProjectEquals(json['project'], 'Instructor Shared',
+                                 'Student One')
+        self.assertEquals(len(json['annotations']), 0)
 
         # Student one public to class composition
-        response = self.api_client.get('/_main/api/v1/project/3/',
-                                       format='json')
+        response = self.api_client.get('/api/project/3/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
         json = self.deserialize(response)
-        self.assertProjectEquals(json, 'Public To Class Composition',
-                                 'Student One', [2, 5, 7])
+        self.assertProjectEquals(json['project'],
+                                 'Public To Class Composition', 'Student One')
+        self.assertSelectionsEqual(json['annotations'], [2, 5, 7])
 
         # Student three composition in alt course
-        response = self.api_client.get('/_main/api/v1/project/4/',
-                                       format='json')
-        self.assertEqual(response.status_code, 401)
+        response = self.api_client.get('/api/project/4/',
+                                       format='json',
+                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 403)
 
     def test_post_list(self):
         self.assertTrue(
@@ -184,7 +202,7 @@ class ProjectResourceTest(ResourceTestCase):
                                          password="test"))
 
         self.assertHttpMethodNotAllowed(self.api_client.post(
-            '/_main/api/v1/project/', format='json', data={}))
+            '/api/project/', format='json', data={}))
 
     def test_put_detail(self):
         self.assertTrue(
@@ -192,7 +210,7 @@ class ProjectResourceTest(ResourceTestCase):
                                          password="test"))
 
         self.assertHttpMethodNotAllowed(self.api_client.put(
-            '/_main/api/v1/project/2/', format='json', data={}))
+            '/api/project/2/', format='json', data={}))
 
     def test_delete(self):
         self.assertTrue(
@@ -200,4 +218,4 @@ class ProjectResourceTest(ResourceTestCase):
                                          password="test"))
 
         self.assertHttpMethodNotAllowed(self.api_client.delete(
-            '/_main/api/v1/project/2/', format='json'))
+            '/api/project/2/', format='json'))

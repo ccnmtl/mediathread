@@ -16,23 +16,23 @@
                 return '/?username=' + username;
             },
             'your-projects': function (username) {
-                return '/yourspace/projects/' + username + '/';
+                return '/api/projects/user/' + username + '/';
             },
             'all-projects': function () {
-                return '/yourspace/projects/';
+                return '/api/projects/';
             },
             'sort-projects': function () {
                 return '/project/sort/';
             },
             'your-space': function (username, tag, modified, citable) {
-                return '/asset/json/user/' + username + '/?' +
+                return '/api/asset/user/' + username + '/?' +
                     (citable ? '&annotations=true' : '') +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');
             },
             'all-space': function (tag, modified, citable) {
-                return '/asset/json/course/?' +
+                return '/api/asset/course/?' +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');
@@ -57,7 +57,7 @@
                 return '/asset/' + asset_id + '/';
             },
             'asset-json': function (asset_id, with_annotations) {
-                return '/asset/json/' + asset_id + (with_annotations ? '/?annotations=true' : '/');
+                return '/api/asset/' + asset_id + (with_annotations ? '/?annotations=true' : '/');
             },
             'annotation-create': function (asset_id) {
                 // a.k.a. server-side annotation-containers
@@ -102,7 +102,7 @@
                 return '/comments/post/';
             },
             'tags': function () {
-                return '/tag/json/';
+                return '/api/tag/';
             },
             'references': function (asset) {
                 return '/asset/references/' + asset.id + '/';

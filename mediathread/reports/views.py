@@ -19,7 +19,7 @@ from structuredcollaboration.models import Collaboration
 from tagging.models import Tag
 import csv
 import re
-import simplejson as json
+import json
 
 
 @allow_http("GET")

@@ -5,6 +5,7 @@ from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible
 import json
@@ -42,7 +43,7 @@ def faculty_only(func):
     return wrap
 
 
-class RestrictedCourseMixin(object):
+class RestrictedMaterialsMixin(object):
 
     def dispatch(self, *args, **kwargs):
         # initialize a few helpful variables here
@@ -78,7 +79,26 @@ class RestrictedCourseMixin(object):
             for user in self.request.course.faculty.all():
                 self.visible_authors.append(user.id)
 
-        return super(CoursePermissionMixin, self).dispatch(*args, **kwargs)
+        return super(RestrictedMaterialsMixin, self).dispatch(*args, **kwargs)
+
+    def visible_assets_and_notes(self, request, assets):
+        tag_string = request.GET.get('tag', '')
+        modified = request.GET.get('modified', '')
+        vocabulary = dict((key[len('vocabulary-'):], val.split(","))
+                          for key, val in request.GET.items()
+                          if key.startswith('vocabulary-'))
+
+        visible_notes = SherdNote.objects.get_related_notes(
+            assets, self.record_owner or None, self.visible_authors,
+            tag_string, modified, vocabulary)
+
+        # return the related asset ids
+        ids = visible_notes.values_list('asset__id', flat=True)
+        visible_assets = assets.filter(id__in=ids).distinct()
+        return (visible_assets, visible_notes)
+
+    def visible_project(self, request, projects):
+        return None
 
 
 class AjaxRequiredMixin(object):

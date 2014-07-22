@@ -4,9 +4,9 @@ from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.urlresolvers import reverse
+from django.db.models.aggregates import Max
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
@@ -21,7 +21,7 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
-    JSONResponseMixin, AjaxRequiredMixin, RestrictedCourseMixin
+    JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 import datetime
@@ -438,8 +438,8 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 
-class AssetReferenceView(LoggedInCourseMixin, RestrictedCourseMixin,
-                        AjaxRequiredMixin, JSONResponseMixin, View):
+class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+                         AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
         try:
@@ -452,9 +452,8 @@ class AssetReferenceView(LoggedInCourseMixin, RestrictedCourseMixin,
             ctx['tags'] = TagResource().render_related(request, notes)
 
             # vocabulary
-            content_type = ContentType.objects.get_for_model(SherdNote)
-            ctx['vocabulary'] = VocabularyResource().render_related(
-                request, content_type, notes)
+            ctx['vocabulary'] = VocabularyResource().render_related(request,
+                                                                    notes)
 
             # DiscussionIndex is misleading. Objects returned are
             # projects & discussions title, object_pk, content_type, modified
@@ -468,7 +467,7 @@ class AssetReferenceView(LoggedInCourseMixin, RestrictedCourseMixin,
             return asset_switch_course(request, asset_id)
 
 
-class AssetWorkspaceView(LoggedInCourseMixin, RestrictedCourseMixin,
+class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
@@ -494,9 +493,10 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedCourseMixin,
         elif asset_id:
             # @todo - refactor this context out of the mix
             # ideally, the client would simply request the json
-            ares = AssetResource(record_owner=request.user,
-                                 visible_authors=self.visible_authors)
-            context = ares.render_one(request, asset)
+            # the mixin is expecting a queryset, so this becomes awkward here
+            assets = Asset.objects.filter(pk=asset_id)
+            (assets, notes) = self.visible_assets_and_notes(request, assets)
+            context = AssetResource().render_one(request, asset, notes)
         else:
             context = {'type': 'asset'}
 
@@ -520,85 +520,118 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedCourseMixin,
         return self.render_to_json_response(data)
 
 
-class AssetDetailView(LoggedInCourseMixin, RestrictedCourseMixin,
+class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                       AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
-        try:
-            asset = Asset.objects.get(pk=asset_id, course=request.course)
-            ares = AssetResource(record_owner=request.user,
-                                 visible_authors=self.visible_authors)
-            context = ares.render_one(request, asset)
-            return self.render_to_json_response(context)
-        except Asset.DoesNotExist:
+        assets = Asset.objects.filter(pk=asset_id, course=request.course)
+        if assets.count() == 0:
             return asset_switch_course(request, asset_id)
+        else:
+            (assets, notes) = self.visible_assets_and_notes(request, assets)
+            context = AssetResource().render_one(request, assets[0], notes)
+            return self.render_to_json_response(context)
 
 
-class AssetCollectionView(LoggedInCourseMixin, RestrictedCourseMixin,
+class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                           AjaxRequiredMixin, JSONResponseMixin, View):
     """
-    An ajax-only request to retrieve a specified user's assets
+    An ajax-only request to retrieve assets for a course or a specified user
     Example:
-        /asset/json/user/sld2131/
-        /asset/json/course/
+        /api/asset/user/sld2131/
+        /api/asset/a/
+        /api/asset/
     """
 
-    def get_context(self, request, assets):
+    valid_filters = ['tag', 'modified']
+
+    def get_context(self, request, assets, notes):
         # Allow the logged in user to add assets to his composition
         citable = request.GET.get('citable', '') == 'true'
         include_annotations = request.GET.get('annotations', '') == 'true'
 
         # Initialize the context
-        user_res = UserResource()
-        context = {
-            'space_viewer': user_res.render_one(request, self.record_viewer),
-            'is_faculty': self.is_viewer_faculty}
+        ures = UserResource()
+        ctx = {
+            'space_viewer': ures.render_one(request, self.record_viewer),
+            'is_faculty': self.is_viewer_faculty
+        }
 
         if self.record_owner:
-            context['space_owner'] = \
-                user_res.render_one(request, self.record_owner)
+            ctx['space_owner'] = ures.render_one(request, self.record_owner)
 
-        active_filters = {}
+        ctx['active_filters'] = {}
         for key, val in request.GET.items():
-            if (key == 'tag' or key == 'modified' or
-                    key.startswith('vocabulary-')):
-                active_filters[key] = val
-        context['active_filters'] = active_filters
+            if (key in self.valid_filters or key.startswith('vocabulary-')):
+                ctx['active_filters'][key] = val
 
-        context['editable'] = self.viewing_own_records
-        context['citable'] = citable
+        ctx['editable'] = self.viewing_own_records
+        ctx['citable'] = citable
+
+        ares = AssetResource(include_annotations=include_annotations,
+                             extras={'editable': self.viewing_own_records,
+                                     'citable': citable})
+        ctx['assets'] = ares.render_list(request, self.record_owner,
+                                         assets, notes)
+
+        return ctx
+
+    def add_metadata(self, request, notes):
+        tags = TagResource().render_related(request, notes)
+        vocab = VocabularyResource().render_related(request, notes)
+        return {'active_tags': tags, 'active_vocabulary': vocab}
+
+    def apply_pagination(self, assets, notes, offset, limit):
+        # sort the object list via aggregation on the visible notes
+        assets = notes.values('asset')
+        assets = assets.annotate(last_modified=Max('modified'))
+        assets = assets.order_by('-last_modified')
+
+        # slice the list
+        assets = assets[offset:offset + limit]
+        ids = [a['asset'] for a in assets]
+        return (assets, notes.filter(asset__id__in=ids))
+
+    def get(self, request):
+        if (self.record_owner):
+            assets = Asset.objects.by_course_and_user(request.course,
+                                                      self.record_owner)
+        else:
+            assets = Asset.objects.by_course(request.course)
+
+        (assets, notes) = self.visible_assets_and_notes(request, assets)
 
         offset = int(request.GET.get("offset", 0))
         limit = int(request.GET.get("limit", 20))
 
-        ares = AssetResource(record_owner=self.record_owner,
-                             visible_authors=self.visible_authors,
-                             include_annotations=include_annotations,
-                             extras={'editable': self.viewing_own_records,
-                                     'citable': citable},
-                             offset=offset,
-                             limit=limit)
-        context['assets'] = ares.render_list(request, assets)
-
+        ctx = {}
         if offset == 0:
-            notes = ares.visible_notes
+            # add relevant tags & metadata for all visible notes
+            # needs to come before the pagination step
+            ctx.update(self.add_metadata(request, notes))
 
-            context['active_tags'] = \
-                TagResource().render_related(request, notes)
+        # slice down the list to speed rendering
+        (assets, notes) = self.apply_pagination(assets, notes, offset, limit)
 
-            context['active_vocabulary'] = \
-                VocabularyResource().render_related(request, notes)
+        # assemble the context
+        ctx.update(self.get_context(request, assets, notes))
 
-        return context
-
-    def get(self, request, record_owner_name=None):
-        if (self.record_owner):
-            assets = Asset.objects.annotated_by(request.course,
-                                                self.record_owner)
-        else:
-            assets = Asset.objects.assets_by_course(request.course)
-
-        context = self.get_context(request, assets)
-        return self.render_to_json_response(context)
+        return self.render_to_json_response(ctx)
 
 AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup
+
+
+class TagCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+                        AjaxRequiredMixin, JSONResponseMixin, View):
+
+    def get(self, request):
+        # Retrieve tags for this course
+        assets = Asset.objects.filter(course=request.course)
+
+        notes = SherdNote.objects.get_related_notes(
+            assets, self.record_owner or None, self.visible_authors)
+
+        context = {}
+        if len(notes) > 0:
+            context = {'tags': TagResource().render_related(request, notes)}
+        return self.render_to_json_response(context)

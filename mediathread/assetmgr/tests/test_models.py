@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote
-import simplejson
+import json
 
 
 class AssetTest(TestCase):
@@ -82,8 +82,8 @@ class AssetTest(TestCase):
         self.assertEquals(len(course.asset_set.all()), 1)
 
         user = User.objects.get(username='test_instructor_two')
-        asset_json = simplejson.dumps(self.asset_set)
-        assets = simplejson.loads(asset_json)
+        asset_json = json.dumps(self.asset_set)
+        assets = json.loads(asset_json)
 
         object_map = {'assets': {}, 'notes': {}}
         object_map = Asset.objects.migrate(
@@ -263,13 +263,13 @@ class AssetTest(TestCase):
         assets = Asset.objects.filter(course=course)
         self.assertEquals(assets.count(), 5)
 
-        assets = Asset.objects.assets_by_course(course=course)
+        assets = Asset.objects.by_course(course=course)
         self.assertEquals(assets.count(), 4)
 
         # make sure the archive isn't in there
         self.assertEquals(assets.filter(title="Sample Archive").count(), 0)
 
-    def test_annotated_by(self):
+    def test_assets_by_course_and_user(self):
         course = Course.objects.get(title='Sample Course')
         user = User.objects.get(username='test_instructor_two')
         archive = Asset.objects.create(title="Sample Archive",
@@ -279,7 +279,7 @@ class AssetTest(TestCase):
                                         url="http://ccnmtl.columbia.edu")
         archive.source_set.add(primary)
 
-        assets = Asset.objects.annotated_by(course, user)
+        assets = Asset.objects.by_course_and_user(course, user)
         self.assertEquals(assets.count(), 2)
         self.assertIsNotNone(assets.get(title='Project Portfolio'))
         self.assertIsNotNone(assets.get(title='Mediathread: Introduction'))
@@ -288,7 +288,7 @@ class AssetTest(TestCase):
         self.assertEquals(assets.filter(title="Sample Archive").count(), 0)
 
         user = User.objects.get(username='test_instructor')
-        assets = Asset.objects.annotated_by(course, user)
+        assets = Asset.objects.by_course_and_user(course, user)
         self.assertEquals(assets.count(), 3)
         self.assertIsNotNone(assets.get(title='Mediathread: Introduction'))
         self.assertIsNotNone(assets.get(title='MAAP Award Reception'))

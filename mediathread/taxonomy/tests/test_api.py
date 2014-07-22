@@ -1,82 +1,42 @@
 #pylint: disable-msg=R0904
 #pylint: disable-msg=E1103
 from courseaffils.models import Course
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 from django.http.request import HttpRequest
+from django.test.client import RequestFactory
 from mediathread.djangosherd.models import SherdNote
 from mediathread.taxonomy.api import VocabularyResource, \
-    TermRelationshipResource
-from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
-from tastypie.test import ResourceTestCase
+    VocabularyAuthorization
+from mediathread.taxonomy.models import Vocabulary
+from mediathread.taxonomy.tests.factories import TaxonomyTestCase
 
 
-class TaxonomyResourceTest(ResourceTestCase):
-    fixtures = ['unittest_sample_course.json']
+class TaxonomyApiTest(TaxonomyTestCase):
 
     def get_credentials(self):
         return None
 
-    def create_vocabularies(self, course, taxonomy):
-        course_type = ContentType.objects.get_for_model(course)
+    def test_vocabulary_authorization(self):
+        factory = RequestFactory()
+        request = factory.get('')
+        request.course = Course.objects.get(title='Sample Course')
+        request.user = User.objects.get(username='test_instructor')
 
-        for name, terms in taxonomy.items():
-            concept = Vocabulary(display_name=name,
-                                 content_type=course_type,
-                                 object_id=course.id)
-            concept.save()
-            for term_name in terms:
-                term = Term(display_name=term_name,
-                            vocabulary=concept)
-                term.save()
+        vocabulary = Vocabulary.objects.all()
+        authorization = VocabularyAuthorization()
 
-    def create_term_relationship(self, content_object, term):
-        # Add some tags to a few notes
-        content_type = ContentType.objects.get_for_model(content_object)
-        TermRelationship.objects.get_or_create(
-            term=term,
-            content_type=content_type,
-            object_id=content_object.id)
+        bundle = VocabularyResource().build_bundle(obj=vocabulary,
+                                                   request=request)
 
-    def setUp(self):
-        super(TaxonomyResourceTest, self).setUp()
-
-        course = Course.objects.get(title="Sample Course")
-        taxonomy = {
-            'Shapes': ['Square', 'Triangle'],
-            'Colors': ['Red', 'Blue', 'Green']
-        }
-        self.create_vocabularies(course, taxonomy)
-
-        course = Course.objects.get(title="Alternate Course")
-        taxonomy = {
-            'Materials': ['Paper', 'Wood', 'Stone']
-        }
-        self.create_vocabularies(course, taxonomy)
-
-        # test_instructor in Sample Course
-        note = SherdNote.objects.get(title="Left Corner")
-        term = Term.objects.get(name="square")
-        self.create_term_relationship(note, term)
-        term = Term.objects.get(name="red")
-        self.create_term_relationship(note, term)
-
-        # test_student_two in Sample Course
-        note = SherdNote.objects.get(title="Nice Tie")
-        term = Term.objects.get(name="square")
-        self.create_term_relationship(note, term)
-
-        # test_student_three in Alternate Course
-        note = SherdNote.objects.get(title="Whole Item Selection",
-                                     author__username='test_student_three')
-        term = Term.objects.get(name="paper")
-        self.create_term_relationship(note, term)
+        lst = authorization.read_list(vocabulary, bundle)
+        self.assertEquals(len(lst), 2)
 
     def test_vocabulary_get_list(self):
         self.assertTrue(
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        response = self.api_client.get('/_main/api/v1/vocabulary/',
+        response = self.api_client.get('/api/vocabulary/',
                                        format='json')
         self.assertValidJSONResponse(response)
 
@@ -109,7 +69,7 @@ class TaxonomyResourceTest(ResourceTestCase):
 
         shapes = Vocabulary.objects.get(name="shapes")
         response = self.api_client.get(
-            '/_main/api/v1/vocabulary/%s/' % shapes.id,
+            '/api/vocabulary/%s/' % shapes.id,
             format='json')
         self.assertValidJSONResponse(response)
 
@@ -127,67 +87,40 @@ class TaxonomyResourceTest(ResourceTestCase):
         self.assertEquals(detail['display_name'], "Shapes")
         self.assertEquals(len(detail['term_set']), 2)
 
-    def test_filter_terms_no_vocabulary(self):
+    def test_vocabulary_render_related(self):
         course = Course.objects.get(title="Sample Course")
         request = HttpRequest()
         request.course = course
 
-        try:
-            TermRelationshipResource().filter(request, {})
-            self.assertFalse(True)
-        except KeyError:
-            pass  # function requires a "vocabulary" item in fitlers
+        notes = SherdNote.objects.filter(title='Left Corner')
+        ctx = VocabularyResource().render_related(request, notes)
 
-    def test_filter_terms_by_vocabulary(self):
+        self.assertEquals(len(ctx), 2)
+        self.assertEquals(ctx[0]['display_name'], 'Colors')
+        self.assertEquals(len(ctx[0]['term_set']), 1)
+        self.assertEquals(ctx[0]['term_set'][0]['display_name'], 'Red')
+        self.assertEquals(ctx[0]['term_set'][0]['count'], 1)
+
+        self.assertEquals(ctx[1]['display_name'], 'Shapes')
+        self.assertEquals(len(ctx[1]['term_set']), 1)
+        self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
+        self.assertEquals(ctx[1]['term_set'][0]['count'], 1)
+
+    def test_vocabulary_render_related_multiple(self):
         course = Course.objects.get(title="Sample Course")
         request = HttpRequest()
         request.course = course
 
-        vocabulary = Vocabulary.objects.get(name="shapes")
-        filters = {'vocabulary': vocabulary.id}
+        notes = SherdNote.objects.filter(title__in=['Left Corner', 'Nice Tie'])
+        ctx = VocabularyResource().render_related(request, notes)
 
-        lst = TermRelationshipResource().filter(request, filters)
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0]['count'], 2)
-        self.assertTrue(lst[0]['last'])
-        self.assertEquals(lst[0]['term__display_name'], "Square")
+        self.assertEquals(len(ctx), 2)
+        self.assertEquals(ctx[0]['display_name'], 'Colors')
+        self.assertEquals(len(ctx[0]['term_set']), 1)
+        self.assertEquals(ctx[0]['term_set'][0]['display_name'], 'Red')
+        self.assertEquals(ctx[0]['term_set'][0]['count'], 1)
 
-    def test_filter_terms_by_vocabulary_and_asset(self):
-        course = Course.objects.get(title="Sample Course")
-        request = HttpRequest()
-        request.course = course
-
-        vocabulary = Vocabulary.objects.get(name="shapes")
-        note = SherdNote.objects.get(title="Nice Tie")
-        filters = {
-            'vocabulary': vocabulary.id,
-            'assets': [note.asset.id]}
-
-        lst = TermRelationshipResource().filter(request, filters)
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0]['count'], 1)
-        self.assertTrue(lst[0]['last'])
-        self.assertEquals(lst[0]['term__display_name'], "Square")
-
-    def test_filter_terms_for_alternate_course(self):
-        course = Course.objects.get(title="Alternate Course")
-        request = HttpRequest()
-        request.course = course
-
-        vocabulary = Vocabulary.objects.get(name="shapes")
-        note = SherdNote.objects.get(title="Nice Tie")
-        filters = {
-            'vocabulary': vocabulary.id,
-            'assets': [note.asset.id]}
-
-        lst = TermRelationshipResource().filter(request, filters)
-        self.assertEquals(len(lst), 0)
-
-        vocabulary = Vocabulary.objects.get(name="materials")
-        filters = {'vocabulary': vocabulary.id}
-
-        lst = TermRelationshipResource().filter(request, filters)
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0]['count'], 1)
-        self.assertTrue(lst[0]['last'])
-        self.assertEquals(lst[0]['term__display_name'], "Paper")
+        self.assertEquals(ctx[1]['display_name'], 'Shapes')
+        self.assertEquals(len(ctx[1]['term_set']), 1)
+        self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
+        self.assertEquals(ctx[1]['term_set'][0]['count'], 2)

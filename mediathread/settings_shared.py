@@ -201,7 +201,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 ANONYMOUS_PATHS = ('/media/',
                    '/accounts/',
                    '/admin/',
-                   '/api/',
                    '/help/'
                    )
 
@@ -220,7 +219,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                        '/_main/',
                        '/analysis/',
                        '/taxonomy/',
-                       '/tag/',
+                       '/api/',
                        re.compile(r'^/$'),
                        )
 

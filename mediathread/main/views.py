@@ -5,24 +5,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic.base import View
 from djangohelpers.lib import rendered_with, allow_http
-from mediathread.api import UserResource, TagResource
+from mediathread.api import UserResource
 from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
-from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
-from mediathread.main.api import CourseSummaryResource
 from mediathread.main.models import UserSetting
-from mediathread.mixins import LoggedInCourseMixin, RestrictedCourseMixin, \
-    AjaxRequiredMixin, JSONResponseMixin, ajax_required, faculty_only
-from mediathread.projects.lib import homepage_project_json, \
-    homepage_assignment_json
+from mediathread.mixins import ajax_required, faculty_only
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-from tagging.models import Tag
 import operator
-import simplejson
+import json
 
 
 # returns important setting information for all web pages.
@@ -47,18 +40,6 @@ def django_settings(request):
         context['is_course_faculty'] = request.course.is_faculty(request.user)
 
     return context
-
-
-def get_prof_feed(course, request):
-    projects = []
-    prof_projects = Project.objects.filter(
-        course.faculty_filter).order_by('ordinality', 'title')
-    for project in prof_projects:
-        if (project.class_visible() and
-                not project.is_assignment(request)):
-            projects.append(project)
-
-    return projects
 
 
 @rendered_with('homepage.html')
@@ -110,7 +91,7 @@ def triple_homepage(request):
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': False,
         'help_homepage_classwork_column': False,
-        'faculty_feed': get_prof_feed(course, request),
+        'faculty_feed': Project.objects.faculty_compositions(request, course),
         'is_faculty': course.is_faculty(logged_in_user),
         'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),
@@ -129,78 +110,6 @@ def triple_homepage(request):
         }
 
     return context
-
-
-@allow_http("GET")
-@ajax_required
-def your_projects(request, record_owner_name):
-    """
-    An ajax-only request to retrieve a specified user's projects,
-    assignment responses and selections
-    """
-    course = request.course
-    in_course_or_404(record_owner_name, course)
-
-    logged_in_user = request.user
-    is_faculty = course.is_faculty(logged_in_user)
-    record_owner = get_object_or_404(User, username=record_owner_name)
-    viewing_own_work = record_owner == logged_in_user
-
-    # Record Owner's Visible Work,
-    # sorted by modified date & feedback (if applicable)
-    projects = Project.objects.visible_by_course_and_user(request,
-                                                          course,
-                                                          record_owner)
-
-    # Show unresponded assignments if viewing self & self is a student
-    assignments = []
-    if not is_faculty and viewing_own_work:
-        assignments = Project.objects.unresponded_assignments(request,
-                                                              logged_in_user)
-
-    # Assemble the context
-    user_rez = UserResource()
-    course_rez = CourseSummaryResource()
-    data = {
-        'assignments': homepage_assignment_json(assignments, is_faculty),
-        'projects': homepage_project_json(request, projects, viewing_own_work),
-        'space_viewer': user_rez.render_one(request, logged_in_user),
-        'space_owner': user_rez.render_one(request, record_owner),
-        'editable': viewing_own_work,
-        'course': course_rez.render_one(request, course),
-        'compositions': len(projects) > 0 or len(assignments) > 0,
-        'is_faculty': is_faculty}
-
-    json_stream = simplejson.dumps(data, indent=2)
-    return HttpResponse(json_stream, mimetype='application/json')
-
-
-@allow_http("GET")
-@ajax_required
-def all_projects(request):
-    """
-    An ajax-only request to retrieve a course's projects,
-    assignment responses and selections
-    """
-    if not request.user.is_staff:
-        in_course_or_404(request.user.username, request.course)
-
-    course = request.course
-    logged_in_user = request.user
-
-    projects = Project.objects.visible_by_course(request, course)
-
-    # Assemble the context
-    user_rez = UserResource()
-    course_rez = CourseSummaryResource()
-    data = {'projects': homepage_project_json(request, projects, False),
-            'space_viewer': user_rez.render_one(request, logged_in_user),
-            'course': course_rez.render_one(request, course),
-            'compositions': len(projects) > 0,
-            'is_faculty': course.is_faculty(logged_in_user)}
-
-    json_stream = simplejson.dumps(data, indent=2)
-    return HttpResponse(json_stream, mimetype='application/json')
 
 
 @allow_http("GET", "POST")
@@ -324,7 +233,7 @@ def set_user_setting(request, user_name):
 
     UserSetting.set_setting(user, name, value)
 
-    json_stream = simplejson.dumps({'success': True})
+    json_stream = json.dumps({'success': True})
     return HttpResponse(json_stream, mimetype='application/json')
 
 
@@ -367,44 +276,28 @@ def migrate(request):
 
         if (not in_course(owner.username, request.course) or
                 not request.course.is_faculty(owner)):
-            json_stream = simplejson.dumps({
+            json_stream = json.dumps({
                 'success': False,
                 'message': '%s is not a course member or faculty member'})
             return HttpResponse(json_stream, mimetype='application/json')
 
         if 'asset_set' in request.POST:
-            asset_set = simplejson.loads(request.POST.get('asset_set'))
+            asset_set = json.loads(request.POST.get('asset_set'))
             object_map = Asset.objects.migrate(asset_set,
                                                request.course,
                                                owner,
                                                object_map)
 
         if 'project_set' in request.POST:
-            project_set = simplejson.loads(request.POST.get('project_set'))
+            project_set = json.loads(request.POST.get('project_set'))
             object_map = Project.objects.migrate(project_set,
                                                  request.course,
                                                  owner,
                                                  object_map)
 
-        json_stream = simplejson.dumps({
+        json_stream = json.dumps({
             'success': True,
             'asset_count': len(object_map['assets']),
             'project_count': len(object_map['projects']),
             'note_count': object_map['note_count']})
         return HttpResponse(json_stream, mimetype='application/json')
-
-
-class TagCollectionView(LoggedInCourseMixin, RestrictedCourseMixin,
-                        AjaxRequiredMixin, JSONResponseMixin, View):
-
-    def get(self, request):
-        # Retrieve tags for this course
-        assets = Asset.objects.filter(course=request.course)
-
-        tags = SherdNote.objects.get_related_tags(
-            assets, self.record_owner or None, self.visible_authors)
-
-        context = {}
-        if len(tags) > 0:
-            context = {'tags': TagResource().render_list(request, tags)}
-        return self.render_to_json_response(context)

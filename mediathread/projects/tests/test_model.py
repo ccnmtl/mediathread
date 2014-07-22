@@ -10,7 +10,7 @@ from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-import simplejson
+import json
 
 
 class ProjectTest(TestCase):
@@ -59,12 +59,12 @@ class ProjectTest(TestCase):
         course = Course.objects.get(id=2)
         self.assertEquals(course.title, "Alternate Course")
         self.assertEquals(len(course.asset_set.all()), 1)
-        self.assertEquals(len(course.project_set.all()), 1)
+        self.assertEquals(len(course.project_set.all()), 2)
 
         user = User.objects.get(username='test_instructor_two')
 
-        project_json = simplejson.dumps(self.project_set)
-        projects = simplejson.loads(project_json)
+        project_json = json.dumps(self.project_set)
+        projects = json.loads(project_json)
 
         object_map = {'assets': {}, 'notes': {}, 'projects': {}}
         object_map = Project.objects.migrate(projects, course,
@@ -87,7 +87,7 @@ class ProjectTest(TestCase):
                                   course=course)
         self.assertEquals(len(asset.sherdnote_set.all()), 1)
 
-        self.assertEquals(len(course.project_set.all()), 2)
+        self.assertEquals(len(course.project_set.all()), 3)
         assignment = Project.objects.get(title="Sample Course Assignment",
                                          course=course)
         self.assertEquals(assignment.visibility_short(), 'Assignment')
@@ -263,3 +263,30 @@ class ProjectTest(TestCase):
             assignment.clean()
         except ValidationError as err:
             self.assertTrue(False, "Due date is in the future, that's ok")
+
+    def test_faculty_compositions(self):
+        student = User.objects.get(username='test_student_three')
+        sample_course = Course.objects.get(title="Sample Course")
+        alt_course = Course.objects.get(title="Alternate Course")
+
+        request = HttpRequest()
+        request.user = student
+        request.course = sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(sample_course.pk))
+
+        compositions = Project.objects.faculty_compositions(
+            request, sample_course)
+        self.assertEquals(len(compositions), 0)
+
+        request.course = alt_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(alt_course.pk))
+
+        compositions = Project.objects.faculty_compositions(
+            request, alt_course)
+        self.assertEquals(len(compositions), 1)

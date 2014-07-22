@@ -165,34 +165,3 @@ class AssetViewTest(TestCase):
         asset = Asset.objects.get(title="Test Video")
         user = User.objects.get(username="test_instructor")
         self.assertIsNotNone(asset.global_annotation(user, auto_create=False))
-
-
-class TagCollectionViewTest(TestCase):
-    fixtures = ['unittest_sample_course.json']
-
-    def get_credentials(self):
-        return None
-
-    def test_tag_collection_view(self):
-        self.assertTrue(
-            self.client.login(username="test_student_one",
-                              password="test"))
-
-        response = self.client.get('/tag/json/', {},
-                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        self.assertValidJSONResponse(response)
-        the_json = self.deserialize(response)
-        lst = the_json['tags']
-
-        self.assertEquals(len(lst), 5)
-
-        for item in lst:
-            self.assertFalse('count' in item)
-
-        self.assertEquals(lst[0]['last'], False)
-        self.assertEquals(lst[0]['name'], 'test_instructor_item')
-
-        self.assertFalse('count' in lst[4])
-        self.assertEquals(lst[4]['last'], True)
-        self.assertEquals(lst[4]['name'], 'youtube')

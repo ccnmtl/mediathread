@@ -2,37 +2,12 @@
 #pylint: disable-msg=E1103
 from courseaffils.models import Course
 from django.contrib.auth.models import User
-from mediathread.api import UserResource, TagResource
-from mediathread.assetmgr.models import Asset
+from mediathread.api import UserResource
 from mediathread.main import course_details
-from tagging.models import Tag
 from tastypie.test import ResourceTestCase
 
 
-class TagResourceTest(ResourceTestCase):
-    fixtures = ['unittest_sample_course.json']
-
-    def get_credentials(self):
-        return None
-
-    def test_render_list(self):
-        asset = Asset.objects.get(id=1)
-        tags = Tag.objects.usage_for_queryset(asset.sherdnote_set.all(),
-                                              counts=True)
-        resource = TagResource()
-        lst = resource.render_list(None, tags)
-        self.assertEquals(len(lst), 5)
-
-        self.assertEquals(lst[0]['count'], 1)
-        self.assertEquals(lst[0]['last'], False)
-        self.assertEquals(lst[0]['name'], 'test_instructor_item')
-
-        self.assertEquals(lst[4]['count'], 1)
-        self.assertEquals(lst[4]['last'], True)
-        self.assertEquals(lst[4]['name'], 'youtube')
-
-
-class UserResourceTest(ResourceTestCase):
+class UserApiTest(ResourceTestCase):
     # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
     # documentation for the gory details.
     fixtures = ['unittest_sample_course.json']
@@ -69,7 +44,7 @@ class UserResourceTest(ResourceTestCase):
         self.assertEquals(members[5]['public_name'], "Teacher's  Assistant")
 
 
-class CourseResourceTest(ResourceTestCase):
+class CourseApiTest(ResourceTestCase):
     # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
     # documentation for the gory details.
     fixtures = ['unittest_sample_course.json',

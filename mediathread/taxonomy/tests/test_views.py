@@ -111,9 +111,9 @@ class TaxonomyViewTest(TestCase):
                                         content_type=sherdnote_type)
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 2)
-        self.assertEquals(related_terms[0].term, square)
+        self.assertEquals(related_terms[0].term, red)
         self.assertEquals(related_terms[0].object_id, sherd_note.id)
-        self.assertEquals(related_terms[1].term, red)
+        self.assertEquals(related_terms[1].term, square)
         self.assertEquals(related_terms[1].object_id, sherd_note.id)
 
         post_data = {
@@ -125,7 +125,7 @@ class TaxonomyViewTest(TestCase):
 
         related_terms = TermRelationship.objects.get_for_object(sherd_note)
         self.assertEquals(len(related_terms), 2)
-        self.assertEquals(related_terms[0].term, circle)
+        self.assertEquals(related_terms[0].term, blue)
         self.assertEquals(related_terms[0].object_id, sherd_note.id)
-        self.assertEquals(related_terms[1].term, blue)
+        self.assertEquals(related_terms[1].term, circle)
         self.assertEquals(related_terms[1].object_id, sherd_note.id)

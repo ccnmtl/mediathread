@@ -177,7 +177,6 @@
                                 {{/context.project.participants}}
                                 </span>
                             </h5>
-                            <h5 class="printonly"> for {{context.project.course_title}}</h5>
                         </td>
                     </tr>
                     
@@ -228,7 +227,7 @@
                                 style="display: {{#context.editing?}}none{{/context.editing?}}{{^context.editing}}block{{/context.editing}}">
                                 
                                 <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
-                                    {{#context.project.create_selection?}}<div class="create-selection" style="float: right"></div>{{/context.project.create_selection?}}
+                                    {{#context.project.is_assignment?}}<div class="create-selection" style="float: right"></div>{{/context.project.is_assignment?}}
                                     <div class="annotation-title publishedCitation" style="margin-left: 5px; margin-top: 5px;"></div>
                                     <div class="asset-title" style="margin-left: 5px; margin-bottom: 5px; margin-top: 5px; font-size: 80%;"></div>
                                     <div class="asset-object" style="border: none; background-color: #ededed;"></div>

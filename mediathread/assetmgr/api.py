@@ -1,12 +1,9 @@
 #pylint: disable-msg=R0904
-from django.db.models.aggregates import Max
 from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
-from mediathread.djangosherd.models import SherdNote
 from mediathread.main.models import UserSetting
 from tastypie import fields
-from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 import json
@@ -26,35 +23,6 @@ class SourceResource(ModelResource):
         return bundle
 
 
-class AssetAuthorization(Authorization):
-
-    def get_related_notes(self, assets, bundle):
-        request = bundle.request
-        tag_string = request.GET.get('tag', '')
-        modified = request.GET.get('modified', '')
-        vocabulary = dict((key[len('vocabulary-'):], val.split(","))
-                          for key, val in request.GET.items()
-                          if key.startswith('vocabulary-'))
-
-        self.related_notes = SherdNote.objects.get_related_notes(
-            assets, bundle.record_owner or None, bundle.visible_authors,
-            tag_string, modified, vocabulary)
-
-        # return the related asset ids
-        return self.related_notes.values_list('asset__id', flat=True)
-
-    def read_detail(self, object_list, bundle):
-        ids = self.get_related_notes(object_list, bundle)
-        return ids.count() > 0
-
-    def read_list(self, object_list, bundle):
-        object_list = object_list.filter(course=bundle.request.course)
-
-        # return the related assets
-        ids = self.get_related_notes(object_list, bundle)
-        return object_list.filter(id__in=ids).distinct()
-
-
 class AssetResource(ModelResource):
 
     author = fields.ForeignKey(UserResource, 'author', full=True)
@@ -63,22 +31,21 @@ class AssetResource(ModelResource):
 
     class Meta:
         queryset = Asset.objects.none()
-        excludes = ['added', 'modified', 'course', 'active', 'metadata_blob']
+        excludes = ['added', 'modified', 'course',
+                    'active', 'metadata_blob']
         list_allowed_methods = []
         detail_allowed_methods = []
         authentication = ClassLevelAuthentication()
-        authorization = AssetAuthorization()
         ordering = ['modified', 'id', 'title']
 
     def __init__(self, *args, **kwargs):
-        self.record_owner = kwargs.pop('record_owner', None)
-        self.visible_authors = kwargs.pop('visible_authors', [])
-        self.include_annotations = kwargs.pop('include_annotations', True)
+        # @todo: extras is a side-effect of the Mustache templating system
+        # not supporting the ability to reference variables in the parent
+        # context. ideally, the templating system should be switched out to
+        # something more reasonable
         self.extras = kwargs.pop('extras', {})
 
-        self.offset = kwargs.pop('offset', 0)
-        self.limit = kwargs.pop('limit', 0)
-
+        self.include_annotations = kwargs.pop('include_annotations', True)
         super(AssetResource, self).__init__(*args, **kwargs)
 
     def format_time(self, dt):
@@ -110,18 +77,9 @@ class AssetResource(ModelResource):
 
         return bundle
 
-    def render_one(self, request, asset):
+    def render_one(self, request, asset, notes=None):
         try:
             bundle = Bundle(request=request)
-            bundle.record_owner = self.record_owner
-            bundle.visible_authors = self.visible_authors
-
-            # authorize the object, compiling visible notes
-            if not self.authorized_read_detail([asset], bundle):
-                return {}
-
-            self.related_notes = self._meta.authorization.related_notes
-
             bundle = self.build_bundle(obj=asset, request=request)
             dehydrated = self.full_dehydrate(bundle)
             the_json = self._meta.serializer.to_simple(dehydrated, None)
@@ -134,14 +92,15 @@ class AssetResource(ModelResource):
             except ValueError:
                 pass
 
-            note_resource = SherdNoteResource()
-            for note in self.related_notes:
-                note_ctx = note_resource.render_one(request, note, "")
+            if notes:
+                note_resource = SherdNoteResource()
+                for note in notes:
+                    note_ctx = note_resource.render_one(request, note, "")
 
-                if note.is_global_annotation():
-                    the_json['global_annotation'] = note_ctx
-                else:
-                    the_json['annotations'].append(note_ctx)
+                    if note.is_global_annotation():
+                        the_json['global_annotation'] = note_ctx
+                    else:
+                        the_json['annotations'].append(note_ctx)
 
             help_setting = UserSetting.get_setting(
                 request.user, "help_item_detail_view", True)
@@ -153,32 +112,10 @@ class AssetResource(ModelResource):
         except Source.DoesNotExist:
             return None
 
-    def render_list(self, request, object_list):
-        bundle = Bundle(request=request)
-        bundle.record_owner = self.record_owner
-        bundle.visible_authors = self.visible_authors
-
-        # filter the objects, compiling visible assets AND notes
-        object_list = self.authorized_read_list(object_list, bundle)
-        self.related_notes = self._meta.authorization.related_notes
-
-        # sort the object list via aggregation on the visible notes
-        assets = self.related_notes.values('asset')
-        assets = assets.annotate(last_modified=Max('modified'))
-        assets = assets.order_by('-last_modified')
-
-        # paginate the list
-        if self.limit:
-            assets = assets[self.offset:self.offset + self.limit]
-            ids = [a['asset'] for a in assets]
-            active_notes = self.related_notes.filter(asset__id__in=ids)
-        else:
-            active_notes = self.related_notes
-
-        # render assets + notes based on the active note list
+    def render_list(self, request, record_owner, assets, notes):
         note_resource = SherdNoteResource()
         ctx = {}
-        for note in active_notes.all():
+        for note in notes.all():
             if note.asset.id not in ctx:
                 abundle = self.build_bundle(obj=note.asset, request=request)
                 dehydrated = self.full_dehydrate(abundle)
@@ -188,7 +125,7 @@ class AssetResource(ModelResource):
             is_global = note.is_global_annotation()
             if not is_global:
                 ctx[note.asset.id]['annotation_count'] += 1
-                if note.author == self.record_owner:
+                if note.author == record_owner:
                     ctx[note.asset.id]['my_annotation_count'] += 1
 
             if note.modified > note.asset.modified:

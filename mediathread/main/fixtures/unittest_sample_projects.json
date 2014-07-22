@@ -78,6 +78,22 @@
                 10
             ]
         }
+    },
+    {
+        "pk": 6,
+        "model": "projects.project", 
+        "fields": {
+            "body": "<p>Class Information</p>", 
+            "feedback": null, 
+            "author": 6, 
+            "title": "Alternate Course Information", 
+            "modified": "2012-12-18 12:17:08", 
+            "submitted": true, 
+            "course": 2, 
+            "participants": [
+                10
+            ]
+        }
     }, 
     {
         "pk": 1, 
@@ -201,5 +217,24 @@
             ], 
             "slug": null
         }
-    }
+    },
+    {
+        "pk": 8, 
+        "model": "structuredcollaboration.collaboration", 
+        "fields": {
+            "_order": 8, 
+            "group": null, 
+            "context": 1, 
+            "title": "Alternate Course Information", 
+            "_policy": 3,
+            "object_pk": "6", 
+            "_parent": null, 
+            "user": 6, 
+            "content_type": [
+                "projects", 
+                "project"
+            ], 
+            "slug": null
+        }
+    }    
 ]

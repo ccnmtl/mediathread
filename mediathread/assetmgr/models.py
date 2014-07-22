@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from tagging.models import Tag
 import re
-import simplejson
+import json
 
 
 def default_url_processor(source, request, obj=None):
@@ -35,7 +35,7 @@ class AssetManager(models.Manager):
     def archives(self):
         return self.filter(source__primary=True, source__label='archive')
 
-    def annotated_by(self, course, user):
+    def by_course_and_user(self, course, user):
         # returns the assets in a user's "collection"
         assets = Asset.objects.filter(course=course,
                                       sherdnote_set__author=user,
@@ -45,7 +45,7 @@ class AssetManager(models.Manager):
         assets = assets.exclude(source__primary=True, source__label='archive')
         return assets.order_by('-sherdnote_set__modified').select_related()
 
-    def assets_by_course(self, course):
+    def by_course(self, course):
         assets = Asset.objects.filter(course=course) \
             .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
             .select_related().order_by('lower_title')
@@ -180,7 +180,7 @@ class Asset(models.Model):
     def metadata(self):
         if self.metadata_blob:
             try:
-                return simplejson.loads(str(self.metadata_blob))
+                return json.loads(str(self.metadata_blob))
             except:  # presumably json decoding, but let's quiet everything
                 return {}
         return {}

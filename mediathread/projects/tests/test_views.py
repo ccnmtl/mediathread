@@ -2,7 +2,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from mediathread.projects.models import Project
-import simplejson
+import json
 
 
 class ProjectViewTest(TestCase):
@@ -60,14 +60,14 @@ class ProjectViewTest(TestCase):
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
 
-        json = simplejson.loads(response.content)
-        self.assertEquals(json["status"], "success")
-        self.assertFalse(json["is_assignment"])
-        self.assertEquals(json["title"], "Private Student Essay")
-        self.assertEquals(json["revision"]["id"], 2)
-        self.assertEquals(json["revision"]["visibility"], "Private")
-        self.assertIsNone(json["revision"]["public_url"])
-        self.assertEquals(json["revision"]["due_date"], "")
+        the_json = json.loads(response.content)
+        self.assertEquals(the_json["status"], "success")
+        self.assertFalse(the_json["is_assignment"])
+        self.assertEquals(the_json["title"], "Private Student Essay")
+        self.assertEquals(the_json["revision"]["id"], 2)
+        self.assertEquals(the_json["revision"]["visibility"], "Private")
+        self.assertIsNone(the_json["revision"]["public_url"])
+        self.assertEquals(the_json["revision"]["due_date"], "")
 
     def test_project_save_invalid_title(self):
         user = User.objects.get(username="test_student_one")
@@ -89,6 +89,6 @@ class ProjectViewTest(TestCase):
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
 
-        json = simplejson.loads(response.content)
-        self.assertEquals(json["status"], "error")
-        self.assertTrue(json["msg"].startswith(' "" is not valid'))
+        the_json = json.loads(response.content)
+        self.assertEquals(the_json["status"], "error")
+        self.assertTrue(the_json["msg"].startswith(' "" is not valid'))

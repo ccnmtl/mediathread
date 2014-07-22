@@ -137,6 +137,17 @@ class ProjectManager(models.Manager):
         projects = projects.order_by('-modified', 'title')
         return [p for p in projects if p.visible(request)]
 
+    def faculty_compositions(self, request, course):
+        projects = []
+        prof_projects = Project.objects.filter(
+            course.faculty_filter).order_by('ordinality', 'title')
+        for project in prof_projects:
+            if (project.class_visible() and
+                    not project.is_assignment(request)):
+                projects.append(project)
+
+        return projects
+
     def unresponded_assignments(self, request, user):
         course = request.course
         projects = list(Project.objects.filter(course.faculty_filter,

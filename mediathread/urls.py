@@ -3,18 +3,19 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
+from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
+    TagCollectionView
 from mediathread.main.api import CourseResource
-from mediathread.main.views import TagCollectionView
-from mediathread.projects.api import ProjectResource
+from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
+from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
 import os.path
 
 
-v1_api = Api(api_name='v1')
-v1_api.register(ProjectResource())
-v1_api.register(CourseResource())
-v1_api.register(TermResource())
-v1_api.register(VocabularyResource())
+tastypie_api = Api('')
+tastypie_api.register(CourseResource())
+tastypie_api.register(TermResource())
+tastypie_api.register(VocabularyResource())
 
 admin.autodiscover()
 
@@ -38,31 +39,30 @@ if hasattr(settings, 'WIND_BASE'):
 urlpatterns = patterns(
     '',
 
-    (r'^crossdomain.xml$', 'django.views.static.serve',
-     {'document_root': os.path.abspath(os.path.dirname(__file__)),
-      'path': 'crossdomain.xml'}),
-
-    (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root':
-      os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),
-      'show_indexes': True}),
-
-    (r'^comments/', include('django.contrib.comments.urls')),
-
-    logout_page,
-
-    auth_urls,  # see above
-
-    (r'^contact/', login_required(
-        TemplateView.as_view(template_name="main/contact.html"))),
-
-    (r'^stats/', TemplateView.as_view(template_name="stats.html")),
-
-    (r'^smoketest/', include('smoketest.urls')),
+    (r'^$', 'mediathread.main.views.triple_homepage'),  # Homepage
 
     (r'^admin/', admin.site.urls),
 
-    (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
+    # API - JSON rendering layers. Half hand-written, half-straight tasty=pie
+    (r'^api/asset/user/(?P<record_owner_name>\w[^/]*)/$',
+     AssetCollectionView.as_view(), {}, 'assets-by-user'),
+    (r'^api/asset/(?P<asset_id>\d+)/$', AssetDetailView.as_view(),
+     {}, 'asset-detail'),
+    (r'^api/asset/$', AssetCollectionView.as_view(), {}, 'assets-by-course'),
+    url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
+        name='api-user-courses'),
+    (r'^api/tag/$', TagCollectionView.as_view(), {}),
+    (r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
+     ProjectCollectionView.as_view(), {}, 'project-by-user'),
+    (r'^api/project/(?P<project_id>\d+)/$', ProjectDetailView.as_view(),
+     {}, 'asset-detail'),
+    (r'^api/project/$', ProjectCollectionView.as_view(), {}),
+    (r'^api', include(tastypie_api.urls)),
+
+    # Collections Space
+    (r'^asset/', include('mediathread.assetmgr.urls')),
+
+    auth_urls,  # see above
 
     # Bookmarklet + cache defeating
     url(r'^bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve',
@@ -71,24 +71,20 @@ urlpatterns = patterns(
         'django.views.static.serve', {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
-    # Courseafills
+    (r'^comments/', include('django.contrib.comments.urls')),
+
+    (r'^contact/', login_required(
+        TemplateView.as_view(template_name="main/contact.html"))),
+
+    # Courseaffils
     url(r'^accounts/logged_in.js$', 'courseaffils.views.is_logged_in',
         name='is_logged_in.js'),
     url(r'^nocache/\w+/accounts/logged_in.js$',
         'courseaffils.views.is_logged_in', name='nocache-is_logged_in.js'),
-    url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
-        name='api-user-courses'),
-    (r'^uploads/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root': settings.MEDIA_ROOT}),
 
-    # Homepage
-    (r'^$', 'mediathread.main.views.triple_homepage'),
-    (r'^yourspace/', include('mediathread.main.urls')),
-    (r'^tag/json/', TagCollectionView.as_view(), {}, 'tags-by-course'),
-    (r'^_main/api/', include(v1_api.urls)),
-
-    # Instructor Dashboard & reporting
-    (r'^reports/', include('mediathread.reports.urls')),
+    (r'^crossdomain.xml$', 'django.views.static.serve',
+     {'document_root': os.path.abspath(os.path.dirname(__file__)),
+      'path': 'crossdomain.xml'}),
 
     url(r'^dashboard/migrate/',
         'mediathread.main.views.migrate',
@@ -100,21 +96,6 @@ urlpatterns = patterns(
         'mediathread.main.views.class_settings',
         name="class-settings"),
 
-    url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
-
-    # Collections Space
-    (r'^asset/', include('mediathread.assetmgr.urls')),
-    (r'^annotations/', include('mediathread.djangosherd.urls')),
-
-    # Bookmarklet Entry point
-    # Staff custom asset entry
-    url(r'^save/$',
-        'mediathread.assetmgr.views.asset_create',
-        name="asset-save"),
-
-    # Composition Space
-    (r'^project/', include('mediathread.projects.urls')),
-
     # Discussion
     (r'^discussion/', include('mediathread.discussions.urls')),
 
@@ -122,6 +103,35 @@ urlpatterns = patterns(
     url(r'^explore/redirect/$',
         'mediathread.assetmgr.views.source_redirect',
         name="source_redirect"),
+
+    (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
+
+    logout_page,
+
+    (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+     {'document_root':
+      os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),
+      'show_indexes': True}),
+
+    # Composition Space
+    (r'^project/', include('mediathread.projects.urls')),
+
+    # Instructor Dashboard & reporting
+    (r'^reports/', include('mediathread.reports.urls')),
+
+    # Bookmarklet Entry point
+    # Staff custom asset entry
+    url(r'^save/$',
+        'mediathread.assetmgr.views.asset_create',
+        name="asset-save"),
+
+    (r'^/setting/(?P<user_name>\w[^/]*)$',
+     'mediathread.main.views.set_user_setting'),
+
+    (r'^stats/', TemplateView.as_view(template_name="stats.html")),
+    (r'^smoketest/', include('smoketest.urls')),
+
+    url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
     ### Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),

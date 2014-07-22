@@ -2,7 +2,7 @@
 #pylint: disable-msg=E1103
 from django.test import TestCase
 from django.test.client import Client
-import simplejson
+import json
 
 
 class HomepageTest(TestCase):
@@ -11,7 +11,7 @@ class HomepageTest(TestCase):
 
     def assertProjectEquals(self, project, title, author, editable):
         self.assertEquals(project['title'], title)
-        self.assertEquals(project['authors'][0]['name'], author)
+        self.assertEquals(project['authors'][0]['public_name'], author)
         self.assertEquals(project['editable'], editable)
 
     def test_get_my_projectlist_as_student(self):
@@ -20,19 +20,19 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_student_one', password='test'))
 
-        response = client.get('/yourspace/projects/test_student_one/',
+        response = client.get('/api/project/user/test_student_one/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
+        the_json = json.loads(response.content)
 
-        assignments = json['assignments']
+        assignments = the_json['assignments']
         self.assertEquals(len(assignments), 1)
         self.assertEquals(assignments[0]['title'], "Sample Course Assignment")
         self.assertTrue(assignments[0]['display_as_assignment'])
         self.assertFalse(assignments[0]['is_faculty'])
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 3)
 
         self.assertProjectEquals(projects[0],
@@ -56,16 +56,16 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_student_one', password='test'))
 
-        response = client.get('/yourspace/projects/test_instructor_two/',
+        response = client.get('/api/project/user/test_instructor_two/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
+        the_json = json.loads(response.content)
 
-        assignments = json['assignments']
+        assignments = the_json['assignments']
         self.assertEquals(len(assignments), 0)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 1)
         self.assertProjectEquals(projects[0],
                                  'Sample Course Assignment',
@@ -78,15 +78,15 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_student_two', password='test'))
 
-        response = client.get('/yourspace/projects/test_student_one/',
+        response = client.get('/api/project/user/test_student_one/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
-        assignments = json['assignments']
+        the_json = json.loads(response.content)
+        assignments = the_json['assignments']
         self.assertEquals(len(assignments), 0)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 1)
 
         self.assertProjectEquals(projects[0],
@@ -103,16 +103,16 @@ class HomepageTest(TestCase):
         response = client.get('/?set_course=Sample_Course_Students')
         self.assertEquals(response.status_code, 200)
 
-        response = client.get('/yourspace/projects/test_instructor_two/',
+        response = client.get('/api/project/user/test_instructor_two/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
+        the_json = json.loads(response.content)
 
-        assignments = json['assignments']
+        assignments = the_json['assignments']
         self.assertEquals(len(assignments), 0)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 1)
         self.assertProjectEquals(projects[0],
                                  'Sample Course Assignment',
@@ -128,16 +128,16 @@ class HomepageTest(TestCase):
         response = client.get('/?set_course=Sample_Course_Students')
         self.assertEquals(response.status_code, 200)
 
-        response = client.get('/yourspace/projects/test_instructor/',
+        response = client.get('/api/project/user/test_instructor/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
+        the_json = json.loads(response.content)
 
-        self.assertEquals(len(json['assignments']), 0)
+        self.assertEquals(len(the_json['assignments']), 0)
         # The assignment is viewable here.
 
-        self.assertEquals(len(json['projects']), 0)
+        self.assertEquals(len(the_json['projects']), 0)
 
     def test_get_student_projectlist_as_instructor(self):
         client = Client()
@@ -145,14 +145,14 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_instructor', password='test'))
 
-        response = client.get('/yourspace/projects/test_student_one/',
+        response = client.get('/api/project/user/test_student_one/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
-        self.assertEquals(len(json['assignments']), 0)
+        the_json = json.loads(response.content)
+        self.assertEquals(len(the_json['assignments']), 0)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 2)
 
         self.assertProjectEquals(projects[0],
@@ -171,12 +171,12 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_student_one', password='test'))
 
-        response = client.get('/yourspace/projects/test_student_alt/',
+        response = client.get('/api/project/user/test_student_alt/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 404)
 
-        response = client.get('/yourspace/projects/test_instructor_alt/',
+        response = client.get('/api/project/user/test_instructor_alt/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 404)
@@ -187,14 +187,14 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_student_one', password='test'))
 
-        response = client.get('/yourspace/projects/',
+        response = client.get('/api/project/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
-        self.assertTrue('assignments' not in json)
+        the_json = json.loads(response.content)
+        self.assertTrue('assignments' not in the_json)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 4)
 
         self.assertProjectEquals(projects[0],
@@ -223,14 +223,14 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_student_two', password='test'))
 
-        response = client.get('/yourspace/projects/',
+        response = client.get('/api/project/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
-        self.assertTrue('assignments' not in json)
+        the_json = json.loads(response.content)
+        self.assertTrue('assignments' not in the_json)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 2)
         self.assertProjectEquals(projects[0],
                                  'Sample Course Assignment',
@@ -247,14 +247,14 @@ class HomepageTest(TestCase):
         self.assertTrue(
             client.login(username='test_instructor', password='test'))
 
-        response = client.get('/yourspace/projects/',
+        response = client.get('/api/project/',
                               {},
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        json = simplejson.loads(response.content)
-        self.assertTrue('assignments' not in json)
+        the_json = json.loads(response.content)
+        self.assertTrue('assignments' not in the_json)
 
-        projects = json['projects']
+        projects = the_json['projects']
         self.assertEquals(len(projects), 3)
         self.assertProjectEquals(projects[0],
                                  'Sample Course Assignment',

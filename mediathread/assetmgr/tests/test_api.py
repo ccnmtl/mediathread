@@ -2,13 +2,15 @@
 #pylint: disable-msg=E1103
 from courseaffils.models import Course
 from datetime import datetime, timedelta
+from mediathread.api import TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.main import course_details
+from tagging.models import Tag
 from tastypie.test import ResourceTestCase
 import json
 
 
-class AssetResourceTest(ResourceTestCase):
+class AssetApiTest(ResourceTestCase):
     # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
     # documentation for the gory details.
     fixtures = ['unittest_sample_course.json']
@@ -35,7 +37,7 @@ class AssetResourceTest(ResourceTestCase):
         self.assert_(self.client.login(username=username, password=password))
 
         response = self.client.get(
-            "/asset/json/user/test_student_one/",
+            "/api/asset/user/test_student_one/",
             {},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -54,7 +56,7 @@ class AssetResourceTest(ResourceTestCase):
 
         record_owner = 'test_student_two'
         response = self.client.get(
-            "/asset/json/user/%s/?annotations=true" % record_owner,
+            "/api/asset/user/%s/?annotations=true" % record_owner,
             {},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -87,7 +89,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        url = '/asset/json/course/?annotations=true'
+        url = '/api/asset/?annotations=true'
         response = self.api_client.get(url, format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
@@ -125,7 +127,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        url = '/asset/json/course/?annotations=true'
+        url = '/api/asset/?annotations=true'
         response = self.api_client.get(url, format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
@@ -153,7 +155,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        url = '/asset/json/course/?annotations=true'
+        url = '/api/asset/?annotations=true'
         response = self.api_client.get(url, format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
@@ -189,7 +191,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        response = self.api_client.get('/asset/json/2/', format='json',
+        response = self.api_client.get('/api/asset/2/', format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
         the_json = self.deserialize(response)
@@ -208,7 +210,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
 
-        response = self.api_client.get('/asset/json/2/', format='json',
+        response = self.api_client.get('/api/asset/2/', format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
         the_json = self.deserialize(response)
@@ -223,7 +225,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_instructor",
                                          password="test"))
 
-        response = self.api_client.get('/asset/json/course/?annotations=true',
+        response = self.api_client.get('/api/asset/?annotations=true',
                                        format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
@@ -266,7 +268,7 @@ class AssetResourceTest(ResourceTestCase):
             self.api_client.client.login(username="test_instructor",
                                          password="test"))
 
-        response = self.api_client.get('/asset/json/1/', format='json',
+        response = self.api_client.get('/api/asset/1/', format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertValidJSONResponse(response)
         the_json = self.deserialize(response)
@@ -292,7 +294,7 @@ class AssetResourceTest(ResourceTestCase):
                                          password="test"))
 
         # Student One Selection
-        response = self.api_client.get('/asset/json/1/',
+        response = self.api_client.get('/api/asset/1/',
                                        format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
@@ -303,7 +305,7 @@ class AssetResourceTest(ResourceTestCase):
                                          password="test"))
 
         self.assertHttpMethodNotAllowed(self.api_client.post(
-            '/asset/json/course/', format='json', data={}))
+            '/api/asset/', format='json', data={}))
 
     def test_put_detail(self):
         self.assertTrue(
@@ -311,7 +313,7 @@ class AssetResourceTest(ResourceTestCase):
                                          password="test"))
 
         self.assertHttpMethodNotAllowed(self.api_client.put(
-            '/asset/json/2/', format='json', data={},
+            '/api/asset/2/', format='json', data={},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'))
 
     def test_delete(self):
@@ -320,7 +322,7 @@ class AssetResourceTest(ResourceTestCase):
                                          password="test"))
 
         self.assertHttpMethodNotAllowed(self.api_client.delete(
-            '/asset/json/2/', format='json',
+            '/api/asset/2/', format='json',
             HTTP_X_REQUESTED_WITH='XMLHttpRequest'))
 
     def test_getobject_multiple_class_member_nocourse(self):
@@ -329,7 +331,7 @@ class AssetResourceTest(ResourceTestCase):
                                          password="test"))
 
         # No course selection yet
-        response = self.api_client.get('/asset/json/1/',
+        response = self.api_client.get('/api/asset/1/',
                                        format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertHttpOK(response)
@@ -346,7 +348,7 @@ class AssetResourceTest(ResourceTestCase):
         self.assertHttpOK(response)
         self.assertEquals(response.templates[0].name, "homepage.html")
 
-        response = self.api_client.get('/asset/json/1/',
+        response = self.api_client.get('/api/asset/1/',
                                        format='json', follow=True,
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
@@ -362,7 +364,7 @@ class AssetResourceTest(ResourceTestCase):
             '/?set_course=Sample_Course_Students', follow=True)
         self.assertHttpOK(response)
         self.assertEquals(response.templates[0].name, "homepage.html")
-        response = self.api_client.get('/asset/json/1/',
+        response = self.api_client.get('/api/asset/1/',
                                        format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertHttpOK(response)
@@ -380,7 +382,7 @@ class AssetResourceTest(ResourceTestCase):
                                          password="test"))
 
         # Student One Selection from Sample Course
-        response = self.api_client.get('/asset/json/course/', format='json')
+        response = self.api_client.get('/api/asset/', format='json')
         self.assertHttpOK(response)
         self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
@@ -392,7 +394,7 @@ class AssetResourceTest(ResourceTestCase):
         self.assertEquals(response.templates[0].name, "homepage.html")
 
         # Let's try this again -- asset list
-        response = self.api_client.get('/asset/json/course/?annotations=true',
+        response = self.api_client.get('/api/asset/?annotations=true',
                                        format='json',
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -403,3 +405,26 @@ class AssetResourceTest(ResourceTestCase):
         self.assertAssetEquals(objects[0], 'Design Research',
                                'test_instructor_alt', 'image',
                                [13, 14, 15], None)
+
+
+class TagApiTest(ResourceTestCase):
+    fixtures = ['unittest_sample_course.json']
+
+    def get_credentials(self):
+        return None
+
+    def test_render_list(self):
+        asset = Asset.objects.get(id=1)
+        tags = Tag.objects.usage_for_queryset(asset.sherdnote_set.all(),
+                                              counts=True)
+        resource = TagResource()
+        lst = resource.render_list(None, tags)
+        self.assertEquals(len(lst), 5)
+
+        self.assertEquals(lst[0]['count'], 1)
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'test_instructor_item')
+
+        self.assertEquals(lst[4]['count'], 1)
+        self.assertEquals(lst[4]['last'], True)
+        self.assertEquals(lst[4]['name'], 'youtube')

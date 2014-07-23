@@ -20,7 +20,8 @@ from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
-from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
+from mediathread.main.models import UserSetting
+from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
@@ -438,7 +439,7 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 
-class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
                          AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
@@ -467,7 +468,7 @@ class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             return asset_switch_course(request, asset_id)
 
 
-class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
@@ -490,15 +491,21 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             return render_to_response('assetmgr/asset_workspace.html',
                                       data,
                                       context_instance=RequestContext(request))
-        elif asset_id:
+        context = {'type': 'asset'}
+        if asset_id:
             # @todo - refactor this context out of the mix
             # ideally, the client would simply request the json
             # the mixin is expecting a queryset, so this becomes awkward here
             assets = Asset.objects.filter(pk=asset_id)
             (assets, notes) = self.visible_assets_and_notes(request, assets)
-            context = AssetResource().render_one(request, asset, notes)
-        else:
-            context = {'type': 'asset'}
+            context['assets'] = {
+                asset.pk: AssetResource().render_one(request, asset, notes)
+            }
+
+            help_setting = UserSetting.get_setting(request.user,
+                                                   "help_item_detail_view",
+                                                   True)
+            context['user_settings'] = {'help_item_detail_view': help_setting}
 
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
@@ -520,20 +527,37 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(data)
 
 
-class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                       AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
         assets = Asset.objects.filter(pk=asset_id, course=request.course)
         if assets.count() == 0:
             return asset_switch_course(request, asset_id)
-        else:
-            (assets, notes) = self.visible_assets_and_notes(request, assets)
-            context = AssetResource().render_one(request, assets[0], notes)
-            return self.render_to_json_response(context)
+
+        (assets, notes) = self.visible_assets_and_notes(request, assets)
+        if assets.count() == 0:
+            return HttpResponseForbidden("forbidden")
+
+        asset = assets[0]
+
+        help_setting = UserSetting.get_setting(request.user,
+                                               "help_item_detail_view",
+                                               True)
+
+        ctx = AssetResource().render_one(request, asset, notes)
+        ctx = {
+            'user_settings': {'help_item_detail_view': help_setting},
+            'type': 'asset',
+            'assets': {
+                asset.pk: AssetResource().render_one(request, asset, notes)
+            }
+        }
+
+        return self.render_to_json_response(ctx)
 
 
-class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
                           AjaxRequiredMixin, JSONResponseMixin, View):
     """
     An ajax-only request to retrieve assets for a course or a specified user
@@ -621,7 +645,7 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup
 
 
-class TagCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class TagCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
                         AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request):

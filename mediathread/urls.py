@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
     TagCollectionView
-from mediathread.main.api import CourseResource
+from mediathread.main.views import MigrateCourseView, MigrateMaterialsView
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
@@ -13,7 +13,6 @@ import os.path
 
 
 tastypie_api = Api('')
-tastypie_api.register(CourseResource())
 tastypie_api.register(TermResource())
 tastypie_api.register(VocabularyResource())
 
@@ -86,9 +85,10 @@ urlpatterns = patterns(
      {'document_root': os.path.abspath(os.path.dirname(__file__)),
       'path': 'crossdomain.xml'}),
 
-    url(r'^dashboard/migrate/',
-        'mediathread.main.views.migrate',
-        name="dashboard-migrate"),
+    url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
+        MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
+    url(r'^dashboard/migrate/', MigrateCourseView.as_view(),
+        {}, "dashboard-migrate"),
     url(r'^dashboard/sources/',
         'mediathread.main.views.class_manage_sources',
         name="class-manage-sources"),

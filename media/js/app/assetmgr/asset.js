@@ -887,8 +887,8 @@
                 error: function () {},
                 success: function (json, textStatus, xhr) {
                     var tags = [];
-                    for (i=0; i < json.objects.length; i++) {
-                        tags.push(json.objects[i].name);
+                    for (i=0; i < json.tags.length; i++) {
+                        tags.push(json.tags[i].name);
                     }
                     jQuery("input[name='annotation-tags']").select2({
                         tags: tags,

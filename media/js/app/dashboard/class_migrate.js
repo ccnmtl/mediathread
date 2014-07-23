@@ -22,7 +22,6 @@
 
     var AssetList = Backbone.Collection.extend({
         model: Asset,
-        urlRoot:  '/_main/api/v1/asset/',
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
@@ -49,7 +48,6 @@
 
     var ProjectList = Backbone.Collection.extend({
         model: Project,
-        urlRoot:  '/_main/api/v1/project/',
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
@@ -68,20 +66,10 @@
             project_set: new ProjectList(),
             asset_set: new AssetList()
         },
-        urlRoot:  '/_main/api/v1/course/',
+        urlRoot:  '/dashboard/migrate/materials/',
         url: function () {
             var url = Backbone.Model.prototype.url.apply(this);
-            
-            var filters = this.get('facultyIds');
-            if (filters !== null && filters.length > 0) {
-                url += '?';
-                url += 'project_set__author__id__in=' + filters;
-                url += '&asset_set__sherdnote_set__author__id__in=' + filters;
-                /* @TODOurl += '&asset_set__sherdnote_set__range1__isnull=False';*/
-                url += '&order_by=title';
-            }
-            
-            return url;
+            return url + this.get('id') + '/'
         },
         parse: function (response) {
             if (response) {

@@ -1,12 +1,12 @@
 #pylint: disable-msg=R0904
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
-from mediathread.api import ClassLevelAuthentication, ToManyFieldEx, \
-    FacultyAuthorization
+from django.db.models import Count
+from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
+from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
-from django.db.models import Count
 
 
 class TermValidation(Validation):
@@ -85,7 +85,7 @@ class VocabularyAuthorization(FacultyAuthorization):
 
 
 class VocabularyResource(ModelResource):
-    term_set = ToManyFieldEx(
+    term_set = ToManyField(
         'mediathread.taxonomy.api.TermResource',
         'term_set',
         blank=True, null=True, full=True, readonly=True)
@@ -99,6 +99,12 @@ class VocabularyResource(ModelResource):
         excludes = ['description', 'single_select']
         ordering = ['display_name']
         validation = VocabularyValidation()
+
+    def alter_list_data_to_serialize(self, request, to_be_serialized):
+        to_be_serialized['objects'] = sorted(
+            to_be_serialized['objects'],
+            key=lambda bundle: bundle.data['display_name'])
+        return to_be_serialized
 
     def dehydrate(self, bundle):
         bundle.data['content_type_id'] = bundle.obj.content_type.id
@@ -120,12 +126,6 @@ class VocabularyResource(ModelResource):
         for vocabulary in vocabularies:
             data.append(self.render_one(request, vocabulary))
         return data
-
-    def alter_list_data_to_serialize(self, request, to_be_serialized):
-        to_be_serialized['objects'] = sorted(
-            to_be_serialized['objects'],
-            key=lambda bundle: bundle.data['display_name'])
-        return to_be_serialized
 
     def render_related(self, request, object_list):
         ctx = {}

@@ -1,21 +1,27 @@
 from courseaffils.lib import in_course, in_course_or_404
+from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateView, View
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.api import UserResource
+from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
+from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.models import UserSetting
-from mediathread.mixins import ajax_required, faculty_only
+from mediathread.mixins import ajax_required, faculty_only, \
+    LoggedInFacultyMixin, AjaxRequiredMixin, JSONResponseMixin
+from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-import operator
 import json
+import operator
 
 
 # returns important setting information for all web pages.
@@ -211,7 +217,7 @@ def class_settings(request):
                 projects = Project.objects.filter(course=course)
                 for project in projects:
                     try:
-                        col = Collaboration.get_associated_collab(project)
+                        col = Collaboration.objects.get_for_object(project)
                         if col._policy.policy_name == 'PublicEditorsAreOwners':
                             col.policy = 'CourseProtected'
                             col.save()
@@ -237,12 +243,11 @@ def set_user_setting(request, user_name):
     return HttpResponse(json_stream, mimetype='application/json')
 
 
-@allow_http("GET", "POST")
-@rendered_with('dashboard/class_migrate.html')
-@login_required
-@faculty_only
-def migrate(request):
-    if request.method == "GET":
+class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
+
+    template_name = 'dashboard/class_migrate.html'
+
+    def get(self, request):
         # Only show courses for which the user is an instructor
         available_courses = available_courses_query(request.user)
         courses = []
@@ -263,7 +268,8 @@ def migrate(request):
             "available_courses": courses,
             "help_migrate_materials": False
         }
-    elif request.method == "POST":
+
+    def post(self, request):
         # maps old ids to new objects
         object_map = {'assets': {},
                       'notes': {},
@@ -301,3 +307,49 @@ def migrate(request):
             'project_count': len(object_map['projects']),
             'note_count': object_map['note_count']})
         return HttpResponse(json_stream, mimetype='application/json')
+
+
+class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
+                           JSONResponseMixin, View):
+    """
+    An ajax-only request to retrieve course information & materials
+    from the perspective of the course faculty members.
+
+    Returns:
+    * Projects authored by faculty
+    * Assets collected or annotated by faculty
+    Example:
+        /api/course/
+    """
+
+    def get(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, id=kwargs.pop('course_id', None))
+        faculty = [user.id for user in course.faculty.all()]
+        faculty_ctx = UserResource().render_list(request, course.faculty.all())
+
+        # filter assets & notes by the faculty set
+        assets = Asset.objects.by_course(course)
+        assets = assets.filter(sherdnote_set__author__id__in=faculty)
+        notes = SherdNote.objects.get_related_notes(assets, None, faculty)
+
+        ares = AssetResource(include_annotations=False)
+        asset_ctx = ares.render_list(request, None, assets, notes)
+
+        projects = Project.objects.by_course_and_users(course, faculty)
+
+        # filter private projects
+        collabs = Collaboration.objects.get_for_object_list(projects)
+        collabs = collabs.exclude(
+            _policy__policy_name='PrivateEditorsAreOwners')
+        ids = [int(c.object_pk) for c in collabs]
+        projects = projects.filter(id__in=ids)
+
+        ctx = {
+            'course': {'id': course.id,
+                       'title': course.title,
+                       'faculty': faculty_ctx},
+            'assets': asset_ctx,
+            'projects': ProjectResource().render_list(request, projects)
+        }
+
+        return self.render_to_json_response(ctx)

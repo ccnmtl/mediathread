@@ -16,10 +16,10 @@
                 return '/?username=' + username;
             },
             'your-projects': function (username) {
-                return '/api/projects/user/' + username + '/';
+                return '/api/project/user/' + username + '/';
             },
             'all-projects': function () {
-                return '/api/projects/';
+                return '/api/project/';
             },
             'sort-projects': function () {
                 return '/project/sort/';
@@ -32,7 +32,7 @@
                     (citable ? '&citable=' + citable : '');
             },
             'all-space': function (tag, modified, citable) {
-                return '/api/asset/course/?' +
+                return '/api/asset/?' +
                     (tag ? '&tag=' + tag : '') +
                     (modified ? '&modified=' + modified : '') +
                     (citable ? '&citable=' + citable : '');

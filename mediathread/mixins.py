@@ -96,15 +96,13 @@ class RestrictedMaterialsMixin(object):
         ids = visible_notes.values_list('asset__id', flat=True)
         visible_assets = assets.filter(id__in=ids).distinct()
         return (visible_assets, visible_notes)
-
-    def visible_project(self, request, projects):
         return None
 
 
 class AjaxRequiredMixin(object):
     @method_decorator(ajax_required)
     def dispatch(self, *args, **kwargs):
-        return super(JSONResponseMixin, self).dispatch(*args, **kwargs)
+        return super(AjaxRequiredMixin, self).dispatch(*args, **kwargs)
 
 
 class JSONResponseMixin(object):
@@ -117,13 +115,23 @@ class JSONResponseMixin(object):
                             **response_kwargs)
 
 
-class LoggedInCourseMixin(object):
+class LoggedInMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_staff:
             in_course_or_404(self.request.user.username, self.request.course)
 
-        return super(LoggedInCourseMixin, self).dispatch(*args, **kwargs)
+        return super(LoggedInMixin, self).dispatch(*args, **kwargs)
+
+
+class LoggedInFacultyMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        if not cached_course_is_faculty(self.request.course,
+                                        self.request.user):
+            return HttpResponseForbidden("forbidden")
+
+        return super(LoggedInFacultyMixin, self).dispatch(*args, **kwargs)
 
 
 class LoggedInMixinSuperuser(object):

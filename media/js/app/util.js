@@ -46,7 +46,7 @@ function switcher(event, a) {
 }
 
 function updateHelpSetting(user, help_content_id, value) {
-    jQuery.post('/yourspace/' + user + '/setting/', { name: help_content_id, value: value });
+    jQuery.post('/setting/' + user + '/', { name: help_content_id, value: value });
 }
 
 function toggleHelp(a, user, parent, help_content_id, callback) {
@@ -56,7 +56,7 @@ function toggleHelp(a, user, parent, help_content_id, callback) {
 
     var user_setting = jQuery(parent).hasClass('on') ? 'True' : 'False';
 
-    jQuery.post('/yourspace/' + user + '/setting/', { name: help_content_id, value: user_setting });
+    jQuery.post('/setting/' + user + '/', { name: help_content_id, value: user_setting });
 
     if (callback) {
         callback();

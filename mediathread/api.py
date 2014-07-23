@@ -1,113 +1,13 @@
 #pylint: disable-msg=R0904
 from courseaffils.lib import get_public_name
+from courseaffils.models import Course, CourseInfo
 from django.contrib.auth.models import User, Group
-from django.core.exceptions import ObjectDoesNotExist
-from mediathread.main.course_details import all_selections_are_visible, \
-    cached_course_is_faculty
 from tagging.models import Tag
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import Authorization
-from tastypie.bundle import Bundle
 from tastypie.constants import ALL
-from tastypie.exceptions import ApiFieldError, BadRequest, InvalidSortError
-from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
-import re
-
-
-class ToManyFieldEx(ToManyField):
-    def build_m2m_filters(self, resource, filters, related_field_name):
-        related_filters = {}
-        pattern = '^.*%s__' % related_field_name
-
-        for key, value in filters.items():
-            if re.match(pattern, key):
-                key = re.sub(pattern, '', key)
-                related_filters[key] = value
-
-        return resource.build_filters(related_filters)
-
-    def apply_m2m_filters(self, bundle, related_field_name, object_list):
-        m2m_resource = self.get_related_resource(None)
-
-        applicable_filters = self.build_m2m_filters(m2m_resource,
-                                                    bundle.request.GET.copy(),
-                                                    related_field_name)
-
-        try:
-            if applicable_filters:
-                object_list = object_list.filter(
-                    **applicable_filters).distinct()
-
-            return m2m_resource.authorized_read_list(object_list, bundle)
-        except ValueError:
-            raise BadRequest("Invalid resource lookup data \
-            provided (mismatched type).")
-
-    def apply_sorting(self, request, object_list):
-        m2m_resource = self.get_related_resource(None)
-        return m2m_resource.apply_sorting(object_list, options=request.GET)
-
-    def dehydrate(self, bundle, for_list=True):
-        if not bundle.obj or not bundle.obj.pk:
-            if not self.null:
-                raise ApiFieldError("The model '%r' does not have a primary \
-                    key and can not be used in a ToMany context." % bundle.obj)
-
-            return []
-
-        the_m2ms = None
-        previous_obj = bundle.obj
-        attr = self.attribute
-
-        if isinstance(self.attribute, basestring):
-            attrs = self.attribute.split('__')
-            the_m2ms = bundle.obj
-
-            for attr in attrs:
-                previous_obj = the_m2ms
-                try:
-                    the_m2ms = getattr(the_m2ms, attr, None)
-                    the_m2ms = self.apply_m2m_filters(bundle,
-                                                      attr,
-                                                      the_m2ms.all())
-                except ObjectDoesNotExist:
-                    the_m2ms = None
-
-                if not the_m2ms:
-                    break
-
-                try:
-                    the_m2ms = self.apply_sorting(bundle.request,
-                                                  the_m2ms.all())
-                except InvalidSortError:
-                    pass
-
-        elif callable(self.attribute):
-            the_m2ms = self.attribute(bundle)
-
-        if not the_m2ms:
-            if not self.null:
-                raise ApiFieldError("The model '%r' has an empty attribute \
-                                    '%s' and doesn't allow a null value."
-                                    % (previous_obj, attr))
-
-            return []
-
-        self.m2m_resources = []
-        m2m_dehydrated = []
-
-        # TODO: Also model-specific and leaky. Relies on there being a
-        #       ``Manager`` there.
-        for m2m in the_m2ms.select_related():
-            m2m_resource = self.get_related_resource(m2m)
-            m2m_bundle = Bundle(obj=m2m, request=bundle.request)
-            self.m2m_resources.append(m2m_resource)
-            m2m_dehydrated.append(self.dehydrate_related(m2m_bundle,
-                                                         m2m_resource))
-
-        return m2m_dehydrated
 
 
 '''From the TastyPie Docs:
@@ -196,28 +96,6 @@ class GroupResource(ModelResource):
         authentication = ClassLevelAuthentication()
 
 
-class RestrictedCourseResource(ModelResource):
-    def __init__(self, course=None):
-        super(RestrictedCourseResource, self).__init__(None)
-        self.course = course
-
-    def get_unrestricted(self, request, object_list, course):
-        return object_list
-
-    def get_restricted(self, request, object_list, course):
-        return []
-
-    def authorized_read_list(self, object_list, bundle):
-        request = bundle.request
-        course = self.course or request.course
-
-        if (all_selections_are_visible(course) or
-                cached_course_is_faculty(course, request.user)):
-            return self.get_unrestricted(request, object_list, course)
-        else:
-            return self.get_restricted(request, object_list, course)
-
-
 class TagResource(ModelResource):
     class Meta:
         queryset = Tag.objects.none()
@@ -259,3 +137,55 @@ class TagResource(ModelResource):
             dehydrated = self.full_dehydrate(bundle)
             data.append(dehydrated.data)
         return data
+
+
+class CourseMemberAuthorization(Authorization):
+
+    def read_detail(self, object_list, bundle):
+        lst = self.read_list(object_list, bundle)
+        return len(lst) > 0
+
+    def read_list(self, object_list, bundle):
+        # User must be a member of all courses in the request list
+        for course in object_list:
+            if not course.is_member(bundle.request.user):
+                return Course.objects.none()
+
+        return object_list
+
+
+class CourseInfoResource(ModelResource):
+    class Meta:
+        queryset = CourseInfo.objects.none()
+        resource_name = 'info'
+        allowed_methods = ['get']
+        excludes = ['days', 'endtime', 'starttime']
+
+
+class CourseResource(ModelResource):
+    faculty_group = fields.ForeignKey(GroupResource,
+                                      'faculty_group',
+                                      full=True)
+    group = fields.ForeignKey(GroupResource,
+                              'group',
+                              full=True)
+
+    info = fields.ForeignKey(CourseInfoResource, 'info',
+                             full=True, blank=True, null=True)
+
+    class Meta:
+        queryset = Course.objects.all()
+        resource_name = "course_summary"
+        list_allowed_methods = []
+        detail_allowed_methods = ['get']
+
+        # User is logged into some course
+        authentication = ClassLevelAuthentication()
+
+        # User is a member of this course
+        authorization = CourseMemberAuthorization()
+
+    def render_one(self, request, course):
+        bundle = self.build_bundle(obj=course, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)

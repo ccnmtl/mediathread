@@ -137,6 +137,13 @@ class ProjectManager(models.Manager):
         projects = projects.order_by('-modified', 'title')
         return [p for p in projects if p.visible(request)]
 
+    def by_course_and_users(self, course, user_ids):
+        projects = Project.objects.filter(
+            Q(author__id__in=user_ids, course=course) |
+            Q(participants__id__in=user_ids, course=course)).distinct()
+
+        return projects.order_by('-modified', 'title')
+
     def faculty_compositions(self, request, course):
         projects = []
         prof_projects = Project.objects.filter(

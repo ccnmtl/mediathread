@@ -12,8 +12,8 @@ from djangohelpers.lib import allow_http
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
-from mediathread.main.api import CourseResource
-from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
+from mediathread.api import CourseResource
+from mediathread.mixins import ajax_required, LoggedInMixin, \
     RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
@@ -23,7 +23,7 @@ from mediathread.taxonomy.models import Vocabulary
 import json
 
 
-class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin, View):
+class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
     def post(self, request):
         project = Project.objects.create(author=request.user,
@@ -448,7 +448,7 @@ def project_sort(request):
     return HttpResponse(json_stream, mimetype='application/json')
 
 
-class ProjectDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                         AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, project_id):
@@ -463,7 +463,7 @@ class ProjectDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(context)
 
 
-class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
+class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
                             AjaxRequiredMixin, JSONResponseMixin, View):
     """
     An ajax-only request to retrieve assets for a course or a specified user

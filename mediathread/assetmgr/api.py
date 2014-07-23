@@ -2,7 +2,6 @@
 from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
-from mediathread.main.models import UserSetting
 from tastypie import fields
 from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
@@ -19,7 +18,7 @@ class SourceResource(ModelResource):
 
     def dehydrate(self, bundle):
         bundle.data['url'] = bundle.obj.url_processed(bundle.request,
-                                                      bundle.obj.asset),
+                                                      bundle.obj.asset)
         return bundle
 
 
@@ -102,12 +101,7 @@ class AssetResource(ModelResource):
                     else:
                         the_json['annotations'].append(note_ctx)
 
-            help_setting = UserSetting.get_setting(
-                request.user, "help_item_detail_view", True)
-
-            return {'type': 'asset',
-                    'assets': {asset.pk: the_json},
-                    'user_settings': {'help_item_detail_view': help_setting}}
+            return the_json
 
         except Source.DoesNotExist:
             return None
@@ -144,6 +138,15 @@ class AssetResource(ModelResource):
         return sorted(values,
                       key=lambda value: self.to_time(value['modified']),
                       reverse=True)
+
+    def render_assets(self, request, assets):
+        lst = []
+        for asset in assets.all():
+            abundle = self.build_bundle(obj=asset, request=request)
+            dehydrated = self.full_dehydrate(abundle)
+            ctx = self._meta.serializer.to_simple(dehydrated, None)
+            lst.append(ctx)
+        return sorted(lst, key=lambda item: item.title)
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(

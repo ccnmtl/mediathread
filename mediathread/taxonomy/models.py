@@ -8,8 +8,7 @@ from django.template.defaultfilters import slugify
 class GenericRelationshipManager(models.Manager):
     def get_for_object(self, obj):
         ctype = ContentType.objects.get_for_model(obj)
-        return self.filter(content_type__pk=ctype.pk,
-                           object_id=obj.pk)
+        return self.filter(content_type__pk=ctype.pk, object_id=obj.pk)
 
     def get_for_object_list(self, object_list):
         ctype = ContentType.objects.get_for_model(object_list[0])

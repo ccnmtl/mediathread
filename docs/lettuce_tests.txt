@@ -113,6 +113,9 @@ Alternate Course
 # Primary: image
 #     Note test_instructor Left Corner
 #     Note test_instructor None
+# Course: [Sample Course], Asset Project Portfolio [5]
+# Primary: image
+#     Note test_instructor_two None
 # Course: [Alternate Course], Asset Design Research [4]
 # Primary: image
 #     Note test_student_three None
@@ -120,9 +123,6 @@ Alternate Course
 #     Note test_instructor_alt Curricular Context
 #     Note test_instructor_alt Research and Evaluation
 #     Note test_instructor_alt None
-# Course: [Sample Course], Asset Project Portfolio [5]
-# Primary: image
-#     Note test_instructor_two None
    
 
 

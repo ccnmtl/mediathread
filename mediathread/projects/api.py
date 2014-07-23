@@ -2,7 +2,6 @@
 from courseaffils.lib import get_public_name
 from mediathread.api import UserResource, ClassLevelAuthentication
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project
@@ -79,17 +78,14 @@ class ProjectResource(ModelResource):
         asset_resource = AssetResource()
         sherd_resource = SherdNoteResource()
 
-        asset_ids = []
+        assets = {}
         notes = []
         for note in project.citations():
+            key = '%s_%s' % (rand, note.asset.pk)
             notes.append(sherd_resource.render_one(request, note, rand))
-            if note.title not in ["Annotation Deleted", 'Asset Deleted']:
-                asset_ids.append(note.asset.pk)
-
-        assets = {}
-        for asset in Asset.objects.filter(id__in=asset_ids).distinct():
-            key = '%s_%s' % (rand, asset.pk)
-            assets[key] = asset_resource.render_one(request, asset)
+            if (note.title not in ["Annotation Deleted", 'Asset Deleted'] and
+                    key not in assets.keys()):
+                assets[key] = asset_resource.render_one(request, note.asset)
 
         data = {
             'project': project_ctx,
@@ -184,5 +180,13 @@ class ProjectResource(ModelResource):
                 is_assignment or parent_assignment is not None
 
             lst.append(ctx)
-
         return lst
+
+    def render_list(self, request, projects):
+        lst = []
+        for project in projects.all():
+            bundle = self.build_bundle(obj=project, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            ctx = self._meta.serializer.to_simple(dehydrated, None)
+            lst.append(ctx)
+        return sorted(lst, key=lambda item: item['title'])

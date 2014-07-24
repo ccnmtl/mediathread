@@ -4098,7 +4098,7 @@ div.selected-for-import div.results {
 }
 
 .import-dialog div.import-stuff table tr td.title div {
-    width: 55%;
+    width: 90%;
     text-overflow: ellipsis;
 }
 

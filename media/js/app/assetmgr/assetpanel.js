@@ -35,11 +35,8 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         var self = event.data.self;
         
         var container = jQuery(self.el).find('div.asset-table')[0];
+        jQuery(container).masonry('appended', html, true);
         
-        if (jQuery(container).hasOwnProperty('masonry')) {
-            jQuery(container).masonry('appended', html, true);
-        }
-
         jQuery(self.el).find("a.asset-title-link").unbind("click").bind("click", { self: self }, self.onClickAssetTitle);
         jQuery(self.el).find("a.edit-asset-inplace").unbind("click").bind("click", { self: self }, self.editItem);
 

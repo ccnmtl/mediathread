@@ -123,7 +123,6 @@ class SherdNoteQuerySet(models.query.QuerySet):
         self = self.filter(asset__in=assets).order_by(
             'asset__id', 'id').select_related()
 
-        # filter by visible authors
         if record_owner:
             # only return original author's global annotations
             self = self.exclude(~Q(author=record_owner), range1__isnull=True)
@@ -162,9 +161,9 @@ class SherdNoteManager(models.Manager):
     def get_related_notes(self, assets, record_owner, visible_authors,
                           tag_string=None, modified=None, vocabulary=None):
         return self.get_query_set().get_related_notes(assets, record_owner,
-                                                     visible_authors,
-                                                     tag_string, modified,
-                                                     vocabulary)
+                                                      visible_authors,
+                                                      tag_string, modified,
+                                                      vocabulary)
 
     def global_annotation(self, asset, author, auto_create=True):
         """

@@ -3,8 +3,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from tagging.models import Tag
-import re
 import json
+import re
 
 
 def default_url_processor(source, request, obj=None):
@@ -54,29 +54,24 @@ class AssetManager(models.Manager):
         archives = assets.filter(source__primary=True, source__label='archive')
         return assets.exclude(id__in=archives.values_list('id', flat=True))
 
-    def migrate(self, asset_set, course, user, object_map):
+    def migrate(self, assets, course, user, faculty, object_map):
         note_model = models.get_model('djangosherd', 'sherdnote')
-        for asset_json in asset_set:
-            if asset_json['id'] not in object_map['assets']:
-                old_asset = Asset.objects.get(id=asset_json['id'])
+        for old_asset in assets:
+            if old_asset.id not in object_map['assets']:
                 new_asset = Asset.objects.migrate_one(old_asset,
                                                       course,
                                                       user)
                 object_map['assets'][old_asset.id] = new_asset
 
-                annotations = []
+                notes = note_model.objects.get_related_notes(
+                    [old_asset], None, faculty)
 
-                if "annotations" in asset_json:
-                    annotations = annotations + asset_json["annotations"]
-
-                for note_json in annotations:
-                    if note_json["id"] not in object_map['notes']:
-                        old_note = note_model.objects.get(
-                            id=note_json["id"])
+                for old_note in notes:
+                    if (not old_note.is_global_annotation() and
+                            old_note.id not in object_map['notes']):
                         new_note = note_model.objects.migrate_one(old_note,
                                                                   new_asset,
                                                                   user)
-                        # Don't count global annotations
                         object_map['notes'][old_note.id] = new_note
 
                 # migrate the requesting user's global annotation

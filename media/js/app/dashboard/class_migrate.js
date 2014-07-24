@@ -1,22 +1,9 @@
 (function (jQuery) {
     var global = this;
-    
-    var SherdNote = Backbone.Model.extend({
-        
-    });
-
-    var SherdNoteList = Backbone.Collection.extend({
-        model: SherdNote
-    });
 
     var Asset = Backbone.Model.extend({
-        defaults: {
-            annotations: new SherdNoteList()
-        },
         initialize: function (attrs) {
-            if (attrs.hasOwnProperty("annotations")) {
-                this.set("annotations", new SherdNoteList(attrs.annotations));
-            }
+            this.id = attrs['id'];
         }
     });
 
@@ -25,24 +12,15 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('annotations').length;
+                count += obj.get('annotation_count')
             });
             return count;
-        },
-        getByDataId: function (id) {
-            var internalId = this.urlRoot + id + '/';
-            return this.get(internalId);
         }
     });
 
     var Project = Backbone.Model.extend({
-        defaults: {
-            annotations: new SherdNoteList()
-        },
         initialize: function (attrs) {
-            if (attrs.hasOwnProperty("annotations")) {
-                this.set("annotations", new SherdNoteList(attrs.annotations));
-            }
+            this.id = attrs['id'];
         }
     });
 
@@ -51,38 +29,18 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('annotations').length;
+                count += obj.get('annotation_count').length;
             });
             return count;
-        },
-        getByDataId: function (id) {
-            var internalId = this.urlRoot + id + '/';
-            return this.get(internalId);
         }
     });
     
     var Course = Backbone.Model.extend({
-        defaults: {
-            project_set: new ProjectList(),
-            asset_set: new AssetList()
-        },
-        urlRoot:  '/dashboard/migrate/materials/',
-        url: function () {
-            var url = Backbone.Model.prototype.url.apply(this);
-            return url + this.get('id') + '/'
-        },
+        urlRoot: '/dashboard/migrate/materials/',
         parse: function (response) {
             if (response) {
-                response.project_set = new ProjectList(response.project_set);
-                
-                // filter archives
-                var assets = [];
-                for (var i = 0; i < response.asset_set.length; i++) {
-                    if (response.asset_set[i].primary_type !== 'archive') {
-                        assets.push(response.asset_set[i]);
-                    }
-                }
-                response.asset_set = new AssetList(assets);
+                response.projects = new ProjectList(response.projects);
+                response.assets = new AssetList(response.assets);
             }
             return response;
         }
@@ -182,7 +140,7 @@
             var markup = this.courseTemplate(json);
             jQuery("#course").html(markup);
             
-            jQuery("#course-title").html(this.model.get("title"));
+            jQuery("#course-title").html(this.model.get("course").title);
             
             jQuery("#available-courses-selector").fadeOut(function () {
                 jQuery("#course-materials-container").fadeIn();
@@ -191,8 +149,8 @@
         
         renderSelectedList: function () {
             var json = {
-                'project_set': this.selectedProjects.toJSON(),
-                'asset_set': this.selectedAssets.toJSON()
+                'projects': this.selectedProjects.toJSON(),
+                'assets': this.selectedAssets.toJSON()
             };
             var markup = this.selectedTemplate(json);
             jQuery("#selected-for-import").html(markup);
@@ -214,17 +172,7 @@
         },
         
         setCourse: function (courseId) {
-            var facultyIds = "";
-            
-            for (var i = 0; i < this.availableCourses.length; i++) {
-                if (this.availableCourses[i].id === courseId) {
-                    facultyIds = this.availableCourses[i].faculty_ids;
-                    break;
-                }
-            }
-            
-            this.model = new Course({id: courseId,
-                                     facultyIds: facultyIds});
+            this.model = new Course({id: courseId});
             this.model.on('change', this.render);
             this.model.fetch();
         },
@@ -255,11 +203,20 @@
             var self = this;
             // @todo - put up an overlay & a progress indicator.
             
+            asset_ids = [];
+            this.selectedAssets.forEach(function (asset) {
+                asset_ids.push(asset.id);
+            });
+            project_ids = [];
+            this.selectedProjects.forEach(function (project) {
+               project_ids.push(project.id); 
+            });
+            
             var data = {
                 'fromCourse': this.model.get('id'),
                 'on_behalf_of': jQuery("#on_behalf_of").attr("value"),
-                'project_set': JSON.stringify(this.selectedProjects.toJSON()),
-                'asset_set': JSON.stringify(this.selectedAssets.toJSON())
+                'project_ids': project_ids,
+                'asset_ids': asset_ids
             };
             
             jQuery.ajax({
@@ -315,12 +272,12 @@
                             click: function () {
                                 jQuery(this).dialog("close");
                                 
-                                self.model.get('project_set').forEach(function (project) {
+                                self.model.get('projects').forEach(function (project) {
                                     if (!self.selectedProjects.get(project.id)) {
                                         self.selectedProjects.add(project);
                                     }
                                 });
-                                self.model.get('asset_set').forEach(function (asset) {
+                                self.model.get('assets').forEach(function (asset) {
                                     if (!self.selectedAssets.get(asset.id)) {
                                         self.selectedAssets.add(asset);
                                     }
@@ -341,36 +298,36 @@
             var self = this;
             var element = jQuery("#import-projects-dialog");
             jQuery(element).dialog({
-                buttons: [{ text: "Cancel",
-                            click: function () {
-                                jQuery(this).dialog("close");
-                            }
-                          },
-                          { text: 'Select',
-                            click: function () {
-                                var lst = jQuery("input.project");
-                                if (lst.length > 0) {
-                                    jQuery(lst).each(
-                                        function (idx, elt) {
-                                            var id = jQuery(elt).attr("value");
-                                            var project = self.model.get('project_set').getByDataId(id);
-                                            if (jQuery(elt).is(":checked")) {
-                                                if (!self.selectedProjects.get(project)) {
-                                                    self.selectedProjects.add(project, {silent: true});
-                                                }
-                                                jQuery(elt).removeAttr('checked');
-                                            } else {
-                                                self.selectedProjects.remove(project, {silent: true});
+                buttons: [{
+                    text: "Cancel",
+                        click: function () {
+                            jQuery(this).dialog("close");
+                        }
+                    },
+                    { text: 'Select',
+                      click: function () {
+                            var lst = jQuery("input.project");
+                            if (lst.length > 0) {
+                                jQuery(lst).each(
+                                    function (idx, elt) {
+                                        var id = jQuery(elt).attr("value");
+                                        var project = self.model.get('projects').get(id);
+                                        if (jQuery(elt).is(":checked")) {
+                                            if (!self.selectedProjects.get(project)) {
+                                                self.selectedProjects.add(project, {silent: true});
                                             }
+                                            jQuery(elt).removeAttr('checked');
+                                        } else {
+                                            self.selectedProjects.remove(project, {silent: true});
                                         }
-                                    );
-                                    
-                                    self.renderSelectedList();
-                                }
-                                jQuery(this).dialog("close");
+                                    }
+                                );
+                                
+                                self.renderSelectedList();
                             }
-                          }
-                ],
+                            jQuery(this).dialog("close");
+                      }
+                }],
                 draggable: true,
                 resizable: true,
                 modal: true,
@@ -400,7 +357,7 @@
                                     jQuery(lst).each(
                                         function (idx, elt) {
                                             var id = jQuery(elt).attr("value");
-                                            var asset = self.model.get('asset_set').getByDataId(id);
+                                            var asset = self.model.get('assets').get(id);
                                             if (jQuery(elt).is(":checked")) {
                                                 if (!self.selectedAssets.get(asset)) {
                                                     self.selectedAssets.add(asset);
@@ -449,14 +406,14 @@
         deselectProject: function (evt) {
             var srcElement = evt.srcElement || evt.target || evt.originalTarget;
             
-            var project = this.selectedProjects.getByDataId(jQuery(srcElement).attr("name"));
+            var project = this.selectedProjects.get(jQuery(srcElement).attr("name"));
             this.selectedProjects.remove(project.id);
         },
         
         deselectAsset: function (evt) {
             var srcElement = evt.srcElement || evt.target || evt.originalTarget;
             
-            var asset = this.selectedAssets.getByDataId(jQuery(srcElement).attr("name"));
+            var asset = this.selectedAssets.get(jQuery(srcElement).attr("name"));
             this.selectedAssets.remove(asset.id);
         }
         

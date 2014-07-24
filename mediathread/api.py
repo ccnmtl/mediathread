@@ -161,6 +161,11 @@ class CourseInfoResource(ModelResource):
         allowed_methods = ['get']
         excludes = ['days', 'endtime', 'starttime']
 
+    def render_one(self, request, course):
+        bundle = self.build_bundle(obj=course, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        return self._meta.serializer.to_simple(dehydrated, None)
+
 
 class CourseResource(ModelResource):
     faculty_group = fields.ForeignKey(GroupResource,

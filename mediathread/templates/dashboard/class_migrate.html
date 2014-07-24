@@ -9,42 +9,42 @@
     
     <script type="text/template" id="course-template">
         <div class="meta">
-            <% if (info && info.term) { %> 
+            <% if (course.info && course.info.term) { %> 
                 <div>
                 <span class="metadata-label">Term:</span>
                     <span class="metadata-value">
-                        <% if (info.term === 1) { %>
+                        <% if (course.info.term === 1) { %>
                             Spring 
-                        <% } else if (info.term === 2) { %>
+                        <% } else if (course.info.term === 2) { %>
                             Summer
-                        <% } else if (info.term === 3) { %>
+                        <% } else if (course.info.term === 3) { %>
                             Fall
                         <% } %>
                     </span>
                 </div>
             <% } %>
-            <% if (info && info.year) { %>
-                <div><span class="metadata-label">Year:</span><span class="metadata-value"> <%= info.year %></span></div>
+            <% if (course.info && course.info.year) { %>
+                <div><span class="metadata-label">Year:</span><span class="metadata-value"> <%= course.info.year %></span></div>
             <% } %>    
             <div>   
                 <span class="metadata-label">Faculty:</span> 
                 <span class="metadata-value">
-                <% for (var i = 0; i < faculty_group.user_set.length; i++) { %>
-                    <%= faculty_group.user_set[i].public_name %><% if (i < faculty_group.user_set.length-1) { %>, <% } %>
+                <% for (var i = 0; i < course.faculty.length; i++) { %>
+                    <%= course.faculty[i].public_name %><% if (i < course.faculty.length-1) { %>, <% } %>
                 <% } %>
             </div>
         </div>
-        
-        <% if (project_set && project_set.length > 0) { %>
-            <div class="metadata-value"><%= project_set.length %> Compositions &amp; Assignments</div>
+
+        <% if (projects && projects.length > 0) { %>
+            <div class="metadata-value"><%= projects.length %> Compositions &amp; Assignments</div>
             <div><input id="import-projects" type="button" class="rounded-button blue" value="Select Compositions &amp; Assignments"></div>
             <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Compositions & Assignments To Migrate">
                 <div class="right"><a href="#" id="select-all-projects">Select All</a> | <a href="#" id="clear-all-projects">Clear All</a></div>
                 <div class="visualclear"/>
                 <div class="import-stuff">
                 <table>
-                <% for (var i = 0; i < project_set.length; i++) { %>
-                    <% var project = project_set.at(i) %>
+                <% for (var i = 0; i < projects.length; i++) { %>
+                    <% var project = projects.at(i) %>
                     <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
                         <td class="composition <% if (project.get('is_assignment')) { %>assignment<% } %>">
                         </td>
@@ -58,13 +58,7 @@
                             <div class="visualclear"></div>
                             <h5><%= project.get('title') %></h5>
                             by <%= project.get('attribution') %>
-                            
-                            <% if (project.get('annotations').length > 0) { %>
-                                <br />
-                                <i>includes <%= project.get('annotations').length %> selection(s)</i>
-                            <% } %>
                         </td>
-                        
                     </tr>
                     <tr class="spacer-row"><td class="spacer" colspan="3"></td></tr>
                 <% } %>
@@ -75,8 +69,8 @@
         <% } %>
         <br />
 
-        <% if (asset_set && asset_set.length > 0) { %>             
-            <div class="metadata-value"><%= asset_set.length %> Items with <%= asset_set.total_sherdnotes() %> selection(s)</div>
+        <% if (assets && assets.length > 0) { %>             
+            <div class="metadata-value"><%= assets.length %> Items with <%= assets.total_sherdnotes() %> selection(s)</div>
             <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items"/></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
@@ -84,8 +78,8 @@
                 <div class="visualclear"/>
                 <div class="import-stuff">
                     <table>
-                        <% for (var j = 0; j < asset_set.length; j++) { %>
-                            <% var asset = asset_set.at(j) %>
+                        <% for (var j = 0; j < assets.length; j++) { %>
+                            <% var asset = assets.at(j) %>
                             <tr  <% if (j % 2 === 0) { %> class="odd" <% } %> >
                                 <td class="asset"></td>
                                 <td>
@@ -102,8 +96,8 @@
                                         <div class="metadata-value">Imported by <%= asset.get('author').public_name %></div>
                                         <div>
                                             <span class="metadata-value">Includes </span>  
-                                            <span class="metadata-label item-annotation-count-total"><%=asset.get('annotations').length %></span>
-                                            <span class="metadata-value">selections</span>                        
+                                            <span class="metadata-label item-annotation-count-total"><%=asset.get('annotation_count') %></span>
+                                            <span class="metadata-value">selections</span>
                                         </div>
                                     </div>
                                 </td>
@@ -118,14 +112,14 @@
         <br /><br />
         <input id="import-all" class="rounded-button green" type="button" value="Select Everything" />
         <div id="import-all-dialog" style="display: none" title="Import">
-            <h3><%= title %></h3>
-            <% if (project_set && project_set.length > 0) { %>
-                <div><%= project_set.length %> Compositions & Assignments</div>
+            <h3><%= course.title %></h3>
+            <% if (projects && projects.length > 0) { %>
+                <div><%= projects.length %> Compositions & Assignments</div>
             <% } else { %>
                 <div>No compositions or assignments</div>
             <% } %>
-            <% if (asset_set && asset_set.length > 0) { %>
-                <div><%= asset_set.length %> items and <%= asset_set.total_sherdnotes()  %> selections</div>
+            <% if (assets && assets.length > 0) { %>
+                <div><%= assets.length %> items and <%= assets.total_sherdnotes()  %> selections</div>
             <% } else { %>
                 <div>No items or selections</div>
             <% } %>
@@ -139,10 +133,10 @@
             <div><div class="left">Selected Materials</div><div class="right">Remove</div></div>
             <div class="visualclear"/>
             <div id="to_import" class="import-stuff scroll">
-                <% if (project_set.length) { %>
+                <% if (projects.length) { %>
                     <table>
-                    <% for (var i = 0; i < project_set.length; i++) { %>
-                        <% var project = project_set[i] %>
+                    <% for (var i = 0; i < projects.length; i++) { %>
+                        <% var project = projects[i] %>
                         <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
                             <td class="composition <% if (project.is_assignment) { %>assignment<% } %>">
                             </td>
@@ -155,11 +149,6 @@
                                 <div class="visualclear"></div>
                                 <h5><%= project.title %></h5>
                                 by <%= project.attribution %>
-                            
-                                <% if (project.annotations.length > 0) { %>
-                                    <br />
-                                    <i>Includes <%= project.annotations.length %> selections</i>
-                                <% } %>
                             </td>
                             <td class="deselect"><input type="button" name="<%= project.id %>" value="X" class="deselect-project"/></td>
                         </tr>
@@ -168,12 +157,12 @@
                     </table>
                 <% } %>
                 
-                <% if (asset_set.length) { %>
+                <% if (assets.length) { %>
                     <table>
-                    <% for (var i = 0; i < asset_set.length; i++) { %>
+                    <% for (var i = 0; i < assets.length; i++) { %>
                         <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
                         <td class="asset"></td>    
-                        <% var asset = asset_set[i] %>
+                        <% var asset = assets[i] %>
                         <td class="record">
                             <% if (asset.thumb_url) { %>
                                 <img class="asset-thumb left" src="<%=asset.thumb_url %>" alt="Item Thumbnail" />                        
@@ -185,7 +174,7 @@
                                 <div class="metadata-value">Imported by <%= asset.author.public_name %></div>
                                 <div>
                                     <span class="metadata-value">Includes </span>  
-                                    <span class="metadata-label item-annotation-count-total"><%=asset.annotations.length %></span>
+                                    <span class="metadata-label item-annotation-count-total"><%=asset.annotation_count %></span>
                                     <span class="metadata-value">selections</span>                        
                                 </div>
                             </div>
@@ -213,19 +202,21 @@
 {% block uncompressable_js %}
     <script type="text/javascript"> 
         var courses =
-            [{% for c in available_courses %}
-                {% ifnotequal c.id request.course.id %}
-                    { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
-                      value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
-                      id: "{{c.id}}",
-                      faculty_ids: "{% for u in c.faculty %}{{u.id}}{% if forloop.last %}{% else %},{% endif %}{% endfor %}"
-                    }
-                    {% if forloop.last %}{% else %},{% endif %}
-                {% endifnotequal %}
-            {% endfor %}];
+        [{% for c in available_courses %}
+            {% ifnotequal c.id request.course.id %}
+                { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                  value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
+                  id: "{{c.id}}",
+                }
+                {% if forloop.last %}{% else %},{% endif %}
+            {% endifnotequal %}
+        {% endfor %}];
         
         jQuery(document).ready(function () {
-            var view = new CourseMaterialsView({ availableCourses: courses, el: "#block" });
+            var view = new CourseMaterialsView({
+                availableCourses: courses,
+                el: "#block"
+            });
         });
     </script>
 {% endblock %}

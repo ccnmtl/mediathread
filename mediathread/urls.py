@@ -87,7 +87,7 @@ urlpatterns = patterns(
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
-    url(r'^dashboard/migrate/', MigrateCourseView.as_view(),
+    url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
         {}, "dashboard-migrate"),
     url(r'^dashboard/sources/',
         'mediathread.main.views.class_manage_sources',

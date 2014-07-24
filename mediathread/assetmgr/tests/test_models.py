@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote
-import json
 
 
 class AssetTest(TestCase):
@@ -27,67 +26,20 @@ class AssetTest(TestCase):
         self.assertFalse(asset.primary.is_archive())
         self.assertFalse(asset.primary.is_audio())
 
-    asset_set = [{"author": {"full_name": "Instructor One",
-                             "id": 2,
-                             "resource_uri": ""},
-                  "id": 1,
-                  "primary_type": "youtube",
-                  "thumb_url": "http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg",
-                  "title": "Mediathread: Introduction",
-                  "global_annotation": {
-                      "asset_id": "1",
-                      "author": {"full_name": "test_instructor_two",
-                                 "id": 10,
-                                 "resource_uri": ""},
-                      "id": 20,
-                      "is_global_annotation": "True",
-                      "resource_uri": "/_main/api/v1/sherdnote/20/",
-                      "title": None,
-                      "tags": ",ccnmtl,foo",
-                      "body": "test instructor two notes"},
-                  "annotations": [{
-                      "id": 2,
-                      "asset_id": "1",
-                      "author": {"full_name": "Instructor One",
-                                 "id": 2,
-                                 "resource_uri": ""},
-                      "is_global_annotation": "False",
-                      "resource_uri": "/_main/api/v1/sherdnote/2/",
-                      "title": "Manage Sources"},
-                      {"asset_id": "1",
-                       "author": {"full_name": "test_instructor_two",
-                                  "id": 10,
-                                  "resource_uri": ""},
-                       "id": 19,
-                       "is_global_annotation": "False",
-                       "resource_uri": "/_main/api/v1/sherdnote/19/",
-                       "title": "Video Selection Is Time-based"}]},
-                 {"author": {"full_name": "Instructor One",
-                             "id": 2,
-                             "resource_uri": ""},
-                  "id": 1,
-                  "primary_type": "youtube",
-                  "thumb_url": "http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg",
-                  "title": "Wrong"},
-                 {"author": {"full_name": "Instructor One",
-                             "id": 2,
-                             "resource_uri": ""},
-                  "id": 2,
-                  "primary_type": "image",
-                  "thumb_url": "http://i.ytimg.com/vi/7KjzRG8zYYo/default.jpg",
-                  "title": "MAAP Award Reception"}]
-
     def test_migrate_many(self):
+        from_course = Course.objects.get(title="Sample Course")
+        faculty = [user.id for user in from_course.faculty.all()]
+
         course = Course.objects.get(title="Alternate Course")
         self.assertEquals(len(course.asset_set.all()), 1)
 
         user = User.objects.get(username='test_instructor_two')
-        asset_json = json.dumps(self.asset_set)
-        assets = json.loads(asset_json)
+        titles = ['Mediathread: Introduction', 'MAAP Award Reception']
+        assets = Asset.objects.filter(title__in=titles)
 
         object_map = {'assets': {}, 'notes': {}}
         object_map = Asset.objects.migrate(
-            assets, course, user, object_map)
+            assets, course, user, faculty, object_map)
 
         self.assertEquals(len(course.asset_set.all()), 3)
         asset = object_map['assets'][1]
@@ -95,7 +47,15 @@ class AssetTest(TestCase):
         self.assertEquals(asset.title, "Mediathread: Introduction")
         self.assertEquals(asset.course, course)
         self.assertEquals(asset.author, user)
-        self.assertEquals(len(asset.sherdnote_set.all()), 3)
+        self.assertEquals(len(asset.sherdnote_set.all()), 5)
+
+        try:
+            asset.sherdnote_set.get(title='Whole Item Selection')
+            asset.sherdnote_set.get(title='Annotations')
+            asset.sherdnote_set.get(title='Manage Sources')
+            asset.sherdnote_set.get(title='Video Selection Is Time-based')
+        except SherdNote.DoesNotExist:
+            self.assertTrue(False)
 
         gann = asset.global_annotation(user, False)
         self.assertTrue(gann is not None)
@@ -107,7 +67,12 @@ class AssetTest(TestCase):
         self.assertEquals(asset.title, "MAAP Award Reception")
         self.assertEquals(asset.course, course)
         self.assertEquals(asset.author, user)
-        self.assertEquals(len(asset.sherdnote_set.all()), 1)
+        self.assertEquals(len(asset.sherdnote_set.all()), 2)
+
+        try:
+            asset.sherdnote_set.get(title='Our esteemed leaders')
+        except SherdNote.DoesNotExist:
+            self.assertTrue(False)
 
         gann = asset.global_annotation(user, False)
         self.assertTrue(gann is not None)

@@ -8,12 +8,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView, View
 from djangohelpers.lib import rendered_with, allow_http
-from mediathread.api import UserResource
+from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
+from mediathread.main.course_details import cached_course_is_faculty
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, faculty_only, \
     LoggedInFacultyMixin, AjaxRequiredMixin, JSONResponseMixin
@@ -247,29 +248,32 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
 
     template_name = 'dashboard/class_migrate.html'
 
-    def get(self, request):
+    def get_context_data(self, **kwargs):
         # Only show courses for which the user is an instructor
-        available_courses = available_courses_query(request.user)
+        available_courses = available_courses_query(self.request.user)
         courses = []
-        if request.user.is_superuser:
+        if self.request.user.is_superuser:
             courses = available_courses
         else:
             for course in available_courses:
-                if course.is_faculty(request.user):
+                if cached_course_is_faculty(course, self.request.user):
                     courses.append(course)
 
         # Only send down the real faculty. Not all us staff members
         faculty = []
-        for user in request.course.faculty.all():
+        for user in self.request.course.faculty.all():
             faculty.append(user)
 
         return {
             "current_course_faculty": faculty,
-            "available_courses": courses,
-            "help_migrate_materials": False
+            "available_courses": courses
         }
 
     def post(self, request):
+        from_course_id = request.POST.get('fromCourse', None)
+        from_course = get_object_or_404(Course, id=from_course_id)
+        faculty = [user.id for user in from_course.faculty.all()]
+
         # maps old ids to new objects
         object_map = {'assets': {},
                       'notes': {},
@@ -287,19 +291,17 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
                 'message': '%s is not a course member or faculty member'})
             return HttpResponse(json_stream, mimetype='application/json')
 
-        if 'asset_set' in request.POST:
-            asset_set = json.loads(request.POST.get('asset_set'))
-            object_map = Asset.objects.migrate(asset_set,
-                                               request.course,
-                                               owner,
-                                               object_map)
+        if 'asset_ids' in request.POST:
+            asset_ids = json.loads(request.POST.get('asset_ids'))
+            assets = Asset.objects.filter(id__in=asset_ids)
+            object_map = Asset.objects.migrate(
+                assets, request.course, owner, faculty, object_map)
 
-        if 'project_set' in request.POST:
-            project_set = json.loads(request.POST.get('project_set'))
-            object_map = Project.objects.migrate(project_set,
-                                                 request.course,
-                                                 owner,
-                                                 object_map)
+        if 'project_ids' in request.POST:
+            project_ids = json.loads(request.POST.get('project_ids'))
+            projects = Project.objects.filter(id__in=project_ids)
+            object_map = Project.objects.migrate(
+                projects, request.course, owner, object_map)
 
         json_stream = json.dumps({
             'success': True,
@@ -344,10 +346,13 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         ids = [int(c.object_pk) for c in collabs]
         projects = projects.filter(id__in=ids)
 
+        info_ctx = CourseInfoResource().render_one(request, course)
+
         ctx = {
             'course': {'id': course.id,
                        'title': course.title,
-                       'faculty': faculty_ctx},
+                       'faculty': faculty_ctx,
+                       'info': info_ctx},
             'assets': asset_ctx,
             'projects': ProjectResource().render_list(request, projects)
         }

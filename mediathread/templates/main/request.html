@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}
-    Contact Us
-{% endblock %}
+{% block title %}Request Course{% endblock %}
 
 {% block css %}
 <style>
@@ -29,12 +27,13 @@
     div.contact_us_form label {
         font-weight: bold;
         margin-bottom: 5px;
+        display: block;
     }
     
-    div.contact_us_form input,
-    div.contact_us_form select {
+    div.contact_us_form input {
         width: 50%;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        height: 21px;
     }
     
     div.contact_us_form textarea {
@@ -52,20 +51,14 @@
 </style>
 {% endblock %}
 
-{% block js %}
-    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
-{% endblock %}
-
 {% block uncompressable_js %}
 
 <script type="text/javascript">
     jQuery(document).ready(function() {
         {% if request.GET.msg %}
-            showMessage("Thank you for your comments.");
+            showMessage("Thank you for your request. A CCNMTL staff member will contact you shortly.");
         {% endif %}
         
-        jQuery('#time').datetimepicker();
-    
         jQuery("form").submit(function() {
             var valid = true;
 
@@ -91,21 +84,16 @@
             });
 
             if (!valid) {
-                showMessage("Please complete all form fields before continuing.");
+                showMessage("Please complete all form fields before continuing.", undefined, "Error");
             } else { 
-                var description = "\n\nCourse: " + document.forms.feedback.course.value;
-                description += "\n\nIssue date/time: " + document.forms.feedback.time.value;
-                description += "\n\nCategory: " + document.forms.feedback.category.value;
-                description += "\n\nUser Description: " + document.forms.feedback.user_description.value;
-                document.forms.feedback.description.value = description; 
-
-                // Tack on any additional information that could be helpful
-                document.forms.feedback.debug_info.value =
-                    "\n\nUser Agent: " + navigator.userAgent + "\n\n" +
-                    "Resolution: " + screen.width + " x " + screen.height + "\n\n" +
-                    "Browser Name: " + navigator.appName + "\n\n" +
-                    "Browser Version: " + navigator.appVersion + "\n\n" +
-                    "Platform: " + navigator.platform;
+                var description = "Requester: " + document.forms.feedback.name.value + " (" + 
+                        document.forms.feedback.email.value + ") " + document.forms.feedback.role.value;
+                description += "\n\nInstitution: " + document.forms.feedback.institution.value;
+                description += "\n\nCourse: " + document.forms.feedback.course.value;
+                description += "\n\nCourse Id: " + document.forms.feedback.course_id.value;
+                description += "\n\nCourse Semester: " + document.forms.feedback.course_semester.value;
+                description += "\n\nCourse Description: " + document.forms.feedback.course_description.value + "\n\n";
+                document.forms.feedback.description.value = description;
             }
 
             return valid;
@@ -116,68 +104,45 @@
 
 {% block content %}
     <div class="contact_us_form">
-        <h2 class="title">Contact Us</h2>
-    
-        <p>
-            If you have comments, suggestions, or questions about this site, or are having a problem using it, 
-            please contact us using the following form. We will do our best to respond within one business day.
-            For more immediate information, please visit the <a href="/help/">Mediathread Help documentation</a>.
-        </p>
-   
+        <h2 class="title">Request a Course</h2>
+
         <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback">
-            <div><label for="name">Name</label></div>
-            <div><input class="text" type="text" id="name" name="name" value="{{ user.get_full_name }}"/></div>
-            
-            <div><label for="name">UNI or Username</label></div>
-            <div><input class="text" type="text" id="name" name="name" value="{{ user.username }}"/></div>                
+            <div><label for="name">Full Name</label><input class="text" type="text" id="name" name="name" /></div>
             
             <div><label for="email">Email address</label></div>
-            <div><input class="text" type="text" id="email" name="email" value="{{user.email}}"/></div>
+            <div><input class="text" type="text" id="email" name="email" /></div>
+
+            <div><label for="role">Your title/role</label></div>
+            <div><input class="text" type="text" id="role" name="role" /></div>
             
-            <div><label for="issue_time">Date and time issue occurred:</label></div>
-            <div><input class="text" type="text" id="time" name="time" value='{% now "m/d/y H:m" %}'/></div>
+            <div><label for="institution">Institution/School</label></div>
+            <div><input class="text" type="text" id="institution" name="institution" /></div>
+
+            <div><label for="course">Course Name</label></div>
+            <div><input class="text" type="text" id="course" name="course" /></div>
+
+            <div><label for="course_id">Course Id</label></div>
+            <div><input class="text" type="text" id="course_id" name="course_id" /></div>
+
+            <div><label for="course_semester">Course Semester</label></div>
+            <div><input class="text" type="text" id="course_semester" name="course_semester" /></div>
+                        
+            <div><label for="course_description">Please describe how this course will be used</label></div>
+            <div><textarea rows="4" cols="35" id="course_description" name="course_description"></textarea></div>
             
-            <div><label for="category">Category:</label></div>
-            <div>
-                <select id="category" name="category">
-                    <option value="-----">Please select a category...</option>
-                    <option value="finding">Finding Media</option>
-                    <option value="importing">Adding Media to the Collection</option>
-                    <option value="uploading">Uploading Media</option>
-                    <option value="video">Video playback/clipping</option>
-                    <option value="audio">Audio playback/clipping</option>
-                    <option value="image">Image view/clipping</option>
-                    <option value="composition">Composition Workspace</option>
-                    <option value="assignment">Assignment Workspace</option>
-                    <option value="discussion">Discussion Workspace</option>
-                    <option value="course_mgmt">Course management (roster list, for example)</option>
-                    <option value="browser">Browser Issues (garbled layout, for example)</option>
-                    <option value="http_404">"HTTP Status 404" error</option>
-                    <option value="http_500">"HTTP Status 500" error</option>
-                    <option value="internal_server_error">Internal Server Error</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            
-            <br />
-            <div><label for="description">Comment or Problem</label></div>
-            <div><textarea rows="4" cols="35" id="user_description" name="user_description"></textarea></div>
-            
-            <input type="submit" id="submit_feedback" name="add item" value="Send Feedback"/>
+            <input type="submit" id="submit_feedback" name="add item" value="Request Course"/>
             
             <div class="visualclear"/>
             
-            <input type="hidden" name="course" value="{{request.course}}"></input>
-            
-            <input type="hidden" name="title" value="Mediathread Error Report From Web User"></input>
+            <input type="hidden" name="title" value="Mediathread Course Request"></input>
             <input type="hidden" name="pid" value="514"></input>
-            <input type="hidden" name="mid" value="3181"></input>
-            <input type="hidden" name="type" value="bug"></input>
+            <input type="hidden" name="mid" value="3596"></input>
+            <input type="hidden" name="type" value="action item"></input>
             <input type="hidden" name="owner" value="ellenm" />
             <input type="hidden" name="assigned_to"  value="ellenm"></input>
             <input type="hidden" name="estimated_time" value="1h"></input>
-            <input type="hidden" name="redirect_url" value="http://{{request.get_host}}/contact/?msg=submitted"></input>
-            <input type="hidden" name="keyword" value="user-reported-error" />
+            <input type="hidden" name="redirect_url" value="http://{{request.get_host}}/course/request/?msg=submitted"></input>
+            <input type="hidden" name="keyword" value="course-request" />
             <input type="hidden" name="debug_info" value="" />
             <input type="hidden" name="description" value="" />
         </form>

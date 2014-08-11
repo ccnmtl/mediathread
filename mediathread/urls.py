@@ -74,6 +74,8 @@ urlpatterns = patterns(
 
     (r'^contact/', login_required(
         TemplateView.as_view(template_name="main/contact.html"))),
+    (r'^course/request/', login_required(
+        TemplateView.as_view(template_name="main/request.html"))),
 
     # Courseaffils
     url(r'^accounts/logged_in.js$', 'courseaffils.views.is_logged_in',

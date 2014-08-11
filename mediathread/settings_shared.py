@@ -190,6 +190,7 @@ CONTACT_US_DESTINATION = ""
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 

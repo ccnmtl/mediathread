@@ -4,11 +4,11 @@
 
 {% block css %}
 <style>
-    div.contact_us_form {
+    .request-course-form {
         width: 600px;
     }
     
-    div.contact_us_form h2 {
+    .request-course-form h2 {
         padding: 10px 0;
         margin: 0 10px 10px 10px;
         border-bottom: solid 1px #EFEFEF;
@@ -16,33 +16,33 @@
         min-width: 900px;
     }
     
-    div.contact_us_form p {
+    .request-course-form p {
         margin: 20px;
     }
     
-    div.contact_us_form form {
+    .request-course-form form {
         margin: 20px;
     }
     
-    div.contact_us_form label {
+    .request-course-form label {
         font-weight: bold;
         margin-bottom: 5px;
         display: block;
     }
     
-    div.contact_us_form input {
+    .request-course-form input {
         width: 50%;
         margin-bottom: 15px;
         height: 21px;
     }
     
-    div.contact_us_form textarea {
+    .request-course-form textarea {
         width: 97%;
         height: 200px;
         margin-top: 5px;
     }
     
-    div.contact_us_form input#submit_feedback {
+    .request-course-form input#submit_feedback {
         float: right;
         width: 125px;
         margin-top: 10px;
@@ -88,10 +88,11 @@
             } else { 
                 var description = "Requester: " + document.forms.feedback.name.value + " (" + 
                         document.forms.feedback.email.value + ") " + document.forms.feedback.role.value;
+                
                 description += "\n\nInstitution: " + document.forms.feedback.institution.value;
                 description += "\n\nCourse: " + document.forms.feedback.course.value;
                 description += "\n\nCourse Id: " + document.forms.feedback.course_id.value;
-                description += "\n\nCourse Semester: " + document.forms.feedback.course_semester.value;
+                description += "\n\nTerm: " + document.forms.feedback.term.value;
                 description += "\n\nCourse Description: " + document.forms.feedback.course_description.value + "\n\n";
                 document.forms.feedback.description.value = description;
             }
@@ -103,29 +104,55 @@
 {% endblock %}
 
 {% block content %}
-    <div class="contact_us_form">
+    <div class="request-course-form">
         <h2 class="title">Request a Course</h2>
 
         <form action="{{settings.CONTACT_US_DESTINATION}}" method="post" name="feedback">
-            <div><label for="name">Full Name</label><input class="text" type="text" id="name" name="name" /></div>
+            <div>
+                <label for="course">Course Name</label>
+                <input class="text" type="text" id="course" name="course" />
+            </div>
             
-            <div><label for="email">Email address</label></div>
-            <div><input class="text" type="text" id="email" name="email" /></div>
+            <div>
+                <label for="course_id">Course Id</label>
+                <input class="text" type="text" id="course_id" name="course_id" />
+            </div>
+
+            <div>
+                <label for="term">Term</label>
+                <input class="text" type="text" id="term" name="term" />
+            </div>
+
+            <div>
+                <label for="instructor">Lead Instructor</label>
+                <input class="text" type="text" id="instructor" name="instructor" />
+            </div>
+            
+            <div>
+                <label for="name">Lead Instructor</label>
+                <input class="text" type="text" id="name" name="name" />
+            </div>
+            
+            <div>
+                <label for="email">Email address</label>
+                <input class="text" type="text" id="email" name="email" />
+            </div>
 
             <div><label for="role">Your title/role</label></div>
             <div><input class="text" type="text" id="role" name="role" /></div>
             
-            <div><label for="institution">Institution/School</label></div>
-            <div><input class="text" type="text" id="institution" name="institution" /></div>
+* Course name (if not pulled from registrar)
+* Term (if  not pulled from registrar)
+* Lead Instructor (if not pulled from registrar)
+* Section leader (if different from above)
+* Anticipated date range of Mediathread use in this course
+* Anticipated number of students working in Mediathread in this course
+* Are Mediathread assignments required? Y/N
+* Rationale for Mediathread use - i.e. instructor's learning goal
+Pertinent supplemental docs (via upload): assignment descriptions, grading criteria or rubrics
+Support requests for CCNMTL staff 
 
-            <div><label for="course">Course Name</label></div>
-            <div><input class="text" type="text" id="course" name="course" /></div>
 
-            <div><label for="course_id">Course Id</label></div>
-            <div><input class="text" type="text" id="course_id" name="course_id" /></div>
-
-            <div><label for="course_semester">Course Semester</label></div>
-            <div><input class="text" type="text" id="course_semester" name="course_semester" /></div>
                         
             <div><label for="course_description">Please describe how this course will be used</label></div>
             <div><textarea rows="4" cols="35" id="course_description" name="course_description"></textarea></div>

@@ -237,10 +237,11 @@ class SherdNoteTest(TestCase):
         notes = SherdNote.objects.filter(asset__title='MAAP Award Reception')
         self.assertEquals(notes.count(), 6)
 
-        notes = notes.filter_by_tags('student_two_selection,image')
+        notes = notes.filter_by_tags(
+            'student_two_selection,image').order_by('id')
         self.assertEquals(notes.count(), 2)
-        self.assertEquals(notes[0].title, 'Nice Tie')
-        self.assertEquals(notes[1].title, 'Our esteemed leaders')
+        self.assertEquals(notes[0].title, 'Our esteemed leaders')
+        self.assertEquals(notes[1].title, 'Nice Tie')
 
     def test_filter_by_vocabulary(self):
         # OR'd within vocabulary, AND'd across vocabulary

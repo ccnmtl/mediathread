@@ -128,6 +128,9 @@ class VocabularyResource(ModelResource):
         return data
 
     def render_related(self, request, object_list):
+        if len(object_list) < 1:
+            return []
+
         ctx = {}
         term_resource = TermResource()
 

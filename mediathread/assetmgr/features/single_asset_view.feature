@@ -79,7 +79,8 @@ Feature: Single Asset View
         Then the item header is "MAAP Award Reception"
         And I see "Here are my notes"
         And I see "abc"
-        And I do not see "student one item note"
+        And I do not see "student one item note" in the item tab
+        Then I wait 1 second
         And I do not see "student_one_item"
                         
         Finished using Selenium

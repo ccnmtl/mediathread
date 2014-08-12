@@ -4,8 +4,6 @@ import os
 
 DEBUG = True
 
-COMPRESS_ROOT = "/Users/sdreher/workspace/mediathread/media/"
-
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 DATABASES = {
@@ -19,7 +17,9 @@ DATABASES = {
 }
 
 LETTUCE_SERVER_PORT = 8002
-BROWSER = 'Firefox'  # ["Chrome", "Firefox", "Headless"}
+#BROWSER = 'Firefox'
+BROWSER = 'Headless'
+#BROWSER = 'Chrome'
 
 LETTUCE_APPS = (
     'mediathread.main',

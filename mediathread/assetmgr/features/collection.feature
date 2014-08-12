@@ -27,7 +27,7 @@ Feature: Collection View
         Then I am at the Mediathread Collection page
                 
         Finished using Selenium
-        
+
     Scenario Outline: collection.feature 2. Collection - Viewing Items & Selections
         Using selenium
         
@@ -124,10 +124,13 @@ Feature: Collection View
         And the "MAAP Award Reception" item has 2 selections, 1 by me
         
         And I can filter by "student_one_selection" in the asset-workspace column
+        And the "MAAP Award Reception" item has 1 selections, 1 by me
+        
         And I can filter by "student_one_item" in the asset-workspace column
         
         # Student Two
         When I select "Student Two" as the owner
+        And I clear all tags
         Then the owner is "Student Two" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 2 selections, 1 by me

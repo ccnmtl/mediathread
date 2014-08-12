@@ -15,6 +15,8 @@ class ProjectResource(ModelResource):
 
     author = fields.ForeignKey(UserResource, 'author', full=True)
 
+    date_fmt = "%m/%d/%y %I:%M %p"
+
     def __init__(self, *args, **kwargs):
         # @todo: extras is a side-effect of the Mustache templating system
         # not supporting the ability to reference variables in the parent
@@ -48,7 +50,7 @@ class ProjectResource(ModelResource):
         bundle.data['is_faculty'] = self.is_viewer_faculty
 
         participants = bundle.obj.attribution_list()
-        bundle.data['authors'] = [{
+        bundle.data['participants'] = [{
             'name': p.get_full_name(),
             'username': p.username,
             'public_name': get_public_name(p, bundle.request),
@@ -98,18 +100,35 @@ class ProjectResource(ModelResource):
         data['responses'] = []
         for response in project.responses(request):
             if response.can_read(request):
-                bundle = self.build_bundle(obj=response, request=request)
-                dehydrated = self.full_dehydrate(bundle)
-                ctx = self._meta.serializer.to_simple(dehydrated, None)
-                data['responses'].append(ctx)
+                obj = {
+                    'url': response.get_absolute_url(),
+                    'title': response.title,
+                    'modified': response.modified.strftime(self.date_fmt),
+                    'attribution_list': []}
+
+                last = len(response.attribution_list()) - 1
+                for idx, author in enumerate(response.attribution_list()):
+                    obj['attribution_list'].append({
+                        'name': get_public_name(author, request),
+                        'last': idx == last})
+
+                data['responses'].append(obj)
         data['response_count'] = len(data['responses'])
 
         my_responses = []
         for response in project.responses_by(request, request.user):
-            bundle = self.build_bundle(obj=response, request=request)
-            dehydrated = self.full_dehydrate(bundle)
-            ctx = self._meta.serializer.to_simple(dehydrated, None)
-            my_responses.append(ctx)
+            obj = {'url': response.get_absolute_url(),
+                   'title': response.title,
+                   'modified': response.modified.strftime(self.date_fmt),
+                   'attribution_list': []}
+
+            last = len(response.attribution_list()) - 1
+            for idx, author in enumerate(response.attribution_list()):
+                obj['attribution_list'].append({
+                    'name': get_public_name(author, request),
+                    'last': idx == last})
+
+            my_responses.append(obj)
 
         if len(my_responses) == 1:
             data['my_response'] = my_responses[0]

@@ -496,6 +496,7 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
             # @todo - refactor this context out of the mix
             # ideally, the client would simply request the json
             # the mixin is expecting a queryset, so this becomes awkward here
+            self.record_owner = request.user
             assets = Asset.objects.filter(pk=asset_id)
             (assets, notes) = self.visible_assets_and_notes(request, assets)
             context['assets'] = {
@@ -531,6 +532,7 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                       AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
+        self.record_owner = request.user
         assets = Asset.objects.filter(pk=asset_id, course=request.course)
         if assets.count() == 0:
             return asset_switch_course(request, asset_id)
@@ -572,6 +574,8 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
     def get_context(self, request, assets, notes):
         # Allow the logged in user to add assets to his composition
         citable = request.GET.get('citable', '') == 'true'
+
+        # Include annotation metadata. (makes response much larger)
         include_annotations = request.GET.get('annotations', '') == 'true'
 
         # Initialize the context
@@ -592,15 +596,23 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         ctx['editable'] = self.viewing_own_records
         ctx['citable'] = citable
 
+        # render the assets
         ares = AssetResource(include_annotations=include_annotations,
                              extras={'editable': self.viewing_own_records,
                                      'citable': citable})
-        ctx['assets'] = ares.render_list(request, self.record_owner,
+        ctx['assets'] = ares.render_list(request,
+                                         self.record_viewer,
                                          assets, notes)
 
         return ctx
 
-    def add_metadata(self, request, notes):
+    def add_metadata(self, request, assets):
+        # metadata for all notes associated with these assets
+        # is displayed in the filtered list.
+        # Not sure this is exactly right...will discuss with team
+        notes = SherdNote.objects.get_related_notes(
+            assets, self.record_owner or None, self.visible_authors)
+
         tags = TagResource().render_related(request, notes)
         vocab = VocabularyResource().render_related(request, notes)
         return {'active_tags': tags, 'active_vocabulary': vocab}
@@ -632,7 +644,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         if offset == 0:
             # add relevant tags & metadata for all visible notes
             # needs to come before the pagination step
-            ctx.update(self.add_metadata(request, notes))
+            ctx.update(self.add_metadata(request, assets))
 
         # slice down the list to speed rendering
         (assets, notes) = self.apply_pagination(assets, notes, offset, limit)

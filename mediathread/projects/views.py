@@ -230,10 +230,9 @@ def project_view_readonly(request, project_id, version_number=None):
         # Requested project, either assignment or composition
         request.public = True
 
-        is_faculty = request.course.is_faculty(request.user)
         resource = ProjectResource(record_viewer=request.user,
-                                   is_viewer_faculty=is_faculty,
-                                   editable=project.can_edit(request))
+                                   is_viewer_faculty=False,
+                                   editable=False)
         project_context = resource.render_one(request, project, version_number)
         panel = {'panel_state': 'open',
                  'panel_state_label': "Version View",

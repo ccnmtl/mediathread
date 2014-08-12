@@ -133,8 +133,10 @@ class SherdNoteQuerySet(models.query.QuerySet):
 
         # filter by tag string, date, vocabulary
         self = self.filter_by_tags(tag_string)
-        self = self.filter_by_date(modified)
-        self = self.filter_by_vocabulary(vocabulary)
+        if self.count() > 0:
+            self = self.filter_by_date(modified)
+        if self.count() > 0:
+            self = self.filter_by_vocabulary(vocabulary)
         return self
 
 

@@ -9,24 +9,9 @@ import json
 import time
 
 
-class SourceResource(ModelResource):
-    class Meta:
-        queryset = Source.objects.none()
-        resource_name = 'source'
-        allowed_methods = ['get']
-        excludes = ['id', 'modified', 'size', 'media_type']
-
-    def dehydrate(self, bundle):
-        bundle.data['url'] = bundle.obj.url_processed(bundle.request,
-                                                      bundle.obj.asset)
-        return bundle
-
-
 class AssetResource(ModelResource):
 
     author = fields.ForeignKey(UserResource, 'author', full=True)
-    sources = fields.ToManyField(SourceResource, 'source_set',
-                                 blank=True, null=True, full=True, )
 
     class Meta:
         queryset = Asset.objects.none()
@@ -71,6 +56,16 @@ class AssetResource(ModelResource):
         bundle.data['my_annotation_count'] = 0
         bundle.data['modified'] = self.format_time(bundle.obj.modified)
 
+        sources = {}
+        for s in bundle.obj.source_set.all():
+            sources[s.label] = {'label': s.label,
+                                'url': s.url_processed(bundle.request,
+                                                       bundle.obj),
+                                'width': s.width,
+                                'height': s.height,
+                                'primary': s.primary}
+        bundle.data['sources'] = sources
+
         for key, value in self.extras.items():
             bundle.data[key] = value
 
@@ -98,6 +93,11 @@ class AssetResource(ModelResource):
 
                     if note.is_global_annotation():
                         the_json['global_annotation'] = note_ctx
+
+                        the_json['global_annotation_analysis'] = (
+                            len(note_ctx['vocabulary']) > 0 or
+                            len(note_ctx['metadata']['body']) > 0 or
+                            len(note_ctx['metadata']['tags']) > 0)
                     else:
                         the_json['annotations'].append(note_ctx)
 
@@ -106,7 +106,7 @@ class AssetResource(ModelResource):
         except Source.DoesNotExist:
             return None
 
-    def render_list(self, request, record_owner, assets, notes):
+    def render_list(self, request, me, assets, notes):
         note_resource = SherdNoteResource()
         ctx = {}
         for note in notes.all():
@@ -119,7 +119,7 @@ class AssetResource(ModelResource):
             is_global = note.is_global_annotation()
             if not is_global:
                 ctx[note.asset.id]['annotation_count'] += 1
-                if note.author == record_owner:
+                if note.author == me:
                     ctx[note.asset.id]['my_annotation_count'] += 1
 
             if note.modified > note.asset.modified:

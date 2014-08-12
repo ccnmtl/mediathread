@@ -11,7 +11,7 @@ class HomepageTest(TestCase):
 
     def assertProjectEquals(self, project, title, author, editable):
         self.assertEquals(project['title'], title)
-        self.assertEquals(project['authors'][0]['public_name'], author)
+        self.assertEquals(project['participants'][0]['public_name'], author)
         self.assertEquals(project['editable'], editable)
 
     def test_get_my_projectlist_as_student(self):

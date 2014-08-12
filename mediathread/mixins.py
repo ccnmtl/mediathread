@@ -68,10 +68,8 @@ class RestrictedMaterialsMixin(object):
         # Does the course allow viewing other user selections?
         # The viewer can always view their own records + faculty records
         # If the viewer is faculty, they can view all records
-        self.all_selections_are_visible = (
-            all_selections_are_visible(self.request.course) or
-            self.viewing_own_records or self.viewing_faculty_records or
-            self.is_viewer_faculty)
+        self.all_selections_are_visible = \
+            all_selections_are_visible(self.request.course)
 
         self.visible_authors = []
         if not self.all_selections_are_visible and not self.is_viewer_faculty:
@@ -96,7 +94,6 @@ class RestrictedMaterialsMixin(object):
         ids = visible_notes.values_list('asset__id', flat=True)
         visible_assets = assets.filter(id__in=ids).distinct()
         return (visible_assets, visible_notes)
-        return None
 
 
 class AjaxRequiredMixin(object):

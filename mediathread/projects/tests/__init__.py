@@ -4,3 +4,4 @@ from mediathread.projects.tests.test_model import *
 from mediathread.projects.tests.test_api import *
 from mediathread.projects.tests.test_views import *
 from mediathread.projects.tests.test_homepage import *
+from mediathread.projects.tests.test_templatetags import *

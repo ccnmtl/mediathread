@@ -1,14 +1,96 @@
 #pylint: disable-msg=R0904
+from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
-from mediathread.assetmgr.models import Asset
+from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.views import asset_workspace_courselookup
 from mediathread.djangosherd.models import SherdNote
 import json
 
 
 class AssetViewTest(TestCase):
     fixtures = ['unittest_sample_course.json']
+
+    def test_archive_add_or_remove_get(self):
+        self.assertTrue(
+            self.client.login(username='test_instructor', password='test'))
+
+        response = self.client.get('/asset/archive/')
+        self.assertEquals(response.status_code, 405)
+
+    def test_archive_add_or_remove_notloggedin(self):
+        response = self.client.post('/asset/archive/')
+        self.assertEquals(response.status_code, 302)
+
+    def test_archive_remove(self):
+        user = User.objects.get(username='test_instructor')
+        course = Course.objects.get(title='Sample Course')
+        archive = Asset.objects.create(title="Sample Archive",
+                                       course=course, author=user)
+        primary = Source.objects.create(asset=archive, label='archive',
+                                        primary=True,
+                                        url="http://ccnmtl.columbia.edu")
+        archive.source_set.add(primary)
+
+        self.assertIsNotNone(Asset.objects.get(title="Sample Archive"))
+
+        self.assertTrue(
+            self.client.login(username='test_instructor', password='test'))
+        response = self.client.post('/asset/archive/',
+                                    {'remove': True,
+                                     'title': 'Sample Archive'})
+        self.assertEquals(response.status_code, 302)
+
+        try:
+            Asset.objects.get(title="Sample Archive")
+            self.fail('Sample archive should have been deleted')
+        except Asset.DoesNotExist:
+            pass  # expected
+
+    def test_archive_add(self):
+        data = {
+            'thumb': '/site_media/img/thumbs/youtube.png',
+            'title': 'YouTube',
+            'url': 'http://www.youtube.com/',
+            'archive': 'http://www.youtube.com/'}
+
+        self.assertTrue(
+            self.client.login(username='test_instructor', password='test'))
+        self.client.post('/asset/archive/', data)
+
+        self.assertIsNotNone(Asset.objects.get(course__title='Sample Course',
+                                               title='YouTube'))
+
+    def test_asset_workspace_course_lookup(self):
+        self.assertIsNone(asset_workspace_courselookup())
+
+        asset = Asset.objects.get(title='MAAP Award Reception')
+        self.assertEquals(asset_workspace_courselookup(asset_id=asset.id),
+                          asset.course)
+
+    def test_most_recent(self):
+        self.assertTrue(
+            self.client.login(username='test_instructor', password='test'))
+
+        response = self.client.get('/asset/most_recent/', {}, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.redirect_chain,
+                          [('http://testserver/asset/3/', 302)])
+
+    def test_asset_delete(self):
+        self.assertTrue(
+            self.client.login(username='test_instructor', password='test'))
+
+        asset = Asset.objects.get(title='MAAP Award Reception')
+        user = asset.author
+        self.assertEquals(asset.sherdnote_set.filter(author=user).count(), 2)
+        response = self.client.get('/asset/delete/%s/' % asset.id,
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        self.assertEquals(asset.sherdnote_set.filter(author=user).count(), 0)
 
     def test_asset_detail(self):
         self.assertTrue(
@@ -25,7 +107,7 @@ class AssetViewTest(TestCase):
         the_json = json.loads(response.content)
         self.assertEquals(the_json["asset_id"], "1")
         self.assertIsNone(the_json["annotation_id"])
-        self.assertEquals(the_json["space_owner"], "test_instructor_two")
+        self.assertTrue("space_owner" not in the_json)
         self.assertEquals(len(the_json["panels"]), 1)
 
         panel = the_json["panels"][0]

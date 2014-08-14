@@ -16,6 +16,22 @@ class ProjectTest(TestCase):
     fixtures = ['unittest_sample_course.json',
                 'unittest_sample_projects.json']
 
+    def test_description(self):
+        project = Project.objects.get(title='Private Composition')
+        self.assertEquals(project.description(), 'Composition')
+        self.assertEquals(project.visibility_short(), 'Private')
+
+        project = Project.objects.get(title="Public To Class Composition")
+        self.assertEquals(project.visibility_short(), 'Published to Class')
+
+        project = Project.objects.get(title="Instructor Shared")
+        self.assertEquals(project.visibility_short(),
+                          'Submitted to Instructor')
+
+        assignment = Project.objects.get(title='Sample Course Assignment')
+        self.assertEquals(assignment.description(), 'Assignment')
+        self.assertEquals(assignment.visibility_short(), 'Assignment')
+
     def test_verify_testdata(self):
         course = Course.objects.get(id=1)
         self.assertEquals(course.title, "Sample Course")

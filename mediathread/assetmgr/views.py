@@ -483,9 +483,7 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                 ctx = RequestContext(request)
                 return render_to_response('500.html', {}, context_instance=ctx)
 
-        data = {'space_owner': request.user.username,
-                'asset_id': asset_id,
-                'annotation_id': annot_id}
+        data = {'asset_id': asset_id, 'annotation_id': annot_id}
 
         if not request.is_ajax():
             return render_to_response('assetmgr/asset_workspace.html',

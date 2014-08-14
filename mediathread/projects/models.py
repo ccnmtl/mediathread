@@ -490,20 +490,6 @@ class Project(models.Model):
 
         return col
 
-    def content_metrics(self):
-        "Do some rough heuristics on how much each author contributed"
-        last_content = ''
-        author_contributions = {}
-        for version in self.versions:
-            change = len(version.body) - len(last_content)
-            author_contributions.setdefault(version.author, [0, 0])
-            if change > 0:  # track adds
-                author_contributions[version.author][0] += change
-            elif change < 0:  # track deletes
-                author_contributions[version.author][1] -= change
-            last_content = version.body
-        return author_contributions
-
 
 @receiver(post_save, sender=ThreadedComment)
 def on_threaded_comment_save(sender, **kwargs):

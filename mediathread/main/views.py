@@ -277,7 +277,6 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
         # maps old ids to new objects
         object_map = {'assets': {},
                       'notes': {},
-                      'note_count': 0,
                       'projects': {}}
 
         owner = request.user
@@ -291,14 +290,14 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
                 'message': '%s is not a course member or faculty member'})
             return HttpResponse(json_stream, mimetype='application/json')
 
-        if 'asset_ids' in request.POST:
-            asset_ids = json.loads(request.POST.get('asset_ids'))
+        if 'asset_ids[]' in request.POST:
+            asset_ids = request.POST.getlist('asset_ids[]')
             assets = Asset.objects.filter(id__in=asset_ids)
             object_map = Asset.objects.migrate(
                 assets, request.course, owner, faculty, object_map)
 
-        if 'project_ids' in request.POST:
-            project_ids = json.loads(request.POST.get('project_ids'))
+        if 'project_ids[]' in request.POST:
+            project_ids = request.POST.getlist('project_ids[]')
             projects = Project.objects.filter(id__in=project_ids)
             object_map = Project.objects.migrate(
                 projects, request.course, owner, object_map)
@@ -307,7 +306,8 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             'success': True,
             'asset_count': len(object_map['assets']),
             'project_count': len(object_map['projects']),
-            'note_count': object_map['note_count']})
+            'note_count': len(object_map['notes'])})
+
         return HttpResponse(json_stream, mimetype='application/json')
 
 

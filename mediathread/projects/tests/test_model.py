@@ -10,7 +10,6 @@ from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-import json
 
 
 class ProjectTest(TestCase):
@@ -50,9 +49,6 @@ class ProjectTest(TestCase):
         self.assertEquals(new_project.course, alt_course)
         self.assertEquals(new_project.visibility_short(), "Assignment")
 
-    project_set = [{"id": 5,
-                    "title": "Sample Course Assignment"}]
-
     def test_migrate_set(self):
         self.assertTrue(True)
 
@@ -63,8 +59,7 @@ class ProjectTest(TestCase):
 
         user = User.objects.get(username='test_instructor_two')
 
-        project_json = json.dumps(self.project_set)
-        projects = json.loads(project_json)
+        projects = Project.objects.filter(title="Sample Course Assignment")
 
         object_map = {'assets': {}, 'notes': {}, 'projects': {}}
         object_map = Project.objects.migrate(projects, course,

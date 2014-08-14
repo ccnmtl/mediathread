@@ -1,3 +1,4 @@
+# flake8: noqa
 # Django settings for mediathread project.
 
 # if you add a 'deploy_specific' directory

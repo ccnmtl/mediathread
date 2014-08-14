@@ -31,6 +31,8 @@ LETTUCE_APPS = (
 LETTUCE_DJANGO_APP = ['lettuce.django']
 INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
 
+COMPRESS_ROOT = "/Users/sdreher/workspace/mediathread/media/"
+
 
 # Full run
 # time(./manage.py harvest --settings=mediathread.settings_test \

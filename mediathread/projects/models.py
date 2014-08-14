@@ -55,8 +55,7 @@ class ProjectManager(models.Manager):
         note_model = models.get_model('djangosherd', 'sherdnote')
         asset_model = models.get_model('assetmgr', 'asset')
 
-        for project_json in project_set:
-            old_project = Project.objects.get(id=project_json['id'])
+        for old_project in project_set:
             project_body = old_project.body
             citations = note_model.objects.references_in_string(project_body,
                                                                 user)

@@ -59,7 +59,7 @@ INSTALLATION
     ./bootstrap.py
 
 The rest of the instructions work like standard Django.  See:
- http://docs.djangoproject.com/en/1.1/ for more details.
+ http://docs.djangoproject.com/ for more details.
 
 4. Sync the database
 

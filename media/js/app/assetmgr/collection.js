@@ -100,7 +100,7 @@ CollectionList.prototype.constructUrl = function(config, updating) {
     }
     
     if (updating) {
-        url += "offset=" + self.limits.offset + "&limit=" + self.limits.limit;
+        url += "&offset=" + self.limits.offset + "&limit=" + self.limits.limit;
     }
     return url;
 };
@@ -561,17 +561,19 @@ CollectionList.prototype.updateAssets = function (the_records) {
 };
     
 CollectionList.prototype.appendAssets = function (the_records) {
-    var self = this;    
-    var html = jQuery(Mustache.render_partial("assets", the_records));
-    var container = jQuery(self.el).find("div.asset-table");
-    jQuery(container).append(html);
-    
-    if (self.create_annotation_thumbs) {
-        self.createThumbs(the_records.assets);
-    } else if (self.create_asset_thumbs) {
-        self.createAssetThumbs(the_records.assets);
+    var self = this;
+    if (the_records.assets.length > 0) {
+        var html = jQuery(Mustache.render_partial("assets", the_records));
+        var container = jQuery(self.el).find("div.asset-table");
+        jQuery(container).append(html);
+        
+        if (self.create_annotation_thumbs) {
+            self.createThumbs(the_records.assets);
+        } else if (self.create_asset_thumbs) {
+            self.createAssetThumbs(the_records.assets);
+        }
+        
+        jQuery(window).trigger("assets.refresh", [html]);
     }
-    
-    jQuery(window).trigger("assets.refresh", [html]);
 };
     

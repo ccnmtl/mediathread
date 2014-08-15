@@ -4,7 +4,7 @@ from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView, View
 from djangohelpers.lib import rendered_with, allow_http
@@ -17,7 +17,7 @@ from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, faculty_only, \
-    LoggedInFacultyMixin, AjaxRequiredMixin, JSONResponseMixin
+    AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
@@ -231,12 +231,14 @@ def class_settings(request):
 
 
 @allow_http("POST")
-@rendered_with('dashboard/class_settings.html')
 @ajax_required
 def set_user_setting(request, user_name):
     user = get_object_or_404(User, username=user_name)
-    name = request.POST.get("name")
-    value = request.POST.get("value")
+    name = request.POST.get("name", None)
+    value = request.POST.get("value", None)
+
+    if name is None:
+        return Http404("Key value not specified")
 
     UserSetting.set_setting(user, name, value)
 

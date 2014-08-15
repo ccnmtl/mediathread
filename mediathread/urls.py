@@ -127,7 +127,7 @@ urlpatterns = patterns(
         'mediathread.assetmgr.views.asset_create',
         name="asset-save"),
 
-    (r'^/setting/(?P<user_name>\w[^/]*)$',
+    (r'^setting/(?P<user_name>\w[^/]*)/$',
      'mediathread.main.views.set_user_setting'),
 
     (r'^stats/', TemplateView.as_view(template_name="stats.html")),

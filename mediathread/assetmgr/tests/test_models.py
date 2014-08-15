@@ -9,6 +9,17 @@ from mediathread.djangosherd.models import SherdNote
 class AssetTest(TestCase):
     fixtures = ['unittest_sample_course.json']
 
+    def test_unicode(self):
+        asset = Asset.objects.get(id=1)
+        self.assertEquals(asset.__unicode__(),
+                          'Mediathread: Introduction <1> (Sample Course)')
+
+    def test_metadata(self):
+        asset = Asset.objects.get(id=1)
+        ctx = asset.metadata()
+        self.assertEquals(ctx['author'], [u'CCNMTL'])
+        self.assertEquals(ctx['category'], [u'Education'])
+
     def test_video(self):
         # youtube -- asset #1
         asset = Asset.objects.get(id=1)
@@ -243,6 +254,13 @@ class AssetTest(TestCase):
                                         primary=True,
                                         url="http://ccnmtl.columbia.edu")
         archive.source_set.add(primary)
+
+        # tweak project portfolio to have a non-primary archive label
+        asset = Asset.objects.get(title='Project Portfolio')
+        metadata = Source.objects.create(asset=asset, label='archive',
+                                         primary=False,
+                                         url="http://ccnmtl.columbia.edu")
+        asset.source_set.add(metadata)
 
         assets = Asset.objects.by_course_and_user(course, user)
         self.assertEquals(assets.count(), 2)

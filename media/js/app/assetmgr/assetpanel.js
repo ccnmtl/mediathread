@@ -93,6 +93,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
                         itemSelector : '.gallery-item',
                         columnWidth: 25
                     });
+                    jQuery(container).masonry('bindResize');
                 } else {
                     jQuery('div.asset-table').css('height', '500px');
                 }
@@ -260,6 +261,10 @@ AssetPanelHandler.prototype.resize = function () {
             jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 36;
         jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
         jQuery("div.accordion").accordion("resize");
+        
+        var container = jQuery(self.el).find('div.asset-table')[0];
+        jQuery(container).masonry();
+        
     }
 };
 

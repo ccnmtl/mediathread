@@ -3,8 +3,10 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django.test.client import RequestFactory
 from mediathread.assetmgr.models import Asset, Source
-from mediathread.assetmgr.views import asset_workspace_courselookup
+from mediathread.assetmgr.views import asset_workspace_courselookup, \
+    asset_create
 from mediathread.djangosherd.models import SherdNote
 import json
 
@@ -62,6 +64,34 @@ class AssetViewTest(TestCase):
         self.assertIsNotNone(Asset.objects.get(course__title='Sample Course',
                                                title='YouTube'))
 
+    def test_asset_create_noasset(self):
+        data = {'title': 'Bad Asset',
+                'foobar': 'http://www.youtube.com/abcdefghi'}
+
+        request = RequestFactory().post('/save/', data)
+        request.user = User.objects.get(username='test_instructor')
+        request.course = Course.objects.get(title='Sample Course')
+
+        try:
+            asset_create(request)
+            self.fail("An assertion error should have been raised")
+        except AssertionError:
+            pass  # expected
+
+    def test_asset_create_via_bookmarklet(self):
+        data = {'title': 'YouTube Asset',
+                'youtube': 'http://www.youtube.com/abcdefghi',
+                'asset-source': 'bookmarklet'}
+
+        request = RequestFactory().post('/save/', data)
+        request.user = User.objects.get(username='test_instructor')
+        request.course = Course.objects.get(title='Sample Course')
+
+        response = asset_create(request)
+        self.assertEquals(response.status_code, 200)
+
+        Asset.objects.get(title='YouTube Asset')
+
     def test_asset_workspace_course_lookup(self):
         self.assertIsNone(asset_workspace_courselookup())
 
@@ -99,7 +129,6 @@ class AssetViewTest(TestCase):
         response = self.client.get('/?set_course=Sample_Course_Students')
         self.assertEquals(response.status_code, 200)
 
-        # Sample Course Asset
         response = self.client.get('/asset/1/',
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -135,7 +164,8 @@ class AssetViewTest(TestCase):
         # Alternate Course Asset
         response = self.client.get('/asset/4/')
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed("asset_not_found.html")
+
+        self.assertTemplateUsed(response, "assetmgr/asset_not_found.html")
         self.assertContains(response, "Oops!")
         self.assertContains(response, "Sample Course")
         self.assertContains(response, "Alternate Course")

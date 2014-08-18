@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView, View
+from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
@@ -15,11 +16,13 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty
+from mediathread.main.forms import RequestCourseForm
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, faculty_only, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
+from restclient import POST
 from structuredcollaboration.models import Collaboration
 import json
 import operator
@@ -360,3 +363,26 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         }
 
         return self.render_to_json_response(ctx)
+
+
+class RequestCourseView(FormView):
+    template_name = 'main/course_request.html'
+    form_class = RequestCourseForm
+    success_url = "/course/request/success/"
+
+    def form_valid(self, form):
+        form_data = form.cleaned_data
+        form_data.pop('captcha')
+
+        form_data['title'] = 'Mediathread Course Request'
+        form_data['pid'] = "514"
+        form_data['mid'] = "3596"
+        form_data['type'] = 'action item'
+        form_data['owner'] = 'ellenm'
+        form_data['assigned_to'] = 'ellenm'
+        form_data['assigned_to'] = 'ellenm'
+
+        POST("http://pmt.ccnmtl.columbia.edu/external_add_item.pl",
+             params=form_data, async=True)
+
+        return super(RequestCourseView, self).form_valid(form)

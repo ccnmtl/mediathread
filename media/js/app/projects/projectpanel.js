@@ -719,7 +719,7 @@ ProjectPanelHandler.prototype.setDirty = function (isDirty) {
                     var frm = jQuery(self.el).find('form[name=editproject]')[0];
                     self.saveProject(frm, true);
                     self.dirtyTimer = undefined;
-                }, 30000);
+                }, 10000);
             }
         } else {
             jQuery(self.el).find('.project-savebutton').attr("value", "Saved");

@@ -134,8 +134,6 @@ class AssetViewTest(TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json["asset_id"], "1")
-        self.assertIsNone(the_json["annotation_id"])
         self.assertTrue("space_owner" not in the_json)
         self.assertEquals(len(the_json["panels"]), 1)
 
@@ -151,8 +149,6 @@ class AssetViewTest(TestCase):
 
         context = panel["context"]
         self.assertEquals(context["type"], "asset")
-        self.assertTrue(context["user_settings"]["help_item_detail_view"])
-        self.assertEquals(context["assets"]["1"]["annotation_count"], 0)
 
     def test_asset_detail_alternate(self):
         self.assertTrue(

@@ -1,14 +1,14 @@
 (function (jQuery) {
     
     Term = Backbone.Model.extend({
-        urlRoot: '/_main/api/v1/term/',
+        urlRoot: '/api/term/',
         toTemplate: function() {
             return _(this.attributes).clone();
         }        
     });    
 
     var TermList = Backbone.Collection.extend({
-        urlRoot: '/_main/api/v1/term/',
+        urlRoot: '/api/term/',
         model: Term,
         comparator: function(obj) {
             return obj.get("display_name");
@@ -27,7 +27,7 @@
     });
     
     Vocabulary = Backbone.Model.extend({
-        urlRoot: '/_main/api/v1/vocabulary/',
+        urlRoot: '/api/vocabulary/',
         parse: function(response) {
             if (response) {
                 response.term_set = new TermList(response.term_set);
@@ -42,7 +42,7 @@
     });
     
     var VocabularyList = Backbone.Collection.extend({
-        urlRoot: '/_main/api/v1/vocabulary/',
+        urlRoot: '/api/vocabulary/',
         model: Vocabulary,
         comparator: function(obj) {
             return obj.get("display_name");

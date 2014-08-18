@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}Request Course{% endblock %}
+
+{% block js %}
+    <script src="/media/js/app/captcha.js"></script>
+{% endblock %}
+
+{% block css %}
+<style>
+    .request-course-form {
+        width: 800px;
+    }
+    
+    .request-course-form h2 {
+        padding: 10px 0;
+        margin: 0 10px 10px 10px;
+        border-bottom: solid 1px #EFEFEF;
+        width: 75%;
+        min-width: 900px;
+    }
+    
+    .request-course-form p {
+        margin: 20px;
+    }
+    
+    .request-course-form form {
+        margin: 20px;
+    }
+    
+    .request-course-form label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+    
+    .request-course-form input {
+        margin: 0 15px 25px 0;
+        height: 20px;
+        padding-left: 5px;
+    }
+    
+    .request-course-form input[name='captcha_1'] {
+        margin-bottom: 12px;
+    }    
+    
+    .request-course-form input[name='name'] {
+        width: 70%;
+        margin-bottom: 1px;
+    }
+    
+    .request-course-form input[name='instructor'],
+    .request-course-form input[name='section_leader'] {
+        width: 70%;
+    }
+    
+    .request-course-form input[name='uni'],
+    .request-course-form input[name='course_id'] {
+        width: 25%;
+    }
+    
+    .request-course-form input[name='year'] {
+        width: 20%:
+    }
+
+    .request-course-form input[name='email'],
+    .request-course-form input[name='course'],
+    .request-course-form select[name='term'] {
+        width: 40%;
+        margin-right: 15px;
+    }
+    
+    .request-course-form input[type="radio"] {
+        display: inline;
+        margin: 0 2px 0 0;
+    }
+    
+    .request-course-form label[for='assignments_required'] {
+        display: inline;
+        margin-right: 15px;
+    }
+    
+    .request-course-form textarea {
+        width: 97%;
+        height: 200px;
+        margin-top: 5px;
+    }
+    
+    .request-course-form input#submit_request {
+        float: right;
+        width: 125px;
+        height: 30px;
+        margin: 10px -5px 0 0;
+        padding: 5px;
+    }
+    
+    .form-control {
+        display: block;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;        
+    }
+    
+    .btn:hover,
+    .btn:focus,
+    .btn:active,
+    .btn.active,
+    .btn.disabled,
+    .btn[disabled] {
+      color: #333333;
+      background-color: #e6e6e6;
+      *background-color: #d9d9d9;
+    }
+    
+    div.help-inline {
+        display: block;
+        padding-bottom: 10px;
+        margin-top: -5px;
+    }
+    
+    button.js-captcha-refresh {
+        padding: 0;
+        color: #0088cc;
+        border: 0;
+        background: none;
+        margin: -4px 3px 0 0;
+        line-height: normal;
+        text-decoration: none;
+        box-shadow: none;
+    }    
+</style>
+{% endblock %}
+
+{% block uncompressable_js %}
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {        
+        jQuery('.datepicker').datepicker();
+        
+        jQuery("form").submit(function() {
+            var valid = true;
+
+            var children = jQuery(this).find("input.required,textarea.required,select.required");
+            jQuery.each(children, function() {
+                if (valid) {
+                    if (this.tagName === 'INPUT' && this.type === 'text' ||
+                        this.tagName === 'TEXTAREA') {
+                        valid = jQuery(this).val().length > 0;
+                    }
+
+                    if (this.tagName === 'SELECT') {
+                        var value=jQuery(this).val()
+                        valid = value !== undefined && value.length > 0 && jQuery(this).val() !== '-----';
+                    }
+
+                    if (this.type === 'checkbox' || this.type === 'radio') {
+                        // one in the group needs to be checked
+                        var selector = 'input[name=' + jQuery(this).attr("name") + ']';
+                        valid = jQuery(selector).is(":checked");
+                    }
+                }
+            });
+
+            if (!valid) {
+                showMessage("Please complete all form fields before continuing.", undefined, "Error");
+            } else { 
+                var description = "Requester: " + document.forms.feedback.name.value + " " + document.forms.feedback.email.value + " (" + 
+                        document.forms.feedback.uni.value + ")";
+                
+                description += "\n\nCourse: " + document.forms.feedback.course.value;
+                description += "\n\nCourse Id: " + document.forms.feedback.course_id.value;
+                description += "\n\nTerm: " + document.forms.feedback.term.value;
+                description += "\n\nYear: " + document.forms.feedback.year.value;
+                
+                description += "\n\nInstructor: " + document.forms.feedback.instructor.value;
+                description += "\n\nSection Leader: " + document.forms.feedback.section_leader.value;
+                
+                description += "\n\nDate Range: " + document.forms.feedback.start.value + " - " + 
+                    document.forms.feedback.end.value;
+                description += "\n\nStudents: " + document.forms.feedback.students.value;
+                description += "\n\nAssignments Required? " + document.forms.feedback.assignments_required.value;
+                
+                description += "\n\nCourse Description: " + document.forms.feedback.course_description.value + "\n\n";
+                document.forms.feedback.description.value = description;
+            }
+
+            return valid;
+        });       
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+    <div class="request-course-form">
+        <h2 class="title">Request a Columbia University Course</h2>
+        
+        <p>
+            Please provide some basic information on your course and how Mediathread will be integrated into the curriculum.
+        </p>
+        <p>
+            If you are not part of Columbia University, please contact {{settings.PUBLIC_CONTACT_EMAIL}} for 
+            information on how to setup a Mediathread instance at your institution.
+        </p>
+   
+
+        <form action="/course/request/" method="post" name="feedback">
+            <div>
+                <label for="email">Contact Information</label>
+                <input class="required form-control" type="text" name="name" placeholder="Contact Name" /><br />
+                <input class="required left form-control" type="text" id="email" name="email" placeholder="E-mail" />
+                <input  class="required left form-control" type="text" name="uni" placeholder="Columbia UNI"/>
+            </div>
+        
+            <div class="visualclear"></div>
+            <div>
+                <label for="course">Course Name/Number</label>
+                <input class="required left form-control" type="text" id="course" name="course" placeholder="Course Name"/>
+                <input class="required left form-control" type="text" id="course_id" name="course_id" placeholder="Course Number"/>
+            </div>
+            
+            <div class="visualclear"></div>
+            <div>
+                <label for="term">Term/Year</label>
+                <select class="required left form-control" name="term">
+                    <option value="Fall">Fall</option>
+                    <option value="Spring">Spring</option>
+                    <option value="Summer">Summer</option>
+                </select>
+                <input class="required left form-control" type="text" name="year" placeholder="Year" />
+            </div>
+
+            <div class="visualclear"></div>
+            <div>
+                <label for="instructor">Lead Instructor</label>
+                <input class="required form-control" type="text" name="instructor" />
+            </div>
+            
+            <div>
+                <label>Section Leader</label>
+                <input class="form-control" type="text" name="section_leader" />
+            </div>
+            
+            <div>
+                <label>Anticipated date range of Mediathread use in this course?</label>
+                <input class="required left form-control datepicker" type="text" name="start" />
+                <input class="required left form-control datepicker" type="text" name="end" />
+            </div>
+
+            <div class="visualclear"></div>
+            <div>
+                <label>Anticipated number of students working in Mediathread in this course?</label>
+                <input class="required form-control" type="text" name="students" />
+            </div>
+            
+            <div>
+                <label>Will Mediathread assignments be required?</label>
+                <input class="required form-control" type="radio" name="assignments_required" value="Yes" />
+                <label for="assignments_required">Yes</label>
+                <input class="required form-control" type="radio" name="assignments_required" value="No" />
+                <label for="assignments_required">No</label>
+            </div>            
+
+            <div class="visualclear"></div>
+            <br /><br />
+            <div><label for="course_description">Please describe the rationale for Mediathread use, i.e. the instructor's learning goal</label></div>
+            <div><textarea rows="4" cols="35" class="required form-control" name="course_description"></textarea></div>
+            
+            <br /><br />
+            <div class="fieldWrapper control-group {% if form.captcha.errors %}error{% endif %}">
+                <label for="id_captcha_0">
+                    <div><b>Please verify you are a person:</b></div>
+                </label>
+                <div class="controls">
+                    {{form.captcha}} {% if form.captcha.errors %} <span class="help-inline">{{form.captcha.errors}}</span>{% endif %}
+                </div>
+            </div>
+            
+            <div class="help-inline captcha">
+                Type the characters you see in the picture.<br /><br />
+                <button class="btn btn-default js-captcha-refresh">Refresh the image</button> if you can't read the picture.<br />
+            </div>            
+            
+            <input class="btn" type="submit" id="submit_request" name="add item" value="Request Course"/>
+            
+            <div class="visualclear"></div>
+            
+            <input type="hidden" name="description" value="" />
+        </form>
+    </div>
+{% endblock %}

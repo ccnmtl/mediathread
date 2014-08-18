@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
     TagCollectionView
-from mediathread.main.views import MigrateCourseView, MigrateMaterialsView
+from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
+    RequestCourseView
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
@@ -70,12 +71,15 @@ urlpatterns = patterns(
         'django.views.static.serve', {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
+    url(r'^captcha/', include('captcha.urls')),
+
     (r'^comments/', include('django.contrib.comments.urls')),
 
     (r'^contact/', login_required(
         TemplateView.as_view(template_name="main/contact.html"))),
-    (r'^course/request/',
-        TemplateView.as_view(template_name="main/request.html")),
+    (r'^course/request/success/$',
+     TemplateView.as_view(template_name="main/course_request_success.html")),
+    (r'^course/request/', RequestCourseView.as_view()),
 
     # Courseaffils
     url(r'^accounts/logged_in.js$', 'courseaffils.views.is_logged_in',

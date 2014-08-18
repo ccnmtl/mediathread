@@ -10,15 +10,19 @@ class AssetTest(TestCase):
     fixtures = ['unittest_sample_course.json']
 
     def test_unicode(self):
-        asset = Asset.objects.get(id=1)
+        asset = Asset.objects.get(title="Mediathread: Introduction")
         self.assertEquals(asset.__unicode__(),
                           'Mediathread: Introduction <1> (Sample Course)')
 
     def test_metadata(self):
-        asset = Asset.objects.get(id=1)
+        asset = Asset.objects.get(title="Mediathread: Introduction")
         ctx = asset.metadata()
         self.assertEquals(ctx['author'], [u'CCNMTL'])
         self.assertEquals(ctx['category'], [u'Education'])
+
+        asset = Asset.objects.get(title="MAAP Award Reception")
+        ctx = asset.metadata()
+        self.assertEquals(len(ctx.keys()), 0)
 
     def test_video(self):
         # youtube -- asset #1

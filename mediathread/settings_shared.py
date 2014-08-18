@@ -32,6 +32,8 @@ DATABASES = {
 }
 
 if 'test' in sys.argv or 'jenkins' in sys.argv:
+    CAPTCHA_TEST_MODE = True
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -151,6 +153,7 @@ INSTALLED_APPS = [
     'mediathread.taxonomy',
     'smoketest',
     'debug_toolbar',
+    'captcha',
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
@@ -266,6 +269,8 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
 }
+
+CAPTCHA_FONT_SIZE = 34
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

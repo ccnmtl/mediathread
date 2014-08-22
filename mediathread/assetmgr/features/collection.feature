@@ -8,7 +8,8 @@ Feature: Collection View
         Then I am at the Collection page
         Given the collection workspace is loaded
         
-        Then the owner is "Me" in the Collection column
+        Then the owner is "All Class Members" in the Collection column
+        When I select "Me" as the owner
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
@@ -169,7 +170,9 @@ Feature: Collection View
         Then I am at the Collection page
         Given the collection workspace is loaded
         
-        Then the owner is "Me" in the asset-workspace column
+        Then the owner is "All Class Members" in the asset-workspace column
+        When I select "Me" as the owner
+
         Then the Collection panel has a "MAAP Award Reception" item
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item

@@ -224,6 +224,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                        '/taxonomy/',
                        '/api/',
                        '/setting/',
+                       '/upgrade/',
                        re.compile(r'^/$'),
                        )
 

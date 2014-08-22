@@ -44,7 +44,7 @@ def django_settings(request):
 
     context = {'settings': dict([(k, getattr(settings, k, None))
                                  for k in whitelist]),
-               'EXPERIMENTAL': 'experimental' in request.COOKIES, }
+               'EXPERIMENTAL': 'experimental' in request.COOKIES}
 
     if request.course:
         context['is_course_faculty'] = request.course.is_faculty(request.user)

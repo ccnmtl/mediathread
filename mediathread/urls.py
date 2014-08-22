@@ -139,6 +139,9 @@ urlpatterns = patterns(
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
+    url(r'^upgrade/', TemplateView.as_view(
+        template_name="assetmgr/upgrade_bookmarklet.html")),
+
     ### Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),
 )

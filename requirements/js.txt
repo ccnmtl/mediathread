@@ -1,1 +1,1 @@
-requirements/src/sherdjs-0.3.4.tar.gz
+requirements/src/sherdjs-0.3.5.tar.gz

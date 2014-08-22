@@ -226,14 +226,14 @@
 
 {% block content %}
     <div class="request-course-form">
-        <h2 class="title">Request a Columbia University Course</h2>
+        <h2 class="title">Request a Mediathread Course</h2>
         
         <p>
             Please provide some basic information on your course and how Mediathread will be integrated into the curriculum.
         </p>
         <p>
             If you are not part of Columbia University, please contact {{settings.PUBLIC_CONTACT_EMAIL}} for 
-            information on how to setup a Mediathread instance at your institution.
+            information on how to join a guest sandbox or get started with Mediathread at your institution.
         </p>
    
 
@@ -270,19 +270,19 @@
             </div>
             
             <div>
-                <label>Section Leader</label>
+                <label>Section Leader (if any)</label>
                 <input class="form-control" type="text" name="section_leader" />
             </div>
             
             <div>
-                <label>Anticipated date range of Mediathread use in this course?</label>
-                <input class="required left form-control datepicker" type="text" name="start" />
-                <input class="required left form-control datepicker" type="text" name="end" />
+                <label>Anticipated date range of Mediathread use in this course</label>
+                <input class="required left form-control datepicker" type="text" name="start" placeholder="Start Date"/>
+                <input class="required left form-control datepicker" type="text" name="end" placeholder="End Date" />
             </div>
 
             <div class="visualclear"></div>
             <div>
-                <label>Anticipated number of students working in Mediathread in this course?</label>
+                <label>Anticipated number of students working in Mediathread in this course</label>
                 <input class="required form-control" type="text" name="students" />
             </div>
             
@@ -296,7 +296,7 @@
 
             <div class="visualclear"></div>
             <br /><br />
-            <div><label for="course_description">Please describe the rationale for Mediathread use, i.e. the instructor's learning goal</label></div>
+            <div><label for="course_description">Please describe rationale for Mediathread use, i.e. instructor's learning goals, desired student activities, etc.</label></div>
             <div><textarea rows="4" cols="35" class="required form-control" name="course_description"></textarea></div>
             
             <br /><br />

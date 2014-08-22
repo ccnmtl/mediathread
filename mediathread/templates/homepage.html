@@ -263,52 +263,8 @@
                     <div class="arrowContent" id="import_collection" style="display: none">
                         <p>
                             Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
-                           
-                                    <div id="firefox" class="browser-instruction"> 
-                                        <strong>Install Bookmarklet in Firefox</strong>
-                                        <ol>
-                                          <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
-                                          <li>Drag the link below onto your browser bookmarks toolbar.</li>
-                                        </ol>
-                                    </div>
-                                    <div id="ie" class="browser-instruction">
-                                        <strong>Install Bookmarklet in Internet Explorer</strong>
-                                        <ol>
-                                          <li>Right-click on the blue bookmarklet button below.</li>  
-                                          <li>and choose <b>Add to Favorites</b></li>
-                                        </ol>
-                                    </div>
-                                    <div id="safari" class="browser-instruction"> 
-                                        <strong>Install Bookmarklet in Safari</strong>
-                                        <ol>
-                                         <li>In the <b>View</b> menu, show the "Bookmarks Bar".</li><br />
-                                          <li>Drag the link below onto your browser bookmarks toolbar</li>
-                                        </ol>
-                                    </div>
-                                    <div id="chrome" class="browser-instruction"> 
-                                        <strong>Install Bookmarklet in Chrome</strong>
-                                        <ol>
-                                          <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
-                                          <li>Drag the link below onto your browser bookmarks toolbar:  <br />Collect w/Mediathread</li>
-                                        </ol>
-                                    </div>
-                                    {% include "assetmgr/bookmarklet.html" %} 
-                                    <script type="text/javascript">
-                                        var u = navigator.userAgent;
-                                        if (/Chrome/.test(u)) {
-                                            jQuery('.browser-instruction').hide();
-                                            jQuery('#chrome').show();
-                                        } else if (/Safari/.test(u)) {
-                                            jQuery('.browser-instruction').hide();
-                                            jQuery('#safari').show();
-                                        } else if (/MSIE/.test(u)) {
-                                            jQuery('.browser-instruction').hide();
-                                            jQuery('#ie').show();
-                                        } else if (/Gecko/.test(u)) {
-                                            jQuery('.browser-instruction').hide();
-                                            jQuery('#firefox').show();
-                                        } 
-                                    </script>
+                            
+                            {% include "assetmgr/install_bookmarklet.html" %}
                         </p>
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->

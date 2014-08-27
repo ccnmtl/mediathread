@@ -19,8 +19,8 @@
         <link rel="shortcut icon" href='{% static "img/mediathread_favicon.ico" type="image/x-icon" %}'/>
         
         {% compress css %}                        
-            <link rel="stylesheet" href='{% static "css/print.css" media="print" %}' />
-            <link rel="stylesheet" href='{% static "css/mediathread.css" media="screen" %}' />
+            <link rel="stylesheet" href='{% static "css/print.css" %}' media="print"' />
+            <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
 
             {% block css %}{% endblock %}
         {% endcompress %}
@@ -40,10 +40,10 @@
                 <div id="standardnav_container">   
                 <div id="mediathread_logo">
                     <a href="/">
-                        <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45"/>
+                        <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
                     </a>
                 </div>
-                {% block standardnav %}            
+                {% block standardnav %}
                    <ul id="standardnav">
                         {% if request.user.is_authenticated %}   
                             {% ifequal role_in_course "non-member" %}
@@ -114,8 +114,8 @@
                             </li>
                             
                             <li>
-			      {% if request.user.is_authenticated and course %}
-			          <div unselectable="on"><a href="/contact/">Contact Us</a></div>
+            			      {% if request.user.is_authenticated and course %}
+            			          <div unselectable="on"><a href="/contact/">Contact Us</a></div>
                               {% else %}{% if settings.PUBLIC_CONTACT_EMAIL %}
                                   <div unselectable="on"><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact Us</a></div>
                               {% endif %}{% endif %}
@@ -210,26 +210,26 @@
     </script>
     
     {% compress js %}
-        <script type="text/javascript" src='{% static "js/app/json2.js"%}'></script>    
-        <script type="text/javascript" src='{% static "js/app/util.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/ajaxDelete.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/analytics.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/browserdetect.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/mediathread_mustache.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/panel.js"%}'></script>
-        <script  type="text/javascript" src='{% static "js/app/shield.js"%}'></script>        
+        <script type="text/javascript" src='{% static "js/app/json2.js" %}'></script>    
+        <script type="text/javascript" src='{% static "js/app/util.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/ajaxDelete.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/browserdetect.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/mediathread_mustache.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/panel.js" %}'></script>
+        <script  type="text/javascript" src='{% static "js/app/shield.js" %}'></script>        
         
         <!--  Asset related -->
-        <script type="text/javascript" src='{% static "js/app/assetmgr/asset.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/assetmgr/assetpanel.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/assetmgr/collection.js"%}'></script>
+        <script type="text/javascript" src='{% static "js/app/assetmgr/asset.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/assetmgr/assetpanel.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/assetmgr/collection.js" %}'></script>
         
         <!--  Discussion related -->
-        <script type="text/javascript" src='{% static "js/app/discussion/discussionpanel.js"%}'></script>
+        <script type="text/javascript" src='{% static "js/app/discussion/discussionpanel.js" %}'></script>
         
         <!--  Project related -->
-        <script type="text/javascript" src='{% static "js/app/projects/projectpanel.js"%}'></script>
-        <script type="text/javascript" src='{% static "js/app/projects/projectlist.js"%}'></script>
+        <script type="text/javascript" src='{% static "js/app/projects/projectpanel.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/projects/projectlist.js" %}'></script>
     
         <script type="text/javascript">
             jQuery(document).ready(function() {

@@ -49,6 +49,11 @@
         margin-bottom: 1px;
     }
     
+    .request-course-form input[name='email'],
+    .request-course-form input[name='uni'] {
+        float: left;
+    }
+    
     .request-course-form input[name='instructor'],
     .request-course-form input[name='section_leader'] {
         width: 70%;
@@ -68,6 +73,10 @@
     .request-course-form select[name='term'] {
         width: 40%;
         margin-right: 15px;
+    }
+    
+    .request-course-form select[name='term'] {
+        float: left;
     }
     
     .request-course-form input[type="radio"] {
@@ -94,9 +103,8 @@
         padding: 5px;
     }
     
-    .form-control {
+    input, select, textarea, radio {
         display: block;
-        height: 34px;
         padding: 6px 12px;
         font-size: 14px;
         line-height: 1.42857143;
@@ -110,6 +118,14 @@
         -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
         -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
         transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+    
+    label[for='assignments_required'] {
+        font-weight: normal;
+    }
+    
+    select {
+        height: 34px;
     }
     
     .btn {
@@ -161,6 +177,23 @@
         line-height: normal;
         text-decoration: none;
         box-shadow: none;
+    }
+    
+    div.control-group.error input {
+        border-color: #b94a48;
+    }
+    
+    div.control-group .help-inline {
+        display: none;
+    }
+    
+    div.control-group.error .help-inline,
+    ul.errorlist {
+        clear: both;
+        list-style-type: none;
+        color: #b94a48;
+        margin: -5px 0 20px 0;
+        display: block;
     }    
 </style>
 {% endblock %}
@@ -170,56 +203,6 @@
 <script type="text/javascript">
     jQuery(document).ready(function() {        
         jQuery('.datepicker').datepicker();
-        
-        jQuery("form").submit(function() {
-            var valid = true;
-
-            var children = jQuery(this).find("input.required,textarea.required,select.required");
-            jQuery.each(children, function() {
-                if (valid) {
-                    if (this.tagName === 'INPUT' && this.type === 'text' ||
-                        this.tagName === 'TEXTAREA') {
-                        valid = jQuery(this).val().length > 0;
-                    }
-
-                    if (this.tagName === 'SELECT') {
-                        var value=jQuery(this).val()
-                        valid = value !== undefined && value.length > 0 && jQuery(this).val() !== '-----';
-                    }
-
-                    if (this.type === 'checkbox' || this.type === 'radio') {
-                        // one in the group needs to be checked
-                        var selector = 'input[name=' + jQuery(this).attr("name") + ']';
-                        valid = jQuery(selector).is(":checked");
-                    }
-                }
-            });
-
-            if (!valid) {
-                showMessage("Please complete all form fields before continuing.", undefined, "Error");
-            } else { 
-                var description = "Requester: " + document.forms.feedback.name.value + " " + document.forms.feedback.email.value + " (" + 
-                        document.forms.feedback.uni.value + ")";
-                
-                description += "\n\nCourse: " + document.forms.feedback.course.value;
-                description += "\n\nCourse Id: " + document.forms.feedback.course_id.value;
-                description += "\n\nTerm: " + document.forms.feedback.term.value;
-                description += "\n\nYear: " + document.forms.feedback.year.value;
-                
-                description += "\n\nInstructor: " + document.forms.feedback.instructor.value;
-                description += "\n\nSection Leader: " + document.forms.feedback.section_leader.value;
-                
-                description += "\n\nDate Range: " + document.forms.feedback.start.value + " - " + 
-                    document.forms.feedback.end.value;
-                description += "\n\nStudents: " + document.forms.feedback.students.value;
-                description += "\n\nAssignments Required? " + document.forms.feedback.assignments_required.value;
-                
-                description += "\n\nCourse Description: " + document.forms.feedback.course_description.value + "\n\n";
-                document.forms.feedback.description.value = description;
-            }
-
-            return valid;
-        });       
     });
 </script>
 {% endblock %}
@@ -235,77 +218,94 @@
             If you are not part of Columbia University, please contact {{settings.PUBLIC_CONTACT_EMAIL}} for 
             information on how to join a guest sandbox or get started with Mediathread at your institution.
         </p>
+        
+        {% if form.errors|length %}
+            <div class="errornote">
+              Please correct errors before continuing.
+              {% if form.non_field_errors %}
+                <div>{{ form.non_field_errors}}</div>
+              {% endif %}
+            </div>
+        {% endif %}
    
 
         <form action="/course/request/" method="post" name="feedback">
-            <div>
+            <div class="control-group {% if form.email.errors or form.name.errors or form.uni.errors %}error{% endif %}">
                 <label for="email">Contact Information</label>
-                <input class="required form-control" type="text" name="name" placeholder="Contact Name" /><br />
-                <input class="required left form-control" type="text" id="email" name="email" placeholder="E-mail" />
-                <input  class="required left form-control" type="text" name="uni" placeholder="Columbia UNI"/>
+                <input type="text" name="name" placeholder="Name" {% if form.data.name %}value="{{form.data.name}}"{% endif %} /><br />
+                <input class="left" type="text" name="email" placeholder="E-mail" {% if form.data.email %}value="{{form.data.email}}"{% endif %} />
+                <input  class="left" type="text" name="uni" placeholder="Columbia UNI" {% if form.data.uni %}value="{{form.data.uni}}"{% endif %}/>                
+                <div class="help-inline left">Name, email and uni are required fields.</div>
             </div>
         
             <div class="visualclear"></div>
-            <div>
+            <div class="control-group {% if form.course.errors or form.course_id.errors %}error{% endif %}">
                 <label for="course">Course Name/Number</label>
-                <input class="required left form-control" type="text" id="course" name="course" placeholder="Course Name"/>
-                <input class="required left form-control" type="text" id="course_id" name="course_id" placeholder="Course Number"/>
+                <input class="required left" type="text" id="course" name="course" placeholder="Course Name" {% if form.data.course %}value="{{form.data.course}}"{% endif %}/>
+                <input class="required left" type="text" id="course_id" name="course_id" placeholder="Course Number" {% if form.data.course_id %}value="{{form.data.course_id}}"{% endif %}/>
+                <div class="help-inline left">Course and Course Number are required fields.</div>
             </div>
             
             <div class="visualclear"></div>
-            <div>
+            <div class="control-group {% if form.term.errors or form.year.errors %}error{% endif %}">
                 <label for="term">Term/Year</label>
-                <select class="required left form-control" name="term">
-                    <option value="Fall">Fall</option>
-                    <option value="Spring">Spring</option>
-                    <option value="Summer">Summer</option>
-                </select>
-                <input class="required left form-control" type="text" name="year" placeholder="Year" />
+                {{form.term}}
+                <input class="required left form-control" type="text" name="year" placeholder="Year" {% if form.data.year %}value="{{form.data.year}}"{% endif %} />
+                <div class="help-inline">Year is a required field.</div>
             </div>
 
             <div class="visualclear"></div>
-            <div>
+            <div class="control-group {% if form.instructor.errors or form.instructor.errors %}error{% endif %}">
                 <label for="instructor">Lead Instructor</label>
-                <input class="required form-control" type="text" name="instructor" />
+                {{form.instructor}}
+                <div class="help-inline">Lead Instructor is a required field.</div>
             </div>
             
             <div>
-                <label>Section Leader (if any)</label>
-                <input class="form-control" type="text" name="section_leader" />
+                <label>Section Leader (optional)</label>
+                {{form.section_leader}}
             </div>
             
-            <div>
+            <div class="control-group {% if form.start.errors or form.end.errors %}error{% endif %}">
                 <label>Anticipated date range of Mediathread use in this course</label>
-                <input class="required left form-control datepicker" type="text" name="start" placeholder="Start Date"/>
-                <input class="required left form-control datepicker" type="text" name="end" placeholder="End Date" />
+                <input class="required left form-control datepicker" type="text" name="start" placeholder="Start Date" {% if form.data.start %}value="{{form.data.start}}"{% endif %}/>
+                <input class="required left form-control datepicker" type="text" name="end" placeholder="End Date" {% if form.data.end %}value="{{form.data.end}}"{% endif %}/>
+                <div class="help-inline">Start Date and End Date are required fields.</div>
             </div>
 
             <div class="visualclear"></div>
-            <div>
+            <div class="control-group {% if form.students.errors %}error{% endif %}">
                 <label>Anticipated number of students working in Mediathread in this course</label>
-                <input class="required form-control" type="text" name="students" />
+                <input class="required form-control" type="text" name="students" {% if form.data.students %}value="{{form.data.students}}"{% endif %}/>
+                <div class="help-inline">Number of students is a required field.</div>
             </div>
             
-            <div>
+            <div class="control-group {% if form.assignments_required.errors %}error{% endif %}">
                 <label>Will Mediathread assignments be required?</label>
-                <input class="required form-control" type="radio" name="assignments_required" value="Yes" />
+                <input class="required form-control" type="radio" name="assignments_required" value="Yes" {% if form.data.assignments_required == 'Yes'%}checked='checked'{% endif %} />
                 <label for="assignments_required">Yes</label>
-                <input class="required form-control" type="radio" name="assignments_required" value="No" />
+                <input class="required form-control" type="radio" name="assignments_required" value="No" {% if form.data.assignments_required == 'No'%}checked='checked'{% endif %}/>
                 <label for="assignments_required">No</label>
+                <div class="help-inline"><br /><br />Please indicate if assignments are required.</div>
             </div>            
 
-            <div class="visualclear"></div>
             <br /><br />
-            <div><label for="course_description">Please describe rationale for Mediathread use, i.e. instructor's learning goals, desired student activities, etc.</label></div>
-            <div><textarea rows="4" cols="35" class="required form-control" name="course_description"></textarea></div>
+            <div class="visualclear"></div>
+            <div class="control-group {% if form.description.errors %}error{% endif %}">
+                <div><label for="description">Please describe rationale for Mediathread use, i.e. instructor's learning goals, desired student activities, etc.</label></div>
+                <div>
+                    {{form.description}}
+                </div>
+                <div class="help-inline"><br /><br />Course description is a required field.</div>
+            </div>
             
             <br /><br />
-            <div class="fieldWrapper control-group {% if form.captcha.errors %}error{% endif %}">
+            <div class="control-group {% if form.captcha.errors %}error{% endif %}">
                 <label for="id_captcha_0">
                     <div><b>Please verify you are a person:</b></div>
                 </label>
                 <div class="controls">
-                    {{form.captcha}} {% if form.captcha.errors %} <span class="help-inline">{{form.captcha.errors}}</span>{% endif %}
+                    {{form.captcha}} {% if form.captcha.errors %}<span class="help-inline">{{form.captcha.errors}}</span>{% endif %}
                 </div>
             </div>
             
@@ -315,10 +315,6 @@
             </div>            
             
             <input class="btn" type="submit" id="submit_request" name="add item" value="Request Course"/>
-            
-            <div class="visualclear"></div>
-            
-            <input type="hidden" name="description" value="" />
         </form>
     </div>
 {% endblock %}

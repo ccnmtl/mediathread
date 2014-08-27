@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
+from django.template import loader
+from django.template.context import Context
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
@@ -381,6 +383,9 @@ class RequestCourseView(FormView):
         form_data['owner'] = 'ellenm'
         form_data['assigned_to'] = 'ellenm'
         form_data['assigned_to'] = 'ellenm'
+
+        template = loader.get_template('main/course_request_description.txt')
+        form_data['description'] = template.render(Context(form_data))
 
         POST("http://pmt.ccnmtl.columbia.edu/external_add_item.pl",
              params=form_data, async=True)

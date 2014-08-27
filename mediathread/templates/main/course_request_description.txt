@@ -1,0 +1,21 @@
+Requester: {{name}} {{email}} ({{uni}})
+
+Course: {{course}}
+
+Course Id: {{course_id}}
+
+Term: {{term}}
+
+Year: {{year}}
+                 
+Instructor: {{instructor}}
+
+Section Leader: {{section_leader}}
+
+Date Range: {{start|date:"SHORT_DATE_FORMAT" }} - {{end|date:"SHORT_DATE_FORMAT" }}
+ 
+Students: {{students}}
+
+Assignments Required? {{assignments_required}}
+                 
+Course Description: {{description}}

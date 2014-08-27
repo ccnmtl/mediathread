@@ -29,7 +29,10 @@
         {% include "assetmgr/bookmarklet.html" %} 
         <script type="text/javascript">
             var u = navigator.userAgent;
-            if (/Chrome/.test(u)) {
+            if (/Trident/.test(u)) {
+                jQuery('.browser-instruction').hide();
+                jQuery('#ie').show();
+            } else if (/Chrome/.test(u)) {
                 jQuery('.browser-instruction').hide();
                 jQuery('#chrome').show();
             } else if (/Safari/.test(u)) {
@@ -41,5 +44,5 @@
             } else if (/Gecko/.test(u)) {
                 jQuery('.browser-instruction').hide();
                 jQuery('#firefox').show();
-            } 
+            }
         </script>

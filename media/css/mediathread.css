@@ -1960,6 +1960,7 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-bu
     -webkit-border-radius: 10px;
     font: normal 12px/130% helvetica, arial, sans-serif;
     color: #000;
+    min-width: 800px;
 }
 
 #shieldbox .browsers

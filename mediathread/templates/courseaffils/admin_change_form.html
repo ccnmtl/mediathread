@@ -1,10 +1,20 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_modify admin_static coursetags %}
 
-{% block extrahead %}{{ block.super }}
-
-<script type="text/javascript" src="../../../jsi18n/"></script>
-{{ media }}
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="../../../jsi18n/"></script>
+    {{ media }}
+    <style>
+        ul.object-tools {
+            width: 75px;
+            overflow: hidden;
+        }
+        
+        p.deletelink-box {
+            display: none;
+        }
+    </style>
 {% endblock %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}

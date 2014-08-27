@@ -83,11 +83,12 @@ class ProjectResource(ModelResource):
         assets = {}
         notes = []
         for note in project.citations():
-            key = '%s_%s' % (rand, note.asset.pk)
             notes.append(sherd_resource.render_one(request, note, rand))
-            if (note.title not in ["Annotation Deleted", 'Asset Deleted'] and
-                    key not in assets.keys()):
-                assets[key] = asset_resource.render_one(request, note.asset)
+            if (note.title not in ["Annotation Deleted", 'Asset Deleted']):
+                key = '%s_%s' % (rand, note.asset.pk)
+                if key not in assets.keys():
+                    assets[key] = \
+                        asset_resource.render_one(request, note.asset)
 
         data = {
             'project': project_ctx,

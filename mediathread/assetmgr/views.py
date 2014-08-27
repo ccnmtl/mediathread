@@ -460,8 +460,8 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
             # projects & discussions title, object_pk, content_type, modified
             indicies = DiscussionIndex.objects.filter(
                 asset=asset).order_by('-modified')
-            ctx['references'] = DiscussionIndexResource().render_list(request,
-                                                                      indicies)
+            ctx.update(DiscussionIndexResource().render_list(request,
+                                                             indicies))
 
             return self.render_to_json_response(ctx)
         except Asset.DoesNotExist:

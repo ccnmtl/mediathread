@@ -531,15 +531,17 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
 
     def get(self, request, asset_id):
         self.record_owner = request.user
-        assets = Asset.objects.filter(pk=asset_id, course=request.course)
-        if assets.count() == 0:
+        the_assets = Asset.objects.filter(pk=asset_id, course=request.course)
+        if the_assets.count() == 0:
             return asset_switch_course(request, asset_id)
 
-        (assets, notes) = self.visible_assets_and_notes(request, assets)
-        if assets.count() == 0:
+        (assets, notes) = self.visible_assets_and_notes(request, the_assets)
+
+        # if asset is not in my collection, it must be in my course
+        if assets.count() == 0 and the_assets[0].course != request.course:
             return HttpResponseForbidden("forbidden")
 
-        asset = assets[0]
+        asset = the_assets[0]
 
         help_setting = UserSetting.get_setting(request.user,
                                                "help_item_detail_view",

@@ -1,5 +1,7 @@
 /* ########## Standard elements ########## */
-
+.olLayerDiv div{
+  display: block !important;
+}
 html,body {
 	height: 100%;
 }

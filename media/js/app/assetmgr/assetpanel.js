@@ -30,16 +30,16 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
         self.resize();
     });
     
+    jQuery(self.el).delegate("a.asset-title-link", "click", {self: self}, self.onClickAssetTitle);
+    jQuery(self.el).delegate("a.edit-asset-inplace", "click", {self: self}, self.editItem);
+    jQuery(self.el).delegate("a.filterbyclasstag", "click", {self: self}, self.onFilterByClassTag);
+    jQuery(self.el).delegate("a.filterbyvocabulary", "click", {self: self}, self.onFilterByVocabulary);            
+    
     // Fired by CollectionList & AnnotationList
     jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
         var self = event.data.self;
-        
         var container = jQuery(self.el).find('div.asset-table')[0];
         jQuery(container).masonry('appended', html, true);
-        
-        jQuery(self.el).find("a.asset-title-link").unbind("click").bind("click", { self: self }, self.onClickAssetTitle);
-        jQuery(self.el).find("a.edit-asset-inplace").unbind("click").bind("click", { self: self }, self.editItem);
-
         jQuery(window).trigger("resize");   
     });
     
@@ -83,9 +83,6 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
             'current_asset': self.panel.current_asset,
             'view_callback': function (assetCount) {
                 var self = this;
-                
-                jQuery(self.el).find("a.asset-title-link").bind("click", { self: self }, self.onClickAssetTitle);
-                jQuery(self.el).find("a.edit-asset-inplace").bind("click", { self: self }, self.editItem);
                 
                 if (assetCount > 0) {
                     var container = jQuery(self.el).find('div.asset-table')[0];
@@ -183,9 +180,6 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
         self.citationView.openCitationById(null, asset_id, annotation_id);
     }
     
-    jQuery(self.el).find("a.filterbyclasstag").unbind();
-    jQuery(self.el).find("a.filterbyvocabulary").unbind();
-    
     // Setup the edit view
     AnnotationList.init({
         "asset_id": asset_id,
@@ -193,10 +187,6 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
         "update_history": self.panel.update_history,
         "vocabulary": self.panel.vocabulary,
         "view_callback": function () {
-            jQuery(self.el).find("a.filterbyclasstag").bind("click",
-                    { self: self }, self.onFilterByClassTag);
-            jQuery(self.el).find("a.filterbyvocabulary").bind("click",
-                    { self: self }, self.onFilterByVocabulary);            
             jQuery(self.el).find("div.tabs").fadeIn("fast", function () {
                 PanelManager.verifyLayout(self.el);
                 jQuery(window).trigger("resize");

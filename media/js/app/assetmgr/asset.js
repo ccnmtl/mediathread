@@ -433,7 +433,7 @@
         this.dismissHelp = function () {
             jQuery("#asset-view-overlay, #asset-view-help, #asset-view-help-tab").hide();
             var checked = jQuery("#asset-view-show-help").is(":checked");
-            updateHelpSetting(MediaThread.current_username, 'help_item_detail_view', !checked);
+            updateUserSetting(MediaThread.current_username, 'help_item_detail_view', !checked);
             return false;
         };
         

@@ -45,8 +45,8 @@ function switcher(event, a) {
     return false;
 }
 
-function updateHelpSetting(user, help_content_id, value) {
-    jQuery.post('/setting/' + user + '/', { name: help_content_id, value: value });
+function updateUserSetting(user, setting, value) {
+    jQuery.post('/setting/' + user + '/', { name: setting, value: value });
 }
 
 function toggleHelp(a, user, parent, help_content_id, callback) {
@@ -83,7 +83,7 @@ function toggleHelpOverlay(btn, user, help_content_id) {
     var elts = jQuery(checked_id);
     if (elts.length) {
         var checked = jQuery(elts[0]).is(":checked");
-        updateHelpSetting(MediaThread.current_username, help_content_id, !checked);
+        updateUserSetting(MediaThread.current_username, help_content_id, !checked);
     }
     
     return false;

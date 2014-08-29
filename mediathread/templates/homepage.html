@@ -88,11 +88,23 @@
     <div class="settings_submenu" style="display: none">
          <a href="/help/">Knowledge Base</a>
          <a href="#" onclick="jQuery(window).trigger('tour.start');">Homepage Tour</a>
+         <a href="/upgrade/">Upgrade Bookmarklet</a>
     </div>
 {% endblock %}
 
 {% block content %}
     {{ block.super }}
+    
+    {% if upgrade_bookmarklet %}
+    <div class="infonote">
+        <a href="#" class="dismiss" 
+           onclick="updateUserSetting('{{request.user.username}}', 'upgrade_bookmarklet', false); jQuery(this).parent().fadeOut(); return false;">
+           <img src="/media/img/switcher/icon_x.png"/>
+        </a>
+        The Mediathread bookmarklet has been updated to comply with new web security protocols. <a href="/upgrade/">Upgrade</a> your old bookmarklet now.
+    </div>
+    {% endif %}
+    
     <table id="home-columns">
     <tbody>
         <tr>
@@ -245,7 +257,7 @@
                    <div class="tour_buttons">
                         <span class="button" id="prevstep" style=""> &lt; Prev</span>
                         <span class="button start" id="nextstep"
-                            onclick="updateHelpSetting('{{request.user.username}}', 'help_show_homepage_tour', false);">
+                            onclick="updateUserSetting('{{request.user.username}}', 'help_show_homepage_tour', false);">
                             Get Started &gt;
                         </span>            
                         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>

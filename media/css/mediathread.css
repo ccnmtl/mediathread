@@ -1233,7 +1233,7 @@ div.button-form form, div.button-form.inline form {
 
 .errornote {
     background: url("/media/img/icon_alert.png") no-repeat 5px 5px #FFEBE8;
-    border: 1px solid #c00 !important;
+    border: 1px solid #ebccd1 !important;
     display: block;
     margin: 10px;
     padding: 10px !important;
@@ -1243,6 +1243,23 @@ div.button-form form, div.button-form.inline form {
 
 .errornote span {
     color: #c00;
+}
+
+.infonote {
+    width: 900px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.infonote a.dismiss {
+    margin-top: -10px;
+    float: right;
+    margin-right: -8px;
 }
 
 #introduction {

@@ -282,5 +282,4 @@ try:
     if 'EXTRA_MIDDLEWARE_CLASSES' in locals():
         MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + EXTRA_MIDDLEWARE_CLASSES
 except:
-    import traceback
-    print traceback.format_exc()
+    pass

@@ -275,6 +275,8 @@ CAPTCHA_FONT_SIZE = 34
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there
+# otherwise, make sure you specify the correct database settings in your
+# local_settings.py
 try:
     from mediathread.deploy_specific.settings import *
     if 'EXTRA_INSTALLED_APPS' in locals():

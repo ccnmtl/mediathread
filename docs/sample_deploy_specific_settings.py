@@ -15,6 +15,17 @@ ADMINS = (
 # developer IPs
 INTERNAL_IPS = ('000.000.000.000',)
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'mediathread',
+        'HOST': 'localhost',
+        'PORT': 5432,  # using standard PostgreSQL installation
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+    }
+}
+
 # custom authentication module
 # AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 

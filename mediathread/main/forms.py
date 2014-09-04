@@ -19,7 +19,7 @@ class RequestCourseForm(forms.Form):
     year = forms.CharField(required=True, max_length="512")
 
     instructor = forms.CharField(required=True, max_length="512")
-    section_leader = forms.CharField(max_length="512")
+    section_leader = forms.CharField(max_length="512", required=False)
 
     start = forms.DateField(required=True)
     end = forms.DateField(required=True)

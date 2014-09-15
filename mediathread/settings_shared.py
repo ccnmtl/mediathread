@@ -211,7 +211,6 @@ ANONYMOUS_PATHS = ('/media/',
 
 NON_ANONYMOUS_PATHS = ('/asset/',
                        '/annotations/',
-                       '/contact/',
                        '/project/',
                        '/explore/',
                        '/comments/',

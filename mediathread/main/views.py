@@ -18,7 +18,7 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty
-from mediathread.main.forms import RequestCourseForm
+from mediathread.main.forms import RequestCourseForm, ContactUsForm
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, faculty_only, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
@@ -28,6 +28,7 @@ from restclient import POST
 from structuredcollaboration.models import Collaboration
 import json
 import operator
+from datetime import datetime
 
 
 # returns important setting information for all web pages.
@@ -375,21 +376,45 @@ class RequestCourseView(FormView):
     success_url = "/course/request/success/"
 
     def form_valid(self, form):
-        form_data = form.cleaned_data
-        form_data.pop('captcha')
+        destination = getattr(settings, 'CONTACT_US_DESTINATION', None)
+        if destination is not None:
+            form_data = form.cleaned_data
+            form_data.pop('captcha')
 
-        form_data['title'] = 'Mediathread Course Request'
-        form_data['pid'] = "514"
-        form_data['mid'] = "3596"
-        form_data['type'] = 'action item'
-        form_data['owner'] = 'ellenm'
-        form_data['assigned_to'] = 'ellenm'
-        form_data['assigned_to'] = 'ellenm'
+            tmpl = loader.get_template('main/course_request_description.txt')
+            form_data['description'] = tmpl.render(Context(form_data))
 
-        template = loader.get_template('main/course_request_description.txt')
-        form_data['description'] = template.render(Context(form_data))
+            POST(destination, params=form_data, async=True)
 
-        POST("http://pmt.ccnmtl.columbia.edu/external_add_item.pl",
-             params=form_data, async=True)
+        return super(RequestCourseView, self).form_valid(form)
+
+
+class ContactUsView(FormView):
+    template_name = 'main/contact.html'
+    form_class = ContactUsForm
+    success_url = "/course/request/success/"
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        if not self.request.user.is_anonymous():
+            self.initial['name'] = self.request.user.get_full_name()
+            self.initial['email'] = self.request.user.email
+            self.initial['username'] = self.request.user.username
+
+        if hasattr(self.request, 'course') and self.request.course is not None:
+            self.initial['course'] = self.request.course.title
+
+        self.initial['issue_date'] = datetime.now()
+
+        return super(ContactUsView, self).get_initial()
+
+    def form_valid(self, form):
+        destination = getattr(settings, 'CONTACT_US_DESTINATION', None)
+        if destination is not None:
+            form_data = form.cleaned_data
+            form_data.pop('captcha')
+            POST(destination, params=form_data, async=True)
 
         return super(RequestCourseView, self).form_valid(form)

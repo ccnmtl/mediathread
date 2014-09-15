@@ -219,7 +219,7 @@ class ProjectTest(TestCase):
 
         request.user = student_one
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, sample_course, student_one)
+            request, sample_course, student_one, False)
         self.assertEquals(len(visible_projects), 3)
         self.assertEquals(visible_projects[0].__unicode__(),
                           "Public To Class Composition <3> by Student One")
@@ -229,7 +229,7 @@ class ProjectTest(TestCase):
                           "Private Composition <1> by Student One")
 
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, sample_course, instructor)
+            request, sample_course, instructor, True)
         self.assertEquals(len(visible_projects), 1)
         self.assertEquals(visible_projects[0].__unicode__(),
                           "Sample Course Assignment <5> "
@@ -237,14 +237,14 @@ class ProjectTest(TestCase):
 
         request.user = student_two
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, sample_course, student_one)
+            request, sample_course, student_one, False)
         self.assertEquals(len(visible_projects), 1)
         self.assertEquals(visible_projects[0].__unicode__(),
                           "Public To Class Composition <3> by Student One")
 
         request.user = instructor
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, sample_course, student_one)
+            request, sample_course, student_one, False)
         self.assertEquals(len(visible_projects), 2)
         self.assertEquals(visible_projects[0].__unicode__(),
                           "Public To Class Composition <3> by Student One")

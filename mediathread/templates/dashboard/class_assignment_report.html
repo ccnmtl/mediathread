@@ -12,8 +12,9 @@
     <tr>
       <th>Student</th>
       <th>Title</th>
-      <th>Saved at</th>
       <th>Status</th>
+      <th>Initial Submit Date</th>
+      <th>Saved at</th>
       <th>Faculty Feedback</th>
     </tr>
   </thead>
@@ -27,10 +28,13 @@
       <a href="{{response.get_absolute_url}}">{{response.title}}</a>
     </td>
     <td>
-      {{response.modified|date}}
+      {{response.status}}
     </td>
     <td>
-      {{response.status}}
+      {{response.submitted_date|date}}
+    </td>
+    <td>
+      {{response.modified|date}}
     </td>
     <td>
       {% with response.feedback_discussion as feedback %}

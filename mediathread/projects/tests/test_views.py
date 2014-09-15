@@ -92,3 +92,35 @@ class ProjectViewTest(TestCase):
         the_json = json.loads(response.content)
         self.assertEquals(the_json["status"], "error")
         self.assertTrue(the_json["msg"].startswith(' "" is not valid'))
+
+    def test_project_create_and_save(self):
+        user = User.objects.get(username="test_student_one")
+
+        self.assertTrue(self.client.login(username='test_student_one',
+                                          password='test'))
+
+        data = {u'participants': [user.id],
+                u'publish': [u'PrivateEditorsAreOwners']}
+
+        response = self.client.post('/project/create/', data, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue(response.redirect_chain[0][0].startswith(
+            'http://testserver/project/view/'))
+
+        project = Project.objects.get(title='Untitled')
+        self.assertEquals(project.versions.count(), 1)
+        self.assertIsNone(project.submitted_date())
+
+        data = {u'body': [u'<p>abcdefghi</p>'],
+                u'participants': [user.id],
+                u'publish': [u'InstructorShared'],
+                u'title': [u'Student Essay']}
+
+        response = self.client.post('/project/save/1/',
+                                    data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        project = Project.objects.get(title='Student Essay')
+        self.assertEquals(project.versions.count(), 2)
+        self.assertIsNotNone(project.submitted_date())

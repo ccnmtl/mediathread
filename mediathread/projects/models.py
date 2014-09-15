@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
@@ -128,13 +126,19 @@ class ProjectManager(models.Manager):
         projects = projects.order_by('-modified', 'title')
         return [p for p in projects if p.visible(request)]
 
-    def visible_by_course_and_user(self, request, course, user):
+    def visible_by_course_and_user(self, request, course, user, is_faculty):
         projects = Project.objects.filter(Q(author=user, course=course)
                                           | Q(participants=user, course=course)
                                           ).distinct()
 
-        projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.visible(request)]
+        lst = [p for p in projects if p.visible(request)]
+        lst.sort(reverse=False, key=lambda project: project.title)
+        lst.sort(reverse=True, key=lambda project: project.modified)
+
+        if not is_faculty:
+            lst.sort(reverse=True, key=lambda project: project.submitted_date()
+                     or project.modified)
+        return lst
 
     def by_course_and_users(self, course, user_ids):
         projects = Project.objects.filter(
@@ -490,14 +494,10 @@ class Project(models.Model):
 
         return col
 
+    def submitted_date(self):
+        if not self.submitted:
+            return None
 
-@receiver(post_save, sender=ThreadedComment)
-def on_threaded_comment_save(sender, **kwargs):
-    instance = kwargs['instance']
-    while instance.parent is not None:
-        instance = instance.parent
-
-    an_object = instance.content_object._parent.content_object
-    if hasattr(an_object, 'modified'):
-        an_object.modified = datetime.now()
-        an_object.save()
+        versions = self.versions.filter(submitted=True)
+        versions = versions.order_by('change_time')
+        return versions[0].change_time

@@ -66,7 +66,7 @@ def class_summary(request):
                                      author=stud).count(),
             'all_projects':
             len(Project.objects.visible_by_course_and_user(
-                request, request.course, stud)),
+                request, request.course, stud, False)),
 
             # 'project_adds':stud_work.get(stud.id,[0,0])[0],
             # 'project_deletes':stud_work.get(stud.id,[0,0])[1],
@@ -134,7 +134,7 @@ def class_summary_graph(request):
             ann_asset['str'] = ann_asset['str'] + 1
             ann_asset['bare'] = (ann_asset['bare'] or ann.is_null())
         for a_id, val in projects[a_project.id]['assets'].items():
-            if not a_id in assets:
+            if a_id not in assets:
                 continue
 
             the_context['links'].append({
@@ -221,7 +221,6 @@ def mediathread_activity_by_course(request):
                'Students', '% Active Students',
                'Items', 'Selections',
                'Compositions', 'Assignments', 'Discussions',
-               #'# of Discussion Items', '% participating in Discussions',
                'Public To World Compositions', 'All Selections Visible',
                '# of Active Tags', '% Using Tags',
                '% Items Tagged', '% Selections Tagged',
@@ -231,7 +230,6 @@ def mediathread_activity_by_course(request):
 
     rows = []
     for the_course in Course.objects.all().order_by('-id'):
-    #for the_course in Course.objects.filter(id=84):  # ccnmtl internal
         if (the_course.faculty_group is None or
             (not (the_course.faculty_group.name.startswith('t1') or
                   the_course.faculty_group.name.startswith('t2') or
@@ -313,7 +311,7 @@ def mediathread_activity_by_course(request):
             else:
                 row.append(0)
 
-            #'% Items Tagged', '% Selections Tagged'
+            # '% Items Tagged', '% Selections Tagged'
             t = item_notes.filter(tags__isnull=False).exclude(tags__exact='')
             row.append(float(len(t)) / len(selections) * 100)
             t = sel_notes.filter(tags__isnull=False).exclude(tags__exact='')
@@ -383,7 +381,7 @@ def mediathread_activity_by_school(request):
         bits = the_course.faculty_group.name.split('.')
         school = bits[4]
 
-        if not school in rows:
+        if school not in rows:
             row = [school, 0, 0, 0, 0, 0]
             rows[school] = row
 

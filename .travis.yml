@@ -5,4 +5,4 @@ python:
 install:
   - ./bootstrap.py
 script:
-  - ./manage.py test
+  - ./manage.py jenkins

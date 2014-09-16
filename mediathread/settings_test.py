@@ -49,7 +49,7 @@ class ExceptionLoggingMiddleware(object):
         print traceback.format_exc()
 
 MIDDLEWARE_CLASSES.append(
-    'mediathread.local_settings.ExceptionLoggingMiddleware')
+    'mediathread.settings_test.ExceptionLoggingMiddleware')
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False

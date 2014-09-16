@@ -136,7 +136,7 @@ class ProjectManager(models.Manager):
         lst.sort(reverse=True, key=lambda project: project.modified)
 
         if not is_faculty:
-            lst.sort(reverse=True, key=lambda project: project.submitted_date()
+            lst.sort(reverse=True, key=lambda project: project.feedback_date()
                      or project.modified)
         return lst
 
@@ -335,15 +335,17 @@ class Project(models.Model):
 
     def feedback_discussion(self):
         '''returns the ThreadedComment object for
-         Professor feedback (assuming it's private)'''
+         professor feedback (assuming it's private)'''
+        thread = None
         col = self.collaboration()
-        if not col:
-            return
-        comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        if col:
+            comm_type = ContentType.objects.get_for_model(ThreadedComment)
 
-        feedback = col.children.filter(content_type=comm_type)
-        if feedback:
-            return feedback[0].content_object
+            feedback = col.children.filter(content_type=comm_type)
+            if feedback:
+                thread = feedback[0].content_object
+
+        return thread
 
     def save(self, *args, **kw):
         models.Model.save(self)
@@ -502,3 +504,7 @@ class Project(models.Model):
             if versions.count() > 0:
                 dt = versions[0].change_time
         return dt
+
+    def feedback_date(self):
+        thread = self.feedback_discussion()
+        return thread.submit_date if thread else None

@@ -495,9 +495,10 @@ class Project(models.Model):
         return col
 
     def submitted_date(self):
-        if not self.submitted:
-            return None
-
-        versions = self.versions.filter(submitted=True)
-        versions = versions.order_by('change_time')
-        return versions[0].change_time
+        dt = None
+        if self.submitted:
+            versions = self.versions.filter(submitted=True)
+            versions = versions.order_by('change_time')
+            if versions.count() > 0:
+                dt = versions[0].change_time
+        return dt

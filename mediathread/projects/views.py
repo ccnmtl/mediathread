@@ -490,7 +490,8 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
             in_course_or_404(self.record_owner.username, request.course)
 
             projects = Project.objects.visible_by_course_and_user(
-                request, request.course, self.record_owner)
+                request, request.course, self.record_owner,
+                self.viewing_faculty_records)
 
             # Show unresponded assignments if viewing self & self is a student
             if not self.is_viewer_faculty and self.viewing_own_records:
@@ -502,9 +503,6 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         else:
             projects = Project.objects.visible_by_course(request,
                                                          request.course)
-
-        #offset = int(request.GET.get("offset", 0))
-        #limit = int(request.GET.get("limit", 20))
 
         ctx['projects'] = pres.render_projects(request, projects)
         ctx['compositions'] = len(projects) > 0 or len(assignments) > 0

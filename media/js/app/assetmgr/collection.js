@@ -78,6 +78,88 @@ var CollectionList = function (config) {
         }
     });
     
+    
+    jQuery(self.el).on('click', "a.switcher-choice.filterbydate", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.href.split("/");
+        var filterName = bits[bits.length - 1];
+        
+        if (filterName === "all") {
+            self.current_records.active_filters.modified = "";
+        } else {
+            self.current_records.active_filters.modified = filterName;
+        }
+        return self.filter();
+    });
+    
+    jQuery(self.el).find("select.vocabulary").on('change select2-removed', function(evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var name = jQuery(srcElement).attr("name");
+        self.current_records.active_filters[name] = jQuery(srcElement).val();
+        return self.filter();
+    });
+
+    jQuery(self.el).find("select.course-tags").on('change select2-removed', function() {
+        var elt = jQuery(self.el).find("select.course-tags");
+        self.current_records.active_filters.tag = jQuery(elt).val();
+        return self.filter();
+    });
+    
+    jQuery(self.parent).on('click', "a.switcher-choice.filterbytag", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.href.split("/");
+        return self.filterByTag(bits[bits.length - 1]);
+    });
+    
+    jQuery(self.el).on('click', "a.collection-choice.edit-asset", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.parentNode.href.split("/");
+        var asset_id = bits[bits.length - 1];
+        jQuery(window).trigger('asset.edit', [ asset_id ]);
+        return false;
+    });
+    
+    jQuery(self.el).on('click', "a.collection-choice.delete-asset", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.parentNode.href.split("/");
+        var asset_id = bits[bits.length - 1];
+        self.deleteAsset(asset_id);
+        return false;
+    });
+    
+    jQuery(self.el).on('click', "a.collection-choice.delete-annotation", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.parentNode.href.split("/");
+        return self.deleteAnnotation(bits[bits.length - 1]);
+    });
+    
+    jQuery(self.el).on('click', "a.collection-choice.create-annotation", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.parentNode.href.split("/");
+        var asset_id = bits[bits.length - 1];
+        jQuery(window).trigger('annotation.create', [ asset_id ]);
+        return false;
+    });
+    
+    jQuery(self.el).on('click', "a.collection-choice.edit-annotation", function (evt) {
+        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+        var bits = srcElement.parentNode.href.split("/");
+        var annotation_id = bits[bits.length - 1];
+        var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
+        jQuery(window).trigger('annotation.edit', [ asset_id, annotation_id ]);
+        return false;
+    });
+    
+    jQuery(self.el).on('click', "#collection-help-button", function() {
+        jQuery("#collection-overlay, #collection-help, #collection-help-tab").show();
+        return false;
+    });
+    
+    jQuery(self.el).on('click', ".dismiss-help", function() {
+        jQuery("#collection-overlay, #collection-help, #collection-help-tab").hide();
+        return false;
+    });    
+    
     return this;
 };
 
@@ -463,87 +545,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
             }
             
             jQuery(elt).fadeIn("slow");
-            
-            jQuery(self.el).find("a.switcher-choice.filterbydate").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.href.split("/");
-                var filterName = bits[bits.length - 1];
-                
-                if (filterName === "all") {
-                    self.current_records.active_filters.modified = "";
-                } else {
-                    self.current_records.active_filters.modified = filterName;
-                }
-                return self.filter();
-            });
-            
-            jQuery(self.el).find("select.vocabulary").on('change select2-removed', function(evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var name = jQuery(srcElement).attr("name");
-                self.current_records.active_filters[name] = jQuery(srcElement).val();
-                return self.filter();
-            });
-
-            jQuery(self.el).find("select.course-tags").on('change select2-removed', function() {
-                var elt = jQuery(self.el).find("select.course-tags");
-                self.current_records.active_filters.tag = jQuery(elt).val();
-                return self.filter();
-            });
-            
-            jQuery(self.parent).find("a.switcher-choice.filterbytag").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.href.split("/");
-                return self.filterByTag(bits[bits.length - 1]);
-            });
-            
-            jQuery(self.el).find("a.collection-choice.edit-asset").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.parentNode.href.split("/");
-                var asset_id = bits[bits.length - 1];
-                jQuery(window).trigger('asset.edit', [ asset_id ]);
-                return false;
-            });
-            
-            jQuery(self.el).find("a.collection-choice.delete-asset").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.parentNode.href.split("/");
-                var asset_id = bits[bits.length - 1];
-                self.deleteAsset(asset_id);
-                return false;
-            });
-            
-            jQuery(self.el).find("a.collection-choice.delete-annotation").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.parentNode.href.split("/");
-                return self.deleteAnnotation(bits[bits.length - 1]);
-            });
-            
-            jQuery(self.el).find("a.collection-choice.create-annotation").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.parentNode.href.split("/");
-                var asset_id = bits[bits.length - 1];
-                jQuery(window).trigger('annotation.create', [ asset_id ]);
-                return false;
-            });
-            
-            jQuery(self.el).find("a.collection-choice.edit-annotation").unbind('click').click(function (evt) {
-                var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = srcElement.parentNode.href.split("/");
-                var annotation_id = bits[bits.length - 1];
-                var asset_id = jQuery('#annotation-' + annotation_id).parents("div.record").children("input.record").attr("value");
-                jQuery(window).trigger('annotation.edit', [ asset_id, annotation_id ]);
-                return false;
-            });
-            
-            jQuery("#collection-help-button").unbind('click').click(function() {
-                jQuery("#collection-overlay, #collection-help, #collection-help-tab").show();
-                return false;
-            });
-            
-            jQuery(self.el).find(".dismiss-help").unbind('click').click(function() {
-                jQuery("#collection-overlay, #collection-help, #collection-help-tab").hide();
-                return false;
-            });            
+      
             
             if (self.view_callback) {
                 self.view_callback(the_records.assets.length);

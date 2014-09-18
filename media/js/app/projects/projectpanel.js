@@ -113,6 +113,12 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
                 jQuery(window).trigger("resize");
+                
+                // Fired by CollectionList & AnnotationList
+                jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
+                    var newAssets = self.collectionList.getAssets();
+                    self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
+                });
             }
         });
         

@@ -115,6 +115,12 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
+                
+                // Fired by CollectionList & AnnotationList
+                jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
+                    var newAssets = self.collectionList.getAssets();
+                    self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
+                });
             }
         });
 
@@ -292,9 +298,11 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
     jQuery(self.form).show('fast', function () {
         if (scroll) {
             var elt = jQuery(self.el).find("div.threadedcomments-container")[0];
+            var top = jQuery(self.form).offset().top - jQuery(self.form).height();
+
             jQuery(elt).animate({
-                scrollTop: jQuery(elt).scrollTop() + jQuery(self.form).parent().position().top + 20
-            }, 500);
+                scrollTop: jQuery(elt).scrollTop() + top
+            }, 100);
         }
     });
     

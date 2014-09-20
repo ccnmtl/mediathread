@@ -7,6 +7,7 @@ simplejson==3.4.0
 smartypants==1.6.0.2
 uuid==1.30
 psycopg2==2.5.1
+#for MySQL: MySQL-python==1.2.5
 Pillow==1.7.8
 nose==1.3.0
 versiontools==1.9.1

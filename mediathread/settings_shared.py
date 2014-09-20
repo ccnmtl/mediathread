@@ -10,6 +10,7 @@ import os.path
 import re
 import sys
 
+VERSION = '2014_Fall.1'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ADMINS = (

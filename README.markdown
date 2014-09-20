@@ -28,13 +28,13 @@ INSTALLATION
     git clone https://github.com/ccnmtl/mediathread.git
 
 2. Build the database  
-   For Postgres:  
+   For Postgres (preferred):  
      A. Create the database `createdb mediathread`  
   
-   For MySQL:   
+   For MySQL: (Note: Mediathread is not well-tested on recent version of MySQL.)  
      A. Edit the file `requirements/libs.txt`  
         - comment out the line `psycopg2`  
-        - uncomment the `MySQL-python` line. Note: Mediathread is not well-tested on recent version of MySQL.  
+        - uncomment the `MySQL-python` line.
      B. Create the database  
   
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql  

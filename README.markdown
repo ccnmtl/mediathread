@@ -28,17 +28,17 @@ INSTALLATION
     git clone https://github.com/ccnmtl/mediathread.git
 
 2. Build the database  
-   For Postgres:
-     A. Create the database `createdb mediathread`
-
-   For MySQL:
-     A. Edit the file `requirements/libs.txt`
-        - comment out the line `psycopg2`
-        - uncomment `MySQLdb`
-     B. Create the database
-
-    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
-
+   For Postgres:  
+     A. Create the database `createdb mediathread`  
+  
+   For MySQL:   
+     A. Edit the file `requirements/libs.txt`  
+        - comment out the line `psycopg2`  
+        - uncomment the `MySQL-python` line. Note: Mediathread is not well-tested on recent version of MySQL.  
+     B. Create the database  
+  
+    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql  
+  
 3. Customize settings  
     Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation At a minimum, you will need to customize your `DATABASES` dictionary.
      

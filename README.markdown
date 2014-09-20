@@ -40,16 +40,16 @@ INSTALLATION
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
 3. Customize settings  
-    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
+    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation At a minimum, you will need to customize your `DATABASES` dictionary.
      
-     For more extensive customization, you can create a deploy_specific directory to house a site-specific settings.py file:
+     For more extensive customization and template overrides, you can create a deploy_specific directory to house a site-specific settings.py file:
 
          $ mkdir deploy_specific
          $ touch deploy_specific/__init__.py
          $ touch deploy_specific/settings.py
 
     Edit the `deploy_specific/settings.py` and override values in `settings_shared.py` like the `DATABASES` dictionary.
-    This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution
+    This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution.
 
 4. Build the virtual environment
    Bootstrap uses virtualenv to build a contained library in `ve/`

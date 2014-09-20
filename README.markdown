@@ -40,8 +40,7 @@ INSTALLATION
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
    For Both:
-     Edit the variables in `settings_shared.py` that you need to customize for your local installation.
-     At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
+     Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
      
      For more extensive customization, you can create a deploy_specific directory to house a site-specific settings.py file:
 
@@ -50,7 +49,7 @@ INSTALLATION
 
        # edit a file called `deploy_specific/settings.py` setting those same variables
          which will override the values in `settings_shared.py`
-         This is where we add custom settings for our deployment that will not
+         This is where we add custom settings and templates for our deployment that will not
          be included in the open-sourced distribution
 
 

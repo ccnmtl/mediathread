@@ -27,7 +27,7 @@ INSTALLATION
 
     git clone https://github.com/ccnmtl/mediathread.git
 
-2. Build the database
+2. Build the database  
    For Postgres:
      A. Create the database `createdb mediathread`
 
@@ -39,26 +39,24 @@ INSTALLATION
 
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
-3. Customize settings
-     Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
+3. Customize settings  
+    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
      
      For more extensive customization, you can create a deploy_specific directory to house a site-specific settings.py file:
 
          $ mkdir deploy_specific
          $ touch deploy_specific/__init__.py
+         $ touch deploy_specific/settings.py
 
-       # edit a file called `deploy_specific/settings.py` setting those same variables
-         which will override the values in `settings_shared.py`
-         This is where we add custom settings and templates for our deployment that will not
-         be included in the open-sourced distribution
+    Edit the `deploy_specific/settings.py` and override values in `settings_shared.py` like the `DATABASES` dictionary.
+    This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution
 
-
-4. Bootstrap uses virtualenv to build a contained library in `ve/`
+4. Build the virtual environment
+   Bootstrap uses virtualenv to build a contained library in `ve/`
 
     ./bootstrap.py
 
-The rest of the instructions work like standard Django.  See:
- http://docs.djangoproject.com/ for more details.
+The rest of the instructions work like standard Django.  See: http://docs.djangoproject.com/ for more details.
 
 5. Sync the database
 

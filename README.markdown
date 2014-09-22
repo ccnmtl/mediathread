@@ -32,9 +32,10 @@ INSTALLATION
      A. Create the database `createdb mediathread`  
   
    For MySQL: (Note: Mediathread is not well-tested on recent version of MySQL.)  
-     A. Edit the file `requirements/libs.txt`  
+     A. Edit the file `requirements.txt`  
         - comment out the line `psycopg2`  
         - uncomment the `MySQL-python` line.
+
      B. Create the database  
   
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql  

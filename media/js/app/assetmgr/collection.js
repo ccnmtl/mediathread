@@ -340,6 +340,7 @@ CollectionList.prototype.getSpaceUrl = function (active_tag, active_modified) {
 CollectionList.prototype.createAssetThumbs = function (assets) {
     var self = this;
     djangosherd.thumbs = [];
+		var isThumb = function(s) { return s.label == 'thumb'; };
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
@@ -348,8 +349,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         
         if (!asset.thumbable) {
             if (jQuery(target_parent).hasClass("static-height")) {
-                var thumbs = jQuery.grep(asset.sources, function(s) {
-                   return s.label == 'thumb'; }); 
+                var thumbs = jQuery.grep(asset.sources, isThumb); 
                 if (thumbs.length && thumbs[0].height > 240) {
                     jQuery(target_parent).css({
                         height: (thumbs[0].height + 75) + 'px'

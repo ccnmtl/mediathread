@@ -7,6 +7,18 @@ jenkins: ./ve/bin/python validate test flake8
 ./ve/bin/python: requirements.txt bootstrap.py virtualenv.py
 	./bootstrap.py
 
+jshint: node_modules/jshint/bin/jshint
+	./node_modules/jshint/bin/jshint media/js/app/
+
+jscs: node_modules/jscs/bin/jscs
+	./node_modules/jscs/bin/jscs media/js/app/
+
+node_modules/jshint/bin/jshint:
+	npm install jshint --prefix .
+
+node_modules/jscs/bin/jscs:
+	npm install jscs --prefix .
+
 test: ./ve/bin/python
 	$(MANAGE) jenkins
 

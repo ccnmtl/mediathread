@@ -8,7 +8,7 @@ function addLoadEvent(func) {
     window.onload = function() {
       oldonload();
       func();
-    }
+    };
   }
 }
 
@@ -16,9 +16,8 @@ function addLoadEvent(func) {
 var BrowserDetect = {
   init: function () {
     this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
-    this.version = this.searchVersion(navigator.userAgent)
-      || this.searchVersion(navigator.appVersion)
-      || "an unknown version";
+    this.version = this.searchVersion(navigator.userAgent) ||
+					this.searchVersion(navigator.appVersion) || "an unknown version";
     this.OS = this.searchString(this.dataOS) || "an unknown OS";
   },
   searchString: function (data) {

@@ -3,7 +3,7 @@
 
     var Asset = Backbone.Model.extend({
         initialize: function (attrs) {
-            this.id = attrs['id'];
+            this.id = attrs.id;
         }
     });
 
@@ -12,7 +12,7 @@
         total_sherdnotes: function () {
             var count = 0;
             this.forEach(function (obj) {
-                count += obj.get('annotation_count')
+                count += obj.get('annotation_count');
             });
             return count;
         }
@@ -20,7 +20,7 @@
 
     var Project = Backbone.Model.extend({
         initialize: function (attrs) {
-            this.id = attrs['id'];
+            this.id = attrs.id;
         }
     });
 

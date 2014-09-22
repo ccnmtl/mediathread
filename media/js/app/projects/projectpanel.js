@@ -742,7 +742,7 @@ ProjectPanelHandler.prototype.isDirty = function() {
     return self.projectModified ||
         self.tinyMCE.isDirty() ||
         (self.tinyMCE.editorId === tinyMCE.activeEditor.editorId &&
-                tinyMCE.activeEditor.isDirty())
+         tinyMCE.activeEditor.isDirty());
 };
 
 ProjectPanelHandler.prototype.updateRevisions = function() {

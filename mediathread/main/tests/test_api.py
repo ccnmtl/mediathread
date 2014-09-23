@@ -4,17 +4,21 @@ from courseaffils.models import Course
 from django.contrib.auth.models import User
 from mediathread.api import UserResource
 from tastypie.test import ResourceTestCase
+from .factories import (UserFactory, GroupFactory, CourseFactory)
 
 
 class UserApiTest(ResourceTestCase):
     # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
     # documentation for the gory details.
-    fixtures = ['unittest_sample_course.json']
 
     def get_credentials(self):
         return None
 
     def test_render_one(self):
+        u = UserFactory(username='test_student_one', first_name='Student',
+                        last_name='One')
+        u.set_password('test')
+        u.save()
         self.assertTrue(
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
@@ -26,9 +30,27 @@ class UserApiTest(ResourceTestCase):
         self.assertEquals(member['public_name'], "Student One")
 
     def test_render_list(self):
+        u = UserFactory(username='test_student_one', first_name='Student',
+                        last_name='One')
+        u.set_password('test')
+        u.save()
         self.assertTrue(
             self.api_client.client.login(username="test_student_one",
                                          password="test"))
+
+        g1 = GroupFactory(name="group1")
+        g2 = GroupFactory(name="group2")
+        CourseFactory(title="Sample Course", faculty_group=g1, group=g2)
+        u.groups.add(g2)
+        UserFactory(username='instructor_one',
+                    first_name='Instructor', last_name='One').groups.add(g2)
+        UserFactory(username='test_instructor_two').groups.add(g2)
+        UserFactory(username='test_student_three').groups.add(g2)
+        UserFactory(username='student_two', first_name='Student',
+                    last_name='Two').groups.add(g2)
+        UserFactory(username='teachers_assistant',
+                    first_name="Teacher's",
+                    last_name=" Assistant").groups.add(g2)
 
         sample_course = Course.objects.get(title="Sample Course")
 

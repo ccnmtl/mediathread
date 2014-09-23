@@ -39,7 +39,9 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
     jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
         var self = event.data.self;
         var container = jQuery(self.el).find('div.asset-table')[0];
-        jQuery(container).masonry('appended', html, true);
+        if (container !== undefined) {
+            jQuery(container).masonry('appended', html, true);
+        }
         jQuery(window).trigger("resize");   
     });
     

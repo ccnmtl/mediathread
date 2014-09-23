@@ -27,56 +27,50 @@ INSTALLATION
 
     git clone https://github.com/ccnmtl/mediathread.git
 
-2. Build the database
-   For Postgres:
-     A. Create the database `createdb mediathread`
+2. Build the database  
+   For Postgres (preferred):  
+     A. Create the database `createdb mediathread`  
+  
+   For MySQL: (Note: Mediathread is not well-tested on recent version of MySQL.)  
+     A. Edit the file `requirements.txt`  
+        - comment out the line `psycopg2`  
+        - uncomment the `MySQL-python` line.
 
-   For MySQL:
-     A. Edit the file `requirements/libs.txt`
-        - comment out the line `psycopg2`
-        - uncomment `MySQLdb`
-     B. Create the database
-
-    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
-
-   For Both:
-     Edit the variables in `settings_shared.py` that you need to customize for your local installation.
-     At a minimum, you will need to customize your `DATABASES` dictionary as appropriate.
+     B. Create the database  
+  
+    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql  
+  
+3. Customize settings  
+    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary.
      
-     For more extensive customization, you can create a deploy_specific directory to house a site-specific settings.py file:
+     For more extensive customization and template overrides, you can create a deploy_specific directory to house a site-specific settings.py file:
 
          $ mkdir deploy_specific
          $ touch deploy_specific/__init__.py
+         $ touch deploy_specific/settings.py
 
-       # edit a file called `deploy_specific/settings.py` setting those same variables
-         which will override the values in `settings_shared.py`
-         This is where we add custom settings for our deployment that will not
-         be included in the open-sourced distribution
+    Edit the `deploy_specific/settings.py` and override values in `settings_shared.py` like the `DATABASES` dictionary.
+    This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution.
 
-
-3. Bootstrap uses virtualenv to build a contained library in `ve/`
+4. Build the virtual environment
+   Bootstrap uses virtualenv to build a contained library in `ve/`
 
     ./bootstrap.py
 
-The rest of the instructions work like standard Django.  See:
- http://docs.djangoproject.com/ for more details.
+The rest of the instructions work like standard Django.  See: http://docs.djangoproject.com/ for more details.
 
-4. Sync the database
+5. Sync the database
 
-    ./manage.py syncdb
-    ./manage.py migrate # to complete the south migration setup
+    ./manage.py syncdb.  # When asked to create a superuser, do so.
+    ./manage.py migrate  # completes the south migration setup
 
-5. Run locally (during development only)
+6. Run locally (during development only)
     ./manage.py runserver myhost.example.com:8000
-
-6. For deployment to Apache, see our sample configuration in `apache/prod.conf`
-   This directory also contains standard `django.wsgi` file which can be used
-   with other webservers
 
 Go to your site in a web browser.
 
-7. The default database is not very useful.  Login with the superuser you
-   created in Step #4.
+7. The default database is not very useful. You'll need to create a course and some users. Login with the superuser you
+   created in Step #5.
 
 8. Click the 'Create a Course' link.
     - Click the "+" to make a group.  Name it something like "test_course"
@@ -91,7 +85,14 @@ Go to your site in a web browser.
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
 
-10. For deployment, take a look at the `apache/` directory for sample apache configuration files
+APACHE
+----------------
+For deployment to Apache, see our sample configuration in `apache/sample.conf`. This directory also contains standard `django.wsgi` file which can be used with other webservers
+
+SSL
+----------------
+To support bookmarking assets from a variety of external sites, Mediathread instances must be accessible via http:// and https://
+
 
 FLOWPLAYER
 ----------------

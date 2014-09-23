@@ -1,3 +1,7 @@
+from datetime import datetime
+import json
+import operator
+
 from courseaffils.lib import in_course, in_course_or_404
 from courseaffils.models import Course
 from courseaffils.views import available_courses_query
@@ -11,6 +15,8 @@ from django.template.context import Context
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
+from restclient import POST
+
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
@@ -24,26 +30,19 @@ from mediathread.mixins import ajax_required, faculty_only, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
-from restclient import POST
 from structuredcollaboration.models import Collaboration
-import json
-import operator
-from datetime import datetime
-
+from django.core.mail import send_mail
 
 # returns important setting information for all web pages.
 def django_settings(request):
-    whitelist = ['PUBLIC_CONTACT_EMAIL',
-                 'CONTACT_US_DESTINATION',
-                 'FLOWPLAYER_SWF_LOCATION',
+    whitelist = ['FLOWPLAYER_SWF_LOCATION',
                  'FLOWPLAYER_AUDIO_PLUGIN',
                  'FLOWPLAYER_PSEUDOSTREAMING_PLUGIN',
                  'FLOWPLAYER_RTMP_PLUGIN',
                  'DEBUG',
                  'REVISION',
                  'DATABASES',
-                 'GOOGLE_ANALYTICS_ID'
-                 ]
+                 'GOOGLE_ANALYTICS_ID']
 
     context = {'settings': dict([(k, getattr(settings, k, None))
                                  for k in whitelist]),
@@ -376,15 +375,14 @@ class RequestCourseView(FormView):
     success_url = "/course/request/success/"
 
     def form_valid(self, form):
-        destination = getattr(settings, 'CONTACT_US_DESTINATION', None)
-        if destination is not None:
-            form_data = form.cleaned_data
-            form_data.pop('captcha')
+        form_data = form.cleaned_data
+        tmpl = loader.get_template('main/course_request_description.txt')
+        form_data['description'] = tmpl.render(Context(form_data))
 
-            tmpl = loader.get_template('main/course_request_description.txt')
-            form_data['description'] = tmpl.render(Context(form_data))
-
-            POST(destination, params=form_data, async=True)
+        task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+        if task_email is not None:
+            # POST to the contact destination
+            POST(task_email, params=form_data, async=True)
 
         return super(RequestCourseView, self).form_valid(form)
 
@@ -411,10 +409,22 @@ class ContactUsView(FormView):
         return super(ContactUsView, self).get_initial()
 
     def form_valid(self, form):
-        destination = getattr(settings, 'CONTACT_US_DESTINATION', None)
-        if destination is not None:
-            form_data = form.cleaned_data
-            form_data.pop('captcha')
-            POST(destination, params=form_data, async=True)
+        form_data = form.cleaned_data
+        tmpl = loader.get_template('main/contactus_description.txt')
+        form_data['description'] = tmpl.render(Context(form_data))
+
+        task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+        if task_email is not None:
+            # POST to the contact us destination
+            POST(task_email, params=form_data, async=True)
+
+        support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
+        if support_email is None:
+            support_email = settings.SERVER_EMAIL
+
+        subject = "Mediathread Contact Us Request"
+        sender = form_data['email']
+        recipients = support_email
+        send_mail(subject, form_data['description'], sender, recipients)
 
         return super(RequestCourseView, self).form_valid(form)

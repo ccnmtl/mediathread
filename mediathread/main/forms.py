@@ -1,5 +1,4 @@
 from django import forms
-from captcha.fields import CaptchaField
 
 TERM_CHOICES = (
     ('Fall', 'Fall'),
@@ -28,7 +27,8 @@ class RequestCourseForm(forms.Form):
     assignments_required = forms.BooleanField(required=True)
 
     description = forms.CharField(widget=forms.Textarea, required=True)
-    captcha = CaptchaField(required=True)
+
+    decoy = forms.CharField(widget=forms.Textarea, required=False)
 
     title = forms.HiddenInput()
     pid = forms.HiddenInput()
@@ -36,6 +36,15 @@ class RequestCourseForm(forms.Form):
     type = forms.HiddenInput()
     owner = forms.HiddenInput()
     assigned_to = forms.HiddenInput()
+
+    def clean(self):
+        cleaned_data = super(ContactUsForm, self).clean()
+
+        if len(cleaned_data['decoy']) > 0:
+            self._errors["decoy"] = self.error_class([
+                "Please leave this field blank"])
+
+        return cleaned_data
 
 
 class ContactUsForm(forms.Form):
@@ -49,7 +58,8 @@ class ContactUsForm(forms.Form):
     category = forms.CharField(required=True, max_length=512)
 
     description = forms.CharField(widget=forms.Textarea, required=True)
-    captcha = CaptchaField(required=True)
+
+    decoy = forms.CharField(widget=forms.Textarea, required=False)
 
     debug_info = forms.HiddenInput
     title = forms.HiddenInput()
@@ -65,5 +75,9 @@ class ContactUsForm(forms.Form):
         if cleaned_data['category'] == '-----':
             self._errors["category"] = self.error_class([
                 "An issue category is required"])
+
+        if len(cleaned_data['decoy']) > 0:
+            self._errors["decoy"] = self.error_class([
+                "Please leave this field blank"])
 
         return cleaned_data

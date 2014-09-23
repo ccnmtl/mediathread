@@ -70,8 +70,6 @@ urlpatterns = patterns(
         'django.views.static.serve', {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
-    url(r'^captcha/', include('captcha.urls')),
-
     (r'^comments/', include('django.contrib.comments.urls')),
 
     (r'^contact/success/$',

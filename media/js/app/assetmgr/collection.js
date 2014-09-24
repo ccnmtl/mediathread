@@ -92,14 +92,14 @@ var CollectionList = function (config) {
         return self.filter();
     });
     
-    jQuery(self.el).find("select.vocabulary").on('change select2-removed', function(evt) {
+    jQuery(self.el).on('change select2-removed', "select.vocabulary", function(evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var name = jQuery(srcElement).attr("name");
         self.current_records.active_filters[name] = jQuery(srcElement).val();
         return self.filter();
     });
 
-    jQuery(self.el).find("select.course-tags").on('change select2-removed', function() {
+    jQuery(self.el).on('change select2-removed', "select.course-tags", function() {
         var elt = jQuery(self.el).find("select.course-tags");
         self.current_records.active_filters.tag = jQuery(elt).val();
         return self.filter();

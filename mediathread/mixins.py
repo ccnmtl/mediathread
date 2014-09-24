@@ -1,14 +1,17 @@
-from courseaffils.lib import in_course_or_404
+import json
+
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+
+from courseaffils.lib import in_course_or_404
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible
-import json
 
 
 def ajax_required(func):
@@ -85,10 +88,16 @@ class RestrictedMaterialsMixin(object):
         vocabulary = dict((key[len('vocabulary-'):], val.split(","))
                           for key, val in request.GET.items()
                           if key.startswith('vocabulary-'))
-
+        
         visible_notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors,
             tag_string, modified, vocabulary)
+        
+        search_text = request.GET.get('search_text', '').strip().lower()
+        if len(search_text) > 0:
+            visible_notes = visible_notes.filter(
+               Q(asset__title__icontains=search_text) |
+               Q(title__icontains=search_text))
 
         # return the related asset ids
         ids = visible_notes.values_list('asset__id', flat=True)

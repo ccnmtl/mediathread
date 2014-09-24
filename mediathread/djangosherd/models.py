@@ -124,8 +124,8 @@ class SherdNoteQuerySet(models.query.QuerySet):
             'asset__id', 'id').select_related()
 
         if record_owner:
-            # only return original author's global annotations
-            self = self.exclude(~Q(author=record_owner), range1__isnull=True)
+            # only return original author's selections
+            self = self.exclude(~Q(author=record_owner))
 
         # only return notes that are authored by certain people
         if len(visible_authors) > 0:
@@ -271,14 +271,12 @@ class SherdNoteManager(models.Manager):
                                      title=old_note.title,
                                      author=user)
 
-        if (old_note.author == user or not old_note.is_global_annotation()):
-            if old_note.body:
-                new_note.body = old_note.body
-            if old_note.tags:
-                new_note.tags = old_note.tags
+        if old_note.body:
+            new_note.body = old_note.body
+        if old_note.tags:
+            new_note.tags = old_note.tags
 
         new_note.save()
-
         return new_note
 
 

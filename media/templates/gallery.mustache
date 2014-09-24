@@ -56,9 +56,19 @@
                 <input class="btn-primary right dismiss-help" type="button" value="Dismiss Help">
             </div>                         
         </div>
-
+        
+        <div class="search-widget">
+            <h3>SEARCH BY...</h3>
+            <span class="switcher-prefix">Title </span>
+            <input type="text" name="search-text" value="{{active_filters.search_text}}" />
+            <button class="btn" name="execute-search">Go</button>
+            <button class="btn" name="clear-search">Clear</button>
+        </div>
+        
+        <div class="visualclear"></div>
+        
         <div class="filter-widget">
-            <h3>FILTER BY...</h3>    
+            <h3>FILTER BY...</h3>
         
             {{#>>switcher_collection_chooser}}
             <div class="switcher_collection_chooser switcher collection-chooser">                

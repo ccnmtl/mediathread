@@ -78,6 +78,15 @@ var CollectionList = function (config) {
         }
     });
     
+    jQuery(self.el).on('click', "button[name='execute-search']", function (evt) {
+        self.current_records.active_filters.search_text = 
+            jQuery(self.el).find("input[name='search-text']").val();
+        return self.filter();
+    });
+    jQuery(self.el).on('click', "button[name='clear-search']", function (evt) {
+        self.current_records.active_filters.search_text = '';
+        return self.filter();
+    });
     
     jQuery(self.el).on('click', "a.switcher-choice.filterbydate", function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
@@ -308,7 +317,7 @@ CollectionList.prototype.filter = function () {
         if (self.current_records.active_filters.hasOwnProperty(filter)) {
             var val = self.current_records.active_filters[filter];
             if (val !== null && val.length > 0) {
-                url += "&" + filter + "=" + val.toString();
+                url += "&" + filter + "=" + escape(val.toString());
             }
         }
     }

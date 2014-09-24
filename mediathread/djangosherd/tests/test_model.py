@@ -129,15 +129,28 @@ class SherdNoteTest(TestCase):
 
     def test_add_tag(self):
         ann = SherdNote.objects.get(id=15)
+        ann1 = SherdNote.objects.get(id=14)
+
         ann.add_tag("foo")
         ann.add_tag("bar")
         ann.save()
+
+        ann1.add_tag("foo")
+        ann1.add_tag("bar")
+        ann1.save()
 
         tags = ann.tags_split()
         self.assertEquals(len(tags), 3)
         self.assertEquals(tags[0].name, 'bar')
         self.assertEquals(tags[1].name, 'foo')
         self.assertEquals(tags[2].name, 'test_student_three')
+        ann.delete()
+
+        tags = ann1.tags_split()
+        self.assertEquals(len(tags), 3)
+        self.assertEquals(tags[0].name, 'bar')
+        self.assertEquals(tags[1].name, 'foo')
+        self.assertEquals(tags[2].name, 'tag1')
 
     def test_update_reference_in_string(self):
         text = ('<p><a href="/asset/2/annotations/10/">Nice Tie</a>'

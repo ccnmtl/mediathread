@@ -108,7 +108,7 @@ var CollectionList = function (config) {
         return self.filter();
     });
 
-    jQuery(self.el).on('change select2-removed', "select.course-tags", function(evt) {
+    jQuery(self.el).on('change select2-removed', "select.course-tags", function() {
         var elt = jQuery(self.el).find("select.course-tags");
         self.current_records.active_filters.tag = jQuery(elt).val();
         return self.filter();

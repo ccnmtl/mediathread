@@ -18,7 +18,7 @@ class TermValidation(Validation):
             vocabulary_id=bundle.data['vocabulary_id'])
 
         if len(a) > 0:  # vocabulary exists with this name
-            if not 'pk' in bundle.data or a[0].pk != int(bundle.data['pk']):
+            if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
                 # a vocabulary already exists with this name
                 msg = 'A %s term already exists. Please choose another name' \
                     % bundle.data['display_name']
@@ -64,7 +64,7 @@ class VocabularyValidation(Validation):
             object_id=bundle.data['object_id'])
 
         if len(a) > 0:  # vocabulary exists with this name
-            if not 'pk' in bundle.data or a[0].pk != int(bundle.data['pk']):
+            if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
                 # a vocabulary already exists with this name
                 msg = 'A %s concept exists. Please choose another name' \
                     % bundle.data['display_name']

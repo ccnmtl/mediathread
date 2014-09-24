@@ -184,10 +184,16 @@ CollectionList.prototype.constructUrl = function(config, updating) {
             url = MediaThread.urls['your-space'](config.space_owner, config.tag, null, self.citable);
         }
     } else {
-        var active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
-        var active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
+        var url = self.getSpaceUrl();
         
-        url = self.getSpaceUrl(active_tag, active_modified);
+        for (var filter in self.current_records.active_filters) {
+            if (self.current_records.active_filters.hasOwnProperty(filter)) {
+                var val = self.current_records.active_filters[filter];
+                if (val !== null && val.length > 0) {
+                    url += "&" + filter + "=" + escape(val.toString());
+                }
+            }
+        }
     }
     
     if (updating) {

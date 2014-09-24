@@ -88,16 +88,16 @@ class RestrictedMaterialsMixin(object):
         vocabulary = dict((key[len('vocabulary-'):], val.split(","))
                           for key, val in request.GET.items()
                           if key.startswith('vocabulary-'))
-        
+
         visible_notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors,
             tag_string, modified, vocabulary)
-        
+
         search_text = request.GET.get('search_text', '').strip().lower()
         if len(search_text) > 0:
             visible_notes = visible_notes.filter(
-               Q(asset__title__icontains=search_text) |
-               Q(title__icontains=search_text))
+                Q(asset__title__icontains=search_text) |
+                Q(title__icontains=search_text))
 
         # return the related asset ids
         ids = visible_notes.values_list('asset__id', flat=True)

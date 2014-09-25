@@ -78,12 +78,17 @@ var CollectionList = function (config) {
         }
     });
     
-    jQuery(self.el).on('click', "button[name='execute-search']", function (evt) {
-        self.current_records.active_filters.search_text = 
-            jQuery(self.el).find("input[name='search-text']").val();
-        return self.filter();
+    jQuery(self.el).on('keyup', "input[name='search-text']", function (evt) {
+        if (evt.keyCode === 13) {
+            self.current_records.active_filters.search_text = 
+                jQuery(self.el).find("input[name='search-text']").val();
+            return self.filter();
+        } else {
+            jQuery("input[name='search-text']").addClass("populated");
+        }
     });
-    jQuery(self.el).on('click', "button[name='clear-search']", function (evt) {
+    jQuery(self.el).on('click', "span.search-text-clear", function (evt) {
+        jQuery("input[name='search-text']").removeClass("populated");
         self.current_records.active_filters.search_text = '';
         return self.filter();
     });

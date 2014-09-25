@@ -57,17 +57,14 @@
             </div>                         
         </div>
         
-        <div class="search-widget">
-            <h3>SEARCH BY...</h3>
-            <span class="switcher-prefix">Title </span>
-            <input type="text" name="search-text" value="{{active_filters.search_text}}" />
-            <button class="btn" name="execute-search">Go</button>
-            <button class="btn" name="clear-search">Clear</button>
-        </div>
-        
-        <div class="visualclear"></div>
-        
         <div class="filter-widget">
+            <h3>SEARCH...</h3>
+            <div class="switcher-search-text {{#active_filters.search_text?}}populated{{/active_filters.search_text?}}">
+                <span class="search-text-prefix"><img src="/media/img/icons/search.png" /></span>
+                <input type="text" name="search-text" value="{{active_filters.search_text}}" placeholder="Item and selection titles"/>
+                <span class="search-text-clear"><img src="/media/img/icons/meth_clear.png" /><span>
+            </div>
+        
             <h3>FILTER BY...</h3>
         
             {{#>>switcher_collection_chooser}}

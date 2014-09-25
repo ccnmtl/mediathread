@@ -2289,13 +2289,32 @@ div.homepage-column-info {
 /*Assignment Specific styles */
 
 /** Switcher CSS **/
-.search-widget {
-    
+
+.filter-widget {
+    padding: 0 2px 23px 0px;
+    /*margin-bottom here causes a firefox bug to push down the top instead
+      so put the margin-bottom on div.switcher
+     */
+    margin-bottom: 0px;
+    position: relative;
 }
 
-.search-widget input[name='search-text'] {
+.filter-widget h3 {
+    margin: 10px 0 12px 3px;
+    color: #777;
+}
+
+.filter-widget h4 {
+    font-size: 80%;
+    font-weight: bold;
+    display: inline;
+    float: left;
+    margin: 2px 5px;
+}
+
+.switcher-search-text input[name='search-text'] {
     padding: 5px;
-    margin: 1px 0;
+    margin: 0 0 25px 0;
     font-family: sans-serif;
     font-size: 100%;
     color: #777;
@@ -2311,31 +2330,37 @@ div.homepage-column-info {
     -webkit-border-bottom-right-radius: 4px;
     -moz-border-radius-bottomright: 4px;
     border-bottom-right-radius: 4px;
+    height: 18px;
+    width: 84%;
 }
 
-.filter-widget {
-    padding: 0 2px 2px 0px;
-    /*margin-bottom here causes a firefox bug to push down the top instead
-      so put the margin-bottom on div.switcher
-     */
-    margin-bottom: 0px;
-    position: relative;
+.switcher-search-text span.search-text-clear {
+    display: none;
+    border-left: 0;
+    -webkit-border-top-right-radius: 4px;
+    -moz-border-radius-topright: 4px;
+    border-top-right-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-border-radius-bottomright: 4px;
+    border-bottom-right-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 6px 2px 6px 0;
+    border-left: 0;
+    margin-left: -5px;
+    cursor: pointer;
 }
 
-.search-widget h3,
-.filter-widget h3 {
-    margin: 10px 0 12px 3px;
-    color: #777;
-}
-
-.filter-widget h4 {
-    font-size: 80%;
-    font-weight: bold;
+.switcher-search-text.populated span.search-text-clear {
     display: inline;
-    float: left;
-    margin: 2px 5px;
 }
-
+    
+.switcher-search-text.populated input[name='search-text'] {
+    border-right: 0;
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    width: 79%;
+}
 
 .switcher {
     z-index: 9998;/*IE z-index bug workaround*/
@@ -2387,6 +2412,7 @@ div a.switcher-top {
     text-overflow: ellipsis;
 }
 
+span.search-text-prefix,
 span.course-tags-prefix,
 span.concept-prefix,
 span.switcher-prefix {
@@ -2407,6 +2433,7 @@ span.switcher-prefix {
     border-bottom-left-radius: 4px;    
 }
 
+span.search-text-prefix,
 span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;
@@ -2417,6 +2444,10 @@ span.concept-prefix {
     overflow:hidden; 
     text-overflow: ellipsis;
     padding: 6px 7px 0 7px;    
+}
+
+span.search-text-prefix {
+    width: 5%;
 }
 
 

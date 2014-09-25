@@ -124,11 +124,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
             'asset__id', 'id').select_related()
 
         if record_owner:
-            # only return original author's selections
-            #self = self.exclude(~Q(author=record_owner))
-            
-            # only return original author's global annotations, exclude other
-            # global annotations
+            # only return original author's global annotations, exclude others
             self = self.exclude(~Q(author=record_owner), range1__isnull=True)
 
         # only return notes that are authored by certain people

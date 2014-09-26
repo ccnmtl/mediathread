@@ -78,19 +78,33 @@ var CollectionList = function (config) {
         }
     });
     
+    jQuery(self.el).on('click', '.filter-widget h3', function(evt) {
+        jQuery(evt.currentTarget).parent().toggleClass("collapsed");
+        jQuery(window).trigger("resize");
+    });
+    
+    jQuery(self.el).on('blur', "input[name='search-text']", function (evt) {
+        self.current_records.active_filters.search_text = 
+            jQuery(self.el).find("input[name='search-text']").val();
+    });
+
     jQuery(self.el).on('keyup', "input[name='search-text']", function (evt) {
         if (evt.keyCode === 13) {
             self.current_records.active_filters.search_text = 
                 jQuery(self.el).find("input[name='search-text']").val();
             return self.filter();
         } else {
-            jQuery("input[name='search-text']").addClass("populated");
+            jQuery("input[name='search-text']").parent().addClass("populated");
         }
     });
     jQuery(self.el).on('click', "span.search-text-clear", function (evt) {
-        jQuery("input[name='search-text']").removeClass("populated");
-        self.current_records.active_filters.search_text = '';
-        return self.filter();
+        jQuery("input[name='search-text']").parent().removeClass("populated");
+        
+        if (self.current_records.active_filters.search_text && 
+                self.current_records.active_filters.search_text.length > 0) {
+            self.current_records.active_filters.search_text = '';
+            return self.filter();
+        }
     });
     
     jQuery(self.el).on('click', "a.switcher-choice.filterbydate", function (evt) {

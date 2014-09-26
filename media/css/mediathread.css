@@ -2291,7 +2291,7 @@ div.homepage-column-info {
 /** Switcher CSS **/
 
 .filter-widget {
-    padding: 0 2px 23px 0px;
+    padding: 0 2px 2px 0px;
     /*margin-bottom here causes a firefox bug to push down the top instead
       so put the margin-bottom on div.switcher
      */
@@ -2299,9 +2299,35 @@ div.homepage-column-info {
     position: relative;
 }
 
-.filter-widget h3 {
+.filter-widget .switcher-filter-container {
+    margin-top: 25px;
+}
+
+.filter-widget .switcher-filter-container h3,
+.filter-widget .switcher-search-container h3 {
     margin: 10px 0 12px 3px;
     color: #777;
+    background-repeat: no-repeat;
+    background-position: -6px center;
+    background-image: url(/media/img/icons/open_list.png);
+    padding-left: 13px;
+    cursor: pointer;
+}
+
+.filter-widget .switcher-filter-container.collapsed h3,
+.filter-widget .switcher-search-container.collapsed h3 {
+    background-image: url(/media/img/icons/closed_list.png);
+}
+
+.filter-widget .switcher-filter-container.collapsed .switcher-tool,
+.filter-widget .switcher-search-container.collapsed .switcher-tool {
+    display: none;
+}
+
+.filter-widget h3 span {
+    font-size: 75%;
+    margin-left: 5px;
+    font-weight: normal;
 }
 
 .filter-widget h4 {
@@ -2312,9 +2338,11 @@ div.homepage-column-info {
     margin: 2px 5px;
 }
 
+
+
 .switcher-search-text input[name='search-text'] {
     padding: 5px;
-    margin: 0 0 25px 0;
+    margin: 0 0 0 0;
     font-family: sans-serif;
     font-size: 100%;
     color: #777;
@@ -2322,7 +2350,7 @@ div.homepage-column-info {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    background: transparent !important;
+    background-color: white;
     min-width: 155px;
     -webkit-border-top-right-radius: 4px;
     -moz-border-radius-topright: 4px;
@@ -2348,6 +2376,7 @@ div.homepage-column-info {
     border-left: 0;
     margin-left: -5px;
     cursor: pointer;
+    background-color: white;
 }
 
 .switcher-search-text.populated span.search-text-clear {
@@ -2450,6 +2479,13 @@ span.search-text-prefix {
     width: 5%;
 }
 
+div.media-column .switcher-search-text input[name='search-text'] {
+    width: 82%;
+}
+
+div.media-column .switcher-search-text.populated input[name='search-text'] {
+    width: 75%;
+}
 
 div.media-column .select2-container-multi .select2-choices {    
     -webkit-border-top-right-radius: 4px;

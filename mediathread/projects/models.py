@@ -49,7 +49,8 @@ PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
 
 class ProjectManager(models.Manager):
 
-    def migrate(self, project_set, course, user, object_map):
+    def migrate(self, project_set, course, user, object_map,
+                include_tags, include_notes):
         note_model = models.get_model('djangosherd', 'sherdnote')
         asset_model = models.get_model('assetmgr', 'asset')
 
@@ -78,9 +79,9 @@ class ProjectManager(models.Manager):
                             object_map['assets'][old_note.asset.id] = new_asset
 
                         # migrate the note
-                        new_note = note_model.objects.migrate_one(old_note,
-                                                                  new_asset,
-                                                                  user)
+                        new_note = note_model.objects.migrate_one(
+                            old_note, new_asset, user,
+                            include_tags, include_notes)
 
                         object_map['notes'][old_note.id] = new_note
 

@@ -58,7 +58,8 @@ class AssetManager(models.Manager):
                                 Q(source__label='archive'))
         return assets.order_by('-sherdnote_set__modified')
 
-    def migrate(self, assets, course, user, faculty, object_map):
+    def migrate(self, assets, course, user, faculty, object_map,
+                include_tags, include_notes):
         note_model = models.get_model('djangosherd', 'sherdnote')
         for old_asset in assets:
             if old_asset.id not in object_map['assets']:
@@ -73,16 +74,17 @@ class AssetManager(models.Manager):
                 for old_note in notes:
                     if (not old_note.is_global_annotation() and
                             old_note.id not in object_map['notes']):
-                        new_note = note_model.objects.migrate_one(old_note,
-                                                                  new_asset,
-                                                                  user)
+                        new_note = note_model.objects.migrate_one(
+                            old_note, new_asset, user,
+                            include_tags, include_notes)
                         object_map['notes'][old_note.id] = new_note
 
                 # migrate the requesting user's global annotation
                 # on this asset, if it exists
                 gann = old_asset.global_annotation(user, False)
                 if gann:
-                    note_model.objects.migrate_one(gann, new_asset, user)
+                    note_model.objects.migrate_one(gann, new_asset, user,
+                                                   include_tags, include_notes)
 
         return object_map
 

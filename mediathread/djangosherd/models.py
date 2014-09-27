@@ -245,7 +245,8 @@ class SherdNoteManager(models.Manager):
 
         return ret_val
 
-    def migrate_one(self, old_note, new_asset, user):
+    def migrate_one(self, old_note, new_asset, user,
+                    include_tags, include_notes):
         new_note = None
 
         if (old_note.is_global_annotation() and
@@ -271,14 +272,12 @@ class SherdNoteManager(models.Manager):
                                      title=old_note.title,
                                      author=user)
 
-        if (old_note.author == user or not old_note.is_global_annotation()):
-            if old_note.body:
-                new_note.body = old_note.body
-            if old_note.tags:
-                new_note.tags = old_note.tags
+        if include_tags:
+            new_note.tags = (new_note.tags or '') + (old_note.tags or '')
+        if include_notes:
+            new_note.body = (new_note.body or '') + (old_note.body or '')
 
         new_note.save()
-
         return new_note
 
 

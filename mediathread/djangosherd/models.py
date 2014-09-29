@@ -313,7 +313,7 @@ class SherdNote(Annotation):
         return self.asset
 
     def delete(self):
-        Tag.objects.get_for_object(self).delete()
+        Tag.objects.update_tags(self, None)
         return Annotation.delete(self)
 
     def get_absolute_url(self):

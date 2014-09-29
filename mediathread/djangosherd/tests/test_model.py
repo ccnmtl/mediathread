@@ -265,43 +265,92 @@ class SherdNoteTest(MediathreadTestCase):
         self.assertEquals(notes[0].title, note.title)
 
 
-class SherdNoteFixtureTest(TestCase):
-    fixtures = ['unittest_sample_course.json']
+class SherdNoteFilterTest(MediathreadTestCase):
 
-    def test_filter_by_authors(self):
-        qs = Asset.objects.filter(title='MAAP Award Reception')
-        author = User.objects.get(username='test_student_one')
+    def setUp(self):
+        super(self.__class__, self).setUp()
 
-        names = ['test_instructor', 'test_instructor_two', 'test_student_one']
+        self.asset = AssetFactory(course=self.sample_course,
+                                  author=self.student_one)
+
+        self.ga1 = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            tags=',student_one_item', title=None, range1=None, range2=None)
+        self.assertTrue(self.ga1.is_global_annotation())
+        self.note1 = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            tags=',student_one_selection', range1=0, range2=1)
+
+        self.ga2 = SherdNoteFactory(
+            asset=self.asset, author=self.student_two,
+            tags=',student_two_item', title=None, range1=None, range2=None)
+        self.note2 = SherdNoteFactory(
+            asset=self.asset, author=self.student_two,
+            tags=',student_two_selection', range1=0, range2=1)
+
+        self.ga3 = SherdNoteFactory(
+            asset=self.asset, author=self.instructor_one,
+            tags=',instructor_one_item', title=None, range1=None, range2=None)
+        self.note3 = SherdNoteFactory(
+            asset=self.asset, author=self.instructor_one,
+            tags=',image,instructor_one_selection,', range1=0, range2=1)
+
+    def test_filter_by_record_owner(self):
+        qs = Asset.objects.filter(id=self.asset.id)
+        author = User.objects.get(username='student_one')
+
+        names = ['instructor_one', 'instructor_two', 'student_one']
         users = User.objects.filter(username__in=names).values_list('id')
         visible_authors = users.values_list('id', flat=True)
 
         notes = SherdNote.objects.get_related_notes(qs,
                                                     author,
                                                     visible_authors)
-        self.assertEquals(notes.count(), 3)
+        self.assertEquals(notes.count(), 2)
 
-        self.assertEquals(notes[0].author.username, "test_instructor")
-        self.assertFalse(notes[0].is_global_annotation())
-        self.assertEquals(notes[0].title, 'Our esteemed leaders')
+        self.assertEquals(notes[0], self.ga1)
+        self.assertEquals(notes[1], self.note1)
 
-        self.assertEquals(notes[1].author, author)
-        self.assertEquals(notes[1].title, "The Award")
-        self.assertFalse(notes[1].is_global_annotation())
+    def test_filter_no_authors(self):
+        qs = Asset.objects.filter(id=self.asset.id)
 
-        self.assertEquals(notes[2].author, author)
-        self.assertTrue(notes[2].is_global_annotation())
+        notes = SherdNote.objects.get_related_notes(qs, None, [])
+        self.assertEquals(notes.count(), 6)
+
+        self.assertEquals(notes[0], self.ga1)
+        self.assertEquals(notes[1], self.note1)
+        self.assertEquals(notes[2], self.ga2)
+        self.assertEquals(notes[3], self.note2)
+        self.assertEquals(notes[4], self.ga3)
+        self.assertEquals(notes[5], self.note3)
+
+    def test_filter_by_visible_authors(self):
+        qs = Asset.objects.filter(id=self.asset.id)
+
+        names = ['instructor_one', 'instructor_two', 'student_one']
+        users = User.objects.filter(username__in=names).values_list('id')
+        visible_authors = users.values_list('id', flat=True)
+
+        notes = SherdNote.objects.get_related_notes(qs,
+                                                    None,
+                                                    visible_authors)
+        self.assertEquals(notes.count(), 4)
+
+        self.assertEquals(notes[0], self.ga1)
+        self.assertEquals(notes[1], self.note1)
+        self.assertEquals(notes[2], self.ga3)
+        self.assertEquals(notes[3], self.note3)
 
     def test_filter_by_tags(self):
         notes = SherdNote.objects.filter_by_tags('student_one_selection')
         self.assertEquals(notes.count(), 1)
-        self.assertEquals(notes[0].title, 'The Award')
+        self.assertEquals(notes[0], self.note1)
 
-        notes = SherdNote.objects.filter(asset__title='MAAP Award Reception')
+        notes = SherdNote.objects.filter(asset=self.asset)
         self.assertEquals(notes.count(), 6)
 
         notes = notes.filter_by_tags(
             'student_two_selection,image').order_by('id')
         self.assertEquals(notes.count(), 2)
-        self.assertEquals(notes[0].title, 'Our esteemed leaders')
-        self.assertEquals(notes[1].title, 'Nice Tie')
+        self.assertEquals(notes[0], self.note2)
+        self.assertEquals(notes[1], self.note3)

@@ -124,11 +124,10 @@ class SherdNoteQuerySet(models.query.QuerySet):
             'asset__id', 'id').select_related()
 
         if record_owner:
-            # only return original author's global annotations
-            self = self.exclude(~Q(author=record_owner), range1__isnull=True)
-
-        # only return notes that are authored by certain people
-        if len(visible_authors) > 0:
+            # only return author's selections
+            self = self.exclude(~Q(author=record_owner))
+        elif len(visible_authors) > 0:
+            # only return notes that are authored by certain people
             self = self.filter(author__id__in=visible_authors)
 
         # filter by tag string, date, vocabulary

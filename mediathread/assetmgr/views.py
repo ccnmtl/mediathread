@@ -567,7 +567,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         /api/asset/
     """
 
-    valid_filters = ['tag', 'modified']
+    valid_filters = ['tag', 'modified', 'search_text']
 
     def get_context(self, request, assets, notes):
         # Allow the logged in user to add assets to his composition

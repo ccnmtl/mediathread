@@ -530,7 +530,6 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                       AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
-        self.record_owner = request.user
         the_assets = Asset.objects.filter(pk=asset_id, course=request.course)
         if the_assets.count() == 0:
             return asset_switch_course(request, asset_id)
@@ -547,7 +546,6 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                                                "help_item_detail_view",
                                                True)
 
-        ctx = AssetResource().render_one(request, asset, notes)
         ctx = {
             'user_settings': {'help_item_detail_view': help_setting},
             'type': 'asset',

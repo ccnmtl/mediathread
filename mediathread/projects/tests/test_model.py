@@ -79,7 +79,8 @@ class ProjectTest(TestCase):
 
         object_map = {'assets': {}, 'notes': {}, 'projects': {}}
         object_map = Project.objects.migrate(projects, course,
-                                             user, object_map)
+                                             user, object_map,
+                                             True, True)
 
         self.assertEquals(len(course.asset_set.all()), 4)
         asset = Asset.objects.get(title="Mediathread: Introduction",
@@ -127,8 +128,12 @@ class ProjectTest(TestCase):
                         "Mediathread: Introduction")
         self.assertEquals(citations[1].id,
                           citations[1].asset.global_annotation(user, False).id)
-        self.assertEquals(citations[1].tags, ',test_instructor_two')
-        self.assertEquals(citations[1].body, 'test_instructor_two notes')
+        self.assertEquals(
+            citations[1].tags,
+            u',youtube, test_instructor_item,test_instructor_two')
+        self.assertEquals(
+            citations[1].body,
+            u'All credit to Mark and Caseytest_instructor_two notes')
 
         # Own selection
         self.assertEquals(citations[2].title, "Video Selection Is Time-based")

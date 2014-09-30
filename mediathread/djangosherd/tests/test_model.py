@@ -1,6 +1,5 @@
 # pylint: disable-msg=R0904
 from django.contrib.auth.models import User
-from django.test.testcases import TestCase
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote

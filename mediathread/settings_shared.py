@@ -10,7 +10,6 @@ import os.path
 import re
 import sys
 
-VERSION = '2014_Fall.1'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ADMINS = (
@@ -76,9 +75,10 @@ MEDIA_ROOT = "/var/www/mediathread/uploads/"
 MEDIA_URL = "/uploads/"
 STATIC_URL = "/media/"
 
+# Override the secret key with your own. This is for development only
 SECRET_KEY = ')ng#)ef_u@_^zvvu@dxm7ql-yb^_!a6%v3v^j3b(mp+)l+5%@h'
 
-#appends a slash if nothing is found without a slash.
+# appends a slash if nothing is found without a slash.
 APPEND_SLASH = True
 
 TEMPLATE_LOADERS = (

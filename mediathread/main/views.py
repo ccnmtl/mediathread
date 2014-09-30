@@ -390,7 +390,7 @@ class RequestCourseView(FormView):
 class ContactUsView(FormView):
     template_name = 'main/contact.html'
     form_class = ContactUsForm
-    success_url = "/course/request/success/"
+    success_url = "/contact/success/"
 
     def get_initial(self):
         """
@@ -409,22 +409,26 @@ class ContactUsView(FormView):
         return super(ContactUsView, self).get_initial()
 
     def form_valid(self, form):
+        subject = "Mediathread Contact Us Request"
         form_data = form.cleaned_data
-        tmpl = loader.get_template('main/contactus_description.txt')
+        tmpl = loader.get_template('main/contact_description.txt')
         form_data['description'] = tmpl.render(Context(form_data))
 
+        # POST to the task assignment destination
         task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
         if task_email is not None:
-            # POST to the contact us destination
             POST(task_email, params=form_data, async=True)
 
+        # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
-        if support_email is None:
-            support_email = settings.SERVER_EMAIL
+        if support_email is not None:
+            sender = form_data['email']
+            recipients = (support_email,)
+            send_mail(subject, form_data['description'], sender, recipients)
 
-        subject = "Mediathread Contact Us Request"
-        sender = form_data['email']
-        recipients = support_email
-        send_mail(subject, form_data['description'], sender, recipients)
+        # POST back to the user. Assumes task or support emails are set.
+        tmpl = loader.get_template('main/contact_email_response.txt')
+        send_mail(subject, tmpl.render(Context(form_data)),
+                  settings.SERVER_EMAIL, (form_data['email'],))
 
-        return super(RequestCourseView, self).form_valid(form)
+        return super(ContactUsView, self).form_valid(form)

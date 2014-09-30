@@ -72,6 +72,7 @@ urlpatterns = patterns(
 
     (r'^comments/', include('django.contrib.comments.urls')),
 
+    # Columbia only request forms.
     (r'^contact/success/$',
      TemplateView.as_view(template_name="main/contact_success.html")),
     (r'^contact/$', ContactUsView.as_view()),

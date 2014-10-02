@@ -1,4 +1,4 @@
-#pylint: disable-msg=E1101
+# pylint: disable-msg=E1101
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType

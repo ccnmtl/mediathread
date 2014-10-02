@@ -283,8 +283,8 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
         from_course = get_object_or_404(Course, id=from_course_id)
         faculty = [user.id for user in from_course.faculty.all()]
 
-        include_tags = request.POST.get('include_tags', False)
-        include_notes = request.POST.get('include_notes', False)
+        include_tags = request.POST.get('include_tags', 'false') == 'true'
+        include_notes = request.POST.get('include_notes', 'false') == 'true'
 
         # maps old ids to new objects
         object_map = {'assets': {},

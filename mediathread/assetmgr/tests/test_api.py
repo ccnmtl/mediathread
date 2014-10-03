@@ -1,5 +1,5 @@
-#pylint: disable-msg=R0904
-#pylint: disable-msg=E1103
+# pylint: disable-msg=R0904
+# pylint: disable-msg=E1103
 from courseaffils.models import Course
 from datetime import datetime, timedelta
 from mediathread.api import TagResource
@@ -66,16 +66,14 @@ class AssetApiTest(ResourceTestCase):
         self.assertFalse(the_json['citable'])
         self.assertFalse(the_json['is_faculty'])
         self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 3)
+        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
 
         annotations = the_json['assets'][0]['annotations']
-        self.assertEquals(annotations[0]['title'], 'Our esteemed leaders')
-        self.assertEquals(annotations[1]['title'], 'The Award')
-        self.assertEquals(annotations[2]['title'], 'Nice Tie')
+        self.assertEquals(annotations[0]['title'], 'Nice Tie')
 
         # student two's tags
-        self.assertEquals(len(annotations[2]['metadata']['tags']), 1)
-        self.assertEquals(annotations[2]['metadata']['body'],
+        self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
+        self.assertEquals(annotations[0]['metadata']['body'],
                           "student two selection note")
 
         self.assertTrue('global_annotation' in the_json['assets'][0])

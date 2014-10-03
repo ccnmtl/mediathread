@@ -54,7 +54,8 @@ class AssetTest(TestCase):
 
         object_map = {'assets': {}, 'notes': {}}
         object_map = Asset.objects.migrate(
-            assets, course, user, faculty, object_map)
+            assets, course, user, faculty, object_map,
+            True, True)
 
         self.assertEquals(len(course.asset_set.all()), 3)
         asset = object_map['assets'][1]
@@ -115,30 +116,34 @@ class AssetTest(TestCase):
         global_annotation = SherdNote.objects.get(id=1)
         global_note = SherdNote.objects.migrate_one(global_annotation,
                                                     new_asset,
-                                                    new_user)
+                                                    new_user, True, True)
         self.assertTrue(global_note.is_global_annotation())
         self.assertEquals(global_note.author, new_user)
         self.assertEquals(global_note.title, None)
-        self.assertEquals(global_note.tags, '')
-        self.assertEquals(global_note.body, None)
+        self.assertEquals(global_note.tags, ',youtube, test_instructor_item')
+        self.assertEquals(global_note.body, u'All credit to Mark and Casey')
 
         # try to migrate another global annotation as well
         # the global annotation that was already created will come back
         another_global_annotation = SherdNote.objects.get(id=20)
         another_note = SherdNote.objects.migrate_one(another_global_annotation,
                                                      new_asset,
-                                                     new_user)
+                                                     new_user,
+                                                     True,
+                                                     True)
         self.assertEquals(another_note, global_note)
 
         selected_annotation = SherdNote.objects.get(id=2)
         new_note = SherdNote.objects.migrate_one(selected_annotation,
                                                  new_asset,
-                                                 new_user)
+                                                 new_user,
+                                                 True,
+                                                 True)
         self.assertFalse(new_note.is_global_annotation())
         self.assertEquals(new_note.author, new_user)
         self.assertEquals(new_note.title, 'Manage Sources')
         self.assertEquals(new_note.tags, ',video')
-        self.assertEquals(new_note.body, None)
+        self.assertEquals(new_note.body, '')
 
     def test_migrate_one_duplicates(self):
         asset = Asset.objects.get(id=1)
@@ -160,14 +165,17 @@ class AssetTest(TestCase):
         selected_annotation = SherdNote.objects.get(id=2)
         new_note = SherdNote.objects.migrate_one(selected_annotation,
                                                  new_asset,
-                                                 new_user)
+                                                 new_user,
+                                                 True,
+                                                 True)
         self.assertFalse(new_note.is_global_annotation())
         self.assertEquals(new_note.author, new_user)
         self.assertEquals(new_note.title, 'Manage Sources')
 
         duplicate_note = SherdNote.objects.migrate_one(selected_annotation,
                                                        new_asset,
-                                                       new_user)
+                                                       new_user,
+                                                       True, True)
         self.assertEquals(new_note, duplicate_note)
 
     def test_update_reference_in_string(self):

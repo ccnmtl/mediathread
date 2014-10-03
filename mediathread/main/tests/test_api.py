@@ -4,7 +4,7 @@ from courseaffils.models import Course
 from django.contrib.auth.models import User
 from mediathread.api import UserResource
 from tastypie.test import ResourceTestCase
-from .factories import (UserFactory, GroupFactory, CourseFactory)
+from mediathread.factories import (UserFactory, GroupFactory, CourseFactory)
 
 
 class UserApiTest(ResourceTestCase):

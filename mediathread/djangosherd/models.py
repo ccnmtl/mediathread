@@ -1,4 +1,4 @@
-#pylint: disable-msg=E1101
+# pylint: disable-msg=E1101
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
@@ -124,11 +124,10 @@ class SherdNoteQuerySet(models.query.QuerySet):
             'asset__id', 'id').select_related()
 
         if record_owner:
-            # only return original author's global annotations
-            self = self.exclude(~Q(author=record_owner), range1__isnull=True)
-
-        # only return notes that are authored by certain people
-        if len(visible_authors) > 0:
+            # only return author's selections
+            self = self.exclude(~Q(author=record_owner))
+        elif len(visible_authors) > 0:
+            # only return notes that are authored by certain people
             self = self.filter(author__id__in=visible_authors)
 
         # filter by tag string, date, vocabulary
@@ -245,7 +244,8 @@ class SherdNoteManager(models.Manager):
 
         return ret_val
 
-    def migrate_one(self, old_note, new_asset, user):
+    def migrate_one(self, old_note, new_asset, user,
+                    include_tags, include_notes):
         new_note = None
 
         if (old_note.is_global_annotation() and
@@ -271,14 +271,12 @@ class SherdNoteManager(models.Manager):
                                      title=old_note.title,
                                      author=user)
 
-        if (old_note.author == user or not old_note.is_global_annotation()):
-            if old_note.body:
-                new_note.body = old_note.body
-            if old_note.tags:
-                new_note.tags = old_note.tags
+        if include_tags:
+            new_note.tags = (new_note.tags or '') + (old_note.tags or '')
+        if include_notes:
+            new_note.body = (new_note.body or '') + (old_note.body or '')
 
         new_note.save()
-
         return new_note
 
 

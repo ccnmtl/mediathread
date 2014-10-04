@@ -78,6 +78,34 @@ var CollectionList = function (config) {
         }
     });
     
+    jQuery(self.el).on('click', '.filter-widget h3', function(evt) {
+        jQuery(evt.currentTarget).parent().toggleClass("collapsed");
+        jQuery(window).trigger("resize");
+    });
+    
+    jQuery(self.el).on('blur', "input[name='search-text']", function (evt) {
+        self.current_records.active_filters.search_text = 
+            jQuery(self.el).find("input[name='search-text']").val();
+    });
+
+    jQuery(self.el).on('keyup', "input[name='search-text']", function (evt) {
+        if (evt.keyCode === 13) {
+            self.current_records.active_filters.search_text = 
+                jQuery(self.el).find("input[name='search-text']").val();
+            return self.filter();
+        } else {
+            jQuery("input[name='search-text']").parent().addClass("populated");
+        }
+    });
+    jQuery(self.el).on('click', "span.search-text-clear", function (evt) {
+        jQuery("input[name='search-text']").parent().removeClass("populated");
+        
+        if (self.current_records.active_filters.search_text && 
+                self.current_records.active_filters.search_text.length > 0) {
+            self.current_records.active_filters.search_text = '';
+            return self.filter();
+        }
+    });
     
     jQuery(self.el).on('click', "a.switcher-choice.filterbydate", function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
@@ -92,14 +120,14 @@ var CollectionList = function (config) {
         return self.filter();
     });
     
-    jQuery(self.el).find("select.vocabulary").on('change select2-removed', function(evt) {
+    jQuery(self.el).on('change select2-removed', "select.vocabulary", function(evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var name = jQuery(srcElement).attr("name");
         self.current_records.active_filters[name] = jQuery(srcElement).val();
         return self.filter();
     });
 
-    jQuery(self.el).find("select.course-tags").on('change select2-removed', function() {
+    jQuery(self.el).on('change select2-removed', "select.course-tags", function() {
         var elt = jQuery(self.el).find("select.course-tags");
         self.current_records.active_filters.tag = jQuery(elt).val();
         return self.filter();
@@ -175,10 +203,16 @@ CollectionList.prototype.constructUrl = function(config, updating) {
             url = MediaThread.urls['your-space'](config.space_owner, config.tag, null, self.citable);
         }
     } else {
-        var active_modified = ('modified' in self.current_records.active_filters) ? self.current_records.active_filters.modified : null;
-        var active_tag = ('tag' in self.current_records.active_filters) ? self.current_records.active_filters.tag : null;
+        var url = self.getSpaceUrl();
         
-        url = self.getSpaceUrl(active_tag, active_modified);
+        for (var filter in self.current_records.active_filters) {
+            if (self.current_records.active_filters.hasOwnProperty(filter)) {
+                var val = self.current_records.active_filters[filter];
+                if (val !== null && val.length > 0) {
+                    url += "&" + filter + "=" + escape(val.toString());
+                }
+            }
+        }
     }
     
     if (updating) {
@@ -308,7 +342,7 @@ CollectionList.prototype.filter = function () {
         if (self.current_records.active_filters.hasOwnProperty(filter)) {
             var val = self.current_records.active_filters[filter];
             if (val !== null && val.length > 0) {
-                url += "&" + filter + "=" + val.toString();
+                url += "&" + filter + "=" + escape(val.toString());
             }
         }
     }
@@ -340,6 +374,7 @@ CollectionList.prototype.getSpaceUrl = function (active_tag, active_modified) {
 CollectionList.prototype.createAssetThumbs = function (assets) {
     var self = this;
     djangosherd.thumbs = [];
+		var isThumb = function(s) { return s.label == 'thumb'; };
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
@@ -348,8 +383,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
         
         if (!asset.thumbable) {
             if (jQuery(target_parent).hasClass("static-height")) {
-                var thumbs = jQuery.grep(asset.sources, function(s) {
-                   return s.label == 'thumb'; }); 
+                var thumbs = jQuery.grep(asset.sources, isThumb); 
                 if (thumbs.length && thumbs[0].height > 240) {
                     jQuery(target_parent).css({
                         height: (thumbs[0].height + 75) + 'px'

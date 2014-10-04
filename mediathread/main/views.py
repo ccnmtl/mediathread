@@ -283,6 +283,9 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
         from_course = get_object_or_404(Course, id=from_course_id)
         faculty = [user.id for user in from_course.faculty.all()]
 
+        include_tags = request.POST.get('include_tags', 'false') == 'true'
+        include_notes = request.POST.get('include_notes', 'false') == 'true'
+
         # maps old ids to new objects
         object_map = {'assets': {},
                       'notes': {},
@@ -303,13 +306,15 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             asset_ids = request.POST.getlist('asset_ids[]')
             assets = Asset.objects.filter(id__in=asset_ids)
             object_map = Asset.objects.migrate(
-                assets, request.course, owner, faculty, object_map)
+                assets, request.course, owner, faculty, object_map,
+                include_tags, include_notes)
 
         if 'project_ids[]' in request.POST:
             project_ids = request.POST.getlist('project_ids[]')
             projects = Project.objects.filter(id__in=project_ids)
             object_map = Project.objects.migrate(
-                projects, request.course, owner, object_map)
+                projects, request.course, owner, object_map,
+                include_tags, include_notes)
 
         json_stream = json.dumps({
             'success': True,

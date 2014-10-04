@@ -1,5 +1,12 @@
-#pylint: disable-msg=C0302
-from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
+# pylint: disable-msg=C0302
+import datetime
+import hashlib
+import hmac
+import json
+import re
+import urllib
+import urllib2
+
 from courseaffils.models import CourseAccess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -7,12 +14,15 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.db.models.aggregates import Max
+from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
+
+from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source
@@ -25,13 +35,6 @@ from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-import datetime
-import hashlib
-import hmac
-import json
-import re
-import urllib
-import urllib2
 
 
 @login_required
@@ -530,7 +533,6 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                       AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
-        self.record_owner = request.user
         the_assets = Asset.objects.filter(pk=asset_id, course=request.course)
         if the_assets.count() == 0:
             return asset_switch_course(request, asset_id)
@@ -541,13 +543,15 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
         if assets.count() == 0 and the_assets[0].course != request.course:
             return HttpResponseForbidden("forbidden")
 
+        # only return original author's global annotations
+        notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
+
         asset = the_assets[0]
 
         help_setting = UserSetting.get_setting(request.user,
                                                "help_item_detail_view",
                                                True)
 
-        ctx = AssetResource().render_one(request, asset, notes)
         ctx = {
             'user_settings': {'help_item_detail_view': help_setting},
             'type': 'asset',
@@ -569,7 +573,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         /api/asset/
     """
 
-    valid_filters = ['tag', 'modified']
+    valid_filters = ['tag', 'modified', 'search_text']
 
     def get_context(self, request, assets, notes):
         # Allow the logged in user to add assets to his composition

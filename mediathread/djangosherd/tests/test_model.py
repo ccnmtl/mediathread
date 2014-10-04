@@ -1,66 +1,30 @@
-#pylint: disable-msg=R0904
-from courseaffils.models import Course
-from datetime import datetime
+# pylint: disable-msg=R0904
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase
+
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
+from mediathread.factories import MediathreadTestCase, AssetFactory, \
+    SherdNoteFactory
+from mediathread.taxonomy.models import Vocabulary, Term
 
 
-class SherdNoteTest(TestCase):
-    fixtures = ['unittest_sample_course.json']
-
-    def create_vocabularies(self, course, taxonomy):
-        course_type = ContentType.objects.get_for_model(course)
-
-        for name, terms in taxonomy.items():
-            concept = Vocabulary(display_name=name,
-                                 content_type=course_type,
-                                 object_id=course.id)
-            concept.save()
-            for term_name in terms:
-                term = Term(display_name=term_name,
-                            vocabulary=concept)
-                term.save()
-
-    def create_term_relationship(self, content_object, term):
-        # Add some tags to a few notes
-        content_type = ContentType.objects.get_for_model(content_object)
-        TermRelationship.objects.get_or_create(
-            term=term,
-            content_type=content_type,
-            object_id=content_object.id)
-
-    def setUp(self):
-        course = Course.objects.get(title="Sample Course")
-        taxonomy = {
-            'Shapes': ['Square', 'Triangle'],
-            'Colors': ['Red', 'Blue', 'Green']
-        }
-        self.create_vocabularies(course, taxonomy)
+class SherdNoteTest(MediathreadTestCase):
 
     def test_is_global_annotation(self):
-        # Alternate Course, test_student_three
-        global_annotation = SherdNote.objects.get(id=16)
+        asset = AssetFactory(course=self.sample_course)
+        global_annotation, created = SherdNote.objects.global_annotation(
+            asset, self.student_three, auto_create=True)
         self.assertTrue(global_annotation.is_global_annotation())
-        self.assertEquals(global_annotation.title, None)
-        self.assertEquals(global_annotation.body, "student three item note")
 
-        # Alternate Course, test_student_three
-        whole_item_annotation = SherdNote.objects.get(id=15)
+        whole_item_annotation = SherdNoteFactory(
+            asset=asset, author=self.student_three,
+            title="Whole Item Selection", range1=0, range2=0)
         self.assertFalse(whole_item_annotation.is_global_annotation())
-        self.assertEquals(whole_item_annotation.title, "Whole Item Selection")
-        self.assertEquals(whole_item_annotation.range1, 0.0)
-        self.assertEquals(whole_item_annotation.range2, 0.0)
 
-        # Alternate Course, test_instructor_alt
-        real_annotation = SherdNote.objects.get(id=14)
+        real_annotation = SherdNoteFactory(
+            asset=asset, author=self.student_three,
+            title="Whole Item Selection", range1=116.25, range2=6.75)
         self.assertFalse(real_annotation.is_global_annotation())
-        self.assertEquals(real_annotation.title, "Curricular Context")
-        self.assertEquals(real_annotation.range1, 116.25)
-        self.assertEquals(real_annotation.range2, 6.75)
 
     def test_seconds_to_code(self):
         self.assertRaises(TypeError, SherdNote.secondsToCode, None)
@@ -74,30 +38,40 @@ class SherdNoteTest(TestCase):
         self.assertEquals(SherdNote.secondsToCode(363600, True), "101:00:00")
 
     def test_range_as_timecode(self):
-        # Sample Course Test Instructor
-        global_annotation = SherdNote.objects.get(id=1)
+        asset = AssetFactory(course=self.sample_course)
+
+        global_annotation, created = SherdNote.objects.global_annotation(
+            asset, self.student_three, auto_create=True)
         self.assertEquals(global_annotation.range_as_timecode(), "")
 
-        whole_item_annotation = SherdNote.objects.get(id=17)
+        whole_item_annotation = SherdNoteFactory(
+            asset=asset, author=self.student_three)
         self.assertEquals(whole_item_annotation.range_as_timecode(), "")
 
-        real_annotation = SherdNote.objects.get(id=2)
+        real_annotation = SherdNoteFactory(
+            asset=asset, author=self.student_three, range1=28, range2=39)
         self.assertEquals(real_annotation.range_as_timecode(), "0:28 - 0:39")
 
-        real_annotation = SherdNote.objects.get(id=3)
+        real_annotation = SherdNoteFactory(
+            asset=asset, author=self.student_three, range1=43, range2=75)
         self.assertEquals(real_annotation.range_as_timecode(), "0:43 - 01:15")
 
     def test_get_global_annotation(self):
-        asset = Asset.objects.get(id=1)
-        author = User.objects.get(username="test_instructor")
+        asset = AssetFactory(course=self.sample_course)
+        author = self.instructor_one
+
+        ann, created = SherdNote.objects.global_annotation(asset, author)
+        self.assertTrue(created)
 
         ann, created = SherdNote.objects.global_annotation(asset, author)
         self.assertFalse(created)
-        self.assertEquals(ann.title, None)
-        self.assertEquals(ann.body, "All credit to Mark and Casey")
-        self.assertEquals(ann.tags, ",youtube, test_instructor_item")
 
-        author = User.objects.get(username="test_student_one")
+        self.assertEquals(ann.title, None)
+        self.assertEquals(ann.title, None)
+        self.assertEquals(ann.body, None)
+        self.assertEquals(ann.tags, '')
+
+        author = self.student_one
         ann, created = SherdNote.objects.global_annotation(asset, author)
         self.assertTrue(created)
         self.assertEquals(ann.title, None)
@@ -105,30 +79,37 @@ class SherdNoteTest(TestCase):
         self.assertEquals(ann.tags, '')
 
     def test_tags_split(self):
-        asset = Asset.objects.get(id=1)
-        author = User.objects.get(username="test_instructor")
+        asset = AssetFactory(course=self.sample_course)
+        ann, created = SherdNote.objects.global_annotation(
+            asset, self.instructor_one)
 
-        ann, created = SherdNote.objects.global_annotation(asset, author)
+        # no tags
+        tags = ann.tags_split()
+        self.assertEquals(len(tags), 0)
+
+        # one tag
+        ann.tags = ',foobar'
+        ann.save()
+        tags = ann.tags_split()
+        self.assertEquals(len(tags), 1)
+        self.assertEquals(tags[0].name, 'foobar')
+
+        # two tags
+        ann.tags = ',youtube, test_instructor_item'
+        ann.save()
         tags = ann.tags_split()
         self.assertEquals(len(tags), 2)
         self.assertEquals(tags[0].name, 'test_instructor_item')
         self.assertEquals(tags[1].name, 'youtube')
 
-        # Alternate course, student 3
-        ann = SherdNote.objects.get(id=15)
-        tags = ann.tags_split()
-        self.assertEquals(len(tags), 1)
-        self.assertEquals(tags[0].name, 'test_student_three')
-
-        # Sample course, student on3
-        author = User.objects.get(username="test_student_one")
-        ann, created = SherdNote.objects.global_annotation(asset, author)
-        self.assertTrue(created)
-        tags = ann.tags_split()
-        self.assertEquals(len(tags), 0)
-
     def test_add_tag(self):
-        ann = SherdNote.objects.get(id=15)
+        asset = AssetFactory(course=self.sample_course)
+        ann, created = SherdNote.objects.global_annotation(
+            asset, self.instructor_one)
+
+        ann.tags = ',foobar'
+        ann.save()
+
         ann.add_tag("foo")
         ann.add_tag("bar")
         ann.save()
@@ -137,16 +118,32 @@ class SherdNoteTest(TestCase):
         self.assertEquals(len(tags), 3)
         self.assertEquals(tags[0].name, 'bar')
         self.assertEquals(tags[1].name, 'foo')
-        self.assertEquals(tags[2].name, 'test_student_three')
+        self.assertEquals(tags[2].name, 'foobar')
 
     def test_update_reference_in_string(self):
-        text = ('<p><a href="/asset/2/annotations/10/">Nice Tie</a>'
-                '</p><p><a href="/asset/2/annotations/10/">Nice Tie</a>'
-                '</p><p><a href="/asset/2/annotations/8/">Nice Tie</a>'
-                '</p><a href="/asset/2/">Whole Item</a></p>')
+        old_asset = AssetFactory(course=self.sample_course,
+                                 author=self.student_one)
+        old_note = SherdNoteFactory(
+            asset=old_asset, author=self.student_one,
+            title="Selection", range1=43, range2=75)
+        alt_note = SherdNoteFactory(
+            asset=old_asset, author=self.student_one,
+            title="Alt Selection", range1=43, range2=75)
 
-        old_note = SherdNote.objects.get(id=10)
-        new_note = SherdNote.objects.get(id=2)
+        new_asset = AssetFactory(course=self.sample_course,
+                                 author=self.student_one)
+        new_note = SherdNoteFactory(
+            asset=new_asset, author=self.student_one,
+            title="Selection", range1=43, range2=75)
+
+        text = ('<p><a href="/asset/%s/annotations/%s/">Selection</a>'
+                '</p><p><a href="/asset/%s/annotations/%s/">Selection</a>'
+                '</p><p><a href="/asset/%s/annotations/%s/">Alt Selection</a>'
+                '</p><a href="/asset/%s/">Global</a></p>' %
+                (old_asset.id, old_note.id,
+                 old_asset.id, old_note.id,
+                 old_asset.id, alt_note.id,
+                 old_asset.id))
 
         new_text = new_note.update_references_in_string(text, old_note)
 
@@ -159,91 +156,35 @@ class SherdNoteTest(TestCase):
         self.assertEquals(citations[1].id, new_note.id)
         self.assertEquals(citations[1].asset.id, new_note.asset.id)
 
-        self.assertEquals(citations[2].id, 8)
-        self.assertEquals(citations[2].asset.id, 2)
+        self.assertEquals(citations[2].id, alt_note.id)
+        self.assertEquals(citations[2].asset.id, old_asset.id)
 
-        self.assertEquals(citations[3].id, 11)
-        self.assertEquals(citations[3].asset.id, 2)
-
-    def test_update_reference_in_string2(self):
-        text = ('<p><a href="/asset/1/annotations/1/">Foo</a>'
-                '</p><p><a href="/asset/1/annotations/19/">Bar</a></p>')
-        old_note = SherdNote.objects.get(id=1)
-        new_note = SherdNote.objects.get(id=5)
-
-        new_text = new_note.update_references_in_string(text, old_note)
-
-        new_note_href = "/asset/%s/annotations/%s/" % (new_note.asset.id,
-                                                       new_note.id)
-        self.assertTrue(new_text.find(new_note_href) > 0)
-
-        citations = SherdNote.objects.references_in_string(new_text,
-                                                           old_note.author)
-        self.assertEquals(len(citations), 2)
-
-        self.assertEquals(citations[0].id, new_note.id)
-        self.assertEquals(citations[0].asset.id, new_note.asset.id)
-
-        self.assertEquals(citations[1].id, 19)
-        self.assertEquals(citations[1].asset.id, 1)
-
-    def test_filter_by_authors(self):
-        qs = Asset.objects.filter(title='MAAP Award Reception')
-        author = User.objects.get(username='test_student_one')
-
-        names = ['test_instructor', 'test_instructor_two', 'test_student_one']
-        users = User.objects.filter(username__in=names).values_list('id')
-        visible_authors = users.values_list('id', flat=True)
-
-        notes = SherdNote.objects.get_related_notes(qs,
-                                                    author,
-                                                    visible_authors)
-        self.assertEquals(notes.count(), 3)
-
-        self.assertEquals(notes[0].author.username, "test_instructor")
-        self.assertFalse(notes[0].is_global_annotation())
-        self.assertEquals(notes[0].title, 'Our esteemed leaders')
-
-        self.assertEquals(notes[1].author, author)
-        self.assertEquals(notes[1].title, "The Award")
-        self.assertFalse(notes[1].is_global_annotation())
-
-        self.assertEquals(notes[2].author, author)
-        self.assertTrue(notes[2].is_global_annotation())
-
-    def test_filter_by_date(self):
-        notes = SherdNote.objects.filter_by_date('today')
-        self.assertEquals(notes.count(), 0)
-
-        notes = SherdNote.objects.filter_by_date('yesterday')
-        self.assertEquals(notes.count(), 0)
-
-        notes = SherdNote.objects.filter_by_date('lastweek')
-        self.assertEquals(notes.count(), 0)
-
-        today_note = SherdNote.objects.get(title='Nice Tie')
-        today_note.modified = datetime.today()
-        today_note.save()
-
-        notes = SherdNote.objects.filter_by_date('today')
-        self.assertEquals(notes.count(), 1)
-        self.assertEquals(notes[0].title, 'Nice Tie')
-
-    def test_filter_by_tags(self):
-        notes = SherdNote.objects.filter_by_tags('student_one_selection')
-        self.assertEquals(notes.count(), 1)
-        self.assertEquals(notes[0].title, 'The Award')
-
-        notes = SherdNote.objects.filter(asset__title='MAAP Award Reception')
-        self.assertEquals(notes.count(), 6)
-
-        notes = notes.filter_by_tags(
-            'student_two_selection,image').order_by('id')
-        self.assertEquals(notes.count(), 2)
-        self.assertEquals(notes[0].title, 'Our esteemed leaders')
-        self.assertEquals(notes[1].title, 'Nice Tie')
+        gann = old_asset.global_annotation(self.student_one, auto_create=False)
+        self.assertEquals(citations[3].id, gann.id)
+        self.assertEquals(citations[3].asset.id, old_asset.id)
 
     def test_filter_by_vocabulary(self):
+        taxonomy = {
+            'Shapes': ['Square', 'Triangle'],
+            'Colors': ['Red', 'Blue', 'Green']
+        }
+        self.create_vocabularies(self.sample_course, taxonomy)
+
+        a1 = AssetFactory(course=self.sample_course, author=self.student_one)
+        note1 = SherdNoteFactory(
+            asset=a1, author=self.student_one,
+            title="The Award", tags=',student_one_selection',
+            body='student one selection note', range1=0, range2=1)
+        note2 = SherdNoteFactory(
+            asset=a1, author=self.student_two,
+            title="Nice Tie", tags=',student_two_selection',
+            body='student two selection note', range1=0, range2=1)
+        note3 = SherdNoteFactory(
+            asset=a1, author=self.instructor_one,
+            title="Our esteemed leaders",
+            tags=',image, instructor_one_selection,',
+            body='instructor one selection note', range1=0, range2=1)
+
         # OR'd within vocabulary, AND'd across vocabulary
         shapes = Vocabulary.objects.get(name='shapes')
         colors = Vocabulary.objects.get(name='colors')
@@ -254,12 +195,9 @@ class SherdNoteTest(TestCase):
         square = Term.objects.get(name='square')
         triangle = Term.objects.get(name='triangle')
 
-        note1 = SherdNote.objects.get(title='The Award')
         self.create_term_relationship(note1, red)
-        note2 = SherdNote.objects.get(title='Nice Tie')
         self.create_term_relationship(note2, blue)
 
-        note3 = SherdNote.objects.get(title='Our esteemed leaders')
         self.create_term_relationship(note3, red)
         self.create_term_relationship(note3, square)
 
@@ -307,3 +245,111 @@ class SherdNoteTest(TestCase):
         }
         notes = SherdNote.objects.filter_by_vocabulary(ctx)
         self.assertEquals(notes.count(), 0)
+
+    def test_filter_by_today(self):
+        note = SherdNoteFactory()
+
+        # today
+        notes = SherdNote.objects.filter_by_date('today')
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0].title, note.title)
+
+        # yesterday
+        notes = SherdNote.objects.filter_by_date('yesterday')
+        self.assertEquals(notes.count(), 0)
+
+        # in the last week
+        notes = SherdNote.objects.filter_by_date('lastweek')
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0].title, note.title)
+
+
+class SherdNoteFilterTest(MediathreadTestCase):
+
+    def setUp(self):
+        super(self.__class__, self).setUp()
+
+        self.asset = AssetFactory(course=self.sample_course,
+                                  author=self.student_one)
+
+        self.ga1 = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            tags=',student_one_item', title=None, range1=None, range2=None)
+        self.assertTrue(self.ga1.is_global_annotation())
+        self.note1 = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            tags=',student_one_selection', range1=0, range2=1)
+
+        self.ga2 = SherdNoteFactory(
+            asset=self.asset, author=self.student_two,
+            tags=',student_two_item', title=None, range1=None, range2=None)
+        self.note2 = SherdNoteFactory(
+            asset=self.asset, author=self.student_two,
+            tags=',student_two_selection', range1=0, range2=1)
+
+        self.ga3 = SherdNoteFactory(
+            asset=self.asset, author=self.instructor_one,
+            tags=',instructor_one_item', title=None, range1=None, range2=None)
+        self.note3 = SherdNoteFactory(
+            asset=self.asset, author=self.instructor_one,
+            tags=',image,instructor_one_selection,', range1=0, range2=1)
+
+    def test_filter_by_record_owner(self):
+        qs = Asset.objects.filter(id=self.asset.id)
+        author = User.objects.get(username='student_one')
+
+        names = ['instructor_one', 'instructor_two', 'student_one']
+        users = User.objects.filter(username__in=names).values_list('id')
+        visible_authors = users.values_list('id', flat=True)
+
+        notes = SherdNote.objects.get_related_notes(qs,
+                                                    author,
+                                                    visible_authors)
+        self.assertEquals(notes.count(), 2)
+
+        self.assertEquals(notes[0], self.ga1)
+        self.assertEquals(notes[1], self.note1)
+
+    def test_filter_no_authors(self):
+        qs = Asset.objects.filter(id=self.asset.id)
+
+        notes = SherdNote.objects.get_related_notes(qs, None, [])
+        self.assertEquals(notes.count(), 6)
+
+        self.assertEquals(notes[0], self.ga1)
+        self.assertEquals(notes[1], self.note1)
+        self.assertEquals(notes[2], self.ga2)
+        self.assertEquals(notes[3], self.note2)
+        self.assertEquals(notes[4], self.ga3)
+        self.assertEquals(notes[5], self.note3)
+
+    def test_filter_by_visible_authors(self):
+        qs = Asset.objects.filter(id=self.asset.id)
+
+        names = ['instructor_one', 'instructor_two', 'student_one']
+        users = User.objects.filter(username__in=names).values_list('id')
+        visible_authors = users.values_list('id', flat=True)
+
+        notes = SherdNote.objects.get_related_notes(qs,
+                                                    None,
+                                                    visible_authors)
+        self.assertEquals(notes.count(), 4)
+
+        self.assertEquals(notes[0], self.ga1)
+        self.assertEquals(notes[1], self.note1)
+        self.assertEquals(notes[2], self.ga3)
+        self.assertEquals(notes[3], self.note3)
+
+    def test_filter_by_tags(self):
+        notes = SherdNote.objects.filter_by_tags('student_one_selection')
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0], self.note1)
+
+        notes = SherdNote.objects.filter(asset=self.asset)
+        self.assertEquals(notes.count(), 6)
+
+        notes = notes.filter_by_tags(
+            'student_two_selection,image').order_by('id')
+        self.assertEquals(notes.count(), 2)
+        self.assertEquals(notes[0], self.note2)
+        self.assertEquals(notes[1], self.note3)

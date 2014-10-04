@@ -349,4 +349,5 @@ class RequestCourseViewTest(TestCase):
             'assigned_to': 'sdreher'
         }
 
-        view.form_valid(form)
+        with self.settings(TASK_ASSIGNMENT_DESTINATION=None):
+            view.form_valid(form)

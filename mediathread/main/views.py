@@ -2,12 +2,12 @@ from datetime import datetime
 import json
 import operator
 
-from courseaffils.lib import in_course, in_course_or_404
 from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -17,6 +17,7 @@ from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 from restclient import POST
 
+from courseaffils.lib import in_course_or_404, in_course
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
@@ -31,7 +32,7 @@ from mediathread.mixins import ajax_required, faculty_only, \
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-from django.core.mail import send_mail
+
 
 # returns important setting information for all web pages.
 def django_settings(request):
@@ -406,9 +407,6 @@ class ContactUsView(FormView):
             self.initial['email'] = self.request.user.email
             self.initial['username'] = self.request.user.username
 
-        if hasattr(self.request, 'course') and self.request.course is not None:
-            self.initial['course'] = self.request.course.title
-
         self.initial['issue_date'] = datetime.now()
 
         return super(ContactUsView, self).get_initial()
@@ -417,7 +415,7 @@ class ContactUsView(FormView):
         subject = "Mediathread Contact Us Request"
         form_data = form.cleaned_data
         tmpl = loader.get_template('main/contact_description.txt')
-        form_data['description'] = tmpl.render(Context(form_data))
+        form_data['description'] = unicode(tmpl.render(Context(form_data)))
 
         # POST to the task assignment destination
         task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
@@ -427,7 +425,7 @@ class ContactUsView(FormView):
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
         if support_email is not None:
-            sender = form_data['email']
+            sender = settings.SERVER_EMAIL
             recipients = (support_email,)
             send_mail(subject, form_data['description'], sender, recipients)
 

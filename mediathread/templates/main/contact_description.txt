@@ -1,0 +1,9 @@
+Issue Date: {{issue_date|date:"SHORT_DATETIME_FORMAT"}}
+
+Requester: {{name}} {{email}} {% if username %}({{username}}){% endif %}
+
+Course: {{course}}
+
+Category: {{category}}
+
+{{description}}

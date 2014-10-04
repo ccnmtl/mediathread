@@ -1,5 +1,6 @@
 from django import forms
 
+
 TERM_CHOICES = (
     ('Fall', 'Fall'),
     ('Spring', 'Spring'),
@@ -30,17 +31,17 @@ class RequestCourseForm(forms.Form):
 
     decoy = forms.CharField(widget=forms.Textarea, required=False)
 
-    title = forms.HiddenInput()
-    pid = forms.HiddenInput()
-    mid = forms.HiddenInput()
-    type = forms.HiddenInput()
-    owner = forms.HiddenInput()
-    assigned_to = forms.HiddenInput()
+    title = forms.CharField(widget=forms.HiddenInput())
+    pid = forms.CharField(widget=forms.HiddenInput())
+    mid = forms.CharField(widget=forms.HiddenInput())
+    type = forms.CharField(widget=forms.HiddenInput())
+    owner = forms.CharField(widget=forms.HiddenInput())
+    assigned_to = forms.CharField(widget=forms.HiddenInput())
 
     def clean(self):
-        cleaned_data = super(ContactUsForm, self).clean()
+        cleaned_data = super(RequestCourseForm, self).clean()
 
-        if len(cleaned_data['decoy']) > 0:
+        if 'decoy' in cleaned_data and len(cleaned_data['decoy']) > 0:
             self._errors["decoy"] = self.error_class([
                 "Please leave this field blank"])
 
@@ -61,13 +62,13 @@ class ContactUsForm(forms.Form):
 
     decoy = forms.CharField(widget=forms.Textarea, required=False)
 
-    debug_info = forms.HiddenInput
-    title = forms.HiddenInput()
-    pid = forms.HiddenInput()
-    mid = forms.HiddenInput()
-    type = forms.HiddenInput()
-    owner = forms.HiddenInput()
-    assigned_to = forms.HiddenInput()
+    debug_info = forms.CharField(widget=forms.HiddenInput())
+    title = forms.CharField(widget=forms.HiddenInput())
+    pid = forms.CharField(widget=forms.HiddenInput())
+    mid = forms.CharField(widget=forms.HiddenInput())
+    type = forms.CharField(widget=forms.HiddenInput())
+    owner = forms.CharField(widget=forms.HiddenInput())
+    assigned_to = forms.CharField(widget=forms.HiddenInput())
 
     def clean(self):
         cleaned_data = super(ContactUsForm, self).clean()
@@ -76,7 +77,7 @@ class ContactUsForm(forms.Form):
             self._errors["category"] = self.error_class([
                 "An issue category is required"])
 
-        if len(cleaned_data['decoy']) > 0:
+        if 'decoy' in cleaned_data and len(cleaned_data['decoy']) > 0:
             self._errors["decoy"] = self.error_class([
                 "Please leave this field blank"])
 

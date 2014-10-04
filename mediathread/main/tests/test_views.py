@@ -1,14 +1,22 @@
-#pylint: disable-msg=R0904
-#pylint: disable-msg=E1103
+# pylint: disable-msg=R0904
+# pylint: disable-msg=E1103
+from datetime import datetime
+import json
+
 from courseaffils.models import Course
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import User, AnonymousUser
+from django.core import mail
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
+
 from mediathread.assetmgr.models import Asset
-from mediathread.main.views import MigrateCourseView
+from mediathread.factories import UserFactory
+from mediathread.main.forms import ContactUsForm, RequestCourseForm
+from mediathread.main.views import MigrateCourseView, ContactUsView, \
+    RequestCourseView
 from mediathread.projects.models import Project
-import json
 
 
 class SimpleViewTest(TestCase):
@@ -252,3 +260,93 @@ class MigrateMaterialsTest(TestCase):
         self.assertEquals(the_json['assets'][0]['annotation_count'], 2)
 
         self.assertEquals(len(the_json['projects']), 1)
+
+
+class ContactUsViewTest(TestCase):
+
+    def test_get_initial_anonymous(self):
+        view = ContactUsView()
+        view.request = RequestFactory().get('/contact/')
+        view.request.user = AnonymousUser()
+        view.get_initial()
+
+        self.assertIsNotNone(view.initial['issue_date'])
+        self.assertFalse('name' in view.initial)
+        self.assertFalse('email' in view.initial)
+        self.assertFalse('username' in view.initial)
+
+    def test_get_initial_not_anonymous(self):
+        view = ContactUsView()
+        view.request = RequestFactory().get('/contact/')
+        view.request.user = UserFactory(first_name='Foo',
+                                        last_name='Bar',
+                                        email='foo@bar.com')
+
+        view.get_initial()
+
+        self.assertIsNotNone(view.initial['issue_date'])
+        self.assertEquals(view.initial['name'], 'Foo Bar')
+        self.assertEquals(view.initial['email'], 'foo@bar.com')
+        self.assertEquals(view.initial['username'], view.request.user.username)
+
+    def test_form_valid(self):
+        view = ContactUsView()
+        form = ContactUsForm()
+        form.cleaned_data = {
+            'issuer_date': datetime.now(),
+            'name': 'Linus Torvalds',
+            'username': 'ltorvalds',
+            'email': 'sender@ccnmtl.columbia.edu',
+            'course': 'Introduction to Linux',
+            'category': 'View Image',
+            'description': 'This is a problem'
+        }
+
+        with self.settings(SUPPORT_DESTINATION='support@ccnmtl.columbia.edu'):
+            view.form_valid(form)
+            self.assertEqual(len(mail.outbox), 2)
+
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread Contact Us Request')
+            self.assertEquals(mail.outbox[0].from_email,
+                              settings.SERVER_EMAIL)
+            self.assertEquals(mail.outbox[0].to,
+                              [settings.SUPPORT_DESTINATION])
+
+            self.assertEqual(mail.outbox[1].subject,
+                             'Mediathread Contact Us Request')
+            self.assertEquals(mail.outbox[1].from_email,
+                              settings.SERVER_EMAIL)
+            self.assertEquals(mail.outbox[1].to,
+                              ['sender@ccnmtl.columbia.edu'])
+
+
+class RequestCourseViewTest(TestCase):
+
+    def test_form_valid(self):
+        view = RequestCourseView()
+        form = RequestCourseForm()
+        form.cleaned_data = {
+            'name': 'Test Instructor',
+            'email': 'test_instructor@ccnmtl.columbia.edu',
+            'uni': 'ttt123',
+            'course': 'Test Course',
+            'course_id': 'Test Course Id',
+            'term': 'Fall',
+            'year': '2014',
+            'instructor': 'Test Instructor',
+            'section_leader': 'Test Teachers Assistant',
+            'start': datetime.now(),
+            'end': datetime.now(),
+            'students': 24,
+            'assignments_required': True,
+            'description': 'Description',
+            'title': 'The Course',
+            'pid': '123',
+            'mid': '456',
+            'type': 'action item',
+            'owner': 'sdreher',
+            'assigned_to': 'sdreher'
+        }
+
+        view.form_valid(form)

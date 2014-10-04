@@ -9,6 +9,7 @@ TEMPLATE_DIRS = (
 )
 
 MEDIA_ROOT = '/var/www/mediathread/uploads/'
+
 # put any static media here to override app served static media
 STATICMEDIA_MOUNTS = (
     ('/sitemedia', '/var/www/mediathread/mediathread/sitemedia'),

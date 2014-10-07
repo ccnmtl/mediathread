@@ -126,7 +126,8 @@ class SherdNoteQuerySet(models.query.QuerySet):
         if record_owner:
             # only return author's selections
             self = self.exclude(~Q(author=record_owner))
-        elif len(visible_authors) > 0:
+
+        if len(visible_authors) > 0:
             # only return notes that are authored by certain people
             self = self.filter(author__id__in=visible_authors)
 

@@ -142,6 +142,13 @@ urlpatterns = patterns(
     url(r'^upgrade/', TemplateView.as_view(
         template_name="assetmgr/upgrade_bookmarklet.html")),
 
-    ### Public Access ###
+    # Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),
 )
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns(
+        '',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )

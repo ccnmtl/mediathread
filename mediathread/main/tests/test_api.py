@@ -1,5 +1,5 @@
-#pylint: disable-msg=R0904
-#pylint: disable-msg=E1103
+# pylint: disable-msg=R0904
+# pylint: disable-msg=E1103
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from mediathread.api import UserResource
@@ -8,20 +8,15 @@ from mediathread.factories import (UserFactory, GroupFactory, CourseFactory)
 
 
 class UserApiTest(ResourceTestCase):
-    # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
-    # documentation for the gory details.
 
     def get_credentials(self):
         return None
 
     def test_render_one(self):
-        u = UserFactory(username='test_student_one', first_name='Student',
-                        last_name='One')
-        u.set_password('test')
-        u.save()
+        u = UserFactory(username='test_student_one',
+                        first_name='Student', last_name='One')
         self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+            self.api_client.client.login(username=u.username, password="test"))
 
         student_one = User.objects.get(username='test_student_one')
 
@@ -30,13 +25,11 @@ class UserApiTest(ResourceTestCase):
         self.assertEquals(member['public_name'], "Student One")
 
     def test_render_list(self):
-        u = UserFactory(username='test_student_one', first_name='Student',
-                        last_name='One')
-        u.set_password('test')
-        u.save()
+        u = UserFactory(username='test_student_one',
+                        first_name='Student', last_name='One')
+
         self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+            self.api_client.client.login(username=u.username, password="test"))
 
         g1 = GroupFactory(name="group1")
         g2 = GroupFactory(name="group2")

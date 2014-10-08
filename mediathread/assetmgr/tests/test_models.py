@@ -1,4 +1,4 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -75,8 +75,12 @@ class AssetTest(TestCase):
 
         gann = asset.global_annotation(user, False)
         self.assertTrue(gann is not None)
-        self.assertEquals(gann.tags, ',test_instructor_two')
-        self.assertEquals(gann.body, 'test_instructor_two notes')
+        self.assertEquals(
+            gann.tags,
+            u',youtube, test_instructor_item,test_instructor_two')
+        self.assertEquals(
+            gann.body,
+            u'All credit to Mark and Caseytest_instructor_two notes')
 
         asset = object_map['assets'][2]
         self.assertNotEquals(asset.id, 2)
@@ -92,8 +96,8 @@ class AssetTest(TestCase):
 
         gann = asset.global_annotation(user, False)
         self.assertTrue(gann is not None)
-        self.assertEquals(gann.tags, '')
-        self.assertEquals(gann.body, None)
+        self.assertEquals(gann.tags, u',flickr, instructor_one')
+        self.assertEquals(gann.body, u'instructor one item note')
 
     def test_migrate_one(self):
         asset = Asset.objects.get(id=1)

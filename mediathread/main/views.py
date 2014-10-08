@@ -355,11 +355,12 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         projects = Project.objects.by_course_and_users(course, faculty)
 
         # filter private projects
-        collabs = Collaboration.objects.get_for_object_list(projects)
-        collabs = collabs.exclude(
-            _policy__policy_name='PrivateEditorsAreOwners')
-        ids = [int(c.object_pk) for c in collabs]
-        projects = projects.filter(id__in=ids)
+        if projects.count() > 0:
+            collabs = Collaboration.objects.get_for_object_list(projects)
+            collabs = collabs.exclude(
+                _policy__policy_name='PrivateEditorsAreOwners')
+            ids = [int(c.object_pk) for c in collabs]
+            projects = projects.filter(id__in=ids)
 
         info_ctx = CourseInfoResource().render_one(request, course)
 

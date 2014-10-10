@@ -207,7 +207,8 @@ ANONYMOUS_PATHS = ('/media/',
                    '/accounts/',
                    '/admin/',
                    '/help/',
-                   '/api/user/courses')
+                   '/api/user/courses'
+                   )
 
 NON_ANONYMOUS_PATHS = ('/asset/',
                        '/annotations/',

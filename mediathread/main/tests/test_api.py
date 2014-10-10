@@ -1,5 +1,5 @@
-#pylint: disable-msg=R0904
-#pylint: disable-msg=E1103
+# pylint: disable-msg=R0904
+# pylint: disable-msg=E1103
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from mediathread.api import UserResource
@@ -63,3 +63,16 @@ class UserApiTest(ResourceTestCase):
         self.assertEquals(members[3]['public_name'], "Student One")
         self.assertEquals(members[4]['public_name'], "Student Two")
         self.assertEquals(members[5]['public_name'], "Teacher's  Assistant")
+
+    def test_get_course_list(self):
+        g1 = GroupFactory(name="group1")
+        g2 = GroupFactory(name="group2")
+        CourseFactory(title="Sample Course", faculty_group=g1, group=g2)
+        UserFactory(username='instructor_one',
+                    first_name='Instructor', last_name='One').groups.add(g2)
+
+        secrets = {'http://testserver/': 'foobar'}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            url = '/api/user/courses?user=instructor_one&secret=foobar'
+            response = self.client.get(url)
+            self.assertEquals(response.status_code, 200)

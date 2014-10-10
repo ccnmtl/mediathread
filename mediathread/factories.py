@@ -128,12 +128,22 @@ class MediathreadTestMixin(object):
         user.groups.add(course.faculty_group)
 
     def setup_sample_course(self):
-        self.instructor_one = UserFactory(username='instructor_one')
-        self.instructor_two = UserFactory(username='instructor_two')
+        self.instructor_one = UserFactory(username='instructor_one',
+                                          first_name="Instructor",
+                                          last_name="One")
+        self.instructor_two = UserFactory(username='instructor_two',
+                                          first_name="Instructor",
+                                          last_name="One")
 
-        self.student_one = UserFactory(username='student_one')
-        self.student_two = UserFactory(username='student_two')
-        self.student_three = UserFactory(username='student_three')
+        self.student_one = UserFactory(username='student_one',
+                                       first_name="Student",
+                                       last_name="One")
+        self.student_two = UserFactory(username='student_two',
+                                       first_name="Student",
+                                       last_name="Two")
+        self.student_three = UserFactory(username='student_three',
+                                         first_name="Student",
+                                         last_name="Three")
 
         self.sample_course = CourseFactory(title="Sample Course")
 

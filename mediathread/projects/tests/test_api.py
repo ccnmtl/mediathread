@@ -64,9 +64,14 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         self.project_instructor_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared')
+        self.add_citation(self.project_instructor_shared, self.student_note)
+        self.add_citation(self.project_instructor_shared, self.student_ga)
+
         self.project_class_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='CourseProtected')
+        self.add_citation(self.project_class_shared, self.student_note)
+        self.add_citation(self.project_class_shared, self.student_ga)
 
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
@@ -74,11 +79,11 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
 
         # Alt Course Projects
         self.project_private_alt_course = ProjectFactory.create(
-            course=self.sample_course, author=self.student_one,
+            course=self.alt_course, author=self.alt_student,
             policy='PrivateEditorsAreOwners')
 
         self.project_public_alt_course = ProjectFactory.create(
-            course=self.sample_course, author=self.student_one,
+            course=self.alt_course, author=self.alt_student,
             policy='PrivateEditorsAreOwners')
 
     def test_student_one_getlist(self):
@@ -143,8 +148,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.get('/api/project/',
-                                   {},
+        response = self.client.get('/api/project/', {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
 
@@ -177,7 +181,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         self.assertProjectEquals(the_json['project'],
                                  self.project_private.title,
                                  'Student One')
-        self.assertSelectionsEqual(json['annotations'],
+        self.assertSelectionsEqual(the_json['annotations'],
                                    [self.student_note.id, self.student_ga.id])
 
     def test_student_one_getobject_altcourse(self):
@@ -185,43 +189,44 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
                                           password="test"))
 
         # Student three composition in alt course
-        url = '/api/project/%s/' % self.project_alt_course.id
-        response = self.api_client.get(url, {},
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_private_alt_course.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 403)
 
     def test_student_two_getobject(self):
         self.assertTrue(
-            self.client.login(username="test_student_two",
-                                         password="test"))
+            self.client.login(username=self.student_two.username,
+                              password="test"))
 
         # Student one private composition
-        response = self.api_client.get('/api/project/1/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_private.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 403)
 
         # Student one instructor shared composition
-        response = self.api_client.get('/api/project/2/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_instructor_shared.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 403)
 
         # Student one public to class composition
-        response = self.api_client.get('/api/project/3/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_class_shared.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
-        self.assertProjectEquals(json['project'],
-                                 'Public To Class Composition',
+        self.assertProjectEquals(the_json['project'],
+                                 self.project_class_shared.title,
                                  'Student One')
-        self.assertSelectionsEqual(json['annotations'], [2, 5, 7])
+        self.assertSelectionsEqual(the_json['annotations'],
+                                   [self.student_note.id, self.student_ga.id])
 
         # Student three composition in alt course
-        response = self.api_client.get('/api/project/4/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_public_alt_course.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 403)
 
     def test_instructor_getobject(self):
@@ -230,35 +235,40 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
                               password="test"))
 
         # Student one private composition
-        response = self.api_client.get('/api/project/1/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_private.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 403)
 
         # Student one instructor shared composition
-        response = self.api_client.get('/api/project/2/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_instructor_shared.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
-        self.assertProjectEquals(json['project'], 'Instructor Shared',
+        self.assertProjectEquals(the_json['project'],
+                                 self.project_instructor_shared.title,
                                  'Student One')
-        self.assertEquals(len(json['annotations']), 0)
+        self.assertEquals(len(the_json['annotations']), 2)
+        self.assertSelectionsEqual(the_json['annotations'],
+                                   [self.student_note.id, self.student_ga.id])
 
         # Student one public to class composition
-        response = self.api_client.get('/api/project/3/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_class_shared.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
-        self.assertProjectEquals(json['project'],
-                                 'Public To Class Composition', 'Student One')
-        self.assertSelectionsEqual(json['annotations'], [2, 5, 7])
+        self.assertProjectEquals(the_json['project'],
+                                 self.project_class_shared.title,
+                                 'Student One')
+        self.assertSelectionsEqual(the_json['annotations'],
+                                   [self.student_note.id, self.student_ga.id])
 
         # Student three composition in alt course
-        response = self.api_client.get('/api/project/4/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/project/%s/' % self.project_public_alt_course.id
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 403)
 
     def test_post_list(self):
@@ -266,8 +276,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.post('/api/project/',
-                                    {},
+        response = self.client.post('/api/project/', {},
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 405)
 
@@ -276,17 +285,17 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.put('/api/project/2/',
-                                   data={},
+        url = '/api/project/%s/' % self.project_class_shared.id
+        response = self.client.put(url, data={},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         self.assertEquals(response.status_code, 405)
 
     def test_delete(self):
         self.assertTrue(
-            self.client.login(username=self.instructor_one.username,
+            self.client.login(username=self.student_one.username,
                               password="test"))
-        response = self.client.delete('/api/project/2/',
-                                      data={},
+        url = '/api/project/%s/' % self.project_class_shared.id
+        response = self.client.delete(url, data={},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 405)

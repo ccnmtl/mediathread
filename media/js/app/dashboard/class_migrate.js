@@ -220,8 +220,8 @@
                 'on_behalf_of': jQuery('#on_behalf_of').attr('value'),
                 'project_ids': project_ids,
                 'asset_ids': asset_ids,
-                'include_tags': jQuery("input[name='include_tags'").is(":checked"),
-                'include_notes': jQuery("input[name='include_notes'").is(":checked")
+                'include_tags': jQuery("input[name='include_tags']").is(":checked"),
+                'include_notes': jQuery("input[name='include_notes']").is(":checked")
             };
 
             jQuery.ajax({

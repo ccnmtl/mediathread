@@ -2349,6 +2349,7 @@ div.homepage-column-info {
     border: 1px solid #ccc;
 }
 
+
 .switcher-search-text span.search-text-prefix {
     width: 5%;
     display: inline-block;
@@ -2385,6 +2386,16 @@ div.homepage-column-info {
 div.media-column .switcher-search-text input[name='search-text'] {
     width: 79%;
 }
+
+td.minimized div.media-column .switcher-search-text input[name='search-text'] {
+    width: 74%;
+}
+
+div.composition .switcher-search-text input[name='search-text'],
+div.assignment .switcher-search-text input[name='search-text'] {
+    width: 82%;
+}
+
  
 .switcher-search-text span.search-text-clear {
     display: none;
@@ -2398,14 +2409,6 @@ div.media-column .switcher-search-text input[name='search-text'] {
 
 .switcher-search-text.populated span.search-text-clear {
     display: inline-block;
-}
-    
-.switcher-search-text.populated input[name='search-text'] {
-    border-right: 0;
-    border-radius: 0px;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
-    width: 79%;
 }
 
 .switcher {

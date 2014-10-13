@@ -465,21 +465,14 @@ class ContactUsViewTest(TestCase):
 
         with self.settings(SUPPORT_DESTINATION='support@ccnmtl.columbia.edu'):
             view.form_valid(form)
-            self.assertEqual(len(mail.outbox), 2)
+            self.assertEqual(len(mail.outbox), 1)
 
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Contact Us Request')
             self.assertEquals(mail.outbox[0].from_email,
-                              settings.SERVER_EMAIL)
+                              'sender@ccnmtl.columbia.edu')
             self.assertEquals(mail.outbox[0].to,
                               [settings.SUPPORT_DESTINATION])
-
-            self.assertEqual(mail.outbox[1].subject,
-                             'Mediathread Contact Us Request')
-            self.assertEquals(mail.outbox[1].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[1].to,
-                              ['sender@ccnmtl.columbia.edu'])
 
 
 class RequestCourseViewTest(TestCase):

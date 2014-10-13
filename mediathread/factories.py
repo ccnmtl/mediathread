@@ -166,3 +166,8 @@ class MediathreadTestMixin(object):
 
         self.add_as_student(self.alt_course, self.alt_student)
         self.add_as_faculty(self.alt_course, self.alt_instructor)
+
+    def switch_course(self, client, course):
+        # assumes there is a logged in user
+        set_course_url = '/?set_course=%s' % course.group.name
+        return client.get(set_course_url)

@@ -114,10 +114,10 @@ class MediathreadTestMixin(object):
 
     def add_citation(self, project, note):
         # add this note into the project's body
-        project.body = '''%s <a class="materialCitation asset-image"
-            href="/asset/%s/annotations/%s/"   ''' % (project.body,
-                                                      note.asset.id,
-                                                      note.id)
+        fmt = '%s <a class="materialCitation" href="/%s/%s/%s/%s/">%s</a>'
+        project.body = fmt % (project.body,
+                              'asset', note.asset.id,
+                              'annotations', note.id, note.title)
         project.save()
 
     def add_as_student(self, course, user):

@@ -1,12 +1,10 @@
 # pylint: disable-msg=R0904
 import json
 
-from django.conf import settings
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
     asset_create
 from mediathread.djangosherd.models import SherdNote
@@ -38,22 +36,16 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_archive_remove(self):
-        archive = Asset.objects.create(title="Sample Archive",
-                                       course=self.sample_course,
-                                       author=self.instructor_one)
-        primary = Source.objects.create(asset=archive, label='archive',
-                                        primary=True,
-                                        url="http://ccnmtl.columbia.edu")
-        archive.source_set.add(primary)
-
-        self.assertIsNotNone(Asset.objects.get(title="Sample Archive"))
+        archive = AssetFactory.create(course=self.sample_course,
+                                      author=self.instructor_one,
+                                      primary_source='archive')
 
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
         response = self.client.post('/asset/archive/',
                                     {'remove': True,
-                                     'title': 'Sample Archive'})
+                                     'title': archive.title})
         self.assertEquals(response.status_code, 302)
 
         try:

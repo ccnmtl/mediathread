@@ -1,21 +1,21 @@
-from courseaffils.models import Course
 from django.test.testcases import TestCase
-from mediathread.projects.models import Project
+
+from mediathread.factories import MediathreadTestMixin, ProjectFactory
 from structuredcollaboration.models import Collaboration
 
 
-class ModelsTest(TestCase):
-    # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
-    # documentation for the gory details.
-    fixtures = ['unittest_sample_course.json',
-                'unittest_sample_projects.json']
+class ModelsTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
 
     def test_get_associated_collaboration_project(self):
-        project = Project.objects.get(id=2)
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners')
         collaboration = Collaboration.get_associated_collab(project)
         self.assertIsNotNone(collaboration)
 
     def test_get_associated_collaboration_course(self):
-        course = Course.objects.get(id=2)
-        collaboration = Collaboration.get_associated_collab(course)
+        collaboration = Collaboration.get_associated_collab(self.sample_course)
         self.assertIsNotNone(collaboration)

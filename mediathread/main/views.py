@@ -350,7 +350,7 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         notes = SherdNote.objects.get_related_notes(assets, None, faculty)
 
         ares = AssetResource(include_annotations=False)
-        asset_ctx = ares.render_list(request, None, assets, notes)
+        asset_ctx = ares.render_list(request, None, None, assets, notes)
 
         projects = Project.objects.by_course_and_users(course, faculty)
 

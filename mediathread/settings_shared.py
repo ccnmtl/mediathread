@@ -212,7 +212,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 ANONYMOUS_PATHS = ('/media/',
                    '/accounts/',
                    '/admin/',
-                   '/help/'
+                   '/help/',
+                   '/api/user/courses'
                    )
 
 NON_ANONYMOUS_PATHS = ('/asset/',

@@ -1,67 +1,216 @@
 # pylint: disable-msg=R0904
 # pylint: disable-msg=E1103
-from courseaffils.models import Course
-from datetime import datetime, timedelta
-from mediathread.api import TagResource
-from mediathread.assetmgr.models import Asset
-from mediathread.main import course_details
-from tagging.models import Tag
-from tastypie.test import ResourceTestCase
 import json
 
+from courseaffils.models import Course
+from django.test.testcases import TestCase
+from tagging.models import Tag
 
-class AssetApiTest(ResourceTestCase):
-    # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
-    # documentation for the gory details.
-    fixtures = ['unittest_sample_course.json']
+from mediathread.api import TagResource
+from mediathread.factories import MediathreadTestMixin, UserFactory, \
+    AssetFactory, SherdNoteFactory
+from mediathread.main import course_details
+
+
+class AssetApiTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+        self.add_as_faculty(self.alt_course, self.instructor_three)
+
+        self.sample_course = Course.objects.get(title='Sample Course')
+        self.alt_course = Course.objects.get(title="Alternate Course")
+
+        self.asset1 = AssetFactory.create(course=self.sample_course,
+                                          author=self.instructor_one,
+                                          primary_source='image')
+
+        self.student_note = SherdNoteFactory(
+            asset=self.asset1, author=self.student_one,
+            tags=',student_one_selection',
+            body='student one selection note', range1=0, range2=1)
+        self.student_ga = SherdNoteFactory(
+            asset=self.asset1, author=self.student_one,
+            tags=',image, student_one_global,',
+            body='student one global note',
+            title=None, range1=None, range2=None)
+        self.instructor_note = SherdNoteFactory(
+            asset=self.asset1, author=self.instructor_one,
+            tags=',image, instructor_one_selection,',
+            body='instructor one selection note', range1=0, range2=1)
+        self.instructor_ga = SherdNoteFactory(
+            asset=self.asset1, author=self.instructor_one,
+            tags=',image, instructor_one_global,',
+            body='instructor one global note',
+            title=None, range1=None, range2=None)
+
+        self.asset2 = AssetFactory.create(course=self.sample_course,
+                                          author=self.instructor_one,
+                                          primary_source='video')
+        self.asset2_instructor_note = SherdNoteFactory(
+            asset=self.asset2, author=self.instructor_one,
+            tags=',video, instructor_one_selection,',
+            body='instructor one selection note', range1=0, range2=1)
+        self.asset2_instructor_ga = SherdNoteFactory(
+            asset=self.asset2, author=self.instructor_one,
+            tags=',video, instructor_one_global,',
+            body='instructor one global note',
+            title=None, range1=None, range2=None)
 
     def get_credentials(self):
         return None
 
     def assertAssetEquals(self, asset, title, author,
-                          primary_type, selection_ids, thumb_url):
+                          primary_type, selection_ids):
 
         self.assertEquals(asset['title'], title)
         self.assertEquals(asset['author']['public_name'], author)
         self.assertEquals(asset['primary_type'], primary_type)
-        self.assertEquals(asset['thumb_url'], thumb_url)
 
         self.assertEquals(len(asset['annotations']), len(selection_ids))
 
         for idx, selection in enumerate(asset['annotations']):
             self.assertEquals(int(selection['id']), selection_ids[idx])
 
-    def test_student_get_my_collection(self):
-        username = "test_student_one"
-        password = "test"
-        self.assert_(self.client.login(username=username, password=password))
+    def test_getall_as_student(self):
+        self.assertTrue(
+            self.client.login(username=self.student_two.username,
+                              password="test"))
 
-        response = self.client.get(
-            "/api/asset/user/test_student_one/",
-            {},
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = '/api/asset/?annotations=true'
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEquals(len(objects), 2)
 
+        selections = [self.student_note.id, self.instructor_note.id]
+        self.assertAssetEquals(objects[0], self.asset1.title,
+                               'Instructor One', 'image', selections)
+        self.assertFalse('global_annotation' in objects[0])
+
+        self.assertAssetEquals(
+            objects[1], self.asset2.title,
+            'Instructor One', 'video', [self.asset2_instructor_note.id])
+        self.assertFalse('global_annotation' in objects[1])
+
+    def test_restricted_getall_as_student(self):
+        # Set course details to restricted
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
+
+        self.assertTrue(
+            self.client.login(username=self.student_two.username,
+                              password="test"))
+
+        url = '/api/asset/?annotations=true'
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEquals(len(objects), 2)
+
+        selections = [self.instructor_note.id]
+        self.assertAssetEquals(objects[0], self.asset1.title,
+                               'Instructor One', 'image', selections)
+        self.assertFalse('global_annotation' in objects[0])
+
+        self.assertAssetEquals(
+            objects[1], self.asset2.title,
+            'Instructor One', 'video', [self.asset2_instructor_note.id])
+        self.assertFalse('global_annotation' in objects[1])
+
+    def test_getall_as_instructor(self):
+        self.assertTrue(
+            self.client.login(username=self.instructor_one.username,
+                              password="test"))
+
+        url = '/api/asset/?annotations=true'
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEquals(len(objects), 2)
+
+        selections = [self.student_note.id, self.instructor_note.id]
+        self.assertAssetEquals(objects[0], self.asset1.title,
+                               'Instructor One', 'image', selections)
+        self.assertFalse('global_annotation' in objects[0])
+
+        self.assertAssetEquals(
+            objects[1], self.asset2.title,
+            'Instructor One', 'video', [self.asset2_instructor_note.id])
+        self.assertFalse('global_annotation' in objects[1])
+
+    def test_restricted_getall_as_instructor(self):
+        # Set course details to restricted
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
+        self.test_getall_as_instructor()
+
+    def test_getstudentlist_as_student_owner(self):
+        self.assert_(self.client.login(username=self.student_one.username,
+                                       password="test"))
+
+        record_owner = self.student_one.username
+        response = self.client.get(
+            "/api/asset/user/%s/?annotations=true" % record_owner,
+            {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        the_json = json.loads(response.content)
+        self.assertEquals(the_json['space_owner']['username'],
+                          self.student_one.username)
+        self.assertEquals(the_json['space_viewer']['username'],
+                          self.student_one.username)
         self.assertTrue(the_json['editable'])
         self.assertFalse(the_json['citable'])
         self.assertFalse(the_json['is_faculty'])
         self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 0)
+        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
 
-    def test_student_get_peer_collection(self):
-        username = "test_student_one"
-        password = "test"
-        self.assert_(self.client.login(username=username, password=password))
+        annotations = the_json['assets'][0]['annotations']
+        self.assertEquals(annotations[0]['title'], self.student_note.title)
 
-        record_owner = 'test_student_two'
+        # student one's tags
+        self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
+        self.assertEquals(annotations[0]['metadata']['body'],
+                          "student one selection note")
+
+        self.assertTrue('global_annotation' in the_json['assets'][0])
+        gla = the_json['assets'][0]['global_annotation']
+        self.assertEquals(len(gla['metadata']['tags']), 2)
+        self.assertEquals(gla['metadata']['body'],
+                          "student one global note")
+
+    def test_restricted_getstudentlist_as_student_owner(self):
+        # Set course details to restricted
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
+        self.test_getstudentlist_as_student_owner()
+
+    def test_getstudentlist_as_student_viewer(self):
+        self.assert_(self.client.login(username=self.student_two.username,
+                                       password="test"))
+
+        record_owner = self.student_one.username
         response = self.client.get(
             "/api/asset/user/%s/?annotations=true" % record_owner,
-            {},
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-
+        self.assertEquals(the_json['space_owner']['username'],
+                          self.student_one.username)
+        self.assertEquals(the_json['space_viewer']['username'],
+                          self.student_two.username)
         self.assertFalse(the_json['editable'])
         self.assertFalse(the_json['citable'])
         self.assertFalse(the_json['is_faculty'])
@@ -69,360 +218,303 @@ class AssetApiTest(ResourceTestCase):
         self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
 
         annotations = the_json['assets'][0]['annotations']
-        self.assertEquals(annotations[0]['title'], 'Nice Tie')
+        self.assertEquals(annotations[0]['title'], self.student_note.title)
 
         # student two's tags
         self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
         self.assertEquals(annotations[0]['metadata']['body'],
-                          "student two selection note")
+                          "student one selection note")
 
         self.assertTrue('global_annotation' in the_json['assets'][0])
         gla = the_json['assets'][0]['global_annotation']
-        self.assertEquals(len(gla['metadata']['tags']), 1)
+        self.assertEquals(len(gla['metadata']['tags']), 2)
         self.assertEquals(gla['metadata']['body'],
-                          "student two item note")
+                          "student one global note")
 
-    def test_student_getlist(self):
-        self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+    def test_restricted_getstudentlist_as_student_viewer(self):
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
 
-        url = '/api/asset/?annotations=true'
-        response = self.api_client.get(url, format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
+        self.assert_(self.client.login(username=self.student_two.username,
+                                       password="test"))
 
-        the_json = self.deserialize(response)
-        objects = the_json['assets']
-        self.assertEquals(len(objects), 4)
+        record_owner = self.student_one.username
+        response = self.client.get(
+            "/api/asset/user/%s/?annotations=true" % record_owner,
+            {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/media/img/test/'
-                               'mediathread_introduction_thumb.jpg')
+        the_json = json.loads(response.content)
+        self.assertEquals(the_json['space_owner']['username'],
+                          self.student_one.username)
+        self.assertEquals(the_json['space_viewer']['username'],
+                          self.student_two.username)
+        self.assertEquals(len(the_json['assets']), 0)
 
-        self.assertAssetEquals(
-            objects[1], 'Project Portfolio',
-            'test_instructor_two', 'image', [], None)
+    def test_getstudentlist_as_instructor(self):
+        self.assert_(self.client.login(username=self.instructor_one.username,
+                                       password="test"))
 
-        self.assertAssetEquals(
-            objects[2], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/media/img/test/maap_thumb.jpg')
+        record_owner = self.student_one.username
+        response = self.client.get(
+            "/api/asset/user/%s/?annotations=true" % record_owner,
+            {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        self.assertAssetEquals(
-            objects[3],
-            'The Armory - Home to CCNMTL\'S CUMC Office',
-            'Instructor One', 'image', [7],
-            'http://localhost:8002/media/img/test/armory_thumb.jpg')
+        the_json = json.loads(response.content)
+        self.assertEquals(the_json['space_owner']['username'],
+                          self.student_one.username)
+        self.assertEquals(the_json['space_viewer']['username'],
+                          self.instructor_one.username)
+        self.assertFalse(the_json['editable'])
+        self.assertFalse(the_json['citable'])
+        self.assertTrue(the_json['is_faculty'])
+        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
 
-    def test_student_getlist_sorted(self):
-        asset = Asset.objects.get(title='MAAP Award Reception')
-        asset.modified = datetime.now() + timedelta(days=1)
-        asset.save()
+        annotations = the_json['assets'][0]['annotations']
+        self.assertEquals(annotations[0]['title'], self.student_note.title)
 
-        self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+        self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
+        self.assertEquals(annotations[0]['metadata']['body'],
+                          "student one selection note")
 
-        url = '/api/asset/?annotations=true'
-        response = self.api_client.get(url, format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
+        self.assertTrue('global_annotation' in the_json['assets'][0])
+        gla = the_json['assets'][0]['global_annotation']
+        self.assertEquals(len(gla['metadata']['tags']), 2)
+        self.assertEquals(gla['metadata']['body'],
+                          "student one global note")
 
-        the_json = self.deserialize(response)
-        objects = the_json['assets']
-        self.assertEquals(len(objects), 4)
-
-        self.assertAssetEquals(
-            objects[0], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/media/img/test/maap_thumb.jpg')
-
-        self.assertAssetEquals(objects[1], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/media/img/test/'
-                               'mediathread_introduction_thumb.jpg')
-
-    def test_student_getlist_restricted(self):
+    def test_restricted_getstudentlist_as_instructor(self):
         # Set course details to restricted
-        sample_course = Course.objects.get(title="Sample Course")
-        sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY, 0)
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
+        self.test_getstudentlist_as_instructor()
 
+    def test_getobject_as_student_owner(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+            self.client.login(username=self.student_one.username,
+                              password="test"))
 
-        url = '/api/asset/?annotations=true'
-        response = self.api_client.get(url, format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
+        response = self.client.get('/api/asset/%s/' % self.asset1.id,
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
 
-        the_json = self.deserialize(response)
-        objects = the_json['assets']
-        self.assertEquals(len(objects), 4)
-
-        self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/media/img/test/'
-                               'mediathread_introduction_thumb.jpg')
-
+        selections = [self.student_note.id, self.instructor_note.id]
+        asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(
-            objects[1],
-            'Project Portfolio',
-            'test_instructor_two', 'image', [],
-            None)
+            asset,
+            self.asset1.title,
+            'Instructor One', 'image', selections)
 
-        self.assertAssetEquals(
-            objects[2], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8],
-            'http://localhost:8002/media/img/test/maap_thumb.jpg')
+        self.assertTrue('global_annotation' in asset)
+        self.assertEquals(asset['global_annotation']['id'],
+                          self.student_ga.id)
 
-        self.assertAssetEquals(
-            objects[3],
-            'The Armory - Home to CCNMTL\'S CUMC Office',
-            'Instructor One', 'image', [7],
-            'http://localhost:8002/media/img/test/armory_thumb.jpg')
+    def test_restricted_getobject_as_student_owner(self):
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
+        self.test_getobject_as_student_owner()
 
-    def test_student_getobject(self):
+    def test_getobject_as_instructor_viewer(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+            self.client.login(username=self.instructor_one.username,
+                              password="test"))
 
-        response = self.api_client.get('/api/asset/2/', format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
-        the_json = self.deserialize(response)
+        response = self.client.get('/api/asset/%s/' % self.asset1.id,
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
 
+        selections = [self.student_note.id, self.instructor_note.id]
+        asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(
-            the_json['assets']['2'], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/media/img/test/maap_thumb.jpg')
+            asset,
+            self.asset1.title,
+            'Instructor One', 'image', selections)
 
-    def test_student_getobject_restricted(self):
+        self.assertTrue('global_annotation' in asset)
+        self.assertEquals(asset['global_annotation']['id'],
+                          self.instructor_ga.id)
+
+    def test_restricted_getobject_as_instructor_viewer(self):
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
+        self.test_getobject_as_instructor_viewer()
+
+    def test_getobject_as_student_viewer(self):
+        self.assertTrue(
+            self.client.login(username=self.student_two.username,
+                              password="test"))
+
+        response = self.client.get('/api/asset/%s/' % self.asset1.id,
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
+
+        selections = [self.student_note.id, self.instructor_note.id]
+        asset = the_json['assets'][str(self.asset1.id)]
+        self.assertAssetEquals(
+            asset,
+            self.asset1.title,
+            'Instructor One', 'image', selections)
+
+        self.assertFalse('global_annotation' in asset)
+
+    def test_restricted_getobject_as_student_viewer(self):
         # Set course details to restricted
-        sample_course = Course.objects.get(title="Sample Course")
-        sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY, 0)
+        self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
+                                      0)
 
         self.assertTrue(
-            self.api_client.client.login(username="test_student_one",
-                                         password="test"))
+            self.client.login(username=self.student_two.username,
+                              password="test"))
 
-        response = self.api_client.get('/api/asset/2/', format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
-        the_json = self.deserialize(response)
+        response = self.client.get('/api/asset/%s/' % self.asset1.id,
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
 
+        selections = [self.instructor_note.id]
+        asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(
-            the_json['assets']['2'], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8],
-            'http://localhost:8002/media/img/test/maap_thumb.jpg')
+            asset,
+            self.asset1.title,
+            'Instructor One', 'image', selections)
 
-    def test_instructor_getlist(self):
-        self.assertTrue(
-            self.api_client.client.login(username="test_instructor",
-                                         password="test"))
+        self.assertFalse('global_annotation' in asset)
 
-        response = self.api_client.get('/api/asset/?annotations=true',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
-
-        the_json = self.deserialize(response)
-        objects = the_json['assets']
-        self.assertEquals(len(objects), 4)
-
-        self.assertAssetEquals(objects[0], 'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/media/img/test/'
-                               'mediathread_introduction_thumb.jpg')
-
-        self.assertAssetEquals(
-            objects[1],
-            'Project Portfolio',
-            'test_instructor_two', 'image', [],
-            None)
-
-        self.assertAssetEquals(
-            objects[2], 'MAAP Award Reception',
-            'Instructor One', 'image', [5, 8, 10],
-            'http://localhost:8002/media/img/test/maap_thumb.jpg')
-
-        self.assertAssetEquals(
-            objects[3],
-            'The Armory - Home to CCNMTL\'S CUMC Office',
-            'Instructor One', 'image', [7],
-            'http://localhost:8002/media/img/test/armory_thumb.jpg')
-
-    def test_instructor_getlist_restricted(self):
-        # Set course details to restricted
-        sample_course = Course.objects.get(title="Sample Course")
-        sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY, 0)
-
-        self.test_instructor_getlist()
-
-    def test_instructor_getobject(self):
-        self.assertTrue(
-            self.api_client.client.login(username="test_instructor",
-                                         password="test"))
-
-        response = self.api_client.get('/api/asset/1/', format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertValidJSONResponse(response)
-        the_json = self.deserialize(response)
-
-        self.assertAssetEquals(the_json['assets']['1'],
-                               'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/media/img/test/'
-                               'mediathread_introduction_thumb.jpg')
-
-    def test_instructor_getobject_restricted(self):
-        # Set course details to restricted
-        sample_course = Course.objects.get(title="Sample Course")
-        sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY, 0)
-
-        self.test_instructor_getobject()
-
-    def test_nonclassmember_getobject(self):
+    def test_getobject_as_nonclassmember(self):
         # Student in Alternate Course attempts
         # to retrieve selections from Sample Course
         self.assertTrue(
-            self.api_client.client.login(username="test_student_alt",
-                                         password="test"))
+            self.client.login(username=self.alt_student.username,
+                              password="test"))
 
         # Student One Selection
-        response = self.api_client.get('/api/asset/1/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get('/api/asset/%s/' % self.asset1,
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 404)
 
     def test_post_list(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_instructor",
-                                         password="test"))
-
-        self.assertHttpMethodNotAllowed(self.api_client.post(
-            '/api/asset/', format='json', data={}))
+            self.client.login(username=self.instructor_one.username,
+                              password="test"))
+        response = self.client.post('/api/asset/', {})
+        self.assertEquals(response.status_code, 405)
 
     def test_put_detail(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_instructor",
-                                         password="test"))
+            self.client.login(username=self.instructor_one.username,
+                              password="test"))
 
-        self.assertHttpMethodNotAllowed(self.api_client.put(
-            '/api/asset/2/', format='json', data={},
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'))
+        response = self.client.put('/api/asset/2/', {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 405)
 
     def test_delete(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_instructor",
-                                         password="test"))
+            self.client.login(username=self.instructor_one.username,
+                              password="test"))
 
-        self.assertHttpMethodNotAllowed(self.api_client.delete(
-            '/api/asset/2/', format='json',
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'))
+        response = self.client.delete('/api/asset/2/', {},
+                                      HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 405)
 
     def test_getobject_multiple_class_member_nocourse(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_student_three",
-                                         password="test"))
+            self.client.login(username=self.instructor_three.username,
+                              password="test"))
 
         # No course selection yet
-        response = self.api_client.get('/api/asset/1/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertHttpOK(response)
+        response = self.client.get('/api/asset/%s/' % self.asset1.id, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
 
     def test_getobject_multiple_class_member_wrongcourse(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_student_three",
-                                         password="test"))
+            self.client.login(username=self.instructor_three.username,
+                              password="test"))
+        self.switch_course(self.client, self.alt_course)
 
-        response = self.api_client.client.get(
-            '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
-        self.assertHttpOK(response)
-        self.assertEquals(response.templates[0].name, "homepage.html")
-
-        response = self.api_client.get('/api/asset/1/',
-                                       format='json', follow=True,
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get('/api/asset/%s/' % self.asset1.id,
+                                   {}, follow=True,
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
                           "assetmgr/asset_not_found.html")
 
     def test_getobject_multiple_class_member_rightcourse(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_student_three",
-                                         password="test"))
+            self.client.login(username=self.instructor_three.username,
+                              password="test"))
 
-        response = self.api_client.client.get(
-            '/?set_course=Sample_Course_Students', follow=True)
-        self.assertHttpOK(response)
-        self.assertEquals(response.templates[0].name, "homepage.html")
-        response = self.api_client.get('/api/asset/1/',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertHttpOK(response)
-        self.assertValidJSONResponse(response)
-        the_json = self.deserialize(response)
-        self.assertAssetEquals(the_json['assets']['1'],
-                               'Mediathread: Introduction',
-                               'Instructor One', 'youtube', [2, 3, 17, 19],
-                               'http://localhost:8002/media/img/test/'
-                               'mediathread_introduction_thumb.jpg')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.get('/api/asset/%s/' % self.asset1.id, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
+
+        selections = [self.student_note.id, self.instructor_note.id]
+        asset = the_json['assets'][str(self.asset1.id)]
+        self.assertAssetEquals(asset, self.asset1.title,
+                               'Instructor One', 'image', selections)
+
+        self.assertFalse('global_annotation' in asset)
 
     def test_getlist_multiple_class_member(self):
         self.assertTrue(
-            self.api_client.client.login(username="test_student_three",
-                                         password="test"))
+            self.client.login(username=self.instructor_three.username,
+                              password="test"))
 
-        # Student One Selection from Sample Course
-        response = self.api_client.get('/api/asset/', format='json')
-        self.assertHttpOK(response)
+        # No course selected
+        response = self.client.get('/api/asset/', {})
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
                           "courseaffils/select_course.html")
 
         # No dice, login to Alternate Course
-        response = self.api_client.client.get(
-            '/?set_course=Alternate%20Course%20Members&next=/', follow=True)
-        self.assertHttpOK(response)
-        self.assertEquals(response.templates[0].name, "homepage.html")
+        self.switch_course(self.client, self.alt_course)
 
         # Let's try this again -- asset list
-        response = self.api_client.get('/api/asset/?annotations=true',
-                                       format='json',
-                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get('/api/asset/?annotations=true',
+                                   {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        the_json = self.deserialize(response)
+        the_json = json.loads(response.content)
         objects = the_json['assets']
-        self.assertEquals(len(objects), 1)
+        self.assertEquals(len(objects), 0)
 
-        self.assertAssetEquals(objects[0], 'Design Research',
-                               'test_instructor_alt', 'image',
-                               [13, 14, 15], None)
-
-
-class TagApiTest(ResourceTestCase):
-    fixtures = ['unittest_sample_course.json']
-
-    def get_credentials(self):
-        return None
-
-    def test_render_list(self):
-        asset = Asset.objects.get(id=1)
-        tags = Tag.objects.usage_for_queryset(asset.sherdnote_set.all(),
+    def test_render_tag_list(self):
+        tags = Tag.objects.usage_for_queryset(self.asset1.sherdnote_set.all(),
                                               counts=True)
         resource = TagResource()
         lst = resource.render_list(None, tags)
         self.assertEquals(len(lst), 5)
 
-        self.assertEquals(lst[0]['count'], 1)
+        self.assertEquals(lst[0]['count'], 3)
         self.assertEquals(lst[0]['last'], False)
-        self.assertEquals(lst[0]['name'], 'test_instructor_item')
+        self.assertEquals(lst[0]['name'], 'image')
+
+        self.assertEquals(lst[1]['count'], 1)
+        self.assertEquals(lst[1]['last'], False)
+        self.assertEquals(lst[1]['name'], 'instructor_one_global')
+
+        self.assertEquals(lst[2]['count'], 1)
+        self.assertEquals(lst[2]['last'], False)
+        self.assertEquals(lst[2]['name'], 'instructor_one_selection')
+
+        self.assertEquals(lst[3]['count'], 1)
+        self.assertEquals(lst[3]['last'], False)
+        self.assertEquals(lst[3]['name'], 'student_one_global')
 
         self.assertEquals(lst[4]['count'], 1)
         self.assertEquals(lst[4]['last'], True)
-        self.assertEquals(lst[4]['name'], 'youtube')
+        self.assertEquals(lst[4]['name'], 'student_one_selection')

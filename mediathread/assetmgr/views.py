@@ -22,7 +22,7 @@ from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 
-from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
+from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source
@@ -605,6 +605,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
                              extras={'editable': self.viewing_own_records,
                                      'citable': citable})
         ctx['assets'] = ares.render_list(request,
+                                         self.record_owner,
                                          self.record_viewer,
                                          assets, notes)
 

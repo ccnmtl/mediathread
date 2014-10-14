@@ -1,12 +1,11 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
     TagCollectionView
 from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
-    RequestCourseView
+    RequestCourseView, ContactUsView
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 from tastypie.api import Api
@@ -71,12 +70,12 @@ urlpatterns = patterns(
         'django.views.static.serve', {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
-    url(r'^captcha/', include('captcha.urls')),
-
     (r'^comments/', include('django.contrib.comments.urls')),
 
-    (r'^contact/', login_required(
-        TemplateView.as_view(template_name="main/contact.html"))),
+    # Columbia only request forms.
+    (r'^contact/success/$',
+     TemplateView.as_view(template_name="main/contact_success.html")),
+    (r'^contact/$', ContactUsView.as_view()),
     (r'^course/request/success/$',
      TemplateView.as_view(template_name="main/course_request_success.html")),
     (r'^course/request/', RequestCourseView.as_view()),

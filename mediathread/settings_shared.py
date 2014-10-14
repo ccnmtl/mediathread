@@ -32,8 +32,6 @@ DATABASES = {
 }
 
 if 'test' in sys.argv or 'jenkins' in sys.argv:
-    CAPTCHA_TEST_MODE = True
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -76,9 +74,10 @@ MEDIA_ROOT = "/var/www/mediathread/uploads/"
 MEDIA_URL = "/uploads/"
 STATIC_URL = "/media/"
 
+# Override the secret key with your own. This is for development only
 SECRET_KEY = ')ng#)ef_u@_^zvvu@dxm7ql-yb^_!a6%v3v^j3b(mp+)l+5%@h'
 
-#appends a slash if nothing is found without a slash.
+# appends a slash if nothing is found without a slash.
 APPEND_SLASH = True
 
 TEMPLATE_LOADERS = (
@@ -135,8 +134,8 @@ INSTALLED_APPS = [
     'tagging',
     'modelversions',
     'structuredcollaboration',
-    'mediathread.djangosherd',
     'mediathread.assetmgr',
+    'mediathread.djangosherd',
     'mediathread.projects',
     'mediathread.discussions',
     'django.contrib.comments',
@@ -151,8 +150,7 @@ INSTALLED_APPS = [
     'mediathread.taxonomy',
     'smoketest',
     'debug_toolbar',
-    'captcha',
-    'django_markwhat',
+    'django_markwhat'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
@@ -188,15 +186,10 @@ STATICFILES_FINDERS = (
 COMPRESS_URL = "/media/"
 COMPRESS_ROOT = "media/"
 
-
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mediathread] "
 EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "mediathread@example.com"
-PUBLIC_CONTACT_EMAIL = "mediathread@example.com"
-
-# External url for issue reporting system or e-mail notification
-CONTACT_US_DESTINATION = ""
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
@@ -218,7 +211,6 @@ ANONYMOUS_PATHS = ('/media/',
 
 NON_ANONYMOUS_PATHS = ('/asset/',
                        '/annotations/',
-                       '/contact/',
                        '/project/',
                        '/explore/',
                        '/comments/',
@@ -277,8 +269,6 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
 }
-
-CAPTCHA_FONT_SIZE = 34
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 

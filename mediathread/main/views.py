@@ -1,9 +1,13 @@
-from courseaffils.lib import in_course, in_course_or_404
+from datetime import datetime
+import json
+import operator
+
 from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -11,6 +15,9 @@ from django.template.context import Context
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
+from restclient import POST
+
+from courseaffils.lib import in_course_or_404, in_course
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
@@ -18,31 +25,25 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty
-from mediathread.main.forms import RequestCourseForm
+from mediathread.main.forms import RequestCourseForm, ContactUsForm
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, faculty_only, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
-from restclient import POST
 from structuredcollaboration.models import Collaboration
-import json
-import operator
 
 
 # returns important setting information for all web pages.
 def django_settings(request):
-    whitelist = ['PUBLIC_CONTACT_EMAIL',
-                 'CONTACT_US_DESTINATION',
-                 'FLOWPLAYER_SWF_LOCATION',
+    whitelist = ['FLOWPLAYER_SWF_LOCATION',
                  'FLOWPLAYER_AUDIO_PLUGIN',
                  'FLOWPLAYER_PSEUDOSTREAMING_PLUGIN',
                  'FLOWPLAYER_RTMP_PLUGIN',
                  'DEBUG',
                  'REVISION',
                  'DATABASES',
-                 'GOOGLE_ANALYTICS_ID'
-                 ]
+                 'GOOGLE_ANALYTICS_ID']
 
     context = {'settings': dict([(k, getattr(settings, k, None))
                                  for k in whitelist]),
@@ -349,16 +350,17 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         notes = SherdNote.objects.get_related_notes(assets, None, faculty)
 
         ares = AssetResource(include_annotations=False)
-        asset_ctx = ares.render_list(request, None, assets, notes)
+        asset_ctx = ares.render_list(request, None, None, assets, notes)
 
         projects = Project.objects.by_course_and_users(course, faculty)
 
         # filter private projects
-        collabs = Collaboration.objects.get_for_object_list(projects)
-        collabs = collabs.exclude(
-            _policy__policy_name='PrivateEditorsAreOwners')
-        ids = [int(c.object_pk) for c in collabs]
-        projects = projects.filter(id__in=ids)
+        if projects.count() > 0:
+            collabs = Collaboration.objects.get_for_object_list(projects)
+            collabs = collabs.exclude(
+                _policy__policy_name='PrivateEditorsAreOwners')
+            ids = [int(c.object_pk) for c in collabs]
+            projects = projects.filter(id__in=ids)
 
         info_ctx = CourseInfoResource().render_one(request, course)
 
@@ -381,20 +383,51 @@ class RequestCourseView(FormView):
 
     def form_valid(self, form):
         form_data = form.cleaned_data
-        form_data.pop('captcha')
+        tmpl = loader.get_template('main/course_request_description.txt')
+        form_data['description'] = tmpl.render(Context(form_data))
 
-        form_data['title'] = 'Mediathread Course Request'
-        form_data['pid'] = "514"
-        form_data['mid'] = "3596"
-        form_data['type'] = 'action item'
-        form_data['owner'] = 'ellenm'
-        form_data['assigned_to'] = 'ellenm'
-        form_data['assigned_to'] = 'ellenm'
-
-        template = loader.get_template('main/course_request_description.txt')
-        form_data['description'] = template.render(Context(form_data))
-
-        POST("http://pmt.ccnmtl.columbia.edu/external_add_item.pl",
-             params=form_data, async=True)
+        task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+        if task_email is not None:
+            # POST to the contact destination
+            POST(task_email, params=form_data, async=True)
 
         return super(RequestCourseView, self).form_valid(form)
+
+
+class ContactUsView(FormView):
+    template_name = 'main/contact.html'
+    form_class = ContactUsForm
+    success_url = "/contact/success/"
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        if not self.request.user.is_anonymous():
+            self.initial['name'] = self.request.user.get_full_name()
+            self.initial['email'] = self.request.user.email
+            self.initial['username'] = self.request.user.username
+
+        self.initial['issue_date'] = datetime.now()
+
+        return super(ContactUsView, self).get_initial()
+
+    def form_valid(self, form):
+        subject = "Mediathread Contact Us Request"
+        form_data = form.cleaned_data
+        tmpl = loader.get_template('main/contact_description.txt')
+        form_data['description'] = unicode(tmpl.render(Context(form_data)))
+
+        # POST to the task assignment destination
+        task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+        if task_email is not None:
+            POST(task_email, params=form_data, async=True)
+
+        # POST to the support email
+        support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
+        if support_email is not None:
+            sender = form_data['email']
+            recipients = (support_email,)
+            send_mail(subject, form_data['description'], sender, recipients)
+
+        return super(ContactUsView, self).form_valid(form)

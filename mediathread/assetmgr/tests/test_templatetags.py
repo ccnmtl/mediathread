@@ -1,8 +1,8 @@
-from courseaffils.models import Course
-from django.contrib.auth.models import User
 from django.test.testcases import TestCase
+
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.assetmgr.templatetags.assetlinks import InCourseNode
+from mediathread.factories import MediathreadTestMixin
 
 
 class MockNodeList(object):
@@ -13,21 +13,20 @@ class MockNodeList(object):
         self.rendered = True
 
 
-class TestInCourse(TestCase):
-    fixtures = ['unittest_sample_course.json']
+class TestInCourse(MediathreadTestMixin, TestCase):
 
     def setUp(self):
-        self.user = User.objects.get(username='test_instructor')
-        self.course = Course.objects.get(title='Sample Course')
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
         self.archive = Asset.objects.create(title="Sample Archive",
-                                            course=self.course,
-                                            author=self.user)
-        primary = Source.objects.create(asset=self.archive, label='archive',
+                                            course=self.sample_course,
+                                            author=self.instructor_one)
+        primary = Source.objects.create(asset=self.archive,
+                                        label='archive',
                                         primary=True,
                                         url="http://ccnmtl.columbia.edu")
         self.archive.source_set.add(primary)
-
-        self.alt_course = Course.objects.get(title='Alternate Course')
 
     def test_not_in_course(self):
         nlTrue = MockNodeList()
@@ -45,7 +44,7 @@ class TestInCourse(TestCase):
         nlFalse = MockNodeList()
 
         node = InCourseNode('archive', 'course', nlTrue, nlFalse)
-        context = dict(archive=self.archive, course=self.course)
+        context = dict(archive=self.archive, course=self.sample_course)
         out = node.render(context)
         self.assertEqual(out, None)
         self.assertTrue(nlTrue.rendered)

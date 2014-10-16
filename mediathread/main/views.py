@@ -425,7 +425,12 @@ class ContactUsView(FormView):
 
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
-        if support_email is not None:
+        if support_email is None:
+            # POST back to the user. Assumes task or support emails are set.
+            tmpl = loader.get_template('main/contact_email_response.txt')
+            send_mail(subject, tmpl.render(Context(form_data)),
+                      settings.SERVER_EMAIL, (form_data['email'],))
+        else:
             sender = form_data['email']
             recipients = (support_email,)
             send_mail(subject, form_data['description'], sender, recipients)

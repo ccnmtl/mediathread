@@ -342,15 +342,15 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
         self.assertEquals(new_asset.sherdnote_set.count(), 3)
-        new_note = new_asset.sherdnote_set.all()[0]
-        self.assertEquals(new_note.author, self.instructor_three)
-        self.assertEquals(new_note.title, self.student_note.title)
 
-        new_note = new_asset.sherdnote_set.all()[1]
+        new_note = new_asset.sherdnote_set.get(title=self.student_note.title)
         self.assertEquals(new_note.author, self.instructor_three)
-        self.assertEquals(new_note.title, self.instructor_note.title)
 
-        new_note = new_asset.sherdnote_set.all()[2]
+        new_note = new_asset.sherdnote_set.get(
+            title=self.instructor_note.title)
+        self.assertEquals(new_note.author, self.instructor_three)
+
+        new_note = new_asset.sherdnote_set.get(title=None)
         self.assertEquals(new_note.author, self.instructor_three)
         self.assertTrue(new_note.is_global_annotation())
 

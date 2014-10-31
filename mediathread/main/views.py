@@ -126,6 +126,20 @@ def triple_homepage(request):
     return context
 
 
+@allow_http("GET")
+@login_required
+@rendered_with('assetmgr/upgrade_bookmarklet.html')
+def upgrade_bookmarklet(request):
+    context = {}
+    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
+        # MUST only contain string values for now!!
+        # (see templates/assetmgr/bookmarklet.js to see why or fix)
+        context['bookmarklet_vars'] = {
+            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
+        }
+    return context
+
+
 @allow_http("GET", "POST")
 @rendered_with('dashboard/class_manage_sources.html')
 @faculty_only

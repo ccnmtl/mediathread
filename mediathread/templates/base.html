@@ -11,24 +11,24 @@
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui-1.9.1.custom.min.js" %}'></script>
         
         <script type="text/javascript" src='{% static "js/mustache/mustache.js" %}'></script>
-        <script type="text/javascript" src='{% static "js/sherdjs/lib/flowplayer/flowplayer-3.1.4.min.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/sherdjs/lib/flowplayer/flowplayer-3.2.13.min.js" %}'></script>
         <script type="text/javascript" src='{% static "js/sherdjs/lib/OpenLayers-min.js" %}'></script>
         <script type="text/javascript" src="/jsi18n"></script>
         
         <link rel="stylesheet" href='{% static "jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" %}'/>            
         <link rel="shortcut icon" href='{% static "img/mediathread_favicon.ico" type="image/x-icon" %}'/>
-        
-        {% compress css %}                        
+
+        {% compress css %}
             <link rel="stylesheet" href='{% static "css/print.css" %}' media="print" />
             <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
 
             {% block css %}{% endblock %}
         {% endcompress %}
-        
-        {% block uncompressable_css %}            
-        {% endblock %}        
+
+        {% block uncompressable_css %}
+        {% endblock %}
     </head>
-    
+
     {% course_role for request.user in course as role_in_course %}
     <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
     <div id="dialog-confirm" style="display: none"></div>    
@@ -71,7 +71,7 @@
                                     <a href="/accounts/logout/?next=/">Log Out</a>
                                 </div>
                             </li>
-                            
+
                             {% if is_course_faculty %}
                             <li>
                                 <div class="settings_menu manage closed">

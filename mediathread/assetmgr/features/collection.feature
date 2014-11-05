@@ -262,6 +262,7 @@ Feature: Collection View
                 
         # Student One can see his own & the instructors annotations
         # But, should see nothing to do with Student Two
+        # Except the fact that the item is in his collection
         
         # Instructor One
         When I select "Instructor One" as the owner
@@ -291,9 +292,9 @@ Feature: Collection View
         When I clear all tags
         When I select "Student Two" as the owner
         Then the owner is "Student Two" in the asset-workspace column
-        Then the Collection panel has no "MAAP Award Reception" item
+        Then the Collection panel has a "MAAP Award Reception" item
         And I cannot filter by "student_two_selection" in the asset-workspace column
-        And I cannot filter by "student_two_item" in the asset-workspace column
+        And I can filter by "student_two_item" in the asset-workspace column
         
         # All Class Members
         When I clear all tags        
@@ -315,7 +316,7 @@ Feature: Collection View
         And I can filter by "student_one_selection" in the asset-workspace column
         And I can filter by "student_one_item" in the asset-workspace column
         And I cannot filter by "student_two_selection" in the asset-workspace column
-        And I cannot filter by "student_two_item" in the asset-workspace column
+        And I can filter by "student_two_item" in the asset-workspace column
                 
         Finished using Selenium
     

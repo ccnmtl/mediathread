@@ -333,12 +333,13 @@ class SherdNoteFilterTest(MediathreadTestCase):
         notes = SherdNote.objects.get_related_notes(qs,
                                                     None,
                                                     visible_authors)
-        self.assertEquals(notes.count(), 4)
+        self.assertEquals(notes.count(), 5)
 
         self.assertEquals(notes[0], self.ga1)
         self.assertEquals(notes[1], self.note1)
-        self.assertEquals(notes[2], self.ga3)
-        self.assertEquals(notes[3], self.note3)
+        self.assertEquals(notes[2], self.ga2)
+        self.assertEquals(notes[3], self.ga3)
+        self.assertEquals(notes[4], self.note3)
 
     def test_filter_by_tags(self):
         notes = SherdNote.objects.filter_by_tags('student_one_selection')

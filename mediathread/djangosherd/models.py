@@ -128,8 +128,10 @@ class SherdNoteQuerySet(models.query.QuerySet):
             self = self.exclude(~Q(author=record_owner))
 
         if len(visible_authors) > 0:
-            # only return notes that are authored by certain people
-            self = self.filter(author__id__in=visible_authors)
+            # return global annotations &
+            # regular selections authored by certain people
+            self = self.filter(Q(author__id__in=visible_authors) |
+                               Q(range1__isnull=True))
 
         # filter by tag string, date, vocabulary
         self = self.filter_by_tags(tag_string)

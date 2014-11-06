@@ -497,9 +497,12 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
             # @todo - refactor this context out of the mix
             # ideally, the client would simply request the json
             # the mixin is expecting a queryset, so this becomes awkward here
-            self.record_owner = request.user
             assets = Asset.objects.filter(pk=asset_id)
             (assets, notes) = self.visible_assets_and_notes(request, assets)
+
+            # only return original author's global annotations
+            notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
+
             context['assets'] = {
                 asset.pk: AssetResource().render_one(request, asset, notes)
             }

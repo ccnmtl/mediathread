@@ -66,25 +66,18 @@ class AssetManager(models.Manager):
                 new_asset = Asset.objects.migrate_one(old_asset,
                                                       course,
                                                       user)
+
                 object_map['assets'][old_asset.id] = new_asset
 
                 notes = note_model.objects.get_related_notes(
                     [old_asset], None, faculty)
 
                 for old_note in notes:
-                    if (not old_note.is_global_annotation() and
-                            old_note.id not in object_map['notes']):
+                    if (old_note.id not in object_map['notes']):
                         new_note = note_model.objects.migrate_one(
                             old_note, new_asset, user,
                             include_tags, include_notes)
                         object_map['notes'][old_note.id] = new_note
-
-                # migrate the requesting user's global annotation
-                # on this asset, if it exists
-                gann = old_asset.global_annotation(user, False)
-                if gann:
-                    note_model.objects.migrate_one(gann, new_asset, user,
-                                                   include_tags, include_notes)
 
         return object_map
 

@@ -1,14 +1,23 @@
-#pylint: disable-msg=R0904
-#pylint: disable-msg=E1103
+# pylint: disable-msg=R0904
+# pylint: disable-msg=E1103
+from datetime import datetime
+import json
+
 from courseaffils.models import Course
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import User, AnonymousUser
+from django.core import mail
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
+
 from mediathread.assetmgr.models import Asset
-from mediathread.main.views import MigrateCourseView
+from mediathread.factories import UserFactory, MediathreadTestMixin, \
+    AssetFactory, ProjectFactory, SherdNoteFactory
+from mediathread.main.forms import ContactUsForm, RequestCourseForm
+from mediathread.main.views import MigrateCourseView, ContactUsView, \
+    RequestCourseView
 from mediathread.projects.models import Project
-import json
 
 
 class SimpleViewTest(TestCase):
@@ -31,25 +40,53 @@ class SimpleViewTest(TestCase):
         self.assertEquals(response.status_code, 200)
 
 
-class MigrateCourseViewTest(TestCase):
-    fixtures = ['unittest_sample_course.json',
-                'unittest_sample_projects.json']
+class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
-        self.faculty = User.objects.get(username='test_instructor_two')
+
+        self.setup_sample_course()
+        self.setup_alternate_course()
 
         self.superuser = User.objects.create(username='ccnmtl',
                                              password='test',
                                              is_superuser=True,
                                              is_staff=True)
 
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+        self.add_as_faculty(self.alt_course, self.instructor_three)
+
         self.sample_course = Course.objects.get(title='Sample Course')
         self.alt_course = Course.objects.get(title="Alternate Course")
 
+        self.asset1 = AssetFactory.create(course=self.sample_course,
+                                          primary_source='image')
+
+        self.student_note = SherdNoteFactory(
+            asset=self.asset1, author=self.student_one,
+            tags=',student_one_selection',
+            body='student one selection note', range1=0, range2=1)
+        self.instructor_note = SherdNoteFactory(
+            asset=self.asset1, author=self.instructor_one,
+            tags=',image, instructor_one_selection,',
+            body='instructor one selection note', range1=0, range2=1)
+        self.instructor_ga = SherdNoteFactory(
+            asset=self.asset1, author=self.instructor_one,
+            tags=',image, instructor_one_global,',
+            body='instructor one global note',
+            title=None, range1=None, range2=None)
+        self.instructor_two_ga = SherdNoteFactory(
+            asset=self.asset1, author=self.instructor_two,
+            tags=',instructor_two_global,',
+            body='instructor two global note',
+            title=None, range1=None, range2=None)
+
     def test_as_student(self):
         self.assertTrue(
-            self.client.login(username='test_student_one', password='test'))
+            self.client.login(username=self.student_one.username,
+                              password='test'))
         response = self.client.get('/dashboard/migrate/')
         self.assertEquals(response.status_code, 403)
 
@@ -59,7 +96,7 @@ class MigrateCourseViewTest(TestCase):
 
     def test_get_context_data(self):
         request = RequestFactory().get('/dashboard/migrate/')
-        request.user = User.objects.get(username='test_instructor_two')
+        request.user = self.instructor_three
         request.course = self.sample_course
 
         view = MigrateCourseView()
@@ -67,11 +104,13 @@ class MigrateCourseViewTest(TestCase):
 
         ctx = view.get_context_data()
 
-        self.assertEquals(len(ctx['current_course_faculty']), 2)
+        self.assertEquals(len(ctx['current_course_faculty']), 3)
         self.assertEquals(ctx['current_course_faculty'][0].username,
-                          'test_instructor')
+                          'instructor_one')
         self.assertEquals(ctx['current_course_faculty'][1].username,
-                          'test_instructor_two')
+                          'instructor_two')
+        self.assertEquals(ctx['current_course_faculty'][2].username,
+                          'instructor_three')
 
         self.assertEquals(len(ctx['available_courses']), 2)
         self.assertEquals(ctx['available_courses'][0].title,
@@ -88,9 +127,7 @@ class MigrateCourseViewTest(TestCase):
                           'Sample Course')
 
     def test_post_invalidcourse(self):
-        data = {
-            'fromCourse': 23
-        }
+        data = {'fromCourse': 42}
 
         request = RequestFactory().post('/dashboard/migrate/', data)
         request.user = self.superuser
@@ -102,10 +139,9 @@ class MigrateCourseViewTest(TestCase):
         self.assertRaises(Http404, view.post, request)
 
     def test_post_on_behalf_of_student(self):
-        student = User.objects.get(username='test_student_alt')
         data = {
             'fromCourse': self.alt_course.id,
-            'on_behalf_of': student.id
+            'on_behalf_of': self.alt_student.id
         }
 
         request = RequestFactory().post('/dashboard/migrate/', data)
@@ -120,10 +156,9 @@ class MigrateCourseViewTest(TestCase):
         self.assertFalse(the_json['success'])
 
     def test_post_on_behalf_of_faculty(self):
-        teacher = User.objects.get(username='test_instructor_alt')
         data = {
             'fromCourse': self.alt_course.id,
-            'on_behalf_of': teacher.id
+            'on_behalf_of': self.alt_instructor.id
         }
 
         request = RequestFactory().post('/dashboard/migrate/', data)
@@ -137,22 +172,15 @@ class MigrateCourseViewTest(TestCase):
         the_json = json.loads(response.content)
         self.assertFalse(the_json['success'])
 
-    def test_post(self):
-        asset1 = Asset.objects.get(
-            course=self.sample_course,
-            title="The Armory - Home to CCNMTL'S CUMC Office")
-        project1 = Project.objects.get(
-            course=self.sample_course, title='Sample Course Assignment')
-        data = {
-            'fromCourse': self.sample_course.id,
-            'asset_ids[]': [asset1.id],
-            'project_ids[]': [project1.id]
-        }
+    def test_migrate_asset(self):
+        data = {'fromCourse': self.sample_course.id,
+                'asset_ids[]': [self.asset1.id],
+                'project_ids[]': []}
 
         # Migrate assets from SampleCourse into Alternate Course
-        # test_instructor_two is a member of both courses
+        # test_instructor_three is a member of both courses
         request = RequestFactory().post('/dashboard/migrate/', data)
-        request.user = User.objects.get(username='test_instructor_two')
+        request.user = self.instructor_three
         request.course = self.alt_course
 
         view = MigrateCourseView()
@@ -161,49 +189,202 @@ class MigrateCourseViewTest(TestCase):
 
         the_json = json.loads(response.content)
         self.assertTrue(the_json['success'])
-        self.assertEquals(the_json['asset_count'], 4)
+        self.assertEquals(the_json['asset_count'], 1)
+        self.assertEquals(the_json['project_count'], 0)
+        self.assertEquals(the_json['note_count'], 3)
+
+        new_asset = Asset.objects.get(course=self.alt_course,
+                                      title=self.asset1.title)
+        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        new_note = new_asset.sherdnote_set.all()[0]
+        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertEquals(new_note.title, self.instructor_note.title)
+        self.assertEquals(new_note.tags, '')
+        self.assertIsNone(new_note.body)
+        self.assertFalse(new_note.is_global_annotation())
+
+        new_note = new_asset.sherdnote_set.all()[1]
+        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertIsNone(new_note.title)
+        self.assertEquals(new_note.tags, '')
+        self.assertIsNone(new_note.body)
+        self.assertTrue(new_note.is_global_annotation())
+
+    def test_migrate_with_tags(self):
+        data = {
+            'fromCourse': self.sample_course.id,
+            'asset_ids[]': [self.asset1.id],
+            'project_ids[]': [],
+            'include_tags': 'true',
+            'include_notes': 'false'
+        }
+
+        # Migrate assets from SampleCourse into Alternate Course
+        # test_instructor_three is a member of both courses
+        request = RequestFactory().post('/dashboard/migrate/', data)
+        request.user = self.instructor_three
+        request.course = self.alt_course
+
+        view = MigrateCourseView()
+        view.request = request
+        view.post(request)
+
+        new_asset = Asset.objects.get(course=self.alt_course,
+                                      title=self.asset1.title)
+        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        new_note = new_asset.sherdnote_set.all()[0]
+        self.assertEquals(new_note.tags, self.instructor_note.tags)
+        self.assertIsNone(new_note.body)
+
+        new_note = new_asset.sherdnote_set.all()[1]
+        self.assertEquals(
+            new_note.tags,
+            u',image, instructor_one_global,,instructor_two_global,')
+        self.assertIsNone(new_note.body)
+
+    def test_migrate_with_notes(self):
+        data = {
+            'fromCourse': self.sample_course.id,
+            'asset_ids[]': [self.asset1.id],
+            'project_ids[]': [],
+            'include_tags': 'false',
+            'include_notes': 'true',
+        }
+
+        # Migrate assets from SampleCourse into Alternate Course
+        # test_instructor_three is a member of both courses
+        request = RequestFactory().post('/dashboard/migrate/', data)
+        request.user = self.instructor_three
+        request.course = self.alt_course
+
+        view = MigrateCourseView()
+        view.request = request
+        view.post(request)
+
+        new_asset = Asset.objects.get(course=self.alt_course,
+                                      title=self.asset1.title)
+        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        new_note = new_asset.sherdnote_set.all()[0]
+        self.assertEquals(new_note.tags, '')
+        self.assertEquals(new_note.body, self.instructor_note.body)
+
+        new_note = new_asset.sherdnote_set.all()[1]
+        self.assertEquals(new_note.tags, '')
+        self.assertEquals(
+            new_note.body,
+            u'instructor one global noteinstructor two global note')
+
+    def test_migrate_tags_and_notes(self):
+        data = {
+            'fromCourse': self.sample_course.id,
+            'asset_ids[]': [self.asset1.id],
+            'project_ids[]': [],
+            'include_tags': 'true',
+            'include_notes': 'true'
+        }
+
+        # Migrate assets from SampleCourse into Alternate Course
+        # test_instructor_three is a member of both courses
+        request = RequestFactory().post('/dashboard/migrate/', data)
+        request.user = self.instructor_three
+        request.course = self.alt_course
+
+        view = MigrateCourseView()
+        view.request = request
+        view.post(request)
+
+        new_asset = Asset.objects.get(course=self.alt_course,
+                                      title=self.asset1.title)
+        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        new_note = new_asset.sherdnote_set.all()[0]
+        self.assertEquals(new_note.tags, self.instructor_note.tags)
+        self.assertEquals(new_note.body, self.instructor_note.body)
+
+        new_note = new_asset.sherdnote_set.all()[1]
+        self.assertEquals(
+            new_note.tags,
+            u',image, instructor_one_global,,instructor_two_global,')
+        self.assertEquals(
+            new_note.body,
+            u'instructor one global noteinstructor two global note')
+
+    def test_migrate_project(self):
+        self.project1 = ProjectFactory.create(course=self.sample_course,
+                                              author=self.instructor_one,
+                                              policy='PublicEditorsAreOwners')
+
+        self.add_citation(self.project1, self.instructor_note)
+        self.add_citation(self.project1, self.student_note)
+        self.assertEquals(len(self.project1.citations()), 2)
+
+        data = {
+            'fromCourse': self.sample_course.id,
+            'asset_ids[]': [],
+            'project_ids[]': [self.project1.id]
+        }
+
+        # Migrate assets from SampleCourse into Alternate Course
+        # test_instructor_three is a member of both courses
+        request = RequestFactory().post('/dashboard/migrate/', data)
+        request.user = self.instructor_three
+        request.course = self.alt_course
+
+        view = MigrateCourseView()
+        view.request = request
+        response = view.post(request)
+
+        the_json = json.loads(response.content)
+        self.assertTrue(the_json['success'])
+        self.assertEquals(the_json['asset_count'], 1)
         self.assertEquals(the_json['project_count'], 1)
-        self.assertEquals(the_json['note_count'], 6)
+        self.assertEquals(the_json['note_count'], 2)
 
-        Asset.objects.get(
-            course=self.alt_course,
-            title="The Armory - Home to CCNMTL'S CUMC Office")
-        Asset.objects.get(
-            course=self.alt_course,
-            title="Mediathread: Introduction")
-        Asset.objects.get(course=self.alt_course, title="MAAP Award Reception")
-        Asset.objects.get(course=self.alt_course, title="Project Portfolio")
+        new_asset = Asset.objects.get(course=self.alt_course,
+                                      title=self.asset1.title)
+        self.assertEquals(new_asset.sherdnote_set.count(), 3)
+        new_note = new_asset.sherdnote_set.all()[0]
+        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertEquals(new_note.title, self.student_note.title)
 
-        project1 = Project.objects.get(
-            course=self.alt_course, title='Sample Course Assignment')
-        self.assertEquals(len(project1.citations()), 5)
+        new_note = new_asset.sherdnote_set.all()[1]
+        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertEquals(new_note.title, self.instructor_note.title)
 
+        new_note = new_asset.sherdnote_set.all()[2]
+        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertTrue(new_note.is_global_annotation())
 
-class MigrateMaterialsTest(TestCase):
-    fixtures = ['unittest_sample_course.json',
-                'unittest_sample_projects.json']
+        new_project = Project.objects.get(
+            course=self.alt_course, title=self.project1.title)
+        self.assertEquals(len(new_project.citations()), 2)
 
-    def get_credentials(self):
-        return None
-
-    def test_as_student(self):
-        self.assertTrue(self.client.login(username="test_student_one",
+    def test_migrate_materials_view_student(self):
+        self.assertTrue(self.client.login(username=self.student_one.username,
                                           password="test"))
 
-        sample_course = Course.objects.get(title="Sample Course")
-
         response = self.client.get('/dashboard/migrate/materials/%s/' %
-                                   sample_course.id, {},
+                                   self.sample_course.id, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 403)
 
-    def test_sample_course(self):
-        self.assertTrue(self.client.login(username="test_instructor",
-                                          password="test"))
+    def test_migrate_materials_sample_course(self):
+        self.project1 = ProjectFactory.create(course=self.sample_course,
+                                              author=self.instructor_one,
+                                              policy='PrivateEditorsAreOwners')
+        self.project2 = ProjectFactory.create(course=self.sample_course,
+                                              author=self.instructor_one,
+                                              policy='Assignment')
 
-        sample_course = Course.objects.get(title="Sample Course")
+        self.assertTrue(self.client.login(
+            username=self.instructor_three.username,
+            password="test"))
 
-        url = '/dashboard/migrate/materials/%s/' % sample_course.id
+        set_course_url = '/?set_course=%s&next=/' % \
+            self.sample_course.group.name
+        response = self.client.get(set_course_url, follow=True)
+        self.assertEquals(response.status_code, 200)
+
+        url = '/dashboard/migrate/materials/%s/' % self.sample_course.id
 
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -211,33 +392,26 @@ class MigrateMaterialsTest(TestCase):
 
         the_json = json.loads(response.content)
         self.assertEquals(the_json['course']['title'], 'Sample Course')
-        self.assertEquals(len(the_json['assets']), 4)
+        self.assertEquals(len(the_json['assets']), 1)
 
         self.assertEquals(the_json['assets'][0]['title'],
-                          'Mediathread: Introduction')
-        self.assertEquals(the_json['assets'][0]['annotation_count'], 4)
-
-        self.assertEquals(the_json['assets'][1]['title'],
-                          'Project Portfolio')
-        self.assertEquals(the_json['assets'][1]['annotation_count'], 0)
-
-        self.assertEquals(the_json['assets'][2]['title'],
-                          'MAAP Award Reception')
-        self.assertEquals(the_json['assets'][2]['annotation_count'], 1)
-
-        self.assertEquals(the_json['assets'][3]['title'],
-                          "The Armory - Home to CCNMTL'S CUMC Office")
-        self.assertEquals(the_json['assets'][3]['annotation_count'], 1)
+                          self.asset1.title)
+        self.assertEquals(the_json['assets'][0]['annotation_count'], 1)
 
         self.assertEquals(len(the_json['projects']), 1)
+        self.assertEquals(the_json['projects'][0]['title'],
+                          self.project2.title)
 
-    def test_alternate_course(self):
-        self.assertTrue(self.client.login(username="test_instructor_alt",
-                                          password="test"))
+    def test_migrate_materials_alternate_course(self):
+        self.assertTrue(self.client.login(
+            username=self.instructor_three.username,
+            password="test"))
+        set_course_url = '/?set_course=%s&next=/' % \
+            self.alt_course.group.name
+        response = self.client.get(set_course_url, follow=True)
+        self.assertEquals(response.status_code, 200)
 
-        sample_course = Course.objects.get(title="Alternate Course")
-
-        url = '/dashboard/migrate/materials/%s/' % sample_course.id
+        url = '/dashboard/migrate/materials/%s/' % self.alt_course.id
 
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -245,10 +419,113 @@ class MigrateMaterialsTest(TestCase):
 
         the_json = json.loads(response.content)
         self.assertEquals(the_json['course']['title'], 'Alternate Course')
-        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEquals(len(the_json['assets']), 0)
+        self.assertEquals(len(the_json['projects']), 0)
 
-        self.assertEquals(the_json['assets'][0]['title'],
-                          'Design Research')
-        self.assertEquals(the_json['assets'][0]['annotation_count'], 2)
 
-        self.assertEquals(len(the_json['projects']), 1)
+class ContactUsViewTest(TestCase):
+
+    def test_get_initial_anonymous(self):
+        view = ContactUsView()
+        view.request = RequestFactory().get('/contact/')
+        view.request.user = AnonymousUser()
+        view.get_initial()
+
+        self.assertIsNotNone(view.initial['issue_date'])
+        self.assertFalse('name' in view.initial)
+        self.assertFalse('email' in view.initial)
+        self.assertFalse('username' in view.initial)
+
+    def test_get_initial_not_anonymous(self):
+        view = ContactUsView()
+        view.request = RequestFactory().get('/contact/')
+        view.request.user = UserFactory(first_name='Foo',
+                                        last_name='Bar',
+                                        email='foo@bar.com')
+
+        view.get_initial()
+
+        self.assertIsNotNone(view.initial['issue_date'])
+        self.assertEquals(view.initial['name'], 'Foo Bar')
+        self.assertEquals(view.initial['email'], 'foo@bar.com')
+        self.assertEquals(view.initial['username'], view.request.user.username)
+
+    def test_form_valid(self):
+        view = ContactUsView()
+        form = ContactUsForm()
+        form.cleaned_data = {
+            'issuer_date': datetime.now(),
+            'name': 'Linus Torvalds',
+            'username': 'ltorvalds',
+            'email': 'sender@ccnmtl.columbia.edu',
+            'course': 'Introduction to Linux',
+            'category': 'View Image',
+            'description': 'This is a problem'
+        }
+
+        # SUPPORT DESTINATION is null
+        view.form_valid(form)
+        self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(mail.outbox[0].subject,
+                         'Mediathread Contact Us Request')
+        self.assertEquals(mail.outbox[0].from_email,
+                          settings.SERVER_EMAIL)
+        self.assertEquals(mail.outbox[0].to,
+                          ['sender@ccnmtl.columbia.edu'])
+
+    def test_form_valid_with_support_destination(self):
+        view = ContactUsView()
+        form = ContactUsForm()
+        form.cleaned_data = {
+            'issuer_date': datetime.now(),
+            'name': 'Linus Torvalds',
+            'username': 'ltorvalds',
+            'email': 'sender@ccnmtl.columbia.edu',
+            'course': 'Introduction to Linux',
+            'category': 'View Image',
+            'description': 'This is a problem'
+        }
+
+        with self.settings(SUPPORT_DESTINATION='support@ccnmtl.columbia.edu'):
+            view.form_valid(form)
+            self.assertEqual(len(mail.outbox), 1)
+
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread Contact Us Request')
+            self.assertEquals(mail.outbox[0].from_email,    
+                              'sender@ccnmtl.columbia.edu')
+            self.assertEquals(mail.outbox[0].to,
+                              [settings.SUPPORT_DESTINATION])
+
+
+class RequestCourseViewTest(TestCase):
+
+    def test_form_valid(self):
+        view = RequestCourseView()
+        form = RequestCourseForm()
+        form.cleaned_data = {
+            'name': 'Test Instructor',
+            'email': 'test_instructor@ccnmtl.columbia.edu',
+            'uni': 'ttt123',
+            'course': 'Test Course',
+            'course_id': 'Test Course Id',
+            'term': 'Fall',
+            'year': '2014',
+            'instructor': 'Test Instructor',
+            'section_leader': 'Test Teachers Assistant',
+            'start': datetime.now(),
+            'end': datetime.now(),
+            'students': 24,
+            'assignments_required': True,
+            'description': 'Description',
+            'title': 'The Course',
+            'pid': '123',
+            'mid': '456',
+            'type': 'action item',
+            'owner': 'sdreher',
+            'assigned_to': 'sdreher'
+        }
+
+        with self.settings(TASK_ASSIGNMENT_DESTINATION=None):
+            view.form_valid(form)

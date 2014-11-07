@@ -1,0 +1,8 @@
+Hello {{name}},
+
+You are receiving this message because you requested Mediathread support.
+
+A Mediathread support person will be in touch with you shortly. We usually respond within 24 hours.
+
+Thanks,
+The Mediathread Staff

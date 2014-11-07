@@ -106,7 +106,7 @@ class AssetResource(ModelResource):
         except Source.DoesNotExist:
             return None
 
-    def render_list(self, request, me, assets, notes):
+    def render_list(self, request, record_owner, record_viewer, assets, notes):
         note_resource = SherdNoteResource()
         ctx = {}
         for note in notes.all():
@@ -119,7 +119,7 @@ class AssetResource(ModelResource):
             is_global = note.is_global_annotation()
             if not is_global:
                 ctx[note.asset.id]['annotation_count'] += 1
-                if note.author == me:
+                if note.author == record_viewer:
                     ctx[note.asset.id]['my_annotation_count'] += 1
 
             if note.modified > note.asset.modified:
@@ -130,7 +130,8 @@ class AssetResource(ModelResource):
                 note_ctx = note_resource.render_one(request, note, "")
 
                 if is_global:
-                    ctx[note.asset.id]['global_annotation'] = note_ctx
+                    if note.author == record_owner:
+                        ctx[note.asset.id]['global_annotation'] = note_ctx
                 else:
                     ctx[note.asset.id]['annotations'].append(note_ctx)
 

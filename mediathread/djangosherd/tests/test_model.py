@@ -1,14 +1,18 @@
 # pylint: disable-msg=R0904
 from django.contrib.auth.models import User
+from django.test import TestCase
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from mediathread.factories import MediathreadTestCase, AssetFactory, \
-    SherdNoteFactory
+from mediathread.factories import AssetFactory, \
+    SherdNoteFactory, MediathreadTestMixin
 from mediathread.taxonomy.models import Vocabulary, Term
 
 
-class SherdNoteTest(MediathreadTestCase):
+class SherdNoteTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
 
     def test_is_global_annotation(self):
         asset = AssetFactory(course=self.sample_course)
@@ -264,10 +268,10 @@ class SherdNoteTest(MediathreadTestCase):
         self.assertEquals(notes[0].title, note.title)
 
 
-class SherdNoteFilterTest(MediathreadTestCase):
+class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
-        super(self.__class__, self).setUp()
+        self.setup_sample_course()
 
         self.asset = AssetFactory(course=self.sample_course,
                                   author=self.student_one)

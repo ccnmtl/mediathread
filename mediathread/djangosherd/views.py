@@ -43,8 +43,8 @@ def create_annotation(request):
 
     update_vocabulary_terms(request, annotation)
 
-    #need to create global annotation if it doesn't exist already
-    #so it appears in the user's list
+    # need to create global annotation if it doesn't exist already
+    # so it appears in the user's list
     asset.global_annotation(annotation.author, auto_create=True)
 
     if request.is_ajax():
@@ -53,7 +53,7 @@ def create_annotation(request):
         return HttpResponse(json.dumps(response),
                             mimetype="application/json")
     else:
-        #new annotations should redirect 'back' to the asset
+        # new annotations should redirect 'back' to the asset
         # at the endpoint of the last annotation
         # so someone can create a new annotation ~lizday
         url_fragment = ''
@@ -112,7 +112,7 @@ def update_annotation(request, annotation):
                 for key, val in request.POST.items()
                 if key.startswith('annotation-'))
 
-    ## @todo -- figure out how the clipform gets into the
+    # @todo -- figure out how the clipform gets into the
     # annotations.mustache form
     # don't let a global annotation turn into a clip, or v.v.
     if form.get('range1') or form.get('range2'):

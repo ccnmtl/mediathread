@@ -140,6 +140,13 @@ urlpatterns = patterns(
 
     url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
 
-    ### Public Access ###
+    # Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),
 )
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns(
+        '',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )

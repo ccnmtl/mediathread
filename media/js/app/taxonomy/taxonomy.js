@@ -442,7 +442,7 @@
                 function (data) {
                     x = JSON.parse(data);
                     //change 4 to x.terms.length after testing.
-                    var MAX = 2;
+                    var MAX = x.terms.length;
                     var parents = [];
                     for (var i = 0; i < MAX; i++) {
                         var pL = x.terms[i]['rdfs:parentLabel'].trim();
@@ -454,24 +454,23 @@
                         if (!(pL === undefined || pL.length < 1)) {
                             var search = undefined;
                             parents.forEach(function(a){if(a.display_name == pL){search = a;}});
-                            console.log(search);
                             if(search === undefined)
                             {
                                 //create the Vocabulary
                                 temp = {'display_name': pL, 'term_set':[]};
                                 parents.push(temp);
-                                console.log(temp);
                                 parents[parents.indexOf(temp)].term_set.push({'display_name': display});
                             }
                             else
                             {
                                 //add the term to the Vocabulary in parents
-                                v = temp;
+                                v = search;
                                 parents[parents.indexOf(v)].term_set.push({'display_name': display});
                             }
                             if(i == MAX -1)
                             {
                                 var tempV;
+                                console.log(parents);
                                 for (var j = 0; j < parents.length; j++)
                                 {
                                     tempV = new Vocabulary({

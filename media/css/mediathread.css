@@ -2922,8 +2922,11 @@ div.gallery-item h4.asset_title {
     text-align:center;
 }
 
+.jwplayer-timedisplay,
 .flowplayer-timedisplay {
-    font-size: 80%;
+    visibility: visible;
+    margin: 5px 0;
+    font-size: 1.5em;    
 }
 
 .asset-table .asset-clips .citationTemplate {

@@ -41,6 +41,38 @@
         }
     });
 
+    function proxyAjaxEvent(event, options, dit) {
+        var eventCallback = options[event];
+        options[event] = function() {
+            // check if callback for event exists and if so pass on request
+            if (eventCallback) { eventCallback(arguments) }
+            dit.processQueue(); // move onto next save request in the queue
+        }
+    };
+    Backbone.Model.prototype._save = Backbone.Model.prototype.save;
+    Backbone.Model.prototype.save = function( attrs, options ) {
+        if (!options) { options = {}; }
+        if (this.saving) {
+            this.saveQueue = this.saveQueue || new Array();
+            this.saveQueue.push({ attrs: _.extend({}, this.attributes, attrs), options: options });
+        } else {
+            this.saving = true;
+            proxyAjaxEvent('success', options, this);
+            proxyAjaxEvent('error', options, this);
+            Backbone.Model.prototype._save.call( this, attrs, options );
+        }
+    };
+    Backbone.Model.prototype.processQueue = function() {
+        if (this.saveQueue && this.saveQueue.length) {
+            var saveArgs = this.saveQueue.shift();
+            proxyAjaxEvent('success', saveArgs.options, this);
+            proxyAjaxEvent('error', saveArgs.options, this);
+            Backbone.Model.prototype._save.call( this, saveArgs.attrs, saveArgs.options );
+        } else {
+            this.saving = false;
+        }
+    };
+
     var VocabularyList = Backbone.Collection.extend({
         urlRoot: '/api/vocabulary/',
         model: Vocabulary,
@@ -294,7 +326,7 @@
                 //when both fields are left blank on submit
                 showMessage("Please enter a term name", undefined, "Error");
                 return;
-            } else {
+            }
                 //if you want to create a term from user input
                 var display_name = jQuery(et).attr("value").trim();
                 if (display_name === undefined || display_name.length < 1) {
@@ -316,7 +348,7 @@
                     }
                 });
                 return false;
-            }
+
         },
         updateTerm: function (evt) {
             evt.preventDefault();
@@ -410,59 +442,84 @@
                 function (data) {
                     x = JSON.parse(data);
                     //change 4 to x.terms.length after testing.
-                    for (var i = 0; i < 2; i++) {
+                    var MAX = 2;
+                    var parents = [];
+                    for (var i = 0; i < MAX; i++) {
                         var pL = x.terms[i]['rdfs:parentLabel'].trim();
-                        var display_name = x.terms[i]['rdfs:label'].trim();
+                        var display = x.terms[i]['rdfs:label'].trim();
+
+                        console.log(pL);
+                        console.log(display);
                         //demorgans law
                         if (!(pL === undefined || pL.length < 1)) {
-                            var p = self.context.vocabularies;
-                            var obj = jQuery.grep(p, function (e) {
-                                return e.display_name == pL;
-                            });
-                            console.log(obj);
-                            var v;
-                            if (obj.length == 0) {
-                                console.log("did not find concept");
-                                //we create a new vocabulary or "concept" if the parent is not created so we can add
-                                // the term to the vocabulary that previously didnt exist.
-                                console.log("creating vocab");
-                                v = new Vocabulary({
-                                    'display_name': pL,
-                                    'content_type_id': 14,
-                                    'object_id': 1,
-                                    'term_set': undefined
-                                });
-
-                                v.save({}, {
-                                    success: function () {
-                                        //imma comment this out for now because I'm not trying to make the one I just created the
-                                        //current selected "concept"/vocabulary.
-                                        self.selected = v;
-                                        self.collection.add(v);
-                                    },
-                                    error: function (model, response) {
-                                        var responseText = jQuery.parseJSON(response.responseText);
-                                        showMessage(responseText.vocabulary.error_message, undefined, "Error");
-                                    }
-                                });
-                                v = v['attributes'];
-                                console.log(v);
-                                console.log("moving on");
-                            }
-                            else //if obj != undefined and we can get the vocab by underscore find method
+                            var search = undefined;
+                            parents.forEach(function(a){if(a.display_name == pL){search = a;}});
+                            console.log(search);
+                            if(search === undefined)
                             {
-                                v = obj[0];
-                                self.selected = v;
+                                //create the Vocabulary
+                                temp = {'display_name': pL, 'term_set':[]};
+                                parents.push(temp);
+                                console.log(temp);
+                                parents[parents.indexOf(temp)].term_set.push({'display_name': display});
                             }
-                            console.log(v.id);
+                            else
+                            {
+                                //add the term to the Vocabulary in parents
+                                v = temp;
+                                parents[parents.indexOf(v)].term_set.push({'display_name': display});
+                            }
+                            if(i == MAX -1)
+                            {
+                                var tempV;
+                                for (var j = 0; j < parents.length; j++)
+                                {
+                                    tempV = new Vocabulary({
+                                        'display_name': parents[j].display_name,
+                                        'content_type_id': 14,
+                                        'object_id': 1,
+                                        'term_set': undefined
+                                    });
+                                    tempV._save({},{
+                                    success: function(it){
+                                        self.selected = it;
+                                        self.collection.add(it);
+                                        console.log('it');
+                                        console.log(it);
+                                        for (var z = 0; z < parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z ++)
+                                        {
+                                            tempT = new Term({
+                                                'display_name':parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set[z].display_name,
+                                                'vocabulary_id': it.attributes['id']
+                                            });
+                                            tempT._save({},{
+                                                success: function (itT) {
+                                                    self.selected.get('term_set').add(new Term({
+                                                        'display_name': itT.attributes['display_name'],
+                                                        'vocabulary_id': itT.attributes['vocabulary_id']
+                                                    }));
+                                                    self.render();
+                                                }
+                                            });
+                                        }
+                                    }});
+                                }
+                            }
+
+                        } else {
+
+                            if (display === undefined || display.length < 1) {
+                                continue;
+                            }
                             var t;
                             t = new Term({
-                                'display_name': display_name,
-                                'vocabulary_id': v.id
+                                'display_name': display,
+                                'vocabulary_id': vocabulary_id
                             });
-                            t.save({}, {
+                            t._save({}, {
+                                wait: true,
                                 success: function (it) {
-                                    v['term_set'].push(new Term({
+                                    self.selected.get('term_set').add(new Term({
                                         'display_name': it.attributes['display_name'],
                                         'vocabulary_id': it.attributes['vocabulary_id']
                                     }));
@@ -474,32 +531,6 @@
                                         undefined, "Error");
                                 }
                             });
-
-                        } else {
-
-                            if (display_name === undefined || display_name.length < 1) {
-                                continue;
-                            }
-                            var t;
-                            t = new Term({
-                                'display_name': display_name,
-                                'vocabulary_id': vocabulary_id
-                            });
-                            t.save({}, {
-                                wait: true,
-                                success: function (it) {
-                                    self.selected.get('term_set').add(new Term({
-                                        'display_name': it.attributes['display_name'],
-                                        'vocabulary_id': it.attributes['vocabulary_id']
-                                    }));
-                                    self.render();
-                                },
-                                error: function (model, response) {
-                                    var responseText = jQuery.ParseJson(response.responseText);
-                                    showMessage(responseText.term.error_message,
-                                        undefined, "Error");
-                                }
-                            });
                         }
                     }
                 });
@@ -507,4 +538,12 @@
 
 
     });
+    function findUtil(array, thing){
+        return jQuery.grep(array, function(item){
+            return item.display_name == thing;
+        });
+    };
+
 }(jQuery));
+
+

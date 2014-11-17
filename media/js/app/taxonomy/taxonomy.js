@@ -445,7 +445,7 @@
                 function (data) {
                     x = JSON.parse(data);
                     //change 4 to x.terms.length after testing.
-                    var MAX = 1//x.terms.length;
+                    var MAX = x.terms.length;
                     var parents = [];
                     for (var i = 0; i < MAX; i++) {
                         var pL = x.terms[i]['rdfs:parentLabel'].trim();
@@ -489,6 +489,8 @@
                                         tempV._save({},{
                                             success: function(it){
                                                 self.selected = it;
+                                                console.log(parents);
+                                                parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self = self.selected;
                                                 self.collection.add(it);
                                                 console.log('it');
                                                 console.log(it);
@@ -500,7 +502,7 @@
                                                     });
                                                     tempT._save({},{
                                                         success: function (itT) {
-                                                            self.selected.get('term_set').add(new Term({
+                                                            parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self.get('term_set').add(new Term({
                                                                 'display_name': itT.attributes['display_name'],
                                                                 'vocabulary_id': itT.attributes['vocabulary_id']
                                                             }));
@@ -512,11 +514,11 @@
                                     } else {
                                         //we do find the model. we just add the term to it.
                                         self.selected = model_search;
-                                        for (var z = 0; z < parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z ++)
+                                        for (var z = 0; z < parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set.length; z ++)
                                         {
                                             tempT = new Term({
-                                                'display_name':parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set[z].display_name,
-                                                'vocabulary_id': it.attributes['id']
+                                                'display_name':parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set[z].display_name,
+                                                'vocabulary_id': model_search.attributes['id']
                                             });
                                             tempT._save({},{
                                                 success: function (itT) {
@@ -559,6 +561,7 @@
                         }
                     }
                 });
+            //location.reload();
         }
 
 

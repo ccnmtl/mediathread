@@ -133,6 +133,10 @@ class SherdNoteQuerySet(models.query.QuerySet):
             self = self.filter(Q(author__id__in=visible_authors) |
                                Q(range1__isnull=True))
 
+            # @todo - to limit visibility at the item level
+            # only return notes that are authored by certain people
+            # self = self.filter(author__id__in=visible_authors)
+
         # filter by tag string, date, vocabulary
         self = self.filter_by_tags(tag_string)
         if self.count() > 0:

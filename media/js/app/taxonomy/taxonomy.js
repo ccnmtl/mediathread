@@ -333,6 +333,7 @@
                     showMessage("Please enter a term name.", undefined, "Error");
                     return;
                 }
+
                 var t = new Term({
                     'display_name': display_name,
                     'vocabulary_id': this.selected.get('id')
@@ -438,11 +439,13 @@
             var self = this;
             var vocabulary_id = this.selected.get('id');
             //'http://www.corsproxy.com/' +
-            jQuery.get(jQuery(et).attr("value").trim(),
+            //this should be sanitized in the future.
+            onomyURL = jQuery(et).attr("value").trim();
+            jQuery.get(onomyURL,
                 function (data) {
                     x = JSON.parse(data);
                     //change 4 to x.terms.length after testing.
-                    var MAX = x.terms.length;
+                    var MAX = 1//x.terms.length;
                     var parents = [];
                     for (var i = 0; i < MAX; i++) {
                         var pL = x.terms[i]['rdfs:parentLabel'].trim();
@@ -457,7 +460,7 @@
                             if(search === undefined)
                             {
                                 //create the Vocabulary
-                                temp = {'display_name': pL, 'term_set':[]};
+                                temp = {'display_name': pL, 'term_set':[], 'self':undefined};
                                 parents.push(temp);
                                 parents[parents.indexOf(temp)].term_set.push({'display_name': display});
                             }
@@ -470,21 +473,45 @@
                             if(i == MAX -1)
                             {
                                 var tempV;
-                                console.log(parents);
                                 for (var j = 0; j < parents.length; j++)
                                 {
-                                    tempV = new Vocabulary({
-                                        'display_name': parents[j].display_name,
-                                        'content_type_id': 14,
-                                        'object_id': 1,
-                                        'term_set': undefined
-                                    });
-                                    tempV._save({},{
-                                    success: function(it){
-                                        self.selected = it;
-                                        self.collection.add(it);
-                                        console.log('it');
-                                        console.log(it);
+                                    model_search = _.find(self.collection.models, function(model){return model.attributes.display_name == parents[j].display_name});
+                                    if(model_search === undefined)
+                                    {
+                                        //if we cant find the vocab in the collection we create a new one.
+                                        tempV = new Vocabulary({
+                                            'display_name': parents[j].display_name,
+                                            'content_type_id': 14,
+                                            'object_id': 1,
+                                            'term_set': undefined,
+                                            'onomy_url': onomyURL
+                                        });
+                                        tempV._save({},{
+                                            success: function(it){
+                                                self.selected = it;
+                                                self.collection.add(it);
+                                                console.log('it');
+                                                console.log(it);
+                                                for (var z = 0; z < parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z ++)
+                                                {
+                                                    tempT = new Term({
+                                                        'display_name':parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set[z].display_name,
+                                                        'vocabulary_id': it.attributes['id']
+                                                    });
+                                                    tempT._save({},{
+                                                        success: function (itT) {
+                                                            self.selected.get('term_set').add(new Term({
+                                                                'display_name': itT.attributes['display_name'],
+                                                                'vocabulary_id': itT.attributes['vocabulary_id']
+                                                            }));
+                                                            self.render();
+                                                        }
+                                                    });
+                                                }
+                                            }});
+                                    } else {
+                                        //we do find the model. we just add the term to it.
+                                        self.selected = model_search;
                                         for (var z = 0; z < parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z ++)
                                         {
                                             tempT = new Term({
@@ -501,7 +528,11 @@
                                                 }
                                             });
                                         }
-                                    }});
+
+                                    }
+
+
+
                                 }
                             }
 
@@ -523,11 +554,6 @@
                                         'vocabulary_id': it.attributes['vocabulary_id']
                                     }));
                                     self.render();
-                                },
-                                error: function (model, response) {
-                                    var responseText = jQuery.parseJSON(response.responseText);
-                                    showMessage(responseText.term.error_message,
-                                        undefined, "Error");
                                 }
                             });
                         }

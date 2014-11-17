@@ -43,7 +43,8 @@ def django_settings(request):
                  'DEBUG',
                  'REVISION',
                  'DATABASES',
-                 'GOOGLE_ANALYTICS_ID']
+                 'GOOGLE_ANALYTICS_ID',
+                 'CAS_BASE']
 
     context = {'settings': dict([(k, getattr(settings, k, None))
                                  for k in whitelist]),

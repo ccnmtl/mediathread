@@ -72,6 +72,9 @@ class AssetManager(models.Manager):
                 notes = note_model.objects.get_related_notes(
                     [old_asset], None, faculty)
 
+                # remove all extraneous global annotations
+                notes = notes.filter(author__id__in=faculty)
+
                 for old_note in notes:
                     if (old_note.id not in object_map['notes']):
                         new_note = note_model.objects.migrate_one(

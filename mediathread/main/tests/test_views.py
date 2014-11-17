@@ -54,7 +54,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
                                              is_staff=True)
 
         # instructor that sees both Sample Course & Alternate Course
-        self.instructor_three = UserFactory(username='instructor_three')
+        self.instructor_three = UserFactory(username='instructor_three',
+                                            first_name='Instructor',
+                                            last_name='Three')
         self.add_as_faculty(self.sample_course, self.instructor_three)
         self.add_as_faculty(self.alt_course, self.instructor_three)
 
@@ -108,9 +110,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['current_course_faculty'][0].username,
                           'instructor_one')
         self.assertEquals(ctx['current_course_faculty'][1].username,
-                          'instructor_two')
-        self.assertEquals(ctx['current_course_faculty'][2].username,
                           'instructor_three')
+        self.assertEquals(ctx['current_course_faculty'][2].username,
+                          'instructor_two')
 
         self.assertEquals(len(ctx['available_courses']), 2)
         self.assertEquals(ctx['available_courses'][0].title,
@@ -493,7 +495,7 @@ class ContactUsViewTest(TestCase):
 
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Contact Us Request')
-            self.assertEquals(mail.outbox[0].from_email,    
+            self.assertEquals(mail.outbox[0].from_email,
                               'sender@ccnmtl.columbia.edu')
             self.assertEquals(mail.outbox[0].to,
                               [settings.SUPPORT_DESTINATION])

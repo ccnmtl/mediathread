@@ -52,6 +52,10 @@ def django_settings(request):
     if request.course:
         context['is_course_faculty'] = request.course.is_faculty(request.user)
 
+    user_agent = request.META.get("HTTP_USER_AGENT")
+    if user_agent is not None and 'firefox' in user_agent.lower():
+        context['settings']['FIREFOX'] = True
+
     return context
 
 
@@ -285,7 +289,8 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
 
         # Only send down the real faculty. Not all us staff members
         faculty = []
-        for user in self.request.course.faculty.all():
+        for user in self.request.course.faculty.all().order_by('last_name',
+                                                               'username'):
             faculty.append(user)
 
         return {

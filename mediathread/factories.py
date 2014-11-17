@@ -133,7 +133,7 @@ class MediathreadTestMixin(object):
                                           last_name="One")
         self.instructor_two = UserFactory(username='instructor_two',
                                           first_name="Instructor",
-                                          last_name="One")
+                                          last_name="Two")
 
         self.student_one = UserFactory(username='student_one',
                                        first_name="Student",

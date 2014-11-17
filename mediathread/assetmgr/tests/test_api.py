@@ -248,7 +248,11 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
                           self.student_one.username)
         self.assertEquals(the_json['space_viewer']['username'],
                           self.student_two.username)
-        self.assertEquals(len(the_json['assets']), 0)
+        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEquals(the_json['assets'][0]['annotation_count'], 0)
+
+        ga = the_json['assets'][0]['global_annotation']
+        self.assertEquals(ga['author']['username'], 'student_one')
 
     def test_getstudentlist_as_instructor(self):
         self.assert_(self.client.login(username=self.instructor_one.username,

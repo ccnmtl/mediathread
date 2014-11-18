@@ -1,15 +1,20 @@
+import os.path
+
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.contrib.auth.views import password_change, password_change_done, \
+    password_reset, password_reset_done, password_reset_complete, \
+    password_reset_confirm
 from django.views.generic.base import TemplateView
+from tastypie.api import Api
+
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
     TagCollectionView
 from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
     RequestCourseView, ContactUsView
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
-from tastypie.api import Api
-import os.path
 
 
 tastypie_api = Api('')
@@ -50,6 +55,26 @@ urlpatterns = patterns(
     admin_logout_page,
     logout_page,
     (r'^admin/', admin.site.urls),
+
+    # override the default urls for pasword
+    url(r'^password/change/$',
+        password_change,
+        name='password_change'),
+    url(r'^password/change/done/$',
+        password_change_done,
+        name='password_change_done'),
+    url(r'^password/reset/$',
+        password_reset,
+        name='password_reset'),
+    url(r'^password/reset/done/$',
+        password_reset_done,
+        name='password_reset_done'),
+    url(r'^password/reset/complete/$',
+        password_reset_complete,
+        name='password_reset_complete'),
+    url(r'^password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        password_reset_confirm,
+        name='password_reset_confirm'),
 
     # API - JSON rendering layers. Half hand-written, half-straight tasty=pie
     (r'^api/asset/user/(?P<record_owner_name>\w[^/]*)/$',

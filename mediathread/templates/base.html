@@ -73,8 +73,13 @@
                                     {% if user_courses > 1 or user.is_staff %}
                                         <a href="/?unset_course">Switch Course</a>
                                     {% endif %}
+
+                                    {% if user.has_usable_password %}
+                                        <a href="/accounts/password_change/">Change Password</a>
+                                    {% endif %}
                                         
                                     <a href="/accounts/logout/?next=/">Log Out</a>
+                                    
                                 </div>
                             </li>
 

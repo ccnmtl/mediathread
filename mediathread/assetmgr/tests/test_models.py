@@ -108,7 +108,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEquals(note.tags, ',image, instructor_one_selection,')
         self.assertEquals(note.body, 'instructor one selection note')
 
-        gann = asset.global_annotation(user, False)
+        gann = asset.global_annotation(self.instructor_three, False)
         self.assertTrue(gann is not None)
         self.assertEquals(gann.tags, ',image, instructor_one_item,')
         self.assertEquals(gann.body, 'instructor one item note')

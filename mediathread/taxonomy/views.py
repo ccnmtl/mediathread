@@ -14,18 +14,19 @@ def taxonomy_workspace(request):
     vocabularies = Vocabulary.objects.get_for_object(request.course)
     for v in vocabularies:
         v.form = VocabularyForm(instance=v)
-
     course_type = ContentType.objects.get_for_model(request.course)
     form = VocabularyForm(initial={'name': 'initial',
                                    'content_type': course_type,
                                    'object_id': request.course.id})
-
+    print vocabularies
+    print request
     return {
         'vocabularies': vocabularies,
         'vocabulary_form': form,
         'course': request.course,
         'course_type': course_type,
         'term_form': TermForm(),
+	'test' : 'tttttt'
     }
 
 
@@ -33,7 +34,7 @@ def update_vocabulary_terms(request, content_object):
     concepts = dict((key[len('vocabulary-'):], request.POST.getlist(key))
                     for key, val in request.POST.items()
                     if key.startswith('vocabulary-'))
-
+    print concepts
     # Retrieve concepts/terms that this object is currently associated with
     associations = TermRelationship.objects.get_for_object(content_object)
 

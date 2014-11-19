@@ -107,6 +107,7 @@ MIDDLEWARE_CLASSES = [
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -151,7 +152,8 @@ INSTALLED_APPS = [
     'mediathread.taxonomy',
     'smoketest',
     'debug_toolbar',
-    'django_markwhat'
+    'django_markwhat',
+    'impersonate'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )

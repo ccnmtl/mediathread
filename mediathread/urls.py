@@ -143,6 +143,8 @@ urlpatterns = patterns(
         'mediathread.assetmgr.views.source_redirect',
         name="source_redirect"),
 
+    url(r'^impersonate/', include('impersonate.urls')),
+
     (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
 
     (r'^media/(?P<path>.*)$', 'django.views.static.serve',

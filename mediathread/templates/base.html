@@ -65,9 +65,15 @@
                                 <div class="visualclear"></div>
                                 <!-- Settings Menu -->
                                 <div class="settings_submenu" style="display: none">
-                                    {%if user.is_staff %}
+                                    {% if user.is_staff %}
                                         <a href="/admin/">Admin</a>
-                                    {%endif%}
+                                    {% endif %}
+                                    {% if user.is_superuser %}
+                                        <a href="/impersonate/search/">Impersonate</a>
+                                    {% endif %}
+                                    {% if user.is_impersonate %}
+                                        <a href="/impersonate/stop/">Impersonate Stop</a>
+                                    {% endif %}
                                     
                                     {% num_courses for user as user_courses %}
                                     {% if user_courses > 1 or user.is_staff %}

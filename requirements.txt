@@ -51,7 +51,7 @@ South==1.0
 django-annoying==0.8.0
 django-nose==1.2
 django-threadedcomments==0.9
-requirements/src/django-courseaffils-0.4.9.tar.gz
+requirements/src/django-courseaffils-0.5.0.tar.gz
 django-statsd-mozilla==0.3.11
 raven==4.0.3
 django-appconf==0.6
@@ -63,3 +63,4 @@ django-debug-toolbar==1.1
 django-simple-captcha==0.4.1
 django-markwhat==1.0
 factory_boy==2.1.1
+django-impersonate==0.7.0

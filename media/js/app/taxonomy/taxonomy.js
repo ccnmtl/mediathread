@@ -29,9 +29,12 @@
     Vocabulary = Backbone.Model.extend({
         urlRoot: '/api/vocabulary/',
         parse: function (response) {
+            console.log(response);
             if (response) {
                 response.term_set = new TermList(response.term_set);
             }
+            console.log("parse");
+            console.log(response);
             return response;
         },
         toTemplate: function () {
@@ -114,7 +117,8 @@
             'click a.edit-term-open': 'showEditTerm',
             'click a.edit-term-close': 'hideEditTerm',
             'click a.delete-term': 'deleteTerm',
-            'click a.onomy-terms-submit': 'createOnomyVocabulary'
+            'click a.onomy-terms-submit': 'createOnomyVocabulary',
+            'click a.refresh-button-submit' : 'refreshOnomy'
         },
         initialize: function (options) {
             _.bindAll(this,
@@ -126,7 +130,8 @@
                 "keypressTermName",
                 "updateTerm",
                 "deleteTerm",
-                //"createOnomyVocabulary",
+                "createOnomyVocabulary",
+                "refreshOnomy",
                 "activateTab");
 
             this.context = options;
@@ -200,18 +205,22 @@
                 'display_name': display_name,
                 'content_type_id': jQuery(parent).find('input[name="content_type_id"]').attr("value"),
                 'object_id': jQuery(parent).find('input[name="object_id"]').attr("value"),
-                'term_set': undefined
+                'term_set': undefined,
+
             });
-            v.save({}, {
+            console.log(v);
+            v.save({'onomy_url': undefined}, {
                 success: function () {
                     self.selected = v;
                     self.collection.add(v);
+                    console.log('success');
                 },
                 error: function (model, response) {
                     var responseText = jQuery.parseJSON(response.responseText);
                     showMessage(responseText.vocabulary.error_message, undefined, "Error");
                 }
             });
+
             return false;
         },
         updateVocabulary: function (evt) {
@@ -479,13 +488,16 @@
                                     if(model_search === undefined)
                                     {
                                         //if we cant find the vocab in the collection we create a new one.
+                                        urlList = [];
+                                        urlList.push(onomyURL);
                                         tempV = new Vocabulary({
                                             'display_name': parents[j].display_name,
                                             'content_type_id': 14,
                                             'object_id': 1,
                                             'term_set': undefined,
-                                            'onomy_url': onomyURL
+                                            'onomy_url': urlList
                                         });
+
                                         tempV._save({},{
                                             success: function(it){
                                                 self.selected = it;
@@ -514,6 +526,7 @@
                                     } else {
                                         //we do find the model. we just add the term to it.
                                         self.selected = model_search;
+                                        model_search.onomy_url.push(onomyURL);
                                         for (var z = 0; z < parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set.length; z ++)
                                         {
                                             tempT = new Term({
@@ -561,7 +574,14 @@
                         }
                     }
                 });
-            //location.reload();
+
+        },
+        refreshOnomy: function(evt)
+        {
+            var self = this;
+            urlArray = _.map(self.collection.models, function(model){return model.attributes.onomy_url});
+            console.log(urlArray);
+            console.log(self.collection);
         }
 
 

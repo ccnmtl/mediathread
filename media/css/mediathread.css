@@ -2917,6 +2917,16 @@ div.gallery-item h4.asset_title {
  {
     display:inline-block;
 }
+
+.sherd-flowplayer5-wrapper,
+.sherd-flowplayer5-wrapper div {
+    display: block;
+}
+
+.sherd-flowplayer5 {
+    margin: 0 auto;    
+}
+
 .asset-display
 {
     text-align:center;

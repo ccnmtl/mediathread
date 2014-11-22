@@ -183,3 +183,27 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(ctx[1]['term_set']), 1)
         self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
         self.assertEquals(ctx[1]['term_set'][0]['count'], 2)
+
+    def test_vocabulary_render_for_course(self):
+        request = HttpRequest()
+        request.course = self.sample_course
+
+        notes = SherdNote.objects.filter(title='Nice Tie')
+        ctx = VocabularyResource().render_for_course(request, notes)
+
+        self.assertEquals(len(ctx), 2)
+        self.assertEquals(ctx[0]['display_name'], 'Colors')
+        self.assertEquals(len(ctx[0]['term_set']), 3)
+        self.assertEquals(ctx[0]['term_set'][0]['display_name'], 'Blue')
+        self.assertEquals(ctx[0]['term_set'][0]['count'], 0)
+        self.assertEquals(ctx[0]['term_set'][1]['display_name'], 'Green')
+        self.assertEquals(ctx[0]['term_set'][1]['count'], 0)
+        self.assertEquals(ctx[0]['term_set'][2]['display_name'], 'Red')
+        self.assertEquals(ctx[0]['term_set'][2]['count'], 0)
+
+        self.assertEquals(ctx[1]['display_name'], 'Shapes')
+        self.assertEquals(len(ctx[1]['term_set']), 2)
+        self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
+        self.assertEquals(ctx[1]['term_set'][0]['count'], 1)
+        self.assertEquals(ctx[1]['term_set'][1]['display_name'], 'Triangle')
+        self.assertEquals(ctx[1]['term_set'][1]['count'], 0)

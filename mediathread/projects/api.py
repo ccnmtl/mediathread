@@ -1,4 +1,4 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from courseaffils.lib import get_public_name
 from mediathread.api import UserResource, ClassLevelAuthentication
 from mediathread.assetmgr.api import AssetResource

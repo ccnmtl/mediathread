@@ -621,8 +621,8 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors)
 
-        tags = TagResource().render_related(request, notes)
-        vocab = VocabularyResource().render_related(request, notes)
+        tags = TagResource().render_for_course(request, notes)
+        vocab = VocabularyResource().render_for_course(request, notes)
         return {'active_tags': tags, 'active_vocabulary': vocab}
 
     def apply_pagination(self, assets, notes, offset, limit):

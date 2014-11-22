@@ -1,21 +1,22 @@
-#pylint: disable-msg=R0904
-from courseaffils.lib import get_public_name
-from courseaffils.models import Course, CourseInfo
-from django.contrib.auth.models import User, Group
-from tagging.models import Tag
-from tastypie import fields
-from tastypie.authentication import Authentication
-from tastypie.authorization import Authorization
-from tastypie.constants import ALL
-from tastypie.resources import ModelResource
-
-
+# pylint: disable-msg=R0904
 '''From the TastyPie Docs:
 Authentication is the component needed to verify who a certain user
 is and to validate their access to the API.
 Authentication answers the question "Who is this person?"
 This usually involves requiring credentials, such as an API key or
 username/password or oAuth tokens.'''
+
+from django.contrib.auth.models import User, Group
+from tagging.models import Tag
+from tastypie.authentication import Authentication
+from tastypie.authorization import Authorization
+from tastypie.constants import ALL
+from tastypie.resources import ModelResource
+
+from courseaffils.lib import get_public_name
+from courseaffils.models import Course, CourseInfo
+from mediathread.djangosherd.models import SherdNote
+from tastypie import fields
 
 
 class ClassLevelAuthentication(Authentication):
@@ -63,9 +64,8 @@ class UserResource(ModelResource):
         allowed_methods = ['get']
         authentication = ClassLevelAuthentication()
         authorization = UserAuthorization()
-        ordering = 'id'
-        filtering = {'id': ALL,
-                     'username': ALL}
+        ordering = ['last_name', 'first_name', 'username']
+        filtering = {'id': ALL, 'username': ALL}
 
     def dehydrate(self, bundle):
         bundle.data['public_name'] = get_public_name(bundle.obj,
@@ -78,6 +78,7 @@ class UserResource(ModelResource):
         return dehydrated.data
 
     def render_list(self, request, lst):
+        lst = lst.order_by('last_name', 'first_name', 'username')
         data = []
         for user in lst:
             bundle = self.build_bundle(obj=user, request=request)
@@ -87,9 +88,10 @@ class UserResource(ModelResource):
 
 
 class GroupResource(ModelResource):
-    user_set = fields.ToManyField('mediathread.api.UserResource',
-                                  'user_set',
-                                  full=True)
+    user_set = fields.ToManyField(
+        'mediathread.api.UserResource', full=True,
+        attribute=lambda bundle: bundle.obj.user_set.all().order_by(
+            "last_name", "first_name", "username"))
 
     class Meta:
         queryset = Group.objects.none()
@@ -132,6 +134,31 @@ class TagResource(ModelResource):
         for idx, tag in enumerate(tags):
             if idx == tag_last:
                 setattr(tag, 'last', idx == tag_last)
+
+            bundle = self.build_bundle(obj=tag, request=request)
+            dehydrated = self.full_dehydrate(bundle)
+            data.append(dehydrated.data)
+        return data
+
+    def render_for_course(self, request, object_list):
+        notes = SherdNote.objects.filter(asset__course=request.course)
+        tags = Tag.objects.usage_for_queryset(notes)
+        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+
+        counts = []
+        if len(object_list) > 0:
+            counts = Tag.objects.usage_for_queryset(object_list, counts=True)
+
+        data = []
+        tag_last = len(tags) - 1
+        for idx, tag in enumerate(tags):
+            if idx == tag_last:
+                setattr(tag, 'last', idx == tag_last)
+            try:
+                x = counts.index(tag)
+                setattr(tag, 'count', counts[x].count)
+            except ValueError:
+                setattr(tag, 'count', 0)
 
             bundle = self.build_bundle(obj=tag, request=request)
             dehydrated = self.full_dehydrate(bundle)

@@ -3,10 +3,12 @@
 import json
 
 from courseaffils.models import Course
+from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 from tagging.models import Tag
 
 from mediathread.api import TagResource
+from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory
 from mediathread.main import course_details
@@ -141,13 +143,17 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         objects = the_json['assets']
         self.assertEquals(len(objects), 2)
 
+        match = [x for x in objects if x['id'] == self.asset1.id]
+        self.assertEquals(len(match), 1)
         selections = [self.student_note.id, self.instructor_note.id]
-        self.assertAssetEquals(objects[0], self.asset1.title,
+        self.assertAssetEquals(match[0], self.asset1.title,
                                'Instructor One', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
+        match = [x for x in objects if x['id'] == self.asset2.id]
+        self.assertEquals(len(match), 1)
         self.assertAssetEquals(
-            objects[1], self.asset2.title,
+            match[0], self.asset2.title,
             'Instructor One', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
@@ -522,3 +528,55 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(lst[4]['count'], 1)
         self.assertEquals(lst[4]['last'], True)
         self.assertEquals(lst[4]['name'], 'student_one_selection')
+
+    def test_render_related_tag_list(self):
+        request = RequestFactory().get('')
+        request.course = self.sample_course
+
+        notes = SherdNote.objects.filter(author=self.student_one)
+        lst = TagResource().render_related(request, notes)
+        self.assertEquals(len(lst), 3)
+
+        self.assertEquals(lst[0]['count'], 1)
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'image')
+
+        self.assertEquals(lst[1]['count'], 1)
+        self.assertEquals(lst[1]['last'], False)
+        self.assertEquals(lst[1]['name'], 'student_one_global')
+
+        self.assertEquals(lst[2]['count'], 1)
+        self.assertEquals(lst[2]['last'], True)
+        self.assertEquals(lst[2]['name'], 'student_one_selection')
+
+    def test_render_tag_list_for_course(self):
+        request = RequestFactory().get('')
+        request.course = self.sample_course
+
+        notes = SherdNote.objects.filter(author=self.student_one)
+        lst = TagResource().render_for_course(request, notes)
+        self.assertEquals(len(lst), 6)
+
+        self.assertEquals(lst[0]['count'], 1)
+        self.assertEquals(lst[0]['last'], False)
+        self.assertEquals(lst[0]['name'], 'image')
+
+        self.assertEquals(lst[1]['count'], 0)
+        self.assertEquals(lst[1]['last'], False)
+        self.assertEquals(lst[1]['name'], 'instructor_one_global')
+
+        self.assertEquals(lst[2]['count'], 0)
+        self.assertEquals(lst[2]['last'], False)
+        self.assertEquals(lst[2]['name'], 'instructor_one_selection')
+
+        self.assertEquals(lst[3]['count'], 1)
+        self.assertEquals(lst[3]['last'], False)
+        self.assertEquals(lst[3]['name'], 'student_one_global')
+
+        self.assertEquals(lst[4]['count'], 1)
+        self.assertEquals(lst[4]['last'], False)
+        self.assertEquals(lst[4]['name'], 'student_one_selection')
+
+        self.assertEquals(lst[5]['count'], 0)
+        self.assertEquals(lst[5]['last'], True)
+        self.assertEquals(lst[5]['name'], 'video')

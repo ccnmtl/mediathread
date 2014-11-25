@@ -1,0 +1,10 @@
+{% load i18n %}
+
+Thank you for registering for the Mediathread. To activate your account, please click the link below. This link will be available to you for {{ expiration_days }} days.
+
+http://{{ site.domain }}{% url "registration_activate" activation_key %}
+
+
+Once you've activated your account, you can log in to {{site.domain}} using the log in button on the front page.
+ 
+The link is valid for {{ expiration_days }} days.

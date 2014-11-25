@@ -1,4 +1,5 @@
 from django import forms
+from registration.forms import RegistrationForm
 
 
 TERM_CHOICES = (
@@ -82,3 +83,8 @@ class ContactUsForm(forms.Form):
                 "Please leave this field blank"])
 
         return cleaned_data
+
+
+class CustomRegistrationForm(RegistrationForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)

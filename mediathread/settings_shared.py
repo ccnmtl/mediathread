@@ -153,7 +153,8 @@ INSTALLED_APPS = [
     'smoketest',
     'debug_toolbar',
     'django_markwhat',
-    'impersonate'
+    'impersonate',
+    'registration',
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
@@ -274,6 +275,8 @@ LOGGING = {
 }
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+ACCOUNT_ACTIVATION_DAYS = 7
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

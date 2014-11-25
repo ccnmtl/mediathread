@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load i18n admin_static %}
+{% block title %}&mdash; Sign up for an account{% endblock %}
+
+{% block css %}
+<style>
+    .register_form {
+        width: 800px;
+        margin: 20px 20px;
+     }
+    
+    .register_form h2 {
+        padding: 10px 0;
+        border-bottom: solid 1px #EFEFEF;
+        width: 75%;
+        min-width: 900px;
+    }
+    
+    .register_form form {
+        margin: 20px;
+        width: 70%;
+    }
+    
+    .register_form label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        width: 100%;
+    }
+    
+    .register_form label small {
+        font-weight: normal;
+        margin-left: 10px;
+    }
+    
+    .register_form input,
+    .register_form select, 
+    .register_form textarea {
+        margin-bottom: 10px;
+        display: block;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    }
+    
+    .register_form input {
+        height: 20px;
+        padding-left: 5px;
+    }
+
+    .register_form input[name='first_name'],
+    .register_form input[name='last_name'] {
+        width: 30%;
+        display: inline;
+    }
+
+    .register_form input[name='username'] {
+        width: 55%;
+        margin-right: 0;
+    }
+    
+    .register_form input[name='email'] {
+        width: 55%;
+        margin-right: 12px;
+    }
+
+    .register_form input[type='submit'] {
+        float: right;
+        width: 125px;
+        height: 30px;
+        margin: 10px -5px 0 0;
+        padding: 5px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;        
+    }
+    
+    .btn:hover,
+    .btn:focus,
+    .btn:active,
+    .btn.active,
+    .btn.disabled,
+    .btn[disabled] {
+      color: #333333;
+      background-color: #e6e6e6;
+      *background-color: #d9d9d9;
+    }
+    
+    div.help-inline {
+        display: block;
+    }
+    
+    div.control-group.error input,
+    div.control-group.error select,
+    div.control-group.error textarea {
+        border-color: #b94a48;
+    }
+    
+    div.control-group .help-inline {
+        display: none;
+    }
+    
+    div.control-group.error .help-inline,
+    ul.errorlist {
+        clear: both;
+        list-style-type: none;
+        color: #b94a48;
+        margin: 0 0 20px 0;
+        display: block;
+    }
+    
+    div.registration_error {
+        margin-bottom: 20px;
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        padding: 15px 15px 0 15px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<form id="reg_form" method="post" action="." class="register_form form-horizontal">
+        
+    <h2 class="pagetitle signuptitle">Sign up for an account</h2>
+    <div><p>
+    If you already have a username or password, but have forgotten either,
+        <a href="{% url "password_reset" %}">reset them here</a>.
+    </p></div>
+
+    {% if form.errors|length %}
+        <div class="registration_error">
+          <strong>Please correct errors before continuing</strong><br /><br />
+          {% if form.non_field_errors %}
+            <div>{{ form.non_field_errors}}</div>
+          {% endif %}
+        </div>
+    {% endif %}
+        
+    <div class="fieldWrapper control-group {% if form.first_name.errors %}error{% endif %}">
+        <label for="id_first_name"><b>Your name is:</b></label>
+        <div class="controls">
+            <span>
+                <input id="id_first_name" maxlength="50" name="first_name" type="text"
+                 value="{{form.data.first_name}}" placeholder="First Name">
+            </span>&nbsp;
+            <span>
+                <input id="id_last_name" maxlength="50" name="last_name"
+                 value="{{form.data.last_name}}"
+                 type="text" placeholder="Last Name">
+            </span>
+            
+            {% if form.first_name.errors or form.last_name.errors %}
+                <div class="help-inline">First and last name are required</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="fieldWrapper control-group">
+        <label class="control-label">Username: </label>
+        <div class="controls">
+            {{ form.username }}
+        </div>
+        {{ form.username.errors }}
+    </div>
+            
+    <div class="fieldWrapper control-group">
+        <label class="control-label">Email: </label>
+        <div class="controls">
+            {{ form.email }}
+        </div>       
+        {{ form.email.errors }}
+    </div>
+
+    <div class="fieldWrapper control-group">
+        <label class="control-label">Password: </label>
+        <div class="controls">
+            {{ form.password1 }}
+        </div>
+        {{ form.password1.errors }}
+    </div>
+
+    <div class="fieldWrapper control-group">
+        <label class="control-label">Confirm Password: </label>
+        <div class="controls">
+            {{ form.password2 }}
+        </div>
+        {{form.password2.errors}}
+    </div>
+
+    <div style="text-align: center">
+    <input class="btn btn-primary btn-large" type="submit" id="submit-id" value="{% trans 'Sign up!' %}" />
+    </div>
+</form>
+
+{% endblock %}
+
+

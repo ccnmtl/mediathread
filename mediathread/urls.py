@@ -11,11 +11,12 @@ from tastypie.api import Api
 
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
     TagCollectionView
+from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
     RequestCourseView, ContactUsView
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
-
+from registration.backends.default.views import RegistrationView
 
 tastypie_api = Api('')
 tastypie_api.register(TermResource())
@@ -75,6 +76,11 @@ urlpatterns = patterns(
     url(r'^password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
         password_reset_confirm,
         name='password_reset_confirm'),
+
+    url(r'^accounts/register/$',
+        RegistrationView.as_view(form_class=CustomRegistrationForm),
+        name='registration_register'),
+    (r'^accounts/', include('registration.backends.default.urls')),
 
     # API - JSON rendering layers. Half hand-written, half-straight tasty=pie
     (r'^api/asset/user/(?P<record_owner_name>\w[^/]*)/$',

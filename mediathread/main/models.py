@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from registration.signals import user_registered, user_activated
 
 
 class UserSetting(models.Model):
@@ -31,3 +32,18 @@ class UserSetting(models.Model):
             user_setting.save()
         except:
             UserSetting.objects.create(user=user, name=setting_id, value=value)
+
+
+def user_registered_callback(sender, user, request, **kwargs):
+    user.first_name = request.POST["first_name"]
+    user.last_name = request.POST["first_name"]
+    user.save()
+
+
+def user_activated_callback(sender, user, request, **kwargs):
+    # add user to the Guest Sandbox
+    pass
+
+
+user_registered.connect(user_registered_callback)
+user_activated.connect(user_activated_callback)

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}&mdash; {% if account %}Activation complete{% else %}Activation problem{% endif %}{% endblock %}
+
+{% block registration_content %}
+<h2 class="pagetitle signuptitle">Account Activation</h2>
+
+{% if account %}
+
+<div><p>Thanks {{ account }}, your account activation is now completed! You may now <a href="/">log in</a> using the username and password you set at registration.</p></div>
+
+{% else %}
+
+<div><p>Oops &ndash; it seems that your activation key is invalid.  Please check the url again.</p></div>
+
+{% endif %}
+
+{% endblock %}
+

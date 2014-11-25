@@ -23,7 +23,7 @@ from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 
 from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
-from mediathread.api import UserResource, TagResource
+from mediathread.api import UserResource, TagResource, ClassLevelAuthentication
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.discussions.api import DiscussionIndexResource
@@ -135,25 +135,29 @@ def asset_create(request):
         raise AssertionError("no arguments were supplied to make an asset")
 
     if asset is None:
+
         try:
             asset = Asset(title=title[:1020],  # max title length
                           course=request.course,
                           author=user)
             asset.save()
-
             for source in sources_from_args(request, asset).values():
                 if len(source.url) <= 4096:
+                    print source
                     source.save()
 
             if "tag" in metadata:
                 for each_tag in metadata["tag"]:
+                    print user, each_tag
                     asset.save_tag(user, each_tag)
 
             asset.metadata_blob = json.dumps(metadata)
             asset.save()
+
         except:
             # we'll make it here if someone doesn't submit
             # any primary_labels as arguments
+            # THIS WILL ALSO HAPPEN IF THE USER IS NOT PART OF THE CLASS
             # @todo verify the above comment.
             raise AssertionError("no primary source provided")
 
@@ -441,6 +445,26 @@ def final_cut_pro_xml(request, asset_id):
         return HttpResponse('Not Implemented: No Final Cut Pro Xmeml support',
                             status=503)
 
+def test_dump(request):
+    user = request.user
+    user_id = user.id
+    asset = Asset.objects.filter(author_id=user_id)
+    ar = AssetResource()
+    ar.Meta.excludes = ['added', 'modified', 'course', 'active']
+    lst = []
+    for a in asset.all():
+        abundle = ar.build_bundle(obj=a, request=request)
+        dehydrated = ar.full_dehydrate(abundle)
+        ctx = ar._meta.serializer.to_simple(dehydrated, None)
+        lst.append(ctx)
+    for l in lst:
+        for key, value in ctx.items():
+            print key, value
+            print "\n"
+    return HttpResponse(lst)
+
+
+
 
 class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
                          AjaxRequiredMixin, JSONResponseMixin, View):
@@ -463,6 +487,7 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
             # projects & discussions title, object_pk, content_type, modified
             indicies = DiscussionIndex.objects.filter(
                 asset=asset).order_by('-modified')
+            print DiscussionIndexResource().render_list(request, indicies)
             ctx.update(DiscussionIndexResource().render_list(request,
                                                              indicies))
 

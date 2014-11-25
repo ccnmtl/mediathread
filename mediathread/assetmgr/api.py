@@ -16,7 +16,7 @@ class AssetResource(ModelResource):
     class Meta:
         queryset = Asset.objects.none()
         excludes = ['added', 'modified', 'course',
-                    'active', 'metadata_blob']
+                    'active']#, 'metadata_blob'] getting rid of this doesn't break anything
         list_allowed_methods = []
         detail_allowed_methods = []
         authentication = ClassLevelAuthentication()

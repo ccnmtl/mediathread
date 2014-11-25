@@ -48,6 +48,33 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEquals(asset1.__unicode__(),
                           'Item Title <%s> (Sample Course)' % asset1.id)
 
+    def test_get_by_args(self):
+        success, asset = Asset.objects.get_by_args(
+            {'foo': 'bar'}, asset__course=self.sample_course)
+        self.assertFalse(success)
+        self.assertIsNone(asset)
+
+        data = {'title': 'Z',
+                'url': 'https://www.google.com/search=X',
+                'metadata-image': '',
+                'image': 'data:image/jpeg;base64,/9j/'}
+        success, asset = Asset.objects.get_by_args(
+            data, asset__course=self.sample_course)
+        self.assertTrue(success)
+        self.assertIsNone(asset)
+
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     author=self.instructor_one)
+
+        data = {'title': asset1.title,
+                'image': asset1.primary.url}
+
+        success, asset = Asset.objects.get_by_args(
+            data, asset__course=self.sample_course)
+        self.assertTrue(success)
+        self.assertEquals(asset1, asset)
+
     def test_metadata(self):
         asset1 = AssetFactory.create(
             course=self.sample_course, primary_source='image',

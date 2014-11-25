@@ -18,20 +18,21 @@ url_processor = getattr(settings, 'ASSET_URL_PROCESSOR', default_url_processor)
 
 
 class AssetManager(models.Manager):
+
     def get_by_args(self, args, **constraints):
         "args typically is request.GET"
         criteria = Asset.good_args(args)
         if not criteria:
-            return False
+            return (False, None)
 
         qry = reduce(lambda x, y: x | y,  # composable Q's
                      [models.Q(label=k, url=args[k], primary=True)
                       for k in criteria])
         sources = Source.objects.filter(qry, **constraints)
         if sources:
-            return sources[0].asset
+            return (True, sources[0].asset)
         else:
-            return None
+            return (True, None)
 
     def archives(self):
         return self.filter(Q(source__primary=True) &
@@ -161,7 +162,7 @@ class Asset(models.Model):
                      'image')
 
     # not good for uniqueness
-    fundamental_labels = ('archive', 'url',)
+    fundamental_labels = ('archive',)
     primary_labels = useful_labels + fundamental_labels
 
     class Meta:

@@ -6,7 +6,7 @@ from django.test.client import RequestFactory
 
 from mediathread.assetmgr.models import Asset
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
-    asset_create
+    asset_create, sources_from_args
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory
@@ -22,6 +22,25 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.instructor_three = UserFactory(username='instructor_three')
         self.add_as_faculty(self.sample_course, self.instructor_three)
         self.add_as_faculty(self.alt_course, self.instructor_three)
+
+    def test_sources_from_args(self):
+        data = {'title': 'Bad Asset',
+                'asset-source': 'bookmarklet',
+                'image': "x" * 5000,  # too long
+                'url': 'http://www.youtube.com/abcdefghi'}
+        request = RequestFactory().post('/save/', data)
+        sources = sources_from_args(request)
+
+        self.assertEquals(len(sources.keys()), 0)
+
+        data = {'title': 'Good Asset',
+                'asset-source': 'bookmarklet',
+                'image': "http://www.flickr.com/"}
+        request = RequestFactory().post('/save/', data)
+        sources = sources_from_args(request)
+        self.assertEquals(len(sources.keys()), 2)
+        self.assertEquals(sources['image'].url, "http://www.flickr.com/")
+        self.assertTrue(sources['image'].primary)
 
     def test_archive_add_or_remove_get(self):
         self.assertTrue(

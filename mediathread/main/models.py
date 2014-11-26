@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from registration.signals import user_registered, user_activated
 
+from mediathread.main.course_details import get_guest_sandbox
+
 
 class UserSetting(models.Model):
     user = models.ForeignKey(User)
@@ -36,13 +38,13 @@ class UserSetting(models.Model):
 
 def user_registered_callback(sender, user, request, **kwargs):
     user.first_name = request.POST["first_name"]
-    user.last_name = request.POST["first_name"]
+    user.last_name = request.POST["last_name"]
     user.save()
 
 
 def user_activated_callback(sender, user, request, **kwargs):
-    # add user to the Guest Sandbox
-    pass
+    sandbox = get_guest_sandbox()
+    sandbox.group.user_set.add(user)
 
 
 user_registered.connect(user_registered_callback)

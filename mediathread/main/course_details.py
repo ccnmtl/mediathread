@@ -1,3 +1,4 @@
+from courseaffils.models import Course
 from django.core.cache import cache
 
 
@@ -44,13 +45,17 @@ def all_selections_are_visible(course):
 
 def cached_course_is_member(course, user):
     key = "%s:%s:is_member" % (course.id, user.id)
-    if not key in cache:
+    if key not in cache:
         cache.set(key, course.is_member(user), 3)
     return cache.get(key)
 
 
 def cached_course_is_faculty(course, user):
     key = "%s:%s:is_faculty" % (course.id, user.id)
-    if not key in cache:
+    if key not in cache:
         cache.set(key, course.is_faculty(user), 3)
     return cache.get(key)
+
+
+def get_guest_sandbox():
+    return Course.objects.get(title="Mediathread.info Sandbox")

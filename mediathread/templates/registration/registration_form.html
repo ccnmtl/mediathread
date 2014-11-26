@@ -5,20 +5,27 @@
 {% block css %}
 <style>
     .register_form {
-        width: 800px;
+        width: 600px;
         margin: 20px 20px;
      }
     
     .register_form h2 {
         padding: 10px 0;
         border-bottom: solid 1px #EFEFEF;
-        width: 75%;
-        min-width: 900px;
+        width: 100%;
     }
     
     .register_form form {
         margin: 20px;
         width: 70%;
+    }
+    
+    .fieldWrapper {
+        margin-bottom: 25px;
+    }
+    
+    .fieldWrapper.password-container {
+        margin-top: 50px;
     }
     
     .register_form label {
@@ -60,18 +67,15 @@
 
     .register_form input[name='first_name'],
     .register_form input[name='last_name'] {
-        width: 30%;
+        width: 45%;
         display: inline;
     }
 
-    .register_form input[name='username'] {
-        width: 55%;
-        margin-right: 0;
-    }
-    
+    .register_form input[name='username'],
+    .register_form input[name='password1'],
+    .register_form input[name='password2'],
     .register_form input[name='email'] {
-        width: 55%;
-        margin-right: 12px;
+        width: 45%;
     }
 
     .register_form input[type='submit'] {
@@ -148,6 +152,12 @@
         border: 1px solid transparent;
         border-radius: 4px;
     }
+    
+    .smalltext {
+        font-size: 90%;
+        color: #595959;
+        margin-left: 5px;
+    }
 </style>
 {% endblock %}
 
@@ -170,7 +180,7 @@
     {% endif %}
         
     <div class="fieldWrapper control-group {% if form.first_name.errors %}error{% endif %}">
-        <label for="id_first_name"><b>Your name is:</b></label>
+        <label for="id_first_name"><b>Your name is</b></label>
         <div class="controls">
             <span>
                 <input id="id_first_name" maxlength="50" name="first_name" type="text"
@@ -189,23 +199,26 @@
     </div>
 
     <div class="fieldWrapper control-group">
-        <label class="control-label">Username: </label>
+        <label class="control-label">Username</label>
         <div class="controls">
             {{ form.username }}
+            {% if not form.username.errors %}
+                <div class="smalltext">30 characters or fewer. Usernames may contain alphanumeric, _, @, +, . and - characters.</div>
+            {% endif %}
         </div>
         {{ form.username.errors }}
     </div>
             
     <div class="fieldWrapper control-group">
-        <label class="control-label">Email: </label>
+        <label class="control-label">Email</label>
         <div class="controls">
             {{ form.email }}
         </div>       
         {{ form.email.errors }}
     </div>
 
-    <div class="fieldWrapper control-group">
-        <label class="control-label">Password: </label>
+    <div class="fieldWrapper control-group password-container">
+        <label class="control-label">Password</label>
         <div class="controls">
             {{ form.password1 }}
         </div>
@@ -213,7 +226,7 @@
     </div>
 
     <div class="fieldWrapper control-group">
-        <label class="control-label">Confirm Password: </label>
+        <label class="control-label">Confirm Password</label>
         <div class="controls">
             {{ form.password2 }}
         </div>

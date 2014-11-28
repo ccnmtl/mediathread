@@ -21,7 +21,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
-
+from mediathread.djangosherd.api import SherdNoteResource
 from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
 from mediathread.api import UserResource, TagResource, ClassLevelAuthentication
 from mediathread.assetmgr.api import AssetResource
@@ -31,6 +31,7 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main.models import UserSetting
+from mediathread.main.course_details import cached_course_is_faculty
 from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
 from mediathread.taxonomy.api import VocabularyResource
@@ -448,20 +449,49 @@ def final_cut_pro_xml(request, asset_id):
 def test_dump(request):
     user = request.user
     user_id = user.id
-    asset = Asset.objects.filter(author_id=user_id)
-    ar = AssetResource()
+    assets = Asset.objects.filter(author_id=user_id)
+    ar = AssetResource(include_annotations=True)
     ar.Meta.excludes = ['added', 'modified', 'course', 'active']
     lst = []
-    for a in asset.all():
-        abundle = ar.build_bundle(obj=a, request=request)
-        dehydrated = ar.full_dehydrate(abundle)
-        ctx = ar._meta.serializer.to_simple(dehydrated, None)
-        lst.append(ctx)
-    for l in lst:
-        for key, value in ctx.items():
-            print key, value
-            print "\n"
-    return HttpResponse(lst)
+    # acv = AssetCollectionView()
+    # acv.record_owner = user_id
+    # acv.record_viewer = request.user
+    # acv.is_viewer_faculty = cached_course_is_faculty(request.course,
+    #                                                       request.user)
+    # acv.visible_authors = [request.user.id]
+
+    # notes = SherdNote.objects.get_related_notes(asset, user_id, request.user.id)
+    notes = SherdNote.objects.get_related_notes(
+            assets, user_id or None, [request.user.id])
+    print notes
+    # for a in assets:
+    #     print a
+    j = ar.render_list(request, [request.user.id], assets, notes)
+    print j
+    note_resource = SherdNoteResource()
+    note_ctx = note_resource.render_one(request, notes[0], "")
+    the_json = {}
+    if notes[0].is_global_annotation():
+        the_json['global_annotation'] = note_ctx
+        the_json['global_annotation_analysis'] = (
+            len(note_ctx['vocabulary']) > 0 or
+            len(note_ctx['metadata']['body']) > 0 or
+            len(note_ctx['metadata']['tags']) > 0)
+    else:
+       the_json['annotations'].append(note_ctx)
+
+    # print the_json
+    #it keeps adding the annotations for all the videos.... whadduhfux
+
+
+    # for a in asset.all():
+    #     abundle = ar.build_bundle(obj=a, request=request)
+    #     dehydrated = ar.full_dehydrate(abundle)
+    #     ctx = ar._meta.serializer.to_simple(dehydrated, None)
+    #     lst.append(ctx)
+    #
+    # lst.append(acv.get(request))
+    return HttpResponse(j)
 
 
 
@@ -617,21 +647,21 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
             'is_faculty': self.is_viewer_faculty
         }
 
-        if self.record_owner:
-            ctx['space_owner'] = ures.render_one(request, self.record_owner)
+        # if self.record_owner:
+        #     ctx['space_owner'] = ures.render_one(request, self.record_owner)
 
         ctx['active_filters'] = {}
         for key, val in request.GET.items():
             if (key in self.valid_filters or key.startswith('vocabulary-')):
                 ctx['active_filters'][key] = val
 
-        ctx['editable'] = self.viewing_own_records
-        ctx['citable'] = citable
+        # ctx['editable'] = self.viewing_own_records
+        # ctx['citable'] = citable
 
         # render the assets
-        ares = AssetResource(include_annotations=include_annotations,
-                             extras={'editable': self.viewing_own_records,
-                                     'citable': citable})
+        ares = AssetResource(include_annotations=include_annotations)
+                             # extras={'editable': self.viewing_own_records,
+                             #         'citable': citable})
         ctx['assets'] = ares.render_list(request,
                                          self.record_viewer,
                                          assets, notes)

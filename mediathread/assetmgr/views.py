@@ -6,6 +6,7 @@ import json
 import re
 import urllib
 import urllib2
+import lxml.etree as ET
 
 from courseaffils.models import CourseAccess
 from django.conf import settings
@@ -463,22 +464,103 @@ def test_dump(request):
     # notes = SherdNote.objects.get_related_notes(asset, user_id, request.user.id)
     notes = SherdNote.objects.get_related_notes(
             assets, user_id or None, [request.user.id])
-    print notes
+    # print notes
     # for a in assets:
     #     print a
     j = ar.render_list(request, [request.user.id], assets, notes)
-    print j
-    note_resource = SherdNoteResource()
-    note_ctx = note_resource.render_one(request, notes[0], "")
-    the_json = {}
-    if notes[0].is_global_annotation():
-        the_json['global_annotation'] = note_ctx
-        the_json['global_annotation_analysis'] = (
-            len(note_ctx['vocabulary']) > 0 or
-            len(note_ctx['metadata']['body']) > 0 or
-            len(note_ctx['metadata']['tags']) > 0)
-    else:
-       the_json['annotations'].append(note_ctx)
+
+    # note_resource = SherdNoteResource()
+    # note_ctx = note_resource.render_one(request, notes[0], "")
+    # the_json = {}
+    # if notes[0].is_global_annotation():
+    #     the_json['global_annotation'] = note_ctx
+    #     the_json['global_annotation_analysis'] = (
+    #         len(note_ctx['vocabulary']) > 0 or
+    #         len(note_ctx['metadata']['body']) > 0 or
+    #         len(note_ctx['metadata']['tags']) > 0)
+    # else:
+    #    the_json['annotations'].append(note_ctx)
+
+    data = j[0]
+    #we need to turn the blob into json so we can grab data easier
+    ascii_blob = data.get('metadata_blob').encode('ascii', 'ignore')
+    jsonmetadata_blob = dict()
+    jsonmetadata_blob = json.loads(ascii_blob)
+    print type(jsonmetadata_blob)
+    print jsonmetadata_blob.get('category')
+
+    #this maps the xmlns paths and all that fun stuff
+    NS_MAP = {"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+     "art" : "http://simile.mit.edu/2003/10/ontologies/artstor#",
+      "foaf" : "http://xmlns.com/foaf/0.1/",
+       "dcterms" : "http://purl.org/dc/terms/",
+        "sioc" : "http://rdfs.org/sioc/ns#",
+         "oa" : "http://www.openannotation.org/ns/"}
+    #short hands the ns
+    RDF = "{%s}" % NS_MAP['rdf']
+    ART = "{%s}" % NS_MAP['art']
+    FOAF = "{%s}" % NS_MAP['foaf']
+    DCTERMS = "{%s}" % NS_MAP['dcterms']
+    SIOC = "{%s}" % NS_MAP['sioc']
+    OA = "{%s}" % NS_MAP['oa']
+
+    #rdf is the 'root'
+    rdf = ET.Element(RDF + "RDF", nsmap=NS_MAP)
+
+    #creating the main rdf for the video
+    description = ET.SubElement(rdf, "{%s}" % NS_MAP['rdf'] + "Description")
+    description.attrib[RDF + 'about'] = data.get('local_url')
+    rdf_type = ET.SubElement(description, RDF + "type")
+    rdf_type.attrib[RDF + 'resource'] = data.get('primary_type')
+    art_thumb = ET.SubElement(description, ART + 'thumbnail')
+    art_thumb.attrib[RDF + 'resource'] = data.get('sources').get('thumb')['url']
+    art_url = ET.SubElement(description, ART + 'url')
+    art_url.attrib[RDF + 'resource'] = data.get('sources').get('url')['url']
+    art_source = ET.SubElement(description, ART + 'sourceLocation')
+    art_source.attrib[RDF + 'resource'] = data.get('sources').get('youtube')['url']
+    dc_title = ET.SubElement(description, DCTERMS + 'title')
+    dc_title.text = data.get('title')
+    dc_desc = ET.SubElement(description, DCTERMS + 'description')
+    dc_desc.text = jsonmetadata_blob.get('description')[0]
+    dc_vers = ET.SubElement(description, DCTERMS + 'isVersionOf')
+    dc_vers.attrib[RDF + 'resource'] = data.get('sources').get('url')['url']
+    dc_pub = ET.SubElement(description, DCTERMS + 'publisher')
+    dc_pub.text = jsonmetadata_blob.get('author')[0]
+    dc_cntb = ET.SubElement(description, DCTERMS + 'contributor')
+    dc_cntb.text = jsonmetadata_blob.get('author')[0]
+    dc_date = ET.SubElement(description, DCTERMS + 'date')
+    dc_date.text = jsonmetadata_blob.get('published')[0]
+    dc_form = ET.SubElement(description, DCTERMS + 'format')
+    dc_form.text = data.get('media_type_label')
+
+    #this can be found if the video has annotations but if it doesnt it doesnt show up
+    dc_ext = ET.SubElement(description, DCTERMS + 'extent')
+    dc_ext.text = "CANNOT BE FOUND"
+
+    dc_type = ET.SubElement(description, DCTERMS + 'type')
+    dc_type.text = data.get('mediat_type_label')
+    dc_datesub = ET.SubElement(description, DCTERMS + 'datesubmitted')
+    dc_datesub.text = jsonmetadata_blob.get('published')[0]
+    dc_rel = ET.SubElement(description, DCTERMS + 'relation')
+    dc_rel.text = jsonmetadata_blob.get('category')[0]
+
+    #now we do annotations and tags etc.
+    for i in range(0, data.get('annotation_count')):
+        anno = ET.SubElement(rdf, RDF + 'Description')
+        anno.attrib[RDF + 'about'] = data.get('annotations')[i]['url']
+        anno_resource = ET.SubElement(anno, OA + 'hasBody')
+        anno_resource[RDF + 'resource'] = data.get('annotations')[i]['url']
+        vocab = data.get('annotations')[i]['vocabulary']
+        for j in range(0, len(vocab)):
+            anno_vocab = ET.SubElement(anno, OA + 'hasBody')
+            anno_vocab.attrib[RDF + 'nodeID'] = vocab[j]['display_name']
+
+        anno_author = ET.SubElement(anno, OA + 'annotatedBy')
+        anno_author[RDF + 'resource'] = data.get('annotations')[i]['author']['username']
+        anno_time = ET.SubElement(anno, OA + 'annotatedAt')
+        anno_time.text = data.get('annotations')[i]['metadata']['modified']
+
 
     # print the_json
     #it keeps adding the annotations for all the videos.... whadduhfux
@@ -491,6 +573,7 @@ def test_dump(request):
     #     lst.append(ctx)
     #
     # lst.append(acv.get(request))
+
     return HttpResponse(j)
 
 

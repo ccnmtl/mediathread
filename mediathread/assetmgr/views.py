@@ -499,6 +499,7 @@ def test_dump(request):
          "oa" : "http://www.openannotation.org/ns/"}
     #short hands the ns
     RDF = "{%s}" % NS_MAP['rdf']
+    RDFS = "{%s}" % NS_MAP['rdfs']
     ART = "{%s}" % NS_MAP['art']
     FOAF = "{%s}" % NS_MAP['foaf']
     DCTERMS = "{%s}" % NS_MAP['dcterms']
@@ -545,23 +546,37 @@ def test_dump(request):
     dc_rel = ET.SubElement(description, DCTERMS + 'relation')
     dc_rel.text = jsonmetadata_blob.get('category')[0]
 
+    vocab = []
     #now we do annotations and tags etc.
     for i in range(0, data.get('annotation_count')):
         anno = ET.SubElement(rdf, RDF + 'Description')
         anno.attrib[RDF + 'about'] = data.get('annotations')[i]['url']
         anno_resource = ET.SubElement(anno, OA + 'hasBody')
-        anno_resource[RDF + 'resource'] = data.get('annotations')[i]['url']
-        vocab = data.get('annotations')[i]['vocabulary']
+        anno_resource.attrib[RDF + 'resource'] = data.get('annotations')[i]['url']
+        vocab.append(data.get('annotations')[i]['vocabulary'])
         for j in range(0, len(vocab)):
+            #create the sub elements for the annotations
             anno_vocab = ET.SubElement(anno, OA + 'hasBody')
-            anno_vocab.attrib[RDF + 'nodeID'] = vocab[j]['display_name']
+            anno_vocab.attrib[RDF + 'nodeID'] = vocab[j][0]['display_name']
+
+            #create the description for that vocab while we are at it
+            for t in vocab[j][0]['terms']:
+                term = ET.SubElement(rdf, RDF + 'Description')
+                term.attrib[RDF + 'nodeID'] = t['name']
+                rdfs_label = ET.SubElement(term, RDFS + 'label')
+                rdfs_label.text = t['display_name']
+                foaf_page = ET.SubElement(term, FOAF + "page")
+                foaf_page.attrib[RDF + 'resource'] = t['resource_uri']
+
 
         anno_author = ET.SubElement(anno, OA + 'annotatedBy')
-        anno_author[RDF + 'resource'] = data.get('annotations')[i]['author']['username']
+        anno_author.attrib[RDF + 'resource'] = data.get('annotations')[i]['author']['username']
         anno_time = ET.SubElement(anno, OA + 'annotatedAt')
         anno_time.text = data.get('annotations')[i]['metadata']['modified']
+        foaf_name = ET.SubElement(anno, FOAF + "name")
+        foaf_name.text = data.get('annotations')[i]['author']['public_name']
 
-
+    print ET.tostring(rdf, pretty_print=True)
     # print the_json
     #it keeps adding the annotations for all the videos.... whadduhfux
 
@@ -574,7 +589,7 @@ def test_dump(request):
     #
     # lst.append(acv.get(request))
 
-    return HttpResponse(j)
+    return HttpResponse(ET.tostring(rdf, pretty_print=True))
 
 
 

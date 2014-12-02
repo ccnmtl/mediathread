@@ -27,7 +27,7 @@ class SherdNoteTest(MediathreadTestMixin, TestCase):
 
         real_annotation = SherdNoteFactory(
             asset=asset, author=self.student_three,
-            title="Whole Item Selection", range1=116.25, range2=6.75)
+            title="Selection", range1=116.25, range2=6.75)
         self.assertFalse(real_annotation.is_global_annotation())
 
     def test_seconds_to_code(self):

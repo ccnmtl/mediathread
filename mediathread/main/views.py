@@ -109,8 +109,6 @@ def triple_homepage(request):
         'classwork_owner': classwork_owner,
         'help_homepage_instructor_column': False,
         'help_homepage_classwork_column': False,
-        'upgrade_bookmarklet': UserSetting.get_setting(
-            logged_in_user, "upgrade_bookmarklet", True),
         'faculty_feed': Project.objects.faculty_compositions(request, course),
         'is_faculty': course.is_faculty(logged_in_user),
         'discussions': get_course_discussions(course),

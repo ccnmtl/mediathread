@@ -15,7 +15,7 @@ class CollaborationManager(models.Manager):
     def inc_order(self):
         return 1 + (self.aggregate(Max('_order')).get('_order__max', 0) or 0)
 
-    def get_for_object_list(self, object_list):        
+    def get_for_object_list(self, object_list):
         ctype = ContentType.objects.get_for_model(object_list[0])
         ids = [str(o.id) for o in object_list]
         lst = self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
@@ -171,17 +171,6 @@ class Collaboration(models.Model):
             content_type=content_type,
             object_pk=str(obj.pk)
         )
-
-    # these methods are for optimized recursive structures
-    # while for other cases, we optimize for shallow structures
-    # think of it as the datastructure equivalent to tail-recursion :-)
-    def get_ancestor_different_type(self):
-        "returns first ancestor that is a different type from self"
-        pass
-
-    def get_ancestor_same_type(self):
-        "returns last ancestor of the same type in a continuous chain"
-        pass
 
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,

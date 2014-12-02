@@ -58,4 +58,4 @@ def cached_course_is_faculty(course, user):
 
 
 def get_guest_sandbox():
-    return Course.objects.get(title="Mediathread.info Sandbox")
+    return Course.objects.get(title="Mediathread Guest Sandbox")

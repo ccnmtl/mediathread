@@ -4,26 +4,12 @@ from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
 from mediathread.discussions.utils import get_course_discussions
-from mediathread.discussions.views import discussion_create, \
-    discussion_delete, discussion_view
+from mediathread.discussions.views import discussion_delete, discussion_view
 from mediathread.factories import MediathreadTestMixin
 from structuredcollaboration.models import Collaboration
 
 
 class DiscussionViewsTest(MediathreadTestMixin, TestCase):
-
-    def create_discussion(self, course, instructor):
-        data = {'comment_html': '%s Discussion' % course.title,
-                'obj_pk': course.id,
-                'model': 'course', 'app_label': 'courseaffils'}
-        request = RequestFactory().post('/discussion/create/', data)
-        request.user = instructor
-        request.course = course
-        request.collaboration_context, created = \
-            Collaboration.objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(course.pk))
-        discussion_create(request)
 
     def test_create_discussions(self):
         self.setup_sample_course()

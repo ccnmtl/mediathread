@@ -36,13 +36,36 @@ class UserSetting(models.Model):
             UserSetting.objects.create(user=user, name=setting_id, value=value)
 
 
+class UserProfile(models.Model):
+    '''UserProfile adds extra information to a user,
+    and associates the user with a group, school,
+    and country.'''
+    user = models.OneToOneField(User, related_name='profile')
+    title = models.CharField(max_length=256, null=True, blank=True)
+    institution = models.TextField()
+    referred_by = models.TextField()
+    user_story = models.TextField(null=True, blank=True)
+    self_registered = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.user.username
+
+
 def user_registered_callback(sender, user, request, **kwargs):
-    user.first_name = request.POST["first_name"]
-    user.last_name = request.POST["last_name"]
+    user.first_name = request.POST['first_name'].strip()
+    user.last_name = request.POST['last_name'].strip()
     user.save()
+
+    UserProfile.objects.create(user=user,
+                               self_registered=True,
+                               title=request.POST['title'].strip(),
+                               institution=request.POST['institution'].strip(),
+                               referred_by=request.POST['referred_by'],
+                               user_story=request.POST['user_story'])
 
 
 def user_activated_callback(sender, user, request, **kwargs):
+    # add this user to the guest sandbox by default
     sandbox = get_guest_sandbox()
     sandbox.group.user_set.add(user)
 

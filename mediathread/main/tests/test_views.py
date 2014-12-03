@@ -430,6 +430,7 @@ class ContactUsViewTest(TestCase):
     def test_get_initial_anonymous(self):
         view = ContactUsView()
         view.request = RequestFactory().get('/contact/')
+        view.request.session = {}
         view.request.user = AnonymousUser()
         view.get_initial()
 
@@ -441,6 +442,7 @@ class ContactUsViewTest(TestCase):
     def test_get_initial_not_anonymous(self):
         view = ContactUsView()
         view.request = RequestFactory().get('/contact/')
+        view.request.session = {}
         view.request.user = UserFactory(first_name='Foo',
                                         last_name='Bar',
                                         email='foo@bar.com')

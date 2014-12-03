@@ -1,5 +1,8 @@
 from django.contrib import admin
-from mediathread.main.models import UserSetting
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
+from mediathread.main.models import UserSetting, UserProfile
 
 
 class UserSettingAdmin(admin.ModelAdmin):
@@ -11,3 +14,15 @@ class UserSettingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserSetting, UserSettingAdmin)
+
+admin.site.unregister(User)
+
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+
+
+class UserProfileAdmin(UserAdmin):
+    inlines = [UserProfileInline, ]
+
+admin.site.register(User, UserProfileAdmin)

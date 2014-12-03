@@ -5,6 +5,7 @@ from django.test.client import RequestFactory
 import factory
 
 from mediathread.assetmgr.models import Asset, Source
+from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
@@ -88,8 +89,28 @@ class ProjectFactory(factory.DjangoModelFactory):
 
             self.collaboration(request, sync_group=True)
 
+    @factory.post_generation
+    def parent(self, create, extracted, **kwargs):
+        if create and extracted:
+            parent_collab = extracted.collaboration()
+            if parent_collab._policy.policy_name == 'Assignment':
+                parent_collab.append_child(self)
+
 
 class MediathreadTestMixin(object):
+
+    def create_discussion(self, course, instructor):
+        data = {'comment_html': '%s Discussion' % course.title,
+                'obj_pk': course.id,
+                'model': 'course', 'app_label': 'courseaffils'}
+        request = RequestFactory().post('/discussion/create/', data)
+        request.user = instructor
+        request.course = course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(course.pk))
+        discussion_create(request)
 
     def create_vocabularies(self, course, taxonomy):
         course_type = ContentType.objects.get_for_model(course)

@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from django.test import TestCase
+from django.test.client import RequestFactory
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
@@ -65,10 +66,11 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.add_citation(self.assignment, self.instructor_ga)
 
     def test_description(self):
+
         project = Project.objects.get(id=self.project_private.id)
         self.assertEquals(project.description(), 'Composition')
-        self.assertEquals(project.visibility_short(), 'Private')
 
+        self.assertEquals(project.visibility_short(), 'Private')
         project = Project.objects.get(id=self.project_class_shared.id)
         self.assertEquals(project.visibility_short(), 'Published to Class')
 
@@ -269,3 +271,24 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         compositions = Project.objects.faculty_compositions(
             request, self.sample_course)
         self.assertEquals(len(compositions), 1)
+
+    def test_responses(self):
+        response1 = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='InstructorShared', parent=self.assignment)
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            policy='InstructorShared', parent=self.assignment)
+
+        request = RequestFactory().get('/', {})
+        request.user = self.instructor_one
+        request.course = self.sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(self.sample_course.pk))
+
+        self.assertEquals(len(self.assignment.responses(request)), 2)
+
+        responses = self.assignment.responses_by(request, self.student_one)
+        self.assertEquals(responses[0], response1)

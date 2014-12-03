@@ -63,4 +63,4 @@ django-simple-captcha==0.4.1
 django-markwhat==1.0
 factory_boy==2.1.1
 django-impersonate==0.7.0
-django-registration==1.1
+requirements/src/django-registration-1.1.tar.gz

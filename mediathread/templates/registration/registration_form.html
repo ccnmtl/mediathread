@@ -24,13 +24,9 @@
         margin-bottom: 25px;
     }
     
-    .fieldWrapper.password-container {
-        margin-top: 50px;
-    }
-    
     .register_form label {
         font-weight: bold;
-        margin-bottom: 5px;
+        margin-bottom: 7px;
         display: block;
         width: 100%;
     }
@@ -64,16 +60,24 @@
         height: 20px;
         padding-left: 5px;
     }
-
-    .register_form input[name='first_name'],
-    .register_form input[name='last_name'] {
-        width: 45%;
-        display: inline;
+    
+    .register_form textarea {
+        width: 95%;
     }
 
-    .register_form input[name='username'],
+    .register_form input[name='first_name'],
+    .register_form input[name='last_name'],
     .register_form input[name='password1'],
-    .register_form input[name='password2'],
+    .register_form input[name='password2'] {
+        width: 45%;
+        display: inline;
+        padding: 6 12 6 5;
+        margin: 0 0 0 10;
+    }
+
+    .register_form input[name='title'],
+    .register_form input[name='institution'],
+    .register_form input[name='username'],
     .register_form input[name='email'] {
         width: 45%;
     }
@@ -158,7 +162,20 @@
         color: #595959;
         margin-left: 5px;
     }
+    
+    .optional {
+        font-weight: normal !important;
+    }
 </style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery("#id_password1").attr("placeholder", "Password");
+            jQuery("#id_password2").attr("placeholder", "Confirm Password");
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -179,8 +196,8 @@
         </div>
     {% endif %}
         
-    <div class="fieldWrapper control-group {% if form.first_name.errors %}error{% endif %}">
-        <label for="id_first_name"><b>Your name is</b></label>
+    <div class="fieldWrapper control-group">
+        <label for="id_first_name"><b>Your name is:</b></label>
         <div class="controls">
             <span>
                 <input id="id_first_name" maxlength="50" name="first_name" type="text"
@@ -191,15 +208,34 @@
                  value="{{form.data.last_name}}"
                  type="text" placeholder="Last Name">
             </span>
-            
             {% if form.first_name.errors or form.last_name.errors %}
-                <div class="help-inline">First and last name are required</div>
+                <ul class="errorlist">
+                    <li>First and last name are required.</li>
+                </ul>
             {% endif %}
         </div>
     </div>
+    
+    <div class="fieldWrapper control-group">
+        <label class="control-label optional">Your title or role:</label>
+        <div class="controls">
+            {{ form.title }}
+        </div>
+    </div>    
 
     <div class="fieldWrapper control-group">
-        <label class="control-label">Username</label>
+        <label class="control-label">Your institution:</label>
+        <div class="controls">
+            {{ form.institution }}
+            <div class="smalltext">Please enter your affiliated institution or "Self".</div>
+        </div>
+        {% if form.institution.errors %}
+            <br/>{{ form.institution.errors }}
+        {% endif %}
+    </div>    
+
+    <div class="fieldWrapper control-group">
+        <label class="control-label">Username:</label>
         <div class="controls">
             {{ form.username }}
             {% if not form.username.errors %}
@@ -210,27 +246,43 @@
     </div>
             
     <div class="fieldWrapper control-group">
-        <label class="control-label">Email</label>
+        <label class="control-label">Email:</label>
         <div class="controls">
             {{ form.email }}
         </div>       
         {{ form.email.errors }}
     </div>
 
-    <div class="fieldWrapper control-group password-container">
-        <label class="control-label">Password</label>
+    <div class="fieldWrapper control-group">
+        <label class="control-label">Create a password:</label>
         <div class="controls">
-            {{ form.password1 }}
+            <span>
+                {{ form.password1 }}
+            </span>&nbsp;
+            <span>
+                {{ form.password2 }}
+            </span>
         </div>
-        {{ form.password1.errors }}
+        {% if form.password1.errors or form.password2.errors %}
+            <ul class="errorlist">
+                <li>Please enter your password twice.</li>
+            </ul>
+        {% endif %}
     </div>
 
     <div class="fieldWrapper control-group">
-        <label class="control-label">Confirm Password</label>
+        <label class="control-label">How did you hear about Mediathread?</label>
         <div class="controls">
-            {{ form.password2 }}
-        </div>
-        {{form.password2.errors}}
+            {{ form.referred_by }}
+        </div>       
+        {{ form.referred_by.errors }}
+    </div>
+    
+    <div class="fieldWrapper control-group">
+        <label class="control-label optional">Reasons for your interest in Mediathread?</label>
+        <div class="controls">
+            {{ form.user_story }}
+        </div>       
     </div>
 
     <div style="text-align: center">

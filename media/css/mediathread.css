@@ -699,6 +699,10 @@ input.autocomplete.default {
     color: #999;
 }
 
+input[name='decoy'] {
+    display: none !important;
+}    
+
 
 /* ########## jQuery UI extensions/overrides ########## */
 

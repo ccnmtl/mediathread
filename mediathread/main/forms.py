@@ -88,3 +88,7 @@ class ContactUsForm(forms.Form):
 class CustomRegistrationForm(RegistrationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
+    title = forms.CharField()
+    institution = forms.CharField(required=True)
+    referred_by = forms.CharField(required=True, widget=forms.Textarea)
+    user_story = forms.CharField(widget=forms.Textarea)

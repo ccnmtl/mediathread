@@ -2,6 +2,8 @@ from datetime import datetime
 import json
 import operator
 
+from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
@@ -17,7 +19,6 @@ from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 from restclient import POST
 
-from courseaffils.lib import in_course_or_404, in_course
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
@@ -427,6 +428,9 @@ class ContactUsView(FormView):
             self.initial['username'] = self.request.user.username
 
         self.initial['issue_date'] = datetime.now()
+
+        if SESSION_KEY in self.request.session:
+            self.initial['course'] = self.request.session[SESSION_KEY].title
 
         return super(ContactUsView, self).get_initial()
 

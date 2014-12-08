@@ -23,6 +23,19 @@ def can_upload(user, course):
         return True
     elif value == UPLOAD_PERMISSION_STUDENT:
         return True
+    else:
+        return False
+
+
+def is_upload_enabled(course):
+    upload_enabled = False
+    for item in course.asset_set.archives().order_by('title'):
+        attribute = item.metadata().get('upload', 0)
+        value = attribute[0] if hasattr(attribute, 'append') else attribute
+        if value and int(value) == 1:
+            upload_enabled = True
+            break
+    return upload_enabled
 
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
@@ -41,6 +54,25 @@ def all_selections_are_visible(course):
     value = int(course.get_detail(SELECTION_VISIBILITY_KEY,
                                   SELECTION_VISIBILITY_DEFAULT))
     return bool(value)
+
+
+ITEM_VISIBILITY_KEY = "item_visibility"
+ITEM_VISIBILITY_DEFAULT = 1
+
+
+def all_items_are_visible(course):
+    value = int(course.get_detail(ITEM_VISIBILITY_KEY,
+                                  ITEM_VISIBILITY_DEFAULT))
+    return bool(value)
+
+
+COURSE_INFORMATION_TITLE_KEY = "course_information_title"
+COURSE_INFORMATION_TITLE_DEFAULT = "From Your Instructor"
+
+
+def course_information_title(course):
+    return course.get_detail(COURSE_INFORMATION_TITLE_KEY,
+                             COURSE_INFORMATION_TITLE_DEFAULT)
 
 
 def cached_course_is_member(course, user):

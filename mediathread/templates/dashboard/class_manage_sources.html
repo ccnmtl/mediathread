@@ -11,10 +11,7 @@
             {% else %}{% if delsrc %}
                 var msg = "{{delsrc|escapejs}} has been disabled for your class.";
                 showMessage(msg);
-            {% else %}{% if changes_saved %}
-                var msg = "Your changes have been saved.";
-                showMessage(msg);
-            {% endif %}{% endif %}{% endif %}
+            {% else %}{% endif %}{% endif %}
         });
     </script>
 {% endblock %}
@@ -26,6 +23,15 @@
 {% endblock %}
 
 {% block dashboard_module %}
+
+    {% if messages %}
+    <div class="infonote">
+        {% for message in messages %}
+        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
     <div class="dashboard-feature">
     <h3>Mediathread Video Uploader</h3>
     <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.
@@ -42,7 +48,7 @@
                 {% endfor %}
             </select>
             <br /><br />
-            <input type="submit" value="submit"></input>
+            <input class="right" type="submit" value="Save"></input>
         </form>
     {% else %}
         <form action="{% url 'asset-save' %}" method="POST">

@@ -14,9 +14,12 @@ from django.test.client import Client, RequestFactory
 from mediathread.assetmgr.models import Asset
 from mediathread.factories import UserFactory, MediathreadTestMixin, \
     AssetFactory, ProjectFactory, SherdNoteFactory
+from mediathread.main import course_details
+from mediathread.main.course_details import allow_public_compositions, \
+    course_information_title, all_items_are_visible, all_selections_are_visible
 from mediathread.main.forms import ContactUsForm, RequestCourseForm
 from mediathread.main.views import MigrateCourseView, ContactUsView, \
-    RequestCourseView
+    RequestCourseView, CourseSettingsView, CourseManageSourcesView
 from mediathread.projects.models import Project
 
 
@@ -43,8 +46,6 @@ class SimpleViewTest(TestCase):
 class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
-        self.factory = RequestFactory()
-
         self.setup_sample_course()
         self.setup_alternate_course()
 
@@ -533,3 +534,129 @@ class RequestCourseViewTest(TestCase):
 
         with self.settings(TASK_ASSIGNMENT_DESTINATION=None):
             view.form_valid(form)
+
+
+class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+    def test_not_logged_in(self):
+        response = self.client.get('/dashboard/settings/')
+        self.assertEquals(response.status_code, 302)
+
+    def test_as_student(self):
+        self.assertTrue(
+            self.client.login(username=self.student_one.username,
+                              password='test'))
+        response = self.client.get('/dashboard/settings/')
+        self.assertEquals(response.status_code, 403)
+
+    def test_get_context_data(self):
+        request = RequestFactory().get('/dashboard/settings/')
+        request.user = self.instructor_one
+        request.course = self.sample_course
+
+        view = CourseSettingsView()
+        view.request = request
+
+        ctx = view.get_context_data()
+
+        self.assertEquals(ctx['course'], self.sample_course)
+        self.assertEquals(ctx[course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY],
+                          course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT)
+
+        self.assertEquals(ctx[course_details.SELECTION_VISIBILITY_KEY],
+                          course_details.SELECTION_VISIBILITY_DEFAULT)
+
+        self.assertEquals(ctx[course_details.ITEM_VISIBILITY_KEY],
+                          course_details.ITEM_VISIBILITY_DEFAULT)
+
+        self.assertEquals(ctx[course_details.COURSE_INFORMATION_TITLE_KEY],
+                          course_details.COURSE_INFORMATION_TITLE_DEFAULT)
+
+    def test_post_allow_public_compositions(self):
+        self.assertTrue(
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='PublicEditorsAreOwners')
+
+        self.client.post(
+            '/dashboard/settings/',
+            {course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY: 0})
+
+        col = project.collaboration()
+        self.assertEquals(col._policy.policy_name, 'CourseProtected')
+
+    def test_post(self):
+        self.assertTrue(
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
+        data = {
+            course_details.COURSE_INFORMATION_TITLE_KEY: "Foo",
+            course_details.SELECTION_VISIBILITY_KEY: 0,
+            course_details.ITEM_VISIBILITY_KEY: 0,
+            course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY: 1
+        }
+
+        response = self.client.post('/dashboard/settings/', data)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(course_information_title(self.sample_course), "Foo")
+        self.assertTrue(allow_public_compositions(self.sample_course))
+        self.assertFalse(all_items_are_visible(self.sample_course))
+        self.assertFalse(all_selections_are_visible(self.sample_course))
+
+
+class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.enable_upload(self.sample_course)
+        self.superuser = UserFactory(is_staff=True, is_superuser=True)
+
+    def test_not_logged_in(self):
+        response = self.client.get('/dashboard/sources/')
+        self.assertEquals(response.status_code, 302)
+
+    def test_as_student(self):
+        self.assertTrue(
+            self.client.login(username=self.student_one.username,
+                              password='test'))
+        response = self.client.get('/dashboard/sources/')
+        self.assertEquals(response.status_code, 403)
+
+    def test_get_context(self):
+        request = RequestFactory().get('/dashboard/sources/')
+        request.user = self.instructor_one
+        request.course = self.sample_course
+
+        view = CourseManageSourcesView()
+        view.request = request
+
+        ctx = view.get_context_data()
+        self.assertEquals(ctx['course'], self.sample_course)
+        self.assertEquals(list(ctx['supported_archives']), [])
+        self.assertEquals(ctx['space_viewer'], self.instructor_one)
+        self.assertFalse(ctx['is_staff'])
+        self.assertEquals(ctx['newsrc'], '')
+        self.assertEquals(ctx['delsrc'], '')
+        self.assertTrue(ctx['upload_enabled'])
+
+    def test_post(self):
+        self.assertTrue(
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
+        data = {
+            course_details.UPLOAD_PERMISSION_KEY:
+            course_details.UPLOAD_PERMISSION_ADMINISTRATOR
+        }
+
+        self.client.post('/dashboard/sources/', data)
+        self.assertTrue(course_details.can_upload(self.superuser,
+                                                  self.sample_course))
+        self.assertFalse(course_details.can_upload(self.instructor_one,
+                                                   self.sample_course))
+        self.assertFalse(course_details.can_upload(self.student_one,
+                                                   self.sample_course))

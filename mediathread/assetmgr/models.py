@@ -71,7 +71,7 @@ class AssetManager(models.Manager):
                 object_map['assets'][old_asset.id] = new_asset
 
                 notes = note_model.objects.get_related_notes(
-                    [old_asset], None, faculty)
+                    [old_asset], None, faculty, True)
 
                 # remove all extraneous global annotations
                 notes = notes.filter(author__id__in=faculty)

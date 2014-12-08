@@ -13,7 +13,7 @@ Feature: Homepage
         When I open the reports menu
         Then there is an "Assignment Responses" link
         And there is a "Class Activity" link
-        And there is a "Student Contributions" link
+        And there is a "Class Member Contributions" link
                 
         And there is a From Your Instructor column
         And there is a Composition column

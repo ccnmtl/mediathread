@@ -7,9 +7,11 @@ from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -25,10 +27,11 @@ from mediathread.assetmgr.models import Asset, SupportedSource
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
-from mediathread.main.course_details import cached_course_is_faculty
+from mediathread.main.course_details import cached_course_is_faculty, \
+    course_information_title
 from mediathread.main.forms import RequestCourseForm, ContactUsForm
 from mediathread.main.models import UserSetting
-from mediathread.mixins import ajax_required, faculty_only, \
+from mediathread.mixins import ajax_required, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
@@ -108,8 +111,7 @@ def triple_homepage(request):
 
     context = {
         'classwork_owner': classwork_owner,
-        'help_homepage_instructor_column': False,
-        'help_homepage_classwork_column': False,
+        "information_title": course_information_title(course),
         'faculty_feed': Project.objects.faculty_compositions(request, course),
         'is_faculty': course.is_faculty(logged_in_user),
         'discussions': get_course_discussions(course),
@@ -145,103 +147,92 @@ def upgrade_bookmarklet(request):
     return context
 
 
-@allow_http("GET", "POST")
-@rendered_with('dashboard/class_manage_sources.html')
-@faculty_only
-def class_manage_sources(request):
-    key = course_details.UPLOAD_PERMISSION_KEY
+class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
+    template_name = 'dashboard/class_manage_sources.html'
 
-    course = request.course
-    user = request.user
+    def get_context_data(self, **kwargs):
+        course = self.request.course
 
-    upload_enabled = False
-    for item in course.asset_set.archives().order_by('title'):
-        attribute = item.metadata().get('upload', 0)
-        value = attribute[0] if hasattr(attribute, 'append') else attribute
-        if value and int(value) == 1:
-            upload_enabled = True
-            break
+        upload_enabled = course_details.is_upload_enabled(course)
 
-    context = {
-        'asset_request': request.GET,
-        'course': course,
-        'supported_archives': SupportedSource.objects.all().order_by("title"),
-        'space_viewer': request.user,
-        'is_staff': request.user.is_staff,
-        'newsrc': request.GET.get('newsrc', ''),
-        'delsrc': request.GET.get('delsrc', ''),
-        'upload_enabled': upload_enabled,
-        'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
-        'help_video_upload': UserSetting.get_setting(
-            user, "help_video_upload", True),
-        'help_supported_collections': UserSetting.get_setting(
-            user, "help_supported_collections", True),
-        'help_dashboard_nav_actions': UserSetting.get_setting(
-            user, "help_dashboard_nav_actions", False),
-        'help_dashboard_nav_reports': UserSetting.get_setting(
-            user, "help_dashboard_nav_reports", False)
-    }
+        supported_sources = SupportedSource.objects.all().order_by("title")
+        upload_permission = int(course.get_detail(
+            course_details.UPLOAD_PERMISSION_KEY,
+            course_details.UPLOAD_PERMISSION_DEFAULT))
 
-    if request.method == "GET":
-        context[key] = int(course.get_detail(
-            key, course_details.UPLOAD_PERMISSION_DEFAULT))
-    else:
-        upload_permission = request.POST.get(key)
-        request.course.add_detail(key, upload_permission)
-        context['changes_saved'] = True
-        context[key] = int(upload_permission)
+        return {
+            'course': course,
+            'supported_archives': supported_sources,
+            'space_viewer': self.request.user,
+            'is_staff': self.request.user.is_staff,
+            'newsrc': self.request.GET.get('newsrc', ''),
+            'delsrc': self.request.GET.get('delsrc', ''),
+            'upload_enabled': upload_enabled,
+            'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
+            course_details.UPLOAD_PERMISSION_KEY: upload_permission
+        }
 
-    return context
+    def post(self, request):
+        perm = request.POST.get(
+            course_details.UPLOAD_PERMISSION_KEY)
+        request.course.add_detail(course_details.UPLOAD_PERMISSION_KEY, perm)
+
+        messages.add_message(request, messages.INFO,
+                             'Your changes were saved.')
+
+        return HttpResponseRedirect(reverse("class-manage-sources"))
 
 
-@allow_http("GET", "POST")
-@login_required
-@rendered_with('dashboard/class_settings.html')
-@faculty_only
-def class_settings(request):
-    course = request.course
-    user = request.user
+class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
+    template_name = 'dashboard/class_settings.html'
 
-    context = {
-        'asset_request': request.GET,
-        'course': course,
-        'space_viewer': request.user,
-        'is_staff': request.user.is_staff,
-        'help_public_compositions': UserSetting.get_setting(
-            user, "help_public_compositions", True),
-        'help_selection_visibility': UserSetting.get_setting(
-            user, "help_selection_visibility", True),
-    }
+    def get_context_data(self, **kwargs):
 
-    public_composition_key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
-    context[course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY] = int(
-        course.get_detail(public_composition_key,
-                          course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
+        context = {'course': self.request.course}
 
-    selection_visibility_key = course_details.SELECTION_VISIBILITY_KEY
-    context[course_details.SELECTION_VISIBILITY_KEY] = int(
-        course.get_detail(selection_visibility_key,
-                          course_details.SELECTION_VISIBILITY_DEFAULT))
+        key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
+        context[key] = int(self.request.course.get_detail(key,
+                           course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
 
-    if request.method == "POST":
-        if selection_visibility_key in request.POST:
-            selection_visibility_value = \
-                int(request.POST.get(selection_visibility_key))
-            request.course.add_detail(selection_visibility_key,
-                                      selection_visibility_value)
-            context[selection_visibility_key] = selection_visibility_value
+        key = course_details.SELECTION_VISIBILITY_KEY
+        context[key] = int(self.request.course.get_detail(key,
+                           course_details.SELECTION_VISIBILITY_DEFAULT))
 
-        if public_composition_key in request.POST:
-            public_composition_value = \
-                int(request.POST.get(public_composition_key))
-            request.course.add_detail(public_composition_key,
-                                      public_composition_value)
-            context[public_composition_key] = public_composition_value
+        key = course_details.ITEM_VISIBILITY_KEY
+        context[key] = int(self.request.course.get_detail(key,
+                           course_details.ITEM_VISIBILITY_DEFAULT))
 
-            if public_composition_value == 0:
+        key = course_details.COURSE_INFORMATION_TITLE_KEY
+        context[key] = self.request.course.get_detail(
+            key, course_details.COURSE_INFORMATION_TITLE_DEFAULT)
+
+        return context
+
+    def post(self, request):
+        key = course_details.COURSE_INFORMATION_TITLE_KEY
+        if key in request.POST:
+            value = request.POST.get(key)
+            request.course.add_detail(key, value)
+
+        key = course_details.SELECTION_VISIBILITY_KEY
+        if key in request.POST:
+            value = int(request.POST.get(key))
+            request.course.add_detail(key, value)
+
+        key = course_details.ITEM_VISIBILITY_KEY
+        if key in request.POST:
+            value = int(request.POST.get(key))
+            request.course.add_detail(key, value)
+
+        key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
+        if key in request.POST:
+            value = int(request.POST.get(key))
+            request.course.add_detail(key, value)
+
+            if value == 0:
                 # Check any existing projects -- if they are
                 # world publishable, turn this feature OFF
-                projects = Project.objects.filter(course=course)
+                projects = Project.objects.filter(course=request.course)
                 for project in projects:
                     try:
                         col = Collaboration.objects.get_for_object(project)
@@ -251,9 +242,10 @@ def class_settings(request):
                     except:
                         pass
 
-        context['changes_saved'] = True
+        messages.add_message(request, messages.INFO,
+                             'Your changes were saved.')
 
-    return context
+        return HttpResponseRedirect(reverse('course-settings'))
 
 
 @allow_http("POST")
@@ -366,7 +358,8 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         # filter assets & notes by the faculty set
         assets = Asset.objects.by_course(course)
         assets = assets.filter(sherdnote_set__author__id__in=faculty)
-        notes = SherdNote.objects.get_related_notes(assets, None, faculty)
+        notes = SherdNote.objects.get_related_notes(
+            assets, None, faculty, True)
 
         ares = AssetResource(include_annotations=False)
         asset_ctx = ares.render_list(request, None, None, assets, notes)

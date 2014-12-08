@@ -113,44 +113,42 @@
             {% if faculty_feed|length > 0 or is_faculty or discussions %}
             <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
-                {% with help_homepage_instructor_column as default_help_state %}
                 {% include "help/help_contentarea.html" %}
                 <div class="column-container">
                    <h2 class="tour_1">
-                        From Your Instructor                     
+                        {{information_title}}                     
                         <div class="actions">{% include "help/help_button.html" %}</div>
                    </h2>                   
                    <div class="column-contents">
                         <div id="instructor-column">                        
                             <div id="tour_1_content" style="display: none">
-                            <p>
-                                {% if is_faculty %}
-                                    Review and edit compositions you have saved for the whole class (such as a syllabus, 
-                                    a list of resources or model compositions) here. 
-                                    If you have created a discussion topic, links to the discussion appear here.                                  
-                                {% else %}
-                                    Review information posted by your instructor such as course materials and syllabus here. 
-                                    If your instructor has created a class discussion, you can respond to discussion posts in this area.           
-                                {% endif %}                                
-                            </p>
-                            <p>
-                                <i>
-                                    For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
-                                </i>
-                            </p>                            
+                                <p>
+                                    {% if is_faculty %}
+                                        Review and edit compositions you have saved for the whole class (such as a syllabus, 
+                                        a list of resources or model compositions) here. 
+                                        If you have created a discussion topic, links to the discussion appear here.                                  
+                                    {% else %}
+                                        Review information posted by your instructor such as course materials and syllabus here. 
+                                        If your instructor has created a class discussion, you can respond to discussion posts in this area.           
+                                    {% endif %}                                
+                                </p>
+                                <p>
+                                    <i>
+                                        For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
+                                    </i>
+                                </p>                          
                             
                                 <div class="tour_buttons">
                                     <span class="button" id="nextstep" style="">Next &gt;</span>
                                     <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
                                 </div>
                             </div>
-                        
-                            
+
                             {% if faculty_feed %}
                                 <h4 class="inst-header information">
-                                    Information
+                                    {{information_title}}
                                 </h4>
-                                <ul id="instructor-information" class="instructor-list">                               
+                                <ul id="instructor-information" class="instructor-list">
                                 {% for project in faculty_feed %}
                                     <li id="project_{{project.id}}">
                                         {% if is_faculty %}
@@ -188,14 +186,13 @@
                          </div>
                     </div>
                 </div>
-                {% endwith %}{% endwith %}
+                {% endwith %}
             </td>
             {% endif %}
             
             
             <td id="classwork">
                 {% with "help_homepage_classwork_column" as help_id %}
-                {% with help_homepage_classwork_column as default_help_state %}
                 {% include "help/help_contentarea.html" %}
             
                 <div class="column-container parent-column-container">
@@ -231,13 +228,12 @@
                     </div>
                     <div id="classwork_table"></div>
                 </div>
-                {% endwith %}{% endwith %}
+                {% endwith %}
             </td>
             
             
             <td id="explore">
                 {% with "help_homepage_explore_column" as help_id %}
-                {% with help_homepage_explore_column as default_help_state %}
                 {% include "help/help_contentarea.html" %}
             
             	<div class="column-container">
@@ -373,7 +369,7 @@
                     {% endif %} 
                     
                 </div>
-                {% endwith %}{% endwith %}
+                {% endwith %}
             </td>            
 
         </tr>

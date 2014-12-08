@@ -29,7 +29,7 @@ Feature: Instructor Dashboard
         And I see "forbidden"
         
         When I access the url "/reports/class_summary/"
-        Then I do not see "Student Contributions"
+        Then I do not see "Class Member Contributions"
         And I see "forbidden"
                
         Finished using Selenium
@@ -120,8 +120,8 @@ Feature: Instructor Dashboard
 
         When I open the reports menu
         When I click the "Assignment Responses" link
-        Then there is a "1 / 6" link
-        When I click the "1 / 6" link
+        Then there is a "1 / 4" link
+        When I click the "1 / 4" link
         Then I see "Assignment Report: Sample Assignment"
         And I see "Student One"
         And I there is a "Sample Assignment Response" link
@@ -141,7 +141,7 @@ Feature: Instructor Dashboard
         Given I am test_instructor in Sample Course
         
         When I open the reports menu
-        When I click the "Student Contributions" link
-        Then I see "Report: Student Contributions"
+        When I click the "Class Member Contributions" link
+        Then I see "Report: Class Member Contributions"
         
         Finished using Selenium  

@@ -192,3 +192,8 @@ class MediathreadTestMixin(object):
         # assumes there is a logged in user
         set_course_url = '/?set_course=%s' % course.group.name
         return client.get(set_course_url)
+
+    def enable_upload(self, course):
+        AssetFactory.create(course=course,
+                            primary_source='archive',
+                            metadata_blob='{"upload": ["1"]}')

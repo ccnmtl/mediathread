@@ -7,16 +7,18 @@ from django.contrib.auth.views import password_change, password_change_done, \
     password_reset, password_reset_done, password_reset_complete, \
     password_reset_confirm
 from django.views.generic.base import TemplateView
+from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
     TagCollectionView
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
-    RequestCourseView, ContactUsView
+    RequestCourseView, ContactUsView, CourseSettingsView, \
+    CourseManageSourcesView
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
-from registration.backends.default.views import RegistrationView
+
 
 tastypie_api = Api('')
 tastypie_api.register(TermResource())
@@ -134,12 +136,10 @@ urlpatterns = patterns(
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
     url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
         {}, "dashboard-migrate"),
-    url(r'^dashboard/sources/',
-        'mediathread.main.views.class_manage_sources',
+    url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
         name="class-manage-sources"),
-    url(r'^dashboard/settings/',
-        'mediathread.main.views.class_settings',
-        name="class-settings"),
+    url(r'^dashboard/settings/', CourseSettingsView.as_view(),
+        name="course-settings"),
 
     # Discussion
     (r'^discussion/', include('mediathread.discussions.urls')),

@@ -64,11 +64,11 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertIsNone(asset)
 
         asset1 = AssetFactory.create(course=self.sample_course,
-                                     primary_source='image',
+                                     primary_source='mp4_pseudo',
                                      author=self.instructor_one)
 
         data = {'title': asset1.title,
-                'image': asset1.primary.url}
+                'mp4_pseudo': asset1.primary.url}
 
         success, asset = Asset.objects.get_by_args(
             data, asset__course=self.sample_course)

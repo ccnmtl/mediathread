@@ -199,19 +199,18 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
         self.assertEquals(new_asset.sherdnote_set.count(), 2)
-        new_note = new_asset.sherdnote_set.all()[0]
-        self.assertEquals(new_note.author, self.instructor_three)
-        self.assertEquals(new_note.title, self.instructor_note.title)
-        self.assertEquals(new_note.tags, '')
-        self.assertIsNone(new_note.body)
-        self.assertFalse(new_note.is_global_annotation())
 
-        new_note = new_asset.sherdnote_set.all()[1]
-        self.assertEquals(new_note.author, self.instructor_three)
-        self.assertIsNone(new_note.title)
-        self.assertEquals(new_note.tags, '')
-        self.assertIsNone(new_note.body)
-        self.assertTrue(new_note.is_global_annotation())
+        # verify there is a global annotation for instructor three
+        ga = new_asset.global_annotation(self.instructor_three, False)
+        self.assertIsNone(ga.title)
+        self.assertEquals(ga.tags, '')
+        self.assertIsNone(ga.body)
+
+        # verify there is a selection annotation for instructor three
+        note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
+        self.assertEquals(note.tags, '')
+        self.assertIsNone(note.body)
+        self.assertFalse(note.is_global_annotation())
 
     def test_migrate_with_tags(self):
         data = {
@@ -235,15 +234,16 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
         self.assertEquals(new_asset.sherdnote_set.count(), 2)
-        new_note = new_asset.sherdnote_set.all()[0]
-        self.assertEquals(new_note.tags, self.instructor_note.tags)
-        self.assertIsNone(new_note.body)
 
-        new_note = new_asset.sherdnote_set.all()[1]
+        note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
+        self.assertEquals(note.tags, self.instructor_note.tags)
+        self.assertIsNone(note.body)
+
+        note = new_asset.global_annotation(self.instructor_three, False)
         self.assertEquals(
-            new_note.tags,
+            note.tags,
             u',image, instructor_one_global,,instructor_two_global,')
-        self.assertIsNone(new_note.body)
+        self.assertIsNone(note.body)
 
     def test_migrate_with_notes(self):
         data = {
@@ -267,14 +267,15 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
         self.assertEquals(new_asset.sherdnote_set.count(), 2)
-        new_note = new_asset.sherdnote_set.all()[0]
-        self.assertEquals(new_note.tags, '')
-        self.assertEquals(new_note.body, self.instructor_note.body)
 
-        new_note = new_asset.sherdnote_set.all()[1]
-        self.assertEquals(new_note.tags, '')
+        note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
+        self.assertEquals(note.tags, '')
+        self.assertEquals(note.body, self.instructor_note.body)
+
+        note = new_asset.global_annotation(self.instructor_three, False)
+        self.assertEquals(note.tags, '')
         self.assertEquals(
-            new_note.body,
+            note.body,
             u'instructor one global noteinstructor two global note')
 
     def test_migrate_tags_and_notes(self):
@@ -299,16 +300,17 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
         self.assertEquals(new_asset.sherdnote_set.count(), 2)
-        new_note = new_asset.sherdnote_set.all()[0]
-        self.assertEquals(new_note.tags, self.instructor_note.tags)
-        self.assertEquals(new_note.body, self.instructor_note.body)
 
-        new_note = new_asset.sherdnote_set.all()[1]
+        note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
+        self.assertEquals(note.tags, self.instructor_note.tags)
+        self.assertEquals(note.body, self.instructor_note.body)
+
+        note = new_asset.global_annotation(self.instructor_three, False)
         self.assertEquals(
-            new_note.tags,
+            note.tags,
             u',image, instructor_one_global,,instructor_two_global,')
         self.assertEquals(
-            new_note.body,
+            note.body,
             u'instructor one global noteinstructor two global note')
 
     def test_migrate_project(self):

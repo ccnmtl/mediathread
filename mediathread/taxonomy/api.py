@@ -116,9 +116,6 @@ class VocabularyResource(ModelResource):
 
     class Meta:
         queryset = Vocabulary.objects.all().order_by('id')
-        print 'queryset'
-        print queryset
-        print 'end queryset'
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'delete']
         authentication = ClassLevelAuthentication()
@@ -128,56 +125,34 @@ class VocabularyResource(ModelResource):
         validation = VocabularyValidation()
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
-        print "entering alter_list_data"
         to_be_serialized['objects'] = sorted(
             to_be_serialized['objects'],
             key=lambda bundle: bundle.data['display_name'])
-        print to_be_serialized
-        print "leaving alter_list_data"
         return to_be_serialized
 
     def dehydrate(self, bundle):
-        print "entering dehydratei"
-        print bundle.obj.content_type.id
-        print bundle.data
         bundle.data['content_type_id'] = bundle.obj.content_type.id
-        print bundle.data['content_type_id']
 
-        print bundle
-        print "leaving dehydrate"
         return bundle
 
     def hydrate(self, bundle):
-        print "entering hydrate"
-        print bundle.obj
-        print ContentType.objects
         bundle.obj.content_type = ContentType.objects.get(
             id=bundle.data['content_type_id'])
         bundle.obj.course = Course.objects.get(id=bundle.data['object_id'])
-        print bundle
-        print "leaving hydrate"
         return bundle
 
     def render_one(self, request, vocabulary):
-        print "render_one"
         bundle = self.build_bundle(obj=vocabulary, request=request)
         dehydrated = self.full_dehydrate(bundle)
-        print bundle
-        print dehydrated
-        print "leaving render_one"
         return self._meta.serializer.to_simple(dehydrated, None)
 
     def render_list(self, request, vocabularies):
-        print "entering render_list"
         data = []
         for vocabulary in vocabularies:
             data.append(self.render_one(request, vocabulary))
-        print data
-        print "leaving render_list"
         return data
 
     def render_related(self, request, object_list):
-        print "entering render_related"
         if len(object_list) < 1:
             return []
 
@@ -208,6 +183,4 @@ class VocabularyResource(ModelResource):
         values.sort(lambda a, b: cmp(a['display_name'].lower(),
                                      b['display_name'].lower()))
 
-        print values
-        print "leaving render_related"
         return values

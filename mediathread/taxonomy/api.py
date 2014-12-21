@@ -84,18 +84,12 @@ class TermResource(ModelResource):
 class VocabularyValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
-        print "DID WE STRIKE GOLD CAMRON?"
-        print bundle
-        print Vocabulary
-        print Validation
         a = Vocabulary.objects.filter(
             content_type_id=bundle.data['content_type_id'],
             display_name=bundle.data['display_name'],
             object_id=bundle.data['object_id']
         )
 
-        print "a"
-        print a
         if len(a) > 0:  # vocabulary exists with this name
             if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
                 # a vocabulary already exists with this name
@@ -111,8 +105,6 @@ class VocabularyAuthorization(FacultyAuthorization):
         course_type = ContentType.objects.get_for_model(request.course)
         object_list = object_list.filter(content_type=course_type,
                                          object_id=request.course.id)
-        print course_type
-        print object_list[0]
         return object_list.order_by('id')
 
 

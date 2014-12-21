@@ -16,7 +16,7 @@ class AssetResource(ModelResource):
     class Meta:
         queryset = Asset.objects.none()
         excludes = ['added', 'modified', 'course',
-                    'active']#, 'metadata_blob'] getting rid of this doesn't break anything
+                    'active', 'metadata_blob']
         list_allowed_methods = []
         detail_allowed_methods = []
         authentication = ClassLevelAuthentication()
@@ -106,33 +106,41 @@ class AssetResource(ModelResource):
         except Source.DoesNotExist:
             return None
 
-    def render_list(self, request, me, assets, notes):
+    def render_list(self, request, record_owner, record_viewer, assets, notes):
         note_resource = SherdNoteResource()
         ctx = {}
         for note in notes.all():
-            if note.asset.id not in ctx:
-                abundle = self.build_bundle(obj=note.asset, request=request)
-                dehydrated = self.full_dehydrate(abundle)
-                asset_ctx = self._meta.serializer.to_simple(dehydrated, None)
-                ctx[note.asset.id] = asset_ctx
+            try:
+                note.asset.primary
 
-            is_global = note.is_global_annotation()
-            if not is_global:
-                ctx[note.asset.id]['annotation_count'] += 1
-                if note.author == me:
-                    ctx[note.asset.id]['my_annotation_count'] += 1
+                if note.asset.id not in ctx:
+                    abundle = self.build_bundle(obj=note.asset,
+                                                request=request)
+                    dehydrated = self.full_dehydrate(abundle)
+                    asset_ctx = self._meta.serializer.to_simple(dehydrated,
+                                                                None)
+                    ctx[note.asset.id] = asset_ctx
 
-            if note.modified > note.asset.modified:
-                ctx[note.asset.id]['modified'] = \
-                    self.format_time(note.modified)
+                is_global = note.is_global_annotation()
+                if not is_global:
+                    ctx[note.asset.id]['annotation_count'] += 1
+                    if note.author == record_viewer:
+                        ctx[note.asset.id]['my_annotation_count'] += 1
 
-            if self.include_annotations:
-                note_ctx = note_resource.render_one(request, note, "")
+                if note.modified > note.asset.modified:
+                    ctx[note.asset.id]['modified'] = \
+                        self.format_time(note.modified)
 
-                if is_global:
-                    ctx[note.asset.id]['global_annotation'] = note_ctx
-                else:
-                    ctx[note.asset.id]['annotations'].append(note_ctx)
+                if self.include_annotations:
+                    note_ctx = note_resource.render_one(request, note, "")
+
+                    if is_global:
+                        if note.author == record_owner:
+                            ctx[note.asset.id]['global_annotation'] = note_ctx
+                    else:
+                        ctx[note.asset.id]['annotations'].append(note_ctx)
+            except Source.DoesNotExist:
+                pass  # don't break in this situation
 
         values = ctx.values()
         return sorted(values,

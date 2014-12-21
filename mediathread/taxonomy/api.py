@@ -1,4 +1,4 @@
-# pylint: disable-msg=R0904
+#pylint: disable-msg=R0904
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
@@ -7,34 +7,6 @@ from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
-import inspect
-
-
-class OnomyValidation(Validation):
-    def is_valid(self, bundle, request=None):
-        errors = {}
-
-        a = Onomy.objects.filter(
-            url=bundle.data['url']
-        )
-
-        if len(a) > 0:
-            if 'pk' not in bundle.data or a[0].pk != int(bundle.ddata['pk']):
-                msg = 'A %s term already exists. Please choose another name' \
-                      % bundle.data['display_name']
-                errors['error_message'] = [msg]
-        return errors
-
-
-class OnomyResource(ModelResource):
-    class Meta:
-        queryset = Term.objects.all().order_by('id')
-        list_allowed_methods = ['get', 'post']
-        detail_allowed_methods = ['get', 'put', 'delete']
-        authentication = ClassLevelAuthentication()
-        authorization = FacultyAuthorization()
-        excludes = ['description', 'ordinality']
-        validation = OnomyValidation()
 
 
 class TermValidation(Validation):
@@ -49,12 +21,13 @@ class TermValidation(Validation):
             if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
                 # a vocabulary already exists with this name
                 msg = 'A %s term already exists. Please choose another name' \
-                      % bundle.data['display_name']
+                    % bundle.data['display_name']
                 errors['error_message'] = [msg]
         return errors
 
 
 class TermResource(ModelResource):
+
     class Meta:
         queryset = Term.objects.all().order_by('id')
         list_allowed_methods = ['get', 'post']
@@ -84,27 +57,30 @@ class TermResource(ModelResource):
 class VocabularyValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
+
         a = Vocabulary.objects.filter(
             content_type_id=bundle.data['content_type_id'],
             display_name=bundle.data['display_name'],
-            object_id=bundle.data['object_id']
-        )
+            object_id=bundle.data['object_id'])
 
         if len(a) > 0:  # vocabulary exists with this name
             if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
                 # a vocabulary already exists with this name
                 msg = 'A %s concept exists. Please choose another name' \
-                      % bundle.data['display_name']
+                    % bundle.data['display_name']
                 errors['error_message'] = [msg]
         return errors
 
 
 class VocabularyAuthorization(FacultyAuthorization):
+
     def read_list(self, object_list, bundle):
         request = bundle.request
+
         course_type = ContentType.objects.get_for_model(request.course)
         object_list = object_list.filter(content_type=course_type,
                                          object_id=request.course.id)
+
         return object_list.order_by('id')
 
 
@@ -132,7 +108,6 @@ class VocabularyResource(ModelResource):
 
     def dehydrate(self, bundle):
         bundle.data['content_type_id'] = bundle.obj.content_type.id
-
         return bundle
 
     def hydrate(self, bundle):
@@ -181,6 +156,25 @@ class VocabularyResource(ModelResource):
 
         values = ctx.values()
         values.sort(lambda a, b: cmp(a['display_name'].lower(),
-                                     b['display_name'].lower()))
+                    b['display_name'].lower()))
 
         return values
+
+    def render_for_course(self, request, object_list):
+        term_counts = TermRelationship.objects.none()
+        if len(object_list) > 0:
+            related = TermRelationship.objects.get_for_object_list(object_list)
+            term_counts = related.values('term').annotate(count=Count('id'))
+
+        data = []
+        for vocabulary in Vocabulary.objects.get_for_object(request.course):
+            ctx = self.render_one(request, vocabulary)
+            for term in ctx['term_set']:
+                qs = term_counts.filter(term=term['id'])
+                term['count'] = qs[0]['count'] if len(qs) > 0 else 0
+            data.append(ctx)
+
+        data.sort(lambda a, b: cmp(a['display_name'].lower(),
+                                   b['display_name'].lower()))
+
+        return data

@@ -458,9 +458,9 @@ def test_dump(request):
     ar.Meta.excludes = ['added', 'modified', 'course', 'active']
     lst = []
 
-    notes = SherdNote.objects.get_related_notes(assets, user_id or None, [request.user.id])
+    notes = SherdNote.objects.get_related_notes(assets, user_id or None, [request.user.id], True)
 
-    api_response = ar.render_list(request, [request.user.id], assets, notes)
+    api_response = ar.render_list(request, [request.user.id], [request.user.id], assets, notes)
     if len(api_response) == 0:
         return HttpResponse("There are no videos in your collection")
     for i in range(0, len(api_response)):

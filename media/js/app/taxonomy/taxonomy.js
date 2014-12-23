@@ -512,7 +512,7 @@
 	}
 	//all of the onomyURL's should fit this so i just strip the numbers from user
 	//input and add it to the format
-	onomyURL = 'http://onomy.org/published/' + onomy_index + '/json');
+	onomyURL = 'http://onomy.org/published/' + onomy_index + '/json';
         var vocabulary_id;
         vocabulary_id = self.selected.get('id');
         jQuery.get(onomyURL,

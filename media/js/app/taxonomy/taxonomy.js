@@ -509,6 +509,8 @@
 	else
 	{
 	  //display error message
+	  showMessage("Enter a valid Onomy URL", undefined, "Error");
+	  return;
 	}
 	//all of the onomyURL's should fit this so i just strip the numbers from user
 	//input and add it to the format

@@ -337,17 +337,10 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
 
         notes = SherdNote.objects.get_related_notes(qs,
                                                     None,
-                                                    visible_authors)
-        self.assertEquals(notes.count(), 5)
-
-        self.assertEquals(notes[0], self.ga1)
-        self.assertEquals(notes[1], self.note1)
-        self.assertEquals(notes[2], self.ga2)
-        self.assertEquals(notes[3], self.ga3)
-        self.assertEquals(notes[4], self.note3)
                                                     visible_authors,
-                                                    True)
-        self.assertEquals(notes.count(), 5)
+						    True)
+        
+	self.assertEquals(notes.count(), 5)
 
         self.assertEquals(notes[0], self.student_one_ga)
         self.assertEquals(notes[1], self.student_one_note)

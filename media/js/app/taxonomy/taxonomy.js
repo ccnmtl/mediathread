@@ -492,9 +492,27 @@
             return item.display_name == thing;
         });
     };
-    function getTheOnomy(onomyURL, self)
+    function getTheOnomy(dirtyURL, self)
     {
-
+        var test;
+        var onomyURL;
+        var onomy_index;
+        
+	//this is to sanitize the url entered by the user.
+	//checks to see if it contains onomy and json
+	test = dirtyURL.search(('onomy' | 'json'));
+	if (test != -1)
+	{
+	  //grab the numbers from the url entered
+	  onomy_index = /\d+/g.exec(dirtyURL);
+	}
+	else
+	{
+	  //display error message
+	}
+	//all of the onomyURL's should fit this so i just strip the numbers from user
+	//input and add it to the format
+	onomyURL = 'http://onomy.org/published/' + onomy_index + '/json');
         var vocabulary_id;
         vocabulary_id = self.selected.get('id');
         jQuery.get(onomyURL,

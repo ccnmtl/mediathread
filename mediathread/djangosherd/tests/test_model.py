@@ -337,7 +337,6 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
 
         notes = SherdNote.objects.get_related_notes(qs,
                                                     None,
-<<<<<<< HEAD
                                                     visible_authors)
         self.assertEquals(notes.count(), 5)
 
@@ -346,7 +345,6 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.assertEquals(notes[2], self.ga2)
         self.assertEquals(notes[3], self.ga3)
         self.assertEquals(notes[4], self.note3)
-=======
                                                     visible_authors,
                                                     True)
         self.assertEquals(notes.count(), 5)
@@ -374,7 +372,6 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.assertEquals(notes[1], self.student_one_note)
         self.assertEquals(notes[2], self.instructor_one_ga)
         self.assertEquals(notes[3], self.instructor_one_note)
->>>>>>> added spring 2015 files
 
     def test_filter_by_tags(self):
         notes = SherdNote.objects.filter_by_tags('student_one_selection')

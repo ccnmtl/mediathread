@@ -1,5 +1,2 @@
-<<<<<<< HEAD
 requirements/src/sherdjs-0.4.1.tar.gz
-=======
 requirements/src/sherdjs-0.4.5.tar.gz
->>>>>>> added spring 2015 files

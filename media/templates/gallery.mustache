@@ -132,7 +132,7 @@
                         data-placeholder="Select tags" 
                         multiple="multiple">
                         {{#active_tags}}
-                            <option value="{{name}}">{{name}}</option>
+                            <option value="{{name}}">{{name}} ({{count}})</option>
                         {{/active_tags}}
                     </select>
                 </div>
@@ -143,7 +143,7 @@
                     <select class="vocabulary" name="vocabulary-{{id}}"
                         data-placeholder="Select {{display_name?lower()}}" multiple="multiple">
                         {{#term_set}}
-                            <option value="{{id}}">{{display_name}}</option>
+                            <option value="{{id}}">{{display_name}} ({{count}})</option>
                         {{/term_set}}
                     </select>
                 </div>

@@ -117,6 +117,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
                            Q(modified__range=[startdate, enddate]))
 
     def get_related_notes(self, assets, record_owner, visible_authors,
+                          all_items_are_visible,
                           tag_string=None, modified=None, vocabulary=None):
 
         # For efficiency purposes, retrieve all related notes
@@ -128,10 +129,21 @@ class SherdNoteQuerySet(models.query.QuerySet):
             self = self.exclude(~Q(author=record_owner))
 
         if len(visible_authors) > 0:
+<<<<<<< HEAD
             # return global annotations &
             # regular selections authored by certain people
             self = self.filter(Q(author__id__in=visible_authors) |
                                Q(range1__isnull=True))
+=======
+            if not all_items_are_visible:
+                # only return notes that are authored by certain people
+                self = self.filter(author__id__in=visible_authors)
+            else:
+                # return everyone's global annotations (item-level) &
+                # regular selections authored by certain people
+                self = self.filter(Q(author__id__in=visible_authors) |
+                                   Q(range1__isnull=True))
+>>>>>>> added spring 2015 files
 
         # filter by tag string, date, vocabulary
         self = self.filter_by_tags(tag_string)
@@ -163,11 +175,11 @@ class SherdNoteManager(models.Manager):
         return self.get_query_set().filter_by_vocabulary(vocabulary)
 
     def get_related_notes(self, assets, record_owner, visible_authors,
+                          all_items_are_visible,
                           tag_string=None, modified=None, vocabulary=None):
-        return self.get_query_set().get_related_notes(assets, record_owner,
-                                                      visible_authors,
-                                                      tag_string, modified,
-                                                      vocabulary)
+        return self.get_query_set().get_related_notes(
+            assets, record_owner, visible_authors,
+            all_items_are_visible, tag_string, modified, vocabulary)
 
     def global_annotation(self, asset, author, auto_create=True):
         """

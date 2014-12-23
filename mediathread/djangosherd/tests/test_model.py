@@ -1,14 +1,18 @@
 # pylint: disable-msg=R0904
 from django.contrib.auth.models import User
+from django.test import TestCase
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from mediathread.factories import MediathreadTestCase, AssetFactory, \
-    SherdNoteFactory
+from mediathread.factories import AssetFactory, \
+    SherdNoteFactory, MediathreadTestMixin
 from mediathread.taxonomy.models import Vocabulary, Term
 
 
-class SherdNoteTest(MediathreadTestCase):
+class SherdNoteTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
 
     def test_is_global_annotation(self):
         asset = AssetFactory(course=self.sample_course)
@@ -23,7 +27,7 @@ class SherdNoteTest(MediathreadTestCase):
 
         real_annotation = SherdNoteFactory(
             asset=asset, author=self.student_three,
-            title="Whole Item Selection", range1=116.25, range2=6.75)
+            title="Selection", range1=116.25, range2=6.75)
         self.assertFalse(real_annotation.is_global_annotation())
 
     def test_seconds_to_code(self):
@@ -264,33 +268,33 @@ class SherdNoteTest(MediathreadTestCase):
         self.assertEquals(notes[0].title, note.title)
 
 
-class SherdNoteFilterTest(MediathreadTestCase):
+class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
-        super(self.__class__, self).setUp()
+        self.setup_sample_course()
 
         self.asset = AssetFactory(course=self.sample_course,
                                   author=self.student_one)
 
-        self.ga1 = SherdNoteFactory(
+        self.student_one_ga = SherdNoteFactory(
             asset=self.asset, author=self.student_one,
             tags=',student_one_item', title=None, range1=None, range2=None)
-        self.assertTrue(self.ga1.is_global_annotation())
-        self.note1 = SherdNoteFactory(
+        self.assertTrue(self.student_one_ga.is_global_annotation())
+        self.student_one_note = SherdNoteFactory(
             asset=self.asset, author=self.student_one,
             tags=',student_one_selection', range1=0, range2=1)
 
-        self.ga2 = SherdNoteFactory(
+        self.student_two_ga = SherdNoteFactory(
             asset=self.asset, author=self.student_two,
             tags=',student_two_item', title=None, range1=None, range2=None)
-        self.note2 = SherdNoteFactory(
+        self.student_two_note = SherdNoteFactory(
             asset=self.asset, author=self.student_two,
             tags=',student_two_selection', range1=0, range2=1)
 
-        self.ga3 = SherdNoteFactory(
+        self.instructor_one_ga = SherdNoteFactory(
             asset=self.asset, author=self.instructor_one,
             tags=',instructor_one_item', title=None, range1=None, range2=None)
-        self.note3 = SherdNoteFactory(
+        self.instructor_one_note = SherdNoteFactory(
             asset=self.asset, author=self.instructor_one,
             tags=',image,instructor_one_selection,', range1=0, range2=1)
 
@@ -304,24 +308,25 @@ class SherdNoteFilterTest(MediathreadTestCase):
 
         notes = SherdNote.objects.get_related_notes(qs,
                                                     author,
-                                                    visible_authors)
+                                                    visible_authors,
+                                                    True)
         self.assertEquals(notes.count(), 2)
 
-        self.assertEquals(notes[0], self.ga1)
-        self.assertEquals(notes[1], self.note1)
+        self.assertEquals(notes[0], self.student_one_ga)
+        self.assertEquals(notes[1], self.student_one_note)
 
     def test_filter_no_authors(self):
         qs = Asset.objects.filter(id=self.asset.id)
 
-        notes = SherdNote.objects.get_related_notes(qs, None, [])
+        notes = SherdNote.objects.get_related_notes(qs, None, [], True)
         self.assertEquals(notes.count(), 6)
 
-        self.assertEquals(notes[0], self.ga1)
-        self.assertEquals(notes[1], self.note1)
-        self.assertEquals(notes[2], self.ga2)
-        self.assertEquals(notes[3], self.note2)
-        self.assertEquals(notes[4], self.ga3)
-        self.assertEquals(notes[5], self.note3)
+        self.assertEquals(notes[0], self.student_one_ga)
+        self.assertEquals(notes[1], self.student_one_note)
+        self.assertEquals(notes[2], self.student_two_ga)
+        self.assertEquals(notes[3], self.student_two_note)
+        self.assertEquals(notes[4], self.instructor_one_ga)
+        self.assertEquals(notes[5], self.instructor_one_note)
 
     def test_filter_by_visible_authors(self):
         qs = Asset.objects.filter(id=self.asset.id)
@@ -332,6 +337,7 @@ class SherdNoteFilterTest(MediathreadTestCase):
 
         notes = SherdNote.objects.get_related_notes(qs,
                                                     None,
+<<<<<<< HEAD
                                                     visible_authors)
         self.assertEquals(notes.count(), 5)
 
@@ -340,11 +346,40 @@ class SherdNoteFilterTest(MediathreadTestCase):
         self.assertEquals(notes[2], self.ga2)
         self.assertEquals(notes[3], self.ga3)
         self.assertEquals(notes[4], self.note3)
+=======
+                                                    visible_authors,
+                                                    True)
+        self.assertEquals(notes.count(), 5)
+
+        self.assertEquals(notes[0], self.student_one_ga)
+        self.assertEquals(notes[1], self.student_one_note)
+        self.assertEquals(notes[2], self.student_two_ga)
+        self.assertEquals(notes[3], self.instructor_one_ga)
+        self.assertEquals(notes[4], self.instructor_one_note)
+
+    def test_filter_by_all_items_are_visible(self):
+        qs = Asset.objects.filter(id=self.asset.id)
+
+        names = ['instructor_one', 'instructor_two', 'student_one']
+        users = User.objects.filter(username__in=names).values_list('id')
+        visible_authors = users.values_list('id', flat=True)
+
+        notes = SherdNote.objects.get_related_notes(qs,
+                                                    None,
+                                                    visible_authors,
+                                                    False)
+        self.assertEquals(notes.count(), 4)
+
+        self.assertEquals(notes[0], self.student_one_ga)
+        self.assertEquals(notes[1], self.student_one_note)
+        self.assertEquals(notes[2], self.instructor_one_ga)
+        self.assertEquals(notes[3], self.instructor_one_note)
+>>>>>>> added spring 2015 files
 
     def test_filter_by_tags(self):
         notes = SherdNote.objects.filter_by_tags('student_one_selection')
         self.assertEquals(notes.count(), 1)
-        self.assertEquals(notes[0], self.note1)
+        self.assertEquals(notes[0], self.student_one_note)
 
         notes = SherdNote.objects.filter(asset=self.asset)
         self.assertEquals(notes.count(), 6)
@@ -352,5 +387,5 @@ class SherdNoteFilterTest(MediathreadTestCase):
         notes = notes.filter_by_tags(
             'student_two_selection,image').order_by('id')
         self.assertEquals(notes.count(), 2)
-        self.assertEquals(notes[0], self.note2)
-        self.assertEquals(notes[1], self.note3)
+        self.assertEquals(notes[0], self.student_two_note)
+        self.assertEquals(notes[1], self.instructor_one_note)

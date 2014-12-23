@@ -23,17 +23,15 @@ ALLOWED_HOSTS = ['.ccnmtl.columbia.edu', 'localhost']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mediathread',
+        'NAME': 'camron',
         'HOST': '',
-        'PORT': '',
-        'USER': '',
-        'PASSWORD': '',
+        'PORT': '5432',
+        'USER': 'camron',
+        'PASSWORD': 'password',
     }
 }
 
 if 'test' in sys.argv or 'jenkins' in sys.argv:
-    CAPTCHA_TEST_MODE = True
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -48,7 +46,6 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
 JENKINS_TASKS = (
     'django_jenkins.tasks.run_pylint',
     'django_jenkins.tasks.with_coverage',
-    'django_jenkins.tasks.django_tests',
     'django_jenkins.tasks.run_pep8',
     'django_jenkins.tasks.run_pyflakes',
 )
@@ -77,9 +74,10 @@ MEDIA_ROOT = "/var/www/mediathread/uploads/"
 MEDIA_URL = "/uploads/"
 STATIC_URL = "/media/"
 
+# Override the secret key with your own. This is for development only
 SECRET_KEY = ')ng#)ef_u@_^zvvu@dxm7ql-yb^_!a6%v3v^j3b(mp+)l+5%@h'
 
-#appends a slash if nothing is found without a slash.
+# appends a slash if nothing is found without a slash.
 APPEND_SLASH = True
 
 TEMPLATE_LOADERS = (
@@ -94,6 +92,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'stagingcontext.staging_processor',
     'django.core.context_processors.static',
     'mediathread.main.views.django_settings',
+    'djangowind.context.context_processor',
+    'django.contrib.messages.context_processors.messages'
 )
 
 MIDDLEWARE_CLASSES = [
@@ -108,6 +108,7 @@ MIDDLEWARE_CLASSES = [
     'courseaffils.middleware.CourseManagerMiddleware',
     'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -128,7 +129,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.flatpages',
-    'django.contrib.markup',
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'courseaffils',
@@ -137,8 +137,8 @@ INSTALLED_APPS = [
     'tagging',
     'modelversions',
     'structuredcollaboration',
-    'mediathread.djangosherd',
     'mediathread.assetmgr',
+    'mediathread.djangosherd',
     'mediathread.projects',
     'mediathread.discussions',
     'django.contrib.comments',
@@ -153,21 +153,30 @@ INSTALLED_APPS = [
     'mediathread.taxonomy',
     'smoketest',
     'debug_toolbar',
-    'captcha',
+    'django_markwhat',
+    'impersonate',
+    'registration',
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
-DEBUG_TOOLBAR_PANELS = (
-    'debug_toolbar.panels.version.VersionDebugPanel',
-    'debug_toolbar.panels.timer.TimerDebugPanel',
-    'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-    'debug_toolbar.panels.headers.HeaderDebugPanel',
-    'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-    'debug_toolbar.panels.template.TemplateDebugPanel',
-    'debug_toolbar.panels.sql.SQLDebugPanel',
-    'debug_toolbar.panels.signals.SignalDebugPanel',
-    'debug_toolbar.panels.logger.LoggingPanel',
-)
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
+
 
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), "../media")
 STATICFILES_DIRS = (
@@ -182,15 +191,10 @@ STATICFILES_FINDERS = (
 COMPRESS_URL = "/media/"
 COMPRESS_ROOT = "media/"
 
-
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[mediathread] "
 EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "mediathread@example.com"
-PUBLIC_CONTACT_EMAIL = "mediathread@example.com"
-
-# External url for issue reporting system or e-mail notification
-CONTACT_US_DESTINATION = ""
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
@@ -212,7 +216,6 @@ ANONYMOUS_PATHS = ('/media/',
 
 NON_ANONYMOUS_PATHS = ('/asset/',
                        '/annotations/',
-                       '/contact/',
                        '/project/',
                        '/explore/',
                        '/comments/',
@@ -272,7 +275,9 @@ LOGGING = {
     'disable_existing_loggers': True,
 }
 
-CAPTCHA_FONT_SIZE = 34
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+ACCOUNT_ACTIVATION_DAYS = 7
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

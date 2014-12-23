@@ -1,3 +1,3 @@
-#pylint: disable-msg=W0401
+# pylint: disable-msg=W0401
 # flake8: noqa
-from .test_model import *
+from mediathread.djangosherd.tests.test_model import *

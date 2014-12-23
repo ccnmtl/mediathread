@@ -35,11 +35,7 @@ class BaseProtectedPolicy:
 
 
 class PolicyByType(CollaborationPolicy):
-    """
-    A common pattern is to have different policies for each class
-    >>> PolicyByType(default=EditorsAreOwners,
-    {Group:ParentEditorsAreOwners,} )
-    """
+
     types = None
     default = None
 

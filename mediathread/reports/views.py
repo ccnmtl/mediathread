@@ -37,17 +37,13 @@ def class_assignment_report(request, project_id):
 @faculty_only
 def class_assignments(request):
     assignments = []
-    maybe_assignments = Project.objects.filter(
-        request.course.faculty_filter)
-    for assignment in maybe_assignments:
-        if assignment.is_assignment(request):
-            assignments.append(assignment)
+    for project in Project.objects.filter(request.course.faculty_filter):
+        if project.is_assignment(request):
+            assignments.append(project)
 
-    num_students = users_in_course(request.course).count()
     return {'assignments': sorted(assignments,
                                   key=lambda assignment: assignment.title),
-            'num_students': num_students,
-            'submenu': 'assignments', }
+            'num_students': len(request.course.students)}
 
 
 @allow_http("GET")
@@ -68,8 +64,6 @@ def class_summary(request):
             len(Project.objects.visible_by_course_and_user(
                 request, request.course, stud, False)),
 
-            # 'project_adds':stud_work.get(stud.id,[0,0])[0],
-            # 'project_deletes':stud_work.get(stud.id,[0,0])[1],
             'comments':
             DiscussionIndex.objects.filter(
                 participant=stud,
@@ -77,9 +71,7 @@ def class_summary(request):
         })
         students.append(stud)
 
-    context = {'students': students, 'submenu': 'summary', }
-    if request.user.is_staff:
-        context['courses'] = Course.objects.all()
+    context = {'students': students}
     return context
 
 
@@ -200,9 +192,7 @@ def class_activity(request):
                 collaboration__context=collab_context)
             .order_by('-modified')[:40],))
 
-    context = {'my_feed': my_feed, 'submenu': 'activity', }
-    if request.user.is_staff:
-        context['courses'] = Course.objects.all()
+    context = {'my_feed': my_feed}
     return context
 
 

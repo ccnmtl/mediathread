@@ -450,7 +450,7 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 #@waffle_switch('ONOMY_SWITCH')
-def test_dump(request):
+def mep_dump(request):
     user = request.user
     user_id = user.id
     assets = Asset.objects.filter(author_id=user_id)

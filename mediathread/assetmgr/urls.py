@@ -43,7 +43,7 @@ urlpatterns = patterns(
         'final_cut_pro_xml',
         name="final_cut_pro_xml"),
 
-    url(r'test/', 'test_dump', name='test_dump'),
+    url(r'MEPdump/', 'mep_dump', name='mep_dump'),
     # Asset workspace variations
     url(r'^$', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),
 )

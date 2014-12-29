@@ -64,18 +64,16 @@
             </ul>       
             <% for (var i=0; i < vocabularies.length; i++) { %>
                 <div id="vocabulary-<%=vocabularies[i].id%>">
-
-
-                    <h2><input type = "text" name="term_name" class="default" value="Enter an Onomy URL here"/>
+		    <div class="onomy">
+                    <input type = "text" name="term_name" class="default" value="Enter an Onomy URL here"/>
 		                <a class="btn-primary onomy-terms-submit" href="#">
-		                    <img alt="refresh" src="/media/img/icons/meth_image.png">
+				    <img alt="submit" src="/media/img/icons/meth_addselection.png">
 		                </a>
-		                <a class="btn-primary refresh-button-submit" href="#">
-		                    <img alt="refresh" src="/media/img/icons/meth_image.png">
+		                <a class="btn-primary refresh-button-submit" href="#" height="35" width="35">
+		                    <img alt="refresh" src="/media/img/icons/refreshIcon.gif">
 		                </a>
 		            <br/>
-                    </h2>
-
+                    </div>
 		            <h2><%=vocabularies[i].display_name%> Concept</h2>
                     <h3>Terms</h3>
                     <div class="terms">

@@ -111,7 +111,9 @@
             'focus input[name="display_name"]': 'focusVocabularyName',
             'blur input[name="display_name"]': 'blurVocabularyName',
             'focus input[name="term_name"]': 'focusTermName',
+	    'focus input[name="onomy_url"]': 'focusTermName',
             'blur input[name="term_name"]': 'blurTermName',
+	    'blur input[name="onomy_url"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
             'keypress input[name="term_name"]': 'keypressTermName',
             'click a.edit-term-submit': 'updateTerm',
@@ -439,10 +441,13 @@
             }
         },
         blurTermName: function (evt) {
-            if (jQuery(evt.currentTarget).attr("value") === '') {
+            if (jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") !== 'onomy_url') {
                 jQuery(evt.currentTarget).addClass("default");
                 jQuery(evt.currentTarget).attr("value", "Type new term name here");
-            }
+            }else if(jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") === "onomy_url") {
+	        jQuery(evt.currentTarget).addClass("default");
+		jQuery(evt.currentTarget).attr("value", "Enter an Onomy URL here");
+	    }
         }
         ,
         createOnomyVocabulary: function (evt) {

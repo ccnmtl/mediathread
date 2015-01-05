@@ -403,12 +403,11 @@ class RequestCourseView(FormView):
         form_data['type'] = 'action item'
         form_data['owner'] = 'ellenm'
         form_data['assigned_to'] = 'ellenm'
-        form_data['assigned_to'] = 'ellenm'
 
         template = loader.get_template('main/course_request_description.txt')
         form_data['description'] = template.render(Context(form_data))
 
-        POST("http://pmt.ccnmtl.columbia.edu/external_add_item.pl",
+        POST("https://pmt.ccnmtl.columbia.edu/drf/external_add_item/",
              params=form_data, async=True)
 
         return super(RequestCourseView, self).form_valid(form)

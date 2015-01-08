@@ -39,7 +39,7 @@
                     </li>
                 <% } %>
 
-                <% if (vocabularies.length < 3) { %>
+                <% if (vocabularies.length < 100) { %>
                     <li class="create-vocabulary">
                         <div class="vocabulary-display">
                             <a href="#new-vocabulary" class="icon-link create-vocabulary-open">
@@ -64,7 +64,17 @@
             </ul>       
             <% for (var i=0; i < vocabularies.length; i++) { %>
                 <div id="vocabulary-<%=vocabularies[i].id%>">
-                    <h2><%=vocabularies[i].display_name%> Concept</h2>
+		    <div class="onomy">
+                    <input type = "text" name="onomy_url" class="default" value="Enter an Onomy URL here" id="onomytext"></input>
+		                <a class="btn-primary onomy-terms-submit" href="#">
+				    <img alt="submit" src="/media/img/icons/meth_addselection.png">
+		                </a>
+		                <a class="btn-primary refresh-button-submit" href="#" height="35" width="35">
+		                    <img alt="refresh" src="/media/img/icons/refreshIcon.gif">
+		                </a>
+		            <br/>
+                    </div>
+		            <h2><%=vocabularies[i].display_name%> Concept</h2>
                     <h3>Terms</h3>
                     <div class="terms">
                         <input type="text" name="term_name" class="left default" value="Type new term name here"/>
@@ -109,7 +119,7 @@
                 </div>
             <% } %>
 
-            <% if (vocabularies.length < 3) { %>
+            <% if (vocabularies.length < 100) { %>
                 <div id="new-vocabulary"></div>
             <% } %>
         </div>

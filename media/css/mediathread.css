@@ -4518,7 +4518,7 @@ div#taxonomy input[type="text"] {
     display: inline-block;
     height: 20px;
     padding: 4px 6px;
-    margin: 5px 0 5px 5px;
+    margin: 5px 0 15px 5px;
     font-size: 14px;
     line-height: 20px;
     color: #555555;
@@ -4683,6 +4683,26 @@ div#taxonomy div.vocabulary-display a.delete-vocabulary {
 }
 
 div#taxonomy div.terms a.create-term-submit {
+    margin: 0 0 0 5px;
+    padding: 4px;
+}
+
+div#taxonomy div.onomy a.refresh-button-submit {
+    margin: 0 0 0 5px;
+    padding: 6.5px;
+    padding-bottom: 4px;
+    padding-top: 8.5px;
+}
+
+div#taxonomy div.onomy a.onomy-terms-submit img {
+    padding: 0;
+}
+
+div#taxonomy div.onomy a.refresh-button-submit img {
+    padding: 0;
+}
+
+div#taxonomy div.onomy a.onomy-terms-submit {
     margin: 0 0 0 5px;
     padding: 4px;
 }

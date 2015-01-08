@@ -21,12 +21,11 @@ class Vocabulary(models.Model):
     display_name = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
     single_select = models.BooleanField(default=False)
-
+    onomy_url = models.TextField(null=True, blank=True)
     # Map this taxonomy to something else. like a course.
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-
     objects = GenericRelationshipManager()
 
     class Meta:
@@ -43,6 +42,24 @@ class Vocabulary(models.Model):
 class VocabularyForm(forms.ModelForm):
     class Meta:
         model = Vocabulary
+
+#class Onomy(models.Model):
+#    url = models.CharField(max_length=100)
+#   vocabulary = models.ForeignKey(Vocabulary)
+
+#    def save(self, force_insert=False, force_update=False):
+#        self.name = slugify(self.display_name)
+#        super(Vocabulary, self).save(force_insert, force_update)
+
+#    def to_json(self):
+#        return {
+#	    'onomy_url':self.onomy_url,
+#        'vocabulary': self.vocabulary
+#	}
+
+#class OnomyForm(forms.ModelForm):
+#    class Meta:
+#        model = Onomy
 
 
 class Term(models.Model):

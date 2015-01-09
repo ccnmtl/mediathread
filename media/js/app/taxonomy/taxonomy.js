@@ -401,10 +401,7 @@
             var self = this;
 
             var id = jQuery(evt.currentTarget).attr('href');
-            console.log(jQuery(evt.currentTarget));
-            console.log(id);
             var term = self.selected.get('term_set').getByDataId(id);
-            console.log(term);
             var msg = "Deleting the term <b>" + term.get('display_name') + "</b>" +
                 " removes this term" +
                 " from all associated course items.";
@@ -445,231 +442,216 @@
                 jQuery(evt.currentTarget).addClass("default");
                 jQuery(evt.currentTarget).attr("value", "Type new term name here");
             }else if(jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") === "onomy_url") {
-	        jQuery(evt.currentTarget).addClass("default");
-		jQuery(evt.currentTarget).attr("value", "Enter an Onomy URL here");
-	    }
+	            jQuery(evt.currentTarget).addClass("default");
+		        jQuery(evt.currentTarget).attr("value", "Enter an Onomy URL here");
+	        }
         }
         ,
         createOnomyVocabulary: function (evt) {
-            evt.preventDefault();
-            var et = jQuery(evt.currentTarget).prev();
-
-            var self = this;
+            var et;
+            var self;
             var vocabulary_id;
+            var onomyURL;
+            evt.preventDefault();
+            et = jQuery(evt.currentTarget).prev();
+
+            self = this;
             vocabulary_id = this.selected.get('id');
-            //'http://www.corsproxy.com/' +
-            //this should be sanitized in the future.
             onomyURL = jQuery(et).attr("value").trim();
-            console.log(onomyURL);
             getTheOnomy(onomyURL, self);
 
         },
-        refreshOnomy: function(evt)
-        {
+        refreshOnomy: function (evt) {
             var self = this;
-            urlArray = _.map(self.collection.models, function(model){return model.attributes.onomy_url});
+            var urlArray;
+            urlArray = _.map(self.collection.models, function (model) {
+                return model.attributes.onomy_url
+            });
             var address;
-            for (var i = 0; i < urlArray.length; i++)
-            {
+            for (var i = 0; i < urlArray.length; i++) {
                 address = urlArray[i].toString();
-                if (!address == "")
-                {
+                if (!address == "") {
                     getTheOnomy(address, self);
                 }
 
             }
 
-//            console.log(self.collection);
-//            var urlcsv = self.selected.get('onomy_url');
-//            url = urlcsv.split(',');
-//            url.push('http://testthis.com/allegedly/onomy');
-//            //self.selected.get('onomy_url').add(urlcsv);
-//            console.log(self.selected.get('onomy_url'));
         }
-
-
-
-
 
     });
     function findUtil(array, thing){
         return jQuery.grep(array, function(item){
             return item.display_name == thing;
         });
-    };
-    function getTheOnomy(dirtyURL, self)
-    {
+    }
+    function getTheOnomy(dirtyURL, self) {
         var test;
         var onomyURL;
         var onomy_index;
-        
-	//this is to sanitize the url entered by the user.
-	//checks to see if it contains onomy and json
-	test = dirtyURL.search(('onomy' | 'json'));
-	if (test != -1)
-	{
-	  //grab the numbers from the url entered
-	  onomy_index = /\d+/g.exec(dirtyURL);
-	}
-	else
-	{
-	  //display error message
-	  showMessage("Enter a valid Onomy URL", undefined, "Error");
-	  return;
-	}
-	//all of the onomyURL's should fit this so i just strip the numbers from user
-	//input and add it to the format
-	onomyURL = 'http://onomy.org/published/' + onomy_index + '/json';
+
+        //this is to sanitize the url entered by the user.
+        //checks to see if it contains onomy and json
+        test = dirtyURL.search(('onomy' | 'json'));
+        if (test != -1) {
+            //grab the numbers from the url entered
+            onomy_index = /\d+/g.exec(dirtyURL);
+        }
+        else {
+            //display error message
+            showMessage("Enter a valid Onomy URL", undefined, "Error");
+            return;
+        }
+        //all of the onomyURL's should fit this so i just strip the numbers from user
+        //input and add it to the format
+        onomyURL = 'http://onomy.org/published/' + onomy_index + '/json';
         var vocabulary_id;
         vocabulary_id = self.selected.get('id');
         jQuery.get(onomyURL,
-                function (data) {
-                    var x;
-                    x = JSON.parse(data);
+                   function (data) {
+                       var x;
+                       x = JSON.parse(data);
 
-                    var MAX;
-                    var parents = [];
-                    MAX = x.terms.length; //change to x.terms.length after done testing
-                    for (var i = 0; i < MAX; i++) {
-                        var pL;
-                        var display;
-                        pL = x.terms[i]['rdfs:parentLabel'].trim();
-                        display = x.terms[i]['rdfs:label'].trim();
-                        console.log(pL);
-                        console.log(display);
-                        //demorgans law
-                        if (!(pL === undefined || pL.length < 1)) {
-                            var search = undefined;
-                            parents.forEach(function(a){if(a.display_name == pL){search = a;}});
-                            if(search === undefined)
-                            {
-                                //create the Vocabulary
-                                temp = {'display_name': pL, 'term_set':[], 'self':undefined};
-                                parents.push(temp);
-                                parents[parents.indexOf(temp)].term_set.push({'display_name': display});
-                            }
-                            else
-                            {
-                                //add the term to the Vocabulary in parents
-                                v = search;
-                                parents[parents.indexOf(v)].term_set.push({'display_name': display});
-                            }
-                            if(i == MAX -1)
-                            {
-                                var tempV;
-                                for (var j = 0; j < parents.length; j++)
-                                {
-                                    model_search = _.find(self.collection.models, function(model){return model.attributes.display_name == parents[j].display_name});
-                                    if(model_search === undefined)
-                                    {
-                                        //if we cant find the vocab in the collection we create a new one.
+                       var MAX;
+                       var parents = [];
+                       MAX = x.terms.length; //change to x.terms.length after done testing
+                       for (var i = 0; i < MAX; i++) {
+                           var pL;
+                           var display;
+                           pL = x.terms[i]['rdfs:parentLabel'].trim();
+                           display = x.terms[i]['rdfs:label'].trim();
+                           console.log(pL);
+                           console.log(display);
+                           //demorgans law
+                           if (!(pL === undefined || pL.length < 1)) {
+                               var search = undefined;
+                               parents.forEach(function (a) {
+                                   if (a.display_name == pL) {
+                                       search = a;
+                                   }
+                               });
+                               if (search === undefined) {
+                                   //create the Vocabulary
+                                   var temp;
+                                   temp = {'display_name': pL, 'term_set': [], 'self': undefined};
+                                   parents.push(temp);
+                                   parents[parents.indexOf(temp)].term_set.push({'display_name': display});
+                               }
+                               else {
+                                   //add the term to the Vocabulary in parents
+                                   v = search;
+                                   parents[parents.indexOf(v)].term_set.push({'display_name': display});
+                               }
+                               if (i == MAX - 1) {
+                                   var tempV;
+                                   var model_search;
+                                   for (var j = 0; j < parents.length; j++) {
+                                       model_search = _.find(self.collection.models, function (model) {
+                                           return model.attributes.display_name == parents[j].display_name
+                                       });
+                                       if (model_search === undefined) {
+                                           //if we cant find the vocab in the collection we create a new one.
 
-                                        tempV = new Vocabulary({
-                                            'display_name': parents[j].display_name,
-                                            'content_type_id': 14,
-                                            'object_id': 1,
-                                            'term_set': undefined,
-                                            'onomy_url': onomyURL
-                                        });
+                                           tempV = new Vocabulary({
+                                                                      'display_name': parents[j].display_name,
+                                                                      'content_type_id': 14,
+                                                                      'object_id': 1,
+                                                                      'term_set': undefined,
+                                                                      'onomy_url': onomyURL
+                                                                  });
 
-                                        tempV._save({},{
-                                            success: function(it){
-                                                self.selected = it;
-                                                console.log(parents);
-                                                parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self = self.selected;
-                                                self.collection.add(it);
-                                                console.log('it');
-                                                console.log(it);
-                                                for (var z = 0; z < parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z ++)
-                                                {
-                                                    tempT = new Term({
-                                                        'display_name':parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set[z].display_name,
-                                                        'vocabulary_id': it.attributes['id']
-                                                    });
-                                                    tempT._save({},{
-                                                        success: function (itT) {
-                                                            parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self.get('term_set').add(itT);
-                                                            self.render();
-                                                        }
-                                                    });
-                                                }
-                                            }});
-                                    } else {
-                                        //we do find the model. we just add the term to it.
-                                        self.selected = model_search;
-                                        var urlcsv;
-                                        var url;
-                                        urlcsv = self.selected.get('onomy_url');
-                                        url = urlcsv.split(',');
-                                        if(!(_.contains(url, onomyURL)))
-                                        {
-                                            url.push(onomyURL);
-                                            model_search.save({'onomy_url': url.toString()});
-                                        }
+                                           tempV._save({}, {
+                                               success: function (it) {
+                                                   var tempT;
+                                                   self.selected = it;
+                                                   parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self = self.selected;
+                                                   self.collection.add(it);
+                                                   for (var z = 0; z < parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z++) {
+                                                       tempT = new Term({
+                                                                            'display_name': parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].term_set[z].display_name,
+                                                                            'vocabulary_id': it.attributes['id']
+                                                                        });
+                                                       tempT._save({}, {
+                                                           success: function (itT) {
+                                                               parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self.get('term_set').add(itT);
+                                                               self.render();
+                                                           }
+                                                       });
+                                                   }
+                                               }
+                                           });
+                                       } else {
+                                           //we do find the model. we just add the term to it.
+                                           self.selected = model_search;
+                                           var urlcsv;
+                                           var url;
+                                           var tempT;
+                                           urlcsv = self.selected.get('onomy_url');
+                                           url = urlcsv.split(',');
+                                           if (!(_.contains(url, onomyURL))) {
+                                               url.push(onomyURL);
+                                               model_search.save({'onomy_url': url.toString()});
+                                           }
 
-                                        for (var z = 0; z < parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set.length; z ++)
-                                        {
-                                            tempT = new Term({
-                                                'display_name':parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set[z].display_name,
-                                                'vocabulary_id': model_search.attributes['id']
+                                           for (var z = 0; z < parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set.length; z++) {
+                                               tempT = new Term({
+                                                                    'display_name': parents[parents.indexOf(findUtil(parents, model_search.attributes['display_name'])[0])].term_set[z].display_name,
+                                                                    'vocabulary_id': model_search.attributes['id']
+                                                                });
+                                               tempT._save({}, {
+                                                   success: function (itT) {
+                                                       self.selected.get('term_set').add(itT);
+                                                       self.render();
+                                                   }
+
+                                               });
+                                           }
+
+                                       }
+
+
+                                   }
+                               }
+
+                           } else {
+
+                               if (display === undefined || display.length < 1) {
+                                   continue;
+                               }
+                               var id;
+                               var v;
+                               var urlcsv;
+                               var url;
+                               console.log(self.selected);
+                               id = self.selected.attributes.id;
+                               v = self.collection.getByDataId(id);
+                               urlcsv = self.selected.get('onomy_url');
+                               url = urlcsv.split(',');
+
+                               //if this vocabulary doesn't contain the url we punched in
+                               if (!(_.contains(url, onomyURL))) {
+                                   //add it to our array we made and save it in the vocab
+                                   url.push(onomyURL);
+                                   v.save({'onomy_url': url.toString()});
+                               }
+                               //we create our term
+                               var t;
+                               t = new Term({
+                                                'display_name': display,
+                                                'vocabulary_id': vocabulary_id
                                             });
-                                            tempT._save({},{
-                                                success: function (itT) {
-                                                    self.selected.get('term_set').add(itT);
-                                                    self.render();
-                                                }
-
-                                            });
-                                        }
-
-                                    }
-
-
-
-                                }
-                            }
-
-                        } else {
-
-                            if (display === undefined || display.length < 1) {
-                                continue;
-                            }
-                            var id;
-                            var v;
-                            var urlcsv;
-                            var url;
-                            console.log(self.selected);
-                            id = self.selected.attributes.id;
-                            v = self.collection.getByDataId(id);
-                            urlcsv = self.selected.get('onomy_url');
-                            url = urlcsv.split(',');
-
-                            //if this vocabulary doesn't contain the url we punched in
-                            if(!(_.contains(url, onomyURL)))
-                            {
-                                //add it to our array we made and save it in the vocab
-                                url.push(onomyURL);
-                                v.save({'onomy_url': url.toString()});
-                            }
-                            //we create our term
-                            var t;
-                            t = new Term({
-                                'display_name': display,
-                                'vocabulary_id': vocabulary_id
-                            });
-                            //then save it with our overriden queued save
-                            t._save({}, {
-                                wait: true,
-                                success: function (it) {
-                                    //add it to our term
-                                    self.selected.get('term_set').add(it);
-                                    self.render();
-                                }
-                            });
-                        }
-                    }
-                });
-    };
+                               //then save it with our overriden queued save
+                               t._save({}, {
+                                   wait: true,
+                                   success: function (it) {
+                                       //add it to our term
+                                       self.selected.get('term_set').add(it);
+                                       self.render();
+                                   }
+                               });
+                           }
+                       }
+                   });
+    }
 
 
 }(jQuery));

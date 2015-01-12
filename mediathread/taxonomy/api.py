@@ -159,3 +159,22 @@ class VocabularyResource(ModelResource):
                     b['display_name'].lower()))
 
         return values
+
+    def render_for_course(self, request, object_list):
+        term_counts = TermRelationship.objects.none()
+        if len(object_list) > 0:
+            related = TermRelationship.objects.get_for_object_list(object_list)
+            term_counts = related.values('term').annotate(count=Count('id'))
+
+        data = []
+        for vocabulary in Vocabulary.objects.get_for_object(request.course):
+            ctx = self.render_one(request, vocabulary)
+            for term in ctx['term_set']:
+                qs = term_counts.filter(term=term['id'])
+                term['count'] = qs[0]['count'] if len(qs) > 0 else 0
+            data.append(ctx)
+
+        data.sort(lambda a, b: cmp(a['display_name'].lower(),
+                                   b['display_name'].lower()))
+
+        return data

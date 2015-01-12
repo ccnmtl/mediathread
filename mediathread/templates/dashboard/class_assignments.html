@@ -9,8 +9,6 @@
 
 {% block dashboard_module %}
 
-<p>If you have published assignments to the class, this report allows you to access responses and track your feedback. </p>
-
 {% if assignments %}
 
 <table>
@@ -36,9 +34,7 @@
   </tbody>
 </table>
 {% else %}
-
-todo: help text
-
+    <p>If you have published assignments to the class, this report allows you to access responses and track your feedback. </p>
 {% endif %}
 
 {% endblock %}

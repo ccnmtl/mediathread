@@ -1,22 +1,51 @@
-#pylint: disable-msg=R0904
-from courseaffils.models import Course
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.test import TestCase
-from django.test.client import RequestFactory
-from mediathread.assetmgr.models import Asset, Source
-from mediathread.assetmgr.views import asset_workspace_courselookup, \
-    asset_create
-from mediathread.djangosherd.models import SherdNote
+# pylint: disable-msg=R0904
 import json
 
+from django.test import TestCase
+from django.test.client import RequestFactory
 
-class AssetViewTest(TestCase):
-    fixtures = ['unittest_sample_course.json']
+from mediathread.assetmgr.models import Asset
+from mediathread.assetmgr.views import asset_workspace_courselookup, \
+    asset_create, sources_from_args
+from mediathread.djangosherd.models import SherdNote
+from mediathread.factories import MediathreadTestMixin, AssetFactory, \
+    SherdNoteFactory, UserFactory
+
+
+class AssetViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+        self.add_as_faculty(self.alt_course, self.instructor_three)
+
+    def test_sources_from_args(self):
+        data = {'title': 'Bad Asset',
+                'asset-source': 'bookmarklet',
+                'image': "x" * 5000,  # too long
+                'url': 'http://www.youtube.com/abcdefghi'}
+        request = RequestFactory().post('/save/', data)
+        sources = sources_from_args(request)
+
+        self.assertEquals(len(sources.keys()), 0)
+
+        data = {'title': 'Good Asset',
+                'asset-source': 'bookmarklet',
+                'image': "http://www.flickr.com/"}
+        request = RequestFactory().post('/save/', data)
+        sources = sources_from_args(request)
+        self.assertEquals(len(sources.keys()), 2)
+        self.assertEquals(sources['image'].url, "http://www.flickr.com/")
+        self.assertTrue(sources['image'].primary)
 
     def test_archive_add_or_remove_get(self):
         self.assertTrue(
-            self.client.login(username='test_instructor', password='test'))
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
 
         response = self.client.get('/asset/archive/')
         self.assertEquals(response.status_code, 405)
@@ -26,22 +55,16 @@ class AssetViewTest(TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_archive_remove(self):
-        user = User.objects.get(username='test_instructor')
-        course = Course.objects.get(title='Sample Course')
-        archive = Asset.objects.create(title="Sample Archive",
-                                       course=course, author=user)
-        primary = Source.objects.create(asset=archive, label='archive',
-                                        primary=True,
-                                        url="http://ccnmtl.columbia.edu")
-        archive.source_set.add(primary)
-
-        self.assertIsNotNone(Asset.objects.get(title="Sample Archive"))
+        archive = AssetFactory.create(course=self.sample_course,
+                                      author=self.instructor_one,
+                                      primary_source='archive')
 
         self.assertTrue(
-            self.client.login(username='test_instructor', password='test'))
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
         response = self.client.post('/asset/archive/',
                                     {'remove': True,
-                                     'title': 'Sample Archive'})
+                                     'title': archive.title})
         self.assertEquals(response.status_code, 302)
 
         try:
@@ -58,10 +81,11 @@ class AssetViewTest(TestCase):
             'archive': 'http://www.youtube.com/'}
 
         self.assertTrue(
-            self.client.login(username='test_instructor', password='test'))
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
         self.client.post('/asset/archive/', data)
 
-        self.assertIsNotNone(Asset.objects.get(course__title='Sample Course',
+        self.assertIsNotNone(Asset.objects.get(course=self.sample_course,
                                                title='YouTube'))
 
     def test_asset_create_noasset(self):
@@ -69,8 +93,8 @@ class AssetViewTest(TestCase):
                 'foobar': 'http://www.youtube.com/abcdefghi'}
 
         request = RequestFactory().post('/save/', data)
-        request.user = User.objects.get(username='test_instructor')
-        request.course = Course.objects.get(title='Sample Course')
+        request.user = self.instructor_one
+        request.course = self.sample_course
 
         try:
             asset_create(request)
@@ -84,8 +108,8 @@ class AssetViewTest(TestCase):
                 'asset-source': 'bookmarklet'}
 
         request = RequestFactory().post('/save/', data)
-        request.user = User.objects.get(username='test_instructor')
-        request.course = Course.objects.get(title='Sample Course')
+        request.user = self.instructor_one
+        request.course = self.sample_course
 
         response = asset_create(request)
         self.assertEquals(response.status_code, 200)
@@ -95,42 +119,59 @@ class AssetViewTest(TestCase):
     def test_asset_workspace_course_lookup(self):
         self.assertIsNone(asset_workspace_courselookup())
 
-        asset = Asset.objects.get(title='MAAP Award Reception')
-        self.assertEquals(asset_workspace_courselookup(asset_id=asset.id),
-                          asset.course)
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image')
+
+        self.assertEquals(asset_workspace_courselookup(asset_id=asset1.id),
+                          asset1.course)
 
     def test_most_recent(self):
         self.assertTrue(
-            self.client.login(username='test_instructor', password='test'))
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
+
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     author=self.instructor_one)
 
         response = self.client.get('/asset/most_recent/', {}, follow=True)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.redirect_chain,
-                          [('http://testserver/asset/3/', 302)])
+
+        url = 'http://testserver/asset/%s/' % asset1.id
+        self.assertEquals(response.redirect_chain, [(url, 302)])
 
     def test_asset_delete(self):
         self.assertTrue(
-            self.client.login(username='test_instructor', password='test'))
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
 
-        asset = Asset.objects.get(title='MAAP Award Reception')
-        user = asset.author
-        self.assertEquals(asset.sherdnote_set.filter(author=user).count(), 2)
-        response = self.client.get('/asset/delete/%s/' % asset.id,
-                                   {},
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     author=self.instructor_one,
+                                     primary_source='image')
+        self.student_note = SherdNoteFactory(
+            asset=asset1, author=self.student_one)
+        self.instructor_note = SherdNoteFactory(
+            asset=asset1, author=self.instructor_one)
+
+        response = self.client.get('/asset/delete/%s/' % asset1.id, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
 
-        self.assertEquals(asset.sherdnote_set.filter(author=user).count(), 0)
+        notes = asset1.sherdnote_set.filter(author=self.instructor_one)
+        self.assertEquals(notes.count(), 0)
+        notes = asset1.sherdnote_set.filter(author=self.student_one)
+        self.assertEquals(notes.count(), 1)
 
     def test_asset_detail(self):
         self.assertTrue(
-            self.client.login(username='test_instructor_two', password='test'))
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
 
-        response = self.client.get('/?set_course=Sample_Course_Students')
-        self.assertEquals(response.status_code, 200)
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     author=self.instructor_one,
+                                     primary_source='image')
 
-        response = self.client.get('/asset/1/',
-                                   {},
+        response = self.client.get('/asset/%s/' % asset1.id, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
@@ -139,7 +180,7 @@ class AssetViewTest(TestCase):
 
         panel = the_json["panels"][0]
         self.assertIsNone(panel["current_annotation"])
-        self.assertEquals(panel["current_asset"], "1")
+        self.assertEquals(panel["current_asset"], str(asset1.id))
         self.assertEquals(panel["panel_state"], "open")
         self.assertEquals(panel["panel_state_label"], "Annotate Media")
         self.assertTrue(panel["show_collection"])
@@ -152,13 +193,18 @@ class AssetViewTest(TestCase):
 
     def test_asset_detail_alternate(self):
         self.assertTrue(
-            self.client.login(username='test_instructor_two', password='test'))
+            self.client.login(username=self.instructor_three.username,
+                              password='test'))
 
-        response = self.client.get('/?set_course=Sample_Course_Students')
+        response = self.switch_course(self.client, self.sample_course)
         self.assertEquals(response.status_code, 200)
 
+        asset1 = AssetFactory.create(course=self.alt_course,
+                                     author=self.alt_instructor,
+                                     primary_source='image')
+
         # Alternate Course Asset
-        response = self.client.get('/asset/4/')
+        response = self.client.get('/asset/%s/' % asset1.id)
         self.assertEquals(response.status_code, 200)
 
         self.assertTemplateUsed(response, "assetmgr/asset_not_found.html")
@@ -168,108 +214,149 @@ class AssetViewTest(TestCase):
 
     def test_asset_detail_does_not_exist(self):
         self.assertTrue(
-            self.client.login(username='test_instructor_two', password='test'))
-
-        response = self.client.get('/?set_course=Sample_Course_Students')
-        self.assertEquals(response.status_code, 200)
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
 
         # Item Does Not Exist
-        response = self.client.get('/asset/56/')
+        response = self.client.get('/asset/5616/')
         self.assertEquals(response.status_code, 404)
 
-    def test_annotation_save(self):
-        asset = Asset.objects.get(id=2)
+    def test_asset_title_save_as_non_author(self):
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     title="Item Title")
 
-        # Update as the asset's non-original author. This should fail
-        username = "test_student_one"
-        self.assert_(self.client.login(username=username, password="test"))
-        post_data = {'asset-title': "My MAAP Award Reception"}
-        gann = SherdNote.objects.get(id=9)  # student one global ann
-        url = "/asset/save/%s/annotations/%s/" % (asset.id, gann.id)
-        response = self.client.post(url,
-                                    post_data,
+        student_ga = SherdNoteFactory(
+            asset=asset1, author=self.student_one,
+            title=None, range1=None, range2=None)
+
+        # Update as the asset's non-original author with ga. This should fail
+        self.assert_(self.client.login(username=self.student_one.username,
+                                       password="test"))
+        post_data = {'asset-title': "Student Item"}
+        url = "/asset/save/%s/annotations/%s/" % (asset1.id, student_ga.id)
+        response = self.client.post(url, post_data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
-        asset = Asset.objects.get(id=2)
-        self.assertEquals(asset.title, "MAAP Award Reception")
+        updated_asset = Asset.objects.get(id=asset1.id)
+        self.assertEquals(updated_asset.title, "Item Title")
 
-        # Switch to the asset's original author
-        username = "test_instructor"
-        self.client.logout()
-        self.assert_(self.client.login(username=username, password="test"))
+    def test_asset_title_save_as_author_not_global_annotation(self):
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     title="Item Title")
 
-        # Update as the asset's original author, this should succeed
-        gann = SherdNote.objects.get(id=4)
-        url = "/asset/save/%s/annotations/%s/" % (asset.id, gann.id)
-        post_data = {'asset-title': "Updated MAAP Award Reception"}
-        response = self.client.post(url,
-                                    post_data,
-                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
-        asset = Asset.objects.get(id=2)
-        self.assertEquals(asset.title, "Updated MAAP Award Reception")
+        note = SherdNoteFactory(
+            asset=asset1, author=self.instructor_one)
+
+        self.assert_(self.client.login(username=self.instructor_one.username,
+                                       password="test"))
 
         # Update passing in a non-global annotation. This should fail
-        ann = SherdNote.objects.get(id=5)
-        url = "/asset/save/%s/annotations/%s/" % (asset.id, ann.id)
-        post_data = {'asset-title': "The New and Improved MAAP",
-                     'annotation-range1': -4.5,
-                     'annotation-range2': 23.0}
-        response = self.client.post(url,
-                                    post_data,
+        post_data = {'asset-title': 'Updated Title',
+                     'annotation-range1': -4.5, 'annotation-range2': 23.0}
+        url = "/asset/save/%s/annotations/%s/" % (asset1.id, note.id)
+        response = self.client.post(url, post_data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
-        asset = Asset.objects.get(id=2)
-        self.assertEquals(asset.title, "Updated MAAP Award Reception")
+        asset = Asset.objects.get(id=asset1.id)
+        self.assertEquals(asset.title, "Item Title")
 
-        # Test "no annotation" exception path
-        url = "/asset/save/%s/annotations/%s/" % (asset.id, 42)
-        post_data = {'asset-title': "The New and Improved Armory"}
-        response = self.client.post(url,
-                                    post_data,
+    def test_asset_title_save_as_author_global_annotation(self):
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     title="Item Title",
+                                     author=self.instructor_one)
+
+        gann = SherdNoteFactory(
+            asset=asset1, author=self.instructor_one,
+            title=None, range1=None, range2=None)
+
+        self.assert_(self.client.login(username=self.instructor_one.username,
+                                       password="test"))
+
+        # Update passing in a non-global annotation. This should fail
+        post_data = {'asset-title': "Updated Item Title"}
+        url = "/asset/save/%s/annotations/%s/" % (asset1.id, gann.id)
+        response = self.client.post(url, post_data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        asset = Asset.objects.get(id=asset1.id)
+        self.assertEquals(asset.title, "Updated Item Title")
+
+    def test_annotation_save(self):
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     title="Item Title")
+
+        note = SherdNoteFactory(
+            asset=asset1, author=self.instructor_one)
+
+        self.assert_(self.client.login(username=self.instructor_one.username,
+                                       password="test"))
+
+        # Update passing in a non-global annotation. This should fail
+        url = "/asset/save/%s/annotations/%s/" % (asset1.id, note.id)
+        post_data = {'annotation-range1': -4.5, 'annotation-range2': 23.0}
+        response = self.client.post(url, post_data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        updated_note = SherdNote.objects.get(id=note.id)
+        self.assertEquals(updated_note.range1, -4.5)
+        self.assertEquals(updated_note.range2, 23.0)
+
+    def test_annotation_save_no_annotation_exists(self):
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image',
+                                     title="Item Title")
+
+        self.assert_(self.client.login(username=self.instructor_one.username,
+                                       password="test"))
+
+        url = "/asset/save/%s/annotations/%s/" % (asset1.id, 42)
+        post_data = {'annotation-range1': -4.5}
+        response = self.client.post(url, post_data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 403)
 
-        # The remainder of the annotation update is tested in djangosherd
-
     def test_save_server2server(self):
-        setattr(settings,
-                'SERVER_ADMIN_SECRETKEYS', {'http://localhost': 'testing'})
+        secrets = {'http://testserver/': 'testing'}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            post_data = {'set_course': self.sample_course.group.name,
+                         'secret': 'testing',
+                         'as': self.student_one.username,
+                         'title': "Test Video",
+                         "metadata-creator": self.student_one.username,
+                         "metadata-description": "a description",
+                         "metadata-subject": "a subject",
+                         "metadata-license": "video.license",
+                         "metadata-language": "english",
+                         "metadata-uuid": "26d62ca0-844f",
+                         "metadata-wardenclyffe-id": str(1234),
+                         "metadata-tag": "upload",
+                         "mp4-metadata": "w%dh%d" % (256, 256),
+                         "mp4_pseudo": "http://stream.ccnmtl.columbia.edu/"
+                         "secvideos/SECURE/d75ebcfa-8444"
+                         "No_training_wheels-mp4-aac-480w-850kbps-ffmpeg.mp4"}
 
-        post_data = {'set_course': "Sample_Course_Students",
-                     'secret': 'testing',
-                     'as': 'test_student_one',
-                     'title': "Test Video",
-                     "metadata-creator": "test_student_one",
-                     "metadata-description": "a description",
-                     "metadata-subject": "a subject",
-                     "metadata-license": "video.license",
-                     "metadata-language": "english",
-                     "metadata-uuid": "26d62ca0-844f-11e3-a7ed-0002a5d5c51b",
-                     "metadata-wardenclyffe-id": str(1234),
-                     "metadata-tag": "upload",
-                     "mp4-metadata": "w%dh%d" % (256, 256),
-                     "mp4_pseudo": "http://stream.ccnmtl.columbia.edu/"
-                     "secvideos/SECURE/d75ebcfa-8444-11e3-a075-00163e3b1544-"
-                     "No_training_wheels-mp4-aac-480w-850kbps-ffmpeg.mp4"}
+            response = self.client.post("/save/", post_data, follow=True)
+            asset = Asset.objects.get(title="Test Video")
+            self.assertRedirects(
+                response,
+                "http://testserver/accounts/login/?next=/asset/%s/" % asset.id,
+                status_code=302,
+                target_status_code=200)
+            self.assertEquals(asset.author.username, self.student_one.username)
+            self.assertEquals(asset.course.title, "Sample Course")
+            self.assertIsNotNone(asset.global_annotation(self.student_one,
+                                                         auto_create=False))
 
-        response = self.client.post("/save/", post_data, follow=True)
-        asset = Asset.objects.get(title="Test Video")
-        self.assertRedirects(response,
-                             "http://testserver/accounts/login/?next=/asset/" +
-                             str(asset.id) + "/",
-                             status_code=302,
-                             target_status_code=200)
-        self.assertEquals(asset.author.username, "test_student_one")
-        self.assertEquals(asset.course.title, "Sample Course")
-        user = User.objects.get(username='test_student_one')
-        self.assertIsNotNone(asset.global_annotation(user, auto_create=False))
+            # Repeat the post with a different user, no duplication expected
+            post_data['as'] = self.instructor_one
+            response = self.client.post("/save/", post_data, follow=True)
 
-        # Repeat the post with a different user, verify there's no duplication
-        post_data['as'] = 'test_instructor'
-        response = self.client.post("/save/", post_data, follow=True)
-
-        # There should only be one asset. This will raise if there are multiple
-        asset = Asset.objects.get(title="Test Video")
-        user = User.objects.get(username="test_instructor")
-        self.assertIsNotNone(asset.global_annotation(user, auto_create=False))
+            # There should only be one asset.
+            asset = Asset.objects.get(title="Test Video")
+            self.assertIsNotNone(asset.global_annotation(self.instructor_one,
+                                                         auto_create=False))

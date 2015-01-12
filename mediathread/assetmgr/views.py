@@ -22,7 +22,7 @@ from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 
-from courseaffils.lib import in_course, in_course_or_404, AUTO_COURSE_SELECT
+from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source
@@ -129,29 +129,31 @@ def asset_create(request):
     user = _parse_user(request)
     metadata = _parse_metadata(req_dict)
     title = req_dict.get('title', '')
-    asset = Asset.objects.get_by_args(req_dict, asset__course=request.course)
+    success, asset = Asset.objects.get_by_args(req_dict,
+                                               asset__course=request.course)
 
-    if asset is False:
+    if success is False:
         raise AssertionError("no arguments were supplied to make an asset")
 
     if asset is None:
+        asset = Asset(title=title[:1020],  # max title length
+                      course=request.course,
+                      author=user)
+        asset.save()
+
+        for source in sources_from_args(request, asset).values():
+            source.save()
+
+        if "tag" in metadata:
+            for each_tag in metadata["tag"]:
+                asset.save_tag(user, each_tag)
+
+        asset.metadata_blob = json.dumps(metadata)
+        asset.save()
+
         try:
-            asset = Asset(title=title[:1020],  # max title length
-                          course=request.course,
-                          author=user)
-            asset.save()
-
-            for source in sources_from_args(request, asset).values():
-                if len(source.url) <= 4096:
-                    source.save()
-
-            if "tag" in metadata:
-                for each_tag in metadata["tag"]:
-                    asset.save_tag(user, each_tag)
-
-            asset.metadata_blob = json.dumps(metadata)
-            asset.save()
-        except:
+            asset.primary  # make sure a primary source was specified
+        except Source.DoesNotExist:
             # we'll make it here if someone doesn't submit
             # any primary_labels as arguments
             # @todo verify the above comment.
@@ -235,8 +237,9 @@ def sources_from_args(request, asset=None):
     sources = {}
     args = request.REQUEST
     for key, val in args.items():
-        if good_asset_arg(key) and val != '':
+        if good_asset_arg(key) and val != '' and len(val) < 4096:
             source = Source(label=key, url=val)
+
             # UGLY non-functional programming for url_processing
             source.request = request
             if asset:
@@ -253,11 +256,15 @@ def sources_from_args(request, asset=None):
                     source.media_type = the_match[4]
             sources[key] = source
 
+    # iterate the primary labels in order of priority
+    # pickup the first matching one & use that
     for lbl in Asset.primary_labels:
-        if lbl in args:
+        if lbl in sources:
             sources[lbl].primary = True
-            break
-    return sources
+            return sources
+
+    # no primary source found, return no sources
+    return {}
 
 
 @login_required
@@ -449,7 +456,8 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
             ctx = {}
             asset = Asset.objects.filter(pk=asset_id, course=request.course)
             notes = SherdNote.objects.get_related_notes(
-                asset, self.record_owner, self.visible_authors)
+                asset, self.record_owner, self.visible_authors,
+                self.all_items_are_visible)
 
             # tags
             ctx['tags'] = TagResource().render_related(request, notes)
@@ -607,6 +615,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
                              extras={'editable': self.viewing_own_records,
                                      'citable': citable})
         ctx['assets'] = ares.render_list(request,
+                                         self.record_owner,
                                          self.record_viewer,
                                          assets, notes)
 
@@ -617,10 +626,11 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         # is displayed in the filtered list.
         # Not sure this is exactly right...will discuss with team
         notes = SherdNote.objects.get_related_notes(
-            assets, self.record_owner or None, self.visible_authors)
+            assets, self.record_owner or None, self.visible_authors,
+            self.all_items_are_visible)
 
-        tags = TagResource().render_related(request, notes)
-        vocab = VocabularyResource().render_related(request, notes)
+        tags = TagResource().render_for_course(request, notes)
+        vocab = VocabularyResource().render_for_course(request, notes)
         return {'active_tags': tags, 'active_vocabulary': vocab}
 
     def apply_pagination(self, assets, notes, offset, limit):
@@ -671,7 +681,8 @@ class TagCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         assets = Asset.objects.filter(course=request.course)
 
         notes = SherdNote.objects.get_related_notes(
-            assets, self.record_owner or None, self.visible_authors)
+            assets, self.record_owner or None, self.visible_authors,
+            self.all_items_are_visible)
 
         context = {}
         if len(notes) > 0:

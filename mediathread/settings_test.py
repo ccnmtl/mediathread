@@ -12,7 +12,8 @@ DATABASES = {
         'NAME': os.path.join(PROJECT_PATH, '../lettuce.db'),
         'OPTIONS': {
             'timeout': 30,
-        }
+        },
+        'ATOMIC_REQUESTS': True
     }
 }
 

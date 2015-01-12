@@ -172,17 +172,6 @@ class Collaboration(models.Model):
             object_pk=str(obj.pk)
         )
 
-    # these methods are for optimized recursive structures
-    # while for other cases, we optimize for shallow structures
-    # think of it as the datastructure equivalent to tail-recursion :-)
-    def get_ancestor_different_type(self):
-        "returns first ancestor that is a different type from self"
-        pass
-
-    def get_ancestor_same_type(self):
-        "returns last ancestor of the same type in a continuous chain"
-        pass
-
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,
                                         self.object_pk, self.slug)

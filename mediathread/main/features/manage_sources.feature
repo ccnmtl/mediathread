@@ -68,8 +68,7 @@ Feature: Sources
         When I click the "Sources" link
         Then I am at the Sources page
         When I allow Administrators to upload videos
-        Then I'm told "Your changes have been saved"
-        Then I confirm the action
+        Then I see "Your changes were saved"
         
         # Instructor cannot see
         When I click the "Sample Course" link
@@ -99,8 +98,7 @@ Feature: Sources
         When I click the "Sources" link
         Then I am at the Sources page
         When I allow Students to upload videos
-        Then I'm told "Your changes have been saved"
-        Then I confirm the action
+        Then I see "Your changes were saved"
         
         # Instructor can see
         When I click the "Sample Course" link
@@ -130,8 +128,7 @@ Feature: Sources
         When I click the "Sources" link
         Then I am at the Sources page
         When I allow Students to upload videos
-        Then I'm told "Your changes have been saved"
-        Then I confirm the action
+        Then I see "Your changes were saved"
         
         # Regular Instructor cannot upload on behalf of
         When I click the "Sample Course" link

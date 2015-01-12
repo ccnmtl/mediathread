@@ -33,6 +33,7 @@ Feature: Collection View
         Using selenium
         
         Given I am test_instructor in Sample Course
+        Given the item visibility is set to "Yes"
         Given the selection visibility is set to "Yes"
         
         Given I am test_instructor in Sample Course
@@ -48,8 +49,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
         
         # Student One
         When I clear all tags
@@ -58,8 +59,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
         
         # All Class Members
         When I select "All Class Members" as the owner
@@ -72,12 +73,12 @@ Feature: Collection View
         Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
-        And I can filter by "student_two_selection" in the asset-workspace column
-        And I can filter by "student_two_item" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
+        And I can filter by "student_two_selection (1)" in the asset-workspace column
+        And I can filter by "student_two_item (1)" in the asset-workspace column
         
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 3 selections, 1 by me        
@@ -103,8 +104,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
         
         # Student One
         When I clear all tags
@@ -113,8 +114,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
         
         # All Class Members
         When I select "All Class Members" as the owner
@@ -127,12 +128,12 @@ Feature: Collection View
         Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
-        And I can filter by "student_two_selection" in the asset-workspace column
-        And I can filter by "student_two_item" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
+        And I can filter by "student_two_selection (1)" in the asset-workspace column
+        And I can filter by "student_two_item (1)" in the asset-workspace column
         
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 3 selections, 1 by me        
@@ -158,8 +159,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
         
         # Student One
         When I clear all tags
@@ -168,8 +169,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
         
         # All Class Members
         When I select "All Class Members" as the owner
@@ -182,12 +183,12 @@ Feature: Collection View
         Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
-        And I can filter by "student_two_selection" in the asset-workspace column
-        And I can filter by "student_two_item" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
+        And I can filter by "student_two_selection (1)" in the asset-workspace column
+        And I can filter by "student_two_item (1)" in the asset-workspace column
         
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 3 selections, 1 by me        
@@ -213,8 +214,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
         
         # Student One
         When I clear all tags
@@ -223,8 +224,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
         
         # All Class Members
         When I select "All Class Members" as the owner
@@ -237,12 +238,12 @@ Feature: Collection View
         Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
-        And I can filter by "student_two_selection" in the asset-workspace column
-        And I can filter by "student_two_item" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
+        And I can filter by "student_two_selection (1)" in the asset-workspace column
+        And I can filter by "student_two_item (1)" in the asset-workspace column
         
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 3 selections, 1 by me        
@@ -273,8 +274,8 @@ Feature: Collection View
         And the "MAAP Award Reception" item has no selections
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
         
         # Student One
         When I clear all tags
@@ -283,10 +284,10 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "student_one_selection" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "student_one_item" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
         
         # Student Two
         When I clear all tags
@@ -294,7 +295,7 @@ Feature: Collection View
         Then the owner is "Student Two" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And I cannot filter by "student_two_selection" in the asset-workspace column
-        And I can filter by "student_two_item" in the asset-workspace column
+        And I can filter by "student_two_item (1)" in the asset-workspace column
         
         # All Class Members
         When I clear all tags        
@@ -311,12 +312,12 @@ Feature: Collection View
         And the "The Armory - Home to CCNMTL'S CUMC ..." item has no tags
         And the "The Armory - Home to CCNMTL'S CUMC ..." item has no selections
         
-        And I can filter by "instructor_one" in the asset-workspace column
-        And I can filter by "instructor_one_selection" in the asset-workspace column
-        And I can filter by "student_one_selection" in the asset-workspace column
-        And I can filter by "student_one_item" in the asset-workspace column
-        And I cannot filter by "student_two_selection" in the asset-workspace column
-        And I can filter by "student_two_item" in the asset-workspace column
+        And I can filter by "instructor_one (1)" in the asset-workspace column
+        And I can filter by "instructor_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_selection (1)" in the asset-workspace column
+        And I can filter by "student_one_item (1)" in the asset-workspace column
+        And I cannot filter by "student_two_selection (1)" in the asset-workspace column
+        And I can filter by "student_two_item (1)" in the asset-workspace column
                 
         Finished using Selenium
     
@@ -335,7 +336,7 @@ Feature: Collection View
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item
         
-        And I can filter by "flickr" in the asset-workspace column
+        And I can filter by "flickr (2)" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has no "Mediathread: Introduction" item
@@ -345,7 +346,7 @@ Feature: Collection View
         And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item
         
-        And I can filter by "video" in the asset-workspace column
+        And I can filter by "video (2)" in the asset-workspace column
         Then the Collection panel has no "MAAP Award Reception" item
         And the Collection panel has no "The Armory - Home to CCNMTL'S CUMC ..." item
         And the Collection panel has a "Mediathread: Introduction" item

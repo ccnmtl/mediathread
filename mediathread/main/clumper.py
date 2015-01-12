@@ -10,7 +10,7 @@ def adapt_date(obj):
     return [getattr(obj, d) for d in date_fields if hasattr(obj, d)][0]
 
 
-class Clumper():
+class Clumper(object):
     """Clumps stuff by thing.content_object"""
     stuff = None  # don't make array here or it persists to other requests.
     items = None
@@ -35,7 +35,7 @@ class Clumper():
         # will use ClumpItem.__cmp__
         return iter(sorted(self.items.values()))
 
-    class ClumpItem():
+    class ClumpItem(object):
         things = None
         primary_thing = None
 

@@ -5,7 +5,7 @@ var tiny_mce_settings = {
         editor_selector: "mceEditor",
         entity_encoding : "numeric",
         /*CUSTOM CCNMTL: added 'citation' and 'editorwindow' --see bottom for explicit loading from a location */
-        plugins: "searchreplace,table,-citation,inlinepopups,-editorwindow,xhtmlxtras,paste",
+        plugins: "searchreplace,table,-citation,inlinepopups,-editorwindow,xhtmlxtras,paste,wordcount",
         /* CUSTOM CCNMTL: visual is set to false, so anchor tags don't get messed up.  This is probably a bug
             to be reported to tinyMCE */
         visual: false,

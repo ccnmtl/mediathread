@@ -4,20 +4,6 @@ from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
 
-def get_discussions(arbitrary_object):
-    coll = ContentType.objects.get_for_model(Collaboration)
-    discussions = []
-    comments = ThreadedComment.objects.filter(parent=None, content_type=coll)
-
-    for comment in comments:
-        parent_content_object = comment.content_object._parent.content_object
-        if (comment.content_object and
-                comment.content_object._parent_id and
-                arbitrary_object == parent_content_object):
-            discussions.append(comment)
-    return discussions
-
-
 def get_course_discussions(course):
 
     content_type = ContentType.objects.get_for_model(Course)

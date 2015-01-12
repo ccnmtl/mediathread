@@ -1,5 +1,6 @@
 import json
 
+from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
@@ -8,10 +9,9 @@ from django.http.response import HttpResponseNotAllowed, HttpResponse, \
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 
-from courseaffils.lib import in_course_or_404
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
-    all_selections_are_visible
+    all_selections_are_visible, all_items_are_visible
 
 
 def ajax_required(func):
@@ -73,9 +73,13 @@ class RestrictedMaterialsMixin(object):
         # If the viewer is faculty, they can view all records
         self.all_selections_are_visible = \
             all_selections_are_visible(self.request.course)
+        self.all_items_are_visible = \
+            all_items_are_visible(self.request.course)
 
         self.visible_authors = []
-        if not self.all_selections_are_visible and not self.is_viewer_faculty:
+        if (not self.is_viewer_faculty and
+                (not self.all_selections_are_visible or
+                 not self.all_items_are_visible)):
             self.visible_authors = [self.record_viewer.id]  # me
             for user in self.request.course.faculty.all():
                 self.visible_authors.append(user.id)
@@ -91,7 +95,7 @@ class RestrictedMaterialsMixin(object):
 
         visible_notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors,
-            tag_string, modified, vocabulary)
+            self.all_items_are_visible, tag_string, modified, vocabulary)
 
         search_text = request.GET.get('search_text', '').strip().lower()
         if len(search_text) > 0:

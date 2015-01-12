@@ -18,20 +18,21 @@ url_processor = getattr(settings, 'ASSET_URL_PROCESSOR', default_url_processor)
 
 
 class AssetManager(models.Manager):
+
     def get_by_args(self, args, **constraints):
         "args typically is request.GET"
         criteria = Asset.good_args(args)
         if not criteria:
-            return False
+            return (False, None)
 
         qry = reduce(lambda x, y: x | y,  # composable Q's
                      [models.Q(label=k, url=args[k], primary=True)
                       for k in criteria])
         sources = Source.objects.filter(qry, **constraints)
         if sources:
-            return sources[0].asset
+            return (True, sources[0].asset)
         else:
-            return None
+            return (True, None)
 
     def archives(self):
         return self.filter(Q(source__primary=True) &
@@ -66,25 +67,21 @@ class AssetManager(models.Manager):
                 new_asset = Asset.objects.migrate_one(old_asset,
                                                       course,
                                                       user)
+
                 object_map['assets'][old_asset.id] = new_asset
 
                 notes = note_model.objects.get_related_notes(
-                    [old_asset], None, faculty)
+                    [old_asset], None, faculty, True)
+
+                # remove all extraneous global annotations
+                notes = notes.filter(author__id__in=faculty)
 
                 for old_note in notes:
-                    if (not old_note.is_global_annotation() and
-                            old_note.id not in object_map['notes']):
+                    if (old_note.id not in object_map['notes']):
                         new_note = note_model.objects.migrate_one(
                             old_note, new_asset, user,
                             include_tags, include_notes)
                         object_map['notes'][old_note.id] = new_note
-
-                # migrate the requesting user's global annotation
-                # on this asset, if it exists
-                gann = old_asset.global_annotation(user, False)
-                if gann:
-                    note_model.objects.migrate_one(gann, new_asset, user,
-                                                   include_tags, include_notes)
 
         return object_map
 
@@ -165,7 +162,7 @@ class Asset(models.Model):
                      'image')
 
     # not good for uniqueness
-    fundamental_labels = ('archive', 'url',)
+    fundamental_labels = ('archive',)
     primary_labels = useful_labels + fundamental_labels
 
     class Meta:

@@ -11,7 +11,13 @@
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui-1.9.1.custom.min.js" %}'></script>
         
         <script type="text/javascript" src='{% static "js/mustache/mustache.js" %}'></script>
-        <script type="text/javascript" src='{% static "js/sherdjs/lib/flowplayer/flowplayer-3.2.13.min.js" %}'></script>
+
+        {% if settings.FIREFOX %}
+            <script type="text/javascript" src="{{STATIC_URL}}js/sherdjs/lib/flowplayer/flowplayer-3.2.13.min.js"></script>
+        {% else %}
+            <script src="http://ccnmtl.columbia.edu/remote/flowplayer-5.5.0/flowplayer.min.js"></script>
+        {% endif %}
+
         <script type="text/javascript" src='{% static "js/sherdjs/lib/OpenLayers-min.js" %}'></script>
         <script type="text/javascript" src="/jsi18n"></script>
         
@@ -59,16 +65,27 @@
                                 <div class="visualclear"></div>
                                 <!-- Settings Menu -->
                                 <div class="settings_submenu" style="display: none">
-                                    {%if user.is_staff %}
+                                    {% if user.is_staff %}
                                         <a href="/admin/">Admin</a>
-                                    {%endif%}
+                                    {% endif %}
+                                    {% if user.is_superuser %}
+                                        <a href="/impersonate/search/">Impersonate</a>
+                                    {% endif %}
+                                    {% if user.is_impersonate %}
+                                        <a href="/impersonate/stop/">Impersonate Stop</a>
+                                    {% endif %}
                                     
                                     {% num_courses for user as user_courses %}
                                     {% if user_courses > 1 or user.is_staff %}
                                         <a href="/?unset_course">Switch Course</a>
                                     {% endif %}
+
+                                    {% if user.has_usable_password %}
+                                        <a href="/accounts/password_change/">Change Password</a>
+                                    {% endif %}
                                         
                                     <a href="/accounts/logout/?next=/">Log Out</a>
+                                    
                                 </div>
                             </li>
 
@@ -98,16 +115,16 @@
                                 <div class="settings_submenu" style="display: none">
                                      <a href="/reports/class_assignments/">Assignment Responses</a>
                                      <a href="/reports/class_activity/">Class Activity</a>
-                                     <a href="/reports/class_summary/">Student Contributions</a>
+                                     <a href="/reports/class_summary/">Class Member Contributions</a>
                                     {% if user.is_staff %}
                                         <hr />
                                         <a href="/reports/activity/course/">Activity by Course</a>
                                         <a href="/reports/activity/school/">Activity by School</a>
                                     {%endif%}     
                                 </div>
-                            </li>                        
+                            </li>
                             {% endif %}
-                            
+
                             <li>
                                 {% block standardnav_help %}
                                     <div class="settings_menu help closed">
@@ -124,11 +141,7 @@
                             </li>
                             
                             <li>
-            			      {% if request.user.is_authenticated and course %}
-            			          <div unselectable="on"><a href="/contact/">Contact Us</a></div>
-                              {% else %}{% if settings.PUBLIC_CONTACT_EMAIL %}
-                                  <div unselectable="on"><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact Us</a></div>
-                              {% endif %}{% endif %}
+            			      <div unselectable="on"><a href="/contact/">Contact Us</a></div>
                             </li>
                         {% else %}
                             <li><div unselectable="on"><a href="/help/">Help</a></div></li>
@@ -193,11 +206,7 @@
     
     	   <ul id="footernav">
                <li><a href="http://ccnmtl.columbia.edu/our_services/tools/mediathread/" target="_blank">About</a></li>
-               {% if request.user.is_authenticated and course %}
-                   <li><a href="/contact/">Contact Us</a></li>
-               {% else %}{% if settings.PUBLIC_CONTACT_EMAIL %}                          
-                   <li><a href="mailto:{{settings.PUBLIC_CONTACT_EMAIL}}">Contact Us</a></li>
-               {% endif %}{% endif %}
+               <li><a href="/contact/">Contact Us</a></li>
                <li><a href="/help/">Help</a></li>
             </ul>
         </div><!-- id="footer" -->

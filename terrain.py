@@ -1153,6 +1153,26 @@ def given_the_selection_visibility_is_value(step, value):
             world.browser.get(django.django_url("/"))
 
 
+@step(u'Given the item visibility is set to "([^"]*)"')
+def given_the_item_visibility_is_value(step, value):
+    if world.using_selenium:
+        world.browser.get(django.django_url("/dashboard/settings/"))
+
+        if value == "Yes":
+            elt = world.browser.find_element_by_id("item_visibility_yes")
+            elt.click()
+        else:
+            elt = world.browser.find_element_by_id("item_visibility_no")
+            elt.click()
+            elt = world.browser.find_element_by_id("selection_visibility_no")
+            elt.click()
+
+        elt = world.browser.find_element_by_id("selection_visibility_submit")
+        if elt:
+            elt.click()
+            world.browser.get(django.django_url("/"))
+
+
 # Local utility functions
 def get_column(title):
     elts = world.browser.find_elements_by_tag_name("h2")

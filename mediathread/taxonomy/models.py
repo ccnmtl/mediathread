@@ -43,24 +43,6 @@ class VocabularyForm(forms.ModelForm):
     class Meta:
         model = Vocabulary
 
-#class Onomy(models.Model):
-#    url = models.CharField(max_length=100)
-#   vocabulary = models.ForeignKey(Vocabulary)
-
-#    def save(self, force_insert=False, force_update=False):
-#        self.name = slugify(self.display_name)
-#        super(Vocabulary, self).save(force_insert, force_update)
-
-#    def to_json(self):
-#        return {
-#	    'onomy_url':self.onomy_url,
-#        'vocabulary': self.vocabulary
-#	}
-
-#class OnomyForm(forms.ModelForm):
-#    class Meta:
-#        model = Onomy
-
 
 class Term(models.Model):
     name = models.SlugField()

@@ -153,8 +153,7 @@ class Clumper(object):
                           'action': self.adapt_action(i),
                           'href': self.adapt_href(i),
                           'text': self.adapt_str(i),
-                          'date': adapt_date(i),
-                          }
+                          'date': adapt_date(i)}
                          for i in self.things])
 
         def __getitem__(self, k):

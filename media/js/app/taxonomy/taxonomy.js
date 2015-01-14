@@ -211,13 +211,11 @@
                 'term_set': undefined,
                 'onomy_url': ""
             });
-            console.log(v);
             v.save({}, {
 
                 success: function () {
                     self.selected = v;
                     self.collection.add(v);
-                    console.log('success');
                 },
                 error: function (model, response) {
                     var responseText = jQuery.parseJSON(response.responseText);
@@ -519,8 +517,6 @@
                            var display;
                            pL = x.terms[i]['rdfs:parentLabel'].trim();
                            display = x.terms[i]['rdfs:label'].trim();
-                           console.log(pL);
-                           console.log(display);
                            //demorgans law
                            if (!(pL === undefined || pL.length < 1)) {
                                var search = undefined;
@@ -621,7 +617,6 @@
                                var v;
                                var urlcsv;
                                var url;
-                               console.log(self.selected);
                                id = self.selected.attributes.id;
                                v = self.collection.getByDataId(id);
                                urlcsv = self.selected.get('onomy_url');

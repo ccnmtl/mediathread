@@ -2,10 +2,6 @@ from datetime import datetime
 import json
 import operator
 
-from courseaffils.lib import in_course_or_404, in_course
-from courseaffils.middleware import SESSION_KEY
-from courseaffils.models import Course
-from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -19,8 +15,12 @@ from django.template.context import Context
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
-from restclient import POST
+import requests
 
+from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.middleware import SESSION_KEY
+from courseaffils.models import Course
+from courseaffils.views import available_courses_query
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SupportedSource
@@ -398,10 +398,12 @@ class RequestCourseView(FormView):
         tmpl = loader.get_template('main/course_request_description.txt')
         form_data['description'] = tmpl.render(Context(form_data))
 
-        task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
-        if task_email is not None:
-            # POST to the contact destination
-            POST(task_email, params=form_data, async=True)
+        task_url = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+        if task_url is not None:
+            response = requests.post(task_url, data=form_data)
+            if not response.status_code == 200:
+                msg = "Post error %s [%s]" % (task_url, response.status_code)
+                raise Exception(msg)
 
         return super(RequestCourseView, self).form_valid(form)
 
@@ -434,9 +436,12 @@ class ContactUsView(FormView):
         form_data['description'] = unicode(tmpl.render(Context(form_data)))
 
         # POST to the task assignment destination
-        task_email = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
-        if task_email is not None:
-            POST(task_email, params=form_data, async=True)
+        task_url = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+        if task_url is not None:
+            response = requests.post(task_url, data=form_data)
+            if not response.status_code == 200:
+                msg = "Post error %s [%s]" % (task_url, response.status_code)
+                raise Exception(msg)
 
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)

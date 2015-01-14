@@ -1,8 +1,8 @@
-(function (jQuery) {
+(function(jQuery) {
 
     Term = Backbone.Model.extend({
         urlRoot: '/api/term/',
-        toTemplate: function () {
+        toTemplate: function() {
             return _(this.attributes).clone();
         }
     });
@@ -10,17 +10,17 @@
     var TermList = Backbone.Collection.extend({
         urlRoot: '/api/term/',
         model: Term,
-        comparator: function (obj) {
+        comparator: function(obj) {
             return obj.get("display_name");
         },
-        toTemplate: function () {
+        toTemplate: function() {
             var a = [];
-            this.forEach(function (item) {
+            this.forEach(function(item) {
                 a.push(item.toTemplate());
             });
             return a;
         },
-        getByDataId: function (id) {
+        getByDataId: function(id) {
             var internalId = this.urlRoot + id + '/';
             return this.get(internalId);
         }
@@ -28,7 +28,7 @@
 
     Vocabulary = Backbone.Model.extend({
         urlRoot: '/api/vocabulary/',
-        parse: function (response) {
+        parse: function(response) {
 
             if (response) {
                 response.term_set = new TermList(response.term_set);
@@ -36,7 +36,7 @@
 
             return response;
         },
-        toTemplate: function () {
+        toTemplate: function() {
             var json = _(this.attributes).clone();
             json.term_set = this.get('term_set').toTemplate();
             return json;
@@ -75,25 +75,23 @@
         }
     };
 
-
-
     var VocabularyList = Backbone.Collection.extend({
         urlRoot: '/api/vocabulary/',
         model: Vocabulary,
-        comparator: function (obj) {
+        comparator: function(obj) {
             return obj.get("display_name");
         },
-        parse: function (response) {
+        parse: function(response) {
             return response.objects || response;
         },
-        toTemplate: function () {
+        toTemplate: function() {
             var a = [];
-            this.forEach(function (item) {
+            this.forEach(function(item) {
                 a.push(item.toTemplate());
             });
             return a;
         },
-        getByDataId: function (id) {
+        getByDataId: function(id) {
             var internalId = this.urlRoot + id + '/';
             return this.get(internalId);
         }
@@ -111,9 +109,9 @@
             'focus input[name="display_name"]': 'focusVocabularyName',
             'blur input[name="display_name"]': 'blurVocabularyName',
             'focus input[name="term_name"]': 'focusTermName',
-	    'focus input[name="onomy_url"]': 'focusTermName',
+            'focus input[name="onomy_url"]': 'focusTermName',
             'blur input[name="term_name"]': 'blurTermName',
-	    'blur input[name="onomy_url"]': 'blurTermName',
+            'blur input[name="onomy_url"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
             'keypress input[name="term_name"]': 'keypressTermName',
             'click a.edit-term-submit': 'updateTerm',
@@ -123,7 +121,7 @@
             'click a.onomy-terms-submit': 'createOnomyVocabulary',
             'click a.refresh-button-submit' : 'refreshOnomy'
         },
-        initialize: function (options) {
+        initialize: function(options) {
             _.bindAll(this,
                 "render",
                 "createVocabulary",
@@ -148,13 +146,13 @@
             this.collection.fetch();
 
         },
-        activateTab: function (evt, ui) {
+        activateTab: function(evt, ui) {
             jQuery(ui.oldTab).find("div.vocabulary-edit, div.vocabulary-create").hide();
             jQuery(ui.oldTab).find("div.vocabulary-display").show();
             var vid = jQuery(ui.newTab).data("id");
             this.selected = this.collection.getByDataId(vid);
         },
-        render: function () {
+        render: function() {
             this.context.vocabularies = this.collection.toTemplate();
             var markup = this.vocabularyTemplate(this.context);
             jQuery(this.el).html(markup);
@@ -175,20 +173,20 @@
                 this.selected = this.collection.at(0);
             }
         },
-        toggleCreateVocabulary: function (evt) {
+        toggleCreateVocabulary: function(evt) {
             evt.preventDefault();
             var parent = jQuery(evt.currentTarget).parents("li")[0];
             jQuery(parent).find("div.vocabulary-display, div.vocabulary-create").toggle();
             return false;
         },
-        toggleEditVocabulary: function (evt) {
+        toggleEditVocabulary: function(evt) {
             evt.preventDefault();
             var parent = jQuery(evt.currentTarget).parents("li")[0];
             jQuery(parent).find("div.vocabulary-display, div.vocabulary-edit").toggle();
             jQuery(parent).find("input[name='display_name']").focus();
             return false;
         },
-        createVocabulary: function (evt) {
+        createVocabulary: function(evt) {
             evt.preventDefault();
             var self = this;
             var parent = jQuery(evt.currentTarget).parent();
@@ -212,12 +210,11 @@
                 'onomy_url': ""
             });
             v.save({}, {
-
-                success: function () {
+                success: function() {
                     self.selected = v;
                     self.collection.add(v);
                 },
-                error: function (model, response) {
+                error: function(model, response) {
                     var responseText = jQuery.parseJSON(response.responseText);
                     showMessage(responseText.vocabulary.error_message, undefined, "Error");
                 }
@@ -225,7 +222,7 @@
 
             return false;
         },
-        updateVocabulary: function (evt) {
+        updateVocabulary: function(evt) {
             evt.preventDefault();
             var self = this;
             var parent = jQuery(evt.currentTarget).parent();
@@ -246,10 +243,10 @@
             var v = this.collection.getByDataId(id);
             if (v.get('display_name') !== 'display_name') {
                 v.save({'display_name': display_name}, {
-                    success: function () {
+                    success: function() {
                         self.render();
                     },
-                    error: function (model, response) {
+                    error: function(model, response) {
                         var responseText = jQuery.parseJSON(response.responseText);
                         showMessage(responseText.vocabulary.error_message, undefined, "Error");
                     }
@@ -257,7 +254,7 @@
             }
             return false;
         },
-        deleteVocabulary: function (evt) {
+        deleteVocabulary: function(evt) {
             var self = this;
 
             var id = jQuery(evt.currentTarget).attr('href');
@@ -275,14 +272,14 @@
                 resizable: false,
                 modal: true,
                 title: "Are you sure?",
-                close: function (event, ui) {
+                close: function(event, ui) {
                     jQuery(dom).removeClass('about-to-delete');
                 },
                 buttons: {
-                    "Cancel": function () {
+                    "Cancel": function() {
                         jQuery(this).dialog("close");
                     },
-                    "OK": function () {
+                    "OK": function() {
                         jQuery(this).dialog("close");
                         self.collection.remove(vocabulary);
                         vocabulary.destroy();
@@ -291,19 +288,19 @@
             });
             return false;
         },
-        focusVocabularyName: function (evt) {
+        focusVocabularyName: function(evt) {
             if (jQuery(evt.currentTarget).hasClass("default")) {
                 jQuery(evt.currentTarget).removeClass("default");
                 jQuery(evt.currentTarget).attr("value", "");
             }
         },
-        blurVocabularyName: function (evt) {
+        blurVocabularyName: function(evt) {
             if (jQuery(evt.currentTarget).attr("value") === '') {
                 jQuery(evt.currentTarget).addClass("default");
                 jQuery(evt.currentTarget).attr("value", "Type concept name here");
             }
         },
-        showEditTerm: function (evt) {
+        showEditTerm: function(evt) {
             evt.preventDefault();
             var container = jQuery(evt.currentTarget).parents("div.terms");
             jQuery(container).find("div.term-display").show();
@@ -315,21 +312,21 @@
             jQuery(parent).find("input[name='display_name']").focus();
             return false;
         },
-        hideEditTerm: function (evt) {
+        hideEditTerm: function(evt) {
             evt.preventDefault();
             var parent = jQuery(evt.currentTarget).parents("div.term")[0];
             jQuery(parent).find("div.term-display").show();
             jQuery(parent).find("div.term-edit").hide();
             return false;
         },
-        keypressTermName: function (evt) {
+        keypressTermName: function(evt) {
             var self = this;
             if (evt.which == 13) {
                 evt.preventDefault();
                 jQuery(evt.currentTarget).next().click();
             }
         },
-        createTerm: function (evt) {
+        createTerm: function(evt) {
             evt.preventDefault();
             var self = this;
             var et = jQuery(evt.currentTarget).prev();
@@ -338,31 +335,30 @@
                 showMessage("Please enter a term name", undefined, "Error");
                 return;
             }
-                //if you want to create a term from user input
-                var display_name = jQuery(et).attr("value").trim();
-                if (display_name === undefined || display_name.length < 1) {
-                    showMessage("Please enter a term name.", undefined, "Error");
-                    return;
+            //if you want to create a term from user input
+            var display_name = jQuery(et).attr("value").trim();
+            if (display_name === undefined || display_name.length < 1) {
+                showMessage("Please enter a term name.", undefined, "Error");
+                return;
+            }
+
+            var t = new Term({
+                'display_name': display_name,
+                'vocabulary_id': this.selected.get('id')
+            });
+            t.save({}, {
+                success: function() {
+                    self.selected.get('term_set').add(t);
+                    self.render();
+                },
+                error: function(model, response) {
+                    var responseText = jQuery.parseJSON(response.responseText);
+                    showMessage(responseText.term.error_message, undefined, "Error");
                 }
-
-                var t = new Term({
-                    'display_name': display_name,
-                    'vocabulary_id': this.selected.get('id')
-                });
-                t.save({}, {
-                    success: function () {
-                        self.selected.get('term_set').add(t);
-                        self.render();
-                    },
-                    error: function (model, response) {
-                        var responseText = jQuery.parseJSON(response.responseText);
-                        showMessage(responseText.term.error_message, undefined, "Error");
-                    }
-                });
-                return false;
-
+            });
+            return false;
         },
-        updateTerm: function (evt) {
+        updateTerm: function(evt) {
             evt.preventDefault();
             var self = this;
             var elt = jQuery(evt.currentTarget).prevAll("input[type='text']");
@@ -383,10 +379,10 @@
             if (term.get('display_name') !== 'display_name') {
                 term.set('display_name', display_name);
                 term.save({}, {
-                    success: function () {
+                    success: function() {
                         self.render();
                     },
-                    error: function (model, response) {
+                    error: function(model, response) {
                         var responseText = jQuery.parseJSON(response.responseText);
                         showMessage(responseText.term.error_message, undefined, "Error");
                     }
@@ -394,7 +390,7 @@
             }
             return false;
         },
-        deleteTerm: function (evt) {
+        deleteTerm: function(evt) {
             evt.preventDefault();
             var self = this;
 
@@ -412,14 +408,14 @@
                 resizable: false,
                 modal: true,
                 title: "Are you sure?",
-                close: function (event, ui) {
+                close: function(event, ui) {
                     jQuery(dom).removeClass('about-to-delete');
                 },
                 buttons: {
-                    "Cancel": function () {
+                    "Cancel": function() {
                         jQuery(this).dialog("close");
                     },
-                    "OK": function () {
+                    "OK": function() {
                         jQuery(this).dialog("close");
                         self.selected.get('term_set').remove(term);
                         term.destroy();
@@ -429,23 +425,22 @@
             });
             return false;
         },
-        focusTermName: function (evt) {
+        focusTermName: function(evt) {
             if (jQuery(evt.currentTarget).hasClass("default")) {
                 jQuery(evt.currentTarget).removeClass("default");
                 jQuery(evt.currentTarget).attr("value", "");
             }
         },
-        blurTermName: function (evt) {
+        blurTermName: function(evt) {
             if (jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") !== 'onomy_url') {
                 jQuery(evt.currentTarget).addClass("default");
                 jQuery(evt.currentTarget).attr("value", "Type new term name here");
             }else if(jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") === "onomy_url") {
-	            jQuery(evt.currentTarget).addClass("default");
-		        jQuery(evt.currentTarget).attr("value", "Enter an Onomy URL here");
-	        }
-        }
-        ,
-        createOnomyVocabulary: function (evt) {
+                jQuery(evt.currentTarget).addClass("default");
+                jQuery(evt.currentTarget).attr("value", "Enter an Onomy URL here");
+            }
+        },
+        createOnomyVocabulary: function(evt) {
             var et;
             var self;
             var vocabulary_id;
@@ -459,10 +454,10 @@
             getTheOnomy(onomyURL, self);
 
         },
-        refreshOnomy: function (evt) {
+        refreshOnomy: function(evt) {
             var self = this;
             var urlArray;
-            urlArray = _.map(self.collection.models, function (model) {
+            urlArray = _.map(self.collection.models, function(model) {
                 return model.attributes.onomy_url
             });
             var address;
@@ -471,11 +466,8 @@
                 if (!address == "") {
                     getTheOnomy(address, self);
                 }
-
             }
-
         }
-
     });
     function findUtil(array, thing){
         return jQuery.grep(array, function(item){
@@ -505,7 +497,7 @@
         var vocabulary_id;
         vocabulary_id = self.selected.get('id');
         jQuery.get(onomyURL,
-                   function (data) {
+                   function(data) {
                        var x;
                        x = JSON.parse(data);
 
@@ -520,7 +512,7 @@
                            //demorgans law
                            if (!(pL === undefined || pL.length < 1)) {
                                var search = undefined;
-                               parents.forEach(function (a) {
+                               parents.forEach(function(a) {
                                    if (a.display_name == pL) {
                                        search = a;
                                    }
@@ -541,7 +533,7 @@
                                    var tempV;
                                    var model_search;
                                    for (var j = 0; j < parents.length; j++) {
-                                       model_search = _.find(self.collection.models, function (model) {
+                                       model_search = _.find(self.collection.models, function(model) {
                                            return model.attributes.display_name == parents[j].display_name
                                        });
                                        if (model_search === undefined) {
@@ -556,7 +548,7 @@
                                                                   });
 
                                            tempV._save({}, {
-                                               success: function (it) {
+                                               success: function(it) {
                                                    var tempT;
                                                    self.selected = it;
                                                    parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self = self.selected;
@@ -567,7 +559,7 @@
                                                                             'vocabulary_id': it.attributes['id']
                                                                         });
                                                        tempT._save({}, {
-                                                           success: function (itT) {
+                                                           success: function(itT) {
                                                                parents[parents.indexOf(findUtil(parents, it.attributes['display_name'])[0])].self.get('term_set').add(itT);
                                                                self.render();
                                                            }
@@ -594,7 +586,7 @@
                                                                     'vocabulary_id': model_search.attributes['id']
                                                                 });
                                                tempT._save({}, {
-                                                   success: function (itT) {
+                                                   success: function(itT) {
                                                        self.selected.get('term_set').add(itT);
                                                        self.render();
                                                    }
@@ -637,7 +629,7 @@
                                //then save it with our overriden queued save
                                t._save({}, {
                                    wait: true,
-                                   success: function (it) {
+                                   success: function(it) {
                                        //add it to our term
                                        self.selected.get('term_set').add(it);
                                        self.render();

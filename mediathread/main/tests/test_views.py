@@ -470,16 +470,17 @@ class ContactUsViewTest(TestCase):
             'description': 'This is a problem'
         }
 
-        # SUPPORT DESTINATION is null
-        view.form_valid(form)
-        self.assertEqual(len(mail.outbox), 1)
+        with self.settings(SUPPORT_DESTINATION=None,
+                           TASK_ASSIGNMENT_DESTINATION=None):
+            view.form_valid(form)
+            self.assertEqual(len(mail.outbox), 1)
 
-        self.assertEqual(mail.outbox[0].subject,
-                         'Mediathread Contact Us Request')
-        self.assertEquals(mail.outbox[0].from_email,
-                          settings.SERVER_EMAIL)
-        self.assertEquals(mail.outbox[0].to,
-                          ['sender@ccnmtl.columbia.edu'])
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread Contact Us Request')
+            self.assertEquals(mail.outbox[0].from_email,
+                              settings.SERVER_EMAIL)
+            self.assertEquals(mail.outbox[0].to,
+                              ['sender@ccnmtl.columbia.edu'])
 
     def test_form_valid_with_support_destination(self):
         view = ContactUsView()
@@ -494,7 +495,8 @@ class ContactUsViewTest(TestCase):
             'description': 'This is a problem'
         }
 
-        with self.settings(SUPPORT_DESTINATION='support@ccnmtl.columbia.edu'):
+        with self.settings(SUPPORT_DESTINATION='support@ccnmtl.columbia.edu',
+                           TASK_ASSIGNMENT_DESTINATION=None):
             view.form_valid(form)
             self.assertEqual(len(mail.outbox), 1)
 

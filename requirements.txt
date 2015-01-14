@@ -1,4 +1,4 @@
-Django==1.6.5
+Django==1.6.10
 httplib2==0.9
 restclient==0.11.0
 feedparser==5.1.3

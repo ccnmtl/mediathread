@@ -417,17 +417,18 @@ class ContactUsView(FormView):
         """
         Returns the initial data to use for forms on this view.
         """
+        initial = super(ContactUsView, self).get_initial()
         if not self.request.user.is_anonymous():
-            self.initial['name'] = self.request.user.get_full_name()
-            self.initial['email'] = self.request.user.email
-            self.initial['username'] = self.request.user.username
+            initial['name'] = self.request.user.get_full_name()
+            initial['email'] = self.request.user.email
+            initial['username'] = self.request.user.username
 
-        self.initial['issue_date'] = datetime.now()
+        initial['issue_date'] = datetime.now()
 
         if SESSION_KEY in self.request.session:
-            self.initial['course'] = self.request.session[SESSION_KEY].title
+            initial['course'] = self.request.session[SESSION_KEY].title
 
-        return super(ContactUsView, self).get_initial()
+        return initial
 
     def form_valid(self, form):
         subject = "Mediathread Contact Us Request"

@@ -447,7 +447,6 @@
             var vocabulary_id = this.selected.get('id');
             var onomyURL = jQuery(et).attr("value").trim();
             getTheOnomy(onomyURL, this);
-
         },
         refreshOnomy: function(evt) {
             var urlArray = _.map(self.collection.models, function(model) {
@@ -466,23 +465,15 @@
             return item.display_name == thing;
         });
     }
-    function getTheOnomy(dirtyURL, self) {
-        var onomy_index;
-
-        //this is to sanitize the url entered by the user.
-        //checks to see if it contains onomy and json
-        var test = dirtyURL.search(('onomy' | 'json'));
-        if (test !== -1) {
-            //grab the numbers from the url entered
-            onomy_index = /\d+/g.exec(dirtyURL);
-        } else {
+    function getTheOnomy(onomyURL, self) {
+        var the_regex = /onomy.org\/published\/(\d+)\/json/g;
+        var match = the_regex.exec(onomyUrl);
+        if (match.length < 0) {
             //display error message
             showMessage("Enter a valid Onomy URL", undefined, "Error");
             return;
         }
-        //all of the onomyURL's should fit this so i just strip the numbers from user
-        //input and add it to the format
-        var onomyURL = 'http://onomy.org/published/' + onomy_index + '/json';
+        
         var vocabulary_id = self.selected.get('id');
         jQuery.get(onomyURL, function(data) {
              var x = JSON.parse(data);
@@ -518,7 +509,7 @@
                                  return model.attributes.display_name == parents[j].display_name
                              });
                              if (model_search === undefined) {
-                                 if we cant find the vocab in the collection we create a new one.
+                                 // if we cant find the vocab in the collection we create a new one.
 
                                  var tempV = new Vocabulary({
                                      'display_name': parents[j].display_name,

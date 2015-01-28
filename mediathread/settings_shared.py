@@ -252,6 +252,7 @@ DJANGOSHERD_FLICKR_APIKEY = None
 # See README.markdown for more information
 # expected: http://<server>/<directory>/flowplayer-3.2.18.swf
 FLOWPLAYER_SWF_LOCATION = None
+FLOWPLAYER_HTML5_LOCATION = None
 # Specify your own plugin versions here. The player looks in the same
 # http://<server>/<directory>/ specified above.
 FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.11.swf'

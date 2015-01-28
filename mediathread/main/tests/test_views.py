@@ -435,12 +435,12 @@ class ContactUsViewTest(TestCase):
         view.request = RequestFactory().get('/contact/')
         view.request.session = {}
         view.request.user = AnonymousUser()
-        view.get_initial()
+        initial = view.get_initial()
 
-        self.assertIsNotNone(view.initial['issue_date'])
-        self.assertFalse('name' in view.initial)
-        self.assertFalse('email' in view.initial)
-        self.assertFalse('username' in view.initial)
+        self.assertIsNotNone(initial['issue_date'])
+        self.assertFalse('name' in initial)
+        self.assertFalse('email' in initial)
+        self.assertFalse('username' in initial)
 
     def test_get_initial_not_anonymous(self):
         view = ContactUsView()
@@ -450,12 +450,20 @@ class ContactUsViewTest(TestCase):
                                         last_name='Bar',
                                         email='foo@bar.com')
 
-        view.get_initial()
+        initial = view.get_initial()
+        self.assertIsNotNone(initial['issue_date'])
+        self.assertEquals(initial['name'], 'Foo Bar')
+        self.assertEquals(initial['email'], 'foo@bar.com')
+        self.assertEquals(initial['username'], view.request.user.username)
 
-        self.assertIsNotNone(view.initial['issue_date'])
-        self.assertEquals(view.initial['name'], 'Foo Bar')
-        self.assertEquals(view.initial['email'], 'foo@bar.com')
-        self.assertEquals(view.initial['username'], view.request.user.username)
+        # a subsequent call using an anonymous session returns a clean initial
+        view.request.session = {}
+        view.request.user = AnonymousUser()
+        initial = view.get_initial()
+        self.assertIsNotNone(initial['issue_date'])
+        self.assertFalse('name' in initial)
+        self.assertFalse('email' in initial)
+        self.assertFalse('username' in initial)
 
     def test_form_valid(self):
         view = ContactUsView()

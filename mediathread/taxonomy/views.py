@@ -41,8 +41,8 @@ def update_vocabulary_terms(request, content_object):
     for a in associations:
         vocabulary_id = str(a.term.vocabulary.id)
         term_id = str(a.term.id)
-        if (not vocabulary_id in concepts or
-                not term_id in concepts[vocabulary_id]):
+        if (vocabulary_id not in concepts or
+                term_id not in concepts[vocabulary_id]):
             a.delete()
 
     content_type = ContentType.objects.get_for_model(content_object)

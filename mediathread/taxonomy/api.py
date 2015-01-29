@@ -1,4 +1,4 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
@@ -17,7 +17,7 @@ class TermValidation(Validation):
             display_name=bundle.data['display_name'],
             vocabulary_id=bundle.data['vocabulary_id'])
 
-        if len(a) > 0:  # vocabulary exists with this name
+        if len(a) > 0:  # term exists with this name
             if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
                 # a vocabulary already exists with this name
                 msg = 'A %s term already exists. Please choose another name' \

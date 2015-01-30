@@ -102,6 +102,8 @@
             'click a.delete-vocabulary': 'deleteVocabulary',
             'click a.create-vocabulary-open': 'toggleCreateVocabulary',
             'click a.create-vocabulary-close': 'toggleCreateVocabulary',
+            'click a.import-vocabulary-open': 'toggleImportVocabulary',
+            'click a.import-vocabulary-close': 'toggleImportVocabulary',
             'click a.edit-vocabulary-open': 'toggleEditVocabulary',
             'click a.edit-vocabulary-close': 'toggleEditVocabulary',
             'click a.create-vocabulary-submit': 'createVocabulary',
@@ -109,32 +111,24 @@
             'focus input[name="display_name"]': 'focusVocabularyName',
             'blur input[name="display_name"]': 'blurVocabularyName',
             'focus input[name="term_name"]': 'focusTermName',
-            'focus input[name="onomy_url"]': 'focusTermName',
             'blur input[name="term_name"]': 'blurTermName',
-            'blur input[name="onomy_url"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
             'keypress input[name="term_name"]': 'keypressTermName',
             'click a.edit-term-submit': 'updateTerm',
             'click a.edit-term-open': 'showEditTerm',
             'click a.edit-term-close': 'hideEditTerm',
             'click a.delete-term': 'deleteTerm',
-            'click a.onomy-terms-submit': 'createOnomyVocabulary',
-            'click a.refresh-button-submit' : 'refreshOnomy'
+            'click a.import-vocabulary-submit': 'createOnomyVocabulary',
+            'click a.refresh-button-submit': 'refreshOnomy'
         },
         initialize: function(options) {
             _.bindAll(this,
                 "render",
-                "createVocabulary",
-                "updateVocabulary",
-                "deleteVocabulary",
-                "createTerm",
-                "keypressTermName",
-                "updateTerm",
-                "deleteTerm",
-                "createOnomyVocabulary",
-                "refreshOnomy",
-                "getTheOnomy",
-                "activateTab");
+                "createVocabulary", "updateVocabulary", "deleteVocabulary",
+                "createTerm", "keypressTermName", "updateTerm", "deleteTerm",
+                "createOnomyVocabulary", "refreshOnomy", "getTheOnomy",
+                "activateTab",
+                "toggleCreateVocabulary", "toggleImportVocabulary");
 
             this.context = options;
             this.vocabularyTemplate =
@@ -174,16 +168,21 @@
                 this.selected = this.collection.at(0);
             }
         },
+        toggleImportVocabulary: function(evt) {
+            evt.preventDefault();
+            jQuery(this.el).find(".vocabulary-import").toggle();
+            return false;
+        },
         toggleCreateVocabulary: function(evt) {
             evt.preventDefault();
             var parent = jQuery(evt.currentTarget).parents("li")[0];
-            jQuery(parent).find("div.vocabulary-display, div.vocabulary-create").toggle();
+            jQuery(parent).find(".vocabulary-display, .vocabulary-create").toggle();
             return false;
         },
         toggleEditVocabulary: function(evt) {
             evt.preventDefault();
             var parent = jQuery(evt.currentTarget).parents("li")[0];
-            jQuery(parent).find("div.vocabulary-display, div.vocabulary-edit").toggle();
+            jQuery(parent).find(".vocabulary-display, .vocabulary-edit").toggle();
             jQuery(parent).find("input[name='display_name']").focus();
             return false;
         },
@@ -433,30 +432,41 @@
             }
         },
         blurTermName: function(evt) {
-            if (jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") !== 'onomy_url') {
+            if (jQuery(evt.currentTarget).attr("value") === '') {
                 jQuery(evt.currentTarget).addClass("default");
                 jQuery(evt.currentTarget).attr("value", "Type new term name here");
-            }else if(jQuery(evt.currentTarget).attr("value") === '' && jQuery(evt.currentTarget).attr("name") === "onomy_url") {
-                jQuery(evt.currentTarget).addClass("default");
-                jQuery(evt.currentTarget).attr("value", "Enter an Onomy URL here");
             }
         },
         createOnomyVocabulary: function(evt) {
             evt.preventDefault();
-            var et = jQuery(evt.currentTarget).prev();
+            var elt = jQuery(this.el).find('input[name="onomy_url"]');
+            
+            var onomyUrl = jQuery(elt).val().trim();
+            if (onomyUrl.length < 1) {
+                showMessage("Please enter a valid Onomy JSON url.", undefined, "Error");
+                return;
+            }
+            
+            var the_regex = /onomy.org\/published\/(\d+)\/json/g;
+            var match = the_regex.exec(onomyUrl);
+            if (match.length < 0) {
+                //display error message
+                showMessage("Please enter a valid Onomy JSON Url", undefined, "Error");
+                return;
+            }
+            
+            // save the onomyUrl to the selected vocabulary
 
-            var vocabulary_id = this.selected.get('id');
-            var onomyURL = jQuery(et).attr("value").trim();
-            this.getTheOnomy(onomyURL, this);
+            this.getTheOnomy(onomyUrl);
         },
         refreshOnomy: function(evt) {
-            var urlArray = _.map(self.collection.models, function(model) {
+            var urlArray = _.map(this.collection.models, function(model) {
                 return model.attributes.onomy_url
             });
             for (var i = 0; i < urlArray.length; i++) {
                 var address = urlArray[i].toString();
                 if (!address == "") {
-                    this.getTheOnomy(address, self);
+                    this.getTheOnomy(address);
                 }
             }
         },
@@ -464,18 +474,11 @@
             return jQuery.grep(array, function(item){
                 return item.display_name == thing;
             });
-        }
+        },
         getTheOnomy: function(onomyURL) {
             var self = this;
-            var the_regex = /onomy.org\/published\/(\d+)\/json/g;
-            var match = the_regex.exec(onomyURL);
-            if (match.length < 0) {
-                //display error message
-                showMessage("Enter a valid Onomy URL", undefined, "Error");
-                return;
-            }
-            
             var vocabulary_id = self.selected.get('id');
+
             jQuery.get(onomyURL, function(data) {
                  var x = JSON.parse(data);
 

@@ -4636,6 +4636,20 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-panel {
     width: 65%;
 }
 
+div#taxonomy .import-vocabulary-open {
+    font-size: .75em;
+    float: right;
+}
+
+div#taxonomy .vocabulary-import {
+    margin: 0 -1px .4em 0;
+    outline: 0;
+    height: 40px;
+    padding: 10px;
+    background-color: #ededed;
+    border-radius: 5px;
+}
+
 div#taxonomy div.vocabulary-display a.create-vocabulary-open {
     width: 94%;
     height: 24px;
@@ -4651,6 +4665,8 @@ div#taxonomy div.term-container a.edit-term-close,
 div#taxonomy div.term-container a.edit-term-submit,
 div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
 div#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
+div#taxonomy div.vocabulary-import a.import-vocabulary-close,
+div#taxonomy div.vocabulary-import a.import-vocabulary-submit,
 div#taxonomy div.vocabulary-create a.create-vocabulary-close,
 div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
     float: right;
@@ -4662,6 +4678,7 @@ div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
 
 div#taxonomy div.term-container a.edit-term-close,
 div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
+div#taxonomy div.vocabulary-import a.import-vocabulary-close, 
 div#taxonomy div.vocabulary-create a.create-vocabulary-close {
     margin: 0 5px 0 5px;
 }
@@ -4687,11 +4704,9 @@ div#taxonomy div.terms a.create-term-submit {
     padding: 4px;
 }
 
-div#taxonomy div.onomy a.refresh-button-submit {
-    margin: 0 0 0 5px;
-    padding: 6.5px;
-    padding-bottom: 4px;
-    padding-top: 8.5px;
+div#taxonomy div.terms a.refresh-button-submit {
+    padding: 5px 0 5px 5px;
+    float: right;
 }
 
 div#taxonomy div.onomy a.onomy-terms-submit img {
@@ -4723,7 +4738,6 @@ div#taxonomy div.term-container {
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    width: 73%;
     margin: 5px 0 5px 5px;    
 }
 

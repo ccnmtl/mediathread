@@ -4537,6 +4537,10 @@ div#taxonomy input[type="text"].name {
     width: 60%;
 }
 
+div#taxonomy input[name='onomy_url'] {
+    width: 87%;
+}
+
 div#taxonomy a.icon-link {
     float: right;
     margin: .5em 0;
@@ -4636,16 +4640,20 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-panel {
     width: 65%;
 }
 
-div#taxonomy .import-vocabulary-open {
-    font-size: .75em;
+div#taxonomy .btn-primary.onomy {
+    font-size: .65em;
     float: right;
+    margin-right: 5px;
+}
+
+div#taxonomy .btn-primary.onomy img {
+    vertical-align: middle;    
 }
 
 div#taxonomy .vocabulary-import {
     margin: 0 -1px .4em 0;
     outline: 0;
-    height: 40px;
-    padding: 10px;
+    padding: 10px 20px;
     background-color: #ededed;
     border-radius: 5px;
 }

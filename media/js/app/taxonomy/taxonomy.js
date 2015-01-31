@@ -119,15 +119,16 @@
             'click a.edit-term-close': 'hideEditTerm',
             'click a.delete-term': 'deleteTerm',
             'click a.import-vocabulary-submit': 'createOnomyVocabulary',
-            'click a.refresh-button-submit': 'refreshOnomy'
+            'click a.refresh-onomy': 'refreshOnomy',
+            'click a.edit-onomy-urls': 'createOnomyVocabulary'
         },
         initialize: function(options) {
             _.bindAll(this,
                 "render",
                 "createVocabulary", "updateVocabulary", "deleteVocabulary",
                 "createTerm", "keypressTermName", "updateTerm", "deleteTerm",
-                "createOnomyVocabulary", "refreshOnomy", "getTheOnomy",
-                "activateTab",
+                "createOnomyVocabulary", "refreshOnomy",
+                "getTheOnomy", "activateTab",
                 "toggleCreateVocabulary", "toggleImportVocabulary");
 
             this.context = options;
@@ -144,6 +145,7 @@
         activateTab: function(evt, ui) {
             jQuery(ui.oldTab).find("div.vocabulary-edit, div.vocabulary-create").hide();
             jQuery(ui.oldTab).find("div.vocabulary-display").show();
+            jQuery(this.el).find(".vocabulary-import").hide();
             var vid = jQuery(ui.newTab).data("id");
             this.selected = this.collection.getByDataId(vid);
         },
@@ -439,7 +441,7 @@
         },
         createOnomyVocabulary: function(evt) {
             evt.preventDefault();
-            var elt = jQuery(this.el).find('input[name="onomy_url"]');
+            var elt = jQuery(evt.currentTarget).prevAll("input[name='onomy_url']")[0];
             
             var onomyUrl = jQuery(elt).val().trim();
             if (onomyUrl.length < 1) {
@@ -450,13 +452,11 @@
             var the_regex = /onomy.org\/published\/(\d+)\/json/g;
             var match = the_regex.exec(onomyUrl);
             if (match.length < 0) {
-                //display error message
+                // display error message
                 showMessage("Please enter a valid Onomy JSON Url", undefined, "Error");
                 return;
             }
             
-            // save the onomyUrl to the selected vocabulary
-
             this.getTheOnomy(onomyUrl);
         },
         refreshOnomy: function(evt) {
@@ -497,11 +497,12 @@
                              }
                          });
                          if (search === undefined) {
-                             //create the Vocabulary
+                             // create the Vocabulary
                              var temp = {'display_name': pL,
                                          'term_set': [],
                                          'content_type_id': self.context.content_type_id,
                                          'object_id': self.context.course_id,
+                                         'onomy_url': 'child',
                                          'self': undefined};
                              parents.push(temp);
                              parents[parents.indexOf(temp)].term_set.push({'display_name': display});
@@ -524,7 +525,7 @@
                                          'content_type_id': self.context.content_type_id,
                                          'object_id': self.context.course_id,
                                          'term_set': undefined,
-                                         'onomy_url': onomyURL
+                                         'onomy_url': 'child'
                                      });
 
                                      tempV._save({}, {
@@ -553,7 +554,6 @@
                                      var url = urlcsv.split(',');
                                      if (!(_.contains(url, onomyURL))) {
                                          url.push(onomyURL);
-                                         model_search.save({'onomy_url': url.toString()});
                                      }
 
                                      for (var z = 0; z < parents[parents.indexOf(self.findUtil(parents, model_search.attributes['display_name'])[0])].term_set.length; z++) {

@@ -4017,6 +4017,14 @@ div#asset-view-details {
     height: 100%;
 }
 
+form#edit-global-annotation-form {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-right: -10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+}
+
 form#edit-annotation-form {
     overflow-y: auto;
     overflow-x: hidden;

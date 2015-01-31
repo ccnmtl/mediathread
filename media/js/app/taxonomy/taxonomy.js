@@ -23,6 +23,12 @@
         getByDataId: function(id) {
             var internalId = this.urlRoot + id + '/';
             return this.get(internalId);
+        },
+        getByDisplayName: function(name) {
+            var filtered = this.filter(function(term) {
+                return term.get("display_name") === name;
+            });
+            return filtered;
         }
     });
 
@@ -40,6 +46,20 @@
             var json = _(this.attributes).clone();
             json.term_set = this.get('term_set').toTemplate();
             return json;
+        },
+        getOnomyUrls: function() {
+            // the onomy url field was conceived as a comma-delimited list
+            // of urls. reconstitute as an array here for easier searching
+            // and adding new urls
+            var urls = [];
+            var str = this.get('onomy_url');
+            if (str.length > 0) {
+                urls = str.split(',');
+            }
+            return urls;
+        },
+        hasTerm: function(termName) {
+            return this.get('term_set').getByDisplayName(termName).length > 0;
         }
     });
 
@@ -353,7 +373,8 @@
                     self.selected.get('term_set').add(t);
                     self.render();
                 },
-                error: function(model, response) {
+                error: function(args) {
+                    var response = args[1];
                     var responseText = jQuery.parseJSON(response.responseText);
                     showMessage(responseText.term.error_message, undefined, "Error");
                 }
@@ -384,7 +405,8 @@
                     success: function() {
                         self.render();
                     },
-                    error: function(model, response) {
+                    error: function(args) {
+                        var response = args[1];
                         var responseText = jQuery.parseJSON(response.responseText);
                         showMessage(responseText.term.error_message, undefined, "Error");
                     }
@@ -443,31 +465,33 @@
             evt.preventDefault();
             var elt = jQuery(evt.currentTarget).prevAll("input[name='onomy_url']")[0];
             
-            var onomyUrl = jQuery(elt).val().trim();
-            if (onomyUrl.length < 1) {
-                showMessage("Please enter a valid Onomy JSON url.", undefined, "Error");
-                return;
+            var value = jQuery(elt).val().trim();
+            
+            // split the url.
+            var urls = value.split(',');
+            for (var i= 0; i < urls.length; i++) {
+                if (urls[i].length < 1) {
+                    showMessage("Please enter a valid Onomy JSON url.", undefined, "Error");
+                    return;
+                }
+                
+                var the_regex = /onomy.org\/published\/(\d+)\/json/g;
+                var match = the_regex.exec(urls[i]);
+                if (match.length < 0) {
+                    // display error message
+                    showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
+                    return;
+                }
             }
             
-            var the_regex = /onomy.org\/published\/(\d+)\/json/g;
-            var match = the_regex.exec(onomyUrl);
-            if (match.length < 0) {
-                // display error message
-                showMessage("Please enter a valid Onomy JSON Url", undefined, "Error");
-                return;
+            for (var i= 0; i < urls.length; i++) {
+                this.getTheOnomy(urls[i], this.selected);
             }
-            
-            this.getTheOnomy(onomyUrl);
         },
         refreshOnomy: function(evt) {
-            var urlArray = _.map(this.collection.models, function(model) {
-                return model.attributes.onomy_url
-            });
-            for (var i = 0; i < urlArray.length; i++) {
-                var address = urlArray[i].toString();
-                if (!address == "") {
-                    this.getTheOnomy(address);
-                }
+            var urls = this.selected.getOnomyUrls();
+            for (var i = 0; i < urls.length; i++) {
+                this.getTheOnomy(urls[i], this.selected);
             }
         },
         findUtil: function(array, thing){
@@ -475,9 +499,8 @@
                 return item.display_name == thing;
             });
         },
-        getTheOnomy: function(onomyURL) {
+        getTheOnomy: function(onomyURL, selectedVocabulary) {
             var self = this;
-            var vocabulary_id = self.selected.get('id');
 
             jQuery.get(onomyURL, function(data) {
                  var x = JSON.parse(data);
@@ -530,8 +553,7 @@
 
                                      tempV._save({}, {
                                          success: function(it) {
-                                             self.selected = it;
-                                             parents[parents.indexOf(self.findUtil(parents, it.attributes['display_name'])[0])].self = self.selected;
+                                             parents[parents.indexOf(self.findUtil(parents, it.attributes['display_name'])[0])].self = it;
                                              self.collection.add(it);
                                              for (var z = 0; z < parents[parents.indexOf(self.findUtil(parents, it.attributes['display_name'])[0])].term_set.length; z++) {
                                                  var tempT = new Term({
@@ -548,14 +570,6 @@
                                          }
                                      });
                                  } else {
-                                     //we do find the model. we just add the term to it.
-                                     self.selected = model_search;
-                                     var urlcsv = self.selected.get('onomy_url');
-                                     var url = urlcsv.split(',');
-                                     if (!(_.contains(url, onomyURL))) {
-                                         url.push(onomyURL);
-                                     }
-
                                      for (var z = 0; z < parents[parents.indexOf(self.findUtil(parents, model_search.attributes['display_name'])[0])].term_set.length; z++) {
                                          var tempT = new Term({
                                              'display_name': parents[parents.indexOf(self.findUtil(parents, model_search.attributes['display_name'])[0])].term_set[z].display_name,
@@ -563,7 +577,7 @@
                                          });
                                          tempT._save({}, {
                                              success: function(itT) {
-                                                 self.selected.get('term_set').add(itT);
+                                                 model_search.get('term_set').add(itT);
                                                  self.render();
                                              }
                                          });
@@ -571,35 +585,31 @@
                                  }
                              }
                          }
-                     } else {
-                         if (display === undefined || display.length < 1) {
-                             continue;
-                         }
-                         var id = self.selected.attributes.id;
-                         var v = self.collection.getByDataId(id);
-                         var urlcsv = self.selected.get('onomy_url');
-                         var url = urlcsv.split(',');
-        
+                     } else if (display !== undefined && display.length > 0) {
+                         var urls = selectedVocabulary.getOnomyUrls();
+
                          //if this vocabulary doesn't contain the url we punched in
-                         if (!(_.contains(url, onomyURL))) {
+                         if (!_.contains(urls, onomyURL)) {
                              //add it to our array we made and save it in the vocab
-                             url.push(onomyURL);
-                             v.save({'onomy_url': url.toString()});
+                             urls.push(onomyURL);
+                             selectedVocabulary.save({'onomy_url': urls.toString()});
                          }
-                         //we create our term
-                         var t = new Term({
-                             'display_name': display,
-                             'vocabulary_id': vocabulary_id
-                         });
-                         //then save it with our overriden queued save
-                         t._save({}, {
-                             wait: true,
-                             success: function(it) {
-                                 //add it to our term
-                                 self.selected.get('term_set').add(it);
-                                 self.render();
-                             }
-                         });
+                         //we create our term if it doesn't already exist
+                         if (!selectedVocabulary.hasTerm(display)) {
+                             var t = new Term({
+                                 'display_name': display,
+                                 'vocabulary_id': selectedVocabulary.get('id')
+                             });
+                             //then save it with our overriden queued save
+                             t._save({}, {
+                                 wait: true,
+                                 success: function(newTerm) {
+                                     //add it to the term set
+                                     selectedVocabulary.get('term_set').add(newTerm);
+                                     self.render();
+                                 }
+                             });
+                         }
                      }
                  }
             });

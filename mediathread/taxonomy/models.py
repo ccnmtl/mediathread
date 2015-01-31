@@ -21,12 +21,11 @@ class Vocabulary(models.Model):
     display_name = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
     single_select = models.BooleanField(default=False)
-
+    onomy_url = models.TextField(null=True, blank=True)
     # Map this taxonomy to something else. like a course.
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-
     objects = GenericRelationshipManager()
 
     class Meta:

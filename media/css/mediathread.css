@@ -4017,6 +4017,14 @@ div#asset-view-details {
     height: 100%;
 }
 
+form#edit-global-annotation-form {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-right: -10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+}
+
 form#edit-annotation-form {
     overflow-y: auto;
     overflow-x: hidden;
@@ -4518,7 +4526,7 @@ div#taxonomy input[type="text"] {
     display: inline-block;
     height: 20px;
     padding: 4px 6px;
-    margin: 5px 0 5px 5px;
+    margin: 5px 0 15px 5px;
     font-size: 14px;
     line-height: 20px;
     color: #555555;
@@ -4535,6 +4543,10 @@ div#taxonomy input[type="text"].default {
 
 div#taxonomy input[type="text"].name {
     width: 60%;
+}
+
+div#taxonomy input[name='onomy_url'] {
+    width: 87%;
 }
 
 div#taxonomy a.icon-link {
@@ -4636,6 +4648,24 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-panel {
     width: 65%;
 }
 
+div#taxonomy .btn-primary.onomy {
+    font-size: .65em;
+    float: right;
+    margin-right: 5px;
+}
+
+div#taxonomy .btn-primary.onomy img {
+    vertical-align: middle;    
+}
+
+div#taxonomy .vocabulary-import {
+    margin: 0 -1px .4em 0;
+    outline: 0;
+    padding: 10px 20px;
+    background-color: #ededed;
+    border-radius: 5px;
+}
+
 div#taxonomy div.vocabulary-display a.create-vocabulary-open {
     width: 94%;
     height: 24px;
@@ -4651,6 +4681,8 @@ div#taxonomy div.term-container a.edit-term-close,
 div#taxonomy div.term-container a.edit-term-submit,
 div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
 div#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
+div#taxonomy div.vocabulary-import a.import-vocabulary-close,
+div#taxonomy div.vocabulary-import a.import-vocabulary-submit,
 div#taxonomy div.vocabulary-create a.create-vocabulary-close,
 div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
     float: right;
@@ -4662,6 +4694,7 @@ div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
 
 div#taxonomy div.term-container a.edit-term-close,
 div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
+div#taxonomy div.vocabulary-import a.import-vocabulary-close, 
 div#taxonomy div.vocabulary-create a.create-vocabulary-close {
     margin: 0 5px 0 5px;
 }
@@ -4687,6 +4720,24 @@ div#taxonomy div.terms a.create-term-submit {
     padding: 4px;
 }
 
+div#taxonomy div.terms a.refresh-button-submit {
+    padding: 5px 0 5px 5px;
+    float: right;
+}
+
+div#taxonomy div.onomy a.onomy-terms-submit img {
+    padding: 0;
+}
+
+div#taxonomy div.onomy a.refresh-button-submit img {
+    padding: 0;
+}
+
+div#taxonomy div.onomy a.onomy-terms-submit {
+    margin: 0 0 0 5px;
+    padding: 4px;
+}
+
 div#taxonomy div.terms a.create-term-submit img {
     padding: 0;
 }
@@ -4703,7 +4754,6 @@ div#taxonomy div.term-container {
     border-radius: 4px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    width: 73%;
     margin: 5px 0 5px 5px;    
 }
 

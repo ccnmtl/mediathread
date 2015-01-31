@@ -23,7 +23,7 @@ ALLOWED_HOSTS = ['.ccnmtl.columbia.edu', 'localhost']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mediathread',
+        'NAME': '',
         'HOST': '',
         'PORT': '',
         'USER': '',

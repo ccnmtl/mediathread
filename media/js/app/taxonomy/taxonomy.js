@@ -204,8 +204,8 @@
 
             var v = new Vocabulary({
                 'display_name': display_name,
-                'content_type_id': jQuery(parent).find('input[name="content_type_id"]').attr("value"),
-                'object_id': jQuery(parent).find('input[name="object_id"]').attr("value"),
+                'content_type_id': this.context.content_type_id,
+                'object_id': this.context.course_id,
                 'term_set': undefined,
                 'onomy_url': ""
             });
@@ -498,7 +498,11 @@
                          });
                          if (search === undefined) {
                              //create the Vocabulary
-                             var temp = {'display_name': pL, 'term_set': [], 'self': undefined};
+                             var temp = {'display_name': pL,
+                                         'term_set': [],
+                                         'content_type_id': self.context.content_type_id,
+                                         'object_id': self.context.course_id,
+                                         'self': undefined};
                              parents.push(temp);
                              parents[parents.indexOf(temp)].term_set.push({'display_name': display});
                          } else {
@@ -517,8 +521,8 @@
 
                                      var tempV = new Vocabulary({
                                          'display_name': parents[j].display_name,
-                                         'content_type_id': 14,
-                                         'object_id': 1,
+                                         'content_type_id': self.context.content_type_id,
+                                         'object_id': self.context.course_id,
                                          'term_set': undefined,
                                          'onomy_url': onomyURL
                                      });

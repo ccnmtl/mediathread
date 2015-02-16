@@ -41,6 +41,7 @@ from structuredcollaboration.models import Collaboration
 # returns important setting information for all web pages.
 def django_settings(request):
     whitelist = ['FLOWPLAYER_SWF_LOCATION',
+                 'FLOWPLAYER_HTML5_SWF_LOCATION',
                  'FLOWPLAYER_AUDIO_PLUGIN',
                  'FLOWPLAYER_PSEUDOSTREAMING_PLUGIN',
                  'FLOWPLAYER_RTMP_PLUGIN',

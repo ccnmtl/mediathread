@@ -503,7 +503,7 @@
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
-                 var x = JSON.parse(data);
+                 var x = data;
 
                  var parents = [];
                  var MAX = x.terms.length; //change to x.terms.length after done testing

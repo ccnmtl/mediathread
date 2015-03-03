@@ -1,10 +1,10 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from mediathread.assetmgr.models import Asset, Source, SupportedSource
 from django.contrib import admin
 
 
 class AssetAdmin(admin.ModelAdmin):
-    readonly_fields = ('course', 'author')
+    readonly_fields = ('course',)
 
     class Meta:
         model = Asset

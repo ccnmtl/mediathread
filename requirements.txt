@@ -8,7 +8,7 @@ uuid==1.30
 psycopg2==2.5.4
 #for MySQL: MySQL-python==1.2.5
 Pillow==2.7.0
-nose==1.3.0
+nose==1.3.4
 versiontools==1.9.1
 statsd==2.0.2
 pep8==1.4.6

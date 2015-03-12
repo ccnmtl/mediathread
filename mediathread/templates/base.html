@@ -12,11 +12,7 @@
         
         <script type="text/javascript" src='{% static "js/mustache/mustache.js" %}'></script>
 
-        {% if settings.FIREFOX %}
-            <script type="text/javascript" src="{{STATIC_URL}}js/sherdjs/lib/flowplayer/flowplayer-3.2.13.min.js"></script>
-        {% else %}
-            <script src="http://ccnmtl.columbia.edu/remote/flowplayer-5.5.0/flowplayer.min.js"></script>
-        {% endif %}
+        <script src="http://ccnmtl.columbia.edu/remote/flowplayer-5.5.0/flowplayer.min.js"></script>
 
         <script type="text/javascript" src='{% static "js/sherdjs/lib/OpenLayers-min.js" %}'></script>
         <script type="text/javascript" src="/jsi18n"></script>

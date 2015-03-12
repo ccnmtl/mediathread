@@ -58,10 +58,6 @@ def django_settings(request):
     if request.course:
         context['is_course_faculty'] = request.course.is_faculty(request.user)
 
-    user_agent = request.META.get("HTTP_USER_AGENT")
-    if user_agent is not None and 'firefox' in user_agent.lower():
-        context['settings']['FIREFOX'] = True
-
     return context
 
 

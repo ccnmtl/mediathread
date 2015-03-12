@@ -276,7 +276,7 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
         draggable: true,
         resizable: false,
         modal: true,
-        width: 600,
+        width: 860,
         position: "top",
         zIndex: 10000
     });

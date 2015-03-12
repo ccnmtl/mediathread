@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, url
 
+from mediathread.reports.views import SelfRegistrationReportView, \
+    ActivityBySchoolView, ActivityByCourseView
+
 
 urlpatterns = patterns(
     '',
@@ -24,11 +27,14 @@ urlpatterns = patterns(
         name="class-activity"),
 
     url(r'^activity/course/$',
-        'mediathread.reports.views.mediathread_activity_by_course',
+        ActivityByCourseView.as_view(),
         name="mediathread-activity-by-course"),
 
     url(r'^activity/school/$',
-        'mediathread.reports.views.mediathread_activity_by_school',
+        ActivityBySchoolView.as_view(),
         name="mediathread-activity-by-school"),
 
+    url(r'^self-registration/$',
+        SelfRegistrationReportView.as_view(),
+        name="mediathread-self-registration")
 )

@@ -1,25 +1,31 @@
+import csv
+import json
+import re
+
 from courseaffils.lib import users_in_course
 from courseaffils.models import Course
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.aggregates import Count
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from django.views.generic.base import View
 from djangohelpers.lib import allow_http, rendered_with
+from registration.models import RegistrationProfile
+from tagging.models import Tag
+
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
-from mediathread.mixins import faculty_only
+from mediathread.mixins import faculty_only, LoggedInMixinSuperuser, \
+    CSVResponseMixin
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, TermRelationship
 from structuredcollaboration.models import Collaboration
-from tagging.models import Tag
-import csv
-import re
-import json
 
 
 @allow_http("GET")
@@ -196,212 +202,210 @@ def class_activity(request):
     return context
 
 
-@login_required
-def mediathread_activity_by_course(request):
-    """STAFF ONLY reporting of entire application activity """
-    if not request.user.is_staff:
-        return HttpResponseForbidden("forbidden")
+class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = \
-        'attachment; filename=mediathread_activity_by_course.csv'
-    writer = csv.writer(response)
-    headers = ['Id', 'Title', 'Instructor', 'Course String',
-               'Term', 'Year', 'Section', 'Course Number', 'School',
-               'Students', '% Active Students',
-               'Items', 'Selections',
-               'Compositions', 'Assignments', 'Discussions',
-               'Public To World Compositions', 'All Selections Visible',
-               '# of Active Tags', '% Using Tags',
-               '% Items Tagged', '% Selections Tagged',
-               '# of Active Vocabulary Terms', '% Using Vocabulary',
-               '% Items Classified', '% Selections Classified']
-    writer.writerow(headers)
+    def get(self, request, *args, **kwargs):
+        headers = ['Id', 'Title', 'Instructor', 'Course String',
+                   'Term', 'Year', 'Section', 'Course Number', 'School',
+                   'Students', '% Active Students',
+                   'Items', 'Selections',
+                   'Compositions', 'Assignments', 'Discussions',
+                   'Public To World Compositions', 'All Selections Visible',
+                   '# of Active Tags', '% Using Tags',
+                   '% Items Tagged', '% Selections Tagged',
+                   '# of Active Vocabulary Terms', '% Using Vocabulary',
+                   '% Items Classified', '% Selections Classified']
 
-    rows = []
-    for the_course in Course.objects.all().order_by('-id'):
-        if (the_course.faculty_group is None or
-            (not (the_course.faculty_group.name.startswith('t1') or
-                  the_course.faculty_group.name.startswith('t2') or
-                  the_course.faculty_group.name.startswith('t3')))):
-            continue
+        rows = []
+        for the_course in Course.objects.all().order_by('-id'):
+            if (the_course.faculty_group is None or
+                (not (the_course.faculty_group.name.startswith('t1') or
+                      the_course.faculty_group.name.startswith('t2') or
+                      the_course.faculty_group.name.startswith('t3')))):
+                continue
 
-        row = []
-        row.append(the_course.id)
-        row.append(the_course.title)
+            row = []
+            row.append(the_course.id)
+            row.append(the_course.title)
 
-        if 'instructor' in the_course.details():
-            row.append(the_course.details()['instructor'].value)
-        else:
-            row.append('')
-
-        course_string = the_course.faculty_group.name
-        row.append(course_string)
-
-        bits = the_course.faculty_group.name.split('.')
-        row.append(bits[0])  # term
-        row.append(bits[1][1:])  # year
-        row.append(bits[2])  # section
-        row.append(bits[3])  # courseNo
-        row.append(bits[4])  # school
-
-        students = the_course.group.user_set.all()
-        if the_course.faculty_group:
-            ids = the_course.faculty_group.user_set.values('id')
-            students = students.exclude(id__in=ids)
-        row.append(len(students))
-
-        if len(students) > 0:
-            active = students.filter(Q(projects__isnull=False) |
-                                     Q(sherdnote__isnull=False)).distinct()
-            row.append(float(len(active)) / len(students) * 100)
-        else:
-            row.append(0)
-
-        items = Asset.objects.filter(course=the_course)
-        row.append(len(items))
-
-        selections = SherdNote.objects.filter(asset__course=the_course)
-        row.append(len(selections))
-
-        compositions = 0
-        assignments = 0
-
-        projects = Project.objects.filter(course=the_course)
-        for project in projects:
-            if project.visibility_short() == 'Assignment':
-                assignments += 1
+            if 'instructor' in the_course.details():
+                row.append(the_course.details()['instructor'].value)
             else:
-                compositions += 1
+                row.append('')
 
-        row.append(compositions)
-        row.append(assignments)
-        try:
-            discussions = get_course_discussions(the_course)
-            row.append(len(discussions))
-            '# of Discussion Items', '% participating in Discussions',
-        except Collaboration.DoesNotExist:
-            row.append(0)
+            course_string = the_course.faculty_group.name
+            row.append(course_string)
 
-        row.append(course_details.allow_public_compositions(the_course))
-        row.append(course_details.all_selections_are_visible(the_course))
+            bits = the_course.faculty_group.name.split('.')
+            row.append(bits[0])  # term
+            row.append(bits[1][1:])  # year
+            row.append(bits[2])  # section
+            row.append(bits[3])  # courseNo
+            row.append(bits[4])  # school
 
-        # Breakdown tags & vocabulary terms by item & selection
-        if len(selections) > 0:
-            item_notes = selections.filter(range1=None, range2=None)
-            sel_notes = selections.exclude(range1=None, range2=None)
+            students = the_course.group.user_set.all()
+            if the_course.faculty_group:
+                ids = the_course.faculty_group.user_set.values('id')
+                students = students.exclude(id__in=ids)
+            row.append(len(students))
 
-            tags = Tag.objects.usage_for_queryset(selections)
-            row.append(len(tags))  # # of Active Tags',
-            tag_users = len(
-                selections.filter(tags__isnull=False).distinct('author'))
             if len(students) > 0:
-                # % users using tags
-                row.append(float(tag_users) / len(students) * 100)
+                active = students.filter(Q(projects__isnull=False) |
+                                         Q(sherdnote__isnull=False)).distinct()
+                row.append(float(len(active)) / len(students) * 100)
             else:
                 row.append(0)
 
-            # '% Items Tagged', '% Selections Tagged'
-            t = item_notes.filter(tags__isnull=False).exclude(tags__exact='')
-            row.append(float(len(t)) / len(selections) * 100)
-            t = sel_notes.filter(tags__isnull=False).exclude(tags__exact='')
-            row.append(float(len(t)) / len(selections) * 100)
+            items = Asset.objects.filter(course=the_course)
+            row.append(len(items))
 
-            # Vocabulary
-            vocab = Vocabulary.objects.get_for_object(the_course)
-            content_type = ContentType.objects.get_for_model(SherdNote)
-            related = TermRelationship.objects.filter(
-                term__vocabulary__in=vocab,
-                content_type=content_type,
-                object_id__in=selections.values_list('id'))
+            selections = SherdNote.objects.filter(asset__course=the_course)
+            row.append(len(selections))
 
-            # '# of Active Vocabulary Terms'
-            q = related.aggregate(Count('term', distinct=True))
-            active_terms = q['term__count']
-            vocab_users = len(SherdNote.objects.filter(
-                id__in=related.values_list('object_id')).distinct(
-                'author'))
+            compositions = 0
+            assignments = 0
 
-            row.append(active_terms)
-            if len(students) > 0:
-                row.append(float(vocab_users) / len(students) * 100)  # % users
-            else:
+            projects = Project.objects.filter(course=the_course)
+            for project in projects:
+                if project.visibility_short() == 'Assignment':
+                    assignments += 1
+                else:
+                    compositions += 1
+
+            row.append(compositions)
+            row.append(assignments)
+            try:
+                discussions = get_course_discussions(the_course)
+                row.append(len(discussions))
+                '# of Discussion Items', '% participating in Discussions',
+            except Collaboration.DoesNotExist:
                 row.append(0)
 
-            related_ids = related.values_list('object_id')
-            items = len(SherdNote.objects.filter(id__in=related_ids,
-                                                 range1=None, range2=None))
-            row.append(float(items) / len(selections) * 100)  # % Items
-            sel = len(SherdNote.objects.filter(id__in=related_ids).exclude(
-                range1=None, range2=None))
-            row.append(float(sel) / len(selections) * 100)  # % Selections
+            row.append(course_details.allow_public_compositions(the_course))
+            row.append(course_details.all_selections_are_visible(the_course))
 
-        rows.append(row)
+            # Breakdown tags & vocabulary terms by item & selection
+            if len(selections) > 0:
+                item_notes = selections.filter(range1=None, range2=None)
+                sel_notes = selections.exclude(range1=None, range2=None)
 
-    for row in rows:
-        try:
-            writer.writerow(row)
-        except:
-            pass
+                tags = Tag.objects.usage_for_queryset(selections)
+                row.append(len(tags))  # # of Active Tags',
+                tag_users = len(
+                    selections.filter(tags__isnull=False).distinct('author'))
+                if len(students) > 0:
+                    # % users using tags
+                    row.append(float(tag_users) / len(students) * 100)
+                else:
+                    row.append(0)
 
-    return response
+                # '% Items Tagged', '% Selections Tagged'
+                t = item_notes.filter(tags__isnull=False).exclude(
+                    tags__exact='')
+                row.append(float(len(t)) / len(selections) * 100)
+                t = sel_notes.filter(tags__isnull=False).exclude(
+                    tags__exact='')
+                row.append(float(len(t)) / len(selections) * 100)
+
+                # Vocabulary
+                vocab = Vocabulary.objects.get_for_object(the_course)
+                content_type = ContentType.objects.get_for_model(SherdNote)
+                related = TermRelationship.objects.filter(
+                    term__vocabulary__in=vocab,
+                    content_type=content_type,
+                    object_id__in=selections.values_list('id'))
+
+                # '# of Active Vocabulary Terms'
+                q = related.aggregate(Count('term', distinct=True))
+                active_terms = q['term__count']
+                vocab_users = len(SherdNote.objects.filter(
+                    id__in=related.values_list('object_id')).distinct(
+                    'author'))
+
+                row.append(active_terms)
+                if len(students) > 0:
+                    # % users
+                    row.append(float(vocab_users) / len(students) * 100)
+                else:
+                    row.append(0)
+
+                related_ids = related.values_list('object_id')
+                items = len(SherdNote.objects.filter(id__in=related_ids,
+                                                     range1=None, range2=None))
+                row.append(float(items) / len(selections) * 100)  # % Items
+                sel = len(SherdNote.objects.filter(id__in=related_ids).exclude(
+                    range1=None, range2=None))
+                row.append(float(sel) / len(selections) * 100)  # % Selections
+
+            rows.append(row)
+
+        return self.render_csv_response(
+            'mediathread_activity_by_course', headers, rows)
 
 
-@login_required
-def mediathread_activity_by_school(request):
-    """STAFF ONLY reporting of entire application activity """
-    if not request.user.is_staff:
-        return HttpResponseForbidden("forbidden")
+class ActivityBySchoolView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = \
-        'attachment; filename=mediathread_activity_by_school.csv'
-    writer = csv.writer(response)
-    headers = ['School', 'Items', 'Selections',
-               'Compositions', 'Assignments', 'Discussions']
-    writer.writerow(headers)
+    def get(self, request, *args, **kwargs):
+        headers = ['School', 'Items', 'Selections',
+                   'Compositions', 'Assignments', 'Discussions']
 
-    rows = {}
-    for the_course in Course.objects.all().order_by('-id'):
-        if not (the_course.faculty_group.name.startswith('t1') or
-                the_course.faculty_group.name.startswith('t2') or
-                the_course.faculty_group.name.startswith('t3')):
-            continue
+        rows = {}
+        for the_course in Course.objects.all().order_by('-id'):
+            if not (the_course.faculty_group.name.startswith('t1') or
+                    the_course.faculty_group.name.startswith('t2') or
+                    the_course.faculty_group.name.startswith('t3')):
+                continue
 
-        bits = the_course.faculty_group.name.split('.')
-        school = bits[4]
+            bits = the_course.faculty_group.name.split('.')
+            school = bits[4]
 
-        if school not in rows:
-            row = [school, 0, 0, 0, 0, 0]
-            rows[school] = row
+            if school not in rows:
+                row = [school, 0, 0, 0, 0, 0]
+                rows[school] = row
 
-        items = Asset.objects.filter(course=the_course)
-        rows[school][1] += len(items)
+            items = Asset.objects.filter(course=the_course)
+            rows[school][1] += len(items)
 
-        selections = SherdNote.objects.filter(asset__course=the_course)
-        rows[school][2] += len(selections)
+            selections = SherdNote.objects.filter(asset__course=the_course)
+            rows[school][2] += len(selections)
 
-        compositions = 0
-        assignments = 0
+            compositions = 0
+            assignments = 0
 
-        projects = Project.objects.filter(course=the_course)
-        for project in projects:
-            if project.visibility_short() == 'Assignment':
-                assignments += 1
-            else:
-                compositions += 1
+            projects = Project.objects.filter(course=the_course)
+            for project in projects:
+                if project.visibility_short() == 'Assignment':
+                    assignments += 1
+                else:
+                    compositions += 1
 
-        rows[school][3] += compositions
-        rows[school][4] += assignments
-        try:
-            rows[school][5] += len(get_course_discussions(the_course))
-        except Collaboration.DoesNotExist:
-            pass  # no discussions exist, that's ok
+            rows[school][3] += compositions
+            rows[school][4] += assignments
+            try:
+                rows[school][5] += len(get_course_discussions(the_course))
+            except Collaboration.DoesNotExist:
+                pass  # no discussions exist, that's ok
 
-    for row in rows.values():
-        try:
-            writer.writerow(row)
-        except:
-            pass
+        return self.render_csv_response(
+            'mediathread_activity_by_school', headers, rows.values())
 
-    return response
+
+class SelfRegistrationReportView(LoggedInMixinSuperuser,
+                                 CSVResponseMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        headers = ['First Name', 'Last Name', 'Email', 'Title',
+                   'Institution', 'Referred_By', 'User Story']
+
+        registered = RegistrationProfile.objects.values_list('user_id',
+                                                             flat=True)
+        users = User.objects.filter(id__in=registered)
+
+        rows = []
+        for user in users:
+            rows.append([user.first_name, user.last_name, user.email,
+                        user.profile.title, user.profile.institution,
+                        user.profile.referred_by, user.profile.user_story])
+
+        return self.render_csv_response(
+            'mediathread_self_registration', headers, rows)

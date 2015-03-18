@@ -26,7 +26,7 @@ testtools==0.9.35
 testscenarios==0.4
 python-subunit==0.0.18
 requirements/src/lettuce-0.2.19_ccnmtl-py2-none-any.whl
-selenium==2.42.1
+selenium==2.45.0
 six==1.3.0
 sqlparse==0.1.11
 python-mimeparse==0.1.4

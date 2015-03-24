@@ -3,10 +3,12 @@ from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.test.client import RequestFactory
 import factory
+from registration.models import RegistrationProfile
 
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.models import UserProfile
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from structuredcollaboration.models import Collaboration
@@ -18,9 +20,28 @@ class UserFactory(factory.DjangoModelFactory):
     password = factory.PostGenerationMethodCall('set_password', 'test')
 
 
+class UserProfileFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = UserProfile
+    '''UserProfile adds extra information to a user,
+    and associates the user with a group, school,
+    and country.'''
+    user = factory.SubFactory(UserFactory)
+    title = "Title"
+    institution = "Columbia University"
+    referred_by = "Pablo Picasso"
+    user_story = "User Story"
+    self_registered = True
+
+
 class GroupFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Group
     name = factory.Sequence(lambda n: 'group%d' % n)
+
+
+class RegistrationProfileFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = RegistrationProfile
+    user = factory.SubFactory(UserFactory)
+    activation_key = factory.Sequence(lambda n: 'key%d' % n)
 
 
 class CourseFactory(factory.DjangoModelFactory):

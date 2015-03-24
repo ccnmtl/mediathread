@@ -393,19 +393,27 @@ class ActivityBySchoolView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 class SelfRegistrationReportView(LoggedInMixinSuperuser,
                                  CSVResponseMixin, View):
 
-    def get(self, request, *args, **kwargs):
-        headers = ['First Name', 'Last Name', 'Email', 'Title',
-                   'Institution', 'Referred_By', 'User Story']
-
+    def get_self_registered_users(self):
         registered = RegistrationProfile.objects.values_list('user_id',
                                                              flat=True)
-        users = User.objects.filter(id__in=registered)
+        return User.objects.filter(id__in=registered)
 
+    def get_rows(self, users):
         rows = []
         for user in users:
             rows.append([user.first_name, user.last_name, user.email,
                         user.profile.title, user.profile.institution,
-                        user.profile.referred_by, user.profile.user_story])
+                        user.profile.referred_by, user.profile.user_story,
+                        user.date_joined])
+        return rows
+
+    def get(self, request, *args, **kwargs):
+        headers = ['First Name', 'Last Name', 'Email', 'Title',
+                   'Institution', 'Referred_By', 'User Story',
+                   'Created']
+
+        users = self.get_self_registered_users()
+        rows = self.get_rows(users)
 
         return self.render_csv_response(
             'mediathread_self_registration', headers, rows)

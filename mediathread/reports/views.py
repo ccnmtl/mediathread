@@ -1,15 +1,13 @@
-import csv
 import json
 import re
 
 from courseaffils.lib import users_in_course
 from courseaffils.models import Course
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.aggregates import Count
 from django.db.models.query_utils import Q
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http, rendered_with

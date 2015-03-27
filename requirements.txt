@@ -46,3 +46,4 @@ django-markwhat==2014.9.20
 factory_boy==2.4.1
 django-impersonate==0.9
 django-registration-redux==1.1
+django-waffle==0.10.1

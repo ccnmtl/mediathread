@@ -1,4 +1,8 @@
 # pylint: disable-msg=E1101
+from datetime import datetime, timedelta
+import json
+import re
+
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
@@ -7,17 +11,13 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
 from django.db.models.signals import post_save
-from mediathread.taxonomy.models import TermRelationship
-from structuredcollaboration.models import Collaboration
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
-from datetime import datetime, timedelta
-import re
-import json
 
 from mediathread.assetmgr.models import Asset
 from mediathread.taxonomy.models import TermRelationship
 from structuredcollaboration.models import Collaboration
+
 
 NULL_FIELDS = dict((i, None) for i in
                    'range1 range2 title'.split())

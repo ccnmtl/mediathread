@@ -64,3 +64,4 @@ django-markwhat==2014.9.20
 factory_boy==2.4.1
 django-impersonate==0.9
 requirements/src/django-registration-1.1.tar.gz
+django-waffle==0.10.1

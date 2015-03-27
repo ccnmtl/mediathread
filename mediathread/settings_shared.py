@@ -107,6 +107,7 @@ MIDDLEWARE_CLASSES = [
     'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
+    'waffle.middleware.WaffleMiddleware',
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -154,6 +155,7 @@ INSTALLED_APPS = [
     'django_markwhat',
     'impersonate',
     'registration',
+    'waffle'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )

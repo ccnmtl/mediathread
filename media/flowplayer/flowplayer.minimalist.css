@@ -40,8 +40,18 @@
 .is-rtl.color-light.flowplayer .fp-fullscreen,.is-rtl.color-light.flowplayer .fp-unload,.is-rtl.color-light.flowplayer .fp-mute,.is-rtl.color-light.flowplayer .fp-embed,.is-rtl.color-light.flowplayer .fp-close,.is-rtl.color-light.flowplayer .fp-play{background-image:url(img/black_rtl.png)}
 @media (-webkit-min-device-pixel-ratio: 2){.color-light.flowplayer .fp-fullscreen,.color-light.flowplayer .fp-unload,.color-light.flowplayer .fp-mute,.color-light.flowplayer .fp-embed,.color-light.flowplayer .fp-close,.color-light.flowplayer .fp-play{background-image:url(img/black@x2.png)}
 .is-rtl.color-light.flowplayer .fp-fullscreen,.is-rtl.color-light.flowplayer .fp-unload,.is-rtl.color-light.flowplayer .fp-mute,.is-rtl.color-light.flowplayer .fp-embed,.is-rtl.color-light.flowplayer .fp-close,.is-rtl.color-light.flowplayer .fp-play{background-image:url(img/black_rtl@x2.png)}
-}@media (-webkit-min-device-pixel-ratio: 2){.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-mute,.flowplayer .fp-embed,.flowplayer .fp-close,.flowplayer .fp-play{background-image:url(img/white@x2.png)}
-.is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-mute,.is-rtl.flowplayer .fp-embed,.is-rtl.flowplayer .fp-close,.is-rtl.flowplayer .fp-play{background-image:url(img/white_rtl@x2.png)}
+}
+@media (-webkit-min-device-pixel-ratio: 2) {
+    .flowplayer .fp-fullscreen {
+        background-image:url(img/black@x2.png)
+    }
+    .flowplayer .fp-unload,
+    .flowplayer .fp-mute,
+    .flowplayer .fp-embed,
+    .flowplayer .fp-close,
+    .flowplayer .fp-play {
+        background-image:url(img/white@x2.png)
+    }.is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-mute,.is-rtl.flowplayer .fp-embed,.is-rtl.flowplayer .fp-close,.is-rtl.flowplayer .fp-play{background-image:url(img/white_rtl@x2.png)}
 }.flowplayer .fp-flash-disabled{background:#333;width:390px;margin:0 auto;position:absolute;bottom:0;color:#fff}
 .is-splash.flowplayer .fp-ui,.is-paused.flowplayer .fp-ui{background:url(img/play_white.png) center no-repeat;background-size:12%;}
 .is-rtl.is-splash.flowplayer .fp-ui,.is-rtl.is-paused.flowplayer .fp-ui{background:url(img/play_white_rtl.png) center no-repeat;background-size:12%}

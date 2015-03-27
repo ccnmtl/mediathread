@@ -101,7 +101,8 @@ class Collaboration(models.Model):
                 self.save()
                 return self.group
 
-    def inc_order():
+    @classmethod
+    def inc_order(cls):
         return Collaboration.objects.inc_order()
 
     _order = models.IntegerField(default=inc_order)

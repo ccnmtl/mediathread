@@ -262,7 +262,7 @@ def set_user_setting(request, user_name):
     UserSetting.set_setting(user, name, value)
 
     json_stream = json.dumps({'success': True})
-    return HttpResponse(json_stream, mimetype='application/json')
+    return HttpResponse(json_stream, content_type='application/json')
 
 
 class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
@@ -313,7 +313,7 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             json_stream = json.dumps({
                 'success': False,
                 'message': '%s is not a course member or faculty member'})
-            return HttpResponse(json_stream, mimetype='application/json')
+            return HttpResponse(json_stream, content_type='application/json')
 
         if 'asset_ids[]' in request.POST:
             asset_ids = request.POST.getlist('asset_ids[]')
@@ -335,7 +335,7 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             'project_count': len(object_map['projects']),
             'note_count': len(object_map['notes'])})
 
-        return HttpResponse(json_stream, mimetype='application/json')
+        return HttpResponse(json_stream, content_type='application/json')
 
 
 class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,

@@ -15,7 +15,9 @@ from datetime import datetime, timedelta
 import re
 import json
 
-Asset = models.get_model('assetmgr', 'asset')
+from mediathread.assetmgr.models import Asset
+from mediathread.taxonomy.models import TermRelationship
+from structuredcollaboration.models import Collaboration
 
 NULL_FIELDS = dict((i, None) for i in
                    'range1 range2 title'.split())

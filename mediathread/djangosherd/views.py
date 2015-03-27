@@ -51,7 +51,7 @@ def create_annotation(request):
         response = {'asset': {'id': asset.id},
                     'annotation': {'id': annotation.id}}
         return HttpResponse(json.dumps(response),
-                            mimetype="application/json")
+                            content_type="application/json")
     else:
         # new annotations should redirect 'back' to the asset
         # at the endpoint of the last annotation
@@ -99,7 +99,7 @@ def edit_annotation(request, annot_id):
         response = {'asset': {'id': annotation.asset_id},
                     'annotation': {'id': annotation.id}}
         return HttpResponse(json.dumps(response),
-                            mimetype="application/json")
+                            content_type="application/json")
     else:
         redirect_to = request.GET.get('next', '.')
         return HttpResponseRedirect(redirect_to)

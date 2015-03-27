@@ -144,7 +144,6 @@ INSTALLED_APPS = [
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
-    'south',
     'django_nose',
     'compressor',
     'django_jenkins',

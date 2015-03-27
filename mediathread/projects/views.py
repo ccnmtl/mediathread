@@ -97,7 +97,7 @@ def project_save(request, project_id):
                 'visibility': project.visibility_short(),
                 'due_date': project.get_due_date()
             }
-        }, indent=2), mimetype='application/json')
+        }, indent=2), content_type='application/json')
     else:
         ctx = {'status': 'error', 'msg': ""}
         for key, value in projectform.errors.items():
@@ -111,7 +111,7 @@ def project_save(request, project_id):
                      value[0].lower())
 
         return HttpResponse(json.dumps(ctx, indent=2),
-                            mimetype='application/json')
+                            content_type='application/json')
 
 
 @login_required
@@ -170,7 +170,7 @@ def project_revisions(request, project_id):
         for v in project.versions.order_by('-change_time')]
 
     return HttpResponse(json.dumps(data, indent=2),
-                        mimetype='application/json')
+                        content_type='application/json')
 
 
 @allow_http("GET")
@@ -243,7 +243,7 @@ def project_view_readonly(request, project_id, version_number=None):
         data['panels'] = panels
 
         return HttpResponse(json.dumps(data, indent=2),
-                            mimetype='application/json')
+                            content_type='application/json')
 
 
 @login_required
@@ -378,7 +378,7 @@ def project_workspace(request, project_id, feedback=None):
         panels.append(panel)
 
         return HttpResponse(json.dumps(data, indent=2),
-                            mimetype='application/json')
+                            content_type='application/json')
 
 
 @login_required
@@ -441,10 +441,10 @@ def project_sort(request):
     data = {'sorted': 'true'}
 
     return HttpResponse(json.dumps(data, indent=2),
-                        mimetype='application/json')
+                        content_type='application/json')
 
     json_stream = json.dumps(data, indent=2)
-    return HttpResponse(json_stream, mimetype='application/json')
+    return HttpResponse(json_stream, content_type='application/json')
 
 
 class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,

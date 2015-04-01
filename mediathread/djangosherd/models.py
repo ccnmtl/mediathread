@@ -62,8 +62,8 @@ class Annotation(models.Model):
             return tc_range
         if self.range1 is not None:
             tc_range += self.secondsToCode(self.range1)
-        if (self.range2 is not None
-                and self.range2 != self.range1):
+        if (self.range2 is not None and
+                self.range2 != self.range1):
             tc_range += " - %s" % self.secondsToCode(self.range2)
         return tc_range
 

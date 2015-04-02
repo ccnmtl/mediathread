@@ -17,7 +17,7 @@ mccabe==0.2.1
 flake8==2.0
 BeautifulSoup==3.2.1
 lxml==3.2.3
-fuzzywuzzy==0.2
+fuzzywuzzy==0.4.0
 sure==1.2.7
 ipython==0.13.2
 ipdb==0.7

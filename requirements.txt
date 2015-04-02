@@ -11,13 +11,13 @@ Pillow==2.7.0
 nose==1.3.4
 versiontools==1.9.1
 statsd==3.0.1
-pep8==1.4.6
+pep8==1.6.2
 pyflakes==0.7.3
 mccabe==0.2.1
 flake8==2.0
 BeautifulSoup==3.2.1
 lxml==3.2.3
-fuzzywuzzy==0.2
+fuzzywuzzy==0.4.0
 sure==1.2.9
 ipython==0.13.2
 ipdb==0.7
@@ -28,7 +28,7 @@ python-subunit==0.0.18
 requirements/src/lettuce-0.2.19_ccnmtl-py2-none-any.whl
 selenium==2.45.0
 six==1.9.0
-sqlparse==0.1.11
+sqlparse==0.1.14
 python-mimeparse==0.1.4
 mimeparse==0.1.3
 django-tastypie==0.12.0

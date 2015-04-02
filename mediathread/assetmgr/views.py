@@ -222,12 +222,12 @@ OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
 # NON_VIEW
 def good_asset_arg(key):
     # need support for some things like width,height,max_zoom
-    return (not (key.startswith('annotation-')
-                 or key.startswith('save-')
-                 or key.startswith('metadata-')  # asset metadata
-                 or key.endswith('-metadata')  # source metadata
-                 )
-            and key not in OPERATION_TAGS)
+    return (not (key.startswith('annotation-') or
+                 key.startswith('save-') or
+                 key.startswith('metadata-') or  # asset metadata
+                 key.endswith('-metadata')  # source metadata
+                 ) and
+            key not in OPERATION_TAGS)
 
 
 def sources_from_args(request, asset=None):

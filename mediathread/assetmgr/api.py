@@ -1,4 +1,4 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource

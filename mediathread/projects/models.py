@@ -128,17 +128,19 @@ class ProjectManager(models.Manager):
         return [p for p in projects if p.visible(request)]
 
     def visible_by_course_and_user(self, request, course, user, is_faculty):
-        projects = Project.objects.filter(Q(author=user, course=course)
-                                          | Q(participants=user, course=course)
-                                          ).distinct()
+        projects = Project.objects.filter(
+            Q(author=user, course=course) |
+            Q(participants=user, course=course)
+        ).distinct()
 
         lst = [p for p in projects if p.visible(request)]
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 
         if not is_faculty:
-            lst.sort(reverse=True, key=lambda project: project.feedback_date()
-                     or project.modified)
+            lst.sort(reverse=True,
+                     key=lambda project: project.feedback_date() or
+                     project.modified)
         return lst
 
     def by_course_and_users(self, course, user_ids):
@@ -396,8 +398,8 @@ class Project(models.Model):
 
     def is_participant(self, user_or_request):
         user = getattr(user_or_request, 'user', user_or_request)
-        return (user == self.author
-                or user in self.participants.all())
+        return (user == self.author or
+                user in self.participants.all())
 
     def citations(self):
         """
@@ -431,8 +433,8 @@ class Project(models.Model):
             # legacy
             return self.submitted
 
-        return (col._policy.policy_name != 'PrivateEditorsAreOwners'
-                and col._policy.policy_name != 'InstructorShared')
+        return (col._policy.policy_name != 'PrivateEditorsAreOwners' and
+                col._policy.policy_name != 'InstructorShared')
 
     def visible(self, request):
         col = self.collaboration()
@@ -477,9 +479,9 @@ class Project(models.Model):
         if sync_group:
             participants = self.participants.all()
             if (len(participants) > 1 or
-                (col.group_id and col.group.user_set.count() > 1)
-                    or (self.author not in participants and
-                        len(participants) > 0)):
+                (col.group_id and col.group.user_set.count() > 1) or
+                (self.author not in participants and
+                 len(participants) > 0)):
                 colgrp = col.have_group()
                 already_grp = set(colgrp.user_set.all())
                 for user in participants:

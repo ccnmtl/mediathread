@@ -23,8 +23,8 @@ try:
 
             if match_path(path, 'ANONYMOUS_PATHS'):
                 return None
-            if (hasattr(settings, 'NON_ANONYMOUS_PATHS')
-                    and not match_path(path, 'NON_ANONYMOUS_PATHS')):
+            if (hasattr(settings, 'NON_ANONYMOUS_PATHS') and
+                    not match_path(path, 'NON_ANONYMOUS_PATHS')):
                 return None
 
             # from django.shortcuts import get_object_or_404

@@ -173,7 +173,7 @@ def class_summary_graph(request):
                                          'target': assets[didx.asset_id], })
 
     return HttpResponse(json.dumps(the_context, indent=2),
-                        mimetype='application/json')
+                        content_type='application/json')
 
 
 @allow_http("GET")
@@ -202,7 +202,7 @@ def mediathread_activity_by_course(request):
     if not request.user.is_staff:
         return HttpResponseForbidden("forbidden")
 
-    response = HttpResponse(mimetype='text/csv')
+    response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = \
         'attachment; filename=mediathread_activity_by_course.csv'
     writer = csv.writer(response)
@@ -353,7 +353,7 @@ def mediathread_activity_by_school(request):
     if not request.user.is_staff:
         return HttpResponseForbidden("forbidden")
 
-    response = HttpResponse(mimetype='text/csv')
+    response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = \
         'attachment; filename=mediathread_activity_by_school.csv'
     writer = csv.writer(response)

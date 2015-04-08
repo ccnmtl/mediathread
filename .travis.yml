@@ -4,4 +4,5 @@ python:
 install:
   - ./bootstrap.py
 script:
-  - make
+  - make jenkins
+  - make harvest

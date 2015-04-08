@@ -23,7 +23,7 @@ test: ./ve/bin/python
 	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
 
 harvest: ./ve/bin/python
-	$(MANAGE) harvest --settings=mediathread.settings_test
+	$(MANAGE) harvest --settings=mediathread.settings_test mediathread/main/features/login.feature
 
 flake8: ./ve/bin/python
 	$(FLAKE8) $(APP) --max-complexity=17

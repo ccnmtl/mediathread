@@ -1,13 +1,10 @@
 # flake8: noqa
 from settings_shared import *
-import os
-
-PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, '../lettuce.db'),
+        'NAME': './lettuce.db',
         'OPTIONS': {
             'timeout': 30,
         },
@@ -15,9 +12,9 @@ DATABASES = {
     }
 }
 
-#BROWSER = 'Firefox'
+# BROWSER = 'Firefox'
 BROWSER = 'Headless'
-#BROWSER = 'Chrome'
+# BROWSER = 'Chrome'
 
 LETTUCE_APPS = (
     'mediathread.main',

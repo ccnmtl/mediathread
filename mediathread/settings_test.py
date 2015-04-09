@@ -19,8 +19,7 @@ BROWSER = 'Headless'
 LETTUCE_APPS = (
     'mediathread.main',
     'mediathread.projects',
-    'mediathread.assetmgr',
-    'mediathread.djangosherd'
+    'mediathread.assetmgr'
 )
 
 LETTUCE_DJANGO_APP = ['lettuce.django']

@@ -1,8 +1,10 @@
 language: python
+env:
+  - TEST_SUITE=jenkins
+  - TEST_SUITE=harvest
 python:
   - "2.7"
 install:
   - ./bootstrap.py
 script:
-  - make jenkins
-  - make harvest
+  - make $TEST_SUITE

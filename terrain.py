@@ -37,7 +37,7 @@ def reset_database(variables):
 @before.all
 def setup_browser():
     world.browser = None
-    browser = getattr(settings, 'BROWSER', "Chrome")
+    browser = getattr(settings, 'BROWSER', "Headless")
     if browser == 'Firefox':
         ff_profile = FirefoxProfile()
         ff_profile.set_preference("webdriver_enable_native_events", False)

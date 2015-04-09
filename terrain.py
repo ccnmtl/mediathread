@@ -25,6 +25,7 @@ def reset_database(variables):
 
     try:
         os.remove('lettuce.db')
+        time.sleep(1)
     except OSError, e:
         if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
             raise  # re-raise exception if a different error occurred
@@ -178,6 +179,7 @@ def there_is_a_sample_assignment(step):
 
 @step(u'there is a sample response')
 def there_is_a_sample_response(step):
+    time.sleep(1)
     os.system("./manage.py loaddata mediathread/main/fixtures/"
               "sample_assignment_and_response.json "
               "--settings=mediathread.settings_test > /dev/null")

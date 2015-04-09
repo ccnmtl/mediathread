@@ -453,14 +453,21 @@ def the_owner_is_name_in_the_title_column(step, name, title):
     assert column, "Unable to find a column entitled %s" % title
 
     s = "div.switcher_collection_chooser"
-    m = column.find_element_by_css_selector(s)
-    owner = m.find_element_by_css_selector("a.switcher-top span.title")
-    msg = "Expected owner title to be %s. Actually %s" % (name, owner.text)
+    try:
+        m = column.find_element_by_css_selector(s)
+        owner = m.find_element_by_css_selector("a.switcher-top span.title")
+        owner.text
+    except StaleElementReferenceException:
+        time.sleep(1)
+        m = column.find_element_by_css_selector(s)
+        owner = m.find_element_by_css_selector("a.switcher-top span.title")
+
     if owner.text != name:
         time.sleep(1)
         m = column.find_element_by_css_selector(s)
         owner = m.find_element_by_css_selector("a.switcher-top span.title")
 
+    msg = "Expected owner title to be %s. Actually %s" % (name, owner.text)
     assert owner.text == name, msg
 
 

@@ -22,6 +22,11 @@ node_modules/jscs/bin/jscs:
 test: ./ve/bin/python
 	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
 
+harvest: ./ve/bin/python
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/main/features
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/assetmgr/features
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/projects/features
+
 flake8: ./ve/bin/python
 	$(FLAKE8) $(APP) --max-complexity=17
 

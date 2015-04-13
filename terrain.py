@@ -25,6 +25,7 @@ def reset_database(variables):
 
     try:
         os.remove('lettuce.db')
+        time.sleep(1)
     except OSError, e:
         if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
             raise  # re-raise exception if a different error occurred
@@ -37,7 +38,7 @@ def reset_database(variables):
 @before.all
 def setup_browser():
     world.browser = None
-    browser = getattr(settings, 'BROWSER', "Chrome")
+    browser = getattr(settings, 'BROWSER', "Headless")
     if browser == 'Firefox':
         ff_profile = FirefoxProfile()
         ff_profile.set_preference("webdriver_enable_native_events", False)
@@ -178,6 +179,7 @@ def there_is_a_sample_assignment(step):
 
 @step(u'there is a sample response')
 def there_is_a_sample_response(step):
+    time.sleep(1)
     os.system("./manage.py loaddata mediathread/main/fixtures/"
               "sample_assignment_and_response.json "
               "--settings=mediathread.settings_test > /dev/null")
@@ -451,14 +453,21 @@ def the_owner_is_name_in_the_title_column(step, name, title):
     assert column, "Unable to find a column entitled %s" % title
 
     s = "div.switcher_collection_chooser"
-    m = column.find_element_by_css_selector(s)
-    owner = m.find_element_by_css_selector("a.switcher-top span.title")
-    msg = "Expected owner title to be %s. Actually %s" % (name, owner.text)
+    try:
+        m = column.find_element_by_css_selector(s)
+        owner = m.find_element_by_css_selector("a.switcher-top span.title")
+        owner.text
+    except StaleElementReferenceException:
+        time.sleep(1)
+        m = column.find_element_by_css_selector(s)
+        owner = m.find_element_by_css_selector("a.switcher-top span.title")
+
     if owner.text != name:
         time.sleep(1)
         m = column.find_element_by_css_selector(s)
         owner = m.find_element_by_css_selector("a.switcher-top span.title")
 
+    msg = "Expected owner title to be %s. Actually %s" % (name, owner.text)
     assert owner.text == name, msg
 
 

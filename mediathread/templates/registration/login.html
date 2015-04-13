@@ -24,7 +24,7 @@
             <br />
             <form id="login-local" name="login_local" method="post" action=".">
                 {% csrf_token %}
-                <div class="login-local-form">
+                <div class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
                     <div class="fieldwrapper">
                         <label for="id_username">Username:</label>
                         {{ form.username }}
@@ -35,10 +35,10 @@
                         {{ form.password }}
                     </div><!-- fieldwrapper -->
                 </div>      
+                <input class="btn-primary" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}
+                    onclick="jQuery('.login-local-form').show(); jQuery(this).hide(); return false;"/>
+                <input class="btn-primary login-local-form" type="submit" value="Log In" {% if not form.errors %}style="display: none;"{% endif %} />                        
                 <input type="hidden" name="next" value="{{ next|urlencode }}" />
-                <input class="regbutton login-local-form" type="submit"
-                    value="Log In" style="float: right; margin: 10px 11px 0 0;"/>
-                <div class="visualclear"></div>                        
             </form>
             <p class="smalltxt"><a href="/accounts/password_reset/">Forgot Password?</a></p>
             <p class="smalltxt"><a href="{% url "registration_register" %}">Need a guest account?</a></p>

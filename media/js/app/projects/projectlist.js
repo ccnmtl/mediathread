@@ -3,7 +3,7 @@ var ProjectList = function (config) {
     self.template_label = config.template_label;
     self.parent = config.parent;
     self.switcher_context = {};
-    
+
     jQuery.ajax({
         url: '/media/templates/' + config.template + '.mustache?nocache=v2',
         dataType: 'text',
@@ -13,25 +13,25 @@ var ProjectList = function (config) {
             self.refresh(config);
         }
     });
-    
+
     jQuery(window).bind('projectlist.refresh', { 'self': self }, function (event) {
         var self = event.data.self;
         self.refresh(config);
     });
-    
+
     return this;
 };
 
 ProjectList.prototype.createAssignmentResponse = function (evt) {
     var self = this;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    
+
     if (!jQuery(srcElement).is("a")) {
         srcElement = jQuery(srcElement).parent();
     }
-    
+
     var params = { 'parent': jQuery(srcElement).data("id") };
-    
+
     jQuery.ajax({
         type: 'POST',
         url: MediaThread.urls['project-create'](),
@@ -48,7 +48,7 @@ ProjectList.prototype.deleteAssignmentResponse = function (evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var link = jQuery(srcElement).parent()[0];
     var data_id = jQuery(link).data("id");
-    
+
     return ajaxDelete(link, data_id, {
         object_type: 'assignment response',
         success: function () {
@@ -60,33 +60,33 @@ ProjectList.prototype.deleteAssignmentResponse = function (evt) {
 ProjectList.prototype.refresh = function (config) {
     var self = this;
     var url;
-        
+
     if (config.view === 'all' || !config.space_owner) {
         url = MediaThread.urls['all-projects']();
     } else {
         url = MediaThread.urls['your-projects'](config.space_owner);
     }
-    
+
     jQuery("a.linkRespond").unbind("click");
     jQuery("a.btnRespond").unbind("click");
     jQuery("a.btnDeleteResponse").unbind("click");
-    
+
     jQuery.ajax({
         url: url,
         dataType: 'json',
         cache: false, // Internet Explorer has aggressive caching policies.
         success: function (the_records) {
             self.update(the_records);
-            
+
             jQuery("a.btnRespond").bind("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
-            
+
             jQuery("a.linkRespond").bind("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
 
-            
+
             jQuery("a.btnDeleteResponse").bind("click", function (evt) {
                 self.deleteAssignmentResponse(evt);
             });
@@ -97,7 +97,7 @@ ProjectList.prototype.refresh = function (config) {
 ProjectList.prototype.selectOwner = function (username) {
     var self = this;
     var url = username ? MediaThread.urls['your-projects'](username) : MediaThread.urls['all-projects']();
-    
+
     jQuery.ajax({
         type: 'GET',
         url: url,
@@ -109,7 +109,7 @@ ProjectList.prototype.selectOwner = function (username) {
             self.update(the_records);
         }
     });
-    
+
     return false;
 };
 
@@ -130,13 +130,13 @@ ProjectList.prototype.updateSwitcher = function () {
     var self = this;
     self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items;
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
-    
+
     // hook up switcher choice owner behavior
     jQuery(self.parent).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
         var username = bits[bits.length - 1];
-        
+
         if (username === "all-class-members") {
             username = null;
         }
@@ -150,7 +150,7 @@ ProjectList.prototype.update = function (the_records) {
     self.switcher_context.owners = the_records.course.group.user_set;
     self.switcher_context.space_viewer = the_records.space_viewer;
     self.switcher_context.selected_view = self.selected_view;
-    
+
     if (self.getShowingAllItems(the_records)) {
         self.switcher_context.selected_label = "All Class Members";
         self.switcher_context.showing_all_items = true;
@@ -166,22 +166,21 @@ ProjectList.prototype.update = function (the_records) {
         self.switcher_context.showing_all_items = false;
         self.switcher_context.selected_label = the_records.space_owner.public_name;
     }
-    
+
     self.current_records = the_records;
-    
+
     var n = _propertyCount(the_records.active_filters);
     if (n > 0) {
         the_records.active_filter_count = n;
     }
-    
+
     Mustache.update(self.template_label, the_records, {
         parent: self.parent,
         pre: function (elt) { jQuery(elt).hide(); },
         post: function (elt) {
             self.updateSwitcher();
-            
+
             jQuery(elt).fadeIn("slow");
         }
     });
 };
-    

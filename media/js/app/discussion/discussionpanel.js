@@ -6,7 +6,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     self.space_owner = space_owner;
     self.form = jQuery(self.el).find("form.threaded_comments_form")[0];
     self.max_comment_length = parseInt(self.form.getAttribute('data-maxlength'), 10);
-    
+
     djangosherd.storage.json_update(panel.context);
 
     jQuery(window).resize(function () {
@@ -17,7 +17,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
         self.onTinyMCEInitialize(instance);
     });
-    
+
     self._bind(self.el, "td.panel-container", "panel_state_change", function () {
         self.onClosePanel(jQuery(this).hasClass("subpanel"));
     });
@@ -72,7 +72,7 @@ var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     } else {
         self.hide_comment_form(false);
     }
-    
+
     jQuery(window).trigger("resize");
 };
 
@@ -103,7 +103,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
         } else {
             self.tinyMCE.focus();
         }
-        
+
         self.collectionList = new CollectionList({
             'parent' : self.el,
             'template' : 'collection',
@@ -115,7 +115,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
             'view_callback': function () {
                 var newAssets = self.collectionList.getAssets();
                 self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
-                
+
                 // Fired by CollectionList & AnnotationList
                 jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
                     var newAssets = self.collectionList.getAssets();
@@ -131,7 +131,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
 DiscussionPanelHandler.prototype.resize = function () {
     var self = this;
     var visible = getVisibleContentHeight();
-    
+
     jQuery(self.el).find('tr td.panel-container div.panel').css('height', (visible) + "px");
 
     visible -= jQuery(self.el).find(".discussion-toolbar-row").height();
@@ -154,10 +154,10 @@ DiscussionPanelHandler.prototype.resize = function () {
 
     visible += 45;
     jQuery(self.el).find('div.threadedcomments-container').css('height', (visible + 30) + "px");
-    
+
     // Resize the collections box, subtracting its header elements
     jQuery(self.el).find('div.collection-assets').css('height', (visible - 50) + "px");
-    
+
     // Resize the media display window
     jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
 
@@ -178,9 +178,9 @@ DiscussionPanelHandler.prototype.onClosePanel = function () {
 
 DiscussionPanelHandler.prototype.render = function () {
     var self = this;
-    
+
     // Give precedence to media view IF the subpanel is open and we're in readonly mode
-    
+
     if (!self.isEditing() && self.isSubpanelOpen()) {
         jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
         jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
@@ -188,13 +188,13 @@ DiscussionPanelHandler.prototype.render = function () {
         jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
         jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
     }
-    
+
     jQuery(window).trigger("resize");
 };
 
 DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
     jQuery(target).parent().css("background", "none");
-    
+
     var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
         PanelManager.openSubPanel(a[0]);
@@ -278,17 +278,17 @@ DiscussionPanelHandler.prototype.open_edit = function (evt, focus) {
 
 DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scroll) {
     var self = this;
-    
+
     jQuery(self.el).find("div.threaded_comment_header").addClass("opacity_fiftypercent");
     jQuery(self.el).find("div.threaded_comment_text").addClass("opacity_fiftypercent");
     jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").addClass("disabled");
 
-    
+
     if (insertAfter) {
         self.tinyMCE = null;
         tinyMCE.execCommand("mceRemoveControl", false, "id_comment");
         jQuery(self.form).insertAfter(insertAfter);
-        
+
         ///makes it resizable--somewhat hacking tinyMCE.init()
         tinyMCE.settings.theme_advanced_statusbar_location = "bottom";
         tinyMCE.settings.theme_advanced_resize_vertical = true;
@@ -305,7 +305,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
             }, 100);
         }
     });
-    
+
 
     // Switch to an Edit View
     // Unload any citations
@@ -318,26 +318,26 @@ DiscussionPanelHandler.prototype.open_comment_form = function (insertAfter, scro
 
 DiscussionPanelHandler.prototype.hide_comment_form = function () {
     var self = this;
-    
+
     jQuery(self.el).find("div.threaded_comment_header").removeClass("opacity_fiftypercent");
     jQuery(self.el).find("div.threaded_comment_text").removeClass("opacity_fiftypercent");
     jQuery(self.el).find("div.threaded_comment_text").find("a.materialCitation").removeClass("disabled");
-    
+
     // Switch to a readonly view
     if (self.tinyMCE) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
-    
+
     jQuery(self.form).hide('fast', function () {
         jQuery(self.form.elements.title).hide();
-    
+
         // Switch to a readonly view
         jQuery(self.el).find("div.collection-materials").hide();
-    
+
         jQuery(self.el).find("td.panhandle-stripe div.label")
                 .html("View Inserted Selections");
         jQuery(self.el).find("div.asset-view-published").show();
-        
+
         self.render();
     });
 };
@@ -462,10 +462,10 @@ DiscussionPanelHandler.prototype.oncomplete = function (responseText, textStatus
                 self.form.elements.timestamp.value = res.timestamp;
                 self.form.elements.security_hash.value = res.security_hash;
             }
-            
+
             // 4. hide form
             self.hide_comment_form(false);
-            
+
             // 5. show respond/edit controls again
             jQuery("div.threaded_comment_text").show();
             jQuery("div.respond_to_comment_form_div").show();

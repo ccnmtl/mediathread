@@ -1,6 +1,5 @@
 (function() {
-
-    window.AnnotationList = new (function AnnotationListAbstract() {
+    var AnnotationList = function() {
         var self = this;
 
         this.init = function(config) {
@@ -36,7 +35,7 @@
                 // setup url rewriting for HTML5 && HTML4 browsers
                 jQuery(window).bind('popstate', function(event) {
                     if (event.originalEvent.state) {
-                        window.AnnotationList
+                        window.annotationList
                               ._update(
                                   {
                                       'annotation_id': event.originalEvent
@@ -82,7 +81,7 @@
                         }
                     }
 
-                    window.AnnotationList
+                    window.annotationList
                         ._update(config, 'annotation-current', xywh);
                 });
                 return this;
@@ -858,7 +857,7 @@
             }
 
             // Save the results up on the server
-            var url
+            var url;
             var creating;
 
             if (frm.elements['annotation-id']) {
@@ -1129,5 +1128,7 @@
                 }
             });
         };
-    })();
+    };
+
+    window.annotationList = new AnnotationList();
 })();

@@ -13,7 +13,7 @@ function buildshieldbox() {
     var nobrowsercommentdiv = document.getElementById("nobrowsercomment");
     nobrowserwarningdiv.innerHTML = 'You are using ' + BrowserDetect.browser + ' v.' + BrowserDetect.version + ', an unsupported browser.';
     nobrowsercommentdiv.innerHTML = '<br /><br />For a better experience using this site, please upgrade to a recommended recent web browser.';
-    
+
     var thisbrowsername = null;
     if (BrowserDetect.browser === 'Internet Explorer') {
         thisbrowsername = 'MSIE';
@@ -33,7 +33,7 @@ function buildshieldbox() {
 function shieldbrowser(reqbrowser) {
     var browsername = false;
     var versionmismatch = false;
-    
+
     var thisbrowsername = null;
     if (BrowserDetect.browser === 'Internet Explorer') {
         thisbrowsername = 'MSIE';

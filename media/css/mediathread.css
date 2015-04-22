@@ -17,6 +17,11 @@ body
     width: 100% auto;
 }
 
+.ui-widget {
+  font-family: 'lucida grande',arial,verdana,sans-serif;
+  font-size: 1em;
+}
+
 .ui-widget-content,
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
     color: #383838;
@@ -3996,6 +4001,7 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
 
 ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
+    outline: 0;
 }
 
 div.asset-view-con  tainer div.asset-view-details h1 {

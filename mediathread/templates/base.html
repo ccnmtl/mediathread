@@ -27,7 +27,6 @@
         {% compress css %}
             <link rel="stylesheet" href='{% static "css/print.css" %}' media="print" />
             <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
-
             {% block css %}{% endblock %}
         {% endcompress %}
 
@@ -253,12 +252,13 @@
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 // setup some ajax progress indicator
-                jQuery("html").bind("ajaxStart", function(){  
+                jQuery("html").ajaxStart(function() {  
                    jQuery(this).addClass("busy");
-                }).bind("ajaxStop", function(){  
+                })
+                jQuery("html").ajaxStop(function() {  
                    jQuery(this).removeClass("busy");
                 });
-                
+
                 /* Select from list: Chrome, Firefox, Safari, MSIE */
                 shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 10 });
                

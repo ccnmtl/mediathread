@@ -253,7 +253,7 @@ AssetPanelHandler.prototype.resize = function () {
         visible -= jQuery("div#annotations-organized h2").outerHeight() +
             jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 36;
         jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
-        jQuery("div.accordion").accordion("resize");
+        jQuery("div.accordion").accordion("refresh");
         
         var container = jQuery(self.el).find('div.asset-table')[0];
         jQuery(container).masonry();
@@ -267,7 +267,7 @@ AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {
     
     var bits = srcElement.href.split('/');
     self.showAsset(bits[bits.length - 2], null, true);
-        
+
     return false;
 };
 

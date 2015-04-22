@@ -314,43 +314,36 @@
             Mustache.update('annotation-list', context, {
                 pre: function(elt) {
                     jQuery(elt).hide();
-                    jQuery('div.accordion').accordion('destroy');
+                    jQuery('.accordion').accordion('destroy');
                 },
                 post: function(elt) {
                     var options = {
                         autoHeight: false,
                         collapsible: true,
-                        active: false
+                        active: false,
+                        animate: false,
+                        heightStyle: "content"
                     };
 
                     jQuery(elt).show();
                     jQuery('li.annotation-listitem', elt)
                         .each(self.decorateLink);
 
-                    // active the current annotation if it exists
-                    jQuery('div.accordion').accordion(options);
+                    // activate the current annotation if it exists
+                    jQuery('.accordion').accordion(options);
+                    jQuery('.accordion').accordion({
+                        'activate': self.showAnnotation});
+                    
                     if (self.active_annotation) {
                         var active = jQuery('#accordion-' +
                             self.active_annotation.id)[0];
-                        var parent = jQuery(active).parents('div.accordion');
-                        jQuery(parent).accordion('activate', active);
-
+                        var parent = jQuery(active).parents('.accordion');
+                        
+                        var idx = jQuery(parent).find('h3').index(active);
+                        jQuery(parent).accordion('option', 'active', idx);
                         jQuery(active)
                            .find('input.annotation-listitem-icon').show();
-
-                        setTimeout(function() {
-                            var list = jQuery(active).offsetParent()[0];
-                            jQuery(list)
-                                .scrollTop(jQuery(list).scrollTop() +
-                                     jQuery(active).position().top);
-                        }, 200);
                     }
-
-                    // Wait to hook up the changestart to prevent default
-                    //  'showAnnotation'
-                    // behavior on initial activation
-                    jQuery('div.accordion')
-                        .accordion({'changestart': self.showAnnotation});
                 }
             });
         };
@@ -649,16 +642,15 @@
 
                 var group = jQuery(ui.newHeader)
                                 .parents('li.annotation-group')[0];
-                jQuery(group).siblings().find('div.accordion')
-                    .accordion('activate', false);
-
+                jQuery(group).siblings().find('.accordion')
+                    .accordion('option', 'active', false);
+                
                 setTimeout(function() {
                     var list = jQuery(ui.newHeader).offsetParent()[0];
                     jQuery(list).scrollTop(jQuery(list)
                         .scrollTop() + jQuery(ui.newHeader)
                             .position().top - 10);
-                }, 200);
-
+                }, 200);                
             }
         };
 
@@ -695,8 +687,9 @@
                 if (self.active_annotation) {
                     var active = jQuery('#accordion-' +
                                      self.active_annotation.id)[0];
-                    var parent = jQuery(active).parents('div.accordion');
-                    jQuery(parent).accordion('activate', active);
+                    var parent = jQuery(active).parents('.accordion');
+                    var idx = jQuery(parent).find('h3').index(active);
+                    jQuery(parent).accordion('option', 'active', idx);
                 }
                 jQuery(self.eltsAnnotationDisplay).fadeIn();
             });

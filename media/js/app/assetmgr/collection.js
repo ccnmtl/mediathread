@@ -27,16 +27,7 @@ var CollectionList = function (config) {
     self.current_asset = config.current_asset;
     
     self.el = jQuery(self.parent).find("div." + self.template_label)[0];
-    
-    // setup some ajax progress indicator
-    jQuery(self.el).bind("ajaxStart", function(){
-        if (!self.loading) {
-            jQuery("div.ajaxloader").show();
-        }
-     }).bind("ajaxStop", function(){  
-        jQuery("div.ajaxloader").hide();
-     });
-    
+
     self.switcher_context = {};
     
     jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) {
@@ -71,9 +62,6 @@ var CollectionList = function (config) {
         cache: false, // Chrome && Internet Explorer has aggressive caching policies.
         success: function (text) {
             MediaThread.templates[config.template] = Mustache.template(config.template, text);
-            
-            var url = null;
-            
             self.refresh(config);
         }
     });
@@ -191,6 +179,19 @@ var CollectionList = function (config) {
     return this;
 };
 
+CollectionList.prototype.getLoading = function() {
+    return self.loading;
+};
+
+CollectionList.prototype.setLoading = function(isLoading) {
+    self.loading = isLoading;
+    if (self.loading) {
+        jQuery(".ajaxloader").show();
+    } else {
+        jQuery(".ajaxloader").hide();
+    }
+};
+
 CollectionList.prototype.constructUrl = function(config, updating) {
     var self = this;
     var url;
@@ -223,6 +224,7 @@ CollectionList.prototype.constructUrl = function(config, updating) {
 
 CollectionList.prototype.refresh = function (config) {
     var self = this;
+    self.setLoading(true);
     self.limits.offset = 0;
     var url = self.constructUrl(config, false);
 
@@ -238,6 +240,7 @@ CollectionList.prototype.refresh = function (config) {
 
 CollectionList.prototype.appendItems = function (config) {
     var self = this;
+    self.setLoading(true);
     self.limits.offset += self.limits.limit;
 
     var url = self.constructUrl(config, true);
@@ -249,7 +252,6 @@ CollectionList.prototype.appendItems = function (config) {
     false,
     function (the_records) {
         self.appendAssets(the_records);
-        self.loading = false;
     });
 };
 
@@ -281,6 +283,7 @@ CollectionList.prototype.deleteAnnotation = function (annotation_id) {
 // Linkable tags within the Project-level composition view
 CollectionList.prototype.filterByTag = function (tag) {
     var self = this;
+    self.setLoading(true);
     var active_modified = ('modified' in self.current_records.active_filters) ? 
             self.current_records.active_filters.modified
             : null;
@@ -299,6 +302,7 @@ CollectionList.prototype.filterByTag = function (tag) {
 // Linkable tags within the Item View/References page
 CollectionList.prototype.filterByClassTag = function (tag) {
     var self = this;
+    self.setLoading(true);
     djangosherd.storage.get({
         type: 'asset',
         url: MediaThread.urls['all-space'](tag, null, self.citable)
@@ -314,6 +318,7 @@ CollectionList.prototype.filterByClassTag = function (tag) {
 //Linkable vocabulary within the Item View/References page
 CollectionList.prototype.filterByVocabulary = function (srcElement) {
     var self = this;
+    self.setLoading(true);
     var url = MediaThread.urls['all-space'](null, null, self.citable);
     url += jQuery(srcElement).data("vocabulary-id") + "=" + 
         jQuery(srcElement).data("term-id");
@@ -331,6 +336,7 @@ CollectionList.prototype.filterByVocabulary = function (srcElement) {
 
 CollectionList.prototype.filter = function () {
     var self = this;
+    self.setLoading(true);
     var filters = {};
     
     jQuery(self.el).find("select.course-tags, select.vocabulary")
@@ -558,10 +564,9 @@ CollectionList.prototype.updateAssets = function (the_records) {
             if (self.current_asset === null) {
                 // handles the maximized view
                 jQuery(window).scroll(function () { 
-                    if (!self.loading &&
+                    if (!self.getLoading() &&
                         jQuery(window).scrollTop() >= jQuery(document).height() -
                             jQuery(window).height() - 300) {
-                        self.loading = true;
                         self.appendItems(self.current_records);
                     }
                 });
@@ -569,10 +574,9 @@ CollectionList.prototype.updateAssets = function (the_records) {
                 // handle the minimized view
                 var container = jQuery(self.el).find("div.collection-assets")[0];
                 jQuery(container).scroll(function () { 
-                    if (!self.loading &&
+                    if (!self.getLoading() &&
                         container.scrollTop + jQuery(container).innerHeight() >= 
                             container.scrollHeight - 300) {
-                        self.loading = true;
                         self.appendItems(self.current_records);
                     }
                 });
@@ -591,7 +595,7 @@ CollectionList.prototype.updateAssets = function (the_records) {
             }
 
             jQuery(window).trigger("resize");
-
+            self.setLoading(false);
         }
     });    
 };
@@ -610,6 +614,7 @@ CollectionList.prototype.appendAssets = function (the_records) {
         }
         
         jQuery(window).trigger("assets.refresh", [html]);
+        self.setLoading(false);
     }
 };
     

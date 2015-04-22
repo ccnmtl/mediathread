@@ -55,12 +55,12 @@
     we can restart or stop the tour,
     and also navigate through the steps
      */    
-    $('#activatetour').live('click', startTour);
-    $('#canceltour').live('click', endTour);
-    $('#endtour').live('click', endTour);
-    $('#restarttour').live('click', restartTour);
-    $('#nextstep').live('click', nextStep);
-    $('#prevstep').live('click', prevStep);
+    $('#activatetour').on('click', startTour);
+    $('#canceltour').on('click', endTour);
+    $('#endtour').on('click', endTour);
+    $('#restarttour').on('click', restartTour);
+    $('#nextstep').on('click', nextStep);
+    $('#prevstep').on('click', prevStep);
     
     function startTour(){
         $('#activatetour').remove();

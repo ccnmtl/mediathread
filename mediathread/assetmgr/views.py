@@ -187,7 +187,7 @@ def asset_create(request):
     elif request.is_ajax():
         # unsure when asset_create is called via ajax
         return HttpResponse(serializers.serialize('json', asset),
-                            mimetype="application/json")
+                            content_type="application/json")
     elif "archive" == asset.primary.label:
         redirect_url = request.POST.get('redirect-url',
                                         reverse('class-manage-sources'))
@@ -212,7 +212,7 @@ def asset_delete(request, asset_id):
     annotations.delete()
 
     json_stream = json.dumps({})
-    return HttpResponse(json_stream, mimetype='application/json')
+    return HttpResponse(json_stream, content_type='application/json')
 
 
 OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
@@ -222,12 +222,12 @@ OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
 # NON_VIEW
 def good_asset_arg(key):
     # need support for some things like width,height,max_zoom
-    return (not (key.startswith('annotation-')
-                 or key.startswith('save-')
-                 or key.startswith('metadata-')  # asset metadata
-                 or key.endswith('-metadata')  # source metadata
-                 )
-            and key not in OPERATION_TAGS)
+    return (not (key.startswith('annotation-') or
+                 key.startswith('save-') or
+                 key.startswith('metadata-') or  # asset metadata
+                 key.endswith('-metadata')  # source metadata
+                 ) and
+            key not in OPERATION_TAGS)
 
 
 def sources_from_args(request, asset=None):
@@ -309,7 +309,7 @@ def annotation_create_global(request, asset_id):
             }
         }
         return HttpResponse(json.dumps(response),
-                            mimetype="application/json")
+                            content_type="application/json")
 
     except SherdNote.DoesNotExist:
         return HttpResponseForbidden("forbidden")
@@ -439,7 +439,7 @@ def final_cut_pro_xml(request, asset_id):
                 clips.append(clip)
 
         xmldom, dumb_uuid = the_video.clips2dom(clips)
-        res = HttpResponse(xmldom.toxml(), mimetype='application/xml')
+        res = HttpResponse(xmldom.toxml(), content_type='application/xml')
         res['Content-Disposition'] = \
             'attachment; filename="%s.xml"' % asset.title
         return res

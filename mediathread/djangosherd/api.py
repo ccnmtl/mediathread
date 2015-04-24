@@ -1,4 +1,4 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote

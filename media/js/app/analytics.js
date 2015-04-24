@@ -1,3 +1,5 @@
+/* global _gaq: true */
+
 /**
  * Listens For:
  * video.create > video of type x is instantiated.

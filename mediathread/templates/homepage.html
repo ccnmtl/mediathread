@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load tagging_tags user_projects helpful_tags coursetags comments collaborations %}
+{% load waffle_tags %}
 
 {% block title %}
     Home
@@ -283,13 +284,17 @@
                 <div class="collection_content">
                     <a href="#" id="upload-from-computer" class ="arrow arrowClosed">
                         <h3 class="left">Upload from Computer</h3>
-                        <div class="arrowIcon left">
-                        </div>
+                        <div class="arrowIcon left"></div>
                     </a>
-                        <div class="arrowContent" id="upload_desktop" style="display: none">                
+                    <div class="arrowContent" id="upload_desktop" style="display: none">
+                        {% flag "uploads_offline" %}
+                            <div class="instructions">
+                                <p>The upload feature is currently down for maintenance. We will return shortly.</p>
+                            </div>
+                        {% else %}
                             {% ifequal role_in_course "non-member" %}
                                 <div class="instructions">
-                                    You must be a course member to upload media files.
+                                    <p>You must be a course member to upload media files.</p>
                                 </div>
                             {% else %}                        
                                     <p>
@@ -301,8 +306,8 @@
                                         {% if owners %}
                                             <div class="upload_for">
                                             <b>For:</b>&nbsp;
-                                            <select name="as"> 
-                                            {% for owner in owners %}                                
+                                            <select name="as">
+                                            {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
                                             {% endfor %}
                                             </select>
@@ -314,13 +319,13 @@
                                     </form>  
                                     </div>
                                     <div id="upload_video">
-                                     <strong>Upload Video</strong>
+                                    <strong>Upload Video</strong>
                                     <form action="/explore/redirect/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
                                             <b>For:</b>&nbsp;
-                                            <select id="video_owners" name="as"> 
-                                            {% for owner in owners %}                                
+                                            <select id="video_owners" name="as">
+                                            {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
                                             {% endfor %}
                                             </select>
@@ -331,9 +336,8 @@
                                     </form>               
                                     </div>
                             {% endifequal %}
-
-                        
-                    </div><!-- end upload from desktop -->
+                       {% endflag %}
+                </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
             {% endif %}
             {% endif %}            

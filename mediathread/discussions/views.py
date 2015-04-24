@@ -108,7 +108,7 @@ def discussion_create(request):
                                                  new_threaded_comment)}
 
         return HttpResponse(json.dumps(data, indent=2),
-                            mimetype='application/json')
+                            content_type='application/json')
 
 
 @allow_http("POST")
@@ -179,7 +179,7 @@ def discussion_view(request, discussion_id):
         data['panels'].append(panel)
 
         return HttpResponse(json.dumps(data, indent=2),
-                            mimetype='application/json')
+                            content_type='application/json')
 
 
 @allow_http("POST")

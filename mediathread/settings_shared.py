@@ -23,7 +23,7 @@ ALLOWED_HOSTS = ['.ccnmtl.columbia.edu', 'localhost']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '',
+        'NAME': 'mediathread',
         'HOST': '',
         'PORT': '',
         'USER': '',
@@ -107,6 +107,7 @@ MIDDLEWARE_CLASSES = [
     'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
+    'waffle.middleware.WaffleMiddleware',
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -144,7 +145,6 @@ INSTALLED_APPS = [
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
-    'south',
     'django_nose',
     'compressor',
     'django_jenkins',
@@ -154,6 +154,7 @@ INSTALLED_APPS = [
     'django_markwhat',
     'impersonate',
     'registration',
+    'waffle'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )

@@ -8,9 +8,18 @@ RUNNING TESTS
 
 1. Required in path: sqlite3 and Firefox.
 2. ./manage.py harvest --settings=mediathread.settings_test --debug-mode
-3. The server runs on port 8002
 
 More information here...http://lettuce.it/reference/cli.html
+
+
+# Full run
+# time(./manage.py harvest --settings=mediathread.settings_test \
+# --debug-mode --verbosity=2 --traceback)
+
+# Run a particular file + scenario
+# ./manage.py harvest \
+# mediathread/main/features/manage_selection_visibility.feature \
+# -d --settings=mediathread.settings_test -s 1
 
 ------------------
 BROWSER SELECTION

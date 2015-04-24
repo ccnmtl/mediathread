@@ -1,3 +1,5 @@
+/* global escape: true, MediaThread: true, unescape: true */
+
 function _propertyCount(obj) {
     var count = 0;
     for (var k in obj) {
@@ -83,7 +85,7 @@ function toggleHelpOverlay(btn, user, help_content_id) {
     if (elts.length) {
         var checked = jQuery(elts[0]).is(':checked');
         updateUserSetting(MediaThread.current_username, help_content_id,
-													!checked);
+                                                    !checked);
     }
     return false;
 }

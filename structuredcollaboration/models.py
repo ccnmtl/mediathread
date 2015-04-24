@@ -12,9 +12,6 @@ from django.contrib.auth.models import User, Group
 
 
 class CollaborationManager(models.Manager):
-    def inc_order(self):
-        return 1 + (self.aggregate(Max('_order')).get('_order__max', 0) or 0)
-
     def get_for_object_list(self, object_list):
         ctype = ContentType.objects.get_for_model(object_list[0])
         ids = [str(o.id) for o in object_list]
@@ -100,11 +97,6 @@ class Collaboration(models.Model):
                 self.group = Group.objects.create(name=name)
                 self.save()
                 return self.group
-
-    def inc_order():
-        return Collaboration.objects.inc_order()
-
-    _order = models.IntegerField(default=inc_order)
 
     class Meta:
         unique_together = (("content_type", "object_pk"),)

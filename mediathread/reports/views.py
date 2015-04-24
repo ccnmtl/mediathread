@@ -177,7 +177,7 @@ def class_summary_graph(request):
                                          'target': assets[didx.asset_id], })
 
     return HttpResponse(json.dumps(the_context, indent=2),
-                        mimetype='application/json')
+                        content_type='application/json')
 
 
 @allow_http("GET")

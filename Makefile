@@ -2,7 +2,7 @@ MANAGE=./manage.py
 APP=mediathread
 FLAKE8=./ve/bin/flake8
 
-jenkins: ./ve/bin/python validate test flake8
+jenkins: ./ve/bin/python check jshint test flake8
 
 ./ve/bin/python: requirements.txt bootstrap.py virtualenv.py
 	./bootstrap.py
@@ -22,17 +22,22 @@ node_modules/jscs/bin/jscs:
 test: ./ve/bin/python
 	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
 
+harvest: ./ve/bin/python
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/main/features
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/assetmgr/features
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/projects/features
+
 flake8: ./ve/bin/python
 	$(FLAKE8) $(APP) --max-complexity=17
 
-runserver: ./ve/bin/python validate
+runserver: ./ve/bin/python check
 	$(MANAGE) runserver
 
-migrate: ./ve/bin/python validate jenkins
+migrate: ./ve/bin/python check jenkins
 	$(MANAGE) migrate
 
-validate: ./ve/bin/python
-	$(MANAGE) validate
+check: ./ve/bin/python
+	$(MANAGE) check
 
 shell: ./ve/bin/python
 	$(MANAGE) shell_plus
@@ -47,14 +52,14 @@ clean:
 
 pull:
 	git pull
-	make validate
+	make check
 	make test
 	make migrate
 	make flake8
 
 rebase:
 	git pull --rebase
-	make validate
+	make check
 	make test
 	make migrate
 	make flake8
@@ -63,7 +68,7 @@ rebase:
 # this out on a new machine to set up dev
 # database, etc. You probably *DON'T* want
 # to run it after that, though.
-install: ./ve/bin/python validate jenkins
+install: ./ve/bin/python check jenkins
 	createdb $(APP)
 	$(MANAGE) syncdb --noinput
 	make migrate

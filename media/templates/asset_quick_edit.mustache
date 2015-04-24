@@ -1,16 +1,16 @@
     <td class="panel-container open" style="display: none">
         <div id="asset-workspace-panel-container" class="panel asset-workspace-dialog">
             <table class="panel-subcontainer">
-                <tr class="asset-workspace-content-row">                    
+                <tr class="asset-workspace-content-row">
                     <td class="panel-container open asset subpanel fixed" style="display: block">
                         {{#>>asset-view-header}}
                             <div id="asset-view-header">
                                 {{#asset-current}}
                                      <div class="asset-view-title"><h3>{{title}}</h3></div>
-                                {{/asset-current}}                             
+                                {{/asset-current}}
                              </div>
                         {{/>>asset-view-header}}
-                        
+
                         <div class="asset-view-container">
                             <div class="asset-view-published asset-view-dialog">
                                 <div id="asset-workspace-videoclipbox" class="videoclipbox">
@@ -27,18 +27,18 @@
                                     {{#annotation.editing?}}
                                         style="display: none"
                                     {{/annotation.editing?}}>
-                                        
+
                                     <h2>Edit Item</h2>
                                     <form id="edit-global-annotation-form" method="post"
                                         {{#asset-current.global_annotation.id?}}
                                         action="/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
                                         {{/asset-current.global_annotation.id?}}
-                                        
+
                                         {{^asset-current.global_annotation.id}}
                                             action="/asset/create/{{asset-current.id}}/global/"
                                         {{/asset-current.global_annotation.id}}
                                         >
-                                        
+
                                         {{#vocabulary}}
                                         <div>
                                             <label>{{display_name}}</label>
@@ -54,7 +54,7 @@
                                             </div>
                                         </div>
                                         {{/vocabulary}}
-                                    
+
                                         {{#asset-current}}
                                             <div>
                                                 <label>Tags</label>
@@ -79,41 +79,41 @@
                                             <br />
                                         {{/asset-current}}
                                         <input class="btn-primary right"
-                                            type="submit" name="submit_notes" value="Save Item" 
-                                            onclick="return AnnotationList.saveItem(this)"></input>
-                                            
+                                            type="submit" name="submit_notes" value="Save Item"
+                                            onclick="return annotationList.saveItem(this)"></input>
+
                                         <input class="btn-primary right"
-                                            type="submit" name="submit_notes_cancel" value="Cancel" 
-                                            onclick="return AnnotationList.cancelItem(this)"></input>
+                                            type="submit" name="submit_notes_cancel" value="Cancel"
+                                            onclick="return annotationList.cancelItem(this)"></input>
                                         <div class="visualclear"></div>
                                     </form>
-                                    
+
                                 </div> {{! end global annotation }}
-                                
+
                                 {{#>>annotation-current}}
                                     <div id="annotation-current">
                                         <div id="asset-details-annotations-current"
-                                            
+
                                             {{#annotation.editing?}}
                                                 style="display: block"
                                             {{/annotation.editing?}}
-                                            
+
                                             {{^annotation.editing}}
                                                 style="display: none"
                                             {{/annotation.editing}}
                                             >
                                             {{#annotation}}
-                                            <div id="original-annotation" class="annotation-data" 
-                                                 data-begin="{{range1}}" 
+                                            <div id="original-annotation" class="annotation-data"
+                                                 data-begin="{{range1}}"
                                                  data-end="{{range2}}"
                                                  {{#annotation_data?}}
                                                     data-annotation="{{annotation_data}}"
                                                  {{/annotation_data?}}
                                                  {{^annotation_data}}
                                                     data-annotation="{}"
-                                                 {{/annotation_data}}> 
+                                                 {{/annotation_data}}>
                                             </div>
-                                        
+
                                             <h2>
                                                 {{#id?}}
                                                     Edit Selection
@@ -128,7 +128,7 @@
                                                  {{/id}}
                                             </h2>
                                             {{/annotation}}
-                                            
+
                                             <form name="edit-annotation-form" onsubmit="return false;">
                                                 <div class="asset-annotator">
                                                     <div class="sherd-instructions"></div>
@@ -141,7 +141,7 @@
                                                     name="annotation-title" value="{{annotation.metadata.title}}"/>
                                                 </div>
                                                 <br />
-                                                
+
                                                 {{#vocabulary}}
                                                     <div>
                                                         <label>{{display_name}}</label>
@@ -157,38 +157,38 @@
                                                         </div>
                                                     </div>
                                                 {{/vocabulary}}
-                        
+
                                                 {{#annotation}}
-                                                    <label for="annotation-tags">Tags</label> 
-                                                    <div><input type="text" id="id_annotation-tags" 
+                                                    <label for="annotation-tags">Tags</label>
+                                                    <div><input type="text" id="id_annotation-tags"
                                                         name="annotation-tags" data-placeholder="select or create tags"
                                                         value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
                                                     <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
-                                                    
+
                                                     <label for="annotation-body">Note</label>
                                                     <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
-                                                    
+
                                                     <input type="hidden" name="annotation-range1" value="{{range1}}" />
                                                     <input type="hidden" name="annotation-range2" value="{{range2}}" />
                                                     <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
-                                                    
-                                                    <input class="btn-primary right" type="button" name="Save" value="Save Selection" 
-                                                        onclick="javascript:AnnotationList.saveAnnotation(this)" />
-                                                        
-                                                    <input class="btn-primary right" type="button" name="Cancel" value="Cancel" 
-                                                        onclick="javascript:AnnotationList.cancelAnnotation()" />
-                                                    
+
+                                                    <input class="btn-primary right" type="button" name="Save" value="Save Selection"
+                                                        onclick="javascript:annotationList.saveAnnotation(this)" />
+
+                                                    <input class="btn-primary right" type="button" name="Cancel" value="Cancel"
+                                                        onclick="javascript:annotationList.cancelAnnotation()" />
+
                                                     {{#id?}} <!-- Editing existing annotation -->
                                                     <input type="hidden" name="annotation-id" value="{{id}}" />
                                                     {{/id?}}
-                                                    {{/annotation}}            
+                                                    {{/annotation}}
                                                 <div class="visualclear"></div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
-                                {{/>>annotation-current}}  
-                                </div></div>                                                
+                                {{/>>annotation-current}}
+                                </div></div>
                             {{/>>asset-view-details}}
                         </div> {{! end asset-view-container }}
                     </td>

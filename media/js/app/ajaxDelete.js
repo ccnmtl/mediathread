@@ -1,4 +1,4 @@
-/* requires jQueryUI */
+/* global showMessage */
 
 function ajaxDelete(link, container, opts) {
     var postUrl = null;

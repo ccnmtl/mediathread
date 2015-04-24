@@ -337,9 +337,17 @@ class Source(models.Model):
         return url_processor(self, request, obj)
 
 
-class SupportedSource(models.Model):
+class ExternalCollection(models.Model):
     title = models.CharField(max_length=1024)
-    archive_url = models.CharField(max_length=1024)
+    url = models.CharField(max_length=1024)
+
+    def __unicode__(self):
+        return self.title
+
+
+class SupportedExternalCollection(models.Model):
+    title = models.CharField(max_length=1024)
+    url = models.CharField(max_length=1024)
     thumb_url = models.CharField(max_length=1024)
     description = models.TextField()
 

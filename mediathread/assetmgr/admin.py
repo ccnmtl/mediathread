@@ -1,5 +1,6 @@
 # pylint: disable-msg=R0904
-from mediathread.assetmgr.models import Asset, Source, SupportedSource
+from mediathread.assetmgr.models import (Asset, Source,
+                                         SupportedExternalCollection)
 from django.contrib import admin
 
 
@@ -32,4 +33,4 @@ class SourceAdmin(admin.ModelAdmin):
 
 admin.site.register(Asset, AssetAdmin)
 admin.site.register(Source, SourceAdmin)
-admin.site.register(SupportedSource)
+admin.site.register(SupportedExternalCollection)

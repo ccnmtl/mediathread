@@ -23,7 +23,7 @@ from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, SupportedSource
+from mediathread.assetmgr.models import Asset, SupportedExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
@@ -156,7 +156,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
 
         upload_enabled = course_details.is_upload_enabled(course)
 
-        supported_sources = SupportedSource.objects.all().order_by("title")
+        supported_sources = SupportedExternalCollection.objects.all().order_by("title")
         upload_permission = int(course.get_detail(
             course_details.UPLOAD_PERMISSION_KEY,
             course_details.UPLOAD_PERMISSION_DEFAULT))

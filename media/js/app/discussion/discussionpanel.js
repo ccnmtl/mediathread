@@ -1,3 +1,7 @@
+/* global CitationView: true, djangosherd: true, CollectionList: true */
+/* global getVisibleContentHeight: true, MediaThread: true */
+/* global PanelManager: true, tinyMCE: true, showMessage: true */
+
 var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     var self = this;
     self.el = el;

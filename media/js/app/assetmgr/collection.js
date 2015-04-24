@@ -1,3 +1,7 @@
+/* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
+/* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
+/* global Mustache: true, Sherd: true,  */
+
 /**
  * Listens For:
  * asset.on_delete > refresh
@@ -181,10 +185,12 @@ var CollectionList = function (config) {
 };
 
 CollectionList.prototype.getLoading = function() {
+    var self = this;
     return self.loading;
 };
 
 CollectionList.prototype.setLoading = function(isLoading) {
+    var self = this;
     self.loading = isLoading;
     if (self.loading) {
         jQuery(".ajaxloader").show();

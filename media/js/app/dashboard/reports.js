@@ -1,3 +1,4 @@
+/* global pv: true */
 //requires Protovis: http://vis.stanford.edu/protovis/
 
 var SherdReport = function() {

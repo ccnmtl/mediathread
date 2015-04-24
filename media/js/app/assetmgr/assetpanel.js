@@ -1,3 +1,6 @@
+/* global annotationList: true, CitationView: true, CollectionList: true */
+/* global djangosherd: true, getVisibleContentHeight: true, panelManager: true */ 
+
 /**
  * Listens For:
  * assets.refresh > trigger a resize/masonry event

@@ -1,8 +1,9 @@
 /* jshint loopfunc: true */
+/* global _: true, Backbone: true, showMessage: true */
 
 (function(jQuery) {
 
-    Term = Backbone.Model.extend({
+    var Term = Backbone.Model.extend({
         urlRoot: '/api/term/',
         toTemplate: function() {
             return _(this.attributes).clone();
@@ -34,7 +35,7 @@
         }
     });
 
-    Vocabulary = Backbone.Model.extend({
+    var Vocabulary = Backbone.Model.extend({
         urlRoot: '/api/vocabulary/',
         parse: function(response) {
 
@@ -536,8 +537,7 @@
                             parents[parents.indexOf(temp)].term_set.push({'display_name': display});
                         } else {
                             //add the term to the Vocabulary in parents
-                            v = search;
-                            parents[parents.indexOf(v)].term_set.push({'display_name': display});
+                            parents[parents.indexOf(search)].term_set.push({'display_name': display});
                         }
 
                         if (i == MAX - 1) {

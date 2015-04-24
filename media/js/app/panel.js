@@ -1,3 +1,7 @@
+/* global AssetPanelHandler: true, getVisibleContentHeight: true */
+/* global DiscussionPanelHandler: true, MediaThread: true */
+/* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */ 
+
 (function () {
     var PanelFactory = function() {
         this.create = function (el, parent, type, panels, space_owner) {

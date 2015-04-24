@@ -1,3 +1,6 @@
+/* global _: true, Backbone: true, getVisibleContentHeight: true */
+/* global showMessage: true */
+
 (function(jQuery) {
     var global = this;
 
@@ -206,11 +209,11 @@
             var self = this;
             // @todo - put up an overlay & a progress indicator.
 
-            asset_ids = [];
+            var asset_ids = [];
             this.selectedAssets.forEach(function(asset) {
                 asset_ids.push(asset.id);
             });
-            project_ids = [];
+            var project_ids = [];
             this.selectedProjects.forEach(function(project) {
                 project_ids.push(project.id);
             });

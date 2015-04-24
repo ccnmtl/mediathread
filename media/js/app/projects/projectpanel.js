@@ -1,3 +1,8 @@
+/* global djangosherd: true, CitationView: true, CollectionList: true */
+/* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
+/* global panelManager: true, SelectFilter: true, showMessage: true */
+/* global tinyMCE: true, tiny_mce_settings: true */
+
 var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     var self = this;
 

@@ -1,3 +1,5 @@
+/* global MediaThread: true, Mustache: true */
+
 (function () {
     var global = this;
     

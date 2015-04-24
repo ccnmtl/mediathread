@@ -1,3 +1,5 @@
+/* global escape: true, MediaThread: true, unescape: true */
+
 function _propertyCount(obj) {
     var count = 0;
     for (var k in obj) {

@@ -1,3 +1,8 @@
+/* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
+/* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
+/* global retrieveData: true, showMessage: true, storeData: true */
+/* global updateUserSetting: true */ 
+
 (function() {
     var AnnotationList = function() {
         var self = this;
@@ -994,7 +999,7 @@
                 error: function() {},
                 success: function(json, textStatus, xhr) {
                     var tags = [];
-                    for (i = 0; i < json.tags.length; i++) {
+                    for (var i = 0; i < json.tags.length; i++) {
                         tags.push(json.tags[i].name);
                     }
                     jQuery('input[name="annotation-tags"]').select2({

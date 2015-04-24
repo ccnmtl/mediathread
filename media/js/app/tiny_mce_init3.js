@@ -1,3 +1,5 @@
+/* global tinymce: true, tinyMCE: true */
+
 var tiny_mce_settings = {
         theme: "advanced",
         content_css: "/media/css/project.css",

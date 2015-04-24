@@ -1,3 +1,6 @@
+/* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
+/* global Mustache: true, showMessage: true */
+
 var ProjectList = function (config) {
     var self = this;
     self.template_label = config.template_label;

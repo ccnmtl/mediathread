@@ -1,6 +1,7 @@
+/* global pv: true */
 //requires Protovis: http://vis.stanford.edu/protovis/
 
-var SherdReport = (new (function() {
+var SherdReport = function() {
     var self = this;
     this.started = false;
 
@@ -14,7 +15,7 @@ var SherdReport = (new (function() {
             for (var author in node.users) {
                 if (node.users.hasOwnProperty(author)) {
                     jQuery('#reports-student-tbody tr.user-' + author)
-												.addClass('highlight');
+                                                .addClass('highlight');
                 }
             }
         }
@@ -76,7 +77,7 @@ var SherdReport = (new (function() {
         })
         .strokeStyle(function(d) {
             return (d.faculty ? new pv.Color.Rgb(200, 0, 0, 1) :
-										this.fillStyle().darker());
+                                        this.fillStyle().darker());
         })
         .lineWidth(self.nodeDefaultLineWidth)
         .shape(function(d) {
@@ -107,26 +108,28 @@ var SherdReport = (new (function() {
                 self.nodes.lineWidth(self.nodeDefaultLineWidth);
             } else {
                 var user = jQuery(this)
-										.addClass('highlight').attr('data-username');
+                                        .addClass('highlight').attr('data-username');
 
                 self.nodes.lineWidth(function(d) {
                     return (d.users && d.users[user] ?
-														10 : self.nodeDefaultLineWidth(d));
+                                                        10 : self.nodeDefaultLineWidth(d));
                 });
             }
         });
     };
-})()); //end SherdReport
+}; //end SherdReport
+
+var sherdReport = new SherdReport();
 
 var report_done = false;
 window['hs_onshow_reports-graph'] = function() {
-    if (!SherdReport.started) {
-        SherdReport.started = true;
+    if (!sherdReport.started) {
+        sherdReport.started = true;
         jQuery.ajax({
             url: '/reports/class_summary/graph.json?nocache=' +
-								Number(new Date()) + location.search.replace(/^./, '&'),
+                                Number(new Date()) + location.search.replace(/^./, '&'),
             dataType: 'json',
-            success: SherdReport.init
+            success: sherdReport.init
         });
     }
 };

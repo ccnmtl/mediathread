@@ -1,6 +1,10 @@
-(function() {
+/* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
+/* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
+/* global retrieveData: true, showMessage: true, storeData: true */
+/* global updateUserSetting: true */ 
 
-    window.AnnotationList = new (function AnnotationListAbstract() {
+(function() {
+    var AnnotationList = function() {
         var self = this;
 
         this.init = function(config) {
@@ -36,7 +40,7 @@
                 // setup url rewriting for HTML5 && HTML4 browsers
                 jQuery(window).bind('popstate', function(event) {
                     if (event.originalEvent.state) {
-                        window.AnnotationList
+                        window.annotationList
                               ._update(
                                   {
                                       'annotation_id': event.originalEvent
@@ -82,7 +86,7 @@
                         }
                     }
 
-                    window.AnnotationList
+                    window.annotationList
                         ._update(config, 'annotation-current', xywh);
                 });
                 return this;
@@ -858,7 +862,7 @@
             }
 
             // Save the results up on the server
-            var url
+            var url;
             var creating;
 
             if (frm.elements['annotation-id']) {
@@ -995,7 +999,7 @@
                 error: function() {},
                 success: function(json, textStatus, xhr) {
                     var tags = [];
-                    for (i = 0; i < json.tags.length; i++) {
+                    for (var i = 0; i < json.tags.length; i++) {
                         tags.push(json.tags[i].name);
                     }
                     jQuery('input[name="annotation-tags"]').select2({
@@ -1129,5 +1133,7 @@
                 }
             });
         };
-    })();
+    };
+
+    window.annotationList = new AnnotationList();
 })();

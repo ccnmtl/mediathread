@@ -1,28 +1,28 @@
     <td id="asset-workspace-panel-container" class="panel-container open asset-workspace parent">
         <div class="column-container parent-column-container">
-            <div class="panel asset-workspace">            
+            <div class="panel asset-workspace">
                 <table class="panel-subcontainer">
                     <tr class="asset-workspace-title-row">
                         <td class="collection-view-header">
                             <div class="actions">
                                 <input id="collection-help-button"
-                                    type="image" title="Help" 
+                                    type="image" title="Help"
                                     alt="Help"
                                     class="help-button"
-                                    src="/media/img/icons/meth_help.png" />                                                             
-                            </div>                        
+                                    src="/media/img/icons/meth_help.png" />
+                            </div>
                             <h2><a href="/asset">Collection</a></h2>
                         </td>
                         <td />
                         <td />
-                        <td class="asset-view-header">                                    
+                        <td class="asset-view-header">
                             <div class="actions">
                                 <input id="asset-view-help-button" type="image" title="Help"
-                                    class="help-button" 
-                                     onclick="return AnnotationList.showHelp();" 
-                                     alt="Help" src="/media/img/icons/meth_help.png" />                                                             
-                            </div>  
-                        
+                                    class="help-button"
+                                     onclick="return annotationList.showHelp();"
+                                     alt="Help" src="/media/img/icons/meth_help.png" />
+                            </div>
+
                             <div class="asset-view-header">
                                 <h2>Item
                                 {{#>>asset-view-header}}
@@ -36,7 +36,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr class="asset-workspace-content-row">                        
+                    <tr class="asset-workspace-content-row">
                         <td class="panel-container collection subpanel">
                             <div class="ajaxloader">
                                 <div class="message">
@@ -44,20 +44,20 @@
                                 <br /><br />
                                 <div>Refreshing the collection</div>
                                 </div>
-                            </div>                            
+                            </div>
                             <div id="media_gallery" class="media_gallery"></div>
                         </td>
-                          
+
                         <td class="panhandle-stripe collection">
                             <div class="label">Collection</div>
                         </td>
-                        
+
                         <td class="pantab-container maximized">
                             <div class="pantab collection maximized"></div>
                         </td>
-                                        
+
                         <td class="panel-container closed asset subpanel fixed alwaysopen">
-                            <div class="visualclear"></div>                            
+                            <div class="visualclear"></div>
                             <div class="asset-view-container">
                                 <div class="asset-view-published">
                                     <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
@@ -66,24 +66,24 @@
                                         <div class="clipstrip-display"></div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="tabs asset-view-tabs" style="display: none">
                                     {{#>>asset-view-help}}
                                     <div id="asset-view-help">
                                     <div id="asset-view-overlay" class="ui-widget-overlay ui-widget-overlay-dark" {{^show_help}}style="display: none"{{/show_help}}></div>
-    
+
                                     <div id="asset-view-help-tab" class="ui-widget-content asset-view-help-tab" {{^show_help}}style="display: none"{{/show_help}}>
-                                            <input class="dismiss-help" type="image" title="Dismiss help" 
-                                                onclick="return AnnotationList.dismissHelp(this);" 
+                                            <input class="dismiss-help" type="image" title="Dismiss help"
+                                                onclick="return annotationList.dismissHelp(this);"
                                                 alt="Dismiss Help" src="/media/img/icons/meth_help.png" />
                                     </div>
-                                    
+
                                     <div id="asset-view-help" class="ui-widget-content asset-view-help" {{^show_help}}style="display: none"{{/show_help}}>
                                         <h3>
                                             How to analyze this item
-                                        </h3>                                            
+                                        </h3>
                                         <div class="asset-view-help-instructions">
-                                            Click the [<img alt="Pencil Icon" src="/media/img/icons/meth_edit.png" />] icon to add tags and notes to whole items. 
+                                            Click the [<img alt="Pencil Icon" src="/media/img/icons/meth_edit.png" />] icon to add tags and notes to whole items.
                                         </div>
                                         <h3>
                                             How to work with item selections
@@ -100,68 +100,68 @@
                                                 Do not show this message again.
                                         </div>
                                         <div class="visualclear"></div>
-                                        <div style="float: right">    
-                                            <input class="btn-primary right" type="button" 
-                                                onclick="javascript:AnnotationList.dismissHelp(this)" 
+                                        <div style="float: right">
+                                            <input class="btn-primary right" type="button"
+                                                onclick="javascript:annotationList.dismissHelp(this)"
                                                 value="Dismiss Help">
                                         </div>
                                     </div>
                                     </div>
                                     {{/>>asset-view-help}}
-                                    
+
                                     <ul>
                                         <li><a href="#tabs-1">Item</a></li>
                                         <li><a href="#tabs-2">Source</a></li>
                                         <li><a href="#tabs-3">References</a></li>
                                     </ul>
-                                    
+
                                     <div id="tabs-1">
-                                        {{#>>asset-view-details}}                                    
+                                        {{#>>asset-view-details}}
                                         <div id="asset-view-details" class="asset-view-details">
                                             {{#>>asset-global-annotation}}
                                             <div id="asset-global-annotation"
                                                 {{#annotation.editing?}}
                                                     style="display: none"
                                                 {{/annotation.editing?}}>
-                                                
+
                                                 {{#asset-current}}
                                                     <h2>Item
                                                         <div class="actions">
-                                                            {{#global_annotation.id?}}     
-                                                            <input type="image" title="Remove item from collection" 
-                                                                onclick="return AnnotationList.deleteItem(event, this, {{id}});" 
+                                                            {{#global_annotation.id?}}
+                                                            <input type="image" title="Remove item from collection"
+                                                                onclick="return annotationList.deleteItem(event, this, {{id}});"
                                                                 alt="Delete" src="/media/img/icons/meth_delete.png" />
-                                                            {{/global_annotation.id?}}                                                           
-                                                            
-                                                            <input type="image" title="Edit item" 
-                                                               onclick="return AnnotationList.editItem(this);" 
+                                                            {{/global_annotation.id?}}
+
+                                                            <input type="image" title="Edit item"
+                                                               onclick="return annotationList.editItem(this);"
                                                                alt="Edit" src="/media/img/icons/meth_edit.png" />
-                                                        </div>                                                
+                                                        </div>
                                                     </h2>
-                                                        
+
                                                     <div id="asset-header">
                                                         <table>
                                                             <tr>
-                                                                {{#thumb_url?}} 
+                                                                {{#thumb_url?}}
                                                                     <td class="thumbnail">
                                                                        <img src="{{thumb_url}}" alt="Item Thumbnail" />
                                                                     </td>
                                                                 {{/thumb_url?}}
                                                                 <td>
-                                                                    <div class="global-annotation-analysis">     
+                                                                    <div class="global-annotation-analysis">
                                                                     {{^global_annotation_analysis}}
                                                                         <center>
                                                                             <div>You have no notes or tags for this item.</div>
                                                                             <br />
                                                                             <a class="btn-primary edit-item"
-                                                                                onclick="return AnnotationList.editItem(this);">
+                                                                                onclick="return annotationList.editItem(this);">
                                                                                 <img src="/media/img/icons/meth_edit.png"
                                                                                     alt="Edit this item"></img>
                                                                                 Edit this item
                                                                             </a>
                                                                        </center>
                                                                     {{/global_annotation_analysis}}
-                                                                    
+
                                                                     {{#global_annotation.metadata.body?}}
                                                                         <div class="meta">
                                                                             <label>Notes</label>
@@ -173,7 +173,7 @@
                                                                 </td>
                                                             </tr>
                                                         </table>
-                                                        
+
                                                         {{#global_annotation.metadata.tags?}}
                                                         <div class="meta global-annotation-tags">
                                                             <label>Tags: </label>
@@ -182,7 +182,7 @@
                                                             {{/global_annotation.metadata.tags}}
                                                         </div>
                                                         {{/global_annotation.metadata.tags?}}
-                                                        
+
                                                         {{#global_annotation.vocabulary?}}
                                                             {{#global_annotation.vocabulary}}
                                                                 <div class="meta">
@@ -195,28 +195,28 @@
                                                         {{/global_annotation.vocabulary?}}
                                                     </div>
                                                 {{/asset-current}}
-                                                
+
                                                 <form id="edit-global-annotation-form" method="post"
                                                     {{#asset-current.global_annotation.id?}}
                                                     action="/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
                                                     {{/asset-current.global_annotation.id?}}
-                                                    
+
                                                     {{^asset-current.global_annotation.id}}
                                                         action="/asset/create/{{asset-current.id}}/global/"
                                                     {{/asset-current.global_annotation.id}}
-                                                    
+
                                                     style="display: none">
-                                                    
+
                                                     {{#asset-current.editable_title?}}
                                                         <div>
                                                             <label>Title</label>
                                                             <div>
                                                                 <input data-label="Title" type="text" name="asset-title"
-                                                                    value="{{asset-current.title}}"/>                                                                
-                                                            </div>                                                            
+                                                                    value="{{asset-current.title}}"/>
+                                                            </div>
                                                         </div>
                                                     {{/asset-current.editable_title?}}
-                                                    
+
                                                     {{#vocabulary}}
                                                     <div>
                                                         <label>{{display_name}}</label>
@@ -233,7 +233,7 @@
                                                     </div>
                                                     <br />
                                                     {{/vocabulary}}
-                                                    
+
                                                     {{#asset-current}}
                                                     <div>
                                                         <label>Tags</label>
@@ -257,49 +257,49 @@
                                                         </div>
                                                     </div>
                                                     {{/asset-current}}
-                                                    
+
                                                     <input class="btn-primary right"
-                                                        type="submit" name="submit_notes" value="Save" 
-                                                        onclick="return AnnotationList.saveItem(this)"></input>
-                                                        
+                                                        type="submit" name="submit_notes" value="Save"
+                                                        onclick="return annotationList.saveItem(this)"></input>
+
                                                     <input class="btn-primary right"
-                                                        type="submit" name="submit_notes_cancel" value="Cancel" 
-                                                        onclick="return AnnotationList.cancelItem(this)"></input>
+                                                        type="submit" name="submit_notes_cancel" value="Cancel"
+                                                        onclick="return annotationList.cancelItem(this)"></input>
                                                     <div class="visualclear"></div>
                                                 </form>
                                             </div>
                                             {{/>>asset-global-annotation}}
-                                            
+
                                             {{#>>annotation-current}}
                                                 <div id="annotation-current">
                                                     <div id="asset-details-annotations-current"
                                                         {{#annotation.editing?}}
                                                             style="display: block"
                                                         {{/annotation.editing?}}
-                                                        
+
                                                         {{^annotation.editing}}
                                                             style="display: none"
                                                         {{/annotation.editing}}
                                                         >
-                                                        
+
                                                         {{#annotation}}
-                                                        <div id="original-annotation" class="annotation-data" 
-                                                             data-begin="{{range1}}" 
+                                                        <div id="original-annotation" class="annotation-data"
+                                                             data-begin="{{range1}}"
                                                              data-end="{{range2}}"
                                                              {{#annotation_data?}}
                                                                 data-annotation="{{annotation_data}}"
                                                              {{/annotation_data?}}
                                                              {{^annotation_data}}
                                                                 data-annotation="{}"
-                                                             {{/annotation_data}}> 
+                                                             {{/annotation_data}}>
                                                         </div>
-                                                        
+
                                                         <div class="actions">
-                                                            <input id="annotation-view-help-button" type="image" title="Help" 
-                                                                 onclick="return jQuery('#instructions').toggle();" 
-                                                                 alt="Help" src="/media/img/icons/meth_help.png" />                                                             
-                                                        </div>                                                        
-                                                    
+                                                            <input id="annotation-view-help-button" type="image" title="Help"
+                                                                 onclick="return jQuery('#instructions').toggle();"
+                                                                 alt="Help" src="/media/img/icons/meth_help.png" />
+                                                        </div>
+
                                                         <h2>
                                                             {{#id?}}
                                                                 Edit Selection
@@ -314,8 +314,8 @@
                                                              {{/id}}
                                                         </h2>
                                                         {{/annotation}}
-                                                        
-                                                        <form id="edit-annotation-form" name="edit-annotation-form" onsubmit="return false;">                                                        
+
+                                                        <form id="edit-annotation-form" name="edit-annotation-form" onsubmit="return false;">
                                                             <div class="asset-annotator">
                                                                 <div id="clipform-display"></div>
                                                             </div>
@@ -324,7 +324,7 @@
                                                                 <label for="annotation-title">Title</label>
                                                                 <div><input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/></div>
                                                                 {{/annotation}}
-                                                                
+
                                                                 {{#vocabulary}}
                                                                     <div class="vocabulary">
                                                                         <label>{{display_name}}</label>
@@ -338,10 +338,10 @@
                                                                         </select>
                                                                     </div>
                                                                 {{/vocabulary}}
-                                        
+
                                                                 {{#annotation}}
                                                                 <label for="annotation-tags">Tags</label>
-                                                                <div> 
+                                                                <div>
                                                                 <input type="text" id="id_annotation-tags"
                                                                     class="annotation-tags"
                                                                     name="annotation-tags"
@@ -349,48 +349,48 @@
                                                                     value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/>
                                                                 </div>
                                                                 <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
-                                                                
+
                                                                 <label for="annotation-body">Notes</label>
                                                                 <textarea id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
 
                                                                 <input type="hidden" name="annotation-range1" value="{{range1}}" />
                                                                 <input type="hidden" name="annotation-range2" value="{{range2}}" />
                                                                 <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
-                                                                
-                                                                <input class="btn-primary right" type="button" name="Save" value="Save" 
-                                                                    onclick="javascript:AnnotationList.saveAnnotation(this)" />
-                                                                    
-                                                                <input class="btn-primary right" type="button" name="Cancel" value="Cancel" 
-                                                                    onclick="javascript:AnnotationList.cancelAnnotation()" />
-                                                                
+
+                                                                <input class="btn-primary right" type="button" name="Save" value="Save"
+                                                                    onclick="javascript:annotationList.saveAnnotation(this)" />
+
+                                                                <input class="btn-primary right" type="button" name="Cancel" value="Cancel"
+                                                                    onclick="javascript:annotationList.cancelAnnotation()" />
+
                                                                 {{#id?}} <!-- Editing existing annotation -->
                                                                 <input type="hidden" name="annotation-id" value="{{id}}" />
                                                                 {{/id?}}
                                                                 {{/annotation}}
-                                                                
+
                                                                 <div class="visualclear"></div>
                                                             </div>
                                                         </form>
-                                                    </div>                                                    
+                                                    </div>
                                                 </div>
-                                            {{/>>annotation-current}}                                                        
-                                        
+                                            {{/>>annotation-current}}
+
                                             <div id="annotations-organized-container">
                                                 <div id="annotations-organized"
                                                     {{#annotation.editing?}}
                                                         style="display: none"
                                                     {{/annotation.editing?}}>
 
-                                                         
+
                                                     {{#asset-current}}
                                                         {{#annotations?}}
-                                                            
+
                                                             <a class="btn-primary create-selection right"
-                                                               title="Create Selection" 
-                                                               onclick="return AnnotationList.newAnnotation();">                                                                
+                                                               title="Create Selection"
+                                                               onclick="return annotationList.newAnnotation();">
                                                                 <img src="/media/img/icons/meth_addselection.png" />
                                                                 Create</a>
-                                                                                                            
+
                                                             <a class="btn-primary filter-selections right"
                                                                 onclick='return jQuery("#annotation-filter-menu").toggle();'>
                                                                 <img src="/media/img/icons/meth_view.png" />
@@ -409,41 +409,41 @@
                                                                     <div>
                                                                         <input type="checkbox" name="showall" />
                                                                             Display all selections
-                                                                        <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>                                                                        
+                                                                        <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>
                                                                     </div>
-                                                                </form>                                                        
+                                                                </form>
                                                             </div>
 
                                                         {{/annotations?}}
                                                         <h2>
                                                             Selections
-                                                        </h2>                  
+                                                        </h2>
                                                         {{^annotations}}
                                                             <center>
                                                                 <br />
                                                                 <div>You have no selections on this item.</div>
                                                                 <br />
-                                                                
+
                                                                 <a class="btn-primary create-selection"
-                                                                    onclick="return AnnotationList.newAnnotation();">
+                                                                    onclick="return annotationList.newAnnotation();">
                                                                     <img src="/media/img/icons/meth_addselection.png"
                                                                         alt="Create Selection"></img>
                                                                     Create a selection
                                                                 </a>
-                                                           </center>                                                    
+                                                           </center>
                                                         {{/annotations}}
-                                                               
+
                                                         {{#annotations?}}
                                                             <a style="display: none"
                                                                 class="btn-primary create-selection"
-                                                                onclick="return AnnotationList.newAnnotation();">
+                                                                onclick="return annotationList.newAnnotation();">
                                                                 <img src="/media/img/icons/meth_addselection.png"
                                                                     alt="Create Selection"></img>
                                                                 Create Selection
-                                                            </a>                                                                
+                                                            </a>
                                                         {{/annotations?}}
                                                     {{/asset-current}}
-                                                  
+
                                                     {{#>>annotation-list}}
                                                     <ul id="asset-details-annotations-list">
                                                         {{#annotation_list}}
@@ -462,21 +462,21 @@
                                                                                     {{metadata.title?ellipses(30)}}
                                                                                 {{/metadata.title?}}
                                                                              </a>
-                                                                             
+
                                                                              {{#editable?}}
-                                                                                 <input style="display: none" type="image" title="Edit Selection" 
-                                                                                     onclick="return AnnotationList.editAnnotation(this);" 
-                                                                                     alt="Edit" src="/media/img/icons/meth_edit.png" 
+                                                                                 <input style="display: none" type="image" title="Edit Selection"
+                                                                                     onclick="return annotationList.editAnnotation(this);"
+                                                                                     alt="Edit" src="/media/img/icons/meth_edit.png"
                                                                                      class="annotation-listitem-icon edit" />
-                                                                                 <input style="display: none" type="image" title="Delete Selection" 
-                                                                                    onclick="return AnnotationList.deleteAnnotation(event, this, {{id}});" 
-                                                                                    alt="Delete" src="/media/img/icons/meth_delete.png" 
+                                                                                 <input style="display: none" type="image" title="Delete Selection"
+                                                                                    onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
+                                                                                    alt="Delete" src="/media/img/icons/meth_delete.png"
                                                                                     class="annotation-listitem-icon delete" />
                                                                              {{/editable?}}
-                                                        
+
                                                                              {{^editable}}
-                                                                                 <input style="display: none" type="image" title="Copy Selection" 
-                                                                                     onclick="return AnnotationList.copyAnnotation(this);" 
+                                                                                 <input style="display: none" type="image" title="Copy Selection"
+                                                                                     onclick="return annotationList.copyAnnotation(this);"
                                                                                      alt="Copy" src="/media/img/icons/meth_copy.png"
                                                                                      class="annotation-listitem-icon" />
                                                                              {{/editable}}
@@ -490,18 +490,18 @@
                                                                                             <label for="">Time code:</label>
                                                                                             <span>{{annotation.startCode}} - {{annotation.endCode}}</span>
                                                                                             </div>
-                                                                                            
-                                                                                            <input type="image" title="Play Clip" 
+
+                                                                                            <input type="image" title="Play Clip"
                                                                                                 class="regButton videoplay left"
                                                                                                 alt="Play Clip"
                                                                                                 src="/media/img/icons/meth_video_play.png" />
                                                                                         </div>
                                                                                         <div class="visualclear"></div>
                                                                                     {{/annotation.startCode?}}
-                                                                                    <div><label for="">Author:</label> <a href="{{home-space?url(author.username)}}">{{author.public_name}}</a></div>                                                                                    
+                                                                                    <div><label for="">Author:</label> <a href="{{home-space?url(author.username)}}">{{author.public_name}}</a></div>
                                                                                     {{#metadata.tags?}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags?}}
                                                                                     {{#metadata.body?}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body?}}
-                                                                                    
+
                                                                                     {{#vocabulary?}}
                                                                                         {{#vocabulary}}
                                                                                             <div>
@@ -517,7 +517,7 @@
                                                                          </div>
                                                                      {{/>>annotation-listitem}}
                                                                  {{/annotations}}
-                                                             </div> 
+                                                             </div>
                                                           {{/category}}
                                                         </li>
                                                         {{/annotation_list}}
@@ -525,49 +525,49 @@
                                                     {{/>>annotation-list}}
                                                 </div>
                                             </div>
-                                        </div> 
+                                        </div>
                                         {{/>>asset-view-details}}
                                     </div>
-                                    
-                                    
+
+
                                     <div id="tabs-2" class="ui-tab-asset-sources">
                                         {{#>>asset-sources}}
                                             <div id="asset-sources">
                                                 <h2>Sources</h2>
                                                 {{#asset-current}}
-                                                    <h4>Item's Original Source:</h4> 
+                                                    <h4>Item's Original Source:</h4>
                                                     <a href="{{sources.url.url}}">{{sources.url.url?ellipses(50)}}</a>
-                                                    
+
                                                     {{#sources.xmeml?}}
                                                         <h4 class="metadata-title">Final Cut Pro</h4>
                                                         <dl>
                                                             <dd>
-                                                                <a onclick="return AnnotationList.showExportDialog(this, {{id}});" href="#">Export clips to XML</a>
+                                                                <a onclick="return annotationList.showExportDialog(this, {{id}});" href="#">Export clips to XML</a>
                                                                 <div class="export-finalcutpro" style="display: none" title="Export Final Cut Pro XML">
                                                                     <div class="selection-list" title="Selections">
-                                                                        <form name="export-finalcutpro" method="POST" action="/asset/xmeml/{{id}}/" 
-                                                                            onsubmit="return AnnotationList.onExportSubmit();">
+                                                                        <form name="export-finalcutpro" method="POST" action="/asset/xmeml/{{id}}/"
+                                                                            onsubmit="return annotationList.onExportSubmit();">
                                                                             <div>Order the selections by clicking and dragging. Click "Export" when you're ready.</div>
                                                                             <br />
                                                                             <ul class="selections"></ul>
-                                                                        </form>    
+                                                                        </form>
                                                                     </div>
-                                                                </div>  
+                                                                </div>
                                                             </dd>
-                                                        </dl>    
+                                                        </dl>
                                                     {{/sources.xmeml?}}
-                                                    
+
                                                     {{#metadata}}
                                                         <h4>{{key}}</h4>
                                                         <div>{{value}}</div>
                                                     {{/metadata}}
                                                 {{/asset-current}}
                                             </div>
-                                            
+
                                         {{/>>asset-sources}}
-                                        <br />                           
+                                        <br />
                                     </div>
-                                    
+
                                     <div id="tabs-3" class="ui-tab-asset-references">
                                         {{#>>asset-references}}
                                             <div id="asset-references">
@@ -576,8 +576,8 @@
                                                     <div>
                                                         <span>
                                                             {{#tags}}
-                                                                <a class="switcher-choice filterbyclasstag" 
-                                                                    href="{{name}}">{{name}} ({{count}})</a> {{^last}}, {{/last}} 
+                                                                <a class="switcher-choice filterbyclasstag"
+                                                                    href="{{name}}">{{name}} ({{count}})</a> {{^last}}, {{/last}}
                                                             {{/tags}}
                                                         </span>
                                                     </div>
@@ -589,42 +589,42 @@
                                                     <div>
                                                         <span>
                                                             {{#term_set}}
-                                                                <a href="#" class="switcher-choice filterbyvocabulary" 
+                                                                <a href="#" class="switcher-choice filterbyvocabulary"
                                                                     data-vocabulary-id="vocabulary-{{vocabulary_id}}"
                                                                     data-term-id="{{id}}">
-                                                                    {{display_name}} ({{count}})</a> {{^last}}, {{/last}} 
+                                                                    {{display_name}} ({{count}})</a> {{^last}}, {{/last}}
                                                             {{/term_set}}
                                                         </span>
                                                     </div>
                                                 <br />
-                                                <br />                                                
+                                                <br />
                                                 {{/vocabulary}}
 
-                                                
-                                                {{#references?}}                                                
+
+                                                {{#references?}}
                                                     <h2>Class References</h2>
                                                     <ul class="clumper">
-                                                    {{#references}}    
+                                                    {{#references}}
                                                         <li>
                                                             <div class="asset_title type-{{type}}">
                                                                 <a href="{{url}}" class="title">{{title}}</a>
                                                             </div>
-            
+
                                                             <div class="asset-activities">
-               
+
                                                                 <div class="asset-activity">
                                                                     collected {{ modified }}
                                                                 </div>
-               
+
                                                             </div>
-                                                        </li>                                            
+                                                        </li>
                                                     {{/references}}
                                                     </ul>
                                                 {{/references?}}
                                             </div>
                                         {{/>>asset-references}}
                                     </div> {{! end tabs-3 references }}
-                                    
+
                                 </div> {{! end tabs }}
                             </div> {{! end asset-view-container }}
                         </td>
@@ -634,7 +634,7 @@
         </div>
         <div id="asset-loaded"></div>
     </td>
-    
+
     <td class="pantab-container">
-        
+
     </td>

@@ -2,7 +2,6 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.query_utils import Q
 from tagging.models import Tag
 import json
 import re
@@ -34,29 +33,17 @@ class AssetManager(models.Manager):
         else:
             return (True, None)
 
-    def archives(self):
-        return self.filter(Q(source__primary=True) &
-                           Q(source__label='archive'))
-
     def by_course_and_user(self, course, user):
         # returns the assets in a user's "collection"
         assets = Asset.objects.filter(course=course,
                                       sherdnote_set__author=user,
                                       sherdnote_set__range1=None).distinct()
-
-        # Exclude archives from these lists
-        assets = assets.exclude(Q(source__primary=True) &
-                                Q(source__label='archive'))
         return assets.order_by('-sherdnote_set__modified').select_related()
 
     def by_course(self, course):
         assets = Asset.objects.filter(course=course) \
             .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
             .distinct().select_related().order_by('lower_title')
-
-        # Exclude archives from these lists
-        assets = assets.exclude(Q(source__primary=True) &
-                                Q(source__label='archive'))
         return assets.order_by('-sherdnote_set__modified')
 
     def migrate(self, assets, course, user, faculty, object_map,
@@ -152,18 +139,14 @@ class Asset(models.Model):
     # in order of priority for which label is marked primary
     # an asset must have at least one source label from this list
     # 'url' should probably stay at the end
-    useful_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
-                     'mp4', 'mp4_pseudo', 'mp4_rtmp',
-                     'youtube', 'quicktime', 'realplayer',
-                     'ogg', 'vimeo', 'kaltura',
-                     'video_pseudo', 'video_rtmp', 'video',
-                     'mp3', 'mp4_audio',
-                     'image_fpx', 'image_fpxid',  # artstor.org
-                     'image')
-
-    # not good for uniqueness
-    fundamental_labels = ('archive',)
-    primary_labels = useful_labels + fundamental_labels
+    primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
+                      'mp4', 'mp4_pseudo', 'mp4_rtmp',
+                      'youtube', 'quicktime', 'realplayer',
+                      'ogg', 'vimeo', 'kaltura',
+                      'video_pseudo', 'video_rtmp', 'video',
+                      'mp3', 'mp4_audio',
+                      'image_fpx', 'image_fpxid',  # artstor.org
+                      'image')
 
     class Meta:
         permissions = (("can_upload_for", "Can upload assets for others"),)
@@ -330,9 +313,6 @@ class Source(models.Model):
     def is_audio(self):
         return self.label == 'mp3' or self.label == 'mp4_audio'
 
-    def is_archive(self):
-        return self.label == 'archive'
-
     def url_processed(self, request, obj=None):
         return url_processor(self, request, obj)
 
@@ -340,9 +320,16 @@ class Source(models.Model):
 class ExternalCollection(models.Model):
     title = models.CharField(max_length=1024)
     url = models.CharField(max_length=1024)
+    thumb_url = models.CharField(max_length=1024, null=True, blank=True)
+    description = models.TextField()
+    course = models.ForeignKey(Course)
+    uploader = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        ordering = ['title']
 
 
 class SupportedExternalCollection(models.Model):
@@ -353,3 +340,6 @@ class SupportedExternalCollection(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        ordering = ['title']

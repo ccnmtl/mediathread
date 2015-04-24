@@ -4,12 +4,12 @@ import json
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from mediathread.assetmgr.models import Asset
+from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
     asset_create, sources_from_args
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    SherdNoteFactory, UserFactory
+    SherdNoteFactory, UserFactory, ExternalCollectionFactory
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -42,7 +42,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(sources['image'].url, "http://www.flickr.com/")
         self.assertTrue(sources['image'].primary)
 
-    def test_archive_add_or_remove_get(self):
+    def test_manage_external_collection_get(self):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
@@ -50,43 +50,38 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/asset/archive/')
         self.assertEquals(response.status_code, 405)
 
-    def test_archive_add_or_remove_notloggedin(self):
+    def test_manage_external_collection_notloggedin(self):
         response = self.client.post('/asset/archive/')
         self.assertEquals(response.status_code, 302)
 
-    def test_archive_remove(self):
-        archive = AssetFactory.create(course=self.sample_course,
-                                      author=self.instructor_one,
-                                      primary_source='archive')
+    def test_manage_external_collection_remove(self):
+        exc = ExternalCollectionFactory(course=self.sample_course)
 
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
         response = self.client.post('/asset/archive/',
                                     {'remove': True,
-                                     'title': archive.title})
+                                     'collection_id': exc.id})
         self.assertEquals(response.status_code, 302)
 
-        try:
-            Asset.objects.get(title="Sample Archive")
-            self.fail('Sample archive should have been deleted')
-        except Asset.DoesNotExist:
-            pass  # expected
+        with self.assertRaises(Asset.DoesNotExist):
+            Asset.objects.get(id=exc.id)
 
     def test_archive_add(self):
         data = {
-            'thumb': '/site_media/img/thumbs/youtube.png',
             'title': 'YouTube',
             'url': 'http://www.youtube.com/',
-            'archive': 'http://www.youtube.com/'}
+            'thumb_url': '/site_media/img/thumbs/youtube.png',
+            'description': 'http://www.youtube.com/'}
 
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
         self.client.post('/asset/archive/', data)
 
-        self.assertIsNotNone(Asset.objects.get(course=self.sample_course,
-                                               title='YouTube'))
+        ExternalCollection.objects.get(course=self.sample_course,
+                                       title='YouTube')
 
     def test_asset_create_noasset(self):
         data = {'title': 'Bad Asset',

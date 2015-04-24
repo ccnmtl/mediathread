@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test.client import RequestFactory
 import factory
 
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
 from mediathread.projects.models import Project
@@ -57,6 +57,15 @@ class AssetFactory(factory.DjangoModelFactory):
                                    label=extracted,
                                    asset=self)
             self.source_set.add(source)
+
+
+class ExternalCollectionFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = ExternalCollection
+
+    title = 'collection'
+    url = 'http://ccnmtl.columbia.edu'
+    description = 'description'
+    course = factory.SubFactory(CourseFactory)
 
 
 class SherdNoteFactory(factory.DjangoModelFactory):

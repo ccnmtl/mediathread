@@ -6,10 +6,11 @@ import json
 import re
 import urllib
 import urllib2
-import lxml.etree as ET
 
+from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -23,10 +24,10 @@ from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 
-from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
+import lxml.etree as ET
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection
 from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
@@ -38,24 +39,29 @@ from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
 
-@login_required
-@allow_http("POST")
-def archive_add_or_remove(request):
+class ManageExternalCollectionView(LoggedInMixin, View):
+    def post(self, request):
+        if 'remove' in request.POST.keys():
+            collection_id = request.POST.get('collection_id')
+            exc = get_object_or_404(ExternalCollection, id=collection_id)
+            msg = '%s has been disabled for your class.' % exc.title
+            exc.delete()
+        else:
+            exc = ExternalCollection()
+            exc.title = request.POST.get('title')
+            exc.url = request.POST.get('url')
+            exc.thumb_url = request.POST.get('thumb')
+            exc.description = request.POST.get('description')
+            exc.course = request.course
+            exc.uploader = request.POST.get('uploader', False)
+            exc.save()
+            msg = '%s has been enabled for your class.' % exc.title
 
-    in_course_or_404(request.user.username, request.course)
+        messages.add_message(request, messages.INFO, msg)
 
-    if 'remove' in request.POST.keys():
-        title = request.POST.get('title')
-        lst = Asset.objects.filter(title=title, course=request.course)
-        for asset in lst:
-            if asset.primary and asset.primary.is_archive():
-                redirect = request.POST.get('redirect-url',
-                                            reverse('class-manage-sources'))
-                url = "%s?delsrc=%s" % (redirect, asset.title)
-                asset.delete()
-                return HttpResponseRedirect(url)
-    else:
-        return asset_create(request)
+        redirect_url = request.POST.get('redirect-url',
+                                        reverse('class-manage-sources'))
+        return HttpResponseRedirect(redirect_url)
 
 
 @login_required
@@ -188,11 +194,6 @@ def asset_create(request):
         # unsure when asset_create is called via ajax
         return HttpResponse(serializers.serialize('json', asset),
                             content_type="application/json")
-    elif "archive" == asset.primary.label:
-        redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-manage-sources'))
-        url = "%s?newsrc=%s" % (redirect_url, asset.title)
-        return HttpResponseRedirect(url)
     else:
         # server2server create
         return HttpResponseRedirect(asset_url)

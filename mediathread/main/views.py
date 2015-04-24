@@ -2,6 +2,10 @@ from datetime import datetime
 import json
 import operator
 
+from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.middleware import SESSION_KEY
+from courseaffils.models import Course
+from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -17,13 +21,10 @@ from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
 
-from courseaffils.lib import in_course_or_404, in_course
-from courseaffils.middleware import SESSION_KEY
-from courseaffils.models import Course
-from courseaffils.views import available_courses_query
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, SupportedExternalCollection
+from mediathread.assetmgr.models import Asset, SupportedExternalCollection, \
+    ExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
@@ -79,30 +80,10 @@ def triple_homepage(request):
 
     course = request.course
 
-    archives = []
-    upload_archive = None
-    for item in course.asset_set.archives().order_by('title'):
-        archive = item.sources['archive']
-        thumb = item.sources.get('thumb', None)
-        description = item.metadata().get('description', '')
-        uploader = item.metadata().get('upload', 0)
-
-        archive_context = {
-            "id": item.id,
-            "title": item.title,
-            "thumb": (None if not thumb else {"id": thumb.id,
-                                              "url": thumb.url}),
-            "archive": {"id": archive.id, "url": archive.url},
-            "metadata": (description[0]
-                         if hasattr(description, 'append') else description)
-        }
-
-        if (uploader[0] if hasattr(uploader, 'append') else uploader):
-            upload_archive = archive_context
-        else:
-            archives.append(archive_context)
-
-    archives.sort(key=operator.itemgetter('title'))
+    archives = ExternalCollection.objects.filter(
+        course=request.course, uploader=False).order_by('title')
+    upload_archive = ExternalCollection.objects.filter(course=request.course,
+                                                       uploader=True).first()
 
     owners = []
     if (in_course(logged_in_user.username, request.course) and
@@ -156,7 +137,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
 
         upload_enabled = course_details.is_upload_enabled(course)
 
-        supported_sources = SupportedExternalCollection.objects.all().order_by("title")
+        supported_sources = SupportedExternalCollection.objects.all()
         upload_permission = int(course.get_detail(
             course_details.UPLOAD_PERMISSION_KEY,
             course_details.UPLOAD_PERMISSION_DEFAULT))

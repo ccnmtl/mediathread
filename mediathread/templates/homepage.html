@@ -342,39 +342,31 @@
             {% endif %}
             {% endif %}            
 
-                    {% if archives %}
-                    <div id="recommend">
-                        
-                            <h3>Recommended Sources</h3>
-                            Your instructor suggests that you import items from these sites. 
+            {% if archives %}
+                <div id="recommend">
+                    <h3>Recommended Sources</h3>
+                    Your instructor suggests that you import items from these sites. 
                     
-                            {% for archive in archives %}
-                                {% if space_viewer.is_staff %}
-                                    <div class="manage-archive">
-                                        <a class="manage-archive-link" href="{%url 'admin:assetmgr_asset_change' archive.id %}">Manage</a>
-                                    </div>
-                                {% endif %}
-                            <div class="recommend_source">
-                                {% if archive.thumb %}
-                                    {% if archive.thumb.url %}
-                                        <div class="source_thumb">
-                                            <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
-                                                <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                                <div class="source_title">
-                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                    {% for archive in archives %}
+                        <div class="recommend_source">
+                            {% if archive.thumb_url %}
+                                <div class="source_thumb">
+                                    <a href="/explore/redirect/?url={{archive.url|urlencode}}">
+                                        <img src="{{archive.thumb_url}}" alt="thumbnail image" class="archive-link" />
+                                    </a>
                                 </div>
-                            </div>     
-                            {%endfor%}                        
-                    </div>
-                    {% endif %} 
-                    
+                            {% endif %}
+                            <div class="source_title">
+                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                            </div>
+                        </div>
+                    {% endfor %}                        
                 </div>
-                {% endwith %}
-            </td>            
+            {% endif %} 
+                    
+            </div>
+        {% endwith %}
+        </td>            
 
         </tr>
     </tbody>

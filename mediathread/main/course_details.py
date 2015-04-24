@@ -1,6 +1,8 @@
 from courseaffils.models import Course
 from django.core.cache import cache
 
+from mediathread.assetmgr.models import ExternalCollection
+
 
 UPLOAD_PERMISSION_KEY = "upload_permission"
 UPLOAD_PERMISSION_ADMINISTRATOR = 0
@@ -28,14 +30,8 @@ def can_upload(user, course):
 
 
 def is_upload_enabled(course):
-    upload_enabled = False
-    for item in course.asset_set.archives().order_by('title'):
-        attribute = item.metadata().get('upload', 0)
-        value = attribute[0] if hasattr(attribute, 'append') else attribute
-        if value and int(value) == 1:
-            upload_enabled = True
-            break
-    return upload_enabled
+    exc = ExternalCollection.objects.filter(course=course, uploader=True)
+    return exc.count() > 0
 
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0

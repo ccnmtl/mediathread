@@ -1,6 +1,11 @@
-from django.conf.urls import patterns, url
-from mediathread.assetmgr.views import AssetWorkspaceView, AssetReferenceView
 import os.path
+
+from django.conf.urls import patterns, url
+
+from mediathread.assetmgr.views import (AssetWorkspaceView,
+                                        AssetReferenceView,
+                                        ManageExternalCollectionView)
+
 
 media_root = os.path.join(os.path.dirname(__file__), "media")
 
@@ -9,8 +14,7 @@ urlpatterns = patterns(
 
     # Archive save or delete
     url(r'^archive/$',
-        'archive_add_or_remove',
-        name="archive-add-or-remove"),
+        ManageExternalCollectionView.as_view(), {}, "archive-add-or-remove"),
 
     # Archive save or delete
     url(r'^references/(?P<asset_id>\d+)/$', AssetReferenceView.as_view(),

@@ -29,9 +29,14 @@ def can_upload(user, course):
         return False
 
 
+def get_uploader(course):
+    return ExternalCollection.objects.filter(
+        course=course, uploader=True).first()
+
+
 def is_upload_enabled(course):
-    exc = ExternalCollection.objects.filter(course=course, uploader=True)
-    return exc.count() > 0
+    return get_uploader(course) is not None
+
 
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0

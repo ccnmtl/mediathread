@@ -7,14 +7,15 @@ from mediathread.assetmgr.views import (AssetWorkspaceView,
                                         ManageExternalCollectionView)
 
 
-media_root = os.path.join(os.path.dirname(__file__), "media")
+media_root = os.path.join(os.path.dirname(__file__), 'media')
 
 urlpatterns = patterns(
     'mediathread.assetmgr.views',
 
     # Archive save or delete
     url(r'^archive/$',
-        ManageExternalCollectionView.as_view(), {}, "archive-add-or-remove"),
+        ManageExternalCollectionView.as_view(), {},
+        'collection-add-or-remove'),
 
     # Archive save or delete
     url(r'^references/(?P<asset_id>\d+)/$', AssetReferenceView.as_view(),

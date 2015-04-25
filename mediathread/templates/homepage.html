@@ -342,22 +342,22 @@
             {% endif %}
             {% endif %}            
 
-            {% if archives %}
+            {% if collections %}
                 <div id="recommend">
                     <h3>Recommended Sources</h3>
                     Your instructor suggests that you import items from these sites. 
                     
-                    {% for archive in archives %}
+                    {% for collection in collections %}
                         <div class="recommend_source">
-                            {% if archive.thumb_url %}
+                            {% if collection.thumb_url %}
                                 <div class="source_thumb">
-                                    <a href="/explore/redirect/?url={{archive.url|urlencode}}">
-                                        <img src="{{archive.thumb_url}}" alt="thumbnail image" class="archive-link" />
+                                    <a href="/explore/redirect/?url={{collection.url|urlencode}}">
+                                        <img src="{{collection.thumb_url}}" alt="thumbnail image" class="collection-link" />
                                     </a>
                                 </div>
                             {% endif %}
                             <div class="source_title">
-                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                                <a href="/explore/redirect/?url={{collection.url|urlencode}}" class="collection-link">{{collection.title}}</a>
                             </div>
                         </div>
                     {% endfor %}                        

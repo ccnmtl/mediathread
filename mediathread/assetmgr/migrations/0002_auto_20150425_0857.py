@@ -15,10 +15,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ExternalCollection',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False,
+                                        auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=1024)),
                 ('url', models.CharField(max_length=1024)),
-                ('thumb_url', models.CharField(max_length=1024, null=True, blank=True)),
+                ('thumb_url', models.CharField(max_length=1024, null=True,
+                                               blank=True)),
                 ('description', models.TextField()),
                 ('uploader', models.BooleanField(default=False)),
                 ('course', models.ForeignKey(to='courseaffils.Course')),
@@ -28,17 +30,26 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.AlterUniqueTogether(
+            name='externalcollection',
+            unique_together=set([('title', 'course')]),
+        ),
         migrations.RenameModel(
             old_name='SupportedSource',
-            new_name='SupportedExternalCollection',
+            new_name='SuggestedExternalCollection',
         ),
         migrations.AlterModelOptions(
-            name='supportedexternalcollection',
+            name='suggestedexternalcollection',
             options={'ordering': ['title']},
         ),
         migrations.RenameField(
-            model_name='supportedexternalcollection',
+            model_name='suggestedexternalcollection',
             old_name='archive_url',
             new_name='url',
+        ),
+        migrations.AlterField(
+            model_name='suggestedexternalcollection',
+            name='title',
+            field=models.CharField(max_length=1024, unique=True)
         ),
     ]

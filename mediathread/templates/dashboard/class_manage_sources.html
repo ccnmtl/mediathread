@@ -11,34 +11,37 @@
 {% block dashboard_module %}
     
     {% if messages %}
-    <ul class="messages">
+    <div class="infonote">
         {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
         {% endfor %}
-    </ul>
-    {% endif %}    
+    </div>
+    {% endif %}  
     
     <div class="dashboard-feature">
     <h3>Mediathread Video Uploader</h3>
     <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.
     You may enable it for just yourself, or enable it for all members of your class.</p>
 
-    {% if upload_enabled %}
-        
-        <form action="{% url 'class-manage-sources' %}" method="POST" name="form-upload-permission">
+    {% if uploader %}
+        <form action="{% url 'class-manage-sources' %}" method="POST">
             <b>Set Upload Permission Settings</b>: &nbsp;
-    
             <select name="upload_permission">
                 {% for level in permission_levels %}
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
                 {% endfor %}
             </select>
-            <br /><br />
-            <input class="right" type="submit" value="Save"></input>
+            &nbsp;&nbsp;<input type="submit" value="Save"></input>
         </form>
+        <form action="{% url 'collection-add-or-remove' %}" method="POST">
+            <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
+            <input type="hidden" name="collection_id" value="{{uploader.id}}" />
+            <input class="right" name="remove" type="submit" value="Disable Video Upload" />
+         </form>
+         <div class="visualclear"></div>
     {% else %}
-        <form action="{% url 'archive-add-or-remove' %}" method="POST">
-            <input class="addtoclass" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
+        <form action="{% url 'collection-add-or-remove' %}" method="POST">
+            <input class="add" type="submit" value="Enable Video Upload" >
             <input type="hidden" name="title" value="Mediathread Video Upload">
             <input type="hidden" name="description" value="Upload your own source material.">
             <input type="hidden" name="uploader" value="1">
@@ -57,32 +60,37 @@
     To select a source for your class, click the "Add to Class" button.
     To designate a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source".</p>
         
-    {% for archive in supported_archives %}
-        <div class="archive">
-            <form action="{% url 'archive-add-or-remove' %}" id="manage-archive-form" method="POST">
+    {% for suggested in suggested_collections %}
+        {% map_course_collection course suggested as course_collection %}
+        <div class="suggested-collection">
+            <form action="{% url 'collection-add-or-remove' %}" method="POST">
                 <table>
                     <tr>
-                        <td class="archive_thumb">
-                            {% if archive.thumb_url %}
-                                <a href="{{archive.archive_url}}"><img src="{{archive.thumb_url}}" alt="thumbnail image" class="archive-link" />
+                        <td class="thumb">
+                            {% if suggested.thumb_url %}
+                                <a href="{{suggested.url}}">
+                                    <img src="{{suggested.thumb_url}}" alt="thumbnail image" />
                                 </a>
                             {% endif %}
                         </td>
                         <td>                    
-                            <a href="{{archive.archive_url}}" class="archive-link">{{archive.title}}</a>
+                            <a href="{{suggested.url}}" class="collection-link">
+                                {{suggested.title}}
+                            </a>
                             <br />
             
                             <span>
-                                {{archive.description|safe|linebreaks}}
+                                {{suggested.description|safe|linebreaks}}
                             </span>
                         </td>
                         <td style="text-align: right">
-                            <input type="hidden" name="collection_id" value="{{archive.id}}" />
-                            {% ifincourse archive course %}
+                            {% if course_collection %}
                                 <input name="remove" type="submit" value="Remove" />
+                                <input type="hidden" name="collection_id" value="{{course_collection.id}}" />
                             {% else %}
                                 <input name="add" type="submit" value="Add to Class" />
-                            {% endifincourse %}
+                                <input type="hidden" name="suggested_id" value="{{suggested.id}}" />
+                            {% endif %}
                         </td>
                     </tr>
                 </table>
@@ -98,7 +106,7 @@
     please email ccnmtl-mediathread@columbia.edu. 
     To upload individual items to Mediathread, use the Mediathread Uploader at the top of this page.
 
-    <form action="{% url 'archive-add-or-remove' %}" method="POST">
+    <form action="{% url 'collection-add-or-remove' %}" method="POST">
         Collection Title: <input type="text" name="title" value="" />
         <br/>
         Collection URL: <input type="text" name="url" value="" />
@@ -117,7 +125,7 @@
 <div class="dashboard-feature">
      <h3>Specific Internet Resources</h3>
         <ul>
-        <li class="archive">
+        <li class="suggested-collection">
             <h3>Local Quicktime Streaming Video</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -133,7 +141,7 @@
             <input type="submit" />
             </form>
             </li>
-            <li class="archive"> 
+            <li class="suggested-collection"> 
             <h3>YouTube Video</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -146,7 +154,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>Flash Video (.flv)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -159,7 +167,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>Flash Video Pseudo Streaming(.flv)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -180,7 +188,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>Kaltura .kdp</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -193,7 +201,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>MP4 (.mp4)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -206,7 +214,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>MP3 Audio (.mp3)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -221,7 +229,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>MP3 Audio (.mp3) as MP4</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -236,7 +244,7 @@
             <input type="submit" />
             </form>
         </li>                
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>MP4 Pseudo Streaming (.mp4)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -251,7 +259,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>RTMP (.mp4)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -264,7 +272,7 @@
             <input type="submit" />
             </form>
         </li>
-        <li class="archive"> 
+        <li class="suggested-collection"> 
             <h3>RTMP (.flv)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}
@@ -277,7 +285,7 @@
             <input type="submit" />
             </form>
             </li>
-            <li class="archive"> 
+            <li class="suggested-collection"> 
             <h3>RealPlayer (.rm)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}

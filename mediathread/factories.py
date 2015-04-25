@@ -4,7 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.test.client import RequestFactory
 import factory
 
-from mediathread.assetmgr.models import Asset, Source, ExternalCollection
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
+    SuggestedExternalCollection
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
 from mediathread.projects.models import Project
@@ -66,6 +67,14 @@ class ExternalCollectionFactory(factory.DjangoModelFactory):
     url = 'http://ccnmtl.columbia.edu'
     description = 'description'
     course = factory.SubFactory(CourseFactory)
+
+
+class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = SuggestedExternalCollection
+
+    title = 'collection'
+    url = 'http://ccnmtl.columbia.edu'
+    description = 'description'
 
 
 class SherdNoteFactory(factory.DjangoModelFactory):
@@ -203,6 +212,5 @@ class MediathreadTestMixin(object):
         return client.get(set_course_url)
 
     def enable_upload(self, course):
-        AssetFactory.create(course=course,
-                            primary_source='archive',
-                            metadata_blob='{"upload": ["1"]}')
+        ExternalCollectionFactory.create(course=course,
+                                         uploader=True)

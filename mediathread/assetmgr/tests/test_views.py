@@ -9,7 +9,8 @@ from mediathread.assetmgr.views import asset_workspace_courselookup, \
     asset_create, sources_from_args
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    SherdNoteFactory, UserFactory, ExternalCollectionFactory
+    SherdNoteFactory, UserFactory, ExternalCollectionFactory,\
+    SuggestedExternalCollectionFactory
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -68,7 +69,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         with self.assertRaises(Asset.DoesNotExist):
             Asset.objects.get(id=exc.id)
 
-    def test_archive_add(self):
+    def test_manage_external_collection_add_custom(self):
         data = {
             'title': 'YouTube',
             'url': 'http://www.youtube.com/',
@@ -82,6 +83,18 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         ExternalCollection.objects.get(course=self.sample_course,
                                        title='YouTube')
+
+    def test_manage_external_collection_add_suggested(self):
+        suggested = SuggestedExternalCollectionFactory()
+        data = {'suggested_id': suggested.id}
+
+        self.assertTrue(
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
+        self.client.post('/asset/archive/', data)
+
+        ExternalCollection.objects.get(course=self.sample_course,
+                                       title=suggested.title)
 
     def test_asset_create_noasset(self):
         data = {'title': 'Bad Asset',

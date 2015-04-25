@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-import operator
 
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
@@ -23,7 +22,7 @@ import requests
 
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, SupportedExternalCollection, \
+from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
     ExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
@@ -80,10 +79,10 @@ def triple_homepage(request):
 
     course = request.course
 
-    archives = ExternalCollection.objects.filter(
+    collections = ExternalCollection.objects.filter(
         course=request.course, uploader=False).order_by('title')
-    upload_archive = ExternalCollection.objects.filter(course=request.course,
-                                                       uploader=True).first()
+    uploader = ExternalCollection.objects.filter(course=request.course,
+                                                 uploader=True).first()
 
     owners = []
     if (in_course(logged_in_user.username, request.course) and
@@ -99,8 +98,8 @@ def triple_homepage(request):
         'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
-        'archives': archives,
-        'upload_archive': upload_archive,
+        'collections': collections,
+        'upload_archive': uploader,
         'can_upload': course_details.can_upload(request.user, request.course),
         'owners': owners
     }
@@ -135,21 +134,18 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
     def get_context_data(self, **kwargs):
         course = self.request.course
 
-        upload_enabled = course_details.is_upload_enabled(course)
-
-        supported_sources = SupportedExternalCollection.objects.all()
+        uploader = course_details.get_uploader(course)
+        suggested = SuggestedExternalCollection.objects.all()
         upload_permission = int(course.get_detail(
             course_details.UPLOAD_PERMISSION_KEY,
             course_details.UPLOAD_PERMISSION_DEFAULT))
 
         return {
             'course': course,
-            'supported_archives': supported_sources,
+            'suggested_collections': suggested,
             'space_viewer': self.request.user,
             'is_staff': self.request.user.is_staff,
-            'newsrc': self.request.GET.get('newsrc', ''),
-            'delsrc': self.request.GET.get('delsrc', ''),
-            'upload_enabled': upload_enabled,
+            'uploader': uploader,
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
             course_details.UPLOAD_PERMISSION_KEY: upload_permission
         }

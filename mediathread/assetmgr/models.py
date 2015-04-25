@@ -330,10 +330,11 @@ class ExternalCollection(models.Model):
 
     class Meta:
         ordering = ['title']
+        unique_together = ("title", "course")
 
 
-class SupportedExternalCollection(models.Model):
-    title = models.CharField(max_length=1024)
+class SuggestedExternalCollection(models.Model):
+    title = models.CharField(max_length=1024, unique=True)
     url = models.CharField(max_length=1024)
     thumb_url = models.CharField(max_length=1024)
     description = models.TextField()

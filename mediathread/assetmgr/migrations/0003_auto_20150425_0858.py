@@ -63,7 +63,7 @@ def refactor_archives(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assetmgr', '0002_auto_20150424_1544'),
+        ('assetmgr', '0002_auto_20150425_0857'),
         ('courseaffils', '0001_initial'),
         ('djangosherd', '0001_initial'),
     ]

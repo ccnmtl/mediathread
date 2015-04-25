@@ -27,7 +27,8 @@ from djangohelpers.lib import allow_http
 import lxml.etree as ET
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, Source, ExternalCollection
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection,\
+    SuggestedExternalCollection
 from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
@@ -40,12 +41,25 @@ from mediathread.taxonomy.models import Vocabulary
 
 
 class ManageExternalCollectionView(LoggedInMixin, View):
+
     def post(self, request):
+        suggested_id = request.POST.get('suggested_id', None)
+        collection_id = request.POST.get('collection_id', None)
         if 'remove' in request.POST.keys():
-            collection_id = request.POST.get('collection_id')
             exc = get_object_or_404(ExternalCollection, id=collection_id)
             msg = '%s has been disabled for your class.' % exc.title
             exc.delete()
+        elif suggested_id:
+            suggested = get_object_or_404(SuggestedExternalCollection,
+                                          id=suggested_id)
+            exc = ExternalCollection()
+            exc.title = suggested.title
+            exc.url = suggested.url
+            exc.thumb_url = suggested.thumb_url
+            exc.description = suggested.description
+            exc.course = request.course
+            exc.save()
+            msg = '%s has been enabled for your class.' % exc.title
         else:
             exc = ExternalCollection()
             exc.title = request.POST.get('title')

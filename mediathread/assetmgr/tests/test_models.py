@@ -97,7 +97,6 @@ class AssetTest(MediathreadTestMixin, TestCase):
         # youtube -- asset #1
         self.assertEquals(asset.media_type(), 'video')
         self.assertFalse(asset.primary.is_image())
-        self.assertFalse(asset.primary.is_archive())
         self.assertFalse(asset.primary.is_audio())
 
     def test_image(self):
@@ -106,7 +105,6 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         self.assertEquals(asset.media_type(), 'image')
         self.assertTrue(asset.primary.is_image())
-        self.assertFalse(asset.primary.is_archive())
         self.assertFalse(asset.primary.is_audio())
 
     def test_migrate_many(self):
@@ -265,23 +263,12 @@ class AssetTest(MediathreadTestMixin, TestCase):
                           self.asset1.user_analysis_count(self.instructor_one))
 
     def test_assets_by_course(self):
-        AssetFactory.create(course=self.sample_course,
-                            primary_source='archive')
-
-        assets = Asset.objects.filter(course=self.sample_course)
-        self.assertEquals(assets.count(), 2)
-
         assets = Asset.objects.by_course(course=self.sample_course)
         self.assertEquals(assets.count(), 1)
 
-        # make sure the archive isn't in there
-        self.assertEquals(assets[0].title, self.asset1.title)
+        self.assertEquals(self.asset1, assets[0])
 
     def test_assets_by_course_and_user(self):
-        AssetFactory.create(course=self.sample_course,
-                            author=self.instructor_one,
-                            primary_source='archive')
-
         # tweak an asset to have a non-primary archive label
         asset2 = AssetFactory.create(course=self.sample_course,
                                      author=self.instructor_one,

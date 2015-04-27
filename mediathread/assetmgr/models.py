@@ -7,15 +7,6 @@ import json
 import re
 
 
-def default_url_processor(source, request, obj=None):
-    return source.url
-
-# Override in deploy_specific/settings.py
-# for special authentication processing
-# Called by Source:url_processed
-url_processor = getattr(settings, 'ASSET_URL_PROCESSOR', default_url_processor)
-
-
 class AssetManager(models.Manager):
 
     def get_by_args(self, args, **constraints):
@@ -233,11 +224,10 @@ class Asset(models.Model):
         whether this function actually did anything.
         """
         note_model = models.get_model('djangosherd', 'sherdnote')
-        if note_model:
-            bucket, created = note_model.objects.global_annotation(self, user)
-            bucket.add_tag(tag)
-            bucket.save()
-            return created
+        bucket, created = note_model.objects.global_annotation(self, user)
+        bucket.add_tag(tag)
+        bucket.save()
+        return created
 
     request = None
 
@@ -299,10 +289,7 @@ class Source(models.Model):
                                     auto_now=True)
 
     def __unicode__(self):
-        asset = u'No Asset'
-        if self.asset_id:  # defensive for non-saved sources w/o an asset
-            asset = self.asset
-        return u'[%s] %s' % (self.label, unicode(asset))
+        return u'[%s] %s' % (self.label, self.asset.__unicode__())
 
     def is_image(self):
         return (self.label == 'poster' or
@@ -313,8 +300,9 @@ class Source(models.Model):
     def is_audio(self):
         return self.label == 'mp3' or self.label == 'mp4_audio'
 
-    def url_processed(self, request, obj=None):
-        return url_processor(self, request, obj)
+    def url_processed(self, request):
+        url_processor = getattr(settings, 'ASSET_URL_PROCESSOR')
+        return url_processor(self.url, self.label, request)
 
 
 class ExternalCollection(models.Model):

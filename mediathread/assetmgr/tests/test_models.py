@@ -4,7 +4,9 @@ from django.test import TestCase
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    UserFactory, SherdNoteFactory, ProjectFactory
+    UserFactory, SherdNoteFactory, ProjectFactory, \
+    SuggestedExternalCollectionFactory, SourceFactory, \
+    ExternalCollectionFactory
 
 
 class AssetTest(MediathreadTestMixin, TestCase):
@@ -87,8 +89,14 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['category'], [u'Education'])
 
         asset2 = AssetFactory.create(course=self.sample_course)
-        ctx = asset2.metadata()
-        self.assertEquals(len(ctx.keys()), 0)
+        self.assertEquals(asset2.metadata(), {})
+
+        asset3 = AssetFactory.create(
+            course=self.sample_course, primary_source='image',
+            author=self.instructor_one,
+            metadata_blob='#$%^&*()_',
+            title="Item Title")
+        self.assertEquals(asset3.metadata(), {})
 
     def test_video(self):
         asset = AssetFactory.create(
@@ -291,3 +299,60 @@ class AssetTest(MediathreadTestMixin, TestCase):
         assets = Asset.objects.by_course_and_user(self.sample_course,
                                                   self.student_two)
         self.assertEquals(assets.count(), 0)
+
+    def test_source_unicode(self):
+        desc = self.asset1.primary.__unicode__()
+        self.assertTrue('[image]' in desc)
+        self.assertTrue('Sample Course' in desc)
+
+    def test_external_collection_unicode(self):
+        collection = ExternalCollectionFactory()
+        self.assertEquals(collection.__unicode__(), 'collection')
+
+    def test_suggested_external_collection_unicode(self):
+        collection = SuggestedExternalCollectionFactory()
+        self.assertEquals(collection.__unicode__(), 'collection')
+
+    def test_html_source(self):
+        with self.assertRaises(Source.DoesNotExist):
+            self.asset1.html_source
+
+        src = SourceFactory(label='url', asset=self.asset1,
+                            url="http://ccnmtl.columbia.edu")
+        self.assertEquals(src, self.asset1.html_source)
+
+    def test_xmeml_source(self):
+        self.assertIsNone(self.asset1.xmeml_source())
+        src = SourceFactory(label='xmeml', asset=self.asset1,
+                            url="http://ccnmtl.columbia.edu")
+        self.assertEquals(src, self.asset1.xmeml_source())
+
+    def test_sources(self):
+        self.assertTrue('image' in self.asset1.sources)
+
+        image_src = Source.objects.get(label='image', asset=self.asset1)
+        self.assertEquals(self.asset1.sources['image'], image_src)
+
+    def test_thumb_url_empty(self):
+        self.assertIsNone(self.asset1.thumb_url)
+
+    def test_thumb_url_valid(self):
+        SourceFactory(label='thumb', asset=self.asset1,
+                      url="http://ccnmtl.columbia.edu")
+        self.assertEquals(self.asset1.thumb_url, "http://ccnmtl.columbia.edu")
+        self.assertEquals(self.asset1.thumb_url, "http://ccnmtl.columbia.edu")
+
+    def test_tags(self):
+        tags = self.asset1.tags()
+        self.assertEquals(len(tags), 5)
+        self.assertEquals(tags[0].name, 'image')
+        self.assertEquals(tags[1].name, 'instructor_one_item')
+        self.assertEquals(tags[2].name, 'instructor_one_selection')
+        self.assertEquals(tags[3].name, 'student_one_item')
+        self.assertEquals(tags[4].name, 'student_one_selection')
+
+    def test_filter_tags_by_users(self):
+        tags = self.asset1.filter_tags_by_users([self.student_one])
+        self.assertEquals(len(tags), 2)
+        self.assertEquals(tags[0].name, 'student_one_item')
+        self.assertEquals(tags[1].name, 'student_one_selection')

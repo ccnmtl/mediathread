@@ -99,7 +99,7 @@ def triple_homepage(request):
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
         'collections': collections,
-        'upload_archive': uploader,
+        'uploader': uploader,
         'can_upload': course_details.can_upload(request.user, request.course),
         'owners': owners
     }

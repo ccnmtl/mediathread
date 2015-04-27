@@ -11,7 +11,7 @@ from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
 from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
-    TagCollectionView
+    TagCollectionView, RedirectToExternalCollectionView, RedirectToUploaderView
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
     RequestCourseView, ContactUsView, CourseSettingsView, \
@@ -27,8 +27,8 @@ tastypie_api.register(VocabularyResource())
 admin.autodiscover()
 
 bookmarklet_root = os.path.join(os.path.dirname(__file__),
-                                "../media/",
-                                "bookmarklets")
+                                '../media/',
+                                'bookmarklets')
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 
@@ -116,10 +116,10 @@ urlpatterns = patterns(
 
     # Columbia only request forms.
     (r'^contact/success/$',
-     TemplateView.as_view(template_name="main/contact_success.html")),
+     TemplateView.as_view(template_name='main/contact_success.html')),
     (r'^contact/$', ContactUsView.as_view()),
     (r'^course/request/success/$',
-     TemplateView.as_view(template_name="main/course_request_success.html")),
+     TemplateView.as_view(template_name='main/course_request_success.html')),
     (r'^course/request/', RequestCourseView.as_view()),
 
     # Courseaffils
@@ -135,19 +135,24 @@ urlpatterns = patterns(
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
     url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
-        {}, "dashboard-migrate"),
+        {}, 'dashboard-migrate'),
     url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
-        name="class-manage-sources"),
+        name='class-manage-sources'),
     url(r'^dashboard/settings/', CourseSettingsView.as_view(),
-        name="course-settings"),
+        name='course-settings'),
 
     # Discussion
     (r'^discussion/', include('mediathread.discussions.urls')),
 
-    # Manage Sources
-    url(r'^explore/redirect/$',
-        'mediathread.assetmgr.views.source_redirect',
-        name="source_redirect"),
+    # External Collections
+    url(r'^explore/redirect/(?P<collection_id>\d+)/$',
+        RedirectToExternalCollectionView.as_view(),
+        name='collection_redirect'),
+
+    # Uploader
+    url(r'^upload/redirect/(?P<collection_id>\d+)/$',
+        RedirectToUploaderView.as_view(),
+        name='uploader_redirect'),
 
     url(r'^impersonate/', include('impersonate.urls')),
 
@@ -168,12 +173,12 @@ urlpatterns = patterns(
     # Staff custom asset entry
     url(r'^save/$',
         'mediathread.assetmgr.views.asset_create',
-        name="asset-save"),
+        name='asset-save'),
 
     (r'^setting/(?P<user_name>\w[^/]*)/$',
      'mediathread.main.views.set_user_setting'),
 
-    (r'^stats/', TemplateView.as_view(template_name="stats.html")),
+    (r'^stats/', TemplateView.as_view(template_name='stats.html')),
     (r'^smoketest/', include('smoketest.urls')),
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),

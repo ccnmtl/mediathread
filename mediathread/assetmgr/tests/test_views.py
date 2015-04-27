@@ -1,15 +1,18 @@
 # pylint: disable-msg=R0904
 import json
 
+from django.core.urlresolvers import reverse
+from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
-    asset_create, sources_from_args
+    asset_create, sources_from_args, RedirectToExternalCollectionView, \
+    RedirectToUploaderView, _parse_user
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    SherdNoteFactory, UserFactory, ExternalCollectionFactory,\
+    SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
     SuggestedExternalCollectionFactory
 
 
@@ -368,3 +371,94 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
             asset = Asset.objects.get(title="Test Video")
             self.assertIsNotNone(asset.global_annotation(self.instructor_one,
                                                          auto_create=False))
+
+    def test_redirect_external_collection(self):
+        view = RedirectToExternalCollectionView()
+        request = RequestFactory().get(reverse('collection_redirect',
+                                               args=[82]))
+
+        with self.assertRaises(Http404):
+            view.get(request, 456)
+
+        exc = ExternalCollectionFactory(url='http://ccnmtl.columbia.edu')
+        request = RequestFactory().get(reverse('collection_redirect',
+                                               args=[exc.id]))
+        response = view.get(request, exc.id)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, 'http://ccnmtl.columbia.edu')
+
+    def test_redirect_uploader(self):
+        # no collection id
+        request = RequestFactory().post('/upload/redirect')
+        request.user = self.student_one
+        request.course = self.sample_course
+
+        view = RedirectToUploaderView()
+        view.request = request
+
+        with self.assertRaises(Http404):
+            view.post(request, [], **{'collection_id': 123})
+
+        secret_keys = {'http://ccnmtl.columbia.edu': 'a very good secret'}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secret_keys):
+            # invalid uploader url
+            as_user = 'as=%s' % self.student_one.username
+            exc = ExternalCollectionFactory(url='http://abc.def.ghi')
+            with self.assertRaises(Http404):
+                view.post(request, [], **{'collection_id': exc.id})
+
+            # successful redirect
+            exc = ExternalCollectionFactory(url='http://ccnmtl.columbia.edu')
+            response = view.post(request, [], **{'collection_id': exc.id})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response.url.startswith(exc.url))
+            self.assertTrue('nonce' in response.url)
+            self.assertTrue('hmac' in response.url)
+            self.assertTrue('redirect_url' in response.url)
+            self.assertTrue(as_user in response.url)
+
+            # "as" without permissions + audio
+            data = {'as': self.student_two.username, 'audio': 'mp4'}
+            request = RequestFactory().post('/upload/redirect', data)
+            request.user = self.student_one
+            request.course = self.sample_course
+            response = view.post(request, [], **{'collection_id': exc.id})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(as_user in response.url)
+            self.assertTrue('audio=mp4' in response.url)
+
+            # "as" with permissions
+            data = {'as': self.student_one.username}
+            request = RequestFactory().post('/upload/redirect', data)
+            request.user = UserFactory(is_staff=True)
+            request.course = self.sample_course
+            self.add_as_faculty(request.course, request.user)
+
+            response = view.post(request, [], **{'collection_id': exc.id})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(as_user in response.url)
+
+    def test_parse_user(self):
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+
+        # regular path
+        request.user = self.student_one
+        self.assertEquals(_parse_user(request), self.student_one)
+
+        # not a course member
+        request.user = self.alt_student
+        response = _parse_user(request)
+        self.assertEquals(response.status_code, 403)
+
+        # "as" without permissions
+        request = RequestFactory().get('/', {'as': self.student_two.username})
+        request.user = self.student_one
+        request.course = self.sample_course
+        self.assertEquals(_parse_user(request), self.student_one)
+
+        # "as" with permissions
+        request.user = UserFactory(is_staff=True)
+        request.course = self.sample_course
+        self.add_as_faculty(request.course, request.user)
+        self.assertEquals(_parse_user(request), self.student_two)

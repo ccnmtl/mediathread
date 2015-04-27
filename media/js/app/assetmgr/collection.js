@@ -247,7 +247,6 @@ CollectionList.prototype.refresh = function (config) {
 
 CollectionList.prototype.appendItems = function (config) {
     var self = this;
-    self.setLoading(true);
     self.limits.offset += self.limits.limit;
 
     var url = self.constructUrl(config, true);
@@ -621,7 +620,6 @@ CollectionList.prototype.appendAssets = function (the_records) {
         }
 
         jQuery(window).trigger("assets.refresh", [html]);
-        self.setLoading(false);
     }
 };
 

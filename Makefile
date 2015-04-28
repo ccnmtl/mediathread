@@ -20,7 +20,7 @@ node_modules/jscs/bin/jscs:
 	npm install jscs --prefix .
 
 test: ./ve/bin/python
-	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
+	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc --coverage-html-report the_report
 
 harvest: ./ve/bin/python
 	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/main/features

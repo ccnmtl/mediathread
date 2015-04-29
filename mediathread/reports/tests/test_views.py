@@ -196,7 +196,6 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 302)
 
         # as superuser
-        # as superuser
         staff = UserFactory(is_staff=True, is_superuser=True)
         self.assertTrue(self.client.login(username=staff.username,
                                           password='test'))

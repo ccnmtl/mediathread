@@ -3,7 +3,8 @@ from django.test.testcases import TestCase
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, ProjectFactory, \
-    UserFactory, AssetFactory, SherdNoteFactory
+    UserFactory, AssetFactory, SherdNoteFactory, RegistrationProfileFactory, \
+    UserProfileFactory
 
 
 class ReportViewTest(MediathreadTestMixin, TestCase):
@@ -154,19 +155,19 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEquals(response.status_code, 302)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEquals(response.status_code, 302)
 
     def test_mediathread_activity_report_staff(self):
         url = reverse('mediathread-activity-by-course')
 
-        # as staff
-        staff = UserFactory(is_staff=True)
+        # as superuser
+        staff = UserFactory(is_staff=True, is_superuser=True)
         self.assertTrue(self.client.login(username=staff.username,
                                           password='test'))
 
@@ -177,3 +178,41 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+
+    def test_self_registration_report(self):
+        UserProfileFactory(user=self.student_one)
+        RegistrationProfileFactory(user=self.student_one)
+        url = reverse('mediathread-self-registration')
+
+        # as student
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 302)
+
+        # as instructor
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 302)
+
+        # as superuser
+        # as superuser
+        staff = UserFactory(is_staff=True, is_superuser=True)
+        self.assertTrue(self.client.login(username=staff.username,
+                                          password='test'))
+
+        set_course_url = '/?set_course=%s&next=/' % \
+            self.sample_course.group.name
+        response = self.client.get(set_course_url, follow=True)
+        self.assertEquals(response.status_code, 200)
+
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+
+        header = ("First Name,Last Name,Email,Title,Institution,"
+                  "Referred_By,User Story,Created")
+        data = ("Student,One,,Title,Columbia University,Pablo Picasso,"
+                "User Story,")
+
+        self.assertTrue(header in response.content)
+        self.assertTrue(data in response.content)

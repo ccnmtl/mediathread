@@ -3,10 +3,13 @@ from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.test.client import RequestFactory
 import factory
+from registration.models import RegistrationProfile
 
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
+    SuggestedExternalCollection
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.models import UserProfile
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from structuredcollaboration.models import Collaboration
@@ -18,10 +21,29 @@ class UserFactory(factory.DjangoModelFactory):
     password = factory.PostGenerationMethodCall('set_password', 'test')
 
 
+class UserProfileFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = UserProfile
+    '''UserProfile adds extra information to a user,
+    and associates the user with a group, school,
+    and country.'''
+    user = factory.SubFactory(UserFactory)
+    title = "Title"
+    institution = "Columbia University"
+    referred_by = "Pablo Picasso"
+    user_story = "User Story"
+    self_registered = True
+
+
 class GroupFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Group
     name = factory.Sequence(
         lambda n: 't1.y2010.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
+
+
+class RegistrationProfileFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = RegistrationProfile
+    user = factory.SubFactory(UserFactory)
+    activation_key = factory.Sequence(lambda n: 'key%d' % n)
 
 
 class CourseFactory(factory.DjangoModelFactory):
@@ -58,6 +80,23 @@ class AssetFactory(factory.DjangoModelFactory):
                                    label=extracted,
                                    asset=self)
             self.source_set.add(source)
+
+
+class ExternalCollectionFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = ExternalCollection
+
+    title = 'collection'
+    url = 'http://ccnmtl.columbia.edu'
+    description = 'description'
+    course = factory.SubFactory(CourseFactory)
+
+
+class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = SuggestedExternalCollection
+
+    title = 'collection'
+    url = 'http://ccnmtl.columbia.edu'
+    description = 'description'
 
 
 class SherdNoteFactory(factory.DjangoModelFactory):
@@ -195,6 +234,5 @@ class MediathreadTestMixin(object):
         return client.get(set_course_url)
 
     def enable_upload(self, course):
-        AssetFactory.create(course=course,
-                            primary_source='archive',
-                            metadata_blob='{"upload": ["1"]}')
+        ExternalCollectionFactory.create(course=course,
+                                         uploader=True)

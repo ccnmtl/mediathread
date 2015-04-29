@@ -1,7 +1,10 @@
 from datetime import datetime
 import json
-import operator
 
+from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.middleware import SESSION_KEY
+from courseaffils.models import Course
+from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -17,13 +20,10 @@ from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
 
-from courseaffils.lib import in_course_or_404, in_course
-from courseaffils.middleware import SESSION_KEY
-from courseaffils.models import Course
-from courseaffils.views import available_courses_query
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, SupportedSource
+from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
+    ExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
@@ -58,10 +58,6 @@ def django_settings(request):
     if request.course:
         context['is_course_faculty'] = request.course.is_faculty(request.user)
 
-    user_agent = request.META.get("HTTP_USER_AGENT")
-    if user_agent is not None and 'firefox' in user_agent.lower():
-        context['settings']['FIREFOX'] = True
-
     return context
 
 
@@ -79,30 +75,10 @@ def triple_homepage(request):
 
     course = request.course
 
-    archives = []
-    upload_archive = None
-    for item in course.asset_set.archives().order_by('title'):
-        archive = item.sources['archive']
-        thumb = item.sources.get('thumb', None)
-        description = item.metadata().get('description', '')
-        uploader = item.metadata().get('upload', 0)
-
-        archive_context = {
-            "id": item.id,
-            "title": item.title,
-            "thumb": (None if not thumb else {"id": thumb.id,
-                                              "url": thumb.url}),
-            "archive": {"id": archive.id, "url": archive.url},
-            "metadata": (description[0]
-                         if hasattr(description, 'append') else description)
-        }
-
-        if (uploader[0] if hasattr(uploader, 'append') else uploader):
-            upload_archive = archive_context
-        else:
-            archives.append(archive_context)
-
-    archives.sort(key=operator.itemgetter('title'))
+    collections = ExternalCollection.objects.filter(
+        course=request.course, uploader=False).order_by('title')
+    uploader = ExternalCollection.objects.filter(course=request.course,
+                                                 uploader=True).first()
 
     owners = []
     if (in_course(logged_in_user.username, request.course) and
@@ -118,8 +94,8 @@ def triple_homepage(request):
         'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
-        'archives': archives,
-        'upload_archive': upload_archive,
+        'collections': collections,
+        'uploader': uploader,
         'can_upload': course_details.can_upload(request.user, request.course),
         'owners': owners
     }
@@ -154,21 +130,18 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
     def get_context_data(self, **kwargs):
         course = self.request.course
 
-        upload_enabled = course_details.is_upload_enabled(course)
-
-        supported_sources = SupportedSource.objects.all().order_by("title")
+        uploader = course_details.get_uploader(course)
+        suggested = SuggestedExternalCollection.objects.all()
         upload_permission = int(course.get_detail(
             course_details.UPLOAD_PERMISSION_KEY,
             course_details.UPLOAD_PERMISSION_DEFAULT))
 
         return {
             'course': course,
-            'supported_archives': supported_sources,
+            'suggested_collections': suggested,
             'space_viewer': self.request.user,
             'is_staff': self.request.user.is_staff,
-            'newsrc': self.request.GET.get('newsrc', ''),
-            'delsrc': self.request.GET.get('delsrc', ''),
-            'upload_enabled': upload_enabled,
+            'uploader': uploader,
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
             course_details.UPLOAD_PERMISSION_KEY: upload_permission
         }

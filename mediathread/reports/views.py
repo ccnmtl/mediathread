@@ -293,8 +293,10 @@ def mediathread_activity_by_course(request):
 
             tags = Tag.objects.usage_for_queryset(selections)
             row.append(len(tags))  # # of Active Tags',
-            tag_users = len(
-                selections.filter(tags__isnull=False).distinct('author'))
+
+            tagged = selections.filter(tags__isnull=False).values('author')
+            tag_users = tagged.distinct().count()
+
             if len(students) > 0:
                 # % users using tags
                 row.append(float(tag_users) / len(students) * 100)
@@ -318,9 +320,10 @@ def mediathread_activity_by_course(request):
             # '# of Active Vocabulary Terms'
             q = related.aggregate(Count('term', distinct=True))
             active_terms = q['term__count']
-            vocab_users = len(SherdNote.objects.filter(
-                id__in=related.values_list('object_id')).distinct(
-                'author'))
+
+            termed = SherdNote.objects.filter(
+                id__in=related.values_list('object_id')).values('author')
+            vocab_users = termed.distinct().count()
 
             row.append(active_terms)
             if len(students) > 0:
@@ -339,66 +342,6 @@ def mediathread_activity_by_course(request):
         rows.append(row)
 
     for row in rows:
-        try:
-            writer.writerow(row)
-        except:
-            pass
-
-    return response
-
-
-@login_required
-def mediathread_activity_by_school(request):
-    """STAFF ONLY reporting of entire application activity """
-    if not request.user.is_staff:
-        return HttpResponseForbidden("forbidden")
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = \
-        'attachment; filename=mediathread_activity_by_school.csv'
-    writer = csv.writer(response)
-    headers = ['School', 'Items', 'Selections',
-               'Compositions', 'Assignments', 'Discussions']
-    writer.writerow(headers)
-
-    rows = {}
-    for the_course in Course.objects.all().order_by('-id'):
-        if not (the_course.faculty_group.name.startswith('t1') or
-                the_course.faculty_group.name.startswith('t2') or
-                the_course.faculty_group.name.startswith('t3')):
-            continue
-
-        bits = the_course.faculty_group.name.split('.')
-        school = bits[4]
-
-        if school not in rows:
-            row = [school, 0, 0, 0, 0, 0]
-            rows[school] = row
-
-        items = Asset.objects.filter(course=the_course)
-        rows[school][1] += len(items)
-
-        selections = SherdNote.objects.filter(asset__course=the_course)
-        rows[school][2] += len(selections)
-
-        compositions = 0
-        assignments = 0
-
-        projects = Project.objects.filter(course=the_course)
-        for project in projects:
-            if project.visibility_short() == 'Assignment':
-                assignments += 1
-            else:
-                compositions += 1
-
-        rows[school][3] += compositions
-        rows[school][4] += assignments
-        try:
-            rows[school][5] += len(get_course_discussions(the_course))
-        except Collaboration.DoesNotExist:
-            pass  # no discussions exist, that's ok
-
-    for row in rows.values():
         try:
             writer.writerow(row)
         except:

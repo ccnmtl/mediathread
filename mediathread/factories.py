@@ -20,7 +20,8 @@ class UserFactory(factory.DjangoModelFactory):
 
 class GroupFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Group
-    name = factory.Sequence(lambda n: 'group%d' % n)
+    name = factory.Sequence(
+        lambda n: 't1.y2010.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
 
 
 class CourseFactory(factory.DjangoModelFactory):
@@ -110,7 +111,7 @@ class MediathreadTestMixin(object):
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
                 object_pk=str(course.pk))
-        discussion_create(request)
+        return discussion_create(request)
 
     def create_vocabularies(self, course, taxonomy):
         course_type = ContentType.objects.get_for_model(course)

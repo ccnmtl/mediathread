@@ -12,7 +12,6 @@ def video_upload_is_enabled(step):
             elt = world.browser.find_element_by_id("mediathread-video-upload")
             if elt:
                 elt.click()
-                step.given("I confirm the action")
         except NoSuchElementException:
             pass  # It's already enabled. That's ok.
 

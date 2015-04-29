@@ -649,12 +649,10 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
 
         ctx = view.get_context_data()
         self.assertEquals(ctx['course'], self.sample_course)
-        self.assertEquals(list(ctx['supported_archives']), [])
+        self.assertEquals(list(ctx['suggested_collections']), [])
         self.assertEquals(ctx['space_viewer'], self.instructor_one)
         self.assertFalse(ctx['is_staff'])
-        self.assertEquals(ctx['newsrc'], '')
-        self.assertEquals(ctx['delsrc'], '')
-        self.assertTrue(ctx['upload_enabled'])
+        self.assertIsNotNone(ctx['uploader'])
 
     def test_post(self):
         self.assertTrue(

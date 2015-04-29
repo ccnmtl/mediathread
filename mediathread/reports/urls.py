@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 
 from mediathread.reports.views import SelfRegistrationReportView, \
-    ActivityByCourseView
+    ActivityByCourseView, ClassSummaryGraphView
 
 
 urlpatterns = patterns(
@@ -19,7 +19,7 @@ urlpatterns = patterns(
         'mediathread.reports.views.class_summary',
         name='class-summary'),
     url(r'^class_summary/graph.json$',
-        'mediathread.reports.views.class_summary_graph',
+        ClassSummaryGraphView.as_view(),
         name='class-summary-graph'),
 
     url(r'^class_activity/$',

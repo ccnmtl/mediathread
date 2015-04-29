@@ -28,7 +28,7 @@ harvest: ./ve/bin/python
 	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/projects/features
 
 flake8: ./ve/bin/python
-	$(FLAKE8) $(APP) --max-complexity=17
+	$(FLAKE8) $(APP) --max-complexity=13
 
 runserver: ./ve/bin/python check
 	$(MANAGE) runserver

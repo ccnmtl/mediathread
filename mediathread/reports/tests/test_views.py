@@ -1,3 +1,5 @@
+from json import loads
+
 from django.core.urlresolvers import reverse
 from django.test.testcases import TestCase
 
@@ -32,9 +34,11 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
             author=self.instructor_one, policy='Assignment')
 
         self.response1 = ProjectFactory.create(
+            title="Response 1",
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared', parent=self.assignment1)
         self.response2 = ProjectFactory.create(
+            title="Response 2",
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment1)
 
@@ -148,6 +152,17 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
                           password='test')
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+        the_json = loads(response.content)
+
+        self.assertEquals(len(the_json['links']), 0)
+        self.assertEquals(len(the_json['nodes']), 6)
+        self.assertEquals(the_json['nodes'][0]['nodeName'], 'Alpha')
+        self.assertEquals(the_json['nodes'][1]['nodeName'], 'Response 1')
+        self.assertEquals(the_json['nodes'][2]['nodeName'], 'Response 2')
+        self.assertEquals(the_json['nodes'][3]['nodeName'], 'Beta')
+        self.assertEquals(the_json['nodes'][4]['nodeName'], 'Gamma')
+        self.assertEquals(the_json['nodes'][5]['nodeName'],
+                          'Comment: Instructor One')
 
     def test_mediathread_activity_report(self):
         url = reverse('mediathread-activity-by-course')

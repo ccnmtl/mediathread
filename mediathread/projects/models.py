@@ -2,6 +2,7 @@ from courseaffils.models import Course
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from structuredcollaboration.models import Collaboration
@@ -226,8 +227,6 @@ class Project(models.Model):
     ordinality = models.IntegerField(default=-1)
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-
         today = datetime.today()
         this_day = datetime(today.year, today.month, today.day, 0, 0)
         if self.due_date is not None and self.due_date < this_day:
@@ -456,6 +455,29 @@ class Project(models.Model):
                 self.collaboration(
                     request, sync_group=True).permission_to('read', request))
 
+    def collaboration_sync_group(self, request, col, policy):
+        participants = self.participants.all()
+        if (len(participants) > 1 or
+            (col.group_id and col.group.user_set.count() > 1) or
+            (self.author not in participants and
+             len(participants) > 0)):
+            colgrp = col.have_group()
+            already_grp = set(colgrp.user_set.all())
+            for user in participants:
+                if user in already_grp:
+                    already_grp.discard(user)
+                else:
+                    colgrp.user_set.add(user)
+            for oldp in already_grp:
+                colgrp.user_set.remove(oldp)
+        if request and request.method == "POST" and \
+                (col.policy != policy or col.title != self.title):
+            col.title = self.title
+            col.policy = policy
+            col.save()
+
+        return col
+
     def collaboration(self, request=None, sync_group=False):
         col = None
         policy = None
@@ -477,25 +499,7 @@ class Project(models.Model):
             return
 
         if sync_group:
-            participants = self.participants.all()
-            if (len(participants) > 1 or
-                (col.group_id and col.group.user_set.count() > 1) or
-                (self.author not in participants and
-                 len(participants) > 0)):
-                colgrp = col.have_group()
-                already_grp = set(colgrp.user_set.all())
-                for user in participants:
-                    if user in already_grp:
-                        already_grp.discard(user)
-                    else:
-                        colgrp.user_set.add(user)
-                for oldp in already_grp:
-                    colgrp.user_set.remove(oldp)
-            if request and request.method == "POST" and \
-                    (col.policy != policy or col.title != self.title):
-                col.title = self.title
-                col.policy = policy
-                col.save()
+            self.collaboration_sync_group(request, col, policy)
 
         return col
 

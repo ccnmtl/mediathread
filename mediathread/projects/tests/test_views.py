@@ -1,6 +1,8 @@
 # pylint: disable-msg=R0904
+from json import loads
 import json
 
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
@@ -179,3 +181,110 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         project = Project.objects.get(title='Student Essay')
         self.assertEquals(project.versions.count(), 2)
         self.assertIsNotNone(project.submitted_date())
+
+    def test_assignment_response_create_error(self):
+        self.client.login(username=self.student_one.username,
+                          password='test')
+
+        data = {u'participants': [self.student_one.id],
+                u'publish': [u'PrivateEditorsAreOwners'],
+                u'parent': 12345}
+
+        response = self.client.post('/project/create/', data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = loads(response.content)
+        project = the_json['context']['project']
+        self.assertFalse(project['is_response'])
+
+    def test_assignment_response_create(self):
+        self.client.login(username=self.student_one.username,
+                          password='test')
+
+        data = {u'participants': [self.student_one.id],
+                u'publish': [u'PrivateEditorsAreOwners'],
+                u'parent': self.assignment.pk}
+
+        response = self.client.post('/project/create/', data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = loads(response.content)
+        project = the_json['context']['project']
+        self.assertTrue(project['is_response'])
+
+    def test_project_delete(self):
+        project_id = self.project_private.id
+        url = reverse('project-delete', args=[project_id])
+
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # as non-owner
+        self.client.login(username=self.student_two.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # as owner
+        self.client.login(username=self.student_one.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+        self.assertIsNone(Project.objects.filter(id=project_id).first())
+
+        # invalid project id
+        url = reverse('project-delete', args=[213456])
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 404)
+
+    def test_project_reparent(self):
+        staff = UserFactory(is_staff=True, is_superuser=True)
+        self.add_as_faculty(self.sample_course, staff)
+        self.assertIsNone(self.project_private.assignment())
+
+        url = reverse('project-reparent',
+                      args=[self.assignment.id, self.project_private.id])
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # forbidden as regular user
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # as superuser
+        self.client.login(username=staff, password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        self.assertEquals(self.project_private.assignment(), self.assignment)
+
+    def test_project_revisions(self):
+        url = reverse('project-revisions', args=[self.project_private.id])
+
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # forbidden as non-class participant
+        self.client.login(username=self.alt_student.username, password='test')
+        self.switch_course(self.client, self.alt_course)
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 404)
+
+        # forbidden as non project-participant
+        self.client.login(username=self.student_two.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # class participant
+        self.client.login(username=self.student_one.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = loads(response.content)
+        self.assertTrue(len(the_json['revisions']) > 0)

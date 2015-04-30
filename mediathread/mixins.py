@@ -129,7 +129,7 @@ class JSONResponseMixin(object):
 class CSVResponseMixin():
 
     def render_csv_response(self, filename, headers, rows):
-        response = HttpResponse(mimetype='text/csv')
+        response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = \
             'attachment; filename=' + filename + '.csv'
         writer = csv.writer(response)

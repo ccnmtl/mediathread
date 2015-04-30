@@ -17,5 +17,7 @@ ghostdriver.log
 media/js/sherdjs/
 media/CACHE
 libpeerconnection.log
-reports
+reports/
 node_modules
+media/js/CHANGES.txt
+the_report

@@ -20,7 +20,7 @@ from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
 from mediathread.mixins import faculty_only, LoggedInMixinSuperuser, \
-    CSVResponseMixin
+    CSVResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, TermRelationship
 from structuredcollaboration.models import Collaboration
@@ -78,105 +78,123 @@ def class_summary(request):
     return context
 
 
-@allow_http("GET")
-@faculty_only
-def class_summary_graph(request):
+class ClassSummaryGraphView(LoggedInFacultyMixin, View):
 
-    # groups: 1=domains,2=assets,3=projects
-    the_context = {'nodes': [], 'links': []}
-
-    assets = {}  # [ann_asset.id] = index
-    projects = {}  # [a_project.id] = {index:0}
-    users = {}  # {projects:[],assets:[]}
-    discussions = {}
-
-    # domains --> assets
-    for ann_asset in Asset.objects.filter(course=request.course):
-        try:
-            domain = re.search('://([^/]+)/',
-                               ann_asset.primary.url).groups()[0]
-        except:
-            continue
-
-        the_context['nodes'].append({'nodeName': "%s (%s)" % (ann_asset.title,
-                                                              domain),
-                                     'group': 2,
-                                     'href': ann_asset.get_absolute_url(),
-                                     'domain': domain, })
-        assets[ann_asset.id] = len(the_context['nodes']) - 1
-
-    # projects
-    for a_project in Project.objects.filter(course=request.course):
-        p_users = a_project.participants.all()
-        p_node = {'nodeName': a_project.title,
-                  'group': 3,
-                  'href': a_project.get_absolute_url(),
-                  'users': dict([(user.username, 1) for user in p_users]), }
-        the_context['nodes'].append(p_node)
-        projects[a_project.id] = {'index': len(the_context['nodes']) - 1,
-                                  'assets': {}, }
-
-        for user in p_users:
-            if request.course.is_faculty(user):
-                p_node['faculty'] = True
-            users.setdefault(user.username,
-                             {'projects': []})['projects'].append(a_project.id)
-
-        # projects-->assets
-        for ann in a_project.citations():
-            ann_asset = projects[a_project.id]['assets'].setdefault(
-                ann.asset_id, {'str': 2, 'bare': False})
-            ann_asset['str'] = ann_asset['str'] + 1
-            ann_asset['bare'] = (ann_asset['bare'] or ann.is_null())
-        for a_id, val in projects[a_project.id]['assets'].items():
-            if a_id not in assets:
+    def initialize_assets(self, course):
+        # domains --> assets
+        for ann_asset in Asset.objects.filter(course=course):
+            try:
+                domain = re.search('://([^/]+)/',
+                                   ann_asset.primary.url).groups()[0]
+            except:
                 continue
 
-            the_context['links'].append({
-                'source': projects[a_project.id]['index'],
-                'target': assets[a_id],
-                'value': val['str'],
-                'bare': val['bare'], })
-    # comments
-    collaboration_context = request.collaboration_context
-    proj_type = ContentType.objects.get_for_model(Project)
+            self.nodes.append({
+                'nodeName': "%s (%s)" % (ann_asset.title, domain),
+                'group': 2,
+                'href': ann_asset.get_absolute_url(),
+                'domain': domain, })
+            self.assets[ann_asset.id] = len(self.nodes) - 1
 
-    for didx in DiscussionIndex.objects.filter(
-        collaboration__context=collaboration_context,
-            participant__isnull=False).order_by('-modified'):
-        the_context['nodes'].append({
-            'nodeName': 'Comment: %s' %
-            (didx.participant.get_full_name() or didx.participant.username),
-            'users': {didx.participant.username: 1},
-            'group': 4,
-            'href': didx.get_absolute_url(),
-            'faculty': request.course.is_faculty(didx.participant),
-        })
+    def initialize_discussions(self, course, collaboration_context):
+        discussions = {}
+        # comments
+        collaboration_context = collaboration_context
+        proj_type = ContentType.objects.get_for_model(Project)
 
-        d_ind = len(the_context['nodes']) - 1
-        # linking discussions in ann_asset chain
-        if didx.collaboration_id in discussions:
-            the_context['links'].append({
-                'source': d_ind,
-                'target': discussions[didx.collaboration_id][-1]})
-            discussions[didx.collaboration_id].append(d_ind)
-        else:
-            discussions[didx.collaboration_id] = [d_ind]
-            if (didx.collaboration._parent_id and
-                didx.collaboration._parent.content_type == proj_type and
-                    int(didx.collaboration._parent.object_pk) in projects):
-                the_context['links'].append({
+        for didx in DiscussionIndex.objects.filter(
+            collaboration__context=collaboration_context,
+                participant__isnull=False).order_by('-modified'):
+            self.nodes.append({
+                'nodeName': 'Comment: %s' %
+                (didx.participant.get_full_name() or
+                 didx.participant.username),
+                'users': {didx.participant.username: 1},
+                'group': 4,
+                'href': didx.get_absolute_url(),
+                'faculty': course.is_faculty(didx.participant),
+            })
+
+            d_ind = len(self.nodes) - 1
+
+            # linking discussions in ann_asset chain
+            if didx.collaboration_id in discussions:
+                self.links.append({
                     'source': d_ind,
-                    'target': projects[int(
-                        didx.collaboration._parent.object_pk)]['index'], })
+                    'target': discussions[didx.collaboration_id][-1]})
+                discussions[didx.collaboration_id].append(d_ind)
+            else:
+                discussions[didx.collaboration_id] = [d_ind]
+                if (didx.collaboration._parent_id and
+                    didx.collaboration._parent.content_type == proj_type and
+                        int(didx.collaboration._parent.object_pk)
+                        in self.projects):
+                    self.links.append({
+                        'source': d_ind,
+                        'target': self.projects[int(
+                            didx.collaboration._parent.object_pk)]['index']})
 
-        # comment --> asset
-        if didx.asset_id:
-            the_context['links'].append({'source': d_ind,
-                                         'target': assets[didx.asset_id], })
+            # comment --> asset
+            if didx.asset_id:
+                self.links.append({
+                    'source': d_ind,
+                    'target': self.assets[didx.asset_id]
+                })
 
-    return HttpResponse(json.dumps(the_context, indent=2),
-                        content_type='application/json')
+    def get(self, request, *args, **kwargs):
+        self.nodes = []
+        self.links = []
+        self.assets = {}
+        self.projects = {}
+        self.discussions = {}
+        self.users = {}
+
+        self.initialize_assets(request.course)
+
+        # projects
+        for a_project in Project.objects.filter(course=request.course):
+            p_users = a_project.participants.all()
+            p_node = {'nodeName': a_project.title,
+                      'group': 3,
+                      'href': a_project.get_absolute_url(),
+                      'users': dict([(user.username, 1) for user in p_users])}
+            self.nodes.append(p_node)
+            self.projects[a_project.id] = {
+                'index': len(self.nodes) - 1,
+                'assets': {}
+            }
+
+            for user in p_users:
+                if request.course.is_faculty(user):
+                    p_node['faculty'] = True
+                self.users.setdefault(
+                    user.username,
+                    {'projects': []})['projects'].append(a_project.id)
+
+            # projects-->assets
+            for ann in a_project.citations():
+                ann_asset = self.projects[a_project.id]['assets'].setdefault(
+                    ann.asset_id, {'str': 2, 'bare': False})
+                ann_asset['str'] = ann_asset['str'] + 1
+                ann_asset['bare'] = (ann_asset['bare'] or ann.is_null())
+
+            for a_id, val in self.projects[a_project.id]['assets'].items():
+                if a_id not in self.assets:
+                    continue
+
+                self.links.append({
+                    'source': self.projects[a_project.id]['index'],
+                    'target': self.assets[a_id],
+                    'value': val['str'],
+                    'bare': val['bare'], })
+
+        self.initialize_discussions(request.course,
+                                    request.collaboration_context)
+
+        the_context = {'nodes': self.nodes, 'links': self.links}
+
+        return HttpResponse(json.dumps(the_context, indent=2),
+                            content_type='application/json')
 
 
 @allow_http("GET")
@@ -201,6 +219,48 @@ def class_activity(request):
 
 class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 
+    def all_students(self, the_course):
+        students = the_course.group.user_set.all()
+        if the_course.faculty_group:
+            ids = the_course.faculty_group.user_set.values('id')
+            students = students.exclude(id__in=ids)
+        return students
+
+    def active_students(self, students):
+        if len(students) > 0:
+            active = students.filter(Q(projects__isnull=False) |
+                                     Q(sherdnote__isnull=False)).distinct()
+            return float(len(active)) / len(students) * 100
+        else:
+            return 0
+
+    def include_course(self, the_course):
+        return (the_course.faculty_group is not None and
+                (the_course.faculty_group.name.startswith('t1') or
+                 the_course.faculty_group.name.startswith('t2') or
+                 the_course.faculty_group.name.startswith('t3')))
+
+    def discussion_count(self, the_course):
+        try:
+            discussions = get_course_discussions(the_course)
+            return len(discussions)
+            '# of Discussion Items', '% participating in Discussions',
+        except Collaboration.DoesNotExist:
+            return 0
+
+    def project_count(self, the_course):
+        compositions = 0
+        assignments = 0
+
+        projects = Project.objects.filter(course=the_course)
+        for project in projects:
+            if project.visibility_short() == 'Assignment':
+                assignments += 1
+            else:
+                compositions += 1
+
+        return compositions, assignments
+
     def get(self, request, *args, **kwargs):
         headers = ['Id', 'Title', 'Instructor', 'Course String',
                    'Term', 'Year', 'Section', 'Course Number', 'School',
@@ -215,10 +275,7 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 
         rows = []
         for the_course in Course.objects.all().order_by('-id'):
-            if (the_course.faculty_group is None or
-                (not (the_course.faculty_group.name.startswith('t1') or
-                      the_course.faculty_group.name.startswith('t2') or
-                      the_course.faculty_group.name.startswith('t3')))):
+            if not self.include_course(the_course):
                 continue
 
             row = []
@@ -240,18 +297,9 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
             row.append(bits[3])  # courseNo
             row.append(bits[4])  # school
 
-            students = the_course.group.user_set.all()
-            if the_course.faculty_group:
-                ids = the_course.faculty_group.user_set.values('id')
-                students = students.exclude(id__in=ids)
+            students = self.all_students(the_course)
             row.append(len(students))
-
-            if len(students) > 0:
-                active = students.filter(Q(projects__isnull=False) |
-                                         Q(sherdnote__isnull=False)).distinct()
-                row.append(float(len(active)) / len(students) * 100)
-            else:
-                row.append(0)
+            row.append(self.active_students(students))
 
             items = Asset.objects.filter(course=the_course)
             row.append(len(items))
@@ -259,25 +307,10 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
             selections = SherdNote.objects.filter(asset__course=the_course)
             row.append(len(selections))
 
-            compositions = 0
-            assignments = 0
-
-            projects = Project.objects.filter(course=the_course)
-            for project in projects:
-                if project.visibility_short() == 'Assignment':
-                    assignments += 1
-                else:
-                    compositions += 1
-
+            compositions, assignments = self.project_count(the_course)
             row.append(compositions)
             row.append(assignments)
-            try:
-                discussions = get_course_discussions(the_course)
-                row.append(len(discussions))
-                '# of Discussion Items', '% participating in Discussions',
-            except Collaboration.DoesNotExist:
-                row.append(0)
-
+            row.append(self.discussion_count(the_course))
             row.append(course_details.allow_public_compositions(the_course))
             row.append(course_details.all_selections_are_visible(the_course))
 
@@ -288,8 +321,9 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 
                 tags = Tag.objects.usage_for_queryset(selections)
                 row.append(len(tags))  # # of Active Tags',
-                tag_users = len(
-                    selections.filter(tags__isnull=False).distinct('author'))
+
+                tagged = selections.filter(tags__isnull=False).values('author')
+                tag_users = tagged.distinct().count()
                 if len(students) > 0:
                     # % users using tags
                     row.append(float(tag_users) / len(students) * 100)
@@ -315,9 +349,9 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
                 # '# of Active Vocabulary Terms'
                 q = related.aggregate(Count('term', distinct=True))
                 active_terms = q['term__count']
-                vocab_users = len(SherdNote.objects.filter(
-                    id__in=related.values_list('object_id')).distinct(
-                    'author'))
+                termed = SherdNote.objects.filter(
+                    id__in=related.values_list('object_id')).values('author')
+                vocab_users = termed.distinct().count()
 
                 row.append(active_terms)
                 if len(students) > 0:
@@ -338,53 +372,6 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
 
         return self.render_csv_response(
             'mediathread_activity_by_course', headers, rows)
-
-
-class ActivityBySchoolView(LoggedInMixinSuperuser, CSVResponseMixin, View):
-
-    def get(self, request, *args, **kwargs):
-        headers = ['School', 'Items', 'Selections',
-                   'Compositions', 'Assignments', 'Discussions']
-
-        rows = {}
-        for the_course in Course.objects.all().order_by('-id'):
-            if not (the_course.faculty_group.name.startswith('t1') or
-                    the_course.faculty_group.name.startswith('t2') or
-                    the_course.faculty_group.name.startswith('t3')):
-                continue
-
-            bits = the_course.faculty_group.name.split('.')
-            school = bits[4]
-
-            if school not in rows:
-                row = [school, 0, 0, 0, 0, 0]
-                rows[school] = row
-
-            items = Asset.objects.filter(course=the_course)
-            rows[school][1] += len(items)
-
-            selections = SherdNote.objects.filter(asset__course=the_course)
-            rows[school][2] += len(selections)
-
-            compositions = 0
-            assignments = 0
-
-            projects = Project.objects.filter(course=the_course)
-            for project in projects:
-                if project.visibility_short() == 'Assignment':
-                    assignments += 1
-                else:
-                    compositions += 1
-
-            rows[school][3] += compositions
-            rows[school][4] += assignments
-            try:
-                rows[school][5] += len(get_course_discussions(the_course))
-            except Collaboration.DoesNotExist:
-                pass  # no discussions exist, that's ok
-
-        return self.render_csv_response(
-            'mediathread_activity_by_school', headers, rows.values())
 
 
 class SelfRegistrationReportView(LoggedInMixinSuperuser,

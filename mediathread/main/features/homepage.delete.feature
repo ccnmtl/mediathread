@@ -7,11 +7,7 @@ Feature: Homepage Delete Operations. Project, Item
         
         Given the home workspace is loaded
         The "Sample Assignment" project has no delete icon
-        
-        # Direct delete url
-        When I access the url "/project/delete/1/"
-        Then I see "forbidden"
-        
+
         Finished using Selenium 
         
     Scenario: homepage.delete.feature 2. Instructor cannot delete student's response
@@ -24,10 +20,6 @@ Feature: Homepage Delete Operations. Project, Item
         Then the owner is "Student One" in the Composition column
         Then the composition panel has 1 response named "Sample Assignment Response"
         The "Sample Assignment Response" project has no delete icon
-        
-        # Direct delete url
-        When I access the url "/project/delete/2/"
-        Then I see "forbidden"
         
         Finished using Selenium
 

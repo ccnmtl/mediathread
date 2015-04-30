@@ -64,41 +64,8 @@ class ProjectResource(ModelResource):
 
         return bundle
 
-    def render_one(self, request, project, version_number=None):
-        bundle = self.build_bundle(obj=project, request=request)
-        dehydrated = self.full_dehydrate(bundle)
-        project_ctx = self._meta.serializer.to_simple(dehydrated, None)
-        project_ctx['body'] = project.body
-        project_ctx['public_url'] = project.public_url()
-        project_ctx['current_version'] = version_number
-        project_ctx['visibility'] = project.visibility_short()
-        project_ctx['type'] = ('assignment' if project.is_assignment(request)
-                               else 'composition')
-
-        rand = ''.join([choice(letters) for i in range(5)])
-
-        asset_resource = AssetResource()
-        sherd_resource = SherdNoteResource()
-
-        assets = {}
-        notes = []
-        for note in project.citations():
-            notes.append(sherd_resource.render_one(request, note, rand))
-            if (note.title not in ["Annotation Deleted", 'Asset Deleted']):
-                key = '%s_%s' % (rand, note.asset.pk)
-                if key not in assets.keys():
-                    assets[key] = \
-                        asset_resource.render_one(request, note.asset)
-
-        data = {
-            'project': project_ctx,
-            'type': 'project',
-            'can_edit': self.editable,
-            'annotations': notes,
-            'assets': assets
-        }
-
-        data['responses'] = []
+    def all_responses(self, request, project):
+        responses = []
         for response in project.responses(request):
             if response.can_read(request):
                 obj = {
@@ -113,9 +80,11 @@ class ProjectResource(ModelResource):
                         'name': get_public_name(author, request),
                         'last': idx == last})
 
-                data['responses'].append(obj)
-        data['response_count'] = len(data['responses'])
+                responses.append(obj)
 
+        return responses
+
+    def my_responses(self, request, project):
         my_responses = []
         for response in project.responses_by(request, request.user):
             obj = {'url': response.get_absolute_url(),
@@ -131,6 +100,52 @@ class ProjectResource(ModelResource):
 
             my_responses.append(obj)
 
+        return my_responses
+
+    def related_assets_notes(self, request, project):
+
+        asset_resource = AssetResource()
+        sherd_resource = SherdNoteResource()
+
+        rand = ''.join([choice(letters) for i in range(5)])
+
+        assets = {}
+        notes = []
+        for note in project.citations():
+            notes.append(sherd_resource.render_one(request, note, rand))
+            if (note.title not in ["Annotation Deleted", 'Asset Deleted']):
+                key = '%s_%s' % (rand, note.asset.pk)
+                if key not in assets.keys():
+                    assets[key] = \
+                        asset_resource.render_one(request, note.asset)
+
+        return assets, notes
+
+    def render_one(self, request, project, version_number=None):
+        bundle = self.build_bundle(obj=project, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        project_ctx = self._meta.serializer.to_simple(dehydrated, None)
+        project_ctx['body'] = project.body
+        project_ctx['public_url'] = project.public_url()
+        project_ctx['current_version'] = version_number
+        project_ctx['visibility'] = project.visibility_short()
+        project_ctx['type'] = ('assignment' if project.is_assignment(request)
+                               else 'composition')
+
+        assets, notes = self.related_assets_notes(request, project)
+
+        data = {
+            'project': project_ctx,
+            'type': 'project',
+            'can_edit': self.editable,
+            'annotations': notes,
+            'assets': assets
+        }
+
+        data['responses'] = self.all_responses(request, project)
+        data['response_count'] = len(data['responses'])
+
+        my_responses = self.my_responses(request, project)
         if len(my_responses) == 1:
             data['my_response'] = my_responses[0]
         elif len(my_responses) > 1:

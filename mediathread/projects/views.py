@@ -1,4 +1,4 @@
-from courseaffils.lib import in_course, in_course_or_404, get_public_name
+from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import get_model
@@ -114,22 +114,24 @@ def project_save(request, project_id):
                             content_type='application/json')
 
 
-@login_required
-def project_delete(request, project_id):
-    """
-    Delete the requested project. Regular access conventions apply.
-    If the logged-in user is not allowed to delete
-    the project, an HttpResponseForbidden
-    will be returned
-    """
-    project = get_object_or_404(Project, pk=project_id, course=request.course)
+class ProjectDeleteView(LoggedInMixin, View):
+    def post(self, request, *args, **kwargs):
+        """
+        Delete the requested project. Regular access conventions apply.
+        If the logged-in user is not allowed to delete
+        the project, an HttpResponseForbidden
+        will be returned
+        """
+        project_id = kwargs.get('project_id', None)
+        project = get_object_or_404(Project, pk=project_id,
+                                    course=request.course)
 
-    if not request.method == "POST" or not project.can_edit(request):
-        return HttpResponseForbidden("forbidden")
+        if not request.method == "POST" or not project.can_edit(request):
+            return HttpResponseForbidden("forbidden")
 
-    project.delete()
+        project.delete()
 
-    return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')
 
 
 @login_required
@@ -421,30 +423,6 @@ def project_export_msword(request, project_id):
     response['Content-Disposition'] = \
         'attachment; filename=%s.doc' % (slugify(project.title))
     return response
-
-
-@login_required
-@allow_http("POST")
-@ajax_required
-def project_sort(request):
-    if (not in_course(request.user, request.course) or
-            not request.course.is_faculty(request.user)):
-        return HttpResponseForbidden("forbidden")
-
-    ids = request.POST.getlist("project")
-    for idx, project_id in enumerate(ids):
-        project = Project.objects.get(id=project_id)
-        if idx != project.ordinality:
-            project.ordinality = idx
-            project.save()
-
-    data = {'sorted': 'true'}
-
-    return HttpResponse(json.dumps(data, indent=2),
-                        content_type='application/json')
-
-    json_stream = json.dumps(data, indent=2)
-    return HttpResponse(json_stream, content_type='application/json')
 
 
 class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,

@@ -107,7 +107,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
     'waffle.middleware.WaffleMiddleware',
@@ -216,24 +215,23 @@ ANONYMOUS_PATHS = ('/media/',
                    '/api/user/courses'
                    )
 
-NON_ANONYMOUS_PATHS = ('/asset/',
+NON_ANONYMOUS_PATHS = ('/analysis/',
                        '/annotations/',
-                       '/project/',
-                       '/explore/',
-                       '/comments/',
-                       '/reports/',
-                       '/discussion/',
-                       '/archive/',
-                       '/assignment/',
-                       '/dashboard/',
-                       '/analysis/',
-                       '/taxonomy/',
                        '/api/',
+                       '/archive/',
+                       '/asset/',
+                       '/assignment/',
+                       '/comments/',
+                       '/dashboard/',
+                       '/discussion/',
+                       '/explore/',
+                       '/project/',
+                       '/reports/',
                        '/setting/',
+                       '/taxonomy/',
                        '/upgrade/',
                        '/upload/',
-                       re.compile(r'^/$'),
-                       )
+                       re.compile(r'^/$'))
 
 # save is an exception, for server2server api
 COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save', '/settings')

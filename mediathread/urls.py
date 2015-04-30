@@ -59,7 +59,7 @@ urlpatterns = patterns(
     logout_page,
     (r'^admin/', admin.site.urls),
 
-    # override the default urls for pasword
+    # override the default urls for password
     url(r'^password/change/$',
         password_change,
         name='password_change'),
@@ -114,7 +114,7 @@ urlpatterns = patterns(
 
     (r'^comments/', include('django.contrib.comments.urls')),
 
-    # Columbia only request forms.
+    # Contact us forms.
     (r'^contact/success/$',
      TemplateView.as_view(template_name='main/contact_success.html')),
     (r'^contact/$', ContactUsView.as_view()),

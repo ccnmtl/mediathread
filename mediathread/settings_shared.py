@@ -53,13 +53,16 @@ PROJECT_APPS = ['mediathread.main',
                 'mediathread.assetmgr',
                 'mediathread.projects',
                 'mediathread.reports',
-                'mediathread.discussions']
+                'mediathread.discussions',
+                'mediathread.taxonomy']
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
+    '--cover-html',
     ('--cover-package=mediathread.main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects'),
+     'mediathread.assetmgr,mediathread.projects,mediathread.taxonomy,'
+     'mediathread.discussions,mediathread.report'),
 ]
 
 CACHE_BACKEND = 'locmem:///'
@@ -228,6 +231,7 @@ NON_ANONYMOUS_PATHS = ('/asset/',
                        '/api/',
                        '/setting/',
                        '/upgrade/',
+                       '/upload/',
                        re.compile(r'^/$'),
                        )
 
@@ -278,6 +282,12 @@ LOGGING = {
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 ACCOUNT_ACTIVATION_DAYS = 7
+
+
+def default_url_processor(url, label=None, request=None):
+    return url
+
+ASSET_URL_PROCESSOR = default_url_processor
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

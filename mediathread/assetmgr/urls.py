@@ -1,16 +1,21 @@
-from django.conf.urls import patterns, url
-from mediathread.assetmgr.views import AssetWorkspaceView, AssetReferenceView
 import os.path
 
-media_root = os.path.join(os.path.dirname(__file__), "media")
+from django.conf.urls import patterns, url
+
+from mediathread.assetmgr.views import (AssetWorkspaceView,
+                                        AssetReferenceView,
+                                        ManageExternalCollectionView)
+
+
+media_root = os.path.join(os.path.dirname(__file__), 'media')
 
 urlpatterns = patterns(
     'mediathread.assetmgr.views',
 
     # Archive save or delete
     url(r'^archive/$',
-        'archive_add_or_remove',
-        name="archive-add-or-remove"),
+        ManageExternalCollectionView.as_view(), {},
+        'collection-add-or-remove'),
 
     # Archive save or delete
     url(r'^references/(?P<asset_id>\d+)/$', AssetReferenceView.as_view(),
@@ -42,8 +47,6 @@ urlpatterns = patterns(
     url(r'^xmeml/(?P<asset_id>\w+)/$',
         'final_cut_pro_xml',
         name="final_cut_pro_xml"),
-
-    url(r'MEPdump/', 'mep_dump', name='mep_dump'),
 
     # Asset workspace variations
     url(r'^$', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),

@@ -279,8 +279,7 @@
                         </p>
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->
-                {% if can_upload %}
-                {% if upload_archive %}
+                {% if can_upload and uploader %}
                 <div class="collection_content">
                     <a href="#" id="upload-from-computer" class ="arrow arrowClosed">
                         <h3 class="left">Upload from Computer</h3>
@@ -302,7 +301,7 @@
                                     </p>
                                     <div id="upload_audio">
                                      <strong>Upload Audio</strong>
-                                    <form action="/explore/redirect/" method="POST">
+                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
                                             <b>For:</b>&nbsp;
@@ -313,14 +312,13 @@
                                             </select>
                                             </div>
                                         {% endif %}
-                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <input type="hidden" name="audio" value="mp4"></input>
                                         <a class="btn-primary upload_button audio"><img src="{{STATIC_URL}}img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
                                     </form>  
                                     </div>
                                     <div id="upload_video">
                                     <strong>Upload Video</strong>
-                                    <form action="/explore/redirect/" method="POST">
+                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
                                             <b>For:</b>&nbsp;
@@ -331,7 +329,6 @@
                                             </select>
                                             </div>
                                         {% endif %}
-                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
                                         <a class="btn-primary upload_button video"><img src="{{STATIC_URL}}img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
                                     </form>               
                                     </div>
@@ -339,42 +336,33 @@
                        {% endflag %}
                 </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
-            {% endif %}
             {% endif %}            
 
-                    {% if archives %}
-                    <div id="recommend">
-                        
-                            <h3>Recommended Sources</h3>
-                            Your instructor suggests that you import items from these sites. 
+            {% if collections %}
+                <div id="recommend">
+                    <h3>Recommended Sources</h3>
+                    Your instructor suggests that you import items from these sites. 
                     
-                            {% for archive in archives %}
-                                {% if space_viewer.is_staff %}
-                                    <div class="manage-archive">
-                                        <a class="manage-archive-link" href="{%url 'admin:assetmgr_asset_change' archive.id %}">Manage</a>
-                                    </div>
-                                {% endif %}
-                            <div class="recommend_source">
-                                {% if archive.thumb %}
-                                    {% if archive.thumb.url %}
-                                        <div class="source_thumb">
-                                            <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
-                                                <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                                <div class="source_title">
-                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                    {% for collection in collections %}
+                        <div class="recommend_source">
+                            {% if collection.thumb_url %}
+                                <div class="source_thumb">
+                                    <a href="/explore/redirect/{{collection.id}}/">
+                                        <img src="{{collection.thumb_url}}" alt="thumbnail image" class="collection-link" />
+                                    </a>
                                 </div>
-                            </div>     
-                            {%endfor%}                        
-                    </div>
-                    {% endif %} 
-                    
+                            {% endif %}
+                            <div class="source_title">
+                                <a href="/explore/redirect/{{collection.id}}/" class="collection-link">{{collection.title}}</a>
+                            </div>
+                        </div>
+                    {% endfor %}                        
                 </div>
-                {% endwith %}
-            </td>            
+            {% endif %} 
+                    
+            </div>
+        {% endwith %}
+        </td>            
 
         </tr>
     </tbody>

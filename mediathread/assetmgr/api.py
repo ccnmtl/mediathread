@@ -59,8 +59,7 @@ class AssetResource(ModelResource):
         sources = {}
         for s in bundle.obj.source_set.all():
             sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(bundle.request,
-                                                       bundle.obj),
+                                'url': s.url_processed(bundle.request),
                                 'width': s.width,
                                 'height': s.height,
                                 'primary': s.primary}

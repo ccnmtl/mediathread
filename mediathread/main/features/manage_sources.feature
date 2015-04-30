@@ -14,8 +14,7 @@ Feature: Sources
         
         # Enable Video Upload
         When I click the Enable Video Upload button
-        Then I'm told "Mediathread Video Upload has been enabled for your class"       
-        Then I confirm the action
+        Then I see "Mediathread Video Upload has been enabled for your class"       
         And I see "Upload Permission Settings"
         
         # Under Add to My Collection        
@@ -190,8 +189,7 @@ Feature: Sources
         
         # Add the YouTube Source
         When I add YouTube to the class
-        Then I'm told "You Tube has been enabled for your class"
-        Then I confirm the action
+        Then I see "You Tube has been enabled for your class"
         Then there is an Remove button
 
         # Under Add to My Collection
@@ -214,8 +212,7 @@ Feature: Sources
         
         # Add the YouTube Source
         When I add YouTube to the class
-        Then I'm told "You Tube has been enabled for your class"
-        Then I confirm the action
+        Then I see "You Tube has been enabled for your class"
         Then there is an Remove button
         
         # Under Add to My Collection
@@ -229,8 +226,7 @@ Feature: Sources
         Then I am at the Sources page
         
         When I click the Remove button
-        Then I'm told "You Tube has been disabled for your class"
-        Then I confirm the action
+        Then I see "You Tube has been disabled for your class"
 
         # Under Add to My Collection
         When I click the "Sample Course" link

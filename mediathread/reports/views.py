@@ -32,8 +32,7 @@ from structuredcollaboration.models import Collaboration
 def class_assignment_report(request, project_id):
     assignment = get_object_or_404(Project, id=project_id)
     responses = assignment.responses(request)
-    return {'assignment': assignment,
-            'responses': responses, }
+    return {'assignment': assignment, 'responses': responses}
 
 
 @allow_http("GET")

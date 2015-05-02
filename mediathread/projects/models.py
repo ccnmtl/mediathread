@@ -184,6 +184,19 @@ class ProjectManager(models.Manager):
 
         return assignments
 
+    def reset_publish_to_world(self, course):
+        # Check any existing projects -- if they are
+        # world publish-able, turn this feature OFF
+        projects = Project.objects.filter(course=course)
+        for project in projects:
+            try:
+                col = Collaboration.objects.get_for_object(project)
+                if col._policy.policy_name == 'PublicEditorsAreOwners':
+                    col.policy = 'CourseProtected'
+                    col.save()
+            except:
+                pass
+
 
 class Project(models.Model):
     objects = ProjectManager()  # custom manager

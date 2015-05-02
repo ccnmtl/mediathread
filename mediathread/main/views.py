@@ -204,17 +204,7 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             request.course.add_detail(key, value)
 
             if value == 0:
-                # Check any existing projects -- if they are
-                # world publishable, turn this feature OFF
-                projects = Project.objects.filter(course=request.course)
-                for project in projects:
-                    try:
-                        col = Collaboration.objects.get_for_object(project)
-                        if col._policy.policy_name == 'PublicEditorsAreOwners':
-                            col.policy = 'CourseProtected'
-                            col.save()
-                    except:
-                        pass
+                Project.objects.reset_publish_to_world(request.course)
 
         messages.add_message(request, messages.INFO,
                              'Your changes were saved.')

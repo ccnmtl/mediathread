@@ -8,8 +8,8 @@ from django.test.client import RequestFactory
 
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
-    asset_create, sources_from_args, RedirectToExternalCollectionView, \
-    RedirectToUploaderView, _parse_user
+    RedirectToExternalCollectionView, \
+    RedirectToUploaderView, _parse_user, AssetCreateView
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
@@ -30,21 +30,25 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
     def test_sources_from_args(self):
         data = {'title': 'Bad Asset',
                 'asset-source': 'bookmarklet',
-                'image': "x" * 5000,  # too long
+                'image': 'x' * 5000,  # too long
                 'url': 'http://www.youtube.com/abcdefghi'}
         request = RequestFactory().post('/save/', data)
-        sources = sources_from_args(request)
+        sources = AssetCreateView.sources_from_args(request)
 
         self.assertEquals(len(sources.keys()), 0)
 
         data = {'title': 'Good Asset',
                 'asset-source': 'bookmarklet',
-                'image': "http://www.flickr.com/"}
+                'image': 'http://www.flickr.com/',
+                'image-metadata': [u'w720h526;text/html']}
         request = RequestFactory().post('/save/', data)
-        sources = sources_from_args(request)
+        sources = AssetCreateView.sources_from_args(request)
         self.assertEquals(len(sources.keys()), 2)
-        self.assertEquals(sources['image'].url, "http://www.flickr.com/")
+        self.assertEquals(sources['image'].url, 'http://www.flickr.com/')
         self.assertTrue(sources['image'].primary)
+        self.assertEquals(sources['image'].width, 720)
+        self.assertEquals(sources['image'].height, 526)
+        self.assertEquals(sources['image'].media_type, 'text/html')
 
     def test_manage_external_collection_get(self):
         self.assertTrue(
@@ -107,11 +111,10 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        try:
-            asset_create(request)
-            self.fail("An assertion error should have been raised")
-        except AssertionError:
-            pass  # expected
+        with self.assertRaises(AssertionError):
+            view = AssetCreateView()
+            view.request = request
+            view.post(request)
 
     def test_asset_create_via_bookmarklet(self):
         data = {'title': 'YouTube Asset',
@@ -122,7 +125,10 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        response = asset_create(request)
+        view = AssetCreateView()
+        view.request = request
+        response = view.post(request)
+
         self.assertEquals(response.status_code, 200)
 
         Asset.objects.get(title='YouTube Asset')

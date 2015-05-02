@@ -3,19 +3,24 @@ import os.path
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.contrib.auth.views import password_change, password_change_done, \
-    password_reset, password_reset_done, password_reset_complete, \
-    password_reset_confirm
+from django.contrib.auth.views import (password_change, password_change_done,
+                                       password_reset, password_reset_done,
+                                       password_reset_complete,
+                                       password_reset_confirm)
 from django.views.generic.base import TemplateView
 from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
-from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
-    TagCollectionView, RedirectToExternalCollectionView, RedirectToUploaderView
+from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
+                                        TagCollectionView,
+                                        RedirectToExternalCollectionView,
+                                        RedirectToUploaderView,
+                                        AssetCreateView)
 from mediathread.main.forms import CustomRegistrationForm
-from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
-    RequestCourseView, ContactUsView, CourseSettingsView, \
-    CourseManageSourcesView
+from mediathread.main.views import (MigrateCourseView, MigrateMaterialsView,
+                                    RequestCourseView, ContactUsView,
+                                    CourseSettingsView,
+                                    CourseManageSourcesView)
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
@@ -169,11 +174,8 @@ urlpatterns = patterns(
     # Instructor Dashboard & reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
-    # Bookmarklet Entry point
-    # Staff custom asset entry
-    url(r'^save/$',
-        'mediathread.assetmgr.views.asset_create',
-        name='asset-save'),
+    # Bookmarklet, Wardenclyffe, Staff custom asset entry
+    url(r'^save/$', AssetCreateView.as_view(), name='asset-save'),
 
     (r'^setting/(?P<user_name>\w[^/]*)/$',
      'mediathread.main.views.set_user_setting'),

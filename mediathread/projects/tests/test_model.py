@@ -292,3 +292,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         responses = self.assignment.responses_by(request, self.student_one)
         self.assertEquals(responses[0], response1)
+
+    def test_reset_publish_to_world(self):
+        public = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PublicEditorsAreOwners')
+        self.assertEquals(public.public_url(), '/s/collaboration/7/')
+
+        Project.objects.reset_publish_to_world(self.sample_course)
+        self.assertIsNone(public.public_url())

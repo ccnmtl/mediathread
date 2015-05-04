@@ -133,63 +133,125 @@ def most_recent(request):
     return HttpResponseRedirect('/asset/' + asset_id + '/')
 
 
-# @login_required #no login, so server2server interface is possible
-@allow_http("POST")
-def asset_create(request):
-    req_dict = getattr(request, request.method)
-    user = _parse_user(request)
-    metadata = _parse_metadata(req_dict)
-    title = req_dict.get('title', '')
-    success, asset = Asset.objects.get_by_args(req_dict,
-                                               asset__course=request.course)
+class AssetCreateView(View):
+    OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
+                      'as', 'set_course', 'secret')
 
-    if success is False:
-        raise AssertionError("no arguments were supplied to make an asset")
+    @classmethod
+    def good_asset_arg(cls, key):
+        # need support for some things like width,height,max_zoom
+        return (not (key.startswith('annotation-') or
+                     key.startswith('save-') or
+                     key.startswith('metadata-') or  # asset metadata
+                     key.endswith('-metadata')  # source metadata
+                     ) and
+                key not in cls.OPERATION_TAGS)
 
-    if asset is None:
-        asset = Asset(title=title[:1020],  # max title length
-                      course=request.course,
-                      author=user)
-        asset.save()
+    @classmethod
+    def add_metadata(cls, source, src_metadata):
+        if src_metadata:
+            # w{width}h{height};{mimetype}
+            # (with mimetype and w+h optional)
+            the_match = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
+                                 src_metadata).groups()
+            if the_match[1]:
+                source.width = int(the_match[1])
+                source.height = int(the_match[2])
+            if the_match[4]:
+                source.media_type = the_match[4]
 
-        for source in sources_from_args(request, asset).values():
+    @classmethod
+    def sources_from_args(cls, request, asset=None):
+        '''
+        utilized by add_view to help create a new asset
+        returns a dict of sources represented in GET/POST args
+        '''
+        sources = {}
+        args = request.REQUEST
+        for key, val in args.items():
+            if cls.good_asset_arg(key) and val != '' and len(val) < 4096:
+                source = Source(label=key, url=val)
+
+                # UGLY non-functional programming for url_processing
+                if asset:
+                    source.asset = asset
+
+                src_metadata = args.get(key + '-metadata', None)
+                cls.add_metadata(source, src_metadata)
+                sources[key] = source
+
+        # iterate the primary labels in order of priority
+        # pickup the first matching one & use that
+        for lbl in Asset.primary_labels:
+            if lbl in sources:
+                sources[lbl].primary = True
+                return sources
+
+        # no primary source found, return no sources
+        return {}
+
+    def add_sources(self, request, asset):
+        for source in self.sources_from_args(request, asset).values():
             source.save()
 
+    def add_tags(self, asset, user, metadata):
         if "tag" in metadata:
             for each_tag in metadata["tag"]:
                 asset.save_tag(user, each_tag)
 
-        asset.metadata_blob = json.dumps(metadata)
-        asset.save()
+    ''' No login required so server2server interface is possible'''
+    def post(self, request):
+        req_dict = getattr(request, request.method)
+        user = _parse_user(request)
+        metadata = _parse_metadata(req_dict)
+        title = req_dict.get('title', '')
+        success, asset = Asset.objects.get_by_args(
+            req_dict, asset__course=request.course)
 
-        try:
-            asset.primary  # make sure a primary source was specified
-        except Source.DoesNotExist:
-            # we'll make it here if someone doesn't submit
-            # any primary_labels as arguments
-            # @todo verify the above comment.
-            raise AssertionError("no primary source provided")
+        if success is False:
+            raise AssertionError("no arguments were supplied to make an asset")
 
-    # create a global annotation
-    asset.global_annotation(user, True)
-    asset_url = reverse('asset-view', args=[asset.id])
-    source = request.POST.get('asset-source', "")
+        if asset is None:
+            asset = Asset(title=title[:1020],  # max title length
+                          course=request.course,
+                          author=user)
+            asset.save()
 
-    if source == 'bookmarklet':
-        # bookmarklet create
-        asset_url += "?level=item"
+            self.add_sources(request, asset)
 
-        template = loader.get_template('assetmgr/analyze.html')
-        context = RequestContext(request, {
-            'request': request,
-            'user': user,
-            'action': request.POST.get('button', None),
-            'asset_url': asset_url
-        })
-        return HttpResponse(template.render(context))
-    else:
-        # server2server create (wardenclyffe)
-        return HttpResponseRedirect(asset_url)
+            self.add_tags(asset, user, metadata)
+
+            asset.metadata_blob = json.dumps(metadata)
+            asset.save()
+
+            try:
+                asset.primary  # make sure a primary source was specified
+            except Source.DoesNotExist:
+                # we'll make it here if someone doesn't submit
+                # any primary_labels as arguments
+                # @todo verify the above comment.
+                raise AssertionError("no primary source provided")
+
+        # create a global annotation
+        asset.global_annotation(user, True)
+        asset_url = reverse('asset-view', args=[asset.id])
+        source = request.POST.get('asset-source', "")
+
+        if source == 'bookmarklet':
+            # bookmarklet create
+            asset_url += "?level=item"
+
+            template = loader.get_template('assetmgr/analyze.html')
+            context = RequestContext(request, {
+                'request': request,
+                'user': user,
+                'action': request.POST.get('button', None),
+                'asset_url': asset_url
+            })
+            return HttpResponse(template.render(context))
+        else:
+            # server2server create (wardenclyffe)
+            return HttpResponseRedirect(asset_url)
 
 
 @login_required
@@ -207,59 +269,6 @@ def asset_delete(request, asset_id):
 
     json_stream = json.dumps({})
     return HttpResponse(json_stream, content_type='application/json')
-
-
-OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
-                  'as', 'set_course', 'secret')
-
-
-# NON_VIEW
-def good_asset_arg(key):
-    # need support for some things like width,height,max_zoom
-    return (not (key.startswith('annotation-') or
-                 key.startswith('save-') or
-                 key.startswith('metadata-') or  # asset metadata
-                 key.endswith('-metadata')  # source metadata
-                 ) and
-            key not in OPERATION_TAGS)
-
-
-def sources_from_args(request, asset=None):
-    '''
-    utilized by add_view to help create a new asset
-    returns a dict of sources represented in GET/POST args
-    '''
-    sources = {}
-    args = request.REQUEST
-    for key, val in args.items():
-        if good_asset_arg(key) and val != '' and len(val) < 4096:
-            source = Source(label=key, url=val)
-
-            # UGLY non-functional programming for url_processing
-            source.request = request
-            if asset:
-                source.asset = asset
-            src_metadata = args.get(key + '-metadata', None)
-            if src_metadata:
-                # w{width}h{height};{mimetype} (with mimetype and w+h optional)
-                the_match = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
-                                     src_metadata).groups()
-                if the_match[1]:
-                    source.width = int(the_match[1])
-                    source.height = int(the_match[2])
-                if the_match[4]:
-                    source.media_type = the_match[4]
-            sources[key] = source
-
-    # iterate the primary labels in order of priority
-    # pickup the first matching one & use that
-    for lbl in Asset.primary_labels:
-        if lbl in sources:
-            sources[lbl].primary = True
-            return sources
-
-    # no primary source found, return no sources
-    return {}
 
 
 @login_required

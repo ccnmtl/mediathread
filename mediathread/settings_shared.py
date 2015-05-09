@@ -54,7 +54,8 @@ PROJECT_APPS = ['mediathread.main',
                 'mediathread.projects',
                 'mediathread.reports',
                 'mediathread.discussions',
-                'mediathread.taxonomy']
+                'mediathread.taxonomy',
+                'structuredcollaboration']
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
@@ -62,7 +63,7 @@ NOSE_ARGS = [
     '--cover-html',
     ('--cover-package=mediathread.main,mediathread.djangosherd,'
      'mediathread.assetmgr,mediathread.projects,mediathread.taxonomy,'
-     'mediathread.discussions,mediathread.report'),
+     'mediathread.discussions,mediathread.report,structuredcollaboration'),
 ]
 
 CACHE_BACKEND = 'locmem:///'

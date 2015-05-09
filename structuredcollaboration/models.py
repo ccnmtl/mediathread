@@ -123,7 +123,7 @@ class Collaboration(models.Model):
                                         args=(self.pk,))
 
     def permission_to(self, permission, request):
-        rv = self.policy.permission_to(self, permission, request)
+        rv = self.get_policy().permission_to(self, permission, request)
         return rv
 
     def get_parent(self):
@@ -150,14 +150,13 @@ class Collaboration(models.Model):
         else:
             return DEFAULT_POLICY
 
-    def set_policy(self, p):
-        if p is None:
+    def set_policy(self, policy_name):
+        if policy_name is None:
             self.policy_record = None
         else:
             self.policy_record, created = \
-                CollaborationPolicyRecord.objects.get_or_create(policy_name=p)
-
-    policy = property(get_policy, set_policy)
+                CollaborationPolicyRecord.objects.get_or_create(
+                    policy_name=policy_name)
 
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,

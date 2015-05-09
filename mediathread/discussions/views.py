@@ -69,7 +69,7 @@ def discussion_create(request):
                             # content_object=None,
                             context=request.collaboration_context,
                             )
-    disc_sc.policy = request.POST.get('publish', None)
+    disc_sc.set_policy(request.POST.get('publish', None))
     if request.POST.get('inherit', None) == 'true':
         disc_sc.group_id = obj_sc.group_id
         disc_sc.user_id = obj_sc.user_id

@@ -499,7 +499,7 @@ class Project(models.Model):
             policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
 
         try:
-            col = Collaboration.get_associated_collab(self)
+            col = Collaboration.objects.get_for_object(self)
         except Collaboration.DoesNotExist:
             if policy is None:
                 policy = "PrivateEditorsAreOwners"

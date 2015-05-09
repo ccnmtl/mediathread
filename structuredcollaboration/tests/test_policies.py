@@ -97,13 +97,14 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
         policy = PrivateStudentAndFaculty()
 
         request = RequestFactory().get('/')
-        collaboration = Collaboration.get_associated_collab(self.sample_course)
+        collaboration = Collaboration.objects.get_for_object(
+            self.sample_course)
         request.course = self.sample_course
         request.collaboration_context = collaboration
 
         self.create_discussion(self.sample_course, self.instructor_one)
         discussions = get_course_discussions(self.sample_course)
-        collaboration = Collaboration.get_associated_collab(discussions[0])
+        collaboration = Collaboration.objects.get_for_object(discussions[0])
 
         request.user = self.student_one
         self.assertFalse(policy.read(collaboration, request))
@@ -127,14 +128,15 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
         policy = InstructorShared()
 
         request = RequestFactory().get('/')
-        collaboration = Collaboration.get_associated_collab(self.sample_course)
+        collaboration = Collaboration.objects.get_for_object(
+            self.sample_course)
         request.course = self.sample_course
         request.collaboration_context = collaboration
 
         project = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared')
-        collaboration = Collaboration.get_associated_collab(project)
+        collaboration = Collaboration.objects.get_for_object(project)
 
         request.user = self.student_one
         self.assertTrue(policy.read(collaboration, request))
@@ -159,12 +161,12 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
         request = RequestFactory().get('/')
         request.course = self.sample_course
         request.collaboration_context = \
-            Collaboration.get_associated_collab(self.sample_course)
+            Collaboration.objects.get_for_object(self.sample_course)
 
         project = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared')
-        collaboration = Collaboration.get_associated_collab(project)
+        collaboration = Collaboration.objects.get_for_object(project)
 
         request.user = self.student_one
         self.assertTrue(policy.read(collaboration, request))
@@ -186,7 +188,7 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
 
         request.course = self.alt_course
         request.collaboration_context = \
-            Collaboration.get_associated_collab(self.alt_course)
+            Collaboration.objects.get_for_object(self.alt_course)
 
         request.user = self.alt_instructor
         self.assertFalse(policy.read(collaboration, request))
@@ -204,14 +206,15 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
         policy = CourseProtected()
         request = RequestFactory().get('/')
 
-        collaboration = Collaboration.get_associated_collab(self.sample_course)
+        collaboration = Collaboration.objects.get_for_object(
+            self.sample_course)
         request.course = self.sample_course
         request.collaboration_context = collaboration
 
         project = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='CourseProtected')
-        collaboration = Collaboration.get_associated_collab(project)
+        collaboration = Collaboration.objects.get_for_object(project)
 
         request.user = self.student_one
         self.assertTrue(policy.read(collaboration, request))
@@ -235,14 +238,15 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
         policy = Assignment()
 
         request = RequestFactory().get('/')
-        collaboration = Collaboration.get_associated_collab(self.sample_course)
+        collaboration = Collaboration.objects.get_for_object(
+            self.sample_course)
         request.course = self.sample_course
         request.collaboration_context = collaboration
 
         assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
             policy='Assignment')
-        collaboration = Collaboration.get_associated_collab(assignment)
+        collaboration = Collaboration.objects.get_for_object(assignment)
 
         request.user = self.student_one
         self.assertTrue(policy.read(collaboration, request))

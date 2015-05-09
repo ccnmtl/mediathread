@@ -1,40 +1,54 @@
-from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
-from django.conf import settings
-from structuredcollaboration.policies import CollaborationPolicies
-from structuredcollaboration.policies import PublicEditorsAreOwners
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django.contrib.auth.models import User, Group
+from structuredcollaboration.policies import (
+    CollaborationPolicy, PrivateEditorsAreOwners, InstructorManaged,
+    InstructorShared, PrivateStudentAndFaculty, CourseProtected,
+    CourseCollaboration, Assignment)
+from structuredcollaboration.policies import PublicEditorsAreOwners
 
 
-class CollaborationManager(models.Manager):
-    def get_for_object_list(self, object_list):
-        ctype = ContentType.objects.get_for_model(object_list[0])
-        ids = [str(o.id) for o in object_list]
-        lst = self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
-        return lst
+class CollaborationPolicyRecordManager(models.Manager):
+    '''
+        @todo - consider pulling this whole registration approach.
+        feels overcomplicated & unnecessary. The primary aim here
+        seems to be caching instances of the policies.
+    '''
+    registered_policies = dict()
 
-    def get_for_object(self, obj):
-        ctype = ContentType.objects.get_for_model(obj)
-        return self.get(content_type__pk=ctype.pk, object_pk=str(obj.pk))
+    def policy_instance(self, record):
+        return self.registered_policies[record.policy_name]
+
+    def register_policy(self, policy_class, policy_key, policy_title):
+        self.registered_policies[policy_key] = policy_class()
 
 
 class CollaborationPolicyRecord(models.Model):
-    policy_name = models.CharField(max_length=512,
-                                   choices=CollaborationPolicies)
-
-    @property
-    def policy(self):
-        return CollaborationPolicies.registered_policies[self.policy_name]
+    objects = CollaborationPolicyRecordManager()
+    policy_name = models.CharField(max_length=512)
 
     def __unicode__(self):
         return self.policy_name
 
     def __eq__(self, other):
         return self.policy_name is other or self is other
+
+
+class CollaborationManager(models.Manager):
+    def get_for_object_list(self, object_list):
+        ctype = ContentType.objects.get_for_model(object_list[0])
+        ids = [str(o.id) for o in object_list]
+        return self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
+
+    def get_for_object(self, obj):
+        ctype = ContentType.objects.get_for_model(obj)
+        return self.get(content_type__pk=ctype.pk, object_pk=str(obj.pk))
+
 
 DEFAULT_POLICY = getattr(settings,
                          'DEFAULT_COLLABORATION_POLICY',
@@ -54,10 +68,8 @@ class Collaboration(models.Model):
         ContentType, related_name="collaboration_set_for_%(class)s",
         null=True, blank=True)
 
-    object_pk = models.CharField(_('object ID'),
-                                 max_length=255,
-                                 null=True,
-                                 blank=True)
+    object_pk = models.CharField(_('object ID'), max_length=255,
+                                 null=True, blank=True)
 
     content_object = generic.GenericForeignKey(ct_field="content_type",
                                                fk_field="object_pk")
@@ -65,17 +77,11 @@ class Collaboration(models.Model):
     policy_record = models.ForeignKey(CollaborationPolicyRecord,
                                       null=True, default=None, blank=True)
 
-    _parent = models.ForeignKey('self',
-                                related_name='children',
-                                null=True,
-                                default=None,
-                                blank=True)
+    _parent = models.ForeignKey('self', related_name='children',
+                                null=True, default=None, blank=True)
 
-    context = models.ForeignKey('self',
-                                related_name='context_children',
-                                null=True,
-                                default=None,
-                                blank=True)
+    context = models.ForeignKey('self', related_name='context_children',
+                                null=True, default=None, blank=True)
 
     def save(self, *args, **kwargs):
         create_group = (self.group and not self.group.id)
@@ -138,8 +144,11 @@ class Collaboration(models.Model):
         return coll
 
     def get_policy(self):
-        return (self.policy_record and self.policy_record.policy or
-                DEFAULT_POLICY)
+        if self.policy_record:
+            return CollaborationPolicyRecord.objects.policy_instance(
+                self.policy_record)
+        else:
+            return DEFAULT_POLICY
 
     def set_policy(self, p):
         if p is None:
@@ -153,3 +162,46 @@ class Collaboration(models.Model):
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,
                                         self.object_pk, self.slug)
+
+
+CollaborationPolicyRecord.objects.register_policy(
+    CollaborationPolicy, 'forbidden', 'Forbidden to everyone')
+
+CollaborationPolicyRecord.objects.register_policy(
+    PublicEditorsAreOwners, 'PublicEditorsAreOwners',
+    'Editors can manage the group, Content is world-readable')
+
+CollaborationPolicyRecord.objects.register_policy(
+    PrivateEditorsAreOwners,
+    'PrivateEditorsAreOwners',
+    'User and group can view/edit/manage. Staff can read')
+
+CollaborationPolicyRecord.objects.register_policy(
+    InstructorManaged,
+    'InstructorManaged',
+    'Instructors/Staff and user manage, Course members read')
+
+CollaborationPolicyRecord.objects.register_policy(
+    InstructorShared,
+    'InstructorShared',
+    'group/user manage/edit and instructors can view')
+
+CollaborationPolicyRecord.objects.register_policy(
+    PrivateStudentAndFaculty,
+    'PrivateStudentAndFaculty',
+    'Private between faculty and student')
+
+CollaborationPolicyRecord.objects.register_policy(
+    CourseProtected,
+    'CourseProtected',
+    'Protected to Course Members')
+
+CollaborationPolicyRecord.objects.register_policy(
+    CourseCollaboration, 'CourseCollaboration',
+    'Course Collaboration')
+
+CollaborationPolicyRecord.objects.register_policy(
+    Assignment,
+    'Assignment',
+    'Course assignment (instructors can manage/edit, '
+    'course members can read/respond)')

@@ -334,7 +334,7 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         if projects.count() > 0:
             collabs = Collaboration.objects.get_for_object_list(projects)
             collabs = collabs.exclude(
-                _policy__policy_name='PrivateEditorsAreOwners')
+                policy_record__policy_name='PrivateEditorsAreOwners')
             ids = [int(c.object_pk) for c in collabs]
             projects = projects.filter(id__in=ids)
 

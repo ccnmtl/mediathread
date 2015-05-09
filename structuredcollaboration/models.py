@@ -62,10 +62,8 @@ class Collaboration(models.Model):
     content_object = generic.GenericForeignKey(ct_field="content_type",
                                                fk_field="object_pk")
 
-    _policy = models.ForeignKey(CollaborationPolicyRecord,
-                                null=True,
-                                default=None,
-                                blank=True)
+    policy_record = models.ForeignKey(CollaborationPolicyRecord,
+                                      null=True, default=None, blank=True)
 
     _parent = models.ForeignKey('self',
                                 related_name='children',
@@ -140,13 +138,14 @@ class Collaboration(models.Model):
         return coll
 
     def get_policy(self):
-        return self._policy_id and self._policy.policy or DEFAULT_POLICY
+        return (self.policy_record and self.policy_record.policy or
+                DEFAULT_POLICY)
 
     def set_policy(self, p):
         if p is None:
-            self._policy = None
+            self.policy_record = None
         else:
-            self._policy, created = \
+            self.policy_record, created = \
                 CollaborationPolicyRecord.objects.get_or_create(policy_name=p)
 
     policy = property(get_policy, set_policy)

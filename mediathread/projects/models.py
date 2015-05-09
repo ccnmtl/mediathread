@@ -114,7 +114,7 @@ class ProjectManager(models.Manager):
             content_type=ContentType.objects.get_for_model(Course),
             object_pk=str(course.pk))
 
-        policy = project.collaboration()._policy
+        policy = project.collaboration().policy_record
 
         Collaboration.objects.create(
             user=new_project.author, title=new_project.title,
@@ -191,7 +191,7 @@ class ProjectManager(models.Manager):
         for project in projects:
             try:
                 col = Collaboration.objects.get_for_object(project)
-                if col._policy.policy_name == 'PublicEditorsAreOwners':
+                if col.policy_record.policy_name == 'PublicEditorsAreOwners':
                     col.policy = 'CourseProtected'
                     col.save()
             except:
@@ -261,7 +261,7 @@ class Project(models.Model):
     def public_url(self, col=None):
         if col is None:
             col = self.collaboration()
-        if col and col._policy.policy_name == 'PublicEditorsAreOwners':
+        if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
     def subobjects(self, request, child_type):
@@ -375,7 +375,8 @@ class Project(models.Model):
 
         col = self.collaboration()
         if col:
-            return opts.get(col._policy.policy_name, col._policy.policy_name)
+            return opts.get(col.policy_record.policy_name,
+                            col.policy_record.policy_name)
         elif self.submitted:
             return u"Submitted"
         else:
@@ -384,8 +385,8 @@ class Project(models.Model):
     def visibility_short(self):
         col = self.collaboration()
         if col:
-            return SHORT_NAME.get(col._policy.policy_name,
-                                  col._policy.policy_name)
+            return SHORT_NAME.get(col.policy_record.policy_name,
+                                  col.policy_record.policy_name)
         elif self.submitted:
             return u"Submitted"
         else:
@@ -397,8 +398,8 @@ class Project(models.Model):
         """
         col = self.collaboration()
         if col:
-            status = SHORT_NAME.get(col._policy.policy_name,
-                                    col._policy.policy_name)
+            status = SHORT_NAME.get(col.policy_record.policy_name,
+                                    col.policy_record.policy_name)
             public_url = self.public_url(col)
             if public_url:
                 status += ' (<a href="%s">public url</a>)' % public_url
@@ -445,8 +446,8 @@ class Project(models.Model):
             # legacy
             return self.submitted
 
-        return (col._policy.policy_name != 'PrivateEditorsAreOwners' and
-                col._policy.policy_name != 'InstructorShared')
+        return (col.policy_record.policy_name != 'PrivateEditorsAreOwners' and
+                col.policy_record.policy_name != 'InstructorShared')
 
     def visible(self, request):
         col = self.collaboration()

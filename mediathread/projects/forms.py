@@ -37,7 +37,7 @@ class ProjectForm(forms.ModelForm):
 
         col = kwargs['instance'].collaboration()
         if col:
-            pol = col._policy.policy_name
+            pol = col.policy_record.policy_name
             if pol not in dict(self.fields['publish'].choices):
                 self.fields['publish'].choices.append((pol, pol))
             self.initial['publish'] = pol

@@ -457,7 +457,8 @@ class DiscussionIndex(models.Model):
     @classmethod
     def with_permission(cls, request, query):
         return [di for di in query
-                if di.collaboration.permission_to('read', request)]
+                if di.collaboration.permission_to(
+                    'read', request.course, request.user)]
 
 
 def commentNproject_indexer(sender, instance=None, created=None, **kwargs):

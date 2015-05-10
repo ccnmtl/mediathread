@@ -5,7 +5,6 @@
 # then you can put a settings.py file and templates/ overrides there
 # (see bottom)
 
-from structuredcollaboration import policies
 import os.path
 import re
 import sys
@@ -262,7 +261,7 @@ FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.13.swf'
 FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.13.swf'
 
 
-DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
+DEFAULT_COLLABORATION_POLICY = 'InstructorManaged'
 
 
 # this gets around Django 1.2's stupidity for commenting

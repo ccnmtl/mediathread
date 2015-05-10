@@ -270,7 +270,8 @@ class Project(models.Model):
         children = col.children.filter(content_type=child_type)
         viewable_children = []
         for child in children:
-            if child.permission_to("read", request) and child.content_object:
+            if (child.permission_to("read", request.course, request.user) and
+                    child.content_object):
                 viewable_children.append(child.content_object)
         return viewable_children
 
@@ -303,7 +304,8 @@ class Project(models.Model):
         col = self.collaboration()
         if not col:
             return False
-        self.is_assignment_cached = col.permission_to("add_child", request)
+        self.is_assignment_cached = col.permission_to(
+            "add_child", request.course, request.user)
         return self.is_assignment_cached
 
     def assignment(self):
@@ -451,7 +453,7 @@ class Project(models.Model):
     def visible(self, request):
         col = self.collaboration()
         if col:
-            return col.permission_to('read', request)
+            return col.permission_to('read', request.course, request.user)
         else:
             return self.submitted
 
@@ -459,14 +461,16 @@ class Project(models.Model):
         if not self.is_participant(request.user):
             return False
 
-        return (self.collaboration(request).permission_to('edit', request) or
-                self.collaboration(
-                    request, sync_group=True).permission_to('edit', request))
+        return (self.collaboration(request).permission_to(
+                'edit', request.course, request.user) or
+                self.collaboration(request, sync_group=True).permission_to(
+                'edit', request.course, request.user))
 
     def can_read(self, request):
-        return (self.collaboration(request).permission_to('read', request) or
-                self.collaboration(
-                    request, sync_group=True).permission_to('read', request))
+        return (self.collaboration(request).permission_to(
+                'read', request.course, request.user) or
+                self.collaboration(request, sync_group=True).permission_to(
+                'read', request.course, request.user))
 
     def collaboration_sync_group(self, request, col, policy_name):
         participants = self.participants.all()

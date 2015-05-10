@@ -114,7 +114,8 @@ def discussion_create(request):
 @allow_http("POST")
 def discussion_delete(request, discussion_id):
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to('read', request):
+    if not root_comment.content_object.permission_to(
+            'read', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to view this discussion.')
 
@@ -127,7 +128,8 @@ def discussion_view(request, discussion_id):
     discussion_id is the pk of the root comment."""
 
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to('read', request):
+    if not root_comment.content_object.permission_to(
+            'read', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to view this discussion.')
 
@@ -188,7 +190,8 @@ def comment_save(request, comment_id, next_url=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
 
-    if comment.content_object.permission_to('manage', request):
+    if comment.content_object.permission_to(
+            'manage', request.course, request.user):
         comment.comment = request.POST['comment']
     elif comment.user == request.user:
         now = datetime.now()

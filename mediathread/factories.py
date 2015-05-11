@@ -137,6 +137,12 @@ class ProjectFactory(factory.DjangoModelFactory):
                 parent_collab.append_child(self)
 
 
+class CollaborationFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = Collaboration
+    user = factory.SubFactory(UserFactory)
+    group = factory.SubFactory(GroupFactory)
+
+
 class MediathreadTestMixin(object):
 
     def create_discussion(self, course, instructor):

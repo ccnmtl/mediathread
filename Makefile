@@ -29,6 +29,7 @@ harvest: ./ve/bin/python
 
 flake8: ./ve/bin/python
 	$(FLAKE8) $(APP) --max-complexity=8
+	$(FLAKE8) structuredcollaboration --max-complexity=8
 
 runserver: ./ve/bin/python check
 	$(MANAGE) runserver

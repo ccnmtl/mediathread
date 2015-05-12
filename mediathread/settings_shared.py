@@ -5,7 +5,7 @@
 # then you can put a settings.py file and templates/ overrides there
 # (see bottom)
 
-from courseaffils import policies
+from structuredcollaboration import policies
 import os.path
 import re
 import sys

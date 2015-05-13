@@ -42,7 +42,7 @@ def discussion_create(request):
     assert the_object is not None
 
     try:
-        obj_sc = Collaboration.get_associated_collab(the_object)
+        obj_sc = Collaboration.objects.get_for_object(the_object)
     except Collaboration.DoesNotExist:
         obj_sc = Collaboration()
         # TODO: populate this collab with sensible auth defaults.
@@ -137,7 +137,7 @@ def discussion_view(request, discussion_id):
         # legacy: for when contexts weren't being set in new()
         my_course = request.course
         root_comment.content_object.context = \
-            Collaboration.get_associated_collab(my_course)
+            Collaboration.objects.get_for_object(my_course)
         root_comment.content_object.save()
 
     data = {'space_owner': request.user.username}

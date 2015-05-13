@@ -150,18 +150,6 @@ class Collaboration(models.Model):
 
     policy = property(get_policy, set_policy)
 
-    @classmethod
-    def get_associated_collab(cls, obj):
-        """
-        collaboration, if any, associated with this object:
-        Collaboration.get_associated_collabs(my_course)
-        """
-        content_type = ContentType.objects.get_for_model(type(obj))
-        return Collaboration.objects.get(
-            content_type=content_type,
-            object_pk=str(obj.pk)
-        )
-
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,
                                         self.object_pk, self.slug)

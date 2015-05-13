@@ -133,7 +133,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     def parent(self, create, extracted, **kwargs):
         if create and extracted:
             parent_collab = extracted.collaboration()
-            if parent_collab._policy.policy_name == 'Assignment':
+            if parent_collab.policy_record.policy_name == 'Assignment':
                 parent_collab.append_child(self)
 
 

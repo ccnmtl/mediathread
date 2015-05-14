@@ -12,7 +12,8 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main.models import UserProfile
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
-from structuredcollaboration.models import Collaboration
+from structuredcollaboration.models import Collaboration, \
+    CollaborationPolicyRecord
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -141,6 +142,10 @@ class CollaborationFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Collaboration
     user = factory.SubFactory(UserFactory)
     group = factory.SubFactory(GroupFactory)
+
+
+class CollaborationPolicyRecordFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = CollaborationPolicyRecord
 
 
 class MediathreadTestMixin(object):

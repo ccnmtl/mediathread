@@ -114,12 +114,13 @@ class ProjectManager(models.Manager):
             content_type=ContentType.objects.get_for_model(Course),
             object_pk=str(course.pk))
 
-        policy = project.collaboration().policy_record
+        policy_record = project.collaboration().policy_record
 
         Collaboration.objects.create(
             user=new_project.author, title=new_project.title,
             content_object=new_project,
-            context=collaboration_context, policy=policy.policy_name)
+            context=collaboration_context,
+            policy=policy_record.policy_name)
 
         return new_project
 

@@ -1,3 +1,4 @@
+
 class CollaborationPolicy(object):
     """
     Base Collaboration Policy
@@ -94,13 +95,7 @@ class CourseCollaboration(CourseProtected):
     edit = CourseProtected.read
 
 
-class CoursePublicCollaboration(CourseCollaboration):
-
-    def read(self):
-        return True
-
-
-class Assignment(CollaborationPolicy):
+class Assignment(CourseProtected):
     def manage(self, coll, request):
         return (coll.context == request.collaboration_context and
                 ((request.course and
@@ -115,77 +110,3 @@ class Assignment(CollaborationPolicy):
                 request.collaboration_context)
 
     add_child = read
-
-
-class PublicAssignment(Assignment):
-    def read(self, coll, request):
-        return (coll.context == request.collaboration_context)
-
-
-class CollaborationPoliciesSingleton(object):
-    # purposely setting it where it stays static on the instance
-    registered_policies = dict()
-    policy_options = dict()
-
-    def register_policy(self, policy_class, policy_key, policy_title):
-        assert(len(policy_key) < 512)
-        self.registered_policies[policy_key] = policy_class()
-        self.policy_options[policy_key] = policy_title
-
-    def __iter__(self):
-        return iter(self.policy_options.items())
-
-CollaborationPolicies = CollaborationPoliciesSingleton()
-
-
-CollaborationPolicies.register_policy(CollaborationPolicy,
-                                      'forbidden',
-                                      'Forbidden to everyone')
-CollaborationPolicies.register_policy(PublicEditorsAreOwners,
-                                      'PublicEditorsAreOwners',
-                                      'Editors can manage the group, \
-                                       Content is world-readable')
-CollaborationPolicies.register_policy(PrivateEditorsAreOwners,
-                                      'PrivateEditorsAreOwners',
-                                      'User and group can view/edit/manage. \
-                                      Staff can read')
-
-CollaborationPolicies.register_policy(
-    InstructorManaged,
-    'InstructorManaged',
-    'Instructors/Staff and user manage, Course members read')
-
-CollaborationPolicies.register_policy(
-    InstructorShared,
-    'InstructorShared',
-    'group/user manage/edit and instructors can view')
-
-CollaborationPolicies.register_policy(
-    PrivateStudentAndFaculty,
-    'PrivateStudentAndFaculty',
-    'Private between faculty and student')
-
-CollaborationPolicies.register_policy(
-    CourseProtected,
-    'CourseProtected',
-    'Protected to Course Members')
-
-CollaborationPolicies.register_policy(CourseCollaboration,
-                                      'CourseCollaboration',
-                                      'Course Collaboration')
-
-CollaborationPolicies.register_policy(CoursePublicCollaboration,
-                                      'CoursePublicCollaboration',
-                                      'Public Course Collaboration')
-
-CollaborationPolicies.register_policy(
-    Assignment,
-    'Assignment',
-    'Course assignment (instructors can manage/edit, '
-    'course members can read/respond)')
-
-CollaborationPolicies.register_policy(
-    PublicAssignment,
-    'PublicAssignment',
-    'Public Assignment (instructors can manage/edit, '
-    'course members can respond, world can see)')

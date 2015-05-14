@@ -57,14 +57,7 @@ PROJECT_APPS = ['mediathread.main',
                 'mediathread.taxonomy',
                 'structuredcollaboration']
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-html',
-    ('--cover-package=mediathread.main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects,mediathread.taxonomy,'
-     'mediathread.discussions,mediathread.report,structuredcollaboration'),
-]
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 CACHE_BACKEND = 'locmem:///'
 
@@ -148,7 +141,6 @@ INSTALLED_APPS = [
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
-    'django_nose',
     'compressor',
     'django_jenkins',
     'mediathread.taxonomy',

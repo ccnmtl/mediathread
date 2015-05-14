@@ -1,12 +1,14 @@
-from courseaffils.models import Course
 from datetime import datetime
+
+from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
+
+from structuredcollaboration.models import Collaboration
 
 
 PUBLISH_OPTIONS = (
@@ -105,14 +107,10 @@ class ProjectManager(models.Manager):
         return object_map
 
     def migrate_one(self, project, course, user):
-        new_project = Project(title=project.title,
-                              course=course,
-                              author=user)
-        new_project.save()
+        new_project = Project.objects.create(title=project.title,
+                                             course=course, author=user)
 
-        collaboration_context = Collaboration.objects.get(
-            content_type=ContentType.objects.get_for_model(Course),
-            object_pk=str(course.pk))
+        collaboration_context = Collaboration.objects.get_for_object(course)
 
         policy_record = project.collaboration().policy_record
 
@@ -120,7 +118,7 @@ class ProjectManager(models.Manager):
             user=new_project.author, title=new_project.title,
             content_object=new_project,
             context=collaboration_context,
-            policy=policy_record.policy_name)
+            policy_record=policy_record)
 
         return new_project
 
@@ -193,7 +191,7 @@ class ProjectManager(models.Manager):
             try:
                 col = Collaboration.objects.get_for_object(project)
                 if col.policy_record.policy_name == 'PublicEditorsAreOwners':
-                    col.policy = 'CourseProtected'
+                    col.set_policy('CourseProtected')
                     col.save()
             except:
                 pass
@@ -470,7 +468,7 @@ class Project(models.Model):
                 self.collaboration(
                     request, sync_group=True).permission_to('read', request))
 
-    def collaboration_sync_group(self, request, col, policy):
+    def collaboration_sync_group(self, request, col, policy_name):
         participants = self.participants.all()
         if (len(participants) > 1 or
             (col.group_id and col.group.user_set.count() > 1) or
@@ -485,36 +483,42 @@ class Project(models.Model):
                     colgrp.user_set.add(user)
             for oldp in already_grp:
                 colgrp.user_set.remove(oldp)
-        if request and request.method == "POST" and \
-                (col.policy != policy or col.title != self.title):
+
+        if (request and request.method == "POST" and
+            (col.policy_record and
+             col.policy_record.policy_name != policy_name or
+             col.title != self.title)):
             col.title = self.title
-            col.policy = policy
+            col.set_policy(policy_name)
             col.save()
 
         return col
 
     def collaboration(self, request=None, sync_group=False):
         col = None
-        policy = None
+        policy_name = None
         if request and request.method == "POST":
-            policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
+            policy_name = \
+                request.POST.get('publish', 'PrivateEditorsAreOwners')
 
         try:
             col = Collaboration.objects.get_for_object(self)
         except Collaboration.DoesNotExist:
-            if policy is None:
-                policy = "PrivateEditorsAreOwners"
+            if policy_name is None:
+                policy_name = "PrivateEditorsAreOwners"
 
             if request is not None:
-                col = Collaboration.objects.create(
-                    user=self.author, title=self.title, content_object=self,
-                    context=request.collaboration_context, policy=policy,)
+                col = Collaboration(user=self.author, title=self.title,
+                                    content_object=self,
+                                    context=request.collaboration_context)
+                col.set_policy(policy_name)
+                col.save()
 
-        if col is None:  # iff collab did not exist and request is None
+        if col is None:  # if collab did not exist and request is None
             return
 
         if sync_group:
-            self.collaboration_sync_group(request, col, policy)
+            self.collaboration_sync_group(request, col, policy_name)
 
         return col
 

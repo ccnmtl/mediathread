@@ -6,11 +6,9 @@ from django.core import urlresolvers
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from structuredcollaboration.policies import (
-    CollaborationPolicy, PrivateEditorsAreOwners, InstructorManaged,
-    InstructorShared, PrivateStudentAndFaculty, CourseProtected,
-    CourseCollaboration, Assignment)
-from structuredcollaboration.policies import PublicEditorsAreOwners
+
+DEFAULT_POLICY = getattr(settings, 'DEFAULT_COLLABORATION_POLICY',
+                         'PublicEditorsAreOwners')
 
 
 class CollaborationPolicyRecordManager(models.Manager):
@@ -48,11 +46,6 @@ class CollaborationManager(models.Manager):
     def get_for_object(self, obj):
         ctype = ContentType.objects.get_for_model(obj)
         return self.get(content_type__pk=ctype.pk, object_pk=str(obj.pk))
-
-
-DEFAULT_POLICY = getattr(settings,
-                         'DEFAULT_COLLABORATION_POLICY',
-                         PublicEditorsAreOwners())
 
 
 class Collaboration(models.Model):
@@ -122,9 +115,9 @@ class Collaboration(models.Model):
             return urlresolvers.reverse("collaboration-dispatch",
                                         args=(self.pk,))
 
-    def permission_to(self, permission, request):
-        rv = self.get_policy().permission_to(self, permission, request)
-        return rv
+    def permission_to(self, permission, course, user):
+        return self.get_policy().permission_to(self, permission,
+                                               course, user)
 
     def get_parent(self):
         return self._parent
@@ -148,7 +141,9 @@ class Collaboration(models.Model):
             return CollaborationPolicyRecord.objects.policy_instance(
                 self.policy_record)
         else:
-            return DEFAULT_POLICY
+            record, created = CollaborationPolicyRecord.objects.get_or_create(
+                policy_name=DEFAULT_POLICY)
+            return CollaborationPolicyRecord.objects.policy_instance(record)
 
     def set_policy(self, policy_name):
         if policy_name is None:
@@ -161,46 +156,3 @@ class Collaboration(models.Model):
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,
                                         self.object_pk, self.slug)
-
-
-CollaborationPolicyRecord.objects.register_policy(
-    CollaborationPolicy, 'forbidden', 'Forbidden to everyone')
-
-CollaborationPolicyRecord.objects.register_policy(
-    PublicEditorsAreOwners, 'PublicEditorsAreOwners',
-    'Editors can manage the group, Content is world-readable')
-
-CollaborationPolicyRecord.objects.register_policy(
-    PrivateEditorsAreOwners,
-    'PrivateEditorsAreOwners',
-    'User and group can view/edit/manage. Staff can read')
-
-CollaborationPolicyRecord.objects.register_policy(
-    InstructorManaged,
-    'InstructorManaged',
-    'Instructors/Staff and user manage, Course members read')
-
-CollaborationPolicyRecord.objects.register_policy(
-    InstructorShared,
-    'InstructorShared',
-    'group/user manage/edit and instructors can view')
-
-CollaborationPolicyRecord.objects.register_policy(
-    PrivateStudentAndFaculty,
-    'PrivateStudentAndFaculty',
-    'Private between faculty and student')
-
-CollaborationPolicyRecord.objects.register_policy(
-    CourseProtected,
-    'CourseProtected',
-    'Protected to Course Members')
-
-CollaborationPolicyRecord.objects.register_policy(
-    CourseCollaboration, 'CourseCollaboration',
-    'Course Collaboration')
-
-CollaborationPolicyRecord.objects.register_policy(
-    Assignment,
-    'Assignment',
-    'Course assignment (instructors can manage/edit, '
-    'course members can read/respond)')

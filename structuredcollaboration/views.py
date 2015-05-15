@@ -1,15 +1,20 @@
-from structuredcollaboration.models import Collaboration
+from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse, resolve
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse, resolve
-from django.contrib.contenttypes.models import ContentType
+
+from structuredcollaboration.models import Collaboration, \
+    CollaborationPolicyRecord
+from structuredcollaboration.policies import CollaborationPolicy, \
+    PublicEditorsAreOwners, PrivateEditorsAreOwners, InstructorManaged, \
+    InstructorShared, PrivateStudentAndFaculty, CourseProtected, \
+    CourseCollaboration, Assignment
+
 
 # tree management (add/remove leaf)
 # re-ordering
 # DO NOT PROVIDE 'MOVE' (intended to be unoptimized)
-
-
 def view_collab_by_obj(request, context_slug, obj_type, obj_id):
     context = get_object_or_404(Collaboration, slug=context_slug)
     request.collaboration_context = context
@@ -40,7 +45,7 @@ def view_collab_by_slug(request, context_slug, collab_slug):
 
 
 def serve_collaboration(request, collab):
-    if not collab.permission_to('read', request):
+    if not collab.permission_to('read', request.course, request.user):
         return HttpResponseForbidden("forbidden")
 
     # Method 1. obj.default_view(request,obj)
@@ -80,7 +85,7 @@ def collaboration_dispatch(request, collab_id, next=None):
 def delete_collaboration(request, collab_id, next=None):
     # only fake-delete it.  We move it out from the context
     disc_sc = get_object_or_404(Collaboration, pk=collab_id)
-    if not disc_sc.permission_to('delete', request):
+    if not disc_sc.permission_to('delete', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to delete this discussion.')
 
@@ -92,6 +97,44 @@ def delete_collaboration(request, collab_id, next=None):
     return HttpResponseRedirect(next or "/")
 
 
-def collaboration_rss(request, context_slug):
-    "RSS feed for collaboration tree"
-    pass
+CollaborationPolicyRecord.objects.register_policy(
+    CollaborationPolicy, 'forbidden', 'Forbidden to everyone')
+
+CollaborationPolicyRecord.objects.register_policy(
+    PublicEditorsAreOwners, 'PublicEditorsAreOwners',
+    'Editors can manage the group, Content is world-readable')
+
+CollaborationPolicyRecord.objects.register_policy(
+    PrivateEditorsAreOwners,
+    'PrivateEditorsAreOwners',
+    'User and group can view/edit/manage. Staff can read')
+
+CollaborationPolicyRecord.objects.register_policy(
+    InstructorManaged,
+    'InstructorManaged',
+    'Instructors/Staff and user manage, Course members read')
+
+CollaborationPolicyRecord.objects.register_policy(
+    InstructorShared,
+    'InstructorShared',
+    'group/user manage/edit and instructors can view')
+
+CollaborationPolicyRecord.objects.register_policy(
+    PrivateStudentAndFaculty,
+    'PrivateStudentAndFaculty',
+    'Private between faculty and student')
+
+CollaborationPolicyRecord.objects.register_policy(
+    CourseProtected,
+    'CourseProtected',
+    'Protected to Course Members')
+
+CollaborationPolicyRecord.objects.register_policy(
+    CourseCollaboration, 'CourseCollaboration',
+    'Course Collaboration')
+
+CollaborationPolicyRecord.objects.register_policy(
+    Assignment,
+    'Assignment',
+    'Course assignment (instructors can manage/edit, '
+    'course members can read/respond)')

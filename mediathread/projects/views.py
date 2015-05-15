@@ -37,7 +37,8 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
                 parent = Project.objects.get(pk=parent)
 
                 parent_collab = parent.collaboration(request)
-                if parent_collab.permission_to("add_child", request):
+                if parent_collab.permission_to("add_child", request.course,
+                                               request.user):
                     parent_collab.append_child(project)
 
             except Project.DoesNotExist:
@@ -150,7 +151,7 @@ def project_reparent(request, assignment_id, composition_id):
         return HttpResponseServerError("Invalid composition parameter")
 
     parent_collab = assignment.collaboration(request)
-    if parent_collab.permission_to("add_child", request):
+    if parent_collab.permission_to("add_child", request.course, request.user):
         parent_collab.append_child(composition)
 
     return HttpResponseRedirect('/')

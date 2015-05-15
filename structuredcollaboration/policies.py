@@ -1,11 +1,13 @@
+from structuredcollaboration.models import Collaboration
+
 
 class CollaborationPolicy(object):
     """
     Base Collaboration Policy
     """
-    def permission_to(self, collaboration, permission, request):
-        rv = getattr(self, permission, lambda c, r: False)(collaboration,
-                                                           request)
+    def permission_to(self, collaboration, permission, course, user):
+        rv = getattr(self, permission, lambda c, r, u: False)(collaboration,
+                                                              course, user)
         return rv
 
 
@@ -13,11 +15,11 @@ class PublicEditorsAreOwners(CollaborationPolicy):
     """
     Implements a basic policy of people who can edit can also manage the group
     """
-    def read(self, collaboration, request):
+    def read(self, collaboration, course, user):
         return True
 
-    def edit(self, collaboration, request):
-        user = request.user
+    def edit(self, collaboration, course, user):
+        user = user
         if user.is_authenticated():
             if user == collaboration.user:
                 return True
@@ -31,64 +33,71 @@ class PublicEditorsAreOwners(CollaborationPolicy):
 
 
 class PrivateEditorsAreOwners(PublicEditorsAreOwners):
-    def read(self, collaboration, request):
-        return (request.user.is_staff or self.edit(collaboration, request))
+    def read(self, collaboration, course, user):
+        return (user.is_staff or self.edit(collaboration, course, user))
 
 
 class PrivateStudentAndFaculty(CollaborationPolicy):
-    def manage(self, coll, request):
-        return (coll.context == request.collaboration_context and
-                request.course and
-                request.course.is_faculty(request.user))
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                course and
+                course.is_faculty(user))
 
     delete = manage
 
-    def read(self, coll, request):
-        return (coll.context == request.collaboration_context and
-                ((request.course and
-                  request.course.is_faculty(request.user)) or
-                 coll.user_id == request.user.id or
+    def read(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                ((course and
+                  course.is_faculty(user)) or
+                 coll.user_id == user.id or
                  (coll.group_id and
-                  request.user in coll.group.user_set.all())))
+                  user in coll.group.user_set.all())))
 
     edit = read
 
 
 class InstructorShared(PrivateEditorsAreOwners):
-    def read(self, coll, request):
-        return (self.manage(coll, request) or
-                request.course.is_faculty(request.user))
+    def read(self, coll, course, user):
+        return (self.manage(coll, course, user) or
+                course.is_faculty(user))
 
 
 class InstructorManaged(CollaborationPolicy):
-    def manage(self, coll, request):
-        return (coll.context == request.collaboration_context and
-                ((request.course and
-                  request.course.is_faculty(request.user)) or
-                 coll.user == request.user))
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                ((course and
+                  course.is_faculty(user)) or
+                 coll.user == user))
     delete = manage
 
-    def read(self, coll, request):
-        return (coll.context == request.collaboration_context)
+    def read(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration)
 
     edit = read
 
 
 class CourseProtected(CollaborationPolicy):
-    def manage(self, coll, request):
-        return (coll.context == request.collaboration_context and
-                (coll.user == request.user or
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                (coll.user == user or
                  (coll.group and
-                  request.user in coll.group.user_set.all())))
+                  user in coll.group.user_set.all())))
 
     edit = manage
     delete = manage
 
-    def read(self, coll, request):
-        return (getattr(request, 'course', None) and
-                coll.context == getattr(
-                request, 'collaboration_context', None) and
-                request.course.is_member(request.user))
+    def read(self, coll, course, user):
+        if not course:
+            return False
+
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                course.is_member(user))
 
 
 class CourseCollaboration(CourseProtected):
@@ -96,17 +105,18 @@ class CourseCollaboration(CourseProtected):
 
 
 class Assignment(CourseProtected):
-    def manage(self, coll, request):
-        return (coll.context == request.collaboration_context and
-                ((request.course and
-                  request.course.is_faculty(request.user)) or
-                 coll.user == request.user)
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                ((course and
+                  course.is_faculty(user)) or
+                 coll.user == user)
                 )
     delete = manage
     edit = manage
 
-    def read(self, coll, request):
-        return (request.course and coll.context ==
-                request.collaboration_context)
+    def read(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (course and coll.context == course_collaboration)
 
     add_child = read

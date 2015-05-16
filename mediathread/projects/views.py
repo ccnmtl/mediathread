@@ -46,9 +46,11 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
             return HttpResponseRedirect(project.get_absolute_url())
         else:
             is_faculty = request.course.is_faculty(request.user)
+            can_edit = project.can_edit(request.course, request.user)
+
             resource = ProjectResource(record_viewer=request.user,
                                        is_viewer_faculty=is_faculty,
-                                       editable=project.can_edit(request))
+                                       editable=can_edit)
             project_context = resource.render_one(request, project)
             project_context['editing'] = True
 
@@ -65,7 +67,7 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 def project_save(request, project_id):
     project = get_object_or_404(Project, pk=project_id, course=request.course)
 
-    if not project.can_edit(request):
+    if not project.can_edit(request.course, request.user):
         return HttpResponseRedirect(project.get_absolute_url())
 
     # verify user is in course
@@ -87,9 +89,12 @@ def project_save(request, project_id):
         projectform.instance.create_or_update_collaboration(policy_name)
 
         v_num = projectform.instance.get_latest_version()
+        is_assignment = projectform.instance.is_assignment(request.course,
+                                                           request.user)
+
         return HttpResponse(json.dumps({
             'status': 'success',
-            'is_assignment': projectform.instance.is_assignment(request),
+            'is_assignment': is_assignment,
             'title': projectform.instance.title,
             'revision': {
                 'id': v_num,
@@ -126,7 +131,7 @@ class ProjectDeleteView(LoggedInMixin, View):
         project = get_object_or_404(Project, pk=project_id,
                                     course=request.course)
 
-        if not request.method == "POST" or not project.can_edit(request):
+        if not project.can_edit(request.course, request.user):
             return HttpResponseForbidden("forbidden")
 
         project.delete()
@@ -194,7 +199,7 @@ def project_view_readonly(request, project_id, version_number=None):
 
     project = get_object_or_404(Project, pk=project_id)
 
-    if not project.can_read(request):
+    if not project.can_read(request.course, request.user):
         return HttpResponseForbidden("forbidden")
 
     data = {'space_owner': request.user.username}
@@ -266,7 +271,7 @@ def project_workspace(request, project_id, feedback=None):
     """
     project = get_object_or_404(Project, pk=project_id)
 
-    if not project.can_read(request):
+    if not project.can_read(request.course, request.user):
         return HttpResponseForbidden("forbidden")
 
     show_feedback = feedback == "feedback"
@@ -287,16 +292,17 @@ def project_workspace(request, project_id, feedback=None):
         owners = UserResource().render_list(request, request.course.members)
 
         is_faculty = request.course.is_faculty(request.user)
-        can_edit = project.can_edit(request)
+        can_edit = project.can_edit(request.course, request.user)
         feedback_discussion = project.feedback_discussion() \
             if is_faculty or can_edit else None
 
         # Project Parent (assignment) if exists
         parent_assignment = project.assignment()
         if parent_assignment:
+            pedit = parent_assignment.can_edit(request.course, request.user)
             resource = ProjectResource(
                 record_viewer=request.user, is_viewer_faculty=is_faculty,
-                editable=parent_assignment.can_edit(request))
+                editable=pedit)
             assignment_ctx = resource.render_one(request, parent_assignment)
 
             panel = {'is_faculty': is_faculty,
@@ -334,11 +340,13 @@ def project_workspace(request, project_id, feedback=None):
         # Project Response -- if the requested project is an assignment
         # This is primarily a student view. The student's response should
         # pop up automatically when the parent assignment is viewed.
-        if project.is_assignment(request):
-            responses = project.responses_by(request, request.user)
+        if project.is_assignment(request.course, request.user):
+            responses = project.responses_by(request.course, request.user,
+                                             request.user)
             if len(responses) > 0:
                 response = responses[0]
-                response_can_edit = response.can_edit(request)
+                response_can_edit = response.can_edit(request.course,
+                                                      request.user)
                 resource = ProjectResource(record_viewer=request.user,
                                            is_viewer_faculty=is_faculty,
                                            editable=response_can_edit)
@@ -387,7 +395,7 @@ def project_workspace(request, project_id, feedback=None):
 @allow_http("GET")
 def project_export_html(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    if not project.can_read(request):
+    if not project.can_read(request.course, request.user):
         return HttpResponseForbidden("forbidden")
 
     template = loader.get_template("projects/export.html")
@@ -404,7 +412,7 @@ def project_export_html(request, project_id):
 @allow_http("GET")
 def project_export_msword(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    if not project.can_read(request):
+    if not project.can_read(request.course, request.user):
         return HttpResponseForbidden("forbidden")
 
     template = loader.get_template("projects/msword.html")
@@ -430,12 +438,14 @@ class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
 
     def get(self, request, project_id):
         project = get_object_or_404(Project, id=project_id)
-        if not project.visible(request):
+        if not project.visible(request.course, request.user):
             return HttpResponseForbidden("forbidden")
+
+        can_edit = project.can_edit(request.course, request.user)
 
         resource = ProjectResource(record_viewer=request.user,
                                    is_viewer_faculty=self.is_viewer_faculty,
-                                   editable=project.can_edit(request))
+                                   editable=can_edit)
         context = resource.render_one(request, project)
         return self.render_to_json_response(context)
 
@@ -468,19 +478,19 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
             in_course_or_404(self.record_owner.username, request.course)
 
             projects = Project.objects.visible_by_course_and_user(
-                request, request.course, self.record_owner,
+                request.course, request.user, self.record_owner,
                 self.viewing_faculty_records)
 
             # Show unresponded assignments if viewing self & self is a student
             if not self.is_viewer_faculty and self.viewing_own_records:
                 assignments = Project.objects.unresponded_assignments(
-                    request, self.record_viewer)
+                    request.course, request.user)
 
             ctx['space_owner'] = ures.render_one(request, self.record_owner)
             ctx['assignments'] = pres.render_assignments(request, assignments)
         else:
-            projects = Project.objects.visible_by_course(request,
-                                                         request.course)
+            projects = Project.objects.visible_by_course(request.course,
+                                                         request.user)
 
         ctx['projects'] = pres.render_projects(request, projects)
         ctx['compositions'] = len(projects) > 0 or len(assignments) > 0

@@ -31,7 +31,7 @@ from structuredcollaboration.models import Collaboration
 @faculty_only
 def class_assignment_report(request, project_id):
     assignment = get_object_or_404(Project, id=project_id)
-    responses = assignment.responses(request)
+    responses = assignment.responses(request.course, request.user)
     return {'assignment': assignment, 'responses': responses}
 
 
@@ -41,7 +41,7 @@ def class_assignment_report(request, project_id):
 def class_assignments(request):
     assignments = []
     for project in Project.objects.filter(request.course.faculty_filter):
-        if project.is_assignment(request):
+        if project.is_assignment(request.course, request.user):
             assignments.append(project)
 
     return {'assignments': sorted(assignments,
@@ -55,24 +55,24 @@ def class_assignments(request):
 def class_summary(request):
     collab_context = request.collaboration_context
     students = []
-    for stud in users_in_course(request.course).order_by('last_name',
-                                                         'first_name',
-                                                         'username'):
+    for student in users_in_course(request.course).order_by('last_name',
+                                                            'first_name',
+                                                            'username'):
 
-        stud.__dict__.update({
+        student.__dict__.update({
             'annotations':
             SherdNote.objects.filter(asset__course=request.course,
-                                     author=stud).count(),
+                                     author=student).count(),
             'all_projects':
             len(Project.objects.visible_by_course_and_user(
-                request, request.course, stud, False)),
+                request.course, request.user, student, False)),
 
             'comments':
             DiscussionIndex.objects.filter(
-                participant=stud,
+                participant=student,
                 collaboration__context=collab_context).count()
         })
-        students.append(stud)
+        students.append(student)
 
     context = {'students': students}
     return context

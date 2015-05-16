@@ -122,18 +122,18 @@ class ProjectManager(models.Manager):
 
         return new_project
 
-    def visible_by_course(self, request, course):
+    def visible_by_course(self, course, user):
         projects = Project.objects.filter(course=course)
         projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.visible(request)]
+        return [p for p in projects if p.visible(course, user)]
 
-    def visible_by_course_and_user(self, request, course, user, is_faculty):
+    def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
         ).distinct()
 
-        lst = [p for p in projects if p.visible(request)]
+        lst = [p for p in projects if p.visible(course, viewer)]
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 
@@ -150,19 +150,18 @@ class ProjectManager(models.Manager):
 
         return projects.order_by('-modified', 'title')
 
-    def faculty_compositions(self, request, course):
+    def faculty_compositions(self, course, user):
         projects = []
         prof_projects = Project.objects.filter(
             course.faculty_filter).order_by('ordinality', 'title')
         for project in prof_projects:
             if (project.class_visible() and
-                    not project.is_assignment(request)):
+                    not project.is_assignment(course, user)):
                 projects.append(project)
 
         return projects
 
-    def unresponded_assignments(self, request, user):
-        course = request.course
+    def unresponded_assignments(self, course, user):
         projects = list(Project.objects.filter(course.faculty_filter,
                                                due_date__isnull=False).
                         order_by("due_date", "-modified", "title"))
@@ -175,8 +174,8 @@ class ProjectManager(models.Manager):
         project_type = ContentType.objects.get_for_model(Project)
 
         for assignment in projects:
-            if (assignment.visible(request) and
-                assignment.is_unanswered_assignment(request,
+            if (assignment.visible(course, user) and
+                assignment.is_unanswered_assignment(course,
                                                     user,
                                                     project_type)):
                 assignments.append(assignment)
@@ -263,32 +262,31 @@ class Project(models.Model):
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
-    def subobjects(self, request, child_type):
+    def subobjects(self, course, viewer, child_type):
         col = self.get_collaboration()
         if not col:
             return []
         children = col.children.filter(content_type=child_type)
         viewable_children = []
         for child in children:
-            if (child.permission_to("read", request.course, request.user) and
+            if (child.permission_to("read", course, viewer) and
                     child.content_object):
                 viewable_children.append(child.content_object)
         return viewable_children
 
-    def discussions(self, request):
+    def discussions(self, course, viewer):
         discussion_type = ContentType.objects.get_for_model(ThreadedComment)
-        return self.subobjects(request, discussion_type)
+        return self.subobjects(course, viewer, discussion_type)
 
-    def responses_by(self, request, user):
-        responses = self.responses(request)
-        return [response for response in responses
-                if response and
-                (user in response.content_object.participants.all() or
-                 user == response.content_object.author)]
-
-    def responses(self, request):
+    def responses(self, course, viewer):
         project_type = ContentType.objects.get_for_model(Project)
-        return self.subobjects(request, project_type)
+        return self.subobjects(course, viewer, project_type)
+
+    def responses_by(self, course, viewer, by_user):
+        responses = self.responses(course, viewer)
+        return [response for response in responses
+                if (by_user in response.content_object.participants.all() or
+                    by_user == response.content_object.author)]
 
     def description(self):
         if self.assignment():
@@ -298,41 +296,35 @@ class Project(models.Model):
         else:
             return "Composition"
 
-    def is_assignment(self, request):
-        if hasattr(self, 'is_assignment_cached'):
-            return self.is_assignment_cached
+    def is_assignment(self, course, user):
         col = self.get_collaboration()
         if not col:
             return False
-        self.is_assignment_cached = col.permission_to(
-            "add_child", request.course, request.user)
-        return self.is_assignment_cached
+        else:
+            return col.permission_to("add_child", course, user)
 
     def assignment(self):
         """
         Returns the Project object that this Project is a response to,
         or None if this Project is not a response to any other.
         """
-        # TODO: this doesn't check content types in any way.
-        # It assumes that obj->collab->parent->obj is-a Project.
         col = self.get_collaboration()
-        if not col:
-            return
-        parent = col.get_parent()
-        if not parent:
-            return
-        return parent.content_object
+        if col:
+            parent = col.get_parent()
+            if parent:
+                return parent.content_object
 
-    def is_unanswered_assignment(self, request, user, expected_type):
+        return None
+
+    def is_unanswered_assignment(self, course, user, expected_type):
         """
         Returns True if this user has a response to this project
         or None if this user has not yet created a response
         """
-        if not self.is_assignment(request):
+        if not self.is_assignment(course, user):
             return False
 
-        collab = self.get_collaboration()
-        children = collab.children.all()
+        children = self.get_collaboration().children.all()
         if not children:
             # It has no responses, but it looks like an assignment
             return True
@@ -409,10 +401,8 @@ class Project(models.Model):
         else:
             return u"Private"
 
-    def is_participant(self, user_or_request):
-        user = getattr(user_or_request, 'user', user_or_request)
-        return (user == self.author or
-                user in self.participants.all())
+    def is_participant(self, user):
+        return (user == self.author or user in self.participants.all())
 
     def citations(self):
         """
@@ -449,22 +439,22 @@ class Project(models.Model):
         return (col.policy_record.policy_name != 'PrivateEditorsAreOwners' and
                 col.policy_record.policy_name != 'InstructorShared')
 
-    def visible(self, request):
+    def visible(self, course, user):
         col = self.get_collaboration()
         if col:
-            return col.permission_to('read', request.course, request.user)
+            return col.permission_to('read', course, user)
         else:
             return self.submitted
 
-    def can_edit(self, request):
-        if not self.is_participant(request.user):
+    def can_edit(self, course, user):
+        if not self.is_participant(user):
             return False
         col = self.get_collaboration()
-        return (col.permission_to('edit', request.course, request.user))
+        return (col.permission_to('edit', course, user))
 
-    def can_read(self, request):
+    def can_read(self, course, user):
         col = self.get_collaboration()
-        return (col.permission_to('read', request.course, request.user))
+        return (col.permission_to('read', course, user))
 
     def collaboration_sync_group(self, col):
         participants = self.participants.all()

@@ -201,20 +201,18 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
 @rendered_with('dashboard/class_activity.html')
 @faculty_only
 def class_activity(request):
-    collab_context = request.collaboration_context
+    assets = SherdNote.objects.filter(
+        asset__course=request.course).order_by('-added')[:40]
 
-    my_feed = Clumper(
-        SherdNote.objects.filter(
-            asset__course=request.course).order_by('-added')[:40],
-        Project.objects.filter(course=request.course,
-                               submitted=True).order_by('-modified')[:40],
-        DiscussionIndex.with_permission(
-            request, DiscussionIndex.objects.filter(
-                collaboration__context=collab_context)
-            .order_by('-modified')[:40],))
+    projects = Project.objects.filter(
+        course=request.course, submitted=True).order_by('-modified')[:40]
 
-    context = {'my_feed': my_feed}
-    return context
+    discussions = DiscussionIndex.with_permission(
+        request, DiscussionIndex.objects.filter(
+            collaboration__context=request.collaboration_context).order_by(
+                    '-modified')[:40],)
+
+    return {'my_feed': Clumper(assets, projects, discussions)}
 
 
 class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):

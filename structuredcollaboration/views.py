@@ -4,12 +4,7 @@ from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-from structuredcollaboration.models import Collaboration, \
-    CollaborationPolicyRecord
-from structuredcollaboration.policies import CollaborationPolicy, \
-    PublicEditorsAreOwners, PrivateEditorsAreOwners, InstructorManaged, \
-    InstructorShared, PrivateStudentAndFaculty, CourseProtected, \
-    CourseCollaboration, Assignment
+from structuredcollaboration.models import Collaboration
 
 
 # tree management (add/remove leaf)
@@ -95,46 +90,3 @@ def delete_collaboration(request, collab_id, next=None):
     disc_sc.save()
 
     return HttpResponseRedirect(next or "/")
-
-
-CollaborationPolicyRecord.objects.register_policy(
-    CollaborationPolicy, 'forbidden', 'Forbidden to everyone')
-
-CollaborationPolicyRecord.objects.register_policy(
-    PublicEditorsAreOwners, 'PublicEditorsAreOwners',
-    'Editors can manage the group, Content is world-readable')
-
-CollaborationPolicyRecord.objects.register_policy(
-    PrivateEditorsAreOwners,
-    'PrivateEditorsAreOwners',
-    'User and group can view/edit/manage. Staff can read')
-
-CollaborationPolicyRecord.objects.register_policy(
-    InstructorManaged,
-    'InstructorManaged',
-    'Instructors/Staff and user manage, Course members read')
-
-CollaborationPolicyRecord.objects.register_policy(
-    InstructorShared,
-    'InstructorShared',
-    'group/user manage/edit and instructors can view')
-
-CollaborationPolicyRecord.objects.register_policy(
-    PrivateStudentAndFaculty,
-    'PrivateStudentAndFaculty',
-    'Private between faculty and student')
-
-CollaborationPolicyRecord.objects.register_policy(
-    CourseProtected,
-    'CourseProtected',
-    'Protected to Course Members')
-
-CollaborationPolicyRecord.objects.register_policy(
-    CourseCollaboration, 'CourseCollaboration',
-    'Course Collaboration')
-
-CollaborationPolicyRecord.objects.register_policy(
-    Assignment,
-    'Assignment',
-    'Course assignment (instructors can manage/edit, '
-    'course members can read/respond)')

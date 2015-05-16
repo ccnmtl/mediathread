@@ -124,16 +124,15 @@ class ProjectFactory(factory.DjangoModelFactory):
 
             request = RequestFactory().post('/', data)
             request.collaboration_context = \
-                Collaboration.objects.get(
-                    content_type=ContentType.objects.get_for_model(Course),
-                    object_pk=str(self.course.pk))
+                Collaboration.objects.get_for_object(self.course)
 
-            self.collaboration(request, sync_group=True)
+            self.create_or_update_collaboration(data['publish'],
+                                                sync_group=True)
 
     @factory.post_generation
     def parent(self, create, extracted, **kwargs):
         if create and extracted:
-            parent_collab = extracted.collaboration()
+            parent_collab = extracted.get_collaboration()
             if parent_collab.policy_record.policy_name == 'Assignment':
                 parent_collab.append_child(self)
 

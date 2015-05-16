@@ -29,17 +29,19 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         project = Project.objects.create(author=request.user,
                                          course=request.course,
                                          title="Untitled")
-        project.collaboration(request, sync_group=True)
+
+        policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
+        project.create_or_update_collaboration(policy_name, sync_group=True)
 
         parent = request.POST.get("parent")
         if parent is not None:
             try:
                 parent = Project.objects.get(pk=parent)
 
-                parent_collab = parent.collaboration(request)
-                if parent_collab.permission_to("add_child", request.course,
-                                               request.user):
-                    parent_collab.append_child(project)
+                collab = parent.create_or_update_collaboration(policy_name)
+                if collab.permission_to("add_child", request.course,
+                                        request.user):
+                    collab.append_child(project)
 
             except Project.DoesNotExist:
                 parent = None
@@ -85,7 +87,10 @@ def project_save(request, project_id):
         projectform.instance.author = request.user
         projectform.save()
 
-        projectform.instance.collaboration(request, sync_group=True)
+        # update the collaboration
+        policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
+        projectform.instance.create_or_update_collaboration(
+            policy_name, sync_group=True)
 
         v_num = projectform.instance.get_latest_version()
         return HttpResponse(json.dumps({
@@ -150,7 +155,7 @@ def project_reparent(request, assignment_id, composition_id):
     except Project.DoesNotExist:
         return HttpResponseServerError("Invalid composition parameter")
 
-    parent_collab = assignment.collaboration(request)
+    parent_collab = assignment.get_collaboration()
     if parent_collab.permission_to("add_child", request.course, request.user):
         parent_collab.append_child(composition)
 

@@ -466,7 +466,7 @@ class Project(models.Model):
         col = self.get_collaboration()
         return (col.permission_to('read', request.course, request.user))
 
-    def collaboration_sync_group(self, col, policy_name):
+    def collaboration_sync_group(self, col):
         participants = self.participants.all()
         if (len(participants) > 1 or
             (col.group_id and col.group.user_set.count() > 1) or
@@ -481,31 +481,20 @@ class Project(models.Model):
             for oldp in already_grp:
                 colgrp.user_set.remove(oldp)
 
-        if ((col.policy_record and
-             col.policy_record.policy_name != policy_name or
-             col.title != self.title)):
-            col.title = self.title
-            col.set_policy(policy_name)
-            col.save()
-
         return col
 
-    def create_or_update_collaboration(self,
-                                       policy_name,
-                                       sync_group=False):
+    def create_or_update_collaboration(self, policy_name):
         try:
             col = Collaboration.objects.get_for_object(self)
+            col.title = self.title
         except Collaboration.DoesNotExist:
             context = Collaboration.objects.get_for_object(self.course)
             col = Collaboration(user=self.author, title=self.title,
-                                content_object=self,
-                                context=context)
-            col.set_policy(policy_name)
-            col.save()
+                                content_object=self, context=context)
+        col.set_policy(policy_name)
+        col.save()
 
-        if sync_group:
-            self.collaboration_sync_group(col, policy_name)
-
+        self.collaboration_sync_group(col)
         return col
 
     def get_collaboration(self):

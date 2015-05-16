@@ -31,14 +31,14 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
                                          title="Untitled")
 
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        project.create_or_update_collaboration(policy_name, sync_group=True)
+        project.create_or_update_collaboration(policy_name)
 
         parent = request.POST.get("parent")
         if parent is not None:
             try:
                 parent = Project.objects.get(pk=parent)
 
-                collab = parent.create_or_update_collaboration(policy_name)
+                collab = parent.get_collaboration()
                 if collab.permission_to("add_child", request.course,
                                         request.user):
                     collab.append_child(project)
@@ -89,8 +89,7 @@ def project_save(request, project_id):
 
         # update the collaboration
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        projectform.instance.create_or_update_collaboration(
-            policy_name, sync_group=True)
+        projectform.instance.create_or_update_collaboration(policy_name)
 
         v_num = projectform.instance.get_latest_version()
         return HttpResponse(json.dumps({

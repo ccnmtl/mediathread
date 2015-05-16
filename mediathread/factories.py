@@ -126,8 +126,7 @@ class ProjectFactory(factory.DjangoModelFactory):
             request.collaboration_context = \
                 Collaboration.objects.get_for_object(self.course)
 
-            self.create_or_update_collaboration(data['publish'],
-                                                sync_group=True)
+            self.create_or_update_collaboration(data['publish'])
 
     @factory.post_generation
     def parent(self, create, extracted, **kwargs):

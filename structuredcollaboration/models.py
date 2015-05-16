@@ -79,23 +79,13 @@ class Collaboration(models.Model):
     context = models.ForeignKey('self', related_name='context_children',
                                 null=True, default=None, blank=True)
 
-    def save(self, *args, **kwargs):
-        create_group = (self.group and not self.group.id)
-
-        super(Collaboration, self).save(*args, **kwargs)
-        if create_group:
-            self.have_group()
-
-    def have_group(self):
-        if self.id:
-            if self.group_id:
-                return self.group
-            else:
-                name = unicode('Collaboration %s: %s' %
-                               (self.pk, self.title))[0:80]
-                self.group = Group.objects.create(name=name)
-                self.save()
-                return self.group
+    def get_or_create_group(self):
+        if not self.group:
+            name = unicode('Collaboration %s: %s' %
+                           (self.pk, self.title))[0:80]
+            self.group = Group.objects.create(name=name)
+            self.save()
+        return self.group
 
     def sync_group(self, col, policy_name, participants):
         if (len(participants) > 1 or

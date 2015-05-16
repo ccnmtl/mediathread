@@ -33,7 +33,7 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
         project.create_or_update_collaboration(policy_name)
 
-        parent = request.POST.get("parent")
+        parent = request.POST.get("parent", None)
         if parent is not None:
             parent = get_object_or_404(Project, pk=parent)
 

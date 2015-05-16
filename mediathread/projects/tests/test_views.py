@@ -192,10 +192,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.post('/project/create/', data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
-        the_json = loads(response.content)
-        project = the_json['context']['project']
-        self.assertFalse(project['is_response'])
+        self.assertEquals(response.status_code, 404)
 
     def test_assignment_response_create(self):
         self.client.login(username=self.student_one.username,

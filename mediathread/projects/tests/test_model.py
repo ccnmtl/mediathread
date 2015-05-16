@@ -253,3 +253,30 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())
+
+    def test_collaboration_sync_model(self):
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one)
+
+        collaboration = project.get_collaboration()
+        self.assertEquals(collaboration.policy_record.policy_name,
+                          'PrivateEditorsAreOwners')
+
+        project.collaboration_sync_group(collaboration)
+        self.assertIsNone(collaboration.group)
+
+        # add some participants
+        project.participants.add(self.student_two)
+        project.collaboration_sync_group(collaboration)
+        self.assertIsNotNone(collaboration.group)
+        users = collaboration.group.user_set.all()
+        self.assertTrue(self.student_one in users)
+        self.assertTrue(self.student_two in users)
+
+        # remove some participants
+        project.participants.remove(self.student_two)
+        project.collaboration_sync_group(collaboration)
+        self.assertIsNotNone(collaboration.group)
+        users = collaboration.group.user_set.all()
+        self.assertTrue(self.student_one in users)
+        self.assertFalse(self.student_two in users)

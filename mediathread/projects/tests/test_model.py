@@ -184,12 +184,6 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(visible_projects[2], self.project_instructor_shared)
 
     def test_visible_by_course_and_user(self):
-        # student_one = User.objects.get(username='test_student_one')
-        # student_two = User.objects.get(username='test_student_two')
-        # instructor = User.objects.get(username='test_instructor_two')
-
-        # sample_course = Course.objects.get(title="Sample Course")
-
         request = HttpRequest()
         request.course = self.sample_course
         request.collaboration_context, created = \

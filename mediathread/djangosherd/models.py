@@ -482,7 +482,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
         # not setting author, since get_or_create will break then
         participant = None
         author = instance.author
-        collaboration = instance.collaboration()
+        collaboration = instance.get_collaboration()
         if collaboration is None:
             return
         sherdsource = instance.body

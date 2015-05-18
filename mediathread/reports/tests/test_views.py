@@ -38,7 +38,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared', parent=self.assignment1)
         self.response2 = ProjectFactory.create(
-            title="Response 2",
+            title="Response 2", submitted=True,
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment1)
 
@@ -130,12 +130,10 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         items = response.context_data['my_feed'].items.values()
 
-        self.assertEquals(len(items), 5)
+        self.assertEquals(len(items), 3)
         self.assertEquals(items[0].content_object, self.asset1)
-        self.assertEquals(items[1].content_object, self.assignment1)
-        self.assertEquals(items[2].content_object, self.assignment2)
-        self.assertEquals(items[3].content_object, self.project)
-        self.assertEquals(items[4].title, "Sample Course Discussion")
+        self.assertEquals(items[1].content_object, self.response2)
+        self.assertEquals(items[2].title, "Sample Course Discussion")
 
     def test_class_summary_graph(self):
         self.create_discussion(self.sample_course, self.instructor_one)

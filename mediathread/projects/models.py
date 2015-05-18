@@ -112,7 +112,7 @@ class ProjectManager(models.Manager):
 
         collaboration_context = Collaboration.objects.get_for_object(course)
 
-        policy_record = project.collaboration().policy_record
+        policy_record = project.get_collaboration().policy_record
 
         Collaboration.objects.create(
             user=new_project.author, title=new_project.title,
@@ -259,12 +259,12 @@ class Project(models.Model):
 
     def public_url(self, col=None):
         if col is None:
-            col = self.collaboration()
+            col = self.get_collaboration()
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
     def subobjects(self, request, child_type):
-        col = self.collaboration()
+        col = self.get_collaboration()
         if not col:
             return []
         children = col.children.filter(content_type=child_type)
@@ -301,7 +301,7 @@ class Project(models.Model):
     def is_assignment(self, request):
         if hasattr(self, 'is_assignment_cached'):
             return self.is_assignment_cached
-        col = self.collaboration()
+        col = self.get_collaboration()
         if not col:
             return False
         self.is_assignment_cached = col.permission_to(
@@ -315,7 +315,7 @@ class Project(models.Model):
         """
         # TODO: this doesn't check content types in any way.
         # It assumes that obj->collab->parent->obj is-a Project.
-        col = self.collaboration()
+        col = self.get_collaboration()
         if not col:
             return
         parent = col.get_parent()
@@ -331,7 +331,7 @@ class Project(models.Model):
         if not self.is_assignment(request):
             return False
 
-        collab = self.collaboration()
+        collab = self.get_collaboration()
         children = collab.children.all()
         if not children:
             # It has no responses, but it looks like an assignment
@@ -353,7 +353,7 @@ class Project(models.Model):
         '''returns the ThreadedComment object for
          professor feedback (assuming it's private)'''
         thread = None
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
             comm_type = ContentType.objects.get_for_model(ThreadedComment)
 
@@ -366,7 +366,6 @@ class Project(models.Model):
     def save(self, *args, **kw):
         models.Model.save(self)
         self.participants.add(self.author)
-        self.collaboration(sync_group=True)
 
     def visibility(self):
         """
@@ -374,7 +373,7 @@ class Project(models.Model):
         """
         opts = dict(PUBLISH_OPTIONS)
 
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
             return opts.get(col.policy_record.policy_name,
                             col.policy_record.policy_name)
@@ -384,7 +383,7 @@ class Project(models.Model):
             return u"Private"
 
     def visibility_short(self):
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
             return SHORT_NAME.get(col.policy_record.policy_name,
                                   col.policy_record.policy_name)
@@ -397,7 +396,7 @@ class Project(models.Model):
         """
         The project's status, one of "draft submitted complete".split()
         """
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
             status = SHORT_NAME.get(col.policy_record.policy_name,
                                     col.policy_record.policy_name)
@@ -442,7 +441,7 @@ class Project(models.Model):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
     def class_visible(self):
-        col = self.collaboration()
+        col = self.get_collaboration()
         if not col:
             # legacy
             return self.submitted
@@ -451,7 +450,7 @@ class Project(models.Model):
                 col.policy_record.policy_name != 'InstructorShared')
 
     def visible(self, request):
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
             return col.permission_to('read', request.course, request.user)
         else:
@@ -460,24 +459,18 @@ class Project(models.Model):
     def can_edit(self, request):
         if not self.is_participant(request.user):
             return False
-
-        return (self.collaboration(request).permission_to(
-                'edit', request.course, request.user) or
-                self.collaboration(request, sync_group=True).permission_to(
-                'edit', request.course, request.user))
+        col = self.get_collaboration()
+        return (col.permission_to('edit', request.course, request.user))
 
     def can_read(self, request):
-        return (self.collaboration(request).permission_to(
-                'read', request.course, request.user) or
-                self.collaboration(request, sync_group=True).permission_to(
-                'read', request.course, request.user))
+        col = self.get_collaboration()
+        return (col.permission_to('read', request.course, request.user))
 
-    def collaboration_sync_group(self, request, col, policy_name):
+    def collaboration_sync_group(self, col):
         participants = self.participants.all()
         if (len(participants) > 1 or
             (col.group_id and col.group.user_set.count() > 1) or
-            (self.author not in participants and
-             len(participants) > 0)):
+                (self.author not in participants and len(participants) > 0)):
             colgrp = col.have_group()
             already_grp = set(colgrp.user_set.all())
             for user in participants:
@@ -488,43 +481,27 @@ class Project(models.Model):
             for oldp in already_grp:
                 colgrp.user_set.remove(oldp)
 
-        if (request and request.method == "POST" and
-            (col.policy_record and
-             col.policy_record.policy_name != policy_name or
-             col.title != self.title)):
-            col.title = self.title
-            col.set_policy(policy_name)
-            col.save()
-
         return col
 
-    def collaboration(self, request=None, sync_group=False):
-        col = None
-        policy_name = None
-        if request and request.method == "POST":
-            policy_name = \
-                request.POST.get('publish', 'PrivateEditorsAreOwners')
-
+    def create_or_update_collaboration(self, policy_name):
         try:
             col = Collaboration.objects.get_for_object(self)
+            col.title = self.title
         except Collaboration.DoesNotExist:
-            if policy_name is None:
-                policy_name = "PrivateEditorsAreOwners"
+            context = Collaboration.objects.get_for_object(self.course)
+            col = Collaboration(user=self.author, title=self.title,
+                                content_object=self, context=context)
+        col.set_policy(policy_name)
+        col.save()
 
-            if request is not None:
-                col = Collaboration(user=self.author, title=self.title,
-                                    content_object=self,
-                                    context=request.collaboration_context)
-                col.set_policy(policy_name)
-                col.save()
-
-        if col is None:  # if collab did not exist and request is None
-            return
-
-        if sync_group:
-            self.collaboration_sync_group(request, col, policy_name)
-
+        self.collaboration_sync_group(col)
         return col
+
+    def get_collaboration(self):
+        try:
+            return Collaboration.objects.get_for_object(self)
+        except Collaboration.DoesNotExist:
+            return None
 
     def submitted_date(self):
         dt = None

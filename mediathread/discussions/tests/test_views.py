@@ -4,8 +4,9 @@ from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
 from mediathread.discussions.utils import get_course_discussions
-from mediathread.discussions.views import discussion_delete, discussion_view
-from mediathread.factories import MediathreadTestMixin
+from mediathread.discussions.views import discussion_delete, discussion_view, \
+    discussion_create
+from mediathread.factories import MediathreadTestMixin, ProjectFactory
 from structuredcollaboration.models import Collaboration
 
 
@@ -25,6 +26,32 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         discussions = get_course_discussions(self.alt_course)
         self.assertEquals(1, len(discussions))
         self.assertEquals(discussions[0].title, "Alternate Course Discussion")
+
+    def test_create_instructor_feedback(self):
+        self.setup_sample_course()
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='InstructorShared')
+
+        data = {
+            'publish': 'PrivateStudentAndFaculty',
+            'inherit': 'true',
+            'app_label': 'projects',
+            'model': 'project',
+            'obj_pk': project.id,
+            'comment_html': 'Instructor Feedback'
+        }
+        request = RequestFactory().post('/discussion/create/', data)
+        request.user = self.instructor_one
+        request.course = self.sample_course
+        request.collaboration_context, created = \
+            Collaboration.objects.get_or_create(
+                content_type=ContentType.objects.get_for_model(Course),
+                object_pk=str(self.sample_course.pk))
+        discussion_create(request)
+
+        discussion = project.feedback_discussion()
+        self.assertIsNotNone(discussion)
 
     def test_delete_discussions(self):
         self.setup_sample_course()

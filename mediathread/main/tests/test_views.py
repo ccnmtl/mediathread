@@ -599,7 +599,7 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
             '/dashboard/settings/',
             {course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY: 0})
 
-        col = project.collaboration()
+        col = project.get_collaboration()
         self.assertEquals(col.policy_record.policy_name, 'CourseProtected')
 
     def test_post(self):

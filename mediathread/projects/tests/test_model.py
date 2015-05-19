@@ -1,18 +1,13 @@
 # pylint: disable-msg=R0904
 from datetime import datetime
 
-from courseaffils.models import Course
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.http import HttpRequest
 from django.test import TestCase
-from django.test.client import RequestFactory
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
     AssetFactory, SherdNoteFactory, ProjectFactory
 from mediathread.projects.models import Project
-from structuredcollaboration.models import Collaboration
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -151,68 +146,48 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(citations[3].id, ga.id)
 
     def test_visible_by_course(self):
-        request = HttpRequest()
-        request.course = self.sample_course
-        request.collaboration_context, created = \
-            Collaboration.objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
-
-        request.user = self.student_one
         visible_projects = Project.objects.visible_by_course(
-            request, self.sample_course)
+            self.sample_course, self.student_one)
         self.assertEquals(len(visible_projects), 4)
         self.assertEquals(visible_projects[0], self.assignment)
         self.assertEquals(visible_projects[1], self.project_class_shared)
         self.assertEquals(visible_projects[2], self.project_instructor_shared)
         self.assertEquals(visible_projects[3], self.project_private)
 
-        request.user = self.student_two
         visible_projects = Project.objects.visible_by_course(
-            request, self.sample_course)
+            self.sample_course, self.student_two)
 
         self.assertEquals(len(visible_projects), 2)
         self.assertEquals(visible_projects[0], self.assignment)
         self.assertEquals(visible_projects[1], self.project_class_shared)
 
-        request.user = self.instructor_one
         visible_projects = Project.objects.visible_by_course(
-            request, self.sample_course)
+            self.sample_course, self.instructor_one)
         self.assertEquals(len(visible_projects), 3)
         self.assertEquals(visible_projects[0], self.assignment)
         self.assertEquals(visible_projects[1], self.project_class_shared)
         self.assertEquals(visible_projects[2], self.project_instructor_shared)
 
     def test_visible_by_course_and_user(self):
-        request = HttpRequest()
-        request.course = self.sample_course
-        request.collaboration_context, created = \
-            Collaboration.objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
-
-        request.user = self.student_one
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, self.sample_course, self.student_one, False)
+            self.sample_course, self.student_one, self.student_one, False)
         self.assertEquals(len(visible_projects), 3)
         self.assertEquals(visible_projects[0], self.project_class_shared)
         self.assertEquals(visible_projects[1], self.project_instructor_shared)
         self.assertEquals(visible_projects[2], self.project_private)
 
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, self.sample_course, self.instructor_one, True)
+            self.sample_course, self.student_one, self.instructor_one, True)
         self.assertEquals(len(visible_projects), 1)
         self.assertEquals(visible_projects[0], self.assignment)
 
-        request.user = self.student_two
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, self.sample_course, self.student_one, False)
+            self.sample_course, self.student_two, self.student_one, False)
         self.assertEquals(len(visible_projects), 1)
         self.assertEquals(visible_projects[0], self.project_class_shared)
 
-        request.user = self.instructor_one
         visible_projects = Project.objects.visible_by_course_and_user(
-            request, self.sample_course, self.student_one, False)
+            self.sample_course, self.instructor_one, self.student_one, False)
         self.assertEquals(len(visible_projects), 2)
         self.assertEquals(visible_projects[0], self.project_class_shared)
         self.assertEquals(visible_projects[1], self.project_instructor_shared)
@@ -241,20 +216,8 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.assertTrue(False, "Due date is in the future, that's ok")
 
     def test_faculty_compositions(self):
-        # student = User.objects.get(username='test_student_three')
-        # sample_course = Course.objects.get(title="Sample Course")
-        # alt_course = Course.objects.get(title="Alternate Course")
-
-        request = HttpRequest()
-        request.user = self.student_one
-        request.course = self.sample_course
-        request.collaboration_context, created = \
-            Collaboration.objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
-
         compositions = Project.objects.faculty_compositions(
-            request, self.sample_course)
+            self.sample_course, self.student_one)
         self.assertEquals(len(compositions), 0)
 
         # instructor composition
@@ -263,7 +226,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             policy='CourseProtected')
 
         compositions = Project.objects.faculty_compositions(
-            request, self.sample_course)
+            self.sample_course, self.student_one)
         self.assertEquals(len(compositions), 1)
 
     def test_responses(self):
@@ -274,18 +237,13 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment)
 
-        request = RequestFactory().get('/', {})
-        request.user = self.instructor_one
-        request.course = self.sample_course
-        request.collaboration_context, created = \
-            Collaboration.objects.get_or_create(
-                content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
+        r = self.assignment.responses(self.sample_course, self.instructor_one)
+        self.assertEquals(len(r), 2)
 
-        self.assertEquals(len(self.assignment.responses(request)), 2)
-
-        responses = self.assignment.responses_by(request, self.student_one)
-        self.assertEquals(responses[0], response1)
+        r = self.assignment.responses_by(self.sample_course,
+                                         self.instructor_one,
+                                         self.student_one)
+        self.assertEquals(r[0], response1)
 
     def test_reset_publish_to_world(self):
         public = ProjectFactory.create(
@@ -295,3 +253,30 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())
+
+    def test_collaboration_sync_model(self):
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one)
+
+        collaboration = project.get_collaboration()
+        self.assertEquals(collaboration.policy_record.policy_name,
+                          'PrivateEditorsAreOwners')
+
+        project.collaboration_sync_group(collaboration)
+        self.assertIsNone(collaboration.group)
+
+        # add some participants
+        project.participants.add(self.student_two)
+        project.collaboration_sync_group(collaboration)
+        self.assertIsNotNone(collaboration.group)
+        users = collaboration.group.user_set.all()
+        self.assertTrue(self.student_one in users)
+        self.assertTrue(self.student_two in users)
+
+        # remove some participants
+        project.participants.remove(self.student_two)
+        project.collaboration_sync_group(collaboration)
+        self.assertIsNotNone(collaboration.group)
+        users = collaboration.group.user_set.all()
+        self.assertTrue(self.student_one in users)
+        self.assertFalse(self.student_two in users)

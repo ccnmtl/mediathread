@@ -89,7 +89,8 @@ def triple_homepage(request):
     context = {
         'classwork_owner': classwork_owner,
         "information_title": course_information_title(course),
-        'faculty_feed': Project.objects.faculty_compositions(request, course),
+        'faculty_feed': Project.objects.faculty_compositions(course,
+                                                             logged_in_user),
         'is_faculty': course.is_faculty(logged_in_user),
         'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),

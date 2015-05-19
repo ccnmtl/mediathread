@@ -285,3 +285,81 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = loads(response.content)
         self.assertTrue(len(the_json['revisions']) > 0)
+
+    def test_project_workspace_errors(self):
+        project_id = self.project_private.id
+        url = reverse('project-workspace', args=[project_id])
+
+        # invalid method
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        self.client.login(username=self.student_two.username, password='test')
+
+        # as non-owner
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 403)
+
+        # invalid project id
+        url = reverse('project-workspace', args=[12345])
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+    def test_project_workspace(self):
+        project_id = self.project_private.id
+        url = reverse('project-workspace', args=[project_id])
+
+        # as owner
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['project'], self.project_private)
+        self.assertEquals(response.context['space_owner'], 'student_one')
+        self.assertFalse(response.context['show_feedback'])
+
+    def test_project_workspace_ajax(self):
+        project_id = self.project_private.id
+        url = reverse('project-workspace', args=[project_id])
+
+        # as owner
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
+
+        self.assertEquals(the_json['space_owner'], 'student_one')
+        self.assertFalse(the_json['show_feedback'])
+
+        self.assertEquals(len(the_json['panels']), 2)
+
+        panel = the_json['panels'][0]
+        self.assertFalse(panel['is_faculty'])
+        self.assertEquals(len(panel['owners']), 6)
+        self.assertEquals(panel['vocabulary'], [])
+        self.assertEquals(panel['panel_state'], 'open')
+        self.assertEquals(panel['template'], 'project')
+        self.assertEquals(len(panel['context']['annotations']), 2)
+        self.assertEquals(len(panel['context']['assets']), 1)
+        self.assertTrue(panel['context']['can_edit'])
+        self.assertFalse(panel['context']['create_instructor_feedback'])
+        self.assertFalse(panel['context']['editing'])
+        self.assertTrue('form' in panel['context'])
+        self.assertTrue('project' in panel['context'])
+        self.assertEquals(panel['context']['response_count'], 0)
+        self.assertEquals(panel['context']['responses'], [])
+        self.assertEquals(panel['context']['type'], 'project')
+
+    def test_project_workspace_collaborator(self):
+        project_id = self.project_private.id
+        url = reverse('project-workspace', args=[project_id])
+        self.project_private.participants.add(self.student_two)
+        self.project_private.create_or_update_collaboration(
+            'PrivateEditorsAreOwners')
+
+        self.client.login(username=self.student_two.username, password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['project'], self.project_private)
+        self.assertEquals(response.context['space_owner'], 'student_two')
+        self.assertFalse(response.context['show_feedback'])

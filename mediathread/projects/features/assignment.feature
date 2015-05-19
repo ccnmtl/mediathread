@@ -173,25 +173,18 @@ Feature: Assignment
         
     Scenario Outline: assignment.feature 4. Assignment Response - visibility rules        
         Using selenium
-        Given there is a sample response
+        Given there is a sample assignment
         Give I am test_student_one in Sample Course
-        
-        # Set the assignment response visibility
-        When I click the "Sample Assignment Response" link
-        Then I am at the Sample Assignment Response page
-        
-        Then there is a closed Assignment panel
+
+        # This navigates rather than automagically opening the panel
+        When I click the Respond to Assignment button
+        Given the composition workspace is loaded
+
+        Then I am at the Untitled page
         And there is an open Composition panel
+        Then I call the Composition "Sample Assignment Response"
         
-        The Composition panel has a Revisions button
-        And the Composition panel has an Edit button
-        And the Composition panel does not have a Preview button
-        And the Composition panel has a Saved button
-        And the Composition panel has a Revisions button
-        And the Composition panel does not have a +/- Author button
-        And there is a "Submitted to Instructor" link 
-        
-        When I click the Saved button
+        When I click the Save button
         Then I see a Save Changes dialog
         Then I set the project visibility to "<visibility>"
         When I save the changes
@@ -202,8 +195,17 @@ Feature: Assignment
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> responses named "Sample Assignment Response"
         
+        Given I am test_student_one in Sample Course
+        When I click the "Sample Course" link
+        Given the home workspace is loaded
+        The "Sample Assignment Response" project has a delete icon
+        
+        When I click the "Sample Assignment Response" project delete icon
+        Then I confirm the action
+        Then there is not a "Sample Assignment Response" link
+        
         Finished using Selenium
-             
+                     
       Examples:
         | visibility                                          | status                  | username         | count |
         | Private - only author(s) can view                   | Private                 | test_instructor  |   0   |
@@ -301,5 +303,33 @@ Feature: Assignment
         
         When I log out
         Then I am at the Login page
+        
+        Finished using Selenium
+        
+    Scenario: assignment.feature 7. Assignment Response - reset visibility        
+        Using selenium
+        Given there is a sample assignment
+        Give I am test_student_one in Sample Course
+
+        # This navigates rather than automagically opening the panel
+        When I click the Respond to Assignment button
+        Given the composition workspace is loaded
+
+        Then I am at the Untitled page
+        And there is an open Composition panel
+        Then I call the Composition "Sample Assignment Response"
+        Then there is a "Private" link
+        
+        When I click the Save button
+        Then I see a Save Changes dialog
+        Then I set the project visibility to "Instructor - only author(s) and instructor can view"
+        When I save the changes
+        Then there is a "Submitted to Instructor" link
+
+        When I click the Saved button
+        Then I see a Save Changes dialog
+        Then I set the project visibility to "Whole Class - all class members can view"
+        When I save the changes
+        Then there is a "Published to Class" link
         
         Finished using Selenium

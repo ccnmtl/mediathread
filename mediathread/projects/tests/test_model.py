@@ -263,13 +263,17 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                           'PrivateEditorsAreOwners')
 
         project.collaboration_sync_group(collaboration)
-        self.assertIsNone(collaboration.group)
+        self.assertIsNotNone(collaboration.group)
+        users = collaboration.group.user_set.all()
+        self.assertEquals(users.count(), 1)
+        self.assertTrue(self.student_one in users)
 
         # add some participants
         project.participants.add(self.student_two)
         project.collaboration_sync_group(collaboration)
         self.assertIsNotNone(collaboration.group)
         users = collaboration.group.user_set.all()
+        self.assertEquals(users.count(), 2)
         self.assertTrue(self.student_one in users)
         self.assertTrue(self.student_two in users)
 
@@ -278,5 +282,6 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         project.collaboration_sync_group(collaboration)
         self.assertIsNotNone(collaboration.group)
         users = collaboration.group.user_set.all()
+        self.assertEquals(users.count(), 1)
         self.assertTrue(self.student_one in users)
         self.assertFalse(self.student_two in users)

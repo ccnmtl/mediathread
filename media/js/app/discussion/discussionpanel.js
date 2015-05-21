@@ -1,6 +1,6 @@
 /* global CitationView: true, djangosherd: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true */
-/* global PanelManager: true, tinyMCE: true, showMessage: true */
+/* global tinyMCE: true, showMessage: true */
 
 var DiscussionPanelHandler = function (el, parent, panel, space_owner) {
     var self = this;
@@ -201,7 +201,7 @@ DiscussionPanelHandler.prototype.onPrepareCitation = function (target) {
 
     var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
-        PanelManager.openSubPanel(a[0]);
+        window.panelManager.openSubPanel(a[0]);
     }
 };
 

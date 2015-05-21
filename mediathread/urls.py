@@ -3,19 +3,24 @@ import os.path
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.contrib.auth.views import password_change, password_change_done, \
-    password_reset, password_reset_done, password_reset_complete, \
-    password_reset_confirm
+from django.contrib.auth.views import (password_change, password_change_done,
+                                       password_reset, password_reset_done,
+                                       password_reset_complete,
+                                       password_reset_confirm)
 from django.views.generic.base import TemplateView
 from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
-from mediathread.assetmgr.views import AssetCollectionView, AssetDetailView, \
-    TagCollectionView
+from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
+                                        TagCollectionView,
+                                        RedirectToExternalCollectionView,
+                                        RedirectToUploaderView,
+                                        AssetCreateView)
 from mediathread.main.forms import CustomRegistrationForm
-from mediathread.main.views import MigrateCourseView, MigrateMaterialsView, \
-    RequestCourseView, ContactUsView, CourseSettingsView, \
-    CourseManageSourcesView
+from mediathread.main.views import (MigrateCourseView, MigrateMaterialsView,
+                                    RequestCourseView, ContactUsView,
+                                    CourseSettingsView,
+                                    CourseManageSourcesView)
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
@@ -27,8 +32,8 @@ tastypie_api.register(VocabularyResource())
 admin.autodiscover()
 
 bookmarklet_root = os.path.join(os.path.dirname(__file__),
-                                "../media/",
-                                "bookmarklets")
+                                '../media/',
+                                'bookmarklets')
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 
@@ -59,7 +64,7 @@ urlpatterns = patterns(
     logout_page,
     (r'^admin/', admin.site.urls),
 
-    # override the default urls for pasword
+    # override the default urls for password
     url(r'^password/change/$',
         password_change,
         name='password_change'),
@@ -114,12 +119,12 @@ urlpatterns = patterns(
 
     (r'^comments/', include('django.contrib.comments.urls')),
 
-    # Columbia only request forms.
+    # Contact us forms.
     (r'^contact/success/$',
-     TemplateView.as_view(template_name="main/contact_success.html")),
+     TemplateView.as_view(template_name='main/contact_success.html')),
     (r'^contact/$', ContactUsView.as_view()),
     (r'^course/request/success/$',
-     TemplateView.as_view(template_name="main/course_request_success.html")),
+     TemplateView.as_view(template_name='main/course_request_success.html')),
     (r'^course/request/', RequestCourseView.as_view()),
 
     # Courseaffils
@@ -135,19 +140,24 @@ urlpatterns = patterns(
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
     url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
-        {}, "dashboard-migrate"),
+        {}, 'dashboard-migrate'),
     url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
-        name="class-manage-sources"),
+        name='class-manage-sources'),
     url(r'^dashboard/settings/', CourseSettingsView.as_view(),
-        name="course-settings"),
+        name='course-settings'),
 
     # Discussion
     (r'^discussion/', include('mediathread.discussions.urls')),
 
-    # Manage Sources
-    url(r'^explore/redirect/$',
-        'mediathread.assetmgr.views.source_redirect',
-        name="source_redirect"),
+    # External Collections
+    url(r'^explore/redirect/(?P<collection_id>\d+)/$',
+        RedirectToExternalCollectionView.as_view(),
+        name='collection_redirect'),
+
+    # Uploader
+    url(r'^upload/redirect/(?P<collection_id>\d+)/$',
+        RedirectToUploaderView.as_view(),
+        name='uploader_redirect'),
 
     url(r'^impersonate/', include('impersonate.urls')),
 
@@ -164,16 +174,13 @@ urlpatterns = patterns(
     # Instructor Dashboard & reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
-    # Bookmarklet Entry point
-    # Staff custom asset entry
-    url(r'^save/$',
-        'mediathread.assetmgr.views.asset_create',
-        name="asset-save"),
+    # Bookmarklet, Wardenclyffe, Staff custom asset entry
+    url(r'^save/$', AssetCreateView.as_view(), name='asset-save'),
 
     (r'^setting/(?P<user_name>\w[^/]*)/$',
      'mediathread.main.views.set_user_setting'),
 
-    (r'^stats/', TemplateView.as_view(template_name="stats.html")),
+    (r'^stats/', TemplateView.as_view(template_name='stats.html')),
     (r'^smoketest/', include('smoketest.urls')),
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),

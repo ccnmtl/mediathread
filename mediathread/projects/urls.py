@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
-from mediathread.projects.views import ProjectCreateView
+
+from mediathread.projects.views import ProjectCreateView, ProjectDeleteView
 
 
 urlpatterns = patterns(
@@ -26,8 +27,7 @@ urlpatterns = patterns(
         name="project-export-html"),
 
     url(r'^delete/(?P<project_id>\d+)/$',
-        'project_delete',
-        name='project-delete'),
+        ProjectDeleteView.as_view(), {}, 'project-delete'),
 
     url(r'^reparent/(?P<assignment_id>\d+)/(?P<composition_id>\d+)/$',
         'project_reparent',
@@ -40,11 +40,6 @@ urlpatterns = patterns(
     # view versioned read only
     url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
         'project_view_readonly', name='project-view-readonly'),
-
-    # view versioned read only
-    url(r'^sort/$',
-        'project_sort', name='project-sort'),
-
 
     # view public url - read only view.
     # Note: StructuredCollaboration requires

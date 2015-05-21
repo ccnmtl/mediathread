@@ -42,7 +42,7 @@ def discussion_create(request):
     assert the_object is not None
 
     try:
-        obj_sc = Collaboration.get_associated_collab(the_object)
+        obj_sc = Collaboration.objects.get_for_object(the_object)
     except Collaboration.DoesNotExist:
         obj_sc = Collaboration()
         # TODO: populate this collab with sensible auth defaults.
@@ -69,10 +69,7 @@ def discussion_create(request):
                             # content_object=None,
                             context=request.collaboration_context,
                             )
-    disc_sc.policy = request.POST.get('publish', None)
-    if request.POST.get('inherit', None) == 'true':
-        disc_sc.group_id = obj_sc.group_id
-        disc_sc.user_id = obj_sc.user_id
+    disc_sc.set_policy(request.POST.get('publish', None))
     disc_sc.save()
 
     # finally create the root discussion object, pointing it at the CHILD.
@@ -114,7 +111,8 @@ def discussion_create(request):
 @allow_http("POST")
 def discussion_delete(request, discussion_id):
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to('read', request):
+    if not root_comment.content_object.permission_to(
+            'read', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to view this discussion.')
 
@@ -127,7 +125,8 @@ def discussion_view(request, discussion_id):
     discussion_id is the pk of the root comment."""
 
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to('read', request):
+    if not root_comment.content_object.permission_to(
+            'read', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to view this discussion.')
 
@@ -137,7 +136,7 @@ def discussion_view(request, discussion_id):
         # legacy: for when contexts weren't being set in new()
         my_course = request.course
         root_comment.content_object.context = \
-            Collaboration.get_associated_collab(my_course)
+            Collaboration.objects.get_for_object(my_course)
         root_comment.content_object.save()
 
     data = {'space_owner': request.user.username}
@@ -188,7 +187,8 @@ def comment_save(request, comment_id, next_url=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
 
-    if comment.content_object.permission_to('manage', request):
+    if comment.content_object.permission_to(
+            'manage', request.course, request.user):
         comment.comment = request.POST['comment']
     elif comment.user == request.user:
         now = datetime.now()

@@ -1,15 +1,15 @@
-from structuredcollaboration.models import Collaboration
+from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse, resolve
 from django.http import HttpResponseForbidden, HttpResponseServerError
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse, resolve
-from django.contrib.contenttypes.models import ContentType
+
+from structuredcollaboration.models import Collaboration
+
 
 # tree management (add/remove leaf)
 # re-ordering
 # DO NOT PROVIDE 'MOVE' (intended to be unoptimized)
-
-
 def view_collab_by_obj(request, context_slug, obj_type, obj_id):
     context = get_object_or_404(Collaboration, slug=context_slug)
     request.collaboration_context = context
@@ -40,7 +40,7 @@ def view_collab_by_slug(request, context_slug, collab_slug):
 
 
 def serve_collaboration(request, collab):
-    if not collab.permission_to('read', request):
+    if not collab.permission_to('read', request.course, request.user):
         return HttpResponseForbidden("forbidden")
 
     # Method 1. obj.default_view(request,obj)
@@ -80,7 +80,7 @@ def collaboration_dispatch(request, collab_id, next=None):
 def delete_collaboration(request, collab_id, next=None):
     # only fake-delete it.  We move it out from the context
     disc_sc = get_object_or_404(Collaboration, pk=collab_id)
-    if not disc_sc.permission_to('delete', request):
+    if not disc_sc.permission_to('delete', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to delete this discussion.')
 
@@ -90,8 +90,3 @@ def delete_collaboration(request, collab_id, next=None):
     disc_sc.save()
 
     return HttpResponseRedirect(next or "/")
-
-
-def collaboration_rss(request, context_slug):
-    "RSS feed for collaboration tree"
-    pass

@@ -1,64 +1,25 @@
-class CollaborationPoliciesSingleton:
-    # purposely setting it where it stays static on the instance
-    registered_policies = dict()
-    policy_options = dict()
-
-    def register_policy(self, policy_class, policy_key, policy_title):
-        assert(len(policy_key) < 512)
-        self.registered_policies[policy_key] = policy_class()
-        self.policy_options[policy_key] = policy_title
-
-    def __iter__(self):
-        return iter(self.policy_options.items())
-
-CollaborationPolicies = CollaborationPoliciesSingleton()
+from structuredcollaboration.models import Collaboration
 
 
-class CollaborationPolicy:
+class CollaborationPolicy(object):
     """
     Base Collaboration Policy
     """
-    def permission_to(self, collaboration, permission, request):
-        rv = getattr(self, permission, lambda c, r: False)(collaboration,
-                                                           request)
+    def permission_to(self, collaboration, permission, course, user):
+        rv = getattr(self, permission, lambda c, r, u: False)(collaboration,
+                                                              course, user)
         return rv
 
 
-class BasePublicPolicy:
-    def read(self, collaboration, request):
-        return True
-
-
-class BaseProtectedPolicy:
-    def read(self, collaboration, request):
-        return request.user.is_authenticated()
-
-
-class PolicyByType(CollaborationPolicy):
-
-    types = None
-    default = None
-
-    def __init__(self, default=None, policy_dict=None):
-        assert(default is not None)
-        self.types = policy_dict or dict()  # empty
-        self.default = default
-
-    def permission_to(self, collaboration, permission, request):
-        col_type = getattr(collaboration.content_object, '__class__', None)
-        return self.types.get(col_type,
-                              self.default).permission_to(collaboration,
-                                                          permission,
-                                                          request)
-
-
-class PublicEditorsAreOwners(CollaborationPolicy, BasePublicPolicy):
+class PublicEditorsAreOwners(CollaborationPolicy):
     """
     Implements a basic policy of people who can edit can also manage the group
     """
+    def read(self, collaboration, course, user):
+        return True
 
-    def edit(self, collaboration, request):
-        user = request.user
+    def edit(self, collaboration, course, user):
+        user = user
         if user.is_authenticated():
             if user == collaboration.user:
                 return True
@@ -71,53 +32,91 @@ class PublicEditorsAreOwners(CollaborationPolicy, BasePublicPolicy):
     delete = edit
 
 
-class ProtectedEditorsAreOwners(PublicEditorsAreOwners, BaseProtectedPolicy):
-    """
-    Implements a basic policy of people who can edit can also manage the group
-    """
-    pass
-
-
-class PublicParentEditorsAreOwners(PublicEditorsAreOwners, BasePublicPolicy):
-    """
-    parent of the instance's editors are the current's owners
-    """
-
-    def manage(self, collaboration, request):
-        return collaboration.get_parent().permission_to('edit', request)
-
-
-class ProtectedParentEditorsAreOwners(PublicParentEditorsAreOwners,
-                                      BaseProtectedPolicy):
-    pass
-
-
 class PrivateEditorsAreOwners(PublicEditorsAreOwners):
-    def read(self, collaboration, request):
-        return (request.user.is_staff or self.edit(collaboration, request))
+    def read(self, collaboration, course, user):
+        return (user.is_staff or self.edit(collaboration, course, user))
 
 
-CollaborationPolicies.register_policy(CollaborationPolicy,
-                                      'forbidden',
-                                      'Forbidden to everyone')
-CollaborationPolicies.register_policy(PublicEditorsAreOwners,
-                                      'PublicEditorsAreOwners',
-                                      'Editors can manage the group, \
-                                       Content is world-readable')
-CollaborationPolicies.register_policy(ProtectedEditorsAreOwners,
-                                      'ProtectedEditorsAreOwners',
-                                      'Editors can manage the group, \
-                                      Viewing requires authentication')
-CollaborationPolicies.register_policy(PublicParentEditorsAreOwners,
-                                      'PublicParentEditorsAreOwners',
-                                      'Parent editors can manage the group, \
-                                      Content is world-readable')
-CollaborationPolicies.register_policy(ProtectedParentEditorsAreOwners,
-                                      'ProtectedParentEditorsAreOwners',
-                                      'Parent editors can manage the group, \
-                                      Viewing requires authentication')
+class PrivateStudentAndFaculty(CollaborationPolicy):
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                course and
+                course.is_faculty(user))
 
-CollaborationPolicies.register_policy(PrivateEditorsAreOwners,
-                                      'PrivateEditorsAreOwners',
-                                      'User and group can view/edit/manage. \
-                                      Staff can read')
+    delete = manage
+
+    def read(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                ((course and
+                  course.is_faculty(user)) or
+                 coll.user_id == user.id or
+                 (coll.group_id and
+                  user in coll.group.user_set.all())))
+
+    edit = read
+
+
+class InstructorShared(PrivateEditorsAreOwners):
+    def read(self, coll, course, user):
+        return (self.manage(coll, course, user) or
+                course.is_faculty(user))
+
+
+class InstructorManaged(CollaborationPolicy):
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                ((course and
+                  course.is_faculty(user)) or
+                 coll.user == user))
+    delete = manage
+
+    def read(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration)
+
+    edit = read
+
+
+class CourseProtected(CollaborationPolicy):
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                (coll.user == user or
+                 (coll.group and
+                  user in coll.group.user_set.all())))
+
+    edit = manage
+    delete = manage
+
+    def read(self, coll, course, user):
+        if not course:
+            return False
+
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                course.is_member(user))
+
+
+class CourseCollaboration(CourseProtected):
+    edit = CourseProtected.read
+
+
+class Assignment(CourseProtected):
+    def manage(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (coll.context == course_collaboration and
+                ((course and
+                  course.is_faculty(user)) or
+                 coll.user == user)
+                )
+    delete = manage
+    edit = manage
+
+    def read(self, coll, course, user):
+        course_collaboration = Collaboration.objects.get_for_object(course)
+        return (course and coll.context == course_collaboration)
+
+    add_child = read

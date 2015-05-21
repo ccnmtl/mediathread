@@ -457,7 +457,8 @@ class DiscussionIndex(models.Model):
     @classmethod
     def with_permission(cls, request, query):
         return [di for di in query
-                if di.collaboration.permission_to('read', request)]
+                if di.collaboration.permission_to(
+                    'read', request.course, request.user)]
 
 
 def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
@@ -481,7 +482,7 @@ def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
         # not setting author, since get_or_create will break then
         participant = None
         author = instance.author
-        collaboration = instance.collaboration()
+        collaboration = instance.get_collaboration()
         if collaboration is None:
             return
         sherdsource = instance.body

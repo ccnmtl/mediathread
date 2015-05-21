@@ -1,3 +1,4 @@
+import csv
 import json
 
 from courseaffils.lib import in_course_or_404
@@ -123,6 +124,25 @@ class JSONResponseMixin(object):
         return HttpResponse(json.dumps(context, indent=2),
                             content_type='application/json',
                             **response_kwargs)
+
+
+class CSVResponseMixin():
+
+    def render_csv_response(self, filename, headers, rows):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = \
+            'attachment; filename=' + filename + '.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(headers)
+
+        for row in rows:
+            try:
+                writer.writerow(row)
+            except:
+                pass
+
+        return response
 
 
 class LoggedInMixin(object):

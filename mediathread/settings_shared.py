@@ -5,7 +5,6 @@
 # then you can put a settings.py file and templates/ overrides there
 # (see bottom)
 
-from courseaffils import policies
 import os.path
 import re
 import sys
@@ -53,7 +52,9 @@ PROJECT_APPS = ['mediathread.main',
                 'mediathread.assetmgr',
                 'mediathread.projects',
                 'mediathread.reports',
-                'mediathread.discussions']
+                'mediathread.discussions',
+                'mediathread.taxonomy',
+                'structuredcollaboration']
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
@@ -99,7 +100,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
     'waffle.middleware.WaffleMiddleware',
@@ -207,23 +207,23 @@ ANONYMOUS_PATHS = ('/media/',
                    '/api/user/courses'
                    )
 
-NON_ANONYMOUS_PATHS = ('/asset/',
+NON_ANONYMOUS_PATHS = ('/analysis/',
                        '/annotations/',
-                       '/project/',
-                       '/explore/',
-                       '/comments/',
-                       '/reports/',
-                       '/discussion/',
-                       '/archive/',
-                       '/assignment/',
-                       '/dashboard/',
-                       '/analysis/',
-                       '/taxonomy/',
                        '/api/',
+                       '/archive/',
+                       '/asset/',
+                       '/assignment/',
+                       '/comments/',
+                       '/dashboard/',
+                       '/discussion/',
+                       '/explore/',
+                       '/project/',
+                       '/reports/',
                        '/setting/',
+                       '/taxonomy/',
                        '/upgrade/',
-                       re.compile(r'^/$'),
-                       )
+                       '/upload/',
+                       re.compile(r'^/$'))
 
 # save is an exception, for server2server api
 COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save', '/settings')
@@ -253,7 +253,7 @@ FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.13.swf'
 FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.13.swf'
 
 
-DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
+DEFAULT_COLLABORATION_POLICY = 'InstructorManaged'
 
 
 # this gets around Django 1.2's stupidity for commenting
@@ -272,6 +272,12 @@ LOGGING = {
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 ACCOUNT_ACTIVATION_DAYS = 7
+
+
+def default_url_processor(url, label=None, request=None):
+    return url
+
+ASSET_URL_PROCESSOR = default_url_processor
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

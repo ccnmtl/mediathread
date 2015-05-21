@@ -3012,7 +3012,7 @@ div.gallery-item h4.asset_title {
     list-style-type: none;
 }
 
-#dashboard-module-body .archive {
+#dashboard-module-body .suggested-collection {
    border: 1px solid #ccc;
    margin: 10px 10px;
    width: 95%;
@@ -3022,48 +3022,35 @@ div.gallery-item h4.asset_title {
    padding: 10px 10px 5px;
 }
    
-#dashboard-module-body .archive h3 {
+#dashboard-module-body .suggested-collection h3 {
    font-size: 100%;
 }
 
-#dashboard-module-body .archive table,
-#dashboard-module-body .archive table tr,
-#dashboard-module-body .archive table tr td {
+#dashboard-module-body .suggested-collection table,
+#dashboard-module-body .suggested-collection table tr,
+#dashboard-module-body .suggested-collection table tr td {
     border: none;
     
 }
 
-#dashboard-module-body .archive table,
-#dashboard-module-body .archive table tr {
+#dashboard-module-body .suggested-collection table,
+#dashboard-module-body .suggested-collection table tr {
     width: 100%;
 }
 
-#dashboard-module-body .archive table tr td.archive_thumb {
+#dashboard-module-body .suggested-collection table tr td.thumb {
     width: 125px;
     height: 85px;
     vertical-align: top;
 }
 
-.manage-archive {
-    float:right;
-}
-
-input.addtoclass {
-    float:right;
-}
-
-table#summary_columns, table#summary_columns tr td.mainsection {
-    vertical-align: top;
-    border: none;
-    text-align: left;
-}
-
-.archive a.archive-link {
+a.collection-link {
     font-weight:bold;
     text-decoration:none;
     margin: 15px 0px;
 }
-.archive img.archive-link {
+
+img.collection-link {
     margin:10px;
     max-width:100px;
     max-height:75px;
@@ -3074,6 +3061,16 @@ div.archive p {
     text-align: left;
     line-height: 150%;
     margin: 10px 10px 1em 10px;
+}
+
+input.addtoclass {
+    float:right;
+}
+
+table#summary_columns, table#summary_columns tr td.mainsection {
+    vertical-align: top;
+    border: none;
+    text-align: left;
 }
 
 .annotation-group h4 {

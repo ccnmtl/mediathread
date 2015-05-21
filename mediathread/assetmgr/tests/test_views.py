@@ -1,15 +1,19 @@
 # pylint: disable-msg=R0904
 import json
 
+from django.core.urlresolvers import reverse
+from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from mediathread.assetmgr.models import Asset
+from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
-    asset_create, sources_from_args
+    RedirectToExternalCollectionView, \
+    RedirectToUploaderView, _parse_user, AssetCreateView
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    SherdNoteFactory, UserFactory
+    SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
+    SuggestedExternalCollectionFactory
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -26,23 +30,27 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
     def test_sources_from_args(self):
         data = {'title': 'Bad Asset',
                 'asset-source': 'bookmarklet',
-                'image': "x" * 5000,  # too long
+                'image': 'x' * 5000,  # too long
                 'url': 'http://www.youtube.com/abcdefghi'}
         request = RequestFactory().post('/save/', data)
-        sources = sources_from_args(request)
+        sources = AssetCreateView.sources_from_args(request)
 
         self.assertEquals(len(sources.keys()), 0)
 
         data = {'title': 'Good Asset',
                 'asset-source': 'bookmarklet',
-                'image': "http://www.flickr.com/"}
+                'image': 'http://www.flickr.com/',
+                'image-metadata': [u'w720h526;text/html']}
         request = RequestFactory().post('/save/', data)
-        sources = sources_from_args(request)
+        sources = AssetCreateView.sources_from_args(request)
         self.assertEquals(len(sources.keys()), 2)
-        self.assertEquals(sources['image'].url, "http://www.flickr.com/")
+        self.assertEquals(sources['image'].url, 'http://www.flickr.com/')
         self.assertTrue(sources['image'].primary)
+        self.assertEquals(sources['image'].width, 720)
+        self.assertEquals(sources['image'].height, 526)
+        self.assertEquals(sources['image'].media_type, 'text/html')
 
-    def test_archive_add_or_remove_get(self):
+    def test_manage_external_collection_get(self):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
@@ -50,43 +58,50 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/asset/archive/')
         self.assertEquals(response.status_code, 405)
 
-    def test_archive_add_or_remove_notloggedin(self):
+    def test_manage_external_collection_notloggedin(self):
         response = self.client.post('/asset/archive/')
         self.assertEquals(response.status_code, 302)
 
-    def test_archive_remove(self):
-        archive = AssetFactory.create(course=self.sample_course,
-                                      author=self.instructor_one,
-                                      primary_source='archive')
+    def test_manage_external_collection_remove(self):
+        exc = ExternalCollectionFactory(course=self.sample_course)
 
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
         response = self.client.post('/asset/archive/',
                                     {'remove': True,
-                                     'title': archive.title})
+                                     'collection_id': exc.id})
         self.assertEquals(response.status_code, 302)
 
-        try:
-            Asset.objects.get(title="Sample Archive")
-            self.fail('Sample archive should have been deleted')
-        except Asset.DoesNotExist:
-            pass  # expected
+        with self.assertRaises(Asset.DoesNotExist):
+            Asset.objects.get(id=exc.id)
 
-    def test_archive_add(self):
+    def test_manage_external_collection_add_custom(self):
         data = {
-            'thumb': '/site_media/img/thumbs/youtube.png',
             'title': 'YouTube',
             'url': 'http://www.youtube.com/',
-            'archive': 'http://www.youtube.com/'}
+            'thumb_url': '/site_media/img/thumbs/youtube.png',
+            'description': 'http://www.youtube.com/'}
 
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
         self.client.post('/asset/archive/', data)
 
-        self.assertIsNotNone(Asset.objects.get(course=self.sample_course,
-                                               title='YouTube'))
+        ExternalCollection.objects.get(course=self.sample_course,
+                                       title='YouTube')
+
+    def test_manage_external_collection_add_suggested(self):
+        suggested = SuggestedExternalCollectionFactory()
+        data = {'suggested_id': suggested.id}
+
+        self.assertTrue(
+            self.client.login(username=self.instructor_one.username,
+                              password='test'))
+        self.client.post('/asset/archive/', data)
+
+        ExternalCollection.objects.get(course=self.sample_course,
+                                       title=suggested.title)
 
     def test_asset_create_noasset(self):
         data = {'title': 'Bad Asset',
@@ -96,11 +111,10 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        try:
-            asset_create(request)
-            self.fail("An assertion error should have been raised")
-        except AssertionError:
-            pass  # expected
+        with self.assertRaises(AssertionError):
+            view = AssetCreateView()
+            view.request = request
+            view.post(request)
 
     def test_asset_create_via_bookmarklet(self):
         data = {'title': 'YouTube Asset',
@@ -111,7 +125,10 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        response = asset_create(request)
+        view = AssetCreateView()
+        view.request = request
+        response = view.post(request)
+
         self.assertEquals(response.status_code, 200)
 
         Asset.objects.get(title='YouTube Asset')
@@ -360,3 +377,94 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
             asset = Asset.objects.get(title="Test Video")
             self.assertIsNotNone(asset.global_annotation(self.instructor_one,
                                                          auto_create=False))
+
+    def test_redirect_external_collection(self):
+        view = RedirectToExternalCollectionView()
+        request = RequestFactory().get(reverse('collection_redirect',
+                                               args=[82]))
+
+        with self.assertRaises(Http404):
+            view.get(request, 456)
+
+        exc = ExternalCollectionFactory(url='http://ccnmtl.columbia.edu')
+        request = RequestFactory().get(reverse('collection_redirect',
+                                               args=[exc.id]))
+        response = view.get(request, exc.id)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, 'http://ccnmtl.columbia.edu')
+
+    def test_redirect_uploader(self):
+        # no collection id
+        request = RequestFactory().post('/upload/redirect')
+        request.user = self.student_one
+        request.course = self.sample_course
+
+        view = RedirectToUploaderView()
+        view.request = request
+
+        with self.assertRaises(Http404):
+            view.post(request, [], **{'collection_id': 123})
+
+        secret_keys = {'http://ccnmtl.columbia.edu': 'a very good secret'}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secret_keys):
+            # invalid uploader url
+            as_user = 'as=%s' % self.student_one.username
+            exc = ExternalCollectionFactory(url='http://abc.def.ghi')
+            with self.assertRaises(Http404):
+                view.post(request, [], **{'collection_id': exc.id})
+
+            # successful redirect
+            exc = ExternalCollectionFactory(url='http://ccnmtl.columbia.edu')
+            response = view.post(request, [], **{'collection_id': exc.id})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response.url.startswith(exc.url))
+            self.assertTrue('nonce' in response.url)
+            self.assertTrue('hmac' in response.url)
+            self.assertTrue('redirect_url' in response.url)
+            self.assertTrue(as_user in response.url)
+
+            # "as" without permissions + audio
+            data = {'as': self.student_two.username, 'audio': 'mp4'}
+            request = RequestFactory().post('/upload/redirect', data)
+            request.user = self.student_one
+            request.course = self.sample_course
+            response = view.post(request, [], **{'collection_id': exc.id})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(as_user in response.url)
+            self.assertTrue('audio=mp4' in response.url)
+
+            # "as" with permissions
+            data = {'as': self.student_one.username}
+            request = RequestFactory().post('/upload/redirect', data)
+            request.user = UserFactory(is_staff=True)
+            request.course = self.sample_course
+            self.add_as_faculty(request.course, request.user)
+
+            response = view.post(request, [], **{'collection_id': exc.id})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(as_user in response.url)
+
+    def test_parse_user(self):
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+
+        # regular path
+        request.user = self.student_one
+        self.assertEquals(_parse_user(request), self.student_one)
+
+        # not a course member
+        request.user = self.alt_student
+        response = _parse_user(request)
+        self.assertEquals(response.status_code, 403)
+
+        # "as" without permissions
+        request = RequestFactory().get('/', {'as': self.student_two.username})
+        request.user = self.student_one
+        request.course = self.sample_course
+        self.assertEquals(_parse_user(request), self.student_one)
+
+        # "as" with permissions
+        request.user = UserFactory(is_staff=True)
+        request.course = self.sample_course
+        self.add_as_faculty(request.course, request.user)
+        self.assertEquals(_parse_user(request), self.student_two)

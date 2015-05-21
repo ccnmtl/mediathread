@@ -1,11 +1,14 @@
-from courseaffils.models import Course
 from datetime import datetime
+
+from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
+
+from structuredcollaboration.models import Collaboration
 
 
 PUBLISH_OPTIONS = (
@@ -104,36 +107,33 @@ class ProjectManager(models.Manager):
         return object_map
 
     def migrate_one(self, project, course, user):
-        new_project = Project(title=project.title,
-                              course=course,
-                              author=user)
-        new_project.save()
+        new_project = Project.objects.create(title=project.title,
+                                             course=course, author=user)
 
-        collaboration_context = Collaboration.objects.get(
-            content_type=ContentType.objects.get_for_model(Course),
-            object_pk=str(course.pk))
+        collaboration_context = Collaboration.objects.get_for_object(course)
 
-        policy = project.collaboration()._policy
+        policy_record = project.get_collaboration().policy_record
 
         Collaboration.objects.create(
             user=new_project.author, title=new_project.title,
             content_object=new_project,
-            context=collaboration_context, policy=policy.policy_name)
+            context=collaboration_context,
+            policy_record=policy_record)
 
         return new_project
 
-    def visible_by_course(self, request, course):
+    def visible_by_course(self, course, user):
         projects = Project.objects.filter(course=course)
         projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.visible(request)]
+        return [p for p in projects if p.visible(course, user)]
 
-    def visible_by_course_and_user(self, request, course, user, is_faculty):
+    def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
         ).distinct()
 
-        lst = [p for p in projects if p.visible(request)]
+        lst = [p for p in projects if p.visible(course, viewer)]
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 
@@ -150,19 +150,18 @@ class ProjectManager(models.Manager):
 
         return projects.order_by('-modified', 'title')
 
-    def faculty_compositions(self, request, course):
+    def faculty_compositions(self, course, user):
         projects = []
         prof_projects = Project.objects.filter(
             course.faculty_filter).order_by('ordinality', 'title')
         for project in prof_projects:
             if (project.class_visible() and
-                    not project.is_assignment(request)):
+                    not project.is_assignment(course, user)):
                 projects.append(project)
 
         return projects
 
-    def unresponded_assignments(self, request, user):
-        course = request.course
+    def unresponded_assignments(self, course, user):
         projects = list(Project.objects.filter(course.faculty_filter,
                                                due_date__isnull=False).
                         order_by("due_date", "-modified", "title"))
@@ -175,13 +174,26 @@ class ProjectManager(models.Manager):
         project_type = ContentType.objects.get_for_model(Project)
 
         for assignment in projects:
-            if (assignment.visible(request) and
-                assignment.is_unanswered_assignment(request,
+            if (assignment.visible(course, user) and
+                assignment.is_unanswered_assignment(course,
                                                     user,
                                                     project_type)):
                 assignments.append(assignment)
 
         return assignments
+
+    def reset_publish_to_world(self, course):
+        # Check any existing projects -- if they are
+        # world publish-able, turn this feature OFF
+        projects = Project.objects.filter(course=course)
+        for project in projects:
+            try:
+                col = Collaboration.objects.get_for_object(project)
+                if col.policy_record.policy_name == 'PublicEditorsAreOwners':
+                    col.set_policy('CourseProtected')
+                    col.save()
+            except:
+                pass
 
 
 class Project(models.Model):
@@ -226,8 +238,6 @@ class Project(models.Model):
     ordinality = models.IntegerField(default=-1)
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-
         today = datetime.today()
         this_day = datetime(today.year, today.month, today.day, 0, 0)
         if self.due_date is not None and self.due_date < this_day:
@@ -248,35 +258,35 @@ class Project(models.Model):
 
     def public_url(self, col=None):
         if col is None:
-            col = self.collaboration()
-        if col and col._policy.policy_name == 'PublicEditorsAreOwners':
+            col = self.get_collaboration()
+        if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
-    def subobjects(self, request, child_type):
-        col = self.collaboration()
+    def subobjects(self, course, viewer, child_type):
+        col = self.get_collaboration()
         if not col:
             return []
         children = col.children.filter(content_type=child_type)
         viewable_children = []
         for child in children:
-            if child.permission_to("read", request) and child.content_object:
+            if (child.permission_to("read", course, viewer) and
+                    child.content_object):
                 viewable_children.append(child.content_object)
         return viewable_children
 
-    def discussions(self, request):
+    def discussions(self, course, viewer):
         discussion_type = ContentType.objects.get_for_model(ThreadedComment)
-        return self.subobjects(request, discussion_type)
+        return self.subobjects(course, viewer, discussion_type)
 
-    def responses_by(self, request, user):
-        responses = self.responses(request)
-        return [response for response in responses
-                if response and
-                (user in response.content_object.participants.all() or
-                 user == response.content_object.author)]
-
-    def responses(self, request):
+    def responses(self, course, viewer):
         project_type = ContentType.objects.get_for_model(Project)
-        return self.subobjects(request, project_type)
+        return self.subobjects(course, viewer, project_type)
+
+    def responses_by(self, course, viewer, by_user):
+        responses = self.responses(course, viewer)
+        return [response for response in responses
+                if (by_user in response.content_object.participants.all() or
+                    by_user == response.content_object.author)]
 
     def description(self):
         if self.assignment():
@@ -286,40 +296,35 @@ class Project(models.Model):
         else:
             return "Composition"
 
-    def is_assignment(self, request):
-        if hasattr(self, 'is_assignment_cached'):
-            return self.is_assignment_cached
-        col = self.collaboration()
+    def is_assignment(self, course, user):
+        col = self.get_collaboration()
         if not col:
             return False
-        self.is_assignment_cached = col.permission_to("add_child", request)
-        return self.is_assignment_cached
+        else:
+            return col.permission_to("add_child", course, user)
 
     def assignment(self):
         """
         Returns the Project object that this Project is a response to,
         or None if this Project is not a response to any other.
         """
-        # TODO: this doesn't check content types in any way.
-        # It assumes that obj->collab->parent->obj is-a Project.
-        col = self.collaboration()
-        if not col:
-            return
-        parent = col.get_parent()
-        if not parent:
-            return
-        return parent.content_object
+        col = self.get_collaboration()
+        if col:
+            parent = col.get_parent()
+            if parent:
+                return parent.content_object
 
-    def is_unanswered_assignment(self, request, user, expected_type):
+        return None
+
+    def is_unanswered_assignment(self, course, user, expected_type):
         """
         Returns True if this user has a response to this project
         or None if this user has not yet created a response
         """
-        if not self.is_assignment(request):
+        if not self.is_assignment(course, user):
             return False
 
-        collab = self.collaboration()
-        children = collab.children.all()
+        children = self.get_collaboration().children.all()
         if not children:
             # It has no responses, but it looks like an assignment
             return True
@@ -340,7 +345,7 @@ class Project(models.Model):
         '''returns the ThreadedComment object for
          professor feedback (assuming it's private)'''
         thread = None
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
             comm_type = ContentType.objects.get_for_model(ThreadedComment)
 
@@ -350,10 +355,9 @@ class Project(models.Model):
 
         return thread
 
-    def save(self, *args, **kw):
-        models.Model.save(self)
+    def save(self, *args, **kwargs):
+        super(Project, self).save(*args, **kwargs)
         self.participants.add(self.author)
-        self.collaboration(sync_group=True)
 
     def visibility(self):
         """
@@ -361,19 +365,20 @@ class Project(models.Model):
         """
         opts = dict(PUBLISH_OPTIONS)
 
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
-            return opts.get(col._policy.policy_name, col._policy.policy_name)
+            return opts.get(col.policy_record.policy_name,
+                            col.policy_record.policy_name)
         elif self.submitted:
             return u"Submitted"
         else:
             return u"Private"
 
     def visibility_short(self):
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
-            return SHORT_NAME.get(col._policy.policy_name,
-                                  col._policy.policy_name)
+            return SHORT_NAME.get(col.policy_record.policy_name,
+                                  col.policy_record.policy_name)
         elif self.submitted:
             return u"Submitted"
         else:
@@ -383,10 +388,10 @@ class Project(models.Model):
         """
         The project's status, one of "draft submitted complete".split()
         """
-        col = self.collaboration()
+        col = self.get_collaboration()
         if col:
-            status = SHORT_NAME.get(col._policy.policy_name,
-                                    col._policy.policy_name)
+            status = SHORT_NAME.get(col.policy_record.policy_name,
+                                    col.policy_record.policy_name)
             public_url = self.public_url(col)
             if public_url:
                 status += ' (<a href="%s">public url</a>)' % public_url
@@ -396,10 +401,8 @@ class Project(models.Model):
         else:
             return u"Private"
 
-    def is_participant(self, user_or_request):
-        user = getattr(user_or_request, 'user', user_or_request)
-        return (user == self.author or
-                user in self.participants.all())
+    def is_participant(self, user):
+        return (user == self.author or user in self.participants.all())
 
     def citations(self):
         """
@@ -428,76 +431,66 @@ class Project(models.Model):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
     def class_visible(self):
-        col = self.collaboration()
+        col = self.get_collaboration()
         if not col:
             # legacy
             return self.submitted
 
-        return (col._policy.policy_name != 'PrivateEditorsAreOwners' and
-                col._policy.policy_name != 'InstructorShared')
+        return (col.policy_record.policy_name != 'PrivateEditorsAreOwners' and
+                col.policy_record.policy_name != 'InstructorShared')
 
-    def visible(self, request):
-        col = self.collaboration()
+    def visible(self, course, user):
+        col = self.get_collaboration()
         if col:
-            return col.permission_to('read', request)
+            return col.permission_to('read', course, user)
         else:
             return self.submitted
 
-    def can_edit(self, request):
-        if not self.is_participant(request.user):
+    def can_edit(self, course, user):
+        if not self.is_participant(user):
             return False
+        col = self.get_collaboration()
+        return (col.permission_to('edit', course, user))
 
-        return (self.collaboration(request).permission_to('edit', request) or
-                self.collaboration(
-                    request, sync_group=True).permission_to('edit', request))
+    def can_read(self, course, user):
+        col = self.get_collaboration()
+        return (col.permission_to('read', course, user))
 
-    def can_read(self, request):
-        return (self.collaboration(request).permission_to('read', request) or
-                self.collaboration(
-                    request, sync_group=True).permission_to('read', request))
+    def collaboration_sync_group(self, collab):
+        participants = self.participants.all()
 
-    def collaboration(self, request=None, sync_group=False):
-        col = None
-        policy = None
-        if request and request.method == "POST":
-            policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
+        collab_group = collab.get_or_create_group()
 
+        existing_members = set(collab_group.user_set.all())
+        for user in participants:
+            if user in existing_members:
+                existing_members.discard(user)  # already accounted for
+            else:
+                collab_group.user_set.add(user)  # add new members
+
+        # remaining members should be removed
+        for ex_member in existing_members:
+            collab_group.user_set.remove(ex_member)
+
+    def create_or_update_collaboration(self, policy_name):
         try:
-            col = Collaboration.get_associated_collab(self)
+            col = Collaboration.objects.get_for_object(self)
+            col.title = self.title
         except Collaboration.DoesNotExist:
-            if policy is None:
-                policy = "PrivateEditorsAreOwners"
+            context = Collaboration.objects.get_for_object(self.course)
+            col = Collaboration(user=self.author, title=self.title,
+                                content_object=self, context=context)
+        col.set_policy(policy_name)
+        col.save()
 
-            if request is not None:
-                col = Collaboration.objects.create(
-                    user=self.author, title=self.title, content_object=self,
-                    context=request.collaboration_context, policy=policy,)
-
-        if col is None:  # iff collab did not exist and request is None
-            return
-
-        if sync_group:
-            participants = self.participants.all()
-            if (len(participants) > 1 or
-                (col.group_id and col.group.user_set.count() > 1) or
-                (self.author not in participants and
-                 len(participants) > 0)):
-                colgrp = col.have_group()
-                already_grp = set(colgrp.user_set.all())
-                for user in participants:
-                    if user in already_grp:
-                        already_grp.discard(user)
-                    else:
-                        colgrp.user_set.add(user)
-                for oldp in already_grp:
-                    colgrp.user_set.remove(oldp)
-            if request and request.method == "POST" and \
-                    (col.policy != policy or col.title != self.title):
-                col.title = self.title
-                col.policy = policy
-                col.save()
-
+        self.collaboration_sync_group(col)
         return col
+
+    def get_collaboration(self):
+        try:
+            return Collaboration.objects.get_for_object(self)
+        except Collaboration.DoesNotExist:
+            return None
 
     def submitted_date(self):
         dt = None

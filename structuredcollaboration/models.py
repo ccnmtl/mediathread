@@ -53,9 +53,6 @@ class Collaboration(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
     group = models.ForeignKey(Group, null=True, blank=True)
 
-    # @todo - Investigate group_id property set by discussions.view (Ln. 74)
-    # self.group_id -- Used for instructor feedback, but...why???!! grrr
-
     title = models.CharField(max_length=1024, null=True, default=None)
     slug = models.SlugField(max_length=50, null=True, default=None, blank=True)
 
@@ -79,46 +76,13 @@ class Collaboration(models.Model):
     context = models.ForeignKey('self', related_name='context_children',
                                 null=True, default=None, blank=True)
 
-    def save(self, *args, **kwargs):
-        create_group = (self.group and not self.group.id)
-
-        super(Collaboration, self).save(*args, **kwargs)
-        if create_group:
-            self.have_group()
-
-    def have_group(self):
-        if self.id:
-            if self.group_id:
-                return self.group
-            else:
-                name = unicode('Collaboration %s: %s' %
-                               (self.pk, self.title))[0:80]
-                self.group = Group.objects.create(name=name)
-                self.save()
-                return self.group
-
-    def sync_group(self, col, policy_name, participants):
-        if (len(participants) > 1 or
-            (col.group_id and col.group.user_set.count() > 1) or
-                (self.author not in participants and len(participants) > 0)):
-            colgrp = col.have_group()
-            already_grp = set(colgrp.user_set.all())
-            for user in participants:
-                if user in already_grp:
-                    already_grp.discard(user)
-                else:
-                    colgrp.user_set.add(user)
-            for oldp in already_grp:
-                colgrp.user_set.remove(oldp)
-
-        if ((col.policy_record and
-             col.policy_record.policy_name != policy_name or
-             col.title != self.title)):
-            col.title = self.title
-            col.set_policy(policy_name)
-            col.save()
-
-        return col
+    def get_or_create_group(self):
+        if not self.group:
+            name = unicode('Collaboration %s: %s' %
+                           (self.pk, self.title))[0:80]
+            self.group = Group.objects.create(name=name)
+            self.save()
+        return self.group
 
     class Meta:
         unique_together = (("content_type", "object_pk"),)

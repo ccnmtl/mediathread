@@ -355,8 +355,8 @@ class Project(models.Model):
 
         return thread
 
-    def save(self, *args, **kw):
-        models.Model.save(self)
+    def save(self, *args, **kwargs):
+        super(Project, self).save(*args, **kwargs)
         self.participants.add(self.author)
 
     def visibility(self):
@@ -456,22 +456,21 @@ class Project(models.Model):
         col = self.get_collaboration()
         return (col.permission_to('read', course, user))
 
-    def collaboration_sync_group(self, col):
+    def collaboration_sync_group(self, collab):
         participants = self.participants.all()
-        if (len(participants) > 1 or
-            (col.group_id and col.group.user_set.count() > 1) or
-                (self.author not in participants and len(participants) > 0)):
-            colgrp = col.have_group()
-            already_grp = set(colgrp.user_set.all())
-            for user in participants:
-                if user in already_grp:
-                    already_grp.discard(user)
-                else:
-                    colgrp.user_set.add(user)
-            for oldp in already_grp:
-                colgrp.user_set.remove(oldp)
 
-        return col
+        collab_group = collab.get_or_create_group()
+
+        existing_members = set(collab_group.user_set.all())
+        for user in participants:
+            if user in existing_members:
+                existing_members.discard(user)  # already accounted for
+            else:
+                collab_group.user_set.add(user)  # add new members
+
+        # remaining members should be removed
+        for ex_member in existing_members:
+            collab_group.user_set.remove(ex_member)
 
     def create_or_update_collaboration(self, policy_name):
         try:

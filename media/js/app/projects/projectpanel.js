@@ -1,6 +1,6 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
-/* global panelManager: true, SelectFilter: true, showMessage: true */
+/* global SelectFilter: true, showMessage: true */
 /* global tinyMCE: true, tiny_mce_settings: true */
 
 var ProjectPanelHandler = function (el, parent, panel, space_owner) {
@@ -204,14 +204,14 @@ ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
 
     var a = jQuery(target).parents("td.panel-container.collection");
     if (a && a.length) {
-        panelManager.openSubPanel(a[0]);
+        window.panelManager.openSubPanel(a[0]);
     }
 };
 
 ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     var self = this;
 
-    panelManager.closeSubPanel(self);
+    window.panelManager.closeSubPanel(self);
 
     var context = {
         'url': MediaThread.urls['project-create'](),
@@ -227,7 +227,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
         };
     }
 
-    panelManager.newPanel(context);
+    window.panelManager.newPanel(context);
 
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     jQuery(srcElement).remove();
@@ -236,9 +236,9 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
 ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
     var self = this;
 
-    panelManager.closeSubPanel(self);
+    window.panelManager.closeSubPanel(self);
 
-    panelManager.newPanel({
+    window.panelManager.newPanel({
         'url': MediaThread.urls['discussion-create'](),
         'params': {
             'publish': 'PrivateStudentAndFaculty',
@@ -786,7 +786,7 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
     }
 
     if (msg) {
-        panelManager.openPanel(self.el);
+        window.panelManager.openPanel(self.el);
         return msg;
     }
 };

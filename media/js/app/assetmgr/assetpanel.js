@@ -1,5 +1,5 @@
 /* global annotationList: true, CitationView: true, CollectionList: true */
-/* global djangosherd: true, getVisibleContentHeight: true, panelManager: true */ 
+/* global djangosherd: true, getVisibleContentHeight: true */ 
 
 /**
  * Listens For:
@@ -193,7 +193,7 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
         "vocabulary": self.panel.vocabulary,
         "view_callback": function () {
             jQuery(self.el).find("div.tabs").fadeIn("fast", function () {
-                panelManager.verifyLayout(self.el);
+                window.panelManager.verifyLayout(self.el);
                 jQuery(window).trigger("resize");
             });
         }

@@ -20,7 +20,7 @@ from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (MigrateCourseView, MigrateMaterialsView,
                                     RequestCourseView, ContactUsView,
                                     CourseSettingsView,
-                                    CourseManageSourcesView)
+                                    CourseManageSourcesView, IsLoggedInView)
 from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
@@ -128,7 +128,7 @@ urlpatterns = patterns(
     (r'^course/request/', RequestCourseView.as_view()),
 
     # Bookmarklet
-    url(r'^accounts/logged_in.js$', 'mediathread.main.views.is_logged_in',
+    url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},
         name='is_logged_in.js'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',

@@ -7,6 +7,7 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
+from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
@@ -670,3 +671,60 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
                                                    self.sample_course))
         self.assertFalse(course_details.can_upload(self.student_one,
                                                    self.sample_course))
+
+
+class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+        self.add_as_faculty(self.alt_course, self.instructor_three)
+
+        self.url = reverse('is_logged_in.js')
+
+    def test_not_logged_in(self):
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+        self.assertContains(response, '"current": false')
+        self.assertContains(response, '"logged_in": false')
+        self.assertContains(response, '"course_selected": false')
+        self.assertContains(response, '"ready": false')
+        self.assertNotContains(response, 'youtube_apikey')
+        self.assertNotContains(response, 'flickr_apikey')
+
+    def test_logged_in_no_course(self):
+        self.client.login(username=self.instructor_three.username,
+                          password='test')
+
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+        self.assertContains(response, '"current": false')
+        self.assertContains(response, '"logged_in": true')
+        self.assertContains(response, '"course_selected": false')
+        self.assertContains(response, '"ready": false')
+        self.assertNotContains(response, 'youtube_apikey')
+        self.assertNotContains(response, 'flickr_apikey')
+
+    def test_logged_in_with_course(self):
+        self.client.login(username=self.instructor_three.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        with self.settings(YOUTUBE_BROWSER_APIKEY="123",
+                           DJANGOSHERD_FLICKR_APIKEY="456",
+                           BOOKMARKLET_VERSION="1"):
+            response = self.client.get(self.url, {'version': 1})
+            self.assertEquals(response.status_code, 200)
+
+            self.assertContains(response, '"current": true')
+            self.assertContains(response, '"logged_in": true')
+            self.assertContains(response, '"course_selected": true')
+            self.assertContains(response, '"ready": true')
+            self.assertContains(response, '"youtube_apikey": "123"')
+            self.assertContains(response, '"flickr_apikey": "456"')

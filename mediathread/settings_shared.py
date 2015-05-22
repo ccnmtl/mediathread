@@ -246,6 +246,7 @@ DJANGOSHERD_FLICKR_APIKEY = 'undefined'
 # https://developers.google.com/youtube/registering_an_application#Create_API_Keys
 YOUTUBE_BROWSER_APIKEY = 'undefined'
 
+BOOKMARKLET_VERSION = '1'  # current version
 
 # Mediathread instantiates a Flowplayer .swf to play many video flavors.
 # Update this variable with your site's Flowplayer installation

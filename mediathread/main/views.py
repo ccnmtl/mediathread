@@ -424,33 +424,36 @@ class ContactUsView(FormView):
         return super(ContactUsView, self).form_valid(form)
 
 
-def is_logged_in(request):
-    """This could be a privacy hole, but since it's just logged in status,
-     it seems pretty harmless"""
-    logged_in = request.user.is_authenticated()
-    course_selected = SESSION_KEY in request.session
-    current = request.GET.get('version', None) == '1'  # has correct version
-    data = {
-        "logged_in": logged_in,
-        "current": current,
-        "course_selected": course_selected,  # just truth value
-        "ready": (logged_in and course_selected and current),
-    }
+class IsLoggedInView(View):
 
-    # deliver the api keys here
-    if logged_in and course_selected:
-        data['youtube_apikey'] = settings.YOUTUBE_BROWSER_APIKEY
-        data['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
+    def get(self, request, *args, **kwargs):
+        """This could be a privacy hole, but since it's just logged in status,
+         it seems pretty harmless"""
+        logged_in = request.user.is_authenticated()
+        course_selected = SESSION_KEY in request.session
+        current = (request.GET.get('version', None) ==
+                   settings.BOOKMARKLET_VERSION)
+        data = {
+            "logged_in": logged_in,
+            "current": current,
+            "course_selected": course_selected,  # just truth value
+            "ready": (logged_in and course_selected and current),
+        }
 
-    jscript = """(function() {
-                   var status = %s;
-                   if (window.SherdBookmarklet) {
-                       window.SherdBookmarklet.update_user_status(status);
-                   }
-                   if (!window.SherdBookmarkletOptions) {
-                          window.SherdBookmarkletOptions={};
-                   }
-                   window.SherdBookmarkletOptions.user_status = status;
-                  })();
-              """ % json.dumps(data)
-    return HttpResponse(jscript, content_type='application/javascript')
+        # deliver the api keys here
+        if logged_in and course_selected:
+            data['youtube_apikey'] = settings.YOUTUBE_BROWSER_APIKEY
+            data['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
+
+        jscript = """(function() {
+                       var status = %s;
+                       if (window.SherdBookmarklet) {
+                           window.SherdBookmarklet.update_user_status(status);
+                       }
+                       if (!window.SherdBookmarkletOptions) {
+                              window.SherdBookmarkletOptions={};
+                       }
+                       window.SherdBookmarkletOptions.user_status = status;
+                      })();
+                  """ % json.dumps(data)
+        return HttpResponse(jscript, content_type='application/javascript')

@@ -237,8 +237,16 @@ COMMENT_MAX_LENGTH = None
 
 FORCE_LOWERCASE_TAGS = True
 
-# if you set this to a string, then bookmarklet can import from flickr
-DJANGOSHERD_FLICKR_APIKEY = None
+# specify FLICKR api key as a string
+# https://www.flickr.com/services/api/misc.api_keys.html
+DJANGOSHERD_FLICKR_APIKEY = 'undefined'
+
+# specify YouTube browser api key as a string
+# obtain a browser api key here:
+# https://developers.google.com/youtube/registering_an_application#Create_API_Keys
+YOUTUBE_BROWSER_APIKEY = 'undefined'
+
+BOOKMARKLET_VERSION = '1'  # current version
 
 # Mediathread instantiates a Flowplayer .swf to play many video flavors.
 # Update this variable with your site's Flowplayer installation

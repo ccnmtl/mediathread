@@ -127,11 +127,9 @@ urlpatterns = patterns(
      TemplateView.as_view(template_name='main/course_request_success.html')),
     (r'^course/request/', RequestCourseView.as_view()),
 
-    # Courseaffils
-    url(r'^accounts/logged_in.js$', 'courseaffils.views.is_logged_in',
+    # Bookmarklet
+    url(r'^accounts/logged_in.js$', 'mediathread.main.views.is_logged_in',
         name='is_logged_in.js'),
-    url(r'^nocache/\w+/accounts/logged_in.js$',
-        'courseaffils.views.is_logged_in', name='nocache-is_logged_in.js'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),

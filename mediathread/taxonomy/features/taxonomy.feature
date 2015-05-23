@@ -195,14 +195,11 @@ Feature: Taxonomy
         When I name a term "Red"
         And create the term
         Then I see a "Red" term
-        
+
         # Edit the term
         When I click the "Red" term edit icon
         I rename the "Red" term to "Blue"
         I save the term
-        
-        Given the taxonomy workspace is loaded
+
         Then I see a "Blue" term
         Then there is no "Red" term
-
-        

@@ -1,4 +1,8 @@
 from lettuce import world, step
+from selenium.webdriver.support.expected_conditions import \
+    invisibility_of_element_located
+import selenium.webdriver.support.ui as ui
+from selenium.webdriver.common.by import By
 
 
 @step(u'I create the concept')
@@ -157,3 +161,7 @@ def i_save_the_term(step):
     selector = '.edit-term-submit'
     elt = world.browser.find_element_by_css_selector(selector)
     elt.click()
+
+    selector = "input[name='term_name']"
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(invisibility_of_element_located((By.CSS_SELECTOR, selector)))

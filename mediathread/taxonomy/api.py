@@ -13,16 +13,19 @@ class TermValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
 
-        a = Term.objects.filter(
-            display_name=bundle.data['display_name'],
-            vocabulary_id=bundle.data['vocabulary_id'])
+        if len(bundle.obj.display_name) < 1:
+            errors['error_message'] = 'Please choose a term name'
+        else:
+            a = Term.objects.filter(
+                display_name=bundle.obj.display_name,
+                vocabulary_id=bundle.obj.vocabulary.id)
 
-        if len(a) > 0:  # term exists with this name
-            if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
+            if len(a) > 0:  # term exists with this name
                 # a vocabulary already exists with this name
-                msg = 'A %s term already exists. Please choose another name' \
+                msg = '%s term already exists. Please choose a new name' \
                     % bundle.data['display_name']
                 errors['error_message'] = [msg]
+
         return errors
 
 
@@ -36,6 +39,7 @@ class TermResource(ModelResource):
         authorization = FacultyAuthorization()
         excludes = ['description', 'ordinality']
         validation = TermValidation()
+        always_return_data = True
 
     def dehydrate(self, bundle):
         bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
@@ -44,8 +48,16 @@ class TermResource(ModelResource):
         return bundle
 
     def hydrate(self, bundle):
-        bundle.obj.vocabulary = Vocabulary.objects.get(
-            id=bundle.data['vocabulary_id'])
+        vocabulary_id = None
+
+        if 'vocabulary_id' in bundle.data:
+            vocabulary_id = bundle.data['vocabulary_id']
+        elif hasattr(bundle, 'related_obj') and bundle.related_obj is not None:
+            vocabulary_id = bundle.related_obj.id
+
+        bundle.obj.vocabulary = Vocabulary.objects.get(id=vocabulary_id)
+
+        bundle.obj.display_name = bundle.data['display_name']
         return bundle
 
     def render_one(self, request, term):
@@ -88,7 +100,8 @@ class VocabularyResource(ModelResource):
     term_set = ToManyField(
         'mediathread.taxonomy.api.TermResource',
         'term_set',
-        blank=True, null=True, full=True, readonly=True)
+        blank=True, null=True, full=True, readonly=False,
+        related_name='vocabulary')
 
     class Meta:
         queryset = Vocabulary.objects.all().order_by('id')
@@ -99,6 +112,7 @@ class VocabularyResource(ModelResource):
         excludes = ['description', 'single_select']
         ordering = ['display_name']
         validation = VocabularyValidation()
+        always_return_data = True
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(

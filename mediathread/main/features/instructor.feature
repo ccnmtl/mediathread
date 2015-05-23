@@ -18,7 +18,12 @@ Feature: Instructor Dashboard
         When I access the url "/dashboard/settings/"
         Then I do not see "Manage Settings"
         And I see "forbidden"
-        
+
+        # Taxonomy
+        When I access the url "/taxonomy/"
+        Then I do not see "Course Vocabulary"
+        And I see "forbidden"
+
         # Reports
         When I access the url "/reports/class_assignments/"
         Then I do not see "Assignment Responses"

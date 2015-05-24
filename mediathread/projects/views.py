@@ -30,6 +30,8 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
                                          course=request.course,
                                          title="Untitled")
 
+        project.participants.add(request.user)
+
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
         project.create_or_update_collaboration(policy_name)
 
@@ -83,6 +85,8 @@ def project_save(request, project_id):
         # this changes for version-tracking purposes
         projectform.instance.author = request.user
         projectform.save()
+
+        projectform.instance.participants.add(request.user)
 
         # update the collaboration
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')

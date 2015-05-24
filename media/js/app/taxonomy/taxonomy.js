@@ -63,6 +63,12 @@
         },
         hasTerm: function(termName) {
             return this.get('term_set').getByDisplayName(termName).length > 0;
+        },
+        addTerm: function(termName) {
+            if (!this.hasTerm(termName)) {
+                var term = new Term({display_name: termName});
+                this.get('term_set').add(term);
+            }
         }
     });
 
@@ -75,8 +81,7 @@
         };
     }
 
-    Backbone.Model.prototype._save = Backbone.Model.prototype.save;
-    Backbone.Model.prototype.save = function( attrs, options ) {
+    Backbone.Model.prototype.queuedSave = function( attrs, options ) {
         if (!options) { options = {}; }
         if (this.saving) {
             this.saveQueue = this.saveQueue || [];
@@ -85,7 +90,7 @@
             this.saving = true;
             proxyAjaxEvent('success', options, this);
             proxyAjaxEvent('error', options, this);
-            Backbone.Model.prototype._save.call( this, attrs, options );
+            Backbone.Model.prototype.save.call( this, attrs, options );
         }
     };
     Backbone.Model.prototype.processQueue = function() {
@@ -93,7 +98,7 @@
             var saveArgs = this.saveQueue.shift();
             proxyAjaxEvent('success', saveArgs.options, this);
             proxyAjaxEvent('error', saveArgs.options, this);
-            Backbone.Model.prototype._save.call( this, saveArgs.attrs, saveArgs.options );
+            Backbone.Model.prototype.save.call( this, saveArgs.attrs, saveArgs.options );
         } else {
             this.saving = false;
         }
@@ -132,10 +137,6 @@
             'click a.edit-vocabulary-close': 'toggleEditVocabulary',
             'click a.create-vocabulary-submit': 'createVocabulary',
             'click a.edit-vocabulary-submit': 'updateVocabulary',
-            'focus input[name="display_name"]': 'focusVocabularyName',
-            'blur input[name="display_name"]': 'blurVocabularyName',
-            'focus input[name="term_name"]': 'focusTermName',
-            'blur input[name="term_name"]': 'blurTermName',
             'click a.create-term-submit': 'createTerm',
             'keypress input[name="term_name"]': 'keypressTermName',
             'click a.edit-term-submit': 'updateTerm',
@@ -163,8 +164,8 @@
             this.collection.on("add", this.render);
             this.collection.on("remove", this.render);
             this.collection.on("reset", this.render);
+            this.collection.on("sync", this.render);
             this.collection.fetch();
-
         },
         activateTab: function(evt, ui) {
             jQuery(ui.oldTab).find("div.vocabulary-edit, div.vocabulary-create").hide();
@@ -217,17 +218,13 @@
             var self = this;
             var parent = jQuery(evt.currentTarget).parent();
             var elt = jQuery(parent).find('input[name="display_name"]')[0];
-            if (jQuery(elt).hasClass("default")) {
+            var display_name = jQuery(elt).val();
+            if (display_name === undefined || display_name.trim().length < 1) {
                 showMessage("Please name your concept.", undefined, "Error");
                 return;
             }
 
-            var display_name = jQuery(elt).attr("value").trim();
-            if (display_name === undefined || display_name.length < 1) {
-                showMessage("Please name your concept.", undefined, "Error");
-                return;
-            }
-
+            display_name = display_name.trim();
             var v = new Vocabulary({
                 'display_name': display_name,
                 'content_type_id': this.context.content_type_id,
@@ -241,8 +238,11 @@
                     self.collection.add(v);
                 },
                 error: function(model, response) {
-                    var responseText = jQuery.parseJSON(response.responseText);
-                    showMessage(responseText.vocabulary.error_message, undefined, "Error");
+                    var text =  jQuery.type(response) == 'object' ?
+                        response.responseText : response;
+                    var the_json = jQuery.parseJSON(text);
+                    showMessage(the_json.vocabulary.error_message,
+                        undefined, "Error");
                 }
             });
 
@@ -254,18 +254,13 @@
             var parent = jQuery(evt.currentTarget).parent();
 
             var elt = jQuery(parent).find('input[name="display_name"]')[0];
-            if (jQuery(elt).hasClass("default")) {
-                showMessage("Please name your concept.", undefined, "Error");
-                return;
-            }
-
-            var display_name = jQuery(elt).attr("value").trim();
+            var display_name = jQuery(elt).val();
             if (display_name === undefined || display_name.length < 1) {
                 showMessage("Please name your concept.", undefined, "Error");
                 return;
             }
 
-            var id = jQuery(parent).find('input[name="vocabulary_id"]').attr("value").trim();
+            var id = jQuery(parent).find('input[name="vocabulary_id"]').val();
             var v = this.collection.getByDataId(id);
             if (v.get('display_name') !== 'display_name') {
                 v.save({'display_name': display_name}, {
@@ -273,8 +268,11 @@
                         self.render();
                     },
                     error: function(model, response) {
-                        var responseText = jQuery.parseJSON(response.responseText);
-                        showMessage(responseText.vocabulary.error_message, undefined, "Error");
+                        var text =  jQuery.type(response) == 'object' ?
+                            response.responseText : response;
+                        var the_json = jQuery.parseJSON(text);
+                        showMessage(the_json.vocabulary.error_message,
+                            undefined, "Error");
                     }
                 });
             }
@@ -314,18 +312,6 @@
             });
             return false;
         },
-        focusVocabularyName: function(evt) {
-            if (jQuery(evt.currentTarget).hasClass("default")) {
-                jQuery(evt.currentTarget).removeClass("default");
-                jQuery(evt.currentTarget).attr("value", "");
-            }
-        },
-        blurVocabularyName: function(evt) {
-            if (jQuery(evt.currentTarget).attr("value") === '') {
-                jQuery(evt.currentTarget).addClass("default");
-                jQuery(evt.currentTarget).attr("value", "Type concept name here");
-            }
-        },
         showEditTerm: function(evt) {
             evt.preventDefault();
             var container = jQuery(evt.currentTarget).parents("div.terms");
@@ -349,24 +335,29 @@
             var self = this;
             if (evt.which == 13) {
                 evt.preventDefault();
-                jQuery(evt.currentTarget).next().click();
+                var opts = '.edit-term-submit,.create-term-submit';
+                jQuery(evt.currentTarget).nextAll(opts).click();
             }
         },
         createTerm: function(evt) {
             evt.preventDefault();
             var self = this;
-            var et = jQuery(evt.currentTarget).prev();
-            if (jQuery(et).hasClass("default")) {
-                //when both fields are left blank on submit
-                showMessage("Please enter a term name", undefined, "Error");
-                return;
+            
+            // currentTarget could be the input box (if user hit return) or
+            // the + button right next door
+            var elt = evt.currentTarget;
+            if (!jQuery(elt).is('input:text')) {
+                elt = jQuery(evt.currentTarget).prev()[0];
             }
+
             //if you want to create a term from user input
-            var display_name = jQuery(et).attr("value").trim();
-            if (display_name === undefined || display_name.length < 1) {
+            var display_name = jQuery(elt).val();
+            if (display_name === undefined || display_name.trim().length < 1) {
                 showMessage("Please enter a term name.", undefined, "Error");
                 return;
             }
+
+            display_name = display_name.trim();
 
             var t = new Term({
                 'display_name': display_name,
@@ -377,10 +368,12 @@
                     self.selected.get('term_set').add(t);
                     self.render();
                 },
-                error: function(args) {
-                    var response = args[1];
-                    var responseText = jQuery.parseJSON(response.responseText);
-                    showMessage(responseText.term.error_message, undefined, "Error");
+                error: function(model, response) {
+                    var text =  jQuery.type(response) == 'object' ?
+                        response.responseText : response;
+                    var the_json = jQuery.parseJSON(text);
+                    showMessage(the_json.term.error_message,
+                        undefined, "Error");                    
                 }
             });
             return false;
@@ -389,17 +382,13 @@
             evt.preventDefault();
             var self = this;
             var elt = jQuery(evt.currentTarget).prevAll("input[type='text']");
-            if (jQuery(elt).hasClass("default")) {
+            var display_name = jQuery(elt).val();
+            if (display_name === undefined || display_name.trim().length < 1) {
                 showMessage("Please enter a term name.", undefined, "Error");
                 return;
             }
 
-            var display_name = jQuery(elt).attr("value").trim();
-            if (display_name === undefined || display_name.length < 1) {
-                showMessage("Please enter a term name.", undefined, "Error");
-                return;
-            }
-
+            display_name = display_name.trim();
             var tid = jQuery(evt.currentTarget).data('id');
             var term = this.selected.get("term_set").getByDataId(tid);
 
@@ -409,10 +398,12 @@
                     success: function() {
                         self.render();
                     },
-                    error: function(args) {
-                        var response = args[1];
-                        var responseText = jQuery.parseJSON(response.responseText);
-                        showMessage(responseText.term.error_message, undefined, "Error");
+                    error: function(model, response) {
+                        var text =  jQuery.type(response) == 'object' ?
+                            response.responseText : response;
+                        var the_json = jQuery.parseJSON(text);
+                        showMessage(the_json.term.error_message,
+                            undefined, "Error");                        
                     }
                 });
             }
@@ -452,18 +443,6 @@
                 }
             });
             return false;
-        },
-        focusTermName: function(evt) {
-            if (jQuery(evt.currentTarget).hasClass("default")) {
-                jQuery(evt.currentTarget).removeClass("default");
-                jQuery(evt.currentTarget).attr("value", "");
-            }
-        },
-        blurTermName: function(evt) {
-            if (jQuery(evt.currentTarget).attr("value") === '') {
-                jQuery(evt.currentTarget).addClass("default");
-                jQuery(evt.currentTarget).attr("value", "Type new term name here");
-            }
         },
         createOnomyVocabulary: function(evt) {
             evt.preventDefault();
@@ -557,7 +536,7 @@
                                             'onomy_url': 'child'
                                         });
 
-                                        tempV._save({}, {
+                                        tempV.save({}, {
                                             success: function(it) {
                                                 parents[parents.indexOf(self.findUtil(parents, it.attributes.display_name)[0])].self = it;
                                                 self.collection.add(it);
@@ -578,7 +557,7 @@
                                                             .term_set[z].display_name,
                                                         'vocabulary_id': it.attributes.id
                                                     });
-                                                    tempT._save({}, {
+                                                    tempT.save({}, {
                                                         success: function(itT) {
                                                             parents[
                                                                 parents.indexOf(
@@ -597,7 +576,7 @@
                                                 'display_name': parents[parents.indexOf(self.findUtil(parents, model_search.attributes.display_name)[0])].term_set[z].display_name,
                                                 'vocabulary_id': model_search.attributes.id
                                             });
-                                            tempT._save({}, {
+                                            tempT.save({}, {
                                                 success: function(itT) {
                                                     model_search.get('term_set').add(itT);
                                                     self.render();
@@ -615,7 +594,7 @@
                         if (!_.contains(urls, onomyURL)) {
                             //add it to our array we made and save it in the vocab
                             urls.push(onomyURL);
-                            selectedVocabulary.save({'onomy_url': urls.toString()});
+                            selectedVocabulary.queuedSave({'onomy_url': urls.toString()});
                         }
                         //we create our term if it doesn't already exist
                         if (!selectedVocabulary.hasTerm(display)) {
@@ -623,8 +602,7 @@
                                 'display_name': display,
                                 'vocabulary_id': selectedVocabulary.get('id')
                             });
-                            //then save it with our overriden queued save
-                            t._save({}, {
+                            t.save({}, {
                                 wait: true,
                                 success: function(newTerm) {
                                     //add it to the term set

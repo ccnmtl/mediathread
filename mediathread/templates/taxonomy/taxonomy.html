@@ -10,7 +10,7 @@
         <div class="vocabularies">           
             <ul>
                 <% for (var i=0; i < vocabularies.length; i++) { %>
-                    <li id="vocabulary-wrapper-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
+                    <li class="vocabulary-wrapper" id="vocabulary-wrapper-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
                         <div class="arrow"></div>
                         <div class="vocabulary-display">
                             <a class="display-name" href="#vocabulary-<%=vocabularies[i].id%>">
@@ -54,8 +54,8 @@
                             </a>
                         </div>
                         <div class="vocabulary-create" style="display: none">
-                            <input id="id_display_name" type="text" name="display_name"
-                                maxlength="50" value="Type concept name here" class="default">
+                            <input id="id_display_name" type="text" name="display_name" class="create-vocabulary-name"
+                                maxlength="50" placeholder="Type concept name here">
                             <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
                             <input type="hidden" name="object_id" value="<%=course_id%>"/>
                             <a class="btn-primary create-vocabulary-close" href="#">
@@ -108,7 +108,7 @@
                     <div class="visualclear"></div>
                     <div class="terms">
                         <h3>Terms</h3>
-                            <input type="text" name="term_name" class="left default" value="Type new term name here"/>
+                            <input type="text" name="term_name" class="left" placeholder="Type new term name here"/>
                             <a class="btn-primary create-term-submit left" href="#">
                                 <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
                             </a>
@@ -122,7 +122,7 @@
                                     <div class="term-display">
                                         <h5><%= vocabularies[i].term_set[j].display_name %></h5>
                                     
-                                        <div class="actions">
+                                        <div class="term-actions">
                                             <a class="icon-link edit-term-open" href="#">                                                     
                                                 <img src="{{STATIC_URL}}img/icons/meth_edit.png" class="edit_icon" alt="Edit term"  />
                                             </a>
@@ -155,6 +155,7 @@
                 <div id="new-vocabulary"></div>
             <% } %>
         </div>
+        <div id="loaded"></div>
     </script>
 {% endblock %}
 

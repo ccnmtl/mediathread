@@ -90,7 +90,7 @@ def access_url(step, url):
 def the_name_workspace_is_loaded(step, name):
     workspace_id = None
     if (name == "composition" or name == "assignment" or
-            name == "home" or name == "collection"):
+            name == "home" or name == "collection" or name == 'taxonomy'):
         workspace_id = "loaded"
     elif name == "asset":
         workspace_id = "asset-loaded"

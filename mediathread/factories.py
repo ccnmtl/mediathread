@@ -135,6 +135,11 @@ class ProjectFactory(factory.DjangoModelFactory):
             if parent_collab.policy_record.policy_name == 'Assignment':
                 parent_collab.append_child(self)
 
+    @factory.post_generation
+    def participants(self, create, extracted, **kwargs):
+        if create:
+            self.participants.add(self.author)
+
 
 class CollaborationFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Collaboration

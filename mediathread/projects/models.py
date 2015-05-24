@@ -355,10 +355,6 @@ class Project(models.Model):
 
         return thread
 
-    def save(self, *args, **kwargs):
-        super(Project, self).save(*args, **kwargs)
-        self.participants.add(self.author)
-
     def visibility(self):
         """
         The project's status, one of "draft submitted complete".split()

@@ -116,7 +116,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
                                           password='test'))
 
         data = {u'body': [u'<p>abcdefghi</p>'],
-                u'participants': [self.student_one.id],
+                u'participants': [self.student_one.id, self.student_two.id],
                 u'publish': [u'PrivateEditorsAreOwners'],
                 u'title': [u'Private Student Essay']}
 
@@ -132,6 +132,43 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(the_json["revision"]["visibility"], "Private")
         self.assertIsNone(the_json["revision"]["public_url"])
         self.assertEquals(the_json["revision"]["due_date"], "")
+
+        project = Project.objects.get(id=self.project_private.id)
+        self.assertEquals(project.author, self.student_one)
+        self.assertIn(self.student_one, project.participants.all())
+        self.assertIn(self.student_two, project.participants.all())
+
+    def test_project_save_swap_authors(self):
+        self.assertTrue(self.client.login(username=self.student_one.username,
+                                          password='test'))
+
+        data = {u'body': [u'<p>abcdefghi</p>'],
+                u'participants': [self.student_one.id, self.student_two.id],
+                u'publish': [u'PrivateEditorsAreOwners'],
+                u'title': [u'Private Student Essay']}
+
+        url = '/project/save/%s/' % self.project_private.id
+        response = self.client.post(url, data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        self.assertTrue(self.client.login(username=self.student_two.username,
+                                          password='test'))
+
+        data = {u'body': [u'<p>the body here</p>'],
+                u'participants': [self.student_two.id],
+                u'publish': [u'PrivateEditorsAreOwners'],
+                u'title': [u'Private Student Essay']}
+
+        url = '/project/save/%s/' % self.project_private.id
+        response = self.client.post(url, data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        project = Project.objects.get(id=self.project_private.id)
+        self.assertEquals(project.author, self.student_two)
+        self.assertNotIn(self.student_one, project.participants.all())
+        self.assertIn(self.student_two, project.participants.all())
 
     def test_project_save_invalid_title(self):
         self.assertTrue(self.client.login(username=self.student_one.username,
@@ -155,8 +192,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(self.client.login(username=self.student_one.username,
                                           password='test'))
 
-        data = {u'participants': [self.student_one.id],
-                u'publish': [u'PrivateEditorsAreOwners']}
+        data = {u'title': [u'']}
 
         response = self.client.post('/project/create/', data, follow=True)
         self.assertEquals(response.status_code, 200)
@@ -167,6 +203,8 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
                                       title='Untitled')
         self.assertEquals(project.versions.count(), 1)
         self.assertIsNone(project.submitted_date())
+        self.assertIn(self.student_one, project.participants.all())
+        self.assertEquals(project.author, self.student_one)
 
         data = {u'body': [u'<p>abcdefghi</p>'],
                 u'participants': [self.student_one.id],

@@ -123,7 +123,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then I see a "Red" term
+        There there is a "Red" term
         
     Scenario: taxonomy.feature 6. Duplicate Term
         Using selenium
@@ -143,7 +143,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then I see a "Red" term
+        There there is a "Red" term
         
         # Duplicate term
         When I name a term "Red"
@@ -168,8 +168,8 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then I see a "Red" term
-        
+        Then there is a "Red" term
+
         # Delete the term
         When I click the "Red" term delete icon
         And I confirm the action
@@ -194,12 +194,13 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then I see a "Red" term
+        There there is a "Red" term
 
         # Edit the term
         When I click the "Red" term edit icon
         I rename the "Red" term to "Blue"
         I save the term
+        I wait until the "Red" rename is complete
 
-        Then I see a "Blue" term
+        Then there is a "Blue" term
         Then there is no "Red" term

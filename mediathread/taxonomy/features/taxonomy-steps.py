@@ -120,15 +120,6 @@ def i_click_the_group1_term_delete_icon(step, group1):
     assert False, 'Unable to find the %s term delete icon' % group1
 
 
-@step(u'there is no "([^"]*)" term')
-def there_is_no_group1_term(step, group1):
-    selector = "div.term-display h5"
-    elts = world.browser.find_elements_by_css_selector(selector)
-    for elt in elts:
-        if elt.text == group1:
-            assert False, 'Found the %s term' % group1
-
-
 @step(u'I click the "([^"]*)" term edit icon')
 def i_click_the_group1_term_edit_icon(step, group1):
     selector = "div.term-display h5"
@@ -156,12 +147,34 @@ def i_rename_the_group1_term_to_group2(step, group1, group2):
     assert False, 'Unable to find the %s term' % group1
 
 
+@step(u'I wait until the "([^"]*)" rename is complete')
+def i_wait_until_the_name_rename_is_complete(step1, name):
+    selector = "input[name='term_name'][value='" + name + "']"
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(invisibility_of_element_located((By.CSS_SELECTOR, selector)))        
+
+
 @step(u'I save the term')
 def i_save_the_term(step):
     selector = '.edit-term-submit'
     elt = world.browser.find_element_by_css_selector(selector)
     elt.click()
+    
 
-    selector = "input[name='term_name']"
-    wait = ui.WebDriverWait(world.browser, 5)
-    wait.until(invisibility_of_element_located((By.CSS_SELECTOR, selector)))
+@step(u'There is a "([^"]*)" term')
+def there_is_a_name_term(step1, name):
+    selector = '.term-display h5'
+    for elt in world.browser.find_elements_by_css_selector(selector):
+        if elt.text == name:
+            return  # found
+
+    assert False, "No term [%s] found" % name
+
+
+@step(u'there is no "([^"]*)" term')
+def there_is_no_name_term(step, name):
+    selector = "div.term-display h5"
+    elts = world.browser.find_elements_by_css_selector(selector)
+    for elt in elts:
+        if elt.text == name:
+            assert False, 'Found the %s term' % name

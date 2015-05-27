@@ -151,7 +151,7 @@ def i_rename_the_group1_term_to_group2(step, group1, group2):
 def i_wait_until_the_name_rename_is_complete(step1, name):
     selector = "input[name='term_name'][value='" + name + "']"
     wait = ui.WebDriverWait(world.browser, 5)
-    wait.until(invisibility_of_element_located((By.CSS_SELECTOR, selector)))        
+    wait.until(invisibility_of_element_located((By.CSS_SELECTOR, selector)))
 
 
 @step(u'I save the term')
@@ -159,7 +159,7 @@ def i_save_the_term(step):
     selector = '.edit-term-submit'
     elt = world.browser.find_element_by_css_selector(selector)
     elt.click()
-    
+
 
 @step(u'There is a "([^"]*)" term')
 def there_is_a_name_term(step1, name):

@@ -123,7 +123,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        There there is a "Red" term
+        Then there is a "Red" term
         
     Scenario: taxonomy.feature 6. Duplicate Term
         Using selenium
@@ -143,7 +143,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        There there is a "Red" term
+        Then there is a "Red" term
         
         # Duplicate term
         When I name a term "Red"
@@ -194,7 +194,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        There there is a "Red" term
+        Then there is a "Red" term
 
         # Edit the term
         When I click the "Red" term edit icon

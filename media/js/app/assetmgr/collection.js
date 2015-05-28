@@ -171,12 +171,12 @@ var CollectionList = function (config) {
         return false;
     });
 
-    jQuery(self.el).on('click', "#collection-help-button", function() {
+    jQuery(self.parent).on('click', "#collection-help-button", function() {
         jQuery("#collection-overlay, #collection-help, #collection-help-tab").show();
         return false;
     });
 
-    jQuery(self.el).on('click', ".dismiss-help", function() {
+    jQuery(self.parent).on('click', ".dismiss-help", function() {
         jQuery("#collection-overlay, #collection-help, #collection-help-tab").hide();
         return false;
     });

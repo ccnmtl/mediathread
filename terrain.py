@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+import errno
+import os
+import time
+
 from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
-from mediathread.projects.models import Project
+from lettuce import django
 from selenium.common.exceptions import NoSuchElementException, \
     StaleElementReferenceException
-import errno
-import os
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.expected_conditions import visibility_of_element_located
+
+from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
-import time
-from lettuce import django
+
 
 try:
     from lxml import html
@@ -401,6 +406,9 @@ def there_is_no_help_for_the_title_column(step, title):
 
 @step(u'I\'m told "([^"]*)"')
 def i_m_told_text(step, text):
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.ID, "dialog-confirm")))
+
     dlg = world.browser.find_element_by_id("dialog-confirm")
     assert dlg.text.startswith(text), "Alert text invalid: %s" % dlg.text
 

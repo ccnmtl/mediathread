@@ -576,7 +576,7 @@ var MISC;
                                          self.render();
                                      }
                                  });
-                             } else {
+                             } else if (parents.length > 0) {
                                  //if we find the model in the collection... just add it
                                  for (var z = 0; z < parents[j].term_set.length; z++) {
                                      var term = parents[j].term_set[z].display_name;

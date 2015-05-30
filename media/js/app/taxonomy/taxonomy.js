@@ -578,8 +578,8 @@ var MISC;
                                  });
                              } else if (parents.length > 0) {
                                  //if we find the model in the collection... just add it
-                                 for (var z = 0; z < parents[j].term_set.length; z++) {
-                                     var term = parents[j].term_set[z].display_name;
+                                 for (var q = 0; q < parents[j].term_set.length; q++) {
+                                     var term = parents[j].term_set[q].display_name;
                                      model_search.add(term);
                                  }
                                  self.render();

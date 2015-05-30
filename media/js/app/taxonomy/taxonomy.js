@@ -241,7 +241,7 @@
                     var text =  jQuery.type(response) == 'object' ?
                         response.responseText : response;
                     var the_json = jQuery.parseJSON(text);
-                    showMessage(the_json.vocabulary.error_message,
+                    showMessage(the_json.vocabulary.error_message[0],
                         undefined, "Error");
                 }
             });

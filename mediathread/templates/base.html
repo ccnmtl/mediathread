@@ -311,6 +311,25 @@
 <h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <b>{{STAGING_DEPLOY_TIME}}</b></h4>
 </div>
 {% endif %}
+
+<script src="//cdn.ravenjs.com/1.1.18/jquery,native/raven.min.js"></script>
+<script>
+ Raven.config('https://49021d8321684c2f9fe0fde14fbcdf8a@sentry.ccnmtl.columbia.edu/33', {
+     whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
+ }).install();
+ {% if user.is_anonymous %}
+ Raven.setUserContext({
+     email: 'none',
+     id: 'anonymous'
+ });
+ {% else %}
+ Raven.setUserContext({
+     email: '{{user.email}}',
+     id: '{{user.username}}'
+ });
+ {% endif %}
+</script>
+
 </body>
 {% endwith %}
 </html>

@@ -81,6 +81,7 @@ var MISC;
             if (eventCallback) { eventCallback(arguments); }
             dit.processQueue(); // move onto next save request in the queue
         };
+
     }
 
     Backbone.Model.prototype.queuedSave = function( attrs, options ) {
@@ -472,6 +473,7 @@ var MISC;
             for (var j = 0; j < urls.length; j++) {
                 this.getTheOnomy(urls[j], this.selected);
             }
+
         },
         refreshOnomy: function(evt) {
             var urls = this.selected.getOnomyUrls();
@@ -495,13 +497,8 @@ var MISC;
                     var display = data.terms[i]['rdfs:label'].trim();
 
                     if (typeof pL !== undefined && pL.length > 0) {
-                        var search;
-                        parents.forEach(function(a) {
-                            if (a.display_name == pL) {
-                                search = a;
-                            }
-                        });
-                        if (typeof search === 'undefined' || typeof search === null) {
+                        var search = parents.hasOwnProperty(pL);
+                        if (!search) {
                             /*
                              * create the 'vocabulary' object
                              * the reason for making this a non vocabulary object is you have to dig
@@ -515,11 +512,11 @@ var MISC;
                                 'onomy_url': 'child'
                             };
                             temp.term_set.push({'display_name': display});
-                            parents.push(temp);
+                            parents[temp.display_name] = temp;
                         } else {
                             //add the term to the Vocabulary in parents
                             var index = parents.indexOf(search);
-                            parents[index].term_set.push({'display_name': display});
+                            parents[pL].term_set.push({'display_name': display});
                         }
 
                     } else if (display !== undefined && display.length > 0) {
@@ -528,64 +525,53 @@ var MISC;
                         if (!_.contains(urls, onomyURL)) {
                             //add it to our array we made and save it in the vocab
                             urls.push(onomyURL);
-                            selectedVocabulary.queuedSave({'onomy_url': urls.toString()});
+                            selectedVocabulary.set("onomy_url", urls.toString());
                         }
                         //we create our term if it doesn't already exist
                         if (!selectedVocabulary.hasTerm(display)) {
-                            var t = new Term({
-                                'display_name': display,
-                                'vocabulary_id': selectedVocabulary.get('id')
-                            });
-                            t.save({}, {
-                                wait: true,
-                                success: function(newTerm) {
-                                    //add it to the term set
-                                    selectedVocabulary.get('term_set').add(newTerm);
-                                    self.render();
-                                }
-                            });
+                            selectedVocabulary.addTerm(display);
                         }
                     }
-                    //once we get to last iteration we save it all
-                     if (i == MAX - 1) {
-                         //loop over the array.
-                         for (var j = 0; j < parents.length; j++) {
+                }
+                selectedVocabulary.save();
+                //loop over the array.
+                for (var key in parents){
+                    if (!parents.hasOwnProperty(key))
+                    {
+                        continue;
+                    }
+                    var model_search = _.find(self.collection.models, function (model) {
+                        return parents.hasOwnProperty(model.attributes.display_name);
+                    });
+                    if (model_search === undefined) {
+                        // if we cant find the vocab in the collection we create a new one.
+                        var vocab = new Vocabulary({
+                            'display_name': key,
+                            'content_type_id': self.context.content_type_id,
+                            'object_id': self.context.course_id,
+                            'term_set': new TermList(),
+                            'onomy_url': 'child',
+                            'self': undefined
+                        });
 
-                             var model_search = _.find(self.collection.models, function (model) {
-                                 return model.attributes.display_name == parents[j].display_name;
-                             });
+                        for (var z = 0; z < parents[key].term_set.length; z++) {
+                            vocab.addTerm(parents[key].term_set[z].display_name);
+                        }
 
-                             if (model_search === undefined) {
-                                 // if we cant find the vocab in the collection we create a new one.
-                                 var vocab = new Vocabulary({
-                                     'display_name': parents[j].display_name,
-                                     'content_type_id': self.context.content_type_id,
-                                     'object_id': self.context.course_id,
-                                     'term_set': new TermList(),
-                                     'onomy_url': 'child',
-                                     'self': undefined
-                                 });
-
-                                 for (var z = 0; z < parents[j].term_set.length; z++) {
-                                     vocab.addTerm(parents[j].term_set[z].display_name);
-                                 }
-
-                                 vocab.save({}, {
-                                     success: function (it) {
-                                         self.collection.add(it);
-                                         self.render();
-                                     }
-                                 });
-                             } else if (parents.length > 0) {
-                                 //if we find the model in the collection... just add it
-                                 for (var q = 0; q < parents[j].term_set.length; q++) {
-                                     var term = parents[j].term_set[q].display_name;
-                                     model_search.add(term);
-                                 }
-                                 self.render();
-                             }
-                         }
-                     }
+                        vocab.save({}, {
+                            success: function (it) {
+                                self.collection.add(it);
+                                self.render();
+                            }
+                        });
+                    } else if ( _.size(parents) > 0) {
+                        //if we find the model in the collection... just add it
+                        for (var q = 0; q < parents[key].term_set.length; q++) {
+                            var term = parents[key].term_set[q].display_name;
+                            model_search.add(term);
+                        }
+                        self.render();
+                    }
                 }
             });
         }

@@ -1,3 +1,5 @@
+import json
+
 from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -9,18 +11,19 @@ from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
+
+from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote
-from mediathread.api import CourseResource
 from mediathread.mixins import ajax_required, LoggedInMixin, \
-    RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin
+    RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin, \
+    LoggedInFacultyMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-import json
 
 
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
@@ -500,3 +503,20 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         ctx['compositions'] = len(projects) > 0 or len(assignments) > 0
 
         return self.render_to_json_response(ctx)
+
+
+class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
+                      JSONResponseMixin, View):
+    '''
+    An ajax-only request to update project ordinality. Used by instructors
+    to tune the "From Your Instructor" list on the homepage
+    '''
+    def post(self, request):
+        ids = request.POST.getlist("project")
+        for idx, project_id in enumerate(ids):
+            project = Project.objects.get(id=project_id)
+            if idx != project.ordinality:
+                project.ordinality = idx
+                project.save()
+
+        return self.render_to_json_response({'sorted': 'true'})

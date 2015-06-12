@@ -38,7 +38,7 @@
 
             if (this.update_history) {
                 // setup url rewriting for HTML5 && HTML4 browsers
-                jQuery(window).bind('popstate', function(event) {
+                jQuery(window).on('popstate', function(event) {
                     if (event.originalEvent.state) {
                         window.annotationList
                               ._update(
@@ -50,7 +50,7 @@
                     }
                 });
 
-                jQuery(window).bind('hashchange', function() {
+                jQuery(window).on('hashchange', function() {
                     var asset_id = null;
                     var annotation_id = null;
                     var xywh = null;

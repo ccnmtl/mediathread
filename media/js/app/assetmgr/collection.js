@@ -34,7 +34,7 @@ var CollectionList = function (config) {
 
     self.switcher_context = {};
 
-    jQuery(window).bind('asset.on_delete', { 'self': self }, function (event) {
+    jQuery(window).on('asset.on_delete', { 'self': self }, function (event) {
         var self = event.data.self;
         var div = jQuery(self.el).find("div.collection-assets");
         if (!self.citable && div.length > 0) {
@@ -42,19 +42,19 @@ var CollectionList = function (config) {
             event.data.self.refresh();
         }
     });
-    jQuery(window).bind('annotation.on_create', { 'self': self }, function (event) {
+    jQuery(window).on('annotation.on_create', { 'self': self }, function (event) {
         var self = event.data.self;
         self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
         event.data.self.refresh();
     });
-    jQuery(window).bind('annotation.on_delete', { 'self': self }, function (event) {
+    jQuery(window).on('annotation.on_delete', { 'self': self }, function (event) {
         var self = event.data.self;
         if (!self.citable) {
             self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
             event.data.self.refresh();
         }
     });
-    jQuery(window).bind('annotation.on_save', { 'self': self }, function (event) {
+    jQuery(window).on('annotation.on_save', { 'self': self }, function (event) {
         var self = event.data.self;
         self.scrollTop = jQuery(self.el).find("div.collection-assets").scrollTop();
         event.data.self.refresh();
@@ -482,7 +482,7 @@ CollectionList.prototype.updateSwitcher = function () {
     Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
 
     // hook up switcher choice owner behavior
-    jQuery(self.el).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
+    jQuery(self.el).find("a.switcher-choice.owner").off('click').on('click', function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
         var username = bits[bits.length - 1];

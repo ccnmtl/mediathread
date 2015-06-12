@@ -18,7 +18,7 @@ var ProjectList = function (config) {
         }
     });
 
-    jQuery(window).bind('projectlist.refresh', { 'self': self }, function (event) {
+    jQuery(window).on('projectlist.refresh', { 'self': self }, function (event) {
         var self = event.data.self;
         self.refresh(config);
     });
@@ -71,9 +71,9 @@ ProjectList.prototype.refresh = function (config) {
         url = MediaThread.urls['your-projects'](config.space_owner);
     }
 
-    jQuery("a.linkRespond").unbind("click");
-    jQuery("a.btnRespond").unbind("click");
-    jQuery("a.btnDeleteResponse").unbind("click");
+    jQuery("a.linkRespond").off("click");
+    jQuery("a.btnRespond").off("click");
+    jQuery("a.btnDeleteResponse").off("click");
 
     jQuery.ajax({
         url: url,
@@ -82,16 +82,16 @@ ProjectList.prototype.refresh = function (config) {
         success: function (the_records) {
             self.update(the_records);
 
-            jQuery("a.btnRespond").bind("click", function (evt) {
+            jQuery("a.btnRespond").on("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
 
-            jQuery("a.linkRespond").bind("click", function (evt) {
+            jQuery("a.linkRespond").on("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
 
 
-            jQuery("a.btnDeleteResponse").bind("click", function (evt) {
+            jQuery("a.btnDeleteResponse").on("click", function (evt) {
                 self.deleteAssignmentResponse(evt);
             });
         }
@@ -132,8 +132,9 @@ ProjectList.prototype.getSpaceUrl = function (active_tag, active_modified) {
 
 ProjectList.prototype.updateSwitcher = function () {
     // hook up switcher choice owner behavior
+
     var self = this;
-    jQuery(this.parent).find('a.switcher-choice.owner').unbind('click').click(function (evt) {
+    jQuery(self.parent).find("a.switcher-choice.owner").off('click').on('click', function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
         var username = bits[bits.length - 1];

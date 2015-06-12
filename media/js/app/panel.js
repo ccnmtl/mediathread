@@ -101,20 +101,16 @@
                     // enable open/close controls on subpanel
                     jQuery(newCell)
                         .find(".pantab-container")
-                        .bind(
-                            'click',
+                        .on('click',
                             {handler: handler, isSubpanel: true},
-                            slidePanelCallback
-                        );
+                            slidePanelCallback);
 
                     // enable open/close controls on parent panels
                     jQuery(newCell)
                         .next(".pantab-container")
-                        .bind(
-                            'click',
+                        .on('click',
                             {handler: handler, isSubpanel: false},
-                            slidePanelCallback
-                        );
+                            slidePanelCallback);
 
                     // @todo -- update history to reflect this new view
 

@@ -1,5 +1,6 @@
+/* global jQuery: true */
 /* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
-/* global Mustache: true, showMessage: true */
+/* global Mustache2: true, showMessage: true */
 
 var ProjectList = function (config) {
     var self = this;
@@ -12,7 +13,7 @@ var ProjectList = function (config) {
         dataType: 'text',
         cache: false, // Chrome && Internet Explorer has aggressive caching policies.
         success: function (text) {
-            MediaThread.templates[config.template] = Mustache.template(config.template, text);
+            MediaThread.templates[config.template] = text;
             self.refresh(config);
         }
     });
@@ -130,11 +131,9 @@ ProjectList.prototype.getSpaceUrl = function (active_tag, active_modified) {
 };
 
 ProjectList.prototype.updateSwitcher = function () {
-    var self = this;
-    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items;
-    Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
-
     // hook up switcher choice owner behavior
+
+    var self = this;
     jQuery(self.parent).find("a.switcher-choice.owner").off('click').on('click', function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
@@ -177,13 +176,14 @@ ProjectList.prototype.update = function (the_records) {
         the_records.active_filter_count = n;
     }
 
-    Mustache.update(self.template_label, the_records, {
-        parent: self.parent,
-        pre: function (elt) { jQuery(elt).hide(); },
-        post: function (elt) {
-            self.updateSwitcher();
+    self.switcher_context.display_switcher_extras =
+        !self.switcher_context.showing_my_items;
+    the_records.switcher_collection_chooser = self.switcher_context;
+    var rendered = Mustache2.render(MediaThread.templates.homepage,
+                                    the_records);
+    var $el = jQuery('#classwork_table');
+    $el.html(rendered).hide().fadeIn('slow');
 
-            jQuery(elt).fadeIn("slow");
-        }
-    });
+    self.parent = $el;
+    self.updateSwitcher();
 };

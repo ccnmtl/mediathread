@@ -401,3 +401,51 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.context['project'], self.project_private)
         self.assertEquals(response.context['space_owner'], 'student_two')
         self.assertFalse(response.context['show_feedback'])
+
+
+class TestProjectSortView(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+    def test_basics(self):
+        c = self.client
+        url = reverse('project-sort')
+
+        # anonymous
+        response = c.post(url, {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 302)
+
+        # student
+        c.login(username=self.student_one.username, password='test')
+        response = c.post(url, {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 403)
+
+        # instructor, but no ajax
+        c.login(username=self.instructor_one.username, password='test')
+        response = c.post(url, {})
+        self.assertEquals(response.status_code, 405)
+
+    def test_sort(self):
+        url = reverse('project-sort')
+        c = self.client
+        c.login(username=self.instructor_one.username, password='test')
+
+        project1 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', ordinality=0)
+        project2 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', ordinality=1)
+
+        data = {'project': [project2.id, project1.id]}
+
+        response = c.post(url, data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+        # ordinality should be reversed
+        project = Project.objects.get(id=project1.id)
+        self.assertEquals(project.ordinality, 1)
+
+        project = Project.objects.get(id=project2.id)
+        self.assertEquals(project.ordinality, 0)

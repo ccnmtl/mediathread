@@ -26,6 +26,8 @@ Feature: Taxonomy
         And I see "Terms"
         And I see "Type new term name here"
         
+        Finished using Selenium
+        
     Scenario: taxonomy.feature 2. Duplicate Taxonomy
         Using selenium
         Given I am test_instructor in Sample Course
@@ -47,6 +49,8 @@ Feature: Taxonomy
         I create the concept
         
         I'm told "A Colors concept exists. Please choose another name"
+        
+        Finished using Selenium
         
     Scenario: taxonomy.feature 3. Delete Taxonomy
         Using selenium
@@ -71,6 +75,8 @@ Feature: Taxonomy
         And I confirm the action
         
         Then there is not a "Colors" link
+        
+        Finished using Selenium
         
     Scenario: taxonomy.feature 4. Edit Taxonomy
         Using selenium
@@ -104,6 +110,8 @@ Feature: Taxonomy
         And I see "Shapes Concept"
         And I see "Terms"
         And I see "Type new term name here"
+        
+        Finished using Selenium
 
     Scenario: taxonomy.feature 5. Create Term
         Using selenium
@@ -124,6 +132,8 @@ Feature: Taxonomy
         When I name a term "Red"
         And create the term
         Then there is a "Red" term
+        
+        Finished using Selenium
         
     Scenario: taxonomy.feature 6. Duplicate Term
         Using selenium
@@ -150,6 +160,8 @@ Feature: Taxonomy
         And create the term
         Then I'm told "Red term already exists. Please choose a new name"
         
+        Finished using Selenium
+        
     Scenario: taxonomy.feature 7. Delete Term
         Using selenium
         Given I am test_instructor in Sample Course
@@ -174,6 +186,8 @@ Feature: Taxonomy
         When I click the "Red" term delete icon
         And I confirm the action
         Then there is no "Red" term
+        
+        Finished using Selenium
         
                  
     Scenario: taxonomy.feature 8. Edit Term
@@ -204,3 +218,39 @@ Feature: Taxonomy
 
         Then there is a "Blue" term
         Then there is no "Red" term
+        
+        Finished using Selenium
+        
+    Scenario: taxonomy.feature 9. Create from onomy
+        Using selenium
+        Given I am test_instructor in Sample Course
+        
+        # shortcut to taxonomy
+        When I access the url "/taxonomy/"
+        Given the taxonomy workspace is loaded
+        I see "Create Concept"
+        
+        # Create a taxonomy
+        When I create a new concept
+        I name the concept "Colors"
+        I create the concept
+        Then there is a "Colors" link
+        
+        When I click the Import button
+        And specify the onomy url
+        And confirm the onomy import
+
+        Then there is a "Black" term
+        Then there is a "Blue" term
+        Then there is a "Green" term
+        Then there is a "Pastels" term
+        Then there is a "Purple" term
+        Then there is a "Red" term
+        
+        Then there is a "Pastels" link
+        When I click the "Pastels" link
+        Then there is a "Light Blue" term
+        Then there is a "Light Green" term
+        Then there is a "Pink" term
+        
+        Finished using Selenium

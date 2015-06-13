@@ -1,8 +1,9 @@
-from lettuce import world, step
+from lettuce import django, step, world
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import \
     invisibility_of_element_located
+
 import selenium.webdriver.support.ui as ui
-from selenium.webdriver.common.by import By
 
 
 @step(u'I create the concept')
@@ -178,3 +179,17 @@ def there_is_no_name_term(step, name):
     for elt in elts:
         if elt.text == name:
             assert False, 'Found the %s term' % name
+
+
+@step(u'specify the onomy url')
+def specify_the_onomy_url(step):
+    url = django.django_url('/media/onomy/test.json')
+    elt = world.browser.find_element_by_id('onomy_url')
+    elt.send_keys(url)
+
+
+@step(u'confirm the onomy import')
+def confirm_the_onomy_import(step):
+    selector = 'a.import-vocabulary-submit'
+    elt = world.browser.find_element_by_css_selector(selector)
+    elt.click()

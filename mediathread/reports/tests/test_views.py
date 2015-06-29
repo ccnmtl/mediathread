@@ -54,6 +54,11 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.add_citation(self.project, whole_item_annotation)
         self.add_citation(self.project, real_annotation)
 
+    def test_class_assignments_report_logged_out(self):
+        url = reverse('class-assignment-report', args=[self.assignment1.id])
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 403)
+
     def test_class_assignment_report(self):
         url = reverse('class-assignment-report', args=[self.assignment1.id])
 

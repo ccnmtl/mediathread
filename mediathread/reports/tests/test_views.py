@@ -1,12 +1,15 @@
 from json import loads
 
 from django.core.urlresolvers import reverse
+from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, ProjectFactory, \
     UserFactory, AssetFactory, SherdNoteFactory, RegistrationProfileFactory, \
     UserProfileFactory
+from mediathread.reports.views import AssignmentDetailReport
+from mediathread.taxonomy.models import Term
 
 
 class ReportViewTest(MediathreadTestMixin, TestCase):
@@ -233,3 +236,114 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         self.assertTrue(header in response.content)
         self.assertTrue(data in response.content)
+
+
+class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+        self.assignment1 = ProjectFactory.create(
+            title='Alpha', course=self.sample_course,
+            author=self.instructor_one, policy='Assignment')
+
+        self.response1 = ProjectFactory.create(
+            title="Response 1",
+            course=self.sample_course, author=self.student_one,
+            policy='InstructorShared', parent=self.assignment1)
+
+        self.asset = AssetFactory(course=self.sample_course)
+        SherdNote.objects.global_annotation(
+            self.asset, self.student_one, auto_create=True)
+        self.student_one_selection1 = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            tags=',student_one_selection',
+            title="Selection", range1=116.25, range2=6.75)
+        self.student_one_selection2 = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            title="Selection", range1=116.25, range2=6.75)
+        self.student_two_selection = SherdNoteFactory(
+            asset=self.asset, author=self.student_two,
+            title="Selection", range1=16.25, range2=2.75)
+
+        self.add_citation(self.response1, self.student_one_selection1)
+        self.add_citation(self.response1, self.student_two_selection)
+
+    def test_citation_analysis(self):
+        view = AssignmentDetailReport()
+        items, selections = view.citation_analysis(self.response1.citations())
+        self.assertEquals(items[0], self.asset)
+        self.assertTrue(self.student_one_selection1 in selections)
+        self.assertTrue(self.student_two_selection in selections)
+
+    def test_tag_usage(self):
+        selections = SherdNote.objects.filter(author=self.student_one)
+        view = AssignmentDetailReport()
+
+        self.assertAlmostEquals(view.tag_usage(selections), 33.33, 2)
+
+    def test_vocab_usage(self):
+        taxonomy = {'Colors': ['Red', 'Blue', 'Green']}
+        self.create_vocabularies(self.sample_course, taxonomy)
+
+        term = Term.objects.get(name='red')
+        self.create_term_relationship(self.student_one_selection1, term)
+
+        selections = SherdNote.objects.filter(author=self.student_one)
+        view = AssignmentDetailReport()
+        view.request = RequestFactory().get('/')
+        view.request.course = self.sample_course
+
+        self.assertAlmostEquals(view.vocabulary_usage(selections), 33.33, 2)
+
+    def test_percent_used(self):
+        selections = SherdNote.objects.filter(author=self.student_one)
+        view = AssignmentDetailReport()
+
+        self.assertEquals(view.percent_used(selections, 0), 0.0)
+        self.assertEquals(view.percent_used(selections, 3), 100.0)
+
+    def test_report_rows(self):
+        view = AssignmentDetailReport()
+        view.request = RequestFactory().get('/')
+        view.request.course = self.sample_course
+
+        responses = self.assignment1.responses(self.sample_course,
+                                               self.instructor_one)
+        rows = view.get_report_rows(responses)
+
+        rows.next()  # header
+        row = rows.next()
+        self.assertEquals(row[0], 'Student One')
+        self.assertEquals(row[1], 'student_one')
+        self.assertEquals(row[2], 'Response 1')
+        self.assertEquals(row[3], 'Submitted to Instructor')
+        self.assertIsNone(row[4])
+        # row[5] modified date
+        self.assertFalse(row[6])
+        self.assertEquals(row[7], 2)  # selections
+        self.assertEquals(row[8], 1)  # items
+        self.assertEquals(row[9], 1)  # author selections
+        self.assertEquals(row[10], 1)  # author items
+        self.assertAlmostEqual(row[11], 33.33, 2)  # % author selections used
+        self.assertAlmostEqual(row[12], 100.00)  # tag usage
+        self.assertEquals(row[13], 0.0)  # vocab usage
+        self.assertEquals(row[14], 3)  # all author selections
+        self.assertEquals(row[15], 1)  # author collection
+
+        with self.assertRaises(StopIteration):
+            rows.next()
+
+    def test_view(self):
+        url = reverse('assignment-detail-report', args=[self.assignment1.id])
+
+        # as student
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 403)
+
+        # as instructor
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)

@@ -378,3 +378,16 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.assertEquals(notes.count(), 2)
         self.assertEquals(notes[0], self.student_two_note)
         self.assertEquals(notes[1], self.instructor_one_note)
+
+    def test_get_related_assets(self):
+        asset2 = AssetFactory(course=self.sample_course,
+                              author=self.student_one)
+        note2 = SherdNoteFactory(asset=asset2, author=self.student_one)
+
+        ids = [self.student_one_ga.id, self.student_one_note.id, note2.id]
+        notes = SherdNote.objects.filter(id__in=ids)
+
+        assets = notes.get_related_assets()
+        self.assertEquals(assets.count(), 2)
+        self.assertTrue(self.asset in assets)
+        self.assertTrue(asset2 in assets)

@@ -118,7 +118,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
         return self.filter(Q(added__range=[startdate, enddate]) |
                            Q(modified__range=[startdate, enddate]))
 
-    def get_related_notes(self, assets, record_owner, visible_authors=[],
+    def get_related_notes(self, assets, record_owner, visible_authors=None,
                           all_items_are_visible=False,
                           tag_string=None, modified=None, vocabulary=None):
 
@@ -130,7 +130,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
             # only return author's selections
             self = self.exclude(~Q(author=record_owner))
 
-        if len(visible_authors) > 0:
+        if visible_authors is not None and len(visible_authors) > 0:
             if not all_items_are_visible:
                 # only return notes that are authored by certain people
                 self = self.filter(author__id__in=visible_authors)
@@ -173,7 +173,7 @@ class SherdNoteManager(models.Manager):
     def filter_by_vocabulary(self, vocabulary):
         return self.get_query_set().filter_by_vocabulary(vocabulary)
 
-    def get_related_notes(self, assets, record_owner, visible_authors=[],
+    def get_related_notes(self, assets, record_owner, visible_authors=None,
                           all_items_are_visible=False,
                           tag_string=None, modified=None, vocabulary=None):
         return self.get_query_set().get_related_notes(

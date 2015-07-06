@@ -38,7 +38,7 @@ requirements/src/django-threadedcomments-0.9.1ccnmtl.tar.gz
 django-courseaffils==2.0.1
 django-statsd-mozilla==0.3.14
 raven==5.2.0
-django-appconf==0.6  # django_compressor
+django-appconf==1.0.1  # django_compressor
 django-compressor==1.5
 django-jenkins==0.17.0
 django-stagingcontext==0.1.0

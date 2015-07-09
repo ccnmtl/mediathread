@@ -88,6 +88,7 @@
                     // The last column is reserved for a placeholder td that eats space
                     // and makes the sliding UI work nicely
                     var lastCell = jQuery("#" + self.options.container + " tr:first td:last");
+                    console.log('panel', panel);
                     lastCell.before(Mustache2.render(MediaThread.templates[panel.template], panel));
 
                     var newCell = jQuery(lastCell).prev().prev()[0];

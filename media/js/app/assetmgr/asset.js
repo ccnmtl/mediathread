@@ -1,15 +1,36 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
-/* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
+/* global DjangoSherd_Colors: true, MediaThread: true, Mustache2: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
-/* global updateUserSetting: true */ 
+/* global updateUserSetting: true */
 
 (function() {
     var AnnotationList = function() {
         var self = this;
 
+        /**
+         * Load a Mustache template from the /media/templates/
+         * directory and put it in the MediaThread.templates
+         * dictionary.
+         */
+        var loadTemplate = function(templateName) {
+            jQuery.ajax({
+                url: '/media/templates/' + templateName +
+                    '.mustache?nocache=v2',
+                dataType: 'text',
+                // Load this synchronously to make sure the template is
+                // available when it's needed.
+                async: false,
+                cache: false,
+                success: function (text) {
+                    MediaThread.templates[templateName] = text;
+                }
+            });
+        };
+
         this.init = function(config) {
             this.layers = {}; //should we really store layers here?
-
+            loadTemplate('asset_view_help');
+            loadTemplate('asset_view_details');
             this.active_annotation = null;
             this.active_asset = null;
             this.vocabulary = config.vocabulary;
@@ -337,12 +358,12 @@
                     jQuery('.accordion').accordion(options);
                     jQuery('.accordion').accordion({
                         'activate': self.showAnnotation});
-                    
+
                     if (self.active_annotation) {
                         var active = jQuery('#accordion-' +
                             self.active_annotation.id)[0];
                         var parent = jQuery(active).parents('.accordion');
-                        
+
                         var idx = jQuery(parent).find('h3').index(active);
                         jQuery(parent).accordion('option', 'active', idx);
                         jQuery(active)
@@ -601,12 +622,14 @@
                         jQuery(saveButton).removeClass('saving');
                         jQuery(saveButton).attr('value', 'Save');
 
+                        console.log('update asset-current 2', self.active_asset.title);
                         var context = {
                             'asset-current': self.active_asset,
                             'vocabulary': self.vocabulary
                         };
 
-                        Mustache.update('asset-view-header', context);
+                        jQuery('.asset-view-title').text(
+                            context['asset-current'].title);
 
                         Mustache.update('asset-global-annotation', context, {
                             pre: function(elt) { jQuery(elt).hide(); },
@@ -648,13 +671,13 @@
                                 .parents('li.annotation-group')[0];
                 jQuery(group).siblings().find('.accordion')
                     .accordion('option', 'active', false);
-                
+
                 setTimeout(function() {
                     var list = jQuery(ui.newHeader).offsetParent()[0];
                     jQuery(list).scrollTop(jQuery(list)
                         .scrollTop() + jQuery(ui.newHeader)
                             .position().top - 10);
-                }, 200);                
+                }, 200);
             }
         };
 
@@ -1064,72 +1087,81 @@
             context.show_help_checked = !self.user_settings
               .help_item_detail_view;
 
-            Mustache.update(template_label, context, {
-                pre: function(elt) { jQuery(elt).hide(); },
-                post: function(elt) {
-                    var i;
-                    self.edit_state = null;
+            var $elt = jQuery('#asset-workspace-panel-container>div');
+            console.log('label', template_label);
+            //var rendered = Mustache2.render(
+            //    MediaThread.templates.asset_workspace, context);
+            //$elt.html(rendered);
 
-                    djangosherd.assetview.clipform.html
-                        .push('clipform-display', {
-                            asset: {}
-                        });
+            self.edit_state = null;
 
-                    Mustache.update('asset-view-help', context);
-                    Mustache.update('asset-view-header', context);
-                    Mustache.update('asset-global-annotation', context);
+            djangosherd.assetview.clipform.html
+                .push('clipform-display', {
+                    asset: {}
+                });
+            var rendered;
 
-                    if (template_label === 'asset-view-details') {
-                        Mustache.update('asset-sources', context);
+            //Mustache.update('asset-view-details', context);
+            //Mustache.update('asset-view-help', context);
+            var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
+            console.log('ctx', context);
+            rendered = Mustache2.render(tpl, context);
+            if (template_label === 'asset-view-details') {
+                jQuery('#asset-view-details').html(rendered);
+            } else {
+                console.error('Didn\'t attach template');
+            }
+            rendered = Mustache2.render(MediaThread.templates.asset_view_help,
+                                        context);
+            jQuery('#asset-view-help').html(rendered);
+            jQuery('.asset-view-title').text(context['asset-current'].title);
+            //Mustache.update('asset-global-annotation', context);
+
+            if (self.active_annotation) {
+                djangosherd.assetview
+                    .setState(self.active_annotation.annotation);
+            } else if (self.xywh) {
+                djangosherd.assetview.setState(self.xywh);
+            } else {
+                // #default initialization. no annotation defined.
+                djangosherd.assetview.setState();
+            }
+
+            self._initTags();
+            self._initConcepts();
+            self._initReferences();
+
+            $elt.fadeIn('slow', function() {
+                if (self.active_annotation) {
+                    djangosherd.assetview.clipform
+                        .setState(
+                            self.active_annotation.annotation,
+                            {
+                                'mode': context.annotation.editing ?
+                                    'edit' : 'browse',
+                                'tool_play': jQuery(
+                                    '#annotation-body-' +
+                                        self.active_annotation.id +
+                                        ' input.videoplay')[0]
+                            });
+                } else if (self.xywh) {
+                    if (djangosherd.assetview.clipform) {
+                        djangosherd.assetview.clipform.setState(
+                            self.xywh, {'mode': 'create'});
                     }
-
-                    if (self.active_annotation) {
-                        djangosherd.assetview
-                            .setState(self.active_annotation.annotation);
-                    } else if (self.xywh) {
-                        djangosherd.assetview.setState(self.xywh);
-                    } else {
-                        // #default initialization. no annotation defined.
-                        djangosherd.assetview.setState();
-                    }
-
-                    self._initTags();
-                    self._initConcepts();
-                    self._initReferences();
-
-                    jQuery(elt).fadeIn('slow', function() {
-                        if (self.active_annotation) {
-                            djangosherd.assetview.clipform
-                                .setState(
-                                    self.active_annotation.annotation,
-                                    {
-                                        'mode': context.annotation.editing ?
-                                            'edit' : 'browse',
-                                        'tool_play': jQuery(
-                                            '#annotation-body-' +
-                                                self.active_annotation.id +
-                                                ' input.videoplay')[0]
-                                    });
-                        } else if (self.xywh) {
-                            if (djangosherd.assetview.clipform) {
-                                djangosherd.assetview.clipform.setState(
-                                    self.xywh, {'mode': 'create'});
-                            }
-                        } else {
-                            // #default initialization. no annotation defined.
-                            djangosherd.assetview.clipform
-                               .setState(
-                                   {'start': 0, 'end': 0},
-                                   {
-                                       'mode': context.annotation &&
-                                           context.annotation.editing ?
-                                           'create' : 'browse'
-                                   });
-                        }
-                        if (self.view_callback) {
-                            self.view_callback();
-                        }
-                    });
+                } else {
+                    // #default initialization. no annotation defined.
+                    djangosherd.assetview.clipform
+                        .setState(
+                            {'start': 0, 'end': 0},
+                            {
+                                'mode': context.annotation &&
+                                    context.annotation.editing ?
+                                    'create' : 'browse'
+                            });
+                }
+                if (self.view_callback) {
+                    self.view_callback();
                 }
             });
         };

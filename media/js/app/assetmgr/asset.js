@@ -681,7 +681,7 @@
 
                 var new_annotation_id = jQuery(ui.newHeader).data('id');
                 self._update({'annotation_id': new_annotation_id},
-                             'annotation-current');
+                             'asset-annotation-current');
                 self._addHistory(/*replace=*/false);
 
                 var group = jQuery(ui.newHeader)
@@ -726,7 +726,7 @@
                     {
                         'annotation_id': annotation_id,
                         'editing': false
-                    }, 'annotation-current');
+                    }, 'asset-annotation-current');
 
                 if (self.active_annotation) {
                     var active = jQuery('#accordion-' +
@@ -800,7 +800,7 @@
                             'annotation_id': self.active_annotation.id,
                             'editing': true
                         },
-                        'annotation-current');
+                        'asset-annotation-current');
                     jQuery(window).trigger('resize');
                 });
             return false;
@@ -1120,7 +1120,7 @@
                 rendered = Mustache2.render(
                     MediaThread.templates.asset_sources, context);
                 jQuery('#asset-sources').html(rendered);
-            } else if (template_label === 'annotation-current') {
+            } else if (template_label === 'asset-annotation-current') {
                 jQuery('#annotation-current').html(rendered);
             } else {
                 console.error('Didn\'t attach template for:', template_label);

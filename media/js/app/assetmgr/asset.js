@@ -27,19 +27,27 @@
             });
         };
 
-        this.init = function(config) {
-            this.layers = {}; //should we really store layers here?
+        /**
+         * Load all the asset-related templates.
+         */
+        var loadTemplates = function() {
             var templates = [
                 'asset_view_help',
                 'asset_view_details',
                 'asset_references',
                 'asset_annotation_list',
-                'asset_annotation_current'
+                'asset_annotation_current',
+                'asset_global_annotation'
             ];
             for (var i = 0; i < templates.length; i++) {
                 loadTemplate(templates[i]);
             }
+        };
 
+        this.init = function(config) {
+            loadTemplates();
+
+            this.layers = {}; //should we really store layers here?
             this.active_annotation = null;
             this.active_asset = null;
             this.vocabulary = config.vocabulary;
@@ -345,7 +353,6 @@
                 'category': cats[context.annotation_list[k]]};
             }
 
-            console.log('update annotation-list');
             var $elt = jQuery('#asset-details-annotations-list');
             $elt.hide();
             jQuery('.accordion').accordion('destroy');
@@ -630,7 +637,6 @@
                         jQuery(saveButton).removeClass('saving');
                         jQuery(saveButton).attr('value', 'Save');
 
-                        console.log('update asset-current 2', self.active_asset.title);
                         var context = {
                             'asset-current': self.active_asset,
                             'vocabulary': self.vocabulary
@@ -639,23 +645,24 @@
                         jQuery('.asset-view-title').text(
                             context['asset-current'].title);
 
-                        console.log('update asset-global-annotation');
-                        Mustache.update('asset-global-annotation', context, {
-                            pre: function(elt) { jQuery(elt).hide(); },
-                            post: function(elt) {
-                                jQuery(elt).fadeIn('slow', function() {
-                                    jQuery('#annotations-organized-container' +
-                                           ', #annotation-current')
-                                    .fadeIn()
-                                    .promise()
-                                    .done(function() {
-                                        self._initTags();
-                                        self._initConcepts();
-                                        self._initReferences();
-                                        jQuery(window).trigger('resize');
-                                    });
+                        var $elt = jQuery('#asset-global-annotation');
+                        $elt.hide();
+                        rendered = Mustache2.render(
+                            MediaThread.templates.asset_global_annotation,
+                            context);
+                        $elt.html(rendered);
+
+                        $elt.fadeIn('slow', function() {
+                            jQuery('#annotations-organized-container' +
+                                   ', #annotation-current')
+                                .fadeIn()
+                                .promise()
+                                .done(function() {
+                                    self._initTags();
+                                    self._initConcepts();
+                                    self._initReferences();
+                                    jQuery(window).trigger('resize');
                                 });
-                            }
                         });
                     });
                 }
@@ -1097,12 +1104,6 @@
             context.show_help_checked = !self.user_settings
               .help_item_detail_view;
 
-            var $elt = jQuery('#asset-workspace-panel-container>div');
-            console.log('label', template_label);
-            //var rendered = Mustache2.render(
-            //    MediaThread.templates.asset_workspace, context);
-            //$elt.html(rendered);
-
             self.edit_state = null;
 
             djangosherd.assetview.clipform.html
@@ -1111,8 +1112,6 @@
                 });
             var rendered;
 
-            //Mustache.update('asset-view-details', context);
-            //Mustache.update('asset-view-help', context);
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
             console.log('ctx', context);
             rendered = Mustache2.render(tpl, context);
@@ -1128,7 +1127,11 @@
                                         context);
             jQuery('#asset-view-help').html(rendered);
             jQuery('.asset-view-title').text(context['asset-current'].title);
-            //Mustache.update('asset-global-annotation', context);
+
+            rendered = Mustache2.render(
+                MediaThread.templates.asset_global_annotation,
+                context);
+            jQuery('#asset-global-annotation').html(rendered);
 
             if (self.active_annotation) {
                 djangosherd.assetview
@@ -1144,6 +1147,7 @@
             self._initConcepts();
             self._initReferences();
 
+            var $elt = jQuery('#asset-workspace-panel-container>div');
             $elt.fadeIn('slow', function() {
                 if (self.active_annotation) {
                     djangosherd.assetview.clipform

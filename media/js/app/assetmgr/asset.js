@@ -29,9 +29,17 @@
 
         this.init = function(config) {
             this.layers = {}; //should we really store layers here?
-            loadTemplate('asset_view_help');
-            loadTemplate('asset_view_details');
-            loadTemplate('asset_references');
+            var templates = [
+                'asset_view_help',
+                'asset_view_details',
+                'asset_references',
+                'asset_annotation_list',
+                'asset_annotation_current'
+            ];
+            for (var i = 0; i < templates.length; i++) {
+                loadTemplate(templates[i]);
+            }
+
             this.active_annotation = null;
             this.active_asset = null;
             this.vocabulary = config.vocabulary;
@@ -338,41 +346,39 @@
             }
 
             console.log('update annotation-list');
-            Mustache.update('annotation-list', context, {
-                pre: function(elt) {
-                    jQuery(elt).hide();
-                    jQuery('.accordion').accordion('destroy');
-                },
-                post: function(elt) {
-                    var options = {
-                        autoHeight: false,
-                        collapsible: true,
-                        active: false,
-                        animate: false,
-                        heightStyle: "content"
-                    };
+            var $elt = jQuery('#asset-details-annotations-list');
+            $elt.hide();
+            jQuery('.accordion').accordion('destroy');
+            var rendered = Mustache2.render(
+                MediaThread.templates.asset_annotation_list, context);
+            $elt.html(rendered);
+            var options = {
+                autoHeight: false,
+                collapsible: true,
+                active: false,
+                animate: false,
+                heightStyle: "content"
+            };
 
-                    jQuery(elt).show();
-                    jQuery('li.annotation-listitem', elt)
-                        .each(self.decorateLink);
+            $elt.show();
+            jQuery('li.annotation-listitem', $elt)
+                .each(self.decorateLink);
 
-                    // activate the current annotation if it exists
-                    jQuery('.accordion').accordion(options);
-                    jQuery('.accordion').accordion({
-                        'activate': self.showAnnotation});
+            // activate the current annotation if it exists
+            jQuery('.accordion').accordion(options);
+            jQuery('.accordion').accordion({
+                'activate': self.showAnnotation});
 
-                    if (self.active_annotation) {
-                        var active = jQuery('#accordion-' +
-                            self.active_annotation.id)[0];
-                        var parent = jQuery(active).parents('.accordion');
+            if (self.active_annotation) {
+                var active = jQuery('#accordion-' +
+                                    self.active_annotation.id)[0];
+                var parent = jQuery(active).parents('.accordion');
 
-                        var idx = jQuery(parent).find('h3').index(active);
-                        jQuery(parent).accordion('option', 'active', idx);
-                        jQuery(active)
-                           .find('input.annotation-listitem-icon').show();
-                    }
-                }
-            });
+                var idx = jQuery(parent).find('h3').index(active);
+                jQuery(parent).accordion('option', 'active', idx);
+                jQuery(active)
+                    .find('input.annotation-listitem-icon').show();
+            }
         };
 
         this.resetHighlightLayer = function() {
@@ -744,35 +750,33 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    console.log('update annotation-current');
-                    Mustache.update(
-                        'annotation-current', context,
-                        {
-                            post: function(elt) {
-                                djangosherd.assetview.clipform.html
-                                    .push('clipform-display', {
-                                        asset: {}
-                                    });
+                    var rendered = Mustache2.render(
+                        MediaThread.templates.asset_annotation_current,
+                        context);
+                    jQuery('#annotation-current').html(rendered);
 
-                                // Preserve zoom level on
-                                //'new selection'
-                                //djangosherd.assetview
-                                // .setState({});
-                                //Let's see if just not
-                                //setting state will work.
-
-                                djangosherd.assetview.clipform
-                                    .setState({'start': 0, 'end': 0},
-                                              {'mode': 'create'});
-
-                                self._initTags();
-                                self._initReferences();
-                                jQuery('select.vocabulary').select2({});
-                                jQuery('#asset-details-annotations-current')
-                                    .fadeIn();
-                                jQuery(window).trigger('resize');
-                            }
+                    djangosherd.assetview.clipform.html
+                        .push('clipform-display', {
+                            asset: {}
                         });
+
+                    // Preserve zoom level on
+                    //'new selection'
+                    //djangosherd.assetview
+                    // .setState({});
+                    //Let's see if just not
+                    //setting state will work.
+
+                    djangosherd.assetview.clipform
+                        .setState({'start': 0, 'end': 0},
+                                  {'mode': 'create'});
+
+                    self._initTags();
+                    self._initReferences();
+                    jQuery('select.vocabulary').select2({});
+                    jQuery('#asset-details-annotations-current')
+                        .fadeIn();
+                    jQuery(window).trigger('resize');
                 });
         };
 
@@ -1014,7 +1018,6 @@
                 dataType: 'json',
                 error: function() {},
                 success: function(json, textStatus, xhr) {
-                    console.log('update asset-references', json);
                     var rendered = Mustache2.render(
                         MediaThread.templates['asset-references'], json);
                     jQuery('#asset-references').html(rendered);
@@ -1119,6 +1122,7 @@
             } else {
                 console.error('Didn\'t attach template');
             }
+
             rendered = Mustache2.render(MediaThread.templates.asset_view_help,
                                         context);
             jQuery('#asset-view-help').html(rendered);

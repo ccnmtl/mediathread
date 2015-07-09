@@ -118,60 +118,7 @@
                                     </div>
 
                                     <div id="tabs-3" class="ui-tab-asset-references">
-                                        {{#asset-references}}
-                                            <div id="asset-references">
-                                                {{#tags}}
-                                                    <h2>Tags</h2>
-                                                    <div>
-                                                        <span>
-                                                            {{#tags}}
-                                                                <a class="switcher-choice filterbyclasstag"
-                                                                    href="{{name}}">{{name}} ({{count}})</a> {{^last}}, {{/last}}
-                                                            {{/tags}}
-                                                        </span>
-                                                    </div>
-                                                    <br />
-                                                    <br />
-                                                {{/tags}}
-                                                {{#vocabulary}}
-                                                    <h2>{{display_name}}</h2>
-                                                    <div>
-                                                        <span>
-                                                            {{#term_set}}
-                                                                <a href="#" class="switcher-choice filterbyvocabulary"
-                                                                    data-vocabulary-id="vocabulary-{{vocabulary_id}}"
-                                                                    data-term-id="{{id}}">
-                                                                    {{display_name}} ({{count}})</a> {{^last}}, {{/last}}
-                                                            {{/term_set}}
-                                                        </span>
-                                                    </div>
-                                                <br />
-                                                <br />
-                                                {{/vocabulary}}
-
-
-                                                {{#references}}
-                                                    <h2>Class References</h2>
-                                                    <ul class="clumper">
-                                                    {{#references}}
-                                                        <li>
-                                                            <div class="asset_title type-{{type}}">
-                                                                <a href="{{url}}" class="title">{{title}}</a>
-                                                            </div>
-
-                                                            <div class="asset-activities">
-
-                                                                <div class="asset-activity">
-                                                                    collected {{ modified }}
-                                                                </div>
-
-                                                            </div>
-                                                        </li>
-                                                    {{/references}}
-                                                    </ul>
-                                                {{/references}}
-                                            </div>
-                                        {{/asset-references}}
+                                      <div id="asset-references"></div>
                                     </div> {{! end tabs-3 references }}
 
                                 </div> {{! end tabs }}

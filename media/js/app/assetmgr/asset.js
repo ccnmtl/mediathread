@@ -31,6 +31,7 @@
             this.layers = {}; //should we really store layers here?
             loadTemplate('asset_view_help');
             loadTemplate('asset_view_details');
+            loadTemplate('asset_references');
             this.active_annotation = null;
             this.active_asset = null;
             this.vocabulary = config.vocabulary;
@@ -336,6 +337,7 @@
                 'category': cats[context.annotation_list[k]]};
             }
 
+            console.log('update annotation-list');
             Mustache.update('annotation-list', context, {
                 pre: function(elt) {
                     jQuery(elt).hide();
@@ -631,6 +633,7 @@
                         jQuery('.asset-view-title').text(
                             context['asset-current'].title);
 
+                        console.log('update asset-global-annotation');
                         Mustache.update('asset-global-annotation', context, {
                             pre: function(elt) { jQuery(elt).hide(); },
                             post: function(elt) {
@@ -741,6 +744,7 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
+                    console.log('update annotation-current');
                     Mustache.update(
                         'annotation-current', context,
                         {
@@ -816,6 +820,7 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
+                    console.log('update2 asset-global-annotation');
                     Mustache.update('annotation-current', context, {
                         pre: function(elt) {
                             jQuery(elt).hide();
@@ -1009,7 +1014,10 @@
                 dataType: 'json',
                 error: function() {},
                 success: function(json, textStatus, xhr) {
-                    Mustache.update('asset-references', json);
+                    console.log('update asset-references', json);
+                    var rendered = Mustache2.render(
+                        MediaThread.templates['asset-references'], json);
+                    jQuery('#asset-references').html(rendered);
                 }
             });
         };

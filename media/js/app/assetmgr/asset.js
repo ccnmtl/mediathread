@@ -37,7 +37,8 @@
                 'asset_references',
                 'asset_annotation_list',
                 'asset_annotation_current',
-                'asset_global_annotation'
+                'asset_global_annotation',
+                'asset_sources'
             ];
             for (var i = 0; i < templates.length; i++) {
                 loadTemplate(templates[i]);
@@ -684,7 +685,7 @@
                 self._addHistory(/*replace=*/false);
 
                 var group = jQuery(ui.newHeader)
-                                .parents('li.annotation-group')[0];
+                    .parents('li.annotation-group')[0];
                 jQuery(group).siblings().find('.accordion')
                     .accordion('option', 'active', false);
 
@@ -1110,13 +1111,15 @@
                 .push('clipform-display', {
                     asset: {}
                 });
-            var rendered;
 
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
-            console.log('ctx', context);
-            rendered = Mustache2.render(tpl, context);
+            var rendered = Mustache2.render(tpl, context);
             if (template_label === 'asset-view-details') {
                 jQuery('#asset-view-details').html(rendered);
+
+                rendered = Mustache2.render(
+                    MediaThread.templates.asset_sources, context);
+                jQuery('#asset-sources').html(rendered);
             } else if (template_label === 'annotation-current') {
                 jQuery('#annotation-current').html(rendered);
             } else {

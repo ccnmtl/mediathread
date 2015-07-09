@@ -4,70 +4,68 @@
       <h4><div class="color-box" style="background-color:{{color}}"></div>{{title}}</h4>
       <div class="accordion">
         {{#annotations}}
-          {{#annotation-listitem}}
-            <h3 id="accordion-{{id}}" data-id="{{id}}">
-              <a href="#">
-                {{^metadata.title}}
-                  -Untitled-
-                  {{/metadata.title}}
-                  {{#metadata.title}}
-                    {{metadata.title?ellipses(30)}}
-                  {{/metadata.title}}
-              </a>
+          <h3 id="accordion-{{id}}" data-id="{{id}}">
+            <a href="#">
+              {{^metadata.title}}
+                -Untitled-
+                {{/metadata.title}}
+                {{#metadata.title}}
+                  {{metadata.title}}
+                {{/metadata.title}}
+            </a>
 
-              {{#editable}}
-                <input style="display: none" type="image" title="Edit Selection"
-                onclick="return annotationList.editAnnotation(this);"
-                alt="Edit" src="/media/img/icons/meth_edit.png"
-                class="annotation-listitem-icon edit" />
-                <input style="display: none" type="image" title="Delete Selection"
-                onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
-                alt="Delete" src="/media/img/icons/meth_delete.png"
-                class="annotation-listitem-icon delete" />
-              {{/editable}}
+            {{#editable}}
+              <input style="display: none" type="image" title="Edit Selection"
+              onclick="return annotationList.editAnnotation(this);"
+              alt="Edit" src="/media/img/icons/meth_edit.png"
+              class="annotation-listitem-icon edit" />
+              <input style="display: none" type="image" title="Delete Selection"
+              onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
+              alt="Delete" src="/media/img/icons/meth_delete.png"
+              class="annotation-listitem-icon delete" />
+            {{/editable}}
 
-              {{^editable}}
-                <input style="display: none" type="image" title="Copy Selection"
-                onclick="return annotationList.copyAnnotation(this);"
-                alt="Copy" src="/media/img/icons/meth_copy.png"
-                class="annotation-listitem-icon" />
-              {{/editable}}
-            </h3>
-            <div>
-              <div id="annotation-body-{{id}}">
-                <div class="meta">
-                  {{#annotation.startCode}}
-                    <div id="clipform-tools" class="annotation-timecode">
-                      <div class="left">
-                        <label for="">Time code:</label>
-                        <span>{{annotation.startCode}} - {{annotation.endCode}}</span>
-                      </div>
-
-                      <input type="image" title="Play Clip"
-                      class="regButton videoplay left"
-                      alt="Play Clip"
-                      src="/media/img/icons/meth_video_play.png" />
+            {{^editable}}
+              <input style="display: none" type="image" title="Copy Selection"
+              onclick="return annotationList.copyAnnotation(this);"
+              alt="Copy" src="/media/img/icons/meth_copy.png"
+              class="annotation-listitem-icon" />
+            {{/editable}}
+          </h3>
+          <div>
+            <div id="annotation-body-{{id}}">
+              <div class="meta">
+                {{#annotation.startCode}}
+                  <div id="clipform-tools" class="annotation-timecode">
+                    <div class="left">
+                      <label for="">Time code:</label>
+                      <span>{{annotation.startCode}} - {{annotation.endCode}}</span>
                     </div>
-                    <div class="visualclear"></div>
-                  {{/annotation.startCode}}
-                  <div><label for="">Author:</label> <a href="{{home-space?url(author.username)}}">{{author.public_name}}</a></div>
-                  {{#metadata.tags}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags}}
-                    {{#metadata.body}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body}}
 
+                    <input type="image" title="Play Clip"
+                    class="regButton videoplay left"
+                    alt="Play Clip"
+                    src="/media/img/icons/meth_video_play.png" />
+                  </div>
+                  <div class="visualclear"></div>
+                {{/annotation.startCode}}
+                <div><label for="">Author:</label> <a href="{{home-space?url(author.username)}}">{{author.public_name}}</a></div>
+                {{#metadata.tags}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags}}
+                  {{#metadata.body}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body}}
+
+                    {{#vocabulary}}
                       {{#vocabulary}}
-                        {{#vocabulary}}
-                          <div>
-                            <label>{{display_name}}: </label>
-                            {{#terms}}
-                              {{display_name}}
-                            {{/terms}}
-                          </div>
-                        {{/vocabulary}}
-                        {{/vocabulary}}
-                </div>
+                        <div>
+                          <label>{{display_name}}: </label>
+                          {{#terms}}
+                            {{display_name}}
+                          {{/terms}}
+                        </div>
+                      {{/vocabulary}}
+                      {{/vocabulary}}
               </div>
             </div>
-          {{/annotation-listitem}}
+          </div>
         {{/annotations}}
       </div>
     {{/category}}

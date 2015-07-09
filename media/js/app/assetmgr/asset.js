@@ -824,32 +824,31 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    console.log('update2 asset-global-annotation');
-                    Mustache.update('annotation-current', context, {
-                        pre: function(elt) {
-                            jQuery(elt).hide();
-                        },
-                        post: function(elt) {
-                            if (self.active_annotation) {
-                                djangosherd.assetview.clipform.html.push(
-                                    'clipform-display', {
-                                        asset: {}
-                                    });
+                    var $elt = jQuery('#annotation-current');
+                    $elt.hide();
+                    var rendered = Mustache2.render(
+                        MediaThread.templates.asset_annotation_current,
+                        context);
+                    $elt.html(rendered);
 
-                                djangosherd.assetview
-                                   .setState(self.active_annotation.annotation);
-                                djangosherd.assetview.clipform
-                                   .setState(self.active_annotation.annotation,
-                                             {'mode': 'copy'});
+                    if (self.active_annotation) {
+                        djangosherd.assetview.clipform.html.push(
+                            'clipform-display', {
+                                asset: {}
+                            });
 
-                                self._initTags();
-                                self._initConcepts();
-                                self._initReferences();
-                                jQuery(elt).fadeIn();
-                                jQuery(window).trigger('resize');
-                            }
-                        }
-                    });
+                        djangosherd.assetview
+                            .setState(self.active_annotation.annotation);
+                        djangosherd.assetview.clipform
+                            .setState(self.active_annotation.annotation,
+                                      {'mode': 'copy'});
+
+                        self._initTags();
+                        self._initConcepts();
+                        self._initReferences();
+                        $elt.fadeIn();
+                        jQuery(window).trigger('resize');
+                    }
                 });
 
             return false;
@@ -1119,8 +1118,10 @@
             rendered = Mustache2.render(tpl, context);
             if (template_label === 'asset-view-details') {
                 jQuery('#asset-view-details').html(rendered);
+            } else if (template_label === 'annotation-current') {
+                jQuery('#annotation-current').html(rendered);
             } else {
-                console.error('Didn\'t attach template');
+                console.error('Didn\'t attach template for:', template_label);
             }
 
             rendered = Mustache2.render(MediaThread.templates.asset_view_help,

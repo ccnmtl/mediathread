@@ -1,4 +1,5 @@
 language: python
+sudo: false
 env:
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest

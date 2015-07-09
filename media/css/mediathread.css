@@ -4787,3 +4787,8 @@ div#taxonomy div.term-container div.term div.term-display div.actions {
 div#taxonomy div.term-container div.term:hover div.term-display div.actions {
     display: inline-block;
 }
+
+/* Make jquery-ui dialogs work with openlayers */
+.ui-dialog {
+    z-index: 1000 !important;
+}

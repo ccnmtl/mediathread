@@ -49,14 +49,14 @@
       </tr>
     </table>
 
-    {{#global_annotation.metadata.tags}}
+    {{#global_annotation.metadata.tags.length}}
       <div class="meta global-annotation-tags">
         <label>Tags: </label>
         {{#global_annotation.metadata.tags}}
           {{name}}{{^last}}, {{/last}}
         {{/global_annotation.metadata.tags}}
       </div>
-        {{/global_annotation.metadata.tags}}
+    {{/global_annotation.metadata.tags.length}}
 
         {{#global_annotation.vocabulary}}
           <div class="meta">

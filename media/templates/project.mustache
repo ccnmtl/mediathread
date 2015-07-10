@@ -122,21 +122,23 @@
                                                 </select> 
                                             </div>  
                                     {{/context.my_responses}}
-                                    
-                                    <input class="project project-responsesbutton" type="button" value="Class Responses ({{context.response_count}})" />
-                                    <div class="response-list" style="display: none" title="Responses">
-                                      <div>Select an assignment response, then click "View"</div>
-                                      <select name="responses" multiple="multiple">
-                                        {{#context.responses}}
-                                          <option value="{{url}}">
-                                            {{ modified }} &mdash;
-                                            {{#attribution_list}}
-                                              {{ name }}{{^last}}, {{/last}}
-                                            {{/attribution_list}}
-                                          </option>
-                                        {{/context.responses}}
-                                      </select>
-                                    </div>
+
+                                    {{#context.responses.length}}
+                                      <input class="project project-responsesbutton" type="button" value="Class Responses ({{context.response_count}})" />
+                                      <div class="response-list" style="display: none" title="Responses">
+                                        <div>Select an assignment response, then click "View"</div>
+                                        <select name="responses" multiple="multiple">
+                                          {{#context.responses}}
+                                            <option value="{{url}}">
+                                              {{ modified }} &mdash;
+                                              {{#attribution_list}}
+                                                {{ name }}{{^last}}, {{/last}} 
+                                              {{/attribution_list}}
+                                            </option>
+                                          {{/context.responses}}
+                                        </select>
+                                      </div>
+                                    {{/context.responses.length}}
                                     
                                     {{#context.create_instructor_feedback}}
                                         <input class="{{context.project.type}} project project-create-instructor-feedback" 

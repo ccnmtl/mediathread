@@ -72,20 +72,20 @@
                                         <input class="{{context.project.type}} project project-previewbutton" 
                                             type="submit" value="{{#context.editing}}Preview{{/context.editing}}{{^context.editing}}Edit{{/context.editing}}" />
                                     
-                                        <input class="{{context.project.type}} project project-revisionbutton" 
-                                            type="button" value="Revisions" />
-                                        
-                                            {{#>>revisions}}
-                                            <div class="revision-list" style="display: none" title="Revisions">
+                                              <input class="{{context.project.type}} project project-revisionbutton"
+                                              type="button" value="Revisions" />
+
+
+                                              <div class="revision-list" style="display: none" title="Revisions">
                                                 <div>Select a revision, then click "View". The revision view will open in a separate window.</div>
-                                                    
+
                                                 <select name="revisions" multiple="multiple">
-                                                    {{#context.revisions}}
-                                                        <option value="/project/view/{{versioned_id}}/version/{{version_number}}/">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
-                                                    {{/context.revisions}}
-                                                </select> 
-                                            </div>  
-                                            {{/>>revisions}}
+                                                  {{#context.revisions}}
+                                                    <option value="/project/view/{{versioned_id}}/version/{{version_number}}/">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
+                                                  {{/context.revisions}}
+                                                </select>
+                                              </div>
+
                                             
                                     {{/context.can_edit}}
                                     

@@ -38,6 +38,8 @@ def ajax_required(func):
 def faculty_only(func):
 
     def wrap(request, *args, **kwargs):
+        if request.user is None or request.user.is_anonymous():
+            return HttpResponseForbidden("forbidden")
         if not cached_course_is_faculty(request.course, request.user):
             return HttpResponseForbidden("forbidden")
         return func(request, *args, **kwargs)

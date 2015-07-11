@@ -5,8 +5,13 @@
     <h2>Assignment Report: {{assignment.title}}</h2>
 {% endblock %}
 
-{% block dashboard_module %}    
-
+{% block dashboard_module %}
+<a class="right"
+    href="{% url 'assignment-detail-report' assignment.id %}">
+    Download Detail
+</a>
+<div class="visualclear"></div>
+<br />
 <table>
   <thead>
     <tr>

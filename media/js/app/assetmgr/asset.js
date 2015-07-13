@@ -648,7 +648,7 @@
 
                         var $elt = jQuery('#asset-global-annotation');
                         $elt.hide();
-                        rendered = Mustache2.render(
+                        var rendered = Mustache2.render(
                             MediaThread.templates.asset_global_annotation,
                             context);
                         $elt.html(rendered);

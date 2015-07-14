@@ -334,7 +334,7 @@ var MISC;
 
             var t = new Term({
                 'display_name': display_name,
-                'vocabulary_id': this.selected.get('id')
+                'vocabulary': this.selected.get('resource_uri')
             });
             t.save({}, {
                 success: function() {

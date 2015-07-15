@@ -39,7 +39,6 @@ var MISC;
     var Vocabulary = Backbone.Model.extend({
         urlRoot: '/api/vocabulary/',
         parse: function(response) {
-
             if (response) {
                 response.term_set = new TermList(response.term_set);
             }
@@ -236,7 +235,7 @@ var MISC;
 
             var id = jQuery(parent).find('input[name="vocabulary_id"]').val();
             var v = this.collection.getByDataId(id);
-            if (v.get('display_name') !== 'display_name') {
+            if (v.get('display_name') !== display_name) {
                 v.save({'display_name': display_name}, {
                     success: function() {
                         self.render();
@@ -335,7 +334,7 @@ var MISC;
 
             var t = new Term({
                 'display_name': display_name,
-                'vocabulary_id': this.selected.get('id')
+                'vocabulary': this.selected.get('resource_uri')
             });
             t.save({}, {
                 success: function() {

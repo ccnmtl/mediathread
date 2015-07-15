@@ -1,0 +1,114 @@
+{
+    "rdfs:about": "http://onomy.org/published/72",
+    "rdfs:label": "Colors",
+    "rdfs:comment": "A test taxonomy of colors.",
+    "version": 3,
+    "terms": [
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/224",
+            "rdfs:label": "Black",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/221",
+            "rdfs:label": "Blue",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/222",
+            "rdfs:label": "Green",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/1386",
+            "rdfs:label": "Light Blue",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "http://onomy.org/published/72/term/1381",
+            "rdfs:parentLabel": "Pastels",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/1387",
+            "rdfs:label": "Light Green",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "http://onomy.org/published/72/term/1381",
+            "rdfs:parentLabel": "Pastels",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/1381",
+            "rdfs:label": "Pastels",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/1385",
+            "rdfs:label": "Pink",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "http://onomy.org/published/72/term/1381",
+            "rdfs:parentLabel": "Pastels",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/223",
+            "rdfs:label": "Purple",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/220",
+            "rdfs:label": "Red",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+{
+            "rdfs:about": "http://onomy.org/published/72/term/1333",
+            "rdfs:label": "Neons",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "",
+            "rdfs:parentLabel": "",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        },
+        {
+            "rdfs:about": "http://onomy.org/published/72/term/1337",
+            "rdfs:label": "Laser Blue",
+            "rdfs:comment": "",
+            "rdfs:subClassOf": "http://onomy.org/published/72/term/1333",
+            "rdfs:parentLabel": "Neons",
+            "rdfs:isDefinedBy": "http://onomy.org/published72",
+            "rdfs:seeAlso": ""
+        }
+    ],
+    "users": [
+        {
+            "foaf:name": "Susan Dreher",
+            "foaf:mbox_sha1sum": "1f2f5fc56ce8050e19e3b2c0105592db35838f34",
+            "foaf:homepage": ""
+        }
+    ]
+}

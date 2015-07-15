@@ -1,9 +1,8 @@
-from lettuce import django, step, world
-from selenium.webdriver.common.by import By
+from lettuce import world, step
 from selenium.webdriver.support.expected_conditions import \
     invisibility_of_element_located
-
 import selenium.webdriver.support.ui as ui
+from selenium.webdriver.common.by import By
 
 
 @step(u'I create the concept')
@@ -193,3 +192,15 @@ def confirm_the_onomy_import(step):
     selector = 'a.import-vocabulary-submit'
     elt = world.browser.find_element_by_css_selector(selector)
     elt.click()
+
+@step(u'specify the incorrect onomy url')
+def specify_the_incorrect_onomy_url(step):
+    url = django.django_url('incorrect')
+    elt = world.browser.find_element_by_id('onomy_ur')
+    elt.send_keys(url)
+
+@step(u'specify the refresh onomy url')
+def specify_the_refresh_onomy_url(step):
+    url = django.django_url('/media/onomy/reimport_test.json')
+    elt = world.browser.find_element_by_id('onomy_ur')
+    elt.send_keys(url)

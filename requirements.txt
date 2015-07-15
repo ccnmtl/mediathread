@@ -35,7 +35,7 @@ django-tagging==0.4
 requirements/src/django-modelversions-1.0.tar.gz
 djangohelpers==0.18.1
 requirements/src/django-threadedcomments-0.9.1ccnmtl.tar.gz
-django-courseaffils==2.0.1
+django-courseaffils==2.0.2
 django-statsd-mozilla==0.3.14
 raven==5.2.0
 django-appconf==1.0.1  # django_compressor

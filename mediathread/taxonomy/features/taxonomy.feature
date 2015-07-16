@@ -1,17 +1,17 @@
 Feature: Taxonomy
 
-    #Scenario: taxonomy.feature 1. Create Taxonomy
+    Scenario: taxonomy.feature 1. Create Taxonomy
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         When I open the manage menu
         Then there is a "Vocabulary" link
         When I click the "Vocabulary" link
         Then I am at the Course Vocabulary page
-        
+
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I see "Type concept name here"
@@ -25,75 +25,75 @@ Feature: Taxonomy
         And I see "Colors Concept"
         And I see "Terms"
         And I see "Type new term name here"
-        
-    #Scenario: taxonomy.feature 2. Duplicate Taxonomy
+
+    Scenario: taxonomy.feature 2. Duplicate Taxonomy
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
         Then there is a "Colors" link
-        
+
         # Duplicate taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
-        
+
         I'm told "A Colors concept exists. Please choose another name"
-        
-    #Scenario: taxonomy.feature 3. Delete Taxonomy
+
+    Scenario: taxonomy.feature 3. Delete Taxonomy
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
         Then there is a "Colors" link
-        
+
         # Delete the taxonomy
         When I click the "Colors" link
         Then the "Colors" concept has a delete icon
-        
+
         When I click the "Colors" concept delete icon
         And I confirm the action
-        
+
         Then there is not a "Colors" link
-        
-    #Scenario: taxonomy.feature 4. Edit Taxonomy
+
+    Scenario: taxonomy.feature 4. Edit Taxonomy
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
         Then there is a "Colors" link
-        
+
         # Edit the taxonomy
         When I click the "Colors" link
         Then the "Colors" concept has an edit icon
-        
-        When I click the "Colors" concept edit icon        
+
+        When I click the "Colors" concept edit icon
         I see "Type concept name here"
-        
+
         # Name and save
         I rename the "Colors" concept to "Shapes"
         I save the concept
@@ -105,66 +105,66 @@ Feature: Taxonomy
         And I see "Terms"
         And I see "Type new term name here"
 
-    #Scenario: taxonomy.feature 5. Create Term
+    Scenario: taxonomy.feature 5. Create Term
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
-        Then there is a "Colors" link  
-        
+        Then there is a "Colors" link
+
         # Create a term
         When I name a term "Red"
         And create the term
         Then There is a "Red" term
-        
-    #Scenario: taxonomy.feature 6. Duplicate Term
+
+    Scenario: taxonomy.feature 6. Duplicate Term
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
-        Then there is a "Colors" link  
-        
+        Then there is a "Colors" link
+
         # Create a term
         When I name a term "Red"
         And create the term
         Then There is a "Red" term
-        
+
         # Duplicate term
         When I name a term "Red"
         And create the term
         Then I'm told "Red term already exists. Please choose a new name"
-        
-    #Scenario: taxonomy.feature 7. Delete Term
+
+    Scenario: taxonomy.feature 7. Delete Term
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
-        Then there is a "Colors" link  
-        
+        Then there is a "Colors" link
+
         # Create a term
         When I name a term "Red"
         And create the term
@@ -174,23 +174,23 @@ Feature: Taxonomy
         When I click the "Red" term delete icon
         And I confirm the action
         Then there is no "Red" term
-        
-                 
-    #Scenario: taxonomy.feature 8. Edit Term
+
+
+    Scenario: taxonomy.feature 8. Edit Term
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
-        
+
         # Create a taxonomy
         When I create a new concept
         I name the concept "Colors"
         I create the concept
-        Then there is a "Colors" link  
-        
+        Then there is a "Colors" link
+
         # Create a term
         When I name a term "Red"
         And create the term
@@ -205,7 +205,7 @@ Feature: Taxonomy
         Then There is a "Blue" term
         Then there is no "Red" term
 
-    #Scenario: taxonomy.feature 9. Create from onomy
+    Scenario: taxonomy.feature 9. Create from onomy
         Using selenium
         Given I am test_instructor in Sample Course
 
@@ -239,7 +239,7 @@ Feature: Taxonomy
 
         Finished using Selenium
 
-    #Scenario: taxonomy.feature 10. onomy delete and refresh
+    Scenario: taxonomy.feature 10. onomy delete and refresh
         Using selenium
         Given I am test_instructor in Sample Course
 
@@ -274,15 +274,15 @@ Feature: Taxonomy
         Then I click the "Colors" link
         When I click the "Red" term delete icon
         Then there is no "Red" term
-        
+
         When I click the "Colors" link
         Then I click the Refresh button
-        
+
         Then There is a "Red" term
 
         Finished using Selenium
 
-    #Scenario: taxonomy.feature 11. Try invalid Onomy url
+    Scenario: taxonomy.feature 11. Try invalid Onomy url
         Using selenium
         Given I am test_instructor in Sample Course
 

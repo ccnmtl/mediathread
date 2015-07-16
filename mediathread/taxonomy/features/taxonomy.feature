@@ -273,6 +273,7 @@ Feature: Taxonomy
 
         Then I click the "Colors" link
         When I click the "Red" term delete icon
+        And I confirm the action
         Then there is no "Red" term
 
         When I click the "Colors" link

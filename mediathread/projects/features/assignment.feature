@@ -65,7 +65,7 @@ Feature: Assignment
         And the Assignment panel does not have a +/- Author button
         And the Assignment panel does not have a Respond To Assignment button
         And the Assignment panel does not have a Responses (1) button
-        
+
         Finished using Selenium 
         
     Scenario: assignment.feature 2. Student creates assignment response

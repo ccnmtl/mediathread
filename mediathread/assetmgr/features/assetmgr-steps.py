@@ -1,6 +1,5 @@
 from lettuce import world, step
 import time
-from selenium.common.exceptions import InvalidElementStateException
 
 
 @step(u'The item header is "([^"]*)"')
@@ -28,27 +27,6 @@ def i_edit_the_item(step):
                 return
 
     assert False, "Unable to find the edit item icon"
-
-
-@step(u'I set the "([^"]*)" "([^"]*)" field to "([^"]*)"')
-def i_set_the_label_type_to_value(step, label, type, value):
-    if world.using_selenium:
-        parent = world.browser.find_element_by_id("asset-view-details")
-        if type == "text":
-            selector = "input[type=text]"
-        elif type == "textarea":
-            selector = "textarea"
-        elts = parent.find_elements_by_css_selector(selector)
-        for elt in elts:
-            if elt.get_attribute('data-label') == label:
-                try:
-                    elt.clear()
-                    elt.send_keys(value)
-                    return
-                except InvalidElementStateException:
-                    time.sleep(1)
-                    elt.clear()
-                    elt.send_keys(value)
 
 
 @step(u'there is not a "([^"]*)" "([^"]*)" field')

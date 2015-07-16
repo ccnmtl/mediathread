@@ -1,8 +1,13 @@
+from urlparse import urlparse
+
 from lettuce import world, step
 from mediathread.projects.models import Project
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.expected_conditions import \
+    invisibility_of_element_located, visibility_of_element_located
 from selenium.webdriver.support.select import Select
-from urlparse import urlparse
+import selenium.webdriver.support.ui as ui
 
 
 @step(u'There are no projects')
@@ -53,7 +58,6 @@ def the_panel_has_a_name_button(step, panel, name):
 
     btn = world.find_button_by_value(name, panel)
     if btn is None:
-        world.browser.get_screenshot_as_file("/tmp/selenium.png")
         assert False, "Can't find button named %s" % name
     if btn.is_displayed() is False:
         assert False, "Button is not visible %s" % name
@@ -224,3 +228,82 @@ def i_toggle_the_panelname_panel(step, panelname):
     assert pantab, "Cannot find the %s pantab" % panelname
 
     pantab.click()
+
+
+@step(u'I click edit item for "([^"]*)"')
+def when_i_click_edit_item_for_title(step, title):
+    selector = ".gallery-item-project"
+    items = world.browser.find_elements_by_css_selector(selector)
+    for item in items:
+        try:
+            item.find_element_by_partial_link_text(title)
+            elt = item.find_element_by_css_selector(".edit_icon")
+            elt.click()
+            return
+        except NoSuchElementException:
+            continue
+
+    assert False, "Unable to find the %s item" % title
+
+
+@step(u'I click create selection for "([^"]*)"')
+def i_click_create_selection_for_title(step, title):
+    selector = ".gallery-item-project"
+    items = world.browser.find_elements_by_css_selector(selector)
+    for item in items:
+        try:
+            item.find_element_by_partial_link_text(title)
+            elt = item.find_element_by_css_selector(".create_annotation_icon")
+            assert elt, "Unable to find the + link for item" % title
+            elt.click()
+            return
+        except NoSuchElementException:
+            continue
+
+    assert False, "Unable to find the %s item" % title
+
+
+@step(u'I click edit selection for "([^"]*)"')
+def i_click_edit_selection_for_title(step, title):
+    selector = ".selection-level-info"
+    items = world.browser.find_elements_by_css_selector(selector)
+    for item in items:
+        try:
+            item.find_element_by_partial_link_text(title)
+            elt = item.find_element_by_css_selector(".edit-selection-icon")
+            elt.click()
+            return
+        except NoSuchElementException:
+            continue
+
+    assert False, "Unable to find the %s selection" % title
+
+
+@step(u'the "([^"]*)" form appears')
+def the_title_form_appears(step, title):
+    try:
+        fid = None
+        if title == 'Create Selection' or title == 'Edit Selection':
+            fid = 'annotation-current'
+        elif title == 'Edit Item':
+            fid = 'asset-global-annotation'
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, fid)))
+    except TimeoutException:
+        assert False, '%s form did not appear' % title
+
+
+@step(u'the "([^"]*)" form disappears')
+def the_title_form_disappears(step, title):
+    try:
+        fid = None
+        if title == 'Create Selection' or title == 'Edit Selection':
+            fid = 'annotation-current'
+        elif title == 'Edit Item':
+            fid = 'asset-global-annotation'
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(invisibility_of_element_located((By.ID, fid)))
+    except TimeoutException:
+        assert False, '%s form did not appear' % title

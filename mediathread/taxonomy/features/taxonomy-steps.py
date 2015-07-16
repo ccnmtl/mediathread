@@ -193,14 +193,16 @@ def confirm_the_onomy_import(step):
     elt = world.browser.find_element_by_css_selector(selector)
     elt.click()
 
+
 @step(u'specify the incorrect onomy url')
 def specify_the_incorrect_onomy_url(step):
     url = django.django_url('incorrect')
     elt = world.browser.find_element_by_id('onomy_url')
     elt.send_keys(url)
 
+
 @step(u'specify the refresh onomy url')
 def specify_the_refresh_onomy_url(step):
-    url = django.django_url('/media/onomy/test.json, /media/onomy/reimport_test.json')
+    url = django.django_url('/media/onomy/reimport_test.json')
     elt = world.browser.find_element_by_id('onomy_url')
     elt.send_keys(url)

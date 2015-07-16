@@ -7,12 +7,12 @@ from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
-from selenium.common.exceptions import NoSuchElementException, \
-    StaleElementReferenceException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.expected_conditions import visibility_of_element_located
-
 from mediathread.projects.models import Project
+from selenium.common.exceptions import NoSuchElementException, \
+    StaleElementReferenceException, InvalidElementStateException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.expected_conditions import \
+    visibility_of_element_located
 import selenium.webdriver.support.ui as ui
 
 
@@ -117,10 +117,10 @@ def i_am_username_in_course(step, username, coursename):
         world.browser.get(django.django_url("/accounts/logout/?next=/"))
         world.browser.get(django.django_url("accounts/login/?next=/"))
 
-        elt = find_button_by_value("Guest Log In")
-        if elt is None:
-            time.sleep(1)
-            elt = find_button_by_value("Guest Log In")
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, 'guest-login')))
+
+        elt = world.browser.find_element_by_id('guest-login')
         elt.click()
 
         username_field = world.browser.find_element_by_id("id_username")
@@ -150,7 +150,6 @@ def i_am_username_in_course(step, username, coursename):
 @step(u'I am not logged in')
 def i_am_not_logged_in(step):
     if world.using_selenium:
-        from lettuce.django import django_url
         world.browser.get(django.django_url("/accounts/logout/?next=/"))
     else:
         world.client.logout()
@@ -161,8 +160,8 @@ def i_log_out(step):
     if world.using_selenium:
         world.browser.get(django.django_url("/accounts/logout/?next=/"))
     else:
-        response = world.client.get(django.django_url("/accounts/logout/?next=/"),
-                                    follow=True)
+        response = world.client.get(
+            django.django_url("/accounts/logout/?next=/"), follow=True)
         world.response = response
         world.dom = html.fromstring(response.content)
 
@@ -1188,6 +1187,27 @@ def given_the_item_visibility_is_value(step, value):
         if elt:
             elt.click()
             world.browser.get(django.django_url("/"))
+
+
+@step(u'I set the "([^"]*)" "([^"]*)" field to "([^"]*)"')
+def i_set_the_label_ftype_to_value(step, label, ftype, value):
+    if world.using_selenium:
+        parent = world.browser.find_element_by_id("asset-view-details")
+        if ftype == "text":
+            selector = "input[type=text]"
+        elif ftype == "textarea":
+            selector = "textarea"
+        elts = parent.find_elements_by_css_selector(selector)
+        for elt in elts:
+            if elt.get_attribute('data-label') == label:
+                try:
+                    elt.clear()
+                    elt.send_keys(value)
+                    return
+                except InvalidElementStateException:
+                    time.sleep(1)
+                    elt.clear()
+                    elt.send_keys(value)
 
 
 # Local utility functions

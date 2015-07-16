@@ -1,4 +1,4 @@
-from lettuce import world, step
+from lettuce import world, step, django
 from selenium.webdriver.support.expected_conditions import \
     invisibility_of_element_located
 import selenium.webdriver.support.ui as ui
@@ -196,11 +196,11 @@ def confirm_the_onomy_import(step):
 @step(u'specify the incorrect onomy url')
 def specify_the_incorrect_onomy_url(step):
     url = django.django_url('incorrect')
-    elt = world.browser.find_element_by_id('onomy_ur')
+    elt = world.browser.find_element_by_id('onomy_url')
     elt.send_keys(url)
 
 @step(u'specify the refresh onomy url')
 def specify_the_refresh_onomy_url(step):
-    url = django.django_url('/media/onomy/reimport_test.json')
-    elt = world.browser.find_element_by_id('onomy_ur')
+    url = django.django_url('/media/onomy/test.json, /media/onomy/reimport_test.json')
+    elt = world.browser.find_element_by_id('onomy_url')
     elt.send_keys(url)

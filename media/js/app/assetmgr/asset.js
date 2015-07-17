@@ -1142,6 +1142,11 @@
             jQuery('.asset-view-title').text(context['asset-current'].title);
 
             rendered = Mustache2.render(
+                MediaThread.templates.asset_global_annotation,
+                context);
+            jQuery('#asset-global-annotation').html(rendered);
+
+            rendered = Mustache2.render(
                 MediaThread.templates.asset_global_annotation_quick_edit,
                 context);
             jQuery('#asset-global-annotation-quick-edit').html(rendered);

@@ -15,7 +15,7 @@
       <div>
         <select class="vocabulary"
           name="vocabulary-{{id}}"
-          data-placeholder="select {{display_name}}"
+          data-placeholder="select {{#lower}}{{display_name}}{{/lower}}"
           multiple="multiple"">
           {{#term_set}}
             <option value="{{id}}">{{display_name}}</option>

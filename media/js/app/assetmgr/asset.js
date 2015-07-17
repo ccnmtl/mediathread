@@ -1062,7 +1062,12 @@
 
             var context = {
                 'asset-current': self.active_asset,
-                'vocabulary': self.vocabulary
+                'vocabulary': self.vocabulary,
+                'lower': function() {
+                    return function(text, render) {
+                        return render(text).toLowerCase();
+                    };
+                }
             };
 
             if (config.annotation_id) {

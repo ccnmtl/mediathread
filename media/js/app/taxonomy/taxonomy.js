@@ -30,17 +30,15 @@ var MISC;
             return this.get(internalId);
         },
         getByDisplayName: function(name) {
-            var filtered = this.filter(function(term) {
+            return this.find(function(term) {
                 return term.get("display_name") === name;
             });
-            return filtered;
         }
     });
 
     var Vocabulary = Backbone.Model.extend({
         urlRoot: '/api/vocabulary/',
         parse: function(response) {
-
             if (response) {
                 response.term_set = new TermList(response.term_set);
             }
@@ -64,7 +62,7 @@ var MISC;
             return urls;
         },
         hasTerm: function(termName) {
-            return this.get('term_set').getByDisplayName(termName).length > 0;
+            return this.get('term_set').getByDisplayName(termName);
         },
         addTerm: function(termName) {
             if (!this.hasTerm(termName)) {
@@ -73,39 +71,6 @@ var MISC;
             }
         }
     });
-
-    function proxyAjaxEvent(event, options, dit) {
-        var eventCallback = options[event];
-        options[event] = function() {
-            // check if callback for event exists and if so pass on request
-            if (eventCallback) { eventCallback(arguments); }
-            dit.processQueue(); // move onto next save request in the queue
-        };
-
-    }
-
-    Backbone.Model.prototype.queuedSave = function( attrs, options ) {
-        if (!options) { options = {}; }
-        if (this.saving) {
-            this.saveQueue = this.saveQueue || [];
-            this.saveQueue.push({ attrs: _.extend({}, this.attributes, attrs), options: options });
-        } else {
-            this.saving = true;
-            proxyAjaxEvent('success', options, this);
-            proxyAjaxEvent('error', options, this);
-            Backbone.Model.prototype.save.call( this, attrs, options );
-        }
-    };
-    Backbone.Model.prototype.processQueue = function() {
-        if (this.saveQueue && this.saveQueue.length) {
-            var saveArgs = this.saveQueue.shift();
-            proxyAjaxEvent('success', saveArgs.options, this);
-            proxyAjaxEvent('error', saveArgs.options, this);
-            Backbone.Model.prototype.save.call( this, saveArgs.attrs, saveArgs.options );
-        } else {
-            this.saving = false;
-        }
-    };
 
     var VocabularyList = Backbone.Collection.extend({
         urlRoot: '/api/vocabulary/',
@@ -126,6 +91,11 @@ var MISC;
         getByDataId: function(id) {
             var internalId = this.urlRoot + id + '/';
             return this.get(internalId);
+        },
+        getByDisplayName: function(displayName) {
+            return this.find(function(vocab) {
+                return vocab.get("display_name") === displayName;
+            });
         }
     });
 
@@ -265,7 +235,7 @@ var MISC;
 
             var id = jQuery(parent).find('input[name="vocabulary_id"]').val();
             var v = this.collection.getByDataId(id);
-            if (v.get('display_name') !== 'display_name') {
+            if (v.get('display_name') !== display_name) {
                 v.save({'display_name': display_name}, {
                     success: function() {
                         self.render();
@@ -364,7 +334,7 @@ var MISC;
 
             var t = new Term({
                 'display_name': display_name,
-                'vocabulary_id': this.selected.get('id')
+                'vocabulary': this.selected.get('resource_uri')
             });
             t.save({}, {
                 success: function() {
@@ -490,9 +460,8 @@ var MISC;
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
-                var parents = [];
-                var MAX = data.terms.length;
-                for (var i = 0; i < MAX; i++) {
+                var parents = {};
+                for (var i = 0; i < data.terms.length; i++) {
                     var pL = data.terms[i]['rdfs:parentLabel'].trim();
                     var display = data.terms[i]['rdfs:label'].trim();
 
@@ -515,7 +484,6 @@ var MISC;
                             parents[temp.display_name] = temp;
                         } else {
                             //add the term to the Vocabulary in parents
-                            var index = parents.indexOf(search);
                             parents[pL].term_set.push({'display_name': display});
                         }
 
@@ -528,23 +496,19 @@ var MISC;
                             selectedVocabulary.set("onomy_url", urls.toString());
                         }
                         //we create our term if it doesn't already exist
-                        if (!selectedVocabulary.hasTerm(display)) {
-                            selectedVocabulary.addTerm(display);
-                        }
+                        selectedVocabulary.addTerm(display);
                     }
                 }
                 selectedVocabulary.save();
-                //loop over the array.
+                
+                // loop over the array.
                 for (var key in parents){
-                    if (!parents.hasOwnProperty(key))
-                    {
+                    if (!parents.hasOwnProperty(key)) {
                         continue;
                     }
-                    var model_search = _.find(self.collection.models, function (model) {
-                        return parents.hasOwnProperty(model.attributes.display_name);
-                    });
+                    var model_search = self.collection.getByDisplayName(key);
                     if (model_search === undefined) {
-                        // if we cant find the vocab in the collection we create a new one.
+                        // if we cant find the vocab in the collection create a new one.
                         var vocab = new Vocabulary({
                             'display_name': key,
                             'content_type_id': self.context.content_type_id,
@@ -568,7 +532,7 @@ var MISC;
                         //if we find the model in the collection... just add it
                         for (var q = 0; q < parents[key].term_set.length; q++) {
                             var term = parents[key].term_set[q].display_name;
-                            model_search.add(term);
+                            model_search.addTerm(term);
                         }
                         self.render();
                     }

@@ -220,6 +220,44 @@ Feature: Taxonomy
         Then there is no "Red" term
         
         Finished using Selenium
+
+    Scenario: taxonomy.feature 8a. Create Term, Edit Taxonomy
+        Using selenium
+        Given I am test_instructor in Sample Course
+        
+        # shortcut to taxonomy
+        When I access the url "/taxonomy/"
+        Given the taxonomy workspace is loaded
+        I see "Create Concept"
+        
+        # Create a taxonomy
+        When I create a new concept
+        I name the concept "Colors"
+        I create the concept
+        Then there is a "Colors" link  
+        
+        # Create a term
+        When I name a term "Red"
+        And create the term
+        Then there is a "Red" term
+        
+        # Edit the taxonomy
+        When I click the "Colors" link
+        Then the "Colors" concept has an edit icon
+        
+        When I click the "Colors" concept edit icon        
+        I see "Type concept name here"
+        
+        # Name and save
+        I rename the "Colors" concept to "Shapes"
+        I save the concept
+
+        Then there is a "Shapes" link
+        Then there is not a "Colors" link
+        And I see "Create Concept"
+        And I see "Shapes Concept"
+        And I see "Terms"
+        And I see "Type new term name here"
         
     Scenario: taxonomy.feature 9. Create from onomy
         Using selenium

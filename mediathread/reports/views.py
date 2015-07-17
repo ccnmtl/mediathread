@@ -1,3 +1,4 @@
+import csv
 import json
 import re
 
@@ -8,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models.aggregates import Count
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
+from django.http.response import StreamingHttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http, rendered_with
@@ -210,7 +212,7 @@ def class_activity(request):
     discussions = DiscussionIndex.with_permission(
         request, DiscussionIndex.objects.filter(
             collaboration__context=request.collaboration_context).order_by(
-                    '-modified')[:40],)
+                '-modified')[:40],)
 
     return {'my_feed': Clumper(assets, projects, discussions)}
 
@@ -399,3 +401,111 @@ class SelfRegistrationReportView(LoggedInMixinSuperuser,
 
         return self.render_csv_response(
             'mediathread_self_registration', headers, rows)
+
+
+class Echo(object):
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+class AssignmentDetailReport(LoggedInFacultyMixin, View):
+    date_fmt = "%m/%d/%y %I:%M %p"
+
+    def percent_used(self, selections, overall_count):
+        try:
+            return float(selections.count()) / overall_count * 100
+        except ZeroDivisionError:
+            return 0
+
+    def tag_usage(self, selections):
+        try:
+            t = selections.filter(tags__isnull=False).exclude(tags__exact='')
+            return float(t.count()) / selections.count() * 100
+        except ZeroDivisionError:
+            return 0
+
+    def vocabulary_usage(self, selections):
+        try:
+            content_type = ContentType.objects.get_for_model(SherdNote)
+            related = TermRelationship.objects.filter(
+                    content_type=content_type,
+                    object_id__in=selections.values_list('id', flat=True))
+            return float(related.count()) / selections.count() * 100
+        except ZeroDivisionError:
+            return 0
+
+    def citation_analysis(self, citations):
+        ids = [c.id for c in citations]
+        selections = SherdNote.objects.filter(id__in=ids).distinct()
+        items = selections.get_related_assets()
+        return items, selections
+
+    def get_report_rows(self, responses):
+        header = ['Student', 'Username', 'Title', 'Status',
+                  'Initial Submit Date', 'Saved at', 'Faculty Feedback',
+                  'Selections', 'Items',
+                  'Author Selections', 'Author Items',
+                  'Percent Author Selections Used',
+                  'Tag Usage', 'Vocabulary Usage',
+                  'All Author Selections', 'All Author Items']
+        yield header
+
+        for response in responses:
+            submitted_date = response.submitted_date()
+            if submitted_date:
+                submitted_date = submitted_date.strftime(self.date_fmt)
+
+            row = [response.author.get_full_name(),
+                   response.author.get_username(),
+                   response.title, response.status(),
+                   submitted_date,
+                   response.modified.strftime(self.date_fmt),
+                   response.feedback_discussion() is not None]
+
+            items, selections = self.citation_analysis(response.citations())
+
+            # embedded citations - all
+            row.append(selections.count())  # citation count
+            row.append(items.count())  # citation parent item count. distinct.
+
+            # embedded citations - response author only - a.k.a. "the subject"
+            selections = selections.filter(author=response.author)
+            items = selections.get_related_assets()
+            row.append(selections.count())  # citation count
+            row.append(items.count())  # citation parent item count. distinct.
+
+            # *all* selections on "the subject" by response author
+            all_count = SherdNote.objects.get_related_notes(
+                items, response.author).count()
+
+            row.append(self.percent_used(selections, all_count))
+            row.append(self.tag_usage(selections))
+            row.append(self.vocabulary_usage(selections))
+
+            selections = SherdNote.objects.filter(author=response.author)
+            row.append(selections.count())
+            items = Asset.objects.by_course_and_user(self.request.course,
+                                                     response.author)
+            row.append(items.count())
+
+            yield row
+
+    def get(self, request, *args, **kwargs):
+        assignment_id = kwargs.get('assignment_id', None)
+        assignment = get_object_or_404(Project, id=assignment_id)
+        responses = assignment.responses(request.course, request.user)
+
+        rows = self.get_report_rows(responses)
+
+        pseudo_buffer = Echo()
+        writer = csv.writer(pseudo_buffer)
+
+        fnm = "%s.csv" % assignment.title
+        response = StreamingHttpResponse(
+            (writer.writerow(row) for row in rows), content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename="' + fnm + '"'
+        return response

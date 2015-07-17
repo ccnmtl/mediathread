@@ -91,12 +91,12 @@
                                     
                                     {{#context.project.is_assignment}}
                                         {{^is_faculty}}
-                                            {{^context.my_responses}}
+                                            {{^context.my_responses.length}}
                                                 {{^context.my_response}}
                                                     <input class="{{context.project.type}} project project-create-assignment-response" 
                                                         type="button" value="Respond to Assignment">
                                                 {{/context.my_response}}
-                                            {{/context.my_responses}}
+                                            {{/context.my_responses.length}}
                                         {{/is_faculty}}
                                     {{/context.project.is_assignment}}
                                     
@@ -106,7 +106,7 @@
                                         {{/context.viewing_my_response}}
                                     {{/context.my_response}}
                                     
-                                    {{#context.my_responses}}
+                                    {{#context.my_responses.length}}
                                         <input class="project project-my-responses" type="button" value="My Responses ({{context.my_responses_count}})"/>
                                             <div class="my-response-list" style="display: none" title="My Responses">
                                                 <div>Select an assignment response, then click "View"</div>
@@ -121,7 +121,7 @@
                                                     {{/context.my_responses}}
                                                 </select> 
                                             </div>  
-                                    {{/context.my_responses}}
+                                    {{/context.my_responses.length}}
 
                                     {{#context.responses.length}}
                                       <input class="project project-responsesbutton" type="button" value="Class Responses ({{context.response_count}})" />

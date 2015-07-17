@@ -1115,7 +1115,9 @@
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
             var rendered = Mustache2.render(tpl, context);
             if (template_label === 'asset-view-details') {
-                jQuery('#asset-view-details').html(rendered);
+                var $el = jQuery('#asset-view-details');
+                $el.closest('.asset-view-tabs').show();
+                $el.html(rendered);
 
                 rendered = Mustache2.render(
                     MediaThread.templates.asset_sources, context);

@@ -182,6 +182,7 @@
                             }
                         }
 
+                        self._update(config, 'asset-view-details');
                         self._update(config, 'asset-view-details-quick-edit');
                         self._addHistory(/*replace=*/true);
 

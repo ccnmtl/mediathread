@@ -2523,7 +2523,7 @@ div.media-column .select2-container-multi .select2-choices {
     display:none;
     background-color: white;
     border: 1px solid #ccc;
-    z-index: 9998;
+    z-index: 500;
     width:inherit;
     left: 5px;
     list-style: none;
@@ -4786,4 +4786,9 @@ div#taxonomy div.term-container div.term div.term-display div.actions {
 
 div#taxonomy div.term-container div.term:hover div.term-display div.actions {
     display: inline-block;
+}
+
+/* Make jquery-ui dialogs work with openlayers */
+.ui-dialog {
+    z-index: 1000 !important;
 }

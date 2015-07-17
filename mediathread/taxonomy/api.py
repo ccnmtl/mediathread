@@ -2,11 +2,12 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
-from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
-from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
+
+from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
+from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 
 
 class TermValidation(Validation):
@@ -41,21 +42,13 @@ class TermResource(ModelResource):
         validation = TermValidation()
         always_return_data = True
 
-    def dehydrate(self, bundle):
-        bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
-        if hasattr(bundle.obj, "count"):
-            bundle.data['count'] = int(bundle.obj.count)
-        return bundle
-
     def hydrate(self, bundle):
-        vocabulary_id = None
-
-        if 'vocabulary_id' in bundle.data:
-            vocabulary_id = bundle.data['vocabulary_id']
-        elif hasattr(bundle, 'related_obj') and bundle.related_obj is not None:
-            vocabulary_id = bundle.related_obj.id
-
-        bundle.obj.vocabulary = Vocabulary.objects.get(id=vocabulary_id)
+        if 'vocabulary' in bundle.data:
+            bundle.obj.vocabulary = VocabularyResource().get_via_uri(
+                bundle.data['vocabulary'])
+        elif (hasattr(bundle, 'related_obj') and
+              bundle.related_obj is not None):
+            bundle.obj.vocabulary = bundle.related_obj
 
         bundle.obj.display_name = bundle.data['display_name']
         return bundle

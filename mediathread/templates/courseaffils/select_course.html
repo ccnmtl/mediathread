@@ -35,7 +35,7 @@
             <div style="width: 200px" class="ui-button ui-widget ui-state-default ui-button-text-only ui-corner-left" role="button" aria-disabled="true">
                 <span class="ui-button-text">View courses from:</span>
             </div>
-            
+
             <input type="radio" id="thisyear" name="view-choice" {% if not list_all_link %}checked=checked{% endif %} value="?{{next_redirect}}" />
             <label style="width: 100px" for="thisyear">This Year</label>
             <input type="radio" id="allyears" name="view-choice" {% if list_all_link %}checked=checked{% endif %} value="?list_all=true{{next_redirect}}"/>

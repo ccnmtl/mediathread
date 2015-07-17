@@ -34,10 +34,12 @@
             var templates = [
                 'asset_view_help',
                 'asset_view_details',
+                'asset_view_details_quick_edit',
                 'asset_references',
                 'asset_annotation_list',
                 'asset_annotation_current',
                 'asset_global_annotation',
+                'asset_global_annotation_quick_edit',
                 'asset_sources'
             ];
             for (var i = 0; i < templates.length; i++) {
@@ -180,7 +182,7 @@
                             }
                         }
 
-                        self._update(config, 'asset-view-details');
+                        self._update(config, 'asset-view-details-quick-edit');
                         self._addHistory(/*replace=*/true);
 
                         // Saved Annotations Form -- setup based on
@@ -1115,13 +1117,18 @@
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
             var rendered = Mustache2.render(tpl, context);
             if (template_label === 'asset-view-details') {
-                var $el = jQuery('#asset-view-details');
-                $el.closest('.asset-view-tabs').show();
-                $el.html(rendered);
+                jQuery('#asset-view-details').html(rendered);
 
                 rendered = Mustache2.render(
                     MediaThread.templates.asset_sources, context);
                 jQuery('#asset-sources').html(rendered);
+            } else if (template_label === 'asset-view-details-quick-edit') {
+                rendered = Mustache2.render(
+                    MediaThread.templates.asset_view_details_quick_edit,
+                    context);
+                var $el = jQuery('#asset-view-details-quick-edit');
+                $el.closest('.asset-view-tabs').show();
+                $el.html(rendered);
             } else if (template_label === 'asset-annotation-current') {
                 jQuery('#annotation-current').html(rendered);
             } else {
@@ -1134,9 +1141,9 @@
             jQuery('.asset-view-title').text(context['asset-current'].title);
 
             rendered = Mustache2.render(
-                MediaThread.templates.asset_global_annotation,
+                MediaThread.templates.asset_global_annotation_quick_edit,
                 context);
-            jQuery('#asset-global-annotation').html(rendered);
+            jQuery('#asset-global-annotation-quick-edit').html(rendered);
 
             if (self.active_annotation) {
                 djangosherd.assetview

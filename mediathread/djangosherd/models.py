@@ -10,7 +10,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
-from django.db.models.signals import post_save
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
 
@@ -466,52 +465,3 @@ class DiscussionIndex(models.Model):
         return [di for di in query
                 if di.collaboration.permission_to(
                     'read', request.course, request.user)]
-
-
-def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
-    sherdsource = None
-    participant = None
-    comment = None
-    collaboration = None
-    author = None
-    if (hasattr(instance, 'comment') and
-        hasattr(instance, 'user') and
-            isinstance(getattr(instance, 'content_object', None),
-                       Collaboration)):
-        # duck-typing for Comment and ThreadedComment
-        participant = instance.user
-        author = instance.user
-        comment = instance
-        collaboration = instance.content_object
-        sherdsource = instance.comment
-    elif hasattr(instance, 'author') and hasattr(instance, 'body') \
-            and callable(getattr(instance, 'collaboration', None)):
-        # not setting author, since get_or_create will break then
-        participant = None
-        author = instance.author
-        collaboration = instance.get_collaboration()
-        if collaboration is None:
-            return
-        sherdsource = instance.body
-    else:
-        return  # not comment, not project
-
-    sherds = SherdNote.objects.references_in_string(sherdsource, author)
-    if not sherds:
-        class NoNote:
-            asset = None
-        sherds = [NoNote(), ]
-
-    for ann in sherds:
-        try:
-            disc, created = DiscussionIndex.objects.get_or_create(
-                participant=participant,
-                collaboration=collaboration,
-                asset=ann.asset)
-            disc.comment = comment
-            disc.save()
-        except:
-            # some things may be deleted. pass
-            pass
-
-post_save.connect(commentNproject_indexer)

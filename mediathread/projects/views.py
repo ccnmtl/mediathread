@@ -37,6 +37,7 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
         project.create_or_update_collaboration(policy_name)
+        project.update_class_references()
 
         parent = request.POST.get("parent", None)
         if parent is not None:
@@ -98,6 +99,8 @@ def project_save(request, project_id):
         v_num = projectform.instance.get_latest_version()
         is_assignment = projectform.instance.is_assignment(request.course,
                                                            request.user)
+
+        projectform.instance.update_class_references()
 
         return HttpResponse(json.dumps({
             'status': 'success',

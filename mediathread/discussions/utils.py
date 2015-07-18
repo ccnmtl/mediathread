@@ -1,7 +1,9 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
-from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
+
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from structuredcollaboration.models import Collaboration
 
 
 def get_course_discussions(course):
@@ -49,3 +51,25 @@ def pretty_date(timestamp):
         ago = "(" + str(day_diff) + " days ago)"
 
     return "%s %s" % (timestamp.strftime("%m/%d/%Y %I:%M %p"), ago)
+
+
+def update_class_references(comment):
+    # update class references
+    notes = SherdNote.objects.references_in_string(comment.comment,
+                                                   comment.user)
+    if len(notes) < 1:
+        class NoNote:
+            asset = None
+        notes = [NoNote(), ]
+
+    for note in notes:
+        try:
+            disc, created = DiscussionIndex.objects.get_or_create(
+                participant=comment.user,
+                collaboration=comment.content_object,
+                asset=note.asset)
+            disc.comment = comment
+            disc.save()
+        except:
+            # some things may be deleted. pass
+            pass

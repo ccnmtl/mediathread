@@ -2,17 +2,19 @@
 import errno
 import os
 import time
+from urlparse import urlparse
 
 from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
-from mediathread.projects.models import Project
 from selenium.common.exceptions import NoSuchElementException, \
     StaleElementReferenceException, InvalidElementStateException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import \
-    visibility_of_element_located
+    visibility_of_element_located, invisibility_of_element_located
+
+from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
 
 
@@ -1208,6 +1210,78 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value):
                     time.sleep(1)
                     elt.clear()
                     elt.send_keys(value)
+
+
+@step(u'I insert "([^"]*)" into the text')
+def i_insert_title_into_the_text(step, title):
+    link = world.browser.find_element_by_partial_link_text(title)
+    href = link.get_attribute("href")
+
+    # strip the http://localhost:port off this href
+    pieces = urlparse(href)
+
+    insert_icon = world.browser.find_element_by_name(pieces.path)
+    insert_icon.click()
+
+
+@step(u'There are no projects')
+def there_are_no_projects(step):
+    Project.objects.all().delete()
+
+    n = Project.objects.count()
+    assert n == 0, "Found %s projects. Expected 0" % n
+
+
+@step(u'Then I set the project visibility to "([^"]*)"')
+def i_set_the_project_visibility_to_level(step, level):
+    elts = world.browser.find_elements_by_name("publish")
+    assert len(elts) > 0
+
+    for e in elts:
+        label_selector = "label[for=%s]" % e.get_attribute("id")
+        label = world.browser.find_element_by_css_selector(label_selector)
+        if label.text.strip() == level:
+            e.click()
+            return
+
+    assert False, "No %s option found" % (level)
+
+
+@step(u'Contextual help is visible for the ([^"]*)')
+def contextual_help_is_visible_for_the_area(step, area):
+    eid = None
+    if area == 'asset':
+        eid = 'asset-view-help'
+    elif area == 'collection':
+        eid = 'collection-help'
+
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.ID, eid)))
+
+
+@step(u'I close the ([^"]*)\'s contextual help')
+def i_close_the_area_s_contextual_help(step, area):
+    eid = None
+    if area == 'asset':
+        eid = 'asset-view-help'
+    elif area == 'collection':
+        eid = 'collection-help'
+
+    elt = world.browser.find_element_by_id(eid)
+    btn = elt.find_element_by_css_selector("input[type='button']")
+    btn.click()
+
+
+@step(u'Contextual help is not visible for the ([^"]*)')
+def contextual_help_is_not_visible_for_the_area(step, area):
+    eid = None
+    if area == 'asset':
+        eid = 'asset-view-help'
+    elif area == 'collection':
+        eid = 'collection-help'
+
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(invisibility_of_element_located((By.ID, eid)))
 
 
 # Local utility functions

@@ -1,5 +1,4 @@
 from lettuce import world, step
-from mediathread.projects.models import Project
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import \

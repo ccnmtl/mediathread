@@ -64,9 +64,7 @@
             <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
         {{/assignments}}
         
-        {{#assignments}}
-            <hr class="divideLinks" />
-        {{/assignments}}
+        <hr class="divideLinks" />
         
         <form action="/project/create/" method="post">
             <input type="hidden" name="title" />
@@ -200,6 +198,7 @@
                                     {{/collaboration}}
                           
                                     <div class="meta">
+                                        {{#collaboration}}
                                         <div class="assignment-listitem response">
                                             <span class="metadata-label">Response:</span>
                                             <span class="metadata-value">
@@ -219,6 +218,7 @@
                                                 {{/editable}}
                                             </span>
                                         </div>
+                                        {{/collaboration}}
                             
                                         <div class="metadata">
                                             <span class="metadata-label">by</span>

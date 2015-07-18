@@ -1120,6 +1120,14 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
                        (title, status_elt.text.strip().lower(), status))
                 assert status_elt.text.strip().lower().startswith(status), msg
 
+                # make sure there is no response
+                try:
+                    selector = '.assignment-listitem.response'
+                    elt = e.find_element_by_css_selector(selector)
+                    assert elt is None, 'A project should not have a response'
+                except NoSuchElementException:
+                    pass  # expected
+
             return
 
     assert False, "Unable to find project named %s" % title

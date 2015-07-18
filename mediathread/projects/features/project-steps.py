@@ -269,3 +269,8 @@ def the_title_form_disappears(step, title):
         wait.until(invisibility_of_element_located((By.ID, fid)))
     except TimeoutException:
         assert False, '%s form did not appear' % title
+
+
+@step(u'"([^"]*)" does not have a response')
+def title_does_not_have_a_response(step, title):
+    assert False, 'This step must be implemented'

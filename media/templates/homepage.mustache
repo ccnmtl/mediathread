@@ -198,11 +198,14 @@
                                     {{/collaboration}}
                           
                                     <div class="meta">
-                                        {{#collaboration}}
+                                        {{#is_response}}
                                         <div class="assignment-listitem response">
                                             <span class="metadata-label">Response:</span>
                                             <span class="metadata-value">
-                                                <a class="metadata-value-response" href="{{url}}">{{title}}</a>
+                                                <a class="metadata-value-response"
+                                                   href="{{url}}">
+                                                    {{title}}
+                                                </a>
                                                 {{#editable}}
                                                 <a href="/project/delete/{{id}}/"
                                                    onclick="return ajaxDelete(this,
@@ -218,7 +221,7 @@
                                                 {{/editable}}
                                             </span>
                                         </div>
-                                        {{/collaboration}}
+                                        {{/is_response}}
                             
                                         <div class="metadata">
                                             <span class="metadata-label">by</span>

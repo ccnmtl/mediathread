@@ -433,7 +433,7 @@ var MISC;
                 if (!urls[i].contains('test.json')) { // testing
                     var the_regex = /onomy.org\/published\/(\d+)\/json/g;
                     var match = the_regex.exec(urls[i]);
-                    if (match.length < 0 || !urls[i].contains('localhost')) {
+                    if (match.length < 0) {
                        // display error message
                        showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
                        return;

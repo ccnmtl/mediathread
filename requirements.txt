@@ -23,7 +23,7 @@ selenium==2.46.0
 six==1.9.0
 sqlparse==0.1.14  # django-debug-toolbar
 python-mimeparse==0.1.4  # tastypie
-python-dateutil==2.4.0  # tastypie
+python-dateutil==2.4.2  # tastypie
 django-tastypie==0.12.1
 coverage==3.7.1
 logilab-common==0.63.2

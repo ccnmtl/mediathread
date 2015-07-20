@@ -1190,10 +1190,12 @@ def given_the_item_visibility_is_value(step, value):
 
 
 @step(u'I set the "([^"]*)" "([^"]*)" field to "([^"]*)"')
-def i_set_the_label_ftype_to_value(step, label, ftype, value):
+def i_set_the_label_ftype_to_value(step, label, ftype, value, sid=None):
     if world.using_selenium:
-        parent = world.browser.find_element_by_css_selector(
-            ".asset-view-details")
+        s = 'asset-view-details'
+        if sid is not None:
+            s = sid
+        parent = world.browser.find_element_by_id(s)
 
         if ftype == "text":
             selector = "input[type=text]"
@@ -1210,6 +1212,12 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value):
                     time.sleep(1)
                     elt.clear()
                     elt.send_keys(value)
+
+
+@step(u'I set the quickedit "([^"]*)" "([^"]*)" field to "([^"]*)"')
+def i_set_the_quickedit_label_ftype_to_value(step, label, ftype, value):
+    return i_set_the_label_ftype_to_value(step, label, ftype, value,
+                                          sid='asset-view-details-quick-edit')
 
 
 # Local utility functions

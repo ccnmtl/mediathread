@@ -1190,12 +1190,10 @@ def given_the_item_visibility_is_value(step, value):
 
 
 @step(u'I set the "([^"]*)" "([^"]*)" field to "([^"]*)"')
-def i_set_the_label_ftype_to_value(step, label, ftype, value, sid=None):
+def i_set_the_label_ftype_to_value(step, label, ftype, value,
+                                   sid='asset-view-details'):
     if world.using_selenium:
-        s = 'asset-view-details'
-        if sid is not None:
-            s = sid
-        parent = world.browser.find_element_by_id(s)
+        parent = world.browser.find_element_by_id(sid)
 
         if ftype == "text":
             selector = "input[type=text]"

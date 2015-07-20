@@ -1206,7 +1206,8 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value,
                     elt.clear()
                     elt.send_keys(value)
                     return
-                except InvalidElementStateException:
+                except (InvalidElementStateException,
+                        StaleElementReferenceException):
                     time.sleep(1)
                     elt.clear()
                     elt.send_keys(value)

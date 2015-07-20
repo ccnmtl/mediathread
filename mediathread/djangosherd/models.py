@@ -454,14 +454,32 @@ class DiscussionIndex(models.Model):
     def get_type_label(self):
         if self.comment and self.comment.threadedcomment:
             return 'discussion'
-
         elif self.collaboration.content_object:
             return 'project'
-
-        return ''
+        else:
+            return ''
 
     @classmethod
     def with_permission(cls, request, query):
         return [di for di in query
                 if di.collaboration.permission_to(
                     'read', request.course, request.user)]
+
+    @classmethod
+    def update_class_references(cls, sherdsource, participant, comment,
+                                collaboration, author):
+        sherds = SherdNote.objects.references_in_string(sherdsource, author)
+        if not sherds:
+            class NoNote:
+                asset = None
+            sherds = [NoNote(), ]
+
+        for ann in sherds:
+            try:
+                disc, created = DiscussionIndex.objects.get_or_create(
+                    participant=participant, collaboration=collaboration,
+                    asset=ann.asset)
+                disc.comment = comment
+                disc.save()
+            except Asset.DoesNotExist:
+                pass  # some annotations or assets may have been deleted

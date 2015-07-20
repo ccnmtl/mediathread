@@ -8,7 +8,6 @@ from django.db import models
 from django.db.models import Q
 from threadedcomments.models import ThreadedComment
 
-from mediathread.djangosherd.models import DiscussionIndex
 from structuredcollaboration.models import Collaboration
 
 
@@ -407,19 +406,6 @@ class Project(models.Model):
         """
         note_model = models.get_model('djangosherd', 'SherdNote')
         return note_model.objects.references_in_string(self.body, self.author)
-
-    def update_class_references(self):
-        note_model = models.get_model('djangosherd', 'SherdNote')
-        notes = note_model.objects.references_in_string(self.body, self.author)
-
-        for note in notes:
-            try:
-                DiscussionIndex.objects.get_or_create(
-                    participant=None,
-                    collaboration=self.get_collaboration(),
-                    asset=note.asset)
-            except:
-                pass  # some things may be deleted?
 
     @property
     def content_object(self):

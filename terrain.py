@@ -1201,13 +1201,18 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value,
             selector = "textarea"
         elts = parent.find_elements_by_css_selector(selector)
         for elt in elts:
-            if elt.get_attribute('data-label') == label:
+            try:
+                label_attr = elt.get_attribute('data-label')
+            except StaleElementReferenceException:
+                time.sleep(1)
+                elt.clear()
+                label_attr = elt.get_attribute('data-label')
+            if label_attr == label:
                 try:
                     elt.clear()
                     elt.send_keys(value)
                     return
-                except (InvalidElementStateException,
-                        StaleElementReferenceException):
+                except InvalidElementStateException:
                     time.sleep(1)
                     elt.clear()
                     elt.send_keys(value)

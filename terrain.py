@@ -1204,9 +1204,8 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value,
             try:
                 label_attr = elt.get_attribute('data-label')
             except StaleElementReferenceException:
-                time.sleep(1)
-                elt.clear()
-                label_attr = elt.get_attribute('data-label')
+                continue
+
             if label_attr == label:
                 try:
                     elt.clear()

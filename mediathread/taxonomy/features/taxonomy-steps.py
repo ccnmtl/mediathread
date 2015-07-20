@@ -1,6 +1,6 @@
 from lettuce import world, step, django
 from selenium.webdriver.support.expected_conditions import \
-    invisibility_of_element_located
+    invisibility_of_element_located, visibility_of_element_located
 import selenium.webdriver.support.ui as ui
 from selenium.webdriver.common.by import By
 
@@ -108,12 +108,11 @@ def i_see_a_group1_term(step, group1):
 
 @step(u'I click the "([^"]*)" term delete icon')
 def i_click_the_group1_term_delete_icon(step, group1):
-    selector = "div.term-display h5"
-    elts = world.browser.find_elements_by_css_selector(selector)
+    elts = world.browser.find_elements_by_css_selector('.term-display')
     for elt in elts:
-        if elt.text == group1:
-            parent = elt.parent
-            icon = parent.find_element_by_css_selector('.delete-term')
+        term = elt.find_element_by_css_selector('h5')
+        if term.text == group1:
+            icon = elt.find_element_by_css_selector('.delete-term')
             icon.click()
             return
 
@@ -161,14 +160,11 @@ def i_save_the_term(step):
     elt.click()
 
 
-@step(u'There is a "([^"]*)" term')
+@step(u'there is a "([^"]*)" term')
 def there_is_a_name_term(step1, name):
-    selector = '.term-display h5'
-    for elt in world.browser.find_elements_by_css_selector(selector):
-        if elt.text == name:
-            return  # found
-
-    assert False, "No term [%s] found" % name
+    selector = '[data-id="%s"]' % name
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.CSS_SELECTOR, selector)))
 
 
 @step(u'there is no "([^"]*)" term')
@@ -205,4 +201,5 @@ def specify_the_incorrect_onomy_url(step):
 def specify_the_refresh_onomy_url(step):
     url = django.django_url('/media/onomy/reimport_test.json')
     elt = world.browser.find_element_by_id('onomy_url')
+    elt.send_keys(',')
     elt.send_keys(url)

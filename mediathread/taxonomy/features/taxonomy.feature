@@ -131,7 +131,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then There is a "Red" term
+        Then there is a "Red" term
 
         Finished using Selenium
 
@@ -153,7 +153,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then There is a "Red" term
+        Then there is a "Red" term
 
         # Duplicate term
         When I name a term "Red"
@@ -180,7 +180,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then There is a "Red" term
+        Then there is a "Red" term
 
         # Delete the term
         When I click the "Red" term delete icon
@@ -208,7 +208,7 @@ Feature: Taxonomy
         # Create a term
         When I name a term "Red"
         And create the term
-        Then There is a "Red" term
+        Then there is a "Red" term
 
         # Edit the term
         When I click the "Red" term edit icon
@@ -216,12 +216,12 @@ Feature: Taxonomy
         I save the term
         I wait until the "Red" rename is complete
 
-        Then There is a "Blue" term
+        Then there is a "Blue" term
         Then there is no "Red" term
 
         Finished using Selenium
 
-    Scenario: taxonomy.feature 8a. Create Term, Edit Taxonomy
+    Scenario: taxonomy.feature 9. Create Term, Edit Taxonomy
         Using selenium
         Given I am test_instructor in Sample Course
         
@@ -259,7 +259,7 @@ Feature: Taxonomy
         And I see "Terms"
         And I see "Type new term name here"
         
-    Scenario: taxonomy.feature 9. Create from onomy
+    Scenario: taxonomy.feature 10. Create from onomy
         Using selenium
         Given I am test_instructor in Sample Course
 
@@ -278,22 +278,22 @@ Feature: Taxonomy
         And specify the onomy url
         And confirm the onomy import
 
-        Then There is a "Black" term
-        Then There is a "Blue" term
-        Then There is a "Green" term
-        Then There is a "Pastels" term
-        Then There is a "Purple" term
-        Then There is a "Red" term
+        Then there is a "Black" term
+        Then there is a "Blue" term
+        Then there is a "Green" term
+        Then there is a "Pastels" term
+        Then there is a "Purple" term
+        Then there is a "Red" term
 
         Then there is a "Pastels" link
         When I click the "Pastels" link
-        Then There is a "Light Blue" term
-        Then There is a "Light Green" term
-        Then There is a "Pink" term
+        Then there is a "Light Blue" term
+        Then there is a "Light Green" term
+        Then there is a "Pink" term
 
         Finished using Selenium
 
-    Scenario: taxonomy.feature 10. onomy delete and refresh
+    Scenario: taxonomy.feature 11. onomy delete and refresh
         Using selenium
         Given I am test_instructor in Sample Course
 
@@ -312,32 +312,32 @@ Feature: Taxonomy
         And specify the onomy url
         And confirm the onomy import
 
-        Then There is a "Black" term
-        Then There is a "Blue" term
-        Then There is a "Green" term
-        Then There is a "Pastels" term
-        Then There is a "Purple" term
-        Then There is a "Red" term
+        Then there is a "Black" term
+        Then there is a "Blue" term
+        Then there is a "Green" term
+        Then there is a "Pastels" term
+        Then there is a "Purple" term
+        Then there is a "Red" term
 
         Then there is a "Pastels" link
         When I click the "Pastels" link
-        Then There is a "Light Blue" term
-        Then There is a "Light Green" term
-        Then There is a "Pink" term
+        Then there is a "Light Blue" term
+        Then there is a "Light Green" term
+        Then there is a "Pink" term
 
         Then I click the "Colors" link
+        Then there is a "Red" term
         When I click the "Red" term delete icon
         And I confirm the action
         Then there is no "Red" term
 
-        When I click the "Colors" link
+        # refresh from the onomy url
         Then I click the Refresh button
-
-        Then There is a "Red" term
+        Then there is a "Red" term
 
         Finished using Selenium
 
-    Scenario: taxonomy.feature 11. Try invalid Onomy url
+    Scenario: taxonomy.feature 12. Try invalid Onomy url
         Using selenium
         Given I am test_instructor in Sample Course
 
@@ -365,7 +365,7 @@ Feature: Taxonomy
 
         Finished using Selenium
 
-    Scenario: taxonomy.feature 12. Refresh
+    Scenario: taxonomy.feature 13. Refresh
         Using selenium
         Given I am test_instructor in Sample Course
 
@@ -384,39 +384,38 @@ Feature: Taxonomy
         And specify the onomy url
         And confirm the onomy import
 
-        Then There is a "Black" term
-        Then There is a "Blue" term
-        Then There is a "Green" term
-        Then There is a "Pastels" term
-        Then There is a "Purple" term
-        Then There is a "Red" term
+        Then there is a "Black" term
+        Then there is a "Blue" term
+        Then there is a "Green" term
+        Then there is a "Pastels" term
+        Then there is a "Purple" term
+        Then there is a "Red" term
 
-        Then There is a "Pastels" link
+        Then there is a "Pastels" link
         When I click the "Pastels" link
-        Then There is a "Light Blue" term
-        Then There is a "Light Green" term
-        Then There is a "Pink" term
+        Then there is a "Light Blue" term
+        Then there is a "Light Green" term
+        Then there is a "Pink" term
 
         Then I click the "Colors" link
         Then I click the Edit button
         And specify the refresh onomy url
         And confirm the onomy import
+        Then there is a "Black" term
+        Then there is a "Blue" term
+        Then there is a "Green" term
+        Then there is a "Pastels" term
+        Then there is a "Purple" term
+        Then there is a "Red" term
 
-        Then There is a "Black" term
-        Then There is a "Blue" term
-        Then There is a "Green" term
-        Then There is a "Pastels" term
-        Then There is a "Purple" term
-        Then There is a "Red" term
-
-        Then There is a "Pastels" link
+        Then there is a "Pastels" link
         When I click the "Pastels" link
-        Then There is a "Light Blue" term
-        Then There is a "Light Green" term
-        Then There is a "Pink" term
+        Then there is a "Light Blue" term
+        Then there is a "Light Green" term
+        Then there is a "Pink" term
 
         Then there is a "Neons" link
         When I click the "Neons" link
-        Then There is a "Laser Blue" term
+        Then there is a "Laser Blue" term
         
         Finished using Selenium

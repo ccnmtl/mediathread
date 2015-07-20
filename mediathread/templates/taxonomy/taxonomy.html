@@ -120,8 +120,10 @@
                             <% for (var j=0; j < vocabularies[i].term_set.length; j++) { %>
                                 <div class="term <% if (j%2 === 0) { %>even<% } else { %>odd<% } %>">
                                     <div class="term-display">
-                                        <h5><%= vocabularies[i].term_set[j].display_name %></h5>
-                                    
+                                        <h5 data-id="<%= vocabularies[i].term_set[j].display_name %>">
+                                            <%= vocabularies[i].term_set[j].display_name %>
+                                        </h5>
+
                                         <div class="term-actions">
                                             <a class="icon-link edit-term-open" href="#">                                                     
                                                 <img src="{{STATIC_URL}}img/icons/meth_edit.png" class="edit_icon" alt="Edit term"  />

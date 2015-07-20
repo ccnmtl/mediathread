@@ -7,8 +7,7 @@ DATABASES = {
         'NAME': './lettuce.db',
         'OPTIONS': {
             'timeout': 30,
-        },
-        'ATOMIC_REQUESTS': True
+        }
     }
 }
 

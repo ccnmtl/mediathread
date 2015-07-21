@@ -1,4 +1,8 @@
 from datetime import datetime
+import json
+from random import choice
+from string import letters
+
 from django.conf import settings
 from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
@@ -9,20 +13,19 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
+from threadedcomments import ThreadedComment
+from threadedcomments.util import annotate_tree_properties, fill_tree
+
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
+from mediathread.djangosherd.models import DiscussionIndex
 from mediathread.mixins import faculty_only
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-from random import choice
-from string import letters
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
-from threadedcomments import ThreadedComment
-from threadedcomments.util import annotate_tree_properties, fill_tree
-import json
 
 
 @allow_http("POST")
@@ -85,6 +88,11 @@ def discussion_create(request):
 
     disc_sc.content_object = new_threaded_comment
     disc_sc.save()
+
+    DiscussionIndex.update_class_references(
+        new_threaded_comment.comment, new_threaded_comment.user,
+        new_threaded_comment, new_threaded_comment.content_object,
+        new_threaded_comment.user)
 
     if not request.is_ajax():
         return HttpResponseRedirect("/discussion/%d/" %
@@ -209,7 +217,12 @@ def comment_save(request, comment_id, next_url=None):
             disc_sc.save()
 
     comment.save()
-    return {'comment': comment, }
+
+    DiscussionIndex.update_class_references(comment.comment, comment.user,
+                                            comment, comment.content_object,
+                                            comment.user)
+
+    return {'comment': comment}
 
 
 def threaded_comment_citations(all_comments, viewer):

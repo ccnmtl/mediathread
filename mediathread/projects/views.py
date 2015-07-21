@@ -15,7 +15,7 @@ from djangohelpers.lib import allow_http
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
-from mediathread.djangosherd.models import SherdNote
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import ajax_required, LoggedInMixin, \
     RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin, \
     LoggedInFacultyMixin
@@ -36,7 +36,10 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         project.participants.add(request.user)
 
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        project.create_or_update_collaboration(policy_name)
+        collaboration = project.create_or_update_collaboration(policy_name)
+        DiscussionIndex.update_class_references(project.body,
+                                                None, None, collaboration,
+                                                project.author)
 
         parent = request.POST.get("parent", None)
         if parent is not None:
@@ -93,11 +96,16 @@ def project_save(request, project_id):
 
         # update the collaboration
         policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        projectform.instance.create_or_update_collaboration(policy_name)
+        collaboration = projectform.instance.create_or_update_collaboration(
+            policy_name)
 
         v_num = projectform.instance.get_latest_version()
         is_assignment = projectform.instance.is_assignment(request.course,
                                                            request.user)
+
+        DiscussionIndex.update_class_references(projectform.instance.body,
+                                                None, None, collaboration,
+                                                projectform.instance.author)
 
         return HttpResponse(json.dumps({
             'status': 'success',

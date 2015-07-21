@@ -30,8 +30,8 @@ Feature: QuickEdit
         
         # Verify the create form is visible
         Then the "Edit Item" form appears
-        And I set the "Tags" "text" field to "abc"
-        And I set the "Notes" "textarea" field to "Here are my notes"
+        And I set the quickedit "Tags" "text" field to "abc"
+        And I set the quickedit "Notes" "textarea" field to "Here are my notes"
         And I click the Save Item button
 
         Then the "Edit Item" form disappears
@@ -79,9 +79,9 @@ Feature: QuickEdit
         And there is a Cancel button
         And there is a Save Selection button
         
-        When I set the "Title" "text" field to "Test Selection"
-        And I set the "Selection Tags" "text" field to "abc"
-        And I set the "Selection Notes" "textarea" field to "Here are my notes"
+        When I set the quickedit "Title" "text" field to "Test Selection"
+        And I set the quickedit "Selection Tags" "text" field to "abc"
+        And I set the quickedit "Selection Notes" "textarea" field to "Here are my notes"
         And I click the Save Selection button
         
         Then there is a "Test Selection" link
@@ -129,9 +129,9 @@ Feature: QuickEdit
         And there is a Cancel button
         And there is a Save Selection button
         
-        When I set the "Title" "text" field to "Test Selection"
-        And I set the "Selection Tags" "text" field to "abc"
-        And I set the "Selection Notes" "textarea" field to "Here are my notes"
+        When I set the quickedit "Title" "text" field to "Test Selection"
+        And I set the quickedit "Selection Tags" "text" field to "abc"
+        And I set the quickedit "Selection Notes" "textarea" field to "Here are my notes"
         And I click the Save Selection button
         
         Then there is a "Test Selection" link

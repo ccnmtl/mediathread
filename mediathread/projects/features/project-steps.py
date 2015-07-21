@@ -286,7 +286,7 @@ def the_title_form_appears(step, title):
         if title == 'Create Selection' or title == 'Edit Selection':
             fid = 'annotation-current'
         elif title == 'Edit Item':
-            fid = 'asset-global-annotation'
+            fid = 'asset-global-annotation-quick-edit'
 
         wait = ui.WebDriverWait(world.browser, 5)
         wait.until(visibility_of_element_located((By.ID, fid)))
@@ -301,7 +301,7 @@ def the_title_form_disappears(step, title):
         if title == 'Create Selection' or title == 'Edit Selection':
             fid = 'annotation-current'
         elif title == 'Edit Item':
-            fid = 'asset-global-annotation'
+            fid = 'asset-global-annotation-quick-edit'
 
         wait = ui.WebDriverWait(world.browser, 5)
         wait.until(invisibility_of_element_located((By.ID, fid)))

@@ -8,12 +8,13 @@ DATABASES = {
         'OPTIONS': {
             'timeout': 30,
         }
-    }
+    },
+    'ATOMIC_REQUESTS': True
 }
 
 # BROWSER = 'Firefox'
 BROWSER = 'Headless'
-# BROWSER = 'Chrome'
+BROWSER = 'Chrome'
 
 LETTUCE_APPS = (
     'mediathread.main',

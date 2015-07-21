@@ -2,15 +2,17 @@
 import errno
 import os
 import time
+from urlparse import urlparse
 
 from django.conf import settings
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
 from selenium.common.exceptions import NoSuchElementException, \
-    StaleElementReferenceException
+    StaleElementReferenceException, InvalidElementStateException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.expected_conditions import visibility_of_element_located
+from selenium.webdriver.support.expected_conditions import \
+    visibility_of_element_located, invisibility_of_element_located
 
 from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
@@ -117,10 +119,10 @@ def i_am_username_in_course(step, username, coursename):
         world.browser.get(django.django_url("/accounts/logout/?next=/"))
         world.browser.get(django.django_url("accounts/login/?next=/"))
 
-        elt = find_button_by_value("Guest Log In")
-        if elt is None:
-            time.sleep(1)
-            elt = find_button_by_value("Guest Log In")
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, 'guest-login')))
+
+        elt = world.browser.find_element_by_id('guest-login')
         elt.click()
 
         username_field = world.browser.find_element_by_id("id_username")
@@ -150,7 +152,6 @@ def i_am_username_in_course(step, username, coursename):
 @step(u'I am not logged in')
 def i_am_not_logged_in(step):
     if world.using_selenium:
-        from lettuce.django import django_url
         world.browser.get(django.django_url("/accounts/logout/?next=/"))
     else:
         world.client.logout()
@@ -161,8 +162,8 @@ def i_log_out(step):
     if world.using_selenium:
         world.browser.get(django.django_url("/accounts/logout/?next=/"))
     else:
-        response = world.client.get(django.django_url("/accounts/logout/?next=/"),
-                                    follow=True)
+        response = world.client.get(
+            django.django_url("/accounts/logout/?next=/"), follow=True)
         world.response = response
         world.dom = html.fromstring(response.content)
 
@@ -1119,6 +1120,14 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
                        (title, status_elt.text.strip().lower(), status))
                 assert status_elt.text.strip().lower().startswith(status), msg
 
+                # make sure there is no response
+                try:
+                    selector = '.assignment-listitem.response'
+                    elt = e.find_element_by_css_selector(selector)
+                    assert elt is None, 'A project should not have a response'
+                except NoSuchElementException:
+                    pass  # expected
+
             return
 
     assert False, "Unable to find project named %s" % title
@@ -1188,6 +1197,112 @@ def given_the_item_visibility_is_value(step, value):
         if elt:
             elt.click()
             world.browser.get(django.django_url("/"))
+
+
+@step(u'I set the "([^"]*)" "([^"]*)" field to "([^"]*)"')
+def i_set_the_label_ftype_to_value(step, label, ftype, value,
+                                   sid='asset-view-details'):
+    if world.using_selenium:
+        parent = world.browser.find_element_by_id(sid)
+
+        if ftype == "text":
+            selector = "input[type=text]"
+        elif ftype == "textarea":
+            selector = "textarea"
+        elts = parent.find_elements_by_css_selector(selector)
+        for elt in elts:
+            try:
+                label_attr = elt.get_attribute('data-label')
+            except StaleElementReferenceException:
+                continue
+
+            if label_attr == label:
+                try:
+                    elt.clear()
+                    elt.send_keys(value)
+                    return
+                except InvalidElementStateException:
+                    time.sleep(1)
+                    elt.clear()
+                    elt.send_keys(value)
+
+
+@step(u'I insert "([^"]*)" into the text')
+def i_insert_title_into_the_text(step, title):
+    link = world.browser.find_element_by_partial_link_text(title)
+    href = link.get_attribute("href")
+
+    # strip the http://localhost:port off this href
+    pieces = urlparse(href)
+
+    insert_icon = world.browser.find_element_by_name(pieces.path)
+    insert_icon.click()
+
+
+@step(u'There are no projects')
+def there_are_no_projects(step):
+    Project.objects.all().delete()
+
+    n = Project.objects.count()
+    assert n == 0, "Found %s projects. Expected 0" % n
+
+
+@step(u'Then I set the project visibility to "([^"]*)"')
+def i_set_the_project_visibility_to_level(step, level):
+    elts = world.browser.find_elements_by_name("publish")
+    assert len(elts) > 0
+
+    for e in elts:
+        label_selector = "label[for=%s]" % e.get_attribute("id")
+        label = world.browser.find_element_by_css_selector(label_selector)
+        if label.text.strip() == level:
+            e.click()
+            return
+
+    assert False, "No %s option found" % (level)
+
+
+@step(u'Contextual help is visible for the ([^"]*)')
+def contextual_help_is_visible_for_the_area(step, area):
+    eid = None
+    if area == 'asset':
+        eid = 'asset-view-help'
+    elif area == 'collection':
+        eid = 'collection-help'
+
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.ID, eid)))
+
+
+@step(u'I close the ([^"]*)\'s contextual help')
+def i_close_the_area_s_contextual_help(step, area):
+    eid = None
+    if area == 'asset':
+        eid = 'asset-view-help'
+    elif area == 'collection':
+        eid = 'collection-help'
+
+    elt = world.browser.find_element_by_id(eid)
+    btn = elt.find_element_by_css_selector("input[type='button']")
+    btn.click()
+
+
+@step(u'Contextual help is not visible for the ([^"]*)')
+def contextual_help_is_not_visible_for_the_area(step, area):
+    eid = None
+    if area == 'asset':
+        eid = 'asset-view-help'
+    elif area == 'collection':
+        eid = 'collection-help'
+
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(invisibility_of_element_located((By.ID, eid)))
+
+
+@step(u'I set the quickedit "([^"]*)" "([^"]*)" field to "([^"]*)"')
+def i_set_the_quickedit_label_ftype_to_value(step, label, ftype, value):
+    return i_set_the_label_ftype_to_value(step, label, ftype, value,
+                                          sid='asset-view-details-quick-edit')
 
 
 # Local utility functions

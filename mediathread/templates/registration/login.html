@@ -35,7 +35,7 @@
                         {{ form.password }}
                     </div><!-- fieldwrapper -->
                 </div>      
-                <input class="btn-primary" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}
+                <input id="guest-login" class="btn-primary" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}
                     onclick="jQuery('.login-local-form').show(); jQuery(this).hide(); return false;"/>
                 <input class="btn-primary login-local-form" type="submit" value="Log In" {% if not form.errors %}style="display: none;"{% endif %} />                        
                 <input type="hidden" name="next" value="{{ next|urlencode }}" />

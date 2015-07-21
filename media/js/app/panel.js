@@ -1,6 +1,6 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
-/* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */ 
+/* global Mustache2: true, panelFactory: true, ProjectPanelHandler: true */
 
 (function () {
     var PanelFactory = function() {
@@ -68,7 +68,7 @@
                     dataType: 'text',
                     cache: false, // Chrome && Internet Explorer have aggressive caching policies.
                     success: function (text) {
-                        MediaThread.templates[self.panels[idx].template] = Mustache.template(self.panels[idx].template, text);
+                        MediaThread.templates[self.panels[idx].template] = text;
                         self.loadTemplates(++idx);
                     }
                 });
@@ -88,7 +88,7 @@
                     // The last column is reserved for a placeholder td that eats space
                     // and makes the sliding UI work nicely
                     var lastCell = jQuery("#" + self.options.container + " tr:first td:last");
-                    lastCell.before(Mustache.tmpl(panel.template, panel));
+                    lastCell.before(Mustache2.render(MediaThread.templates[panel.template], panel));
 
                     var newCell = jQuery(lastCell).prev().prev()[0];
                     var handler = panelFactory.create(newCell,
@@ -101,20 +101,16 @@
                     // enable open/close controls on subpanel
                     jQuery(newCell)
                         .find(".pantab-container")
-                        .bind(
-                            'click',
+                        .on('click',
                             {handler: handler, isSubpanel: true},
-                            slidePanelCallback
-                        );
+                            slidePanelCallback);
 
                     // enable open/close controls on parent panels
                     jQuery(newCell)
                         .next(".pantab-container")
-                        .bind(
-                            'click',
+                        .on('click',
                             {handler: handler, isSubpanel: false},
-                            slidePanelCallback
-                        );
+                            slidePanelCallback);
 
                     // @todo -- update history to reflect this new view
 

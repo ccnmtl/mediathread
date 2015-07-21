@@ -1,7 +1,8 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
-from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
+
+from structuredcollaboration.models import Collaboration
 
 
 def get_course_discussions(course):

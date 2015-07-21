@@ -1,15 +1,56 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
-/* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
+/* global DjangoSherd_Colors: true, MediaThread: true, Mustache2: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
-/* global updateUserSetting: true */ 
+/* global updateUserSetting: true */
 
 (function() {
     var AnnotationList = function() {
         var self = this;
 
-        this.init = function(config) {
-            this.layers = {}; //should we really store layers here?
+        /**
+         * Load a Mustache template from the /media/templates/
+         * directory and put it in the MediaThread.templates
+         * dictionary.
+         */
+        var loadTemplate = function(templateName) {
+            jQuery.ajax({
+                url: '/media/templates/' + templateName +
+                    '.mustache?nocache=v2',
+                dataType: 'text',
+                // Load this synchronously to make sure the template is
+                // available when it's needed.
+                async: false,
+                cache: false,
+                success: function (text) {
+                    MediaThread.templates[templateName] = text;
+                }
+            });
+        };
 
+        /**
+         * Load all the asset-related templates.
+         */
+        var loadTemplates = function() {
+            var templates = [
+                'asset_view_help',
+                'asset_view_details',
+                'asset_view_details_quick_edit',
+                'asset_references',
+                'asset_annotation_list',
+                'asset_annotation_current',
+                'asset_global_annotation',
+                'asset_global_annotation_quick_edit',
+                'asset_sources'
+            ];
+            for (var i = 0; i < templates.length; i++) {
+                loadTemplate(templates[i]);
+            }
+        };
+
+        this.init = function(config) {
+            loadTemplates();
+
+            this.layers = {}; //should we really store layers here?
             this.active_annotation = null;
             this.active_asset = null;
             this.vocabulary = config.vocabulary;
@@ -142,6 +183,7 @@
                         }
 
                         self._update(config, 'asset-view-details');
+                        self._update(config, 'asset-view-details-quick-edit');
                         self._addHistory(/*replace=*/true);
 
                         // Saved Annotations Form -- setup based on
@@ -315,41 +357,39 @@
                 'category': cats[context.annotation_list[k]]};
             }
 
-            Mustache.update('annotation-list', context, {
-                pre: function(elt) {
-                    jQuery(elt).hide();
-                    jQuery('.accordion').accordion('destroy');
-                },
-                post: function(elt) {
-                    var options = {
-                        autoHeight: false,
-                        collapsible: true,
-                        active: false,
-                        animate: false,
-                        heightStyle: "content"
-                    };
+            var $elt = jQuery('#asset-details-annotations-list');
+            $elt.hide();
+            jQuery('.accordion').accordion('destroy');
+            var rendered = Mustache2.render(
+                MediaThread.templates.asset_annotation_list, context);
+            $elt.html(rendered);
+            var options = {
+                autoHeight: false,
+                collapsible: true,
+                active: false,
+                animate: false,
+                heightStyle: "content"
+            };
 
-                    jQuery(elt).show();
-                    jQuery('li.annotation-listitem', elt)
-                        .each(self.decorateLink);
+            $elt.show();
+            jQuery('li.annotation-listitem', $elt)
+                .each(self.decorateLink);
 
-                    // activate the current annotation if it exists
-                    jQuery('.accordion').accordion(options);
-                    jQuery('.accordion').accordion({
-                        'activate': self.showAnnotation});
-                    
-                    if (self.active_annotation) {
-                        var active = jQuery('#accordion-' +
-                            self.active_annotation.id)[0];
-                        var parent = jQuery(active).parents('.accordion');
-                        
-                        var idx = jQuery(parent).find('h3').index(active);
-                        jQuery(parent).accordion('option', 'active', idx);
-                        jQuery(active)
-                           .find('input.annotation-listitem-icon').show();
-                    }
-                }
-            });
+            // activate the current annotation if it exists
+            jQuery('.accordion').accordion(options);
+            jQuery('.accordion').accordion({
+                'activate': self.showAnnotation});
+
+            if (self.active_annotation) {
+                var active = jQuery('#accordion-' +
+                                    self.active_annotation.id)[0];
+                var parent = jQuery(active).parents('.accordion');
+
+                var idx = jQuery(parent).find('h3').index(active);
+                jQuery(parent).accordion('option', 'active', idx);
+                jQuery(active)
+                    .find('input.annotation-listitem-icon').show();
+            }
         };
 
         this.resetHighlightLayer = function() {
@@ -606,24 +646,27 @@
                             'vocabulary': self.vocabulary
                         };
 
-                        Mustache.update('asset-view-header', context);
+                        jQuery('.asset-view-title').text(
+                            context['asset-current'].title);
 
-                        Mustache.update('asset-global-annotation', context, {
-                            pre: function(elt) { jQuery(elt).hide(); },
-                            post: function(elt) {
-                                jQuery(elt).fadeIn('slow', function() {
-                                    jQuery('#annotations-organized-container' +
-                                           ', #annotation-current')
-                                    .fadeIn()
-                                    .promise()
-                                    .done(function() {
-                                        self._initTags();
-                                        self._initConcepts();
-                                        self._initReferences();
-                                        jQuery(window).trigger('resize');
-                                    });
+                        var $elt = jQuery('#asset-global-annotation');
+                        $elt.hide();
+                        var rendered = Mustache2.render(
+                            MediaThread.templates.asset_global_annotation,
+                            context);
+                        $elt.html(rendered);
+
+                        $elt.fadeIn('slow', function() {
+                            jQuery('#annotations-organized-container' +
+                                   ', #annotation-current')
+                                .fadeIn()
+                                .promise()
+                                .done(function() {
+                                    self._initTags();
+                                    self._initConcepts();
+                                    self._initReferences();
+                                    jQuery(window).trigger('resize');
                                 });
-                            }
                         });
                     });
                 }
@@ -641,20 +684,20 @@
 
                 var new_annotation_id = jQuery(ui.newHeader).data('id');
                 self._update({'annotation_id': new_annotation_id},
-                             'annotation-current');
+                             'asset-annotation-current');
                 self._addHistory(/*replace=*/false);
 
                 var group = jQuery(ui.newHeader)
-                                .parents('li.annotation-group')[0];
+                    .parents('li.annotation-group')[0];
                 jQuery(group).siblings().find('.accordion')
                     .accordion('option', 'active', false);
-                
+
                 setTimeout(function() {
                     var list = jQuery(ui.newHeader).offsetParent()[0];
                     jQuery(list).scrollTop(jQuery(list)
                         .scrollTop() + jQuery(ui.newHeader)
                             .position().top - 10);
-                }, 200);                
+                }, 200);
             }
         };
 
@@ -686,7 +729,7 @@
                     {
                         'annotation_id': annotation_id,
                         'editing': false
-                    }, 'annotation-current');
+                    }, 'asset-annotation-current');
 
                 if (self.active_annotation) {
                     var active = jQuery('#accordion-' +
@@ -718,34 +761,33 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    Mustache.update(
-                        'annotation-current', context,
-                        {
-                            post: function(elt) {
-                                djangosherd.assetview.clipform.html
-                                    .push('clipform-display', {
-                                        asset: {}
-                                    });
+                    var rendered = Mustache2.render(
+                        MediaThread.templates.asset_annotation_current,
+                        context);
+                    jQuery('#annotation-current').html(rendered);
 
-                                // Preserve zoom level on
-                                //'new selection'
-                                //djangosherd.assetview
-                                // .setState({});
-                                //Let's see if just not
-                                //setting state will work.
-
-                                djangosherd.assetview.clipform
-                                    .setState({'start': 0, 'end': 0},
-                                              {'mode': 'create'});
-
-                                self._initTags();
-                                self._initReferences();
-                                jQuery('select.vocabulary').select2({});
-                                jQuery('#asset-details-annotations-current')
-                                    .fadeIn();
-                                jQuery(window).trigger('resize');
-                            }
+                    djangosherd.assetview.clipform.html
+                        .push('clipform-display', {
+                            asset: {}
                         });
+
+                    // Preserve zoom level on
+                    //'new selection'
+                    //djangosherd.assetview
+                    // .setState({});
+                    //Let's see if just not
+                    //setting state will work.
+
+                    djangosherd.assetview.clipform
+                        .setState({'start': 0, 'end': 0},
+                                  {'mode': 'create'});
+
+                    self._initTags();
+                    self._initReferences();
+                    jQuery('select.vocabulary').select2({});
+                    jQuery('#asset-details-annotations-current')
+                        .fadeIn();
+                    jQuery(window).trigger('resize');
                 });
         };
 
@@ -761,7 +803,7 @@
                             'annotation_id': self.active_annotation.id,
                             'editing': true
                         },
-                        'annotation-current');
+                        'asset-annotation-current');
                     jQuery(window).trigger('resize');
                 });
             return false;
@@ -793,31 +835,31 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    Mustache.update('annotation-current', context, {
-                        pre: function(elt) {
-                            jQuery(elt).hide();
-                        },
-                        post: function(elt) {
-                            if (self.active_annotation) {
-                                djangosherd.assetview.clipform.html.push(
-                                    'clipform-display', {
-                                        asset: {}
-                                    });
+                    var $elt = jQuery('#annotation-current');
+                    $elt.hide();
+                    var rendered = Mustache2.render(
+                        MediaThread.templates.asset_annotation_current,
+                        context);
+                    $elt.html(rendered);
 
-                                djangosherd.assetview
-                                   .setState(self.active_annotation.annotation);
-                                djangosherd.assetview.clipform
-                                   .setState(self.active_annotation.annotation,
-                                             {'mode': 'copy'});
+                    if (self.active_annotation) {
+                        djangosherd.assetview.clipform.html.push(
+                            'clipform-display', {
+                                asset: {}
+                            });
 
-                                self._initTags();
-                                self._initConcepts();
-                                self._initReferences();
-                                jQuery(elt).fadeIn();
-                                jQuery(window).trigger('resize');
-                            }
-                        }
-                    });
+                        djangosherd.assetview
+                            .setState(self.active_annotation.annotation);
+                        djangosherd.assetview.clipform
+                            .setState(self.active_annotation.annotation,
+                                      {'mode': 'copy'});
+
+                        self._initTags();
+                        self._initConcepts();
+                        self._initReferences();
+                        $elt.fadeIn();
+                        jQuery(window).trigger('resize');
+                    }
                 });
 
             return false;
@@ -986,7 +1028,9 @@
                 dataType: 'json',
                 error: function() {},
                 success: function(json, textStatus, xhr) {
-                    Mustache.update('asset-references', json);
+                    var rendered = Mustache2.render(
+                        MediaThread.templates['asset-references'], json);
+                    jQuery('#asset-references').html(rendered);
                 }
             });
         };
@@ -1018,7 +1062,12 @@
 
             var context = {
                 'asset-current': self.active_asset,
-                'vocabulary': self.vocabulary
+                'vocabulary': self.vocabulary,
+                'lower': function() {
+                    return function(text, render) {
+                        return render(text).toLowerCase();
+                    };
+                }
             };
 
             if (config.annotation_id) {
@@ -1064,72 +1113,95 @@
             context.show_help_checked = !self.user_settings
               .help_item_detail_view;
 
-            Mustache.update(template_label, context, {
-                pre: function(elt) { jQuery(elt).hide(); },
-                post: function(elt) {
-                    var i;
-                    self.edit_state = null;
+            self.edit_state = null;
 
-                    djangosherd.assetview.clipform.html
-                        .push('clipform-display', {
-                            asset: {}
-                        });
+            djangosherd.assetview.clipform.html
+                .push('clipform-display', {
+                    asset: {}
+                });
 
-                    Mustache.update('asset-view-help', context);
-                    Mustache.update('asset-view-header', context);
-                    Mustache.update('asset-global-annotation', context);
+            var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
+            var rendered = Mustache2.render(tpl, context);
+            if (template_label === 'asset-view-details') {
+                jQuery('#asset-view-details').html(rendered);
 
-                    if (template_label === 'asset-view-details') {
-                        Mustache.update('asset-sources', context);
+                rendered = Mustache2.render(
+                    MediaThread.templates.asset_sources, context);
+                jQuery('#asset-sources').html(rendered);
+            } else if (template_label === 'asset-view-details-quick-edit') {
+                rendered = Mustache2.render(
+                    MediaThread.templates.asset_view_details_quick_edit,
+                    context);
+                var $el = jQuery('#asset-view-details-quick-edit');
+                $el.closest('.asset-view-tabs').show();
+                $el.html(rendered);
+            } else if (template_label === 'asset-annotation-current') {
+                jQuery('#annotation-current').html(rendered);
+            } else {
+                console.error('Didn\'t attach template for:', template_label);
+            }
+
+            rendered = Mustache2.render(MediaThread.templates.asset_view_help,
+                                        context);
+            jQuery('#asset-view-help').html(rendered);
+            jQuery('.asset-view-title').text(context['asset-current'].title);
+
+            rendered = Mustache2.render(
+                MediaThread.templates.asset_global_annotation,
+                context);
+            jQuery('#asset-global-annotation').html(rendered);
+
+            rendered = Mustache2.render(
+                MediaThread.templates.asset_global_annotation_quick_edit,
+                context);
+            jQuery('#asset-global-annotation-quick-edit').html(rendered);
+
+            if (self.active_annotation) {
+                djangosherd.assetview
+                    .setState(self.active_annotation.annotation);
+            } else if (self.xywh) {
+                djangosherd.assetview.setState(self.xywh);
+            } else {
+                // #default initialization. no annotation defined.
+                djangosherd.assetview.setState();
+            }
+
+            self._initTags();
+            self._initConcepts();
+            self._initReferences();
+
+            var $elt = jQuery('#asset-workspace-panel-container>div');
+            $elt.fadeIn('slow', function() {
+                if (self.active_annotation) {
+                    djangosherd.assetview.clipform
+                        .setState(
+                            self.active_annotation.annotation,
+                            {
+                                'mode': context.annotation.editing ?
+                                    'edit' : 'browse',
+                                'tool_play': jQuery(
+                                    '#annotation-body-' +
+                                        self.active_annotation.id +
+                                        ' input.videoplay')[0]
+                            });
+                } else if (self.xywh) {
+                    if (djangosherd.assetview.clipform) {
+                        djangosherd.assetview.clipform.setState(
+                            self.xywh, {'mode': 'create'});
                     }
-
-                    if (self.active_annotation) {
-                        djangosherd.assetview
-                            .setState(self.active_annotation.annotation);
-                    } else if (self.xywh) {
-                        djangosherd.assetview.setState(self.xywh);
-                    } else {
-                        // #default initialization. no annotation defined.
-                        djangosherd.assetview.setState();
-                    }
-
-                    self._initTags();
-                    self._initConcepts();
-                    self._initReferences();
-
-                    jQuery(elt).fadeIn('slow', function() {
-                        if (self.active_annotation) {
-                            djangosherd.assetview.clipform
-                                .setState(
-                                    self.active_annotation.annotation,
-                                    {
-                                        'mode': context.annotation.editing ?
-                                            'edit' : 'browse',
-                                        'tool_play': jQuery(
-                                            '#annotation-body-' +
-                                                self.active_annotation.id +
-                                                ' input.videoplay')[0]
-                                    });
-                        } else if (self.xywh) {
-                            if (djangosherd.assetview.clipform) {
-                                djangosherd.assetview.clipform.setState(
-                                    self.xywh, {'mode': 'create'});
-                            }
-                        } else {
-                            // #default initialization. no annotation defined.
-                            djangosherd.assetview.clipform
-                               .setState(
-                                   {'start': 0, 'end': 0},
-                                   {
-                                       'mode': context.annotation &&
-                                           context.annotation.editing ?
-                                           'create' : 'browse'
-                                   });
-                        }
-                        if (self.view_callback) {
-                            self.view_callback();
-                        }
-                    });
+                } else {
+                    // #default initialization. no annotation defined.
+                    djangosherd.assetview.clipform
+                        .setState(
+                            {'start': 0, 'end': 0},
+                            {
+                                'mode': context.annotation &&
+                                    context.annotation.editing ?
+                                    'create' : 'browse'
+                            });
+                }
+                if (self.view_callback) {
+                    self.view_callback();
                 }
             });
         };

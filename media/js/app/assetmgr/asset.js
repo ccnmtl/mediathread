@@ -1,7 +1,7 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global DjangoSherd_Colors: true, MediaThread: true, Mustache2: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
-/* global updateUserSetting: true */
+/* global updateUserSetting: true, console: true */
 
 (function() {
     var AnnotationList = function() {
@@ -1029,7 +1029,7 @@
                 error: function() {},
                 success: function(json, textStatus, xhr) {
                     var rendered = Mustache2.render(
-                        MediaThread.templates['asset-references'], json);
+                        MediaThread.templates.asset_references, json);
                     jQuery('#asset-references').html(rendered);
                 }
             });

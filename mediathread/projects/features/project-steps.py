@@ -1,21 +1,10 @@
-from urlparse import urlparse
-
 from lettuce import world, step
-from mediathread.projects.models import Project
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import \
     invisibility_of_element_located, visibility_of_element_located
 from selenium.webdriver.support.select import Select
 import selenium.webdriver.support.ui as ui
-
-
-@step(u'There are no projects')
-def there_are_no_projects(step):
-    Project.objects.all().delete()
-
-    n = Project.objects.count()
-    assert n == 0, "Found %s projects. Expected 0" % n
 
 
 @step(u'there is not an? ([^"]*) ([^"]*) panel')
@@ -124,21 +113,6 @@ def there_is_not_a_project_visibility_level(step, level):
             assert False, "Found %s option" % (level)
 
 
-@step(u'Then I set the project visibility to "([^"]*)"')
-def i_set_the_project_visibility_to_level(step, level):
-    elts = world.browser.find_elements_by_name("publish")
-    assert len(elts) > 0
-
-    for e in elts:
-        label_selector = "label[for=%s]" % e.get_attribute("id")
-        label = world.browser.find_element_by_css_selector(label_selector)
-        if label.text.strip() == level:
-            e.click()
-            return
-
-    assert False, "No %s option found" % (level)
-
-
 @step(u'I select ([^"]*)\'s response')
 def i_select_username_s_response(step, username):
     elt = world.browser.find_element_by_name("responses")
@@ -160,18 +134,6 @@ def there_is_a_comment_from_username(step, username):
             return
 
     assert False, 'Cannot find comment from %s' % username
-
-
-@step(u'I insert "([^"]*)" into the text')
-def i_insert_title_into_the_text(step, title):
-    link = world.browser.find_element_by_partial_link_text(title)
-    href = link.get_attribute("href")
-
-    # strip the http://localhost:port off this href
-    pieces = urlparse(href)
-
-    insert_icon = world.browser.find_element_by_name(pieces.path)
-    insert_icon.click()
 
 
 @step(u'Then I remember the "([^"]*)" link')
@@ -307,3 +269,8 @@ def the_title_form_disappears(step, title):
         wait.until(invisibility_of_element_located((By.ID, fid)))
     except TimeoutException:
         assert False, '%s form did not appear' % title
+
+
+@step(u'"([^"]*)" does not have a response')
+def title_does_not_have_a_response(step, title):
+    assert False, 'This step must be implemented'

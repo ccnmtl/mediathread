@@ -6,7 +6,6 @@ import re
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
@@ -304,8 +303,10 @@ class SherdNote(Annotation):
     author = models.ForeignKey(User, null=True, blank=True)
     tags = TagField()
     body = models.TextField(blank=True, null=True)
-    added = models.DateTimeField('date created', editable=False)
-    modified = models.DateTimeField('date modified', editable=False)
+    added = models.DateTimeField('date created', editable=False,
+                                 auto_now_add=True)
+    modified = models.DateTimeField('date modified', editable=False,
+                                    auto_now=True)
 
     def __unicode__(self):
         username = self.author.username if self.author else ''
@@ -338,37 +339,6 @@ class SherdNote(Annotation):
                            (self.asset.pk, self.pk))
         except:
             return ''
-
-    def save(self, *args, **kw):
-        """
-        Only allow a single rangeless annotation per (user,asset)
-        """
-
-        if not self.pk:
-            self.added = datetime.today()
-        self.modified = datetime.today()
-
-        # stupid hack to get around stupid parsing
-        # if someone makes a single tag with spaces
-        if self.tags and not self.tags.startswith(','):
-            self.tags = ',%s' % self.tags
-
-        if not self.is_null():
-            # anything goes
-            return Annotation.save(self, *args, **kw)
-
-        try:
-            global_annotation = SherdNote.objects.get(asset=self.asset,
-                                                      author=self.author,
-                                                      **NULL_FIELDS)
-        except ObjectDoesNotExist:
-            return Annotation.save(self, *args, **kw)
-
-        if global_annotation != self:
-            raise Exception("Only one rangeless annotation \
-                may be stored per (user,asset)")
-
-        return Annotation.save(self, *args, **kw)
 
     @classmethod
     def date_filter_for(cls, field):

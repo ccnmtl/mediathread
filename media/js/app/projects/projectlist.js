@@ -1,5 +1,6 @@
+/* global jQuery: true */
 /* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
-/* global Mustache: true, showMessage: true */
+/* global Mustache2: true, showMessage: true */
 
 var ProjectList = function (config) {
     var self = this;
@@ -12,12 +13,12 @@ var ProjectList = function (config) {
         dataType: 'text',
         cache: false, // Chrome && Internet Explorer has aggressive caching policies.
         success: function (text) {
-            MediaThread.templates[config.template] = Mustache.template(config.template, text);
+            MediaThread.templates[config.template] = text;
             self.refresh(config);
         }
     });
 
-    jQuery(window).bind('projectlist.refresh', { 'self': self }, function (event) {
+    jQuery(window).on('projectlist.refresh', { 'self': self }, function (event) {
         var self = event.data.self;
         self.refresh(config);
     });
@@ -70,9 +71,9 @@ ProjectList.prototype.refresh = function (config) {
         url = MediaThread.urls['your-projects'](config.space_owner);
     }
 
-    jQuery("a.linkRespond").unbind("click");
-    jQuery("a.btnRespond").unbind("click");
-    jQuery("a.btnDeleteResponse").unbind("click");
+    jQuery("a.linkRespond").off("click");
+    jQuery("a.btnRespond").off("click");
+    jQuery("a.btnDeleteResponse").off("click");
 
     jQuery.ajax({
         url: url,
@@ -81,16 +82,16 @@ ProjectList.prototype.refresh = function (config) {
         success: function (the_records) {
             self.update(the_records);
 
-            jQuery("a.btnRespond").bind("click", function (evt) {
+            jQuery("a.btnRespond").on("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
 
-            jQuery("a.linkRespond").bind("click", function (evt) {
+            jQuery("a.linkRespond").on("click", function (evt) {
                 self.createAssignmentResponse(evt);
             });
 
 
-            jQuery("a.btnDeleteResponse").bind("click", function (evt) {
+            jQuery("a.btnDeleteResponse").on("click", function (evt) {
                 self.deleteAssignmentResponse(evt);
             });
         }
@@ -130,12 +131,10 @@ ProjectList.prototype.getSpaceUrl = function (active_tag, active_modified) {
 };
 
 ProjectList.prototype.updateSwitcher = function () {
-    var self = this;
-    self.switcher_context.display_switcher_extras = !self.switcher_context.showing_my_items;
-    Mustache.update("switcher_collection_chooser", self.switcher_context, { parent: self.parent });
-
     // hook up switcher choice owner behavior
-    jQuery(self.parent).find("a.switcher-choice.owner").unbind('click').click(function (evt) {
+
+    var self = this;
+    jQuery(self.parent).find("a.switcher-choice.owner").off('click').on('click', function (evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
         var username = bits[bits.length - 1];
@@ -177,13 +176,14 @@ ProjectList.prototype.update = function (the_records) {
         the_records.active_filter_count = n;
     }
 
-    Mustache.update(self.template_label, the_records, {
-        parent: self.parent,
-        pre: function (elt) { jQuery(elt).hide(); },
-        post: function (elt) {
-            self.updateSwitcher();
+    self.switcher_context.display_switcher_extras =
+        !self.switcher_context.showing_my_items;
+    the_records.switcher_collection_chooser = self.switcher_context;
+    var rendered = Mustache2.render(MediaThread.templates.homepage,
+                                    the_records);
+    var $el = jQuery('#classwork_table');
+    $el.html(rendered).hide().fadeIn('slow');
 
-            jQuery(elt).fadeIn("slow");
-        }
-    });
+    self.parent = $el;
+    self.updateSwitcher();
 };

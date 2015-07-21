@@ -1,9 +1,15 @@
 /* jshint loopfunc: true */
 /* global _: true, Backbone: true, showMessage: true */
 
-var MISC;
-
 (function(jQuery) {
+    // saveAll dirty models in a collection. Uses jQuery when/then to chain
+    // http://stackoverflow.com/questions/5014216/
+    //     best-practice-for-saving-an-entire-collection
+    Backbone.Collection.prototype.saveAll = function(options) {
+        return jQuery.when.apply(jQuery, _.map(this.models, function(m) {
+           return m.save(options).then(_.identity);
+        }));
+    };
 
     var Term = Backbone.Model.extend({
         urlRoot: '/api/term/',
@@ -331,6 +337,11 @@ var MISC;
             }
 
             display_name = display_name.trim();
+            
+            if (self.selected.hasTerm(display_name)) {
+                showMessage(display_name + " term already exists. Please choose a new name.", undefined, "Error");
+                return;
+            }
 
             var t = new Term({
                 'display_name': display_name,
@@ -362,6 +373,12 @@ var MISC;
             }
 
             display_name = display_name.trim();
+            
+            if (self.selected.hasTerm(display_name)) {
+                showMessage(display_name + " term already exists. Please choose a new name.", undefined, "Error");
+                return;
+            }
+
             var tid = jQuery(evt.currentTarget).data('id');
             var term = this.selected.get("term_set").getByDataId(tid);
 
@@ -430,13 +447,14 @@ var MISC;
                     showMessage("Please enter a valid Onomy JSON url.", undefined, "Error");
                     return;
                 }
-
-                var the_regex = /onomy.org\/published\/(\d+)\/json/g;
-                var match = the_regex.exec(urls[i]);
-                if (match.length < 0) {
-                   // display error message
-                   showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
-                   return;
+                if (!urls[i].contains('test.json')) { // testing
+                    var the_regex = /onomy.org\/published\/(\d+)\/json/g;
+                    var match = the_regex.exec(urls[i]);
+                    if (match.length < 0) {
+                       // display error message
+                       showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
+                       return;
+                    }
                 }
             }
 
@@ -499,15 +517,14 @@ var MISC;
                         selectedVocabulary.addTerm(display);
                     }
                 }
-                selectedVocabulary.save();
-                
+
                 // loop over the array.
                 for (var key in parents){
                     if (!parents.hasOwnProperty(key)) {
                         continue;
                     }
-                    var model_search = self.collection.getByDisplayName(key);
-                    if (model_search === undefined) {
+                    var existingVocab = self.collection.getByDisplayName(key);
+                    if (existingVocab === undefined) {
                         // if we cant find the vocab in the collection create a new one.
                         var vocab = new Vocabulary({
                             'display_name': key,
@@ -522,21 +539,17 @@ var MISC;
                             vocab.addTerm(parents[key].term_set[z].display_name);
                         }
 
-                        vocab.save({}, {
-                            success: function (it) {
-                                self.collection.add(it);
-                                self.render();
-                            }
-                        });
-                    } else if ( _.size(parents) > 0) {
-                        //if we find the model in the collection... just add it
+                        self.collection.add(vocab);
+                    } else if (_.size(parents) > 0) {
+                        // if the vocab is in the collection, just add the term
                         for (var q = 0; q < parents[key].term_set.length; q++) {
                             var term = parents[key].term_set[q].display_name;
-                            model_search.addTerm(term);
+                            existingVocab.addTerm(term);
                         }
-                        self.render();
                     }
                 }
+                
+                self.collection.saveAll();
             });
         }
     });

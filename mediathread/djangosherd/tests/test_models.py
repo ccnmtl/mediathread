@@ -1,11 +1,12 @@
 # pylint: disable-msg=R0904
 from django.contrib.auth.models import User
 from django.test import TestCase
+from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
-from mediathread.djangosherd.models import SherdNote
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.factories import AssetFactory, \
-    SherdNoteFactory, MediathreadTestMixin
+    SherdNoteFactory, MediathreadTestMixin, ProjectFactory
 from mediathread.taxonomy.models import Vocabulary, Term
 
 
@@ -391,3 +392,74 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.assertEquals(assets.count(), 2)
         self.assertTrue(self.asset in assets)
         self.assertTrue(asset2 in assets)
+
+
+class DiscussionIndexTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+    def test_project(self):
+        asset = AssetFactory.create(course=self.sample_course,
+                                    primary_source='image')
+        note = SherdNoteFactory(
+            asset=asset, author=self.student_one,
+            tags=',student_one_selection',
+            body='student one selection note', range1=0, range2=1)
+
+        asset2 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image')
+        to_be_deleted = SherdNoteFactory(
+            asset=asset2, author=self.student_one, title='to be deleted')
+
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='CourseProtected')
+
+        self.add_citation(project, note)
+        self.add_citation(project, to_be_deleted)
+        asset2.delete()
+
+        collaboration = project.get_collaboration()
+        DiscussionIndex.update_class_references(project.body,
+                                                None, None,
+                                                collaboration,
+                                                project.author)
+
+        indicies = DiscussionIndex.objects.all()
+        self.assertEquals(indicies.count(), 1)
+        index = indicies.first()
+        self.assertIsNone(index.participant)
+        self.assertIsNone(index.comment)
+        self.assertEquals(index.collaboration, collaboration)
+        self.assertEquals(index.asset, asset)
+
+        self.assertEquals(index.get_type_label(), 'project')
+        self.assertEquals(index.content_object, asset)
+        self.assertEquals(index.clump_parent(), project)
+        self.assertIsNone(index.get_parent_url())
+        self.assertEquals(index.body, '')
+
+    def test_discussion_references(self):
+        self.create_discussion(self.sample_course, self.instructor_one)
+
+        indicies = DiscussionIndex.objects.all()
+        self.assertEquals(indicies.count(), 1)
+
+        index = indicies.first()
+        comment = ThreadedComment.objects.first()
+
+        self.assertEquals(index.participant, comment.user)
+        self.assertEquals(index.comment, comment.comment_ptr)
+        self.assertEquals(index.collaboration, comment.content_object)
+        self.assertIsNone(index.asset)
+
+        self.assertEquals(index.get_type_label(), 'discussion')
+        self.assertEquals(index.content_object, comment.content_object)
+        self.assertEquals(index.clump_parent(group_by='discussion'),
+                          comment.content_object)
+        self.assertEquals(index.clump_parent(),
+                          comment.content_object)
+        self.assertEquals(index.get_parent_url(),
+                          '/discussion/%s' % comment.id)
+        self.assertEquals(index.body, '')

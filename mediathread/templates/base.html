@@ -10,7 +10,13 @@
         <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
         
-        <script type="text/javascript" src='{% static "js/mustache/mustache.js" %}'></script>
+        <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
+        <script>
+         // Let Mediathread's custom Mustache library use the Mustache global.
+         var Mustache2 = Mustache;
+         Mustache = undefined;
+        </script>
+        <script src="{% static 'js/mustache/mustache-custom.js' %}"></script>
 
         <script src="{{STATIC_URL}}js/flowplayer/flowplayer-5.5.0.min.js"></script>
 

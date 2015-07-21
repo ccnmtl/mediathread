@@ -33,7 +33,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
 
     // hook up behaviors
-    jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
+    jQuery(window).on('tinymce_init_instance', function (event, instance, param2) {
         self.onTinyMCEInitialize(instance);
     });
 
@@ -102,7 +102,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
         // if this isn't completed AFTER instantiation
         jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
 
-        jQuery(window).bind('beforeunload', function () {
+        jQuery(window).on('beforeunload', function () {
             return self.beforeUnload();
         });
 
@@ -120,7 +120,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
                 jQuery(window).trigger("resize");
 
                 // Fired by CollectionList & AnnotationList
-                jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
+                jQuery(window).on('assets.refresh', { 'self': self }, function(event, html) {
                     var newAssets = self.collectionList.getAssets();
                     self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
                 });
@@ -592,7 +592,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
             if (!jQuery('#id_publish_2').is(":checked")) {
                 jQuery("#id_due_date").attr("disabled", "disabled");
             }
-            jQuery("input[name=publish]").bind('click', function () {
+            jQuery("input[name=publish]").on('click', function () {
                 if (jQuery('#id_publish_2').is(":checked")) {
                     jQuery("#id_due_date").removeAttr("disabled");
                 } else {
@@ -794,7 +794,7 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
 ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, handler) {
     var elements = jQuery(parent).find(elementSelector);
     if (elements.length) {
-        jQuery(elements[0]).bind(event, handler);
+        jQuery(elements[0]).on(event, handler);
         return true;
     } else {
         return false;

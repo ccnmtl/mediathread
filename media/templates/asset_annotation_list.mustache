@@ -50,19 +50,26 @@
                   <div class="visualclear"></div>
                 {{/annotation.startCode}}
                 <div><label for="">Author:</label> <a href="{{home-space?url(author.username)}}">{{author.public_name}}</a></div>
-                {{#metadata.tags}}<div><label for="">Tags:</label> {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>{{/metadata.tags}}
-                  {{#metadata.body}}<div><label for="">Note:</label> {{metadata.body}}</div>{{/metadata.body}}
+                {{#metadata.tags.length}}
+                  <div>
+                    <label for="">Tags:</label>
+                    {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>
+                {{/metadata.tags.length}}
 
-                    {{#vocabulary}}
-                      {{#vocabulary}}
-                        <div>
-                          <label>{{display_name}}: </label>
-                          {{#terms}}
-                            {{display_name}}
-                          {{/terms}}
-                        </div>
-                      {{/vocabulary}}
-                      {{/vocabulary}}
+                {{#metadata.body}}
+                  <div>
+                    <label for="">Note:</label> {{metadata.body}}
+                  </div>
+                {{/metadata.body}}
+
+                {{#vocabulary}}
+                  <div>
+                    <label>{{display_name}}: </label>
+                    {{#terms}}
+                      {{display_name}}
+                    {{/terms}}
+                  </div>
+                {{/vocabulary}}
               </div>
             </div>
           </div>

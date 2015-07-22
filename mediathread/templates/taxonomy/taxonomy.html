@@ -94,7 +94,7 @@
                             <a href="http://onomy.org">onomy.org</a> now to build your own taxonomies.  
                         </p>
                         <div><b>Published Onomy Urls</b> <i>JSON format, separated by commas</i></div>
-                        <input type = "text" name="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
+                        <input type = "text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
                         <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
                         <input type="hidden" name="object_id" value="<%=course_id%>"/>
                         <a class="btn-primary import-vocabulary-close" href="#">
@@ -120,8 +120,10 @@
                             <% for (var j=0; j < vocabularies[i].term_set.length; j++) { %>
                                 <div class="term <% if (j%2 === 0) { %>even<% } else { %>odd<% } %>">
                                     <div class="term-display">
-                                        <h5><%= vocabularies[i].term_set[j].display_name %></h5>
-                                    
+                                        <h5 data-id="<%= vocabularies[i].term_set[j].display_name %>">
+                                            <%= vocabularies[i].term_set[j].display_name %>
+                                        </h5>
+
                                         <div class="term-actions">
                                             <a class="icon-link edit-term-open" href="#">                                                     
                                                 <img src="{{STATIC_URL}}img/icons/meth_edit.png" class="edit_icon" alt="Edit term"  />

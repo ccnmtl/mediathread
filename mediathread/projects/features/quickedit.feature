@@ -16,9 +16,12 @@ Feature: QuickEdit
         Then I am at the Untitled page
         Then I see "by Instructor One"
         And I see "Private"
-
+        
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
+        # Save the project (otherwise an "Unsaved" alert pops up)
+        When I click the Save button
+        I save the changes
         
         # Verify asset exists
         And there is a "MAAP Award Reception" link
@@ -37,10 +40,6 @@ Feature: QuickEdit
         Then the "Edit Item" form disappears
         And I see "Here are my notes"
         And there is an "abc" link
-        
-        # Save the project (otherwise an "Unsaved" alert pops up)
-        When I click the Save button
-        I save the changes
 
         Finished using Selenium
 

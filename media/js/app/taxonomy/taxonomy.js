@@ -7,7 +7,7 @@
     //     best-practice-for-saving-an-entire-collection
     Backbone.Collection.prototype.saveAll = function(options) {
         return jQuery.when.apply(jQuery, _.map(this.models, function(m) {
-           return m.save(options).then(_.identity);
+           return m.save({}, {wait: true, async: false}).then(_.identity);
         }));
     };
 

@@ -46,8 +46,6 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         if parent is not None:
             parent = get_object_or_404(Project,
                                        pk=parent, course=request.course)
-            if parent.is_assignment():
-
             collab = parent.get_collaboration()
             if collab.permission_to("add_child", request.course,
                                     request.user):

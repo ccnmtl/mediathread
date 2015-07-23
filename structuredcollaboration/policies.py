@@ -100,21 +100,6 @@ class CourseProtected(CollaborationPolicy):
                 course.is_member(user))
 
 
+# Used for discussions
 class CourseCollaboration(CourseProtected):
     edit = CourseProtected.read
-
-
-class Assignment(CourseProtected):
-    def manage(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
-        return (coll.context == course_collaboration and
-                ((course and
-                  course.is_faculty(user)) or
-                 coll.user == user)
-                )
-    delete = manage
-    edit = manage
-
-    def read(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
-        return (course and coll.context == course_collaboration)

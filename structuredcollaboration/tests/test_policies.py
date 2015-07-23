@@ -7,7 +7,7 @@ from structuredcollaboration.models import Collaboration
 from structuredcollaboration.policies import PublicEditorsAreOwners, \
     PrivateEditorsAreOwners, CollaborationPolicy, \
     PrivateStudentAndFaculty, InstructorShared, InstructorManaged, \
-    CourseProtected, Assignment
+    CourseProtected
 
 
 class PoliciesTest(MediathreadTestMixin, TestCase):
@@ -212,25 +212,3 @@ class PoliciesTest(MediathreadTestMixin, TestCase):
         self.assertFalse(policy.edit(collaboration, course, user))
         self.assertFalse(policy.manage(collaboration, course, user))
         self.assertFalse(policy.delete(collaboration, course, user))
-
-    def test_assignment(self):
-        policy = Assignment()
-
-        course = self.sample_course
-
-        assignment = ProjectFactory.create(
-            course=self.sample_course, author=self.instructor_one,
-            policy='Assignment')
-        collaboration = Collaboration.objects.get_for_object(assignment)
-
-        user = self.student_one
-        self.assertTrue(policy.read(collaboration, course, user))
-        self.assertFalse(policy.edit(collaboration, course, user))
-        self.assertFalse(policy.manage(collaboration, course, user))
-        self.assertFalse(policy.delete(collaboration, course, user))
-
-        user = self.instructor_one
-        self.assertTrue(policy.read(collaboration, course, user))
-        self.assertTrue(policy.edit(collaboration, course, user))
-        self.assertTrue(policy.manage(collaboration, course, user))
-        self.assertTrue(policy.delete(collaboration, course, user))

@@ -22,14 +22,10 @@ PUBLISH_OPTIONS = (
 
     ('CourseProtected', 'Whole Class - all class members can view'),
 
-    ('Assignment',
-     'Assignment - published to all students in class, tracks responses'),
-
     ('PublicEditorsAreOwners', 'Whole World - a public url is provided'),
 )
 
 SHORT_NAME = {
-    'Assignment': 'Assignment',
     'PrivateEditorsAreOwners': 'Private',
     'InstructorShared': 'Submitted to Instructor',
     'CourseProtected': 'Published to Class',
@@ -46,7 +42,6 @@ PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners',
                                       'CourseProtected']
 
 PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners',
-                           'Assignment',
                            'CourseProtected']
 
 PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',

@@ -16,7 +16,7 @@
         "pk": 2,
         "model": "structuredcollaboration.collaborationpolicyrecord",
         "fields": {
-            "policy_name": "Assignment"
+            "policy_name": "CourseProtected"
         }
     },
     {

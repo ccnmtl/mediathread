@@ -131,10 +131,9 @@ class ProjectFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def parent(self, create, extracted, **kwargs):
-        if create and extracted:
+        if create and extracted and extracted.is_assignment():
             parent_collab = extracted.get_collaboration()
-            if parent_collab.policy_record.policy_name == 'Assignment':
-                parent_collab.append_child(self)
+            parent_collab.append_child(self)
 
     @factory.post_generation
     def participants(self, create, extracted, **kwargs):

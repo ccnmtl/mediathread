@@ -1,15 +1,18 @@
 from datetime import datetime
-
+from django.db import models
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.db import models
 from django.db.models import Q
+from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
-from structuredcollaboration.models import Collaboration
 
+PROJECT_TYPES = (
+    ('Assignment', 'assignment'),
+    ('Composition', 'composition')
+)
 
 PUBLISH_OPTIONS = (
     ('PrivateEditorsAreOwners', 'Private - only author(s) can view'),
@@ -26,12 +29,12 @@ PUBLISH_OPTIONS = (
 )
 
 SHORT_NAME = {
-    "Assignment": 'Assignment',
-    "PrivateEditorsAreOwners": 'Private',
-    "InstructorShared": 'Submitted to Instructor',
-    "CourseProtected": 'Published to Class',
-    "PublicEditorsAreOwners": 'Published to World',
-    "PrivateStudentAndFaculty": "with Instructors",
+    'Assignment': 'Assignment',
+    'PrivateEditorsAreOwners': 'Private',
+    'InstructorShared': 'Submitted to Instructor',
+    'CourseProtected': 'Published to Class',
+    'PublicEditorsAreOwners': 'Published to World',
+    'PrivateStudentAndFaculty': 'with Instructors',
 }
 
 PUBLISH_OPTIONS_STUDENT_COMPOSITION = ['PrivateEditorsAreOwners',
@@ -108,7 +111,9 @@ class ProjectManager(models.Manager):
 
     def migrate_one(self, project, course, user):
         new_project = Project.objects.create(title=project.title,
-                                             course=course, author=user)
+                                             project_type=project.project_type,
+                                             course=course,
+                                             author=user)
 
         collaboration_context = Collaboration.objects.get_for_object(course)
 
@@ -156,7 +161,7 @@ class ProjectManager(models.Manager):
             course.faculty_filter).order_by('ordinality', 'title')
         for project in prof_projects:
             if (project.class_visible() and
-                    not project.is_assignment(course, user)):
+                    not project.is_assignment()):
                 projects.append(project)
 
         return projects
@@ -204,17 +209,16 @@ class Project(models.Model):
     course = models.ForeignKey(Course, related_name='project_set')
 
     # this is actually the LAST UPDATER for version-control purposes
+    # (and wow does that make a mess of things!)
     author = models.ForeignKey(User)
 
-    # should be limited to course members
-    # maybe just in the form:
-    # http://collingrady.wordpress.com/2008/07/24/useful-form-tricks-in-django/
     participants = models.ManyToManyField(User,
                                           null=True,
                                           blank=True,
                                           related_name='projects',
                                           verbose_name='Authors',)
 
+    # modelversions attributes
     only_save_if_changed = True
     only_save_version_if_changed_fields_to_ignore = ['modified', 'author']
 
@@ -223,9 +227,6 @@ class Project(models.Model):
     # available to someone other than the authors
     # -- at least, the instructor, if not the whole class
     submitted = models.BooleanField(default=False)
-
-    # DEPRECATED: do not use this field
-    feedback = models.TextField(blank=True, null=True)
 
     modified = models.DateTimeField('date modified',
                                     editable=False,
@@ -236,6 +237,9 @@ class Project(models.Model):
                                     blank=True)
 
     ordinality = models.IntegerField(default=-1)
+
+    project_type = models.TextField(choices=PROJECT_TYPES,
+                                    default='composition')
 
     def clean(self):
         today = datetime.today()
@@ -291,17 +295,13 @@ class Project(models.Model):
     def description(self):
         if self.assignment():
             return "Assignment Response"
-        elif self.visibility_short() == "Assignment":
+        elif self.is_assignment():
             return "Assignment"
         else:
             return "Composition"
 
-    def is_assignment(self, course, user):
-        col = self.get_collaboration()
-        if not col:
-            return False
-        else:
-            return col.permission_to("add_child", course, user)
+    def is_assignment(self):
+        return self.project_type == 'assignment'
 
     def assignment(self):
         """
@@ -321,7 +321,7 @@ class Project(models.Model):
         Returns True if this user has a response to this project
         or None if this user has not yet created a response
         """
-        if not self.is_assignment(course, user):
+        if not self.is_assignment():
             return False
 
         children = self.get_collaboration().children.all()
@@ -356,9 +356,6 @@ class Project(models.Model):
         return thread
 
     def visibility(self):
-        """
-        The project's status, one of "draft submitted complete".split()
-        """
         opts = dict(PUBLISH_OPTIONS)
 
         col = self.get_collaboration()
@@ -381,9 +378,6 @@ class Project(models.Model):
             return u"Private"
 
     def status(self):
-        """
-        The project's status, one of "draft submitted complete".split()
-        """
         col = self.get_collaboration()
         if col:
             status = SHORT_NAME.get(col.policy_record.policy_name,

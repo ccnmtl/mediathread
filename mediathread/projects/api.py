@@ -38,8 +38,7 @@ class ProjectResource(ModelResource):
         ordering = ['id', 'title']
 
     def dehydrate(self, bundle):
-        bundle.data['is_assignment'] = \
-            bundle.obj.visibility_short() == 'Assignment'
+        bundle.data['is_assignment'] = bundle.obj.is_assignment()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()
         bundle.data['url'] = bundle.obj.get_absolute_url()
@@ -130,11 +129,7 @@ class ProjectResource(ModelResource):
         project_ctx['public_url'] = project.public_url()
         project_ctx['current_version'] = version_number
         project_ctx['visibility'] = project.visibility_short()
-
-        project_type = ('assignment'
-                        if project.is_assignment(request.course, request.user)
-                        else 'composition')
-        project_ctx['type'] = project_type
+        project_ctx['type'] = project.project_type
 
         assets, notes = self.related_assets_notes(request, project)
 
@@ -207,7 +202,7 @@ class ProjectResource(ModelResource):
                 ctx['collaboration']['due_date'] = \
                     parent_assignment.get_due_date()
 
-            is_assignment = project.is_assignment(course, user)
+            is_assignment = project.is_assignment()
             if is_assignment:
                 count = 0
                 for response in project.responses(course, user):

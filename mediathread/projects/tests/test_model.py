@@ -54,7 +54,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='Assignment')
+            policy='Assignment', project_type='assignment')
         self.add_citation(self.assignment, self.student_note)
         self.add_citation(self.assignment, self.instructor_note)
         self.add_citation(self.assignment, self.student_ga)
@@ -64,12 +64,14 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         project = Project.objects.get(id=self.project_private.id)
         self.assertEquals(project.description(), 'Composition')
-
         self.assertEquals(project.visibility_short(), 'Private')
+
         project = Project.objects.get(id=self.project_class_shared.id)
+        self.assertEquals(project.description(), 'Composition')
         self.assertEquals(project.visibility_short(), 'Published to Class')
 
         project = Project.objects.get(id=self.project_instructor_shared.id)
+        self.assertEquals(project.description(), 'Composition')
         self.assertEquals(project.visibility_short(),
                           'Submitted to Instructor')
 
@@ -94,6 +96,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(new_project.title, self.assignment.title)
         self.assertEquals(new_project.author, self.alt_instructor)
         self.assertEquals(new_project.course, self.alt_course)
+        self.assertEquals(new_project.description(), "Assignment")
         self.assertEquals(new_project.visibility_short(), "Assignment")
 
     def test_migrate_projects_to_alt_course(self):
@@ -129,6 +132,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(self.alt_course.project_set.count(), 1)
         project = self.alt_course.project_set.all()[0]
         self.assertEquals(project.title, self.assignment.title)
+        self.assertEquals(project.description(), 'Assignment')
         self.assertEquals(project.visibility_short(), 'Assignment')
         self.assertEquals(project.author, self.alt_instructor)
 
@@ -233,7 +237,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response1 = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared', parent=self.assignment)
-        ProjectFactory.create(
+        response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment)
 
@@ -244,6 +248,11 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                                          self.instructor_one,
                                          self.student_one)
         self.assertEquals(r[0], response1)
+
+        r = self.assignment.responses_by(self.sample_course,
+                                         self.instructor_one,
+                                         self.student_two)
+        self.assertEquals(r[0], response2)
 
     def test_reset_publish_to_world(self):
         public = ProjectFactory.create(

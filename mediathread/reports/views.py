@@ -43,7 +43,7 @@ def class_assignment_report(request, project_id):
 def class_assignments(request):
     assignments = []
     for project in Project.objects.filter(request.course.faculty_filter):
-        if project.is_assignment(request.course, request.user):
+        if project.is_assignment():
             assignments.append(project)
 
     return {'assignments': sorted(assignments,

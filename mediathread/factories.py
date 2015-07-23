@@ -114,6 +114,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
     title = factory.Sequence(lambda n: 'Project %d' % n)
     author = factory.SubFactory(UserFactory)
+    project_type = 'composition'
 
     @factory.post_generation
     def policy(self, create, extracted, **kwargs):

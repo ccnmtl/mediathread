@@ -118,5 +118,3 @@ class Assignment(CourseProtected):
     def read(self, coll, course, user):
         course_collaboration = Collaboration.objects.get_for_object(course)
         return (course and coll.context == course_collaboration)
-
-    add_child = read

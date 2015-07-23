@@ -12,7 +12,7 @@ Feature: Assignment
         And there is a Create Composition button
         And there is a Create Discussion button
         
-        When I click the Create Composition button       
+        When I click the Create Composition button  
         
         Then I am at the Untitled page
         There is an open Composition panel
@@ -31,8 +31,8 @@ Feature: Assignment
         Then there is an "Assignment" link
         Then there is an open Assignment panel
         And the composition "Assignment: Scenario 1" has text 
-        And there is a Saved button       
-        
+        And there is a Saved button
+
         # Toggle to preview
         When I click the Preview button
         The Assignment panel has a Revisions button

@@ -17,6 +17,7 @@ Feature: Assignment
         Then I am at the Untitled page
         There is an open Assignment panel
         And there is a Saved button
+        And there is a "Private" link
 
         # Add a title and some text
         Then I call the Assignment "Assignment: Scenario 1"

@@ -11,7 +11,6 @@ from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
-
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
@@ -29,9 +28,11 @@ from mediathread.taxonomy.models import Vocabulary
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
     def post(self, request):
+        project_type = request.POST.get('project_type', 'composition')
         project = Project.objects.create(author=request.user,
                                          course=request.course,
-                                         title="Untitled")
+                                         title="Untitled",
+                                         project_type=project_type)
 
         project.participants.add(request.user)
 
@@ -43,12 +44,11 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
         parent = request.POST.get("parent", None)
         if parent is not None:
-            parent = get_object_or_404(Project, pk=parent)
-
-            collab = parent.get_collaboration()
-            if collab.permission_to("add_child", request.course,
-                                    request.user):
-                collab.append_child(project)
+            parent = get_object_or_404(Project,
+                                       pk=parent, course=request.course)
+            if parent.is_assignment():
+                collaboration = parent.get_collaboration()
+                collaboration.append_child(project)
 
         if not request.is_ajax():
             return HttpResponseRedirect(project.get_absolute_url())
@@ -100,8 +100,7 @@ def project_save(request, project_id):
             policy_name)
 
         v_num = projectform.instance.get_latest_version()
-        is_assignment = projectform.instance.is_assignment(request.course,
-                                                           request.user)
+        is_assignment = projectform.instance.is_assignment()
 
         DiscussionIndex.update_class_references(projectform.instance.body,
                                                 None, None, collaboration,
@@ -169,8 +168,8 @@ def project_reparent(request, assignment_id, composition_id):
     except Project.DoesNotExist:
         return HttpResponseServerError("Invalid composition parameter")
 
-    parent_collab = assignment.get_collaboration()
-    if parent_collab.permission_to("add_child", request.course, request.user):
+    if assignment.is_assignment():
+        parent_collab = assignment.get_collaboration()
         parent_collab.append_child(composition)
 
     return HttpResponseRedirect('/')
@@ -355,7 +354,7 @@ def project_workspace(request, project_id, feedback=None):
         # Project Response -- if the requested project is an assignment
         # This is primarily a student view. The student's response should
         # pop up automatically when the parent assignment is viewed.
-        if project.is_assignment(request.course, request.user):
+        if project.is_assignment():
             responses = project.responses_by(request.course, request.user,
                                              request.user)
             if len(responses) > 0:

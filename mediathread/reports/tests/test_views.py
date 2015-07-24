@@ -34,7 +34,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         self.assignment1 = ProjectFactory.create(
             title='Alpha', course=self.sample_course,
-            author=self.instructor_one, policy='Assignment')
+            author=self.instructor_one, policy='CourseProtected',
+            project_type='assignment')
 
         self.response1 = ProjectFactory.create(
             title="Response 1",
@@ -47,7 +48,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         self.assignment2 = ProjectFactory.create(
             title='Beta', course=self.sample_course,
-            author=self.instructor_one, policy='Assignment')
+            author=self.instructor_one, policy='CourseProtected',
+            project_type='assignment')
 
         self.project = ProjectFactory(title='Gamma', course=self.sample_course,
                                       author=self.instructor_one,
@@ -245,7 +247,8 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
 
         self.assignment1 = ProjectFactory.create(
             title='Alpha', course=self.sample_course,
-            author=self.instructor_one, policy='Assignment')
+            author=self.instructor_one, policy='CourseProtected',
+            project_type='assignment')
 
         self.response1 = ProjectFactory.create(
             title="Response 1",

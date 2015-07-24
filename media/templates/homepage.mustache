@@ -43,11 +43,13 @@
         {{#is_faculty}}
         <form action="/project/create/" method="post">
             <input type="hidden" name="title" />
-            <input type="hidden" name="publish" value="Assignment"/>
+            <input type="hidden" name="publish" value="CourseProtected"/>
+            <input type="hidden" name="project_type" value="assignment"/>
             <input type="submit" value="Create Assignment" />
         </form>
         <form action="/project/create/" method="post">
             <input type="hidden" name="title" />
+            <input type="hidden" name="project_type" value="composition"/>
             <input type="submit" value="Create Composition" />
         </form>
         <form action="/discussion/create/" method="post">
@@ -60,16 +62,19 @@
         {{/is_faculty}}
         
         {{^is_faculty}}
-        {{#assignments}}
-            <a data-id="{{id}}" class="linkRespond">Respond to <strong>{{title}}</strong></a>
-        {{/assignments}}
-        
-        <hr class="divideLinks" />
-        
-        <form action="/project/create/" method="post">
-            <input type="hidden" name="title" />
-            <input type="submit" value="Create Composition" />
-        </form>
+            {{#assignments}}
+                <a data-id="{{id}}" class="linkRespond">
+                    Respond to <strong>{{title}}</strong>
+                </a>
+            {{/assignments}}
+            
+            <hr class="divideLinks" />
+    
+            <form action="/project/create/" method="post">
+                <input type="hidden" name="title" />
+                <input type="hidden" name="project_type" value="composition"/>
+                <input type="submit" value="Create Composition" />
+            </form>
         {{/is_faculty}}
     </div>
 </div>

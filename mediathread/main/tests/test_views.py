@@ -379,7 +379,8 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
                                               policy='PrivateEditorsAreOwners')
         self.project2 = ProjectFactory.create(course=self.sample_course,
                                               author=self.instructor_one,
-                                              policy='Assignment')
+                                              policy='CourseProtected',
+                                              project_type='assignment')
 
         self.assertTrue(self.client.login(
             username=self.instructor_three.username,

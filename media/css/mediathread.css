@@ -156,116 +156,6 @@ a:hover {
 	padding: 0 0 0 10px;
 }
 
-/* ---- Primary Button Style ----- */
-
-a.btn-primary,
-.btn-primary {
-  font-size: 1em;
-  font-weight: normal;
-  color: #2f2f2f;
-  padding: 10px 15px;
-  margin: -12px 0px 21px;
-  border: solid 1px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-   background-color: #efefef;
-  *background-color: #efefef;
-  background-image: -moz-linear-gradient(top, #fcfcfc, #efefef);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfcfc), to(#efefef));
-  background-image: -webkit-linear-gradient(top, #fcfcfc, #efefef);
-  background-image: -o-linear-gradient(top, #fcfcfc, #efefef);
-  background-image: linear-gradient(to bottom, #fcfcfc, #efefef);
-  background-repeat: repeat-x;
-  border-color: #0044cc #0044cc #002a80;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  cursor: pointer;
-  display: inline-block;
-}
-
-a.btn-primary:hover, .btn-primary:hover, 
-a.btn-primary:active, .btn-primary:active, 
-a.btn-primary.active, .btn-primary.active,
-a.btn-primary.disabled, .btn-primary.disabled,
-a.btn-primary[disabled], .btn-primary[disabled] {
-  color: #2f2f2f;
-   background-color: #efefef;
-  *background-color: #efefef;
-  background-image: -moz-linear-gradient(top, #efefef, #fcfcfc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#efefef), to(#fcfcfc));
-  background-image: -webkit-linear-gradient(top, #efefef, #fcfcfc);
-  background-image: -o-linear-gradient(top, #efefef, #fcfcfc);
-  background-image: linear-gradient(to bottom, #efefef, #fcfcfc);
-  text-decoration: none;
-}
-
-a.btn-primary:active,
-a.btn-primary.active {
-  background-color: #003399 \9;
-}
-
-a.btn-primary img,
-.btn-primary img {
-    padding: 0 10px 0 0;
-}
-
-div.ui-dialog div.asset-view-details input.btn-primary {
-    padding: 4px 8px;
-    margin: 5px 0px 0px 6px;            
-}
-
-div.asset-workspace input.btn-primary {
-    padding: 4px 8px;
-    margin: 10px 0px 0px 6px;    
-}
-
-div.asset-workspace a.btn-primary {
-    padding: 5px 10px 3px 5px;
-    margin: 0px 0px 10px;
-}
-
-div.asset-workspace a.btn-primary img {
-    vertical-align: middle;
-    margin-top: -2px;
-    padding-right: 0;
-    width: 20px !important;
-    height: 20px !important;
-}
-
-div.asset-workspace a.btn-primary.create img {
-    vertical-align: middle;
-    margin-top: -4px;
-    padding-left: 0;
-    width: 6px !important;
-    height: 12px !important;
-}
-
-td#classwork .btn-primary.create {
-    margin-top: -4px;
-}
-
-td#classwork .btn-primary.create img {
-    padding: 0 0 0 10px;
-}
-
-.btn-primary.collection {
-    float: right;
-    margin: -4px 0 0;
-}
-
-a.btn-primary.upload_button {
-  float: left;
-  margin: 10px 0 0 35px;
-}
-
-div#taxonomy a.btn-primary.create-vocabulary-submit,
-div#taxonomy a.btn-primary.create-vocabulary-close,
-div#taxonomy a.btn-primary.create-vocabulary-open {
-    margin: 0 0 10px 0;
-}
-
 /* ---- Metadata displays ---- */
 
 .meta {
@@ -547,8 +437,6 @@ a.btn-feedback {
 }
 
 a.btn-feedback:hover,
-a.btn-primary.btn-feedback
-a.btn-primary.active,
 a.btn-feedback.disabled,
 a.btn-feedback[disabled] {
   color: #ffffff;
@@ -967,10 +855,6 @@ div.column-contents {
     clear: all;
     margin: 20px 0 0 0;
    }
-   a.btn-primary.upload_button {
-  float: left;
-  margin: 10px 0 0 0;
-}
 }
 
 .dashboard-feature {
@@ -1104,6 +988,13 @@ div.button-form form, div.button-form.inline form {
     background: url("../img/login_bg.jpg") center no-repeat;
 }
 
+.login-description a.btn {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    font-weight: normal;
+}
+
 .login-description h1 {
     font-weight: 200;
     line-height: 1.5em;
@@ -1157,10 +1048,6 @@ div.button-form form, div.button-form.inline form {
     border: 0;
 }
 
-.loginbox .content .btn-primary {
-	margin: 0;
-}
-
 .loginbox .seperator
 {
     margin: 20px 0;
@@ -1168,79 +1055,6 @@ div.button-form form, div.button-form.inline form {
     border: 0;
     border-top: 1px dotted #d9e3eb;
     background-color: #d9e3eb;
-}
-
-.loginbox .fieldwrapper
-{
-    margin: 0 0 10px 10px;
-    padding: 0;
-    border: 0;
-}
-
-.loginbox .fieldwrapper label
-{
-    display: block;
-    font-weight: bold;
-    color: #666;
-    font-size: 12px;
-}
-
-.loginbox .fieldwrapper input {
-    width: 200px;
-    height: 25px;
-    margin: 2px 0;
-    padding: 3px;
-    border: 0;
-    border: 1px solid #ccc;
-    background-color: #f4f4f4;
-    font: bold 12px arial, helvetica, verdana, sans-serif;
-}
-
-.loginbox .fieldwrapper input:focus
-{
-    border: 1px solid #06f;
-    background-color: #fff;
-}
-
-.loginbox .regbutton
-{
-    cursor: pointer;
-    padding: 4px 17px;
-    margin: 0 0 10px 10px;
-    color: #000;
-    font-weight: normal;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    border-left-color: #ccc;
-    border-right-color: #ccc;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-    text-align: center;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6));
-    background: -moz-linear-gradient(top, #fff, #e6e6e6);
-    font: bold 14px arial, helvetica, verdana, sans-serif !important;
-    text-transform: uppercase;
-}
-
-.loginbox .regbutton:hover
-{
-    border: 1px solid #999;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
-    background: -moz-linear-gradient(top, #fff, #ddd);
-}
-
-.loginbox .regbutton:active
-{
-    border: 1px solid #006666;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#669999));
-    background: -moz-linear-gradient(top, #fff, #669999);
-}
-
-.loginbox .smalltxt
-{
-    font-size: 11px;
 }
 
 .errornote {
@@ -3362,10 +3176,6 @@ div.asset-annotator {
     text-align: right;
 }
 
-.sherd-clipform-editing input.btn-primary {
-    margin: 5px 5px 5px 10px !important;
-}
-
 .sherd-clipform-editing input.videoplay {
     width: 25px;
     margin: -2px 0 0 -5px;
@@ -4652,16 +4462,6 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-panel {
     margin: 0;
     float: right;
     width: 65%;
-}
-
-div#taxonomy .btn-primary.onomy {
-    font-size: .65em;
-    float: right;
-    margin-right: 5px;
-}
-
-div#taxonomy .btn-primary.onomy img {
-    vertical-align: middle;    
 }
 
 div#taxonomy .vocabulary-import {

@@ -14,7 +14,7 @@ DATABASES = {
 
 # BROWSER = 'Firefox'
 BROWSER = 'Headless'
-BROWSER = 'Chrome'
+# BROWSER = 'Chrome'
 
 LETTUCE_APPS = (
     'mediathread.main',

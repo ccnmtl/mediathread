@@ -31,17 +31,17 @@
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
                 {% endfor %}
             </select>
-            &nbsp;&nbsp;<input type="submit" value="Save"></input>
+            &nbsp;&nbsp;<input class="btn btn-default" type="submit" value="Save"></input>
         </form>
         <form action="{% url 'collection-add-or-remove' %}" method="POST">
             <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
             <input type="hidden" name="collection_id" value="{{uploader.id}}" />
-            <input class="right" name="remove" type="submit" value="Disable Video Upload" />
+            <input class="btn btn-default right" name="remove" type="submit" value="Disable Video Upload" />
          </form>
          <div class="visualclear"></div>
     {% else %}
         <form action="{% url 'collection-add-or-remove' %}" method="POST">
-            <input class="add" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
+            <input class="add btn btn-default" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
             <input type="hidden" name="title" value="Mediathread Video Upload">
             <input type="hidden" name="description" value="Upload your own source material.">
             <input type="hidden" name="uploader" value="1">
@@ -85,10 +85,10 @@
                         </td>
                         <td style="text-align: right">
                             {% if course_collection %}
-                                <input name="remove" type="submit" value="Remove" id="{{suggested.title|slugify}}" />
+                                <input class="btn btn-default" name="remove" type="submit" value="Remove" id="{{suggested.title|slugify}}" />
                                 <input type="hidden" name="collection_id" value="{{course_collection.id}}" />
                             {% else %}
-                                <input name="add" type="submit" value="Add to Class" id="{{suggested.title|slugify}}" />
+                                <input class="btn btn-default" name="add" type="submit" value="Add to Class" id="{{suggested.title|slugify}}" />
                                 <input type="hidden" name="suggested_id" value="{{suggested.id}}" />
                             {% endif %}
                         </td>
@@ -116,7 +116,7 @@
         <br/>
         Thumb URL: <input type="text" name="thumb" value="" />
         <br/>
-        <input type="submit" value="Add Source to Class" />
+        <input class="btn btn-default" type="submit" value="Add Source to Class" />
     </form>
 </div>
 

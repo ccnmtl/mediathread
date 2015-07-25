@@ -73,14 +73,14 @@
 		            <h2>
                         <%=vocabularies[i].display_name%> Concept 
                         <% if (vocabularies[i].onomy_url.length < 1) { %>
-                            <a href="#" class="btn btn-default onomy import-vocabulary-open right">
+                            <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Import</span>
                             </a>
                         <% } else if (vocabularies[i].onomy_url.length > 0 && vocabularies[i].onomy_url !== 'child') { %>
-                            <a href="#" class="btn btn-default onomy import-vocabulary-open right">
+                            <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Edit</span>
                             </a>
-                            <a class="btn btn-default onomy refresh-onomy right" href="#">
+                            <a class="btn btn-default btn-sm onomy refresh-onomy right" href="#">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Refresh</span>
                             </a>
 

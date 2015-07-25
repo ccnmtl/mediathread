@@ -21,8 +21,8 @@ body
 }
 
 .ui-widget {
-  font-family: 'lucida grande',arial,verdana,sans-serif;
-  font-size: 1em;
+    font-family: 'lucida grande',arial,verdana,sans-serif;
+    font-size: 1em;
 }
 
 .ui-widget-content,
@@ -622,6 +622,7 @@ html.busy, html.busy * {
 
 .ui-accordion .ui-accordion-content {
     padding: 0 .5em .5em 1em !important;
+    width: 100%;
 }
 
 /* ########## Blocks style definitions ########## */
@@ -1450,8 +1451,9 @@ form#edit-global-annotation-form input[name="asset-title"],
     margin-bottom: 10px;
 }
 
-div.panel.asset-workspace-dialog #id_annotation-body {
-    height: 65px !important;
+#id_annotation-body { 
+    height: 100px;
+    width: 98%;
 }
 
 div.panel.asset-workspace-dialog #asset-global-annotation,
@@ -2507,11 +2509,6 @@ a.switcher-top.menuclosed span.down-arrow:hover {
 /** Course CSS **/
 ul li {
     margin: 0 0 5px 0;
-}
-
-#id_annotation-body { 
-    height: 100px;
-    width: 98%;
 }
 
 .panel { 
@@ -3725,6 +3722,10 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
     -webkit-border-radius: 0;
 }
 
+div.asset-view-container div.asset-view-tabs .btn-primary {
+    margin: 3px 0 0 3px;
+}
+
 ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
     outline: 0;
@@ -3770,12 +3771,18 @@ div#asset-view-details div#asset-global-annotation {
     margin-bottom: 15px;
 }
 
+div#asset-view-details  a.edit-item {
+    padding: 3px 8px 2px 4px;    
+}
+
 div#asset-view-details a.create-selection {
-    margin: 1px 8px 0px 8px;
+    margin: -8px 8px 0px 8px;
+    padding: 3px 8px 2px 4px;
 }
 
 div#asset-view-details a.filter-selections {
-    margin: 1px 0 0 0;
+    margin: -8px 0 0 0;
+    padding: 3px 8px 2px 4px;
 }
 
 div#asset-header table {
@@ -4240,7 +4247,7 @@ div.panel.assignment div.collection-filter select {
 
 /** Taxonomy **/
 
-div#taxonomy input[type="text"] {
+#taxonomy input[type="text"] {
     background-color: #ffffff;
     border: 1px solid #cccccc;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -4264,44 +4271,44 @@ div#taxonomy input[type="text"] {
     width: 65%;
 }
 
-div#taxonomy input[type="text"].default {
+#taxonomy input[type="text"].default {
     color: #999;
 }
 
-div#taxonomy input[type="text"].name {
+#taxonomy input[type="text"].name {
     width: 60%;
 }
 
-div#taxonomy input[name='onomy_url'] {
+#taxonomy input[name='onomy_url'] {
     width: 87%;
 }
 
-div#taxonomy a.icon-link {
+#taxonomy a.icon-link {
     float: right;
     margin: .5em 0;
     padding: 0;
     cursor: pointer;
 }
 
-div#taxonomy a.icon-link:hover {
+#taxonomy a.icon-link:hover {
     text-decoration: none;    
 }
 
-div#taxonomy ul li.ui-state-default div.actions {
+#taxonomy ul li.ui-state-default div.actions {
     display: none;
 }
 
-div#taxonomy ul li.ui-state-active div.actions {
+#taxonomy ul li.ui-state-active div.actions {
     display: block;
 }
 
 
-div#taxonomy .ui-tabs-vertical {
+#taxonomy .ui-tabs-vertical {
     width: 100%;
     border: none;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav {
     padding: .2em .1em .2em .2em;
     float: left;
     width: 30%;
@@ -4310,7 +4317,7 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav {
     border: none;    
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li {
     clear: left;
     width: 100%;
     border-bottom-width: 1px !important;
@@ -4321,26 +4328,26 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li {
     padding-top: 5px;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li a {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li a {
     display: block;
     outline: 0;
     cursor: pointer; 
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li a.display-name {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li a.display-name {
     width: 60%;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
     padding-bottom: 0;
     padding-right: .1em;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li .arrow {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li .arrow {
     display: none;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow {
     border-width: 11px;
     top: 50%;
     right: -11px;
@@ -4349,8 +4356,8 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow {
     border-right-width: 0;    
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow,
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow,
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     position: absolute;
     display: block;
     width: 0;
@@ -4359,7 +4366,7 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     border-style: solid;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     border-width: 10px;
     content: "";    
     right: 1px;
@@ -4368,14 +4375,14 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     border-right-width: 0;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-panel {
+#taxonomy .ui-tabs-vertical .ui-tabs-panel {
     padding: 0;
     margin: 0;
     float: right;
     width: 65%;
 }
 
-div#taxonomy .vocabulary-import {
+#taxonomy .vocabulary-import {
     margin: 0 -1px .4em 0;
     outline: 0;
     padding: 10px 20px;
@@ -4383,25 +4390,25 @@ div#taxonomy .vocabulary-import {
     border-radius: 5px;
 }
 
-div#taxonomy div.vocabulary-display a.create-vocabulary-open {
+#taxonomy div.vocabulary-display a.create-vocabulary-open {
     width: 94%;
     height: 24px;
     padding-right: 2px;
 }
 
-div#taxonomy div.vocabulary-display a.create-vocabulary-open img {
+#taxonomy div.vocabulary-display a.create-vocabulary-open img {
     float: right;
     margin: -2px 2px 0 0;
 }
 
-div#taxonomy div.term-container a.edit-term-close,
-div#taxonomy div.term-container a.edit-term-submit,
-div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
-div#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
-div#taxonomy div.vocabulary-import a.import-vocabulary-close,
-div#taxonomy div.vocabulary-import a.import-vocabulary-submit,
-div#taxonomy div.vocabulary-create a.create-vocabulary-close,
-div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
+#taxonomy div.term-container a.edit-term-close,
+#taxonomy div.term-container a.edit-term-submit,
+#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
+#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
+#taxonomy div.vocabulary-import a.import-vocabulary-close,
+#taxonomy div.vocabulary-import a.import-vocabulary-submit,
+#taxonomy div.vocabulary-create a.create-vocabulary-close,
+#taxonomy div.vocabulary-create a.create-vocabulary-submit {
     float: right;
     padding: 8px 2px 0 2px;
     margin-top: 0;
@@ -4409,63 +4416,63 @@ div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
     height: 25px;
 }
 
-div#taxonomy div.term-container a.edit-term-close,
-div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
-div#taxonomy div.vocabulary-import a.import-vocabulary-close, 
-div#taxonomy div.vocabulary-create a.create-vocabulary-close {
+#taxonomy div.term-container a.edit-term-close,
+#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
+#taxonomy div.vocabulary-import a.import-vocabulary-close, 
+#taxonomy div.vocabulary-create a.create-vocabulary-close {
     margin: 0 5px 0 5px;
 }
 
-div#taxonomy div.term-container a.edit-term-close,
-div#taxonomy div.term-container a.edit-term-submit {
+#taxonomy div.term-container a.edit-term-close,
+#taxonomy div.term-container a.edit-term-submit {
     padding: 3px 2px 0 2px;
     margin-top: 5px;
     height: 20px;
     margin-bottom: 0;
 }
 
-div#taxonomy div.vocabulary-display a.edit-vocabulary-open {
+#taxonomy div.vocabulary-display a.edit-vocabulary-open {
     margin-right: 1em; 
 }
 
-div#taxonomy div.vocabulary-display a.delete-vocabulary {
+#taxonomy div.vocabulary-display a.delete-vocabulary {
     margin-right: .25em; 
 }
 
-div#taxonomy div.terms a.create-term-submit {
+#taxonomy div.terms a.create-term-submit {
     margin: 0 0 0 5px;
     padding: 4px;
 }
 
-div#taxonomy div.terms a.refresh-button-submit {
+#taxonomy div.terms a.refresh-button-submit {
     padding: 5px 0 5px 5px;
     float: right;
 }
 
-div#taxonomy div.onomy a.onomy-terms-submit img {
+#taxonomy div.onomy a.onomy-terms-submit img {
     padding: 0;
 }
 
-div#taxonomy div.onomy a.refresh-button-submit img {
+#taxonomy div.onomy a.refresh-button-submit img {
     padding: 0;
 }
 
-div#taxonomy div.onomy a.onomy-terms-submit {
+#taxonomy div.onomy a.onomy-terms-submit {
     margin: 0 0 0 5px;
     padding: 4px;
 }
 
-div#taxonomy div.terms a.create-term-submit img {
+#taxonomy div.terms a.create-term-submit img {
     padding: 0;
 }
 
-div#taxonomy div.terms h5 {
+#taxonomy div.terms h5 {
     float: left;
     margin: 0.7em 0 0 0;
     font-weight: normal;
 }
 
-div#taxonomy div.term-container {
+#taxonomy div.term-container {
     border: 1px solid #ccc;
     border-top-width: 0;
     border-radius: 4px;
@@ -4474,32 +4481,36 @@ div#taxonomy div.term-container {
     margin: 5px 0 5px 5px;    
 }
 
-div#taxonomy div.term-container div.term {
+#taxonomy div.term-container div.term {
     font-weight: normal;
     color: #212121;
     border-top: 1px solid #ccc;
     height: 38px;
 }
 
-div#taxonomy div.term-container div.term-display {
+#taxonomy div.term-container div.term-display {
     padding: 0 10px 0 20px;
 }
 
-div#taxonomy div.term-container div.term-edit {
+#taxonomy div.term-container div.term-edit {
     background-color: #f5f5f5;
     height: 38px;
 }
 
-div#taxonomy div.term-container div.term:hover {
+#taxonomy div.term-container div.term:hover {
     background-color: #f5f5f5;
 }
 
-div#taxonomy div.term-container div.term div.term-display div.actions {
+#taxonomy div.term-container div.term div.term-display div.actions {
     display: none;
 }
 
-div#taxonomy div.term-container div.term:hover div.term-display div.actions {
+#taxonomy div.term-container div.term:hover div.term-display div.actions {
     display: inline-block;
+}
+
+#taxonomy .import-vocabulary-open {
+    margin-left: 3px;
 }
 
 /* Make jquery-ui dialogs work with openlayers */

@@ -4,6 +4,7 @@
     -moz-box-sizing: content-box;
     box-sizing: content-box;
 }
+
 html,body {
 	height: 100%;
 	font-size: 1em;
@@ -475,18 +476,6 @@ a.btn-feedback.active {
 
 
 /* ---- Content block elements ---------- */
-
-#content
-{
-
-}
-
-#squish
-{
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
 
 img
 {

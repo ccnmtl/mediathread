@@ -197,6 +197,8 @@ class ProjectManager(models.Manager):
 
 
 class Project(models.Model):
+    DEFAULT_TITLE = 'Untitled'
+
     objects = ProjectManager()  # custom manager
 
     title = models.CharField(max_length=1024)
@@ -247,7 +249,13 @@ class Project(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project-workspace', (), {'project_id': self.pk})
+        if self.project_type == 'selection-assignment':
+            if self.title == self.DEFAULT_TITLE:
+                return ('selection-assignment-edit', (), {'pk': self.pk})
+            else:
+                return ('selection-assignment-view', (), {'pk': self.pk})
+        else:
+            return ('project-workspace', (), {'project_id': self.pk})
 
     def get_due_date(self):
         if self.due_date is None:

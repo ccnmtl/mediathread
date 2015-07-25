@@ -9,8 +9,10 @@ from django.http import HttpResponse, HttpResponseRedirect, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
+from django.views.generic.detail import DetailView
 from djangohelpers.lib import allow_http
+
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
@@ -31,7 +33,7 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         project_type = request.POST.get('project_type', 'composition')
         project = Project.objects.create(author=request.user,
                                          course=request.course,
-                                         title="Untitled",
+                                         title=Project.DEFAULT_TITLE,
                                          project_type=project_type)
 
         project.participants.add(request.user)
@@ -527,3 +529,12 @@ class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
                 project.save()
 
         return self.render_to_json_response({'sorted': 'true'})
+
+
+class SelectionAssignmentView(LoggedInMixin, DetailView):
+    model = Project
+    template_name = 'projects/selection_assignment_view.html'
+
+
+class SelectionAssignmentEditView(LoggedInMixin, TemplateView):
+    template_name = 'projects/selection_assignment_edit.html'

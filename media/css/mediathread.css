@@ -1027,23 +1027,6 @@ div.button-form form, div.button-form.inline form {
     background-color: #d9e3eb;
 }
 
-.infonote {
-    width: 900px;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: #31708f;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
-}
-
-.infonote a.dismiss {
-    margin-top: -10px;
-    float: right;
-    margin-right: -8px;
-}
-
 #introduction {
     text-align: left; 
     background-color: #dedede; 
@@ -1053,7 +1036,7 @@ div.button-form form, div.button-form.inline form {
     margin-right: 25px;
     min-width: 500px; 
     width: 62% 
-    float: left; 
+    float: left;
     margin-bottom: 3em;
     line-height: 1.5em;
 }

@@ -11,11 +11,12 @@
 {% block dashboard_module %}
     
     {% if messages %}
-    <div class="infonote">
-        {% for message in messages %}
-        <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
-        {% endfor %}
-    </div>
+        <div class="alert alert-info alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {% for message in messages %}
+                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        </div>    
     {% endif %}  
     
     <div class="dashboard-feature">
@@ -25,13 +26,15 @@
 
     {% if uploader %}
         <form name="form-upload-permission" action="{% url 'class-manage-sources' %}" method="POST">
-            <b>Set Upload Permission Settings</b>: &nbsp;
-            <select name="upload_permission">
+            <div class="form-group">
+            <label>Set Upload Permission Settings</label>: &nbsp;
+            <select name="upload_permission" class="form-control">
                 {% for level in permission_levels %}
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
                 {% endfor %}
             </select>
             &nbsp;&nbsp;<input class="btn btn-default" type="submit" value="Save"></input>
+            </div>
         </form>
         <form action="{% url 'collection-add-or-remove' %}" method="POST">
             <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">

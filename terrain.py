@@ -9,7 +9,8 @@ from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
 from selenium.common.exceptions import NoSuchElementException, \
-    StaleElementReferenceException, InvalidElementStateException
+    StaleElementReferenceException, InvalidElementStateException, \
+    TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import \
     visibility_of_element_located, invisibility_of_element_located
@@ -246,9 +247,10 @@ def there_is_a_text_link(step, text):
         assert False, "could not find the '%s' link" % text
     else:
         try:
-            link = world.browser.find_element_by_partial_link_text(text)
-            assert link.is_displayed()
-        except NoSuchElementException:
+            wait = ui.WebDriverWait(world.browser, 5)
+            wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT,
+                                                      text)))
+        except TimeoutException:
             world.browser.get_screenshot_as_file("/tmp/selenium.png")
             assert False, "Cannot find link %s" % text
 
@@ -1222,11 +1224,13 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value,
             if label_attr == label:
                 try:
                     elt.clear()
+                    time.sleep(1)
                     elt.send_keys(value)
                     return
                 except InvalidElementStateException:
                     time.sleep(1)
                     elt.clear()
+                    time.sleep(1)
                     elt.send_keys(value)
 
 

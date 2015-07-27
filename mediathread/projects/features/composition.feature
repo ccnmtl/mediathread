@@ -33,7 +33,6 @@ Feature: Composition
         When I click the Save button
         Then I see a Save Changes dialog
         There is a project visibility "Private - only author(s) can view"
-        There is a project visibility "Assignment - published to all students in class, tracks responses"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
         And the project visibility is "Private - only author(s) can view"
@@ -96,7 +95,6 @@ Feature: Composition
         There is a project visibility "Instructor - only author(s) and instructor can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        There is not a project visibility "Assignment - published to all students in class, tracks responses"
         And the project visibility is "Private - only author(s) can view"
         
         Then I save the changes
@@ -150,7 +148,6 @@ Feature: Composition
       Examples:
         | title   | visibility                                                        | status             | info_count | composition_count |
         | Private | Private - only author(s) can view                                 | Private            | 0          | 0                 |
-        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1                 |
         | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0                 |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions

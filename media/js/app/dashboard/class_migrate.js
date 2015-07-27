@@ -197,9 +197,10 @@
             jQuery('#course-title').html('');
         },
 
-        migrateCourseMaterials: function() {
+        migrateCourseMaterials: function(evt) {
             var self = this;
             // @todo - put up an overlay & a progress indicator.
+            jQuery(evt.currentTarget).attr('disabled', 'disabled');
 
             var asset_ids = [];
             this.selectedAssets.forEach(function(asset) {
@@ -251,6 +252,9 @@
                         self.selectedProjects.reset();
                         self.selectedAssets.reset();
                     });
+                },
+                complete: function() {
+                    jQuery(evt.currentTarget).removeAttr('disabled');
                 }
             });
         },

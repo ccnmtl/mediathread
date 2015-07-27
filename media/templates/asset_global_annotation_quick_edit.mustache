@@ -1,0 +1,59 @@
+<h2>Edit Item</h2>
+<form id="edit-global-annotation-form" method="post"
+  {{#asset-current.global_annotation.id}}
+    action="/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
+  {{/asset-current.global_annotation.id}}
+
+  {{^asset-current.global_annotation.id}}
+    action="/asset/create/{{asset-current.id}}/global/"
+  {{/asset-current.global_annotation.id}}
+  >
+
+  {{#vocabulary}}
+    <div>
+      <label>{{display_name}}</label>
+      <div>
+        <select class="vocabulary"
+          name="vocabulary-{{id}}"
+          data-placeholder="select {{#lower}}{{display_name}}{{/lower}}"
+          multiple="multiple"">
+          {{#term_set}}
+            <option value="{{id}}">{{display_name}}</option>
+          {{/term_set}}
+        </select>
+      </div>
+    </div>
+  {{/vocabulary}}
+
+  {{#asset-current}}
+    <div>
+      <label>Tags</label>
+      <div>
+        <input data-label="Tags" class="global-annotation-tags"
+        type="text"
+        name="annotation-tags"
+        data-placeholder="select or create tags"
+        value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"
+          id="id_annotation-tags"></input>
+          <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
+      </div>
+    </div>
+    <br />
+    <div>
+      <label>Notes</label>
+      <div>
+        <textarea data-label="Notes" id="id_annotation-body" rows="7" cols="51"
+          name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
+      </div>
+    </div>
+    <br />
+  {{/asset-current}}
+  <input class="btn-primary right"
+  type="submit" name="submit_notes" value="Save Item"
+  onclick="return annotationList.saveItem(this)"></input>
+
+  <input class="btn-primary right"
+  type="submit" name="submit_notes_cancel" value="Cancel"
+  onclick="return annotationList.cancelItem(this)"></input>
+  <div class="visualclear"></div>
+</form>

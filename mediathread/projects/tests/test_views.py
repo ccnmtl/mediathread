@@ -64,7 +64,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='Assignment')
+            policy='CourseProtected', project_type='assignment')
 
         # Alt Course Projects
         self.project_private_alt_course = ProjectFactory.create(

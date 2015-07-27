@@ -12,27 +12,28 @@ Feature: Assignment
         And there is a Create Composition button
         And there is a Create Discussion button
         
-        When I click the Create Composition button       
+        When I click the Create Assignment button  
         
         Then I am at the Untitled page
-        There is an open Composition panel
+        There is an open Assignment panel
         And there is a Saved button
+        And there is a "Private" link
 
         # Add a title and some text
-        Then I call the Composition "Assignment: Scenario 1"
+        Then I call the Assignment "Assignment: Scenario 1"
         And there is a Save button
         And I write some text for the Composition
         
         # Save as an Assignment
         When I click the Save button
         Then I see a Save Changes dialog
-        Then I set the project visibility to "Assignment - published to all students in class, tracks responses"
+        Then I set the project visibility to "Whole Class - all class members can view"
         When I save the changes
-        Then there is an "Assignment" link
+        Then there is an "Published to Class" link
         Then there is an open Assignment panel
         And the composition "Assignment: Scenario 1" has text 
-        And there is a Saved button       
-        
+        And there is a Saved button
+
         # Toggle to preview
         When I click the Preview button
         The Assignment panel has a Revisions button
@@ -54,7 +55,7 @@ Feature: Assignment
         # Preview view elements
         I see "by Instructor One"
         And I see "Assignment: Scenario 1"
-        And there is an "Assignment" link
+        And there is an "Published to Class" link
         
         There is an open Assignment panel
         The Assignment panel has a Revisions button
@@ -65,7 +66,7 @@ Feature: Assignment
         And the Assignment panel does not have a +/- Author button
         And the Assignment panel does not have a Respond To Assignment button
         And the Assignment panel does not have a Responses (1) button
-        
+
         Finished using Selenium 
         
     Scenario: assignment.feature 2. Student creates assignment response
@@ -85,7 +86,7 @@ Feature: Assignment
         And the Assignment panel does not have a Saved button
         And the Assignment panel does not have a Revisions button
         And the Assignment panel does not have a +/- Author button
-        And there is not an "Assignment" link
+        And there is not an "Published to Class" link
         And the Assignment panel has a Respond to Assignment button
         
         # Create the response

@@ -246,18 +246,6 @@
                         </div>
                         
                         <div>
-                            <div class="actions">
-                                {{#editable?}}
-                                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                        <img src="/media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
-                                    </a>
-                                {{/editable?}}
-                                
-                                <a class="collection-choice edit-asset-inplace" href="{{local_url}}" title="Edit item attributes">
-                                    <img src="/media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                                </a>
-                            </div>
-                        
                             {{#annotation_count?}}
                                 <div class="item-annotation-count meta">
                                     <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>

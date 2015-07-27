@@ -266,7 +266,7 @@
     <br />
     <div>
         <a href="/help/" style="margin-top: 3px;" class="more-help left">View More Help</a>        
-        <input class="btn-primary right" type="button" 
+        <input class="btn btn-primary right" type="button" 
             onclick="var rc = toggleHelpOverlay(this, '{{request.user.username}}', '{{help_id}}'); {%if callback %} {{callback}}();{%endif%} return rc;" 
             value="Close" />
     </div>

@@ -398,10 +398,10 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
                 var thumbs = jQuery.grep(asset.sources, isThumb);
                 if (thumbs.length && thumbs[0].height > 240) {
                     jQuery(target_parent).css({
-                        height: (thumbs[0].height + 75) + 'px'
+                        height: (thumbs[0].height + 50) + 'px'
                     });
                 } else {
-                    jQuery(target_parent).css({height: '240px'});
+                    jQuery(target_parent).css({height: '215px'});
                 }
             }
         } else {

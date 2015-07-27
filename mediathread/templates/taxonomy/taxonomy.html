@@ -35,10 +35,10 @@
                             <input id="id_display_name" type="text" name="display_name"
                                 maxlength="50" value="<%=vocabularies[i].display_name%>"></input>
                             <input type="hidden" name="vocabulary_id" value="<%=vocabularies[i].id%>"/>
-                            <a class="btn-primary edit-vocabulary-close" href="#">
+                            <a class="btn btn-default edit-vocabulary-close" href="#">
                                 <span class="ui-icon ui-icon-closethick">close</span>
                             </a>
-                            <a class="btn-primary edit-vocabulary-submit" href="#">
+                            <a class="btn btn-default edit-vocabulary-submit" href="#">
                                 <span class="ui-icon ui-icon-check">close</span>
                             </a>
                         </div>
@@ -58,10 +58,10 @@
                                 maxlength="50" placeholder="Type concept name here">
                             <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
                             <input type="hidden" name="object_id" value="<%=course_id%>"/>
-                            <a class="btn-primary create-vocabulary-close" href="#">
+                            <a class="btn btn-default create-vocabulary-close" href="#">
                                 <span class="ui-icon ui-icon-closethick">close</span>
                             </a>
-                            <a class="btn-primary create-vocabulary-submit" href="#">
+                            <a class="btn btn-default create-vocabulary-submit" href="#">
                                 <span class="ui-icon ui-icon-check">close</span>
                             </a>
                         </div>
@@ -73,15 +73,15 @@
 		            <h2>
                         <%=vocabularies[i].display_name%> Concept 
                         <% if (vocabularies[i].onomy_url.length < 1) { %>
-                            <a href="#" class="btn-primary onomy import-vocabulary-open">
-                                <img src="{{STATIC_URL}}img/onomy_logo.png" /><span>Import</span>
+                            <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
+                                <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Import</span>
                             </a>
                         <% } else if (vocabularies[i].onomy_url.length > 0 && vocabularies[i].onomy_url !== 'child') { %>
-                            <a href="#" class="btn-primary onomy import-vocabulary-open">
-                                <img src="{{STATIC_URL}}img/onomy_logo.png" /><span>Edit</span>
+                            <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
+                                <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Edit</span>
                             </a>
-                            <a class="btn-primary onomy refresh-onomy" href="#">
-                                <img src="{{STATIC_URL}}img/onomy_logo.png" /><span>Refresh</span>
+                            <a class="btn btn-default btn-sm onomy refresh-onomy right" href="#">
+                                <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Refresh</span>
                             </a>
 
                         <% } %>
@@ -97,10 +97,10 @@
                         <input type = "text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
                         <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
                         <input type="hidden" name="object_id" value="<%=course_id%>"/>
-                        <a class="btn-primary import-vocabulary-close" href="#">
+                        <a class="btn btn-default import-vocabulary-close" href="#">
                            <span class="ui-icon ui-icon-closethick">close</span>
                         </a>
-                        <a class="btn-primary import-vocabulary-submit" href="#">
+                        <a class="btn btn-default import-vocabulary-submit" href="#">
                             <span class="ui-icon ui-icon-check">close</span>
                         </a>
                         <div class="visualclear"></div>
@@ -109,7 +109,7 @@
                     <div class="terms">
                         <h3>Terms</h3>
                             <input type="text" name="term_name" class="left" placeholder="Type new term name here"/>
-                            <a class="btn-primary create-term-submit left" href="#">
+                            <a class="btn btn-default create-term-submit left" href="#">
                                 <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
                             </a>
                         
@@ -137,10 +137,10 @@
                                     <div class="term-edit" style="display: none">
                                         <input id="id_display_name" type="text" name="term_name"
                                             maxlength="50" value="<%=vocabularies[i].term_set[j].display_name%>">
-                                        <a class="btn-primary edit-term-close" href="#">
+                                        <a class="btn btn-default edit-term-close" href="#">
                                             <span class="ui-icon ui-icon-closethick">close</span>
                                         </a>
-                                        <a class="btn-primary edit-term-submit" href="#" data-id="<%=vocabularies[i].term_set[j].id%>">
+                                        <a class="btn btn-default edit-term-submit" href="#" data-id="<%=vocabularies[i].term_set[j].id%>">
                                             <span class="ui-icon ui-icon-check">close</span>
                                         </a>
                                     </div>

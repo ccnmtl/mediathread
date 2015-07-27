@@ -8,6 +8,7 @@
     	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
         
         <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
+        <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>    
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
         
         <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
@@ -20,9 +21,10 @@
 
         <script src="{{STATIC_URL}}js/flowplayer/flowplayer-5.5.0.min.js"></script>
 
-        <script type="text/javascript" src='{% static "js/sherdjs/lib/OpenLayers-min.js" %}'></script>
+        <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
-        
+
+        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" media="screen" />
         <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui.min.css' %}" media="screen" />
         <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon"/>
 
@@ -37,7 +39,7 @@
     </head>
 
     {% course_role for request.user in course as role_in_course %}
-    <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
+    <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
     <div id="dialog-confirm" style="display: none"></div>    
     <div id="container">
         {% block masthead %}
@@ -178,20 +180,15 @@
     
     
     		<!-- ###### Page Content ###### -->
-    		<div id="content">
-    			<div id="squish"><!-- Don't touch this div -->
-    				<div id="block" class="block">
-    					{% block pagetitle %}{% endblock %}
-    				
-    					{% block content %}{% endblock %}
+    		<div>
+				{% block pagetitle %}{% endblock %}
+			
+				{% block content %}{% endblock %}
     
-    				<!-- ###### Don't touch this ###### -->
-    				<div class="visualclear"></div><!-- id="visualclear" -->				
-    
-    				</div><!-- class="block" -->
-    			</div><!-- id="squish" -->
+				<!-- ###### Don't touch this ###### -->
+				<div class="visualclear"></div><!-- id="visualclear" -->				
     			<div id="clearfooter"></div>
-    		</div><!-- id="content" -->
+    		</div>
     	</div><!-- id="pagebody" -->
     </div><!-- id="container" -->
 

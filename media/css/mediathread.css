@@ -1,9 +1,12 @@
 /* ########## Standard elements ########## */
-.olLayerDiv div{
-  display: block !important;
+* {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
 }
 html,body {
 	height: 100%;
+	font-size: 1em;
 }
 
 body
@@ -18,8 +21,8 @@ body
 }
 
 .ui-widget {
-  font-family: 'lucida grande',arial,verdana,sans-serif;
-  font-size: 1em;
+    font-family: 'lucida grande',arial,verdana,sans-serif;
+    font-size: 1em;
 }
 
 .ui-widget-content,
@@ -75,12 +78,12 @@ h6
     font-style: italic;
 }
 
-p
-{
+p {
     display: block;
     padding: 0;
     border: 0;
     line-height: 1.5em;
+    margin: 14px 0;
 }
 
 table
@@ -153,116 +156,6 @@ a:hover {
 	padding: 0 0 0 10px;
 }
 
-/* ---- Primary Button Style ----- */
-
-a.btn-primary,
-.btn-primary {
-  font-size: 1em;
-  font-weight: normal;
-  color: #2f2f2f;
-  padding: 10px 15px;
-  margin: -12px 0px 21px;
-  border: solid 1px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-   background-color: #efefef;
-  *background-color: #efefef;
-  background-image: -moz-linear-gradient(top, #fcfcfc, #efefef);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fcfcfc), to(#efefef));
-  background-image: -webkit-linear-gradient(top, #fcfcfc, #efefef);
-  background-image: -o-linear-gradient(top, #fcfcfc, #efefef);
-  background-image: linear-gradient(to bottom, #fcfcfc, #efefef);
-  background-repeat: repeat-x;
-  border-color: #0044cc #0044cc #002a80;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  cursor: pointer;
-  display: inline-block;
-}
-
-a.btn-primary:hover, .btn-primary:hover, 
-a.btn-primary:active, .btn-primary:active, 
-a.btn-primary.active, .btn-primary.active,
-a.btn-primary.disabled, .btn-primary.disabled,
-a.btn-primary[disabled], .btn-primary[disabled] {
-  color: #2f2f2f;
-   background-color: #efefef;
-  *background-color: #efefef;
-  background-image: -moz-linear-gradient(top, #efefef, #fcfcfc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#efefef), to(#fcfcfc));
-  background-image: -webkit-linear-gradient(top, #efefef, #fcfcfc);
-  background-image: -o-linear-gradient(top, #efefef, #fcfcfc);
-  background-image: linear-gradient(to bottom, #efefef, #fcfcfc);
-  text-decoration: none;
-}
-
-a.btn-primary:active,
-a.btn-primary.active {
-  background-color: #003399 \9;
-}
-
-a.btn-primary img,
-.btn-primary img {
-    padding: 0 10px 0 0;
-}
-
-div.ui-dialog div.asset-view-details input.btn-primary {
-    padding: 4px 8px;
-    margin: 5px 0px 0px 6px;            
-}
-
-div.asset-workspace input.btn-primary {
-    padding: 4px 8px;
-    margin: 10px 0px 0px 6px;    
-}
-
-div.asset-workspace a.btn-primary {
-    padding: 5px 10px 3px 5px;
-    margin: 0px 0px 10px;
-}
-
-div.asset-workspace a.btn-primary img {
-    vertical-align: middle;
-    margin-top: -2px;
-    padding-right: 0;
-    width: 20px !important;
-    height: 20px !important;
-}
-
-div.asset-workspace a.btn-primary.create img {
-    vertical-align: middle;
-    margin-top: -4px;
-    padding-left: 0;
-    width: 6px !important;
-    height: 12px !important;
-}
-
-td#classwork .btn-primary.create {
-    margin-top: -8px;
-}
-
-td#classwork .btn-primary.create img {
-    padding: 0 0 0 10px;
-}
-
-.btn-primary.collection {
-    float: right;
-    margin: -7px 0 0;
-}
-
-a.btn-primary.upload_button {
-  float: left;
-  margin: 10px 0 0 35px;
-}
-
-div#taxonomy a.btn-primary.create-vocabulary-submit,
-div#taxonomy a.btn-primary.create-vocabulary-close,
-div#taxonomy a.btn-primary.create-vocabulary-open {
-    margin: 0 0 10px 0;
-}
-
 /* ---- Metadata displays ---- */
 
 .meta {
@@ -297,7 +190,7 @@ div#asset-view-details .meta {
 }
 
 #course_title {
-	margin: 16px 0 0 16px;
+	margin: 6px 0 0 16px;
 	float: left;
     z-index: 9997;
     white-space:nowrap;
@@ -323,7 +216,7 @@ div.arrowIcon {
     width: 16px;
     height: 16px;
     margin-left: .5em;
-    margin-top: 1em;
+    margin-top: 19px;
     background-repeat: no-repeat;
     background-position: center center;
 }
@@ -424,8 +317,6 @@ ul#projects li {
 	color: #efefef;
 	border-width: 0px;
 	height: 1px;
-	clear:both;
-	float: left;
 }
 
 #create-project-menu input:hover {
@@ -544,8 +435,6 @@ a.btn-feedback {
 }
 
 a.btn-feedback:hover,
-a.btn-primary.btn-feedback
-a.btn-primary.active,
 a.btn-feedback.disabled,
 a.btn-feedback[disabled] {
   color: #ffffff;
@@ -733,6 +622,7 @@ html.busy, html.busy * {
 
 .ui-accordion .ui-accordion-content {
     padding: 0 .5em .5em 1em !important;
+    width: 100%;
 }
 
 /* ########## Blocks style definitions ########## */
@@ -916,7 +806,7 @@ div.column-contents {
 }
 
 .column-container h2 {
-	padding: 10px 0;
+	padding: 0 0 10px 0;
 	border-bottom: solid 1px #efefef;
 }
 
@@ -931,43 +821,10 @@ div.column-contents {
     width: 95%;
 }
 
-#upload_audio, #upload_video {
-  width: 215px;
-  background-color: #fff;
-  padding: 10px 10px 15px 10px;
-  float: left;
-  margin: 0 15px 0 15px;
-}
-
 .upload_for {
   display: block;
   height: 35px;
   margin: 15px 0 0 0;
-}
-
-@media screen and (max-width: 2435px) {
-  #upload_audio, #upload_video {
-    float: left;
-    display: block;
-    clear: all;
-    margin: 20px 15px 0 15px;
-   }
-}
-
-/*SmartBoard fix*/
-
-@media screen and (max-width: 1195px) {
-  #upload_audio, #upload_video {
-    width: 175px;
-    float: left;
-    display: block;
-    clear: all;
-    margin: 20px 0 0 0;
-   }
-   a.btn-primary.upload_button {
-  float: left;
-  margin: 10px 0 0 0;
-}
 }
 
 .dashboard-feature {
@@ -1101,6 +958,13 @@ div.button-form form, div.button-form.inline form {
     background: url("../img/login_bg.jpg") center no-repeat;
 }
 
+.login-description a.btn {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    font-weight: normal;
+}
+
 .login-description h1 {
     font-weight: 200;
     line-height: 1.5em;
@@ -1154,10 +1018,6 @@ div.button-form form, div.button-form.inline form {
     border: 0;
 }
 
-.loginbox .content .btn-primary {
-	margin: 0;
-}
-
 .loginbox .seperator
 {
     margin: 20px 0;
@@ -1165,110 +1025,6 @@ div.button-form form, div.button-form.inline form {
     border: 0;
     border-top: 1px dotted #d9e3eb;
     background-color: #d9e3eb;
-}
-
-.loginbox .fieldwrapper
-{
-    margin: 0 0 10px 10px;
-    padding: 0;
-    border: 0;
-}
-
-.loginbox .fieldwrapper label
-{
-    display: block;
-    font-weight: bold;
-    color: #666;
-    font-size: 12px;
-}
-
-.loginbox .fieldwrapper input {
-    width: 200px;
-    height: 25px;
-    margin: 2px 0;
-    padding: 3px;
-    border: 0;
-    border: 1px solid #ccc;
-    background-color: #f4f4f4;
-    font: bold 12px arial, helvetica, verdana, sans-serif;
-}
-
-.loginbox .fieldwrapper input:focus
-{
-    border: 1px solid #06f;
-    background-color: #fff;
-}
-
-.loginbox .regbutton
-{
-    cursor: pointer;
-    padding: 4px 17px;
-    margin: 0 0 10px 10px;
-    color: #000;
-    font-weight: normal;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    border-left-color: #ccc;
-    border-right-color: #ccc;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-    text-align: center;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6));
-    background: -moz-linear-gradient(top, #fff, #e6e6e6);
-    font: bold 14px arial, helvetica, verdana, sans-serif !important;
-    text-transform: uppercase;
-}
-
-.loginbox .regbutton:hover
-{
-    border: 1px solid #999;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
-    background: -moz-linear-gradient(top, #fff, #ddd);
-}
-
-.loginbox .regbutton:active
-{
-    border: 1px solid #006666;
-    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#669999));
-    background: -moz-linear-gradient(top, #fff, #669999);
-}
-
-.loginbox .smalltxt
-{
-    font-size: 11px;
-}
-
-.errornote {
-    background: url("/media/img/icon_alert.png") no-repeat 5px 5px #FFEBE8;
-    border: 1px solid #ebccd1 !important;
-    display: block;
-    margin: 10px;
-    padding: 10px !important;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-}
-
-.errornote span {
-    color: #c00;
-}
-
-.infonote {
-    width: 900px;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: #31708f;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
-}
-
-.infonote a.dismiss {
-    margin-top: -10px;
-    float: right;
-    margin-right: -8px;
 }
 
 #introduction {
@@ -1280,7 +1036,7 @@ div.button-form form, div.button-form.inline form {
     margin-right: 25px;
     min-width: 500px; 
     width: 62% 
-    float: left; 
+    float: left;
     margin-bottom: 3em;
     line-height: 1.5em;
 }
@@ -1678,8 +1434,9 @@ form#edit-global-annotation-form input[name="asset-title"],
     margin-bottom: 10px;
 }
 
-div.panel.asset-workspace-dialog #id_annotation-body {
-    height: 65px !important;
+#id_annotation-body { 
+    height: 100px;
+    width: 98%;
 }
 
 div.panel.asset-workspace-dialog #asset-global-annotation,
@@ -2737,11 +2494,6 @@ ul li {
     margin: 0 0 5px 0;
 }
 
-#id_annotation-body { 
-    height: 100px;
-    width: 98%;
-}
-
 .panel { 
   text-align:center;
 }
@@ -3281,45 +3033,6 @@ ul.clumper li div.type-project {
     margin-top: -3px;
 }
 
-a.bookmarklet {
-  clear: both;
-  float: left;
-  font-size: 1em;
-  font-weight: normal;
-  color: #ffffff;
-  padding: 10px 15px;
-  margin: 15px 0 5px 0;
-  border: solid 1px;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  background-color: #0e76bc;
-  background-image: -moz-linear-gradient(top, #3d89bc, #0e76bc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3d89bc), to(#0e76bc));
-  background-image: -webkit-linear-gradient(top, #3d89bc, #0e76bc);
-  background-image: -o-linear-gradient(top, #3d89bc, #0e76bc);
-  background-image: linear-gradient(to bottom, #3d89bc, #0e76bc);
-  background-repeat: repeat-x;
-  border-color: #0044cc #0044cc #002a80;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-}
-
-a.bookmarklet:hover,
-a.bookmarklet.disabled,
-a.bookmarklet[disabled] {
-  color: #ffffff;
-  background-color: #0044cc;
-  *background-color: #003bb3;
-  text-decoration: none;
-}
-
-a.bookmarklet:active,
-a.bookmarklet.active {
-  background-color: #003399 \9;
-}
-
 .sherd-instructions {
     color: black;
     display:block;
@@ -3357,10 +3070,6 @@ div.asset-annotator {
     width: 80px;
     margin: 0 5px 0 10px;
     text-align: right;
-}
-
-.sherd-clipform-editing input.btn-primary {
-    margin: 5px 5px 5px 10px !important;
 }
 
 .sherd-clipform-editing input.videoplay {
@@ -3996,6 +3705,10 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
     -webkit-border-radius: 0;
 }
 
+div.asset-view-container div.asset-view-tabs .btn-primary {
+    margin: 3px 0 0 3px;
+}
+
 ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
     outline: 0;
@@ -4041,12 +3754,18 @@ div#asset-view-details div#asset-global-annotation {
     margin-bottom: 15px;
 }
 
+div#asset-view-details  a.edit-item {
+    padding: 3px 8px 2px 4px;    
+}
+
 div#asset-view-details a.create-selection {
-    margin: 1px 8px 0px 8px;
+    margin: -8px 8px 0px 8px;
+    padding: 3px 8px 2px 4px;
 }
 
 div#asset-view-details a.filter-selections {
-    margin: 1px 0 0 0;
+    margin: -8px 0 0 0;
+    padding: 3px 8px 2px 4px;
 }
 
 div#asset-header table {
@@ -4055,11 +3774,6 @@ div#asset-header table {
 
 div#asset-header table tr td.thumbnail {
     width: 100px;
-}
-
-div#asset-header table tr td img {
-    width: 100px;
-    height: auto;
 }
 
 div#asset-header div.global-annotation-analysis {
@@ -4516,7 +4230,7 @@ div.panel.assignment div.collection-filter select {
 
 /** Taxonomy **/
 
-div#taxonomy input[type="text"] {
+#taxonomy input[type="text"] {
     background-color: #ffffff;
     border: 1px solid #cccccc;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -4540,44 +4254,44 @@ div#taxonomy input[type="text"] {
     width: 65%;
 }
 
-div#taxonomy input[type="text"].default {
+#taxonomy input[type="text"].default {
     color: #999;
 }
 
-div#taxonomy input[type="text"].name {
+#taxonomy input[type="text"].name {
     width: 60%;
 }
 
-div#taxonomy input[name='onomy_url'] {
+#taxonomy input[name='onomy_url'] {
     width: 87%;
 }
 
-div#taxonomy a.icon-link {
+#taxonomy a.icon-link {
     float: right;
     margin: .5em 0;
     padding: 0;
     cursor: pointer;
 }
 
-div#taxonomy a.icon-link:hover {
+#taxonomy a.icon-link:hover {
     text-decoration: none;    
 }
 
-div#taxonomy ul li.ui-state-default div.actions {
+#taxonomy ul li.ui-state-default div.actions {
     display: none;
 }
 
-div#taxonomy ul li.ui-state-active div.actions {
+#taxonomy ul li.ui-state-active div.actions {
     display: block;
 }
 
 
-div#taxonomy .ui-tabs-vertical {
+#taxonomy .ui-tabs-vertical {
     width: 100%;
     border: none;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav {
     padding: .2em .1em .2em .2em;
     float: left;
     width: 30%;
@@ -4586,7 +4300,7 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav {
     border: none;    
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li {
     clear: left;
     width: 100%;
     border-bottom-width: 1px !important;
@@ -4597,26 +4311,26 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li {
     padding-top: 5px;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li a {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li a {
     display: block;
     outline: 0;
     cursor: pointer; 
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li a.display-name {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li a.display-name {
     width: 60%;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
     padding-bottom: 0;
     padding-right: .1em;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li .arrow {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li .arrow {
     display: none;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow {
     border-width: 11px;
     top: 50%;
     right: -11px;
@@ -4625,8 +4339,8 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow {
     border-right-width: 0;    
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow,
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow,
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     position: absolute;
     display: block;
     width: 0;
@@ -4635,7 +4349,7 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     border-style: solid;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
+#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     border-width: 10px;
     content: "";    
     right: 1px;
@@ -4644,24 +4358,14 @@ div#taxonomy .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active .arrow:after {
     border-right-width: 0;
 }
 
-div#taxonomy .ui-tabs-vertical .ui-tabs-panel {
+#taxonomy .ui-tabs-vertical .ui-tabs-panel {
     padding: 0;
     margin: 0;
     float: right;
     width: 65%;
 }
 
-div#taxonomy .btn-primary.onomy {
-    font-size: .65em;
-    float: right;
-    margin-right: 5px;
-}
-
-div#taxonomy .btn-primary.onomy img {
-    vertical-align: middle;    
-}
-
-div#taxonomy .vocabulary-import {
+#taxonomy .vocabulary-import {
     margin: 0 -1px .4em 0;
     outline: 0;
     padding: 10px 20px;
@@ -4669,25 +4373,25 @@ div#taxonomy .vocabulary-import {
     border-radius: 5px;
 }
 
-div#taxonomy div.vocabulary-display a.create-vocabulary-open {
+#taxonomy div.vocabulary-display a.create-vocabulary-open {
     width: 94%;
     height: 24px;
     padding-right: 2px;
 }
 
-div#taxonomy div.vocabulary-display a.create-vocabulary-open img {
+#taxonomy div.vocabulary-display a.create-vocabulary-open img {
     float: right;
     margin: -2px 2px 0 0;
 }
 
-div#taxonomy div.term-container a.edit-term-close,
-div#taxonomy div.term-container a.edit-term-submit,
-div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
-div#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
-div#taxonomy div.vocabulary-import a.import-vocabulary-close,
-div#taxonomy div.vocabulary-import a.import-vocabulary-submit,
-div#taxonomy div.vocabulary-create a.create-vocabulary-close,
-div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
+#taxonomy div.term-container a.edit-term-close,
+#taxonomy div.term-container a.edit-term-submit,
+#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
+#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
+#taxonomy div.vocabulary-import a.import-vocabulary-close,
+#taxonomy div.vocabulary-import a.import-vocabulary-submit,
+#taxonomy div.vocabulary-create a.create-vocabulary-close,
+#taxonomy div.vocabulary-create a.create-vocabulary-submit {
     float: right;
     padding: 8px 2px 0 2px;
     margin-top: 0;
@@ -4695,63 +4399,63 @@ div#taxonomy div.vocabulary-create a.create-vocabulary-submit {
     height: 25px;
 }
 
-div#taxonomy div.term-container a.edit-term-close,
-div#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
-div#taxonomy div.vocabulary-import a.import-vocabulary-close, 
-div#taxonomy div.vocabulary-create a.create-vocabulary-close {
+#taxonomy div.term-container a.edit-term-close,
+#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
+#taxonomy div.vocabulary-import a.import-vocabulary-close, 
+#taxonomy div.vocabulary-create a.create-vocabulary-close {
     margin: 0 5px 0 5px;
 }
 
-div#taxonomy div.term-container a.edit-term-close,
-div#taxonomy div.term-container a.edit-term-submit {
+#taxonomy div.term-container a.edit-term-close,
+#taxonomy div.term-container a.edit-term-submit {
     padding: 3px 2px 0 2px;
     margin-top: 5px;
     height: 20px;
     margin-bottom: 0;
 }
 
-div#taxonomy div.vocabulary-display a.edit-vocabulary-open {
+#taxonomy div.vocabulary-display a.edit-vocabulary-open {
     margin-right: 1em; 
 }
 
-div#taxonomy div.vocabulary-display a.delete-vocabulary {
+#taxonomy div.vocabulary-display a.delete-vocabulary {
     margin-right: .25em; 
 }
 
-div#taxonomy div.terms a.create-term-submit {
+#taxonomy div.terms a.create-term-submit {
     margin: 0 0 0 5px;
     padding: 4px;
 }
 
-div#taxonomy div.terms a.refresh-button-submit {
+#taxonomy div.terms a.refresh-button-submit {
     padding: 5px 0 5px 5px;
     float: right;
 }
 
-div#taxonomy div.onomy a.onomy-terms-submit img {
+#taxonomy div.onomy a.onomy-terms-submit img {
     padding: 0;
 }
 
-div#taxonomy div.onomy a.refresh-button-submit img {
+#taxonomy div.onomy a.refresh-button-submit img {
     padding: 0;
 }
 
-div#taxonomy div.onomy a.onomy-terms-submit {
+#taxonomy div.onomy a.onomy-terms-submit {
     margin: 0 0 0 5px;
     padding: 4px;
 }
 
-div#taxonomy div.terms a.create-term-submit img {
+#taxonomy div.terms a.create-term-submit img {
     padding: 0;
 }
 
-div#taxonomy div.terms h5 {
+#taxonomy div.terms h5 {
     float: left;
     margin: 0.7em 0 0 0;
     font-weight: normal;
 }
 
-div#taxonomy div.term-container {
+#taxonomy div.term-container {
     border: 1px solid #ccc;
     border-top-width: 0;
     border-radius: 4px;
@@ -4760,35 +4464,83 @@ div#taxonomy div.term-container {
     margin: 5px 0 5px 5px;    
 }
 
-div#taxonomy div.term-container div.term {
+#taxonomy div.term-container div.term {
     font-weight: normal;
     color: #212121;
     border-top: 1px solid #ccc;
     height: 38px;
 }
 
-div#taxonomy div.term-container div.term-display {
+#taxonomy div.term-container div.term-display {
     padding: 0 10px 0 20px;
 }
 
-div#taxonomy div.term-container div.term-edit {
+#taxonomy div.term-container div.term-edit {
     background-color: #f5f5f5;
     height: 38px;
 }
 
-div#taxonomy div.term-container div.term:hover {
+#taxonomy div.term-container div.term:hover {
     background-color: #f5f5f5;
 }
 
-div#taxonomy div.term-container div.term div.term-display div.actions {
+#taxonomy div.term-container div.term div.term-display div.actions {
     display: none;
 }
 
-div#taxonomy div.term-container div.term:hover div.term-display div.actions {
+#taxonomy div.term-container div.term:hover div.term-display div.actions {
     display: inline-block;
+}
+
+#taxonomy .import-vocabulary-open {
+    margin-left: 3px;
 }
 
 /* Make jquery-ui dialogs work with openlayers */
 .ui-dialog {
     z-index: 1000 !important;
+}
+
+/* sherdjs open layers */
+.olLayerDiv div {
+  display: block !important;
+}
+
+/* Fix bootstrap styles */
+.navbar * {
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+    font-weight: normal !important;
+}
+
+.form-control {
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+}
+
+a.btn.btn-primary {
+    color: white;
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;    
+}
+
+a.btn.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    font-weight: normal;
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;    
+}
+
+a.btn.btn-default img.right {
+    padding: 4px 0 0 10px;
+}
+
+a.btn.btn-default img.left {
+    padding: 4px 10px 0 0;
 }

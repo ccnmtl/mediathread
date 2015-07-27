@@ -19,7 +19,7 @@ pbr>=0.11
 testscenarios==0.5.0  # python-subunit
 python-subunit==1.1.0  # lettuce
 lettuce==0.2.20
-selenium==2.46.0
+selenium==2.46.1
 six==1.9.0
 sqlparse==0.1.14  # django-debug-toolbar
 python-mimeparse==0.1.4  # tastypie

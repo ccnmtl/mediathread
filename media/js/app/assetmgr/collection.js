@@ -113,10 +113,10 @@ var CollectionList = function (config) {
         return self.filter();
     });
 
-    jQuery(self.el).on('change select2-removed', "select.vocabulary", function(evt) {
+    jQuery(self.el).on('change select2-removed', 'select.vocabulary', function(evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-        var name = jQuery(srcElement).attr("name");
-        self.current_records.active_filters[name] = jQuery(srcElement).val();
+        var filter = jQuery(evt.added.element).attr('data-parent');
+        self.current_records.active_filters[filter] = jQuery(srcElement).val();
         return self.filter();
     });
 

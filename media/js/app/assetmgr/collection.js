@@ -83,6 +83,7 @@ var CollectionList = function (config) {
 
     jQuery(self.el).on('keyup', "input[name='search-text']", function(evt) {
         if (evt.keyCode === 13) {
+            evt.preventDefault();
             self.current_records.active_filters.search_text =
                 jQuery(self.el).find("input[name='search-text']").val();
             return self.filter();

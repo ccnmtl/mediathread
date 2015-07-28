@@ -22,6 +22,7 @@ class Vocabulary(models.Model):
     description = models.TextField(null=True, blank=True)
     single_select = models.BooleanField(default=False)
     onomy_url = models.TextField(null=True, blank=True)
+    skos_uri = models.CharField(null=True, blank=True, max_length=100)
     # Map this taxonomy to something else. like a course.
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
@@ -50,6 +51,7 @@ class Term(models.Model):
     display_name = models.CharField(max_length=100)
     description = models.CharField(null=True, blank=True, max_length=256)
     ordinality = models.IntegerField(null=True, blank=True, default=0)
+    skos_uri = models.CharField(null=True, blank=True, max_length=100)
 
     class Meta:
         unique_together = ('name', 'vocabulary')

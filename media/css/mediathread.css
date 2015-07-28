@@ -2212,7 +2212,7 @@ div.collection-chooser a.switcher-top {
 div#media_gallery div.vocabulary,
 div#media_gallery div.course-tags,
 div#media_gallery div.collection-filter select {
-    width: 68%;
+    width: 78%;
 }
 
 div.vocabulary,
@@ -2252,7 +2252,7 @@ span.concept-prefix {
     border: 1px solid #CCCCCC;
     border-right: none;
     height: 22px;
-    width: 25%;
+    width: 15%;
     white-space:nowrap; 
     overflow:hidden; 
     text-overflow: ellipsis;
@@ -4224,7 +4224,7 @@ div.panel.composition div.collection-filter select,
 div.panel.assignment div.vocabulary,
 div.panel.assignment div.course-tags,
 div.panel.assignment div.collection-filter select {
-    width: 256px;
+    width: 294px;
     margin-bottom: 10px;
 }
 

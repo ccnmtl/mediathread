@@ -137,18 +137,24 @@
                     </select>
                 </div>
                 
-                {{#active_vocabulary}}
                 <div class="switcher-tool">
-                    <span class="concept-prefix" title="{{display_name}}">{{display_name}}</span>                
-                    <select class="vocabulary" name="vocabulary-{{id}}"
-                        data-placeholder="Select {{display_name?lower()}}" multiple="multiple">
-                        {{#term_set}}
-                            <option value="{{id}}">{{display_name}} ({{count}})</option>
-                        {{/term_set}}
+                    <span class="concept-prefix" title="{{Terms}}">Terms</span>
+                    <select class="vocabulary"
+                        data-placeholder="Select {{display_name?lower()}}"
+                        multiple="multiple">
+                                        
+                        {{#active_vocabulary}}
+                        <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
+                            {{#term_set}}
+                                <option value="{{id}}">
+                                    {{display_name}} ({{count}})
+                                </option>
+                            {{/term_set}}
+                        </optgroup>
+                        {{/active_vocabulary}}     
                     </select>
                 </div>
-                {{/active_vocabulary}}
-                            
+
             </div>
         </div>  {{! end filter widget }}
             

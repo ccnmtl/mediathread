@@ -2104,79 +2104,7 @@ div.homepage-column-info {
     margin: 2px 5px;
 }
 
-.switcher-search-text {
-    background-color: white;
-    min-width: 155px;
-    width: 98%;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    height: 28px;
-    border: 1px solid #ccc;
-}
-
-
-.switcher-search-text span.search-text-prefix {
-    width: 5%;
-    display: inline-block;
-    height: 22px;
-    padding: 6px 7px 0 7px;
-    background-color: #EFEFEF;
-    border: 1px solid #ccc;
-    border-left: 0;
-    border-top: 0;
-    border-bottom: 0;
-    -webkit-border-top-left-radius: 4px;
-    -moz-border-radius-topleft: 4px;
-    border-top-left-radius: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    border-bottom-left-radius: 4px;  
-    border-right: 1px solid #CCCCCC;  
-}
-
-.switcher-search-text input[name='search-text'] {
-    border: 0;
-    padding: 0 5px;
-    margin: 0;
-    font-family: sans-serif;
-    font-size: 100%;
-    color: #777;
-    outline: 0;
-    height: 28px;
-    display: inline-block;
-    vertical-align: top;
-}
-
 /* full collection view */
-div.media-column .switcher-search-text input[name='search-text'] {
-    width: 79%;
-}
-
-td.minimized div.media-column .switcher-search-text input[name='search-text'] {
-    width: 74%;
-}
-
-div.composition .switcher-search-text input[name='search-text'],
-div.assignment .switcher-search-text input[name='search-text'] {
-    width: 82%;
-}
-
- 
-.switcher-search-text span.search-text-clear {
-    display: none;
-    border: 0;
-    cursor: pointer;
-    background-color: white;
-    margin: 6px 0 0 -5px;
-    padding-bottom: 2px;
-    vertical-align: top;    
-}
-
-.switcher-search-text.populated span.search-text-clear {
-    display: inline-block;
-}
-
 .switcher {
     z-index: 9998;/*IE z-index bug workaround*/
     outline:none;

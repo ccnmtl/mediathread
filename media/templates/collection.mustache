@@ -2,15 +2,18 @@
 <div class="collection_table">
     <div class="media-column" >
         <div class="filter-widget">
-            <div class="switcher-search-container collapsed">
-                <h3>SEARCH<span>(beta)</span></h3>
-                <div class="switcher-tool switcher-search-text {{#active_filters.search_text?}}populated{{/active_filters.search_text?}}">
-                    <span class="search-text-prefix"><img src="/media/img/icons/search.png" /></span>
-                    <input type="text" name="search-text" value="{{active_filters.search_text}}" placeholder="Item and selection titles"/>
-                    <span class="search-text-clear"><img src="/media/img/icons/meth_clear.png" /></span>
+            <div class="switcher-search-container">
+                <h3>SEARCH</h3>
+                <div class="switcher-tool switcher-search-text input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    <input type="text" class="form-control" name="search-text"
+                        value="{{active_filters.search_text}}" placeholder="Item &amp; selection titles"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-search-text" type="button">Go</button>
+                    </span>
                 </div>
             </div>
-        
+            
             <div class="switcher-filter-container collapsed">
                 <h3>FILTER</h3>
             

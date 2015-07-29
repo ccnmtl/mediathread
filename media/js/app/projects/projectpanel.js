@@ -45,6 +45,11 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         self.onClosePanel(jQuery(this).hasClass("subpanel"));
     });
 
+    self._bind(self.el, "form[name='editproject']", 'keypress keydown keyup', function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    });
 
     self._bind(self.el, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
     self._bind(self.el, "a.project-visibility-link", "click", function (evt) {

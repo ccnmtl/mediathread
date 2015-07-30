@@ -86,9 +86,23 @@ class ContactUsForm(forms.Form):
 
 
 class CustomRegistrationForm(RegistrationForm):
-    first_name = forms.CharField(required=True)
-    last_name = forms.CharField(required=True)
-    title = forms.CharField(required=False)
-    institution = forms.CharField(required=True)
-    referred_by = forms.CharField(required=True, widget=forms.Textarea)
-    user_story = forms.CharField(required=False, widget=forms.Textarea)
+    first_name = forms.CharField(required=True,
+                                 widget=forms.TextInput(attrs={'class':'form-control'}))
+    last_name = forms.CharField(required=True,
+                                widget=forms.TextInput(attrs={'class':'form-control'}))
+    username = forms.CharField(required=True,
+                                widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.CharField(required=True,
+                                widget=forms.TextInput(attrs={'class':'form-control'}))
+    password1 = forms.CharField(required=True,
+                                widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(required=True,
+                                widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    title = forms.CharField(required=False,
+                            widget=forms.TextInput(attrs={'class':'form-control'}))
+    institution = forms.CharField(required=True,
+                                  widget=forms.TextInput(attrs={'class':'form-control'}))
+    referred_by = forms.CharField(required=True,
+                                  widget=forms.Textarea(attrs={'class':'form-control'}))
+    user_story = forms.CharField(required=False,
+                                 widget=forms.Textarea(attrs={'class':'form-control'}))

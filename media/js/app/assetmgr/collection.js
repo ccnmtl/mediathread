@@ -76,31 +76,26 @@ var CollectionList = function (config) {
         jQuery(window).trigger("resize");
     });
 
-    jQuery(self.el).on('blur', "input[name='search-text']", function (evt) {
+    jQuery(self.el).on('blur', "input[name='search-text']", function(evt) {
         self.current_records.active_filters.search_text =
             jQuery(self.el).find("input[name='search-text']").val();
     });
 
-    jQuery(self.el).on('keyup', "input[name='search-text']", function (evt) {
+    jQuery(self.el).on('keyup', "input[name='search-text']", function(evt) {
         if (evt.keyCode === 13) {
+            evt.preventDefault();
             self.current_records.active_filters.search_text =
                 jQuery(self.el).find("input[name='search-text']").val();
             return self.filter();
-        } else {
-            jQuery("input[name='search-text']").parent().addClass("populated");
         }
     });
-    jQuery(self.el).on('click', "span.search-text-clear", function (evt) {
-        jQuery("input[name='search-text']").parent().removeClass("populated");
-
-        if (self.current_records.active_filters.search_text &&
-                self.current_records.active_filters.search_text.length > 0) {
-            self.current_records.active_filters.search_text = '';
-            return self.filter();
-        }
+    jQuery(self.el).on('click', '.btn-search-text', function(evt) {
+        self.current_records.active_filters.search_text =
+            jQuery(self.el).find("input[name='search-text']").val();
+        return self.filter();
     });
 
-    jQuery(self.el).on('click', "a.switcher-choice.filterbydate", function (evt) {
+    jQuery(self.el).on('click', "a.switcher-choice.filterbydate", function(evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
         var bits = srcElement.href.split("/");
         var filterName = bits[bits.length - 1];
@@ -113,10 +108,21 @@ var CollectionList = function (config) {
         return self.filter();
     });
 
-    jQuery(self.el).on('change select2-removed', "select.vocabulary", function(evt) {
+    jQuery(self.el).on('change select2-removed', 'select.vocabulary', function(evt) {
         var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-        var name = jQuery(srcElement).attr("name");
-        self.current_records.active_filters[name] = jQuery(srcElement).val();
+        var option = evt.added || evt.removed;
+        var vocab = jQuery(option.element).parent().attr('data-id');
+        if (!self.current_records.active_filters.hasOwnProperty(vocab)) {
+            self.current_records.active_filters[vocab] = [];
+        }
+
+        if (evt.added) {
+            self.current_records.active_filters[vocab].push(option.id);
+        } else if (evt.removed) {
+            var index =
+                self.current_records.active_filters[vocab].indexOf(option.id); 
+            self.current_records.active_filters[vocab].splice(index, 1);
+        }
         return self.filter();
     });
 
@@ -509,16 +515,19 @@ CollectionList.prototype.updateSwitcher = function () {
             self.current_records.active_filters.tag.split(","));
     }
 
-    jQuery(self.el).find("select.vocabulary").select2({});
-    jQuery(self.el).find("select.vocabulary").each(function(idx, elt) {
-        var name = jQuery(elt).attr("name");
-        if (name in self.current_records.active_filters &&
-                self.current_records.active_filters[name].length > 0) {
+    var vocabulary = jQuery(self.el).find("select.vocabulary")[0];
+    jQuery(vocabulary).select2({});
 
-            jQuery(self.el).find("select[name='" + name + "']").select2("val",
-                   self.current_records.active_filters[name].split(","));
+    var values = [];
+    for (var key in self.current_records.active_filters) {
+        if (self.current_records.active_filters.hasOwnProperty(key) &&
+                self.current_records.active_filters[key].length > 0) {
+            var val = self.current_records.active_filters[key].split(",");
+            self.current_records.active_filters[key] = val;
+            values = values.concat(val); 
         }
-    });
+    }
+    jQuery(vocabulary).select2("val", values);
 };
 
 CollectionList.prototype.getAssets = function () {

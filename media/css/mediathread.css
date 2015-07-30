@@ -2020,6 +2020,7 @@ div#media_gallery div.feature-help {
     position: static;
     width: 60%;
     margin-left: 20px;
+    z-index: 100;
 }
 
 div#media_gallery div.intro-text {
@@ -2052,156 +2053,63 @@ div.homepage-column-info {
     padding: 10px;
 }
 
-/*Assignment Specific styles */
-
 /** Switcher CSS **/
 
+/* full collection gallery */
 .filter-widget {
-    padding: 0 2px 2px 0px;
-    /*margin-bottom here causes a firefox bug to push down the top instead
-      so put the margin-bottom on div.switcher
-     */
-    margin-bottom: 0px;
-    position: relative;
+    width: 100%;
 }
 
-.filter-widget .switcher-filter-container {
-    margin-top: 25px;
-}
-
-.filter-widget .switcher-filter-container h3,
-.filter-widget .switcher-search-container h3 {
-    margin: 10px 0 12px 3px;
-    color: #777;
-    background-repeat: no-repeat;
-    background-position: -6px center;
-    background-image: url(/media/img/icons/open_list.png);
-    padding-left: 13px;
-    cursor: pointer;
-}
-
-.filter-widget .switcher-filter-container.collapsed h3,
-.filter-widget .switcher-search-container.collapsed h3 {
-    background-image: url(/media/img/icons/closed_list.png);
-}
-
-.filter-widget .switcher-filter-container.collapsed .switcher-tool,
-.filter-widget .switcher-search-container.collapsed .switcher-tool {
-    display: none;
-}
-
-.filter-widget h3 span {
-    font-size: 75%;
-    margin-left: 5px;
-    font-weight: normal;
-}
-
-.filter-widget h4 {
-    font-size: 80%;
-    font-weight: bold;
-    display: inline;
+.filter-widget .collection-col-3,
+.filter-widget .collection-col-2 {
     float: left;
-    margin: 2px 5px;
+    margin: 0 15px 10px 0;
 }
 
-.switcher-search-text {
-    background-color: white;
-    min-width: 155px;
-    width: 98%;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    height: 28px;
-    border: 1px solid #ccc;
+.filter-widget .collection-col-3 {
+    width: 20%;
+}
+
+.filter-widget .collection-col-2 {
+    width: 13%;
+}
+
+/* homepage */
+#classwork_table .filter-widget {
+    width: 50%;
+    margin-bottom: 5px;
 }
 
 
-.switcher-search-text span.search-text-prefix {
-    width: 5%;
-    display: inline-block;
-    height: 22px;
-    padding: 6px 7px 0 7px;
-    background-color: #EFEFEF;
-    border: 1px solid #ccc;
-    border-left: 0;
-    border-top: 0;
-    border-bottom: 0;
-    -webkit-border-top-left-radius: 4px;
-    -moz-border-radius-topleft: 4px;
-    border-top-left-radius: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    border-bottom-left-radius: 4px;  
-    border-right: 1px solid #CCCCCC;  
+/* composition, assignment, discussion space */
+.panel.composition td.panel-container.collection .filter-widget,
+.panel.discussion td.panel-container.collection .filter-widget {
+    width: 370px;
+    padding: 5px;
 }
 
-.switcher-search-text input[name='search-text'] {
-    border: 0;
-    padding: 0 5px;
-    margin: 0;
-    font-family: sans-serif;
-    font-size: 100%;
-    color: #777;
-    outline: 0;
-    height: 28px;
-    display: inline-block;
-    vertical-align: top;
+.panel.discussion td.panel-container.collection .filter-widget .collection-col-3,
+.panel.discussion td.panel-container.collection .filter-widget .collection-col-2,
+.panel.composition td.panel-container.collection .filter-widget .collection-col-3,
+.panel.composition td.panel-container.collection .filter-widget .collection-col-2 {
+    min-width: 370px;
+}
+
+/* asset workspace */
+.panel.asset-workspace td.panel-container.collection.minimized .filter-widget {
+    width: 245px !important;
+}
+
+.panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-3,
+.panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-2 {
+    min-width: 245px !important;
 }
 
 /* full collection view */
-div.media-column .switcher-search-text input[name='search-text'] {
-    width: 79%;
-}
-
-td.minimized div.media-column .switcher-search-text input[name='search-text'] {
-    width: 74%;
-}
-
-div.composition .switcher-search-text input[name='search-text'],
-div.assignment .switcher-search-text input[name='search-text'] {
-    width: 82%;
-}
-
- 
-.switcher-search-text span.search-text-clear {
-    display: none;
-    border: 0;
-    cursor: pointer;
-    background-color: white;
-    margin: 6px 0 0 -5px;
-    padding-bottom: 2px;
-    vertical-align: top;    
-}
-
-.switcher-search-text.populated span.search-text-clear {
-    display: inline-block;
-}
-
 .switcher {
-    z-index: 9998;/*IE z-index bug workaround*/
-    outline:none;
-    margin-bottom: 10px;
-}
-
-div.collection-date-filter {
-    width: 144px;
-}
-
-div.collection-date-filter .switcher-options {  
-    width: 145px;
-}
-
-div.collection-chooser {
-    width: 270px;
-}
-
-div.collection-chooser .switcher-options {  
-    width: 225px;
-}
-
-table#home-columns td#classwork div.collection-chooser .switcher-options {
-    left: 10px;
-    width: 194px;
+    outline: none;
+    position: relative;
+    width: 100%;
 }
 
 div.collection-chooser a.switcher-top {
@@ -2209,22 +2117,10 @@ div.collection-chooser a.switcher-top {
     background-color: white;
 }
 
-div#media_gallery div.vocabulary,
-div#media_gallery div.course-tags,
-div#media_gallery div.collection-filter select {
-    width: 68%;
-}
-
-div.vocabulary,
-div.course-tags,
-div.collection-filter select {
-    width: 100%;
-    margin-bottom: 8px;
-}
-
 div a.switcher-top {
     white-space: nowrap;
     text-overflow: ellipsis;
+    overflow-x: hidden;
 }
 
 span.course-tags-prefix,
@@ -2236,8 +2132,8 @@ span.switcher-prefix {
     color: #777;
     border-right: 1px solid #CCCCCC;
     background-color: #EFEFEF;
-    height: 20px;
-    padding: 5px 7px 0 7px;
+    height: 32px;
+    padding: 8px 7px 0 7px;
     font-size: .85em;
     -webkit-border-top-left-radius: 4px;
     -moz-border-radius-topleft: 4px;
@@ -2251,12 +2147,11 @@ span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;
     border-right: none;
-    height: 22px;
-    width: 25%;
+    height: 24px;
     white-space:nowrap; 
     overflow:hidden; 
     text-overflow: ellipsis;
-    padding: 6px 7px 0 7px;    
+    padding: 8px 7px 0 7px;    
 }
 
 div.media-column .select2-container-multi .select2-choices {    
@@ -2282,10 +2177,9 @@ div.media-column .select2-container-multi .select2-choices {
     border: 1px solid #ccc;
     z-index: 500;
     width:inherit;
-    left: 5px;
     list-style: none;
-    padding: 4px;    
-    margin-top: -1px;
+    padding: 3px 0 0 0;    
+    margin: -1px 0 0 0;
     max-height: 300px;
     overflow-y: auto;
     -webkit-border-bottom-left-radius: 4px;
@@ -2294,10 +2188,6 @@ div.media-column .select2-container-multi .select2-choices {
     -webkit-border-bottom-right-radius: 4px;    
     -moz-border-radius-bottomright: 4px;    
     border-bottom-right-radius: 4px;    
-}
-
-.switcher .switcher-options ul {
-    margin:0;
 }
 
 .switcher .switcher-options li {
@@ -2379,9 +2269,9 @@ div.media-column .select2-container-multi .select2-choices {
     background-color: white;
 
     color: #383838; 
-    width: auto;
+    width: inherit;
     display: block; 
-    height: 25px; 
+    height: 34px; 
     cursor: pointer;
 }
 
@@ -2446,15 +2336,14 @@ div.switcher-active-filter span a.remove:hover {
 
 a.switcher-top.menuopen span.title {
     float: left;
-    margin-top: 6px;
+    margin-top: 9px;
     padding: 0 0 0 7px;
     font-size: 1em;
     display: inline-block;
 }
 
 a.switcher-top.menuclosed span.title {
-    float: left;
-    margin-top: 6px;
+    margin-top: 9px;
     padding: 0 0 0 7px;
     font-size: 1em;
     display: inline-block;
@@ -2462,7 +2351,7 @@ a.switcher-top.menuclosed span.title {
 
 span.down-arrow {
     right: 4px;
-    width: 14px; 
+    width: 16px; 
     height: 16px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -2474,7 +2363,7 @@ span.down-arrow {
     outline: 0;
     float: right;
     background-color: white;
-    margin-top: 4px;     
+    margin-top: 7px;     
 }
 
 a.switcher-top.menuopen span.down-arrow {
@@ -2878,8 +2767,7 @@ input.videoplay:hover,
 }
 
 .record {
-    clear:both;
-
+    clear: both;
 }
 
 .record img.asset-thumb {
@@ -3293,23 +3181,6 @@ table.item-level-info td {
     padding: 0px;
     width: 0;
 }
-
-/**
-div#materials.homepage table.item-level-info td.item-meta {
-    text-align: left;
-    padding: 0px !important;
-}
-
-
-div#materials.homepage table.item-level-info td.item-actions {
-    padding: 0px !important;
-}
-
-div#materials.homepage table.item-level-info td {
-    text-align: center;
-}
-
-**/
 
 div.item-annotation-count.meta {
     text-align: left;
@@ -4116,49 +3987,13 @@ div.panel.asset-workspace td.panel-container.asset-details.fixed {
     padding: 10px;    
 }
 
-div.panel.asset-workspace td.panel-container.collection div.filter-widget {
-    width: 300px;
-    float: left;    
-}
-
-div.panel.asset-workspace td.panel-container.collection.minimized  div.filter-widget {
-    width: 245px;
-}
-
 div.panel.asset-workspace td.panel-container.collection div.collection-date-filter,
 div.panel.asset-workspace td.panel-container.collection div.collection-filter,
 div.panel.asset-workspace td.panel-container.collection div.collection-chooser {
-    width: 296px;
-    margin-right: 12px;    
-}
-
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-date-filter,
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-filter,
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-chooser {
-    width: 245px;
-    margin-right: 12px;    
-}
-
-div.panel.asset-workspace td.panel-container.collection div.collection-date-filter .switcher-options {
-    left: -9px;
-    width: 239px;    
-}
-
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-date-filter .switcher-options {
-    width: 188px;
-}
-    
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-chooser .switcher-options {
-    left: 5px;
-    width: 229px;
-}
-
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-chooser .switcher-options {
-    width: 174px;
+    width: 100%;
 }
 
 /* Project View overrides */
-
 
 /** Project Dialogs **/
 
@@ -4181,52 +4016,7 @@ div.ui-dialog div.asset-view-details {
 div.ui-dialog div.asset-view-details h2 {
     margin-top: 0;
 }
-    
-div.panel.discussion .filter-widget,
-div.panel.composition .filter-widget,
-div.panel.assignment .filter-widget {
-    margin: 6px 0 0 6px;
-}
 
-div.panel.discussion td.panel-container.collection div.collection-date-filter,
-div.panel.discussion td.panel-container.collection div.collection-filter,
-div.panel.discussion td.panel-container.collection div.collection-chooser,
-div.panel.assignment td.panel-container.collection div.collection-date-filter,
-div.panel.assignment td.panel-container.collection div.collection-filter,
-div.panel.assignment td.panel-container.collection div.collection-chooser,
-div.panel.composition td.panel-container.collection div.collection-date-filter,
-div.panel.composition td.panel-container.collection div.collection-filter,
-div.panel.composition td.panel-container.collection div.collection-chooser {
-    width: 365px;
-    margin-right: 12px;    
-}
-
-div.panel.discussion td.panel-container.collection div.collection-date-filter .switcher-options,
-div.panel.composition td.panel-container.collection div.collection-date-filter .switcher-options,
-div.panel.assignment td.panel-container.collection div.collection-date-filter .switcher-options {
-    left: -9px;
-    width: 308px;    
-}
-
-div.panel.discussion div.collection-chooser .switcher-options,
-div.panel.composition div.collection-chooser .switcher-options,
-div.panel.assignment div.collection-chooser .switcher-options {  
-    width: 294px;
-    left: 5px;
-}
-
-div.panel.discussion div.vocabulary,
-div.panel.discussion div.course-tags,
-div.panel.discussion div.collection-filter select,
-div.panel.composition div.vocabulary,
-div.panel.composition div.course-tags,
-div.panel.composition div.collection-filter select,
-div.panel.assignment div.vocabulary,
-div.panel.assignment div.course-tags,
-div.panel.assignment div.collection-filter select {
-    width: 256px;
-    margin-bottom: 10px;
-}
 
 /** Taxonomy **/
 
@@ -4514,6 +4304,7 @@ div.panel.assignment div.collection-filter select {
     font-weight: normal !important;
 }
 
+.switcher *,
 .form-control {
     -webkit-box-sizing: border-box !important;
     -moz-box-sizing: border-box !important;

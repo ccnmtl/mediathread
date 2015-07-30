@@ -16,11 +16,17 @@ class RequestCourseForm(forms.Form):
     course = forms.CharField(required=True, max_length=512)
     course_id = forms.CharField(required=True, max_length=512)
 
-    term = forms.ChoiceField(required=True, choices=TERM_CHOICES)
+    term = forms.ChoiceField(
+        required=True, choices=TERM_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}))
     year = forms.CharField(required=True, max_length=512)
 
-    instructor = forms.CharField(required=True, max_length=512)
-    section_leader = forms.CharField(max_length=512, required=False)
+    instructor = forms.CharField(
+        required=True, max_length=512,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    section_leader = forms.CharField(
+        max_length=512, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     start = forms.DateField(required=True)
     end = forms.DateField(required=True)
@@ -28,7 +34,9 @@ class RequestCourseForm(forms.Form):
     students = forms.IntegerField(required=True)
     assignments_required = forms.BooleanField(required=True)
 
-    description = forms.CharField(widget=forms.Textarea, required=True)
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        required=True)
 
     decoy = forms.CharField(widget=forms.Textarea, required=False)
 

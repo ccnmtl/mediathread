@@ -468,6 +468,8 @@
                     } else if (skos_match === null){
                         flagArray.push(true);
                     }
+                } else { //testing
+                    flagArray.push(true);
                 }
             }
 
@@ -479,7 +481,12 @@
         refreshOnomy: function(evt) {
             var urls = this.selected.getOnomyUrls();
             for (var i = 0; i < urls.length; i++) {
-                this.getTheOnomy(urls[i], this.selected);
+                if (urls[i].indexOf("json") > -1) {
+                    this.getTheOnomy(urls[i], this.selected, true);
+                } else {
+                    this.getTheOnomy(urls[i], this.selected, false);
+                }
+                
             }
         },
         findUtil: function(array, thing){
@@ -491,6 +498,8 @@
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
+                console.log(data);
+                console.log(JSON_FLAG);
                 var parents = {};
                 var arrayMax = 0;
                 var skosData;
@@ -502,7 +511,7 @@
                     });
                     arrayMax = skosData.length;
                 }
-
+             
                 for (var i = 0; i < arrayMax; i++) {
                     var pL;
                     var display;
@@ -521,6 +530,8 @@
                             pL = undefined;
                         }
                     }
+
+                    console.log(display);
                     
 
                     if (pL !== undefined && pL.length > 0) {
@@ -531,13 +542,19 @@
                              * the reason for making this a non vocabulary object is you have to dig
                              * down deeper into the Vocabulary model to get display_name etc.
                             */
+                            var parent_uri;
+                            try {
+                                parent_uri = data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"].value.trim();
+                            } catch (e) {
+                            }
+
                             var temp = {
                                 'display_name': pL,
                                 'term_set': [],
                                 'content_type_id': self.context.content_type_id,
                                 'object_id': self.context.course_id,
                                 'onomy_url': 'child',
-                                'skos_uri' : data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"].value.trim()
+                                'skos_uri' : parent_uri
                             };
                             temp.term_set.push({'display_name': display, 'skos_uri': skos_uri});
                             parents[temp.display_name] = temp;

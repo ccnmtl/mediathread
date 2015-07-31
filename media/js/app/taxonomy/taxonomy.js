@@ -75,6 +75,12 @@
                 var term = new Term({display_name: termName});
                 this.get('term_set').add(term);
             }
+        },
+        addTermWithURI: function(termName, uri) {
+            if (!this.hasTerm(termName)) {
+                var term = new Term({display_name: ternName, skos_uri: uri});
+                this.get('term_set').add(term);
+            }
         }
     });
 

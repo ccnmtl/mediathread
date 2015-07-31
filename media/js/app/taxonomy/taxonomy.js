@@ -448,24 +448,31 @@
 
             // split the url.
             var urls = value.split(',');
+            var flagArray = [];
             for (var i = 0; i < urls.length; i++) {
                 if (urls[i].length < 1) {
                     showMessage("Please enter a valid Onomy JSON url.", undefined, "Error");
                     return;
                 }
                 if (!urls[i].contains('test.json')) { // testing
-                    var the_regex = /onomy.org\/published\/(\d+)\/json/g;
-                    var match = the_regex.exec(urls[i]);
-                    if (match.length < 0) {
+                    var json_regex = /onomy.org\/published\/(\d+)\/json/g;
+                    var skos_regex = /onomy.org\/published\/(\d+)\/skos/g;
+                    var json_match = json_regex.exec(urls[i]);
+                    var skos_match = skos_regex.exec(urls[i]);
+                    if (json_match.length < 0 && skos_match.length < 0) {
                        // display error message
                        showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
                        return;
+                    } else if (json_match.length < 0) {
+                       flagArray.push(false);
+                    } else if (skos_match.length < 0){
+                        flagArray.push(true);
                     }
                 }
             }
 
             for (var j = 0; j < urls.length; j++) {
-                this.getTheOnomy(urls[j], this.selected);
+                this.getTheOnomy(urls[j], this.selected, flagArray[j]);
             }
 
         },
@@ -480,14 +487,25 @@
                 return item.display_name == thing;
             });
         },
-        getTheOnomy: function(onomyURL, selectedVocabulary) {
+        getTheOnomy: function(onomyURL, selectedVocabulary, JSON_FLAG) {
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
                 var parents = {};
                 for (var i = 0; i < data.terms.length; i++) {
-                    var pL = data.terms[i]['rdfs:parentLabel'].trim();
-                    var display = data.terms[i]['rdfs:label'].trim();
+                    var pL;
+                    var display;
+                    var skos_uri = undefined;
+
+                    if (JSON_FLAG) {
+                        pL = data.terms[i]['rdfs:parentLabel'].trim();
+                        display = data.terms[i]['rdfs:label'].trim();
+                    } else {
+                        pL = ""; //this will get SKOS pL
+                        display = ""; //get SKOS displayName
+                        skos_uri = ""; //get SKOS_URI
+                    }
+                    
 
                     if (typeof pL !== undefined && pL.length > 0) {
                         var search = parents.hasOwnProperty(pL);
@@ -502,7 +520,8 @@
                                 'term_set': [],
                                 'content_type_id': self.context.content_type_id,
                                 'object_id': self.context.course_id,
-                                'onomy_url': 'child'
+                                'onomy_url': 'child',
+                                'skos_uri' : skos_uri
                             };
                             temp.term_set.push({'display_name': display});
                             parents[temp.display_name] = temp;
@@ -520,7 +539,7 @@
                             selectedVocabulary.set("onomy_url", urls.toString());
                         }
                         //we create our term if it doesn't already exist
-                        selectedVocabulary.addTerm(display);
+                        selectedVocabulary.addTermWithURI(display, skos_uri);
                     }
                 }
 
@@ -538,19 +557,21 @@
                             'object_id': self.context.course_id,
                             'term_set': new TermList(),
                             'onomy_url': 'child',
+                            'skos_uri': undefined,
                             'self': undefined
                         });
 
                         for (var z = 0; z < parents[key].term_set.length; z++) {
-                            vocab.addTerm(parents[key].term_set[z].display_name);
+                            var term = parents[key].term_set[z];
+                            vocab.addTermWithURI(term.display_name, term.skos_uri);
                         }
 
                         self.collection.add(vocab);
                     } else if (_.size(parents) > 0) {
                         // if the vocab is in the collection, just add the term
                         for (var q = 0; q < parents[key].term_set.length; q++) {
-                            var term = parents[key].term_set[q].display_name;
-                            existingVocab.addTerm(term);
+                            var term = parents[key].term_set[q];
+                            existingVocab.addTermWithURI(term.display_name, term.skos_uri);
                         }
                     }
                 }

@@ -536,7 +536,7 @@
                                 'content_type_id': self.context.content_type_id,
                                 'object_id': self.context.course_id,
                                 'onomy_url': 'child',
-                                'skos_uri' : skos_uri
+                                'skos_uri' : data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"].value.trim()
                             };
                             temp.term_set.push({'display_name': display, 'skos_uri': skos_uri});
                             parents[temp.display_name] = temp;
@@ -572,7 +572,7 @@
                             'object_id': self.context.course_id,
                             'term_set': new TermList(),
                             'onomy_url': 'child',
-                            'skos_uri': undefined,
+                            'skos_uri': parents[key].skos_uri,
                             'self': undefined
                         });
 

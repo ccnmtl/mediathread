@@ -492,7 +492,17 @@
 
             jQuery.get(onomyURL, function(data) {
                 var parents = {};
-                for (var i = 0; i < data.terms.length; i++) {
+                var arrayMax = 0;
+                if (JSON_FLAG) {
+                    arrayMax = data.terms.length;
+                } else {
+                    var skosData = _.filter(Object.keys(data), function(test) {
+                       return test.indexOf("\/term\/") > -1;
+                    });
+                    arrayMax = skosData.length;
+                }
+
+                for (var i = 0; i < arrayMax; i++) {
                     var pL;
                     var display;
                     var skos_uri = undefined;
@@ -501,9 +511,14 @@
                         pL = data.terms[i]['rdfs:parentLabel'].trim();
                         display = data.terms[i]['rdfs:label'].trim();
                     } else {
-                        pL = ""; //this will get SKOS pL
-                        display = ""; //get SKOS displayName
-                        skos_uri = ""; //get SKOS_URI
+                        skos_uri = skosData[i];
+                        display = skosData[i]["http:\/\/www.w3.org\/2004\/02\/skos\/core#altLabel"].value.trim();
+
+                        try {
+                            pL = skosData[i]["http:\/\/onomy.org\/onomy-ns#parentLabel"].value.trim();
+                        } catch (e) {
+                            pL = undefined;
+                        }
                     }
                     
 

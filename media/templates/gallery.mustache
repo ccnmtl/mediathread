@@ -166,6 +166,10 @@
         <div class="collection-assets scroll annotation-embedding">
             {{#>>assets}}
             <div id="asset_table" class="asset-table">
+                <div class="gallery-item-overlay rounded hidden">
+                    <div class="glyphicon glyphicon-plus" aria-hidden="true"></div>
+                </div>
+            
                 {{^assets}}
                     <div class="default-content feature-help">
                         {{^active_filter_count}}

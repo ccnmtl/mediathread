@@ -226,6 +226,22 @@ a.arrowClosed div.arrowIcon {
     background-image: url(/media/img/arrowOpen.png);
 }
 
+/* form error messaging */
+.help-inline {
+    display: none;
+}
+
+.has-error .help-inline {
+    clear: both;
+    list-style-type: none;
+    color: #b94a48;
+    margin: 5px 0 20px 0;
+    display: block;
+}
+
+.has-error .control-label {
+    color: #383838;
+}
 
 /* ---- Student Dashboard Blocks ---- */
 
@@ -2052,15 +2068,17 @@ div.homepage-column-info {
 .filter-widget .collection-col-3,
 .filter-widget .collection-col-2 {
     float: left;
-    margin: 0 15px 10px 0;
+    margin: 0 13px 10px 0;
 }
 
 .filter-widget .collection-col-3 {
     width: 20%;
+    min-width: 199px;
 }
 
 .filter-widget .collection-col-2 {
     width: 13%;
+    min-width: 100px;
 }
 
 /* homepage */
@@ -3391,7 +3409,7 @@ div.collection_table {
 .gallery-item {
     float: left;
     margin-bottom: 10px;
-    margin-left: 5px;
+    margin-right: 5px;
     padding: 0 10px 10px 10px;
     width: 200px;
     border: 1px solid #ccc;
@@ -4323,4 +4341,43 @@ a.btn.btn-default img.right {
 
 a.btn.btn-default img.left {
     padding: 4px 10px 0 0;
+}
+
+/* Selection Assignment */
+.selection-assignment #sliding-content-container {
+    margin-top: 20px;
+}
+
+.selection-assignment .affix {
+    width: 25%;
+}
+
+.selection-assignment .col-md-9 {
+    width: 70%;
+}
+
+.selection-assignment .gallery-item-overlay {
+    position: absolute;
+    background: rgba(119,119,119,.70);
+    text-align: center;
+    vertical-align: middle;
+    opacity:0.70;
+    -moz-opacity:0.70;
+    filter:alpha(opacity=70);
+    font-weight: 900;
+    color: rgba(255,255,255,.85);
+    font-size: 48px;
+    z-index: 1000;
+}
+
+.selection-assignment .gallery-item-overlay div {
+    margin-top: 40%;
+    outline: 0;
+    -moz-user-select: none; 
+    -khtml-user-select: none; 
+    user-select: none;
+}
+
+.selection-assignment .selected-item .meta {
+    display: none;
 }

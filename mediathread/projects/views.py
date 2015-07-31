@@ -538,3 +538,7 @@ class SelectionAssignmentView(LoggedInMixin, DetailView):
 
 class SelectionAssignmentEditView(LoggedInMixin, TemplateView):
     template_name = 'projects/selection_assignment_edit.html'
+
+    def get_context_data(self, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('pk', None))
+        return {'project': project}

@@ -13,6 +13,8 @@
 {% endblock %}
 
 {% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
 {% endblock %}
 
@@ -26,6 +28,7 @@
     </script>
 
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}js/app/projects/selectionassignment.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
@@ -43,39 +46,89 @@
                 'container': 'sliding-content-container',
                 'url': MediaThread.urls['asset-workspace']()
             });
+            
+            var view = new SelectionAssignmentView({
+                el: jQuery('.selection-assignment').first()
+            });
         });
     </script>
 {% endblock %}
 
 {% block content %}
-    <div class="form">    
-        <div class="row">
-            <div class="col-md-3 column-container">
-                <h2>Instructions</h2>
-                <div class="page1">
-                    <h3>1. Specify the Title</h3>
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Title" />      
+<div class="selection-assignment">    
+    <div class="row">
+        <div class="col-md-3 column-container">
+            <div class="affix affix-top" data-spy="affix">
+                <form action="{% url 'selection-assignment-edit' project.id %}"
+                    method="post">
+                    <h2>Edit Selection Assignment</h2>
+                    <div data-page="1">
+                        <h3>1. Specify the Title</h3>
+                        <div class="form-group">
+                            <input type="text" name="title" class="form-control"
+                                placeholder="Title"
+                                value="{% ifnotequal project.title project.DEFAULT_TITLE %}{{project.title}}{% endifnotequal %}"/>
+                            <div class="help-inline">Title is a required field</div>
+                        </div>
+                        <nav>
+                            <ul class="pager">
+                                <li><a href="#" class="right next">Next</a></li>
+                            </ul>
+                        </nav>
                     </div>
-                    <h3>2. Specify the Instructions</h3>
-                    <div class="form-group">
-                        <textarea class="form-control" placeholder="Instructions"></textarea>      
+                    <div data-page="2" class="hidden">
+                        <h3>2. Specify the Instructions</h3>
+                        <div class="form-group">
+                            <textarea name="body" class="form-control"
+                                placeholder="Instructions">{{project.body}}</textarea>
+                            <div class="help-inline">Instructions is a required field</div>      
+                        </div>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right next">Next</a></li>
+                        </ul>
                     </div>
-                </div>
-                <div class="page2">
-                    <h3>3. Select Item</h3>
-                    <p>Search and filter the collection. Click on an item to select it as the basis for the assignment.</p>
-                </div>
-                <button class="form-control right btn btn-primary">Next</button> 
-            </div>
-            <div class="col-md-9">
-                <table id="sliding-content-container">
-                    <tr id="sliding-content-row" class="sliding-content-row">
-                        <td id="sliding-content-last-column" class="filler"></td>
-                    </tr>
-                </table>            
+                    <div data-page="3" class="hidden">
+                        <h3>3. Select Item</h3>
+                        <p>Search and filter the collection. Click on an item
+                            to select it as the basis for the assignment.</p>
+                        <div class="selected-item">
+                            {% if selected_item %}
+                                <div class="gallery-item static-height rounded">
+                                    <h4 class="asset_title asset-{{selected_item.primary_type}}">
+                                    <a class="asset-title-link" title="{{selected_item.title}}"
+                                     href="/asset/{{selected_item.id}}/">
+                                        {{selected_item.title|truncatechars:35}}
+                                    </a>
+                                    </h4>
+                                    <div class="asset-thumb">
+                                        <img class="gallery-item-thumb"
+                                         src="{{selected_item.thumb_url}}"
+                                         alt="Item Thumbnail">
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div></div>
+                            {% endif %} 
+                        </div>
+                        <input type="hidden" name="selected_item" value="" />
+                        <div class="help-inline">An item must be selected.</div>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right save">Save</a></li>
+                        </ul>
+                    </div>
+                </form>
             </div>
         </div>
+        <div class="col-md-9">
+            <table id="sliding-content-container" class="hidden">
+                <tr id="sliding-content-row" class="sliding-content-row">
+                    <td id="sliding-content-last-column" class="filler"></td>
+                </tr>
+            </table>            
+        </div>
     </div>
-{% endblock %}    
+</div>
+{% endblock %}
 

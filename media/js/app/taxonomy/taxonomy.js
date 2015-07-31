@@ -459,13 +459,13 @@
                     var skos_regex = /onomy.org\/published\/(\d+)\/skos/g;
                     var json_match = json_regex.exec(urls[i]);
                     var skos_match = skos_regex.exec(urls[i]);
-                    if (json_match == null && skos_match == null) {
+                    if (json_match === null && skos_match === null) {
                        // display error message
                        showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
                        return;
-                    } else if (json_match == null) {
+                    } else if (json_match === null) {
                        flagArray.push(false);
-                    } else if (skos_match == null){
+                    } else if (skos_match === null){
                         flagArray.push(true);
                     }
                 }
@@ -493,10 +493,11 @@
             jQuery.get(onomyURL, function(data) {
                 var parents = {};
                 var arrayMax = 0;
+                var skosData;
                 if (JSON_FLAG) {
                     arrayMax = data.terms.length;
                 } else {
-                    var skosData = _.filter(Object.keys(data), function(test) {
+                    skosData = _.filter(Object.keys(data), function(test) {
                        return test.indexOf("\/term\/") > -1;
                     });
                     arrayMax = skosData.length;
@@ -505,7 +506,7 @@
                 for (var i = 0; i < arrayMax; i++) {
                     var pL;
                     var display;
-                    var skos_uri = undefined;
+                    var skos_uri;
 
                     if (JSON_FLAG) {
                         pL = data.terms[i]['rdfs:parentLabel'].trim();
@@ -522,7 +523,7 @@
                     }
                     
 
-                    if (pL != undefined && pL.length > 0) {
+                    if (pL !== undefined && pL.length > 0) {
                         var search = parents.hasOwnProperty(pL);
                         if (!search) {
                             /*
@@ -585,8 +586,8 @@
                     } else if (_.size(parents) > 0) {
                         // if the vocab is in the collection, just add the term
                         for (var q = 0; q < parents[key].term_set.length; q++) {
-                            var term = parents[key].term_set[q];
-                            existingVocab.addTermWithURI(term.display_name, term.skos_uri);
+                            var set = parents[key].term_set[q];
+                            existingVocab.addTermWithURI(set.display_name, set.skos_uri);
                         }
                     }
                 }

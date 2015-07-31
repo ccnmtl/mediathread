@@ -78,7 +78,7 @@
         },
         addTermWithURI: function(termName, uri) {
             if (!this.hasTerm(termName)) {
-                var term = new Term({display_name: ternName, skos_uri: uri});
+                var term = new Term({display_name: termName, skos_uri: uri});
                 this.get('term_set').add(term);
             }
         }
@@ -459,13 +459,13 @@
                     var skos_regex = /onomy.org\/published\/(\d+)\/skos/g;
                     var json_match = json_regex.exec(urls[i]);
                     var skos_match = skos_regex.exec(urls[i]);
-                    if (json_match.length < 0 && skos_match.length < 0) {
+                    if (json_match == null && skos_match == null) {
                        // display error message
                        showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
                        return;
-                    } else if (json_match.length < 0) {
+                    } else if (json_match == null) {
                        flagArray.push(false);
-                    } else if (skos_match.length < 0){
+                    } else if (skos_match == null){
                         flagArray.push(true);
                     }
                 }
@@ -512,17 +512,17 @@
                         display = data.terms[i]['rdfs:label'].trim();
                     } else {
                         skos_uri = skosData[i];
-                        display = skosData[i]["http:\/\/www.w3.org\/2004\/02\/skos\/core#altLabel"].value.trim();
+                        display = data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#altLabel"].value.trim();
 
                         try {
-                            pL = skosData[i]["http:\/\/onomy.org\/onomy-ns#parentLabel"].value.trim();
+                            pL = data[skos_uri]["http:\/\/onomy.org\/onomy-ns#parentLabel"].value.trim();
                         } catch (e) {
                             pL = undefined;
                         }
                     }
                     
 
-                    if (typeof pL !== undefined && pL.length > 0) {
+                    if (pL != undefined && pL.length > 0) {
                         var search = parents.hasOwnProperty(pL);
                         if (!search) {
                             /*
@@ -538,11 +538,11 @@
                                 'onomy_url': 'child',
                                 'skos_uri' : skos_uri
                             };
-                            temp.term_set.push({'display_name': display});
+                            temp.term_set.push({'display_name': display, 'skos_uri': skos_uri});
                             parents[temp.display_name] = temp;
                         } else {
                             //add the term to the Vocabulary in parents
-                            parents[pL].term_set.push({'display_name': display});
+                            parents[pL].term_set.push({'display_name': display, 'skos_uri': skos_uri});
                         }
 
                     } else if (display !== undefined && display.length > 0) {

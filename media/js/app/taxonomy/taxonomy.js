@@ -496,7 +496,6 @@
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
-                var parents = {};
                 var arrayMax = 0;
                 var skosData;
                 if (self.isJSON(onomyURL)) {
@@ -508,70 +507,19 @@
                     arrayMax = skosData.length;
                 }
              
-                for (var i = 0; i < arrayMax; i++) {
-                    var pL;
-                    var display;
-                    var skos_uri;
+                var parents = self.createParents(data, selectedVocabulary, onomyURL, arrayMax);
 
-                    if (self.isJSON(onomyURL)) {
-                        pL = data.terms[i]['rdfs:parentLabel'].trim();
-                        display = data.terms[i]['rdfs:label'].trim();
-                    } else {
-                        skos_uri = skosData[i];
-                        display = data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#altLabel"].value.trim();
+                self.createFromParents(parents);
+                
+                self.collection.saveAll();
+            });
+        },
+        createFromParents: function(parentsArray) {
+            var self = this;
 
-                        try {
-                            pL = data[skos_uri]["http:\/\/onomy.org\/onomy-ns#parentLabel"].value.trim();
-                        } catch (e) {
-                            pL = undefined;
-                        }
-                    }                    
-
-                    if (pL !== undefined && pL.length > 0) {
-                        var search = parents.hasOwnProperty(pL);
-                        if (!search) {
-                            /*
-                             * create the 'vocabulary' object
-                             * the reason for making this a non vocabulary object is you have to dig
-                             * down deeper into the Vocabulary model to get display_name etc.
-                            */
-                            var parent_uri;
-                            try {
-                                parent_uri = data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"].value.trim();
-                            } catch (e) {
-                            }
-
-                            var temp = {
-                                'display_name': pL,
-                                'term_set': [],
-                                'content_type_id': self.context.content_type_id,
-                                'object_id': self.context.course_id,
-                                'onomy_url': 'child',
-                                'skos_uri' : parent_uri
-                            };
-                            temp.term_set.push({'display_name': display, 'skos_uri': skos_uri});
-                            parents[temp.display_name] = temp;
-                        } else {
-                            //add the term to the Vocabulary in parents
-                            parents[pL].term_set.push({'display_name': display, 'skos_uri': skos_uri});
-                        }
-
-                    } else if (display !== undefined && display.length > 0) {
-                        var urls = selectedVocabulary.getOnomyUrls();
-                        //if this vocabulary doesn't contain the url we punched in
-                        if (!_.contains(urls, onomyURL)) {
-                            //add it to our array we made and save it in the vocab
-                            urls.push(onomyURL);
-                            selectedVocabulary.set("onomy_url", urls.toString());
-                        }
-                        //we create our term if it doesn't already exist
-                        selectedVocabulary.addTerm(display, skos_uri);
-                    }
-                }
-
-                // loop over the array.
-                for (var key in parents){
-                    if (!parents.hasOwnProperty(key)) {
+            // loop over the array.
+                for (var key in parentsArray){
+                    if (!parentsArray.hasOwnProperty(key)) {
                         continue;
                     }
                     var existingVocab = self.collection.getByDisplayName(key);
@@ -583,27 +531,92 @@
                             'object_id': self.context.course_id,
                             'term_set': new TermList(),
                             'onomy_url': 'child',
-                            'skos_uri': parents[key].skos_uri,
+                            'skos_uri': parentsArray[key].skos_uri,
                             'self': undefined
                         });
 
-                        for (var z = 0; z < parents[key].term_set.length; z++) {
-                            var term = parents[key].term_set[z];
+                        for (var z = 0; z < parentsArray[key].term_set.length; z++) {
+                            var term = parentsArray[key].term_set[z];
                             vocab.addTerm(term.display_name, term.skos_uri);
                         }
 
                         self.collection.add(vocab);
-                    } else if (_.size(parents) > 0) {
+                    } else if (_.size(parentsArray) > 0) {
                         // if the vocab is in the collection, just add the term
-                        for (var q = 0; q < parents[key].term_set.length; q++) {
-                            var set = parents[key].term_set[q];
+                        for (var q = 0; q < parentsArray[key].term_set.length; q++) {
+                            var set = parentsArray[key].term_set[q];
                             existingVocab.addTerm(set.display_name, set.skos_uri);
                         }
                     }
                 }
-                
-                self.collection.saveAll();
-            });
+        },
+        createParents: function (data, selectedVocabulary,onomyURL, loopMax) {
+
+            var self = this;
+            var parentsArray = {};
+
+            for (var i = 0; i < loopMax; i++) {
+                    var pL;
+                    var display;
+                    var skos_uri;
+
+                if (self.isJSON(onomyURL)) {
+                    pL = data.terms[i]['rdfs:parentLabel'].trim();
+                    display = data.terms[i]['rdfs:label'].trim();
+                } else {
+                    skos_uri = skosData[i];
+                    display = data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#altLabel"].value.trim();
+
+                    try {
+                        pL = data[skos_uri]["http:\/\/onomy.org\/onomy-ns#parentLabel"].value.trim();
+                    } catch (e) {
+                        pL = undefined;
+                    }
+                }                    
+
+                if (pL !== undefined && pL.length > 0) {
+                    var search = parentsArray.hasOwnProperty(pL);
+                    if (!search) {
+                            /*
+                             * create the 'vocabulary' object
+                             * the reason for making this a non vocabulary object is you have to dig
+                             * down deeper into the Vocabulary model to get display_name etc.
+                            */
+                        var parent_uri;
+                        try {
+                            parent_uri = data[skos_uri]["http:\/\/www.w3.org\/2004\/02\/skos\/core#broader"].value.trim();
+                        } catch (e) {
+                        }
+
+                        var temp = {
+                            'display_name': pL,
+                            'term_set': [],
+                            'content_type_id': self.context.content_type_id,
+                            'object_id': self.context.course_id,
+                            'onomy_url': 'child',
+                            'skos_uri' : parent_uri
+                        };
+                        temp.term_set.push({'display_name': display, 'skos_uri': skos_uri});
+                        parentsArray[temp.display_name] = temp;
+                    } else {
+                        //add the term to the Vocabulary in parentsArray
+                        parentsArray[pL].term_set.push({'display_name': display, 'skos_uri': skos_uri});
+                    }
+
+                } else if (display !== undefined && display.length > 0) {
+                    var urls = selectedVocabulary.getOnomyUrls();
+                    //if this vocabulary doesn't contain the url we punched in
+                    if (!_.contains(urls, onomyURL)) {
+                        //add it to our array we made and save it in the vocab
+                        urls.push(onomyURL);
+                        selectedVocabulary.set("onomy_url", urls.toString());
+                    }
+                    //we create our term if it doesn't already exist
+                    selectedVocabulary.addTerm(display, skos_uri);
+                }
+            }
+
+            return parentsArray;
         }
     });
 }(jQuery));

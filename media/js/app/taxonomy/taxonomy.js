@@ -70,13 +70,7 @@
         hasTerm: function(termName) {
             return this.get('term_set').getByDisplayName(termName);
         },
-        addTerm: function(termName) {
-            if (!this.hasTerm(termName)) {
-                var term = new Term({display_name: termName});
-                this.get('term_set').add(term);
-            }
-        },
-        addTermWithURI: function(termName, uri) {
+        addTerm: function(termName, uri) {
             if (!this.hasTerm(termName)) {
                 var term = new Term({display_name: termName, skos_uri: uri});
                 this.get('term_set').add(term);
@@ -440,6 +434,26 @@
             });
             return false;
         },
+        isSKOS: function(url) {
+            var skos_regex = /onomy.org\/published\/(\d+)\/skos/g;
+            var skos_match = skos_regex.exec(url);
+            if (skos_match !== null) {
+                return true;
+            }
+            return false;
+
+        },
+        isJSON: function(url) {
+            var json_regex = /onomy.org\/published\/(\d+)\/json/g;
+            var json_match = json_regex.exec(url);
+            if (json_match !== null) {
+                return true;
+            } else if (url.indexOf("json") > -1) {
+                return true;
+            }
+            return false;
+
+        },
         createOnomyVocabulary: function(evt) {
             evt.preventDefault();
             var elt = jQuery(evt.currentTarget).prevAll("input[name='onomy_url']")[0];
@@ -448,45 +462,29 @@
 
             // split the url.
             var urls = value.split(',');
-            var flagArray = [];
             for (var i = 0; i < urls.length; i++) {
                 if (urls[i].length < 1) {
                     showMessage("Please enter a valid Onomy JSON url.", undefined, "Error");
                     return;
                 }
                 if (!urls[i].contains('test.json')) { // testing
-                    var json_regex = /onomy.org\/published\/(\d+)\/json/g;
-                    var skos_regex = /onomy.org\/published\/(\d+)\/skos/g;
-                    var json_match = json_regex.exec(urls[i]);
-                    var skos_match = skos_regex.exec(urls[i]);
-                    if (json_match === null && skos_match === null) {
+                    if (this.isJSON(urls[i]) === false && this.isSKOS(urls[i]) === false) {
                        // display error message
-                       showMessage(urls[i] + " is not valid. Please enter an Onomy JSON Url.", undefined, "Error");
+                       showMessage(urls[i] + " is not valid. Please enter an Onomy JSON/SKOS Url.", undefined, "Error");
                        return;
-                    } else if (json_match === null) {
-                       flagArray.push(false);
-                    } else if (skos_match === null){
-                        flagArray.push(true);
                     }
-                } else { //testing
-                    flagArray.push(true);
                 }
             }
 
             for (var j = 0; j < urls.length; j++) {
-                this.getTheOnomy(urls[j], this.selected, flagArray[j]);
+                this.getTheOnomy(urls[j], this.selected);
             }
 
         },
         refreshOnomy: function(evt) {
             var urls = this.selected.getOnomyUrls();
             for (var i = 0; i < urls.length; i++) {
-                if (urls[i].indexOf("json") > -1) {
-                    this.getTheOnomy(urls[i], this.selected, true);
-                } else {
-                    this.getTheOnomy(urls[i], this.selected, false);
-                }
-                
+                this.getTheOnomy(urls[i], this.selected);
             }
         },
         findUtil: function(array, thing){
@@ -494,14 +492,14 @@
                 return item.display_name == thing;
             });
         },
-        getTheOnomy: function(onomyURL, selectedVocabulary, jsonFlag) {
+        getTheOnomy: function(onomyURL, selectedVocabulary) {
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
                 var parents = {};
                 var arrayMax = 0;
                 var skosData;
-                if (jsonFlag) {
+                if (self.isJSON(onomyURL)) {
                     arrayMax = data.terms.length;
                 } else {
                     skosData = _.filter(Object.keys(data), function(test) {
@@ -515,7 +513,7 @@
                     var display;
                     var skos_uri;
 
-                    if (jsonFlag) {
+                    if (self.isJSON(onomyURL)) {
                         pL = data.terms[i]['rdfs:parentLabel'].trim();
                         display = data.terms[i]['rdfs:label'].trim();
                     } else {
@@ -567,7 +565,7 @@
                             selectedVocabulary.set("onomy_url", urls.toString());
                         }
                         //we create our term if it doesn't already exist
-                        selectedVocabulary.addTermWithURI(display, skos_uri);
+                        selectedVocabulary.addTerm(display, skos_uri);
                     }
                 }
 
@@ -591,7 +589,7 @@
 
                         for (var z = 0; z < parents[key].term_set.length; z++) {
                             var term = parents[key].term_set[z];
-                            vocab.addTermWithURI(term.display_name, term.skos_uri);
+                            vocab.addTerm(term.display_name, term.skos_uri);
                         }
 
                         self.collection.add(vocab);
@@ -599,7 +597,7 @@
                         // if the vocab is in the collection, just add the term
                         for (var q = 0; q < parents[key].term_set.length; q++) {
                             var set = parents[key].term_set[q];
-                            existingVocab.addTermWithURI(set.display_name, set.skos_uri);
+                            existingVocab.addTerm(set.display_name, set.skos_uri);
                         }
                     }
                 }

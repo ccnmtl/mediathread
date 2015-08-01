@@ -494,14 +494,14 @@
                 return item.display_name == thing;
             });
         },
-        getTheOnomy: function(onomyURL, selectedVocabulary, JSON_FLAG) {
+        getTheOnomy: function(onomyURL, selectedVocabulary, jsonFlag) {
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
                 var parents = {};
                 var arrayMax = 0;
                 var skosData;
-                if (JSON_FLAG) {
+                if (jsonFlag) {
                     arrayMax = data.terms.length;
                 } else {
                     skosData = _.filter(Object.keys(data), function(test) {
@@ -515,7 +515,7 @@
                     var display;
                     var skos_uri;
 
-                    if (JSON_FLAG) {
+                    if (jsonFlag) {
                         pL = data.terms[i]['rdfs:parentLabel'].trim();
                         display = data.terms[i]['rdfs:label'].trim();
                     } else {

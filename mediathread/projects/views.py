@@ -536,9 +536,19 @@ class SelectionAssignmentView(LoggedInMixin, DetailView):
     template_name = 'projects/selection_assignment_view.html'
 
 
-class SelectionAssignmentEditView(LoggedInMixin, TemplateView):
+class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
     template_name = 'projects/selection_assignment_edit.html'
 
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('pk', None))
         return {'project': project}
+
+    def post(self, request, *args, **kwargs):
+        pk = request.POST.get('pk', None)
+        project = get_object_or_404(Project, pk=pk)
+        project.title = request.POST.get('title', project.DEFAULT_TITLE)
+        project.body = request.POST.get('body', '')
+        project.save()
+
+        # redirect to view
+        return HttpResponseRedirect(project.get_absolute_url())

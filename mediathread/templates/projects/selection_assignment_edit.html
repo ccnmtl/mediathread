@@ -60,7 +60,9 @@
         <div class="col-md-3 column-container">
             <div class="affix affix-top" data-spy="affix">
                 <form action="{% url 'selection-assignment-edit' project.id %}"
-                    method="post">
+                    method="post">{% csrf_token %}
+                    <input type="hidden" name="pk" value="{{project.id}}" />
+
                     <h2>Edit Selection Assignment</h2>
                     <div data-page="1">
                         <h3>1. Specify the Title</h3>
@@ -108,8 +110,9 @@
                                     </div>
                                 </div>
                             {% else %}
+                                <!--  this will be replaced by selection -->
                                 <div></div>
-                            {% endif %} 
+                            {% endif %}
                         </div>
                         <input type="hidden" name="selected_item" value="" />
                         <div class="help-inline">An item must be selected.</div>

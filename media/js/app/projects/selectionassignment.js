@@ -8,16 +8,19 @@
         events : {
             'click .next': 'onNext',
             'click .prev': 'onPrev',
+            'click .save': 'onSave',
             'mouseover .asset-table .gallery-item': 'onGalleryItemMouseOver',
             'mouseleave .asset-table': 'onGalleryMouseOut',
             'click .gallery-item-overlay': 'onGalleryItemSelect'
         },
         initialize: function(options) {
-            _.bindAll(this, 'onNext', 'onPrev',
+            _.bindAll(this, 'onNext', 'onPrev', 'onSave',
                     'onGalleryItemMouseOver', 'onGalleryMouseOut',
                     'onGalleryItemSelect');
             this.currentPage = 1;
             this.totalPages = 3;
+            this.hoverItem = null;
+            this.selectedItem = null;
         },
         validate: function(pageNo) {
             if (pageNo === 1) {
@@ -25,7 +28,7 @@
             } else if (pageNo === 2) {
                 return jQuery(this.el).find("textarea[name='body']").val().length > 0;
             } else if (pageNo === 3) {
-                return this.hasOwnProperty('selected');
+                return this.hasOwnProperty('selectedItem');
             }
         },
         onNext: function(evt) {
@@ -57,18 +60,12 @@
             if (!this.validate(this.currentPage)) {
                 $current.addClass('has-error');
             } else {
-                // save the results
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: data,
-                    success: success,
-                    dataType: dataType
-                  });
+                var form = jQuery(evt.currentTarget).parents('form').first();
+                form.submit();
             }
         },
         onGalleryItemMouseOver: function(evt) {
-            this.selectedItem = evt.currentTarget;
+            this.hoverItem = evt.currentTarget;
             var $elt = jQuery(evt.currentTarget);
             var $overlay = jQuery('.gallery-item-overlay');
             $overlay.css('top', $elt.position().top);
@@ -78,10 +75,12 @@
             $overlay.removeClass('hidden');
         },
         onGalleryMouseOut: function(evt) {
+            this.hoverItem = null;
             var $overlay = jQuery('.gallery-item-overlay');
             $overlay.addClass('hidden');
         },
         onGalleryItemSelect: function(evt) {
+            this.selectedItem = this.hoverItem;
             var clone = jQuery.clone(this.selectedItem);
             jQuery(clone).attr('style', 'float: none');
             jQuery('.selected-item div').replaceWith(clone);

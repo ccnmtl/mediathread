@@ -498,8 +498,6 @@
             var self = this;
 
             jQuery.get(onomyURL, function(data) {
-                console.log(data);
-                console.log(JSON_FLAG);
                 var parents = {};
                 var arrayMax = 0;
                 var skosData;
@@ -529,10 +527,7 @@
                         } catch (e) {
                             pL = undefined;
                         }
-                    }
-
-                    console.log(display);
-                    
+                    }                    
 
                     if (pL !== undefined && pL.length > 0) {
                         var search = parents.hasOwnProperty(pL);

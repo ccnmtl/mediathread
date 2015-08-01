@@ -42,9 +42,11 @@
         <div class="col-md-3 column-container">
             <h2 class="">
                 Instructions
-                <a href="{% url 'selection-assignment-edit' object.id %}">
+                {% if can_edit %}
+                <a href="{% url 'selection-assignment-edit' project.id %}">
                     <span class="glyphicon glyphicon-pencil right" aria-hidden="true"></span>
                 </a>
+                {% endif %}
             </h2>
         </div>
         <div class="col-md-9">

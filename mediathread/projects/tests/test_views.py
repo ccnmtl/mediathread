@@ -449,3 +449,114 @@ class TestProjectSortView(MediathreadTestMixin, TestCase):
 
         project = Project.objects.get(id=project2.id)
         self.assertEquals(project.ordinality, 0)
+
+
+class SelectionAssignmenViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        self.project = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='PrivateEditorsAreOwners',
+            project_type='selection-assignment')
+
+    def test_view(self):
+        url = reverse('selection-assignment-view', args=[self.project.id])
+
+        # anonymous
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # alt course instructor
+        self.client.login(username=self.alt_instructor.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # author
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+
+class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        self.project = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='PrivateEditorsAreOwners',
+            project_type='selection-assignment')
+
+    def test_access(self):
+        url = reverse('selection-assignment-edit', args=[self.project.id])
+
+        # anonymous
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # alt course instructor
+        self.client.login(username=self.alt_instructor.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # author
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+    def test_post(self):
+        asset1 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='image')
+        asset2 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='youtube')
+
+        url = reverse('selection-assignment-edit', args=[self.project.id])
+
+        # author
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        data = {
+            'title': 'Updated',
+            'body': 'Body Text',
+            'item': asset1.id
+        }
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+
+        # verify
+        project = Project.objects.get(id=self.project.id)
+        self.assertEquals(project.title, 'Updated')
+        self.assertEquals(project.body, 'Body Text')
+        self.assertEquals(project.assignmentitem_set.count(), 1)
+        self.assertEquals(project.assignmentitem_set.first().asset, asset1)
+
+        # swap out the asset
+        data = {
+            'title': 'Updated',
+            'body': 'Body Text',
+            'item': asset2.id
+        }
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(project.assignmentitem_set.count(), 1)
+        self.assertEquals(project.assignmentitem_set.first().asset, asset2)

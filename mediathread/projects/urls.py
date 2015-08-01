@@ -18,10 +18,12 @@ urlpatterns = patterns(
         'project_workspace',
         name='project-workspace-feedback'),
 
-    url(r'^view/sa/(?P<pk>\d+)/$', SelectionAssignmentView.as_view(), {},
+    url(r'^view/sa/(?P<project_id>\d+)/$',
+        SelectionAssignmentView.as_view(), {},
         'selection-assignment-view'),
 
-    url(r'^edit/sa/(?P<pk>\d+)/$', SelectionAssignmentEditView.as_view(), {},
+    url(r'^edit/sa/(?P<project_id>\d+)/$',
+        SelectionAssignmentEditView.as_view(), {},
         'selection-assignment-edit'),
 
     url(r'^save/(?P<project_id>\d+)/$', 'project_save', name='project-save'),

@@ -235,7 +235,8 @@
                    </div>
                 {{/assets}} 
                 {{#assets}}
-                    <div id="record-{{id}}" class="gallery-item record-{{primary_type}} gallery-item-{{id}} static-height rounded">
+                    <div data-id="{{id}}" id="record-{{id}}" class="gallery-item
+                     record-{{primary_type}} gallery-item-{{id}} static-height rounded">
                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                             <a class="asset-title-link"
                                title="{{{title?default(-Untitled-)}}"

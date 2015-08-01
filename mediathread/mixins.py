@@ -13,6 +13,7 @@ from django.utils.decorators import method_decorator
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible
+from mediathread.projects.models import Project
 
 
 def ajax_required(func):
@@ -170,3 +171,21 @@ class LoggedInMixinSuperuser(object):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
         return super(LoggedInMixinSuperuser, self).dispatch(*args, **kwargs)
+
+
+class ProjectVisibleMixin(object):
+    def dispatch(self, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        if not project.visible(self.request.course, self.request.user):
+            return HttpResponseForbidden("forbidden")
+
+        return super(ProjectVisibleMixin, self).dispatch(*args, **kwargs)
+
+
+class ProjectEditableMixin(object):
+    def dispatch(self, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        if not project.can_edit(self.request.course, self.request.user):
+            return HttpResponseForbidden("forbidden")
+
+        return super(ProjectEditableMixin, self).dispatch(*args, **kwargs)

@@ -17,10 +17,11 @@
             _.bindAll(this, 'onNext', 'onPrev', 'onSave',
                     'onGalleryItemMouseOver', 'onGalleryMouseOut',
                     'onGalleryItemSelect');
+            var self = this;
             this.currentPage = 1;
             this.totalPages = 3;
             this.hoverItem = null;
-            this.selectedItem = null;
+            this.selectedItem = jQuery('.selected-item .gallery-item')[0];
         },
         validate: function(pageNo) {
             if (pageNo === 1) {
@@ -28,7 +29,7 @@
             } else if (pageNo === 2) {
                 return jQuery(this.el).find("textarea[name='body']").val().length > 0;
             } else if (pageNo === 3) {
-                return this.hasOwnProperty('selectedItem');
+                return this.selectedItem !== undefined;
             }
         },
         onNext: function(evt) {
@@ -61,6 +62,11 @@
                 $current.addClass('has-error');
             } else {
                 var form = jQuery(evt.currentTarget).parents('form').first();
+
+                // set the item id
+                var pk = jQuery(this.selectedItem).attr('data-id');
+                jQuery("input[name='item']").val(pk);
+                
                 form.submit();
             }
         },

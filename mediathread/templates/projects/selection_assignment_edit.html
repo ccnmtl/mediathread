@@ -55,6 +55,7 @@
 {% endblock %}
 
 {% block content %}
+{% with item=project.assignmentitem_set.first.asset %}
 <div class="selection-assignment">    
     <div class="row">
         <div class="col-md-3 column-container">
@@ -81,7 +82,7 @@
                     <div data-page="2" class="hidden">
                         <h3>2. Specify the Instructions</h3>
                         <div class="form-group">
-                            <textarea name="body" class="form-control"
+                            <textarea name="body" class="form-control mceEditor"
                                 placeholder="Instructions">{{project.body}}</textarea>
                             <div class="help-inline">Instructions is a required field</div>      
                         </div>
@@ -95,17 +96,17 @@
                         <p>Search and filter the collection. Click on an item
                             to select it as the basis for the assignment.</p>
                         <div class="selected-item">
-                            {% if selected_item %}
-                                <div class="gallery-item static-height rounded">
-                                    <h4 class="asset_title asset-{{selected_item.primary_type}}">
-                                    <a class="asset-title-link" title="{{selected_item.title}}"
-                                     href="/asset/{{selected_item.id}}/">
-                                        {{selected_item.title|truncatechars:35}}
+                            {% if item %}
+                                <div class="gallery-item static-height rounded" data-id="{{item.id}}">
+                                    <h4 class="asset_title asset-{{item.primary.label}}">
+                                    <a class="asset-title-link" title="{{item.title}}"
+                                     href="/asset/{{item.id}}/">
+                                        {{item.title|truncatechars:35}}
                                     </a>
                                     </h4>
                                     <div class="asset-thumb">
                                         <img class="gallery-item-thumb"
-                                         src="{{selected_item.thumb_url}}"
+                                         src="{{item.thumb_url}}"
                                          alt="Item Thumbnail">
                                     </div>
                                 </div>
@@ -114,8 +115,9 @@
                                 <div></div>
                             {% endif %}
                         </div>
-                        <input type="hidden" name="selected_item" value="" />
+                        <input type="hidden" name="item" value="" />
                         <div class="help-inline">An item must be selected.</div>
+                        <div class="clearfix"></div>
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right save">Save</a></li>
@@ -133,5 +135,6 @@
         </div>
     </div>
 </div>
+{% endwith %}
 {% endblock %}
 

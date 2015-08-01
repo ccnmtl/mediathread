@@ -10,19 +10,19 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from django.views.generic.base import View, TemplateView
-from django.views.generic.detail import DetailView
 from djangohelpers.lib import allow_http
 
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
+from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import ajax_required, LoggedInMixin, \
     RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin, \
-    LoggedInFacultyMixin
+    LoggedInFacultyMixin, ProjectVisibleMixin, ProjectEditableMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, AssignmentItem
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -135,7 +135,7 @@ def project_save(request, project_id):
                             content_type='application/json')
 
 
-class ProjectDeleteView(LoggedInMixin, View):
+class ProjectDeleteView(LoggedInMixin, ProjectVisibleMixin, View):
     def post(self, request, *args, **kwargs):
         """
         Delete the requested project. Regular access conventions apply.
@@ -450,12 +450,11 @@ def project_export_msword(request, project_id):
 
 
 class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
-                        AjaxRequiredMixin, JSONResponseMixin, View):
+                        AjaxRequiredMixin, JSONResponseMixin,
+                        ProjectVisibleMixin, View):
 
     def get(self, request, project_id):
         project = get_object_or_404(Project, id=project_id)
-        if not project.visible(request.course, request.user):
-            return HttpResponseForbidden("forbidden")
 
         can_edit = project.can_edit(request.course, request.user)
 
@@ -531,24 +530,38 @@ class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
         return self.render_to_json_response({'sorted': 'true'})
 
 
-class SelectionAssignmentView(LoggedInMixin, DetailView):
+class SelectionAssignmentView(LoggedInMixin, ProjectVisibleMixin,
+                              TemplateView):
     model = Project
     template_name = 'projects/selection_assignment_view.html'
 
+    def get_context_data(self, **kwargs):
+        ctx = super(SelectionAssignmentView, self).get_context_data(**kwargs)
 
-class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        ctx['project'] = project
+        ctx['can_edit'] = project.can_edit(self.request.course,
+                                           self.request.user)
+        return ctx
+
+
+class SelectionAssignmentEditView(LoggedInFacultyMixin, ProjectEditableMixin,
+                                  TemplateView):
     template_name = 'projects/selection_assignment_edit.html'
 
     def get_context_data(self, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('pk', None))
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         return {'project': project}
 
     def post(self, request, *args, **kwargs):
-        pk = request.POST.get('pk', None)
-        project = get_object_or_404(Project, pk=pk)
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         project.title = request.POST.get('title', project.DEFAULT_TITLE)
         project.body = request.POST.get('body', '')
         project.save()
 
-        # redirect to view
+        item = get_object_or_404(Asset, pk=request.POST.get('item', None))
+        if project.assignmentitem_set.filter(asset=item).count() == 0:
+            AssignmentItem.objects.create(project=project, asset=item)
+            project.assignmentitem_set.exclude(asset=item).delete()
+
         return HttpResponseRedirect(project.get_absolute_url())

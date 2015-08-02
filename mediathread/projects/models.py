@@ -1,12 +1,16 @@
 from datetime import datetime
-from django.db import models
+
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.db.models import Q
-from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
+
+from mediathread.assetmgr.models import Asset
+from mediathread.djangosherd.models import SherdNote
+from structuredcollaboration.models import Collaboration
 
 
 PROJECT_TYPES = (
@@ -52,13 +56,11 @@ class ProjectManager(models.Manager):
 
     def migrate(self, project_set, course, user, object_map,
                 include_tags, include_notes):
-        note_model = models.get_model('djangosherd', 'sherdnote')
-        asset_model = models.get_model('assetmgr', 'asset')
 
         for old_project in project_set:
             project_body = old_project.body
-            citations = note_model.objects.references_in_string(project_body,
-                                                                user)
+            citations = SherdNote.objects.references_in_string(project_body,
+                                                               user)
 
             new_project = Project.objects.migrate_one(old_project,
                                                       course,
@@ -75,12 +77,12 @@ class ProjectManager(models.Manager):
                             new_asset = object_map['assets'][old_note.asset.id]
                         else:
                             # migrate the asset
-                            new_asset = asset_model.objects.migrate_one(
+                            new_asset = Asset.objects.migrate_one(
                                 old_note.asset, course, user)
                             object_map['assets'][old_note.asset.id] = new_asset
 
                         # migrate the note
-                        new_note = note_model.objects.migrate_one(
+                        new_note = SherdNote.objects.migrate_one(
                             old_note, new_asset, user,
                             include_tags, include_notes)
 
@@ -94,7 +96,7 @@ class ProjectManager(models.Manager):
                     project_body = \
                         new_note.asset.update_references_in_string(
                             project_body, old_note.asset)
-                except asset_model.DoesNotExist:
+                except Asset.DoesNotExist:
                     # todo: The asset was deleted, but is still referenced.
                     pass
 
@@ -197,6 +199,8 @@ class ProjectManager(models.Manager):
 
 
 class Project(models.Model):
+    DEFAULT_TITLE = 'Untitled'
+
     objects = ProjectManager()  # custom manager
 
     title = models.CharField(max_length=1024)
@@ -247,7 +251,15 @@ class Project(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('project-workspace', (), {'project_id': self.pk})
+        if self.project_type == 'selection-assignment':
+            if self.title == self.DEFAULT_TITLE:
+                return ('selection-assignment-edit', (),
+                        {'project_id': self.pk})
+            else:
+                return ('selection-assignment-view', (),
+                        {'project_id': self.pk})
+        else:
+            return ('project-workspace', (), {'project_id': self.pk})
 
     def get_due_date(self):
         if self.due_date is None:
@@ -393,8 +405,7 @@ class Project(models.Model):
         """
         citation references to sherdnotes
         """
-        note_model = models.get_model('djangosherd', 'SherdNote')
-        return note_model.objects.references_in_string(self.body, self.author)
+        return SherdNote.objects.references_in_string(self.body, self.author)
 
     @property
     def content_object(self):
@@ -489,3 +500,8 @@ class Project(models.Model):
     def feedback_date(self):
         thread = self.feedback_discussion()
         return thread.submit_date if thread else None
+
+
+class AssignmentItem(models.Model):
+    asset = models.ForeignKey(Asset)
+    project = models.ForeignKey(Project)

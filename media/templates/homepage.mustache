@@ -46,6 +46,12 @@
             <input type="hidden" name="project_type" value="assignment"/>
             <input type="submit" value="Create Assignment" />
         </form>
+        <form action="/project/create/" method="post" style="display: none">
+            <input type="hidden" name="title" />
+            <input type="hidden" name="project_type" value="selection-assignment"/>
+            <input type="submit" value="Create Selection Assignment" />
+        </form>
+        <hr class="divideLinks" />
         <form action="/project/create/" method="post">
             <input type="hidden" name="title" />
             <input type="hidden" name="project_type" value="composition"/>

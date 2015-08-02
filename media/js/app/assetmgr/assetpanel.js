@@ -93,7 +93,7 @@ var AssetPanelHandler = function (el, parent, panel, space_owner) {
                     var container = jQuery(self.el).find('div.asset-table')[0];
                     jQuery(container).masonry({
                         itemSelector : '.gallery-item',
-                        columnWidth: 25
+                        columnWidth: 23
                     });
                     jQuery(container).masonry('bindResize');
                 } else {
@@ -257,11 +257,10 @@ AssetPanelHandler.prototype.resize = function () {
             jQuery("div#annotations-organized div.ui-widget-header").outerHeight() + 36;
         jQuery(self.el).find('ul#asset-details-annotations-list').css('height', (visible) + "px");
         jQuery("div.accordion").accordion("refresh");
-        
-        var container = jQuery(self.el).find('div.asset-table')[0];
-        jQuery(container).masonry();
-
     }
+    
+    var container = jQuery(self.el).find('div.asset-table')[0];
+    jQuery(container).masonry();
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function (evt) {

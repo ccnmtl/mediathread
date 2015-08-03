@@ -15,7 +15,8 @@ from structuredcollaboration.models import Collaboration
 
 PROJECT_TYPES = (
     ('Assignment', 'assignment'),
-    ('Composition', 'composition')
+    ('Composition', 'composition'),
+    ('Selection Assignment', 'selection-assignment')
 )
 
 PUBLISH_OPTIONS = (
@@ -158,7 +159,8 @@ class ProjectManager(models.Manager):
             course.faculty_filter).order_by('ordinality', 'title')
         for project in prof_projects:
             if (project.class_visible() and
-                    not project.is_assignment()):
+                    not project.is_assignment() and
+                    not project.is_selection_assignment()):
                 projects.append(project)
 
         return projects
@@ -251,7 +253,7 @@ class Project(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        if self.project_type == 'selection-assignment':
+        if self.is_selection_assignment():
             if self.title == self.DEFAULT_TITLE:
                 return ('selection-assignment-edit', (),
                         {'project_id': self.pk})
@@ -304,11 +306,16 @@ class Project(models.Model):
             return "Assignment Response"
         elif self.is_assignment():
             return "Assignment"
+        elif self.is_selection_assignment():
+            return "Selection Assignment"
         else:
             return "Composition"
 
     def is_assignment(self):
         return self.project_type == 'assignment'
+
+    def is_selection_assignment(self):
+        return self.project_type == 'selection-assignment'
 
     def assignment(self):
         """
@@ -328,7 +335,7 @@ class Project(models.Model):
         Returns True if this user has a response to this project
         or None if this user has not yet created a response
         """
-        if not self.is_assignment():
+        if not self.is_assignment() and not self.is_selection_assignment():
             return False
 
         children = self.get_collaboration().children.all()

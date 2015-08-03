@@ -39,6 +39,9 @@ class ProjectResource(ModelResource):
 
     def dehydrate(self, bundle):
         bundle.data['is_assignment'] = bundle.obj.is_assignment()
+        bundle.data['is_selection_assignment'] = \
+            bundle.obj.is_selection_assignment()
+        bundle.data['description'] = bundle.obj.description()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()
         bundle.data['url'] = bundle.obj.get_absolute_url()
@@ -202,7 +205,8 @@ class ProjectResource(ModelResource):
                 ctx['collaboration']['due_date'] = \
                     parent_assignment.get_due_date()
 
-            is_assignment = project.is_assignment()
+            is_assignment = (project.is_assignment() or
+                             project.is_selection_assignment())
             if is_assignment:
                 count = 0
                 for response in project.responses(course, user):

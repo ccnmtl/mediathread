@@ -506,8 +506,9 @@
                     });
                     arrayMax = skosData.length;
                 }
-             
-                var parents = self.createParents(data, selectedVocabulary, onomyURL, arrayMax);
+
+                var parents = self.createParents(
+                    data, selectedVocabulary, onomyURL, skosData, arrayMax);
 
                 self.createFromParents(parents);
                 
@@ -518,7 +519,7 @@
             var self = this;
 
             // loop over the array.
-                for (var key in parentsArray){
+                for (var key in parentsArray) {
                     if (!parentsArray.hasOwnProperty(key)) {
                         continue;
                     }
@@ -550,17 +551,17 @@
                     }
                 }
         },
-        createParents: function (data, selectedVocabulary,onomyURL, loopMax) {
-
+        createParents: function (data, selectedVocabulary, onomyURL,
+                                skosData, loopMax) {
             var self = this;
             var parentsArray = {};
 
             for (var i = 0; i < loopMax; i++) {
-                    var pL;
-                    var display;
-                    var skos_uri;
+                var pL;
+                var display;
+                var skos_uri;
 
-                if (self.isJSON(onomyURL)) {
+                if (skosData === undefined) {
                     pL = data.terms[i]['rdfs:parentLabel'].trim();
                     display = data.terms[i]['rdfs:label'].trim();
                 } else {
@@ -602,7 +603,6 @@
                         //add the term to the Vocabulary in parentsArray
                         parentsArray[pL].term_set.push({'display_name': display, 'skos_uri': skos_uri});
                     }
-
                 } else if (display !== undefined && display.length > 0) {
                     var urls = selectedVocabulary.getOnomyUrls();
                     //if this vocabulary doesn't contain the url we punched in

@@ -1,5 +1,5 @@
 /* global _: true, Backbone: true */
-/* global showMessage: true */
+/* global showMessage: true, tinyMCE: true */
 
 (function(jQuery) {
     var global = this;
@@ -22,12 +22,22 @@
             this.totalPages = 3;
             this.hoverItem = null;
             this.selectedItem = jQuery('.selected-item .gallery-item')[0];
+            
+            // hook up behaviors
+            jQuery(window).on('tinymce_init_instance',
+                function (event, instance, param2) {
+                    if (instance) {
+                        var width = jQuery(self.el).find('textarea').width();
+                        instance.theme.resizeTo(width, 400);
+                    }
+                }
+            );
         },
         validate: function(pageNo) {
             if (pageNo === 1) {
                 return jQuery(this.el).find("input[name='title']").val().length > 0;
             } else if (pageNo === 2) {
-                return jQuery(this.el).find("textarea[name='body']").val().length > 0;
+                return tinyMCE.activeEditor.getContent().length > 0;
             } else if (pageNo === 3) {
                 return this.selectedItem !== undefined;
             }

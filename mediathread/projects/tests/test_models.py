@@ -60,6 +60,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.add_citation(self.assignment, self.student_ga)
         self.add_citation(self.assignment, self.instructor_ga)
 
+        self.selection_assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='selection-assignment')
+
     def test_description(self):
         project = Project.objects.get(id=self.project_private.id)
         self.assertEquals(project.description(), 'Composition')
@@ -77,6 +81,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         assignment = Project.objects.get(id=self.assignment.id)
         self.assertEquals(assignment.description(), 'Assignment')
         self.assertEquals(assignment.visibility_short(), 'Published to Class')
+
+        sassignment = Project.objects.get(id=self.selection_assignment.id)
+        self.assertEquals(sassignment.description(), 'Selection Assignment')
 
     def test_migrate_one(self):
         new_project = Project.objects.migrate_one(self.project_private,
@@ -151,25 +158,27 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_visible_by_course(self):
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.student_one)
-        self.assertEquals(len(visible_projects), 4)
-        self.assertEquals(visible_projects[0], self.assignment)
-        self.assertEquals(visible_projects[1], self.project_class_shared)
-        self.assertEquals(visible_projects[2], self.project_instructor_shared)
-        self.assertEquals(visible_projects[3], self.project_private)
+        self.assertEquals(len(visible_projects), 5)
+        self.assertTrue(self.assignment in visible_projects)
+        self.assertTrue(self.selection_assignment in visible_projects)
+        self.assertTrue(self.project_class_shared in visible_projects)
+        self.assertTrue(self.project_instructor_shared in visible_projects)
+        self.assertTrue(self.project_private in visible_projects)
 
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.student_two)
 
-        self.assertEquals(len(visible_projects), 2)
-        self.assertEquals(visible_projects[0], self.assignment)
-        self.assertEquals(visible_projects[1], self.project_class_shared)
+        self.assertEquals(len(visible_projects), 3)
+        self.assertTrue(self.assignment in visible_projects)
+        self.assertTrue(self.selection_assignment in visible_projects)
+        self.assertTrue(self.project_class_shared, visible_projects)
 
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.instructor_one)
-        self.assertEquals(len(visible_projects), 3)
-        self.assertEquals(visible_projects[0], self.assignment)
-        self.assertEquals(visible_projects[1], self.project_class_shared)
-        self.assertEquals(visible_projects[2], self.project_instructor_shared)
+        self.assertEquals(len(visible_projects), 4)
+        self.assertTrue(self.assignment in visible_projects)
+        self.assertTrue(self.project_class_shared in visible_projects)
+        self.assertTrue(self.project_instructor_shared in visible_projects)
 
     def test_visible_by_course_and_user(self):
         visible_projects = Project.objects.visible_by_course_and_user(
@@ -181,8 +190,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_one, self.instructor_one, True)
-        self.assertEquals(len(visible_projects), 1)
-        self.assertEquals(visible_projects[0], self.assignment)
+        self.assertEquals(len(visible_projects), 2)
+        self.assertTrue(self.assignment in visible_projects)
+        self.assertTrue(self.selection_assignment in visible_projects)
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_two, self.student_one, False)
@@ -257,7 +267,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         public = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PublicEditorsAreOwners')
-        self.assertEquals(public.public_url(), '/s/collaboration/7/')
+        self.assertEquals(
+            public.public_url(),
+            '/s/collaboration/%s/' % public.get_collaboration().id)
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())

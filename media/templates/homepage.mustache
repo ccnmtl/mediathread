@@ -46,7 +46,7 @@
             <input type="hidden" name="project_type" value="assignment"/>
             <input type="submit" value="Create Assignment" />
         </form>
-        <form action="/project/create/" method="post" style="display: none">
+        <form action="/project/create/" method="post">
             <input type="hidden" name="title" />
             <input type="hidden" name="project_type" value="selection-assignment"/>
             <input type="submit" value="Create Selection Assignment" />
@@ -106,7 +106,9 @@
                                 {{#assignments}}
                                 <li class="projectlist assignment" id="assignment-{{id}}">
                                     <div>
-                                        <span class="metadata-value-assignment">Assignment</span>
+                                        <span class="metadata-value-assignment">
+                                            {{description}}
+                                        </span>
                                         {{#due_date}}
                                             <span class="metadata-value-assignment right">due {{due_date}}</span>
                                         {{/due_date}}
@@ -147,7 +149,7 @@
                                             <span class="metadata-value-composition">Composition</span>
                                         {{/display_as_assignment}}
                                         {{#display_as_assignment}}
-                                            <span class="metadata-value-assignment">Assignment</span>
+                                            <span class="metadata-value-assignment">{{description}}</span>
                                             {{#collaboration.due_date}}
                                                 <span class="metadata-value-assignment right">due {{collaboration.due_date}}</span>
                                             {{/collaboration.due_date}}

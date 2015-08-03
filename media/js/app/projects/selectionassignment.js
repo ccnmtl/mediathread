@@ -1,5 +1,5 @@
 /* global _: true, Backbone: true */
-/* global showMessage: true */
+/* global showMessage: true, tinyMCE: true */
 
 (function(jQuery) {
     var global = this;

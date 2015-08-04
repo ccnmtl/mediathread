@@ -1,0 +1,52 @@
+    <td id="asset-workspace-panel-container" class="panel-container open asset-workspace parent">
+        <div class="column-container parent-column-container">
+            <div class="panel asset-workspace">
+                <table class="panel-subcontainer">
+                    <tr class="asset-workspace-title-row">
+                        <td class="asset-view-header">
+                            <div class="actions">
+                                <input id="asset-view-help-button" type="image" title="Help"
+                                    class="help-button"
+                                     onclick="return annotationList.showHelp();"
+                                     alt="Help" src="/media/img/icons/meth_help.png" />
+                            </div>
+
+                            <div class="asset-view-header">
+                                <h2>Item
+                                    <span class="asset-view-title">
+                                        {{#asset-current}}
+                                             {{title}}
+                                        {{/asset-current}}
+                                     </span>
+                                </h2>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="asset-workspace-content-row">
+                        <td class="panel-container closed asset subpanel fixed alwaysopen">
+                            <div class="visualclear"></div>
+                            <div class="asset-view-container">
+                                <div class="asset-view-published">
+                                    <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
+                                        <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                        <div class="asset-display"></div>
+                                        <div class="clipstrip-display"></div>
+                                    </div>
+                                </div>
+
+                                <div class="tabs asset-view-tabs" style="display: none">
+                                    <div id="asset-view-help"></div>
+                                    <div id="tabs-1">
+                                        <div id="asset-view-details" class="asset-view-details"></div>
+                                    </div>
+                                </div> {{! end tabs }}
+                            </div> {{! end asset-view-container }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="asset-loaded"></div>
+    </td>
+
+    <td class="pantab-container"></td>

@@ -203,7 +203,9 @@ AssetPanelHandler.prototype.showAsset = function (asset_id, annotation_id, displ
 AssetPanelHandler.prototype.resize = function () {
     var self = this;
 
-    if (jQuery(self.el).find('td.panel-container.collection').hasClass('minimized')) {
+    var $collection = jQuery(self.el).find('td.panel-container.collection');
+    
+    if ($collection.length < 1 || $collection.hasClass('minimized')) {
         jQuery("td.asset-view-header").show();
     } else {
         jQuery("td.asset-view-header").hide();

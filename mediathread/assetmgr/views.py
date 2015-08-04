@@ -25,7 +25,7 @@ from djangohelpers.lib import allow_http
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, Source, ExternalCollection,\
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
     SuggestedExternalCollection
 from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
@@ -482,7 +482,6 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
-
         if asset_id:
             try:
                 asset = Asset.objects.get(pk=asset_id, course=request.course)
@@ -525,16 +524,26 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
 
-        data['panels'] = [{'panel_state': 'open',
-                           'panel_state_label': "Annotate Media",
-                           'context': context,
-                           'owners': owners,
-                           'vocabulary': vocabulary,
-                           'template': 'asset_workspace',
-                           'current_asset': asset_id,
-                           'current_annotation': annot_id,
-                           'update_history': True,
-                           'show_collection': True}]
+        if request.GET.get('standalone', '0') == '1':
+            update_history = False
+            show_collection = False
+            template = 'standalone_asset_workspace'
+        else:
+            update_history = True
+            show_collection = True
+            template = 'asset_workspace'
+
+        data['panels'] = [{
+            'panel_state': 'open',
+            'panel_state_label': "Annotate Media",
+            'context': context,
+            'owners': owners,
+            'vocabulary': vocabulary,
+            'template': template,
+            'current_asset': asset_id,
+            'current_annotation': annot_id,
+            'update_history': update_history,
+            'show_collection': show_collection}]
 
         return self.render_to_json_response(data)
 

@@ -11,10 +11,12 @@
             'click .save': 'onSave',
             'mouseover .asset-table .gallery-item': 'onGalleryItemMouseOver',
             'mouseleave .asset-table': 'onGalleryMouseOut',
-            'click .gallery-item-overlay': 'onGalleryItemSelect'
+            'click .gallery-item-overlay': 'onGalleryItemSelect',
+            'keypress form[name="selection-assignment-edit"]': 'onFormKeyPress'
         },
         initialize: function(options) {
             _.bindAll(this, 'onNext', 'onPrev', 'onSave',
+                    'onFormKeyPress',
                     'onGalleryItemMouseOver', 'onGalleryMouseOut',
                     'onGalleryItemSelect');
             var self = this;
@@ -78,6 +80,11 @@
                 jQuery("input[name='item']").val(pk);
                 
                 form.submit();
+            }
+        },
+        onFormKeyPress: function(evt) {
+            if (evt.keyCode == 13) {
+                evt.preventDefault();
             }
         },
         onGalleryItemMouseOver: function(evt) {

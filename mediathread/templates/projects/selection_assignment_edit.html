@@ -64,7 +64,7 @@
     <div class="row">
         <div class="col-md-3 column-container">
             <div class="affix affix-top" data-spy="affix">
-                <form action="{% url 'selection-assignment-edit' project.id %}"
+                <form name='selection-assignment-edit' action="{% url 'selection-assignment-edit' project.id %}"
                     method="post">{% csrf_token %}
                     <input type="hidden" name="pk" value="{{project.id}}" />
 
@@ -114,12 +114,13 @@
                                          alt="Item Thumbnail">
                                     </div>
                                 </div>
+                                <input type="hidden" name="item" value="{{item.id}}" />
                             {% else %}
                                 <!--  this will be replaced by selection -->
                                 <div></div>
+                                <input type="hidden" name="item" value="" />
                             {% endif %}
                         </div>
-                        <input type="hidden" name="item" value="" />
                         <div class="help-inline">An item must be selected.</div>
                         <div class="clearfix"></div>
                         <ul class="pager">

@@ -3441,6 +3441,7 @@ div.asset-view-header {
     margin-left: 10px;
 }
 
+span.project-view-title,
 span.asset-view-title {
     font-weight: bold;
     margin-left: 10px;
@@ -4345,6 +4346,15 @@ a.btn.btn-default img.left {
 /* Selection Assignment */
 .selection-assignment #sliding-content-container {
     margin-top: 20px;
+}
+
+.selection-assignment #asset-global-annotation {
+    display: none;
+}
+
+.selection-assignment .asset-view-tabs {
+    padding-left: 15px !important;
+    width: 32% !important;
 }
 
 .selection-assignment .affix {

@@ -108,6 +108,9 @@
             },
             'references': function (asset) {
                 return '/asset/references/' + asset.id + '/';
+            },
+            'selection-assignment-workspace': function (asset_id) {
+                return '/asset/' + asset_id + '/?standalone=1';
             }
         };
 

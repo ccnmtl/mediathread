@@ -4352,6 +4352,11 @@ a.btn.btn-default img.left {
     display: none;
 }
 
+.selection-assignment #id_publish {
+    margin: 0 4em 0.7em .7em;
+    list-style-type: none;
+}
+
 .selection-assignment .asset-view-tabs {
     padding-left: 15px !important;
     width: 32% !important;

@@ -21,9 +21,7 @@
                     'onGalleryItemSelect');
             var self = this;
             this.currentPage = 1;
-            this.totalPages = 3;
-            this.hoverItem = null;
-            this.selectedItem = jQuery('.selected-item .gallery-item')[0];
+            this.totalPages = 4;
             
             // hook up behaviors
             jQuery(window).on('tinymce_init_instance',
@@ -34,6 +32,10 @@
                     }
                 }
             );
+            jQuery('input[name="due_date"]').datepicker({
+                minDate: 0,
+                dateFormat: 'mm/dd/yy'
+            });
         },
         validate: function(pageNo) {
             if (pageNo === 1) {
@@ -41,7 +43,9 @@
             } else if (pageNo === 2) {
                 return tinyMCE.activeEditor.getContent().length > 0;
             } else if (pageNo === 3) {
-                return this.selectedItem !== undefined;
+                return jQuery("input[name='item']").val() !== '';
+            } else if (pageNo === 4) {
+                return true;
             }
         },
         onNext: function(evt) {
@@ -57,6 +61,8 @@
                 if (this.currentPage == 3) {
                     jQuery('#sliding-content-container').removeClass('hidden');
                     jQuery(window).trigger('resize');
+                } else {
+                    jQuery('#sliding-content-container').addClass('hidden');
                 }
             }
         },
@@ -73,13 +79,24 @@
             if (!this.validate(this.currentPage)) {
                 $current.addClass('has-error');
             } else {
-                var form = jQuery(evt.currentTarget).parents('form').first();
+                tinyMCE.activeEditor.save();
+                var frm = jQuery(evt.currentTarget).parents('form')[0];
 
-                // set the item id
-                var pk = jQuery(this.selectedItem).attr('data-id');
-                jQuery("input[name='item']").val(pk);
-                
-                form.submit();
+                var data = jQuery(frm).serializeArray();
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: frm.action,
+                    dataType: 'json',
+                    data: data,
+                    success: function (json) {
+                        window.location = json.project.url;
+                    },
+                    error: function() {
+                        // do something useful here
+                    }
+                });
+
             }
         },
         onFormKeyPress: function(evt) {
@@ -98,15 +115,19 @@
             $overlay.removeClass('hidden');
         },
         onGalleryMouseOut: function(evt) {
-            this.hoverItem = null;
+            delete this.hoverItem;
             var $overlay = jQuery('.gallery-item-overlay');
             $overlay.addClass('hidden');
         },
         onGalleryItemSelect: function(evt) {
-            this.selectedItem = this.hoverItem;
-            var clone = jQuery.clone(this.selectedItem);
+            var pk = jQuery(this.hoverItem).attr('data-id');
+            jQuery("input[name='item']").val(pk);
+
+            var clone = jQuery.clone(this.hoverItem);
             jQuery(clone).attr('style', 'float: none');
             jQuery('.selected-item div').replaceWith(clone);
+            
+            delete this.hoverItem;
         }
     });
 }(jQuery));

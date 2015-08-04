@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if project.title %}{{project.title}}{% else %}New Assignment{% endif %}
+    {% if form.instance.title %}{{form.instance.title}}{% else %}New Assignment{% endif %}
 {% endblock %}
 
 {% block css %}
@@ -59,14 +59,16 @@
 {% endblock %}
 
 {% block content %}
-{% with item=project.assignmentitem_set.first.asset %}
+{% with item=form.instance.assignmentitem_set.first.asset %}
 <div class="selection-assignment">    
     <div class="row">
         <div class="col-md-3 column-container">
             <div class="affix affix-top" data-spy="affix">
-                <form name='selection-assignment-edit' action="{% url 'selection-assignment-edit' project.id %}"
-                    method="post">{% csrf_token %}
-                    <input type="hidden" name="pk" value="{{project.id}}" />
+                <form name='selection-assignment-edit'
+                    action="{% url 'project-save' form.instance.id %}"
+                    method="post">
+                    
+                    {% csrf_token %}
 
                     <h2>Edit Selection Assignment</h2>
                     <div data-page="1">
@@ -74,7 +76,7 @@
                         <div class="form-group">
                             <input type="text" name="title" class="form-control"
                                 placeholder="Title"
-                                value="{% ifnotequal project.title project.DEFAULT_TITLE %}{{project.title}}{% endifnotequal %}"/>
+                                value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                             <div class="help-inline">Title is a required field</div>
                         </div>
                         <nav>
@@ -87,7 +89,7 @@
                         <h3>2. Specify the Instructions</h3>
                         <div class="form-group">
                             <textarea name="body" class="form-control mceEditor"
-                                placeholder="Instructions">{{project.body}}</textarea>
+                                placeholder="Instructions">{{form.instance.body}}</textarea>
                             <div class="help-inline">Instructions is a required field</div>      
                         </div>
                         <ul class="pager">
@@ -116,13 +118,32 @@
                                 </div>
                                 <input type="hidden" name="item" value="{{item.id}}" />
                             {% else %}
-                                <!--  this will be replaced by selection -->
+                                <!--  this will be replaced by selected item -->
                                 <div></div>
                                 <input type="hidden" name="item" value="" />
                             {% endif %}
                         </div>
                         <div class="help-inline">An item must be selected.</div>
                         <div class="clearfix"></div>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right next">Next</a></li>
+                        </ul>
+                    </div>
+                    <div data-page="4" class="hidden">
+                        <h3>4. Publish</h3>
+                        <p></p>
+                        <div class="form-group">
+                            <label for="due_date">Due Date</label>
+                            <input class="form-control" type="text"
+                                name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="publish">Visibility</label>
+                            <div class="radio">
+                                {{form.publish}}
+                            </div>
+                        </div>                        
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right save">Save</a></li>

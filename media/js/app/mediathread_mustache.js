@@ -88,6 +88,9 @@
             'project-create': function () {
                 return '/project/create/';
             },
+            'project-save': function (project_id) {
+                return '/project/save/' + project_id + '/';
+            },
             'project-revisions': function (project_id) {
                 return '/project/revisions/' + project_id + '/';
             },

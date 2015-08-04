@@ -95,12 +95,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, follow=True,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 403)
-        self.assertEquals(len(response.redirect_chain), 1)
-        elt = response.redirect_chain[0]
-
-        view = 'project/view/%s/' % self.project_private.id
-        self.assertTrue(elt[0].endswith(view))
-        self.assertEquals(elt[1], 302)
 
     def test_project_save_nonajax(self):
         self.assertTrue(
@@ -530,7 +524,7 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         asset2 = AssetFactory.create(course=self.sample_course,
                                      primary_source='youtube')
 
-        url = reverse('selection-assignment-edit', args=[self.project.id])
+        url = reverse('project-save', args=[self.project.id])
 
         # author
         self.client.login(username=self.instructor_one.username,
@@ -541,7 +535,11 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
             'item': asset1.id
         }
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.status_code, 405)
+
+        response = self.client.post(url, data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
 
         # verify
         project = Project.objects.get(id=self.project.id)
@@ -556,7 +554,8 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
             'body': 'Body Text',
             'item': asset2.id
         }
-        response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        response = self.client.post(url, data,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(project.assignmentitem_set.count(), 1)
         self.assertEquals(project.assignmentitem_set.first().asset, asset2)

@@ -4311,6 +4311,7 @@ div.ui-dialog div.asset-view-details h2 {
     font-weight: normal !important;
 }
 
+.ui-accordion-content,
 .switcher *,
 .form-control {
     -webkit-box-sizing: border-box !important;

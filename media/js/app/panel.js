@@ -154,37 +154,6 @@
                 self.verifyLayout(panel);
                 jQuery(window).trigger("resize");
             }
-
-            /** Real Sliding
-            // Open/close this panhandle's panel
-            var panel = jQuery(pantab_container).prevAll("td.panel-container")[0];
-            var panelTab = jQuery(pantab_container).children("div.pantab")[0];
-            var panelDiv = jQuery(panel).children('div.panel')[0];
-
-            if (jQuery(panel).hasClass("open")) {
-                jQuery(panelTab).hide();
-                jQuery(panel).addClass("closing");
-                jQuery(panelDiv).hide("slide", { direction: "left" }, 500, function () {
-                    jQuery(panel).removeClass("closing").removeClass("open").addClass("closed");
-                    jQuery(panelTab).removeClass("open").addClass("closed");
-                    jQuery(panel).trigger('panel_state_change', ["closed"]);
-                    jQuery(panelTab).fadeIn("fast");
-                });
-
-
-            } else {
-                jQuery(panelTab).hide();
-                jQuery(panel).addClass("closing").removeClass("closed").addClass("open");
-                jQuery(panelDiv).show("slide", { direction: "left" }, 500, function () {
-                    jQuery(panel).removeClass("closing");
-                    jQuery(panelTab).removeClass("closed").addClass("open").fadeIn("fast");
-                    jQuery(panel).trigger('panel_state_change', ["open"]);
-                });
-            }
-
-            self.verifyLayout(panel);
-            jQuery(window).trigger("resize");
-            **/
         };
 
         this.openSubPanel = function (subpanel) {

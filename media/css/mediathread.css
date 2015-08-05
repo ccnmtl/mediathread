@@ -4348,8 +4348,9 @@ a.btn.btn-default img.left {
     margin-top: 20px;
 }
 
+.selection-assignment input[name='copy-selection-icon'],
 .selection-assignment #asset-global-annotation {
-    display: none;
+    display: none !important;
 }
 
 .selection-assignment #id_publish {

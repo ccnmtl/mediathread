@@ -58,14 +58,14 @@
       </div>
     {{/global_annotation.metadata.tags.length}}
 
-        {{#global_annotation.vocabulary}}
-          <div class="meta">
-            <label>{{display_name}}: </label>
-            {{#terms}}
-              {{display_name}}
-            {{/terms}}
-          </div>
-        {{/global_annotation.vocabulary}}
+    {{#global_annotation.vocabulary}}
+      <div class="meta">
+        <label>{{display_name}}: </label>
+        {{#terms}}
+          {{display_name}}
+        {{/terms}}
+      </div>
+    {{/global_annotation.vocabulary}}
   </div>
 {{/asset-current}}
 
@@ -89,23 +89,25 @@
     </div>
   {{/asset-current.editable_title}}
 
-  {{#vocabulary}}
-    <div>
-      <label>{{display_name}}</label>
-      <div>
-        <select class="vocabulary"
-          name="vocabulary-{{id}}"
-          data-placeholder="select {{display_name?lower()}}"
-          multiple="multiple">
-          {{#term_set}}
-            <option value="{{id}}">{{display_name}}</option>
-          {{/term_set}}
-        </select>
-      </div>
+  {{#vocabulary.length}}
+    <div class="vocabulary">
+      <label>Terms</label>
+      <select class="vocabulary"
+        data-placeholder="select {{display_name?lower()}}"
+        name="vocabulary"
+        multiple="multiple">
+        
+        {{#vocabulary}}
+            <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
+            {{#term_set}}
+              <option value="{{id}}">{{display_name}}</option>
+            {{/term_set}}
+            </optgroup>
+        {{/vocabulary}}
+      </select>
     </div>
-    <br />
-  {{/vocabulary}}
-
+  {{/vocabulary.length}}
+  <br />
   {{#asset-current}}
     <div>
       <label>Tags</label>

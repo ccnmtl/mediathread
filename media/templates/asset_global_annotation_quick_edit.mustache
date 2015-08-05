@@ -9,23 +9,26 @@
   {{/asset-current.global_annotation.id}}
   >
 
-  {{#vocabulary}}
-    <div>
-      <label>{{display_name}}</label>
-      <div>
-        <select class="vocabulary"
-          name="vocabulary-{{id}}"
-          data-placeholder="select {{#lower}}{{display_name}}{{/lower}}"
-          multiple="multiple"">
-          {{#term_set}}
-            <option value="{{id}}">{{display_name}}</option>
-          {{/term_set}}
-        </select>
-      </div>
+  {{#vocabulary.length}}
+    <div class="vocabulary">
+      <label>Terms</label>
+      <select class="vocabulary"
+        data-placeholder="select {{display_name?lower()}}"
+        name="vocabulary" multiple="multiple">
+        
+        {{#vocabulary}}
+            <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
+            {{#term_set}}
+              <option value="{{id}}">{{display_name}}</option>
+            {{/term_set}}
+            </optgroup>
+        {{/vocabulary}}
+      </select>
     </div>
-  {{/vocabulary}}
+  {{/vocabulary.length}}
 
   {{#asset-current}}
+    <br />
     <div>
       <label>Tags</label>
       <div>

@@ -306,10 +306,12 @@
                                                                     {{#vocabulary?}}
                                                                         {{#vocabulary}}
                                                                             <div>
-                                                                                <label>{{display_name}}: </label>
+                                                                                <span class="metadata-label">{{display_name}}: </span>
+                                                                                <span class="metadata-value">
                                                                                 {{#terms}}
                                                                                     {{display_name}}
                                                                                 {{/terms}}
+                                                                                </span>
                                                                             </div>
                                                                         {{/vocabulary}}
                                                                     {{/vocabulary?}}

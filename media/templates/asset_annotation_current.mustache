@@ -51,20 +51,25 @@
             <div><input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/></div>
           {{/annotation}}
 
-          {{#vocabulary}}
+          {{#vocabulary.length}}
             <div class="vocabulary">
-              <label>{{display_name}}</label>
+              <label>Terms</label>
               <select class="vocabulary"
                 data-placeholder="select {{display_name?lower()}}"
-                name="vocabulary-{{id}}"
+                name="vocabulary"
                 multiple="multiple">
-                {{#term_set}}
-                  <option value="{{id}}">{{display_name}}</option>
-                {{/term_set}}
+                
+                {{#vocabulary}}
+                    <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
+                    {{#term_set}}
+                      <option value="{{id}}">{{display_name}}</option>
+                    {{/term_set}}
+                    </optgroup>
+                {{/vocabulary}}
               </select>
             </div>
-          {{/vocabulary}}
-
+          {{/vocabulary.length}}
+          <br />
           {{#annotation}}
             <label for="annotation-tags">Tags</label>
             <div>

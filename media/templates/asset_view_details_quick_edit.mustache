@@ -42,7 +42,7 @@
       </h2>
         {{/annotation}}
 
-        <form name="edit-annotation-form" onsubmit="return false;">
+        <form id="edit-annotation-form" name="edit-annotation-form" onsubmit="return false;">
           <div class="asset-annotator">
             <div class="sherd-instructions"></div>
             <div id="clipform-display"></div>
@@ -53,24 +53,25 @@
               <input data-label="Title" type="text" id="id_annotation-title"
               name="annotation-title" value="{{annotation.metadata.title}}"/>
             </div>
-            <br />
 
-            {{#vocabulary}}
-              <div>
-                <label>{{display_name}}</label>
-                <div>
-                  <select class="vocabulary"
-                    name="vocabulary-{{id}}"
-                    data-placeholder="select {{#lower}}{{display_name}}{{/lower}}"
-                    multiple="multiple"">
+          {{#vocabulary.length}}
+            <div class="vocabulary">
+              <label>Terms</label>
+              <select class="vocabulary"
+                data-placeholder="select {{display_name?lower()}}"
+                name="vocabulary" multiple="multiple">
+                
+                {{#vocabulary}}
+                    <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
                     {{#term_set}}
                       <option value="{{id}}">{{display_name}}</option>
                     {{/term_set}}
-                  </select>
-                </div>
-              </div>
-            {{/vocabulary}}
-
+                    </optgroup>
+                {{/vocabulary}}
+              </select>
+            </div>
+          {{/vocabulary.length}}
+          <br />
             {{#annotation}}
               <label for="annotation-tags">Tags</label>
               <div><input data-label="Selection Tags" type="text" id="id_annotation-tags"

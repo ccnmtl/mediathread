@@ -1009,16 +1009,16 @@
         };
 
         this._selectConcepts = function(elt, vocabulary) {
+            var query = 'select[name="vocabulary"]';
+            var selectBox = jQuery(elt).find(query)[0];
+            var terms = [];
+
             for (var i = 0; i < vocabulary.length; i++) {
-                var selector = 'select[name="vocabulary-' +
-                    vocabulary[i].id + '"]';
-                var selectBox = jQuery(elt).find(selector)[0];
-                var terms = [];
                 for (var j = 0; j < vocabulary[i].terms.length; j++) {
                     terms.push(vocabulary[i].terms[j].id);
                 }
-                jQuery(selectBox).select2('val', terms);
             }
+            jQuery(selectBox).select2('val', terms);
         };
 
         this._initReferences = function() {

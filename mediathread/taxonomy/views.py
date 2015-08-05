@@ -30,26 +30,20 @@ def taxonomy_workspace(request):
 
 
 def update_vocabulary_terms(request, content_object):
-    concepts = dict((key[len('vocabulary-'):], request.POST.getlist(key))
-                    for key, val in request.POST.items()
-                    if key.startswith('vocabulary-'))
+    term_ids = request.POST.getlist('vocabulary')
 
     # Retrieve concepts/terms that this object is currently associated with
     associations = TermRelationship.objects.get_for_object(content_object)
 
     # Remove any unmentioned associations
     for a in associations:
-        vocabulary_id = str(a.term.vocabulary.id)
-        term_id = str(a.term.id)
-        if (vocabulary_id not in concepts or
-                term_id not in concepts[vocabulary_id]):
+        if (str(a.term.id) not in term_ids):
             a.delete()
 
     content_type = ContentType.objects.get_for_model(content_object)
-    for name, terms in concepts.items():
-        for term_id in concepts[name]:
-            term = Term.objects.get(id=int(term_id))
-            TermRelationship.objects.get_or_create(
-                term=term,
-                content_type=content_type,
-                object_id=content_object.id)
+    for term_id in term_ids:
+        term = Term.objects.get(id=term_id)
+        TermRelationship.objects.get_or_create(
+            term=term,
+            content_type=content_type,
+            object_id=content_object.id)

@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from mediathread.projects.views import ProjectCreateView, ProjectDeleteView, \
     ProjectSortView, SelectionAssignmentView, \
-    SelectionAssignmentEditView
+    SelectionAssignmentEditView, ProjectSaveView
 
 
 urlpatterns = patterns(
@@ -26,9 +26,9 @@ urlpatterns = patterns(
         SelectionAssignmentEditView.as_view(), {},
         'selection-assignment-edit'),
 
-    url(r'^save/(?P<project_id>\d+)/$', 'project_save', name='project-save'),
-
-    url(r'^save/(?P<project_id>\d+)/$', 'project_save', name='project-save'),
+    url(r'^save/(?P<project_id>\d+)/$',
+        ProjectSaveView.as_view(), {},
+        name='project-save'),
 
     url(r'^export/msword/(?P<project_id>\d+)/$',
         'project_export_msword',

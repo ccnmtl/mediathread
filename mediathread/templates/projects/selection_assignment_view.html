@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />
 
     <!--All the annotation css -->
@@ -19,7 +20,7 @@
 {% endblock %}
 
 {% block uncompressable_js %}
-    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>    
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.masonry.min.js"></script>
 
     <script type="text/javascript">
@@ -45,7 +46,12 @@
                     </a>
                 {% endif %}
             </h2>
-            <h3></h3>
+            <div class="project-visibility-description small text-right">
+                {{project.visibility}}
+            </div>
+            <div class="project-due-date small text-right">
+                {% if project.due_date %}Due {{project.due_date|date:'m/d/y'}}{% endif %}
+            </div>
             <p>{{project.body|safe}}</p>
         </div>
         <div class="col-md-9">

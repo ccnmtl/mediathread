@@ -17,9 +17,10 @@ from mediathread.api import UserResource
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
-from mediathread.mixins import ajax_required, LoggedInMixin, \
-    RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin, \
-    LoggedInFacultyMixin, ProjectVisibleMixin, ProjectEditableMixin
+from mediathread.mixins import (
+    LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
+    JSONResponseMixin, LoggedInFacultyMixin, ProjectVisibleMixin,
+    ProjectEditableMixin)
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project, AssignmentItem
@@ -71,71 +72,70 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
             return self.render_to_json_response(data)
 
 
-@login_required
-@allow_http("POST")
-@ajax_required
-def project_save(request, project_id):
-    project = get_object_or_404(Project, pk=project_id, course=request.course)
+class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
+                      ProjectEditableMixin, View):
 
-    if not project.can_edit(request.course, request.user):
-        return HttpResponseRedirect(project.get_absolute_url())
+    def post(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
 
-    # verify user is in course
-    in_course_or_404(project.author.username, request.course)
+        frm = ProjectForm(request, instance=project, data=request.POST)
+        if frm.is_valid():
+            policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
+            frm.instance.submitted = \
+                policy != 'PrivateEditorsAreOwners'
 
-    projectform = ProjectForm(request, instance=project, data=request.POST)
-    if projectform.is_valid():
+            frm.instance.author = request.user
+            frm.save()
 
-        # legacy and for optimizing queries
-        projectform.instance.submitted = \
-            request.POST.get('publish', None) != 'PrivateEditorsAreOwners'
+            frm.instance.participants.add(request.user)
 
-        # this changes for version-tracking purposes
-        projectform.instance.author = request.user
-        projectform.save()
+            try:
+                item = Asset.objects.get(id=request.POST.get('item', None))
+                if project.assignmentitem_set.filter(asset=item).count() == 0:
+                    AssignmentItem.objects.create(project=project, asset=item)
+                    project.assignmentitem_set.exclude(asset=item).delete()
+            except Asset.DoesNotExist:
+                pass  # optional parameter
 
-        projectform.instance.participants.add(request.user)
+            # update the collaboration
+            collaboration = frm.instance.create_or_update_collaboration(policy)
 
-        # update the collaboration
-        policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        collaboration = projectform.instance.create_or_update_collaboration(
-            policy_name)
+            # update the reference index
+            DiscussionIndex.update_class_references(frm.instance.body,
+                                                    None, None, collaboration,
+                                                    frm.instance.author)
 
-        v_num = projectform.instance.get_latest_version()
-        is_assignment = projectform.instance.is_assignment()
+            return HttpResponse(json.dumps({
+                'status': 'success',
+                'is_assignment': frm.instance.is_assignment(),
+                'title': frm.instance.title,
+                'project': {
+                    'url': frm.instance.get_absolute_url()
+                },
+                'revision': {
+                    'id': frm.instance.get_latest_version(),
+                    'public_url': frm.instance.public_url(),
+                    'visibility': project.visibility_short(),
+                    'due_date': project.get_due_date()
+                }
+            }, indent=2), content_type='application/json')
+        else:
+            ctx = {'status': 'error', 'msg': ""}
+            for key, value in frm.errors.items():
+                if key == '__all__':
+                    ctx['msg'] = ctx['msg'] + value[0] + "\n"
+                else:
+                    ctx['msg'] = \
+                        '%s "%s" is not valid for the %s field.\n %s\n' % \
+                        (ctx['msg'], frm.data[key],
+                         frm.fields[key].label,
+                         value[0].lower())
 
-        DiscussionIndex.update_class_references(projectform.instance.body,
-                                                None, None, collaboration,
-                                                projectform.instance.author)
-
-        return HttpResponse(json.dumps({
-            'status': 'success',
-            'is_assignment': is_assignment,
-            'title': projectform.instance.title,
-            'revision': {
-                'id': v_num,
-                'public_url': projectform.instance.public_url(),
-                'visibility': project.visibility_short(),
-                'due_date': project.get_due_date()
-            }
-        }, indent=2), content_type='application/json')
-    else:
-        ctx = {'status': 'error', 'msg': ""}
-        for key, value in projectform.errors.items():
-            if key == '__all__':
-                ctx['msg'] = ctx['msg'] + value[0] + "\n"
-            else:
-                ctx['msg'] = \
-                    '%s "%s" is not valid for the %s field.\n %s\n' % \
-                    (ctx['msg'], projectform.data[key],
-                     projectform.fields[key].label,
-                     value[0].lower())
-
-        return HttpResponse(json.dumps(ctx, indent=2),
-                            content_type='application/json')
+            return HttpResponse(json.dumps(ctx, indent=2),
+                                content_type='application/json')
 
 
-class ProjectDeleteView(LoggedInMixin, ProjectVisibleMixin, View):
+class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
     def post(self, request, *args, **kwargs):
         """
         Delete the requested project. Regular access conventions apply.
@@ -143,13 +143,7 @@ class ProjectDeleteView(LoggedInMixin, ProjectVisibleMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
-        project_id = kwargs.get('project_id', None)
-        project = get_object_or_404(Project, pk=project_id,
-                                    course=request.course)
-
-        if not project.can_edit(request.course, request.user):
-            return HttpResponseForbidden("forbidden")
-
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         project.delete()
 
         return HttpResponseRedirect('/')
@@ -476,7 +470,7 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
 
     def get(self, request):
         ures = UserResource()
-        course_rez = CourseResource()
+        course_res = CourseResource()
         pres = ProjectResource(editable=self.viewing_own_records,
                                record_viewer=self.record_viewer,
                                is_viewer_faculty=self.is_viewer_faculty)
@@ -485,7 +479,7 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         ctx = {
             'space_viewer': ures.render_one(request, self.record_viewer),
             'editable': self.viewing_own_records,
-            'course': course_rez.render_one(request, request.course),
+            'course': course_res.render_one(request, request.course),
             'is_faculty': self.is_viewer_faculty
         }
 
@@ -551,17 +545,4 @@ class SelectionAssignmentEditView(LoggedInFacultyMixin, ProjectEditableMixin,
 
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        return {'project': project}
-
-    def post(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        project.title = request.POST.get('title', project.DEFAULT_TITLE)
-        project.body = request.POST.get('body', '')
-        project.save()
-
-        item = get_object_or_404(Asset, pk=request.POST.get('item', None))
-        if project.assignmentitem_set.filter(asset=item).count() == 0:
-            AssignmentItem.objects.create(project=project, asset=item)
-            project.assignmentitem_set.exclude(asset=item).delete()
-
-        return HttpResponseRedirect(project.get_absolute_url())
+        return {'form': ProjectForm(self.request, instance=project)}

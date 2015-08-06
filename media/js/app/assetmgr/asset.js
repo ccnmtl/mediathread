@@ -766,10 +766,7 @@
                         context);
                     jQuery('#annotation-current').html(rendered);
 
-                    djangosherd.assetview.clipform.html
-                        .push('clipform-display', {
-                            asset: {}
-                        });
+
 
                     // Preserve zoom level on
                     //'new selection'
@@ -786,7 +783,12 @@
                     self._initReferences();
                     jQuery('select.vocabulary').select2({});
                     jQuery('#asset-details-annotations-current')
-                        .fadeIn();
+                        .fadeIn(function() {
+                            djangosherd.assetview.clipform.html
+                                .push('clipform-display', {
+                                    asset: {}
+                                });
+                        });
                     jQuery(window).trigger('resize');
                 });
         };
@@ -843,11 +845,6 @@
                     $elt.html(rendered);
 
                     if (self.active_annotation) {
-                        djangosherd.assetview.clipform.html.push(
-                            'clipform-display', {
-                                asset: {}
-                            });
-
                         djangosherd.assetview
                             .setState(self.active_annotation.annotation);
                         djangosherd.assetview.clipform
@@ -857,7 +854,12 @@
                         self._initTags();
                         self._initConcepts();
                         self._initReferences();
-                        $elt.fadeIn();
+                        $elt.fadeIn(function() {
+                            djangosherd.assetview.clipform.html.push(
+                                'clipform-display', {
+                                    asset: {}
+                                });
+                        });
                         jQuery(window).trigger('resize');
                     }
                 });
@@ -1115,11 +1117,6 @@
 
             self.edit_state = null;
 
-            djangosherd.assetview.clipform.html
-                .push('clipform-display', {
-                    asset: {}
-                });
-
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
             var rendered = Mustache2.render(tpl, context);
             if (template_label === 'asset-view-details') {
@@ -1170,8 +1167,13 @@
             self._initConcepts();
             self._initReferences();
 
-            var $elt = jQuery('#asset-workspace-panel-container>div');
+            var $elt = jQuery('#asset-workspace-panel-container');
             $elt.fadeIn('slow', function() {
+                djangosherd.assetview.clipform.html
+                    .push('clipform-display', {
+                        asset: {}
+                    });
+
                 if (self.active_annotation) {
                     djangosherd.assetview.clipform
                         .setState(

@@ -9,14 +9,14 @@ from django.db.models import Q
 from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
-from mediathread.djangosherd.models import SherdNote
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from structuredcollaboration.models import Collaboration
 
 
 PROJECT_TYPES = (
-    ('Assignment', 'assignment'),
-    ('Composition', 'composition'),
-    ('Selection Assignment', 'selection-assignment')
+    ('assignment', 'Assignment'),
+    ('composition', 'Composition'),
+    ('selection-assignment', 'Selection Assignment')
 )
 
 PUBLISH_OPTIONS = (
@@ -253,15 +253,7 @@ class Project(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        if self.is_selection_assignment():
-            if self.title == self.DEFAULT_TITLE:
-                return ('selection-assignment-edit', (),
-                        {'project_id': self.pk})
-            else:
-                return ('selection-assignment-view', (),
-                        {'project_id': self.pk})
-        else:
-            return ('project-workspace', (), {'project_id': self.pk})
+        return ('project-workspace', (), {'project_id': self.pk})
 
     def get_due_date(self):
         if self.due_date is None:
@@ -490,7 +482,29 @@ class Project(models.Model):
         col.save()
 
         self.collaboration_sync_group(col)
+
+        DiscussionIndex.update_class_references(
+            self.body, None, None, col, self.author)
+
         return col
+
+    def create_or_update_item(self, item_id):
+        try:
+            item = Asset.objects.get(id=item_id)
+            if self.assignmentitem_set.filter(asset=item).count() == 0:
+                AssignmentItem.objects.create(project=self, asset=item)
+                self.assignmentitem_set.exclude(asset=item).delete()
+        except Asset.DoesNotExist:
+            pass  # optional parameter
+
+    def create_or_update_parent(self, parent_id):
+        try:
+            parent = Project.objects.get(id=parent_id)
+            if parent.is_assignment():
+                collaboration = parent.get_collaboration()
+                collaboration.append_child(self)
+        except Project.DoesNotExist:
+            pass
 
     def get_collaboration(self):
         try:

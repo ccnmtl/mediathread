@@ -90,7 +90,7 @@
                     dataType: 'json',
                     data: data,
                     success: function (json) {
-                        window.location = json.project.url;
+                        window.location = json.context.project.url;
                     },
                     error: function() {
                         // do something useful here

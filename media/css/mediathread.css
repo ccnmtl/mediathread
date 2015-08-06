@@ -4311,6 +4311,7 @@ div.ui-dialog div.asset-view-details h2 {
     font-weight: normal !important;
 }
 
+.ui-accordion-content,
 .switcher *,
 .form-control {
     -webkit-box-sizing: border-box !important;
@@ -4348,8 +4349,9 @@ a.btn.btn-default img.left {
     margin-top: 20px;
 }
 
+.selection-assignment input[name='copy-selection-icon'],
 .selection-assignment #asset-global-annotation {
-    display: none;
+    display: none !important;
 }
 
 .selection-assignment #id_publish {

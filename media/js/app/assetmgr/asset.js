@@ -784,10 +784,11 @@
                     jQuery('select.vocabulary').select2({});
                     jQuery('#asset-details-annotations-current')
                         .fadeIn(function() {
-                            djangosherd.assetview.clipform.html
-                                .push('clipform-display', {
+                            djangosherd.assetview.clipform.html.push(
+                                'clipform-display', {
                                     asset: {}
                                 });
+                            jQuery('#clipform').show();
                         });
                     jQuery(window).trigger('resize');
                 });
@@ -859,6 +860,7 @@
                                 'clipform-display', {
                                     asset: {}
                                 });
+                            jQuery('#clipform').show();
                         });
                         jQuery(window).trigger('resize');
                     }
@@ -1169,10 +1171,11 @@
 
             var $elt = jQuery('#asset-workspace-panel-container');
             $elt.fadeIn('slow', function() {
-                djangosherd.assetview.clipform.html
-                    .push('clipform-display', {
+                djangosherd.assetview.clipform.html.push(
+                    'clipform-display', {
                         asset: {}
                     });
+                jQuery('#clipform').show();
 
                 if (self.active_annotation) {
                     djangosherd.assetview.clipform

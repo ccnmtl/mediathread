@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from mediathread.projects.views import ProjectCreateView, ProjectDeleteView, \
     ProjectSortView, SelectionAssignmentView, \
-    SelectionAssignmentEditView, ProjectSaveView
+    SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView
 
 
 urlpatterns = patterns(
@@ -11,12 +11,10 @@ urlpatterns = patterns(
     url(r'^create/$', ProjectCreateView.as_view(), {}, "project-create"),
 
     url(r'^view/(?P<project_id>\d+)/$',
-        'project_workspace',
-        name='project-workspace'),
+        ProjectWorkspaceView.as_view(), {}, name='project-workspace'),
 
     url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$',
-        'project_workspace',
-        name='project-workspace-feedback'),
+        ProjectWorkspaceView.as_view(), {}, name='project-workspace-feedback'),
 
     url(r'^view/sa/(?P<project_id>\d+)/$',
         SelectionAssignmentView.as_view(), {},

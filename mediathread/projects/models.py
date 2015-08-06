@@ -269,6 +269,9 @@ class Project(models.Model):
         else:
             return self.due_date.strftime("%m/%d/%y")
 
+    def is_empty(self):
+        return self.title == self.DEFAULT_TITLE and len(self.body) == 0
+
     def public_url(self, col=None):
         if col is None:
             col = self.get_collaboration()

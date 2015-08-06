@@ -263,142 +263,142 @@ def project_view_readonly(request, project_id, version_number=None):
                             content_type='application/json')
 
 
-@login_required
-@allow_http("GET")
-def project_workspace(request, project_id, feedback=None):
-    """
-    A multi-panel editable view for the specified project
-    Legacy note: Ideally, this function would be named project_view but
-    StructuredCollaboration requires the view name
-    to be  <class>-view to do a reverse lookup
+class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
+                           JSONResponseMixin, View):
 
-    Panel 1: Parent Assignment (if applicable)
-    Panel 2: Project
-    Panel 3: Instructor Feedback (if applicable & exists)
+    def get(self, request, *args, **kwargs):
+        """
+        A multi-panel editable view for the specified project
+        Legacy note: Ideally, this function would be named project_view but
+        StructuredCollaboration requires the view name
+        to be  <class>-view to do a reverse lookup
 
-    Keyword arguments:
-    project_id -- the model id
-    """
-    project = get_object_or_404(Project, pk=project_id)
+        Panel 1: Parent Assignment (if applicable)
+        Panel 2: Project
+        Panel 3: Instructor Feedback (if applicable & exists)
 
-    if not project.can_read(request.course, request.user):
-        return HttpResponseForbidden("forbidden")
+        Keyword arguments:
+        project_id -- the model id
+        """
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
 
-    show_feedback = feedback == "feedback"
-    data = {'space_owner': request.user.username,
-            'show_feedback': show_feedback}
+        if not project.can_read(request.course, request.user):
+            return HttpResponseForbidden("forbidden")
 
-    if not request.is_ajax():
-        data['project'] = project
-        return render_to_response('projects/project.html',
-                                  data,
-                                  context_instance=RequestContext(request))
-    else:
-        panels = []
+        show_feedback = kwargs.get('feedback', None) == "feedback"
+        data = {'space_owner': request.user.username,
+                'show_feedback': show_feedback}
 
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
+        if not request.is_ajax():
+            data['project'] = project
+            return render_to_response('projects/project.html',
+                                      data,
+                                      context_instance=RequestContext(request))
+        else:
+            panels = []
 
-        owners = UserResource().render_list(request, request.course.members)
+            vocabulary = VocabularyResource().render_list(
+                request, Vocabulary.objects.get_for_object(request.course))
 
-        is_faculty = request.course.is_faculty(request.user)
-        can_edit = project.can_edit(request.course, request.user)
-        feedback_discussion = project.feedback_discussion() \
-            if is_faculty or can_edit else None
+            owners = UserResource().render_list(request,
+                                                request.course.members)
 
-        # Project Parent (assignment) if exists
-        parent_assignment = project.assignment()
-        if parent_assignment:
-            pedit = parent_assignment.can_edit(request.course, request.user)
-            resource = ProjectResource(
-                record_viewer=request.user, is_viewer_faculty=is_faculty,
-                editable=pedit)
-            assignment_ctx = resource.render_one(request, parent_assignment)
+            is_faculty = request.course.is_faculty(request.user)
+            can_edit = project.can_edit(request.course, request.user)
+            feedback_discussion = project.feedback_discussion() \
+                if is_faculty or can_edit else None
 
-            panel = {'is_faculty': is_faculty,
-                     'panel_state': "open" if (project.title == "Untitled" and
-                                               len(project.body) == 0)
-                     else "closed",
-                     'subpanel_state': 'closed',
-                     'context': assignment_ctx,
-                     'owners': owners,
-                     'vocabulary': vocabulary,
-                     'template': 'project'}
-            panels.append(panel)
-
-        # Requested project, can be either an assignment or composition
-        resource = ProjectResource(record_viewer=request.user,
-                                   is_viewer_faculty=is_faculty,
-                                   editable=can_edit)
-        project_context = resource.render_one(request, project)
-
-        # only editing if it's new
-        project_context['editing'] = \
-            True if can_edit and len(project.body) < 1 else False
-
-        project_context['create_instructor_feedback'] = \
-            is_faculty and parent_assignment and not feedback_discussion
-
-        panel = {'is_faculty': is_faculty,
-                 'panel_state': 'closed' if show_feedback else 'open',
-                 'context': project_context,
-                 'template': 'project',
-                 'owners': owners,
-                 'vocabulary': vocabulary}
-        panels.append(panel)
-
-        # Project Response -- if the requested project is an assignment
-        # This is primarily a student view. The student's response should
-        # pop up automatically when the parent assignment is viewed.
-        if project.is_assignment():
-            responses = project.responses_by(request.course, request.user,
-                                             request.user)
-            if len(responses) > 0:
-                response = responses[0]
-                response_can_edit = response.can_edit(request.course,
-                                                      request.user)
-                resource = ProjectResource(record_viewer=request.user,
-                                           is_viewer_faculty=is_faculty,
-                                           editable=response_can_edit)
-                response_context = resource.render_one(request, response)
+            # Project Parent (assignment) if exists
+            parent = project.assignment()
+            if parent:
+                pedit = parent.can_edit(request.course, request.user)
+                resource = ProjectResource(
+                    record_viewer=request.user, is_viewer_faculty=is_faculty,
+                    editable=pedit)
+                ctx = resource.render_one(request, parent)
+                state = "open" if (project.is_empty()) else "closed"
 
                 panel = {'is_faculty': is_faculty,
-                         'panel_state': 'closed',
-                         'context': response_context,
-                         'template': 'project',
+                         'panel_state': state,
+                         'subpanel_state': 'closed',
+                         'context': ctx,
                          'owners': owners,
-                         'vocabulary': vocabulary}
+                         'vocabulary': vocabulary,
+                         'template': 'project'}
                 panels.append(panel)
 
-                if not feedback_discussion and response_can_edit:
-                    feedback_discussion = response.feedback_discussion()
+            # Requested project, can be either an assignment or composition
+            resource = ProjectResource(record_viewer=request.user,
+                                       is_viewer_faculty=is_faculty,
+                                       editable=can_edit)
+            project_context = resource.render_one(request, project)
 
-        data['panels'] = panels
+            # only editing if it's new
+            project_context['editing'] = \
+                True if can_edit and len(project.body) < 1 else False
 
-        # If feedback exists for the requested project
-        if feedback_discussion:
-            # 3rd pane is the instructor feedback, if it exists
-            panel = {'panel_state': 'open' if show_feedback else 'closed',
-                     'panel_state_label': "Instructor Feedback",
-                     'template': 'discussion',
+            project_context['create_instructor_feedback'] = \
+                is_faculty and parent and not feedback_discussion
+
+            panel = {'is_faculty': is_faculty,
+                     'panel_state': 'closed' if show_feedback else 'open',
+                     'context': project_context,
+                     'template': 'project',
                      'owners': owners,
-                     'vocabulary': vocabulary,
-                     'context': threaded_comment_json(request,
-                                                      feedback_discussion)}
+                     'vocabulary': vocabulary}
             panels.append(panel)
 
-        # Create a place for asset editing
-        panel = {'panel_state': 'closed',
-                 'panel_state_label': "Item Details",
-                 'template': 'asset_quick_edit',
-                 'update_history': False,
-                 'owners': owners,
-                 'vocabulary': vocabulary,
-                 'context': {'type': 'asset'}}
-        panels.append(panel)
+            # Project Response -- if the requested project is an assignment
+            # This is primarily a student view. The student's response should
+            # pop up automatically when the parent assignment is viewed.
+            if project.is_assignment():
+                responses = project.responses_by(request.course, request.user,
+                                                 request.user)
+                if len(responses) > 0:
+                    response = responses[0]
+                    response_can_edit = response.can_edit(request.course,
+                                                          request.user)
+                    resource = ProjectResource(record_viewer=request.user,
+                                               is_viewer_faculty=is_faculty,
+                                               editable=response_can_edit)
+                    response_context = resource.render_one(request, response)
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            content_type='application/json')
+                    panel = {'is_faculty': is_faculty,
+                             'panel_state': 'closed',
+                             'context': response_context,
+                             'template': 'project',
+                             'owners': owners,
+                             'vocabulary': vocabulary}
+                    panels.append(panel)
+
+                    if not feedback_discussion and response_can_edit:
+                        feedback_discussion = response.feedback_discussion()
+
+            data['panels'] = panels
+
+            # If feedback exists for the requested project
+            if feedback_discussion:
+                # 3rd pane is the instructor feedback, if it exists
+                panel = {'panel_state': 'open' if show_feedback else 'closed',
+                         'panel_state_label': "Instructor Feedback",
+                         'template': 'discussion',
+                         'owners': owners,
+                         'vocabulary': vocabulary,
+                         'context': threaded_comment_json(request,
+                                                          feedback_discussion)}
+                panels.append(panel)
+
+            # Create a place for asset editing
+            panel = {'panel_state': 'closed',
+                     'panel_state_label': "Item Details",
+                     'template': 'asset_quick_edit',
+                     'update_history': False,
+                     'owners': owners,
+                     'vocabulary': vocabulary,
+                     'context': {'type': 'asset'}}
+            panels.append(panel)
+
+            return self.render_to_json_response(data)
 
 
 @login_required

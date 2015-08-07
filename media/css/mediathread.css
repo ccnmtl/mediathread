@@ -2957,18 +2957,30 @@ div.asset-annotator {
 .sherd-clipform-play {
     text-align: center; 
     border-top: 2px solid #999; 
-    padding: 10px 0px 0px 0px;
+    padding: 10px 0 0 5px;
+}
+
+tr.sherd-clipform-editing td {
+    text-align: center;
+}
+
+.sherd-clipform-editing input[type="button"] {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sherd-clipform-editing input.timecode,
+.sherd-clipform-editing input[type="button"] {
+    width: 80%;
 }
 
 .sherd-clipform-editing input.timecode {
-    width: 80px;
-    margin: 0 5px 0 10px;
     text-align: right;
 }
 
 .sherd-clipform-editing input.videoplay {
     width: 25px;
-    margin: -2px 0 0 -5px;
+    margin: -2px 0 0 0;
     border: 0;
 }
 
@@ -3585,6 +3597,11 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
 
 div.asset-view-container div.asset-view-tabs .btn-primary {
     margin: 3px 0 0 3px;
+}
+
+div.asset-view-container div.asset-view-tabs #clipform-display .btn-primary {
+    margin: inherit;
+    margin-bottom: 5px;
 }
 
 ul#asset-details-annotations-list h3.ui-accordion-header-active {

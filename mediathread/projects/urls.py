@@ -11,6 +11,10 @@ urlpatterns = patterns(
     url(r'^create/sa/$', SelectionAssignmentEditView.as_view(), {},
         name='selection-assignment-create'),
 
+    url(r'^edit/sa/(?P<project_id>\d+)/$',
+        SelectionAssignmentEditView.as_view(), {},
+        name='selection-assignment-edit'),
+
     url(r'^create/$', ProjectCreateView.as_view(), {}, "project-create"),
 
     url(r'^view/(?P<project_id>\d+)/$',
@@ -18,10 +22,6 @@ urlpatterns = patterns(
 
     url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$',
         ProjectWorkspaceView.as_view(), {}, name='project-workspace-feedback'),
-
-    url(r'^edit/sa/(?P<project_id>\d+)/$',
-        SelectionAssignmentEditView.as_view(), {},
-        name='selection-assignment-edit'),
 
     url(r'^save/(?P<project_id>\d+)/$',
         ProjectSaveView.as_view(), {},

@@ -214,18 +214,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(project.versions.count(), 2)
         self.assertIsNotNone(project.submitted_date())
 
-    def test_assignment_response_create_error(self):
-        self.client.login(username=self.student_one.username,
-                          password='test')
-
-        data = {u'participants': [self.student_one.id],
-                u'publish': [u'PrivateEditorsAreOwners'],
-                u'parent': 12345}
-
-        response = self.client.post('/project/create/', data,
-                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 404)
-
     def test_assignment_response_create(self):
         self.client.login(username=self.student_one.username,
                           password='test')
@@ -457,7 +445,7 @@ class SelectionAssignmenViewTest(MediathreadTestMixin, TestCase):
             project_type='selection-assignment')
 
     def test_view(self):
-        url = reverse('selection-assignment-view', args=[self.project.id])
+        url = reverse('project-workspace', args=[self.project.id])
 
         # anonymous
         response = self.client.get(url, {})

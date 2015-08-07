@@ -9,7 +9,7 @@ from django.db.models import Q
 from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
-from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from mediathread.djangosherd.models import SherdNote
 from structuredcollaboration.models import Collaboration
 
 
@@ -229,13 +229,10 @@ class Project(models.Model):
     # -- at least, the instructor, if not the whole class
     submitted = models.BooleanField(default=False)
 
-    modified = models.DateTimeField('date modified',
-                                    editable=False,
+    modified = models.DateTimeField('date modified', editable=False,
                                     auto_now=True)
 
-    due_date = models.DateTimeField('due date',
-                                    null=True,
-                                    blank=True)
+    due_date = models.DateTimeField('due date', null=True, blank=True)
 
     ordinality = models.IntegerField(default=-1)
 
@@ -482,10 +479,6 @@ class Project(models.Model):
         col.save()
 
         self.collaboration_sync_group(col)
-
-        DiscussionIndex.update_class_references(
-            self.body, None, None, col, self.author)
-
         return col
 
     def create_or_update_item(self, item_id):
@@ -497,12 +490,11 @@ class Project(models.Model):
         except Asset.DoesNotExist:
             pass  # optional parameter
 
-    def create_or_update_parent(self, parent_id):
+    def set_parent(self, parent_id):
         try:
             parent = Project.objects.get(id=parent_id)
             if parent.is_assignment():
-                collaboration = parent.get_collaboration()
-                collaboration.append_child(self)
+                parent.get_collaboration().append_child(self)
         except Project.DoesNotExist:
             pass
 

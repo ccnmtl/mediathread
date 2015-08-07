@@ -305,3 +305,41 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(users.count(), 1)
         self.assertTrue(self.student_one in users)
         self.assertFalse(self.student_two in users)
+
+    def test_collaboration_create_or_update(self):
+        project = Project.objects.create(title="Untitled",
+                                         course=self.sample_course,
+                                         author=self.student_one)
+        self.assertIsNone(project.get_collaboration())
+
+        project.create_or_update_collaboration('PrivateEditorsAreOwners')
+        collaboration = project.get_collaboration()
+        self.assertEquals(collaboration.policy_record.policy_name,
+                          'PrivateEditorsAreOwners')
+
+        project.create_or_update_collaboration('PublicEditorsAreOwners')
+        collaboration = project.get_collaboration()
+        self.assertEquals(collaboration.policy_record.policy_name,
+                          'PublicEditorsAreOwners')
+
+    def test_create_or_update_item(self):
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one)
+
+        project.create_or_update_item(self.asset1.id)
+        self.assertEquals(project.assignmentitem_set.first().asset,
+                          self.asset1)
+
+        asset2 = AssetFactory.create(course=self.sample_course,
+                                     primary_source='youtube')
+
+        project.create_or_update_item(asset2.id)
+        self.assertEquals(project.assignmentitem_set.first().asset, asset2)
+
+    def test_set_parent(self):
+        project = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one)
+        self.assertIsNone(project.assignment())
+
+        project.set_parent(self.assignment.id)
+        self.assertEquals(project.assignment(), self.assignment)

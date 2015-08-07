@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 
 from courseaffils.lib import in_course_or_404, get_public_name
@@ -14,7 +15,7 @@ from djangohelpers.lib import allow_http
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.discussions.views import threaded_comment_json
-from mediathread.djangosherd.models import SherdNote
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import (
     LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectVisibleMixin,
@@ -29,15 +30,25 @@ from mediathread.taxonomy.models import Vocabulary
 
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
+    def get_title(self):
+        title = self.request.POST.get('title', Project.DEFAULT_TITLE)
+        if len(title) < 1:
+            title = Project.DEFAULT_TITLE
+        return title
+
+    def set_due_date(self, project):
+        # convert mm/dd/yyyy into a datetime
+        due_date = self.request.POST.get('due_date', None)
+        if due_date and len(due_date) > 0:
+            project.due_date = datetime.strptime(due_date, '%m/%d/%Y')
+
     def post(self, request):
         project_type = request.POST.get('project_type', 'composition')
-        due_date = request.POST.get('due_date', None)
-        title = project_type = request.POST.get('title', Project.DEFAULT_TITLE)
-        project = Project.objects.create(author=request.user,
-                                         course=request.course,
-                                         title=title,
-                                         project_type=project_type,
-                                         due_date=due_date)
+
+        project = Project(author=request.user, course=request.course,
+                          title=self.get_title(), project_type=project_type)
+        self.set_due_date(project)
+        project.save()
 
         project.participants.add(request.user)
 
@@ -45,7 +56,13 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         project.create_or_update_item(item_id)
 
         policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        project.create_or_update_collaboration(policy)
+        collaboration = project.create_or_update_collaboration(policy)
+
+        DiscussionIndex.update_class_references(
+            project.body, None, None, collaboration, project.author)
+
+        parent_id = request.POST.get('parent', None)
+        project.set_parent(parent_id)
 
         if not request.is_ajax():
             return HttpResponseRedirect(project.get_absolute_url())
@@ -85,7 +102,9 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
             frm.instance.create_or_update_item(item_id)
 
             # update the collaboration
-            frm.instance.create_or_update_collaboration(policy)
+            collaboration = frm.instance.create_or_update_collaboration(policy)
+            DiscussionIndex.update_class_references(
+                project.body, None, None, collaboration, project.author)
 
             ctx = {
                 'status': 'success',
@@ -244,27 +263,24 @@ def project_view_readonly(request, project_id, version_number=None):
                             content_type='application/json')
 
 
-class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
-                           JSONResponseMixin, TemplateView):
+class SelectionAssignmentView(LoggedInMixin, ProjectVisibleMixin,
+                              TemplateView):
+    template_name = 'projects/selection_assignment_view.html'
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-
-        if project.is_selection_assignment():
-            return self.selection_assignment(project)
-        else:
-            return self.default_project(project, args, kwargs)
-
-    def selection_assignment(self, project):
-        self.template_name = 'projects/selection_assignment_view.html'
         ctx = {
             'project': project,
             'can_edit': project.can_edit(self.request.course,
                                          self.request.user)
         }
-        return self.render_to_response(ctx)
+        return ctx
 
-    def default_project(self, project, *args, **kwargs):
+
+class DefaultProjectView(LoggedInMixin, ProjectVisibleMixin,
+                         JSONResponseMixin, TemplateView):
+
+    def get(self, request, *args, **kwargs):
         """
         A multi-panel editable view for the specified project
         Legacy note: Ideally, this function would be named project_view but
@@ -278,7 +294,7 @@ class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
         Keyword arguments:
         project_id -- the model id
         """
-        request = self.request
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         show_feedback = kwargs.get('feedback', None) == "feedback"
         data = {'space_owner': request.user.username,
                 'show_feedback': show_feedback}
@@ -392,6 +408,18 @@ class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
             panels.append(panel)
 
             return self.render_to_json_response(data)
+
+
+class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        if project.is_selection_assignment():
+            view = SelectionAssignmentView.as_view()
+        else:
+            view = DefaultProjectView.as_view()
+
+        return view(request, *args, **kwargs)
 
 
 @login_required

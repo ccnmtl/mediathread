@@ -35,12 +35,15 @@ class ProjectForm(forms.ModelForm):
             'id': "id_participants_%s" % self.instance.id
         }
 
-        col = kwargs['instance'].get_collaboration()
-        if col:
-            pol = col.policy_record.policy_name
-            if pol not in dict(self.fields['publish'].choices):
-                self.fields['publish'].choices.append((pol, pol))
-            self.initial['publish'] = pol
+        if kwargs['instance']:
+            col = kwargs['instance'].get_collaboration()
+            if col:
+                pol = col.policy_record.policy_name
+                if pol not in dict(self.fields['publish'].choices):
+                    self.fields['publish'].choices.append((pol, pol))
+                self.initial['publish'] = pol
+        else:
+            self.instance = None
 
         if request.course.is_faculty(request.user):
             # Faculty
@@ -49,7 +52,7 @@ class ProjectForm(forms.ModelForm):
                  if choice[0] in PUBLISH_OPTIONS_FACULTY]
         else:
             # Student
-            if kwargs['instance'].assignment():
+            if kwargs['instance'] and kwargs['instance'].assignment():
                 # Assignment response
                 self.fields['publish'].choices = \
                     [choice for choice in self.fields['publish'].choices

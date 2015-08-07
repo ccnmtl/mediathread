@@ -1,18 +1,22 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
 /* global Mustache2: true, panelFactory: true, ProjectPanelHandler: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
-(function () {
+(function() {
     var PanelFactory = function() {
-        this.create = function (el, parent, type, panels, space_owner) {
+        this.create = function(el, parent, type, panels, space_owner) {
             // Instantiate the panel's handler
             var handler = null;
-            if (type === "project") {
-                handler = new ProjectPanelHandler(el, parent, panels, space_owner);
-            } else if (type === "discussion") {
-                handler = new DiscussionPanelHandler(el, parent, panels, space_owner);
-            } else if (type === "asset") {
-                handler = new AssetPanelHandler(el, parent, panels, space_owner);
+            if (type === 'project') {
+                handler = new ProjectPanelHandler(el, parent, panels,
+                                                  space_owner);
+            } else if (type === 'discussion') {
+                handler = new DiscussionPanelHandler(el, parent, panels,
+                                                     space_owner);
+            } else if (type === 'asset') {
+                handler = new AssetPanelHandler(el, parent, panels,
+                                                space_owner);
             }
 
             return handler;
@@ -23,37 +27,37 @@
     var PanelManager = function() {
         var self = this;
 
-        this.init = function (options, panels) {
+        this.init = function(options, panels) {
             self.options = options;
             self.panelHandlers = [];
-            self.el = jQuery("#" + options.container)[0];
+            self.el = jQuery('#' + options.container)[0];
 
             jQuery.ajax({
                 url: options.url,
                 dataType: 'json',
-                cache: false, // Chrome && Internet Explorer has aggressive caching policies.
-                success: function (json) {
+                cache: false, // Chrome & IE cache aggressively
+                success: function(json) {
                     self.panels = json.panels;
                     self.space_owner = json.space_owner;
                     self.loadTemplates(0);
                 }
             });
 
-            jQuery(window).resize(function () {
+            jQuery(window).resize(function() {
                 self.resize();
             });
         };
 
-        this.count = function () {
+        this.count = function() {
             return self.panelHandlers.length;
         };
 
-        this.resize = function () {
+        this.resize = function() {
             var visible = getVisibleContentHeight();
-            jQuery(self.el).css('height', visible + "px");
+            jQuery(self.el).css('height', visible + 'px');
         };
 
-        this.loadTemplates = function (idx) {
+        this.loadTemplates = function(idx) {
             if (idx === self.panels.length) {
                 // done. load content.
                 self.loadContent();
@@ -64,31 +68,35 @@
             } else {
                 // pull it off the wire
                 jQuery.ajax({
-                    url: '/media/templates/' + self.panels[idx].template + '.mustache?nocache=v3',
+                    url: '/media/templates/' + self.panels[idx].template +
+                        '.mustache?nocache=v3',
                     dataType: 'text',
-                    cache: false, // Chrome && Internet Explorer have aggressive caching policies.
-                    success: function (text) {
-                        MediaThread.templates[self.panels[idx].template] = text;
+                    cache: false, // Chrome & IE cache aggressively.
+                    success: function(txt) {
+                        MediaThread.templates[self.panels[idx].template] = txt;
                         self.loadTemplates(++idx);
                     }
                 });
             }
         };
 
-        this.loadContent = function () {
+        this.loadContent = function() {
             var slidePanelCallback = function(event) {
                 self.slidePanel(this, event);
             };
 
             for (var i = 0; i < self.panels.length; i++) {
                 var panel = self.panels[i];
-                if (!panel.hasOwnProperty("loaded")) {
+                if (!panel.hasOwnProperty('loaded')) {
 
-                    // Add these new columns to the table, before the last column
-                    // The last column is reserved for a placeholder td that eats space
-                    // and makes the sliding UI work nicely
-                    var lastCell = jQuery("#" + self.options.container + " tr:first td:last");
-                    lastCell.before(Mustache2.render(MediaThread.templates[panel.template], panel));
+                    // Add these new columns to the table, before the last
+                    // column. The last column is reserved for a placeholder td
+                    // that eats space and makes the sliding UI work nicely
+                    var lastCell = jQuery('#' + self.options.container +
+                                          ' tr:first td:last');
+                    lastCell.before(
+                        Mustache2.render(MediaThread.templates[panel.template],
+                                         panel));
 
                     var newCell = jQuery(lastCell).prev().prev()[0];
                     var handler = panelFactory.create(newCell,
@@ -100,14 +108,14 @@
 
                     // enable open/close controls on subpanel
                     jQuery(newCell)
-                        .find(".pantab-container")
+                        .find('.pantab-container')
                         .on('click',
                             {handler: handler, isSubpanel: true},
                             slidePanelCallback);
 
                     // enable open/close controls on parent panels
                     jQuery(newCell)
-                        .next(".pantab-container")
+                        .next('.pantab-container')
                         .on('click',
                             {handler: handler, isSubpanel: false},
                             slidePanelCallback);
@@ -121,114 +129,129 @@
             }
         };
 
-        this.slidePanel = function (pantab_container, event) {
+        this.slidePanel = function(pantab_container, event) {
             // Open/close this panhandle's panel
-            var panel = jQuery(pantab_container).prevAll("td.panel-container")[0];
+            var panel = jQuery(pantab_container).prevAll(
+                'td.panel-container')[0];
 
-            var param, panelTab;
-            if (jQuery(panel).hasClass("minimized") || jQuery(panel).hasClass("maximized")) {
-                param = jQuery(panel).hasClass("minimized") ? "maximized" : "minimized";
-                jQuery(panel).toggleClass("minimized maximized");
-                jQuery(panel).trigger('panel_state_change', [ param ]);
+            var param;
+            var panelTab;
+            if (jQuery(panel).hasClass('minimized') ||
+                    jQuery(panel).hasClass('maximized')) {
+                param = jQuery(panel).hasClass('minimized') ?
+                    'maximized' : 'minimized';
+                jQuery(panel).toggleClass('minimized maximized');
+                jQuery(panel).trigger('panel_state_change', [param]);
 
-                panelTab = jQuery(pantab_container).children("div.pantab")[0];
-                jQuery(panelTab).toggleClass("minimized maximized");
+                panelTab = jQuery(pantab_container).children('div.pantab')[0];
+                jQuery(panelTab).toggleClass('minimized maximized');
 
-                if (param === "maximized") {
+                if (param === 'maximized') {
                     jQuery(panel).siblings('td.panel-container').hide();
-                    jQuery(panel).css("display", "table-cell");
+                    jQuery(panel).css('display', 'table-cell');
                 } else {
                     jQuery(panel).siblings('td.panel-container').show();
                 }
 
                 self.verifyLayout(panel);
-                jQuery(window).trigger("resize");
+                jQuery(window).trigger('resize');
             } else {
-                param = jQuery(panel).hasClass("open") ? "closed" : "open";
-                jQuery(panel).toggleClass("open closed");
-                jQuery(panel).trigger('panel_state_change', [ param ]);
+                param = jQuery(panel).hasClass('open') ? 'closed' : 'open';
+                jQuery(panel).toggleClass('open closed');
+                jQuery(panel).trigger('panel_state_change', [param]);
 
-                panelTab = jQuery(pantab_container).children("div.pantab")[0];
-                jQuery(panelTab).toggleClass("open closed");
+                panelTab = jQuery(pantab_container).children('div.pantab')[0];
+                jQuery(panelTab).toggleClass('open closed');
 
                 self.verifyLayout(panel);
-                jQuery(window).trigger("resize");
+                jQuery(window).trigger('resize');
             }
         };
 
-        this.openSubPanel = function (subpanel) {
+        this.openSubPanel = function(subpanel) {
             if (subpanel) {
-                jQuery(subpanel).removeClass("closed").addClass("open");
-                jQuery(subpanel).trigger('panel_state_change', [ 'open' ]);
+                jQuery(subpanel).removeClass('closed').addClass('open');
+                jQuery(subpanel).trigger('panel_state_change', ['open']);
 
-                var container = jQuery(subpanel).nextAll("td.pantab-container");
-                var panelTab = jQuery(container[0]).children("div.pantab");
-                jQuery(panelTab[0]).removeClass("closed");
-                jQuery(panelTab[0]).addClass("open");
+                var container =
+                    jQuery(subpanel).nextAll('td.pantab-container');
+                var panelTab = jQuery(container[0]).children('div.pantab');
+                jQuery(panelTab[0]).removeClass('closed');
+                jQuery(panelTab[0]).addClass('open');
 
                 self.verifyLayout(subpanel);
-                jQuery(window).trigger("resize");
+                jQuery(window).trigger('resize');
             }
         };
 
-        this.closeSubPanel = function (view) {
-            var subpanel = jQuery(view.el).find("td.panel-container.open")[0];
+        this.closeSubPanel = function(view) {
+            var subpanel = jQuery(view.el).find('td.panel-container.open')[0];
 
-            jQuery(subpanel).removeClass("open").addClass("closed");
-            jQuery(subpanel).trigger('panel_state_change', [ 'closed' ]);
+            jQuery(subpanel).removeClass('open').addClass('closed');
+            jQuery(subpanel).trigger('panel_state_change', ['closed']);
 
-            var panelTab = jQuery(subpanel).next().next().children("div.pantab")[0];
-            jQuery(panelTab).toggleClass("open closed");
+            var panelTab = jQuery(subpanel).next()
+                                           .next()
+                                           .children('div.pantab')[0];
+            jQuery(panelTab).toggleClass('open closed');
 
             self.verifyLayout(subpanel);
-            jQuery(window).trigger("resize");
+            jQuery(window).trigger('resize');
         };
 
-        this.verifyLayout = function (panel) {
+        this.verifyLayout = function(panel) {
             var screenWidth = jQuery(window).width();
             var tableWidth = jQuery(self.el).width();
 
-            var elts = jQuery(panel).parents("td.panel-container.open");
+            var elts = jQuery(panel).parents('td.panel-container.open');
             var parent = elts.length > 0 ? elts[0] : null;
 
             // Try really minimizing the minimized guys first
-            var a = jQuery(self.el).find("table.panel-subcontainer td.panel-container.minimized");
+            var a = jQuery(self.el).find(
+                'table.panel-subcontainer td.panel-container.minimized');
             for (var i = 0; i < a.length && tableWidth > screenWidth; i++) {
                 var subcontainer = a[i];
-                jQuery(subcontainer).css("display", "none");
+                jQuery(subcontainer).css('display', 'none');
                 tableWidth = jQuery(self.el).width();
             }
 
             // Try closing the subpanels first
-            a = jQuery(self.el).find("table.panel-subcontainer tbody tr td.panel-container.open").not(".alwaysopen");
+            a = jQuery(self.el).find(
+                'table.panel-subcontainer tbody tr td.panel-container.open')
+                .not('.alwaysopen');
             for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
                 var p = a[i];
                 if (panel !== p) {
                     // close it
-                    jQuery(p).removeClass("open").addClass("closed");
-                    jQuery(p).trigger('panel_state_change', [ 'closed' ]);
+                    jQuery(p).removeClass('open').addClass('closed');
+                    jQuery(p).trigger('panel_state_change', ['closed']);
 
-                    var container = jQuery(p).nextAll("td.pantab-container");
-                    var panelTab = jQuery(container[0]).children("div.pantab");
-                    jQuery(panelTab[0]).removeClass("open").addClass("closed");
+                    var container = jQuery(p).nextAll('td.pantab-container');
+                    var panelTab = jQuery(container[0]).children('div.pantab');
+                    jQuery(panelTab[0]).removeClass('open').addClass('closed');
 
                     tableWidth = jQuery(self.el).width();
                 }
             }
 
             // Then go for the parent panels
-            a = jQuery(self.el).find("tr.sliding-content-row").children("td.panel-container.open:visible").not(".alwaysopen");
+            a = jQuery(self.el).find('tr.sliding-content-row')
+                .children('td.panel-container.open:visible')
+                .not('.alwaysopen');
             if (a.length > 1) {
                 for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
 
                     if (a[i] !== panel && a[i] !== parent) {
                         // close it
-                        jQuery(a[i]).removeClass("open").addClass("closed");
-                        jQuery(a[i]).trigger('panel_state_change', [ 'closed' ]);
+                        jQuery(a[i]).removeClass('open').addClass('closed');
+                        jQuery(a[i]).trigger('panel_state_change', ['closed']);
 
-                        var parentContainer = jQuery(a[i]).nextAll("td.pantab-container")[0];
-                        var parentPanelTab = jQuery(parentContainer).children("div.pantab")[0];
-                        jQuery(parentPanelTab).removeClass("open").addClass("closed");
+                        var parentContainer =
+                            jQuery(a[i]).nextAll('td.pantab-container')[0];
+                        var parentPanelTab =
+                            jQuery(parentContainer).children('div.pantab')[0];
+                        jQuery(parentPanelTab).removeClass('open')
+                                              .addClass('closed');
 
                         tableWidth = jQuery(self.el).width();
                     }
@@ -236,13 +259,13 @@
             }
         };
 
-        this.newPanel = function (options) {
+        this.newPanel = function(options) {
             jQuery.ajax({
                 type: 'POST',
                 url: options.url,
                 dataType: 'json',
                 data: options.params,
-                success: function (json) {
+                success: function(json) {
                     if (options.callback) {
                         options.callback(json);
                     } else {
@@ -253,31 +276,34 @@
             });
         };
 
-        this.openPanel = function (panel) {
+        this.openPanel = function(panel) {
             // Open this panel
-            if (jQuery(panel).hasClass("closed")) {
-                jQuery(panel).removeClass("closed").addClass("open");
-                jQuery(panel).trigger('panel_state_change', [ 'open' ]);
+            if (jQuery(panel).hasClass('closed')) {
+                jQuery(panel).removeClass('closed').addClass('open');
+                jQuery(panel).trigger('panel_state_change', ['open']);
 
-                var panelTab = jQuery(panel).next().children("div.pantab")[0];
-                jQuery(panelTab).toggleClass("open closed");
+                var panelTab = jQuery(panel).next().children('div.pantab')[0];
+                jQuery(panelTab).toggleClass('open closed');
 
                 self.verifyLayout(panel);
-                jQuery(window).trigger("resize");
+                jQuery(window).trigger('resize');
             }
         };
 
-        this.maximizePanel = function (panel) {
-            if (jQuery(panel).hasClass("minimized")) {
-                jQuery(panel).removeClass("minimized").addClass("maximized");
+        this.maximizePanel = function(panel) {
+            if (jQuery(panel).hasClass('minimized')) {
+                jQuery(panel).removeClass('minimized').addClass('maximized');
                 jQuery(panel).siblings('td.panel-container').hide();
 
-                var panelTab = jQuery(panel).next().children("div.pantab")[0];
-                jQuery(panelTab).parent().removeClass("minimized").addClass("maximized");
-                jQuery(panelTab).removeClass("minimized").addClass("maximized");
+                var panelTab = jQuery(panel).next().children('div.pantab')[0];
+                jQuery(panelTab).parent()
+                                .removeClass('minimized')
+                                .addClass('maximized');
+                jQuery(panelTab).removeClass('minimized')
+                                .addClass('maximized');
 
                 self.verifyLayout(panel);
-                jQuery(window).trigger("resize");
+                jQuery(window).trigger('resize');
             }
         };
     };

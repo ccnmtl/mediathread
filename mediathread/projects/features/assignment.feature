@@ -8,11 +8,11 @@ Feature: Assignment
         # Create an assignment from the home page
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
-        When I click the Create Assignment button  
+        When I click the Create Composition Assignment button  
         
         Then I am at the Untitled page
         There is an open Assignment panel

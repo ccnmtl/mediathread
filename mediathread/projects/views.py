@@ -87,37 +87,36 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
                       ProjectEditableMixin, View):
 
     def post(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
 
-        frm = ProjectForm(request, instance=project, data=request.POST)
+        frm = ProjectForm(request, instance=self.project, data=request.POST)
         if frm.is_valid():
             frm.instance.submitted = policy != 'PrivateEditorsAreOwners'
             frm.instance.author = request.user
-            frm.save()
+            project = frm.save()
 
-            frm.instance.participants.add(request.user)
+            project.participants.add(request.user)
 
             item_id = request.POST.get('item', None)
-            frm.instance.create_or_update_item(item_id)
+            project.create_or_update_item(item_id)
 
             # update the collaboration
-            collaboration = frm.instance.create_or_update_collaboration(policy)
+            collaboration = project.create_or_update_collaboration(policy)
             DiscussionIndex.update_class_references(
                 project.body, None, None, collaboration, project.author)
 
             ctx = {
                 'status': 'success',
-                'is_assignment': frm.instance.is_assignment(),
-                'title': frm.instance.title,
+                'is_assignment': project.is_assignment(),
+                'title': project.title,
                 'context': {
                     'project': {
-                        'url': frm.instance.get_absolute_url()
+                        'url': project.get_absolute_url()
                     }
                 },
                 'revision': {
-                    'id': frm.instance.get_latest_version(),
-                    'public_url': frm.instance.public_url(),
+                    'id': project.get_latest_version(),
+                    'public_url': project.public_url(),
                     'visibility': project.visibility_short(),
                     'due_date': project.get_due_date()
                 }
@@ -145,8 +144,7 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        project.delete()
+        self.project.delete()
 
         return HttpResponseRedirect('/')
 
@@ -545,15 +543,16 @@ class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
         return self.render_to_json_response({'sorted': 'true'})
 
 
-class SelectionAssignmentEditView(LoggedInFacultyMixin, ProjectEditableMixin,
-                                  TemplateView):
+class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
     template_name = 'projects/selection_assignment_edit.html'
 
-    def get_context_data(self, **kwargs):
-        project_id = kwargs.get('project_id', None)
-        if project_id:
-            project = get_object_or_404(Project, pk=project_id)
+    def get(self, *args, **kwargs):
+        try:
+            project = Project.objects.get(id=kwargs.get('project_id', None))
+            if (not project.can_edit(self.request.course, self.request.user)):
+                return HttpResponseForbidden("forbidden")
             form = ProjectForm(self.request, instance=project)
-        else:
+        except Project.DoesNotExist:
             form = ProjectForm(self.request, instance=None)
-        return {'form': form}
+
+        return self.render_to_response({'form': form})

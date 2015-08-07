@@ -481,8 +481,9 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
             policy='PrivateEditorsAreOwners',
             project_type='selection-assignment')
 
-    def test_access(self):
-        url = reverse('selection-assignment-edit', args=[self.project.id])
+    def test_get_edit(self):
+        url = reverse('selection-assignment-edit',
+                      args=[self.project.id])
 
         # anonymous
         response = self.client.get(url, {})
@@ -506,7 +507,16 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get(url, {})
         self.assertEquals(response.status_code, 200)
 
-    def test_post(self):
+    def test_get_create(self):
+        url = reverse('selection-assignment-create')
+
+        # faculty
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+    def test_save(self):
         asset1 = AssetFactory.create(course=self.sample_course,
                                      primary_source='image')
         asset2 = AssetFactory.create(course=self.sample_course,

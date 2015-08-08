@@ -12,11 +12,13 @@ from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from structuredcollaboration.models import Collaboration
 
-
+PROJECT_TYPE_ASSIGNMENT = 'assignment'
+PROJECT_TYPE_COMPOSITION = 'composition'
+PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'
 PROJECT_TYPES = (
-    ('assignment', 'Assignment'),
-    ('composition', 'Composition'),
-    ('selection-assignment', 'Selection Assignment')
+    (PROJECT_TYPE_ASSIGNMENT, 'Assignment'),
+    (PROJECT_TYPE_COMPOSITION, 'Composition'),
+    (PROJECT_TYPE_SELECTION_ASSIGNMENT, 'Selection Assignment')
 )
 
 PUBLISH_OPTIONS = (
@@ -38,19 +40,25 @@ SHORT_NAME = {
     'PrivateStudentAndFaculty': 'with Instructors',
 }
 
-PUBLISH_OPTIONS_STUDENT_COMPOSITION = ['PrivateEditorsAreOwners',
-                                       'InstructorShared',
-                                       'CourseProtected']
-
-PUBLISH_OPTIONS_STUDENT_ASSIGNMENT = ['PrivateEditorsAreOwners',
-                                      'InstructorShared',
-                                      'CourseProtected']
-
-PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners',
+PUBLISH_OPTIONS_STUDENT = ['PrivateEditorsAreOwners',
+                           'InstructorShared',
                            'CourseProtected']
+
+PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners', 'CourseProtected']
 
 PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
                           'Whole World - a public url is provided')
+
+
+RESPONSE_VIEW_NEVER = (
+    'never', 'Students can never see submitted responses')
+RESPONSE_VIEW_ALWAYS = (
+    'always', 'Students can always see submitted responses')
+RESPONSE_VIEW_SUBMITTED = (
+    'submitted',
+    'Students can see submitted responses once they submit their own response')
+RESPONSE_VIEW_POLICY = (
+    RESPONSE_VIEW_NEVER, RESPONSE_VIEW_ALWAYS, RESPONSE_VIEW_SUBMITTED)
 
 
 class ProjectManager(models.Manager):
@@ -128,7 +136,7 @@ class ProjectManager(models.Manager):
     def visible_by_course(self, course, user):
         projects = Project.objects.filter(course=course)
         projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.visible(course, user)]
+        return [p for p in projects if p.can_read(course, user)]
 
     def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         projects = Project.objects.filter(
@@ -136,7 +144,7 @@ class ProjectManager(models.Manager):
             Q(participants=user, course=course)
         ).distinct()
 
-        lst = [p for p in projects if p.visible(course, viewer)]
+        lst = [p for p in projects if p.can_read(course, viewer)]
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 
@@ -155,12 +163,14 @@ class ProjectManager(models.Manager):
 
     def faculty_compositions(self, course, user):
         projects = []
-        prof_projects = Project.objects.filter(
-            course.faculty_filter).order_by('ordinality', 'title')
-        for project in prof_projects:
-            if (project.class_visible() and
-                    not project.is_assignment() and
-                    not project.is_selection_assignment()):
+        qs = Project.objects.filter(course.faculty_filter)
+        qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
+        qs = qs.order_by('ordinality', 'title')
+
+        for project in qs:
+            c = project.get_collaboration()
+            if (c and
+                    c.policy_record.policy_name != 'PrivateEditorsAreOwners'):
                 projects.append(project)
 
         return projects
@@ -178,7 +188,7 @@ class ProjectManager(models.Manager):
         project_type = ContentType.objects.get_for_model(Project)
 
         for assignment in projects:
-            if (assignment.visible(course, user) and
+            if (assignment.can_read(course, user) and
                 assignment.is_unanswered_assignment(course,
                                                     user,
                                                     project_type)):
@@ -227,6 +237,7 @@ class Project(models.Model):
 
     # available to someone other than the authors
     # -- at least, the instructor, if not the whole class
+    # this is somewhat deprecated...
     submitted = models.BooleanField(default=False)
 
     modified = models.DateTimeField('date modified', editable=False,
@@ -237,7 +248,10 @@ class Project(models.Model):
     ordinality = models.IntegerField(default=-1)
 
     project_type = models.TextField(choices=PROJECT_TYPES,
-                                    default='composition')
+                                    default=PROJECT_TYPE_COMPOSITION)
+
+    response_view_policy = models.TextField(choices=RESPONSE_VIEW_POLICY,
+                                            default='always')
 
     def clean(self):
         today = datetime.today()
@@ -294,20 +308,23 @@ class Project(models.Model):
                     by_user == response.content_object.author)]
 
     def description(self):
-        if self.assignment():
-            return "Assignment Response"
-        elif self.is_assignment():
+        if self.is_assignment():
             return "Assignment"
         elif self.is_selection_assignment():
             return "Selection Assignment"
+        elif self.assignment():
+            return "Assignment Response"
         else:
             return "Composition"
 
     def is_assignment(self):
-        return self.project_type == 'assignment'
+        return self.project_type == PROJECT_TYPE_ASSIGNMENT
 
     def is_selection_assignment(self):
-        return self.project_type == 'selection-assignment'
+        return self.project_type == PROJECT_TYPE_SELECTION_ASSIGNMENT
+
+    def is_composition(self):
+        return self.project_type == PROJECT_TYPE_COMPOSITION
 
     def assignment(self):
         """
@@ -368,8 +385,6 @@ class Project(models.Model):
         if col:
             return opts.get(col.policy_record.policy_name,
                             col.policy_record.policy_name)
-        elif self.submitted:
-            return u"Submitted"
         else:
             return u"Private"
 
@@ -378,8 +393,6 @@ class Project(models.Model):
         if col:
             return SHORT_NAME.get(col.policy_record.policy_name,
                                   col.policy_record.policy_name)
-        elif self.submitted:
-            return u"Submitted"
         else:
             return u"Private"
 
@@ -392,8 +405,6 @@ class Project(models.Model):
             if public_url:
                 status += ' (<a href="%s">public url</a>)' % public_url
             return status
-        elif self.submitted:
-            return u"Submitted"
         else:
             return u"Private"
 
@@ -425,31 +436,37 @@ class Project(models.Model):
     def __unicode__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
-    def class_visible(self):
-        col = self.get_collaboration()
-        if not col:
-            # legacy
-            return self.submitted
-
-        return (col.policy_record.policy_name != 'PrivateEditorsAreOwners' and
-                col.policy_record.policy_name != 'InstructorShared')
-
-    def visible(self, course, user):
-        col = self.get_collaboration()
-        if col:
-            return col.permission_to('read', course, user)
-        else:
-            return self.submitted
-
     def can_edit(self, course, user):
         if not self.is_participant(user):
             return False
         col = self.get_collaboration()
         return (col.permission_to('edit', course, user))
 
-    def can_read(self, course, user):
-        col = self.get_collaboration()
-        return (col.permission_to('read', course, user))
+    def can_read(self, course, viewer):
+        # has the author published his work?
+        collaboration = self.get_collaboration()
+        if not collaboration.permission_to('read', course, viewer):
+            return False
+
+        # assignment response?
+        parent = collaboration.get_parent()
+        if parent is None:
+            return True
+
+        if self.is_participant(viewer) or course.is_faculty(viewer):
+            return True
+
+        assignment = parent.content_object
+        if (assignment.response_view_policy == 'always'):
+            return True
+        elif assignment.response_view_policy == 'submitted':
+            # can_read if the viewer has submitted his own work
+            # @todo - consider multiple assignment responses
+            # via collaborative authoring.
+            responses = assignment.responses_by(course, viewer, viewer)
+            return len(responses) > 0 and responses[0].submitted
+        else:  # assignment.response_view_policy == 'never':
+            return False
 
     def collaboration_sync_group(self, collab):
         participants = self.participants.all()
@@ -493,8 +510,7 @@ class Project(models.Model):
     def set_parent(self, parent_id):
         try:
             parent = Project.objects.get(id=parent_id)
-            if parent.is_assignment():
-                parent.get_collaboration().append_child(self)
+            parent.get_collaboration().append_child(self)
         except Project.DoesNotExist:
             pass
 

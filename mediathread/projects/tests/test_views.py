@@ -254,31 +254,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 404)
 
-    def test_project_reparent(self):
-        staff = UserFactory(is_staff=True, is_superuser=True)
-        self.add_as_faculty(self.sample_course, staff)
-        self.assertIsNone(self.project_private.assignment())
-
-        url = reverse('project-reparent',
-                      args=[self.assignment.id, self.project_private.id])
-        response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 302)
-
-        # forbidden as regular user
-        self.client.login(username=self.instructor_one.username,
-                          password='test')
-        self.switch_course(self.client, self.sample_course)
-        response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 403)
-
-        # as superuser
-        self.client.login(username=staff, password='test')
-        self.switch_course(self.client, self.sample_course)
-        response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 302)
-
-        self.assertEquals(self.project_private.assignment(), self.assignment)
-
     def test_project_revisions(self):
         url = reverse('project-revisions', args=[self.project_private.id])
 

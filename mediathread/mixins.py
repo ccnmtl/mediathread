@@ -173,13 +173,13 @@ class LoggedInMixinSuperuser(object):
         return super(LoggedInMixinSuperuser, self).dispatch(*args, **kwargs)
 
 
-class ProjectVisibleMixin(object):
+class ProjectReadableMixin(object):
     def dispatch(self, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        if not project.visible(self.request.course, self.request.user):
+        if not project.can_read(self.request.course, self.request.user):
             return HttpResponseForbidden("forbidden")
 
-        return super(ProjectVisibleMixin, self).dispatch(*args, **kwargs)
+        return super(ProjectReadableMixin, self).dispatch(*args, **kwargs)
 
 
 class ProjectEditableMixin(object):

@@ -7,7 +7,8 @@ from django.test import TestCase
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
     AssetFactory, SherdNoteFactory, ProjectFactory
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
+    RESPONSE_VIEW_SUBMITTED
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -343,3 +344,83 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         project.set_parent(self.assignment.id)
         self.assertEquals(project.assignment(), self.assignment)
+
+    def test_can_read(self):
+        self.assertTrue(self.project_private.can_read(
+            self.sample_course, self.student_one))
+        self.assertFalse(self.project_private.can_read(
+            self.sample_course, self.student_two))
+        self.assertFalse(self.project_private.can_read(
+            self.sample_course, self.instructor_one))
+        self.assertFalse(self.project_private.can_read(
+            self.alt_course, self.alt_instructor))
+
+        self.assertTrue(self.project_instructor_shared.can_read(
+            self.sample_course, self.student_one))
+        self.assertFalse(self.project_instructor_shared.can_read(
+            self.sample_course, self.student_two))
+        self.assertTrue(self.project_instructor_shared.can_read(
+            self.sample_course, self.instructor_one))
+        self.assertFalse(self.project_instructor_shared.can_read(
+            self.sample_course, self.alt_instructor))
+
+        self.assertTrue(self.project_class_shared.can_read(
+            self.sample_course, self.student_one))
+        self.assertTrue(self.project_class_shared.can_read(
+            self.sample_course, self.student_two))
+        self.assertTrue(self.project_class_shared.can_read(
+            self.sample_course, self.instructor_one))
+        self.assertFalse(self.project_class_shared.can_read(
+            self.alt_course, self.alt_instructor))
+
+    def test_can_read_selection_assignment(self):
+        # always
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PublicEditorsAreOwners',
+            parent=self.selection_assignment)
+
+        self.assertTrue(response.can_read(
+            self.sample_course, self.student_one))
+        self.assertTrue(response.can_read(
+            self.sample_course, self.student_two))
+        self.assertTrue(response.can_read(
+            self.sample_course, self.instructor_one))
+
+        # never
+        self.selection_assignment.response_view_policy = \
+            RESPONSE_VIEW_NEVER[0]
+        self.selection_assignment.save()
+
+        self.assertTrue(response.can_read(
+            self.sample_course, self.student_one))
+        self.assertFalse(response.can_read(
+            self.sample_course, self.student_two))
+        self.assertTrue(response.can_read(
+            self.sample_course, self.instructor_one))
+
+        # submitted
+        self.selection_assignment.response_view_policy = \
+            RESPONSE_VIEW_SUBMITTED[0]
+        self.selection_assignment.save()
+
+        self.assertTrue(response.can_read(
+            self.sample_course, self.student_one))
+        self.assertFalse(response.can_read(
+            self.sample_course, self.student_two))
+        self.assertTrue(response.can_read(
+            self.sample_course, self.instructor_one))
+
+        # student two created a response
+        response2 = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            parent=self.selection_assignment)
+        self.assertFalse(response.can_read(
+            self.sample_course, self.student_two))
+
+        # student two submits his response (mock)
+        response2.create_or_update_collaboration('PublicEditorsAreOwners')
+        response2.submitted = True
+        response2.save()
+        self.assertTrue(response.can_read(
+            self.sample_course, self.student_two))

@@ -281,31 +281,24 @@ class Project(models.Model):
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
-    def subobjects(self, course, viewer, child_type):
-        col = self.get_collaboration()
-        if not col:
-            return []
-        children = col.children.filter(content_type=child_type)
-        viewable_children = []
-        for child in children:
-            if (child.permission_to("read", course, viewer) and
-                    child.content_object):
-                viewable_children.append(child.content_object)
-        return viewable_children
-
-    def discussions(self, course, viewer):
-        discussion_type = ContentType.objects.get_for_model(ThreadedComment)
-        return self.subobjects(course, viewer, discussion_type)
-
     def responses(self, course, viewer):
+        visible = []
+        col = self.get_collaboration()
         project_type = ContentType.objects.get_for_model(Project)
-        return self.subobjects(course, viewer, project_type)
+        for child in col.children.filter(content_type=project_type):
+            if child.content_object.can_read(course, viewer):
+                visible.append(child.content_object)
+        return visible
 
     def responses_by(self, course, viewer, by_user):
-        responses = self.responses(course, viewer)
-        return [response for response in responses
-                if (by_user in response.content_object.participants.all() or
-                    by_user == response.content_object.author)]
+        visible = []
+        col = self.get_collaboration()
+        project_type = ContentType.objects.get_for_model(Project)
+        for child in col.children.filter(content_type=project_type):
+            if (child.content_object.is_participant(by_user) and
+                    child.content_object.can_read(course, viewer)):
+                visible.append(child.content_object)
+        return visible
 
     def description(self):
         if self.is_assignment():

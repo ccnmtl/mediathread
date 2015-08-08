@@ -247,19 +247,29 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
                               TemplateView):
     template_name = 'projects/selection_assignment_view.html'
 
-    def get_context_data(self, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-
+    def get_assignment(self, project):
         if project.is_selection_assignment():
             assignment = project
         else:
             assignment = project.assignment()
+        return assignment
+
+    def get_my_response(self, assignment):
+        my_response = None
+        responses = assignment.responses_by(self.request.course,
+                                            self.request.user,
+                                            self.request.user)
+        if len(responses) > 0:
+            my_response = responses[0]
+        return my_response
+
+    def get_context_data(self, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        assignment = self.get_assignment(project)
 
         responses = assignment.responses(self.request.course,
                                          self.request.user)
-        my_response = assignment.responses_by(self.request.course,
-                                              self.request.user,
-                                              self.request.user)
+        my_response = self.get_my_response(assignment)
 
         ctx = {
             'assignment': assignment,
@@ -267,7 +277,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
                                                        self.request.user),
             'responses': responses,
             'my_response': my_response,
-            'response_view_policies': RESPONSE_VIEW_POLICY
+            'response_view_policies': RESPONSE_VIEW_POLICY,
+            'submit_policy': 'PublicEditorsAreOwners'
         }
         return ctx
 

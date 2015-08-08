@@ -51,12 +51,11 @@ PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
 
 
 RESPONSE_VIEW_NEVER = (
-    'never', 'Students can never see submitted responses')
+    'never', 'Viewable by instructor only')
 RESPONSE_VIEW_ALWAYS = (
-    'always', 'Students can always see submitted responses')
+    'always', 'Viewable by all')
 RESPONSE_VIEW_SUBMITTED = (
-    'submitted',
-    'Students can see submitted responses once they submit their own response')
+    'submitted', 'Viewable by other submitters')
 RESPONSE_VIEW_POLICY = (
     RESPONSE_VIEW_NEVER, RESPONSE_VIEW_ALWAYS, RESPONSE_VIEW_SUBMITTED)
 
@@ -286,7 +285,8 @@ class Project(models.Model):
         col = self.get_collaboration()
         project_type = ContentType.objects.get_for_model(Project)
         for child in col.children.filter(content_type=project_type):
-            if child.content_object.can_read(course, viewer):
+            if (child.content_object and
+                    child.content_object.can_read(course, viewer)):
                 visible.append(child.content_object)
         return visible
 
@@ -295,7 +295,8 @@ class Project(models.Model):
         col = self.get_collaboration()
         project_type = ContentType.objects.get_for_model(Project)
         for child in col.children.filter(content_type=project_type):
-            if (child.content_object.is_participant(by_user) and
+            if (child.content_object and
+                child.content_object.is_participant(by_user) and
                     child.content_object.can_read(course, viewer)):
                 visible.append(child.content_object)
         return visible

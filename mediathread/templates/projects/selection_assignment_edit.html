@@ -75,7 +75,14 @@
                     {% csrf_token %}
                     <input type="hidden" name="project_type" value="selection-assignment" />
 
-                    <h2>Edit Selection Assignment</h2>
+                    <h2>
+                        Edit Selection Assignment
+                        {% if form.instance.id %}
+                        <a class="right" href="{% url 'project-workspace' form.instance.id %}">
+                            <img alt="Edit" src="/media/img/icons/meth_view.png"></span>
+                        </a>
+                        {% endif %}
+                    </h2>
                     <div data-page="1" class="page">
                         <h3>1. Specify the Title</h3>
                         <div class="form-group">

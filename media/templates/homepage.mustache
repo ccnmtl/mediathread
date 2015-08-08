@@ -107,16 +107,20 @@
                                         {{/due_date}}
                                     </div>
                                     <h3>
+                                        {{#is_faculty}}
                                         <a href="{{url}}"
                                            class="asset_title type-assignment"
                                            title='View "{{#title}}{{{title}}}{{/title}}{{^title}}Untitled{{/title}}"'>
+                                        {{/is_faculty}}
                                            {{#title}}
                                                {{{title}}}
                                            {{/title}}
                                            {{^title}}
                                                -Untitled-
                                            {{/title}}
+                                        {{#is_faculty}}
                                         </a>
+                                        {{/is_faculty}}
                                     </h3>
 
                                     <div class="meta">

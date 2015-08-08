@@ -4,7 +4,7 @@
 (function(jQuery) {
     var global = this;
 
-    global.SelectionAssignmentView = Backbone.View.extend({
+    global.SelectionAssignmentEditView = Backbone.View.extend({
         events : {
             'click .next': 'onNext',
             'click .prev': 'onPrev',

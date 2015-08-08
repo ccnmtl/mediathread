@@ -524,14 +524,9 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
 
-        if request.GET.get('standalone', '0') == '1':
-            update_history = False
-            show_collection = False
-            template = 'standalone_asset_workspace'
-        else:
-            update_history = True
-            show_collection = True
-            template = 'asset_workspace'
+        update_history = True
+        show_collection = True
+        template = 'asset_workspace'
 
         data['panels'] = [{
             'panel_state': 'open',

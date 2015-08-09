@@ -1,4 +1,5 @@
 /* global escape: true, MediaThread: true, unescape: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 function _propertyCount(obj) {
     var count = 0;
@@ -14,14 +15,16 @@ function getVisibleContentHeight() {
     var viewportwidth;
     var viewportheight;
 
-    // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+    // the more standards compliant browsers (mozilla/netscape/opera/IE7
+    // use window.innerWidth and window.innerHeight
     if (typeof window.innerWidth !== 'undefined') {
         viewportwidth = window.innerWidth;
         viewportheight = window.innerHeight;
     } else if (typeof document.documentElement !== 'undefined' &&
         typeof document.documentElement.clientWidth !== 'undefined' &&
             document.documentElement.clientWidth !== 0) {
-        // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+        // IE6 in standards compliant mode (i.e. with a valid doctype
+        // as the first line in the document)
         viewportwidth = document.documentElement.clientWidth;
         viewportheight = document.documentElement.clientHeight;
     } else {
@@ -51,41 +54,41 @@ function updateUserSetting(user, setting, value) {
     jQuery.post('/setting/' + user + '/', {name: setting, value: value});
 }
 
-function toggleHelp(a, user, parent, help_content_id, callback) {
+function toggleHelp(a, user, parent, helpContentId, callback) {
     jQuery(parent).toggleClass('on off');
-    jQuery('#' + help_content_id).toggleClass('on off');
+    jQuery('#' + helpContentId).toggleClass('on off');
     jQuery(a).toggleClass('open');
 
-    var user_setting = jQuery(parent).hasClass('on') ? 'True' : 'False';
+    var userSetting = jQuery(parent).hasClass('on') ? 'True' : 'False';
 
     jQuery.post('/setting/' + user + '/',
-                {name: help_content_id,
-                value: user_setting});
+                {name: helpContentId,
+                value: userSetting});
 
     if (callback) {
         callback();
     }
 }
 
-function toggleHelpOverlay(btn, user, help_content_id) {
-    var overlay_id = '#' + help_content_id + '-overlay';
-    var tab_id = '#' + help_content_id + '-tab';
-    var content_id = '#' + help_content_id + '-content';
-    if (jQuery(overlay_id).is(':visible')) {
-        jQuery(overlay_id).hide();
-        jQuery(tab_id).hide();
-        jQuery(content_id).hide();
+function toggleHelpOverlay(btn, user, helpContentId) {
+    var overlayId = '#' + helpContentId + '-overlay';
+    var tabId = '#' + helpContentId + '-tab';
+    var contentId = '#' + helpContentId + '-content';
+    if (jQuery(overlayId).is(':visible')) {
+        jQuery(overlayId).hide();
+        jQuery(tabId).hide();
+        jQuery(contentId).hide();
     } else {
-        jQuery(overlay_id).show();
-        jQuery(tab_id).show();
-        jQuery(content_id).show();
+        jQuery(overlayId).show();
+        jQuery(tabId).show();
+        jQuery(contentId).show();
     }
-    var checked_id = '#' + help_content_id + '_checkbox';
-    var elts = jQuery(checked_id);
+    var checkedId = '#' + helpContentId + '_checkbox';
+    var elts = jQuery(checkedId);
     if (elts.length) {
         var checked = jQuery(elts[0]).is(':checked');
-        updateUserSetting(MediaThread.current_username, help_content_id,
-                                                    !checked);
+        updateUserSetting(MediaThread.current_username,
+                          helpContentId, !checked);
     }
     return false;
 }

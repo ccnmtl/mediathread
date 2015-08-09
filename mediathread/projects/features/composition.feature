@@ -8,7 +8,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
@@ -65,7 +65,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is not a Create Assignment button
+        Then there is not a Create Composition Assignment button
         And there is a Create Composition button
         And there is not a Create Discussion button
         
@@ -122,7 +122,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
@@ -157,7 +157,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is not a Create Assignment button
+        Then there is not a Create Composition Assignment button
         And there is a Create Composition button
         And there is not a Create Discussion button
         

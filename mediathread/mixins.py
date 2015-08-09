@@ -185,7 +185,7 @@ class ProjectVisibleMixin(object):
 class ProjectEditableMixin(object):
     def dispatch(self, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        if not project.can_edit(self.request.course, self.request.user):
+        if (not project.can_edit(self.request.course, self.request.user)):
             return HttpResponseForbidden("forbidden")
-
+        self.project = project
         return super(ProjectEditableMixin, self).dispatch(*args, **kwargs)

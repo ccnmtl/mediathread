@@ -1,9 +1,9 @@
+from datetime import datetime
 import json
 
 from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.db.models import get_model
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
@@ -14,44 +14,55 @@ from djangohelpers.lib import allow_http
 
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
-from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import (
     LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectVisibleMixin,
     ProjectEditableMixin)
+from mediathread.projects.admin import ProjectVersion
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
-from mediathread.projects.models import Project, AssignmentItem
+from mediathread.projects.models import Project
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
 
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
+    def get_title(self):
+        title = self.request.POST.get('title', Project.DEFAULT_TITLE)
+        if len(title) < 1:
+            title = Project.DEFAULT_TITLE
+        return title
+
+    def set_due_date(self, project):
+        # convert mm/dd/yyyy into a datetime
+        due_date = self.request.POST.get('due_date', None)
+        if due_date and len(due_date) > 0:
+            project.due_date = datetime.strptime(due_date, '%m/%d/%Y')
+
     def post(self, request):
         project_type = request.POST.get('project_type', 'composition')
-        project = Project.objects.create(author=request.user,
-                                         course=request.course,
-                                         title=Project.DEFAULT_TITLE,
-                                         project_type=project_type)
+
+        project = Project(author=request.user, course=request.course,
+                          title=self.get_title(), project_type=project_type)
+        self.set_due_date(project)
+        project.save()
 
         project.participants.add(request.user)
 
-        policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        collaboration = project.create_or_update_collaboration(policy_name)
-        DiscussionIndex.update_class_references(project.body,
-                                                None, None, collaboration,
-                                                project.author)
+        item_id = request.POST.get('item', None)
+        project.create_or_update_item(item_id)
 
-        parent = request.POST.get("parent", None)
-        if parent is not None:
-            parent = get_object_or_404(Project,
-                                       pk=parent, course=request.course)
-            if parent.is_assignment():
-                collaboration = parent.get_collaboration()
-                collaboration.append_child(project)
+        policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
+        collaboration = project.create_or_update_collaboration(policy)
+
+        DiscussionIndex.update_class_references(
+            project.body, None, None, collaboration, project.author)
+
+        parent_id = request.POST.get('parent', None)
+        project.set_parent(parent_id)
 
         if not request.is_ajax():
             return HttpResponseRedirect(project.get_absolute_url())
@@ -76,49 +87,40 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
                       ProjectEditableMixin, View):
 
     def post(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
 
-        frm = ProjectForm(request, instance=project, data=request.POST)
+        frm = ProjectForm(request, instance=self.project, data=request.POST)
         if frm.is_valid():
-            policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
-            frm.instance.submitted = \
-                policy != 'PrivateEditorsAreOwners'
-
+            frm.instance.submitted = policy != 'PrivateEditorsAreOwners'
             frm.instance.author = request.user
-            frm.save()
+            project = frm.save()
 
-            frm.instance.participants.add(request.user)
+            project.participants.add(request.user)
 
-            try:
-                item = Asset.objects.get(id=request.POST.get('item', None))
-                if project.assignmentitem_set.filter(asset=item).count() == 0:
-                    AssignmentItem.objects.create(project=project, asset=item)
-                    project.assignmentitem_set.exclude(asset=item).delete()
-            except Asset.DoesNotExist:
-                pass  # optional parameter
+            item_id = request.POST.get('item', None)
+            project.create_or_update_item(item_id)
 
             # update the collaboration
-            collaboration = frm.instance.create_or_update_collaboration(policy)
+            collaboration = project.create_or_update_collaboration(policy)
+            DiscussionIndex.update_class_references(
+                project.body, None, None, collaboration, project.author)
 
-            # update the reference index
-            DiscussionIndex.update_class_references(frm.instance.body,
-                                                    None, None, collaboration,
-                                                    frm.instance.author)
-
-            return HttpResponse(json.dumps({
+            ctx = {
                 'status': 'success',
-                'is_assignment': frm.instance.is_assignment(),
-                'title': frm.instance.title,
-                'project': {
-                    'url': frm.instance.get_absolute_url()
+                'is_assignment': project.is_assignment(),
+                'title': project.title,
+                'context': {
+                    'project': {
+                        'url': project.get_absolute_url()
+                    }
                 },
                 'revision': {
-                    'id': frm.instance.get_latest_version(),
-                    'public_url': frm.instance.public_url(),
+                    'id': project.get_latest_version(),
+                    'public_url': project.public_url(),
                     'visibility': project.visibility_short(),
                     'due_date': project.get_due_date()
                 }
-            }, indent=2), content_type='application/json')
+            }
         else:
             ctx = {'status': 'error', 'msg': ""}
             for key, value in frm.errors.items():
@@ -131,8 +133,7 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
                          frm.fields[key].label,
                          value[0].lower())
 
-            return HttpResponse(json.dumps(ctx, indent=2),
-                                content_type='application/json')
+        return self.render_to_json_response(ctx)
 
 
 class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
@@ -143,8 +144,7 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        project.delete()
+        self.project.delete()
 
         return HttpResponseRedirect('/')
 
@@ -233,8 +233,6 @@ def project_view_readonly(request, project_id, version_number=None):
                                   data,
                                   context_instance=RequestContext(request))
     else:
-        ProjectVersion = get_model('projects', 'projectversion')
-
         if version_number:
             version = get_object_or_404(ProjectVersion,
                                         versioned_id=project_id,
@@ -263,8 +261,22 @@ def project_view_readonly(request, project_id, version_number=None):
                             content_type='application/json')
 
 
-class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
-                           JSONResponseMixin, View):
+class SelectionAssignmentView(LoggedInMixin, ProjectVisibleMixin,
+                              TemplateView):
+    template_name = 'projects/selection_assignment_view.html'
+
+    def get_context_data(self, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        ctx = {
+            'project': project,
+            'can_edit': project.can_edit(self.request.course,
+                                         self.request.user)
+        }
+        return ctx
+
+
+class DefaultProjectView(LoggedInMixin, ProjectVisibleMixin,
+                         JSONResponseMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         """
@@ -281,19 +293,14 @@ class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
         project_id -- the model id
         """
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-
-        if not project.can_read(request.course, request.user):
-            return HttpResponseForbidden("forbidden")
-
         show_feedback = kwargs.get('feedback', None) == "feedback"
         data = {'space_owner': request.user.username,
                 'show_feedback': show_feedback}
 
         if not request.is_ajax():
+            self.template_name = 'projects/project.html'
             data['project'] = project
-            return render_to_response('projects/project.html',
-                                      data,
-                                      context_instance=RequestContext(request))
+            return self.render_to_response(data)
         else:
             panels = []
 
@@ -399,6 +406,18 @@ class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin,
             panels.append(panel)
 
             return self.render_to_json_response(data)
+
+
+class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        if project.is_selection_assignment():
+            view = SelectionAssignmentView.as_view()
+        else:
+            view = DefaultProjectView.as_view()
+
+        return view(request, *args, **kwargs)
 
 
 @login_required
@@ -524,25 +543,16 @@ class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
         return self.render_to_json_response({'sorted': 'true'})
 
 
-class SelectionAssignmentView(LoggedInMixin, ProjectVisibleMixin,
-                              TemplateView):
-    model = Project
-    template_name = 'projects/selection_assignment_view.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super(SelectionAssignmentView, self).get_context_data(**kwargs)
-
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        ctx['project'] = project
-        ctx['can_edit'] = project.can_edit(self.request.course,
-                                           self.request.user)
-        return ctx
-
-
-class SelectionAssignmentEditView(LoggedInFacultyMixin, ProjectEditableMixin,
-                                  TemplateView):
+class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
     template_name = 'projects/selection_assignment_edit.html'
 
-    def get_context_data(self, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        return {'form': ProjectForm(self.request, instance=project)}
+    def get(self, *args, **kwargs):
+        try:
+            project = Project.objects.get(id=kwargs.get('project_id', None))
+            if (not project.can_edit(self.request.course, self.request.user)):
+                return HttpResponseForbidden("forbidden")
+            form = ProjectForm(self.request, instance=project)
+        except Project.DoesNotExist:
+            form = ProjectForm(self.request, instance=None)
+
+        return self.render_to_response({'form': form})

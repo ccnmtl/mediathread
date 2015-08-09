@@ -14,9 +14,9 @@ from structuredcollaboration.models import Collaboration
 
 
 PROJECT_TYPES = (
-    ('Assignment', 'assignment'),
-    ('Composition', 'composition'),
-    ('Selection Assignment', 'selection-assignment')
+    ('assignment', 'Assignment'),
+    ('composition', 'Composition'),
+    ('selection-assignment', 'Selection Assignment')
 )
 
 PUBLISH_OPTIONS = (
@@ -229,13 +229,10 @@ class Project(models.Model):
     # -- at least, the instructor, if not the whole class
     submitted = models.BooleanField(default=False)
 
-    modified = models.DateTimeField('date modified',
-                                    editable=False,
+    modified = models.DateTimeField('date modified', editable=False,
                                     auto_now=True)
 
-    due_date = models.DateTimeField('due date',
-                                    null=True,
-                                    blank=True)
+    due_date = models.DateTimeField('due date', null=True, blank=True)
 
     ordinality = models.IntegerField(default=-1)
 
@@ -253,15 +250,7 @@ class Project(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        if self.is_selection_assignment():
-            if self.title == self.DEFAULT_TITLE:
-                return ('selection-assignment-edit', (),
-                        {'project_id': self.pk})
-            else:
-                return ('selection-assignment-view', (),
-                        {'project_id': self.pk})
-        else:
-            return ('project-workspace', (), {'project_id': self.pk})
+        return ('project-workspace', (), {'project_id': self.pk})
 
     def get_due_date(self):
         if self.due_date is None:
@@ -491,6 +480,23 @@ class Project(models.Model):
 
         self.collaboration_sync_group(col)
         return col
+
+    def create_or_update_item(self, item_id):
+        try:
+            item = Asset.objects.get(id=item_id)
+            if self.assignmentitem_set.filter(asset=item).count() == 0:
+                AssignmentItem.objects.create(project=self, asset=item)
+                self.assignmentitem_set.exclude(asset=item).delete()
+        except Asset.DoesNotExist:
+            pass  # optional parameter
+
+    def set_parent(self, parent_id):
+        try:
+            parent = Project.objects.get(id=parent_id)
+            if parent.is_assignment():
+                parent.get_collaboration().append_child(self)
+        except Project.DoesNotExist:
+            pass
 
     def get_collaboration(self):
         try:

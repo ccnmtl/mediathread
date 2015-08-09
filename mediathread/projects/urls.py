@@ -1,12 +1,19 @@
 from django.conf.urls import patterns, url
 
-from mediathread.projects.views import ProjectCreateView, ProjectDeleteView, \
-    ProjectSortView, SelectionAssignmentView, \
-    SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView
+from mediathread.projects.views import (
+    ProjectCreateView, ProjectDeleteView, ProjectSortView,
+    SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView)
 
 
 urlpatterns = patterns(
     'mediathread.projects.views',
+
+    url(r'^create/sa/$', SelectionAssignmentEditView.as_view(), {},
+        name='selection-assignment-create'),
+
+    url(r'^edit/sa/(?P<project_id>\d+)/$',
+        SelectionAssignmentEditView.as_view(), {},
+        name='selection-assignment-edit'),
 
     url(r'^create/$', ProjectCreateView.as_view(), {}, "project-create"),
 
@@ -15,14 +22,6 @@ urlpatterns = patterns(
 
     url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$',
         ProjectWorkspaceView.as_view(), {}, name='project-workspace-feedback'),
-
-    url(r'^view/sa/(?P<project_id>\d+)/$',
-        SelectionAssignmentView.as_view(), {},
-        'selection-assignment-view'),
-
-    url(r'^edit/sa/(?P<project_id>\d+)/$',
-        SelectionAssignmentEditView.as_view(), {},
-        'selection-assignment-edit'),
 
     url(r'^save/(?P<project_id>\d+)/$',
         ProjectSaveView.as_view(), {},

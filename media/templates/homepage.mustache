@@ -42,18 +42,12 @@
     <div id="create-project-menu" style="display: none;">
         {{#is_faculty}}
         <form action="/project/create/" method="post">
-            <input type="hidden" name="title" />
             <input type="hidden" name="project_type" value="assignment"/>
-            <input type="submit" value="Create Assignment" />
+            <input type="submit" value="Create Composition Assignment" />
         </form>
-        <form action="/project/create/" method="post">
-            <input type="hidden" name="title" />
-            <input type="hidden" name="project_type" value="selection-assignment"/>
-            <input type="submit" value="Create Selection Assignment" />
-        </form>
+        <a href="/project/create/sa/">Create Selection Assignment</a>
         <hr class="divideLinks" />
         <form action="/project/create/" method="post">
-            <input type="hidden" name="title" />
             <input type="hidden" name="project_type" value="composition"/>
             <input type="submit" value="Create Composition" />
         </form>
@@ -65,7 +59,7 @@
             <input type="submit" value="Create Discussion" />
         </form>
         {{/is_faculty}}
-        
+
         {{^is_faculty}}
             {{#assignments}}
                 <a data-id="{{id}}" class="linkRespond">
@@ -76,7 +70,6 @@
             <hr class="divideLinks" />
     
             <form action="/project/create/" method="post">
-                <input type="hidden" name="title" />
                 <input type="hidden" name="project_type" value="composition"/>
                 <input type="submit" value="Create Composition" />
             </form>

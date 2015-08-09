@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if form.instance.title %}{{form.instance.title}}{% else %}New Assignment{% endif %}
+    {% if form.instance %}{{form.instance.title}}{% else %}Create Assignment{% endif %}
 {% endblock %}
 
 {% block css %}
@@ -65,10 +65,15 @@
         <div class="col-md-3 column-container">
             <div class="affix affix-top" data-spy="affix">
                 <form name='selection-assignment-edit'
-                    action="{% url 'project-save' form.instance.id %}"
+                    {% if form.instance %}
+                        action="{% url 'project-save' form.instance.id %}"
+                    {% else %}
+                        action="{% url 'project-create' %}"
+                    {% endif %}
                     method="post">
                     
                     {% csrf_token %}
+                    <input type="hidden" name="project_type" value="selection-assignment" />
 
                     <h2>Edit Selection Assignment</h2>
                     <div data-page="1">

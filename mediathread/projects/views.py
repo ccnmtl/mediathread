@@ -278,7 +278,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             'responses': responses,
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
-            'submit_policy': 'PublicEditorsAreOwners'
+            'submit_policy': 'PublicEditorsAreOwners',
+            'is_faculty': self.request.course.is_faculty(self.request.user)
         }
         return ctx
 

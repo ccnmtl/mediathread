@@ -107,20 +107,16 @@
                                         {{/due_date}}
                                     </div>
                                     <h3>
-                                        {{#is_faculty}}
                                         <a href="{{url}}"
                                            class="asset_title type-assignment"
                                            title='View "{{#title}}{{{title}}}{{/title}}{{^title}}Untitled{{/title}}"'>
-                                        {{/is_faculty}}
                                            {{#title}}
                                                {{{title}}}
                                            {{/title}}
                                            {{^title}}
                                                -Untitled-
                                            {{/title}}
-                                        {{#is_faculty}}
                                         </a>
-                                        {{/is_faculty}}
                                     </h3>
 
                                     <div class="meta">
@@ -130,7 +126,9 @@
                                     </div>
 
                                     {{^is_faculty}}
-                                        <a data-id="{{id}}" class="btnRespond">Respond to Assignment</a>
+                                        <div class="clearfix"></div>
+                                        <br />
+                                        <a data-id="{{id}}" class="btn btn-success btnRespond">Respond to Assignment</a>
                                     {{/is_faculty}}
                                 </li>
                                 {{/assignments}}
@@ -253,7 +251,8 @@
                                     
                                         {{#feedback}}
                                         <div class="feedback">
-                                            <a class="btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>
+                                            <div class="clearfix"></div><br />
+                                            <a class="btn btn-warning btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>
                                         </div>
                                         {{/feedback}}
                                         <br />

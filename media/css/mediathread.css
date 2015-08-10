@@ -129,10 +129,6 @@ a:hover {
 	text-decoration: underline;
 }
 
-.btn {
-    color: white !important;
-}
-
 /* ---- block elements ---------- */
 
 #container
@@ -876,13 +872,6 @@ div.button-form form, div.button-form.inline form {
 	padding: 35px;
 	width: 58%;
     background: url("../img/login_bg.jpg") center no-repeat;
-}
-
-.login-description a.btn {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-    font-weight: normal;
 }
 
 .login-description h1 {
@@ -4234,6 +4223,11 @@ div.ui-dialog div.asset-view-details h2 {
     box-sizing: border-box !important;
 }
 
+a.btn.btn-default {
+    color: #333; !important;
+    font-weight: normal;
+}
+
 a.btn.btn-primary {
     color: white;
     -webkit-box-sizing: border-box !important;
@@ -4242,10 +4236,6 @@ a.btn.btn-primary {
 }
 
 a.btn.btn-default {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-    font-weight: normal;
     -webkit-box-sizing: border-box !important;
     -moz-box-sizing: border-box !important;
     box-sizing: border-box !important;    

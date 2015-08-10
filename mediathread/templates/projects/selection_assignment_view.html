@@ -84,7 +84,7 @@
         </div>
         <div class="col-md-9">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     <div class="asset-view-header">
                         <h2>Item
                             <span class="asset-view-title">
@@ -93,11 +93,69 @@
                         </h2>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    {% if my_response.submitted %}
-                    <div class="right">
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <strong>Submitted</strong> {{my_response.submitted_date}}
-                    </div>
+                <div class="col-md-4">
+                    {% if not is_faculty %}
+                        {% if not my_response %}
+                            <div class="text-right">
+                                <form action="/project/create/" method="post">
+                                    <input type="hidden" name="parent" value="{{assignment.id}}" />
+                                    <input type="hidden" name="project_type" value="composition" />
+                                    <input type="hidden" name="title"
+                                        value="Selection Assignment Response by {{request.user.get_full_name}}" />
+                                    <input class="btn btn-success" type="submit" value="Respond to Assignment" />
+                                </form>
+                            </div>
+                        {% else %}{% if my_response.submitted %}
+                            <div class="right">
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
+                                <strong>Submitted</strong> {{my_response.submitted_date}}
+                            </div>
+                        {% else %}
+                            <!--  @todo only show the submit button if work has been done
+                            if my_response.notes|length > 0 %} --->
+                            <div class="text-right">
+                                <!--  Submit -->
+                                <button type="button" class="btn btn-primary"
+                                    data-toggle="modal" data-target="#submit-project">
+                                    Submit Response
+                                </button>
+                            </div>
+                            <div class="modal fade" id="submit-project" tabindex="-1"
+                                role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Submit Response</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form method="post" class="project-response-form"
+                                        action="{% url 'project-save' my_response.id %}">
+                                        
+                                        <div>Please make sure your work is complete before submission</div><br />
+                                        <div><strong>Checklist</strong></div><br />
+                                        <ul>
+                                            <li>Have you completed the required selections?</li>
+                                            <li>Have you made notes, if applicable?</li>
+                                            <li>Have you tagged selections, if applicable?</li>
+                                            <li>Have you added vocabulary terms to the selections, if applicable?</li>
+                                        </ul>
+                                        <br />
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong>Important!</strong> Once you submit your response, you cannot unsubmit it.
+                                        </div>
+                                        <input type="hidden" name="publish" value="{{submit_policy}}" />
+                                        <input type="hidden" name="title" value="Selection Assignment Response by {{request.user.get_full_name}}" />
+                                    </form>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary submit-response">Submit</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>                            
+                        {% endif %}{% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -112,67 +170,13 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if not is_faculty and not my_response %}
-                        <div class="text-center">
-                        <form action="/project/create/" method="post">
-                            <input type="hidden" name="parent" value="{{assignment.id}}" />
-                            <input type="hidden" name="project_type" value="composition" />
-                            <input type="hidden" name="title" value="Selection Assignment Response by {{request.user.get_full_name}}" />
-                            <input class="btn btn-success" type="submit" value="Respond to Assignment" />
-                        </form>
-                        </div>
-                    {% endif %}
                     {% if my_response and not my_response.submitted %}
-                        <!--  @todo only show the submit button if work has been done
-                        if my_response.notes|length > 0 %} --->
-                        <div class="text-center">
-                            <!--  Submit -->
-                            <button type="button" class="btn btn-primary"
-                                data-toggle="modal" data-target="#submit-project">
-                                Submit Response
-                            </button>
-                        </div>
-                        <div class="modal fade" id="submit-project" tabindex="-1"
-                            role="dialog" aria-labelledby="myModalLabel">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Submit Response</h4>
-                              </div>
-                              <div class="modal-body">
-                                <form method="post" class="project-response-form"
-                                    action="{% url 'project-save' my_response.id %}">
-                                    
-                                    <div>Please make sure your work is complete before submission</div><br />
-                                    <div><strong>Checklist</strong></div><br />
-                                    <ul>
-                                        <li>Have you completed the required selections?</li>
-                                        <li>Have you made notes, if applicable?</li>
-                                        <li>Have you tagged selections, if applicable?</li>
-                                        <li>Have you added vocabulary terms to the selections, if applicable?</li>
-                                    </ul>
-                                    <br />
-                                    <div class="alert alert-danger" role="alert">
-                                        <strong>Important!</strong> Once you submit your response, you cannot unsubmit it.
-                                    </div>
-                                    <input type="hidden" name="publish" value="{{submit_policy}}" />
-                                    <input type="hidden" name="title" value="Selection Assignment Response by {{request.user.get_full_name}}" />
-                                </form>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary submit-response">Submit</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-    
                         <!-- add/edit selections  -->
+                        
                     {% endif %}
 
+                    <!--  View Other Visible Responses -->
                     {% if responses|length > 0 %}        
-                        <!--  View Other Visible Responses -->
                         {% for response in responses %}
                             {% ifnotequal response.id my_response.id %}
                                 <div>{{response.author}} {{response.modified}}</div>
@@ -183,5 +187,5 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 {% endblock %}

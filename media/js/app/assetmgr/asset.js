@@ -757,7 +757,8 @@
                         'author': {'id': MediaThread.current_user},
                         'author_name': MediaThread.user_full_name
                     }
-                }
+                },
+                'parent': self.config.parentId
             };
 
             jQuery(self.eltsAnnotationDisplay)

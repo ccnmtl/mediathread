@@ -33,7 +33,10 @@
     <script type="text/javascript">
         var view = new SelectionAssignmentView({
             el: jQuery('.selection-assignment').first(),
-            itemId: '{{assignment.assignmentitem_set.first.asset.id}}'
+            assignmentId: '{{assignment.id}}',
+            itemId: '{{item.id}}',
+            relatedItems: JSON.parse('{{related_items|escapejs}}'),
+            vocabulary: JSON.parse('{{vocabulary|escapejs}}')
         });
     </script>
 {% endblock %}
@@ -94,7 +97,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if not is_faculty %}
+                    {% if not can_edit %}
                         {% if not my_response %}
                             <div class="text-right">
                                 <form action="/project/create/" method="post">
@@ -172,7 +175,7 @@
                 <div class="col-md-4">
                     {% if my_response and not my_response.submitted %}
                         <!-- add/edit selections  -->
-                        
+                        <div id="asset-view-details" class="asset-view-details"></div>
                     {% endif %}
 
                     <!--  View Other Visible Responses -->

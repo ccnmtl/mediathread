@@ -16,6 +16,8 @@ DATABASES = {
 BROWSER = 'Headless'
 # BROWSER = 'Chrome'
 
+LETTUCE_SERVER_PORT = 8002
+
 LETTUCE_APPS = (
     'mediathread.main',
     'mediathread.projects',

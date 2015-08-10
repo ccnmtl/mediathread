@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, AssignmentItem
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):
@@ -418,6 +418,10 @@ class SelectionAssignmenViewTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.instructor_one,
             policy='PrivateEditorsAreOwners',
             project_type='selection-assignment')
+
+        asset = AssetFactory.create(course=self.sample_course,
+                                    primary_source='image')
+        AssignmentItem.objects.create(project=self.project, asset=asset)
 
     def test_view(self):
         url = reverse('project-workspace', args=[self.project.id])

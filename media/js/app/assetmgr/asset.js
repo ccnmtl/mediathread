@@ -159,7 +159,9 @@
                         id: config.asset_id,
                         type: 'asset',
                         url: MediaThread.urls['asset-json'](
-                            config.asset_id, /*annotations=*/true)
+                            config.asset_id,
+                            /*annotations=*/true,
+                            config.parentId)
                     },
                     false,
                     function(asset_full) {
@@ -625,7 +627,8 @@
                         id: json.asset.id,
                         type: 'asset',
                         url: MediaThread.urls['asset-json'](
-                                 json.asset.id,/*annotations=*/true)
+                            json.asset.id, /*annotations=*/true,
+                            self.config.parentId)
                     },
                     false,
                     function(asset_full) {
@@ -931,7 +934,9 @@
                     djangosherd.storage.get({
                         id: json.asset.id,
                         type: 'asset',
-                        url: MediaThread.urls['asset-json'](json.asset.id,/*annotations=*/true)
+                        url: MediaThread.urls['asset-json'](
+                                json.asset.id, /*annotations=*/true,
+                                self.config.parentId)
                     },
                     false,
                     function(asset_full) {
@@ -1105,13 +1110,13 @@
                         'author_name': MediaThread.user_full_name
                     }
                 };
-            } else if (self.active_asset &&
-                        (self.active_asset.user_analysis === undefined ||
-                       self.active_asset.user_analysis < 1)) {
+            } else if (self.user_settings !== undefined &&
+                       self.active_asset &&
+                       (self.active_asset.user_analysis === undefined ||
+                        self.active_asset.user_analysis < 1)) {
                 context.show_help = self.user_settings.help_item_detail_view;
+                context.show_help_checked = !self.user_settings.help_item_detail_view;
             }
-            context.show_help_checked = !self.user_settings
-              .help_item_detail_view;
 
             self.edit_state = null;
 

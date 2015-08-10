@@ -5,7 +5,7 @@
     var global = this;
 
     global.SelectionAssignmentEditView = Backbone.View.extend({
-        events : {
+        events: {
             'click .next': 'onNext',
             'click .prev': 'onPrev',
             'click .save': 'onSave',
@@ -22,10 +22,10 @@
             var self = this;
             this.currentPage = 1;
             this.totalPages = jQuery('.page').length;
-            
+
             // hook up behaviors
             jQuery(window).on('tinymce_init_instance',
-                function (event, instance, param2) {
+                function(event, instance, param2) {
                     if (instance) {
                         var width = jQuery(self.el).find('textarea').width();
                         instance.theme.resizeTo(width, 400);
@@ -40,23 +40,23 @@
         validate: function(pageNo) {
             var q;
             if (pageNo === 1) {
-                return jQuery(this.el).find("input[name='title']")
+                return jQuery(this.el).find('input[name="title"]')
                                       .val()
                                       .length > 0;
             } else if (pageNo === 2) {
                 return tinyMCE.activeEditor.getContent().length > 0;
             } else if (pageNo === 3) {
-                return jQuery("input[name='item']").val() !== '';
+                return jQuery('input[name="item"]').val() !== '';
             } else if (pageNo === 4) {
-                q = "input[name='response_view_policy']:checked";
+                q = 'input[name="response_view_policy"]:checked';
                 return jQuery(q).val() !== undefined;
             } else if (pageNo === 5) {
-                q = "input[name='publish']:checked";
+                q = 'input[name="publish"]:checked';
                 return jQuery(q).val() !== undefined;
             }
         },
         onNext: function(evt) {
-            var $current = jQuery("div[data-page='" + this.currentPage + "']"); 
+            var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             if (!this.validate(this.currentPage)) {
                 $current.addClass('has-error');
             } else {
@@ -64,9 +64,9 @@
 
                 this.currentPage = Math.min(this.currentPage + 1,
                                             this.totalPages);
-                var q = "div[data-page='" + this.currentPage + "']";
+                var q = 'div[data-page="' + this.currentPage + '"]';
                 jQuery(q).removeClass('hidden');
-    
+
                 if (this.currentPage == 3) {
                     jQuery('#sliding-content-container').removeClass('hidden');
                     jQuery(window).trigger('resize');
@@ -78,14 +78,14 @@
         onPrev: function() {
             jQuery('#sliding-content-container').addClass('hidden');
 
-            var q = "div[data-page='" + this.currentPage + "']";
+            var q = 'div[data-page="' + this.currentPage + '"]';
             jQuery(q).addClass('hidden');
-            
+
             this.currentPage = Math.max(this.currentPage - 1, 1);
             jQuery(q).removeClass('hidden');
         },
         onSave: function(evt) {
-            var $current = jQuery("div[data-page='" + this.currentPage + "']"); 
+            var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             if (!this.validate(this.currentPage)) {
                 $current.addClass('has-error');
             } else {
@@ -96,7 +96,7 @@
                     url: frm.action,
                     dataType: 'json',
                     data: jQuery(frm).serializeArray(),
-                    success: function (json) {
+                    success: function(json) {
                         window.location = json.context.project.url;
                     },
                     error: function() {
@@ -127,12 +127,12 @@
         },
         onGalleryItemSelect: function(evt) {
             var pk = jQuery(this.hoverItem).attr('data-id');
-            jQuery("input[name='item']").val(pk);
+            jQuery('input[name="item"]').val(pk);
 
             var clone = jQuery.clone(this.hoverItem);
             jQuery(clone).attr('style', 'float: none');
             jQuery('.selected-item div').replaceWith(clone);
-            
+
             delete this.hoverItem;
         }
     });

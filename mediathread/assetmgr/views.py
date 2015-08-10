@@ -34,7 +34,6 @@ from mediathread.djangosherd.views import create_annotation, edit_annotation, \
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
-from mediathread.projects.models import Project, ProjectNote
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -293,14 +292,7 @@ def annotation_create(request, asset_id):
     form['annotation-next'] = reverse('asset-view', args=[asset_id])
     request.GET = form
 
-    annotation = create_annotation(request)
-
-    project_id = request.POST.get('parent', None)
-    if project_id:
-        project = get_object_or_404(Project, id=project_id)
-        ProjectNote.objects.create(project=project, note=annotation)
-
-    return annotation
+    return create_annotation(request)
 
 
 @login_required

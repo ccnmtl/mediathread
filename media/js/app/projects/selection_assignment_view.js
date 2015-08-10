@@ -42,7 +42,8 @@
                 'annotation_id': undefined,
                 'update_history': false,
                 'vocabulary': options.vocabulary,
-                'parentId': options.assignmentId
+                'parentId': options.assignmentId,
+                'projectId': options.responseId
             });
         },
         onSubmitResponse: function(evt) {

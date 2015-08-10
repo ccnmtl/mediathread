@@ -42,9 +42,9 @@
       {{/annotation}}
 
       <form id="edit-annotation-form" name="edit-annotation-form" onsubmit="return false;">
-        {{#parent}}
-            <input type="hidden" name="parent" value="{{.}}" />
-        {{/parent}}
+        {{#project}}
+            <input type="hidden" name="project" value="{{.}}" />
+        {{/project}}
         <div class="asset-annotator">
           <div id="clipform-display"></div>
         </div>

@@ -34,6 +34,7 @@
         var view = new SelectionAssignmentView({
             el: jQuery('.selection-assignment').first(),
             assignmentId: '{{assignment.id}}',
+            responseId: '{{my_response.id}}',
             itemId: '{{item.id}}',
             relatedItems: JSON.parse('{{related_items|escapejs}}'),
             vocabulary: JSON.parse('{{vocabulary|escapejs}}')
@@ -47,7 +48,7 @@
         <div class="col-md-3 column-container">
             <h2 class="">
                 Selection Assignment
-                {% if can_edit_assignment %}
+                {% if assignment_can_edit %}
                     <a class="right" href="{% url 'selection-assignment-edit' assignment.id %}">
                         <img alt="Edit" src="/media/img/icons/meth_edit.png"></span>
                     </a>
@@ -55,7 +56,7 @@
             </h2>
             <div class="small">
                 <h3>{{assignment.title}}</h3>
-                {% if can_edit_assignment %}
+                {% if assignment_can_edit %}
                     <div><b>Visibility</b>: {{assignment.visibility_short}}</div>
                 {% endif %}
                 {% if project.due_date %}
@@ -97,7 +98,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if not can_edit %}
+                    {% if not assignment_can_edit %}
                         {% if not my_response %}
                             <div class="text-right">
                                 <form action="/project/create/" method="post">
@@ -173,19 +174,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if my_response and not my_response.submitted %}
-                        <!-- add/edit selections  -->
-                        <div id="asset-view-details" class="asset-view-details"></div>
-                    {% endif %}
-
-                    <!--  View Other Visible Responses -->
-                    {% if responses|length > 0 %}        
-                        {% for response in responses %}
-                            {% ifnotequal response.id my_response.id %}
-                                <div>{{response.author}} {{response.modified}}</div>
-                            {% endifnotequal %}
-                        {% endfor %}
-                    {% endif %}
+                    <div id="asset-view-details" class="asset-view-details"></div>
                 </div>
             </div>
         </div>

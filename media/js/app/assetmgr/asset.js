@@ -148,20 +148,20 @@
             self.active_asset = theAsset;
         };
 
-        this.refresh = function(config) {
-            if (config.asset_id) {
+        this.refresh = function(opts) {
+            if (opts.asset_id) {
                 this.grouping = null;
                 this.highlight_layer = null;
 
                 // Retrieve the full asset w/annotations from storage
                 djangosherd.storage.get(
                     {
-                        id: config.asset_id,
+                        id: opts.asset_id,
                         type: 'asset',
                         url: MediaThread.urls['asset-json'](
-                            config.asset_id,
+                            opts.asset_id,
                             /*annotations=*/true,
-                            config.parentId)
+                            self.config.parentId)
                     },
                     false,
                     function(asset_full) {
@@ -174,18 +174,18 @@
                             var annotation_query = djangosherd.assetview
                                 .queryformat.find(document.location.hash);
                             if (annotation_query.length) {
-                                config.xywh = annotation_query[0];
+                                opts.xywh = annotation_query[0];
                             } else {
                                 var annid = String(window.location.hash)
                                                 .match(/annotation_id=([.\d]+)/);
                                 if (annid !== null) {
-                                    config.annotation_id = Number(annid[1]);
+                                    opts.annotation_id = Number(annid[1]);
                                 }
                             }
                         }
 
-                        self._update(config, 'asset-view-details');
-                        self._update(config, 'asset-view-details-quick-edit');
+                        self._update(opts, 'asset-view-details');
+                        self._update(opts, 'asset-view-details-quick-edit');
                         self._addHistory(/*replace=*/true);
 
                         // Saved Annotations Form -- setup based on
@@ -758,7 +758,7 @@
                         'author_name': MediaThread.user_full_name
                     }
                 },
-                'parent': self.config.parentId
+                'project': self.config.projectId
             };
 
             jQuery(self.eltsAnnotationDisplay)

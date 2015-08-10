@@ -26,7 +26,7 @@ from mediathread.projects.admin import ProjectVersion
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project, \
-    RESPONSE_VIEW_POLICY
+    RESPONSE_VIEW_POLICY, ProjectNote
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -280,8 +280,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
 
         ctx = {
             'assignment': assignment,
-            'item': item,
             'assignment_can_edit': can_edit,
+            'item': item,
             'related_items': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
@@ -584,16 +584,16 @@ class ProjectItemView(LoggedInMixin, JSONResponseMixin,
     def get(self, *args, **kwargs):
         item = get_object_or_404(Asset, id=kwargs.get('asset_id', None))
 
-#         parent = get_object_or_404(Project, id=kwargs.get('parent_id', None))
-#         # visible responses (based on submit state & response policy)
-#         responses = parent.responses(self.request.course, self.request.user)
-#         response_ids = [r.id for r in responses]
-#
-#         # notes related to visible responses are visible
-#         notes = ProjectNote.objects.filter(project__id__in=response_ids)
-#         note_ids = notes.values_list('annotation__id')
-#
-#         notes = SherdNote.objects.filter(id__in=note_ids)
+        parent = get_object_or_404(Project, id=kwargs.get('project_id', None))
+        # visible responses (based on submit state & response policy)
+        responses = parent.responses(self.request.course, self.request.user)
+        response_ids = [r.id for r in responses]
 
-        ctx = AssetResource().render_one_context(self.request, item)
+        # notes related to visible responses are visible
+        notes = ProjectNote.objects.filter(project__id__in=response_ids)
+        note_ids = notes.values_list('annotation__id', flat=True)
+
+        notes = SherdNote.objects.filter(id__in=note_ids)
+
+        ctx = AssetResource().render_one_context(self.request, item, notes)
         return self.render_to_json_response(ctx)

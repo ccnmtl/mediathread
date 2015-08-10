@@ -6,8 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.db.models.signals import post_save
-from django.dispatch.dispatcher import receiver
 from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
@@ -539,4 +537,3 @@ class AssignmentItem(models.Model):
 class ProjectNote(models.Model):
     annotation = models.ForeignKey(SherdNote)
     project = models.ForeignKey(Project)
-

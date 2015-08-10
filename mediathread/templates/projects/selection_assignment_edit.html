@@ -76,7 +76,7 @@
                     <input type="hidden" name="project_type" value="selection-assignment" />
 
                     <h2>Edit Selection Assignment</h2>
-                    <div data-page="1">
+                    <div data-page="1" class="page">
                         <h3>1. Specify the Title</h3>
                         <div class="form-group">
                             <input type="text" name="title" class="form-control"
@@ -90,7 +90,7 @@
                             </ul>
                         </nav>
                     </div>
-                    <div data-page="2" class="hidden">
+                    <div data-page="2" class="hidden page">
                         <h3>2. Specify the Instructions</h3>
                         <div class="form-group">
                             <textarea name="body" class="form-control mceEditor"
@@ -102,7 +102,7 @@
                             <li><a href="#" class="right next">Next</a></li>
                         </ul>
                     </div>
-                    <div data-page="3" class="hidden">
+                    <div data-page="3" class="hidden page">
                         <h3>3. Select Item</h3>
                         <p>Search and filter the collection. Click on an item
                             to select it as the basis for the assignment.</p>
@@ -135,20 +135,34 @@
                             <li><a href="#" class="right next">Next</a></li>
                         </ul>
                     </div>
-                    <div data-page="4" class="hidden">
-                        <h3>4. Publish</h3>
+                    <div data-page="4" class="hidden page">
+                        <h3>4. Response Policy</h3>
                         <p></p>
                         <div class="form-group">
-                            <label for="due_date">Due Date</label>
+                            {{form.response_view_policy}}
+                        </div>
+                        <div class="help-inline">Please choose how responses will be viewed.</div>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right next">Next</a></li>
+                        </ul>
+                    </div>                    
+                    <div data-page="5" class="hidden page">
+                        <h3>5. Publish</h3>
+                        <p></p>
+                        <div class="form-group">
+                            <label for="due_date">Due Date <span class="small">(optional)</span></label>
                             <input class="form-control" type="text"
                                 name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                         </div>
+                        <br />
                         <div class="form-group">
-                            <label for="publish">Visibility</label>
+                            <label for="publish">Who can see this assignment?</label>
                             <div class="radio">
                                 {{form.publish}}
                             </div>
-                        </div>                        
+                        </div>
+                        <div class="help-inline">Please select who can see your work.</div>           
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right save">Save</a></li>

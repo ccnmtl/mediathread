@@ -21,7 +21,7 @@
                     'onGalleryItemSelect');
             var self = this;
             this.currentPage = 1;
-            this.totalPages = 4;
+            this.totalPages = jQuery('.page').length;
             
             // hook up behaviors
             jQuery(window).on('tinymce_init_instance',
@@ -38,6 +38,7 @@
             });
         },
         validate: function(pageNo) {
+            var q;
             if (pageNo === 1) {
                 return jQuery(this.el).find("input[name='title']").val().length > 0;
             } else if (pageNo === 2) {
@@ -45,7 +46,11 @@
             } else if (pageNo === 3) {
                 return jQuery("input[name='item']").val() !== '';
             } else if (pageNo === 4) {
-                return true;
+                q = "input[name='response_view_policy']:checked";
+                return jQuery(q).val() !== undefined;
+            } else if (pageNo === 5) {
+                q = "input[name='publish']:checked";
+                return jQuery(q).val() !== undefined;
             }
         },
         onNext: function(evt) {

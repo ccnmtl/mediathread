@@ -131,7 +131,7 @@ class ProjectFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def parent(self, create, extracted, **kwargs):
-        if create and extracted and extracted.is_assignment():
+        if create and extracted:
             parent_collab = extracted.get_collaboration()
             parent_collab.append_child(self)
 

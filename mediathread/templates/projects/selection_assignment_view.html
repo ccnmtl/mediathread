@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load user_projects %}
 
 {% block title %}
-    {% if project.title %}{{project.title}}{% else %}New Assignment{% endif %}
+    {% if assignment.title %}{{assignment.title}}{% else %}New Assignment{% endif %}
 {% endblock %}
 
 {% block css %}
@@ -10,6 +11,12 @@
 
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
 {% endblock %}
 
 {% block js %}
@@ -22,15 +29,12 @@
 {% block uncompressable_js %}
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.masonry.min.js"></script>
-
+    <script src="{{STATIC_URL}}js/app/projects/selection_assignment_view.js" type="text/javascript"></script>
     <script type="text/javascript">
-    jQuery(document).ready(function () {
-        panelManager.init({
-            'container': 'sliding-content-container',
-            'url': MediaThread.urls['selection-assignment-workspace'](
-                {{project.assignmentitem_set.first.asset.id}})
+        var view = new SelectionAssignmentView({
+            el: jQuery('.selection-assignment').first(),
+            itemId: '{{assignment.assignmentitem_set.first.asset.id}}'
         });
-    });
     </script>
 {% endblock %}
 
@@ -39,28 +43,101 @@
     <div class="row">
         <div class="col-md-3 column-container">
             <h2 class="">
-                Assignment <span class="project-view-title">{{project.title}}</span>
-                {% if can_edit %}
-                    <a href="{% url 'selection-assignment-edit' project.id %}">
+                Assignment <span class="project-view-title">{{assignment.title}}</span>
+                {% if can_edit_assignment %}
+                    <a href="{% url 'selection-assignment-edit' assignment.id %}">
                         <span class="glyphicon glyphicon-pencil right" aria-hidden="true"></span>
                     </a>
                 {% endif %}
             </h2>
-            <div class="project-visibility-description small text-right">
-                {{project.visibility}}
+            <div class="small">
+                {% if can_edit_assignment %}
+                    <div><b>Visibility</b> {{assignment.visibility_short}}</div>
+                {% endif %}
+                {% if project.due_date %}
+                    <div><b>Due</b> {{project.due_date|date:'m/d/y'}}</div>
+                {% endif %}
+                
+                <div><b>Response Policy</b> 
+                {% for key, value in response_view_policies %}
+                    {% ifequal key assignment.response_view_policy %}
+                        {{value}}
+                    {% endifequal %}
+                {% endfor %}
+                </div>
             </div>
-            <div class="project-due-date small text-right">
-                {% if project.due_date %}Due {{project.due_date|date:'m/d/y'}}{% endif %}
-            </div>
-            <p>{{project.body|safe}}</p>
+            <p>{{assignment.body|safe}}</p>
         </div>
-        <div class="col-md-9">
-            <table id="sliding-content-container">
-                <tr id="sliding-content-row" class="sliding-content-row">
-                    <td id="sliding-content-last-column" class="filler"></td>
-                </tr>
-            </table>
+        <div class="col-md-5">
+            <div class="asset-view-header">
+                <h2>Item
+                    <span class="asset-view-title">
+                        {{assignment.assignmentitem_set.first.asset.title}}
+                     </span>
+                </h2>
+            </div>
+            <div class="asset-view-published">
+                <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
+                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                    <div class="asset-display"></div>
+                    <div class="clipstrip-display"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            {% if my_response %}
+                {% if my_response.is_submitted %}
+                {% else %}
+                    <!--  @todo if work has been done
+                    if my_response.notes|length > 0 %} --->
+
+                    <!--  Submit -->
+                    <button type="button" class="btn btn-primary"
+                        data-toggle="modal" data-target="#submit-project">
+                        Submit
+                    </button>
+                    <div class="modal fade" id="submit-project" tabindex="-1"
+                        role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Submit</h4>
+                          </div>
+                          <div class="modal-body">
+                            <form class="submit-project">
+                                Once you submit your project, you cannot unsubmit it.
+
+                                {% ifequal viewers "never" %}
+                                    On submit, only your instructor will see your work
+                                {% else %}{% ifequal viewers "submitters" %}
+                                    On submit, other students who have submitted their work can see your work
+                                {% else %}{% ifequal viewers "all" %}
+                                    On submit, other students can see your work
+                                {% endifequal %}{% endifequal %}{% endifequal %}
+                                <input type="hidden" name="publish" value="{{submit_policy}}" />
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- add/edit selections  -->
+                    
+                {% endif %}
+            {% endif %}
+
+            <!--  View Other Visible Responses -->
+            {% for response in responses %}
+                {% ifnotequal response my_resonse %}
+                    {{response.author}} {[response.modified}}
+                {% endifnotequal %}
+            {% endfor %}
         </div>
     </div>
-</div>    
+</div> 
 {% endblock %}

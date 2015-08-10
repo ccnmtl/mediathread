@@ -5,7 +5,7 @@ from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, \
-    HttpResponseForbidden, HttpResponseServerError
+    HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
@@ -18,12 +18,13 @@ from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import (
     LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
-    JSONResponseMixin, LoggedInFacultyMixin, ProjectVisibleMixin,
+    JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
     ProjectEditableMixin)
 from mediathread.projects.admin import ProjectVersion
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, \
+    RESPONSE_VIEW_POLICY
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -44,9 +45,10 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
     def post(self, request):
         project_type = request.POST.get('project_type', 'composition')
-
+        response_policy = request.POST.get('response_view_policy', 'always')
         project = Project(author=request.user, course=request.course,
-                          title=self.get_title(), project_type=project_type)
+                          title=self.get_title(), project_type=project_type,
+                          response_view_policy=response_policy)
         self.set_due_date(project)
         project.save()
 
@@ -87,10 +89,9 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
                       ProjectEditableMixin, View):
 
     def post(self, request, *args, **kwargs):
-        policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
-
         frm = ProjectForm(request, instance=self.project, data=request.POST)
         if frm.is_valid():
+            policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
             frm.instance.submitted = policy != 'PrivateEditorsAreOwners'
             frm.instance.author = request.user
             project = frm.save()
@@ -104,6 +105,9 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
             collaboration = project.create_or_update_collaboration(policy)
             DiscussionIndex.update_class_references(
                 project.body, None, None, collaboration, project.author)
+
+            parent_id = request.POST.get('parent', None)
+            project.set_parent(parent_id)
 
             ctx = {
                 'status': 'success',
@@ -147,28 +151,6 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         self.project.delete()
 
         return HttpResponseRedirect('/')
-
-
-@login_required
-def project_reparent(request, assignment_id, composition_id):
-    if not request.user.is_staff:
-        return HttpResponseForbidden("forbidden")
-
-    try:
-        assignment = Project.objects.get(id=assignment_id)
-    except Project.DoesNotExist:
-        return HttpResponseServerError("Invalid assignment parameter")
-
-    try:
-        composition = Project.objects.get(id=composition_id)
-    except Project.DoesNotExist:
-        return HttpResponseServerError("Invalid composition parameter")
-
-    if assignment.is_assignment():
-        parent_collab = assignment.get_collaboration()
-        parent_collab.append_child(composition)
-
-    return HttpResponseRedirect('/')
 
 
 @login_required
@@ -261,21 +243,36 @@ def project_view_readonly(request, project_id, version_number=None):
                             content_type='application/json')
 
 
-class SelectionAssignmentView(LoggedInMixin, ProjectVisibleMixin,
+class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
                               TemplateView):
     template_name = 'projects/selection_assignment_view.html'
 
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        ctx = {
-            'project': project,
-            'can_edit': project.can_edit(self.request.course,
+
+        if project.is_selection_assignment():
+            assignment = project
+        else:
+            assignment = project.assignment()
+
+        responses = assignment.responses(self.request.course,
                                          self.request.user)
+        my_response = assignment.responses_by(self.request.course,
+                                              self.request.user,
+                                              self.request.user)
+
+        ctx = {
+            'assignment': assignment,
+            'can_edit_assignment': assignment.can_edit(self.request.course,
+                                                       self.request.user),
+            'responses': responses,
+            'my_response': my_response,
+            'response_view_policies': RESPONSE_VIEW_POLICY
         }
         return ctx
 
 
-class DefaultProjectView(LoggedInMixin, ProjectVisibleMixin,
+class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
                          JSONResponseMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
@@ -408,11 +405,13 @@ class DefaultProjectView(LoggedInMixin, ProjectVisibleMixin,
             return self.render_to_json_response(data)
 
 
-class ProjectWorkspaceView(LoggedInMixin, ProjectVisibleMixin, View):
+class ProjectWorkspaceView(LoggedInMixin, ProjectReadableMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        if project.is_selection_assignment():
+        parent = project.assignment()
+        if (project.is_selection_assignment() or
+                (parent and parent.is_selection_assignment())):
             view = SelectionAssignmentView.as_view()
         else:
             view = DefaultProjectView.as_view()
@@ -464,7 +463,7 @@ def project_export_msword(request, project_id):
 
 class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                         AjaxRequiredMixin, JSONResponseMixin,
-                        ProjectVisibleMixin, View):
+                        ProjectReadableMixin, View):
 
     def get(self, request, project_id):
         project = get_object_or_404(Project, id=project_id)
@@ -555,4 +554,6 @@ class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
         except Project.DoesNotExist:
             form = ProjectForm(self.request, instance=None)
 
-        return self.render_to_response({'form': form})
+        return self.render_to_response({
+            'form': form
+        })

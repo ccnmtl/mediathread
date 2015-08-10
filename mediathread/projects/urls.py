@@ -38,10 +38,6 @@ urlpatterns = patterns(
     url(r'^delete/(?P<project_id>\d+)/$',
         ProjectDeleteView.as_view(), {}, 'project-delete'),
 
-    url(r'^reparent/(?P<assignment_id>\d+)/(?P<composition_id>\d+)/$',
-        'project_reparent',
-        name='project-reparent'),
-
     url(r'^revisions/(?P<project_id>\d+)/$',
         'project_revisions',
         name='project-revisions'),

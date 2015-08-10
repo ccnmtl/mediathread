@@ -4380,9 +4380,16 @@ a.btn.btn-default img.left {
     display: none !important;
 }
 
+.selection-assignment #id_response_view_policy,
 .selection-assignment #id_publish {
     margin: 0 4em 0.7em .7em;
     list-style-type: none;
+    width: 100%;
+}
+
+.selection-assignment #id_response_view_policy label,
+.selection-assignment #id_publish label {
+    font-weight: normal;
 }
 
 .selection-assignment .asset-view-tabs {

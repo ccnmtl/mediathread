@@ -281,26 +281,20 @@ class Project(models.Model):
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
-    def responses(self, course, viewer):
+    def responses(self, course, viewer, by_user=None):
         visible = []
+        hidden = []
         col = self.get_collaboration()
         project_type = ContentType.objects.get_for_model(Project)
         for child in col.children.filter(content_type=project_type):
             if (child.content_object and
-                    child.content_object.can_read(course, viewer)):
-                visible.append(child.content_object)
-        return visible
-
-    def responses_by(self, course, viewer, by_user):
-        visible = []
-        col = self.get_collaboration()
-        project_type = ContentType.objects.get_for_model(Project)
-        for child in col.children.filter(content_type=project_type):
-            if (child.content_object and
-                child.content_object.is_participant(by_user) and
-                    child.content_object.can_read(course, viewer)):
-                visible.append(child.content_object)
-        return visible
+                (by_user is None or
+                 child.content_object.is_participant(by_user))):
+                    if child.content_object.can_read(course, viewer):
+                        visible.append(child.content_object)
+                    else:
+                        hidden.append(child.content_object)
+        return visible, hidden
 
     def description(self):
         if self.is_assignment():
@@ -458,7 +452,7 @@ class Project(models.Model):
             # can_read if the viewer has submitted his own work
             # @todo - consider multiple assignment responses
             # via collaborative authoring.
-            responses = assignment.responses_by(course, viewer, viewer)
+            (responses, hidden) = assignment.responses(course, viewer, viewer)
             return len(responses) > 0 and responses[0].submitted
         else:  # assignment.response_view_policy == 'never':
             return False

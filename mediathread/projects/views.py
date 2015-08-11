@@ -258,9 +258,9 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
 
     def get_my_response(self, assignment):
         my_response = None
-        responses = assignment.responses_by(self.request.course,
-                                            self.request.user,
-                                            self.request.user)
+        (responses, hidden) = assignment.responses(self.request.course,
+                                                   self.request.user,
+                                                   self.request.user)
         if len(responses) > 0:
             my_response = responses[0]
         return my_response
@@ -375,8 +375,9 @@ class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
             # This is primarily a student view. The student's response should
             # pop up automatically when the parent assignment is viewed.
             if project.is_assignment():
-                responses = project.responses_by(request.course, request.user,
-                                                 request.user)
+                (responses, hidden) = project.responses(request.course,
+                                                        request.user,
+                                                        request.user)
                 if len(responses) > 0:
                     response = responses[0]
                     response_can_edit = response.can_edit(request.course,
@@ -585,8 +586,10 @@ class ProjectItemView(LoggedInMixin, JSONResponseMixin,
         item = get_object_or_404(Asset, id=kwargs.get('asset_id', None))
 
         parent = get_object_or_404(Project, id=kwargs.get('project_id', None))
-        # visible responses (based on submit state & response policy)
-        responses = parent.responses(self.request.course, self.request.user)
+
+        # visible & hidden responses (based on submit state & response policy)
+        (responses, hidden) = parent.responses(self.request.course,
+                                               self.request.user)
         response_ids = [r.id for r in responses]
 
         # notes related to visible responses are visible

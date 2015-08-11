@@ -251,17 +251,18 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment)
 
-        r = self.assignment.responses(self.sample_course, self.instructor_one)
+        (r, h) = self.assignment.responses(self.sample_course,
+                                           self.instructor_one)
         self.assertEquals(len(r), 2)
 
-        r = self.assignment.responses_by(self.sample_course,
-                                         self.instructor_one,
-                                         self.student_one)
+        (r, h) = self.assignment.responses(self.sample_course,
+                                           self.instructor_one,
+                                           self.student_one)
         self.assertEquals(r[0], response1)
 
-        r = self.assignment.responses_by(self.sample_course,
-                                         self.instructor_one,
-                                         self.student_two)
+        (r, h) = self.assignment.responses(self.sample_course,
+                                           self.instructor_one,
+                                           self.student_two)
         self.assertEquals(r[0], response2)
 
     def test_reset_publish_to_world(self):

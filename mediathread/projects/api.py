@@ -67,29 +67,31 @@ class ProjectResource(ModelResource):
         return bundle
 
     def all_responses(self, request, project):
-        responses = []
-        for response in project.responses(request.course, request.user):
-            if response.can_read(request.course, request.user):
-                obj = {
-                    'url': response.get_absolute_url(),
-                    'title': response.title,
-                    'modified': response.modified.strftime(self.date_fmt),
-                    'attribution_list': []}
+        ctx = []
+        (responses, hidden) = project.responses(request.course, request.user)
+        for response in responses:
+            obj = {
+                'url': response.get_absolute_url(),
+                'title': response.title,
+                'modified': response.modified.strftime(self.date_fmt),
+                'attribution_list': []}
 
-                last = len(response.attribution_list()) - 1
-                for idx, author in enumerate(response.attribution_list()):
-                    obj['attribution_list'].append({
-                        'name': get_public_name(author, request),
-                        'last': idx == last})
+            last = len(response.attribution_list()) - 1
+            for idx, author in enumerate(response.attribution_list()):
+                obj['attribution_list'].append({
+                    'name': get_public_name(author, request),
+                    'last': idx == last})
 
-                responses.append(obj)
+            ctx.append(obj)
 
-        return responses
+        return ctx
 
     def my_responses(self, request, project):
-        my_responses = []
-        for response in project.responses_by(request.course, request.user,
-                                             request.user):
+        ctx = []
+        (responses, hidden) = project.responses(request.course,
+                                                request.user,
+                                                request.user)
+        for response in responses:
             obj = {'url': response.get_absolute_url(),
                    'title': response.title,
                    'modified': response.modified.strftime(self.date_fmt),
@@ -101,9 +103,9 @@ class ProjectResource(ModelResource):
                     'name': get_public_name(author, request),
                     'last': idx == last})
 
-            my_responses.append(obj)
+            ctx.append(obj)
 
-        return my_responses
+        return ctx
 
     def related_assets_notes(self, request, project):
 
@@ -198,27 +200,18 @@ class ProjectResource(ModelResource):
 
             parent_assignment = project.assignment()
             if parent_assignment:
+                ctx['display_as_assignment'] = True
                 ctx['collaboration'] = {}
                 ctx['collaboration']['title'] = parent_assignment.title
                 ctx['collaboration']['url'] = \
                     parent_assignment.get_absolute_url()
                 ctx['collaboration']['due_date'] = \
                     parent_assignment.get_due_date()
-
-            is_assignment = (project.is_assignment() or
-                             project.is_selection_assignment())
-            if is_assignment:
-                count = 0
-                for response in project.responses(course, user):
-                    if response.can_read(course, user):
-                        count += 1
-                ctx['responses'] = count
-
+            elif project.is_assignment() or project.is_selection_assignment():
+                (responses, hidden) = project.responses(course, user)
+                ctx['responses'] = len(responses)
                 ctx['is_assignment'] = True
-                ctx['responses'] = len(project.responses(course, user))
-
-            ctx['display_as_assignment'] = \
-                is_assignment or parent_assignment is not None
+                ctx['display_as_assignment'] = True
 
             lst.append(ctx)
         return lst

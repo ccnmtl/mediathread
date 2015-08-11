@@ -19,5 +19,7 @@ register.tag('num_courses', UserCourses.process_tag)
 
 
 def assignment_responses(project, request):
-    return project.responses(request.course, request.user)
+    (responses, hidden) = project.responses(request.course, request.user)
+    return responses
+
 register.filter(assignment_responses)

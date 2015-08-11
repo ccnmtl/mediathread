@@ -33,7 +33,7 @@ from structuredcollaboration.models import Collaboration
 @faculty_only
 def class_assignment_report(request, project_id):
     assignment = get_object_or_404(Project, id=project_id)
-    responses = assignment.responses(request.course, request.user)
+    (responses, hidden) = assignment.responses(request.course, request.user)
     return {'assignment': assignment, 'responses': responses}
 
 
@@ -432,8 +432,8 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
         try:
             content_type = ContentType.objects.get_for_model(SherdNote)
             related = TermRelationship.objects.filter(
-                    content_type=content_type,
-                    object_id__in=selections.values_list('id', flat=True))
+                content_type=content_type,
+                object_id__in=selections.values_list('id', flat=True))
             return float(related.count()) / selections.count() * 100
         except ZeroDivisionError:
             return 0
@@ -497,7 +497,8 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
     def get(self, request, *args, **kwargs):
         assignment_id = kwargs.get('assignment_id', None)
         assignment = get_object_or_404(Project, id=assignment_id)
-        responses = assignment.responses(request.course, request.user)
+        (responses, hidden) = assignment.responses(request.course,
+                                                   request.user)
 
         rows = self.get_report_rows(responses)
 

@@ -16,9 +16,9 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'onNext', 'onPrev', 'onSave',
-                    'onFormKeyPress',
-                    'onGalleryItemMouseOver', 'onGalleryMouseOut',
-                    'onGalleryItemSelect');
+                      'onFormKeyPress',
+                      'onGalleryItemMouseOver', 'onGalleryMouseOut',
+                        'onGalleryItemSelect');
             var self = this;
             this.currentPage = 1;
             this.totalPages = jQuery('.page').length;
@@ -40,7 +40,9 @@
         validate: function(pageNo) {
             var q;
             if (pageNo === 1) {
-                return jQuery(this.el).find("input[name='title']").val().length > 0;
+                return jQuery(this.el).find("input[name='title']")
+                                      .val()
+                                      .length > 0;
             } else if (pageNo === 2) {
                 return tinyMCE.activeEditor.getContent().length > 0;
             } else if (pageNo === 3) {
@@ -60,8 +62,10 @@
             } else {
                 $current.removeClass('has-error').addClass('hidden');
 
-                this.currentPage = Math.min(this.currentPage + 1, this.totalPages);
-                jQuery("div[data-page='" + this.currentPage + "']").removeClass('hidden');
+                this.currentPage = Math.min(this.currentPage + 1,
+                                            this.totalPages);
+                var q = "div[data-page='" + this.currentPage + "']";
+                jQuery(q).removeClass('hidden');
     
                 if (this.currentPage == 3) {
                     jQuery('#sliding-content-container').removeClass('hidden');
@@ -74,10 +78,11 @@
         onPrev: function() {
             jQuery('#sliding-content-container').addClass('hidden');
 
-            jQuery("div[data-page='" + this.currentPage + "']").addClass('hidden');
+            var q = "div[data-page='" + this.currentPage + "']";
+            jQuery(q).addClass('hidden');
             
             this.currentPage = Math.max(this.currentPage - 1, 1);
-            jQuery("div[data-page='" + this.currentPage + "']").removeClass('hidden');
+            jQuery(q).removeClass('hidden');
         },
         onSave: function(evt) {
             var $current = jQuery("div[data-page='" + this.currentPage + "']"); 
@@ -86,14 +91,11 @@
             } else {
                 tinyMCE.activeEditor.save();
                 var frm = jQuery(evt.currentTarget).parents('form')[0];
-
-                var data = jQuery(frm).serializeArray();
-
                 jQuery.ajax({
                     type: 'POST',
                     url: frm.action,
                     dataType: 'json',
-                    data: data,
+                    data: jQuery(frm).serializeArray(),
                     success: function (json) {
                         window.location = json.context.project.url;
                     },
@@ -101,7 +103,6 @@
                         // do something useful here
                     }
                 });
-
             }
         },
         onFormKeyPress: function(evt) {

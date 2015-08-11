@@ -381,104 +381,6 @@ ul#projects h3 .delete_icon {
     display: inline;
 }
 
-a.btnRespond {
-  font-size: 1em;
-  font-weight: normal;
-  color: #ffffff;
-  padding: 10px 15px;
-  margin: 15px 0 5px 0;
-  border: solid 1px;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #5bb75b;
-  *background-color: #51a351;
-  background-image: -moz-linear-gradient(top, #62c462, #51a351);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
-  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
-  background-image: -o-linear-gradient(top, #62c462, #51a351);
-  background-image: linear-gradient(to bottom, #62c462, #51a351);
-  background-repeat: repeat-x;
-  border-color: #fff #fff #777;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  cursor: pointer;
-  clear: both;
-  display: block;
-  float: left;
-}
-
-a.btnRespond:hover,
-a.btnRespond:active,
-a.btnRespond.active,
-a.btnRespond.disabled,
-a.btnRespond[disabled] {
-  color: #ffffff;
-  background-image: -moz-linear-gradient(top, #51a351, #62c462);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#51a351), to(#62c462));
-  background-image: -webkit-linear-gradient(top, #51a351, #62c462);
-  background-image: -o-linear-gradient(top, #51a351, #62c462);
-  background-image: linear-gradient(to bottom, #51a351, #62c462);
-  background-repeat: repeat-x;
-  border-color: #fff #fff #777;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  text-decoration: none;
-}
-
-a.btnRespond:active,
-a.btnRespond.active {
-  background-color: #408140 \9;
-}
-
-a.btn-feedback {
-  font-size: 1.1428em;
-  font-weight: normal;
-  color: #ffffff;
-  padding: 10px 15px;
-  margin: 15px 0 5px 0;
-  border: solid 1px;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;  
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-  background-color: #f7941e;
-  *background-color: #f7941e;
-  background-image: -moz-linear-gradient(top, #f7b362, #f7941e);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f7b362), to(#f7941e));
-  background-image: -webkit-linear-gradient(top, #f7b362, #f7941e);
-  background-image: -o-linear-gradient(top, #f7b362, #f7941e);
-  background-image: linear-gradient(to bottom, #f7b362, #f7941e);
-  background-repeat: repeat-x;
-  border-color: #f7b362 #f7b362 #f7b362;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  clear: both;
-  display: block;
-  float: left;
-}
-
-a.btn-feedback:hover,
-a.btn-feedback.disabled,
-a.btn-feedback[disabled] {
-  color: #ffffff;
-  background-image: -moz-linear-gradient(top, #f7941e, #f7b362);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f7941e), to(#f7b362));
-  background-image: -webkit-linear-gradient(top, #f7941e, #f7b362);
-  background-image: -o-linear-gradient(top, #f7941e, #f7b362);
-  background-image: linear-gradient(to bottom, #f7941e, #f7b362);
-  background-repeat: repeat-x;
-  border-color: #f7941e;
-  text-decoration: none;
-}
-
-a.btn-feedback:active,
-a.btn-feedback.active {
-  background-color: #003399 \9;
-}
-
 .assignment-listitem.response  {
     background-color: #E4EEF7;
     clear: both;
@@ -970,13 +872,6 @@ div.button-form form, div.button-form.inline form {
 	padding: 35px;
 	width: 58%;
     background: url("../img/login_bg.jpg") center no-repeat;
-}
-
-.login-description a.btn {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-    font-weight: normal;
 }
 
 .login-description h1 {
@@ -4345,6 +4240,11 @@ div.ui-dialog div.asset-view-details h2 {
     box-sizing: border-box !important;
 }
 
+a.btn.btn-default {
+    color: #333; !important;
+    font-weight: normal;
+}
+
 a.btn.btn-primary {
     color: white;
     -webkit-box-sizing: border-box !important;
@@ -4353,10 +4253,6 @@ a.btn.btn-primary {
 }
 
 a.btn.btn-default {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-    font-weight: normal;
     -webkit-box-sizing: border-box !important;
     -moz-box-sizing: border-box !important;
     box-sizing: border-box !important;    

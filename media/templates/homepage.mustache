@@ -126,7 +126,9 @@
                                     </div>
 
                                     {{^is_faculty}}
-                                        <a data-id="{{id}}" class="btnRespond">Respond to Assignment</a>
+                                        <div class="clearfix"></div>
+                                        <br />
+                                        <a data-id="{{id}}" class="btn btn-success btnRespond">Respond to Assignment</a>
                                     {{/is_faculty}}
                                 </li>
                                 {{/assignments}}
@@ -249,7 +251,8 @@
                                     
                                         {{#feedback}}
                                         <div class="feedback">
-                                            <a class="btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>
+                                            <div class="clearfix"></div><br />
+                                            <a class="btn btn-warning btn-feedback" href="{{url}}feedback/">Read Instructor Feedback</a>
                                         </div>
                                         {{/feedback}}
                                         <br />

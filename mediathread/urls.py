@@ -17,10 +17,12 @@ from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
                                         RedirectToUploaderView,
                                         AssetCreateView)
 from mediathread.main.forms import CustomRegistrationForm
-from mediathread.main.views import (MigrateCourseView, MigrateMaterialsView,
-                                    RequestCourseView, ContactUsView,
-                                    CourseSettingsView,
-                                    CourseManageSourcesView, IsLoggedInView)
+from mediathread.main.views import (
+    MigrateCourseView, MigrateMaterialsView,
+    RequestCourseView, ContactUsView,
+    CourseSettingsView,
+    CourseManageSourcesView, IsLoggedInView, IsLoggedInDataView,
+)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
@@ -133,6 +135,9 @@ urlpatterns = patterns(
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},
         name='is_logged_in.js'),
+
+    url(r'^accounts/is_logged_in/$', IsLoggedInDataView.as_view(), {},
+        name='is_logged_in'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),

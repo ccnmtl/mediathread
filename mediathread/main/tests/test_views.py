@@ -13,8 +13,10 @@ from django.test import TestCase
 from django.test.client import Client, RequestFactory
 
 from mediathread.assetmgr.models import Asset
-from mediathread.factories import UserFactory, MediathreadTestMixin, \
+from mediathread.factories import (
+    UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory
+)
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
@@ -729,3 +731,35 @@ class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
             self.assertContains(response, '"ready": true')
             self.assertContains(response, '"youtube_apikey": "123"')
             self.assertContains(response, '"flickr_apikey": "456"')
+
+
+class IsLoggedInDataViewTest(MediathreadTestMixin, TestCase):
+    def setUp(self):
+        self.up = UserProfileFactory()
+        self.setup_sample_course()
+
+    def test_get_as_anonymous(self):
+        r = self.client.get(reverse('is_logged_in'))
+        self.assertEqual(r.status_code, 200)
+
+        data = json.loads(r.content)
+        self.assertEqual(data['logged_in'], False)
+        self.assertEqual(data['course_selected'], False)
+        self.assertNotIn('youtube_apikey', data)
+        self.assertNotIn('flickr_apikey', data)
+
+    def test_get_when_logged_in(self):
+        self.client.login(username=self.up.user.username, password='test')
+        r = self.client.get(reverse('is_logged_in'))
+        self.assertEqual(r.status_code, 200)
+
+        data = json.loads(r.content)
+        self.assertEqual(data['logged_in'], True)
+        self.assertEqual(data['course_selected'], False)
+
+    def test_get_when_course_is_selected(self):
+        # TODO: Select the sample course for the user and
+        # make sure the api keys are present.
+        self.client.login(username=self.up.user.username, password='test')
+        r = self.client.get(reverse('is_logged_in'))
+        self.assertEqual(r.status_code, 200)

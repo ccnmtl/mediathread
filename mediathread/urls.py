@@ -21,7 +21,8 @@ from mediathread.main.views import (MigrateCourseView, MigrateMaterialsView,
                                     RequestCourseView, ContactUsView,
                                     CourseSettingsView,
                                     CourseManageSourcesView, IsLoggedInView)
-from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
+from mediathread.projects.views import (
+    ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
 
@@ -100,6 +101,8 @@ urlpatterns = patterns(
     (r'^api/tag/$', TagCollectionView.as_view(), {}),
     (r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
      ProjectCollectionView.as_view(), {}, 'project-by-user'),
+    (r'^api/project/(?P<project_id>\d+)/(?P<asset_id>\d+)/$',
+     ProjectItemView.as_view(), {}, 'project-item-view'),
     (r'^api/project/(?P<project_id>\d+)/$', ProjectDetailView.as_view(),
      {}, 'asset-detail'),
     (r'^api/project/$', ProjectCollectionView.as_view(), {}),

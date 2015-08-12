@@ -59,9 +59,13 @@
             'asset-view': function(assetId) {
                 return '/asset/' + assetId + '/';
             },
-            'asset-json': function(assetId, withAnnotations) {
-                return '/api/asset/' + assetId +
-                    (withAnnotations ? '/?annotations=true' : '/');
+            'asset-json': function(assetId, withAnnotations, parentId) {
+                if (parentId !== undefined) {
+                    return '/api/project/' + parentId + '/' + assetId + '/';
+                } else {
+                    return '/api/asset/' + assetId +
+                        (withAnnotations ? '/?annotations=true' : '/');
+                }
             },
             'annotation-create': function(assetId) {
                 // a.k.a. server-side annotation-containers

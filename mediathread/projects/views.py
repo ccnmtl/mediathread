@@ -14,6 +14,8 @@ from djangohelpers.lib import allow_http
 
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
+from mediathread.assetmgr.api import AssetResource
+from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import (
@@ -266,20 +268,25 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         assignment = self.get_assignment(project)
-
-        responses = assignment.responses(self.request.course,
-                                         self.request.user)
+        can_edit = assignment.can_edit(self.request.course, self.request.user)
         my_response = self.get_my_response(assignment)
+
+        item = assignment.assignmentitem_set.first().asset
+        item_ctx = AssetResource().render_one_context(self.request, item)
+
+        vocabulary_json = VocabularyResource().render_list(
+            self.request,
+            Vocabulary.objects.get_for_object(self.request.course))
 
         ctx = {
             'assignment': assignment,
-            'can_edit_assignment': assignment.can_edit(self.request.course,
-                                                       self.request.user),
-            'responses': responses,
+            'item': item,
+            'assignment_can_edit': can_edit,
+            'related_items': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': 'PublicEditorsAreOwners',
-            'is_faculty': self.request.course.is_faculty(self.request.user)
+            'vocabulary': json.dumps(vocabulary_json)
         }
         return ctx
 
@@ -569,3 +576,24 @@ class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
         return self.render_to_response({
             'form': form
         })
+
+
+class ProjectItemView(LoggedInMixin, JSONResponseMixin,
+                      AjaxRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        item = get_object_or_404(Asset, id=kwargs.get('asset_id', None))
+
+#         parent = get_object_or_404(Project, id=kwargs.get('parent_id', None))
+#         # visible responses (based on submit state & response policy)
+#         responses = parent.responses(self.request.course, self.request.user)
+#         response_ids = [r.id for r in responses]
+#
+#         # notes related to visible responses are visible
+#         notes = ProjectNote.objects.filter(project__id__in=response_ids)
+#         note_ids = notes.values_list('annotation__id')
+#
+#         notes = SherdNote.objects.filter(id__in=note_ids)
+
+        ctx = AssetResource().render_one_context(self.request, item)
+        return self.render_to_json_response(ctx)

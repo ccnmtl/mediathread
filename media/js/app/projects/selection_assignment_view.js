@@ -1,5 +1,6 @@
-/* global _: true, Backbone: true */
+/* global _: true, Backbone: true, djangosherd: true */
 /* global annotationList: true, CitationView: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
  * Listens For:
@@ -18,8 +19,12 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'onSubmitResponse');
+            var self = this;
 
             jQuery('[data-toggle="tooltip"]').tooltip();
+
+            // load the selection item into storage
+            djangosherd.storage.json_update(options.relatedItems);
 
             // Setup the media display window.
             this.citationView = new CitationView();
@@ -32,7 +37,13 @@
 
             this.citationView.openCitationById(null, options.itemId, null);
 
-            // @todo Setup the edit view -- anotationList.init
+            window.annotationList.init({
+                'asset_id': options.itemId,
+                'annotation_id': undefined,
+                'update_history': false,
+                'vocabulary': options.vocabulary,
+                'parentId': options.assignmentId
+            });
         },
         onSubmitResponse: function(evt) {
             evt.preventDefault();

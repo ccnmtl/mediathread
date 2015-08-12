@@ -471,6 +471,25 @@ class Project(models.Model):
         else:  # assignment.response_view_policy == 'never':
             return False
 
+    def can_cite(self, course, viewer):
+        # notes in an unsubmitted project are not citable
+        if not self.submitted:
+            return False
+
+        parent = self.assignment()
+
+        if (not parent or
+                parent.response_view_policy == RESPONSE_VIEW_ALWAYS[0]):
+            return True
+
+        if parent.response_view_policy == RESPONSE_VIEW_SUBMITTED[0]:
+            # a bit hacky...but should work unless we get collaborative
+            # do the visible responses == students
+            responses = parent.responses(course, viewer)
+            return len(course.students) == len(responses)
+
+        return False
+
     def collaboration_sync_group(self, collab):
         participants = self.participants.all()
 

@@ -114,10 +114,6 @@ class RestrictedMaterialsMixin(object):
         (visible, hidden) = Project.objects.responses_by_course(
             request.course, self.record_viewer)
 
-        # @todo -- filter out notes associated with projects that aren't
-        # yet visible to peers. How to determine that? Grrr
-        # projects that cannot be read by a fellow student...
-
         pids = [project.id for project in hidden]
         pnotes = ProjectNote.objects.filter(project__id__in=pids)
         pnids = pnotes.values_list('annotation__id', flat=True)

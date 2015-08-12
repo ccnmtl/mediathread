@@ -618,9 +618,14 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_two,
             policy='PrivateEditorsAreOwners', parent=self.assignment)
         self.note_two = SherdNoteFactory(
-            asset=self.asset, author=self.student_one,
-            body='student one selection note', range1=0, range2=1)
+            asset=self.asset, author=self.student_two,
+            body='student two selection note', range1=0, range2=1)
         ProjectNoteFactory(project=self.response_two, annotation=self.note_two)
+
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_three,
+            policy='PublicEditorsAreOwners', parent=self.assignment,
+            submitted=True)
 
         url = reverse('project-item-view',
                       args=[self.assignment.id, self.asset.id])
@@ -628,7 +633,8 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         self.view.request = RequestFactory().get(url)
         self.view.request.course = self.sample_course
 
-    def assert_visible_notes(self, viewer, visible):
+    def assert_visible_notes(self, viewer, visible,
+                             editable=False, citable=False):
         self.view.request.user = viewer
         response = self.view.get(None, project_id=self.assignment.id,
                                  asset_id=self.asset.id)
@@ -637,11 +643,17 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
 
         notes = the_json['assets'].values()[0]['annotations']
         for idx, note in enumerate(notes):
-            self.assertEquals(note['id'], visible[idx])
+            self.assertEquals(note['id'], visible[idx][0])
+            self.assertEquals(note['editable'], visible[idx][1])
+            self.assertEquals(note['citable'], visible[idx][2])
 
     def test_get(self):
-        self.assert_visible_notes(self.student_one, [self.note_one.id])
-        self.assert_visible_notes(self.student_two, [self.note_two.id])
+        # responses are not submitted
+        # assignment is set to "always" response policy
+        self.assert_visible_notes(self.student_one,
+                                  [(self.note_one.id, True, False)])
+        self.assert_visible_notes(self.student_two,
+                                  [(self.note_two.id, True, False)])
         self.assert_visible_notes(self.instructor_one, [])
 
         # submit student one's response
@@ -650,34 +662,48 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         self.response_one.submitted = True
         self.response_one.save()
 
-        self.assert_visible_notes(self.student_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_one,
+                                  [(self.note_one.id, False, True)])
         self.assert_visible_notes(self.student_two,
-                                  [self.note_one.id, self.note_two.id])
-        self.assert_visible_notes(self.instructor_one, [self.note_one.id])
+                                  [(self.note_one.id, False, True),
+                                   (self.note_two.id, True, False)])
+        self.assert_visible_notes(self.instructor_one,
+                                  [(self.note_one.id, False, True)])
 
         # change assignment policy to never
         self.assignment.response_view_policy = RESPONSE_VIEW_NEVER[0]
         self.assignment.save()
 
-        self.assert_visible_notes(self.student_one, [self.note_one.id])
-        self.assert_visible_notes(self.student_two, [self.note_two.id])
-        self.assert_visible_notes(self.instructor_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_one,
+                                  [(self.note_one.id, False, False)])
+        self.assert_visible_notes(self.student_two,
+                                  [(self.note_two.id, True, False)])
+        self.assert_visible_notes(self.instructor_one,
+                                  [(self.note_one.id, False, False)])
 
         # change assignment policy to submitted
         self.assignment.response_view_policy = RESPONSE_VIEW_SUBMITTED[0]
         self.assignment.save()
-        self.assert_visible_notes(self.student_one, [self.note_one.id])
-        self.assert_visible_notes(self.student_two, [self.note_two.id])
-        self.assert_visible_notes(self.instructor_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_one,
+                                  [(self.note_one.id, False, False)])
+        self.assert_visible_notes(self.student_two,
+                                  [(self.note_two.id, True, False)])
+        self.assert_visible_notes(self.instructor_one,
+                                  [(self.note_one.id, False, False)])
 
         # submit student two's response
+        # all students having submitted, the annotation is now citable
         self.response_two.create_or_update_collaboration(
             'PublicEditorsAreOwners')
         self.response_two.submitted = True
         self.response_two.save()
+
         self.assert_visible_notes(self.student_one,
-                                  [self.note_one.id, self.note_two.id])
+                                  [(self.note_one.id, False, True),
+                                   (self.note_two.id, False, True)])
         self.assert_visible_notes(self.student_two,
-                                  [self.note_one.id, self.note_two.id])
+                                  [(self.note_one.id, False, True),
+                                   (self.note_two.id, False, True)])
         self.assert_visible_notes(self.instructor_one,
-                                  [self.note_one.id, self.note_two.id])
+                                  [(self.note_one.id, False, True),
+                                   (self.note_two.id, False, True)])

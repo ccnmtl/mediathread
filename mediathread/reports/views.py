@@ -33,7 +33,7 @@ from structuredcollaboration.models import Collaboration
 @faculty_only
 def class_assignment_report(request, project_id):
     assignment = get_object_or_404(Project, id=project_id)
-    (responses, hidden) = assignment.responses(request.course, request.user)
+    responses = assignment.responses(request.course, request.user)
     return {'assignment': assignment, 'responses': responses}
 
 
@@ -497,8 +497,7 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
     def get(self, request, *args, **kwargs):
         assignment_id = kwargs.get('assignment_id', None)
         assignment = get_object_or_404(Project, id=assignment_id)
-        (responses, hidden) = assignment.responses(request.course,
-                                                   request.user)
+        responses = assignment.responses(request.course, request.user)
 
         rows = self.get_report_rows(responses)
 

@@ -39,9 +39,12 @@ class CollaborationPolicyRecord(models.Model):
 
 class CollaborationManager(models.Manager):
     def get_for_object_list(self, object_list):
-        ctype = ContentType.objects.get_for_model(object_list[0])
-        ids = [str(o.id) for o in object_list]
-        return self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
+        if len(object_list) < 1:
+            return Collaboration.objects.none()
+        else:
+            ctype = ContentType.objects.get_for_model(object_list[0])
+            ids = [str(o.id) for o in object_list]
+            return self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
 
     def get_for_object(self, obj):
         ctype = ContentType.objects.get_for_model(obj)

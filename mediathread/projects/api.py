@@ -68,7 +68,7 @@ class ProjectResource(ModelResource):
 
     def all_responses(self, request, project):
         ctx = []
-        (responses, hidden) = project.responses(request.course, request.user)
+        responses = project.responses(request.course, request.user)
         for response in responses:
             obj = {
                 'url': response.get_absolute_url(),
@@ -88,9 +88,8 @@ class ProjectResource(ModelResource):
 
     def my_responses(self, request, project):
         ctx = []
-        (responses, hidden) = project.responses(request.course,
-                                                request.user,
-                                                request.user)
+        responses = project.responses(request.course,
+                                      request.user, request.user)
         for response in responses:
             obj = {'url': response.get_absolute_url(),
                    'title': response.title,
@@ -208,7 +207,7 @@ class ProjectResource(ModelResource):
                 ctx['collaboration']['due_date'] = \
                     parent_assignment.get_due_date()
             elif project.is_assignment() or project.is_selection_assignment():
-                (responses, hidden) = project.responses(course, user)
+                responses = project.responses(course, user)
                 ctx['responses'] = len(responses)
                 ctx['is_assignment'] = True
                 ctx['display_as_assignment'] = True

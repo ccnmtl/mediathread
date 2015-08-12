@@ -36,7 +36,7 @@
             assignmentId: '{{assignment.id}}',
             responseId: '{{my_response.id}}',
             itemId: '{{item.id}}',
-            relatedItems: JSON.parse('{{related_items|escapejs}}'),
+            itemJson: JSON.parse('{{item_json|escapejs}}'),
             vocabulary: JSON.parse('{{vocabulary|escapejs}}')
         });
     </script>
@@ -174,7 +174,9 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div id="asset-view-details" class="asset-view-details"></div>
+                    {% if my_response or assignment_can_edit %}
+                        <div id="asset-view-details" class="asset-view-details"></div>
+                    {% endif %}
                 </div>
             </div>
         </div>

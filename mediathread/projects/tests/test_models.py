@@ -206,6 +206,61 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(visible_projects[0], self.project_class_shared)
         self.assertEquals(visible_projects[1], self.project_instructor_shared)
 
+    def assert_responses_by_course(self, viewer, visible, hidden):
+        self.assertEquals(
+            Project.objects.responses_by_course(self.sample_course, viewer),
+            (visible, hidden))
+
+    def test_responses_by_course(self):
+        # no responses
+        self.assert_responses_by_course(self.student_one, [], [])
+        self.assert_responses_by_course(self.instructor_one, [], [])
+
+        # private response
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.assert_responses_by_course(self.student_one, [response], [])
+        self.assert_responses_by_course(self.instructor_one, [], [response])
+        self.assert_responses_by_course(self.student_two, [], [response])
+
+        # submit response
+        response.create_or_update_collaboration('PublicEditorsAreOwners')
+        response.submitted = True
+        response.save()
+
+        self.assert_responses_by_course(self.student_one, [response], [])
+        self.assert_responses_by_course(self.instructor_one, [response], [])
+        self.assert_responses_by_course(self.student_two, [response], [])
+
+        # change assignment policy to never
+        self.assignment.response_view_policy = RESPONSE_VIEW_NEVER[0]
+        self.assignment.save()
+
+        self.assert_responses_by_course(self.student_one, [response], [])
+        self.assert_responses_by_course(self.instructor_one, [response], [])
+        self.assert_responses_by_course(self.student_two, [], [response])
+
+        # change assignment policy to submitted
+        self.assignment.response_view_policy = RESPONSE_VIEW_SUBMITTED[0]
+        self.assignment.save()
+
+        self.assert_responses_by_course(self.student_one, [response], [])
+        self.assert_responses_by_course(self.instructor_one, [response], [])
+        self.assert_responses_by_course(self.student_two, [], [response])
+
+        # student_two submits
+        response2 = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            submitted=True, policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+        self.assert_responses_by_course(self.student_one,
+                                        [response, response2], [])
+        self.assert_responses_by_course(self.instructor_one,
+                                        [response, response2], [])
+        self.assert_responses_by_course(self.student_two,
+                                        [response, response2], [])
+
     def test_project_clean_date_field(self):
         try:
             self.assignment.due_date = datetime(2012, 3, 13, 0, 0)
@@ -251,18 +306,15 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment)
 
-        (r, h) = self.assignment.responses(self.sample_course,
-                                           self.instructor_one)
+        r = self.assignment.responses(self.sample_course, self.instructor_one)
         self.assertEquals(len(r), 2)
 
-        (r, h) = self.assignment.responses(self.sample_course,
-                                           self.instructor_one,
-                                           self.student_one)
+        r = self.assignment.responses(self.sample_course, self.instructor_one,
+                                      self.student_one)
         self.assertEquals(r[0], response1)
 
-        (r, h) = self.assignment.responses(self.sample_course,
-                                           self.instructor_one,
-                                           self.student_two)
+        r = self.assignment.responses(self.sample_course, self.instructor_one,
+                                      self.student_two)
         self.assertEquals(r[0], response2)
 
     def test_reset_publish_to_world(self):

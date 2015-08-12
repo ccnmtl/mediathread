@@ -258,9 +258,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
 
     def get_my_response(self, assignment):
         my_response = None
-        (responses, hidden) = assignment.responses(self.request.course,
-                                                   self.request.user,
-                                                   self.request.user)
+        responses = assignment.responses(self.request.course,
+                                         self.request.user, self.request.user)
         if len(responses) > 0:
             my_response = responses[0]
         return my_response
@@ -282,7 +281,7 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             'assignment': assignment,
             'assignment_can_edit': can_edit,
             'item': item,
-            'related_items': json.dumps(item_ctx),
+            'item_json': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': 'PublicEditorsAreOwners',
@@ -375,9 +374,8 @@ class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
             # This is primarily a student view. The student's response should
             # pop up automatically when the parent assignment is viewed.
             if project.is_assignment():
-                (responses, hidden) = project.responses(request.course,
-                                                        request.user,
-                                                        request.user)
+                responses = project.responses(request.course,
+                                              request.user, request.user)
                 if len(responses) > 0:
                     response = responses[0]
                     response_can_edit = response.can_edit(request.course,
@@ -587,15 +585,12 @@ class ProjectItemView(LoggedInMixin, JSONResponseMixin,
 
         parent = get_object_or_404(Project, id=kwargs.get('project_id', None))
 
-        # visible & hidden responses (based on submit state & response policy)
-        (responses, hidden) = parent.responses(self.request.course,
-                                               self.request.user)
+        responses = parent.responses(self.request.course, self.request.user)
         response_ids = [r.id for r in responses]
 
         # notes related to visible responses are visible
-        notes = ProjectNote.objects.filter(project__id__in=response_ids)
-        note_ids = notes.values_list('annotation__id', flat=True)
-
+        pnotes = ProjectNote.objects.filter(project__id__in=response_ids)
+        note_ids = pnotes.values_list('annotation__id', flat=True)
         notes = SherdNote.objects.filter(id__in=note_ids)
 
         ctx = AssetResource().render_one_context(self.request, item, notes)

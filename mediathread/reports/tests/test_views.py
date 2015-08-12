@@ -311,8 +311,8 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         view.request = RequestFactory().get('/')
         view.request.course = self.sample_course
 
-        (responses, hidden) = self.assignment1.responses(self.sample_course,
-                                                         self.instructor_one)
+        responses = self.assignment1.responses(self.sample_course,
+                                               self.instructor_one)
         rows = view.get_report_rows(responses)
 
         rows.next()  # header

@@ -133,10 +133,10 @@ class ProjectManager(models.Manager):
 
         return new_project
 
-    def visible_by_course(self, course, user):
+    def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)
         projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.can_read(course, user)]
+        return [p for p in projects if p.can_read(course, viewer)]
 
     def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         projects = Project.objects.filter(
@@ -153,6 +153,22 @@ class ProjectManager(models.Manager):
                      key=lambda project: project.feedback_date() or
                      project.modified)
         return lst
+
+    def responses_by_course(self, course, viewer):
+        projects = Project.objects.filter(
+            course=course, project_type=PROJECT_TYPE_COMPOSITION)
+
+        responses = Collaboration.objects.get_for_object_list(projects)
+        responses = responses.filter(_parent__isnull=False)
+
+        visible = []
+        hidden = []
+        for r in responses:
+            if r.content_object.can_read(course, viewer):
+                visible.append(r.content_object)
+            else:
+                hidden.append(r.content_object)
+        return visible, hidden
 
     def by_course_and_users(self, course, user_ids):
         projects = Project.objects.filter(
@@ -283,7 +299,6 @@ class Project(models.Model):
 
     def responses(self, course, viewer, by_user=None):
         visible = []
-        hidden = []
         col = self.get_collaboration()
         project_type = ContentType.objects.get_for_model(Project)
         for child in col.children.filter(content_type=project_type):
@@ -292,9 +307,7 @@ class Project(models.Model):
                  child.content_object.is_participant(by_user))):
                     if child.content_object.can_read(course, viewer):
                         visible.append(child.content_object)
-                    else:
-                        hidden.append(child.content_object)
-        return visible, hidden
+        return visible
 
     def description(self):
         if self.is_assignment():
@@ -442,17 +455,18 @@ class Project(models.Model):
         if parent is None:
             return True
 
+        # the author & faculty can always view a submitted response
         if self.is_participant(viewer) or course.is_faculty(viewer):
             return True
 
         assignment = parent.content_object
-        if (assignment.response_view_policy == 'always'):
+        if (assignment.response_view_policy == RESPONSE_VIEW_ALWAYS[0]):
             return True
-        elif assignment.response_view_policy == 'submitted':
+        elif assignment.response_view_policy == RESPONSE_VIEW_SUBMITTED[0]:
             # can_read if the viewer has submitted his own work
             # @todo - consider multiple assignment responses
             # via collaborative authoring.
-            (responses, hidden) = assignment.responses(course, viewer, viewer)
+            responses = assignment.responses(course, viewer, viewer)
             return len(responses) > 0 and responses[0].submitted
         else:  # assignment.response_view_policy == 'never':
             return False

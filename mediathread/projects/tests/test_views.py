@@ -4,10 +4,14 @@ import json
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.test.client import RequestFactory
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
-    AssetFactory, SherdNoteFactory, ProjectFactory
-from mediathread.projects.models import Project, AssignmentItem
+    AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
+    ProjectNoteFactory
+from mediathread.projects.models import Project, \
+    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED
+from mediathread.projects.views import SelectionAssignmentView, ProjectItemView
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):
@@ -408,23 +412,23 @@ class TestProjectSortView(MediathreadTestMixin, TestCase):
         self.assertEquals(project.ordinality, 0)
 
 
-class SelectionAssignmenViewTest(MediathreadTestMixin, TestCase):
+class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
         self.setup_alternate_course()
 
-        self.project = ProjectFactory.create(
+        self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
             policy='PrivateEditorsAreOwners',
             project_type='selection-assignment')
 
-        asset = AssetFactory.create(course=self.sample_course,
-                                    primary_source='image')
-        AssignmentItem.objects.create(project=self.project, asset=asset)
+        self.asset = AssetFactory.create(course=self.sample_course,
+                                         primary_source='image')
+        AssignmentItemFactory.create(project=self.assignment, asset=self.asset)
 
     def test_view(self):
-        url = reverse('project-workspace', args=[self.project.id])
+        url = reverse('project-workspace', args=[self.assignment.id])
 
         # anonymous
         response = self.client.get(url, {})
@@ -447,6 +451,56 @@ class SelectionAssignmenViewTest(MediathreadTestMixin, TestCase):
                           password='test')
         response = self.client.get(url, {})
         self.assertEquals(response.status_code, 200)
+
+    def test_get_assignment(self):
+        view = SelectionAssignmentView()
+        self.assertEquals(self.assignment,
+                          view.get_assignment(self.assignment))
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.assertEquals(self.assignment,
+                          view.get_assignment(response))
+
+    def test_get_my_response(self):
+        view = SelectionAssignmentView()
+
+        url = reverse('project-workspace', args=[self.assignment.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+        view.request = request
+
+        self.assertIsNone(view.get_my_response(self.assignment))
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.assertEquals(response,
+                          view.get_my_response(self.assignment))
+
+    def test_get_context_data(self):
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[self.assignment.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+
+        view = SelectionAssignmentView()
+        view.request = request
+
+        ctx = view.get_context_data(project_id=self.assignment.id)
+        self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertEquals(ctx['my_response'], response)
+        self.assertEquals(ctx['item'], self.asset)
+        self.assertEquals(ctx['response_view_policies'], RESPONSE_VIEW_POLICY)
+        self.assertEquals(ctx['submit_policy'], 'PublicEditorsAreOwners')
+        self.assertTrue('vocabulary' in ctx)
+        self.assertTrue('item_json' in ctx)
 
 
 class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
@@ -536,3 +590,94 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(project.assignmentitem_set.count(), 1)
         self.assertEquals(project.assignmentitem_set.first().asset, asset2)
+
+
+class ProjectItemViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+        self.assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='PublicEditorsAreOwners',
+            project_type='selection-assignment')
+
+        self.asset = AssetFactory.create(course=self.sample_course,
+                                         primary_source='image')
+        AssignmentItemFactory.create(project=self.assignment, asset=self.asset)
+
+        self.response_one = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.note_one = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            body='student one selection note', range1=0, range2=1)
+        ProjectNoteFactory(project=self.response_one, annotation=self.note_one)
+
+        self.response_two = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.note_two = SherdNoteFactory(
+            asset=self.asset, author=self.student_one,
+            body='student one selection note', range1=0, range2=1)
+        ProjectNoteFactory(project=self.response_two, annotation=self.note_two)
+
+        url = reverse('project-item-view',
+                      args=[self.assignment.id, self.asset.id])
+        self.view = ProjectItemView()
+        self.view.request = RequestFactory().get(url)
+        self.view.request.course = self.sample_course
+
+    def assert_visible_notes(self, viewer, visible):
+        self.view.request.user = viewer
+        response = self.view.get(None, project_id=self.assignment.id,
+                                 asset_id=self.asset.id)
+        the_json = loads(response.content)
+        self.assertEquals(len(the_json['assets']), 1)
+
+        notes = the_json['assets'].values()[0]['annotations']
+        for idx, note in enumerate(notes):
+            self.assertEquals(note['id'], visible[idx])
+
+    def test_get(self):
+        self.assert_visible_notes(self.student_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_two, [self.note_two.id])
+        self.assert_visible_notes(self.instructor_one, [])
+
+        # submit student one's response
+        self.response_one.create_or_update_collaboration(
+            'PublicEditorsAreOwners')
+        self.response_one.submitted = True
+        self.response_one.save()
+
+        self.assert_visible_notes(self.student_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_two,
+                                  [self.note_one.id, self.note_two.id])
+        self.assert_visible_notes(self.instructor_one, [self.note_one.id])
+
+        # change assignment policy to never
+        self.assignment.response_view_policy = RESPONSE_VIEW_NEVER[0]
+        self.assignment.save()
+
+        self.assert_visible_notes(self.student_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_two, [self.note_two.id])
+        self.assert_visible_notes(self.instructor_one, [self.note_one.id])
+
+        # change assignment policy to submitted
+        self.assignment.response_view_policy = RESPONSE_VIEW_SUBMITTED[0]
+        self.assignment.save()
+        self.assert_visible_notes(self.student_one, [self.note_one.id])
+        self.assert_visible_notes(self.student_two, [self.note_two.id])
+        self.assert_visible_notes(self.instructor_one, [self.note_one.id])
+
+        # submit student two's response
+        self.response_two.create_or_update_collaboration(
+            'PublicEditorsAreOwners')
+        self.response_two.submitted = True
+        self.response_two.save()
+        self.assert_visible_notes(self.student_one,
+                                  [self.note_one.id, self.note_two.id])
+        self.assert_visible_notes(self.student_two,
+                                  [self.note_one.id, self.note_two.id])
+        self.assert_visible_notes(self.instructor_one,
+                                  [self.note_one.id, self.note_two.id])

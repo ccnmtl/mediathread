@@ -24,7 +24,7 @@
             jQuery('[data-toggle="tooltip"]').tooltip();
 
             // load the selection item into storage
-            djangosherd.storage.json_update(options.relatedItems);
+            djangosherd.storage.json_update(options.itemJson);
 
             // Setup the media display window.
             this.citationView = new CitationView();
@@ -37,13 +37,16 @@
 
             this.citationView.openCitationById(null, options.itemId, null);
 
-            window.annotationList.init({
-                'asset_id': options.itemId,
-                'annotation_id': undefined,
-                'update_history': false,
-                'vocabulary': options.vocabulary,
-                'parentId': options.assignmentId
-            });
+            if (jQuery('#asset-view-details').length > 0) {
+                window.annotationList.init({
+                    'asset_id': options.itemId,
+                    'annotation_id': undefined,
+                    'update_history': false,
+                    'vocabulary': options.vocabulary,
+                    'parentId': options.assignmentId,
+                    'projectId': options.responseId
+                });
+            }
         },
         onSubmitResponse: function(evt) {
             evt.preventDefault();

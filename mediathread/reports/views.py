@@ -432,8 +432,8 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
         try:
             content_type = ContentType.objects.get_for_model(SherdNote)
             related = TermRelationship.objects.filter(
-                    content_type=content_type,
-                    object_id__in=selections.values_list('id', flat=True))
+                content_type=content_type,
+                object_id__in=selections.values_list('id', flat=True))
             return float(related.count()) / selections.count() * 100
         except ZeroDivisionError:
             return 0

@@ -10,7 +10,7 @@ from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.models import UserProfile
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, AssignmentItem, ProjectNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from structuredcollaboration.models import Collaboration, \
     CollaborationPolicyRecord
@@ -149,6 +149,14 @@ class CollaborationFactory(factory.DjangoModelFactory):
 
 class CollaborationPolicyRecordFactory(factory.DjangoModelFactory):
     FACTORY_FOR = CollaborationPolicyRecord
+
+
+class AssignmentItemFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = AssignmentItem
+
+
+class ProjectNoteFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = ProjectNote
 
 
 class MediathreadTestMixin(object):

@@ -4245,7 +4245,8 @@ a.btn.btn-default {
     font-weight: normal;
 }
 
-a.btn.btn-primary {
+a.btn.btn-primary,
+a.btn.btn-warning {
     color: white;
     -webkit-box-sizing: border-box !important;
     -moz-box-sizing: border-box !important;

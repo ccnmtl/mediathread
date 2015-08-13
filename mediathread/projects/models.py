@@ -447,7 +447,8 @@ class Project(models.Model):
     def can_read(self, course, viewer):
         # has the author published his work?
         collaboration = self.get_collaboration()
-        if not collaboration.permission_to('read', course, viewer):
+        if (collaboration is None) or \
+           (not collaboration.permission_to('read', course, viewer)):
             return False
 
         # assignment response?

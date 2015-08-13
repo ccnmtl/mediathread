@@ -1056,15 +1056,18 @@ table#sliding-content-container tr td.panel-container div.panel {
 
 table#sliding-content-container tr td.panel-container div.panel.composition {
     border: 1px solid #3A84BE;
+    background-color: #f0f5fa !important;
 }
 
 table#sliding-content-container tr td.panel-container div.panel.feedback,
 table#sliding-content-container tr td.panel-container div.panel.discussion {
-        border: 1px solid black;
+    border: 1px solid black;
+    background-color: #ededed;
 }
 
 table#sliding-content-container tr td.panel-container div.panel.assignment {
     border: 1px solid #175D35;
+    background-color: #DAE7E0 !important;
 }
 
 table#sliding-content-container tr td.panel-container div.panel form {
@@ -4231,6 +4234,7 @@ a.btn.btn-default {
 a.btn.btn-primary,
 a.btn.btn-warning {
     color: white;
+    font-weight: normal;
     -webkit-box-sizing: border-box !important;
     -moz-box-sizing: border-box !important;
     box-sizing: border-box !important;    

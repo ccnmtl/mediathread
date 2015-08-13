@@ -1104,7 +1104,7 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
             if assignment:
                 type_elt = e.find_element_by_css_selector(
                     "span.metadata-value-assignment")
-                assert type_elt.text.strip() == "ASSIGNMENT"
+                assert type_elt.text.strip() == "COMPOSITION ASSIGNMENT"
             else:
                 type_elt = e.find_element_by_css_selector(
                     "span.metadata-value-composition")

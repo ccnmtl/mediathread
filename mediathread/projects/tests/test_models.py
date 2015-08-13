@@ -80,7 +80,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                           'Submitted to Instructor')
 
         assignment = Project.objects.get(id=self.assignment.id)
-        self.assertEquals(assignment.description(), 'Assignment')
+        self.assertEquals(assignment.description(), 'Composition Assignment')
         self.assertEquals(assignment.visibility_short(), 'Published to Class')
 
         sassignment = Project.objects.get(id=self.selection_assignment.id)
@@ -103,7 +103,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(new_project.title, self.assignment.title)
         self.assertEquals(new_project.author, self.alt_instructor)
         self.assertEquals(new_project.course, self.alt_course)
-        self.assertEquals(new_project.description(), 'Assignment')
+        self.assertEquals(new_project.description(), 'Composition Assignment')
         self.assertEquals(new_project.visibility_short(), 'Published to Class')
 
     def test_migrate_projects_to_alt_course(self):
@@ -139,7 +139,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(self.alt_course.project_set.count(), 1)
         project = self.alt_course.project_set.all()[0]
         self.assertEquals(project.title, self.assignment.title)
-        self.assertEquals(project.description(), 'Assignment')
+        self.assertEquals(project.description(), 'Composition Assignment')
         self.assertEquals(project.visibility_short(), 'Published to Class')
         self.assertEquals(project.author, self.alt_instructor)
 

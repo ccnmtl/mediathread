@@ -128,7 +128,14 @@
                                     {{^is_faculty}}
                                         <div class="clearfix"></div>
                                         <br />
-                                        <a data-id="{{id}}" class="btn btn-success btnRespond">Respond to Assignment</a>
+                                        <form action="/project/create/" method="post">
+                                            <input type="hidden" name="parent" value="{{id}}" />
+                                            <input type="hidden" name="project_type" value="composition" />
+                                            {{#is_selection_assignment}}
+                                                <input type="hidden" name="title" value="My Response" />
+                                            {{/is_selection_assignment}}
+                                            <input class="btn btn-success" type="submit" value="Respond to Assignment" />
+                                        </form>
                                     {{/is_faculty}}
                                 </li>
                                 {{/assignments}}
@@ -214,6 +221,7 @@
                                                     {{title}}
                                                 </a>
                                                 {{#editable}}
+                                                {{^submitted}}
                                                 <a href="/project/delete/{{id}}/"
                                                    onclick="return ajaxDelete(this,
                                                            'project-{{id}}',
@@ -225,6 +233,7 @@
                                                         class="delete_icon" alt="Delete"
                                                         width="25" height="25" />
                                                 </a>
+                                                {{/submitted}}
                                                 {{/editable}}
                                             </span>
                                         </div>

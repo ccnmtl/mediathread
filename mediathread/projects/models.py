@@ -17,7 +17,7 @@ PROJECT_TYPE_ASSIGNMENT = 'assignment'
 PROJECT_TYPE_COMPOSITION = 'composition'
 PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'
 PROJECT_TYPES = (
-    (PROJECT_TYPE_ASSIGNMENT, 'Assignment'),
+    (PROJECT_TYPE_ASSIGNMENT, 'Composition Assignment'),
     (PROJECT_TYPE_COMPOSITION, 'Composition'),
     (PROJECT_TYPE_SELECTION_ASSIGNMENT, 'Selection Assignment')
 )
@@ -311,7 +311,7 @@ class Project(models.Model):
 
     def description(self):
         if self.is_assignment():
-            return "Assignment"
+            return "Composition Assignment"
         elif self.is_selection_assignment():
             return "Selection Assignment"
         elif self.assignment():
@@ -511,9 +511,10 @@ class Project(models.Model):
             col = Collaboration.objects.get_for_object(self)
             col.title = self.title
         except Collaboration.DoesNotExist:
-            context = Collaboration.objects.get_for_object(self.course)
             col = Collaboration(user=self.author, title=self.title,
-                                content_object=self, context=context)
+                                content_object=self)
+        if col.context is None:
+            col.context = Collaboration.objects.get_for_object(self.course)
         col.set_policy(policy_name)
         col.save()
 

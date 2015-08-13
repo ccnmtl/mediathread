@@ -498,7 +498,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['my_response'], response)
         self.assertEquals(ctx['item'], self.asset)
         self.assertEquals(ctx['response_view_policies'], RESPONSE_VIEW_POLICY)
-        self.assertEquals(ctx['submit_policy'], 'PublicEditorsAreOwners')
+        self.assertEquals(ctx['submit_policy'], 'CourseProtected')
         self.assertTrue('vocabulary' in ctx)
         self.assertTrue('item_json' in ctx)
 
@@ -599,7 +599,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
 
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='PublicEditorsAreOwners',
+            policy='CourseProtected',
             project_type='selection-assignment')
 
         self.asset = AssetFactory.create(course=self.sample_course,
@@ -608,6 +608,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
 
         self.response_one = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
+            title="Student One Response",
             policy='PrivateEditorsAreOwners', parent=self.assignment)
         self.note_one = SherdNoteFactory(
             asset=self.asset, author=self.student_one,
@@ -619,12 +620,13 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
             policy='PrivateEditorsAreOwners', parent=self.assignment)
         self.note_two = SherdNoteFactory(
             asset=self.asset, author=self.student_two,
+            title="Student One Response",
             body='student two selection note', range1=0, range2=1)
         ProjectNoteFactory(project=self.response_two, annotation=self.note_two)
 
         ProjectFactory.create(
             course=self.sample_course, author=self.student_three,
-            policy='PublicEditorsAreOwners', parent=self.assignment,
+            policy='CourseProtected', parent=self.assignment,
             submitted=True)
 
         url = reverse('project-item-view',
@@ -658,7 +660,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
 
         # submit student one's response
         self.response_one.create_or_update_collaboration(
-            'PublicEditorsAreOwners')
+            'CourseProtected')
         self.response_one.submitted = True
         self.response_one.save()
 
@@ -694,7 +696,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # submit student two's response
         # all students having submitted, the annotation is now citable
         self.response_two.create_or_update_collaboration(
-            'PublicEditorsAreOwners')
+            'CourseProtected')
         self.response_two.submitted = True
         self.response_two.save()
 

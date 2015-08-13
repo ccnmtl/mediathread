@@ -8,7 +8,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
     AssetFactory, SherdNoteFactory, ProjectFactory
 from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
-    RESPONSE_VIEW_SUBMITTED
+    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -327,6 +327,20 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())
+
+    def test_limit_response_policy(self):
+        self.assertEquals(self.assignment.response_view_policy,
+                          RESPONSE_VIEW_ALWAYS[0])
+        self.assertEquals(self.selection_assignment.response_view_policy,
+                          RESPONSE_VIEW_ALWAYS[0])
+        Project.objects.limit_response_policy(self.sample_course)
+
+        assignment = Project.objects.get(id=self.assignment.id)
+        self.assertEquals(assignment.response_view_policy,
+                          RESPONSE_VIEW_ALWAYS[0])
+        assignment = Project.objects.get(id=self.selection_assignment.id)
+        self.assertEquals(assignment.response_view_policy,
+                          RESPONSE_VIEW_NEVER[0])
 
     def test_collaboration_sync_model(self):
         project = ProjectFactory.create(

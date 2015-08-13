@@ -194,6 +194,9 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             value = int(request.POST.get(key))
             request.course.add_detail(key, value)
 
+            if value == 0:
+                Project.objects.limit_response_policy(request.course)
+
         key = course_details.ITEM_VISIBILITY_KEY
         if key in request.POST:
             value = int(request.POST.get(key))

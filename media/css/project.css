@@ -91,15 +91,6 @@ div.save-publish-status {
     text-align: left;
 }
 
-div.save-publish-status div.due-date {
-    margin-left: 30px;
-    margin-top: 3px;
-}
-
-div.save-publish-status div.due-date input#id_due_date {
-    width: 215px;
-}
-
 div.save-publish-status ul {
     margin-left: .25em;
     margin-right: .25em;
@@ -107,6 +98,10 @@ div.save-publish-status ul {
 
 div.save-publish-status li {
     list-style-type: none;
+}
+
+.save-publish-status #id_publish label {
+    font-weight: normal;
 }
 
 /* ---- Threaded comments ---------- */

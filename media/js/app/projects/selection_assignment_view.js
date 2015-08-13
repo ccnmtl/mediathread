@@ -15,13 +15,14 @@
 
     global.SelectionAssignmentView = Backbone.View.extend({
         events: {
-            'click .submit-response': 'onSubmitResponse'
+            'click .submit-response': 'onSubmitResponse',
+            'click .btn-show-submit': 'onShowSubmitDialog'
         },
         initialize: function(options) {
-            _.bindAll(this, 'onSubmitResponse');
+            _.bindAll(this, 'onSubmitResponse', 'onShowSubmitDialog');
             var self = this;
 
-            jQuery('[data-toggle="tooltip"]').tooltip();
+            self.viewer = options.viewer;
 
             // load the selection item into storage
             djangosherd.storage.json_update(options.itemJson);
@@ -36,7 +37,7 @@
             });
 
             this.citationView.openCitationById(null, options.itemId, null);
-            
+
             // annotationlist is readonly by faculty and submitted students
             var readOnly = options.responseId.length < 1 || options.submitted;
 
@@ -50,6 +51,16 @@
                     'projectId': options.responseId,
                     'readOnly': readOnly
                 });
+            }
+        },
+        onShowSubmitDialog: function(evt) {
+            evt.preventDefault();
+            var opts = {'show': true, 'backdrop': 'static'};
+
+            if (window.annotationList.hasAnnotations(this.viewer)) {
+                jQuery('#submit-project').modal(opts);
+            } else {
+                jQuery('#cannot-submit-project').modal(opts);
             }
         },
         onSubmitResponse: function(evt) {

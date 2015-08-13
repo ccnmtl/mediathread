@@ -779,20 +779,9 @@
                         MediaThread.templates.asset_annotation_current,
                         context);
                     jQuery('#annotation-current').html(rendered);
-
-
-
-                    // Preserve zoom level on
-                    //'new selection'
-                    //djangosherd.assetview
-                    // .setState({});
-                    //Let's see if just not
-                    //setting state will work.
-
                     djangosherd.assetview.clipform
                         .setState({'start': 0, 'end': 0},
                                   {'mode': 'create'});
-
                     self._initTags();
                     self._initReferences();
                     jQuery('select.vocabulary').select2({});

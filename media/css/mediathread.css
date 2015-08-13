@@ -998,6 +998,7 @@ table#sliding-content-container, table#sliding-content-container tr {
     border-collapse: collapse;
 }
 
+#asset-workspace-panel-container tr, #asset-workspace-panel-container tr td,
 table#sliding-content-container tr, table#sliding-content-container tr td {
     border: none;
     margin: 0;
@@ -3498,11 +3499,11 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
     -webkit-border-radius: 0;
 }
 
-div.asset-view-container div.asset-view-tabs .btn-primary {
+.asset-view-details .btn-primary {
     margin: 3px 0 0 3px;
 }
 
-div.asset-view-container div.asset-view-tabs #clipform-display .btn-primary {
+#clipform-display .btn-primary {
     margin: inherit;
     margin-bottom: 5px;
 }

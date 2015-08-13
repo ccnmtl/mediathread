@@ -480,4 +480,13 @@ class IsLoggedInDataView(View):
             d['youtube_apikey'] = settings.YOUTUBE_BROWSER_APIKEY
             d['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
 
-        return HttpResponse(json.dumps(d), content_type='application/json')
+        json_data = json.dumps(d)
+
+        if 'callback' in request.REQUEST:
+            # JSONP
+            rendered = '{}({});'.format(request.REQUEST['callback'], json_data)
+            return HttpResponse(rendered,
+                                content_type='application/javascript')
+        else:
+            return HttpResponse(json_data,
+                                content_type='application/json')

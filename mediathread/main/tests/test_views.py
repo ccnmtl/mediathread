@@ -763,3 +763,12 @@ class IsLoggedInDataViewTest(MediathreadTestMixin, TestCase):
         self.client.login(username=self.up.user.username, password='test')
         r = self.client.get(reverse('is_logged_in'))
         self.assertEqual(r.status_code, 200)
+
+    def test_get_when_logged_in_jsonp(self):
+        self.client.login(username=self.up.user.username, password='test')
+        r = self.client.get(reverse('is_logged_in'), {'callback': 'test'})
+
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'logged_in')
+        self.assertContains(r, 'course_selected')
+        self.assertContains(r, 'test')

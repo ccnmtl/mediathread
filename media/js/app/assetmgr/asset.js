@@ -134,6 +134,16 @@
             }
         };
 
+        this.hasAnnotations = function(username) {
+            for (var i=0; i < self.active_asset.annotations.length; i++) {
+                var note = self.active_asset.annotations[i]; 
+                if (note.author.username === username) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
         this.processAsset = function(asset_full) {
             self.asset_full_json = asset_full;
             self.user_settings = asset_full.user_settings;

@@ -52,3 +52,4 @@ factory_boy==2.4.1
 django-impersonate==0.9.1
 django-registration-redux==1.2
 django-waffle==0.10.1
+django-cors-headers==1.1.0

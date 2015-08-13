@@ -225,6 +225,12 @@ class ProjectManager(models.Manager):
             except:
                 pass
 
+    def limit_response_policy(self, course):
+        # All selection assignment response policy must be NEVER
+        projects = Project.objects.filter(
+            course=course, project_type=PROJECT_TYPE_SELECTION_ASSIGNMENT)
+        projects.update(response_view_policy=RESPONSE_VIEW_NEVER[0])
+
 
 class Project(models.Model):
     DEFAULT_TITLE = 'Untitled'
@@ -452,7 +458,7 @@ class Project(models.Model):
 
         # assignment response?
         parent = collaboration.get_parent()
-        if parent is None:
+        if parent is None or parent.content_object is None:
             return True
 
         # the author & faculty can always view a submitted response

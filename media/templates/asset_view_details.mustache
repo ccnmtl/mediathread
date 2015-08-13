@@ -20,31 +20,35 @@
             <img src="/media/img/icons/meth_addselection.png" />
             Create</a>
         {{/readOnly}}
+        
+        <div class="btn-group right">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle filter-selections"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="/media/img/icons/meth_view.png" /> View <span class="caret"></span>
+            </button>
+            <div id="annotation-filter-menu" class="dropdown-menu dropdown-menu-right">
+                <form name="annotation-list-filter">
+                    <div><b>Group selections by</b></div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="groupby" value="author" />author
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="groupby" value="tag" />tag
+                        </label>
+                    </div>
+                    <hr />
+                    <label>
+                        <input type="checkbox" name="showall" />
+                            Display all selections
+                    </label>
+                    <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>
+                </form>
+            </div>
+        </div>        
 
-        <a class="btn btn-default btn-sm filter-selections right"
-          onclick='return jQuery("#annotation-filter-menu").toggle();'>
-          <img src="/media/img/icons/meth_view.png" />
-          View
-        </a>
-        <div id="annotation-filter-menu" style="display: none">
-          <form name="annotation-list-filter">
-            <div>
-              <div>Group selections by</div>
-              <select name="groupby">
-                <option>author</option>
-                <option>tag</option>
-              </select>
-            </div>
-            <br />
-            <div>
-              <label>
-                <input type="checkbox" name="showall" />
-                Display all selections
-              </label>
-              <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>
-            </div>
-          </form>
-        </div>
         <h2>
           Selections
         </h2>

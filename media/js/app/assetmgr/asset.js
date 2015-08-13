@@ -204,10 +204,12 @@
                         if (frm) {
                             frm.elements.showall.checked = retrieveData(
                                 'annotation-list-filter__showall');
-                            jQuery(frm.elements.groupby).val(
-                                    retrieveData(
-                                        'annotation-list-filter__group') ||
-                                        'author');
+                            
+                            var value = retrieveData(
+                                'annotation-list-filter__group') || 'author';
+                            jQuery(
+                                'input[name="groupby"][value="' + value + '"]')
+                                .prop('checked', true); 
 
                             jQuery(frm.elements.showall)
                                 .change(self.showHideAnnotations);
@@ -216,7 +218,7 @@
                                 storeData('annotation-list-filter__group', val);
                                 self.groupBy(val);
                             });
-                            self.groupBy(jQuery(frm.elements.groupby).val());
+                            self.groupBy(value);
                         }
                     }
                 );

@@ -63,7 +63,7 @@ class ProjectForm(forms.ModelForm):
                  if choice[0] in PUBLISH_OPTIONS_STUDENT]
 
         if course_details.allow_public_compositions(request.course):
-            if not kwargs['instance'] or kwargs['instance'].is_composition():
+            if kwargs['instance'] and kwargs['instance'].is_composition():
                 self.fields['publish'].choices.append(PUBLISH_OPTIONS_PUBLIC)
 
         choices = [RESPONSE_VIEW_NEVER]

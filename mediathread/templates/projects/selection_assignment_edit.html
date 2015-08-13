@@ -82,35 +82,9 @@
                             <img alt="Edit" src="/media/img/icons/meth_view.png"></span>
                         </a>
                         {% endif %}
-                    </h2>
+                    </h2>                   
                     <div data-page="1" class="page">
-                        <h3>1. Specify the Title</h3>
-                        <div class="form-group">
-                            <input type="text" name="title" class="form-control"
-                                placeholder="Title"
-                                value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
-                            <div class="help-inline">Title is a required field</div>
-                        </div>
-                        <nav>
-                            <ul class="pager">
-                                <li><a href="#" class="right next">Next</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div data-page="2" class="hidden page">
-                        <h3>2. Specify the Instructions</h3>
-                        <div class="form-group">
-                            <textarea name="body" class="form-control mceEditor"
-                                placeholder="Instructions">{{form.instance.body}}</textarea>
-                            <div class="help-inline">Instructions is a required field</div>      
-                        </div>
-                        <ul class="pager">
-                            <li><a href="#" class="left prev">Previous</a></li>
-                            <li><a href="#" class="right next">Next</a></li>
-                        </ul>
-                    </div>
-                    <div data-page="3" class="hidden page">
-                        <h3>3. Select Item</h3>
+                        <h3>1. Select Item</h3>
                         <p>Search and filter the collection. Click on an item
                             to select it as the basis for the assignment.</p>
                         <div class="selected-item">
@@ -138,10 +112,50 @@
                         <div class="help-inline">An item must be selected.</div>
                         <div class="clearfix"></div>
                         <ul class="pager">
+                            <li><a href="#" class="right next">Next</a></li>
+                        </ul>
+                    </div>                    
+                    <div data-page="2" class="hidden page">
+                        <h3>2. Specify the Title &amp; Instructions</h3>
+                        <div class="form-group">
+                            <input type="text" name="title" class="form-control"
+                                placeholder="Title"
+                                value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
+                            <div class="help-inline">Title is a required field</div>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="body" class="form-control mceEditor"
+                                placeholder="Instructions">{{form.instance.body}}</textarea>
+                            <div class="help-inline">Instructions is a required field</div>      
+                        </div>
+                        <nav>
+                            <ul class="pager">
+                                <li><a href="#" class="left prev">Previous</a></li>
+                                <li><a href="#" class="right next">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div data-page="3" class="hidden page">
+                        <h3>3. Publish options</h3>
+                        <p></p>
+                        <div class="form-group">
+                            <label for="due_date">Due Date <span class="small">(optional)</span></label>
+                            <input class="form-control" type="text"
+                                name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label for="publish">Visibility</label>
+                            <div class="radio">
+                                {{form.publish}}
+                            </div>
+                        </div>
+                        <div class="help-inline">Please select who can see your work.</div>           
+                        <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right next">Next</a></li>
                         </ul>
-                    </div>
+                    </div>                    
                     <div data-page="4" class="hidden page">
                         <h3>4. Response Policy</h3>
                         <p></p>
@@ -151,39 +165,34 @@
                         <div class="help-inline">Please choose how responses will be viewed.</div>
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
-                            <li><a href="#" class="right next">Next</a></li>
-                        </ul>
-                    </div>                    
-                    <div data-page="5" class="hidden page">
-                        <h3>5. Publish</h3>
-                        <p></p>
-                        <div class="form-group">
-                            <label for="due_date">Due Date <span class="small">(optional)</span></label>
-                            <input class="form-control" type="text"
-                                name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
-                        </div>
-                        <br />
-                        <div class="form-group">
-                            <label for="publish">Who can see this assignment?</label>
-                            <div class="radio">
-                                {{form.publish}}
-                            </div>
-                        </div>
-                        <div class="help-inline">Please select who can see your work.</div>           
-                        <ul class="pager">
-                            <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right save">Save</a></li>
                         </ul>
-                    </div>
+                    </div>                    
                 </form>
             </div>
         </div>
         <div class="col-md-9">
-            <table id="sliding-content-container" class="hidden">
+            <table id="sliding-content-container">
                 <tr id="sliding-content-row" class="sliding-content-row">
                     <td id="sliding-content-last-column" class="filler"></td>
                 </tr>
-            </table>            
+            </table>
+
+            <div class="row">
+                <div class="col-md-7 col-md-offset-1">
+                    <div class="asset-view-header column-container">
+                        <h2>Item
+                            <span class="asset-view-title"></span>
+                        </h2>
+                    </div>
+                    <div class="asset-view-published hidden">
+                        <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
+                            <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                            <div class="asset-display"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

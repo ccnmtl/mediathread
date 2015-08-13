@@ -3285,7 +3285,7 @@ div.collection_table {
 .asset-view-published {
     height: 100%;
     min-height: 300px;
-    border: 1px solid #ccc;
+    border: 1px solid #efefef;
 }
 
 .asset-title {
@@ -3354,10 +3354,6 @@ div.collection_table {
     text-align: left;
     position: absolute;
     bottom: 2px;
-}
-
-div.asset-view-header {
-    margin-left: 10px;
 }
 
 span.project-view-title,
@@ -4306,8 +4302,9 @@ a.btn.btn-default img.left {
     width: 70%;
 }
 
+.selection-assignment .mceLayout,
 .selection-assignment textarea {
-    width: 100%;
+    width: 100% !important;
     height: 100%;
 }
 

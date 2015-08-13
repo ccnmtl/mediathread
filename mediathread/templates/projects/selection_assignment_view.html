@@ -8,6 +8,7 @@
 {% block css %}
     <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
 
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
@@ -57,14 +58,10 @@
                 {% endif %}
             </h2>
             <div class="small">
-                <h3>{{assignment.title}}</h3>
-                {% if assignment_can_edit %}
-                    <div><b>Visibility</b>: {{assignment.visibility_short}}</div>
+                <h1 class="project-title">{{assignment.title}}</h1><br />
+                {% if assignment.due_date %}
+                    <div><b>Due</b>: {{assignment.due_date|date:'m/d/y'}}</div>
                 {% endif %}
-                {% if project.due_date %}
-                    <div><b>Due</b>: {{project.due_date|date:'m/d/y'}}</div>
-                {% endif %}
-                
                 <div>
                     <b>Submitted Response Policy:</b>
                     {% for key, value in response_view_policies %}
@@ -74,13 +71,16 @@
                     {% endfor %}
                     </a>
                 </div>
+                {% if assignment_can_edit %}
+                    <div><b>Visibility</b>: {{assignment.visibility_short}}</div>
+                {% endif %}
             </div>
             <p>{{assignment.body|safe}}</p>
         </div>
         <div class="col-md-9">
             <div class="row">
                 <div class="col-md-7">
-                    <div class="asset-view-header">
+                    <div class="asset-view-header column-container">
                         <h2>Item
                             <span class="asset-view-title">
                                 {{assignment.assignmentitem_set.first.asset.title}}
@@ -183,9 +183,11 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if my_response or assignment_can_edit %}
+                    {% if assignment_can_edit and responses|length < 1 %}
+                        <div class="well">No responses yet</div>
+                    {% else %}{% if my_response or assignment_can_edit %}
                         <div id="asset-view-details" class="asset-view-details"></div>
-                    {% endif %}
+                    {% endif %}{% endif %}
                 </div>
             </div>
         </div>

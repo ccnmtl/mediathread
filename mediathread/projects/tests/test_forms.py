@@ -39,11 +39,10 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
         self.sample_course.add_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY, 1)
         frm = ProjectForm(self.request, instance=None, data={})
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 4)
+        self.assertEquals(len(lst), 3)
         self.assertEquals(lst[0][0], 'PrivateEditorsAreOwners')
         self.assertEquals(lst[1][0], 'InstructorShared')
         self.assertEquals(lst[2][0], 'CourseProtected')
-        self.assertEquals(lst[3][0], 'PublicEditorsAreOwners')
 
     def test_response_policy_options(self):
         frm = ProjectForm(self.request, instance=None, data={})

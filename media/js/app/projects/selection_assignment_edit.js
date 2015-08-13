@@ -1,4 +1,4 @@
-/* global _: true, Backbone: true */
+/* global _: true, Backbone: true, CitationView: true */
 /* global showMessage: true, tinyMCE: true */
 
 (function(jQuery) {
@@ -15,10 +15,9 @@
             'keypress form[name="selection-assignment-edit"]': 'onFormKeyPress'
         },
         initialize: function(options) {
-            _.bindAll(this, 'onNext', 'onPrev', 'onSave',
-                      'onFormKeyPress',
+            _.bindAll(this, 'onNext', 'onPrev', 'onSave', 'onFormKeyPress',
                       'onGalleryItemMouseOver', 'onGalleryMouseOut',
-                        'onGalleryItemSelect');
+                      'onGalleryItemSelect');
             var self = this;
             this.currentPage = 1;
             this.totalPages = jQuery('.page').length;
@@ -36,22 +35,31 @@
                 minDate: 0,
                 dateFormat: 'mm/dd/yy'
             });
+
+            // Setup the media display window.
+            this.citationView = new CitationView();
+            this.citationView.init({
+                'default_target': 'asset-workspace-videoclipbox',
+                'presentation': 'medium',
+                'clipform': false,
+                'autoplay': false
+            });
+
+            jQuery(window).trigger('resize');
         },
         validate: function(pageNo) {
             var q;
             if (pageNo === 1) {
-                return jQuery(this.el).find('input[name="title"]')
-                                      .val()
-                                      .length > 0;
-            } else if (pageNo === 2) {
-                return tinyMCE.activeEditor.getContent().length > 0;
-            } else if (pageNo === 3) {
                 return jQuery('input[name="item"]').val() !== '';
+            } else if (pageNo === 2) {
+                var title = jQuery(this.el).find('input[name="title"]').val();
+                var body = tinyMCE.activeEditor.getContent();
+                return title.length > 0 && body.length > 0;
+            } else if (pageNo === 3) {
+                q = 'input[name="publish"]:checked';
+                return jQuery(q).val() !== undefined;
             } else if (pageNo === 4) {
                 q = 'input[name="response_view_policy"]:checked';
-                return jQuery(q).val() !== undefined;
-            } else if (pageNo === 5) {
-                q = 'input[name="publish"]:checked';
                 return jQuery(q).val() !== undefined;
             }
         },
@@ -67,22 +75,30 @@
                 var q = 'div[data-page="' + this.currentPage + '"]';
                 jQuery(q).removeClass('hidden');
 
-                if (this.currentPage == 3) {
+                if (this.currentPage === 1) {
                     jQuery('#sliding-content-container').removeClass('hidden');
-                    jQuery(window).trigger('resize');
-                } else {
+                    jQuery('.asset-view-published').addClass('hidden');
+                } else if (this.currentPage === 2) {
                     jQuery('#sliding-content-container').addClass('hidden');
+                    jQuery('.asset-view-published').removeClass('hidden');
+                    var itemId = jQuery('input[name="item"]').val();
+                    this.citationView.openCitationById(null, itemId, null);
                 }
             }
         },
         onPrev: function() {
             jQuery('#sliding-content-container').addClass('hidden');
-
-            var q = 'div[data-page="' + this.currentPage + '"]';
-            jQuery(q).addClass('hidden');
+            jQuery('.page').addClass('hidden');
 
             this.currentPage = Math.max(this.currentPage - 1, 1);
+            var q = 'div[data-page="' + this.currentPage + '"]';
             jQuery(q).removeClass('hidden');
+
+            if (this.currentPage === 1) {
+                jQuery('#sliding-content-container').removeClass('hidden');
+                jQuery('#asset-view-details').addClass('hidden');
+                jQuery(window).trigger('resize');
+            }
         },
         onSave: function(evt) {
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');

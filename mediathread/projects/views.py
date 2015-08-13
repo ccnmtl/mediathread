@@ -39,20 +39,22 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
             title = Project.DEFAULT_TITLE
         return title
 
-    def set_due_date(self, project):
-        # convert mm/dd/yyyy into a datetime
-        due_date = self.request.POST.get('due_date', None)
+    def format_date(self, due_date):
+        formatted = None
         if due_date and len(due_date) > 0:
-            project.due_date = datetime.strptime(due_date, '%m/%d/%Y')
+            # convert mm/dd/yyyy into a datetime
+            formatted = datetime.strptime(due_date, '%m/%d/%Y')
+        return formatted
 
     def post(self, request):
         project_type = request.POST.get('project_type', 'composition')
+        body = request.POST.get('body', '')
         response_policy = request.POST.get('response_view_policy', 'always')
-        project = Project(author=request.user, course=request.course,
-                          title=self.get_title(), project_type=project_type,
-                          response_view_policy=response_policy)
-        self.set_due_date(project)
-        project.save()
+        due_date = self.format_date(self.request.POST.get('due_date', None))
+        project = Project.objects.create(
+            author=request.user, course=request.course, title=self.get_title(),
+            project_type=project_type, response_view_policy=response_policy,
+            body=body, due_date=due_date)
 
         project.participants.add(request.user)
 
@@ -256,21 +258,20 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             assignment = project.assignment()
         return assignment
 
-    def get_my_response(self, assignment):
-        my_response = None
-        responses = assignment.responses(self.request.course,
-                                         self.request.user, self.request.user)
-        if len(responses) > 0:
-            my_response = responses[0]
-        return my_response
+    def get_my_response(self, responses):
+        for response in responses:
+            if response.is_participant(self.request.user):
+                return response
+        return None
 
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        assignment = self.get_assignment(project)
-        can_edit = assignment.can_edit(self.request.course, self.request.user)
-        my_response = self.get_my_response(assignment)
+        parent = self.get_assignment(project)
+        can_edit = parent.can_edit(self.request.course, self.request.user)
+        responses = parent.responses(self.request.course, self.request.user)
+        my_response = self.get_my_response(responses)
 
-        item = assignment.assignmentitem_set.first().asset
+        item = parent.assignmentitem_set.first().asset
         item_ctx = AssetResource().render_one_context(self.request, item)
 
         vocabulary_json = VocabularyResource().render_list(
@@ -278,14 +279,15 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             Vocabulary.objects.get_for_object(self.request.course))
 
         ctx = {
-            'assignment': assignment,
+            'assignment': parent,
             'assignment_can_edit': can_edit,
             'item': item,
             'item_json': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': 'CourseProtected',
-            'vocabulary': json.dumps(vocabulary_json)
+            'vocabulary': json.dumps(vocabulary_json),
+            'responses': responses
         }
         return ctx
 

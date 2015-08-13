@@ -472,13 +472,16 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         request.user = self.student_one
         view.request = request
 
-        self.assertIsNone(view.get_my_response(self.assignment))
+        responses = self.assignment.responses(self.sample_course,
+                                              self.student_one)
+        self.assertIsNone(view.get_my_response(responses))
 
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PrivateEditorsAreOwners', parent=self.assignment)
-        self.assertEquals(response,
-                          view.get_my_response(self.assignment))
+        responses = self.assignment.responses(self.sample_course,
+                                              self.student_one)
+        self.assertEquals(response, view.get_my_response(responses))
 
     def test_get_context_data(self):
         response = ProjectFactory.create(

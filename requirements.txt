@@ -4,7 +4,7 @@ psycopg2==2.6.1
 statsd==3.1
 pep8==1.6.2
 pyflakes==0.8.1
-mccabe==0.3
+mccabe==0.3.1
 flake8==2.3.0
 lxml==3.4.4
 fuzzywuzzy==0.4.0  # lettuce

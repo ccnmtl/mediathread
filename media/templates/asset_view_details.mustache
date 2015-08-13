@@ -13,11 +13,13 @@
     {{/annotation.editing}}>
 
     {{#asset-current}}
-      <a class="btn btn-default btn-sm create-selection right"
-        title="Create Selection"
-        onclick="return annotationList.newAnnotation();">
-        <img src="/media/img/icons/meth_addselection.png" />
-        Create</a>
+        {{^readOnly}}
+        <a class="btn btn-default btn-sm create-selection right"
+            title="Create Selection"
+            onclick="return annotationList.newAnnotation();">
+            <img src="/media/img/icons/meth_addselection.png" />
+            Create</a>
+        {{/readOnly}}
 
         <a class="btn btn-default btn-sm filter-selections right"
           onclick='return jQuery("#annotation-filter-menu").toggle();'>
@@ -47,6 +49,7 @@
           Selections
         </h2>
         {{^annotations}}
+        {{^readOnly}}
           <center>
             <br />
             <div>You have no selections on this item.</div>
@@ -59,6 +62,7 @@
               Create a selection
             </a>
           </center>
+          {{/readOnly}}
           {{/annotations}}
 
           {{#annotations}}

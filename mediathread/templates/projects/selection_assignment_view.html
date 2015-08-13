@@ -37,7 +37,8 @@
             responseId: '{{my_response.id}}',
             itemId: '{{item.id}}',
             itemJson: JSON.parse('{{item_json|escapejs}}'),
-            vocabulary: JSON.parse('{{vocabulary|escapejs}}')
+            vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
+            submitted: {% if my_response and my_response.submitted %}true{% else %}false{% endif %}
         });
     </script>
 {% endblock %}

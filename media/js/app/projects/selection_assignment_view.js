@@ -36,6 +36,9 @@
             });
 
             this.citationView.openCitationById(null, options.itemId, null);
+            
+            // annotationlist is readonly by faculty and submitted students
+            var readOnly = options.responseId.length < 1 || options.submitted;
 
             if (jQuery('#asset-view-details').length > 0) {
                 window.annotationList.init({
@@ -44,7 +47,8 @@
                     'update_history': false,
                     'vocabulary': options.vocabulary,
                     'parentId': options.assignmentId,
-                    'projectId': options.responseId
+                    'projectId': options.responseId,
+                    'readOnly': readOnly
                 });
             }
         },

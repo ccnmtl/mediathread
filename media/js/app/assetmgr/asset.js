@@ -1073,6 +1073,7 @@
             var context = {
                 'asset-current': self.active_asset,
                 'vocabulary': self.vocabulary,
+                'readOnly': self.config.readOnly,
                 'lower': function() {
                     return function(text, render) {
                         return render(text).toLowerCase();

@@ -95,8 +95,7 @@
                                 <form action="/project/create/" method="post">
                                     <input type="hidden" name="parent" value="{{assignment.id}}" />
                                     <input type="hidden" name="project_type" value="composition" />
-                                    <input type="hidden" name="title"
-                                        value="Response" />
+                                    <input type="hidden" name="title" value="My Response" />
                                     <input class="btn btn-success" type="submit" value="Respond to Assignment" />
                                 </form>
                             </div>
@@ -121,10 +120,7 @@
                                     <h4 class="modal-title">Submit Response</h4>
                                   </div>
                                   <div class="modal-body">
-                                    <form method="post" class="project-response-form"
-                                        action="{% url 'project-save' my_response.id %}">
-                                        <div>Your response is incomplete.</div><br />
-                                    </form>
+                                    <div>Your response is incomplete.</div><br />
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -158,7 +154,7 @@
                                             <strong>Important!</strong> Once you submit your response, you cannot unsubmit it.
                                         </div>
                                         <input type="hidden" name="publish" value="{{submit_policy}}" />
-                                        <input type="hidden" name="title" value="Selection Assignment Response by {{request.user.get_full_name}}" />
+                                        <input type="hidden" name="title" value="{{my_response.title}}" />
                                     </form>
                                   </div>
                                   <div class="modal-footer">

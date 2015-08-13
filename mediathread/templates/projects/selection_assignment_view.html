@@ -186,7 +186,9 @@
                     {% if assignment_can_edit and responses|length < 1 %}
                         <div class="well">No responses yet</div>
                     {% else %}{% if my_response or assignment_can_edit %}
-                        <div id="asset-view-details" class="asset-view-details"></div>
+                        <div id="asset-workspace-panel-container">
+                            <div id="asset-view-details" class="asset-view-details"></div>
+                        </div>
                     {% endif %}{% endif %}
                 </div>
             </div>

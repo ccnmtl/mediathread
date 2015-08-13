@@ -49,7 +49,20 @@ Feature: Homepage Delete Operations. Project, Item
         Given I am test_student_one in Sample Course
         
         Given the home workspace is loaded
-        The "Sample Assignment Response" project has a delete icon
+        The "Sample Assignment Response" project has no delete icon
+        
+        # Add a title and some text
+        When I click the "Sample Assignment Response" link
+        Then I am at the Sample Assignment Response page
+        
+        # Save
+        When I click the Saved button
+        Then I set the project visibility to "Private - only author(s) can view"
+        Then I save the changes
+        Then there is a "Private" link
+
+        When I click the "Sample Course" link
+        Given the home workspace is loaded
         
         When I click the "Sample Assignment Response" project delete icon
         Then I cancel the action

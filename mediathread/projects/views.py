@@ -284,7 +284,7 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             'item_json': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
-            'submit_policy': 'PublicEditorsAreOwners',
+            'submit_policy': 'CourseProtected',
             'vocabulary': json.dumps(vocabulary_json)
         }
         return ctx

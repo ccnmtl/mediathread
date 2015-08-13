@@ -30,7 +30,7 @@ class ProjectResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all().order_by('id')
-        excludes = ['participants', 'body', 'submitted',
+        excludes = ['participants', 'body',
                     'feedback', 'sherdnote_set']
         list_allowed_methods = []
         detail_allowed_methods = []
@@ -50,6 +50,7 @@ class ProjectResource(ModelResource):
         bundle.data['modified_time'] = bundle.obj.modified.strftime("%I:%M %p")
         bundle.data['editable'] = self.editable
         bundle.data['is_faculty'] = self.is_viewer_faculty
+        bundle.data['submitted'] = bundle.obj.submitted
 
         participants = bundle.obj.attribution_list()
         bundle.data['participants'] = [{

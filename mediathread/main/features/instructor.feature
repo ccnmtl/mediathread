@@ -107,7 +107,7 @@ Feature: Instructor Dashboard
         Then I am at the Home page
         
         Given the home workspace is loaded
-        Then there is a private "Instructor Feature 4" project by Instructor One
+        Then there is a draft "Instructor Feature 4" project by Instructor One
         
         Finished using Selenium
         

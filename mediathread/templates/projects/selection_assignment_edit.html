@@ -30,7 +30,6 @@
             base: '{{STATIC_URL}}js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'
         };
     </script>
-
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
     <script src="{{STATIC_URL}}js/app/projects/selection_assignment_edit.js" type="text/javascript"></script>
 {% endblock %}
@@ -82,11 +81,21 @@
                             <img alt="Edit" src="/media/img/icons/meth_view.png"></span>
                         </a>
                         {% endif %}
-                    </h2>                   
+                    </h2>
                     <div data-page="1" class="page">
-                        <h3>1. Select Item</h3>
-                        <p>Search and filter the collection. Click on an item
-                            to select it as the basis for the assignment.</p>
+                        <ol>
+                            <li>Choose an item in your collection.</li>
+                            <li>Write Instructions</li>
+                            <li>Set Response Due Date & Visibility</li>
+                            <li>Publish Assignment</li>
+                        </ol>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right next">Next</a></li>
+                        </ul>
+                    </div>                   
+                    <div data-page="2" class="page hidden">
+                        <h3>1. Choose an item from the course collection</h3>
                         <div class="selected-item">
                             {% if item %}
                                 <div class="gallery-item static-height rounded" data-id="{{item.id}}">
@@ -112,11 +121,17 @@
                         <div class="help-inline">An item must be selected.</div>
                         <div class="clearfix"></div>
                         <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right next">Next</a></li>
                         </ul>
                     </div>                    
-                    <div data-page="2" class="hidden page">
-                        <h3>2. Specify the Title &amp; Instructions</h3>
+                    <div data-page="3" class="hidden page">
+                        <h3>2. Write Instructions</h3>
+                        <p>Write a title and instructions for your students
+                        on how to work  with the item you've chosen.
+                        These could include  selection, annotation, 
+                        and/or tagging instructions</p>
+                        
                         <div class="form-group">
                             <input type="text" name="title" class="form-control"
                                 placeholder="Title"
@@ -124,8 +139,9 @@
                             <div class="help-inline">Title is a required field</div>
                         </div>
                         <div class="form-group">
-                            <textarea name="body" class="form-control mceEditor"
-                                placeholder="Instructions">{{form.instance.body}}</textarea>
+                            <textarea name="body" class="form-control mceEditor">
+                                {{form.instance.body}}
+                            </textarea>
                             <div class="help-inline">Instructions is a required field</div>      
                         </div>
                         <nav>
@@ -135,8 +151,8 @@
                             </ul>
                         </nav>
                     </div>
-                    <div data-page="3" class="hidden page">
-                        <h3>3. Publish options</h3>
+                    <div data-page="4" class="hidden page">
+                        <h3>3. Set Response Due Date &amp; Visibility</h3>
                         <p></p>
                         <div class="form-group">
                             <label for="due_date">Due Date <span class="small">(optional)</span></label>
@@ -144,25 +160,25 @@
                                 name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                         </div>
                         <br />
+                        <label for="response_view_policy">Visibility</label>
                         <div class="form-group">
-                            <label for="publish">Visibility</label>
-                            <div class="radio">
-                                {{form.publish}}
-                            </div>
+                            {{form.response_view_policy}}
                         </div>
-                        <div class="help-inline">Please select who can see your work.</div>           
+                        <div class="help-inline">Please choose how responses will be viewed.</div>           
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right next">Next</a></li>
                         </ul>
                     </div>                    
-                    <div data-page="4" class="hidden page">
-                        <h3>4. Response Policy</h3>
+                    <div data-page="5" class="hidden page">
+                        <h3>4. Publish Assignment</h3>
                         <p></p>
                         <div class="form-group">
-                            {{form.response_view_policy}}
+                            <div class="radio">
+                                {{form.publish}}
+                            </div>
                         </div>
-                        <div class="help-inline">Please choose how responses will be viewed.</div>
+                        <div class="help-inline">Please select who can see your work.</div>
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right save">Save</a></li>
@@ -172,20 +188,20 @@
             </div>
         </div>
         <div class="col-md-9">
-            <table id="sliding-content-container">
+            <table id="sliding-content-container" class="hidden">
                 <tr id="sliding-content-row" class="sliding-content-row">
                     <td id="sliding-content-last-column" class="filler"></td>
                 </tr>
             </table>
 
-            <div class="row">
+            <div class="row hidden asset-view-publish-container">
                 <div class="col-md-7 col-md-offset-1">
                     <div class="asset-view-header column-container">
                         <h2>Item
                             <span class="asset-view-title"></span>
                         </h2>
                     </div>
-                    <div class="asset-view-published hidden">
+                    <div class="asset-view-published">
                         <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
                             <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                             <div class="asset-display"></div>

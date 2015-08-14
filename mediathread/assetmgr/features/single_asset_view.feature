@@ -126,7 +126,7 @@ Feature: Single Asset View
         Given the composition workspace is loaded
         Then I am at the Untitled page
         Then I see "by Student One"
-        And I see "Private"
+        And I see "Draft"
         
         # Add a title and some text and an asset
         Then I call the Composition "Single Asset View 4"

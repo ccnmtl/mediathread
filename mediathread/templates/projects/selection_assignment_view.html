@@ -35,6 +35,7 @@
         var view = new SelectionAssignmentView({
             el: jQuery('.selection-assignment').first(),
             viewer: '{{request.user.username}}',
+            isFaculty: {% if is_faculty %}true{% else %}false{% endif %},
             assignmentId: '{{assignment.id}}',
             responseId: '{{my_response.id}}',
             itemId: '{{item.id}}',
@@ -62,15 +63,17 @@
                 {% if assignment.due_date %}
                     <div><b>Due</b>: {{assignment.due_date|date:'m/d/y'}}</div>
                 {% endif %}
-                <div>
-                    <b>Submitted Response Policy:</b>
-                    {% for key, value in response_view_policies %}
-                        {% ifequal key assignment.response_view_policy %}
-                            {{value}}
-                        {% endifequal %}
-                    {% endfor %}
-                    </a>
-                </div>
+                {% if assignment_can_edit %}
+                    <div>
+                        <b>Responses:</b>
+                        {% for key, value in response_view_policies %}
+                            {% ifequal key assignment.response_view_policy %}
+                                {{value}}
+                            {% endifequal %}
+                        {% endfor %}
+                        </a>
+                    </div>
+                {% endif %}
                 {% if assignment_can_edit %}
                     <div><b>Visibility</b>: {{assignment.visibility_short}}</div>
                 {% endif %}
@@ -89,27 +92,24 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if not assignment_can_edit %}
-                        {% if not my_response %}
-                            <div class="text-right">
-                                <form action="/project/create/" method="post">
-                                    <input type="hidden" name="parent" value="{{assignment.id}}" />
-                                    <input type="hidden" name="project_type" value="composition" />
-                                    <input type="hidden" name="title" value="My Response" />
-                                    <input class="btn btn-success" type="submit" value="Respond to Assignment" />
-                                </form>
-                            </div>
-                        {% else %}{% if my_response.submitted %}
+                    {% if not assignment_can_edit and not is_faculty %}
+                        {% if my_response.submitted %}
                             <div class="right">
                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
                                 <strong>Submitted</strong> {{my_response.submitted_date}}
                             </div>
-                        {% else %}
-                            <div class="text-right">
-                                <!-- Submit -->
-                                <button type="button" class="btn btn-primary btn-show-submit" >
-                                    Submit Response
-                                </button>
+                        {% else %}{% if my_response %}
+                            <div>
+                                <div class="left">
+                                    <!-- Submit -->
+                                    <button type="button" class="btn btn-primary btn-show-submit" style="display: inline">
+                                        Submit Response
+                                    </button>
+                                </div>
+                                <div class="right">
+                                    <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 
+                                    <strong>Draft</strong>
+                                </div>
                             </div>
                             <div class="modal fade" id="cannot-submit-project" tabindex="-1"
                                 role="dialog" aria-labelledby="Cannot Submit Response">
@@ -179,13 +179,29 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if assignment_can_edit and responses|length < 1 %}
-                        <div class="well">No responses yet</div>
-                    {% else %}{% if my_response or assignment_can_edit %}
-                        <div id="asset-workspace-panel-container">
-                            <div id="asset-view-details" class="asset-view-details"></div>
-                        </div>
-                    {% endif %}{% endif %}
+                    {% if not assignment_can_edit and not is_faculty %}
+                        {% if not my_response %}
+                            <div class="text-center">
+                                <form action="/project/create/" method="post">
+                                    <input type="hidden" name="parent" value="{{assignment.id}}" />
+                                    <input type="hidden" name="project_type" value="composition" />
+                                    <input type="hidden" name="title" value="My Response" />
+                                    <input class="btn btn-success" type="submit" value="Respond to Assignment" />
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if responses|length < 1 %}
+                        {% if assignment_can_edit or is_faculty %}
+                            <div class="well">No responses yet</div>
+                        {% endif %}
+                    {% else %}
+                        {% if my_response or assignment_can_edit or is_faculty %}
+                            <div id="asset-workspace-panel-container" class="asset-workspace column-container">
+                                <div id="asset-view-details" class="asset-view-details"></div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>

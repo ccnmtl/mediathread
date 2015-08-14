@@ -57,9 +57,9 @@ Feature: Homepage Delete Operations. Project, Item
         
         # Save
         When I click the Saved button
-        Then I set the project visibility to "Private - only author(s) can view"
+        Then I set the project visibility to "Draft - only author(s) can view"
         Then I save the changes
-        Then there is a "Private" link
+        Then there is a "Draft" link
 
         When I click the "Sample Course" link
         Given the home workspace is loaded

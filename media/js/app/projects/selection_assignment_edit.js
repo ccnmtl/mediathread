@@ -17,7 +17,7 @@
         initialize: function(options) {
             _.bindAll(this, 'onNext', 'onPrev', 'onSave', 'onFormKeyPress',
                       'onGalleryItemMouseOver', 'onGalleryMouseOut',
-                      'onGalleryItemSelect');
+                      'onGalleryItemSelect', 'beforeUnload');
             var self = this;
             this.currentPage = 1;
             this.totalPages = jQuery('.page').length;
@@ -45,23 +45,27 @@
                 'autoplay': false
             });
 
-            jQuery(window).trigger('resize');
+            jQuery(window).bind('beforeunload', self.beforeUnload);
+        },
+        beforeUnload: function() {
+            return "Changes to your assignment have not been saved.";
         },
         validate: function(pageNo) {
             var q;
-            if (pageNo === 1) {
+            if (pageNo === 2) {
                 return jQuery('input[name="item"]').val() !== '';
-            } else if (pageNo === 2) {
+            } else if (pageNo === 3) {
                 var title = jQuery(this.el).find('input[name="title"]').val();
                 var body = tinyMCE.activeEditor.getContent();
                 return title.length > 0 && body.length > 0;
-            } else if (pageNo === 3) {
-                q = 'input[name="publish"]:checked';
-                return jQuery(q).val() !== undefined;
             } else if (pageNo === 4) {
                 q = 'input[name="response_view_policy"]:checked';
                 return jQuery(q).val() !== undefined;
+            } else if (pageNo === 5) {
+                q = 'input[name="publish"]:checked';
+                return jQuery(q).val() !== undefined;
             }
+            return true;
         },
         onNext: function(evt) {
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
@@ -75,14 +79,21 @@
                 var q = 'div[data-page="' + this.currentPage + '"]';
                 jQuery(q).removeClass('hidden');
 
-                if (this.currentPage === 1) {
+                if (this.currentPage === 2) {
                     jQuery('#sliding-content-container').removeClass('hidden');
-                    jQuery('.asset-view-published').addClass('hidden');
-                } else if (this.currentPage === 2) {
+                    jQuery('.asset-view-publish-container').addClass('hidden');
+                    jQuery(window).trigger('resize');
+                } else if (this.currentPage === 3) {
                     jQuery('#sliding-content-container').addClass('hidden');
-                    jQuery('.asset-view-published').removeClass('hidden');
+                    jQuery('.asset-view-publish-container').removeClass('hidden');
                     var itemId = jQuery('input[name="item"]').val();
                     this.citationView.openCitationById(null, itemId, null);
+                } else if (this.currentPage === 4) {
+                    // if there is only one radio button, select it
+                    var elts = jQuery('input[name="response_view_policy"]');
+                    if (elts.length === 1) {
+                        jQuery(elts).attr('checked', 'checked');
+                    }
                 }
             }
         },
@@ -94,7 +105,7 @@
             var q = 'div[data-page="' + this.currentPage + '"]';
             jQuery(q).removeClass('hidden');
 
-            if (this.currentPage === 1) {
+            if (this.currentPage === 2) {
                 jQuery('#sliding-content-container').removeClass('hidden');
                 jQuery('#asset-view-details').addClass('hidden');
                 jQuery(window).trigger('resize');
@@ -105,6 +116,7 @@
             if (!this.validate(this.currentPage)) {
                 $current.addClass('has-error');
             } else {
+                jQuery(window).unbind('beforeunload');
                 tinyMCE.activeEditor.save();
                 var frm = jQuery(evt.currentTarget).parents('form')[0];
                 jQuery.ajax({

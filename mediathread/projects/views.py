@@ -279,6 +279,7 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             Vocabulary.objects.get_for_object(self.request.course))
 
         ctx = {
+            'is_faculty': self.request.course.is_faculty(self.request.user),
             'assignment': parent,
             'assignment_can_edit': can_edit,
             'item': item,

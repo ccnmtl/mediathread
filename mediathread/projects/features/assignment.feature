@@ -17,7 +17,7 @@ Feature: Assignment
         Then I am at the Untitled page
         There is an open Assignment panel
         And there is a Saved button
-        And there is a "Private" link
+        And there is a "Draft" link
 
         # Add a title and some text
         Then I call the Assignment "Assignment: Scenario 1"
@@ -200,9 +200,9 @@ Feature: Assignment
         When I click the "Sample Assignment Response" link 
         Then I am at the Sample Assignment Response page
         When I click the Saved button
-        Then I set the project visibility to "Private - only author(s) can view"
+        Then I set the project visibility to "Draft - only author(s) can view"
         Then I save the changes
-        Then there is a "Private" link
+        Then there is a "Draft" link
 
         When I click the "Sample Course" link
         Given the home workspace is loaded
@@ -219,10 +219,10 @@ Feature: Assignment
                      
       Examples:
         | visibility                                          | status                  | username         | count |
-        | Private - only author(s) can view                   | Private                 | test_instructor  |   0   |
+        | Draft - only author(s) can view                     | Draft                   | test_instructor  |   0   |
         | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_instructor  |   1   |
         | Whole Class - all class members can view            | Published to Class      | test_instructor  |   1   |
-        | Private - only author(s) can view                   | Private                 | test_student_two |   0   |
+        | Draft - only author(s) can view                     | Draft                   | test_student_two |   0   |
         | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_student_two |   0   |
         | Whole Class - all class members can view            | Published to Class      | test_student_two |   1   |
 
@@ -310,7 +310,7 @@ Feature: Assignment
         When I click the Save button
         Then I see a Save Changes dialog
         Then I save the changes        
-        Then there is a "Private" link
+        Then there is a "Draft" link
         
         When I log out
         Then I am at the Login page
@@ -329,7 +329,7 @@ Feature: Assignment
         Then I am at the Untitled page
         And there is an open Composition panel
         Then I call the Composition "Sample Assignment Response"
-        Then there is a "Private" link
+        Then there is a "Draft" link
         
         When I click the Save button
         Then I see a Save Changes dialog

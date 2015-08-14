@@ -39,7 +39,9 @@
             this.citationView.openCitationById(null, options.itemId, null);
 
             // annotationlist is readonly by faculty and submitted students
-            var readOnly = options.responseId.length < 1 || options.submitted;
+            var readOnly = options.responseId.length < 1 ||
+                           options.submitted ||
+                           options.isFaculty;
 
             if (jQuery('#asset-view-details').length > 0) {
                 window.annotationList.init({
@@ -50,6 +52,13 @@
                     'parentId': options.assignmentId,
                     'projectId': options.responseId,
                     'readOnly': readOnly
+                });
+            }
+           
+            // unsubmitted response
+            if (options.responseId.length > 0 && !options.submitted) {
+                jQuery(window).bind('beforeunload', function() {
+                    return 'Your work has been saved, but you have not submitted your response.';
                 });
             }
         },
@@ -65,6 +74,7 @@
         },
         onSubmitResponse: function(evt) {
             evt.preventDefault();
+            jQuery(window).unbind('beforeunload');
             var frm = jQuery(this.el).find('.project-response-form')[0];
             jQuery.ajax({
                 type: 'POST',

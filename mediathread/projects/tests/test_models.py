@@ -68,7 +68,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_description(self):
         project = Project.objects.get(id=self.project_private.id)
         self.assertEquals(project.description(), 'Composition')
-        self.assertEquals(project.visibility_short(), 'Private')
+        self.assertEquals(project.visibility_short(), 'Draft')
 
         project = Project.objects.get(id=self.project_class_shared.id)
         self.assertEquals(project.description(), 'Composition')
@@ -94,7 +94,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(new_project.title, self.project_private.title)
         self.assertEquals(new_project.author, self.alt_instructor)
         self.assertEquals(new_project.course, self.alt_course)
-        self.assertEquals(new_project.visibility_short(), "Private")
+        self.assertEquals(new_project.visibility_short(), "Draft")
 
         new_project = Project.objects.migrate_one(self.assignment,
                                                   self.alt_course,

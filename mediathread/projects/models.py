@@ -23,7 +23,7 @@ PROJECT_TYPES = (
 )
 
 PUBLISH_OPTIONS = (
-    ('PrivateEditorsAreOwners', 'Private - only author(s) can view'),
+    ('PrivateEditorsAreOwners', 'Draft - only author(s) can view'),
 
     ('InstructorShared',
      'Instructor - only author(s) and instructor can view'),
@@ -34,7 +34,7 @@ PUBLISH_OPTIONS = (
 )
 
 SHORT_NAME = {
-    'PrivateEditorsAreOwners': 'Private',
+    'PrivateEditorsAreOwners': 'Draft',
     'InstructorShared': 'Submitted to Instructor',
     'CourseProtected': 'Published to Class',
     'PublicEditorsAreOwners': 'Published to World',
@@ -52,11 +52,12 @@ PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
 
 
 RESPONSE_VIEW_NEVER = (
-    'never', 'Viewable by instructor only')
+    'never', 'Student responses visible only to instructors')
 RESPONSE_VIEW_ALWAYS = (
-    'always', 'Viewable by all')
+    'always',
+    'Students can see other responses only after submitting their own')
 RESPONSE_VIEW_SUBMITTED = (
-    'submitted', 'Viewable by other submitters')
+    'submitted', 'Students can see other responses at any time')
 RESPONSE_VIEW_POLICY = (
     RESPONSE_VIEW_NEVER, RESPONSE_VIEW_ALWAYS, RESPONSE_VIEW_SUBMITTED)
 

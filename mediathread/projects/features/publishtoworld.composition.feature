@@ -19,7 +19,7 @@ Feature: Public Compositions
         Given the composition workspace is loaded
             Then I am at the Untitled page
             Then I see "by Instructor One"
-            And I see "Private"
+            And I see "Draft"
         
             # Add a title and some text
             Then I call the Composition "<project_name>"

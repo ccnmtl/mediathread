@@ -16,7 +16,7 @@ Feature: Composition
         
         Then I am at the Untitled page
         I see "by Instructor One"
-        And I see "Private"
+        And I see "Draft"
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -32,13 +32,13 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Private - only author(s) can view"
+        There is a project visibility "Draft - only author(s) can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        And the project visibility is "Private - only author(s) can view"
+        And the project visibility is "Draft - only author(s) can view"
         
         Then I save the changes
-        Then there is a "Private" link
+        Then there is a "Draft" link
         And the Composition panel has a Saved button              
         
         # Toggle Preview Mode
@@ -53,7 +53,7 @@ Feature: Composition
         # The project shows on Home
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is a private "Composition: Scenario 1" project by Instructor One
+        Then there is a draft "Composition: Scenario 1" project by Instructor One
 
         Finished using Selenium
 
@@ -73,7 +73,7 @@ Feature: Composition
 
         Then I am at the Untitled page
         I see "by Student One"
-        And there is a "Private" link
+        And there is a "Draft" link
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -91,11 +91,11 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Private - only author(s) can view"
+        There is a project visibility "Draft - only author(s) can view"
         There is a project visibility "Instructor - only author(s) and instructor can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        And the project visibility is "Private - only author(s) can view"
+        And the project visibility is "Draft - only author(s) can view"
         
         Then I save the changes
         
@@ -111,7 +111,7 @@ Feature: Composition
         # The project shows on Home
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is a private "Composition: Scenario 2" project by Student One
+        Then there is a draft "Composition: Scenario 2" project by Student One
         
         Finished using Selenium
 
@@ -147,7 +147,7 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                                        | status             | info_count | composition_count |
-        | Private | Private - only author(s) can view                                 | Private            | 0          | 0                 |
+        | Draft   | Draft - only author(s) can view                                   | Draft              | 0          | 0                 |
         | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0                 |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
@@ -188,7 +188,7 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                      | status             | count |
-        | private | Private - only author(s) can view               | Private            | 0     |
+        | Draft   | Draft - only author(s) can view                 | Draft              | 0     |
         | public  | Whole Class - all class members can view        | Published to Class | 1     |
 
 

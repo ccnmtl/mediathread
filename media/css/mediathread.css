@@ -1280,25 +1280,25 @@ td.panel-container.asset-workspace {
     border-left: 1px solid #CCC;
 }
 
-td.panel-container.asset-workspace .column-container {
+.asset-workspace .column-container {
     margin-left: 5px;
 }
 
-td.panel-container.asset-workspace .column-container h2 {
+.asset-workspace .column-container h2 {
     margin-bottom: 10px;
     margin-top: 0;
 }
 
-td.panel-container.asset-workspace div#annotations-organized h2 {
+.asset-workspace div#annotations-organized h2 {
     margin-bottom: 0;
 }
 
-td.panel-container.asset-workspace .parent-column-container h2 a {
+.asset-workspace .parent-column-container h2 a {
     color: #777;
     font-weight: normal;
 }
 
-td.panel-container.asset-workspace .parent-column-container h2 a:hover {
+.asset-workspace .parent-column-container h2 a:hover {
     text-decoration: none;
 }
 
@@ -3546,7 +3546,7 @@ form#edit-annotation-form {
 }
 
 div#asset-view-details div#asset-global-annotation {
-    margin-bottom: 15px;
+    margin-bottom: 35px;
 }
 
 div#asset-view-details  a.edit-item {
@@ -3584,7 +3584,6 @@ div#asset-view-details div#annotation-list-filter-container {
 
 #annotations-organized { 
     margin-right: -10px;
-    padding-top: 10px;
 }
 
 #annotations-organized .ui-widget-header {

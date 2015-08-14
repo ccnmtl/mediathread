@@ -3518,10 +3518,6 @@ div.asset-view-con  tainer div.asset-view-details h1 {
     font-weight: bold;
 }
 
-div.asset-view-container div.asset-view-details label {
-    font-weight: bold;
-}
-
 form#edit-annotation-form label,
 form#edit-global-annotation-form label {
     display: block;
@@ -3562,7 +3558,7 @@ div#asset-view-details a.create-selection {
     padding: 3px 8px 2px 4px;
 }
 
-div#asset-view-details a.filter-selections {
+div#asset-view-details .filter-selections {
     margin: -8px 0 0 0;
     padding: 3px 8px 2px 4px;
 }
@@ -3638,18 +3634,9 @@ form[name="annotation-list-filter"] {
 
 
 div#annotation-filter-menu {
-    position: absolute;
     width: 200px;
     padding: 10px;
     line-height: 1.5em;
-    background-color: white;
-    border: 1px solid #ccc;
-    z-index: 9998;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    left: 46px;
-    margin-top: 32px;
 }
 
 div#annotation-filter-menu select {

@@ -48,7 +48,7 @@
             jQuery(window).bind('beforeunload', self.beforeUnload);
         },
         beforeUnload: function() {
-            return "Changes to your assignment have not been saved.";
+            return 'Changes to your assignment have not been saved.';
         },
         validate: function(pageNo) {
             var q;
@@ -85,7 +85,8 @@
                     jQuery(window).trigger('resize');
                 } else if (this.currentPage === 3) {
                     jQuery('#sliding-content-container').addClass('hidden');
-                    jQuery('.asset-view-publish-container').removeClass('hidden');
+                    jQuery('.asset-view-publish-container').removeClass(
+                        'hidden');
                     var itemId = jQuery('input[name="item"]').val();
                     this.citationView.openCitationById(null, itemId, null);
                 } else if (this.currentPage === 4) {

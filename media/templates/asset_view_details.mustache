@@ -29,18 +29,20 @@
             </button>
             <div id="annotation-filter-menu" class="dropdown-menu dropdown-menu-right">
                 <form name="annotation-list-filter">
-                    <div><b>Group selections by</b></div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="groupby" value="author" />author
-                        </label>
+                    <div class="annotation-filter-groupby">
+                        <div><b>Group selections by</b></div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="groupby" value="author" />author
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="groupby" value="tag" />tag
+                            </label>
+                        </div>
+                        <hr />
                     </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="groupby" value="tag" />tag
-                        </label>
-                    </div>
-                    <hr />
                     <label>
                         <input type="checkbox" name="showall" />
                             Display all selections
@@ -51,26 +53,26 @@
         </div>        
 
         <h2>
-          Selections
+            {{^readOnly}}Selections{{/readOnly}}
+            {{#readOnly}}Responses{{/readOnly}}
         </h2>
         {{^annotations}}
-        {{^readOnly}}
-          <center>
-            <br />
-            <div>You have no selections on this item.</div>
-            <br />
-
-            <a class="btn btn-default btn-sm create-selection"
-              onclick="return annotationList.newAnnotation();">
-              <img src="/media/img/icons/meth_addselection.png"
-              alt="Create Selection"></img>
-              Create a selection
-            </a>
-          </center>
-          {{/readOnly}}
-          {{/annotations}}
-
-          {{#annotations}}
+            {{^readOnly}}
+                <center>
+                <br />
+                <div>You have no selections on this item.</div>
+                <br />
+    
+                <a class="btn btn-default btn-sm create-selection"
+                  onclick="return annotationList.newAnnotation();">
+                  <img src="/media/img/icons/meth_addselection.png"
+                  alt="Create Selection"></img>
+                  Create a selection
+                </a>
+                </center>
+            {{/readOnly}}
+        {{/annotations}}
+        {{#annotations.length}}
             <a style="display: none"
               class="btn btn-default create-selection"
               onclick="return annotationList.newAnnotation();">
@@ -78,7 +80,7 @@
               alt="Create Selection"></img>
               Create Selection
             </a>
-          {{/annotations}}
+        {{/annotations.length}}
     {{/asset-current}}
 
     <ul id="asset-details-annotations-list"></ul>

@@ -1,10 +1,16 @@
 {{#annotation_list}}
   <li class="annotation-group">
     {{#category}}
-      <h4><div class="color-box" style="background-color:{{color}}"></div>{{title}}</h4>
+      <div class="group-header">
+          <h4>
+            <div class="color-box" style="background-color:{{color}}"></div>
+            <span class="group-title">{{title}}</span>
+          </h4>
+      </div>
       <div class="accordion">
         {{#annotations}}
-          <h3 id="accordion-{{id}}" data-id="{{id}}">
+          <h3 class="annotation-header" id="accordion-{{id}}"
+            data-id="{{id}}" data-username="{{author.username}}">
             <a href="#">
               {{^metadata.title}}
                 -Untitled-

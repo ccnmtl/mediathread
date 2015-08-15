@@ -694,7 +694,7 @@ table#home-columns td {
 
 table#home-columns td#instructor {
     padding: 0 0 0 7px;
-    width: 22%;
+    width: 25%;
     float: left;
     position: relative;
 }
@@ -764,7 +764,6 @@ div.column-contents {
     float: left;
     margin: 20px 0;
     padding: 4px 20px 20px;
-    width: 95%;
 }
 
 .recommend_source {
@@ -975,16 +974,8 @@ div.button-form form, div.button-form.inline form {
 
 /* SLIDING CONTENT */
 
-.large {
-    width: 620px !important;
-}
-
 .medium {
     width: 475px !important;
-}
-
-.small {
-    width: 350px !important;
 }
 
 table#sliding-content-container {
@@ -3500,7 +3491,7 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
 }
 
 .asset-view-details .btn-primary {
-    margin: 3px 0 0 3px;
+    margin: 0 0 0 3px;
 }
 
 #clipform-display .btn-primary {
@@ -3608,6 +3599,16 @@ div#asset-view-details div#annotation-list-filter-container {
 #annotations-organized ul li.annotation-group {
     border: 0;
 }
+
+#annotations-organized .annotation-feedback {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+
+#annotations-organized .annotation-feedback textarea {
+    margin-bottom: 10px;
+    height: 100px;
+}
  
 div#asset-global-annotation textarea,
 div#asset-global-annotation input[type="text"] {
@@ -3631,15 +3632,10 @@ form[name="annotation-list-filter"] {
     vertical-align: middle;
 }
 
-
 div#annotation-filter-menu {
     width: 200px;
     padding: 10px;
     line-height: 1.5em;
-}
-
-div#annotation-filter-menu select {
-    width: 180px;
 }
 
 input.annotation-listitem-icon {
@@ -4285,6 +4281,10 @@ a.btn.btn-default img.left {
     width: 25%;
 }
 
+.selection-assignment .asset-view-published.affix {
+    width: 42%;
+}
+
 .selection-assignment .col-md-9 {
     width: 70%;
 }
@@ -4319,5 +4319,9 @@ a.btn.btn-default img.left {
 }
 
 .selection-assignment .selected-item .meta {
+    display: none;
+}
+
+.selection-assignment .annotation-filter-groupby {
     display: none;
 }

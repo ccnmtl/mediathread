@@ -264,12 +264,27 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
                 return response
         return None
 
+    def get_feedback(self, responses, is_faculty):
+        ctx = {}
+        for response in responses:
+            ctx[response.author.username] = {'responseId': response.id}
+
+            feedback = response.feedback_discussion()
+            if feedback and (is_faculty or
+                             response.is_participant(self.request.user)):
+                ctx[response.author.username]['comment'] = {
+                    'id': feedback.id,
+                    'content': feedback.comment
+                }
+        return ctx
+
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         parent = self.get_assignment(project)
         can_edit = parent.can_edit(self.request.course, self.request.user)
         responses = parent.responses(self.request.course, self.request.user)
         my_response = self.get_my_response(responses)
+        is_faculty = self.request.course.is_faculty(self.request.user)
 
         item = parent.assignmentitem_set.first().asset
         item_ctx = AssetResource().render_one_context(self.request, item)
@@ -279,7 +294,7 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             Vocabulary.objects.get_for_object(self.request.course))
 
         ctx = {
-            'is_faculty': self.request.course.is_faculty(self.request.user),
+            'is_faculty': is_faculty,
             'assignment': parent,
             'assignment_can_edit': can_edit,
             'item': item,
@@ -288,7 +303,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': 'CourseProtected',
             'vocabulary': json.dumps(vocabulary_json),
-            'responses': responses
+            'responses': responses,
+            'feedback': json.dumps(self.get_feedback(responses, is_faculty))
         }
         return ctx
 

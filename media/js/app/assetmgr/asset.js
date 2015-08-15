@@ -12,7 +12,7 @@
          * directory and put it in the MediaThread.templates
          * dictionary.
          */
-        var loadTemplate = function(templateName) {
+        this.loadTemplate = function(templateName) {
             jQuery.ajax({
                 url: '/media/templates/' + templateName +
                     '.mustache?nocache=v2',
@@ -30,7 +30,7 @@
         /**
          * Load all the asset-related templates.
          */
-        var loadTemplates = function() {
+        this.loadTemplates = function() {
             var templates = [
                 'asset_view_help',
                 'asset_view_details',
@@ -40,15 +40,16 @@
                 'asset_annotation_current',
                 'asset_global_annotation',
                 'asset_global_annotation_quick_edit',
-                'asset_sources'
+                'asset_sources',
+                'asset_feedback'
             ];
             for (var i = 0; i < templates.length; i++) {
-                loadTemplate(templates[i]);
+                this.loadTemplate(templates[i]);
             }
         };
 
         this.init = function(config) {
-            loadTemplates();
+            this.loadTemplates();
 
             this.layers = {}; //should we really store layers here?
             this.active_annotation = null;
@@ -219,6 +220,9 @@
                                 self.groupBy(val);
                             });
                             self.groupBy(value);
+                        }
+                        if (self.view_callback) {
+                            self.view_callback();
                         }
                     }
                 );
@@ -1212,9 +1216,6 @@
                                     context.annotation.editing ?
                                     'create' : 'browse'
                             });
-                }
-                if (self.view_callback) {
-                    self.view_callback();
                 }
             });
         };

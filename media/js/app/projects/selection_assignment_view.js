@@ -28,6 +28,7 @@
             self.viewer = options.viewer;
             self.isFaculty = options.isFaculty;
             self.feedback = options.feedback;
+            self.feedbackCount = options.feedbackCount;
 
             // load the selection item into storage
             djangosherd.storage.json_update(options.itemJson);
@@ -74,6 +75,7 @@
         },
         render: function() {
             var self = this;
+            jQuery('.feedback-count').html(self.feedbackCount);
             jQuery('#annotations-organized .group-header').each(function() {
                 // annotations exist?
                 var ctx = {
@@ -116,7 +118,7 @@
 
             // change the feedback icon to a progress indicator
             var frm = jQuery(evt.currentTarget).parents('form')[0];
-            
+
             jQuery.ajax({
                 type: 'POST',
                 url: frm.action,
@@ -125,6 +127,9 @@
                 success: function(json) {
                     // rerender the form based on the return context
                     var username = jQuery(frm).attr('data-username');
+                    if (self.feedback[username].comment === undefined) {
+                        self.feedbackCount++;
+                    }
                     self.feedback[username].comment = {
                         'id': json.context.discussion.thread[0].id,
                         'content': json.context.discussion.thread[0].content

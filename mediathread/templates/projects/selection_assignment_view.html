@@ -62,22 +62,35 @@
             <div class="small">
                 <h1 class="project-title">{{assignment.title}}</h1><br />
                 {% if assignment.due_date %}
-                    <div><b>Due</b>: {{assignment.due_date|date:'m/d/y'}}</div>
+                    <div class="meta">
+                        <span class="metadata-label">
+                            <b>Due</b>:
+                        </span>
+                        <span class="metadata-value">
+                            {{assignment.due_date|date:'m/d/y'}}
+                        </span>
+                    </div>
                 {% endif %}
                 {% if is_faculty %}
-                <div>
-                    <b>Responses:</b>
+                <div class="meta">
+                    <span class="metadata-label"><b>Responses</b>:</span>
                     {% for key, value in response_view_policies %}
                         {% ifequal key assignment.response_view_policy %}
-                            {{value}}
+                            <span class="metadata-value">{{value}}</span>
                         {% endifequal %}
                     {% endfor %}
                     </a>
                 </div>
                 {% endif %}
                 {% if assignment_can_edit %}
-                    <div><b>Visibility</b>: {{assignment.visibility_short}}</div>
+                    <div class="meta">
+                        <span class="metadata-label"><b>Visibility</b>:</span>
+                        <span class="metadata-value">
+                            {{assignment.visibility_short}}
+                        </span>
+                    </div>
                 {% endif %}
+                <div class="clearfix"></div>
             </div>
             <p>{{assignment.body|safe}}</p>
         </div>

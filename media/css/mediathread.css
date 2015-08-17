@@ -4285,6 +4285,11 @@ a.btn.btn-default img.left {
     border: 0;
 }
 
+.selection-assignment input[name='Save'],
+.selection-assignment input[name='Cancel'] {
+    margin-top: 10px;
+}
+
 .selection-assignment .asset-view-published.affix {
     width: 42%;
 }

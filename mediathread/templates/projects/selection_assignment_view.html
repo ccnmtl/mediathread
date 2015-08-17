@@ -63,22 +63,35 @@
             <div class="small">
                 <h1 class="project-title">{{assignment.title}}</h1><br />
                 {% if assignment.due_date %}
-                    <div><b>Due</b>: {{assignment.due_date|date:'m/d/y'}}</div>
+                    <div class="meta">
+                        <span class="metadata-label">
+                            <b>Due</b>:
+                        </span>
+                        <span class="metadata-value">
+                            {{assignment.due_date|date:'m/d/y'}}
+                        </span>
+                    </div>
                 {% endif %}
                 {% if is_faculty %}
-                <div>
-                    <b>Responses:</b>
+                <div class="meta">
+                    <span class="metadata-label"><b>Responses</b>:</span>
                     {% for key, value in response_view_policies %}
                         {% ifequal key assignment.response_view_policy %}
-                            {{value}}
+                            <span class="metadata-value">{{value}}</span>
                         {% endifequal %}
                     {% endfor %}
                     </a>
                 </div>
                 {% endif %}
                 {% if assignment_can_edit %}
-                    <div><b>Visibility</b>: {{assignment.visibility_short}}</div>
+                    <div class="meta">
+                        <span class="metadata-label"><b>Visibility</b>:</span>
+                        <span class="metadata-value">
+                            {{assignment.visibility_short}}
+                        </span>
+                    </div>
                 {% endif %}
+                <div class="clearfix"></div>
             </div>
             <p>{{assignment.body|safe}}</p>
         </div>
@@ -151,15 +164,19 @@
                                     <form method="post" class="project-response-form"
                                         action="{% url 'project-save' my_response.id %}">
 
-                                        <div>Please make sure your work is complete before submission</div><br />
-                                        <div><strong>Checklist</strong></div><br />
-                                        <ul>
-                                            <li>Have you completed the required selections?</li>
-                                            <li>Have you made notes, if applicable?</li>
-                                            <li>Have you tagged selections, if applicable?</li>
-                                            <li>Have you added vocabulary terms to the selections, if applicable?</li>
-                                        </ul>
-                                        <br />
+                                        <div>Please make sure your response is complete.</div><br />
+
+                                        <div>
+                                            Once submitted, 
+                                            {% ifequal assignment.response_view_policy 'never' %}
+                                                your response will only be visible to instructors.
+                                            {% else %}{% ifequal assignment.response_view_policy 'always' %}
+                                                your response will be visible to the whole class.
+                                            {% else %}{% ifequal assignment.response_view_policy 'submitted' %}
+                                                your response will be visible to the instructor and other students who have submitted.
+                                            {% endifequal %}{% endifequal %}{% endifequal %}
+                                        </div><br />
+
                                         <div class="alert alert-danger" role="alert">
                                             <strong>Important!</strong> Once you submit your response, you cannot unsubmit it.
                                         </div>

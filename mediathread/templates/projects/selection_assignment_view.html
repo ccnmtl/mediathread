@@ -42,7 +42,8 @@
             itemJson: JSON.parse('{{item_json|escapejs}}'),
             vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
             submitted: {% if my_response and my_response.submitted %}true{% else %}false{% endif %},
-            feedback: JSON.parse('{{feedback|escapejs}}')
+            feedback: JSON.parse('{{feedback|escapejs}}'),
+            feedbackCount: {{feedback_count}}
         });
     </script>
 {% endblock %}
@@ -106,11 +107,19 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    {% if not assignment_can_edit and not is_faculty %}
+                    {% if is_faculty %}
+                        <div class="right">
+                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 
+                            <strong>
+                                {{responses|length}} Responses | 
+                                <span class="feedback-count">{{feedback_count}}</span> Feedback
+                            </strong>
+                        </div>
+                    {% else %}{% if not assignment_can_edit  %}
                         {% if my_response.submitted %}
                             <div class="right">
                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
-                                <strong>Submitted</strong> {{my_response.submitted_date}}
+                                <strong>Submitted</strong> {{my_response.submitted_date}} | 
                             </div>
                         {% else %}{% if my_response %}
                             <div>
@@ -183,7 +192,7 @@
                               </div>
                             </div>                            
                         {% endif %}{% endif %}
-                    {% endif %}
+                    {% endif %}{% endif %}
                 </div>
             </div>
             <div class="row">
@@ -207,17 +216,11 @@
                             </form>
                         </div>
                     {% endif %}
-                    {% if responses|length < 1 %}
-                        {% if is_faculty %}
-                            <div class="well">No responses yet</div>
-                        {% endif %}
-                    {% else %}
-                        {% if my_response or is_faculty %}
-                            <div id="asset-workspace-panel-container" class="asset-workspace column-container">
-                                <div id="asset-view-details" class="asset-view-details"></div>
-                            </div>
-                        {% endif %}
-                    {% endif %}                
+                    {% if my_response or is_faculty %}
+                        <div id="asset-workspace-panel-container" class="asset-workspace column-container">
+                            <div id="asset-view-details" class="asset-view-details"></div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -266,17 +266,19 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
 
     def get_feedback(self, responses, is_faculty):
         ctx = {}
+        existing = 0
         for response in responses:
             ctx[response.author.username] = {'responseId': response.id}
 
             feedback = response.feedback_discussion()
             if feedback and (is_faculty or
                              response.is_participant(self.request.user)):
+                existing += 1
                 ctx[response.author.username]['comment'] = {
                     'id': feedback.id,
                     'content': feedback.comment
                 }
-        return ctx
+        return ctx, existing
 
     def get_context_data(self, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
@@ -293,6 +295,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             self.request,
             Vocabulary.objects.get_for_object(self.request.course))
 
+        feedback, feedback_count = self.get_feedback(responses, is_faculty)
+
         ctx = {
             'is_faculty': is_faculty,
             'assignment': parent,
@@ -304,7 +308,8 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             'submit_policy': 'CourseProtected',
             'vocabulary': json.dumps(vocabulary_json),
             'responses': responses,
-            'feedback': json.dumps(self.get_feedback(responses, is_faculty))
+            'feedback': json.dumps(feedback),
+            'feedback_count': feedback_count
         }
         return ctx
 

@@ -4281,6 +4281,10 @@ a.btn.btn-default img.left {
     width: 25%;
 }
 
+.selection-assignment .asset-view-published {
+    border: 0;
+}
+
 .selection-assignment .asset-view-published.affix {
     width: 42%;
 }

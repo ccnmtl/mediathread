@@ -34,6 +34,7 @@ def discussion_create(request):
 
     """Start a discussion of an arbitrary model instance."""
     title = request.POST['comment_html']
+    comment = request.POST.get('comment', '')
 
     # Find the object we're discussing.
     the_content_type = ContentType.objects.get(
@@ -78,7 +79,7 @@ def discussion_create(request):
     # finally create the root discussion object, pointing it at the CHILD.
     new_threaded_comment = ThreadedComment(parent=None,
                                            title=title,
-                                           comment='',
+                                           comment=comment,
                                            user=request.user,
                                            content_object=disc_sc)
 
@@ -185,8 +186,7 @@ def discussion_view(request, discussion_id):
 
         data['panels'].append(panel)
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            content_type='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 @allow_http("POST")
@@ -209,7 +209,7 @@ def comment_save(request, comment_id, next_url=None):
         return HttpResponseForbidden('You do not have permission \
                                      to edit this discussion.')
 
-    if request.POST['title']:
+    if request.POST.get('title', None):
         comment.title = request.POST['title']
         if not comment.parent:
             disc_sc = comment.content_object
@@ -222,7 +222,11 @@ def comment_save(request, comment_id, next_url=None):
                                             comment, comment.content_object,
                                             comment.user)
 
-    return {'comment': comment}
+    if request.is_ajax():
+        ctx = {'context': threaded_comment_json(request, comment)}
+        return HttpResponse(json.dumps(ctx), content_type='application/json')
+    else:
+        return {'comment': comment}
 
 
 def threaded_comment_citations(all_comments, viewer):

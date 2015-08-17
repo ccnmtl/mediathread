@@ -27,7 +27,7 @@
                 function(event, instance, param2) {
                     if (instance) {
                         var width = jQuery(self.el).find('textarea').width();
-                        instance.theme.resizeTo(width, 400);
+                        instance.theme.resizeTo(width, 200);
                     }
                 }
             );

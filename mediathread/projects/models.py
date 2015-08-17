@@ -52,7 +52,7 @@ PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
 
 
 RESPONSE_VIEW_NEVER = (
-    'never', 'Student responses visible only to instructors')
+    'never', 'Student responses are visible only to instructors')
 RESPONSE_VIEW_SUBMITTED = (
     'submitted',
     'Students can see other responses only after submitting their own')

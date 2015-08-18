@@ -1342,6 +1342,13 @@ form#edit-global-annotation-form input[name="asset-title"],
     width: 98%;
 }
 
+#asset-global-annotation input[name='submit_notes'],
+#asset-global-annotation input[name='submit_notes_cancel'],
+#annotation-body input[name='Save'],
+#annotation-body input[name='Cancel'] {
+    margin-top: 10px !important;
+}
+
 div.panel.asset-workspace-dialog #asset-global-annotation,
 div.panel.asset-workspace-dialog #annotation-current,
 div.panel.asset-workspace-dialog #asset-details-annotations-current {
@@ -4282,11 +4289,6 @@ a.btn.btn-default img.left {
 
 .selection-assignment .asset-view-published {
     border: 0;
-}
-
-.selection-assignment input[name='Save'],
-.selection-assignment input[name='Cancel'] {
-    margin-top: 10px;
 }
 
 .selection-assignment .asset-view-published.affix {

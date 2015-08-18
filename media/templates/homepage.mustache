@@ -4,6 +4,7 @@
         <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
             <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                 <span class="switcher-prefix">Author</span>
+                <span class="down-arrow" tabindex="3"></span>
                 <span class="title">
                     {{#selected_label}}
                         {{{selected_label}}}
@@ -12,7 +13,6 @@
                         &hellip;
                     {{/selected_label}}
                 </span>
-                <span class="down-arrow" tabindex="3"></span>
             </a>
 
             <ul class="switcher-options">
@@ -37,7 +37,8 @@
     </div> {{! end filter widget }}
 
     <a href="#" onclick='jQuery("#create-project-menu").toggle();' class="btn btn-default create right">
-        Create<img class="right" src="/media/img/menuselect.png" width="6" height="12" />
+        Create&nbsp;
+        <img src="/media/img/menuselect.png" width="6" height="12" />
     </a>
     <div id="create-project-menu" style="display: none;">
         {{#is_faculty}}

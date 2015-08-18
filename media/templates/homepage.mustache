@@ -4,6 +4,7 @@
         <div class="switcher_collection_chooser switcher collection-chooser" tabindex="1">
             <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                 <span class="switcher-prefix">Author</span>
+                <span class="down-arrow" tabindex="3"></span>
                 <span class="title">
                     {{#selected_label}}
                         {{{selected_label}}}
@@ -12,7 +13,6 @@
                         &hellip;
                     {{/selected_label}}
                 </span>
-                <span class="down-arrow" tabindex="3"></span>
             </a>
 
             <ul class="switcher-options">

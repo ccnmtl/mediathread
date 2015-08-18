@@ -2080,7 +2080,7 @@ div.media-column .select2-container-multi .select2-choices {
     display:none;
     background-color: white;
     border: 1px solid #ccc;
-    z-index: 500;
+    z-index: 1000;
     width:inherit;
     list-style: none;
     padding: 3px 0 0 0;    
@@ -2255,7 +2255,6 @@ a.switcher-top.menuclosed span.title {
 }
 
 span.down-arrow {
-    right: 4px;
     width: 16px; 
     height: 16px;
     -webkit-touch-callout: none;

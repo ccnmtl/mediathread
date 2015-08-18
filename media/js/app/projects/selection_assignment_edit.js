@@ -108,7 +108,7 @@
 
             if (this.currentPage === 2) {
                 jQuery('#sliding-content-container').removeClass('hidden');
-                jQuery('#asset-view-details').addClass('hidden');
+                jQuery('.asset-view-publish-container').addClass('hidden');
                 jQuery(window).trigger('resize');
             }
         },

@@ -285,6 +285,7 @@ ACCOUNT_ACTIVATION_DAYS = 7
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = ('GET',)
+CORS_ALLOW_CREDENTIALS = True
 
 
 def default_url_processor(url, label=None, request=None):

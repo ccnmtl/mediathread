@@ -1,10 +1,4 @@
 /* ########## Standard elements ########## */
-* {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
 html,body {
 	height: 100%;
 	font-size: 1em;
@@ -154,7 +148,7 @@ a:hover {
 #pagebody
 {
 	position: relative;
-	padding: 0 0 0 10px;
+	padding: 0 15px;
 }
 
 /* ---- Metadata displays ---- */
@@ -4214,18 +4208,7 @@ div.ui-dialog div.asset-view-details h2 {
 
 /* Fix bootstrap styles */
 .navbar * {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;
     font-weight: normal !important;
-}
-
-.ui-accordion-content,
-.switcher *,
-.form-control {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;
 }
 
 a.btn.btn-default {
@@ -4237,15 +4220,6 @@ a.btn.btn-primary,
 a.btn.btn-warning {
     color: white;
     font-weight: normal;
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;    
-}
-
-a.btn.btn-default {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;    
 }
 
 a.btn.btn-default img.right {
@@ -4283,16 +4257,25 @@ a.btn.btn-default img.left {
     width: 32% !important;
 }
 
-.selection-assignment .affix {
-    width: 25%;
-}
 
 .selection-assignment .asset-view-published {
     border: 0;
 }
 
-.selection-assignment .asset-view-published.affix {
-    width: 42%;
+.affix-top, .affix {
+    position: static;
+    width: inherit;
+    padding-right: 20px;
+}
+
+@media (min-width: 1024px) {
+    .selection-assignment .affix-top {
+        position: static;
+    }
+
+    .selection-assignment .affix {
+        position: fixed;
+    }
 }
 
 .selection-assignment .col-md-9 {

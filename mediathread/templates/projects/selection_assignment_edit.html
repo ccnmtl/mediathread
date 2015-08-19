@@ -88,19 +88,20 @@
                          shared with the entire class or just the instructor.
                         </p>
                         <ol>
-                            <li>Choose an item in your collection.</li>
-                            <li>Write Instructions</li>
-                            <li>Set Response Due Date & Visibility</li>
-                            <li>Publish Assignment</li>
+                            <li>Choose an item from your collection</li>
+                            <li>Write instructions</li>
+                            <li>Set response due date & visibility</li>
+                            <li>Publish assignment</li>
                         </ol>
-                        <ul class="pager">
-                            <li><a href="#" class="left prev">Previous</a></li>
-                            <li><a href="#" class="right next">Next</a></li>
-                        </ul>
+                        <br />
+                        <div class="text-center">
+                        <a href="#" class="btn btn-primary next right">Get Started</a>
+                        </div>
                     </div>                   
                     <div data-page="2" class="page hidden">
-                        <h3>1. Choose an item from the course collection</h3>
+                        <h3>1. Choose an item from your collection</h3>
                         <div class="selected-item">
+                        <center>
                             {% if item %}
                                 <div class="gallery-item static-height rounded" data-id="{{item.id}}">
                                     <h4 class="asset_title asset-{{item.primary.label}}">
@@ -118,10 +119,13 @@
                                 <input type="hidden" name="item" value="{{item.id}}" />
                             {% else %}
                                 <!--  this will be replaced by selected item -->
-                                <div></div>
+                                <div>
+                                    <div class="gallery-item static-height rounded placeholder">
+                                    </div>
+                                </div>
                                 <input type="hidden" name="item" value="" />
                             {% endif %}
-                        </div>
+                        </center></div>
                         <div class="help-inline">An item must be selected.</div>
                         <div class="clearfix"></div>
                         <ul class="pager">
@@ -164,8 +168,7 @@
                         </div>
                         <br />
                         <label for="response_view_policy">Visibility</label>
-                        <p>Instructors can always view submitted responses. Choose when
-                        students can see submitted responses.</p>
+                        <p>Choose when students can see responses submitted by other students</p>
                         <div class="form-group">
                             {{form.response_view_policy}}
                         </div>

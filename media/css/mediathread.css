@@ -4318,3 +4318,42 @@ a.btn.btn-default img.left {
 .selection-assignment .annotation-filter-groupby {
     display: none;
 }
+
+.selection-assignment .selected-item .gallery-item {
+    margin-top: 30px;
+    float: none;
+}
+
+.selection-assignment .selected-item .gallery-item.placeholder {
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    position: relative;
+}
+
+.selection-assignment .selected-item .gallery-item.placeholder::after,
+.selection-assignment .selected-item .gallery-item.placeholder::before {
+    position: absolute;
+    top: 50%;
+    left: -16px;
+    content: '';
+    display: block;
+    width: 250px;
+    height: 1px;
+    background-color: #ccc;
+}
+
+.selection-assignment .selected-item .gallery-item.placeholder::after {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.selection-assignment .selected-item .gallery-item.placeholder::before {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}

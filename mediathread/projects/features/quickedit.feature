@@ -24,22 +24,22 @@ Feature: QuickEdit
         I save the changes
         
         # Verify asset exists
-        And there is a "MAAP Award Reception" link
+        And there is a "Mediathread: Introduction" link
         I see "instructor one item note"
         And there is not an "abc" link
 
         # Click the +/Create button next to the asset
-        When I click edit item for "MAAP Award Reception"
+        When I click edit item for "Mediathread: Introduction"
         
         # Verify the create form is visible
         Then the "Edit Item" form appears
-        And I set the quickedit "Tags" "text" field to "abc"
+        And I set the item tags field to "ghi"
         And I set the quickedit "Notes" "textarea" field to "Here are my notes"
         And I click the Save Item button
 
         Then the "Edit Item" form disappears
         And I see "Here are my notes"
-        And there is an "abc" link
+        And there is an "ghi" link
 
         Finished using Selenium
 
@@ -62,12 +62,15 @@ Feature: QuickEdit
 
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
+        # Save the project (otherwise an "Unsaved" alert pops up)
+        When I click the Save button
+        I save the changes
         
         # Verify asset exists
-        And there is a "MAAP Award Reception" link
+        And there is a "Mediathread: Introduction" link
         
         # Click the +/Create button next to the asset
-        When I click create selection for "MAAP Award Reception"
+        When I click create selection for "Mediathread: Introduction"
         
         # Verify the create form is visible
         Then the "Create Selection" form appears
@@ -79,17 +82,14 @@ Feature: QuickEdit
         And there is a Save Selection button
         
         When I set the quickedit "Title" "text" field to "Test Selection"
-        And I set the quickedit "Selection Tags" "text" field to "abc"
-        And I set the quickedit "Selection Notes" "textarea" field to "Here are my notes"
+        And I set the selection tags field to "abc"
+        And I set the quickedit "Selection Notes" "textarea" field to "Here are my new notes"
         And I click the Save Selection button
         
-        Then there is a "Test Selection" link
+        Then the "Create Selection" form disappears
+        And I scroll to the "Test Selection" link
+        And I see "Here are my new notes"
         And there is an "abc" link
-        And I see "Here are my notes"
-        
-        # Save the project (otherwise an "Unsaved" alert pops up)
-        When I click the Save button
-        I save the changes
         
         Finished using Selenium
         
@@ -112,9 +112,12 @@ Feature: QuickEdit
 
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
+        # Save the project (otherwise an "Unsaved" alert pops up)
+        When I click the Save button
+        I save the changes        
         
         # Verify asset exists
-        And there is a "MAAP Award Reception" link
+        And there is a "Mediathread: Introduction" link
         
         # Click the +/Create button next to the asset
         When I click edit selection for "Manage Sources"
@@ -129,17 +132,14 @@ Feature: QuickEdit
         And there is a Save Selection button
         
         When I set the quickedit "Title" "text" field to "Test Selection"
-        And I set the quickedit "Selection Tags" "text" field to "abc"
-        And I set the quickedit "Selection Notes" "textarea" field to "Here are my notes"
+        And I set the selection tags field to "def"
+        And I set the quickedit "Selection Notes" "textarea" field to "Here are my selection notes"
         And I click the Save Selection button
         
+        Then the "Edit Selection" form disappears
         Then there is a "Test Selection" link
-        And there is an "abc" link
-        And I see "Here are my notes"
-        
-        # Save the project (otherwise an "Unsaved" alert pops up)
-        When I click the Save button
-        I save the changes
+        And I see "Here are my selection notes"
+        And there is an "def" link
         
         Finished using Selenium        
 

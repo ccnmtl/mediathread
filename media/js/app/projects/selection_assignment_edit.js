@@ -155,6 +155,10 @@
             $overlay.addClass('hidden');
         },
         onGalleryItemSelect: function(evt) {
+            if (!this.hoverItem) {
+                return;
+            }
+
             var pk = jQuery(this.hoverItem).attr('data-id');
             jQuery('input[name="item"]').val(pk);
 

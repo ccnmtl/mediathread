@@ -294,6 +294,7 @@ class Source(models.Model):
     def is_image(self):
         return (self.label == 'poster' or
                 self.label == "image" or
+                self.label == "image_fpxid" or
                 self.label == "image_fpx" or
                 (self.media_type and self.media_type.startswith('image/')))
 

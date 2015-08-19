@@ -75,8 +75,12 @@ div.mce_editorwindow {
     border-bottom: 1px solid #CCC !important;
 }
 
+.essay-space-container .mceLayout {
+    width: 100% !important;
+}
+
 .project-content { 
-    width: 100%;
+    width: 100% !important;
     border: 1px solid #ccc;
 }
  
@@ -214,7 +218,7 @@ li.comment-thread {
     background-color:#CCCCCC;
     padding: 2px 0px 4px 0px;
     width: 100%;
-    height: 35px;
+    height: 45px;
 }
 
 .threaded_comment_text {

@@ -253,7 +253,7 @@ ul#projects li {
 	clear: both;
     display: block;
     float: left;
-    width: 93%;
+    width: 100%;
 }
 
 .metadata-value-assignment {
@@ -2771,9 +2771,9 @@ a.hs-control.hs-control-show.plist.float
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
-   padding: 2px 5px 0 0;
+   padding: 5px 5px 0 0;
    width: 125px;
-   height: 14px;
+   height: 20px;
    font-size: 12px;
    text-align: center;
    margin: -2px -10px 0 0;
@@ -3310,7 +3310,7 @@ div.collection_table {
     margin-top: 10px;
     margin-left: 5px;
     padding: 0 10px 10px 10px;
-    width: 90%;
+    width: 98%;
     border: 1px solid #ccc;
     background: white;
     text-align: center;
@@ -3449,7 +3449,7 @@ div.asset-view-container div.asset-view-published {
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
-    width: 33%;
+    width: 34%;
     float: left;
     border: 0;
     padding-left: 0;

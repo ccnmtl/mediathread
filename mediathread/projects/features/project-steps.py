@@ -1,3 +1,4 @@
+import time
 from lettuce import world, step
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -267,6 +268,7 @@ def the_title_form_disappears(step, title):
 
         wait = ui.WebDriverWait(world.browser, 5)
         wait.until(invisibility_of_element_located((By.ID, fid)))
+        time.sleep(1)
     except TimeoutException:
         assert False, '%s form did not appear' % title
 

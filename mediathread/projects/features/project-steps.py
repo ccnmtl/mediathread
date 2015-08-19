@@ -269,7 +269,7 @@ def the_title_form_disappears(step, title):
 
         wait = ui.WebDriverWait(world.browser, 5)
         wait.until(invisibility_of_element_located((By.ID, fid)))
-        
+
         q = 'div.ajaxloader'
         wait = ui.WebDriverWait(world.browser, 5)
         wait.until(invisibility_of_element_located((By.CSS_SELECTOR, q)))
@@ -280,7 +280,8 @@ def the_title_form_disappears(step, title):
 @step(u'"([^"]*)" does not have a response')
 def title_does_not_have_a_response(step, title):
     assert False, 'This step must be implemented'
-    
+
+
 @step(u'I set the selection tags field to "([^"]*)"')
 def i_set_the_selection_tags_field_to_value(step, value):
     q = '#edit-annotation-form #s2id_id_annotation-tags .select2-input'
@@ -288,11 +289,12 @@ def i_set_the_selection_tags_field_to_value(step, value):
     elt.send_keys(value)
     elt.send_keys(Keys.TAB)
     time.sleep(1)
-    
+
+
 @step(u'I set the item tags field to "([^"]*)"')
 def i_set_the_item_tags_field_to_value(step, value):
     q = '#edit-global-annotation-form #s2id_id_annotation-tags .select2-input'
     elt = world.browser.find_element_by_css_selector(q)
     elt.send_keys(value)
     elt.send_keys(Keys.TAB)
-    time.sleep(1)    
+    time.sleep(1)

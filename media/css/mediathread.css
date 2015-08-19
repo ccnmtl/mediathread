@@ -2053,7 +2053,7 @@ span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;
     border-right: none;
-    height: 24px;
+    height: 32px;
     white-space:nowrap; 
     overflow:hidden; 
     text-overflow: ellipsis;
@@ -3321,7 +3321,7 @@ div.collection_table {
     margin-bottom: 10px;
     margin-right: 5px;
     padding: 0 10px 10px 10px;
-    width: 200px;
+    width: 220px;
     border: 1px solid #ccc;
     background: white;
     text-align: center;
@@ -4278,10 +4278,6 @@ a.btn.btn-default img.left {
     }
 }
 
-.selection-assignment .col-md-9 {
-    width: 70%;
-}
-
 .selection-assignment .mceLayout,
 .selection-assignment textarea {
     width: 100% !important;
@@ -4315,45 +4311,11 @@ a.btn.btn-default img.left {
     display: none;
 }
 
-.selection-assignment .annotation-filter-groupby {
+.selection-assignment .filter-selections {
     display: none;
 }
 
 .selection-assignment .selected-item .gallery-item {
     margin-top: 30px;
     float: none;
-}
-
-.selection-assignment .selected-item .gallery-item.placeholder {
-    width: 200px;
-    height: 200px;
-    background-color: white;
-    position: relative;
-}
-
-.selection-assignment .selected-item .gallery-item.placeholder::after,
-.selection-assignment .selected-item .gallery-item.placeholder::before {
-    position: absolute;
-    top: 50%;
-    left: -16px;
-    content: '';
-    display: block;
-    width: 250px;
-    height: 1px;
-    background-color: #ccc;
-}
-
-.selection-assignment .selected-item .gallery-item.placeholder::after {
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-.selection-assignment .selected-item .gallery-item.placeholder::before {
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    transform: rotate(-45deg);
 }

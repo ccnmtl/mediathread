@@ -407,7 +407,7 @@ CollectionList.prototype.createAssetThumbs = function (assets) {
                         height: (thumbs[0].height + 50) + 'px'
                     });
                 } else {
-                    jQuery(target_parent).css({height: '215px'});
+                    jQuery(target_parent).css({height: '222px'});
                 }
             }
         } else {

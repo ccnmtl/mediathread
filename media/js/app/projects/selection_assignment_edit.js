@@ -142,7 +142,7 @@
         onGalleryItemMouseOver: function(evt) {
             this.hoverItem = evt.currentTarget;
             var $elt = jQuery(evt.currentTarget);
-            var $overlay = jQuery('.gallery-item-overlay');
+            var $overlay = jQuery('.gallery-item-overlay').first();
             $overlay.css('top', $elt.position().top);
             $overlay.css('left', $elt.position().left);
             $overlay.css('width', $elt.outerWidth());

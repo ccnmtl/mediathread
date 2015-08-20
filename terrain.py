@@ -276,6 +276,18 @@ def i_click_the_link(step, text):
             assert False, link.location
 
 
+@step(u'I scroll to the "([^"]*)" link')
+def i_scroll_to_the_link(step, text):
+    try:
+        link = world.browser.find_element_by_partial_link_text(text)
+        script = "return arguments[0].scrollIntoView();"
+        world.browser.execute_script(script, link)
+        assert link.is_displayed()
+    except NoSuchElementException:
+        world.browser.get_screenshot_as_file("/tmp/selenium.png")
+        assert False, link.location
+
+
 @step(u'I am in the ([^"]*) class')
 def i_am_in_the_coursename_class(step, coursename):
     if world.using_selenium:

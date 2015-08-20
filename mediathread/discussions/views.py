@@ -222,11 +222,11 @@ def comment_save(request, comment_id, next_url=None):
                                             comment, comment.content_object,
                                             comment.user)
 
-    if request.is_ajax():
+    if request.META['HTTP_ACCEPT'].startswith("text/html"):
+        return {'comment': comment}
+    else:
         ctx = {'context': threaded_comment_json(request, comment)}
         return HttpResponse(json.dumps(ctx), content_type='application/json')
-    else:
-        return {'comment': comment}
 
 
 def threaded_comment_citations(all_comments, viewer):

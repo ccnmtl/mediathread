@@ -1,10 +1,4 @@
-(function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(['jquery'], factory);
-    } else {
-        factory(jQuery);
-    }
-}(function ($) {
+(function ($) {
     function getSubcalls(row) {
         var id = row.attr('id');
         return $('.djDebugProfileRow[id^="'+id+'_"]');
@@ -23,5 +17,5 @@
             subcalls.hide();
         }
     });
-
-}));
+    djdt.applyStyle('padding-left');
+})(djdt.jQuery);

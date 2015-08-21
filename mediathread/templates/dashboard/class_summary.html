@@ -116,7 +116,7 @@
 <tr>
 
 <td class="mainsection">
-    <table>
+    <table class="table table-bordered">
       <thead>
         <tr>
           <th>Name</th>
@@ -125,7 +125,7 @@
           <th>Compositions</th>
         </tr>
       </thead>
-      <tbody id="reports-student-tbody">
+      <tbody id="reports-student-tbody" class="table-striped">
         {% for student in students %}
         <tr data-username="{{student.username}}" class="user-{{student.username}}">
           <td><a href="/?username={{student.username}}">

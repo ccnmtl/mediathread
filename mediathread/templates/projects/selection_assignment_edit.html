@@ -111,9 +111,15 @@
                                     </a>
                                     </h4>
                                     <div class="asset-thumb">
-                                        <img class="gallery-item-thumb"
-                                         src="{{item.thumb_url}}"
-                                         alt="Item Thumbnail">
+                                        {% if item.thumb_url %}
+                                            <img class="gallery-item-thumb"
+                                             src="{{item.thumb_url}}"
+                                             alt="Item Thumbnail">
+                                        {% else %}{% ifequal item.media_type "image" %}
+                                            <img class="gallery-item-thumb"
+                                             src="{{item.primary.url}}"
+                                             alt="Item Thumbnail">
+                                        {% endif %}{% endif %}
                                     </div>
                                 </div>
                                 <input type="hidden" name="item" value="{{item.id}}" />

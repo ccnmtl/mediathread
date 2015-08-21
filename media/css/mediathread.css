@@ -1,10 +1,4 @@
 /* ########## Standard elements ########## */
-* {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
 html,body {
 	height: 100%;
 	font-size: 1em;
@@ -154,7 +148,7 @@ a:hover {
 #pagebody
 {
 	position: relative;
-	padding: 0 0 0 10px;
+	padding: 0 15px;
 }
 
 /* ---- Metadata displays ---- */
@@ -259,7 +253,7 @@ ul#projects li {
 	clear: both;
     display: block;
     float: left;
-    width: 93%;
+    width: 100%;
 }
 
 .metadata-value-assignment {
@@ -2059,7 +2053,7 @@ span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;
     border-right: none;
-    height: 24px;
+    height: 32px;
     white-space:nowrap; 
     overflow:hidden; 
     text-overflow: ellipsis;
@@ -2777,9 +2771,9 @@ a.hs-control.hs-control-show.plist.float
    background-image: url("../img/buttons/collections_button_bg.jpg");
    border: 1px solid #C89345;
    float: right;
-   padding: 2px 5px 0 0;
+   padding: 5px 5px 0 0;
    width: 125px;
-   height: 14px;
+   height: 20px;
    font-size: 12px;
    text-align: center;
    margin: -2px -10px 0 0;
@@ -3316,7 +3310,7 @@ div.collection_table {
     margin-top: 10px;
     margin-left: 5px;
     padding: 0 10px 10px 10px;
-    width: 90%;
+    width: 98%;
     border: 1px solid #ccc;
     background: white;
     text-align: center;
@@ -3327,7 +3321,7 @@ div.collection_table {
     margin-bottom: 10px;
     margin-right: 5px;
     padding: 0 10px 10px 10px;
-    width: 200px;
+    width: 220px;
     border: 1px solid #ccc;
     background: white;
     text-align: center;
@@ -3455,7 +3449,7 @@ div.asset-view-container div.asset-view-published {
 
 div.asset-view-container div.asset-view-tabs {
     min-width: 250px;
-    width: 33%;
+    width: 34%;
     float: left;
     border: 0;
     padding-left: 0;
@@ -4214,18 +4208,7 @@ div.ui-dialog div.asset-view-details h2 {
 
 /* Fix bootstrap styles */
 .navbar * {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;
     font-weight: normal !important;
-}
-
-.ui-accordion-content,
-.switcher *,
-.form-control {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;
 }
 
 a.btn.btn-default {
@@ -4237,15 +4220,6 @@ a.btn.btn-primary,
 a.btn.btn-warning {
     color: white;
     font-weight: normal;
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;    
-}
-
-a.btn.btn-default {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;    
 }
 
 a.btn.btn-default img.right {
@@ -4283,20 +4257,25 @@ a.btn.btn-default img.left {
     width: 32% !important;
 }
 
-.selection-assignment .affix {
-    width: 25%;
-}
 
 .selection-assignment .asset-view-published {
     border: 0;
 }
 
-.selection-assignment .asset-view-published.affix {
-    width: 42%;
+.affix-top, .affix {
+    position: static;
+    width: inherit;
+    padding-right: 20px;
 }
 
-.selection-assignment .col-md-9 {
-    width: 70%;
+@media (min-width: 1024px) {
+    .selection-assignment .affix-top {
+        position: static;
+    }
+
+    .selection-assignment .affix {
+        position: fixed;
+    }
 }
 
 .selection-assignment .mceLayout,
@@ -4332,6 +4311,11 @@ a.btn.btn-default img.left {
     display: none;
 }
 
-.selection-assignment .annotation-filter-groupby {
+.selection-assignment .filter-selections {
     display: none;
+}
+
+.selection-assignment .selected-item .gallery-item {
+    margin-top: 30px;
+    float: none;
 }

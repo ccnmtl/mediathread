@@ -32,10 +32,10 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Draft - only author(s) can view"
+        There is a project visibility "Draft - only you can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        And the project visibility is "Draft - only author(s) can view"
+        And the project visibility is "Draft - only you can view"
         
         Then I save the changes
         Then there is a "Draft" link
@@ -91,11 +91,11 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Draft - only author(s) can view"
+        There is a project visibility "Draft - only you can view"
         There is a project visibility "Instructor - only author(s) and instructor can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        And the project visibility is "Draft - only author(s) can view"
+        And the project visibility is "Draft - only you can view"
         
         Then I save the changes
         
@@ -137,9 +137,10 @@ Feature: Composition
         Then I set the project visibility to "<visibility>"
         When I save the changes
         Then there is a "<status>" link
-        
+
         # Try to view as student one
         Given I am test_student_one in Sample Course
+        Given the home workspace is loaded
         Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
         Then the composition panel has <composition_count> projects named "Composition <title>: Scenario 3"
         
@@ -147,7 +148,7 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                                        | status             | info_count | composition_count |
-        | Draft   | Draft - only author(s) can view                                   | Draft              | 0          | 0                 |
+        | Draft   | Draft - only you can view                                         | Draft              | 0          | 0                 |
         | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0                 |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
@@ -174,12 +175,14 @@ Feature: Composition
         
         # Try to view as student two
         Given I am test_student_two in Sample Course
+        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am test_instructor in Sample Course
+        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
@@ -188,7 +191,7 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                      | status             | count |
-        | Draft   | Draft - only author(s) can view                 | Draft              | 0     |
+        | Draft   | Draft - only you can view                       | Draft              | 0     |
         | public  | Whole Class - all class members can view        | Published to Class | 1     |
 
 

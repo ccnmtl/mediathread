@@ -33,8 +33,8 @@ Feature: QuickEdit
         
         # Verify the create form is visible
         Then the "Edit Item" form appears
-        And I set the item tags field to "ghi"
         And I set the quickedit "Notes" "textarea" field to "Here are my notes"
+        And I set the item tags field to "ghi"
         And I click the Save Item button
 
         Then the "Edit Item" form disappears

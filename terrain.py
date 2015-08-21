@@ -355,6 +355,9 @@ def i_confirm_the_action(step):
         span = btn.find_element_by_css_selector("span.ui-button-text")
         if span.text == "OK":
             btn.click()
+            wait = ui.WebDriverWait(world.browser, 5)
+            wait.until(invisibility_of_element_located((By.ID,
+                                                        'dialog-confirm')))
             time.sleep(2)
             return
 

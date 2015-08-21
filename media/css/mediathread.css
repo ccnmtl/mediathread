@@ -77,7 +77,7 @@ p {
     display: block;
     padding: 0;
     border: 0;
-    line-height: 1.5em;
+    line-height: 1.3em;
     margin: 14px 0;
 }
 
@@ -4237,7 +4237,7 @@ a.btn.btn-default img.left {
 
 .project-response-form ul,
 .selection-assignment .page ul {
-    margin:  0 0em 0.7em 2em;
+    margin:  .4em 0em 0.7em 2em;
 }
 
 .selection-assignment input[name='copy-selection-icon'],

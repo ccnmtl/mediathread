@@ -4235,6 +4235,11 @@ a.btn.btn-default img.left {
     margin-top: 20px;
 }
 
+.project-response-form ul,
+.selection-assignment .page ul {
+    margin:  0 0em 0.7em 2em;
+}
+
 .selection-assignment input[name='copy-selection-icon'],
 .selection-assignment #asset-global-annotation {
     display: none !important;

@@ -137,9 +137,10 @@ Feature: Composition
         Then I set the project visibility to "<visibility>"
         When I save the changes
         Then there is a "<status>" link
-        
+
         # Try to view as student one
         Given I am test_student_one in Sample Course
+        Given the home workspace is loaded
         Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
         Then the composition panel has <composition_count> projects named "Composition <title>: Scenario 3"
         
@@ -174,12 +175,14 @@ Feature: Composition
         
         # Try to view as student two
         Given I am test_student_two in Sample Course
+        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am test_instructor in Sample Course
+        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"

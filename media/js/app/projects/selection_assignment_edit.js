@@ -158,6 +158,7 @@
             if (!this.hoverItem) {
                 return;
             }
+            jQuery('.has-error').removeClass('has-error');
 
             var pk = jQuery(this.hoverItem).attr('data-id');
             jQuery('input[name="item"]').val(pk);

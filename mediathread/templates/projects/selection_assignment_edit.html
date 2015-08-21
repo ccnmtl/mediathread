@@ -83,23 +83,32 @@
                         {% endif %}
                     </h2>
                     <div data-page="1" class="page">
-                        <p>A selection assignment allows students to deeply analyze  
-                         a video or image chosen by the instructor. Responses can be 
-                         shared with the entire class or just the instructor.
-                        </p>
-                        <ol>
-                            <li>Choose an item from your collection</li>
-                            <li>Write instructions</li>
-                            <li>Set response due date &amp; visibility</li>
-                            <li>Publish assignment</li>
-                        </ol>
-                        <br />
+
+                        <p>A selection assignment allows students to make 
+                        annotations on a video, image, or audio file that 
+                        an instructor designates.</p>
+
+                        <p>Instructions to students could include:</p>
+                        <ul>
+                        <li>How many selections to create</li>
+                        <li>How to title selections</li>
+                        <li>How to annotate selections in the notes field</li>
+                        <li>Guidance on tagging selections</li>
+                        </ul>
+                        
+                        <p>Visibility of student responses must be set at one of the following levels:</p>
+                        <ul>
+                        <li>Student responses are visible only to instructors</li>
+                        <li>Students can see other responses only after submitting their own</li>
+                        <li>Students can see other responses at any time</li>
+                        </ul>
+
                         <div class="text-center">
                         <a href="#" class="btn btn-primary next right">Get Started</a>
                         </div>
                     </div>                   
                     <div data-page="2" class="page hidden">
-                        <h3>1. Choose an item from your collection</h3>
+                        <h3>1. Choose an item from the course collection</h3>
                         <div class="selected-item">
                         <center>
                             {% if item %}
@@ -131,18 +140,23 @@
                         </ul>
                     </div>                    
                     <div data-page="3" class="hidden page">
-                        <h3>2. Write Title &amp; Instructions</h3>
+                        <h3>2. Write title &amp; instructions</h3>
                         <div class="form-group">
+                            <label>Assignment Title</label>
                             <input type="text" name="title" class="form-control"
-                                placeholder="Title"
+                                placholder="Assignment Title"
                                 value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                             <div class="help-inline">Title is a required field</div>
                         </div>
                         <div class="form-group">
-                            <p>Write instructions for your students
-                            on how to work  with the item you've chosen.
-                            These could include  selection, annotation, 
-                            and/or tagging instructions</p>
+                            <label>Assignment Instructions</label>
+                            <div>Instructions to students could include:</div>
+                            <ul>
+                                <li>How many selections to create</li>
+                                <li>How to title selections</li>
+                                <li>How to annotate selections in the notes field</li>
+                                <li>Guidance on tagging selections with free form tags or course vocabulary terms</li>
+                            </ul>
                             <textarea name="body" class="form-control mceEditor">
                                 {{form.instance.body}}
                             </textarea>
@@ -156,7 +170,7 @@
                         </nav>
                     </div>
                     <div data-page="4" class="hidden page">
-                        <h3>3. Set Response Due Date &amp; Visibility</h3>
+                        <h3>3. Set response due date &amp; visibility</h3>
                         <p></p>
                         <div class="form-group">
                             <label for="due_date">Due Date <span class="small">(optional)</span></label>
@@ -165,7 +179,7 @@
                         </div>
                         <br />
                         <label for="response_view_policy">Visibility</label>
-                        <p>Choose when students can see responses submitted by other students</p>
+                        <p>Choose when students can see responses submitted by other students:</p>
                         <div class="form-group">
                             {{form.response_view_policy}}
                         </div>
@@ -176,7 +190,7 @@
                         </ul>
                     </div>                    
                     <div data-page="5" class="hidden page">
-                        <h3>4. Publish Assignment</h3>
+                        <h3>4. Publish assignment to students</h3>
                         <p></p>
                         <div class="form-group">
                             <div class="radio">

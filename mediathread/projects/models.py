@@ -23,7 +23,7 @@ PROJECT_TYPES = (
 )
 
 PUBLISH_OPTIONS = (
-    ('PrivateEditorsAreOwners', 'Draft - only author(s) can view'),
+    ('PrivateEditorsAreOwners', 'Draft - only you can view'),
 
     ('InstructorShared',
      'Instructor - only author(s) and instructor can view'),

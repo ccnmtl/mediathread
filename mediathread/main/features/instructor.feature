@@ -115,13 +115,6 @@ Feature: Instructor Dashboard
         Using selenium
         Given there is a sample response
         Given I am test_instructor in Sample Course
-        
-        When I open the reports menu
-        When I click the "Assignment Responses" link
-        There is a "Sample Assignment" link
-        When I click the "Sample Assignment" link
-        Then I am at the Sample Assignment page
-        There is an open Assignment panel
 
         When I open the reports menu
         When I click the "Assignment Responses" link
@@ -131,7 +124,7 @@ Feature: Instructor Dashboard
         And I see "Student One"
         And I there is a "Sample Assignment Response" link
         And I see "Submitted to Instructor"
-        And I see "No feedback" 
+        And I see "No" 
         
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page

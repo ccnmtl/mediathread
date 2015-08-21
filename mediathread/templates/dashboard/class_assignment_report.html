@@ -10,9 +10,10 @@
     href="{% url 'assignment-detail-report' assignment.id %}">
     Download Detail
 </a>
-<div class="visualclear"></div>
-<br />
-<table>
+<div class="clearfix"></div>
+<br /><br />
+
+<table class="table table-bordered">
   <thead>
     <tr>
       <th>Student</th>
@@ -23,7 +24,7 @@
       <th>Faculty Feedback</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-striped">
 {% for response in responses %}
   <tr>
     <td>
@@ -44,9 +45,9 @@
     <td>
       {% with response.feedback_discussion as feedback %}
       {% if feedback %}
-      <a href="/discussion/{{feedback.id}}">Feedback</a>
+        Yes
       {% else %}
-      No feedback
+        No
       {% endif %}
       {% endwith %}
     </td>

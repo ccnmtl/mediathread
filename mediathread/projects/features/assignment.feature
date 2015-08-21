@@ -200,7 +200,7 @@ Feature: Assignment
         When I click the "Sample Assignment Response" link 
         Then I am at the Sample Assignment Response page
         When I click the Saved button
-        Then I set the project visibility to "Draft - only author(s) can view"
+        Then I set the project visibility to "Draft - only you can view"
         Then I save the changes
         Then there is a "Draft" link
 
@@ -219,10 +219,10 @@ Feature: Assignment
                      
       Examples:
         | visibility                                          | status                  | username         | count |
-        | Draft - only author(s) can view                     | Draft                   | test_instructor  |   0   |
+        | Draft - only you can view                           | Draft                   | test_instructor  |   0   |
         | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_instructor  |   1   |
         | Whole Class - all class members can view            | Published to Class      | test_instructor  |   1   |
-        | Draft - only author(s) can view                     | Draft                   | test_student_two |   0   |
+        | Draft - only you can view                           | Draft                   | test_student_two |   0   |
         | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_student_two |   0   |
         | Whole Class - all class members can view            | Published to Class      | test_student_two |   1   |
 

@@ -258,6 +258,47 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 404)
 
+    def test_unsubmit_response(self):
+        assignment_response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('unsubmit-response')
+        data = {'student-response': assignment_response.id}
+
+        # anonymous
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+
+        # as owner
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 403)
+
+        # as faculty
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 403)
+
+        # resave the response as submitted
+        assignment_response.create_or_update_collaboration('CourseProtected')
+        assignment_response.submitted = True
+        assignment_response.save()
+
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, data, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue(response.redirect_chain[0][0].startswith(
+            'http://testserver/project/view/'))
+
+        assignment_response = Project.objects.get(id=assignment_response.id)
+        self.assertFalse(assignment_response.submitted)
+        collaboration = assignment_response.get_collaboration()
+        self.assertEquals(collaboration.policy_record.policy_name,
+                          'PrivateEditorsAreOwners')
+
     def test_project_revisions(self):
         url = reverse('project-revisions', args=[self.project_private.id])
 

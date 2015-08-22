@@ -2,7 +2,8 @@ from django.conf.urls import patterns, url
 
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
-    SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView)
+    SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView,
+    UnsubmitResponseView)
 
 
 urlpatterns = patterns(
@@ -37,6 +38,9 @@ urlpatterns = patterns(
 
     url(r'^delete/(?P<project_id>\d+)/$',
         ProjectDeleteView.as_view(), {}, 'project-delete'),
+
+    url(r'^unsubmit/$',
+        UnsubmitResponseView.as_view(), {}, 'unsubmit-response'),
 
     url(r'^revisions/(?P<project_id>\d+)/$',
         'project_revisions',

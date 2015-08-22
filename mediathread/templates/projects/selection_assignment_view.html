@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load user_projects %}
+{% load user_projects coursetags %}
 
 {% block title %}
     {% if assignment.title %}{{assignment.title}}{% else %}New Assignment{% endif %}
@@ -125,15 +125,57 @@
                 <div class="right">
                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 
                     <strong>
+                        <a href="#" data-toggle="modal" data-target="#unsubmit-response">
                         {{responses|length}} Responses | 
                         <span class="feedback-count">{{feedback_count}}</span> Feedback
+                        </a>
                     </strong>
+                    <div class="modal fade" id="unsubmit-response" tabindex="-1"
+                        role="dialog" aria-labelledby="Cannot Submit Response">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Unsubmit Response</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                                    Etiam ultricies egestas sapien, non eleifend erat vulputate a. 
+                                    Sed quis ex est. Morbi iaculis diam sem, eu semper justo dictum tempor.</p>
+                                    <form action="/project/unsubmit/" method="post">
+                                        <label for="student-response-id">Select Response</label>
+                                        <select name="student-response" class="form-control">
+                                            {% for response in responses %}
+                                                {% if response.submitted %}
+                                                    <option value="{{response.id}}">
+                                                        {% public_name for response.author %} (submitted {{ response.submitted_date }})
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <hr />
+                                        <div class="right">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <span class="glyphicon glyphicon-repeat hidden" aria-hidden="true"></span> 
+                                                Unsubmit
+                                            </button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>    
+                            </div>
+                        </div>
+                    </div>                            
                 </div>
             {% else %}{% if not assignment_can_edit  %}
                 {% if my_response.submitted %}
                     <div class="right">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
-                        <strong>Submitted</strong> {{my_response.submitted_date}} | 
+                        <strong>Submitted</strong> {{my_response.submitted_date}}
                     </div>
                 {% else %}{% if my_response %}
                     <div>

@@ -157,6 +157,27 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         return HttpResponseRedirect('/')
 
 
+class UnsubmitResponseView(LoggedInFacultyMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        project_id = request.POST.get('student-response', None)
+        project = get_object_or_404(Project, id=project_id)
+
+        assignment = project.assignment()
+        if (not project.can_read(self.request.course, self.request.user) or
+                not assignment):
+            return HttpResponseForbidden("forbidden")
+
+        project.submitted = False
+        project.save()
+
+        policy = 'PrivateEditorsAreOwners'
+        project.create_or_update_collaboration(policy)
+
+        return HttpResponseRedirect(
+            reverse('project-workspace', kwargs={'project_id': assignment.id}))
+
+
 @login_required
 def project_revisions(request, project_id):
     project = get_object_or_404(Project, pk=project_id, course=request.course)

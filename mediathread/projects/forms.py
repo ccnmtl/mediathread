@@ -4,7 +4,8 @@ from django.forms.widgets import RadioSelect
 
 from mediathread.main import course_details
 from mediathread.main.course_details import all_selections_are_visible
-from mediathread.projects.models import Project, PUBLISH_WHOLE_WORLD
+from mediathread.projects.models import Project, PUBLISH_WHOLE_WORLD, \
+    PUBLISH_OPTIONS
 from mediathread.projects.models import \
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED, \
     RESPONSE_VIEW_ALWAYS, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS, \
@@ -16,7 +17,8 @@ class ProjectForm(forms.ModelForm):
     submit = forms.ChoiceField(choices=(('Preview', 'Preview'),
                                         ('Save', 'Save'),))
 
-    publish = forms.ChoiceField(label='Visibility', widget=RadioSelect)
+    publish = forms.ChoiceField(choices=PUBLISH_OPTIONS,
+                                label='Visibility', widget=RadioSelect)
 
     parent = forms.CharField(required=False, label='Response to',)
 
@@ -49,19 +51,22 @@ class ProjectForm(forms.ModelForm):
         else:
             self.instance = None
 
+        choices = []
         if request.course.is_faculty(request.user):
             if not project or project.get_collaboration().children.count() < 1:
-                self.fields['publish'].choices.append(PUBLISH_DRAFT)
-            self.fields['publish'].choices.append(PUBLISH_WHOLE_CLASS)
+                choices.append(PUBLISH_DRAFT)
+            choices.append(PUBLISH_WHOLE_CLASS)
         else:
             # Student
-            self.fields['publish'].choices.append(PUBLISH_DRAFT)
-            self.fields['publish'].choices.append(PUBLISH_INSTRUCTOR_SHARED)
-            self.fields['publish'].choices.append(PUBLISH_WHOLE_CLASS)
+            choices.append(PUBLISH_DRAFT)
+            choices.append(PUBLISH_INSTRUCTOR_SHARED)
+            choices.append(PUBLISH_WHOLE_CLASS)
 
         if course_details.allow_public_compositions(request.course):
             if project and project.is_composition():
-                self.fields['publish'].choices.append(PUBLISH_WHOLE_WORLD)
+                choices.append(PUBLISH_WHOLE_WORLD)
+
+        self.fields['publish'].choices = choices
 
         # response view policy
         choices = [RESPONSE_VIEW_NEVER]

@@ -26,7 +26,7 @@ from mediathread.projects.admin import ProjectVersion
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project, \
-    RESPONSE_VIEW_POLICY, ProjectNote
+    RESPONSE_VIEW_POLICY, ProjectNote, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -61,7 +61,7 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
         item_id = request.POST.get('item', None)
         project.create_or_update_item(item_id)
 
-        policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
+        policy = request.POST.get('publish', PUBLISH_DRAFT[0])
         collaboration = project.create_or_update_collaboration(policy)
 
         DiscussionIndex.update_class_references(
@@ -95,8 +95,8 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
     def post(self, request, *args, **kwargs):
         frm = ProjectForm(request, instance=self.project, data=request.POST)
         if frm.is_valid():
-            policy = request.POST.get('publish', 'PrivateEditorsAreOwners')
-            frm.instance.submitted = policy != 'PrivateEditorsAreOwners'
+            policy = request.POST.get('publish', PUBLISH_DRAFT[0])
+            frm.instance.submitted = policy != PUBLISH_DRAFT[0]
             frm.instance.author = request.user
             project = frm.save()
 
@@ -326,7 +326,7 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
             'item_json': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
-            'submit_policy': 'CourseProtected',
+            'submit_policy': PUBLISH_WHOLE_CLASS[0],
             'vocabulary': json.dumps(vocabulary_json),
             'responses': responses,
             'feedback': json.dumps(feedback),

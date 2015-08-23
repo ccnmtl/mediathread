@@ -4,11 +4,12 @@ from django.forms.widgets import RadioSelect
 
 from mediathread.main import course_details
 from mediathread.main.course_details import all_selections_are_visible
-from mediathread.projects.models import PUBLISH_OPTIONS_PUBLIC, \
-    PUBLISH_OPTIONS_STUDENT, PUBLISH_OPTIONS, PUBLISH_OPTIONS_FACULTY, \
+from mediathread.projects.models import Project, PUBLISH_WHOLE_WORLD, \
+    PUBLISH_OPTIONS
+from mediathread.projects.models import \
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED, \
-    RESPONSE_VIEW_ALWAYS
-from mediathread.projects.models import Project
+    RESPONSE_VIEW_ALWAYS, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS, \
+    PUBLISH_INSTRUCTOR_SHARED
 
 
 class ProjectForm(forms.ModelForm):
@@ -41,42 +42,44 @@ class ProjectForm(forms.ModelForm):
             'id': "id_participants_%s" % self.instance.id
         }
 
-        if kwargs['instance']:
-            col = kwargs['instance'].get_collaboration()
+        project = kwargs['instance']
+        if project:
+            # set initial publish value
+            col = project.get_collaboration()
             if col:
-                pol = col.policy_record.policy_name
-                if pol not in dict(self.fields['publish'].choices):
-                    self.fields['publish'].choices.append((pol, pol))
-                self.initial['publish'] = pol
+                self.initial['publish'] = col.policy_record.policy_name
         else:
             self.instance = None
 
+        choices = []
         if request.course.is_faculty(request.user):
-            # Faculty
-            self.fields['publish'].choices = \
-                [choice for choice in self.fields['publish'].choices
-                 if choice[0] in PUBLISH_OPTIONS_FACULTY]
+            if not project or project.get_collaboration().children.count() < 1:
+                choices.append(PUBLISH_DRAFT)
+            choices.append(PUBLISH_WHOLE_CLASS)
         else:
             # Student
-            self.fields['publish'].choices = \
-                [choice for choice in self.fields['publish'].choices
-                 if choice[0] in PUBLISH_OPTIONS_STUDENT]
+            choices.append(PUBLISH_DRAFT)
+            choices.append(PUBLISH_INSTRUCTOR_SHARED)
+            choices.append(PUBLISH_WHOLE_CLASS)
 
         if course_details.allow_public_compositions(request.course):
-            if kwargs['instance'] and kwargs['instance'].is_composition():
-                self.fields['publish'].choices.append(PUBLISH_OPTIONS_PUBLIC)
+            if project and project.is_composition():
+                choices.append(PUBLISH_WHOLE_WORLD)
 
+        self.fields['publish'].choices = choices
+
+        # response view policy
         choices = [RESPONSE_VIEW_NEVER]
         if all_selections_are_visible(request.course):
             choices.append(RESPONSE_VIEW_SUBMITTED)
             choices.append(RESPONSE_VIEW_ALWAYS)
         self.fields['response_view_policy'].choices = choices
+        self.fields['response_view_policy'].required = False
 
         self.fields['participants'].required = False
         self.fields['body'].required = False
         self.fields['submit'].required = False
         self.fields['publish'].required = False
-        self.fields['response_view_policy'].required = False
 
         # for structured collaboration
         self.fields['title'].widget.attrs['maxlength'] = 80

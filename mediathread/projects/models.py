@@ -22,16 +22,13 @@ PROJECT_TYPES = (
     (PROJECT_TYPE_SELECTION_ASSIGNMENT, 'Selection Assignment')
 )
 
-PUBLISH_OPTIONS = (
-    ('PrivateEditorsAreOwners', 'Draft - only you can view'),
-
-    ('InstructorShared',
-     'Instructor - only author(s) and instructor can view'),
-
-    ('CourseProtected', 'Whole Class - all class members can view'),
-
-    ('PublicEditorsAreOwners', 'Whole World - a public url is provided'),
-)
+PUBLISH_DRAFT = ('PrivateEditorsAreOwners', 'Draft - only you can view')
+PUBLISH_INSTRUCTOR_SHARED = \
+    ('InstructorShared', 'Instructor - only author(s) and instructor can view')
+PUBLISH_WHOLE_CLASS = \
+    ('CourseProtected', 'Whole Class - all class members can view')
+PUBLISH_WHOLE_WORLD = \
+    ('PublicEditorsAreOwners', 'Whole World - a public url is provided')
 
 SHORT_NAME = {
     'PrivateEditorsAreOwners': 'Draft',
@@ -41,15 +38,8 @@ SHORT_NAME = {
     'PrivateStudentAndFaculty': 'with Instructors',
 }
 
-PUBLISH_OPTIONS_STUDENT = ['PrivateEditorsAreOwners',
-                           'InstructorShared',
-                           'CourseProtected']
-
-PUBLISH_OPTIONS_FACULTY = ['PrivateEditorsAreOwners', 'CourseProtected']
-
-PUBLISH_OPTIONS_PUBLIC = ('PublicEditorsAreOwners',
-                          'Whole World - a public url is provided')
-
+PUBLISH_OPTIONS = dict([PUBLISH_DRAFT, PUBLISH_INSTRUCTOR_SHARED,
+                        PUBLISH_WHOLE_CLASS, PUBLISH_WHOLE_WORLD])
 
 RESPONSE_VIEW_NEVER = (
     'never', 'Never - Responses visible only to instructors')
@@ -388,14 +378,11 @@ class Project(models.Model):
         return thread
 
     def visibility(self):
-        opts = dict(PUBLISH_OPTIONS)
-
         col = self.get_collaboration()
         if col:
-            return opts.get(col.policy_record.policy_name,
-                            col.policy_record.policy_name)
+            return PUBLISH_OPTIONS[col.policy_record.policy_name]
         else:
-            return u"Private"
+            return PUBLISH_DRAFT[0]
 
     def visibility_short(self):
         col = self.get_collaboration()
@@ -403,7 +390,7 @@ class Project(models.Model):
             return SHORT_NAME.get(col.policy_record.policy_name,
                                   col.policy_record.policy_name)
         else:
-            return u"Private"
+            return PUBLISH_DRAFT[0]
 
     def status(self):
         col = self.get_collaboration()

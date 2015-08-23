@@ -168,6 +168,9 @@
             jQuery('.selected-item div').replaceWith(clone);
 
             delete this.hoverItem;
+
+            // scroll to top of page
+            jQuery('body').scrollTop(0);
         }
     });
 }(jQuery));

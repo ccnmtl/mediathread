@@ -125,10 +125,14 @@
                 <div class="right">
                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 
                     <strong>
-                        <a href="#" data-toggle="modal" data-target="#unsubmit-response">
+                        {% if responses|length > 0 %}
+                            <a href="#" data-toggle="modal" data-target="#unsubmit-response">
+                        {% endif %}
                         {{responses|length}} Responses | 
                         <span class="feedback-count">{{feedback_count}}</span> Feedback
-                        </a>
+                        {% if responses|length > 0 %}
+                            </a>
+                        {% endif %}    
                     </strong>
                     <div class="modal fade" id="unsubmit-response" tabindex="-1"
                         role="dialog" aria-labelledby="Cannot Submit Response">

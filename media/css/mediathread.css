@@ -2602,6 +2602,12 @@ img.collection-link {
     max-height:75px;
 }
 
+a.btn.collection img {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+} 
+
 div.archive p {
     font-size: 85%;
     text-align: left;
@@ -3931,26 +3937,6 @@ div.ui-dialog div.asset-view-details h2 {
 /** Taxonomy **/
 
 #taxonomy input[type="text"] {
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
-    -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
-    -o-transition: border linear 0.2s, box-shadow linear 0.2s;
-    transition: border linear 0.2s, box-shadow linear 0.2s;
-    display: inline-block;
-    height: 20px;
-    padding: 4px 6px;
-    margin: 5px 0 15px 5px;
-    font-size: 14px;
-    line-height: 20px;
-    color: #555555;
-    vertical-align: middle;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
     width: 65%;
 }
 
@@ -3963,7 +3949,7 @@ div.ui-dialog div.asset-view-details h2 {
 }
 
 #taxonomy input[name='onomy_url'] {
-    width: 87%;
+    width: 82%;
 }
 
 #taxonomy a.icon-link {
@@ -4006,9 +3992,9 @@ div.ui-dialog div.asset-view-details h2 {
     border-bottom-width: 1px !important;
     margin: 0 -1px .4em 0;
     outline: 0;
-    height: 40px;
+    height: 45px;
     border: 1px solid #d3d3d3;
-    padding-top: 5px;
+    padding: 5px;
 }
 
 #taxonomy .ui-tabs-vertical .ui-tabs-nav li a {
@@ -4085,33 +4071,10 @@ div.ui-dialog div.asset-view-details h2 {
 }
 
 #taxonomy div.term-container a.edit-term-close,
-#taxonomy div.term-container a.edit-term-submit,
-#taxonomy div.vocabulary-edit a.edit-vocabulary-close,
-#taxonomy div.vocabulary-edit a.edit-vocabulary-submit,
-#taxonomy div.vocabulary-import a.import-vocabulary-close,
-#taxonomy div.vocabulary-import a.import-vocabulary-submit,
-#taxonomy div.vocabulary-create a.create-vocabulary-close,
-#taxonomy div.vocabulary-create a.create-vocabulary-submit {
-    float: right;
-    padding: 8px 2px 0 2px;
-    margin-top: 0;
-    width: 16px;
-    height: 25px;
-}
-
-#taxonomy div.term-container a.edit-term-close,
 #taxonomy div.vocabulary-edit a.edit-vocabulary-close,
 #taxonomy div.vocabulary-import a.import-vocabulary-close, 
 #taxonomy div.vocabulary-create a.create-vocabulary-close {
     margin: 0 5px 0 5px;
-}
-
-#taxonomy div.term-container a.edit-term-close,
-#taxonomy div.term-container a.edit-term-submit {
-    padding: 3px 2px 0 2px;
-    margin-top: 5px;
-    height: 20px;
-    margin-bottom: 0;
 }
 
 #taxonomy div.vocabulary-display a.edit-vocabulary-open {
@@ -4168,7 +4131,7 @@ div.ui-dialog div.asset-view-details h2 {
     font-weight: normal;
     color: #212121;
     border-top: 1px solid #ccc;
-    height: 38px;
+    height: 42px;
 }
 
 #taxonomy div.term-container div.term-display {
@@ -4177,7 +4140,8 @@ div.ui-dialog div.asset-view-details h2 {
 
 #taxonomy div.term-container div.term-edit {
     background-color: #f5f5f5;
-    height: 38px;
+    height: 40px;
+    padding: 2px;
 }
 
 #taxonomy div.term-container div.term:hover {

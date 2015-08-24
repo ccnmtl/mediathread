@@ -33,13 +33,15 @@
                     <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
                 {% endfor %}
             </select>
-            &nbsp;&nbsp;<input class="btn btn-default" type="submit" value="Save"></input>
+            <br />
+            <input class="btn btn-default right" type="submit" value="Save"></input>
             </div>
         </form>
+        <div class="clearfix"></div>
         <form action="{% url 'collection-add-or-remove' %}" method="POST">
             <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
             <input type="hidden" name="collection_id" value="{{uploader.id}}" />
-            <input class="btn btn-default right" name="remove" type="submit" value="Disable Video Upload" />
+            <input class="btn btn-default left" name="remove" type="submit" value="Disable Video Upload" />
          </form>
          <div class="visualclear"></div>
     {% else %}
@@ -110,16 +112,24 @@
     To upload individual items to Mediathread, use the Mediathread Uploader at the top of this page.
 
     <form action="{% url 'collection-add-or-remove' %}" method="POST">
-        Collection Title: <input type="text" name="title" value="" />
-        <br/>
-        Collection URL: <input type="text" name="url" value="" />
-        <br/>
-        Description:
-        <textarea cols="55" rows="5" name="description"></textarea>
-        <br/>
-        Thumb URL: <input type="text" name="thumb" value="" />
-        <br/>
-        <input class="btn btn-default" type="submit" value="Add Source to Class" />
+        <div class="form-group">
+            <label>Collection Title</label>
+            <input class="form-control" type="text" name="title" value="" />
+        </div>
+        <div class="form-group">
+            <label>Collection URL</label>
+            <input class="form-control" type="text" name="url" value="" />
+        </div>
+        <div class="form-group">
+            <label>Thumb URL</label>
+            <input class="form-control" type="text" name="thumb" value="" />
+        </div>
+        <div class="form-group">
+            <label>Description</label><br />
+            <textarea class="form-control" cols="55" rows="5" name="description"></textarea>
+        </div>
+        <br /><br />
+        <input class="btn btn-default right" type="submit" value="Add Source to Class" />
     </form>
 </div>
 

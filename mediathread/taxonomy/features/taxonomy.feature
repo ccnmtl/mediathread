@@ -14,7 +14,7 @@ Feature: Taxonomy
 
         # Create a taxonomy
         When I create a new concept
-        I see "Type concept name here"
+        I see "Concept name"
 
         # Name and save
         I name the concept "Colors"
@@ -98,7 +98,7 @@ Feature: Taxonomy
         Then the "Colors" concept has an edit icon
 
         When I click the "Colors" concept edit icon
-        I see "Type concept name here"
+        I see "Concept name"
 
         # Name and save
         I rename the "Colors" concept to "Shapes"
@@ -246,7 +246,7 @@ Feature: Taxonomy
         Then the "Colors" concept has an edit icon
         
         When I click the "Colors" concept edit icon        
-        I see "Type concept name here"
+        I see "Concept name"
         
         # Name and save
         I rename the "Colors" concept to "Shapes"

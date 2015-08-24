@@ -30,6 +30,9 @@ def i_create_a_new_concept(step):
 @step(u'I name the concept "([^"]*)"')
 def i_name_the_concept_title(step, title):
     selector = 'input.create-vocabulary-name'
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.CSS_SELECTOR, selector)))
+
     elt = world.browser.find_element_by_css_selector(selector)
     elt.clear()
     elt.send_keys(title)

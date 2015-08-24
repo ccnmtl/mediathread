@@ -1,51 +1,74 @@
+from datetime import datetime
 import json
 
 from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.db.models import get_model
 from django.http import HttpResponse, HttpResponseRedirect, \
-    HttpResponseForbidden, HttpResponseServerError
+    HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
+from mediathread.assetmgr.api import AssetResource
+from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
-from mediathread.djangosherd.models import SherdNote
-from mediathread.mixins import ajax_required, LoggedInMixin, \
-    RestrictedMaterialsMixin, AjaxRequiredMixin, JSONResponseMixin, \
-    LoggedInFacultyMixin
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from mediathread.mixins import (
+    LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
+    JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
+    ProjectEditableMixin)
+from mediathread.projects.admin import ProjectVersion
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, \
+    RESPONSE_VIEW_POLICY, ProjectNote, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
 
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
+    def get_title(self):
+        title = self.request.POST.get('title', Project.DEFAULT_TITLE)
+        if len(title) < 1:
+            title = Project.DEFAULT_TITLE
+        return title
+
+    def format_date(self, due_date):
+        formatted = None
+        if due_date and len(due_date) > 0:
+            # convert mm/dd/yyyy into a datetime
+            formatted = datetime.strptime(due_date, '%m/%d/%Y')
+        return formatted
+
     def post(self, request):
-        project = Project.objects.create(author=request.user,
-                                         course=request.course,
-                                         title="Untitled")
+        project_type = request.POST.get('project_type', 'composition')
+        body = request.POST.get('body', '')
+        response_policy = request.POST.get('response_view_policy', 'always')
+        due_date = self.format_date(self.request.POST.get('due_date', None))
+        project = Project.objects.create(
+            author=request.user, course=request.course, title=self.get_title(),
+            project_type=project_type, response_view_policy=response_policy,
+            body=body, due_date=due_date)
 
         project.participants.add(request.user)
 
-        policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        project.create_or_update_collaboration(policy_name)
+        item_id = request.POST.get('item', None)
+        project.create_or_update_item(item_id)
 
-        parent = request.POST.get("parent", None)
-        if parent is not None:
-            parent = get_object_or_404(Project, pk=parent)
+        policy = request.POST.get('publish', PUBLISH_DRAFT[0])
+        collaboration = project.create_or_update_collaboration(policy)
 
-            collab = parent.get_collaboration()
-            if collab.permission_to("add_child", request.course,
-                                    request.user):
-                collab.append_child(project)
+        DiscussionIndex.update_class_references(
+            project.body, None, None, collaboration, project.author)
+
+        parent_id = request.POST.get('parent', None)
+        project.set_parent(parent_id)
 
         if not request.is_ajax():
             return HttpResponseRedirect(project.get_absolute_url())
@@ -66,67 +89,62 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
             return self.render_to_json_response(data)
 
 
-@login_required
-@allow_http("POST")
-@ajax_required
-def project_save(request, project_id):
-    project = get_object_or_404(Project, pk=project_id, course=request.course)
+class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
+                      ProjectEditableMixin, View):
 
-    if not project.can_edit(request.course, request.user):
-        return HttpResponseRedirect(project.get_absolute_url())
+    def post(self, request, *args, **kwargs):
+        frm = ProjectForm(request, instance=self.project, data=request.POST)
+        if frm.is_valid():
+            policy = request.POST.get('publish', PUBLISH_DRAFT[0])
+            frm.instance.submitted = policy != PUBLISH_DRAFT[0]
+            frm.instance.author = request.user
+            project = frm.save()
 
-    # verify user is in course
-    in_course_or_404(project.author.username, request.course)
+            project.participants.add(request.user)
 
-    projectform = ProjectForm(request, instance=project, data=request.POST)
-    if projectform.is_valid():
+            item_id = request.POST.get('item', None)
+            project.create_or_update_item(item_id)
 
-        # legacy and for optimizing queries
-        projectform.instance.submitted = \
-            request.POST.get('publish', None) != 'PrivateEditorsAreOwners'
+            # update the collaboration
+            collaboration = project.create_or_update_collaboration(policy)
+            DiscussionIndex.update_class_references(
+                project.body, None, None, collaboration, project.author)
 
-        # this changes for version-tracking purposes
-        projectform.instance.author = request.user
-        projectform.save()
+            parent_id = request.POST.get('parent', None)
+            project.set_parent(parent_id)
 
-        projectform.instance.participants.add(request.user)
-
-        # update the collaboration
-        policy_name = request.POST.get('publish', 'PrivateEditorsAreOwners')
-        projectform.instance.create_or_update_collaboration(policy_name)
-
-        v_num = projectform.instance.get_latest_version()
-        is_assignment = projectform.instance.is_assignment(request.course,
-                                                           request.user)
-
-        return HttpResponse(json.dumps({
-            'status': 'success',
-            'is_assignment': is_assignment,
-            'title': projectform.instance.title,
-            'revision': {
-                'id': v_num,
-                'public_url': projectform.instance.public_url(),
-                'visibility': project.visibility_short(),
-                'due_date': project.get_due_date()
+            ctx = {
+                'status': 'success',
+                'is_assignment': project.is_assignment(),
+                'title': project.title,
+                'context': {
+                    'project': {
+                        'url': project.get_absolute_url()
+                    }
+                },
+                'revision': {
+                    'id': project.get_latest_version(),
+                    'public_url': project.public_url(),
+                    'visibility': project.visibility_short(),
+                    'due_date': project.get_due_date()
+                }
             }
-        }, indent=2), content_type='application/json')
-    else:
-        ctx = {'status': 'error', 'msg': ""}
-        for key, value in projectform.errors.items():
-            if key == '__all__':
-                ctx['msg'] = ctx['msg'] + value[0] + "\n"
-            else:
-                ctx['msg'] = \
-                    '%s "%s" is not valid for the %s field.\n %s\n' % \
-                    (ctx['msg'], projectform.data[key],
-                     projectform.fields[key].label,
-                     value[0].lower())
+        else:
+            ctx = {'status': 'error', 'msg': ""}
+            for key, value in frm.errors.items():
+                if key == '__all__':
+                    ctx['msg'] = ctx['msg'] + value[0] + "\n"
+                else:
+                    ctx['msg'] = \
+                        '%s "%s" is not valid for the %s field.\n %s\n' % \
+                        (ctx['msg'], frm.data[key],
+                         frm.fields[key].label,
+                         value[0].lower())
 
-        return HttpResponse(json.dumps(ctx, indent=2),
-                            content_type='application/json')
+        return self.render_to_json_response(ctx)
 
 
-class ProjectDeleteView(LoggedInMixin, View):
+class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
     def post(self, request, *args, **kwargs):
         """
         Delete the requested project. Regular access conventions apply.
@@ -134,38 +152,30 @@ class ProjectDeleteView(LoggedInMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
-        project_id = kwargs.get('project_id', None)
-        project = get_object_or_404(Project, pk=project_id,
-                                    course=request.course)
-
-        if not project.can_edit(request.course, request.user):
-            return HttpResponseForbidden("forbidden")
-
-        project.delete()
+        self.project.delete()
 
         return HttpResponseRedirect('/')
 
 
-@login_required
-def project_reparent(request, assignment_id, composition_id):
-    if not request.user.is_staff:
-        return HttpResponseForbidden("forbidden")
+class UnsubmitResponseView(LoggedInFacultyMixin, View):
 
-    try:
-        assignment = Project.objects.get(id=assignment_id)
-    except Project.DoesNotExist:
-        return HttpResponseServerError("Invalid assignment parameter")
+    def post(self, request, *args, **kwargs):
+        project_id = request.POST.get('student-response', None)
+        project = get_object_or_404(Project, id=project_id)
 
-    try:
-        composition = Project.objects.get(id=composition_id)
-    except Project.DoesNotExist:
-        return HttpResponseServerError("Invalid composition parameter")
+        assignment = project.assignment()
+        if (not project.can_read(self.request.course, self.request.user) or
+                not assignment):
+            return HttpResponseForbidden("forbidden")
 
-    parent_collab = assignment.get_collaboration()
-    if parent_collab.permission_to("add_child", request.course, request.user):
-        parent_collab.append_child(composition)
+        project.submitted = False
+        project.save()
 
-    return HttpResponseRedirect('/')
+        policy = 'PrivateEditorsAreOwners'
+        project.create_or_update_collaboration(policy)
+
+        return HttpResponseRedirect(
+            reverse('project-workspace', kwargs={'project_id': assignment.id}))
 
 
 @login_required
@@ -230,8 +240,6 @@ def project_view_readonly(request, project_id, version_number=None):
                                   data,
                                   context_instance=RequestContext(request))
     else:
-        ProjectVersion = get_model('projects', 'projectversion')
-
         if version_number:
             version = get_object_or_404(ProjectVersion,
                                         versioned_id=project_id,
@@ -260,142 +268,218 @@ def project_view_readonly(request, project_id, version_number=None):
                             content_type='application/json')
 
 
-@login_required
-@allow_http("GET")
-def project_workspace(request, project_id, feedback=None):
-    """
-    A multi-panel editable view for the specified project
-    Legacy note: Ideally, this function would be named project_view but
-    StructuredCollaboration requires the view name
-    to be  <class>-view to do a reverse lookup
+class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
+                              TemplateView):
+    template_name = 'projects/selection_assignment_view.html'
 
-    Panel 1: Parent Assignment (if applicable)
-    Panel 2: Project
-    Panel 3: Instructor Feedback (if applicable & exists)
+    def get_assignment(self, project):
+        if project.is_selection_assignment():
+            assignment = project
+        else:
+            assignment = project.assignment()
+        return assignment
 
-    Keyword arguments:
-    project_id -- the model id
-    """
-    project = get_object_or_404(Project, pk=project_id)
+    def get_my_response(self, responses):
+        for response in responses:
+            if response.is_participant(self.request.user):
+                return response
+        return None
 
-    if not project.can_read(request.course, request.user):
-        return HttpResponseForbidden("forbidden")
+    def get_feedback(self, responses, is_faculty):
+        ctx = {}
+        existing = 0
+        for response in responses:
+            ctx[response.author.username] = {'responseId': response.id}
 
-    show_feedback = feedback == "feedback"
-    data = {'space_owner': request.user.username,
-            'show_feedback': show_feedback}
+            feedback = response.feedback_discussion()
+            if feedback and (is_faculty or
+                             response.is_participant(self.request.user)):
+                existing += 1
+                ctx[response.author.username]['comment'] = {
+                    'id': feedback.id,
+                    'content': feedback.comment
+                }
+        return ctx, existing
 
-    if not request.is_ajax():
-        data['project'] = project
-        return render_to_response('projects/project.html',
-                                  data,
-                                  context_instance=RequestContext(request))
-    else:
-        panels = []
+    def get_context_data(self, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        parent = self.get_assignment(project)
+        can_edit = parent.can_edit(self.request.course, self.request.user)
+        responses = parent.responses(self.request.course, self.request.user)
+        my_response = self.get_my_response(responses)
+        is_faculty = self.request.course.is_faculty(self.request.user)
 
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
+        item = parent.assignmentitem_set.first().asset
+        item_ctx = AssetResource().render_one_context(self.request, item)
 
-        owners = UserResource().render_list(request, request.course.members)
+        vocabulary_json = VocabularyResource().render_list(
+            self.request,
+            Vocabulary.objects.get_for_object(self.request.course))
 
-        is_faculty = request.course.is_faculty(request.user)
-        can_edit = project.can_edit(request.course, request.user)
-        feedback_discussion = project.feedback_discussion() \
-            if is_faculty or can_edit else None
+        feedback, feedback_count = self.get_feedback(responses, is_faculty)
 
-        # Project Parent (assignment) if exists
-        parent_assignment = project.assignment()
-        if parent_assignment:
-            pedit = parent_assignment.can_edit(request.course, request.user)
-            resource = ProjectResource(
-                record_viewer=request.user, is_viewer_faculty=is_faculty,
-                editable=pedit)
-            assignment_ctx = resource.render_one(request, parent_assignment)
+        ctx = {
+            'is_faculty': is_faculty,
+            'assignment': parent,
+            'assignment_can_edit': can_edit,
+            'item': item,
+            'item_json': json.dumps(item_ctx),
+            'my_response': my_response,
+            'response_view_policies': RESPONSE_VIEW_POLICY,
+            'submit_policy': PUBLISH_WHOLE_CLASS[0],
+            'vocabulary': json.dumps(vocabulary_json),
+            'responses': responses,
+            'feedback': json.dumps(feedback),
+            'feedback_count': feedback_count
+        }
+        return ctx
 
-            panel = {'is_faculty': is_faculty,
-                     'panel_state': "open" if (project.title == "Untitled" and
-                                               len(project.body) == 0)
-                     else "closed",
-                     'subpanel_state': 'closed',
-                     'context': assignment_ctx,
-                     'owners': owners,
-                     'vocabulary': vocabulary,
-                     'template': 'project'}
-            panels.append(panel)
 
-        # Requested project, can be either an assignment or composition
-        resource = ProjectResource(record_viewer=request.user,
-                                   is_viewer_faculty=is_faculty,
-                                   editable=can_edit)
-        project_context = resource.render_one(request, project)
+class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
+                         JSONResponseMixin, TemplateView):
 
-        # only editing if it's new
-        project_context['editing'] = \
-            True if can_edit and len(project.body) < 1 else False
+    def get(self, request, *args, **kwargs):
+        """
+        A multi-panel editable view for the specified project
+        Legacy note: Ideally, this function would be named project_view but
+        StructuredCollaboration requires the view name
+        to be  <class>-view to do a reverse lookup
 
-        project_context['create_instructor_feedback'] = \
-            is_faculty and parent_assignment and not feedback_discussion
+        Panel 1: Parent Assignment (if applicable)
+        Panel 2: Project
+        Panel 3: Instructor Feedback (if applicable & exists)
 
-        panel = {'is_faculty': is_faculty,
-                 'panel_state': 'closed' if show_feedback else 'open',
-                 'context': project_context,
-                 'template': 'project',
-                 'owners': owners,
-                 'vocabulary': vocabulary}
-        panels.append(panel)
+        Keyword arguments:
+        project_id -- the model id
+        """
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        show_feedback = kwargs.get('feedback', None) == "feedback"
+        data = {'space_owner': request.user.username,
+                'show_feedback': show_feedback}
 
-        # Project Response -- if the requested project is an assignment
-        # This is primarily a student view. The student's response should
-        # pop up automatically when the parent assignment is viewed.
-        if project.is_assignment(request.course, request.user):
-            responses = project.responses_by(request.course, request.user,
-                                             request.user)
-            if len(responses) > 0:
-                response = responses[0]
-                response_can_edit = response.can_edit(request.course,
-                                                      request.user)
-                resource = ProjectResource(record_viewer=request.user,
-                                           is_viewer_faculty=is_faculty,
-                                           editable=response_can_edit)
-                response_context = resource.render_one(request, response)
+        if not request.is_ajax():
+            self.template_name = 'projects/project.html'
+            data['project'] = project
+            return self.render_to_response(data)
+        else:
+            panels = []
+
+            vocabulary = VocabularyResource().render_list(
+                request, Vocabulary.objects.get_for_object(request.course))
+
+            owners = UserResource().render_list(request,
+                                                request.course.members)
+
+            is_faculty = request.course.is_faculty(request.user)
+            can_edit = project.can_edit(request.course, request.user)
+            feedback_discussion = project.feedback_discussion() \
+                if is_faculty or can_edit else None
+
+            # Project Parent (assignment) if exists
+            parent = project.assignment()
+            if parent:
+                pedit = parent.can_edit(request.course, request.user)
+                resource = ProjectResource(
+                    record_viewer=request.user, is_viewer_faculty=is_faculty,
+                    editable=pedit)
+                ctx = resource.render_one(request, parent)
+                state = "open" if (project.is_empty()) else "closed"
 
                 panel = {'is_faculty': is_faculty,
-                         'panel_state': 'closed',
-                         'context': response_context,
-                         'template': 'project',
+                         'panel_state': state,
+                         'subpanel_state': 'closed',
+                         'context': ctx,
                          'owners': owners,
-                         'vocabulary': vocabulary}
+                         'vocabulary': vocabulary,
+                         'template': 'project'}
                 panels.append(panel)
 
-                if not feedback_discussion and response_can_edit:
-                    feedback_discussion = response.feedback_discussion()
+            # Requested project, can be either an assignment or composition
+            resource = ProjectResource(record_viewer=request.user,
+                                       is_viewer_faculty=is_faculty,
+                                       editable=can_edit)
+            project_context = resource.render_one(request, project)
 
-        data['panels'] = panels
+            # only editing if it's new
+            project_context['editing'] = \
+                True if can_edit and len(project.body) < 1 else False
 
-        # If feedback exists for the requested project
-        if feedback_discussion:
-            # 3rd pane is the instructor feedback, if it exists
-            panel = {'panel_state': 'open' if show_feedback else 'closed',
-                     'panel_state_label': "Instructor Feedback",
-                     'template': 'discussion',
+            project_context['create_instructor_feedback'] = \
+                is_faculty and parent and not feedback_discussion
+
+            panel = {'is_faculty': is_faculty,
+                     'panel_state': 'closed' if show_feedback else 'open',
+                     'context': project_context,
+                     'template': 'project',
                      'owners': owners,
-                     'vocabulary': vocabulary,
-                     'context': threaded_comment_json(request,
-                                                      feedback_discussion)}
+                     'vocabulary': vocabulary}
             panels.append(panel)
 
-        # Create a place for asset editing
-        panel = {'panel_state': 'closed',
-                 'panel_state_label': "Item Details",
-                 'template': 'asset_quick_edit',
-                 'update_history': False,
-                 'owners': owners,
-                 'vocabulary': vocabulary,
-                 'context': {'type': 'asset'}}
-        panels.append(panel)
+            # Project Response -- if the requested project is an assignment
+            # This is primarily a student view. The student's response should
+            # pop up automatically when the parent assignment is viewed.
+            if project.is_assignment():
+                responses = project.responses(request.course,
+                                              request.user, request.user)
+                if len(responses) > 0:
+                    response = responses[0]
+                    response_can_edit = response.can_edit(request.course,
+                                                          request.user)
+                    resource = ProjectResource(record_viewer=request.user,
+                                               is_viewer_faculty=is_faculty,
+                                               editable=response_can_edit)
+                    response_context = resource.render_one(request, response)
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            content_type='application/json')
+                    panel = {'is_faculty': is_faculty,
+                             'panel_state': 'closed',
+                             'context': response_context,
+                             'template': 'project',
+                             'owners': owners,
+                             'vocabulary': vocabulary}
+                    panels.append(panel)
+
+                    if not feedback_discussion and response_can_edit:
+                        feedback_discussion = response.feedback_discussion()
+
+            data['panels'] = panels
+
+            # If feedback exists for the requested project
+            if feedback_discussion:
+                # 3rd pane is the instructor feedback, if it exists
+                panel = {'panel_state': 'open' if show_feedback else 'closed',
+                         'panel_state_label': "Instructor Feedback",
+                         'template': 'discussion',
+                         'owners': owners,
+                         'vocabulary': vocabulary,
+                         'context': threaded_comment_json(request,
+                                                          feedback_discussion)}
+                panels.append(panel)
+
+            # Create a place for asset editing
+            panel = {'panel_state': 'closed',
+                     'panel_state_label': "Item Details",
+                     'template': 'asset_quick_edit',
+                     'update_history': False,
+                     'owners': owners,
+                     'vocabulary': vocabulary,
+                     'context': {'type': 'asset'}}
+            panels.append(panel)
+
+            return self.render_to_json_response(data)
+
+
+class ProjectWorkspaceView(LoggedInMixin, ProjectReadableMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        parent = project.assignment()
+        if (project.is_selection_assignment() or
+                (parent and parent.is_selection_assignment())):
+            view = SelectionAssignmentView.as_view()
+        else:
+            view = DefaultProjectView.as_view()
+
+        return view(request, *args, **kwargs)
 
 
 @login_required
@@ -441,12 +525,11 @@ def project_export_msword(request, project_id):
 
 
 class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
-                        AjaxRequiredMixin, JSONResponseMixin, View):
+                        AjaxRequiredMixin, JSONResponseMixin,
+                        ProjectReadableMixin, View):
 
     def get(self, request, project_id):
         project = get_object_or_404(Project, id=project_id)
-        if not project.visible(request.course, request.user):
-            return HttpResponseForbidden("forbidden")
 
         can_edit = project.can_edit(request.course, request.user)
 
@@ -468,7 +551,7 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
 
     def get(self, request):
         ures = UserResource()
-        course_rez = CourseResource()
+        course_res = CourseResource()
         pres = ProjectResource(editable=self.viewing_own_records,
                                record_viewer=self.record_viewer,
                                is_viewer_faculty=self.is_viewer_faculty)
@@ -477,7 +560,7 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         ctx = {
             'space_viewer': ures.render_one(request, self.record_viewer),
             'editable': self.viewing_own_records,
-            'course': course_rez.render_one(request, request.course),
+            'course': course_res.render_one(request, request.course),
             'is_faculty': self.is_viewer_faculty
         }
 
@@ -520,3 +603,40 @@ class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
                 project.save()
 
         return self.render_to_json_response({'sorted': 'true'})
+
+
+class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
+    template_name = 'projects/selection_assignment_edit.html'
+
+    def get(self, *args, **kwargs):
+        try:
+            project = Project.objects.get(id=kwargs.get('project_id', None))
+            if (not project.can_edit(self.request.course, self.request.user)):
+                return HttpResponseForbidden("forbidden")
+            form = ProjectForm(self.request, instance=project)
+        except Project.DoesNotExist:
+            form = ProjectForm(self.request, instance=None)
+
+        return self.render_to_response({
+            'form': form
+        })
+
+
+class ProjectItemView(LoggedInMixin, JSONResponseMixin,
+                      AjaxRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        item = get_object_or_404(Asset, id=kwargs.get('asset_id', None))
+
+        parent = get_object_or_404(Project, id=kwargs.get('project_id', None))
+
+        responses = parent.responses(self.request.course, self.request.user)
+        response_ids = [r.id for r in responses]
+
+        # notes related to visible responses are visible
+        pnotes = ProjectNote.objects.filter(project__id__in=response_ids)
+        note_ids = pnotes.values_list('annotation__id', flat=True)
+        notes = SherdNote.objects.filter(id__in=note_ids)
+
+        ctx = AssetResource().render_one_context(self.request, item, notes)
+        return self.render_to_json_response(ctx)

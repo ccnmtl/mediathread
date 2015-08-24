@@ -1,4 +1,8 @@
 from datetime import datetime
+import json
+from random import choice
+from string import letters
+
 from django.conf import settings
 from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
@@ -9,20 +13,19 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
+from threadedcomments import ThreadedComment
+from threadedcomments.util import annotate_tree_properties, fill_tree
+
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
+from mediathread.djangosherd.models import DiscussionIndex
 from mediathread.mixins import faculty_only
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-from random import choice
-from string import letters
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
-from threadedcomments import ThreadedComment
-from threadedcomments.util import annotate_tree_properties, fill_tree
-import json
 
 
 @allow_http("POST")
@@ -31,6 +34,7 @@ def discussion_create(request):
 
     """Start a discussion of an arbitrary model instance."""
     title = request.POST['comment_html']
+    comment = request.POST.get('comment', '')
 
     # Find the object we're discussing.
     the_content_type = ContentType.objects.get(
@@ -75,7 +79,7 @@ def discussion_create(request):
     # finally create the root discussion object, pointing it at the CHILD.
     new_threaded_comment = ThreadedComment(parent=None,
                                            title=title,
-                                           comment='',
+                                           comment=comment,
                                            user=request.user,
                                            content_object=disc_sc)
 
@@ -85,6 +89,11 @@ def discussion_create(request):
 
     disc_sc.content_object = new_threaded_comment
     disc_sc.save()
+
+    DiscussionIndex.update_class_references(
+        new_threaded_comment.comment, new_threaded_comment.user,
+        new_threaded_comment, new_threaded_comment.content_object,
+        new_threaded_comment.user)
 
     if not request.is_ajax():
         return HttpResponseRedirect("/discussion/%d/" %
@@ -177,8 +186,7 @@ def discussion_view(request, discussion_id):
 
         data['panels'].append(panel)
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            content_type='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 @allow_http("POST")
@@ -201,7 +209,7 @@ def comment_save(request, comment_id, next_url=None):
         return HttpResponseForbidden('You do not have permission \
                                      to edit this discussion.')
 
-    if request.POST['title']:
+    if request.POST.get('title', None):
         comment.title = request.POST['title']
         if not comment.parent:
             disc_sc = comment.content_object
@@ -209,7 +217,16 @@ def comment_save(request, comment_id, next_url=None):
             disc_sc.save()
 
     comment.save()
-    return {'comment': comment, }
+
+    DiscussionIndex.update_class_references(comment.comment, comment.user,
+                                            comment, comment.content_object,
+                                            comment.user)
+
+    if request.META['HTTP_ACCEPT'].startswith("text/html"):
+        return {'comment': comment}
+    else:
+        ctx = {'context': threaded_comment_json(request, comment)}
+        return HttpResponse(json.dumps(ctx), content_type='application/json')
 
 
 def threaded_comment_citations(all_comments, viewer):

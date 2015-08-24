@@ -10,26 +10,6 @@ from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 
 
-class TermValidation(Validation):
-    def is_valid(self, bundle, request=None):
-        errors = {}
-
-        if len(bundle.obj.display_name) < 1:
-            errors['error_message'] = 'Please choose a term name'
-        else:
-            a = Term.objects.filter(
-                display_name=bundle.obj.display_name,
-                vocabulary_id=bundle.obj.vocabulary.id)
-
-            if len(a) > 0:  # term exists with this name
-                # a vocabulary already exists with this name
-                msg = '%s term already exists. Please choose a new name' \
-                    % bundle.data['display_name']
-                errors['error_message'] = [msg]
-
-        return errors
-
-
 class TermResource(ModelResource):
 
     class Meta:
@@ -39,7 +19,6 @@ class TermResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = FacultyAuthorization()
         excludes = ['description', 'ordinality']
-        validation = TermValidation()
         always_return_data = True
 
     def hydrate(self, bundle):

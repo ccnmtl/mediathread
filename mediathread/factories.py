@@ -10,7 +10,7 @@ from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.models import UserProfile
-from mediathread.projects.models import Project
+from mediathread.projects.models import Project, AssignmentItem, ProjectNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from structuredcollaboration.models import Collaboration, \
     CollaborationPolicyRecord
@@ -114,6 +114,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
     title = factory.Sequence(lambda n: 'Project %d' % n)
     author = factory.SubFactory(UserFactory)
+    project_type = 'composition'
 
     @factory.post_generation
     def policy(self, create, extracted, **kwargs):
@@ -132,8 +133,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     def parent(self, create, extracted, **kwargs):
         if create and extracted:
             parent_collab = extracted.get_collaboration()
-            if parent_collab.policy_record.policy_name == 'Assignment':
-                parent_collab.append_child(self)
+            parent_collab.append_child(self)
 
     @factory.post_generation
     def participants(self, create, extracted, **kwargs):
@@ -149,6 +149,14 @@ class CollaborationFactory(factory.DjangoModelFactory):
 
 class CollaborationPolicyRecordFactory(factory.DjangoModelFactory):
     FACTORY_FOR = CollaborationPolicyRecord
+
+
+class AssignmentItemFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = AssignmentItem
+
+
+class ProjectNoteFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = ProjectNote
 
 
 class MediathreadTestMixin(object):

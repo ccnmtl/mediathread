@@ -43,7 +43,7 @@ def class_assignment_report(request, project_id):
 def class_assignments(request):
     assignments = []
     for project in Project.objects.filter(request.course.faculty_filter):
-        if project.is_assignment(request.course, request.user):
+        if project.is_assignment() or project.is_selection_assignment():
             assignments.append(project)
 
     return {'assignments': sorted(assignments,
@@ -432,8 +432,8 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
         try:
             content_type = ContentType.objects.get_for_model(SherdNote)
             related = TermRelationship.objects.filter(
-                    content_type=content_type,
-                    object_id__in=selections.values_list('id', flat=True))
+                content_type=content_type,
+                object_id__in=selections.values_list('id', flat=True))
             return float(related.count()) / selections.count() * 100
         except ZeroDivisionError:
             return 0

@@ -6,11 +6,9 @@ import re
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
-from django.db.models.signals import post_save
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
 
@@ -305,8 +303,10 @@ class SherdNote(Annotation):
     author = models.ForeignKey(User, null=True, blank=True)
     tags = TagField()
     body = models.TextField(blank=True, null=True)
-    added = models.DateTimeField('date created', editable=False)
-    modified = models.DateTimeField('date modified', editable=False)
+    added = models.DateTimeField('date created', editable=False,
+                                 auto_now_add=True)
+    modified = models.DateTimeField('date modified', editable=False,
+                                    auto_now=True)
 
     def __unicode__(self):
         username = self.author.username if self.author else ''
@@ -339,37 +339,6 @@ class SherdNote(Annotation):
                            (self.asset.pk, self.pk))
         except:
             return ''
-
-    def save(self, *args, **kw):
-        """
-        Only allow a single rangeless annotation per (user,asset)
-        """
-
-        if not self.pk:
-            self.added = datetime.today()
-        self.modified = datetime.today()
-
-        # stupid hack to get around stupid parsing
-        # if someone makes a single tag with spaces
-        if self.tags and not self.tags.startswith(','):
-            self.tags = ',%s' % self.tags
-
-        if not self.is_null():
-            # anything goes
-            return Annotation.save(self, *args, **kw)
-
-        try:
-            global_annotation = SherdNote.objects.get(asset=self.asset,
-                                                      author=self.author,
-                                                      **NULL_FIELDS)
-        except ObjectDoesNotExist:
-            return Annotation.save(self, *args, **kw)
-
-        if global_annotation != self:
-            raise Exception("Only one rangeless annotation \
-                may be stored per (user,asset)")
-
-        return Annotation.save(self, *args, **kw)
 
     @classmethod
     def date_filter_for(cls, field):
@@ -455,11 +424,10 @@ class DiscussionIndex(models.Model):
     def get_type_label(self):
         if self.comment and self.comment.threadedcomment:
             return 'discussion'
-
         elif self.collaboration.content_object:
             return 'project'
-
-        return ''
+        else:
+            return ''
 
     @classmethod
     def with_permission(cls, request, query):
@@ -467,51 +435,21 @@ class DiscussionIndex(models.Model):
                 if di.collaboration.permission_to(
                     'read', request.course, request.user)]
 
+    @classmethod
+    def update_class_references(cls, sherdsource, participant, comment,
+                                collaboration, author):
+        sherds = SherdNote.objects.references_in_string(sherdsource, author)
+        if not sherds:
+            class NoNote:
+                asset = None
+            sherds = [NoNote(), ]
 
-def commentNproject_indexer(sender, instance=None, created=None, **kwargs):
-    sherdsource = None
-    participant = None
-    comment = None
-    collaboration = None
-    author = None
-    if (hasattr(instance, 'comment') and
-        hasattr(instance, 'user') and
-            isinstance(getattr(instance, 'content_object', None),
-                       Collaboration)):
-        # duck-typing for Comment and ThreadedComment
-        participant = instance.user
-        author = instance.user
-        comment = instance
-        collaboration = instance.content_object
-        sherdsource = instance.comment
-    elif hasattr(instance, 'author') and hasattr(instance, 'body') \
-            and callable(getattr(instance, 'collaboration', None)):
-        # not setting author, since get_or_create will break then
-        participant = None
-        author = instance.author
-        collaboration = instance.get_collaboration()
-        if collaboration is None:
-            return
-        sherdsource = instance.body
-    else:
-        return  # not comment, not project
-
-    sherds = SherdNote.objects.references_in_string(sherdsource, author)
-    if not sherds:
-        class NoNote:
-            asset = None
-        sherds = [NoNote(), ]
-
-    for ann in sherds:
-        try:
-            disc, created = DiscussionIndex.objects.get_or_create(
-                participant=participant,
-                collaboration=collaboration,
-                asset=ann.asset)
-            disc.comment = comment
-            disc.save()
-        except:
-            # some things may be deleted. pass
-            pass
-
-post_save.connect(commentNproject_indexer)
+        for ann in sherds:
+            try:
+                disc, created = DiscussionIndex.objects.get_or_create(
+                    participant=participant, collaboration=collaboration,
+                    asset=ann.asset)
+                disc.comment = comment
+                disc.save()
+            except Asset.DoesNotExist:
+                pass  # some annotations or assets may have been deleted

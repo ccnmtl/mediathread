@@ -33,7 +33,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.essaySpace = jQuery(self.el).find(".essay-space")[0];
 
     // hook up behaviors
-    jQuery(window).bind('tinymce_init_instance', function (event, instance, param2) {
+    jQuery(window).on('tinymce_init_instance', function (event, instance, param2) {
         self.onTinyMCEInitialize(instance);
     });
 
@@ -45,6 +45,11 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         self.onClosePanel(jQuery(this).hasClass("subpanel"));
     });
 
+    self._bind(self.el, "form[name='editproject']", 'keypress keydown keyup', function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    });
 
     self._bind(self.el, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
     self._bind(self.el, "a.project-visibility-link", "click", function (evt) {
@@ -102,7 +107,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
         // if this isn't completed AFTER instantiation
         jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
 
-        jQuery(window).bind('beforeunload', function () {
+        jQuery(window).on('beforeunload', function () {
             return self.beforeUnload();
         });
 
@@ -120,7 +125,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
                 jQuery(window).trigger("resize");
 
                 // Fired by CollectionList & AnnotationList
-                jQuery(window).bind('assets.refresh', { 'self': self }, function(event, html) {
+                jQuery(window).on('assets.refresh', { 'self': self }, function(event, html) {
                     var newAssets = self.collectionList.getAssets();
                     self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
                 });
@@ -282,7 +287,12 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
         resizable: false,
         modal: true,
         width: 860,
-        position: "top",
+        position: {
+            my: 'center top',
+            at: 'center top',
+            of: window,
+            collision: 'none'
+        },
         zIndex: 10000
     });
 
@@ -324,7 +334,12 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
         modal: true,
         width: 425,
         height: 245,
-        position: "top",
+        position: {
+            my: 'center top',
+            at: 'center top',
+            of: window,
+            collision: 'none'
+        },
         zIndex: 10000
     });
 
@@ -367,7 +382,12 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
         modal: true,
         width: 425,
         height: 200,
-        position: "top",
+        position: {
+            my: 'center top',
+            at: 'center top',
+            of: window,
+            collision: 'none'
+        },
         zIndex: 10000
     });
 
@@ -411,7 +431,12 @@ ProjectPanelHandler.prototype.showMyResponses = function (evt) {
         modal: true,
         width: 425,
         height: 200,
-        position: "top",
+        position: {
+            my: 'center top',
+            at: 'center top',
+            of: window,
+            collision: 'none'
+        },
         zIndex: 10000
     });
 
@@ -572,12 +597,12 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     var element = jQuery(frm).find("div.save-publish-status")[0];
 
     jQuery(element).dialog({
-        buttons: [{ text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }},
-                  { text: "Save",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
+        buttons: [{text: "Cancel",
+                   click: function () { jQuery(this).dialog("close"); }},
+                  {text: "Save",
+                   click: function () { self._save = true; jQuery(this).dialog("close"); }}
               ],
-        create: function () {
+        create: function(event, ui) {
             jQuery('#id_due_date').datepicker({
                 minDate: 0,
                 dateFormat: 'mm/dd/yy',
@@ -585,18 +610,6 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
                     inst.dpDiv.css({
                         top: (input.offsetHeight) + 'px'
                     });
-                }
-            });
-        },
-        open: function( event, ui ) {
-            if (!jQuery('#id_publish_2').is(":checked")) {
-                jQuery("#id_due_date").attr("disabled", "disabled");
-            }
-            jQuery("input[name=publish]").bind('click', function () {
-                if (jQuery('#id_publish_2').is(":checked")) {
-                    jQuery("#id_due_date").removeAttr("disabled");
-                } else {
-                    jQuery("#id_due_date").attr("disabled", "disabled");
                 }
             });
         },
@@ -608,11 +621,16 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
             self._save = false;
             return true;
         },
-        draggable: false,
+        draggable: true,
         resizable: false,
         modal: true,
         width: 430,
-        position: "top",
+        position: {
+            my: 'center top',
+            at: 'center top',
+            of: window,
+            collision: 'none'
+        },
         zIndex: 10000
     });
 
@@ -794,7 +812,7 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
 ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, handler) {
     var elements = jQuery(parent).find(elementSelector);
     if (elements.length) {
-        jQuery(elements[0]).bind(event, handler);
+        jQuery(elements[0]).on(event, handler);
         return true;
     } else {
         return false;

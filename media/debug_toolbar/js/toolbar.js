@@ -1,12 +1,4 @@
-(function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as anonymous module.
-        define(['jquery'], factory);
-    } else {
-        // Browser globals.
-        window.djdt = factory(jQuery);
-    }
-}(function ($) {
+(function ($, publicAPI) {
     var djdt = {
         handleDragged: false,
         events: {
@@ -16,17 +8,17 @@
         init: function() {
             $('#djDebug').show();
             var current = null;
-            $(document).on('click', '#djDebugPanelList li a', function() {
+            $('#djDebugPanelList').on('click', 'li a', function() {
                 if (!this.className) {
                     return false;
                 }
                 current = $('#djDebug #' + this.className);
                 if (current.is(':visible')) {
                     $(document).trigger('close.djDebug');
-                    $(this).parent().removeClass('active');
+                    $(this).parent().removeClass('djdt-active');
                 } else {
-                    $('.panelContent').hide(); // Hide any that are already open
-                    var inner = current.find('.djDebugPanelContent .scroll'),
+                    $('.djdt-panelContent').hide(); // Hide any that are already open
+                    var inner = current.find('.djDebugPanelContent .djdt-scroll'),
                         store_id = $('#djDebug').data('store-id'),
                         render_panel_url = $('#djDebug').data('render-panel-url');
                     if (store_id !== '' && inner.children().length === 0) {
@@ -42,22 +34,22 @@
                             inner.prev().remove();  // Remove AJAX loader
                             inner.html(data);
                         }).fail(function(xhr){
-                            var message = '<div class="djDebugPanelTitle"><a class="djDebugClose djDebugBack" href="">Back</a><h3>'+xhr.status+': '+xhr.statusText+'</h3></div>';
+                            var message = '<div class="djDebugPanelTitle"><a class="djDebugClose djDebugBack" href=""></a><h3>'+xhr.status+': '+xhr.statusText+'</h3></div>';
                             $('#djDebugWindow').html(message).show();
                         });
                     }
                     current.show();
-                    $('#djDebugToolbar li').removeClass('active');
-                    $(this).parent().addClass('active');
+                    $('#djDebugToolbar li').removeClass('djdt-active');
+                    $(this).parent().addClass('djdt-active');
                 }
                 return false;
             });
-            $(document).on('click', '#djDebug a.djDebugClose', function() {
+            $('#djDebug').on('click', 'a.djDebugClose', function() {
                 $(document).trigger('close.djDebug');
-                $('#djDebugToolbar li').removeClass('active');
+                $('#djDebugToolbar li').removeClass('djdt-active');
                 return false;
             });
-            $(document).on('click', '#djDebug .djDebugPanelButton input[type=checkbox]', function() {
+            $('#djDebug').on('click', '.djDebugPanelButton input[type=checkbox]', function() {
                 djdt.cookie.set($(this).attr('data-cookie'), $(this).prop('checked') ? 'on' : 'off', {
                     path: '/',
                     expires: 10
@@ -65,7 +57,7 @@
             });
 
             // Used by the SQL and template panels
-            $(document).on('click', '#djDebug .remoteCall', function() {
+            $('#djDebug').on('click', '.remoteCall', function() {
                 var self = $(this);
                 var name = self[0].tagName.toLowerCase();
                 var ajax_data = {};
@@ -87,11 +79,11 @@
                 $.ajax(ajax_data).done(function(data){
                     $('#djDebugWindow').html(data).show();
                 }).fail(function(xhr){
-                        var message = '<div class="djDebugPanelTitle"><a class="djDebugClose djDebugBack" href="">Back</a><h3>'+xhr.status+': '+xhr.statusText+'</h3></div>';
+                        var message = '<div class="djDebugPanelTitle"><a class="djDebugClose djDebugBack" href=""></a><h3>'+xhr.status+': '+xhr.statusText+'</h3></div>';
                         $('#djDebugWindow').html(message).show();
                 });
 
-                $(document).on('click', '#djDebugWindow a.djDebugBack', function() {
+                $('#djDebugWindow').on('click', 'a.djDebugBack', function() {
                     $(this).parent().parent().hide();
                     return false;
                 });
@@ -100,7 +92,7 @@
             });
 
             // Used by the cache, profiling and SQL panels
-            $(document).on('click', '#djDebug a.djToggleSwitch', function(e) {
+            $('#djDebug').on('click', 'a.djToggleSwitch', function(e) {
                 e.preventDefault();
                 var btn = $(this);
                 var id = btn.attr('data-toggle-id');
@@ -140,19 +132,32 @@
             });
             var handle = $('#djDebugToolbarHandle');
             $('#djShowToolBarButton').on('mousedown', function (event) {
-                var baseY = handle.offset().top - event.pageY;
+                var startPageY = event.pageY;
+                var baseY = handle.offset().top - startPageY;
+                var windowHeight = $(window).height();
                 $(document).on('mousemove.djDebug', function (event) {
-                    var offset = handle.offset();
-                    offset.top = baseY + event.pageY;
-                    handle.offset(offset);
-                    djdt.handleDragged = true;
+                    // Chrome can send spurious mousemove events, so don't do anything unless the
+                    // cursor really moved.  Otherwise, it will be impossible to expand the toolbar
+                    // due to djdt.handleDragged being set to true.
+                    if (djdt.handleDragged || event.pageY != startPageY) {
+                        var top = baseY + event.clientY;
+                        
+                        if (top < 0) {
+                            top = 0;
+                        } else if (top + handle.height() > windowHeight) {
+                            top = windowHeight - handle.height();
+                        }
+                        
+                        handle.css({top: top});
+                        djdt.handleDragged = true;
+                    }
                 });
                 return false;
             });
             $(document).on('mouseup', function () {
                 $(document).off('mousemove.djDebug');
                 if (djdt.handleDragged) {
-                    var top = handle.offset().top;
+                    var top = handle.offset().top - window.pageYOffset;
                     djdt.cookie.set('djdttop', top, {
                         path: '/',
                         expires: 10
@@ -170,9 +175,9 @@
                     return;
                 }
                 // If a panel is open, close that
-                if ($('.panelContent').is(':visible')) {
-                    $('.panelContent').hide();
-                    $('#djDebugToolbar li').removeClass('active');
+                if ($('.djdt-panelContent').is(':visible')) {
+                    $('.djdt-panelContent').hide();
+                    $('#djDebugToolbar li').removeClass('djdt-active');
                     return;
                 }
                 // Otherwise, just minimize the toolbar
@@ -204,8 +209,8 @@
             // close any sub panels
             $('#djDebugWindow').hide();
             // close all panels
-            $('.panelContent').hide();
-            $('#djDebugToolbar li').removeClass('active');
+            $('.djdt-panelContent').hide();
+            $('#djDebugToolbar li').removeClass('djdt-active');
             // finally close toolbar
             $('#djDebugToolbar').hide('fast');
             $('#djDebugToolbarHandle').show();
@@ -280,8 +285,21 @@
 
                 return value;
             }
+        },
+        applyStyle: function(name) {
+            $('#djDebug [data-' + name + ']').each(function() {
+                var css = {};
+                css[name] = $(this).data(name);
+                $(this).css(css);
+            });
         }
     };
+    $.extend(publicAPI, {
+        show_toolbar: djdt.show_toolbar,
+        hide_toolbar: djdt.hide_toolbar,
+        close: djdt.close,
+        cookie: djdt.cookie,
+        applyStyle: djdt.applyStyle
+    });
     $(document).ready(djdt.init);
-    return djdt;
-}));
+})(djdt.jQuery, djdt);

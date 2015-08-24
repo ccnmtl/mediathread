@@ -15,28 +15,28 @@ var MediathreadAnalytics = function(tracker) {
     self.tracker = tracker;
 
     // Fired by sherdjs video viewers
-    jQuery(window).bind(
+    jQuery(window).on(
         'video.create',
         {'self': self},
         function(event, id, type) {
             _gaq.push(['_trackEvent', 'video', 'create', type, id]);
         });
 
-    jQuery(window).bind(
+    jQuery(window).on(
         'video.play',
         {'self': self},
         function(event, id, type) {
             _gaq.push(['_trackEvent', 'video', 'play', type, id]);
         });
 
-    jQuery(window).bind(
+    jQuery(window).on(
         'video.pause',
         {'self': self},
         function(event, id, type) {
             _gaq.push(['_trackEvent', 'video', 'pause', type, id]);
         });
 
-    jQuery(window).bind(
+    jQuery(window).on(
         'video.finish',
         {'self': self},
         function(event, id, type) {

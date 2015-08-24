@@ -17,11 +17,14 @@ from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
                                         RedirectToUploaderView,
                                         AssetCreateView)
 from mediathread.main.forms import CustomRegistrationForm
-from mediathread.main.views import (MigrateCourseView, MigrateMaterialsView,
-                                    RequestCourseView, ContactUsView,
-                                    CourseSettingsView,
-                                    CourseManageSourcesView, IsLoggedInView)
-from mediathread.projects.views import ProjectCollectionView, ProjectDetailView
+from mediathread.main.views import (
+    MigrateCourseView, MigrateMaterialsView,
+    RequestCourseView, ContactUsView,
+    CourseSettingsView,
+    CourseManageSourcesView, IsLoggedInView, IsLoggedInDataView,
+)
+from mediathread.projects.views import (
+    ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
 
@@ -100,6 +103,8 @@ urlpatterns = patterns(
     (r'^api/tag/$', TagCollectionView.as_view(), {}),
     (r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
      ProjectCollectionView.as_view(), {}, 'project-by-user'),
+    (r'^api/project/(?P<project_id>\d+)/(?P<asset_id>\d+)/$',
+     ProjectItemView.as_view(), {}, 'project-item-view'),
     (r'^api/project/(?P<project_id>\d+)/$', ProjectDetailView.as_view(),
      {}, 'asset-detail'),
     (r'^api/project/$', ProjectCollectionView.as_view(), {}),
@@ -130,6 +135,9 @@ urlpatterns = patterns(
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},
         name='is_logged_in.js'),
+
+    url(r'^accounts/is_logged_in/$', IsLoggedInDataView.as_view(), {},
+        name='is_logged_in'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),

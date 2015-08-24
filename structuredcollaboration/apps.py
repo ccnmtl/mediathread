@@ -2,7 +2,7 @@ from structuredcollaboration.models import CollaborationPolicyRecord
 from structuredcollaboration.policies import CollaborationPolicy, \
     PublicEditorsAreOwners, PrivateEditorsAreOwners, InstructorManaged, \
     InstructorShared, PrivateStudentAndFaculty, CourseProtected, \
-    CourseCollaboration, Assignment
+    CourseCollaboration
 
 from django.apps import AppConfig
 
@@ -46,9 +46,3 @@ class CollaborationPolicyConfig(AppConfig):
         CollaborationPolicyRecord.objects.register_policy(
             CourseCollaboration, 'CourseCollaboration',
             'Course Collaboration')
-
-        CollaborationPolicyRecord.objects.register_policy(
-            Assignment,
-            'Assignment',
-            'Course assignment (instructors can manage/edit, '
-            'course members can read/respond)')

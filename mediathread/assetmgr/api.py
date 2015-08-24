@@ -105,6 +105,14 @@ class AssetResource(ModelResource):
         except Source.DoesNotExist:
             return None
 
+    def render_one_context(self, request, asset, notes=None):
+        ctx = {
+            'assets': {
+                asset.pk: self.render_one(request, asset, notes)
+            }
+        }
+        return ctx
+
     def update_asset_context(self, request, ctx, note):
         if note.asset.id not in ctx:
             abundle = self.build_bundle(obj=note.asset, request=request)

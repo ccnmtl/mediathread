@@ -93,6 +93,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 MIDDLEWARE_CLASSES = [
     'django_statsd.middleware.GraphiteRequestTimingMiddleware',
     'django_statsd.middleware.GraphiteMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -148,7 +149,8 @@ INSTALLED_APPS = [
     'django_markwhat',
     'impersonate',
     'registration',
-    'waffle'
+    'waffle',
+    'corsheaders',
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
@@ -280,6 +282,10 @@ LOGGING = {
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 ACCOUNT_ACTIVATION_DAYS = 7
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = ('GET',)
+CORS_ALLOW_CREDENTIALS = True
 
 
 def default_url_processor(url, label=None, request=None):

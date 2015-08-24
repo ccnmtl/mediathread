@@ -25,7 +25,7 @@ from djangohelpers.lib import allow_http
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, Source, ExternalCollection,\
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
     SuggestedExternalCollection
 from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
@@ -482,7 +482,6 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
-
         if asset_id:
             try:
                 asset = Asset.objects.get(pk=asset_id, course=request.course)
@@ -499,7 +498,7 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
             return render_to_response('assetmgr/asset_workspace.html',
                                       data,
                                       context_instance=RequestContext(request))
-        context = {'type': 'asset'}
+        ctx = {'type': 'asset'}
         if asset_id:
             # @todo - refactor this context out of the mix
             # ideally, the client would simply request the json
@@ -510,14 +509,13 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
             # only return original author's global annotations
             notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
 
-            context['assets'] = {
-                asset.pk: AssetResource().render_one(request, asset, notes)
-            }
+            ares = AssetResource()
+            ctx.update(ares.render_one_context(request, asset, notes))
 
             help_setting = UserSetting.get_setting(request.user,
                                                    "help_item_detail_view",
                                                    True)
-            context['user_settings'] = {'help_item_detail_view': help_setting}
+            ctx['user_settings'] = {'help_item_detail_view': help_setting}
 
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
@@ -525,16 +523,21 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
 
-        data['panels'] = [{'panel_state': 'open',
-                           'panel_state_label': "Annotate Media",
-                           'context': context,
-                           'owners': owners,
-                           'vocabulary': vocabulary,
-                           'template': 'asset_workspace',
-                           'current_asset': asset_id,
-                           'current_annotation': annot_id,
-                           'update_history': True,
-                           'show_collection': True}]
+        update_history = True
+        show_collection = True
+        template = 'asset_workspace'
+
+        data['panels'] = [{
+            'panel_state': 'open',
+            'panel_state_label': "Annotate Media",
+            'context': ctx,
+            'owners': owners,
+            'vocabulary': vocabulary,
+            'template': template,
+            'current_asset': asset_id,
+            'current_annotation': annot_id,
+            'update_history': update_history,
+            'show_collection': show_collection}]
 
         return self.render_to_json_response(data)
 
@@ -562,13 +565,9 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                                                "help_item_detail_view",
                                                True)
 
-        ctx = {
-            'user_settings': {'help_item_detail_view': help_setting},
-            'type': 'asset',
-            'assets': {
-                asset.pk: AssetResource().render_one(request, asset, notes)
-            }
-        }
+        ctx = AssetResource().render_one_context(request, asset, notes)
+        ctx['user_settings'] = {'help_item_detail_view': help_setting}
+        ctx['type'] = 'asset'
 
         return self.render_to_json_response(ctx)
 

@@ -194,6 +194,9 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             value = int(request.POST.get(key))
             request.course.add_detail(key, value)
 
+            if value == 0:
+                Project.objects.limit_response_policy(request.course)
+
         key = course_details.ITEM_VISIBILITY_KEY
         if key in request.POST:
             value = int(request.POST.get(key))
@@ -457,3 +460,24 @@ class IsLoggedInView(View):
                       })();
                   """ % json.dumps(data)
         return HttpResponse(jscript, content_type='application/javascript')
+
+
+class IsLoggedInDataView(View):
+    """
+    This is similar to the IsLoggedInView, but instead of returning
+    some JavaScript code along with the data, it just returns the data.
+    """
+    def get(self, request, *args, **kwargs):
+        logged_in = request.user.is_authenticated()
+        course_selected = SESSION_KEY in request.session
+
+        d = {
+            'logged_in': logged_in,
+            'course_selected': course_selected,
+        }
+
+        if logged_in and course_selected:
+            d['youtube_apikey'] = settings.YOUTUBE_BROWSER_APIKEY
+            d['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
+
+        return HttpResponse(json.dumps(d), content_type='application/json')

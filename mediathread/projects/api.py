@@ -30,7 +30,7 @@ class ProjectResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all().order_by('id')
-        excludes = ['participants', 'body', 'submitted',
+        excludes = ['participants', 'body',
                     'feedback', 'sherdnote_set']
         list_allowed_methods = []
         detail_allowed_methods = []
@@ -38,8 +38,10 @@ class ProjectResource(ModelResource):
         ordering = ['id', 'title']
 
     def dehydrate(self, bundle):
-        bundle.data['is_assignment'] = \
-            bundle.obj.visibility_short() == 'Assignment'
+        bundle.data['is_assignment'] = bundle.obj.is_assignment()
+        bundle.data['is_selection_assignment'] = \
+            bundle.obj.is_selection_assignment()
+        bundle.data['description'] = bundle.obj.description()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()
         bundle.data['url'] = bundle.obj.get_absolute_url()
@@ -48,6 +50,7 @@ class ProjectResource(ModelResource):
         bundle.data['modified_time'] = bundle.obj.modified.strftime("%I:%M %p")
         bundle.data['editable'] = self.editable
         bundle.data['is_faculty'] = self.is_viewer_faculty
+        bundle.data['submitted'] = bundle.obj.submitted
 
         participants = bundle.obj.attribution_list()
         bundle.data['participants'] = [{
@@ -65,29 +68,30 @@ class ProjectResource(ModelResource):
         return bundle
 
     def all_responses(self, request, project):
-        responses = []
-        for response in project.responses(request.course, request.user):
-            if response.can_read(request.course, request.user):
-                obj = {
-                    'url': response.get_absolute_url(),
-                    'title': response.title,
-                    'modified': response.modified.strftime(self.date_fmt),
-                    'attribution_list': []}
+        ctx = []
+        responses = project.responses(request.course, request.user)
+        for response in responses:
+            obj = {
+                'url': response.get_absolute_url(),
+                'title': response.title,
+                'modified': response.modified.strftime(self.date_fmt),
+                'attribution_list': []}
 
-                last = len(response.attribution_list()) - 1
-                for idx, author in enumerate(response.attribution_list()):
-                    obj['attribution_list'].append({
-                        'name': get_public_name(author, request),
-                        'last': idx == last})
+            last = len(response.attribution_list()) - 1
+            for idx, author in enumerate(response.attribution_list()):
+                obj['attribution_list'].append({
+                    'name': get_public_name(author, request),
+                    'last': idx == last})
 
-                responses.append(obj)
+            ctx.append(obj)
 
-        return responses
+        return ctx
 
     def my_responses(self, request, project):
-        my_responses = []
-        for response in project.responses_by(request.course, request.user,
-                                             request.user):
+        ctx = []
+        responses = project.responses(request.course,
+                                      request.user, request.user)
+        for response in responses:
             obj = {'url': response.get_absolute_url(),
                    'title': response.title,
                    'modified': response.modified.strftime(self.date_fmt),
@@ -99,9 +103,9 @@ class ProjectResource(ModelResource):
                     'name': get_public_name(author, request),
                     'last': idx == last})
 
-            my_responses.append(obj)
+            ctx.append(obj)
 
-        return my_responses
+        return ctx
 
     def related_assets_notes(self, request, project):
 
@@ -130,11 +134,7 @@ class ProjectResource(ModelResource):
         project_ctx['public_url'] = project.public_url()
         project_ctx['current_version'] = version_number
         project_ctx['visibility'] = project.visibility_short()
-
-        project_type = ('assignment'
-                        if project.is_assignment(request.course, request.user)
-                        else 'composition')
-        project_ctx['type'] = project_type
+        project_ctx['type'] = project.project_type
 
         assets, notes = self.related_assets_notes(request, project)
 
@@ -200,26 +200,18 @@ class ProjectResource(ModelResource):
 
             parent_assignment = project.assignment()
             if parent_assignment:
+                ctx['display_as_assignment'] = True
                 ctx['collaboration'] = {}
                 ctx['collaboration']['title'] = parent_assignment.title
                 ctx['collaboration']['url'] = \
                     parent_assignment.get_absolute_url()
                 ctx['collaboration']['due_date'] = \
                     parent_assignment.get_due_date()
-
-            is_assignment = project.is_assignment(course, user)
-            if is_assignment:
-                count = 0
-                for response in project.responses(course, user):
-                    if response.can_read(course, user):
-                        count += 1
-                ctx['responses'] = count
-
+            elif project.is_assignment() or project.is_selection_assignment():
+                responses = project.responses(course, user)
+                ctx['responses'] = len(responses)
                 ctx['is_assignment'] = True
-                ctx['responses'] = len(project.responses(course, user))
-
-            ctx['display_as_assignment'] = \
-                is_assignment or parent_assignment is not None
+                ctx['display_as_assignment'] = True
 
             lst.append(ctx)
         return lst

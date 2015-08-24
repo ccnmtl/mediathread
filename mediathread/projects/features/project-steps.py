@@ -1,16 +1,12 @@
+import time
 from lettuce import world, step
-from mediathread.projects.models import Project
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.expected_conditions import \
+    invisibility_of_element_located, visibility_of_element_located
 from selenium.webdriver.support.select import Select
-from urlparse import urlparse
-
-
-@step(u'There are no projects')
-def there_are_no_projects(step):
-    Project.objects.all().delete()
-
-    n = Project.objects.count()
-    assert n == 0, "Found %s projects. Expected 0" % n
+import selenium.webdriver.support.ui as ui
+from selenium.webdriver.common.keys import Keys
 
 
 @step(u'there is not an? ([^"]*) ([^"]*) panel')
@@ -53,7 +49,6 @@ def the_panel_has_a_name_button(step, panel, name):
 
     btn = world.find_button_by_value(name, panel)
     if btn is None:
-        world.browser.get_screenshot_as_file("/tmp/selenium.png")
         assert False, "Can't find button named %s" % name
     if btn.is_displayed() is False:
         assert False, "Button is not visible %s" % name
@@ -120,21 +115,6 @@ def there_is_not_a_project_visibility_level(step, level):
             assert False, "Found %s option" % (level)
 
 
-@step(u'Then I set the project visibility to "([^"]*)"')
-def i_set_the_project_visibility_to_level(step, level):
-    elts = world.browser.find_elements_by_name("publish")
-    assert len(elts) > 0
-
-    for e in elts:
-        label_selector = "label[for=%s]" % e.get_attribute("id")
-        label = world.browser.find_element_by_css_selector(label_selector)
-        if label.text.strip() == level:
-            e.click()
-            return
-
-    assert False, "No %s option found" % (level)
-
-
 @step(u'I select ([^"]*)\'s response')
 def i_select_username_s_response(step, username):
     elt = world.browser.find_element_by_name("responses")
@@ -156,18 +136,6 @@ def there_is_a_comment_from_username(step, username):
             return
 
     assert False, 'Cannot find comment from %s' % username
-
-
-@step(u'I insert "([^"]*)" into the text')
-def i_insert_title_into_the_text(step, title):
-    link = world.browser.find_element_by_partial_link_text(title)
-    href = link.get_attribute("href")
-
-    # strip the http://localhost:port off this href
-    pieces = urlparse(href)
-
-    insert_icon = world.browser.find_element_by_name(pieces.path)
-    insert_icon.click()
 
 
 @step(u'Then I remember the "([^"]*)" link')
@@ -224,3 +192,113 @@ def i_toggle_the_panelname_panel(step, panelname):
     assert pantab, "Cannot find the %s pantab" % panelname
 
     pantab.click()
+
+
+@step(u'I click edit item for "([^"]*)"')
+def when_i_click_edit_item_for_title(step, title):
+    selector = ".gallery-item-project"
+    items = world.browser.find_elements_by_css_selector(selector)
+    for item in items:
+        try:
+            item.find_element_by_partial_link_text(title)
+            elt = item.find_element_by_css_selector(".edit_icon")
+            elt.click()
+            return
+        except NoSuchElementException:
+            continue
+
+    assert False, "Unable to find the %s item" % title
+
+
+@step(u'I click create selection for "([^"]*)"')
+def i_click_create_selection_for_title(step, title):
+    selector = ".gallery-item-project"
+    items = world.browser.find_elements_by_css_selector(selector)
+    for item in items:
+        try:
+            item.find_element_by_partial_link_text(title)
+            elt = item.find_element_by_css_selector(".create_annotation_icon")
+            assert elt, "Unable to find the + link for item" % title
+            elt.click()
+            return
+        except NoSuchElementException:
+            continue
+
+    assert False, "Unable to find the %s item" % title
+
+
+@step(u'I click edit selection for "([^"]*)"')
+def i_click_edit_selection_for_title(step, title):
+    selector = ".selection-level-info"
+    items = world.browser.find_elements_by_css_selector(selector)
+    for item in items:
+        try:
+            item.find_element_by_partial_link_text(title)
+            elt = item.find_element_by_css_selector(".edit-selection-icon")
+            elt.click()
+            return
+        except NoSuchElementException:
+            continue
+
+    assert False, "Unable to find the %s selection" % title
+
+
+@step(u'the "([^"]*)" form appears')
+def the_title_form_appears(step, title):
+    try:
+        fid = None
+        if title == 'Create Selection' or title == 'Edit Selection':
+            fid = 'annotation-current'
+        elif title == 'Edit Item':
+            fid = 'asset-global-annotation-quick-edit'
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, fid)))
+    except TimeoutException:
+        assert False, '%s form did not appear' % title
+
+
+@step(u'the "([^"]*)" form disappears')
+def the_title_form_disappears(step, title):
+    try:
+        fid = None
+        if title == 'Create Selection' or title == 'Edit Selection':
+            fid = 'annotation-current'
+        elif title == 'Edit Item':
+            fid = 'asset-global-annotation-quick-edit'
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(invisibility_of_element_located((By.ID, fid)))
+
+        q = 'div.ajaxloader'
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(invisibility_of_element_located((By.CSS_SELECTOR, q)))
+    except TimeoutException:
+        assert False, '%s form did not appear' % title
+
+
+@step(u'"([^"]*)" does not have a response')
+def title_does_not_have_a_response(step, title):
+    assert False, 'This step must be implemented'
+
+
+@step(u'I set the selection tags field to "([^"]*)"')
+def i_set_the_selection_tags_field_to_value(step, value):
+    q = '#edit-annotation-form #s2id_id_annotation-tags .select2-input'
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.CSS_SELECTOR, q)))
+    elt = world.browser.find_element_by_css_selector(q)
+    elt.send_keys(value)
+    elt.send_keys(Keys.TAB)
+    time.sleep(1)
+
+
+@step(u'I set the item tags field to "([^"]*)"')
+def i_set_the_item_tags_field_to_value(step, value):
+    q = '#edit-global-annotation-form #s2id_id_annotation-tags .select2-input'
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.CSS_SELECTOR, q)))
+    elt = world.browser.find_element_by_css_selector(q)
+    elt.send_keys(value)
+    elt.send_keys(Keys.TAB)
+    time.sleep(1)

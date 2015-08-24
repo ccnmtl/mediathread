@@ -4,167 +4,48 @@
 
 {% block css %}
 <style>
-    .register_form {
+    .register-form {
         width: 600px;
         margin: 20px 20px;
      }
-    
-    .register_form h2 {
+
+    .register-form h2 {
         padding: 10px 0;
         border-bottom: solid 1px #EFEFEF;
         width: 100%;
     }
     
-    .register_form form {
+    .register-form form {
         margin: 20px;
         width: 70%;
     }
-    
-    .fieldWrapper {
-        margin-bottom: 25px;
-    }
-    
-    .register_form label {
-        font-weight: bold;
-        margin-bottom: 7px;
-        display: block;
-        width: 100%;
-    }
-    
-    .register_form label small {
-        font-weight: normal;
-        margin-left: 10px;
-    }
-    
-    .register_form input,
-    .register_form select, 
-    .register_form textarea {
-        margin-bottom: 10px;
-        display: block;
-        padding: 6px 12px;
-        font-size: 14px;
-        line-height: 1.42857143;
-        color: #555;
-        background-color: #fff;
-        background-image: none;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    }
-    
-    .register_form input {
-        height: 20px;
-        padding-left: 5px;
-    }
-    
-    .register_form textarea {
-        width: 95%;
-    }
 
-    .register_form input[name='first_name'],
-    .register_form input[name='last_name'],
-    .register_form input[name='password1'],
-    .register_form input[name='password2'] {
+    .register-form input[name='first_name'],
+    .register-form input[name='last_name'],
+    .register-form input[name='password1'],
+    .register-form input[name='password2'] {
         width: 45%;
         display: inline;
-        padding: 6 12 6 5;
-        margin: 0 0 0 10;
+        margin: 0 10px 0 0;
     }
-
-    .register_form input[name='title'],
-    .register_form input[name='institution'],
-    .register_form input[name='username'],
-    .register_form input[name='email'] {
+    .register-form input[name='title'],
+    .register-form input[name='institution'],
+    .register-form input[name='username'],
+    .register-form input[name='email'] {
         width: 45%;
     }
-
-    .register_form input[type='submit'] {
-        float: right;
-        width: 125px;
-        height: 30px;
-        margin: 10px -5px 0 0;
-        padding: 5px;
+    .small {
+        margin-top: 5px;
     }
-    
-    .btn {
-        display: inline-block;
-        padding: 6px 12px;
-        margin-bottom: 0;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 1.42857143;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: middle;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        background-image: none;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        color: #333;
-        background-color: #fff;
-        border-color: #ccc;        
-    }
-    
-    .btn:hover,
-    .btn:focus,
-    .btn:active,
-    .btn.active,
-    .btn.disabled,
-    .btn[disabled] {
-      color: #333333;
-      background-color: #e6e6e6;
-      *background-color: #d9d9d9;
-    }
-    
-    div.help-inline {
-        display: block;
-    }
-    
-    div.control-group.error input,
-    div.control-group.error select,
-    div.control-group.error textarea {
-        border-color: #b94a48;
-    }
-    
-    div.control-group .help-inline {
-        display: none;
-    }
-    
-    div.control-group.error .help-inline,
+    .optional {
+        font-weight: normal !important;
+    }    
     ul.errorlist {
         clear: both;
         list-style-type: none;
         color: #b94a48;
-        margin: 0 0 20px 0;
+        margin: 5px 0 20px 0;
         display: block;
-    }
-    
-    div.registration_error {
-        margin-bottom: 20px;
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #ebccd1;
-        padding: 15px 15px 0 15px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-    }
-    
-    .smalltext {
-        font-size: 90%;
-        color: #595959;
-        margin-left: 5px;
-    }
-    
-    .optional {
-        font-weight: normal !important;
     }
 </style>
 {% endblock %}
@@ -179,7 +60,7 @@
 {% endblock %}
 
 {% block content %}
-<form id="reg_form" method="post" action="." class="register_form form-horizontal">
+<form method="post" action="." class="register-form">
         
     <h2 class="pagetitle signuptitle">Sign up for an account</h2>
     <div><p>
@@ -191,9 +72,8 @@
         <a href="/">login here</a>.
     </p></div>
     
-
     {% if form.errors|length %}
-        <div class="registration_error">
+        <div class="alert alert-danger">
           <strong>Please correct errors before continuing</strong><br /><br />
           {% if form.non_field_errors %}
             <div>{{ form.non_field_errors}}</div>
@@ -201,15 +81,15 @@
         </div>
     {% endif %}
         
-    <div class="fieldWrapper control-group">
+    <div class="form-group {% if form.first_name.errors or form.last_name.errors %}has-error{% endif %}">
         <label for="id_first_name"><b>Your name is:</b></label>
-        <div class="controls">
+        <div>
             <span>
-                <input id="id_first_name" maxlength="50" name="first_name" type="text"
+                <input class="form-control" id="id_first_name" maxlength="50" name="first_name" type="text"
                  value="{{form.data.first_name}}" placeholder="First Name">
             </span>&nbsp;
             <span>
-                <input id="id_last_name" maxlength="50" name="last_name"
+                <input class="form-control" id="id_last_name" maxlength="50" name="last_name"
                  value="{{form.data.last_name}}"
                  type="text" placeholder="Last Name">
             </span>
@@ -220,47 +100,47 @@
             {% endif %}
         </div>
     </div>
-    
-    <div class="fieldWrapper control-group">
-        <label class="control-label optional">Your title or role:</label>
-        <div class="controls">
+ 
+    <div class="form-group">
+        <label class="optional">Your title or role:</label>
+        <div>
             {{ form.title }}
         </div>
-    </div>    
+    </div>
 
-    <div class="fieldWrapper control-group">
-        <label class="control-label">Your institution:</label>
+    <div class="form-group {% if form.institution.errors %}has-error{% endif %}">
+        <label>Your institution:</label>
         <div class="controls">
             {{ form.institution }}
-            <div class="smalltext">Please enter your affiliated institution or "Self".</div>
+            <div class="small">Please enter your affiliated institution or "Self".</div>
         </div>
         {% if form.institution.errors %}
             <br/>{{ form.institution.errors }}
         {% endif %}
-    </div>    
+    </div>
 
-    <div class="fieldWrapper control-group">
-        <label class="control-label">Username:</label>
-        <div class="controls">
+    <div class="form-group {% if form.username.errors %}has-error{% endif %}" >
+        <label>Username:</label>
+        <div>
             {{ form.username }}
             {% if not form.username.errors %}
-                <div class="smalltext">30 characters or fewer. Usernames may contain alphanumeric, _, @, +, . and - characters.</div>
+                <div class="small">30 characters or fewer.<br /> Usernames may contain alphanumeric, _, @, +, . and - characters.</div>
             {% endif %}
         </div>
         {{ form.username.errors }}
     </div>
             
-    <div class="fieldWrapper control-group">
-        <label class="control-label">Email:</label>
-        <div class="controls">
+    <div class="form-group {% if form.email.errors %}has-error{% endif %}">
+        <label>Email:</label>
+        <div>
             {{ form.email }}
         </div>       
         {{ form.email.errors }}
     </div>
 
-    <div class="fieldWrapper control-group">
-        <label class="control-label">Create a password:</label>
-        <div class="controls">
+    <div class="form-group {% if form.password1.errors or form.password2.errors %}has-error{% endif %}">
+        <label>Create a password:</label>
+        <div>
             <span>
                 {{ form.password1 }}
             </span>&nbsp;
@@ -275,23 +155,24 @@
         {% endif %}
     </div>
 
-    <div class="fieldWrapper control-group">
-        <label class="control-label">How did you hear about Mediathread?</label>
-        <div class="controls">
+    <div class="form-group  {% if form.referred_by.errors %}has-error{% endif %}">
+        <label>How did you hear about Mediathread?</label>
+        <div>
             {{ form.referred_by }}
         </div>       
         {{ form.referred_by.errors }}
     </div>
     
-    <div class="fieldWrapper control-group">
+    <div class="form-group">
         <label class="control-label optional">Reasons for your interest in Mediathread?</label>
-        <div class="controls">
+        <div>
             {{ form.user_story }}
         </div>       
     </div>
 
     <div style="text-align: center">
-    <input class="btn btn-primary btn-large" type="submit" id="submit-id" value="{% trans 'Sign up!' %}" />
+    <input class="btn btn-primary btn-large right" type="submit"
+     id="submit-id" value="{% trans 'Sign up!' %}" />
     </div>
 </form>
 

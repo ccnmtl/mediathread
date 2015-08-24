@@ -3,28 +3,26 @@ Feature: Collection View
     Scenario: collection.feature 1. Collection - Basic item functionality
         Using selenium
         Given I am test_instructor in Sample Course
-        
+
         When I click the "View Full Collection" link
         Then I am at the Collection page
         Given the collection workspace is loaded
-        
+
         Then the owner is "All Class Members" in the Collection column
         When I select "Me" as the owner
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has no notes
         And the "MAAP Award Reception" item has no tags
         And the "MAAP Award Reception" item has 1 selections, 1 by me
-        And the "MAAP Award Reception" item has a delete icon
-        And the "MAAP Award Reception" item has an edit icon
+        And the "MAAP Award Reception" item has no delete icon
+        And the "MAAP Award Reception" item has no edit icon
         
         When I select "Student One" as the owner
         Then the owner is "Student One" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
-        And the "MAAP Award Reception" item has no delete icon
-        And the "MAAP Award Reception" item has an edit icon
         
-        When I click the "MAAP Award Reception" item edit icon
+        When I click the "MAAP Award Reception" link
         Then I am at the Mediathread Collection page
                 
         Finished using Selenium

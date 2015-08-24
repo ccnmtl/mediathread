@@ -27,7 +27,9 @@
 </h4>
 
 <div id="annotation-feedback-{{title}}" class="annotation-feedback"
-    style="display: none">
+    {{^showFeedback}}
+    style="display: none"
+    {{/showFeedback}}>
     
     {{#isFaculty}}
     <form method="post" data-username="{{title}}" 
@@ -52,8 +54,14 @@
                 <button class="btn btn-primary btn-sm right save-feedback">Save Feedback</button>
                 <button class="btn btn-default btn-sm right toggle-feedback"
                     data-target="annotation-feedback-{{title}}">Cancel</button>
-                <div class="clearfix"></div>
             {{/isFaculty}}
+            
+            {{^isFaculty}}
+                <button class="btn btn-default btn-sm right toggle-feedback"
+                    data-target="annotation-feedback-{{title}}">Close</button>
+            {{/isFaculty}}            
+            <div class="clearfix"></div>
+            
     {{#isFaculty}}
     </form>
     {{/isFaculty}}

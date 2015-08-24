@@ -623,7 +623,6 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
     def add_metadata(self, request, assets):
         # metadata for all notes associated with these assets
         # is displayed in the filtered list.
-        # Not sure this is exactly right...will discuss with team
         notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors,
             self.all_items_are_visible)

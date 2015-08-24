@@ -176,10 +176,14 @@
                     </div>                            
                 </div>
             {% else %}{% if not assignment_can_edit  %}
+                {% with total_selections=my_response.projectnote_set.count %}
                 {% if my_response.submitted %}
                     <div class="right">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
-                        <strong>Submitted</strong> {{my_response.submitted_date}}
+                        <strong>
+                            Submitted |
+                            {{total_selections}} Selection{{total_selections|pluralize}}
+                        </strong> {{my_response.submitted_date}}
                     </div>
                 {% else %}{% if my_response %}
                     <div>
@@ -191,7 +195,15 @@
                         </div>
                         <div class="right">
                             <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span> 
-                            <strong>Draft</strong>
+                            <strong>
+                                Draft |
+                                 <span class="project-note-count">
+                                    {{total_selections}}
+                                 </span>
+                                 <span class="project-note-count-label">
+                                    Selection{{total_selections|pluralize}}
+                                 </span>
+                            </strong>
                         </div>
                     </div>
                     <div class="modal fade" id="cannot-submit-project" tabindex="-1"
@@ -218,12 +230,15 @@
                         <div class="modal-content">
                           <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Submit Response</h4>
+                            <h4 class="modal-title">
+                                Submit Response &mdash;
+                                <span class="project-submit-count"></span>
+                                <span class="project-submit-count-label"></span>
+                            </h4>
                           </div>
                           <div class="modal-body">
                             <form method="post" class="project-response-form"
                                 action="{% url 'project-save' my_response.id %}">
-
                                 <div>Please review assignment instructions before submitting. Instructions may specify:</div>
                                 <ul>
                                     <li>The number of selections to include in your response.</li>
@@ -239,7 +254,6 @@
                                         Your response will be visible to the instructor and other students who have submitted.
                                     {% endifequal %}{% endifequal %}{% endifequal %}
                                 </p>
-
                                 <div class="alert alert-danger" role="alert">
                                     <strong>Important!</strong><br /><br />
                                     Once you submit your response, you will not be able to unsubmit or edit it.
@@ -256,6 +270,7 @@
                       </div>
                     </div>                            
                 {% endif %}{% endif %}
+                {% endwith %}
             {% endif %}{% endif %}
             <div class="clearfix"></div>
             <br /><br />

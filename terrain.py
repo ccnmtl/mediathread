@@ -1008,7 +1008,13 @@ def there_is_a_state_name_panel(step, state, name):
     name -- composition, assignment, discussion, collection
     """
     selector = "td.panel-container.%s.%s" % (state.lower(), name.lower())
-    panel = world.browser.find_element_by_css_selector(selector)
+
+    try:
+        panel = world.browser.find_element_by_css_selector(selector)
+    except NoSuchElementException:
+        time.sleep(1)
+        panel = world.browser.find_element_by_css_selector(selector)
+
     assert panel is not None, "Can't find panel named %s" % panel
 
 

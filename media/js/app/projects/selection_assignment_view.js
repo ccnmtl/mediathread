@@ -29,6 +29,7 @@
             self.isFaculty = options.isFaculty;
             self.feedback = options.feedback;
             self.feedbackCount = options.feedbackCount;
+            self.myResponse = parseInt(options.responseId, 10);
 
             // load the selection item into storage
             djangosherd.storage.json_update(options.itemJson);
@@ -91,6 +92,8 @@
                     var username = jQuery(elt).data('username');
                     ctx.responseId = self.feedback[username].responseId;
                     ctx.comment = self.feedback[username].comment;
+                    ctx.showFeedback = ctx.responseId === self.myResponse &&
+                        ctx.comment !== undefined;
 
                     // render the template
                     var rendered = Mustache2.render(

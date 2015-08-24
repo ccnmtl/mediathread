@@ -23,7 +23,9 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                      'onShowSubmitDialog', 'onSubmitResponse');
+                      'onShowSubmitDialog', 'onSubmitResponse',
+                      'decrementSelectionCount',
+                      'incrementSelectionCount');
             var self = this;
             self.viewer = options.viewer;
             self.isFaculty = options.isFaculty;
@@ -73,6 +75,10 @@
             }
 
             this.listenTo(this, 'render', this.render);
+            jQuery(window).on('annotation.on_delete', {'self': self},
+                              self.decrementSelectionCount);
+            jQuery(window).on('annotation.on_create', {'self': self},
+                              self.incrementSelectionCount);
         },
         render: function() {
             var self = this;
@@ -155,6 +161,12 @@
         },
         onShowSubmitDialog: function(evt) {
             evt.preventDefault();
+
+            var $elt = jQuery('.project-note-count');
+            var $label = jQuery('.project-note-count-label');
+            jQuery('.project-submit-count').html($elt.html());
+            jQuery('.project-submit-count-label').html($label.html());
+
             var opts = {'show': true, 'backdrop': 'static'};
 
             if (window.annotationList.hasAnnotations(this.viewer)) {
@@ -190,6 +202,22 @@
             evt.preventDefault();
             var q = jQuery(evt.currentTarget).attr('data-target');
             jQuery('#' + q).toggle();
+        },
+        incrementSelectionCount: function(evt) {
+            var $elt = jQuery('.project-note-count');
+            var value = parseInt($elt.html(), 10) + 1;
+            $elt.html(value);
+
+            var label = value === 1 ? 'Selection' : 'Selections';
+            jQuery('.project-note-count-label').html(label);
+        },
+        decrementSelectionCount: function(evt) {
+            var $elt = jQuery('.project-note-count');
+            var value = parseInt($elt.html(), 10) - 1;
+            $elt.html(value);
+
+            var label = value === 1 ? 'Selection' : 'Selections';
+            jQuery('.project-note-count-label').html(label);
         }
     });
 }(jQuery));

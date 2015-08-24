@@ -4198,7 +4198,7 @@ div.ui-dialog div.asset-view-details h2 {
 
 /* Make jquery-ui dialogs work with openlayers */
 .ui-dialog {
-    z-index: 1000 !important;
+    z-index: 2000 !important;
 }
 
 /* sherdjs open layers */

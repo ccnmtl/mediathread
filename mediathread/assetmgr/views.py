@@ -620,13 +620,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
 
         return ctx
 
-    def add_metadata(self, request, assets):
-        # metadata for all notes associated with these assets
-        # is displayed in the filtered list.
-        notes = SherdNote.objects.get_related_notes(
-            assets, self.record_owner or None, self.visible_authors,
-            self.all_items_are_visible)
-
+    def add_metadata(self, request, notes):
         tags = TagResource().render_for_course(request, notes)
         vocab = VocabularyResource().render_for_course(request, notes)
         return {'active_tags': tags, 'active_vocabulary': vocab}
@@ -658,7 +652,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         if offset == 0:
             # add relevant tags & metadata for all visible notes
             # needs to come before the pagination step
-            ctx.update(self.add_metadata(request, assets))
+            ctx.update(self.add_metadata(request, notes))
 
         # slice down the list to speed rendering
         (assets, notes) = self.apply_pagination(assets, notes, offset, limit)

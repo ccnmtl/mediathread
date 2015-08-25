@@ -35,7 +35,7 @@ class AssetManager(models.Manager):
     def by_course(self, course):
         assets = Asset.objects.filter(course=course) \
             .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
-            .distinct().select_related().order_by('lower_title')
+            .distinct()
         assets = assets.order_by('-sherdnote_set__modified')
         return assets.select_related('sherdnote_set', 'source_set', 'author')
 

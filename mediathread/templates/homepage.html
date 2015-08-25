@@ -108,7 +108,7 @@
     <table id="home-columns">
     <tbody>
         <tr>
-            {% if faculty_feed|length > 0 or is_faculty or discussions %}
+            {% if faculty_feed.count > 0 or is_faculty or discussions %}
             <td id="instructor">
                 {% with "help_homepage_instructor_column" as help_id %}
                 {% include "help/help_contentarea.html" %}
@@ -142,7 +142,7 @@
                                 </div>
                             </div>
 
-                            {% if faculty_feed %}
+                            {% if faculty_feed.count %}
                                 <h4 class="inst-header information">
                                     {{information_title}}
                                 </h4>
@@ -336,7 +336,7 @@
             </div><!-- end collection content box -->
             {% endif %}            
 
-            {% if collections %}
+            {% if collections.count %}
                 <div id="recommend">
                     <h3>Recommended Sources</h3>
                     Your instructor suggests that you import items from these sites. 

@@ -51,14 +51,9 @@ def django_settings(request):
                  'GOOGLE_ANALYTICS_ID',
                  'CAS_BASE']
 
-    context = {'settings': dict([(k, getattr(settings, k, None))
-                                 for k in whitelist]),
-               'EXPERIMENTAL': 'experimental' in request.COOKIES}
-
-    if request.course:
-        context['is_course_faculty'] = request.course.is_faculty(request.user)
-
-    return context
+    return {'settings': dict([(k, getattr(settings, k, None))
+                              for k in whitelist]),
+            'EXPERIMENTAL': 'experimental' in request.COOKIES}
 
 
 @rendered_with('homepage.html')
@@ -75,10 +70,9 @@ def triple_homepage(request):
 
     course = request.course
 
-    collections = ExternalCollection.objects.filter(
-        course=request.course, uploader=False).order_by('title')
-    uploader = ExternalCollection.objects.filter(course=request.course,
-                                                 uploader=True).first()
+    qs = ExternalCollection.objects.filter(course=request.course)
+    collections = qs.filter(uploader=False).order_by('title')
+    uploader = qs.filter(uploader=True).first()
 
     owners = []
     if (in_course(logged_in_user.username, request.course) and
@@ -91,7 +85,7 @@ def triple_homepage(request):
         "information_title": course_information_title(course),
         'faculty_feed': Project.objects.faculty_compositions(course,
                                                              logged_in_user),
-        'is_faculty': course.is_faculty(logged_in_user),
+        'is_faculty': cached_course_is_faculty(course, logged_in_user),
         'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
@@ -276,7 +270,7 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             owner = User.objects.get(id=request.POST.get('on_behalf_of'))
 
         if (not in_course(owner.username, request.course) or
-                not request.course.is_faculty(owner)):
+                not cached_course_is_faculty(request.course, owner)):
             json_stream = json.dumps({
                 'success': False,
                 'message': '%s is not a course member or faculty member'})

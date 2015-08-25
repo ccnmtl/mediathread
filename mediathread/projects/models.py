@@ -176,7 +176,8 @@ class ProjectManager(models.Manager):
 
         # short circuit the collaboration mechanism
         lst = Collaboration.objects.get_for_object_list(qs)
-        return lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
+        lst = lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
+        return [c.content_object for c in lst]
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(course.faculty_filter)

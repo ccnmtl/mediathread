@@ -152,7 +152,9 @@ class VocabularyResource(ModelResource):
             related = TermRelationship.objects.get_for_object_list(object_list)
 
         data = []
-        for vocabulary in Vocabulary.objects.get_for_object(request.course):
+        lst = Vocabulary.objects.get_for_object(request.course)
+        lst = lst.select_related('term_set')
+        for vocabulary in lst:
             ctx = self.render_one(request, vocabulary)
             for term in ctx['term_set']:
                 term['count'] = related.filter(term__id=term['id']).count()

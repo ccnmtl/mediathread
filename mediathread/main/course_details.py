@@ -21,7 +21,8 @@ def can_upload(user, course):
                                   UPLOAD_PERMISSION_DEFAULT))
     if user.is_staff:
         return True
-    elif course.is_faculty(user) and value >= UPLOAD_PERMISSION_INSTRUCTOR:
+    elif (cached_course_is_faculty(course, user) and
+            value >= UPLOAD_PERMISSION_INSTRUCTOR):
         return True
     elif value == UPLOAD_PERMISSION_STUDENT:
         return True

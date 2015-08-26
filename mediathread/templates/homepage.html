@@ -142,7 +142,7 @@
                                 </div>
                             </div>
 
-                            {% if faculty_feed %}
+                            {% if faculty_feed|length %}
                                 <h4 class="inst-header information">
                                     {{information_title}}
                                 </h4>
@@ -336,7 +336,7 @@
             </div><!-- end collection content box -->
             {% endif %}            
 
-            {% if collections %}
+            {% if collections.count %}
                 <div id="recommend">
                     <h3>Recommended Sources</h3>
                     Your instructor suggests that you import items from these sites. 
@@ -357,7 +357,7 @@
                     {% endfor %}                        
                 </div>
             {% endif %} 
-                    
+
             </div>
         {% endwith %}
         </td>            

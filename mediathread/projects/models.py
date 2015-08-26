@@ -11,6 +11,7 @@ from threadedcomments.models import ThreadedComment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from structuredcollaboration.models import Collaboration
+from mediathread.main.course_details import cached_course_is_faculty
 
 
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
@@ -126,6 +127,7 @@ class ProjectManager(models.Manager):
 
     def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)
+        projects = projects.select_related('author', 'participants')
         projects = projects.order_by('-modified', 'title')
         return [p for p in projects if p.can_read(course, viewer)]
 
@@ -133,7 +135,7 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
-        ).distinct()
+        ).distinct().select_related('author', 'participants')
 
         lst = [p for p in projects if p.can_read(course, viewer)]
         lst.sort(reverse=False, key=lambda project: project.title)
@@ -148,6 +150,7 @@ class ProjectManager(models.Manager):
     def responses_by_course(self, course, viewer):
         projects = Project.objects.filter(
             course=course, project_type=PROJECT_TYPE_COMPOSITION)
+        projects = projects.select_related('author', 'participants')
 
         responses = Collaboration.objects.get_for_object_list(projects)
         responses = responses.filter(_parent__isnull=False)
@@ -165,30 +168,28 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author__id__in=user_ids, course=course) |
             Q(participants__id__in=user_ids, course=course)).distinct()
-
+        projects = projects.select_related('author', 'participants')
         return projects.order_by('-modified', 'title')
 
     def faculty_compositions(self, course, user):
-        projects = []
         qs = Project.objects.filter(course.faculty_filter)
+        qs = qs.select_related('author', 'participants')
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
         qs = qs.order_by('ordinality', 'title')
 
-        for project in qs:
-            c = project.get_collaboration()
-            if (c and
-                    c.policy_record.policy_name != 'PrivateEditorsAreOwners'):
-                projects.append(project)
-
-        return projects
+        # short circuit the collaboration mechanism
+        lst = Collaboration.objects.get_for_object_list(qs)
+        lst = lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
+        return [c.content_object for c in lst]
 
     def unresponded_assignments(self, course, user):
-        projects = list(Project.objects.filter(course.faculty_filter,
-                                               due_date__isnull=False).
+        qs = Project.objects.filter(course.faculty_filter)
+        qs = qs.exclude(project_type=PROJECT_TYPE_COMPOSITION)
+
+        projects = list(qs.filter(due_date__isnull=False).
                         order_by("due_date", "-modified", "title"))
 
-        projects.extend(Project.objects.filter(course.faculty_filter,
-                                               due_date__isnull=True).
+        projects.extend(qs.filter(due_date__isnull=True).
                         order_by("-modified", "title"))
 
         assignments = []
@@ -343,7 +344,7 @@ class Project(models.Model):
         Returns True if this user has a response to this project
         or None if this user has not yet created a response
         """
-        if not self.is_assignment() and not self.is_selection_assignment():
+        if self.is_composition():
             return False
 
         children = self.get_collaboration().children.all()
@@ -451,7 +452,8 @@ class Project(models.Model):
             return True
 
         # the author & faculty can always view a submitted response
-        if self.is_participant(viewer) or course.is_faculty(viewer):
+        if (self.is_participant(viewer) or
+                cached_course_is_faculty(course, viewer)):
             return True
 
         assignment = parent.content_object

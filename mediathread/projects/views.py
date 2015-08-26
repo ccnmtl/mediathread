@@ -312,9 +312,10 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
         item = parent.assignmentitem_set.first().asset
         item_ctx = AssetResource().render_one_context(self.request, item)
 
+        lst = Vocabulary.objects.get_for_object(self.request.course)
+        lst = lst.prefetch_related('term_set')
         vocabulary_json = VocabularyResource().render_list(
-            self.request,
-            Vocabulary.objects.get_for_object(self.request.course))
+            self.request, lst)
 
         feedback, feedback_count = self.get_feedback(responses, is_faculty)
 
@@ -364,8 +365,9 @@ class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
         else:
             panels = []
 
-            vocabulary = VocabularyResource().render_list(
-                request, Vocabulary.objects.get_for_object(request.course))
+            lst = Vocabulary.objects.get_for_object(request.course)
+            lst = lst.prefetch_related('term_set')
+            vocabulary = VocabularyResource().render_list(request, lst)
 
             owners = UserResource().render_list(request,
                                                 request.course.members)

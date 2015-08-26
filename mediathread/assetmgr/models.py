@@ -29,13 +29,15 @@ class AssetManager(models.Manager):
         assets = Asset.objects.filter(course=course,
                                       sherdnote_set__author=user,
                                       sherdnote_set__range1=None).distinct()
-        return assets.order_by('-sherdnote_set__modified').select_related()
+        assets = assets.order_by('-sherdnote_set__modified')
+        return assets.select_related('sherdnote_set', 'source_set', 'author')
 
     def by_course(self, course):
         assets = Asset.objects.filter(course=course) \
             .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
-            .distinct().select_related().order_by('lower_title')
-        return assets.order_by('-sherdnote_set__modified')
+            .distinct()
+        assets = assets.order_by('-sherdnote_set__modified')
+        return assets.select_related('sherdnote_set', 'source_set', 'author')
 
     def migrate(self, assets, course, user, faculty, object_map,
                 include_tags, include_notes):

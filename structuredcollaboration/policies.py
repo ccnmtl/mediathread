@@ -25,7 +25,7 @@ class PublicEditorsAreOwners(CollaborationPolicy):
                 return True
             if collaboration.group_id:
                 qs = collaboration.group.user_set.filter(pk=user.pk)
-                return len(qs) > 0
+                return qs.count() > 0
         return False
 
     manage = edit
@@ -60,8 +60,7 @@ class PrivateStudentAndFaculty(CollaborationPolicy):
 
 class InstructorShared(PrivateEditorsAreOwners):
     def read(self, coll, course, user):
-        return (self.manage(coll, course, user) or
-                course.is_faculty(user))
+        return (self.manage(coll, course, user) or course.is_faculty(user))
 
 
 class InstructorManaged(CollaborationPolicy):

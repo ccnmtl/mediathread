@@ -161,8 +161,8 @@ class ProjectManager(models.Manager):
 
         visible = []
         hidden = []
-        for r in responses:
-            if r.can_read(course, viewer):
+        for idx, r in enumerate(responses):
+            if r.can_read(course, viewer, collaborations[idx]):
                 visible.append(r)
             else:
                 hidden.append(r)
@@ -423,9 +423,9 @@ class Project(models.Model):
         col = self.get_collaboration()
         return (col.permission_to('edit', course, user))
 
-    def can_read(self, course, viewer):
+    def can_read(self, course, viewer, the_collaboration=None):
         # has the author published his work?
-        collaboration = self.get_collaboration()
+        collaboration = the_collaboration or self.get_collaboration()
         if (collaboration is None) or \
            (not collaboration.permission_to('read', course, viewer)):
             return False

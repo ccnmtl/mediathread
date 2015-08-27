@@ -56,6 +56,12 @@ class CollaborationManager(models.Manager):
             'user', 'group', '_parent', 'policy_record').get(
             content_type=ctype, object_pk=str(obj.pk))
 
+    def get_children_for_object(self, obj):
+        ctype = ContentType.objects.get_for_model(obj)
+        return self.select_related(
+            'user', 'group', '_parent', 'policy_record').filter(
+            content_type=ctype, _parent=obj)
+
 
 class Collaboration(models.Model):
     objects = CollaborationManager()

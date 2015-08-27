@@ -150,18 +150,22 @@ class ProjectManager(models.Manager):
     def responses_by_course(self, course, viewer):
         projects = Project.objects.filter(
             course=course, project_type=PROJECT_TYPE_COMPOSITION)
-        projects = projects.select_related('author', 'participants')
 
-        responses = Collaboration.objects.get_for_object_list(projects)
-        responses = responses.filter(_parent__isnull=False)
+        collaborations = Collaboration.objects.get_for_object_list(projects)
+        collaborations = collaborations.filter(_parent__isnull=False)
+
+        # get all the content objects at once
+        ids = [int(c.object_pk) for c in collaborations]
+        responses = Project.objects.filter(id__in=ids)
+        responses = responses.select_related('author', 'participants')
 
         visible = []
         hidden = []
         for r in responses:
-            if r.content_object.can_read(course, viewer):
-                visible.append(r.content_object)
+            if r.can_read(course, viewer):
+                visible.append(r)
             else:
-                hidden.append(r.content_object)
+                hidden.append(r)
         return visible, hidden
 
     def by_course_and_users(self, course, user_ids):
@@ -179,10 +183,13 @@ class ProjectManager(models.Manager):
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
         qs = qs.order_by('ordinality', 'title')
 
-        # short circuit the collaboration mechanism
+        # filter private compositions
         lst = Collaboration.objects.get_for_object_list(qs)
         lst = lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
-        return [c.content_object for c in lst]
+
+        # get all the projects at once
+        ids = [int(c.object_pk) for c in lst]
+        return Project.objects.filter(id__in=ids)
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(

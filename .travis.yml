@@ -2,7 +2,7 @@ language: python
 sudo: false
 env:
   - TEST_SUITE=jenkins
-  - TEST_SUITE=harvest
+  - TEST_SUITE=harvest project=main
 python:
   - "2.7"
 install:

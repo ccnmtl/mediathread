@@ -176,10 +176,8 @@ class Asset(models.Model):
 
     @property
     def primary(self):
-        primary_cache = getattr(self, '_primary_cache', None)
-        if primary_cache:
-            return primary_cache
-        self._primary_cache = Source.objects.get(asset=self, primary=True)
+        if not hasattr(self, '_primary_cache'):
+            self._primary_cache = self.source_set.get(primary=True)
         return self._primary_cache
 
     @property
@@ -273,7 +271,7 @@ class Source(models.Model):
     # This should help indicate what 'kind' of thing
     # the asset is, so one with label 'quicktime' as primary
     # is a movie, even though it might have image urls for thumbs, etc
-    primary = models.BooleanField(default=False)
+    primary = models.BooleanField(default=False, db_index=True)
 
     media_type = models.CharField(default=None, null=True, max_length=64)
 

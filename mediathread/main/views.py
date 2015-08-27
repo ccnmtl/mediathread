@@ -75,7 +75,7 @@ def triple_homepage(request):
     uploader = qs.filter(uploader=True).first()
 
     owners = []
-    if (in_course(logged_in_user.username, request.course) and
+    if (request.course.is_member(logged_in_user) and
         (logged_in_user.is_staff or
          logged_in_user.has_perm('assetmgr.can_upload_for'))):
         owners = UserResource().render_list(request, request.course.members)

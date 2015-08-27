@@ -432,7 +432,7 @@ class Project(models.Model):
 
         # assignment response?
         parent = collaboration.get_parent()
-        if parent is None or parent.content_object is None:
+        if parent is None:
             return True
 
         # the author & faculty can always view a submitted response

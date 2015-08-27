@@ -3,6 +3,9 @@ sudo: false
 env:
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest project=main
+  - TEST_SUITE=harvest project=assetmgr
+  - TEST_SUITE=harvest project=taxonomy
+  - TEST_SUITE=harvest project=projects
 python:
   - "2.7"
 install:

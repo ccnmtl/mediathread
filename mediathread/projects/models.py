@@ -263,7 +263,8 @@ class Project(models.Model):
     ordinality = models.IntegerField(default=-1)
 
     project_type = models.TextField(choices=PROJECT_TYPES,
-                                    default=PROJECT_TYPE_COMPOSITION)
+                                    default=PROJECT_TYPE_COMPOSITION,
+                                    db_index=True)
 
     response_view_policy = models.TextField(choices=RESPONSE_VIEW_POLICY,
                                             default='always')

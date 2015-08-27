@@ -1,4 +1,5 @@
 # pylint: disable-msg=R0904
+from django.core.cache import cache
 from django.test import TestCase
 
 from mediathread.assetmgr.models import Asset, Source
@@ -41,6 +42,9 @@ class AssetTest(MediathreadTestMixin, TestCase):
             tags=',image, instructor_one_item,',
             body='instructor one item note',
             title=None, range1=None, range2=None)
+
+    def tearDown(self):
+        cache.clear()
 
     def test_unicode(self):
         asset1 = AssetFactory.create(course=self.sample_course,

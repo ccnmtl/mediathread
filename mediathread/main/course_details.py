@@ -80,14 +80,14 @@ def course_information_title(course):
 def cached_course_is_member(course, user):
     key = "%s:%s:is_member" % (course.id, user.id)
     if key not in cache:
-        cache.set(key, course.is_member(user), 3)
+        cache.set(key, course.is_member(user))
     return cache.get(key)
 
 
 def cached_course_is_faculty(course, user):
     key = "%s:%s:is_faculty" % (course.id, user.id)
     if key not in cache:
-        cache.set(key, course.is_faculty(user), 3)
+        cache.set(key, course.is_faculty(user))
     return cache.get(key)
 
 

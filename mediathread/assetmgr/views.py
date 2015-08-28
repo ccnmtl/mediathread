@@ -20,7 +20,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
-from django.views.generic.base import View, TemplateView
+from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 
 from mediathread.api import UserResource, TagResource
@@ -573,7 +573,7 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
 
 
 class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
-                          JSONResponseMixin, TemplateView):
+                          AjaxRequiredMixin, JSONResponseMixin, View):
     """
     An ajax-only request to retrieve assets for a course or a specified user
     Example:
@@ -581,7 +581,6 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         /api/asset/a/
         /api/asset/
     """
-    template_name = "test.html"
     valid_filters = ['tag', 'modified', 'search_text']
 
     def get_context(self, request, assets, notes):
@@ -666,10 +665,8 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         # assemble the context
         ctx.update(self.get_context(request, assets, notes))
 
-        if request.is_ajax():
-            return self.render_to_json_response(ctx)
-        else:
-            return self.render_to_response(ctx)
+        return self.render_to_json_response(ctx)
+
 
 AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup
 

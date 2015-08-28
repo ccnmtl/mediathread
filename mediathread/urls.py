@@ -22,7 +22,7 @@ from mediathread.main.views import (
     RequestCourseView, ContactUsView,
     CourseSettingsView,
     CourseManageSourcesView, IsLoggedInView, IsLoggedInDataView,
-)
+    LTILaunchView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
@@ -192,6 +192,10 @@ urlpatterns = patterns(
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
     url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
+
+    # LTI stuff
+    # (r'^lti/config/$', 'mediathread.main.views.lti_config'),
+    url(r'^lti/$', LTILaunchView.as_view(), name='lti-launch'),
 
     # Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),

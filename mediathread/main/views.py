@@ -26,6 +26,7 @@ from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
     ExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
+from mediathread.lti import lti
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
@@ -475,3 +476,10 @@ class IsLoggedInDataView(View):
             d['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
 
         return HttpResponse(json.dumps(d), content_type='application/json')
+
+
+class LTILaunchView(TemplateView):
+
+    @lti('initial')
+    def post(self, request):
+        return HttpResponseRedirect('/')

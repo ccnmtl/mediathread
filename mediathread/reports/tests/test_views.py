@@ -1,5 +1,6 @@
 from json import loads
 
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
@@ -58,6 +59,9 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.add_citation(self.project, global_annotation)
         self.add_citation(self.project, whole_item_annotation)
         self.add_citation(self.project, real_annotation)
+
+    def tearDown(self):
+        cache.clear()
 
     def test_class_assignments_report_logged_out(self):
         url = reverse('class-assignment-report', args=[self.assignment1.id])

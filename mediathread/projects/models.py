@@ -523,9 +523,10 @@ class Project(models.Model):
 
     def submitted_date(self):
         dt = None
-        if self.submitted:
-            dt = self.modified
-        return dt
+        for v in self.versions():
+            if v.object_version.submitted:
+                dt = v.object_version.modified
+        return dt or self.modified
 
     def feedback_date(self):
         thread = self.feedback_discussion()

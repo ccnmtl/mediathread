@@ -156,7 +156,7 @@
                                             {% for response in responses %}
                                                 {% if response.submitted %}
                                                     <option value="{{response.id}}">
-                                                        {% public_name for response.author %} (submitted {{ response.modified_date|date:'m/d/Y h:i a' }})
+                                                        {% public_name for response.author %} (submitted {{ response.modified|date:'m/d/Y h:i a' }})
                                                     </option>
                                                 {% endif %}
                                             {% endfor %}
@@ -184,7 +184,7 @@
                         <strong>
                             Submitted |
                             {{total_selections}} Selection{{total_selections|pluralize}}
-                        </strong> {{my_response.modified_date|date:"m/d/Y h:i a"}}
+                        </strong> {{my_response.modified|date:"m/d/Y h:i a"}}
                     </div>
                 {% else %}{% if my_response %}
                     <div>

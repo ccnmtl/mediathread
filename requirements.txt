@@ -35,7 +35,7 @@ ndg-httpsclient==0.4.0
 requests==2.7.0
 djangowind==0.13.3
 django-tagging==0.4
-requirements/src/django-modelversions-1.0.tar.gz
+django-reversion==1.9.3
 djangohelpers==0.18.1
 requirements/src/django-threadedcomments-0.9.1ccnmtl.tar.gz
 django_courseaffils==2.0.3

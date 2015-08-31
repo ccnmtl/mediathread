@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from mediathread.projects.models import Project
-from modelversions import version_model
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -28,5 +27,3 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
-
-ProjectVersion = version_model(Project)

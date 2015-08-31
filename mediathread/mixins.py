@@ -4,6 +4,7 @@ import json
 from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
@@ -14,6 +15,8 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible
 from mediathread.projects.models import Project, ProjectNote
+
+import reversion
 
 
 def ajax_required(func):
@@ -183,6 +186,13 @@ class LoggedInMixinSuperuser(object):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
         return super(LoggedInMixinSuperuser, self).dispatch(*args, **kwargs)
+
+
+class CreateReversionMixin(object):
+    @transaction.atomic()
+    @reversion.create_revision()
+    def dispatch(self, *args, **kwargs):
+        return super(CreateReversionMixin, self).dispatch(*args, **kwargs)
 
 
 class ProjectReadableMixin(object):

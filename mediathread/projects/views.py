@@ -96,7 +96,8 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
         frm = ProjectForm(request, instance=self.project, data=request.POST)
         if frm.is_valid():
             policy = request.POST.get('publish', PUBLISH_DRAFT[0])
-            frm.instance.submitted = policy != PUBLISH_DRAFT[0]
+            if policy != PUBLISH_DRAFT[0]:
+                frm.instance.date_submitted = datetime.now()
             frm.instance.author = request.user
             project = frm.save()
 
@@ -168,7 +169,7 @@ class UnsubmitResponseView(LoggedInFacultyMixin, View):
                 not assignment):
             return HttpResponseForbidden("forbidden")
 
-        project.submitted = False
+        project.date_submitted = None
         project.save()
 
         policy = 'PrivateEditorsAreOwners'

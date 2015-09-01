@@ -1,4 +1,5 @@
 # pylint: disable-msg=R0904
+from datetime import datetime
 from json import loads
 import json
 
@@ -200,7 +201,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         project = Project.objects.get(course=self.sample_course,
                                       title='Untitled')
         self.assertEquals(project.versions.count(), 1)
-        self.assertIsNone(project.submitted_date())
+        self.assertIsNone(project.date_submitted)
         self.assertIn(self.student_one, project.participants.all())
         self.assertEquals(project.author, self.student_one)
 
@@ -216,7 +217,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         project = Project.objects.get(title='Student Essay')
         self.assertEquals(project.versions.count(), 2)
-        self.assertIsNotNone(project.submitted_date())
+        self.assertIsNotNone(project.date_submitted)
 
     def test_assignment_response_create(self):
         self.client.login(username=self.student_one.username,
@@ -283,7 +284,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         # resave the response as submitted
         assignment_response.create_or_update_collaboration('CourseProtected')
-        assignment_response.submitted = True
+        assignment_response.date_submitted = datetime.now()
         assignment_response.save()
 
         self.client.login(username=self.instructor_one.username,
@@ -294,7 +295,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
             'http://testserver/project/view/'))
 
         assignment_response = Project.objects.get(id=assignment_response.id)
-        self.assertFalse(assignment_response.submitted)
+        self.assertFalse(assignment_response.is_submitted())
         collaboration = assignment_response.get_collaboration()
         self.assertEquals(collaboration.policy_record.policy_name,
                           'PrivateEditorsAreOwners')
@@ -671,7 +672,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         ProjectFactory.create(
             course=self.sample_course, author=self.student_three,
             policy='CourseProtected', parent=self.assignment,
-            submitted=True)
+            date_submitted=datetime.now())
 
         url = reverse('project-item-view',
                       args=[self.assignment.id, self.asset.id])
@@ -705,7 +706,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # submit student one's response
         self.response_one.create_or_update_collaboration(
             'CourseProtected')
-        self.response_one.submitted = True
+        self.response_one.date_submitted = datetime.now()
         self.response_one.save()
 
         self.assert_visible_notes(self.student_one,
@@ -741,7 +742,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # all students having submitted, the annotation is now citable
         self.response_two.create_or_update_collaboration(
             'CourseProtected')
-        self.response_two.submitted = True
+        self.response_two.date_submitted = datetime.now()
         self.response_two.save()
 
         self.assert_visible_notes(self.student_one,

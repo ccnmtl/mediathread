@@ -226,7 +226,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         # submit response
         response.create_or_update_collaboration('PublicEditorsAreOwners')
-        response.submitted = True
+        response.date_submitted = datetime.now()
         response.save()
 
         self.assert_responses_by_course(self.student_one, [response], [])
@@ -252,7 +252,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # student_two submits
         response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            submitted=True, policy='PublicEditorsAreOwners',
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
             parent=self.assignment)
         self.assert_responses_by_course(self.student_one,
                                         [response, response2], [])
@@ -487,7 +487,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         # student two submits his response (mock)
         response2.create_or_update_collaboration('PublicEditorsAreOwners')
-        response2.submitted = True
+        response2.date_submitted = datetime.now()
         response2.save()
         self.assertTrue(response.can_read(
             self.sample_course, self.student_two))

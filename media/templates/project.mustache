@@ -135,10 +135,10 @@
                                         <select name="responses" multiple="multiple">
                                           {{#context.responses}}
                                             <option value="{{url}}">
-                                              {{ modified }} &mdash;
                                               {{#attribution_list}}
                                                 {{ name }}{{^last}}, {{/last}} 
                                               {{/attribution_list}}
+                                               &mdash; {{ submitted }}
                                             </option>
                                           {{/context.responses}}
                                         </select>

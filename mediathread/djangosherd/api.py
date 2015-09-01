@@ -51,7 +51,7 @@ class SherdNoteResource(ModelResource):
                 annotation__id=bundle.obj.id).first()
             if reference:
                 # notes in a submitted response are not editable
-                editable = editable and not reference.project.submitted
+                editable = editable and not reference.project.is_submitted()
                 citable = reference.project.can_cite(bundle.request.course,
                                                      bundle.request.user)
 

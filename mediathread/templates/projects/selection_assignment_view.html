@@ -41,7 +41,7 @@
             itemId: '{{item.id}}',
             itemJson: JSON.parse('{{item_json|escapejs}}'),
             vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
-            submitted: {% if my_response and my_response.submitted %}true{% else %}false{% endif %},
+            submitted: {% if my_response and my_response.is_submitted %}true{% else %}false{% endif %},
             feedback: JSON.parse('{{feedback|escapejs}}'),
             feedbackCount: {{feedback_count}}
         });
@@ -92,7 +92,7 @@
                     {% else %}{% if my_response %}
                         <span class="metadata-label"><b>Publication status</b>:</span>
                         <span class="metadata-value">
-                            {% if my_response.submitted %}
+                            {% if my_response.is_submitted %}
                                 Response submitted
                             {% else %}
                                 Response not submitted
@@ -154,7 +154,7 @@
                                         <label for="student-response-id">Select Response</label>
                                         <select name="student-response" class="form-control">
                                             {% for response in responses %}
-                                                {% if response.submitted %}
+                                                {% if response.is_submitted %}
                                                     <option value="{{response.id}}">
                                                         {% public_name for response.author %} (submitted {{ response.modified|date:'m/d/Y h:i a' }})
                                                     </option>
@@ -178,7 +178,7 @@
                 </div>
             {% else %}{% if not assignment_can_edit  %}
                 {% with total_selections=my_response.projectnote_set.count %}
-                {% if my_response.submitted %}
+                {% if my_response.is_submitted %}
                     <div class="right">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
                         <strong>

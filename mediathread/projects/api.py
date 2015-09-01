@@ -72,10 +72,14 @@ class ProjectResource(ModelResource):
         responses = project.responses(request.course, request.user)
 
         for response in responses:
+            submitted = ''
+            if response.is_submitted():
+                submitted = response.date_submitted.strftime(self.date_fmt)
+
             obj = {
                 'url': response.get_absolute_url(),
                 'title': response.title,
-                'submitted': response.date_submitted.strftime(self.date_fmt),
+                'submitted': submitted,
                 'modified': response.modified.strftime(self.date_fmt),
                 'attribution_list': []}
 

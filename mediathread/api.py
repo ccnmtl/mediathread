@@ -89,7 +89,7 @@ class UserResource(ModelResource):
 
 class GroupResource(ModelResource):
     user_set = fields.ToManyField(
-        'mediathread.api.UserResource', full=True,
+        'mediathread.api.UserResource', full=True, null=True,
         attribute=lambda bundle: bundle.obj.user_set.all().order_by(
             "last_name", "first_name", "username"))
 

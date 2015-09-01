@@ -45,8 +45,9 @@ Feature: Sliding Panels
         # Assignment View
         There is an assignment "Sample Assignment" project by Instructor One
         When I click the "Sample Assignment" link
+
+        Given the composition workspace is loaded
         Then I am at the Sample Assignment page
-        
         There is an open Assignment panel
         And the Assignment panel has an <assignment_subpanel_state> subpanel
         

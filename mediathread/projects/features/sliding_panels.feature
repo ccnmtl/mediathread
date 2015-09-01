@@ -53,6 +53,7 @@ Feature: Sliding Panels
         
         # Assignment Response
         When I click the Respond to Assignment button
+        Given the composition workspace is loaded
         Then there is an <assignment_panel_state> Assignment panel
         Then there is an open Composition panel
         And the Composition panel has a <composition_subpanel_state> subpanel

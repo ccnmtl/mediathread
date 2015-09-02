@@ -3,6 +3,7 @@ import json
 
 from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
@@ -21,8 +22,7 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import (
     LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
-    ProjectEditableMixin)
-from mediathread.projects.admin import ProjectVersion
+    ProjectEditableMixin, CreateReversionMixin)
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project, \
@@ -30,8 +30,11 @@ from mediathread.projects.models import Project, \
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
+from reversion.models import Version
 
-class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
+
+class ProjectCreateView(LoggedInMixin, JSONResponseMixin,
+                        CreateReversionMixin, View):
 
     def get_title(self):
         title = self.request.POST.get('title', Project.DEFAULT_TITLE)
@@ -90,7 +93,7 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin, View):
 
 
 class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
-                      ProjectEditableMixin, View):
+                      ProjectEditableMixin, CreateReversionMixin, View):
 
     def post(self, request, *args, **kwargs):
         frm = ProjectForm(request, instance=self.project, data=request.POST)
@@ -127,7 +130,7 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
                     }
                 },
                 'revision': {
-                    'id': project.get_latest_version(),
+                    'id': project.latest_version(),
                     'public_url': project.public_url(),
                     'visibility': project.visibility_short(),
                     'due_date': project.get_due_date()
@@ -161,7 +164,7 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         return HttpResponseRedirect('/')
 
 
-class UnsubmitResponseView(LoggedInFacultyMixin, View):
+class UnsubmitResponseView(LoggedInFacultyMixin, CreateReversionMixin, View):
 
     def post(self, request, *args, **kwargs):
         project_id = request.POST.get('student-response', None)
@@ -189,13 +192,16 @@ def project_revisions(request, project_id):
     if not project.is_participant(request.user):
         return HttpResponseForbidden("forbidden")
 
-    data = {}
-    data['revisions'] = [{
-        'version_number': v.version_number,
-        'versioned_id': v.versioned_id,
-        'author': get_public_name(v.instance().author, request),
-        'modified': v.modified.strftime("%m/%d/%y %I:%M %p")}
-        for v in project.versions.order_by('-change_time')]
+    data = {'revisions': []}
+    fmt = "%m/%d/%y %I:%M %p"
+    for v in project.versions():
+        author = User.objects.get(id=v.field_dict['author'])
+        data['revisions'].append({
+            'version_number': v.revision_id,
+            'versioned_id': v.object_id,
+            'author': get_public_name(author, request),
+            'modified': v.revision.date_created.strftime(fmt)
+        })
 
     return HttpResponse(json.dumps(data, indent=2),
                         content_type='application/json')
@@ -245,11 +251,8 @@ def project_view_readonly(request, project_id, version_number=None):
                                   context_instance=RequestContext(request))
     else:
         if version_number:
-            version = get_object_or_404(ProjectVersion,
-                                        versioned_id=project_id,
-                                        version_number=version_number)
-
-            project = version.instance()
+            version = get_object_or_404(Version, revision_id=version_number)
+            project = version.object_version.object
 
         panels = []
 
@@ -595,7 +598,7 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
 
 
 class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
-                      JSONResponseMixin, View):
+                      JSONResponseMixin, CreateReversionMixin, View):
     '''
     An ajax-only request to update project ordinality. Used by instructors
     to tune the "From Your Instructor" list on the homepage

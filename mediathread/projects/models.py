@@ -10,8 +10,9 @@ from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from structuredcollaboration.models import Collaboration
 from mediathread.main.course_details import cached_course_is_faculty
+import reversion
+from structuredcollaboration.models import Collaboration
 
 
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
@@ -250,10 +251,6 @@ class Project(models.Model):
                                           blank=True,
                                           related_name='projects',
                                           verbose_name='Authors',)
-
-    # modelversions attributes
-    only_save_if_changed = True
-    only_save_version_if_changed_fields_to_ignore = ['modified', 'author']
 
     body = models.TextField(blank=True)
 
@@ -527,6 +524,20 @@ class Project(models.Model):
     def feedback_date(self):
         thread = self.feedback_discussion()
         return thread.submit_date if thread else None
+
+    def latest_version(self):
+        try:
+            version = reversion.get_for_object(self).get_unique().next()
+            return version.revision_id
+        except StopIteration:
+            return None
+
+    def versions(self):
+        # all previous versions, latest versions first, duplicates removed
+        return reversion.get_for_object(self).get_unique()
+
+
+reversion.register(Project)
 
 
 class AssignmentItem(models.Model):

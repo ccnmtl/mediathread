@@ -2,8 +2,9 @@
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache2: true */
 /* global SelectFilter: true, showMessage: true */
 /* global tinyMCE: true, tiny_mce_settings: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
-var ProjectPanelHandler = function (el, parent, panel, space_owner) {
+var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     var self = this;
 
     self.el = el;
@@ -12,93 +13,123 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     self.parentContainer = parent;
     self.space_owner = space_owner;
     self.tiny_mce_settings = tiny_mce_settings;
-    jQuery(self.el).find('.project-savebutton').attr("value", "Saved");
+    jQuery(self.el).find('.project-savebutton').attr('value', 'Saved');
 
     djangosherd.storage.json_update(panel.context);
     MediaThread.loadTemplate('project_revisions');
 
     if (panel.context.can_edit) {
-        var select = jQuery(self.el).find("select[name='participants']")[0];
-        jQuery(select).addClass("selectfilter");
-        SelectFilter.init("id_participants_" + panel.context.project.id,
-            "participants", 0, "/media/admin/");
+        var select = jQuery(self.el).find('select[name="participants"]')[0];
+        jQuery(select).addClass('selectfilter');
+        SelectFilter.init('id_participants_' + panel.context.project.id,
+            'participants', 0, '/media/admin/');
 
         // HACK: move the save options around due to django form constraints
-        var assignment_elt = jQuery(self.el).find("label[for='id_publish_2']").parent();
+        var assignment_elt = jQuery(self.el).find('label[for="id_publish_2"]')
+                                            .parent();
         if (assignment_elt.length > 0) {
             jQuery(self.el).find('div.due-date').appendTo(assignment_elt);
         }
     }
 
     self.project_type = panel.context.project.project_type;
-    self.essaySpace = jQuery(self.el).find(".essay-space")[0];
+    self.essaySpace = jQuery(self.el).find('.essay-space')[0];
 
     // hook up behaviors
-    jQuery(window).on('tinymce_init_instance', function (event, instance, param2) {
-        self.onTinyMCEInitialize(instance);
-    });
+    jQuery(window).on('tinymce_init_instance',
+        function(event, instance, param2) {
+            self.onTinyMCEInitialize(instance);
+        });
 
-    jQuery(window).resize(function () {
+    jQuery(window).resize(function() {
         self.resize();
     });
 
-    self._bind(self.el, "td.panel-container", "panel_state_change", function () {
-        self.onClosePanel(jQuery(this).hasClass("subpanel"));
+    self._bind(self.el, 'td.panel-container', 'panel_state_change',
+        function() {
+            self.onClosePanel(jQuery(this).hasClass('subpanel'));
+        });
+
+    self._bind(self.el, 'form[name="editproject"]', 'keypress keydown keyup',
+        function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+            }
+        });
+
+    self._bind(self.el, 'input.project-savebutton', 'click', function(evt) {
+        return self.showSaveOptions(evt);
+    });
+    self._bind(self.el, 'a.project-visibility-link', 'click', function(evt) {
+        jQuery(self.el).find('input.project-savebutton').click();
+    });
+    self._bind(self.el, 'input.project-previewbutton', 'click', function(evt) {
+        return self.preview(evt);
+    });
+    self._bind(self.el, 'input.participants_toggle', 'click', function(evt) {
+        return self.showParticipantList(evt);
     });
 
-    self._bind(self.el, "form[name='editproject']", 'keypress keydown keyup', function(e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-        }
+    self._bind(self.el, 'input.project-revisionbutton', 'click',
+        function(evt) {
+            self.showRevisions(evt);
+        });
+    self._bind(self.el, 'input.project-responsesbutton', 'click',
+        function(evt) {
+            self.showResponses(evt);
+        });
+    self._bind(self.el, 'input.project-my-responses', 'click', function(evt) {
+        self.showMyResponses(evt);
+    });
+    self._bind(self.el, 'input.project-my-response', 'click', function(evt) {
+        self.showMyResponse(evt);
     });
 
-    self._bind(self.el, "input.project-savebutton", "click", function (evt) { return self.showSaveOptions(evt); });
-    self._bind(self.el, "a.project-visibility-link", "click", function (evt) {
-        jQuery(self.el).find("input.project-savebutton").click();
-    });
-    self._bind(self.el, "input.project-previewbutton", "click", function (evt) { return self.preview(evt); });
-    self._bind(self.el, "input.participants_toggle", "click", function (evt) { return self.showParticipantList(evt); });
+    self._bind(self.el, 'input.project-create-assignment-response', 'click',
+        function(evt) {
+            self.createAssignmentResponse(evt);
+        });
+    self._bind(self.el, 'input.project-create-instructor-feedback', 'click',
+        function(evt) {
+            self.createInstructorFeedback(evt);
+        });
 
-    self._bind(self.el, "input.project-revisionbutton", "click", function (evt) { self.showRevisions(evt); });
-    self._bind(self.el, "input.project-responsesbutton", "click", function (evt) { self.showResponses(evt); });
-    self._bind(self.el, "input.project-my-responses", "click", function (evt) { self.showMyResponses(evt); });
-    self._bind(self.el, "input.project-my-response", "click", function (evt) { self.showMyResponse(evt); });
-
-    self._bind(self.el, "input.project-create-assignment-response", "click", function (evt) { self.createAssignmentResponse(evt); });
-    self._bind(self.el, "input.project-create-instructor-feedback", "click", function (evt) { self.createInstructorFeedback(evt); });
-
-    self._bind(self.el, "input.project-title", 'keypress', function (evt) {
+    self._bind(self.el, 'input.project-title', 'keypress', function(evt) {
         self.setDirty(true);
     });
 
     // Setup the media display window.
     self.citationView = new CitationView();
     self.citationView.init({
-        'default_target': panel.context.project.id + "-videoclipbox",
+        'default_target': panel.context.project.id + '-videoclipbox',
         'onPrepareCitation': self.onPrepareCitation,
-        'presentation': "medium",
+        'presentation': 'medium',
         'clipform': true,
-        'winHeight': function () {
-            var elt = jQuery(self.el).find("div.asset-view-published")[0];
+        'winHeight': function() {
+            var elt = jQuery(self.el).find('div.asset-view-published')[0];
             return jQuery(elt).height() -
-                (jQuery(elt).find("div.annotation-title").height() + jQuery(elt).find("div.asset-title").height() + 15);
+                (jQuery(elt).find('div.annotation-title').height() +
+                 jQuery(elt).find('div.asset-title').height() + 15);
         }
     });
     self.citationView.decorateLinks(self.essaySpace.id);
 
     if (panel.context.can_edit) {
         tinyMCE.settings = self.tiny_mce_settings;
-        tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
+        tinyMCE.execCommand('mceAddControl', false,
+                            panel.context.project.id + '-project-content');
     }
-    
+
     self.render();
     self.updateRevisions();
 };
 
-ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
+ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
     var self = this;
 
-    if (instance && instance.id === self.panel.context.project.id + "-project-content" && !self.tinyMCE) {
+    if (instance &&
+        instance.id === self.panel.context.project.id + '-project-content' &&
+            !self.tinyMCE) {
 
         self.tinyMCE = instance;
 
@@ -108,95 +139,112 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
 
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
-        jQuery('#' + self.panel.context.project.id + '-project-content_tbl').css('width', "100%");
+        var q = '#' + self.panel.context.project.id + '-project-content_tbl';
+        jQuery(q).css('width', '100%');
 
-        jQuery(window).on('beforeunload', function () {
+        jQuery(window).on('beforeunload', function() {
             return self.beforeUnload();
         });
 
         self.collectionList = new CollectionList({
             'parent': self.el,
             'template': 'collection',
-            'template_label': "collection_table",
+            'template_label': 'collection_table',
             'create_annotation_thumbs': true,
             'space_owner': self.space_owner,
             'owners': self.panel.owners,
             'citable': true,
-            'view_callback': function () {
-                var newAssets = self.collectionList.getAssets();
-                self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
-                jQuery(window).trigger("resize");
+            'view_callback': function() {
+                var assets = self.collectionList.getAssets();
+                self.tinyMCE.plugins.citation.decorateCitationAdders(assets);
+                jQuery(window).trigger('resize');
 
                 // Fired by CollectionList & AnnotationList
-                jQuery(window).on('assets.refresh', { 'self': self }, function(event, html) {
-                    var newAssets = self.collectionList.getAssets();
-                    self.tinyMCE.plugins.citation.decorateCitationAdders(newAssets);
-                });
+                jQuery(window).on('assets.refresh', {'self': self},
+                    function(event, html) {
+                        self.tinyMCE.plugins.citation.decorateCitationAdders(
+                            self.collectionList.getAssets());
+                    });
             }
         });
 
         if (self.panel.context.editing) {
             self.tinyMCE.show();
-            var title = jQuery(self.el).find("input.project-title");
+            var title = jQuery(self.el).find('input.project-title');
             title.focus();
         }
 
-        jQuery(self.el).find(".participants_toggle").removeAttr("disabled");
+        jQuery(self.el).find('.participants_toggle').removeAttr('disabled');
 
         self.render();
     }
 };
 
-ProjectPanelHandler.prototype.resize = function () {
+ProjectPanelHandler.prototype.resize = function() {
     var self = this;
     var visible = getVisibleContentHeight();
 
-    visible -= jQuery(self.el).find(".project-visibility-row").height();
-    visible -= jQuery(self.el).find(".project-toolbar-row").height();
-    visible -= jQuery(self.el).find(".project-participant-row").height();
-    visible -= jQuery("#footer").height(); // padding
+    visible -= jQuery(self.el).find('.project-visibility-row').height();
+    visible -= jQuery(self.el).find('.project-toolbar-row').height();
+    visible -= jQuery(self.el).find('.project-participant-row').height();
+    visible -= jQuery('#footer').height(); // padding
 
     visible += 30;
 
     if (self.tinyMCE) {
         var editorHeight = visible;
         // tinyMCE project editing window. Make sure we only resize ourself.
-        jQuery(self.el).find("table.mceLayout").css('height', (editorHeight) + "px");
-        jQuery(self.el).find("iframe").css('height', (editorHeight) + "px");
+        jQuery(self.el).find('table.mceLayout')
+            .css('height', (editorHeight) + 'px');
+        jQuery(self.el).find('iframe').css('height', (editorHeight) + 'px');
     }
 
-    jQuery(self.el).find("div.essay-space").css('height', (visible + 20) + "px");
-    jQuery(self.el).find('div.asset-view-published').css('height', (visible + 30) + "px");
+    jQuery(self.el).find('div.essay-space')
+        .css('height', (visible + 20) + 'px');
+    jQuery(self.el).find('div.asset-view-published')
+        .css('height', (visible + 30) + 'px');
     jQuery(self.el).find('div.ajaxloader').css('height', visible + 'px');
 
     // Resize the collections box, subtracting its header elements
-    visible -= jQuery(self.el).find("div.filter-widget").outerHeight() + 10;
-    jQuery(self.el).find('div.collection-assets').css('height', visible + "px");
+    visible -= jQuery(self.el).find('div.filter-widget').outerHeight() + 10;
+    jQuery(self.el).find('div.collection-assets')
+        .css('height', visible + 'px');
 
     // For IE
-    jQuery(self.el).find('tr.project-content-row').css('height', (visible) + "px");
-    jQuery(self.el).find('tr.project-content-row').children('td.panhandle-stripe').css('height', (visible - 10) + "px");
+    jQuery(self.el).find('tr.project-content-row')
+        .css('height', (visible) + 'px');
+    jQuery(self.el).find('tr.project-content-row')
+        .children('td.panhandle-stripe').css('height', (visible - 10) + 'px');
 };
 
-ProjectPanelHandler.prototype.render = function () {
+ProjectPanelHandler.prototype.render = function() {
     var self = this;
 
     // Make sure initial state is correct
-    // Give precedence to media view IF the subpanel is open and we're in preview mode
+    // Give precedence to media view IF the subpanel is open
+    // and we're in preview mode
     var preview = self.isPreview();
     var open = self.isSubpanelOpen();
     if (preview && open) {
-        jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
-        jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
+        jQuery(self.el).find('.panel-content')
+                       .removeClass('fluid')
+                       .addClass('fixed');
+        jQuery(self.el).find('td.panel-container.collection')
+                       .removeClass('fixed')
+                       .addClass('fluid');
     } else {
-        jQuery(self.el).find(".panel-content").removeClass("fixed").addClass("fluid");
-        jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
+        jQuery(self.el).find('.panel-content')
+                       .removeClass('fixed')
+                       .addClass('fluid');
+        jQuery(self.el).find('td.panel-container.collection')
+                       .removeClass('fluid')
+                       .addClass('fixed');
     }
 
-    jQuery(window).trigger("resize");
+    jQuery(window).trigger('resize');
 };
 
-ProjectPanelHandler.prototype.onClosePanel = function (isSubpanel) {
+ProjectPanelHandler.prototype.onClosePanel = function(isSubpanel) {
     var self = this;
 
     // close any outstanding citation windows
@@ -207,30 +255,31 @@ ProjectPanelHandler.prototype.onClosePanel = function (isSubpanel) {
     self.render();
 };
 
-ProjectPanelHandler.prototype.onPrepareCitation = function (target) {
-    jQuery(target).parent().css("background", "none");
+ProjectPanelHandler.prototype.onPrepareCitation = function(target) {
+    jQuery(target).parent().css('background', 'none');
 
-    var a = jQuery(target).parents("td.panel-container.collection");
+    var a = jQuery(target).parents('td.panel-container.collection');
     if (a && a.length) {
         window.panelManager.openSubPanel(a[0]);
     }
 };
 
-ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
+ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     var self = this;
 
     window.panelManager.closeSubPanel(self);
 
     var context = {
         'url': MediaThread.urls['project-create'](),
-        'params': { parent: self.panel.context.project.id }
+        'params': {parent: self.panel.context.project.id}
     };
 
     // Short-term
     // Navigate to a new project if the user is looking
     // at another response.
-    if (jQuery(self.parentContainer).find("td.panel-container.composition").length > 0) {
-        context.callback = function (json) {
+    var q = 'td.panel-container.composition';
+    if (jQuery(self.parentContainer).find(q).length > 0) {
+        context.callback = function(json) {
             window.location = json.context.project.url;
         };
     }
@@ -241,7 +290,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function (evt) {
     jQuery(srcElement).remove();
 };
 
-ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
+ProjectPanelHandler.prototype.createInstructorFeedback = function(evt) {
     var self = this;
 
     window.panelManager.closeSubPanel(self);
@@ -254,7 +303,9 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
             'app_label': 'projects',
             'model': 'project',
             'obj_pk': self.panel.context.project.id,
-            'comment_html': jQuery(self.el).find("h1.project-title").html().trim() + ": Instructor Feedback"
+            'comment_html': jQuery(self.el).find('h1.project-title')
+                                           .html()
+                                           .trim() + ': Instructor Feedback'
         }
     });
 
@@ -262,7 +313,7 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function (evt) {
     jQuery(srcElement).remove();
 };
 
-ProjectPanelHandler.prototype.showParticipantList = function (evt) {
+ProjectPanelHandler.prototype.showParticipantList = function(evt) {
     var self = this;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var frm = srcElement.form;
@@ -272,12 +323,14 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
 
-    var element = jQuery(self.el).find(".participant_list")[0];
+    var element = jQuery(self.el).find('.participant_list')[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Update",
-                    click: function () { jQuery(this).dialog("close"); }}
+        buttons: [{text: 'Update',
+                   click: function() {
+                       jQuery(this).dialog('close');
+                   }}
                  ],
-        beforeClose: function (event, ui) {
+        beforeClose: function(event, ui) {
             self._save = false;
             if (!self._validAuthors()) {
                 return false;
@@ -303,7 +356,7 @@ ProjectPanelHandler.prototype.showParticipantList = function (evt) {
     return false;
 };
 
-ProjectPanelHandler.prototype.showRevisions = function (evt) {
+ProjectPanelHandler.prototype.showRevisions = function(evt) {
     var self = this;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var frm = srcElement.form;
@@ -313,23 +366,29 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
 
-    var element = jQuery(self.el).find(".revision-list")[0];
+    var element = jQuery(self.el).find('.revision-list')[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }},
-                  { text: "View",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
+        buttons: [{text: 'Cancel',
+                   click: function() {
+                       jQuery(this).dialog('close');
+                   }},
+                  {text: 'View',
+                   click: function() {
+                       self._save = true; jQuery(this).dialog('close');
+                   }}
               ],
-        beforeClose: function (event, ui) {
+        beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
-                var opts = jQuery(self.el).find("select[name='revisions'] option:selected");
+                var q = 'select[name="revisions"] option:selected';
+                var opts = jQuery(self.el).find(q);
                 if (opts.length < 1) {
-                    showMessage("Please select a revision", null, "Error");
+                    showMessage('Please select a revision', null, 'Error');
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
-                    window.open(val, 'mediathread_project' + self.panel.context.project.id);
+                    window.open(val, 'mediathread_project' +
+                                     self.panel.context.project.id);
                 }
             }
             return true;
@@ -350,7 +409,7 @@ ProjectPanelHandler.prototype.showRevisions = function (evt) {
     return false;
 };
 
-ProjectPanelHandler.prototype.showResponses = function (evt) {
+ProjectPanelHandler.prototype.showResponses = function(evt) {
     var self = this;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var frm = srcElement.form;
@@ -360,19 +419,24 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
 
-    var element = jQuery(self.el).find(".response-list")[0];
+    var element = jQuery(self.el).find('.response-list')[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }},
-                  { text: "View Response",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
+        buttons: [{text: 'Cancel',
+                   click: function() {
+                       jQuery(this).dialog('close');
+                   }},
+                  {text: 'View Response',
+                   click: function() {
+                       self._save = true; jQuery(this).dialog('close');
+                   }}
                  ],
-        beforeClose: function (event, ui) {
+        beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
-                var opts = jQuery(self.el).find("select[name='responses'] option:selected");
+                var opts = jQuery(self.el).find(
+                    'select[name="responses"] option:selected');
                 if (opts.length < 1) {
-                    showMessage("Please select a response", null, "Error");
+                    showMessage('Please select a response', null, 'Error');
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -399,7 +463,7 @@ ProjectPanelHandler.prototype.showResponses = function (evt) {
 };
 
 // Multiple responses.
-ProjectPanelHandler.prototype.showMyResponses = function (evt) {
+ProjectPanelHandler.prototype.showMyResponses = function(evt) {
     var self = this;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var frm = srcElement.form;
@@ -409,19 +473,24 @@ ProjectPanelHandler.prototype.showMyResponses = function (evt) {
         self.tinyMCE.plugins.editorwindow._closeWindow();
     }
 
-    var element = jQuery(self.el).find(".my-response-list")[0];
+    var element = jQuery(self.el).find('.my-response-list')[0];
     jQuery(element).dialog({
-        buttons: [{ text: "Cancel",
-                    click: function () { jQuery(this).dialog("close"); }},
-                  { text: "View",
-                    click: function () { self._save = true; jQuery(this).dialog("close"); }}
+        buttons: [{text: 'Cancel',
+                   click: function() {
+                       jQuery(this).dialog('close');
+                   }},
+                  {text: 'View',
+                   click: function() {
+                       self._save = true; jQuery(this).dialog('close');
+                   }}
                  ],
-        beforeClose: function (event, ui) {
+        beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
-                var opts = jQuery(self.el).find("select[name='my-responses'] option:selected");
+                var opts = jQuery(self.el).find(
+                    'select[name="my-responses"] option:selected');
                 if (opts.length < 1) {
-                    showMessage("Please select a response", null, "Error");
+                    showMessage('Please select a response', null, 'Error');
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
@@ -448,16 +517,16 @@ ProjectPanelHandler.prototype.showMyResponses = function (evt) {
 };
 
 // A single response
-ProjectPanelHandler.prototype.showMyResponse = function (evt) {
+ProjectPanelHandler.prototype.showMyResponse = function(evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    window.location = jQuery(srcElement).data("url");
+    window.location = jQuery(srcElement).data('url');
 };
 
-ProjectPanelHandler.prototype.updateParticipantList = function (evt) {
+ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
     var self = this;
 
     // Compare the participants label with the results from the new list
-    var opts = jQuery(self.el).find("select[name='participants'] option");
+    var opts = jQuery(self.el).find('select[name="participants"] option');
     var old_list = jQuery(self.el).find('.participants_chosen')
         .text()
         .replace(/^\s*/, '')
@@ -478,31 +547,32 @@ ProjectPanelHandler.prototype.updateParticipantList = function (evt) {
     return false;
 };
 
-ProjectPanelHandler.prototype.updateParticipantsLabel = function () {
+ProjectPanelHandler.prototype.updateParticipantsLabel = function() {
     var self = this;
 
-    var opts = jQuery(self.el).find("select[name='participants'] option");
-    var participant_list = "";
+    var opts = jQuery(self.el).find('select[name="participants"] option');
+    var participant_list = '';
     for (var i = 0; i < opts.length; i++) {
         if (participant_list.length > 0) {
-            participant_list += ", ";
+            participant_list += ', ';
         }
         participant_list +=  opts[i].innerHTML;
     }
     jQuery(self.el).find('.participants_chosen').html(participant_list);
 };
 
-ProjectPanelHandler.prototype.isPreview = function () {
+ProjectPanelHandler.prototype.isPreview = function() {
     var self = this;
-    return jQuery(self.essaySpace).css("display") === "block";
+    return jQuery(self.essaySpace).css('display') === 'block';
 };
 
-ProjectPanelHandler.prototype.isSubpanelOpen = function () {
+ProjectPanelHandler.prototype.isSubpanelOpen = function() {
     var self = this;
-    return jQuery(self.el).find("td.panel-container.collection").hasClass("open");
+    return jQuery(self.el).find('td.panel-container.collection')
+        .hasClass('open');
 };
 
-ProjectPanelHandler.prototype.preview = function (evt) {
+ProjectPanelHandler.prototype.preview = function(evt) {
     var self = this;
 
     // Unload any citations
@@ -517,25 +587,31 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         // Switch to Edit View
         jQuery(self.essaySpace).hide();
 
-        jQuery(self.el).find("td.panhandle-stripe div.label").html("Insert Selections");
-        jQuery(self.el).find("input.project-previewbutton").attr("value", "Preview");
-        jQuery(self.el).find("div.asset-view-published").hide();
-        jQuery(self.el).find("h1.project-title").hide();
+        jQuery(self.el).find('td.panhandle-stripe div.label')
+            .html('Insert Selections');
+        jQuery(self.el).find('input.project-previewbutton')
+            .attr('value', 'Preview');
+        jQuery(self.el).find('div.asset-view-published').hide();
+        jQuery(self.el).find('h1.project-title').hide();
 
         // Kill the asset view
         self.citationView.unload();
 
-        jQuery(self.el).find("div.collection-materials").show();
-        jQuery(self.el).find("input.project-title").show();
-        jQuery(self.el).find("input.participants_toggle").show();
-        jQuery(self.el).find("span.project-current-version").show();
+        jQuery(self.el).find('div.collection-materials').show();
+        jQuery(self.el).find('input.project-title').show();
+        jQuery(self.el).find('input.participants_toggle').show();
+        jQuery(self.el).find('span.project-current-version').show();
 
         // Highlight toolbar
-        jQuery(self.el).find('table.panel-subcontainer tr td.panel-subcontainer-toolbar-column').addClass("editing");
+        jQuery(self.el).find(
+            'table.panel-subcontainer tr td.panel-subcontainer-toolbar-column')
+            .addClass('editing');
 
         // Make the edit space take up the most room
-        jQuery(self.el).find(".panel-content.fixed").removeClass("fixed").addClass("fluid");
-        jQuery(self.el).find("td.panel-container.collection").removeClass("fluid").addClass("fixed");
+        jQuery(self.el).find('.panel-content.fixed')
+            .removeClass('fixed').addClass('fluid');
+        jQuery(self.el).find('td.panel-container.collection')
+            .removeClass('fluid').addClass('fixed');
 
         self.tinyMCE.show();
     } else {
@@ -548,21 +624,27 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.tinyMCE.hide();
         self.tinyMCE.plugins.editorwindow._closeWindow();
 
-        jQuery(self.el).find("h1.project-title").html(jQuery(self.el).find("input.project-title").val());
+        var val = jQuery(self.el).find('input.project-title').val();
+        jQuery(self.el).find('h1.project-title').html(val);
 
-        jQuery(self.el).find("textarea.mceEditor").hide();
-        jQuery(self.el).find("div.collection-materials").hide();
-        jQuery(self.el).find("input.project-title").hide();
-        jQuery(self.el).find("input.participants_toggle").hide();
-        jQuery(self.el).find("span.project-current-version").hide();
+        jQuery(self.el).find('textarea.mceEditor').hide();
+        jQuery(self.el).find('div.collection-materials').hide();
+        jQuery(self.el).find('input.project-title').hide();
+        jQuery(self.el).find('input.participants_toggle').hide();
+        jQuery(self.el).find('span.project-current-version').hide();
 
         // De-Highlight toolbar
-        jQuery(self.el).find('table.panel-subcontainer tr td.panel-subcontainer-toolbar-column').removeClass("editing");
+        jQuery(self.el).find(
+            'table.panel-subcontainer tr td.panel-subcontainer-toolbar-column')
+            .removeClass('editing');
 
         // Give precedence to media view IF the subpanel is open
-        if (jQuery(self.el).find("td.panel-container.collection").hasClass("open")) {
-            jQuery(self.el).find(".panel-content").removeClass("fluid").addClass("fixed");
-            jQuery(self.el).find("td.panel-container.collection").removeClass("fixed").addClass("fluid");
+        if (jQuery(self.el).find('td.panel-container.collection')
+                .hasClass('open')) {
+            jQuery(self.el).find('.panel-content')
+                .removeClass('fluid').addClass('fixed');
+            jQuery(self.el).find('td.panel-container.collection')
+                .removeClass('fixed').addClass('fluid');
         }
 
         // Get updated text into the preview space - decorate any new links
@@ -570,10 +652,12 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.citationView.decorateLinks(self.essaySpace.id);
 
         jQuery(self.essaySpace).show();
-        jQuery(self.el).find("td.panhandle-stripe div.label").html("View Inserted Selections");
-        jQuery(self.el).find("input.project-previewbutton").attr("value", "Edit");
-        jQuery(self.el).find("div.asset-view-published").show();
-        jQuery(self.el).find("h1.project-title").show();
+        jQuery(self.el).find('td.panhandle-stripe div.label')
+            .html('View Inserted Selections');
+        jQuery(self.el).find('input.project-previewbutton')
+            .attr('value', 'Edit');
+        jQuery(self.el).find('div.asset-view-published').show();
+        jQuery(self.el).find('h1.project-title').show();
 
         // TinyMCE bug
         // The first time the editor is shown
@@ -581,42 +665,46 @@ ProjectPanelHandler.prototype.preview = function (evt) {
         self.projectModified = isDirty;
     }
 
-    jQuery(window).trigger("resize");
+    jQuery(window).trigger('resize');
 
     return false;
 };
 
-
-ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
+ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
     var self = this;
 
-    // Validate title. Not empty or "Untitled". At least one author
+    // Validate title. Not empty or 'Untitled'. At least one author
     if (!self._validTitle() || !self._validAuthors()) {
         return false;
     }
 
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     var frm = srcElement.form;
-    var element = jQuery(frm).find("div.save-publish-status")[0];
+    var element = jQuery(frm).find('div.save-publish-status')[0];
 
     jQuery(element).dialog({
-        buttons: [{text: "Cancel",
-                   click: function () { jQuery(this).dialog("close"); }},
-                  {text: "Save",
-                   click: function () { self._save = true; jQuery(this).dialog("close"); }}
+        buttons: [{text: 'Cancel',
+                   click: function() {
+                       jQuery(this).dialog('close');
+                   }},
+                  {text: 'Save',
+                   click: function() {
+                       self._save = true;
+                       jQuery(this).dialog('close');
+                   }}
               ],
         create: function(event, ui) {
             jQuery('#id_due_date').datepicker({
                 minDate: 0,
                 dateFormat: 'mm/dd/yy',
-                beforeShow: function (input, inst) {
+                beforeShow: function(input, inst) {
                     inst.dpDiv.css({
                         top: (input.offsetHeight) + 'px'
                     });
                 }
             });
         },
-        beforeClose: function (event, ui) {
+        beforeClose: function(event, ui) {
             if (self._save) {
                 self.saveProject(frm);
             }
@@ -641,7 +729,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function (evt) {
     return false;
 };
 
-ProjectPanelHandler.prototype.saveProject = function (frm, skipValidation) {
+ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
     var self = this;
 
     tinyMCE.activeEditor.save();
@@ -652,86 +740,106 @@ ProjectPanelHandler.prototype.saveProject = function (frm, skipValidation) {
         }
     }
 
-    jQuery(self.el).find("select[name='participants'] option")
-        .attr("selected", "selected");
+    jQuery(self.el).find('select[name="participants"] option')
+        .attr('selected', 'selected');
     var data = jQuery(frm).serializeArray();
     data = data.concat(jQuery(document.forms.editparticipants)
         .serializeArray());
 
-    var saveButton = jQuery(self.el).find(".project-savebutton").get(0);
-    jQuery(saveButton).attr("disabled", "disabled")
-        .attr("value", "Saving...")
-        .addClass("saving");
+    var saveButton = jQuery(self.el).find('.project-savebutton').get(0);
+    jQuery(saveButton).attr('disabled', 'disabled')
+        .attr('value', 'Saving...')
+        .addClass('saving');
 
     jQuery.ajax({
         type: 'POST',
         url: frm.action,
         data: data,
         dataType: 'json',
-        error: function () {
-            jQuery(saveButton).removeAttr("disabled").attr("value", "Save").removeClass("saving");
-            showMessage('There was an error saving your project.', null, "Error");
+        error: function() {
+            jQuery(saveButton).removeAttr('disabled')
+                .attr('value', 'Save').removeClass('saving');
+            showMessage('There was an error saving your project.',
+                        null, 'Error');
         },
-        success: function (json, textStatus, xhr) {
+        success: function(json, textStatus, xhr) {
             if (json.status === 'error') {
-                showMessage(json.msg, null, "Error");
+                showMessage(json.msg, null, 'Error');
             } else {
-                var lastVersionPublic = jQuery(self.el).find(".last-version-public").get(0);
+                var lastVersionPublic = jQuery(self.el).find(
+                    '.last-version-public').get(0);
                 if (json.revision.public_url) {
-                    jQuery(lastVersionPublic).attr("href", json.revision.public_url);
+                    jQuery(lastVersionPublic).attr('href',
+                                                   json.revision.public_url);
                     jQuery(lastVersionPublic).show();
                 } else {
-                    jQuery(lastVersionPublic).attr("href", "");
+                    jQuery(lastVersionPublic).attr('href', '');
                     jQuery(lastVersionPublic).hide();
                 }
 
                 if (json.is_assignment) {
-                    jQuery(self.el).removeClass("composition").addClass("assignment");
-                    jQuery(self.el).find(".composition").removeClass("composition").addClass("assignment");
-                    jQuery(self.el).next(".pantab-container").find(".composition").removeClass("composition").addClass("assignment");
-                    jQuery(self.el).prev().removeClass("composition").addClass("assignment");
-                    jQuery(self.el).prev().find("div.label").html("assignment");
-                    jQuery(self.el).prev().prev().find(".composition").removeClass("composition").addClass("assignment");
+                    jQuery(self.el).removeClass('composition')
+                        .addClass('assignment');
+                    jQuery(self.el).find('.composition')
+                        .removeClass('composition').addClass('assignment');
+                    jQuery(self.el).next('.pantab-container')
+                        .find('.composition').removeClass('composition')
+                        .addClass('assignment');
+                    jQuery(self.el).prev().removeClass('composition')
+                        .addClass('assignment');
+                    jQuery(self.el).prev().find('div.label')
+                         .html('assignment');
+                    jQuery(self.el).prev().prev().find('.composition')
+                        .removeClass('composition').addClass('assignment');
 
                     jQuery(self.el).find('a.project-export').hide();
                     jQuery(self.el).find('a.project-print').hide();
                 } else {
-                    jQuery(self.el).removeClass("assignment").addClass("composition");
-                    jQuery(self.el).find(".assignment").removeClass("assignment").addClass("composition");
-                    jQuery(self.el).next(".pantab-container").find(".assignment").removeClass("assignment").addClass("composition");
-                    jQuery(self.el).prev().removeClass("assignment").addClass("composition");
-                    jQuery(self.el).prev().find("div.label").html("composition");
-                    jQuery(self.el).prev().prev().find(".assignment").removeClass("assignment").addClass("composition");
+                    jQuery(self.el).removeClass('assignment')
+                        .addClass('composition');
+                    jQuery(self.el).find('.assignment')
+                        .removeClass('assignment').addClass('composition');
+                    jQuery(self.el).next('.pantab-container')
+                        .find('.assignment').removeClass('assignment')
+                        .addClass('composition');
+                    jQuery(self.el).prev().removeClass('assignment')
+                        .addClass('composition');
+                    jQuery(self.el).prev().find('div.label')
+                        .html('composition');
+                    jQuery(self.el).prev().prev().find('.assignment')
+                        .removeClass('assignment').addClass('composition');
 
                     jQuery(self.el).find('a.project-export').show();
                     jQuery(self.el).find('a.project-print').show();
                 }
 
-                jQuery(self.el).find('.project-visibility-description').html(json.revision.visibility);
+                jQuery(self.el).find('.project-visibility-description')
+                               .html(json.revision.visibility);
 
                 if (json.revision.due_date) {
-                    jQuery(self.el).find('.project-due-date').html("Due " + json.revision.due_date);
+                    jQuery(self.el).find('.project-due-date')
+                                   .html('Due ' + json.revision.due_date);
                 } else {
-                    jQuery(self.el).find('.project-due-date').html("");
+                    jQuery(self.el).find('.project-due-date').html('');
                 }
 
                 self.revision = json.revision;
-                if ("title" in json) {
-                    document.title = "Mediathread " + json.title;
+                if ('title' in json) {
+                    document.title = 'Mediathread ' + json.title;
                 }
                 self.setDirty(false);
                 self.updateRevisions();
             }
-            jQuery(saveButton).removeAttr("disabled")
-                .removeClass("saving", 1200, function () {
-                    jQuery(this).attr("value", "Saved"); });
+            jQuery(saveButton).removeAttr('disabled')
+                .removeClass('saving', 1200, function() {
+                    jQuery(this).attr('value', 'Saved'); });
         }
     });
 
     return true;
 };
 
-ProjectPanelHandler.prototype.setDirty = function (isDirty) {
+ProjectPanelHandler.prototype.setDirty = function(isDirty) {
     var self = this;
 
     if (self.projectModified !== isDirty) {
@@ -742,19 +850,19 @@ ProjectPanelHandler.prototype.setDirty = function (isDirty) {
         }
 
         if (isDirty) {
-            jQuery(self.el).find('.project-savebutton').attr("value", "Save");
+            jQuery(self.el).find('.project-savebutton').attr('value', 'Save');
             // Set a single timer to kick off a save event.
             // If the timer is already active, don't set another one
             // Clear the timer variable at the end
             if (self.dirtyTimer === undefined) {
                 self.dirtyTimer = window.setTimeout(function() {
-                    var frm = jQuery(self.el).find('form[name=editproject]')[0];
-                    self.saveProject(frm, true);
+                    var frm = jQuery(self.el).find('form[name=editproject]');
+                    self.saveProject(frm[0], true);
                     self.dirtyTimer = undefined;
                 }, 10000);
             }
         } else {
-            jQuery(self.el).find('.project-savebutton').attr("value", "Saved");
+            jQuery(self.el).find('.project-savebutton').attr('value', 'Saved');
             if (self.dirtyTimer !== undefined) {
                 window.clearTimeout(self.dirtyTimer);
                 self.dirtyTimer = undefined;
@@ -774,15 +882,15 @@ ProjectPanelHandler.prototype.isDirty = function() {
 ProjectPanelHandler.prototype.updateRevisions = function() {
     var self =  this;
     var $elt = jQuery('#project-revisions');
-    
+
     if ($elt.length > 0) {
         jQuery.ajax({
             type: 'GET',
             url: MediaThread.urls['project-revisions'](
                     self.panel.context.project.id),
             dataType: 'json',
-            error: function () {},
-            success: function (json, textStatus, xhr) {
+            error: function() {},
+            success: function(json, textStatus, xhr) {
                 var rendered = Mustache2.render(
                         MediaThread.templates.project_revisions, json);
                 $elt.html(rendered);
@@ -791,20 +899,21 @@ ProjectPanelHandler.prototype.updateRevisions = function() {
     }
 };
 
-ProjectPanelHandler.prototype.beforeUnload = function () {
+ProjectPanelHandler.prototype.beforeUnload = function() {
     var self = this;
     var msg = null;
 
-    // Check tinyMCE dirty state. For some reason, the instance we're holding is not always current
+    // Check tinyMCE dirty state.
+    // For some reason, the instance is not always current
     if (self.isDirty()) {
-        msg = "Changes to your project have not been saved.";
+        msg = 'Changes to your project have not been saved.';
     } else {
-        var title = jQuery(self.el).find("input[name=title]");
+        var title = jQuery(self.el).find('input[name=title]');
         if (title && title.length > 0) {
             var value = jQuery(title[0]).val();
             if (!value || value.length < 1) {
-                msg = "Please specify a project title.";
-            } else if (value === "Untitled") {
+                msg = 'Please specify a project title.';
+            } else if (value === 'Untitled') {
                 msg = 'Please update your "Untitled" project title.';
             }
         }
@@ -816,7 +925,8 @@ ProjectPanelHandler.prototype.beforeUnload = function () {
     }
 };
 
-ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, handler) {
+ProjectPanelHandler.prototype._bind = function(parent, elementSelector,
+                                               event, handler) {
     var elements = jQuery(parent).find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).on(event, handler);
@@ -826,30 +936,32 @@ ProjectPanelHandler.prototype._bind = function (parent, elementSelector, event, 
     }
 };
 
-ProjectPanelHandler.prototype._validAuthors = function () {
+ProjectPanelHandler.prototype._validAuthors = function() {
     var self = this;
     // Make sure there's at least one author
-    var options = jQuery(self.el).find("select[name='participants'] option");
+    var options = jQuery(self.el).find('select[name="participants"] option');
     if (options.length < 1) {
-        showMessage("This project has no authors. Please select at least one author.",
-                    null, "Error");
+        showMessage(
+            'This project has no authors. Please select at least one author.',
+            null, 'Error');
         return false;
     } else {
         return true;
     }
 };
 
-ProjectPanelHandler.prototype._validTitle = function () {
+ProjectPanelHandler.prototype._validTitle = function() {
     var self = this;
 
-    var title = jQuery(self.el).find("input.project-title");
+    var title = jQuery(self.el).find('input.project-title');
     var value = title.val();
     if (!value || value.length < 1) {
-        showMessage("Please specify a project title.", null, "Error");
+        showMessage('Please specify a project title.', null, 'Error');
         title.focus();
         return false;
-    } else if (value === "Untitled") {
-        showMessage('Please update your "Untitled" project title.', null, 'Error');
+    } else if (value === 'Untitled') {
+        showMessage('Please update your "Untitled" project title.',
+                    null, 'Error');
         title.focus();
         return false;
     } else {

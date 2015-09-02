@@ -8,26 +8,6 @@
         var self = this;
 
         /**
-         * Load a Mustache template from the /media/templates/
-         * directory and put it in the MediaThread.templates
-         * dictionary.
-         */
-        this.loadTemplate = function(templateName) {
-            jQuery.ajax({
-                url: '/media/templates/' + templateName +
-                    '.mustache?nocache=v2',
-                dataType: 'text',
-                // Load this synchronously to make sure the template is
-                // available when it's needed.
-                async: false,
-                cache: false,
-                success: function (text) {
-                    MediaThread.templates[templateName] = text;
-                }
-            });
-        };
-
-        /**
          * Load all the asset-related templates.
          */
         this.loadTemplates = function() {
@@ -44,7 +24,7 @@
                 'asset_feedback'
             ];
             for (var i = 0; i < templates.length; i++) {
-                this.loadTemplate(templates[i]);
+                MediaThread.loadTemplate(templates[i]);
             }
         };
 

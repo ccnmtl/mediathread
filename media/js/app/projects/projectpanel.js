@@ -1,5 +1,5 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
-/* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
+/* global getVisibleContentHeight: true, MediaThread: true, Mustache2: true */
 /* global SelectFilter: true, showMessage: true */
 /* global tinyMCE: true, tiny_mce_settings: true */
 
@@ -15,6 +15,7 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
     jQuery(self.el).find('.project-savebutton').attr("value", "Saved");
 
     djangosherd.storage.json_update(panel.context);
+    MediaThread.loadTemplate('project_revisions');
 
     if (panel.context.can_edit) {
         var select = jQuery(self.el).find("select[name='participants']")[0];
@@ -89,7 +90,9 @@ var ProjectPanelHandler = function (el, parent, panel, space_owner) {
         tinyMCE.settings = self.tiny_mce_settings;
         tinyMCE.execCommand("mceAddControl", false, panel.context.project.id + "-project-content");
     }
+    
     self.render();
+    self.updateRevisions();
 };
 
 ProjectPanelHandler.prototype.onTinyMCEInitialize = function (instance) {
@@ -770,18 +773,22 @@ ProjectPanelHandler.prototype.isDirty = function() {
 
 ProjectPanelHandler.prototype.updateRevisions = function() {
     var self =  this;
-
-    jQuery.ajax({
-        type: 'GET',
-        url: MediaThread.urls['project-revisions'](
-                self.panel.context.project.id),
-        dataType: 'json',
-        error: function () {},
-        success: function (json, textStatus, xhr) {
-            Mustache.update("revisions", {'context': json});
-        }
-    });
-
+    var $elt = jQuery('#project-revisions');
+    
+    if ($elt.length > 0) {
+        jQuery.ajax({
+            type: 'GET',
+            url: MediaThread.urls['project-revisions'](
+                    self.panel.context.project.id),
+            dataType: 'json',
+            error: function () {},
+            success: function (json, textStatus, xhr) {
+                var rendered = Mustache2.render(
+                        MediaThread.templates.project_revisions, json);
+                $elt.html(rendered);
+            }
+        });
+    }
 };
 
 ProjectPanelHandler.prototype.beforeUnload = function () {

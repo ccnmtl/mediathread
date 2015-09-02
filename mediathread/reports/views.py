@@ -456,14 +456,14 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
         yield header
 
         for response in responses:
-            submitted_date = response.date_submitted
-            if submitted_date:
-                submitted_date = submitted_date.strftime(self.date_fmt)
+            dt = None
+            if response.date_submitted:
+                dt = response.date_submitted.strftime(self.date_fmt)
 
             row = [response.author.get_full_name(),
                    response.author.get_username(),
                    response.title, response.status(),
-                   submitted_date,
+                   dt,
                    response.modified.strftime(self.date_fmt),
                    response.feedback_discussion() is not None]
 

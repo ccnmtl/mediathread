@@ -211,7 +211,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         versions = reversion.get_for_object(project).get_unique()
         self.assertEquals(sum(1 for v in versions), 1)
-        self.assertIsNone(project.submitted_date())
+        self.assertIsNone(project.date_submitted)
         self.assertIn(self.student_one, project.participants.all())
         self.assertEquals(project.author, self.student_one)
 
@@ -229,7 +229,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         versions = reversion.get_for_object(project).get_unique()
         self.assertEquals(sum(1 for v in versions), 2)
-        self.assertIsNotNone(project.submitted_date())
+        self.assertIsNotNone(project.date_submitted)
 
     def test_assignment_response_create(self):
         self.client.login(username=self.student_one.username,

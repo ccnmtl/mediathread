@@ -145,6 +145,7 @@ class ProjectResource(ModelResource):
         project_ctx = self._meta.serializer.to_simple(dehydrated, None)
         project_ctx['body'] = project.body
         project_ctx['public_url'] = project.public_url()
+        project_ctx['modified'] = project.modified.strftime(self.date_fmt)
         project_ctx['current_version'] = version_number
         project_ctx['visibility'] = project.visibility_short()
         project_ctx['type'] = project.project_type
@@ -171,14 +172,13 @@ class ProjectResource(ModelResource):
 
         if project.is_participant(request.user):
             data['revisions'] = []
-            fmt = "%m/%d/%y %I:%M %p"
             for v in project.versions():
                 author = User.objects.get(id=v.field_dict['author'])
                 data['revisions'].append({
                     'version_number': v.revision_id,
                     'versioned_id': v.object_id,
                     'author': get_public_name(author, request),
-                    'modified': v.revision.date_created.strftime(fmt)
+                    'modified': v.revision.date_created.strftime(self.date_fmt)
                 })
 
         if self.editable:

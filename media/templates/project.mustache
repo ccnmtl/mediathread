@@ -29,7 +29,7 @@
                                         style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
                                     {{#context.project.current_version}}
                                         <span class="project-current-version" style="display: inline">
-                                            | Version {{context.project.current_version}}
+                                            | Version {{context.project.modified}}
                                         </span>
                                     {{/context.project.current_version}}
                                     
@@ -86,7 +86,7 @@
 
                                                 <select name="revisions" multiple="multiple">
                                                   {{#context.revisions}}
-                                                    <option value="/project/view/{{versioned_id}}/version/{{version_number}}/">{{version_number}} &mdash; {{modified}} by {{author}}&nbsp;</option>
+                                                    <option value="/project/view/{{versioned_id}}/version/{{version_number}}/">{{modified}} by {{author}}&nbsp;</option>
                                                   {{/context.revisions}}
                                                 </select>
                                               </div>

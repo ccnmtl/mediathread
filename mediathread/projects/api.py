@@ -55,7 +55,7 @@ class ProjectResource(ModelResource):
         bundle.data['modified_time'] = bundle.obj.modified.strftime("%I:%M %p")
         bundle.data['editable'] = self.editable
         bundle.data['is_faculty'] = self.is_viewer_faculty
-        bundle.data['submitted'] = bundle.obj.submitted
+        bundle.data['submitted'] = bundle.obj.is_submitted()
 
         participants = bundle.obj.attribution_list()
         bundle.data['participants'] = [{
@@ -75,10 +75,16 @@ class ProjectResource(ModelResource):
     def all_responses(self, request, project):
         ctx = []
         responses = project.responses(request.course, request.user)
+
         for response in responses:
+            submitted = ''
+            if response.is_submitted():
+                submitted = response.date_submitted.strftime(self.date_fmt)
+
             obj = {
                 'url': response.get_absolute_url(),
                 'title': response.title,
+                'submitted': submitted,
                 'modified': response.modified.strftime(self.date_fmt),
                 'attribution_list': []}
 
@@ -90,7 +96,9 @@ class ProjectResource(ModelResource):
 
             ctx.append(obj)
 
-        return ctx
+        return sorted(
+            ctx,
+            key=lambda response: response['attribution_list'][0]['name'])
 
     def my_responses(self, request, project):
         ctx = []

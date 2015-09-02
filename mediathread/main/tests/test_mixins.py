@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
@@ -64,7 +65,7 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
         # submit student one's response
         self.response_one.create_or_update_collaboration(
             'PublicEditorsAreOwners')
-        self.response_one.submitted = True
+        self.response_one.date_submitted = datetime.now()
         self.response_one.save()
 
         self.assert_visible_notes(self.student_one, [self.note_one])
@@ -90,7 +91,7 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
         # submit student two's response
         self.response_two.create_or_update_collaboration(
             'PublicEditorsAreOwners')
-        self.response_two.submitted = True
+        self.response_two.date_submitted = datetime.now()
         self.response_two.save()
         self.assert_visible_notes(self.student_one,
                                   [self.note_one, self.note_two])

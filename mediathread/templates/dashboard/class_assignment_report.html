@@ -19,8 +19,7 @@
       <th>Student</th>
       <th>Title</th>
       <th>Status</th>
-      <th>Initial Submit Date</th>
-      <th>Saved at</th>
+      <th>Submit Date</th>
       <th>Faculty Feedback</th>
     </tr>
   </thead>
@@ -37,10 +36,7 @@
       {{response.status}}
     </td>
     <td>
-      {{response.submitted_date|date}}
-    </td>
-    <td>
-      {{response.modified|date}}
+      {{response.date_submitted|date}}
     </td>
     <td>
       {% with response.feedback_discussion as feedback %}

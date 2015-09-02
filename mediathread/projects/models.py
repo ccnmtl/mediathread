@@ -254,10 +254,7 @@ class Project(models.Model):
 
     body = models.TextField(blank=True)
 
-    # available to someone other than the authors
-    # -- at least, the instructor, if not the whole class
-    # this is somewhat deprecated...
-    submitted = models.BooleanField(default=False)
+    date_submitted = models.DateTimeField(null=True, blank=True)
 
     modified = models.DateTimeField('date modified', editable=False,
                                     auto_now=True)
@@ -445,13 +442,13 @@ class Project(models.Model):
             # @todo - consider multiple assignment responses
             # via collaborative authoring.
             responses = assignment.responses(course, viewer, viewer)
-            return len(responses) > 0 and responses[0].submitted
+            return len(responses) > 0 and responses[0].is_submitted()
         else:  # assignment.response_view_policy == 'never':
             return False
 
     def can_cite(self, course, viewer):
         # notes in an unsubmitted project are not citable
-        if not self.submitted:
+        if not self.is_submitted():
             return False
 
         parent = self.assignment()
@@ -521,12 +518,8 @@ class Project(models.Model):
         except Collaboration.DoesNotExist:
             return None
 
-    def submitted_date(self):
-        dt = None
-        for v in self.versions():
-            if v.object_version.submitted:
-                dt = v.object_version.modified
-        return dt or self.modified
+    def is_submitted(self):
+        return self.date_submitted is not None
 
     def feedback_date(self):
         thread = self.feedback_discussion()

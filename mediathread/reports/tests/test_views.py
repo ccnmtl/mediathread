@@ -1,3 +1,4 @@
+from datetime import datetime
 from json import loads
 
 from django.core.cache import cache
@@ -43,7 +44,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_one,
             policy='InstructorShared', parent=self.assignment1)
         self.response2 = ProjectFactory.create(
-            title="Response 2", submitted=True,
+            title="Response 2", date_submitted=datetime.now(),
             course=self.sample_course, author=self.student_two,
             policy='InstructorShared', parent=self.assignment1)
 

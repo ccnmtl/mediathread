@@ -31,7 +31,7 @@ var SherdReport = function() {
         var w = jQuery('#reports-graph-link').width();
         var h = Math.max(500, jQuery(window).height() - 300);
         var colors = pv.Colors.category10();
-        var domain_colors = pv.Colors.category20();
+        var domainColors = pv.Colors.category20();
 
         var vis = new pv.Panel({canvas: 'reports-graph-visualization'})
         .canvas('reports-graph-visualization')
@@ -59,14 +59,15 @@ var SherdReport = function() {
 
         self.nodes = force.node.add(pv.Dot)
         .size(function(d) {
-        return 3 + (d.linkDegree + 4) * Math.pow(this.scale, -1.5); })
+            return 3 + (d.linkDegree + 4) * Math.pow(this.scale, -1.5);
+        })
         .fillStyle(function(d) {
             var color;
             switch (d.group) {
             case 1:
                 return new pv.Color.Rgb(256, 256, 0, 1); //tag
             case 2:
-                return domain_colors(d.domain); //asset
+                return domainColors(d.domain); //asset
             case 3:
                 return new pv.Color.Rgb(0, 100, 256, 1); //project
             case 4:
@@ -108,11 +109,11 @@ var SherdReport = function() {
                 self.nodes.lineWidth(self.nodeDefaultLineWidth);
             } else {
                 var user = jQuery(this)
-                                        .addClass('highlight').attr('data-username');
+                           .addClass('highlight').attr('data-username');
 
                 self.nodes.lineWidth(function(d) {
-                    return (d.users && d.users[user] ?
-                                                        10 : self.nodeDefaultLineWidth(d));
+                    return (d.users &&
+                            d.users[user] ? 10 : self.nodeDefaultLineWidth(d));
                 });
             }
         });
@@ -121,13 +122,12 @@ var SherdReport = function() {
 
 var sherdReport = new SherdReport();
 
-var report_done = false;
 window['hs_onshow_reports-graph'] = function() {
     if (!sherdReport.started) {
         sherdReport.started = true;
         jQuery.ajax({
             url: '/reports/class_summary/graph.json?nocache=' +
-                                Number(new Date()) + location.search.replace(/^./, '&'),
+                Number(new Date()) + location.search.replace(/^./, '&'),
             dataType: 'json',
             success: sherdReport.init
         });

@@ -2,7 +2,7 @@ MANAGE=./manage.py
 APP=mediathread
 FLAKE8=./ve/bin/flake8
 
-jenkins: ./ve/bin/python check jshint test flake8
+jenkins: ./ve/bin/python check jshint jscs flake8 test
 
 ./ve/bin/python: requirements.txt bootstrap.py virtualenv.py
 	./bootstrap.py
@@ -17,7 +17,7 @@ node_modules/jshint/bin/jshint:
 	npm install jshint --prefix .
 
 node_modules/jscs/bin/jscs:
-	npm install jscs --prefix .
+	npm install jscs@1.8.1 --prefix .
 
 test: ./ve/bin/python
 	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc

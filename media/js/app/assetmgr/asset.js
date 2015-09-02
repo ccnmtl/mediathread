@@ -2,6 +2,7 @@
 /* global DjangoSherd_Colors: true, MediaThread: true, Mustache2: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
 /* global updateUserSetting: true, console: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
     var AnnotationList = function() {
@@ -90,7 +91,7 @@
                         }
                     }
 
-                    // parse out the annotation id in the hashtag (if it exists)
+                    // parse out the annotation id in the hashtag (if exists)
                     // hashtags override a urls embedded annotation_id
                     var config = {};
                     if (window.location.hash) {
@@ -116,8 +117,8 @@
         };
 
         this.hasAnnotations = function(username) {
-            for (var i=0; i < self.active_asset.annotations.length; i++) {
-                var note = self.active_asset.annotations[i]; 
+            for (var i = 0; i < self.active_asset.annotations.length; i++) {
+                var note = self.active_asset.annotations[i];
                 if (note.author.username === username) {
                     return true;
                 }
@@ -167,8 +168,9 @@
                             if (annotation_query.length) {
                                 opts.xywh = annotation_query[0];
                             } else {
-                                var annid = String(window.location.hash)
-                                                .match(/annotation_id=([.\d]+)/);
+                                var annid =
+                                    String(window.location.hash)
+                                    .match(/annotation_id=([.\d]+)/);
                                 if (annid !== null) {
                                     opts.annotation_id = Number(annid[1]);
                                 }
@@ -185,18 +187,19 @@
                         if (frm) {
                             frm.elements.showall.checked = retrieveData(
                                 'annotation-list-filter__showall');
-                            
+
                             var value = retrieveData(
                                 'annotation-list-filter__group') || 'author';
                             jQuery(
                                 'input[name="groupby"][value="' + value + '"]')
-                                .prop('checked', true); 
+                                .prop('checked', true);
 
                             jQuery(frm.elements.showall)
                                 .change(self.showHideAnnotations);
                             jQuery(frm.elements.groupby).change(function() {
                                 var val = jQuery(this).val();
-                                storeData('annotation-list-filter__group', val);
+                                storeData('annotation-list-filter__group',
+                                          val);
                                 self.groupBy(val);
                             });
                             self.groupBy(value);
@@ -251,7 +254,7 @@
                     };
                 } else {
                     this.layers[grouping].create(grouping, {
-                        //onclick:function (feature) {},
+                        // onclick:function(feature) {},
                         title: ' ',//hide grouping title for the video view
                         onmouseenter: function(id, name) {
                             self.highlight(id);
@@ -316,7 +319,7 @@
                     for (var j = 0; j < titles.length; j++) {
                         var title = titles[j];
                         var color = DjangoSherd_Colors.get(title);
-                        /// add the annotation onto the layer in the right color
+                        /// add the annotation onto the layer w/the right color
                         if (ann.annotation) {
                             self.layers[grouping].add(
                                 ann.annotation, {
@@ -332,7 +335,8 @@
                                 'color': color,
                                 'annotations': []
                             };
-                            if (title && title === MediaThread.user_full_name) {
+                            if (title &&
+                                    title === MediaThread.user_full_name) {
                                 user_listing = title;
                             } else {
                                 context.annotation_list.push(title);
@@ -366,7 +370,7 @@
                 collapsible: true,
                 active: false,
                 animate: false,
-                heightStyle: "content"
+                heightStyle: 'content'
             };
 
             $elt.show();
@@ -454,7 +458,8 @@
             jQuery(list).find('li').remove();
 
             if (this.hasOwnProperty('active_asset')) {
-                for (var i = 0; i < this.active_asset.annotations.length; i++) {
+                var activeAnnotations = this.active_asset.annotations.length;
+                for (var i = 0; i < activeAnnotations; i++) {
                     var ann = this.active_asset.annotations[i];
                     if (ann.annotation) {
                         var li = '<li>' +
@@ -915,11 +920,13 @@
                 url: url,
                 data: jQuery(frm).serialize(),
                 dataType: 'json',
-                cache: false, // Chrome && Internet Explorer has aggressive caching policies.
+                cache: false, // Chrome && IE have aggressive caching policies.
                 success: function(json, textStatus, jqXHR) {
                     // Repopulate the cache & refresh the annotation view
-                    // @todo -- if asset_json could be moved over to djangosherd:views.py,
-                    // then create_annotation, edit_annotation could just return the full asset json
+                    // @todo -- if asset_json could be moved over
+                    // to djangosherd:views.py,
+                    // then create_annotation, edit_annotation could just
+                    // return the full asset json
                     // And eliminate this extra call.
                     djangosherd.storage.get({
                         id: json.asset.id,
@@ -948,7 +955,7 @@
 
         // Push annotation_ids on the history stack as a user views them.
         // If an annotation is missing (deleted?) -- revert to the asset view.
-        // HTML 5.0 browsers: https://developer.mozilla.org/en/DOM/Manipulating_the_browser_history
+        // HTML 5.0 browsers: browser history
         // < HTML 5.0 browsers: Hashtag implementation
         this._addHistory = function(replace) {
             if (self.update_history === false) {
@@ -1068,8 +1075,8 @@
 
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);
-
-                for (var i = 0; i < self.active_asset.annotations.length; i++) {
+                var activeAnnotations = self.active_asset.annotations.length;
+                for (var i = 0; i < activeAnnotations; i++) {
                     var ann = self.active_asset.annotations[i];
                     if (ann.id === annotation_id) {
                         self.active_annotation = ann;
@@ -1106,7 +1113,8 @@
                        (self.active_asset.user_analysis === undefined ||
                         self.active_asset.user_analysis < 1)) {
                 context.show_help = self.user_settings.help_item_detail_view;
-                context.show_help_checked = !self.user_settings.help_item_detail_view;
+                context.show_help_checked =
+                    !self.user_settings.help_item_detail_view;
             }
 
             self.edit_state = null;

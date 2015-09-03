@@ -424,10 +424,14 @@ class Project(models.Model):
            (not collaboration.permission_to('read', course, viewer)):
             return False
 
-        # assignment response?
+        # If this project is an assignment response, verify the parent
+        # assignment's response policy sanctions a read by the viewer
+        if not self.is_composition():
+            return True  # this project is an assignment
+
         parent = collaboration.get_parent()
-        if parent is None:
-            return True
+        if parent is None or parent.content_object is None:
+            return True  # this project does not have a parent assignment
 
         # the author & faculty can always view a submitted response
         if (self.is_participant(viewer) or

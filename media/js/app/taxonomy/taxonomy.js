@@ -217,7 +217,7 @@
                     self.collection.add(v);
                 },
                 error: function(model, response) {
-                    var text =  jQuery.type(response) == 'object' ?
+                    var text =  jQuery.type(response) === 'object' ?
                         response.responseText : response;
                     var the_json = jQuery.parseJSON(text);
                     showMessage(the_json.vocabulary.error_message[0],
@@ -247,7 +247,7 @@
                         self.render();
                     },
                     error: function(model, response) {
-                        var text =  jQuery.type(response) == 'object' ?
+                        var text =  jQuery.type(response) === 'object' ?
                             response.responseText : response;
                         var the_json = jQuery.parseJSON(text);
                         showMessage(the_json.vocabulary.error_message,
@@ -312,7 +312,7 @@
         },
         keypressTermName: function(evt) {
             var self = this;
-            if (evt.which == 13) {
+            if (evt.which === 13) {
                 evt.preventDefault();
                 var opts = '.edit-term-submit,.create-term-submit';
                 jQuery(evt.currentTarget).nextAll(opts).click();
@@ -353,7 +353,7 @@
                     self.render();
                 },
                 error: function(model, response) {
-                    var text =  jQuery.type(response) == 'object' ?
+                    var text =  jQuery.type(response) === 'object' ?
                         response.responseText : response;
                     var the_json = jQuery.parseJSON(text);
                     showMessage(the_json.term.error_message,
@@ -389,7 +389,7 @@
                         self.render();
                     },
                     error: function(model, response) {
-                        var text =  jQuery.type(response) == 'object' ?
+                        var text =  jQuery.type(response) === 'object' ?
                             response.responseText : response;
                         var the_json = jQuery.parseJSON(text);
                         showMessage(the_json.term.error_message,
@@ -489,7 +489,7 @@
         },
         findUtil: function(array, thing){
             return jQuery.grep(array, function(item){
-                return item.display_name == thing;
+                return item.display_name === thing;
             });
         },
         getTheOnomy: function(onomyURL, selectedVocabulary) {

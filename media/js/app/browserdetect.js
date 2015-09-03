@@ -2,7 +2,7 @@
 
 function addLoadEvent(func) {
     var oldonload = window.onload;
-    if (typeof window.onload != 'function') {
+    if (typeof window.onload !== 'function') {
         window.onload = func;
     } else {
         window.onload = function() {
@@ -27,7 +27,7 @@ var BrowserDetect = {
             this.versionSearchString = data[i].versionSearch ||
                 data[i].identity;
             if (dataString) {
-                if (dataString.indexOf(data[i].subString) != -1) {
+                if (dataString.indexOf(data[i].subString) !== -1) {
                     return data[i].identity;
                 }
             } else if (dataProp) {
@@ -37,7 +37,7 @@ var BrowserDetect = {
     },
     searchVersion: function(dataString) {
         var index = dataString.indexOf(this.versionSearchString);
-        if (index == -1) {
+        if (index === -1) {
             return;
         }
         return parseFloat(

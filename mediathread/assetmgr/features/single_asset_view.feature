@@ -26,8 +26,7 @@ Feature: Single Asset View
         
         # Verify the Sources tab
         When I click the "Source" link
-        Then I see "Item's Original Source"
-        And there is a "http://www.flickr.com/photos/ccnmtl/4049410921/" link
+        And there is an "Item Permalink" link
                         
         Finished using Selenium
         

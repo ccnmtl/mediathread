@@ -668,4 +668,3 @@ CollectionList.prototype.appendAssets = function(the_records) {
         jQuery(window).trigger('assets.refresh', [html]);
     }
 };
-

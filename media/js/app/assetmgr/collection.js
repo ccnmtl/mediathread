@@ -417,7 +417,7 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
     var self = this;
     djangosherd.thumbs = [];
     var isThumb = function(s) {
-        return s.label == 'thumb';
+        return s.label === 'thumb';
     };
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];

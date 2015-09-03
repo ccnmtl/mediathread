@@ -8,7 +8,7 @@ jenkins: ./ve/bin/python check jshint jscs flake8 test
 	./bootstrap.py
 
 jshint: node_modules/jshint/bin/jshint
-	./node_modules/jshint/bin/jshint media/js/app/
+	./node_modules/jshint/bin/jshint --config=.jshintrc media/js/app/
 
 jscs: node_modules/jscs/bin/jscs
 	./node_modules/jscs/bin/jscs media/js/app/

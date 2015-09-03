@@ -1,5 +1,6 @@
 /* global _: true, Backbone: true, getVisibleContentHeight: true */
 /* global showMessage: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
     var global = this;
@@ -52,7 +53,7 @@
     });
 
     global.CourseMaterialsView = Backbone.View.extend({
-        events : {
+        events: {
             'click #view-materials': 'clickViewMaterials',
             'click #import-all': 'importAll',
             'click #import-projects': 'importProjects',
@@ -80,7 +81,8 @@
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
 
-            this.courseTemplate = _.template(jQuery('#course-template').html());
+            this.courseTemplate = _.template(jQuery('#course-template')
+                                             .html());
             this.selectedTemplate = _.template(jQuery('#selected-template')
                                                .html());
 
@@ -216,8 +218,10 @@
                 'on_behalf_of': jQuery('#on_behalf_of').val(),
                 'project_ids': project_ids,
                 'asset_ids': asset_ids,
-                'include_tags': jQuery("input[name='include_tags']").is(":checked"),
-                'include_notes': jQuery("input[name='include_notes']").is(":checked")
+                'include_tags': jQuery('input[name="include_tags"]')
+                    .is(':checked'),
+                'include_notes': jQuery('input[name="include_notes"]')
+                    .is(':checked')
             };
 
             jQuery.ajax({
@@ -443,7 +447,8 @@
         },
 
         deselectProject: function(evt) {
-            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+            var srcElement = evt.srcElement || evt.target ||
+                evt.originalTarget;
 
             var project = this.selectedProjects
                               .get(jQuery(srcElement).attr('name'));
@@ -451,7 +456,8 @@
         },
 
         deselectAsset: function(evt) {
-            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+            var srcElement = evt.srcElement || evt.target ||
+                evt.originalTarget;
 
             var asset = this.selectedAssets.get(jQuery(srcElement)
                 .attr('name'));

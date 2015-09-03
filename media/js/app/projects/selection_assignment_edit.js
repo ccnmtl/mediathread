@@ -135,7 +135,7 @@
             }
         },
         onFormKeyPress: function(evt) {
-            if (evt.keyCode == 13) {
+            if (evt.keyCode === 13) {
                 evt.preventDefault();
             }
         },

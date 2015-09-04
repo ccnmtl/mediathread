@@ -63,7 +63,7 @@
                     'readOnly': readOnly,
                     'view_callback': self.render
                 });
-                window.annotationList.loadTemplate('asset_feedback');
+                MediaThread.loadTemplate('asset_feedback');
             }
 
             // bind beforeunload so user won't forget to submit response

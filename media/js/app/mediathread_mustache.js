@@ -125,7 +125,7 @@
                 return '/asset/' + assetId + '/?standalone=1';
             }
         };
-        
+
         /**
          * Load a Mustache template from the /media/templates/
          * directory and put it in the MediaThread.templates
@@ -133,17 +133,18 @@
          */
         MediaThread.loadTemplate = function(templateName) {
             jQuery.ajax({
-                url: '/media/templates/' + templateName + '.mustache?nocache=v2',
+                url: '/media/templates/' +
+                    templateName + '.mustache?nocache=v2',
                 dataType: 'text',
                 // Load this synchronously to make sure the template is
                 // available when it's needed.
                 async: false,
                 cache: false,
-                success: function (text) {
+                success: function(text) {
                     MediaThread.templates[templateName] = text;
                 }
             });
-        };        
+        };
 
         Mustache.Renderer.prototype.filters_supported.url =
             function(name, context, args) {

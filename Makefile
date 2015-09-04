@@ -2,7 +2,7 @@ MANAGE=./manage.py
 APP=mediathread
 FLAKE8=./ve/bin/flake8
 
-jenkins: ./ve/bin/python validate jshint test flake8
+jenkins: ./ve/bin/python validate jshint jscs flake8 test
 
 ./ve/bin/python: requirements.txt bootstrap.py virtualenv.py
 	./bootstrap.py

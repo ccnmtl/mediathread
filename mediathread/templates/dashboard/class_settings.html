@@ -55,19 +55,19 @@
         </div>        
     {% endif %}   
 
-    <div class="dashboard-feature">
-    
-    <h3>Homepage "From Your Instructor" Title</h3>
-    <p>This feature allows faculty to customize the left-hand column title on the Mediathread homepage.
-    Titles should be less than 25 characters long.</p>
+    <div class="well">
+        <h3>Homepage "From Your Instructor" Title</h3>
+        <p>This feature allows faculty to customize the left-hand column title on the Mediathread homepage.
+        Titles should be less than 25 characters long.</p>
         <form action="{% url 'course-settings' %}" name="course-information-title-form" method="POST">
             <input class="form-control" type="text" name="course_information_title" value="{{course_information_title}}" />
             <br />
             <input class="btn btn-default right" type="submit" value="Save Title"></input>
         </form>
+        <div class="visualclear"></div>
     </div>
     
-    <div class="dashboard-feature">
+    <div class="well">
     <h3>"Publish To The World" Compositions</h3>
     <p>This feature allows authors to publish compositions at
     a public level, via a link that does not require logging into Mediathread.</p>
@@ -85,7 +85,7 @@
         </form>
     </div>
     
-    <div class="dashboard-feature">
+    <div class="well">
         <h3>Item & Selection Visibility</h3>
         <p>Turning off item or selection visibility hides individual items or selections from all
         collections views. Students can still view an item or selection embedded

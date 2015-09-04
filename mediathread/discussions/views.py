@@ -258,7 +258,8 @@ def threaded_comment_json(request, comment):
 
     return {
         'type': 'discussion',
-        'form': django_comments.get_form()(comment.content_object).__unicode__(),
+        'form': django_comments.get_form()(
+            comment.content_object).__unicode__(),
         'editing': True,
         'can_edit': True,
         'discussion': {

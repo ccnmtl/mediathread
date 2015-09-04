@@ -238,7 +238,7 @@ AssetPanelHandler.prototype.resize = function() {
     var pantab = jQuery(self.el).find(q);
     if (pantab.length > 0) {
         q = 'div.panel.asset-workspace td.panhandle-stripe.collection';
-        jQuery().show();
+        jQuery(q).show();
     } else {
         q = 'div.panel.asset-workspace td.panhandle-stripe.collection';
         jQuery(q).hide();

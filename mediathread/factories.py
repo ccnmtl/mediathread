@@ -17,16 +17,16 @@ from structuredcollaboration.models import Collaboration, \
 
 
 class UserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = User
+    class Meta:
+        model = User
     username = factory.Sequence(lambda n: 'user%d' % n)
     password = factory.PostGenerationMethodCall('set_password', 'test')
 
 
 class UserProfileFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = UserProfile
-    '''UserProfile adds extra information to a user,
-    and associates the user with a group, school,
-    and country.'''
+    class Meta:
+        model = UserProfile
+
     user = factory.SubFactory(UserFactory)
     title = "Title"
     institution = "Columbia University"
@@ -36,19 +36,22 @@ class UserProfileFactory(factory.DjangoModelFactory):
 
 
 class GroupFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Group
+    class Meta:
+        model = Group
     name = factory.Sequence(
         lambda n: 't1.y2010.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
 
 
 class RegistrationProfileFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = RegistrationProfile
+    class Meta:
+        model = RegistrationProfile
     user = factory.SubFactory(UserFactory)
     activation_key = factory.Sequence(lambda n: 'key%d' % n)
 
 
 class CourseFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Course
+    class Meta:
+        model = Course
     title = "Sample Course"
     faculty_group = factory.SubFactory(GroupFactory)
     group = factory.SubFactory(GroupFactory)
@@ -62,13 +65,15 @@ class CourseFactory(factory.DjangoModelFactory):
 
 
 class SourceFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Source
+    class Meta:
+        model = Source
     url = 'sample url'
     media_type = 'ext'
 
 
 class AssetFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Asset
+    class Meta:
+        model = Asset
     title = factory.Sequence(lambda n: 'asset %d' % n)
     author = factory.SubFactory(UserFactory)
     course = factory.SubFactory(CourseFactory)
@@ -84,7 +89,8 @@ class AssetFactory(factory.DjangoModelFactory):
 
 
 class ExternalCollectionFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = ExternalCollection
+    class Meta:
+        model = ExternalCollection
 
     title = 'collection'
     url = 'http://ccnmtl.columbia.edu'
@@ -93,7 +99,8 @@ class ExternalCollectionFactory(factory.DjangoModelFactory):
 
 
 class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = SuggestedExternalCollection
+    class Meta:
+        model = SuggestedExternalCollection
 
     title = 'collection'
     url = 'http://ccnmtl.columbia.edu'
@@ -101,7 +108,8 @@ class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
 
 
 class SherdNoteFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = SherdNote
+    class Meta:
+        model = SherdNote
     title = factory.Sequence(lambda n: 'note %d' % n)
     range1 = 0.0
     range2 = 0.0
@@ -110,7 +118,8 @@ class SherdNoteFactory(factory.DjangoModelFactory):
 
 
 class ProjectFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Project
+    class Meta:
+        model = Project
     course = factory.SubFactory(CourseFactory)
     title = factory.Sequence(lambda n: 'Project %d' % n)
     author = factory.SubFactory(UserFactory)
@@ -142,21 +151,25 @@ class ProjectFactory(factory.DjangoModelFactory):
 
 
 class CollaborationFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = Collaboration
+    class Meta:
+        model = Collaboration
     user = factory.SubFactory(UserFactory)
     group = factory.SubFactory(GroupFactory)
 
 
 class CollaborationPolicyRecordFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = CollaborationPolicyRecord
+    class Meta:
+        model = CollaborationPolicyRecord
 
 
 class AssignmentItemFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = AssignmentItem
+    class Meta:
+        model = AssignmentItem
 
 
 class ProjectNoteFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = ProjectNote
+    class Meta:
+        model = ProjectNote
 
 
 class MediathreadTestMixin(object):

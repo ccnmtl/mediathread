@@ -211,6 +211,7 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id,
                 window.panelManager.verifyLayout(self.el);
                 jQuery(window).trigger('resize');
             });
+            jQuery('html').removeClass('busy');
         }
     });
 };
@@ -299,6 +300,8 @@ AssetPanelHandler.prototype.resize = function() {
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function(evt) {
+    jQuery('html').addClass('busy');
+
     var self = evt.data.self;
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
 

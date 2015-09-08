@@ -4,8 +4,8 @@ from random import choice
 from string import letters
 
 from django.conf import settings
-from django.contrib import comments
-from django.contrib.comments.models import COMMENT_MAX_LENGTH
+from django_comments.models import COMMENT_MAX_LENGTH
+import django_comments
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.http import HttpResponse, HttpResponseForbidden, \
@@ -258,7 +258,8 @@ def threaded_comment_json(request, comment):
 
     return {
         'type': 'discussion',
-        'form': comments.get_form()(comment.content_object).__unicode__(),
+        'form': django_comments.get_form()(
+            comment.content_object).__unicode__(),
         'editing': True,
         'can_edit': True,
         'discussion': {

@@ -122,7 +122,7 @@ urlpatterns = patterns(
         'django.views.static.serve', {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
-    (r'^comments/', include('django.contrib.comments.urls')),
+    (r'^comments/', include('django_comments.urls')),
 
     # Contact us forms.
     (r'^contact/success/$',

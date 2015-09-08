@@ -43,6 +43,7 @@ class Vocabulary(models.Model):
 class VocabularyForm(forms.ModelForm):
     class Meta:
         model = Vocabulary
+        exclude = []
 
 
 class Term(models.Model):
@@ -75,6 +76,7 @@ class Term(models.Model):
 class TermForm(forms.ModelForm):
     class Meta:
         model = Term
+        exclude = []
 
 
 class TermRelationship(models.Model):

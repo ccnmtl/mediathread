@@ -1,4 +1,4 @@
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.projects.models import Project

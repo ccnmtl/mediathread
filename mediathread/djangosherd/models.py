@@ -4,7 +4,7 @@ import json
 import re
 
 from django.contrib.auth.models import User
-from django.contrib.comments.models import Comment
+from django_comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -156,30 +156,30 @@ class SherdNoteManager(models.Manager):
         super(SherdNoteManager, self).__init__(*args, **kwargs)
         self._fields = fields
 
-    def get_query_set(self):
+    def get_queryset(self):
         return SherdNoteQuerySet(self.model, self._fields)
 
     def filter_by_authors(self, author, visible_authors):
-        return self.get_query_set().filter_by_authors(author, visible_authors)
+        return self.get_queryset().filter_by_authors(author, visible_authors)
 
     def filter_by_date(self, date_range):
-        return self.get_query_set().filter_by_date(date_range)
+        return self.get_queryset().filter_by_date(date_range)
 
     def filter_by_tags(self, tag_string):
-        return self.get_query_set().filter_by_tags(tag_string)
+        return self.get_queryset().filter_by_tags(tag_string)
 
     def filter_by_vocabulary(self, vocabulary):
-        return self.get_query_set().filter_by_vocabulary(vocabulary)
+        return self.get_queryset().filter_by_vocabulary(vocabulary)
 
     def get_related_notes(self, assets, record_owner, visible_authors=None,
                           all_items_are_visible=False,
                           tag_string=None, modified=None, vocabulary=None):
-        return self.get_query_set().get_related_notes(
+        return self.get_queryset().get_related_notes(
             assets, record_owner, visible_authors,
             all_items_are_visible, tag_string, modified, vocabulary)
 
     def get_related_assets(self):
-        return self.get_query_set().get_related_assets()
+        return self.get_queryset().get_related_assets()
 
     def global_annotation(self, asset, author, auto_create=True):
         """

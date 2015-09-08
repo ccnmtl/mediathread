@@ -32,14 +32,14 @@ class AssetManager(models.Manager):
                                       sherdnote_set__author=user,
                                       sherdnote_set__range1=None).distinct()
         assets = assets.order_by('-sherdnote_set__modified')
-        return assets.select_related('sherdnote_set', 'source_set', 'author')
+        return assets.select_related('course', 'author')
 
     def by_course(self, course):
         assets = Asset.objects.filter(course=course) \
             .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
             .distinct()
         assets = assets.order_by('-sherdnote_set__modified')
-        return assets.select_related('sherdnote_set', 'source_set', 'author')
+        return assets.select_related('course', 'author')
 
     def migrate(self, assets, course, user, faculty, object_map,
                 include_tags, include_notes):

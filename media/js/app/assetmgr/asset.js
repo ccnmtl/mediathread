@@ -10,6 +10,8 @@
 
         /**
          * Load all the asset-related templates.
+         *
+         * Returns an array of promises.
          */
         this.loadTemplates = function() {
             var templates = [
@@ -24,14 +26,28 @@
                 'asset_sources',
                 'asset_feedback'
             ];
+            var promises = [];
+
             for (var i = 0; i < templates.length; i++) {
-                MediaThread.loadTemplate(templates[i]);
+                promises.push(MediaThread.loadTemplate(templates[i]));
             }
+
+            return promises;
         };
 
         this.init = function(config) {
-            this.loadTemplates();
+            var self = this;
 
+            jQuery.when.apply(this, this.loadTemplates())
+                .then(function() {
+                    // This is triggered once each promise created by
+                    // this.loadTemplates() has either been resolved or
+                    // rejected.
+                    self.initAfterTemplatesLoad(config);
+                });
+        };
+
+        this.initAfterTemplatesLoad = function(config) {
             this.layers = {}; //should we really store layers here?
             this.active_annotation = null;
             this.active_asset = null;

@@ -112,21 +112,4 @@
             <input class="btn btn-default" id="selection_visibility_submit" type="submit" value="Save Visiblity Options"></input>
         </form>
     </div>
-
-    {% if user.is_superuser %}
-        <div class="well">
-            <h3>Clear Course</h3>
-            <p>Clear all non-instructor materials from this course including
-                items, selections, compositions, assignment responses, etc.</p>
-            <div class="alert alert-danger">
-                <strong><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>DANGER</strong>
-            </div>
-            <form action="{% url 'course-settings' %}" name="course-information-title-form" method="POST">
-                <input class="form-control" type="text" name="course_information_title" value="{{course_information_title}}" />
-                <br />
-                <input class="btn btn-default right" type="submit" value="Save Title"></input>
-            </form>
-            <div class="visualclear"></div>
-        </div>
-    {% endif %}
 {% endblock %}

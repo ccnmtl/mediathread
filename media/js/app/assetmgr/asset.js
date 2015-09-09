@@ -11,7 +11,7 @@
         /**
          * Load all the asset-related templates.
          *
-         * Returns an array of promises.
+         * Returns an array of jqXHR objects.
          */
         this.loadTemplates = function() {
             var templates = [

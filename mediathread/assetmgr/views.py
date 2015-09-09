@@ -547,7 +547,7 @@ def scalar_export(request):
             export[data.get('annotations')[i]['url']] = annotation_node
             
         print export
-        return HttpResponse(str(export))
+        return HttpResponse(json.dumps(export))
 
 def mep_dump(request):
     user = request.user

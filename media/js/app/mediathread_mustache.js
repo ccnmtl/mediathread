@@ -130,15 +130,14 @@
          * Load a Mustache template from the /media/templates/
          * directory and put it in the MediaThread.templates
          * dictionary.
+         *
+         * Returns a jqXHR object.
          */
         MediaThread.loadTemplate = function(templateName) {
-            jQuery.ajax({
+            return jQuery.ajax({
                 url: '/media/templates/' +
                     templateName + '.mustache?nocache=v2',
                 dataType: 'text',
-                // Load this synchronously to make sure the template is
-                // available when it's needed.
-                async: false,
                 cache: false,
                 success: function(text) {
                     MediaThread.templates[templateName] = text;

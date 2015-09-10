@@ -615,6 +615,10 @@ ul#standardnav
 
 }
 
+#standardnav li .settings_submenu hr {
+    margin: 10px 0;
+}
+
 /* ---- Footer block elements ---------- */
 #footer
 {

@@ -21,7 +21,7 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
-from mediathread.mixins import faculty_only, LoggedInMixinSuperuser, \
+from mediathread.mixins import faculty_only, LoggedInSuperuserMixin, \
     CSVResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import Vocabulary, TermRelationship
@@ -218,7 +218,7 @@ def class_activity(request):
     return {'my_feed': Clumper(assets, projects, discussions)}
 
 
-class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
+class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
 
     def all_students(self, the_course):
         students = the_course.group.user_set.all()
@@ -375,7 +375,7 @@ class ActivityByCourseView(LoggedInMixinSuperuser, CSVResponseMixin, View):
             'mediathread_activity_by_course', headers, rows)
 
 
-class SelfRegistrationReportView(LoggedInMixinSuperuser,
+class SelfRegistrationReportView(LoggedInSuperuserMixin,
                                  CSVResponseMixin, View):
 
     def get_self_registered_users(self):

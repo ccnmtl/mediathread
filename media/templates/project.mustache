@@ -64,12 +64,13 @@
                                                 </div>
                                                 {{#context.project.is_assignment}}
                                                 {{#is_faculty}}
-                                                <br />
-                                                <div class="due-date">
-                                                    <label for="due_date">Due Date</label><br />
-                                                    <input class="form-control" type="text" name="due_date"
-                                                        value="{{context.project.due_date}}" id="id_due_date">
-                                                </div>
+                                                    <br />
+                                                    <div class="due-date">
+                                                        <label for="due_date">Due Date</label><br />
+                                                        <input class="form-control" type="text" name="due_date"
+                                                            value="{{context.project.due_date}}" id="id_due_date">
+                                                    </div>
+                                                    <input type="hidden" name="response_view_policy" value="{{context.project.response_view_policy}}" />
                                                 {{/is_faculty}}
                                                 {{/context.project.is_assignment}}
                                             </div> 

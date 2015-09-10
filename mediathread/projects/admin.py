@@ -9,7 +9,8 @@ class ProjectAdmin(admin.ModelAdmin):
                      "participants__last_name")
 
     list_display = ("title", "course", "author", "modified",
-                    "date_submitted", "id")
+                    "date_submitted", "id", "project_type",
+                    "response_view_policy")
     filter_horizontal = ('participants',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

@@ -23,7 +23,8 @@ class ProjectForm(forms.ModelForm):
     parent = forms.CharField(required=False, label='Response to',)
 
     response_view_policy = forms.ChoiceField(choices=RESPONSE_VIEW_POLICY,
-                                             widget=RadioSelect)
+                                             widget=RadioSelect,
+                                             required=False)
 
     class Meta:
         model = Project
@@ -68,13 +69,14 @@ class ProjectForm(forms.ModelForm):
 
         self.fields['publish'].choices = choices
 
-        # response view policy
-        choices = [RESPONSE_VIEW_NEVER]
-        if all_selections_are_visible(request.course):
-            choices.append(RESPONSE_VIEW_SUBMITTED)
-            choices.append(RESPONSE_VIEW_ALWAYS)
-        self.fields['response_view_policy'].choices = choices
-        self.fields['response_view_policy'].required = False
+        # response view policy. limit choices if there is no project
+        # or the project is a selection assignment
+        if not project or project.is_selection_assignment():
+            choices = [RESPONSE_VIEW_NEVER]
+            if all_selections_are_visible(request.course):
+                choices.append(RESPONSE_VIEW_SUBMITTED)
+                choices.append(RESPONSE_VIEW_ALWAYS)
+            self.fields['response_view_policy'].choices = choices
 
         self.fields['participants'].required = False
         self.fields['body'].required = False

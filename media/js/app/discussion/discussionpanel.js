@@ -522,7 +522,7 @@ DiscussionPanelHandler.prototype.onfail = function(xhr, textStatus, error) {
 
 DiscussionPanelHandler.prototype.parseResponse = function(xhr) {
     var rv = {};
-    var error_regex = '/class="error"\s+>[^>]+>([\w ]+)<\/label/g';
+    var error_regex = /class="error"\s+>[^>]+>([\w ]+)<\/label/g;
     var error = error_regex.exec(xhr.responseText);
     if (error !== null) {
         rv.error = 'Required Fields: ';
@@ -530,27 +530,27 @@ DiscussionPanelHandler.prototype.parseResponse = function(xhr) {
             rv.error += error[1] + ';';
         } while ((error = error_regex.exec(xhr.responseText)) !== null);
     }
-    var new_comment = String(xhr.responseText).match('/#comment-(\d+)/');
+    var new_comment = String(xhr.responseText).match(/#comment-(\d+)/);
     if (new_comment !== null) {
         rv.comment_id = new_comment[1];
     }
     var timestamp = String(xhr.responseText).match(
-            '/name="timestamp"\s+value="(\d+)"/');
+            /name="timestamp"\s+value="(\d+)"/);
     if (timestamp !== null) {
         rv.timestamp = timestamp[1];
     }
     var security = String(xhr.responseText).match(
-            '/name="security_hash"\s+value="(\w+)"/');
+            /name="security_hash"\s+value="(\w+)"/);
     if (security !== null) {
         rv.security_hash = security[1];
     }
     var comment_text = String(xhr.responseText).match(
-            '/id="commentposted">((.|\n)*)<!--endposted/');
+            /id="commentposted">((.|\n)*)<!--endposted/);
     if (comment_text !== null) {
         rv.comment = comment_text[1];
     }
     var comment_title = String(xhr.responseText).match(
-        '/id="commenttitle">(.+)<\/h2>/');
+        /id="commenttitle">(.+)<\/h2>/);
     if (comment_title !== null) {
         rv.title = comment_title[1];
     }

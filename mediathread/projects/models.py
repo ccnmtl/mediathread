@@ -198,6 +198,12 @@ class ProjectManager(models.Manager):
             author__in=course.faculty_group.user_set.all())
         qs = qs.exclude(project_type=PROJECT_TYPE_COMPOSITION)
 
+        # filter private assignments
+        lst = Collaboration.objects.get_for_object_list(qs)
+        lst = lst.filter(policy_record__policy_name=PUBLISH_DRAFT[0])
+        ids = [int(c.object_pk) for c in lst]
+        qs = qs.exclude(id__in=ids)
+
         projects = list(qs.filter(due_date__isnull=False).
                         order_by("due_date", "-modified", "title"))
 

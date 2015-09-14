@@ -65,6 +65,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.instructor_one,
             policy='CourseProtected', project_type='selection-assignment')
 
+        self.draft_assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='PrivateEditorsAreOwners', project_type='assignment')
+
     def test_description(self):
         project = Project.objects.get(id=self.project_private.id)
         self.assertEquals(project.description(), 'Composition')
@@ -176,10 +180,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.instructor_one)
-        self.assertEquals(len(visible_projects), 4)
+        self.assertEquals(len(visible_projects), 5)
         self.assertTrue(self.assignment in visible_projects)
+        self.assertTrue(self.draft_assignment in visible_projects)
         self.assertTrue(self.project_class_shared in visible_projects)
         self.assertTrue(self.project_instructor_shared in visible_projects)
+        self.assertTrue(self.selection_assignment in visible_projects)
 
     def test_visible_by_course_and_user(self):
         visible_projects = Project.objects.visible_by_course_and_user(
@@ -491,3 +497,31 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response2.save()
         self.assertTrue(response.can_read(
             self.sample_course, self.student_two))
+
+    def test_unresponded_assignments(self):
+        lst = Project.objects.unresponded_assignments(self.sample_course,
+                                                      self.student_one)
+        self.assertEquals(len(lst), 2)
+        self.assertTrue(self.selection_assignment in lst)
+        self.assertTrue(self.assignment in lst)
+
+        # add a response & retry
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PublicEditorsAreOwners',
+            parent=self.selection_assignment)
+
+        lst = Project.objects.unresponded_assignments(self.sample_course,
+                                                      self.student_one)
+        self.assertEquals(len(lst), 1)
+        self.assertTrue(self.assignment in lst)
+
+        # add a response & retry
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners',
+            parent=self.assignment)
+
+        lst = Project.objects.unresponded_assignments(self.sample_course,
+                                                      self.student_one)
+        self.assertEquals(len(lst), 0)

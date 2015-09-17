@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
-/* global Mustache: true, Sherd: true,  */
+/* global Mustache2: true, Sherd: true,  */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -19,6 +19,7 @@
 
 var CollectionList = function(config) {
     var self = this;
+    self.config = config;
     self.template_label = config.template_label;
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
@@ -65,17 +66,14 @@ var CollectionList = function(config) {
         event.data.self.refresh();
     });
 
-    jQuery.ajax({
-        url: '/media/templates/' + config.template + '.mustache?nocache=v2',
-        dataType: 'text',
-        cache: false, // Chrome && IE have aggressive caching policies.
-        success: function(text) {
-            MediaThread.templates[config.template] =
-                Mustache.template(config.template, text);
-
+    MediaThread.loadTemplate(config.template)
+        .done(function() {
+            jQuery('#media_gallery').html(
+                Mustache2.render(
+                    MediaThread.templates[config.template],
+                    {}));
             self.refresh(config);
-        }
-    });
+        });
 
     jQuery(self.el).on('click', '.filter-widget h3', function(evt) {
         jQuery(evt.currentTarget).parent().toggleClass('collapsed');
@@ -204,19 +202,15 @@ var CollectionList = function(config) {
         jQuery(q).hide();
         return false;
     });
-
-    return this;
 };
 
 CollectionList.prototype.getLoading = function() {
-    var self = this;
-    return self.loading;
+    return this.loading;
 };
 
 CollectionList.prototype.setLoading = function(isLoading) {
-    var self = this;
-    self.loading = isLoading;
-    if (self.loading) {
+    this.loading = isLoading;
+    if (this.loading) {
         jQuery('.ajaxloader').show();
     } else {
         jQuery('.ajaxloader').hide();
@@ -224,24 +218,23 @@ CollectionList.prototype.setLoading = function(isLoading) {
 };
 
 CollectionList.prototype.constructUrl = function(config, updating) {
-    var self = this;
     var url;
 
     if (config && config.parent) {
         // Retrieve the full asset w/annotations from storage
         if (config.view === 'all' || !config.space_owner) {
             url = MediaThread.urls['all-space'](
-                config.tag, null, self.citable);
+                config.tag, null, this.citable);
         } else {
             url = MediaThread.urls['your-space'](
-                config.space_owner, config.tag, null, self.citable);
+                config.space_owner, config.tag, null, this.citable);
         }
     } else {
-        url = self.getSpaceUrl();
+        url = this.getSpaceUrl();
 
-        for (var filter in self.current_records.active_filters) {
-            if (self.current_records.active_filters.hasOwnProperty(filter)) {
-                var val = self.current_records.active_filters[filter];
+        for (var filter in this.current_records.active_filters) {
+            if (this.current_records.active_filters.hasOwnProperty(filter)) {
+                var val = this.current_records.active_filters[filter];
                 if (val !== null && val.length > 0) {
                     url += '&' + filter + '=' + escape(val.toString());
                 }
@@ -250,7 +243,7 @@ CollectionList.prototype.constructUrl = function(config, updating) {
     }
 
     if (updating) {
-        url += '&offset=' + self.limits.offset + '&limit=' + self.limits.limit;
+        url += '&offset=' + this.limits.offset + '&limit=' + this.limits.limit;
     }
     return url;
 };
@@ -288,11 +281,9 @@ CollectionList.prototype.appendItems = function(config) {
 };
 
 CollectionList.prototype.editAsset = function(asset_id) {
-    var self = this;
 };
 
 CollectionList.prototype.deleteAsset = function(asset_id) {
-    var self = this;
     var url = MediaThread.urls['asset-delete'](asset_id);
     return ajaxDelete(null, 'record-' + asset_id, {
         'href': url,
@@ -306,7 +297,6 @@ CollectionList.prototype.deleteAsset = function(asset_id) {
 };
 
 CollectionList.prototype.deleteAnnotation = function(annotation_id) {
-    var self = this;
     var asset_id = jQuery('#annotation-' + annotation_id)
                        .parents('div.record').children('input.record')
                        .attr('value');
@@ -513,51 +503,58 @@ CollectionList.prototype.updateSwitcher = function() {
     var self = this;
     self.switcher_context.display_switcher_extras =
         !self.switcher_context.showing_my_items;
-    Mustache.update('switcher_collection_chooser',
-        self.switcher_context, {parent: self.parent});
 
-    // hook up switcher choice owner behavior
-    jQuery(self.el).find('a.switcher-choice.owner')
-            .off('click').on('click', function(evt) {
-        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-        var bits = srcElement.href.split('/');
-        var username = bits[bits.length - 1];
+    MediaThread.loadTemplate('collection_chooser')
+        .then(function(template) {
+            var rendered =
+                Mustache2.render(template, self.switcher_context);
+            jQuery('#collection-chooser-container').html(rendered);
+                // hook up switcher choice owner behavior
+            jQuery(self.el).find('a.switcher-choice.owner')
+                .off('click').on('click', function(evt) {
+                    var srcElement = evt.srcElement ||
+                        evt.target ||
+                        evt.originalTarget;
+                    var bits = srcElement.href.split('/');
+                    var username = bits[bits.length - 1];
 
-        if (username === 'all-class-members') {
-            self.current_records.space_owner = null;
-        } else {
-            self.current_records.space_owner = {'username': {}};
-            self.current_records.space_owner.username.id = '';
-            self.current_records.space_owner.username.public_name = '';
-            self.current_records.space_owner.username = username;
-        }
-        return self.filter();
-    });
+                    if (username === 'all-class-members') {
+                        self.current_records.space_owner = null;
+                    } else {
+                        self.current_records.space_owner = {'username': {}};
+                        self.current_records.space_owner.username.id = '';
+                        self.current_records.space_owner.username.public_name = '';
+                        self.current_records.space_owner.username = username;
+                    }
+                    return self.filter();
+                });
 
-    jQuery(self.el).find('select.course-tags')
-        .select2({
-            placeholder: 'Select tag'
+            jQuery(self.el).find('select.course-tags')
+                .select2({
+                    placeholder: 'Select tag'
+                });
+            if ('tag' in self.current_records.active_filters &&
+                self.current_records.active_filters.tag.length > 0) {
+
+                jQuery(self.el).find('select.course-tags').select2(
+                    'val',
+                    self.current_records.active_filters.tag.split(','));
+            }
+
+            var vocabulary = jQuery(self.el).find('select.vocabulary')[0];
+            jQuery(vocabulary).select2({});
+
+            var values = [];
+            for (var key in self.current_records.active_filters) {
+                if (self.current_records.active_filters.hasOwnProperty(key) &&
+                    self.current_records.active_filters[key].length > 0) {
+                    var val = self.current_records.active_filters[key].split(',');
+                    self.current_records.active_filters[key] = val;
+                    values = values.concat(val);
+                }
+            }
+            jQuery(vocabulary).select2('val', values);
         });
-    if ('tag' in self.current_records.active_filters &&
-            self.current_records.active_filters.tag.length > 0) {
-
-        jQuery(self.el).find('select.course-tags').select2('val',
-            self.current_records.active_filters.tag.split(','));
-    }
-
-    var vocabulary = jQuery(self.el).find('select.vocabulary')[0];
-    jQuery(vocabulary).select2({});
-
-    var values = [];
-    for (var key in self.current_records.active_filters) {
-        if (self.current_records.active_filters.hasOwnProperty(key) &&
-                self.current_records.active_filters[key].length > 0) {
-            var val = self.current_records.active_filters[key].split(',');
-            self.current_records.active_filters[key] = val;
-            values = values.concat(val);
-        }
-    }
-    jQuery(vocabulary).select2('val', values);
 };
 
 CollectionList.prototype.getAssets = function() {
@@ -596,66 +593,74 @@ CollectionList.prototype.updateAssets = function(the_records) {
         the_records.active_filter_count = n;
     }
 
-    Mustache.update(self.template_label, the_records, {
-        parent: self.parent,
-        pre: function(elt) {
-            jQuery(elt).hide();
-        },
-        post: function(elt) {
-            if (self.create_annotation_thumbs) {
-                self.createThumbs(the_records.assets);
-            } else if (self.create_asset_thumbs) {
-                self.createAssetThumbs(the_records.assets);
+    var $elt = jQuery('#asset_table');
+    $elt.hide();
+    MediaThread.loadTemplate(self.config.template + '_assets')
+        .done(function(template) {
+            var rendered = Mustache2.render(template, the_records);
+            $elt.html(rendered);
+            window.elt = $elt;
+            self.assetPostUpdate($elt, the_records);
+        });
+};
+
+CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
+    var self = this;
+
+    if (self.create_annotation_thumbs) {
+        self.createThumbs(the_records.assets);
+    } else if (self.create_asset_thumbs) {
+        self.createAssetThumbs(the_records.assets);
+    }
+
+    self.updateSwitcher();
+
+    if (self.current_asset === null) {
+        // handles the maximized view
+        jQuery(window).scroll(function() {
+            if (!self.getLoading() &&
+                jQuery(window).scrollTop() >=
+                jQuery(document).height() -
+                jQuery(window).height() - 300) {
+                self.appendItems(self.current_records);
             }
-
-            self.updateSwitcher();
-
-            if (self.current_asset === null) {
-                // handles the maximized view
-                jQuery(window).scroll(function() {
-                    if (!self.getLoading() &&
-                        jQuery(window).scrollTop() >=
-                            jQuery(document).height() -
-                            jQuery(window).height() - 300) {
-                        self.appendItems(self.current_records);
-                    }
-                });
-            } else {
-                // handle the minimized view
-                var q = 'div.collection-assets';
-                var container = jQuery(self.el).find(q)[0];
-                jQuery(container).scroll(function() {
-                    if (!self.getLoading() &&
-                        container.scrollTop +
-                        jQuery(container).innerHeight() >=
-                            container.scrollHeight - 300) {
-                        self.appendItems(self.current_records);
-                    }
-                });
+        });
+    } else {
+        // handle the minimized view
+        var q = 'div.collection-assets';
+        var container = jQuery(self.el).find(q)[0];
+        jQuery(container).scroll(function() {
+            if (!self.getLoading() &&
+                container.scrollTop +
+                jQuery(container).innerHeight() >=
+                container.scrollHeight - 300) {
+                self.appendItems(self.current_records);
             }
+        });
+    }
 
-            jQuery(elt).fadeIn('slow');
+    $elt.fadeIn('slow');
 
-            if (self.view_callback) {
-                self.view_callback(the_records.assets.length);
-            }
+    if (self.view_callback) {
+        self.view_callback(the_records.assets.length);
+    }
 
-            if (self.scrollTop) {
-                jQuery(self.el).find('div.collection-assets')
-                    .scrollTop(self.scrollTop);
-                self.scrollTop = undefined;
-            }
+    if (self.scrollTop) {
+        jQuery(self.el).find('div.collection-assets')
+            .scrollTop(self.scrollTop);
+        self.scrollTop = undefined;
+    }
 
-            jQuery(window).trigger('resize');
-            self.setLoading(false);
-        }
-    });
+    jQuery(window).trigger('resize');
+    self.setLoading(false);
 };
 
 CollectionList.prototype.appendAssets = function(the_records) {
     var self = this;
     if (the_records.assets.length > 0) {
-        var html = jQuery(Mustache.render_partial('assets', the_records));
+        var html = jQuery(Mustache2.render(
+            MediaThread.templates[self.config.template + '_assets'],
+            the_records));
         var container = jQuery(self.el).find('div.asset-table');
         jQuery(container).append(html);
 

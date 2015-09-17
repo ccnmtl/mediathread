@@ -131,18 +131,25 @@
          * directory and put it in the MediaThread.templates
          * dictionary.
          *
-         * Returns a jqXHR object.
+         * Returns a promise.
          */
         MediaThread.loadTemplate = function(templateName) {
-            return jQuery.ajax({
-                url: '/media/templates/' +
-                    templateName + '.mustache?nocache=v2',
-                dataType: 'text',
-                cache: false,
-                success: function(text) {
-                    MediaThread.templates[templateName] = text;
-                }
-            });
+            if (typeof MediaThread.templates[templateName] === 'undefined') {
+                return jQuery.ajax({
+                    url: '/media/templates/' +
+                        templateName + '.mustache?nocache=v2',
+                    dataType: 'text',
+                    cache: false,
+                    success: function(text) {
+                        MediaThread.templates[templateName] = text;
+                    }
+                });
+            } else {
+                // The template was already loaded, so just resolve this
+                // promise.
+                var dfd = jQuery.Deferred();
+                return dfd.resolve(MediaThread.templates[templateName]);
+            }
         };
 
         Mustache.Renderer.prototype.filters_supported.url =

@@ -104,6 +104,7 @@
                                       .first();
                 if (elt.length) {
                     var username = jQuery(elt).data('username');
+                    ctx.username = username;
                     ctx.responseId = self.feedback[username].responseId;
                     ctx.comment = self.feedback[username].comment;
                     ctx.showFeedback = ctx.responseId === self.myResponse &&

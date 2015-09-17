@@ -179,9 +179,11 @@ class Asset(models.Model):
     @property
     def primary(self):
         key = "%s:primary" % (self.id)
-        if key not in cache:
-            cache.set(key, self.source_set.get(primary=True))
-        return cache.get(key)
+        the_primary = cache.get(key)
+        if the_primary is None:
+            the_primary = self.source_set.get(primary=True)
+            cache.set(key, the_primary)
+        return the_primary
 
     @property
     def thumb_url(self):

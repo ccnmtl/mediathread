@@ -205,7 +205,8 @@ ProjectPanelHandler.prototype.resize = function() {
         // tinyMCE project editing window. Make sure we only resize ourself.
         jQuery(self.el).find('table.mceLayout')
             .css('height', (editorHeight) + 'px');
-        jQuery(self.el).find('iframe').css('height', (editorHeight) + 'px');
+        jQuery(self.el).find('.mceFirst iframe')
+            .css('height', (editorHeight) + 'px');
     }
 
     jQuery(self.el).find('div.essay-space')

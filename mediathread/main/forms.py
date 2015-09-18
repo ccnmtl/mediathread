@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import RadioSelect
 from registration.forms import RegistrationForm
 
 
@@ -124,3 +125,23 @@ class CustomRegistrationForm(RegistrationForm):
     user_story = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+
+class CourseDeleteMaterialsForm(forms.Form):
+    username = forms.CharField(required=True)
+    clear_all = forms.BooleanField(
+        initial=False, required=False,
+        widget=RadioSelect(choices=[(True, 'Yes'), (False, 'No')]))
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(CourseDeleteMaterialsForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(CourseDeleteMaterialsForm, self).clean()
+
+        if cleaned_data['username'] != self.request.user.username:
+            self._errors['username'] = self.error_class([
+                "Please enter your username"])
+
+        return cleaned_data

@@ -18,11 +18,9 @@ from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
                                         AssetCreateView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    MigrateCourseView, MigrateMaterialsView,
-    RequestCourseView, ContactUsView,
-    CourseSettingsView,
-    CourseManageSourcesView, IsLoggedInView, IsLoggedInDataView,
-)
+    MigrateCourseView, MigrateMaterialsView, RequestCourseView, ContactUsView,
+    CourseSettingsView, CourseManageSourcesView, IsLoggedInView,
+    IsLoggedInDataView, CourseDeleteMaterialsView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
@@ -151,6 +149,8 @@ urlpatterns = patterns(
         name='class-manage-sources'),
     url(r'^dashboard/settings/', CourseSettingsView.as_view(),
         name='course-settings'),
+    url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
+        name='course-delete-materials'),
 
     # Discussion
     (r'^discussion/', include('mediathread.discussions.urls')),

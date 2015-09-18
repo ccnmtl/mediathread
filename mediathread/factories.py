@@ -1,9 +1,13 @@
+import re
+
 from courseaffils.models import Course
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import Site
 from django.test.client import RequestFactory
 import factory
 from registration.models import RegistrationProfile
+from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
     SuggestedExternalCollection
@@ -185,7 +189,18 @@ class MediathreadTestMixin(object):
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
                 object_pk=str(course.pk))
-        return discussion_create(request)
+        response = discussion_create(request)
+
+        parent_id = re.search(r'\d+', response.url).group()
+        return ThreadedComment.objects.get(id=parent_id)
+
+    def add_comment(self, parent_comment, author):
+        comment = ThreadedComment.objects.create(
+            site=Site.objects.all().first(),
+            content_type=ContentType.objects.get_for_model(ThreadedComment),
+            parent=parent_comment, comment="test comment",
+            user=author)
+        return comment
 
     def create_vocabularies(self, course, taxonomy):
         course_type = ContentType.objects.get_for_model(course)

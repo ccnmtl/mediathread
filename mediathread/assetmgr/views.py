@@ -516,7 +516,7 @@ def scalar_export(request):
             user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get('annotations')[i]['author']['public_name'], "type": "literal"}]
             user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']  = { "value" : "http://xmlns.com/foaf/0.1/Person", "type" : "uri" }
             user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = {"value": hash_or_username, "type": "literal"}
-            export[root + '/' + hash_or_username] = user_node
+            export[root + '/ns/user/' + hash_or_username] = user_node
             tag = []
             tag.append(data.get('annotations')[i]['metadata']['tags'])
             for k in range(0, len(tag)):

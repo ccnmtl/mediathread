@@ -12,6 +12,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.views.generic.base import View
 from djangohelpers.lib import rendered_with, allow_http
 from threadedcomments import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
@@ -21,7 +22,7 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import DiscussionIndex
-from mediathread.mixins import faculty_only
+from mediathread.mixins import faculty_only, LoggedInMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
@@ -128,65 +129,68 @@ def discussion_delete(request, discussion_id):
     return delete_collaboration(request, root_comment.object_pk)
 
 
-@allow_http("GET")
-def discussion_view(request, discussion_id):
-    """Show a threadedcomments discussion of an arbitrary object.
-    discussion_id is the pk of the root comment."""
+class DiscussionView(LoggedInMixin, View):
 
-    root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to(
-            'read', request.course, request.user):
-        return HttpResponseForbidden('You do not have permission \
-                                     to view this discussion.')
+    def get(self, request, *args, **kwargs):
+        """Show a threadedcomments discussion of an arbitrary object.
+        discussion_id is the pk of the root comment."""
 
-    try:
-        my_course = root_comment.content_object.context.content_object
-    except:
-        # legacy: for when contexts weren't being set in new()
-        my_course = request.course
-        root_comment.content_object.context = \
-            Collaboration.objects.get_for_object(my_course)
-        root_comment.content_object.save()
+        discussion_id = kwargs.get('discussion_id', None)
+        root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
+        if not root_comment.content_object.permission_to(
+                'read', request.course, request.user):
+            return HttpResponseForbidden('You do not have permission \
+                                         to view this discussion.')
 
-    data = {'space_owner': request.user.username}
+        try:
+            my_course = root_comment.content_object.context.content_object
+        except:
+            # legacy: for when contexts weren't being set in new()
+            my_course = request.course
+            root_comment.content_object.context = \
+                Collaboration.objects.get_for_object(my_course)
+            root_comment.content_object.save()
 
-    if not request.is_ajax():
-        data['discussion'] = root_comment
-        return render_to_response('discussions/discussion.html', data,
-                                  context_instance=RequestContext(request))
-    else:
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
+        data = {'space_owner': request.user.username}
 
-        user_resource = UserResource()
-        owners = user_resource.render_list(request, request.course.members)
+        if not request.is_ajax():
+            data['discussion'] = root_comment
+            return render_to_response('discussions/discussion.html', data,
+                                      context_instance=RequestContext(request))
+        else:
+            vocabulary = VocabularyResource().render_list(
+                request, Vocabulary.objects.get_for_object(request.course))
 
-        data['panels'] = [{
-            'panel_state': 'open',
-            'subpanel_state': 'open',
-            'panel_state_label': "Discussion",
-            'template': 'discussion',
-            'owners': owners,
-            'vocabulary': vocabulary,
-            'title': root_comment.title,
-            'can_edit_title': my_course.is_faculty(request.user),
-            'root_comment_id': root_comment.id,
-            'context': threaded_comment_json(request, root_comment)
-        }]
+            user_resource = UserResource()
+            owners = user_resource.render_list(request, request.course.members)
 
-        # Create a place for asset editing
-        panel = {'panel_state': 'closed',
-                 'panel_state_label': "Item Details",
-                 'template': 'asset_quick_edit',
-                 'update_history': False,
-                 'show_collection': False,
-                 'owners': owners,
-                 'vocabulary': vocabulary,
-                 'context': {'type': 'asset'}}
+            data['panels'] = [{
+                'panel_state': 'open',
+                'subpanel_state': 'open',
+                'panel_state_label': "Discussion",
+                'template': 'discussion',
+                'owners': owners,
+                'vocabulary': vocabulary,
+                'title': root_comment.title,
+                'can_edit_title': my_course.is_faculty(request.user),
+                'root_comment_id': root_comment.id,
+                'context': threaded_comment_json(request, root_comment)
+            }]
 
-        data['panels'].append(panel)
+            # Create a place for asset editing
+            panel = {'panel_state': 'closed',
+                     'panel_state_label': "Item Details",
+                     'template': 'asset_quick_edit',
+                     'update_history': False,
+                     'show_collection': False,
+                     'owners': owners,
+                     'vocabulary': vocabulary,
+                     'context': {'type': 'asset'}}
 
-        return HttpResponse(json.dumps(data), content_type='application/json')
+            data['panels'].append(panel)
+
+            return HttpResponse(json.dumps(data),
+                                content_type='application/json')
 
 
 @allow_http("POST")

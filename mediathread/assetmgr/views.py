@@ -516,7 +516,7 @@ def scalar_export(request):
             user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get('annotations')[i]['author']['public_name'], "type": "literal"}]
             user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']  = { "value" : "http://xmlns.com/foaf/0.1/Person", "type" : "uri" }
             user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = {"value": hash_or_username, "type": "literal"}
-            export[root + hash_or_username] = user_node
+            export[root + '/' + hash_or_username] = user_node
             tag = []
             tag.append(data.get('annotations')[i]['metadata']['tags'])
             for k in range(0, len(tag)):
@@ -542,7 +542,9 @@ def scalar_export(request):
             vocab = []
             vocab.append(data.get('annotations')[i]['vocabulary'])
             for j in range(0, len(vocab)):
+                num = 0
                 for t in vocab[j][0]['terms']:
+                    num += 1
                     urn_vocab_node = {}
                     urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": 'term/' + vocab[j][0]['display_name'], "type": "literal"}]
                     urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
@@ -561,7 +563,7 @@ def scalar_export(request):
                     except Exception:
                         pass
 
-                    export["urn:mediathread:tag"] = urn_vocab_node
+                    export["urn:mediathread:tag" + str(num)] = urn_vocab_node
 
             try:
                 export[root + data.get('annotations')[i]['author']['resource_uri']] = user_node

@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, url
 
+from mediathread.discussions.views import DiscussionView
+
+
 urlpatterns = patterns(
     'mediathread.discussions.views',
 
@@ -14,6 +17,6 @@ urlpatterns = patterns(
         name='comment-save'),
 
     url(r'^(?P<discussion_id>\d+)/$',
-        'discussion_view',
-        name='discussion-view'),
+        DiscussionView.as_view(), {}, 'discussion-view'),
+
 )

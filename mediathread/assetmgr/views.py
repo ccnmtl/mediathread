@@ -496,19 +496,19 @@ def scalar_export(request):
             except Exception:
                 hash_or_username = username
             user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get('annotations')[i]['author']['public_name'], "type": "literal"}]
-            user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']  = { "value" : "http://xmlns.com/foaf/0.1/Person", "type" : "uri" }
-            user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = {"value": hash_or_username, "type": "literal"}
-            export[root + '/ns/user/' + hash_or_username] = user_node
+            user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']  = [{ "value" : "http://xmlns.com/foaf/0.1/Person", "type" : "uri" }]
+            user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = [{"value": hash_or_username, "type": "literal"}]
+            export[root + '/user/' + hash_or_username] = user_node
 
             annotation_node = {}
             annotation_node['http://purl.org/dc/terms/title'] = [{"value": data.get('annotations')[i]['title'], "type": "literal"}]
             annotation_node['http://purl.org/dc/terms/description'] = [{"value": "This is an annotation", "type": "literal"}]
             annotation_node['http://rdfs.org/sioc/ns#content'] = [{"value": data.get('annotations')[i]['metadata']['body'], "type": "literal"}]
-            annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [{"value":root + data.get('annotations')[i]['author']['resource_uri'].rstrip('/') + '/ns/user/' + hash_or_username, "type": "uri"}]
+            annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [{"value":root + data.get('annotations')[i]['author']['resource_uri'].rstrip('/') + '/user/' + hash_or_username, "type": "uri"}]
             a_annotation_node = {}
             a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root +'/' + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
             time = ''
-            time += data.get('local_url')
+            time += data.get('local_url').rstrip('/')
             time += '#t=npt:'
             time += str(data.get('annotations')[i]['annotation']['start'])
             time += ','
@@ -533,7 +533,7 @@ def scalar_export(request):
                 # export[root + tag[k][0]['resource_uri'].rstrip('/')] = tag_node
                 a_tag_node = {}
                 try:
-                    a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+                    a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
                 except Exception:
                     pass
                 try:
@@ -565,7 +565,7 @@ def scalar_export(request):
                     term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{"type":"uri","value":"http://www.openannotation.org/ns/SemanticTag"}]
                     export[root + '/term/'+ vocab[j][0]['display_name']+'-'+ t['name']] = term_node
                     try:
-                        urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+                        urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
                     except Exception:
                         pass
 

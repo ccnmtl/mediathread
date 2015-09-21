@@ -207,7 +207,8 @@ def class_activity(request):
         asset__course=request.course).order_by('-added')[:40]
 
     projects = Project.objects.filter(
-        course=request.course, submitted=True).order_by('-modified')[:40]
+        course=request.course,
+        date_submitted__isnull=False).order_by('-modified')[:40]
 
     discussions = DiscussionIndex.with_permission(
         request, DiscussionIndex.objects.filter(
@@ -455,14 +456,14 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
         yield header
 
         for response in responses:
-            submitted_date = response.submitted_date()
-            if submitted_date:
-                submitted_date = submitted_date.strftime(self.date_fmt)
+            dt = None
+            if response.date_submitted:
+                dt = response.date_submitted.strftime(self.date_fmt)
 
             row = [response.author.get_full_name(),
                    response.author.get_username(),
                    response.title, response.status(),
-                   submitted_date,
+                   dt,
                    response.modified.strftime(self.date_fmt),
                    response.feedback_discussion() is not None]
 

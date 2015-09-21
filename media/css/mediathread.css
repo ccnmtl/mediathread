@@ -721,8 +721,7 @@ div.column-contents {
 }
 
 #upload_desktop, 
-#import_collection,
-.dashboard-feature {
+#import_collection {
    background-color: #F5F5F5;
     display: block;
     float: left;
@@ -735,10 +734,6 @@ div.column-contents {
   display: block;
   height: 35px;
   margin: 15px 0 0 0;
-}
-
-.dashboard-feature {
-    width: 75%;
 }
 
 #browser-instructions h3 {	
@@ -2552,10 +2547,6 @@ div.gallery-item h4.asset_title {
     min-height: 600px;
     width: 75%;
     margin: 0 10px;
-}
-
-#dashboard-module-body .dashboard-feature ul {
-    list-style-type: none;
 }
 
 #dashboard-module-body .suggested-collection {

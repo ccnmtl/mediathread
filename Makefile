@@ -2,13 +2,13 @@ MANAGE=./manage.py
 APP=mediathread
 FLAKE8=./ve/bin/flake8
 
-jenkins: ./ve/bin/python check jshint test flake8
+jenkins: ./ve/bin/python check jshint jscs flake8 test
 
 ./ve/bin/python: requirements.txt bootstrap.py virtualenv.py
 	./bootstrap.py
 
 jshint: node_modules/jshint/bin/jshint
-	./node_modules/jshint/bin/jshint media/js/app/
+	./node_modules/jshint/bin/jshint --config=.jshintrc media/js/app/
 
 jscs: node_modules/jscs/bin/jscs
 	./node_modules/jscs/bin/jscs media/js/app/
@@ -25,13 +25,13 @@ test: ./ve/bin/python
 harvest1: ./ve/bin/python
 	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/main/features
 	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/assetmgr/features
-    $(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/taxonomy/features
+	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/taxonomy/features
 
 harvest2: ./ve/bin/python
 	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/projects/features
 
 flake8: ./ve/bin/python
-	$(FLAKE8) $(APP) --max-complexity=8
+	$(FLAKE8) $(APP) --max-complexity=9
 	$(FLAKE8) structuredcollaboration --max-complexity=8
 
 runserver: ./ve/bin/python check

@@ -581,7 +581,6 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         /api/asset/a/
         /api/asset/
     """
-
     valid_filters = ['tag', 'modified', 'search_text']
 
     def get_context(self, request, assets, notes):
@@ -667,6 +666,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         ctx.update(self.get_context(request, assets, notes))
 
         return self.render_to_json_response(ctx)
+
 
 AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup
 

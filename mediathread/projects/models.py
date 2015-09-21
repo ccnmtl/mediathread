@@ -10,8 +10,9 @@ from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from structuredcollaboration.models import Collaboration
 from mediathread.main.course_details import cached_course_is_faculty
+import reversion
+from structuredcollaboration.models import Collaboration
 
 
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
@@ -150,18 +151,22 @@ class ProjectManager(models.Manager):
     def responses_by_course(self, course, viewer):
         projects = Project.objects.filter(
             course=course, project_type=PROJECT_TYPE_COMPOSITION)
-        projects = projects.select_related('author', 'participants')
 
-        responses = Collaboration.objects.get_for_object_list(projects)
-        responses = responses.filter(_parent__isnull=False)
+        collaborations = Collaboration.objects.get_for_object_list(projects)
+        collaborations = collaborations.filter(_parent__isnull=False)
+
+        # get all the content objects at once
+        ids = [int(c.object_pk) for c in collaborations]
+        responses = Project.objects.filter(id__in=ids)
+        responses = responses.select_related('author', 'participants')
 
         visible = []
         hidden = []
-        for r in responses:
-            if r.content_object.can_read(course, viewer):
-                visible.append(r.content_object)
+        for idx, r in enumerate(responses):
+            if r.can_read(course, viewer, collaborations[idx]):
+                visible.append(r)
             else:
-                hidden.append(r.content_object)
+                hidden.append(r)
         return visible, hidden
 
     def by_course_and_users(self, course, user_ids):
@@ -179,16 +184,25 @@ class ProjectManager(models.Manager):
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
         qs = qs.order_by('ordinality', 'title')
 
-        # short circuit the collaboration mechanism
+        # filter private compositions
         lst = Collaboration.objects.get_for_object_list(qs)
         lst = lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
-        return [c.content_object for c in lst]
+
+        # get all the projects at once
+        ids = [int(c.object_pk) for c in lst]
+        return Project.objects.filter(id__in=ids)
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(
             course=course,
             author__in=course.faculty_group.user_set.all())
         qs = qs.exclude(project_type=PROJECT_TYPE_COMPOSITION)
+
+        # filter private assignments
+        lst = Collaboration.objects.get_for_object_list(qs)
+        lst = lst.filter(policy_record__policy_name=PUBLISH_DRAFT[0])
+        ids = [int(c.object_pk) for c in lst]
+        qs = qs.exclude(id__in=ids)
 
         projects = list(qs.filter(due_date__isnull=False).
                         order_by("due_date", "-modified", "title"))
@@ -244,16 +258,9 @@ class Project(models.Model):
                                           related_name='projects',
                                           verbose_name='Authors',)
 
-    # modelversions attributes
-    only_save_if_changed = True
-    only_save_version_if_changed_fields_to_ignore = ['modified', 'author']
-
     body = models.TextField(blank=True)
 
-    # available to someone other than the authors
-    # -- at least, the instructor, if not the whole class
-    # this is somewhat deprecated...
-    submitted = models.BooleanField(default=False)
+    date_submitted = models.DateTimeField(null=True, blank=True)
 
     modified = models.DateTimeField('date modified', editable=False,
                                     auto_now=True)
@@ -416,17 +423,21 @@ class Project(models.Model):
         col = self.get_collaboration()
         return (col.permission_to('edit', course, user))
 
-    def can_read(self, course, viewer):
+    def can_read(self, course, viewer, the_collaboration=None):
         # has the author published his work?
-        collaboration = self.get_collaboration()
+        collaboration = the_collaboration or self.get_collaboration()
         if (collaboration is None) or \
            (not collaboration.permission_to('read', course, viewer)):
             return False
 
-        # assignment response?
+        # If this project is an assignment response, verify the parent
+        # assignment's response policy sanctions a read by the viewer
+        if not self.is_composition():
+            return True  # this project is an assignment
+
         parent = collaboration.get_parent()
         if parent is None or parent.content_object is None:
-            return True
+            return True  # this project does not have a parent assignment
 
         # the author & faculty can always view a submitted response
         if (self.is_participant(viewer) or
@@ -441,13 +452,13 @@ class Project(models.Model):
             # @todo - consider multiple assignment responses
             # via collaborative authoring.
             responses = assignment.responses(course, viewer, viewer)
-            return len(responses) > 0 and responses[0].submitted
+            return len(responses) > 0 and responses[0].is_submitted()
         else:  # assignment.response_view_policy == 'never':
             return False
 
     def can_cite(self, course, viewer):
         # notes in an unsubmitted project are not citable
-        if not self.submitted:
+        if not self.is_submitted():
             return False
 
         parent = self.assignment()
@@ -517,18 +528,26 @@ class Project(models.Model):
         except Collaboration.DoesNotExist:
             return None
 
-    def submitted_date(self):
-        dt = None
-        if self.submitted:
-            versions = self.versions.filter(submitted=True)
-            versions = versions.order_by('change_time')
-            if versions.count() > 0:
-                dt = versions[0].change_time
-        return dt
+    def is_submitted(self):
+        return self.date_submitted is not None
 
     def feedback_date(self):
         thread = self.feedback_discussion()
         return thread.submit_date if thread else None
+
+    def latest_version(self):
+        try:
+            version = reversion.get_for_object(self).get_unique().next()
+            return version.revision_id
+        except StopIteration:
+            return None
+
+    def versions(self):
+        # all previous versions, latest versions first, duplicates removed
+        return reversion.get_for_object(self).get_unique()
+
+
+reversion.register(Project)
 
 
 class AssignmentItem(models.Model):

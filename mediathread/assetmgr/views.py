@@ -482,7 +482,7 @@ def scalar_export(request):
         video_node['http://purl.org/dc/terms/source'] = [{"value": data.get('primary_type'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/date'] = [{"value": data.get('modified'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/contributor'] = [{"value": data.get('author')['username'], "type": "literal"}]
-        export[root + data.get('local_url')] = video_node
+        export[root + data.get('local_url').rstrip('/')] = video_node
         #for annotation node
         for i in range(0, data.get('annotation_count')):
             print i

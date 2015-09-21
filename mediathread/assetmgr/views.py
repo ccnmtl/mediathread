@@ -551,12 +551,12 @@ def scalar_export(request):
                 for t in vocab[j][0]['terms']:
                     num += 1
                     urn_vocab_node = {}
-                    urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j][0]['display_name'] + ':' + t['name'], "type": "literal"}]
+                    urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
                     urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
 
                     term_node = {}
-                    term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j][0]['display_name'] + ':' + t['name'], "type": "literal"}]
-                    term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j][0]['display_name'] + ':' + t['name'], "type": "literal"}]
+                    term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
+                    term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
                     try:
                         # term_node['http://xmlns.com/foaf/0.1/'] = [{"value": t['resource_uri'], "type": "uri"}]
                         term_node['http://www.w3.org/2004/02/skos/core#related'] = [{"value": t['skos_uri'].rstrip('/'), "type": "uri"}]

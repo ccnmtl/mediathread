@@ -725,7 +725,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
         draggable: true,
         resizable: false,
         modal: true,
-        width: 430,
+        width: 450,
         position: {
             my: 'center top',
             at: 'center top',

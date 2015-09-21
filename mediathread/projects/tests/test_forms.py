@@ -135,10 +135,8 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
 
         frm = ProjectForm(self.request, instance=selection_assignment, data={})
         lst = frm.fields['response_view_policy'].choices
-        self.assertEquals(len(lst), 3)
+        self.assertEquals(len(lst), 1)
         self.assertEquals(lst[0], RESPONSE_VIEW_NEVER)
-        self.assertEquals(lst[1], RESPONSE_VIEW_ALWAYS)
-        self.assertEquals(lst[2], RESPONSE_VIEW_SUBMITTED)
 
         assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,

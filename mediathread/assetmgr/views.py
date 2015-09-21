@@ -449,7 +449,6 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 def scalar_export(request):
-    print request.META['HTTP_HOST']
     root = 'http://' + request.get_host()
     user = request.user
     user_id = user.id
@@ -485,8 +484,6 @@ def scalar_export(request):
         export[root + data.get('local_url').rstrip('/')] = video_node
         #for annotation node
         for i in range(0, data.get('annotation_count')):
-            print i
-
             user_node = {}
             username = data.get('annotations')[i]['author']['username']
             try:
@@ -576,7 +573,6 @@ def scalar_export(request):
                 export[root + data.get('annotations')[i]['url'].rstrip('/')] = annotation_node
             except Exception:
                 pass
-            print data.get('annotations')[i]['url']
         return HttpResponse(json.dumps(export))
 
 

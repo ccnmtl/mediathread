@@ -506,8 +506,9 @@ def scalar_export(request):
             annotation_node['http://rdfs.org/sioc/ns#content'] = [{"value": data.get('annotations')[i]['metadata']['body'], "type": "literal"}]
             annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [{"value":root + data.get('annotations')[i]['author']['resource_uri'].rstrip('/') + '/user/' + hash_or_username, "type": "uri"}]
             a_annotation_node = {}
-            a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root +'/' + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+            a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
             time = ''
+            time += root
             time += data.get('local_url').rstrip('/')
             time += '#t=npt:'
             time += str(data.get('annotations')[i]['annotation']['start'])

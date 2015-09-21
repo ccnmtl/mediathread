@@ -153,7 +153,7 @@ class VocabularyResource(ModelResource):
 
         data = []
         lst = Vocabulary.objects.get_for_object(request.course)
-        lst = lst.select_related('term_set')
+        lst = lst.select_related('content_type')
         for vocabulary in lst:
             ctx = self.render_one(request, vocabulary)
             for term in ctx['term_set']:

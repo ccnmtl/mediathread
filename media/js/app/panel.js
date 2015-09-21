@@ -67,16 +67,10 @@
                 self.loadTemplates(++idx);
             } else {
                 // pull it off the wire
-                jQuery.ajax({
-                    url: '/media/templates/' + self.panels[idx].template +
-                        '.mustache?nocache=v3',
-                    dataType: 'text',
-                    cache: false, // Chrome & IE cache aggressively.
-                    success: function(txt) {
-                        MediaThread.templates[self.panels[idx].template] = txt;
+                MediaThread.loadTemplate(self.panels[idx].template)
+                    .then(function() {
                         self.loadTemplates(++idx);
-                    }
-                });
+                    });
             }
         };
 

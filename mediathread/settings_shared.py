@@ -27,6 +27,7 @@ DATABASES = {
         'PORT': '',
         'USER': '',
         'PASSWORD': '',
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -39,6 +40,7 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
             'PORT': '',
             'USER': '',
             'PASSWORD': '',
+            'ATOMIC_REQUESTS': True,
         }
     }
 
@@ -87,10 +89,10 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.request',
+    'django.template.context_processors.debug',
+    'django.template.context_processors.request',
     'stagingcontext.staging_processor',
-    'django.core.context_processors.static',
+    'django.template.context_processors.static',
     'mediathread.main.views.django_settings',
     'djangowind.context.context_processor',
     'django.contrib.messages.context_processors.messages'
@@ -104,7 +106,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -141,8 +142,8 @@ INSTALLED_APPS = [
     'mediathread.djangosherd',
     'mediathread.projects',
     'mediathread.discussions',
-    'django.contrib.comments',
     'threadedcomments',
+    'django_comments',
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',

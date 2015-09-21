@@ -86,9 +86,12 @@
                                     {% if user.has_usable_password %}
                                         <a href="/accounts/password_change/">Change Password</a>
                                     {% endif %}
-                                        
-                                    <a href="/accounts/logout/?next=/">Log Out</a>
                                     
+                                    {% if role_in_course == 'instructor' %}
+                                        <a href="/course/request/">Request Course</a>
+                                    {% endif %}
+
+                                    <a href="/accounts/logout/?next=/">Log Out</a>
                                 </div>
                             </li>
 
@@ -105,7 +108,10 @@
                                     <a href="/dashboard/sources/">Sources</a>
                                     <a href="/dashboard/migrate/">Migrations</a>
                                     <a href="/taxonomy/">Vocabulary</a>
-                                    <a href="/course/request/">Course Request</a>
+                                    {% if user.is_staff %}
+                                        <hr />
+                                        <a href="/dashboard/delete/materials/">Materials</a>
+                                    {% endif %}
                                 </div>
                             </li>
                             <li>

@@ -63,8 +63,16 @@
                     'readOnly': readOnly,
                     'view_callback': self.render
                 });
-                MediaThread.loadTemplate('asset_feedback');
+                MediaThread.loadTemplate('asset_feedback')
+                    .then(function() {
+                        self.initializeAfterTemplateLoad(options);
+                    });
+            } else {
+                this.initializeAfterTemplateLoad(options);
             }
+        },
+        initializeAfterTemplateLoad: function(options) {
+            var self = this;
 
             // bind beforeunload so user won't forget to submit response
             if (options.responseId.length > 0 && !options.submitted) {

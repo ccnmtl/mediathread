@@ -1,0 +1,89 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load assetlinks %}
+{% block title %}Delete Course Materials{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block css %}
+<style>
+    ul.errorlist {
+        list-style: none;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_module_header %}
+    <h2>Delete Course Materials</div></h2>    
+{% endblock %}
+
+{% block uncompressable_js %}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('form[name="course-clear-form"]').submit(function(evt) {
+            if (jQuery('input[name="username"]').val().length === 0) {
+                jQuery('form[name="course-clear-form"]').addClass('has-error');
+                return false;
+            }
+            
+            return confirm("Are you very, very sure?");
+        });
+    });
+</script>
+{% endblock %}
+
+{% block dashboard_module %}
+    {% if messages %}
+        <div class="alert alert-info alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {% for message in messages %}
+                <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        </div>        
+    {% endif %}   
+
+    <form action="{% url 'course-delete-materials' %}"
+     name="course-clear-form" method="POST"
+     class="{% if form.errors %}has-error{% endif %}">
+        <div class="alert alert-danger">
+            <h3 style="margin: 0;">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
+                DANGER
+            </h3>
+            <p>
+                This utility deletes course materials including items, selections, compositions, assignments and assignment responses.
+            </p>            
+            <p> 
+                <strong>This action cannot be undone.</strong>
+            </p>
+        </div>
+            <br />
+            <label>Your username</label> <i>(so we know who to blame)</i>
+            <input type="text" name="username" style="width: 25%;"
+                class="form-control" />
+            <div class="help-inline">
+                {% if form.username.errors %}
+                    {{form.username.errors}}
+                {% else %}
+                    Username is required
+                {% endif %}
+            </div>
+            <br /><br />
+            <div><label>Include instructor created materials?</label></div>
+            <div>
+                <label style="font-weight: normal">
+                    <input id="id_clear_all_0" name="clear_all" type="radio" value="True"> Yes
+                </label>&nbsp;&nbsp;
+                <label style="font-weight: normal">
+                    <input checked="checked" id="id_clear_all_1" name="clear_all" type="radio" value="False"> No
+                </label>
+            </div>
+
+            <br /><br />
+            <input class="btn btn-danger" type="submit" name="clear-course"
+                value="Permanently Delete Materials"></input>
+            <div class="visualclear"></div>
+        </div>
+    </form>
+{% endblock %}
+    

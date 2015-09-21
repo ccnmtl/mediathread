@@ -19,6 +19,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
+from threadedcomments.models import ThreadedComment
 
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
@@ -30,10 +31,12 @@ from mediathread.lti import lti
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
-from mediathread.main.forms import RequestCourseForm, ContactUsForm
+from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
+    CourseDeleteMaterialsForm
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, \
-    AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
+    AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
+    LoggedInSuperuserMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
@@ -483,3 +486,46 @@ class LTILaunchView(TemplateView):
     @lti('initial')
     def post(self, request):
         return HttpResponseRedirect('/')
+
+
+class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
+    template_name = 'dashboard/class_delete_materials.html'
+    form_class = CourseDeleteMaterialsForm
+
+    def get_success_url(self):
+        return reverse('course-delete-materials')
+
+    def form_valid(self, form):
+        # delete the requested materials
+        notes = SherdNote.objects.filter(asset__course=self.request.course)
+        assets = Asset.objects.filter(course=self.request.course)
+        projects = Project.objects.filter(course=self.request.course)
+
+        if not form.cleaned_data['clear_all']:
+            # exclude assets, projects & notes authored by faculty
+            faculty = self.request.course.faculty_group.user_set.all()
+            assets = assets.exclude(author__in=faculty)
+            projects = projects.exclude(author__in=faculty)
+            notes = notes.exclude(author__in=faculty)
+
+        notes.delete()
+        assets.delete()
+        projects.delete()
+
+        # Clear all discussions. The root comment will be preserved.
+        discussions = get_course_discussions(self.request.course)
+        parents = [d.id for d in discussions]
+        comments = ThreadedComment.objects.filter(parent_id__in=parents)
+        comments.delete()
+
+        # @todo - kill all unreferenced tags
+
+        messages.add_message(self.request, messages.INFO,
+                             'All requested materials were deleted')
+
+        return super(CourseDeleteMaterialsView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(CourseDeleteMaterialsView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs

@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('structuredcollaboration', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('comments', '__first__'),
+        ('django_comments', '__first__'),
         ('djangosherd', '0001_initial'),
     ]
 
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='discussionindex',
             name='comment',
-            field=models.ForeignKey(to='comments.Comment', null=True),
+            field=models.ForeignKey(to='django_comments.Comment', null=True),
             preserve_default=True,
         ),
         migrations.AddField(

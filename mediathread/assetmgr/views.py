@@ -544,7 +544,7 @@ def scalar_export(request):
             
             vocab = []
             vocab.append(data.get('annotations')[i]['vocabulary'])
-            if len(vocab) != 0:
+            if len(vocab) != 0 and 'vocabulary' in data.get('annotations')[i]:
                 for j in range(0, len(vocab)):
                     num = 0
                     for t in vocab[j][0]['terms']:

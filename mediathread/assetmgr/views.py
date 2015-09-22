@@ -521,51 +521,53 @@ def scalar_export(request):
 
             
             tag = []
-            tag.append(data.get('annotations')[i]['metadata']['tags'])
-            for k in range(0, len(tag)):
-                # tag_node = {}
-                # tag_node['http://purl.org/dc/terms/title'] = [{"value": tag[k][0]['name'], "type": "literal"}]
-                # tag_node['http://purl.org/dc/terms/description'] = [{ "value" : "This is a tag page", "type" : "literal" }]
-                # tag_node['http://rdfs.org/sioc/ns#content'] = [{"value" : "" , "type": "literal"}]
-
-                # export[root + tag[k][0]['resource_uri'].rstrip('/')] = tag_node
+            tag = (data.get('annotations')[i]['metadata']['tags'])
+            for k in range(0, len(data.get('annotations')[i]['metadata']['tags'])):
+                tag_node = {}
+                tag_node['http://purl.org/dc/terms/title'] = [{"value": tag[k]['name'], "type": "literal"}]
+                tag_node['http://purl.org/dc/terms/description'] = [{ "value" : "This is a tag page", "type" : "literal" }]
+                tag_node['http://rdfs.org/sioc/ns#content'] = [{"value" : "" , "type": "literal"}]
+                if  tag[k]['resource_uri'].rstrip('/') > 1:
+                    export[root + tag[k]['resource_uri'].rstrip('/')] = tag_node
+                else:
+                    export[root + '/tag/' + tag[k]['name']] = tag_node
                 a_tag_node = {}
                 try:
                     a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
                 except Exception:
                     pass
                 try:
-                    if (len(tag[k][0]['resource_uri']) > 1):
-                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k][0]['resource_uri'].rstrip('/'), "type": "uri"}]
+                    if (len(tag[k]['resource_uri']) > 1):
+                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k]['resource_uri'].rstrip('/'), "type": "uri"}]
                     else:
-                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k][0]['name'].rstrip('/'), "type": "uri"}]
+                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k]['name'].rstrip('/'), "type": "uri"}]
                 except Exception:
                     pass
                 a_tag_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
-                a_tag_urn = 'urn:mediathread:tag' + str(tag[k][0]['id'])
+                a_tag_urn = 'urn:mediathread:tag' + str(tag[k]['id'])
                 export[a_tag_urn] = a_tag_node
             
             vocab = []
-            vocab.append(data.get('annotations')[i]['vocabulary'])
+            vocab = data.get('annotations')[i]['vocabulary']
             try:
                 for j in range(0, len(vocab)):
                     num = 0
-                    for t in vocab[j][0]['terms']:
+                    for t in vocab[j]['terms']:
                         num += 1
                         urn_vocab_node = {}
-                        urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j]['display_name'] + '-' + t['name'], "type": "literal"}]
                         urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
     
                         term_node = {}
-                        term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
-                        term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j]['display_name'] + '-' + t['name'], "type": "literal"}]
                         try:
                             # term_node['http://xmlns.com/foaf/0.1/'] = [{"value": t['resource_uri'], "type": "uri"}]
                             term_node['http://www.w3.org/2004/02/skos/core#related'] = [{"value": t['skos_uri'].rstrip('/'), "type": "uri"}]
                         except Exception:
                             pass
                         term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{"type":"uri","value":"http://www.openannotation.org/ns/SemanticTag"}]
-                        export[root + '/term/'+ vocab[j][0]['display_name']+'-'+ t['name']] = term_node
+                        export[root + '/term/'+ vocab[j]['display_name']+'-'+ t['name']] = term_node
                         try:
                             urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
                         except Exception:

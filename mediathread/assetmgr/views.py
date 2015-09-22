@@ -544,15 +544,15 @@ def scalar_export(request):
             
             vocab = []
             vocab.append(data.get('annotations')[i]['vocabulary'])
-            for j in range(0, len(vocab)):
-                num = 0
-                if 'terms' in vocab[j][0]:
+            if len(vocab) != 0:
+                for j in range(0, len(vocab)):
+                    num = 0
                     for t in vocab[j][0]['terms']:
                         num += 1
                         urn_vocab_node = {}
                         urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
                         urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
-
+    
                         term_node = {}
                         term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
                         term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
@@ -567,7 +567,7 @@ def scalar_export(request):
                             urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
                         except Exception:
                             pass
-
+    
                         export["urn:mediathread:tag" + str(num)] = urn_vocab_node
 
             try:

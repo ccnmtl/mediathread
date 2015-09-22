@@ -544,7 +544,7 @@ def scalar_export(request):
             
             vocab = []
             vocab.append(data.get('annotations')[i]['vocabulary'])
-            if len(vocab) != 0 and 'vocabulary' in data.get('annotations')[i]:
+            try:
                 for j in range(0, len(vocab)):
                     num = 0
                     for t in vocab[j][0]['terms']:
@@ -569,7 +569,8 @@ def scalar_export(request):
                             pass
     
                         export["urn:mediathread:tag" + str(num)] = urn_vocab_node
-
+            except Exception:
+                pass
             try:
                 export[root + data.get('annotations')[i]['url'].rstrip('/')] = annotation_node
             except Exception:

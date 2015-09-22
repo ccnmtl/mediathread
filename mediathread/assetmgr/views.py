@@ -525,10 +525,7 @@ def scalar_export(request):
             for k in range(0, len(data.get('annotations')[i]['metadata']['tags'])):
                 tag_node = {}
                 tag_node["http://www.w3.org/2000/01/rdf-schema#label"] = [{"value": tag[k]['name'], "type": "literal"}]
-                if  tag[k]['resource_uri'].rstrip('/') > 1:
-                    export[root + tag[k]['resource_uri'].rstrip('/')] = tag_node
-                else:
-                    export[root + '/tag/' + tag[k]['name']] = tag_node
+                export[root + '/tag/' + tag[k]['name']] = tag_node
                 a_tag_node = {}
                 try:
                     a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]

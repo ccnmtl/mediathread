@@ -524,9 +524,7 @@ def scalar_export(request):
             tag = (data.get('annotations')[i]['metadata']['tags'])
             for k in range(0, len(data.get('annotations')[i]['metadata']['tags'])):
                 tag_node = {}
-                tag_node['http://purl.org/dc/terms/title'] = [{"value": tag[k]['name'], "type": "literal"}]
-                tag_node['http://purl.org/dc/terms/description'] = [{ "value" : "This is a tag page", "type" : "literal" }]
-                tag_node['http://rdfs.org/sioc/ns#content'] = [{"value" : "" , "type": "literal"}]
+                tag_node["http://www.w3.org/2000/01/rdf-schema#label"] = [{"value": tag[k]['name'], "type": "literal"}]
                 if  tag[k]['resource_uri'].rstrip('/') > 1:
                     export[root + tag[k]['resource_uri'].rstrip('/')] = tag_node
                 else:

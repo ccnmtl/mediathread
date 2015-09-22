@@ -482,9 +482,18 @@ class IsLoggedInDataView(View):
 
 
 class LTILaunchView(TemplateView):
+    request_type = 'initial'
 
     @lti('initial')
     def post(self, request):
+        if not request.session.get('lti_authenticated', False):
+            return HttpResponseForbidden()
+
+        user_id = request.session.get('user_id')
+        try:
+            user = User.objects.get(user_id)
+        except User.DoesNotExist:
+
         return HttpResponseRedirect('/')
 
 

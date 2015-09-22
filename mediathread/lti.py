@@ -177,30 +177,31 @@ class LTI(object):
         :raises: LTIException is request validation failed
         """
         if request.method == 'POST':
-            params = request.POST
+            params = dict(request.POST._iteritems())
         else:
             params = request.GET
 
         try:
-            verify_request_common(self._consumers(), request.url,
-                                  request.method, request.headers,
+            verify_request_common(self._consumers(),
+                                  request.build_absolute_uri(),
+                                  request.method, request.META,
                                   params)
 
             # All good to go, store all of the LTI params into a
             # session dict for use in views
             for prop in LTI_PROPERTY_LIST:
                 if params.get(prop, None):
-                    session[prop] = params[prop]
+                    request.session[prop] = params[prop]
 
             # Set logged in session key
-            session[LTI_SESSION_KEY] = True
+            request.session[LTI_SESSION_KEY] = True
             return True
         except LTIException:
             for prop in LTI_PROPERTY_LIST:
-                if session.get(prop, None):
-                    del session[prop]
+                if request.session.get(prop, None):
+                    del request.session[prop]
 
-            session[LTI_SESSION_KEY] = False
+            request.session[LTI_SESSION_KEY] = False
             raise
 
     @staticmethod
@@ -212,6 +213,22 @@ class LTI(object):
             if session.get(prop, None):
                 del session[prop]
         session[LTI_SESSION_KEY] = False
+
+
+class LTIMixin(object):
+    role_type = 'any'
+    request_type = 'any'
+
+    def dispatch(self, *args, **kwargs):
+        try:
+            the_lti = LTI(self.request_type, self.role_type)
+            the_lti.verify(self.request)
+            the_lti._check_role()  # pylint: disable=protected-access
+            kwargs['lti'] = the_lti
+            return super(LTIMixin, self).dispatch(*args, **kwargs)
+        except LTIException as lti_exception:
+            return HttpResponseServerError(
+                'An LTI error has occurred', str(lti_exception))
 
 
 class lti(object):
@@ -237,8 +254,8 @@ class lti(object):
                 the_lti = LTI(self.request_type, self.role_type)
                 the_lti.verify(view.request)
                 the_lti._check_role()  # pylint: disable=protected-access
-                kwargs['lti'] = the_lti
-                return func(*args, **kwargs)
+                # kwargs['lti'] = the_lti
+                return func(view.request, *args, **kwargs)
             except LTIException as lti_exception:
                 return HttpResponseServerError(
                     'An LTI error has occurred', str(lti_exception))

@@ -546,28 +546,29 @@ def scalar_export(request):
             vocab.append(data.get('annotations')[i]['vocabulary'])
             for j in range(0, len(vocab)):
                 num = 0
-                for t in vocab[j][0]['terms']:
-                    num += 1
-                    urn_vocab_node = {}
-                    urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
-                    urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
+                if 'terms' in vocab[j][0]:
+                    for t in vocab[j][0]['terms']:
+                        num += 1
+                        urn_vocab_node = {}
+                        urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
 
-                    term_node = {}
-                    term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
-                    term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
-                    try:
-                        # term_node['http://xmlns.com/foaf/0.1/'] = [{"value": t['resource_uri'], "type": "uri"}]
-                        term_node['http://www.w3.org/2004/02/skos/core#related'] = [{"value": t['skos_uri'].rstrip('/'), "type": "uri"}]
-                    except Exception:
-                        pass
-                    term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{"type":"uri","value":"http://www.openannotation.org/ns/SemanticTag"}]
-                    export[root + '/term/'+ vocab[j][0]['display_name']+'-'+ t['name']] = term_node
-                    try:
-                        urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
-                    except Exception:
-                        pass
+                        term_node = {}
+                        term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j][0]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        try:
+                            # term_node['http://xmlns.com/foaf/0.1/'] = [{"value": t['resource_uri'], "type": "uri"}]
+                            term_node['http://www.w3.org/2004/02/skos/core#related'] = [{"value": t['skos_uri'].rstrip('/'), "type": "uri"}]
+                        except Exception:
+                            pass
+                        term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{"type":"uri","value":"http://www.openannotation.org/ns/SemanticTag"}]
+                        export[root + '/term/'+ vocab[j][0]['display_name']+'-'+ t['name']] = term_node
+                        try:
+                            urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+                        except Exception:
+                            pass
 
-                    export["urn:mediathread:tag" + str(num)] = urn_vocab_node
+                        export["urn:mediathread:tag" + str(num)] = urn_vocab_node
 
             try:
                 export[root + data.get('annotations')[i]['url'].rstrip('/')] = annotation_node

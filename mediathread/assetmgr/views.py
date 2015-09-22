@@ -535,7 +535,7 @@ def scalar_export(request):
                 except Exception:
                     pass
                 try:
-                    if len(tag[k][0]['resource_uri']) < 1:
+                    if (len(tag[k][0]['resource_uri']) > 1):
                         a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k][0]['resource_uri'].rstrip('/'), "type": "uri"}]
                     else:
                         a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k][0]['name'].rstrip('/'), "type": "uri"}]

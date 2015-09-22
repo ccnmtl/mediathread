@@ -535,7 +535,10 @@ def scalar_export(request):
                 except Exception:
                     pass
                 try:
-                    a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/' + tag[k][0]['resource_uri'].rstrip('/'), "type": "uri"}]
+                    if len(tag[k][0]['resource_uri']) < 1:
+                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/' + tag[k][0]['resource_uri'].rstrip('/'), "type": "uri"}]
+                    else:
+                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k][0]['name'].rstrip('/'), "type": "uri"}]
                 except Exception:
                     pass
                 a_tag_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]

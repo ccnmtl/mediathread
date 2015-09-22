@@ -463,6 +463,7 @@ def scalar_export(request):
                                   [request.user.id], assets, notes)
     export = {}
     video_node = {}
+    tag_num = 0
     if len(api_response) == 0:
         return HttpResponse("There are no videos in your collection")
     for i in range(0, len(api_response)):
@@ -539,7 +540,8 @@ def scalar_export(request):
                 except Exception:
                     pass
                 a_tag_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
-                a_tag_urn = 'urn:mediathread:tag' + str(tag[k]['id'])
+                tag_num += 1
+                a_tag_urn = 'urn:mediathread:tag' + str(tag_num)
                 export[a_tag_urn] = a_tag_node
             
             vocab = []
@@ -568,7 +570,7 @@ def scalar_export(request):
                         except Exception:
                             pass
     
-                        export["urn:mediathread:tag" + str(num)] = urn_vocab_node
+                        export["urn:mediathread:term" + str(num)] = urn_vocab_node
             except Exception:
                 pass
             try:

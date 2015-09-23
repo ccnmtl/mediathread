@@ -27,7 +27,6 @@ from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
     ExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
-from mediathread.lti import lti
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
@@ -479,22 +478,6 @@ class IsLoggedInDataView(View):
             d['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
 
         return HttpResponse(json.dumps(d), content_type='application/json')
-
-
-class LTILaunchView(TemplateView):
-    request_type = 'initial'
-
-    @lti('initial')
-    def post(self, request):
-        if not request.session.get('lti_authenticated', False):
-            return HttpResponseForbidden()
-
-        user_id = request.session.get('user_id')
-        try:
-            user = User.objects.get(user_id)
-        except User.DoesNotExist:
-
-        return HttpResponseRedirect('/')
 
 
 class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):

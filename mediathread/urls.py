@@ -20,7 +20,7 @@ from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseSettingsView, CourseDeleteMaterialsView, LTILaunchView)
+    CourseSettingsView, CourseDeleteMaterialsView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
@@ -193,9 +193,7 @@ urlpatterns = patterns(
 
     url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
 
-    # LTI stuff
-    # (r'^lti/config/$', 'mediathread.main.views.lti_config'),
-    url(r'^lti/$', LTILaunchView.as_view(), name='lti-launch'),
+    (r'^lti/', include('lti_auth.urls')),
 
     # Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),

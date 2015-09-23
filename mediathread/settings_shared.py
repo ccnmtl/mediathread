@@ -300,6 +300,9 @@ def default_url_processor(url, label=None, request=None):
 
 ASSET_URL_PROCESSOR = default_url_processor
 
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
+                           'lti_auth.auth.LTIBackend']
+
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there
 # otherwise, make sure you specify the correct database settings in your

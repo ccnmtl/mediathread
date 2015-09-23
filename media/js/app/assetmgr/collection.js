@@ -509,7 +509,7 @@ CollectionList.prototype.updateSwitcher = function() {
             var rendered =
                 Mustache.render(template, self.switcher_context);
             jQuery('#collection-chooser-container').html(rendered);
-                // hook up switcher choice owner behavior
+            // hook up switcher choice owner behavior
             jQuery(self.el).find('a.switcher-choice.owner')
                 .off('click').on('click', function(evt) {
                     var srcElement = evt.srcElement ||
@@ -523,7 +523,8 @@ CollectionList.prototype.updateSwitcher = function() {
                     } else {
                         self.current_records.space_owner = {'username': {}};
                         self.current_records.space_owner.username.id = '';
-                        self.current_records.space_owner.username.public_name = '';
+                        self.current_records.space_owner.username.public_name =
+                            '';
                         self.current_records.space_owner.username = username;
                     }
                     return self.filter();
@@ -548,7 +549,8 @@ CollectionList.prototype.updateSwitcher = function() {
             for (var key in self.current_records.active_filters) {
                 if (self.current_records.active_filters.hasOwnProperty(key) &&
                     self.current_records.active_filters[key].length > 0) {
-                    var val = self.current_records.active_filters[key].split(',');
+                    var val = self.current_records.active_filters[key]
+                        .split(',');
                     self.current_records.active_filters[key] = val;
                     values = values.concat(val);
                 }

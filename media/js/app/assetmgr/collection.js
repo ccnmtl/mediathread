@@ -466,6 +466,7 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
 CollectionList.prototype.createThumbs = function(assets) {
     var self = this;
     djangosherd.thumbs = [];
+    console.log('rendering assets', assets);
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
@@ -486,8 +487,14 @@ CollectionList.prototype.createThumbs = function(assets) {
                 var objDiv = document.createElement('div');
                 objDiv.setAttribute('class', 'annotation-thumb');
 
-                var t = jQuery(self.el).find('.annotation-thumb-' + ann.id)[0];
-                t.appendChild(objDiv);
+                console.log('h', self.el, ann.id);
+                var t = jQuery(self.el).find('.annotation-thumb-' + ann.id);
+                if (t.length > 0) {
+                    t[0].appendChild(objDiv);
+                } else {
+                    console.error('woops!');
+                }
+
                 // should probably be in .view
                 asset.presentation = 'thumb';
 
@@ -596,10 +603,14 @@ CollectionList.prototype.updateAssets = function(the_records) {
     }
 
     var $elt = jQuery('#asset_table');
+    if ($elt.length === 0) {
+        $elt = jQuery('.collection-materials:first');
+    }
     $elt.hide();
     MediaThread.loadTemplate(self.config.template + '_assets')
         .done(function(template) {
             var rendered = Mustache.render(template, the_records);
+            console.log('rendered', self.config.template + '_assets', the_records);
             $elt.html(rendered);
             window.elt = $elt;
             self.assetPostUpdate($elt, the_records);

@@ -1,6 +1,6 @@
 /* global _: true, Backbone: true, djangosherd: true */
 /* global annotationList: true, CitationView: true */
-/* global Mustache2: true, MediaThread: true, showMessage: true */
+/* global Mustache: true, MediaThread: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -111,8 +111,8 @@
                         ctx.comment !== undefined;
 
                     // render the template
-                    var rendered = Mustache2.render(
-                            MediaThread.templates.asset_feedback, ctx);
+                    var rendered = Mustache.render(
+                        MediaThread.templates.asset_feedback, ctx);
                     jQuery(this).html(rendered);
                 }
             });

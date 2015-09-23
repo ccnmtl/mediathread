@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
-/* global Mustache2: true, Sherd: true,  */
+/* global Mustache: true, Sherd: true,  */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -69,7 +69,7 @@ var CollectionList = function(config) {
     MediaThread.loadTemplate(config.template)
         .done(function() {
             jQuery('#media_gallery').html(
-                Mustache2.render(
+                Mustache.render(
                     MediaThread.templates[config.template],
                     {}));
             self.refresh(config);
@@ -507,7 +507,7 @@ CollectionList.prototype.updateSwitcher = function() {
     MediaThread.loadTemplate('collection_chooser')
         .then(function(template) {
             var rendered =
-                Mustache2.render(template, self.switcher_context);
+                Mustache.render(template, self.switcher_context);
             jQuery('#collection-chooser-container').html(rendered);
                 // hook up switcher choice owner behavior
             jQuery(self.el).find('a.switcher-choice.owner')
@@ -597,7 +597,7 @@ CollectionList.prototype.updateAssets = function(the_records) {
     $elt.hide();
     MediaThread.loadTemplate(self.config.template + '_assets')
         .done(function(template) {
-            var rendered = Mustache2.render(template, the_records);
+            var rendered = Mustache.render(template, the_records);
             $elt.html(rendered);
             window.elt = $elt;
             self.assetPostUpdate($elt, the_records);
@@ -658,7 +658,7 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
 CollectionList.prototype.appendAssets = function(the_records) {
     var self = this;
     if (the_records.assets.length > 0) {
-        var html = jQuery(Mustache2.render(
+        var html = jQuery(Mustache.render(
             MediaThread.templates[self.config.template + '_assets'],
             the_records));
         var container = jQuery(self.el).find('div.asset-table');

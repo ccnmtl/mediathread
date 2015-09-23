@@ -1,6 +1,6 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
-/* global Mustache2: true, panelFactory: true, ProjectPanelHandler: true */
+/* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -89,8 +89,8 @@
                     var lastCell = jQuery('#' + self.options.container +
                                           ' tr:first td:last');
                     lastCell.before(
-                        Mustache2.render(MediaThread.templates[panel.template],
-                                         panel));
+                        Mustache.render(MediaThread.templates[panel.template],
+                                        panel));
 
                     var newCell = jQuery(lastCell).prev().prev()[0];
                     var handler = panelFactory.create(newCell,

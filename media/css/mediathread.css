@@ -2984,7 +2984,7 @@ div#instructor-column {
 }
 
 
-div#materials {
+div.materials {
     margin: 0 5px;
     overflow-x: hidden;
     box-shadow: none;
@@ -3004,7 +3004,7 @@ li.annotation-group {
     border: solid 1px #ccc;
 }
 
-div#materials h4 {
+div.materials h4 {
     color: #000;
     font-weight: normal;
     margin: .3em 0 0 0;
@@ -3028,15 +3028,15 @@ div.gallery-item h4 {
     margin: .5em 0 0.25em;
 }
 
-div#materials.column-contents {
+div.materials.column-contents {
     padding-top: 0px;
 }
 
-div.panel.asset-workspace div#materials h4 a {
+div.panel.asset-workspace div.materials h4 a {
     margin-left: 0px;
 }
 
-div#materials h4 a,
+div.materials h4 a,
 div.gallery-item h4 a {
     display: block;
     font-weight: bold;

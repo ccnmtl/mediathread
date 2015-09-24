@@ -470,7 +470,7 @@ CollectionList.prototype.createThumbs = function(assets) {
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
-        if (asset.thumbable && asset.annotations) {
+        if (asset.thumbable && asset.annotations.length > 0) {
             for (var j = 0; j < asset.annotations.length; j++) {
                 var ann = asset.annotations[j];
 
@@ -489,6 +489,7 @@ CollectionList.prototype.createThumbs = function(assets) {
 
                 console.log('h', self.el, ann.id);
                 var t = jQuery(self.el).find('.annotation-thumb-' + ann.id);
+                console.log('t', t);
                 if (t.length > 0) {
                     t[0].appendChild(objDiv);
                 } else {
@@ -606,13 +607,13 @@ CollectionList.prototype.updateAssets = function(the_records) {
     if ($elt.length === 0) {
         $elt = jQuery('.collection-materials:first');
     }
+    console.log('$elt', $elt);
     $elt.hide();
     MediaThread.loadTemplate(self.config.template + '_assets')
         .done(function(template) {
             var rendered = Mustache.render(template, the_records);
             console.log('rendered', self.config.template + '_assets', the_records);
             $elt.html(rendered);
-            window.elt = $elt;
             self.assetPostUpdate($elt, the_records);
         });
 };

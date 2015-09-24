@@ -8,12 +8,9 @@
     var AnnotationList = function() {
         var self = this;
 
-        /**
-         * Load all the asset-related templates.
-         *
-         * Returns an array of jqXHR objects.
-         */
-        this.loadTemplates = function() {
+        this.init = function(config) {
+            var self = this;
+
             var templates = [
                 'asset_view_help',
                 'asset_view_details',
@@ -26,19 +23,8 @@
                 'asset_sources',
                 'asset_feedback'
             ];
-            var promises = [];
 
-            for (var i = 0; i < templates.length; i++) {
-                promises.push(MediaThread.loadTemplate(templates[i]));
-            }
-
-            return promises;
-        };
-
-        this.init = function(config) {
-            var self = this;
-
-            jQuery.when.apply(this, this.loadTemplates())
+            jQuery.when.apply(this, MediaThread.loadTemplates(templates))
                 .then(function() {
                     // This is triggered once each promise created by
                     // this.loadTemplates() has either been resolved or

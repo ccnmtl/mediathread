@@ -142,4 +142,19 @@
             return dfd.resolve(MediaThread.templates[templateName]);
         }
     };
+
+    /**
+     * Load all the templates, given an array of template names.
+     *
+     * Returns an array of jqXHR objects.
+     */
+    MediaThread.loadTemplates = function(templates) {
+        var promises = [];
+
+        for (var i = 0; i < templates.length; i++) {
+            promises.push(MediaThread.loadTemplate(templates[i]));
+        }
+
+        return promises;
+    };
 })();

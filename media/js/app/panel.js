@@ -39,7 +39,18 @@
                 success: function(json) {
                     self.panels = json.panels;
                     self.space_owner = json.space_owner;
-                    self.loadTemplates(0);
+
+                    var templates = [];
+                    jQuery.each(self.panels, function(idx, e) {
+                        templates.push(e.template);
+                    });
+
+                    jQuery.when.apply(
+                        this,
+                        MediaThread.loadTemplates(templates)
+                    ).then(function() {
+                        self.loadContent();
+                    });
                 }
             });
 
@@ -55,23 +66,6 @@
         this.resize = function() {
             var visible = getVisibleContentHeight();
             jQuery(self.el).css('height', visible + 'px');
-        };
-
-        this.loadTemplates = function(idx) {
-            if (idx === self.panels.length) {
-                // done. load content.
-                self.loadContent();
-
-            } else if (MediaThread.templates[self.panels[idx].template]) {
-                // it's already cached
-                self.loadTemplates(++idx);
-            } else {
-                // pull it off the wire
-                MediaThread.loadTemplate(self.panels[idx].template)
-                    .then(function() {
-                        self.loadTemplates(++idx);
-                    });
-            }
         };
 
         this.loadContent = function() {

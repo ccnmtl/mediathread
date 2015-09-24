@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
-/* global Mustache: true, Sherd: true,  */
+/* global Mustache: true, Sherd: true, console: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -68,10 +68,18 @@ var CollectionList = function(config) {
 
     MediaThread.loadTemplate(config.template)
         .done(function() {
-            jQuery('#media_gallery').html(
-                Mustache.render(
-                    MediaThread.templates[config.template],
-                    {}));
+            var renderedCollection =
+                Mustache.render(MediaThread.templates[config.template], {});
+
+            if (jQuery('#media_gallery').length > 0) {
+                jQuery('#media_gallery').html(renderedCollection);
+            } else if (jQuery('.collection_table').length > 0) {
+                // If there's already a .collection_table element, like on the
+                // composition page, use that instead.
+                var $el = jQuery(renderedCollection).find('>div');
+                jQuery('.collection_table').append($el);
+            }
+
             self.refresh(config);
         });
 
@@ -254,14 +262,15 @@ CollectionList.prototype.refresh = function(config) {
     self.limits.offset = 0;
     var url = self.constructUrl(config, false);
 
-    djangosherd.storage.get({
-        type: 'asset',
-        url: url
-    },
-    false,
-    function(the_records) {
-        self.updateAssets(the_records);
-    });
+    djangosherd.storage.get(
+        {
+            type: 'asset',
+            url: url
+        },
+        false,
+        function(the_records) {
+            self.updateAssets(the_records);
+        });
 };
 
 CollectionList.prototype.appendItems = function(config) {
@@ -466,7 +475,6 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
 CollectionList.prototype.createThumbs = function(assets) {
     var self = this;
     djangosherd.thumbs = [];
-    console.log('rendering assets', assets);
     for (var i = 0; i < assets.length; i++) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
@@ -487,13 +495,11 @@ CollectionList.prototype.createThumbs = function(assets) {
                 var objDiv = document.createElement('div');
                 objDiv.setAttribute('class', 'annotation-thumb');
 
-                console.log('h', self.el, ann.id);
                 var t = jQuery(self.el).find('.annotation-thumb-' + ann.id);
-                console.log('t', t);
                 if (t.length > 0) {
                     t[0].appendChild(objDiv);
                 } else {
-                    console.error('woops!');
+                    console.error('CollectionList error!');
                 }
 
                 // should probably be in .view
@@ -604,15 +610,10 @@ CollectionList.prototype.updateAssets = function(the_records) {
     }
 
     var $elt = jQuery('#asset_table');
-    if ($elt.length === 0) {
-        $elt = jQuery('.collection-materials:first');
-    }
-    console.log('$elt', $elt);
     $elt.hide();
     MediaThread.loadTemplate(self.config.template + '_assets')
         .done(function(template) {
             var rendered = Mustache.render(template, the_records);
-            console.log('rendered', self.config.template + '_assets', the_records);
             $elt.html(rendered);
             self.assetPostUpdate($elt, the_records);
         });

@@ -1,7 +1,6 @@
 from hashlib import sha1
 from courseaffils.models import Course
 from django.contrib.auth.models import User, Group
-from django.shortcuts import get_object_or_404
 from pylti.common import LTIException
 
 from lti_auth.lti import LTI
@@ -60,9 +59,10 @@ class LTIBackend(object):
             # validate course first
             try:
                 coursename = lti.course_group()
-                group = get_object_or_404(Group, name=coursename)
+                group = Group.objects.get(name=coursename)
                 course = group.course
-            except Course.DoesNotExist:
+            except (Course.DoesNotExist, Group.DoesNotExist):
+                lti.clear_session(request)
                 return None
 
             user = self.find_or_create_user(lti)

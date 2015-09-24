@@ -69,6 +69,12 @@ class LTI(object):
 
         return None
 
+    def clear_session(self, request):
+        """
+        Invalidates session
+        """
+        request.session[LTI_SESSION_KEY] = False
+
     def verify(self, request):
         """
         Verify if LTI request is valid, validation

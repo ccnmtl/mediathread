@@ -159,6 +159,28 @@
     };
 
     /**
+     * {{ellipsis}}
+     * @author: Jon Schlinkert <http://github.com/jonschlinkert>
+     * Truncate the input string and removes all HTML tags
+     * @param  {String} str      The input string.
+     * @param  {Number} limit    The number of characters to limit the string.
+     * @param  {String} append   The string to append if charaters are omitted.
+     * @return {String}          The truncated string.
+     */
+    var ellipsis = function(str, limit, append) {
+        if (typeof append === 'undefined') {
+            append = '&hellip;';
+        }
+
+        var sanitized = str.replace(/(<([^>]+)>)/g, '');
+        if (sanitized.length > limit) {
+            return sanitized.substr(0, limit - append.length) + append;
+        } else {
+            return sanitized;
+        }
+    };
+
+    /**
      * A collection of helper functions for rendering our mustache
      * templates.
      *
@@ -169,6 +191,16 @@
      * switch to handlebars.
      */
     MediaThread.mustacheHelpers = {
+        ellipsis18: function() {
+            return function(text, render) {
+                return ellipsis(render(text), 18);
+            };
+        },
+        ellipsis35: function() {
+            return function(text, render) {
+                return ellipsis(render(text), 35);
+            };
+        },
         lower: function() {
             return function(text, render) {
                 return render(text).toLowerCase();

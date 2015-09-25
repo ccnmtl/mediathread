@@ -3,7 +3,9 @@
         onclick="return switcher(event, this);">
         <span class="switcher-prefix">Owner </span>
         <span class="down-arrow"></span>
-        <span class="title">{{{selected_label}}}</span>
+        <span class="title">
+            {{#ellipsis18}}{{selected_label}}{{/ellipsis18}}
+        </span>
     </a>
 
     <ul class="switcher-options">

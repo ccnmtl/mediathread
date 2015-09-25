@@ -35,7 +35,7 @@ var CollectionList = function(config) {
 
     self.el = jQuery(self.parent).find('div.' + self.template_label)[0];
 
-    self.switcher_context = {};
+    self.switcher_context = MediaThread.mustacheHelpers;
 
     jQuery(window).on('asset.on_delete', {'self': self}, function(event) {
         var self = event.data.self;
@@ -615,7 +615,10 @@ CollectionList.prototype.updateAssets = function(the_records) {
     $elt.hide();
     MediaThread.loadTemplate(self.config.template + '_assets')
         .done(function(template) {
-            var rendered = Mustache.render(template, the_records);
+            var rendered = Mustache.render(
+                template,
+                jQuery.extend(the_records, MediaThread.mustacheHelpers)
+            );
             $elt.html(rendered);
             self.assetPostUpdate($elt, the_records);
         });

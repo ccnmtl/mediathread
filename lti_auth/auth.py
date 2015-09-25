@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from pylti.common import LTIException
 
 from lti_auth.lti import LTI
+from nameparser import HumanName
 
 
 class LTIBackend(object):
@@ -11,9 +12,13 @@ class LTIBackend(object):
     def create_user(self, lti, username):
         # create the user if necessary
         user = User(username=username, password='LTI user')
-        user.email = lti.user_email()
-        user.last_name = lti.user_fullname()
         user.set_unusable_password()
+        user.email = lti.user_email()
+
+        name = HumanName(lti.user_fullname())
+        user.first_name = name.first[:30]
+        user.last_name = name.last[:30]
+
         user.save()
         return user
 

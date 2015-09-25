@@ -18,9 +18,9 @@ from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
                                         AssetCreateView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    MigrateCourseView, MigrateMaterialsView, RequestCourseView, ContactUsView,
-    CourseSettingsView, CourseManageSourcesView, IsLoggedInView,
-    IsLoggedInDataView, CourseDeleteMaterialsView)
+    ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
+    MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
+    CourseSettingsView, CourseDeleteMaterialsView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
@@ -192,6 +192,8 @@ urlpatterns = patterns(
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
     url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
+
+    (r'^lti/', include('lti_auth.urls')),
 
     # Public Access ###
     (r'^s/', include('structuredcollaboration.urls')),

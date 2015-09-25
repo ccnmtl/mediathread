@@ -39,7 +39,8 @@ class LTI(object):
         """
         Returns user's full name as provided by LTI
         """
-        if 'lis_person_name_full' in self.lti_params:
+        if ('lis_person_name_full' in self.lti_params and
+                len(self.lti_params['lis_person_name_full']) > 0):
             return self.lti_params['lis_person_name_full']
 
         if 'user_id' in self.lti_params:

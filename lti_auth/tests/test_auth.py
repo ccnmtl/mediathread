@@ -19,7 +19,26 @@ class LTIBackendTest(TestCase):
         user = self.backend.create_user(self.lti, '12345')
         self.assertFalse(user.has_usable_password())
         self.assertEquals(user.email, 'foo@bar.com')
-        self.assertEquals(user.get_full_name(), 'Foo Bar Baz')
+        self.assertEquals(user.get_full_name(), 'Foo Baz')
+
+    def test_create_user_no_full_name(self):
+        self.lti.lti_params.pop('lis_person_name_full')
+        user = self.backend.create_user(self.lti, '12345')
+        self.assertEquals(user.get_full_name(), 'student')
+
+    def test_create_user_empty_full_name(self):
+        self.lti.lti_params['lis_person_name_full'] = ''
+        user = self.backend.create_user(self.lti, '12345')
+        self.assertEquals(user.get_full_name(), 'student')
+
+    def test_create_user_long_name(self):
+        self.lti.lti_params['lis_person_name_full'] = (
+            'Pneumonoultramicroscopicsilicovolcanoconiosis '
+            'Supercalifragilisticexpialidocious')
+        user = self.backend.create_user(self.lti, '12345')
+        self.assertEquals(
+            user.get_full_name(),
+            'Pneumonoultramicroscopicsilico Supercalifragilisticexpialidoc')
 
     def test_find_or_create_user1(self):
         # via email
@@ -39,7 +58,7 @@ class LTIBackendTest(TestCase):
         user = self.backend.find_or_create_user(self.lti)
         self.assertFalse(user.has_usable_password())
         self.assertEquals(user.email, 'foo@bar.com')
-        self.assertEquals(user.get_full_name(), 'Foo Bar Baz')
+        self.assertEquals(user.get_full_name(), 'Foo Baz')
 
         username = self.backend.get_hashed_username(self.lti)
         self.assertEquals(user.username, username)
@@ -74,7 +93,7 @@ class LTIBackendTest(TestCase):
             self.assertTrue(request.session[LTI_SESSION_KEY])
             self.assertFalse(user.has_usable_password())
             self.assertEquals(user.email, 'foo@bar.com')
-            self.assertEquals(user.get_full_name(), 'Foo Bar Baz')
+            self.assertEquals(user.get_full_name(), 'Foo Baz')
             self.assertTrue(course.group in user.groups.all())
             self.assertTrue(course.faculty_group in user.groups.all())
 

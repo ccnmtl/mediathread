@@ -157,4 +157,22 @@
 
         return promises;
     };
+
+    /**
+     * A collection of helper functions for rendering our mustache
+     * templates.
+     *
+     * See: https://github.com/janl/mustache.js#functions
+     *
+     * These functions aren't able to take any parameters passed
+     * in via the template. If we need that functionality we can
+     * switch to handlebars.
+     */
+    MediaThread.mustacheHelpers = {
+        lower: function() {
+            return function(text, render) {
+                return render(text).toLowerCase();
+            };
+        }
+    };
 })();

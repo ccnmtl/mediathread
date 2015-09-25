@@ -69,7 +69,9 @@ var CollectionList = function(config) {
     MediaThread.loadTemplate(config.template)
         .done(function() {
             var renderedCollection =
-                Mustache.render(MediaThread.templates[config.template], {});
+                Mustache.render(
+                    MediaThread.templates[config.template],
+                    MediaThread.mustacheHelpers);
 
             if (jQuery('#media_gallery').length > 0) {
                 jQuery('#media_gallery').html(renderedCollection);

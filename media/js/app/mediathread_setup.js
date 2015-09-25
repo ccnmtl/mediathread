@@ -160,8 +160,8 @@
 
     /**
      * {{ellipsis}}
-     * @author: Jon Schlinkert <http://github.com/jonschlinkert>
      * Truncate the input string and removes all HTML tags
+     *
      * @param  {String} str      The input string.
      * @param  {Number} limit    The number of characters to limit the string.
      * @param  {String} append   The string to append if charaters are omitted.

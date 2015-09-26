@@ -31,10 +31,9 @@ class LTIBackend(object):
         return sha1(uid).hexdigest()[:30]
 
     def find_or_create_user(self, lti):
-        try:
-            # find the user via email address
-            user = User.objects.get(email=lti.user_email())
-        except User.DoesNotExist:
+        # find the user via email address
+        user = User.objects.filter(email=lti.user_email()).first()
+        if user is None:
             username = self.get_hashed_username(lti)
             try:
                 # find the user via generated lti user id

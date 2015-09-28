@@ -482,64 +482,32 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
-        if asset_id:
-            try:
-                asset = Asset.objects.get(pk=asset_id, course=request.course)
-                asset.primary
-            except Asset.DoesNotExist:
-                return asset_switch_course(request, asset_id)
-            except Source.DoesNotExist:
-                ctx = RequestContext(request)
-                return render_to_response('500.html', {}, context_instance=ctx)
-
         data = {'asset_id': asset_id, 'annotation_id': annot_id}
 
         if not request.is_ajax():
             return render_to_response('assetmgr/asset_workspace.html',
                                       data,
                                       context_instance=RequestContext(request))
-        ctx = {'type': 'asset'}
-        if asset_id:
-            # @todo - refactor this context out of the mix
-            # ideally, the client would simply request the json
-            # the mixin is expecting a queryset, so this becomes awkward here
-            assets = Asset.objects.filter(pk=asset_id)
-            (assets, notes) = self.visible_assets_and_notes(request, assets)
+        else:
+            vocabulary = VocabularyResource().render_list(
+                request, Vocabulary.objects.get_for_object(request.course))
 
-            # only return original author's global annotations
-            notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
+            user_resource = UserResource()
+            owners = user_resource.render_list(request, request.course.members)
 
-            ares = AssetResource()
-            ctx.update(ares.render_one_context(request, asset, notes))
+            data['panels'] = [{
+                'panel_state': 'open',
+                'panel_state_label': "Annotate Media",
+                'context': {'type': 'asset'},
+                'owners': owners,
+                'vocabulary': vocabulary,
+                'template': 'asset_workspace',
+                'current_asset': asset_id,
+                'current_annotation': annot_id,
+                'update_history': True,
+                'show_collection': True}]
 
-            help_setting = UserSetting.get_setting(request.user,
-                                                   "help_item_detail_view",
-                                                   True)
-            ctx['user_settings'] = {'help_item_detail_view': help_setting}
-
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
-
-        user_resource = UserResource()
-        owners = user_resource.render_list(request, request.course.members)
-
-        update_history = True
-        show_collection = True
-        template = 'asset_workspace'
-
-        data['panels'] = [{
-            'panel_state': 'open',
-            'panel_state_label': "Annotate Media",
-            'context': ctx,
-            'owners': owners,
-            'vocabulary': vocabulary,
-            'template': template,
-            'current_asset': asset_id,
-            'current_annotation': annot_id,
-            'update_history': update_history,
-            'show_collection': show_collection}]
-
-        return self.render_to_json_response(data)
+            return self.render_to_json_response(data)
 
 
 class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,

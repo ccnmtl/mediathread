@@ -21,7 +21,7 @@ python-subunit==1.1.0  # lettuce
 lettuce==0.2.20
 selenium==2.47.1
 six==1.9.0
-sqlparse==0.1.14  # django-debug-toolbar
+sqlparse==0.1.16  # django-debug-toolbar
 python-mimeparse==0.1.4  # tastypie
 python-dateutil==2.4.2  # tastypie
 django-tastypie==0.12.2

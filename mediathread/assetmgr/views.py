@@ -499,23 +499,6 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                                       data,
                                       context_instance=RequestContext(request))
         ctx = {'type': 'asset'}
-        if asset_id:
-            # @todo - refactor this context out of the mix
-            # ideally, the client would simply request the json
-            # the mixin is expecting a queryset, so this becomes awkward here
-            assets = Asset.objects.filter(pk=asset_id)
-            (assets, notes) = self.visible_assets_and_notes(request, assets)
-
-            # only return original author's global annotations
-            notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
-
-            ares = AssetResource()
-            ctx.update(ares.render_one_context(request, asset, notes))
-
-            help_setting = UserSetting.get_setting(request.user,
-                                                   "help_item_detail_view",
-                                                   True)
-            ctx['user_settings'] = {'help_item_detail_view': help_setting}
 
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))

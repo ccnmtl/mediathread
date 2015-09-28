@@ -70,9 +70,6 @@
                 window.location.hash = '';
             }
 
-            djangosherd.assetview.clipform
-                .setState({'start': 0, 'end': 0}, {'mode': 'reset'});
-
             this.refresh(config);
 
             if (this.update_history) {

@@ -9,7 +9,7 @@ import urllib2
 import lxml.etree as ET
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
-from courseaffils.models import CourseAccess
+from courseaffils.models import Course, CourseAccess
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -453,20 +453,25 @@ def scalar_export(request):
     user = request.user
     user_id = user.id
     assets = Asset.objects.filter(course=request.course)
-    ar = AssetResource(include_annotations=True)
-    ar.Meta.excludes = ['added', 'modified', 'course', 'active']
-    lst = []
-    notes = SherdNote.objects.get_related_notes(assets, user_id or None,
-                                                [request.user.id], True)
+    course =  Course.objects.get(id=request.course.id)
+    api_response = []
+    for course_member in course.user_set.values():
+        ar = AssetResource(include_annotations=True)
+        ar.Meta.excludes = ['added', 'modified', 'course', 'active']
+        lst = []
+        notes = SherdNote.objects.get_related_notes(assets, user_id or None,
+                                                [course_member['id']], True)
 
-    api_response = ar.render_list(request, [request.user.id],
-                                  [request.user.id], assets, notes)
+        api_response += (ar.render_list(request, [course_member['id']],
+                                  [request.user.id], assets, notes))
+
     export = {}
     video_node = {}
     tag_num = 0
     if len(api_response) == 0:
         return HttpResponse("There are no videos in your collection")
     for i in range(0, len(api_response)):
+
         data = api_response[i]
         utf_blob = data.get('metadata_blob')
         jsonmetadata_blob = dict()
@@ -577,7 +582,7 @@ def scalar_export(request):
                 export[root + data.get('annotations')[i]['url'].rstrip('/')] = annotation_node
             except Exception:
                 pass
-        return HttpResponse(json.dumps(export))
+    return HttpResponse(json.dumps(export))
 
 
 class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,

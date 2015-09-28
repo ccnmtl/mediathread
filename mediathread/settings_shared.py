@@ -306,7 +306,7 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
 
 LTI_TOOL_CONFIGURATION = {
     'launch_url': 'lti/',
-    'icon_url': 'media/img/favicon.png',
+    'icon_url': 'media/img/icons/icon-16.png',
     'title': 'Mediathread',
     'tool_id': 'mediathread',
     'description': 'View and filter your Mediathread selections. '

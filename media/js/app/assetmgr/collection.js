@@ -552,7 +552,6 @@ CollectionList.prototype.updateSwitcher = function() {
                 });
             if ('tag' in self.current_records.active_filters &&
                 self.current_records.active_filters.tag.length > 0) {
-
                 jQuery(self.el).find('select.course-tags').select2(
                     'val',
                     self.current_records.active_filters.tag.split(','));
@@ -613,15 +612,34 @@ CollectionList.prototype.updateAssets = function(the_records) {
 
     var $elt = jQuery('#asset_table');
     $elt.hide();
-    MediaThread.loadTemplate(self.config.template + '_assets')
-        .done(function(template) {
-            var rendered = Mustache.render(
-                template,
-                jQuery.extend(the_records, MediaThread.mustacheHelpers)
-            );
-            $elt.html(rendered);
-            self.assetPostUpdate($elt, the_records);
-        });
+    jQuery.when.apply(
+        this,
+        MediaThread.loadTemplates([
+            self.config.template,
+            self.config.template + '_assets'
+        ])
+    ).then(function() {
+        var renderedMain = Mustache.render(
+            MediaThread.templates[self.config.template],
+            jQuery.extend(the_records, MediaThread.mustacheHelpers)
+        );
+        if (jQuery('#media_gallery').length > 0) {
+            jQuery('#media_gallery').html(renderedMain);
+        } else if (jQuery('.collection_table').length > 0) {
+            // If there's already a .collection_table element, like on the
+            // composition page, use that instead.
+            var $el = jQuery(renderedMain).find('>div');
+            jQuery('.collection_table').html($el);
+        }
+
+        var rendered = Mustache.render(
+            MediaThread.templates[self.config.template + '_assets'],
+            jQuery.extend(the_records, MediaThread.mustacheHelpers)
+        );
+        $elt = jQuery('#asset_table');
+        $elt.html(rendered);
+        self.assetPostUpdate($elt, the_records);
+    });
 };
 
 CollectionList.prototype.assetPostUpdate = function($elt, the_records) {

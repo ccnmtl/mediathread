@@ -459,7 +459,7 @@ def scalar_export(request):
         ar = AssetResource(include_annotations=True)
         ar.Meta.excludes = ['added', 'modified', 'course', 'active']
         lst = []
-        notes = SherdNote.objects.get_related_notes(assets, user_id or None,
+        notes = SherdNote.objects.get_related_notes(assets, course_member['id'] or None,
                                                 [course_member['id']], True)
 
         api_response += (ar.render_list(request, [course_member['id']],

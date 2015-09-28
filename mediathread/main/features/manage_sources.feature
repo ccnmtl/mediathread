@@ -29,7 +29,7 @@ Feature: Sources
         The Collection panel has no "You Tube" item
         And the Collection panel has a "MAAP Award Reception" item
         And the Collection panel has a "Mediathread: Introduction" item
-        And the Collection panel has a "The Armory - Home to CCNMTL…" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
             
         Finished using Selenium
    

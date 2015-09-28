@@ -68,7 +68,7 @@ Feature: Collection View
         And the "MAAP Award Reception" item has 3 selections, 1 by me
         
         Then the Collection panel has a "Mediathread: Introduction" item
-        Then the Collection panel has a "The Armory - Home to CCNMTL…" item
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         Then the Collection panel has a "Project Portfolio" item
         
         And I can filter by "instructor_one (1)" in the asset-workspace column
@@ -123,7 +123,7 @@ Feature: Collection View
         And the "MAAP Award Reception" item has 3 selections, 1 by me
         
         Then the Collection panel has a "Mediathread: Introduction" item
-        Then the Collection panel has a "The Armory - Home to CCNMTL…" item
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         Then the Collection panel has a "Project Portfolio" item
         
         And I can filter by "instructor_one (1)" in the asset-workspace column
@@ -178,7 +178,7 @@ Feature: Collection View
         And the "MAAP Award Reception" item has 3 selections, 1 by me
         
         Then the Collection panel has a "Mediathread: Introduction" item
-        Then the Collection panel has a "The Armory - Home to CCNMTL…" item
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         Then the Collection panel has a "Project Portfolio" item
         
         And I can filter by "instructor_one (1)" in the asset-workspace column
@@ -233,7 +233,7 @@ Feature: Collection View
         And the "MAAP Award Reception" item has 3 selections, 1 by me
         
         Then the Collection panel has a "Mediathread: Introduction" item
-        Then the Collection panel has a "The Armory - Home to CCNMTL…" item
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         Then the Collection panel has a "Project Portfolio" item
         
         And I can filter by "instructor_one (1)" in the asset-workspace column
@@ -305,10 +305,10 @@ Feature: Collection View
         
         Then the Collection panel has a "Mediathread: Introduction" item
 
-        Then the Collection panel has a "The Armory - Home to CCNMTL…" item
-        And the "The Armory - Home to CCNMTL…" item has no notes
-        And the "The Armory - Home to CCNMTL…" item has no tags
-        And the "The Armory - Home to CCNMTL…" item has no selections
+        Then the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
+        And the "The Armory - Home to CCNMTL'S CUMC…" item has no notes
+        And the "The Armory - Home to CCNMTL'S CUMC…" item has no tags
+        And the "The Armory - Home to CCNMTL'S CUMC…" item has no selections
         
         And I can filter by "instructor_one (1)" in the asset-workspace column
         And I can filter by "instructor_one_selection (1)" in the asset-workspace column
@@ -331,22 +331,22 @@ Feature: Collection View
         When I select "Me" as the owner
 
         Then the Collection panel has a "MAAP Award Reception" item
-        And the Collection panel has a "The Armory - Home to CCNMTL…" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         And the Collection panel has a "Mediathread: Introduction" item
         
         And I can filter by "flickr (2)" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
-        And the Collection panel has a "The Armory - Home to CCNMTL…" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         And the Collection panel has no "Mediathread: Introduction" item
         
         When I clear all tags
         Then the Collection panel has a "MAAP Award Reception" item
-        And the Collection panel has a "The Armory - Home to CCNMTL…" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
         And the Collection panel has a "Mediathread: Introduction" item
         
         And I can filter by "video (2)" in the asset-workspace column
         Then the Collection panel has no "MAAP Award Reception" item
-        And the Collection panel has no "The Armory - Home to CCNMTL…" item
+        And the Collection panel has no "The Armory - Home to CCNMTL'S CUMC…" item
         And the Collection panel has a "Mediathread: Introduction" item
 
         Finished using Selenium

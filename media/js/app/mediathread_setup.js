@@ -169,7 +169,7 @@
      */
     var ellipsis = function(str, limit, append) {
         if (typeof append === 'undefined') {
-            append = '&hellip;';
+            append = '…';
         }
 
         var sanitized = str.replace(/(<([^>]+)>)/g, '');

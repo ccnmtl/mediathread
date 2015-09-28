@@ -517,7 +517,7 @@ def scalar_export(request):
             except Exception:
                 pass
             a_annotation_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
-            anno_urn = 'urn:mediathread:anno' + str(i)
+            anno_urn = 'urn:mediathread:anno' + str(i + 1)
             export[anno_urn.rstrip('/')] = a_annotation_node
 
             

@@ -72,15 +72,7 @@ var CollectionList = function(config) {
                 Mustache.render(
                     MediaThread.templates[config.template],
                     MediaThread.mustacheHelpers);
-
-            if (jQuery('#media_gallery').length > 0) {
-                jQuery('#media_gallery').html(renderedCollection);
-            } else if (jQuery('.collection_table').length > 0) {
-                // If there's already a .collection_table element, like on the
-                // composition page, use that instead.
-                var $el = jQuery(renderedCollection).find('>div');
-                jQuery('.collection_table').append($el);
-            }
+            jQuery(self.el).html(renderedCollection);
 
             self.refresh(config);
         });
@@ -623,14 +615,7 @@ CollectionList.prototype.updateAssets = function(the_records) {
             MediaThread.templates[self.config.template],
             jQuery.extend(the_records, MediaThread.mustacheHelpers)
         );
-        if (jQuery('#media_gallery').length > 0) {
-            jQuery('#media_gallery').html(renderedMain);
-        } else if (jQuery('.collection_table').length > 0) {
-            // If there's already a .collection_table element, like on the
-            // composition page, use that instead.
-            var $el = jQuery(renderedMain).find('>div');
-            jQuery('.collection_table').html($el);
-        }
+        jQuery(self.el).html(renderedMain);
 
         var rendered = Mustache.render(
             MediaThread.templates[self.config.template + '_assets'],

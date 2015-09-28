@@ -452,7 +452,7 @@ def scalar_export(request):
     root = 'http://' + request.get_host()
     user = request.user
     user_id = user.id
-    assets = Asset.objects.filter(author_id=user_id)
+    assets = Asset.objects.filter(course=request.course)
     ar = AssetResource(include_annotations=True)
     ar.Meta.excludes = ['added', 'modified', 'course', 'active']
     lst = []

@@ -487,36 +487,38 @@ def scalar_export(request):
         video_node['http://purl.org/dc/terms/source'] = [{"value": data.get('primary_type'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/date'] = [{"value": data.get('modified'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/contributor'] = [{"value": data.get('author')['username'], "type": "literal"}]
-        export[root + data.get('local_url').rstrip('/')] = video_node
+        export[root +'/' + course.title +  data.get('local_url').rstrip('/')] = video_node
         #for annotation node
-        for i in range(0, data.get('annotation_count')):
+        for n in range(0, data.get('annotation_count')):
             user_node = {}
-            username = data.get('annotations')[i]['author']['username']
+            username = data.get('annotations')[n]['author']['username']
             try:
                 author_user = User.objects.get(username=username)
                 author_email = author_user.email
                 hash_or_username = hashlib.sha1(author_email).hexdigest()
             except Exception:
                 hash_or_username = username
-            user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get('annotations')[i]['author']['public_name'], "type": "literal"}]
+            user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get('annotations')[n]['author']['public_name'], "type": "literal"}]
             user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']  = [{ "value" : "http://xmlns.com/foaf/0.1/Person", "type" : "uri" }]
             user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = [{"value": hash_or_username, "type": "literal"}]
             export[root + '/user/' + hash_or_username] = user_node
 
             annotation_node = {}
-            annotation_node['http://purl.org/dc/terms/title'] = [{"value": data.get('annotations')[i]['title'], "type": "literal"}]
+            annotation_node['http://purl.org/dc/terms/title'] = [{"value": data.get('annotations')[n]['title'], "type": "literal"}]
             annotation_node['http://purl.org/dc/terms/description'] = [{"value": "This is an annotation", "type": "literal"}]
-            annotation_node['http://rdfs.org/sioc/ns#content'] = [{"value": data.get('annotations')[i]['metadata']['body'], "type": "literal"}]
-            annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [{"value":root + data.get('annotations')[i]['author']['resource_uri'].rstrip('/') + '/user/' + hash_or_username, "type": "uri"}]
+            annotation_node['http://rdfs.org/sioc/ns#content'] = [{"value": data.get('annotations')[n]['metadata']['body'], "type": "literal"}]
+            annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [{"value":root + data.get('annotations')[n]['author']['resource_uri'].rstrip('/') + '/user/' + hash_or_username, "type": "uri"}]
             a_annotation_node = {}
-            a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+            a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/' + course.title + data.get('annotations')[n]['url'].rstrip('/'), "type": "uri"}]
             time = ''
             time += root
+            time += '/'
+            time += course.title
             time += data.get('local_url').rstrip('/')
             time += '#t=npt:'
-            time += str(data.get('annotations')[i]['annotation']['start'])
+            time += str(data.get('annotations')[n]['annotation']['start'])
             time += ','
-            time += str(data.get('annotations')[i]['annotation']['end'])
+            time += str(data.get('annotations')[n]['annotation']['end'])
             try:
                 a_annotation_node['http://www.openannotation.org/ns/hasTarget'] = [{"value": time, "type": "uri"}]
             except Exception:
@@ -527,14 +529,14 @@ def scalar_export(request):
 
             
             tag = []
-            tag = (data.get('annotations')[i]['metadata']['tags'])
-            for k in range(0, len(data.get('annotations')[i]['metadata']['tags'])):
+            tag = (data.get('annotations')[n]['metadata']['tags'])
+            for k in range(0, len(data.get('annotations')[n]['metadata']['tags'])):
                 tag_node = {}
                 tag_node["http://www.w3.org/2000/01/rdf-schema#label"] = [{"value": tag[k]['name'], "type": "literal"}]
                 export[root + '/tag/' + tag[k]['name']] = tag_node
                 a_tag_node = {}
                 try:
-                    a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+                    a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : root + '/' + course.title + data.get('annotations')[n]['url'].rstrip('/'), "type": "uri"}]
                 except Exception:
                     pass
                 try:
@@ -550,7 +552,7 @@ def scalar_export(request):
                 export[a_tag_urn] = a_tag_node
             
             vocab = []
-            vocab = data.get('annotations')[i]['vocabulary']
+            vocab = data.get('annotations')[n]['vocabulary']
             try:
                 for j in range(0, len(vocab)):
                     num = 0
@@ -571,7 +573,7 @@ def scalar_export(request):
                         term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{"type":"uri","value":"http://www.openannotation.org/ns/SemanticTag"}]
                         export[root + '/term/'+ vocab[j]['display_name']+'-'+ t['name']] = term_node
                         try:
-                            urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[i]['url'].rstrip('/'), "type": "uri"}]
+                            urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + '/' + course.title + data.get('annotations')[n]['url'].rstrip('/'), "type": "uri"}]
                         except Exception:
                             pass
     
@@ -579,9 +581,10 @@ def scalar_export(request):
             except Exception:
                 pass
             try:
-                export[root + data.get('annotations')[i]['url'].rstrip('/')] = annotation_node
+                export[root + '/'+ course.title + data.get('annotations')[n]['url'].rstrip('/')] = annotation_node
             except Exception:
                 pass
+            print request.course
     return HttpResponse(json.dumps(export))
 
 

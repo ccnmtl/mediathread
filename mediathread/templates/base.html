@@ -2,7 +2,7 @@
 {% load cache user_projects coursetags compress static %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-{% with request.collaboration_context.content_object as course %}
+{% with request.course as course %}
     <head><!-- {{controller_name}} :: {{template_name}} -->
     	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
     	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
@@ -54,12 +54,12 @@
                 </div>
                 {% block standardnav %}
                    <ul id="standardnav">
-                        {% if request.user.is_authenticated %}   
+                        {% if course %}
                             {% ifequal role_in_course "non-member" %}
                                 <li>
                                     <div class="nonmember">You are not a class member!</div>
                                 </li>
-                            {% endifequal %}     
+                            {% endifequal %}
                             <li>
                                 <div class="settings_menu user closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
@@ -92,7 +92,7 @@
                                 </div>
                             </li>
 
-                            {% if is_course_faculty %}
+                            {% if role_in_course == 'instructor' %}
                             <li>
                                 <div class="settings_menu manage closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>

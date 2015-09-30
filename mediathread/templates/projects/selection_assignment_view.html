@@ -41,7 +41,7 @@
             itemId: '{{item.id}}',
             itemJson: JSON.parse('{{item_json|escapejs}}'),
             vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
-            submitted: {% if my_response and my_response.submitted %}true{% else %}false{% endif %},
+            submitted: {% if my_response and my_response.is_submitted %}true{% else %}false{% endif %},
             feedback: JSON.parse('{{feedback|escapejs}}'),
             feedbackCount: {{feedback_count}}
         });
@@ -92,7 +92,7 @@
                     {% else %}{% if my_response %}
                         <span class="metadata-label"><b>Publication status</b>:</span>
                         <span class="metadata-value">
-                            {% if my_response.submitted %}
+                            {% if my_response.is_submitted %}
                                 Response submitted
                             {% else %}
                                 Response not submitted
@@ -146,16 +146,17 @@
                                     <h4 class="modal-title">Unsubmit Response</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                    Etiam ultricies egestas sapien, non eleifend erat vulputate a. 
-                                    Sed quis ex est. Morbi iaculis diam sem, eu semper justo dictum tempor.</p>
+                                    <p>You may allow a student to resubmit their response
+                                    by first selecting their name in the drop-down and then clicking
+                                    Unsubmit. Once you click Unsubmit, the student's response will return to draft
+                                    status, allowing the student to edit and resubmit the response.</p>
                                     <form action="/project/unsubmit/" method="post">
                                         <label for="student-response-id">Select Response</label>
                                         <select name="student-response" class="form-control">
                                             {% for response in responses %}
-                                                {% if response.submitted %}
+                                                {% if response.is_submitted %}
                                                     <option value="{{response.id}}">
-                                                        {% public_name for response.author %} (submitted {{ response.submitted_date }})
+                                                        {% public_name for response.author %} (submitted {{ response.modified|date:'m/d/Y h:i a' }})
                                                     </option>
                                                 {% endif %}
                                             {% endfor %}
@@ -177,13 +178,13 @@
                 </div>
             {% else %}{% if not assignment_can_edit  %}
                 {% with total_selections=my_response.projectnote_set.count %}
-                {% if my_response.submitted %}
+                {% if my_response.is_submitted %}
                     <div class="right">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
                         <strong>
                             Submitted |
                             {{total_selections}} Selection{{total_selections|pluralize}}
-                        </strong> {{my_response.submitted_date}}
+                        </strong> {{my_response.modified|date:"m/d/Y h:i a"}}
                     </div>
                 {% else %}{% if my_response %}
                     <div>

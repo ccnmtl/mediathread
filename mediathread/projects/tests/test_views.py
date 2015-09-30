@@ -1,4 +1,5 @@
 # pylint: disable-msg=R0904
+from datetime import datetime
 from json import loads
 import json
 
@@ -12,6 +13,7 @@ from mediathread.factories import MediathreadTestMixin, UserFactory, \
 from mediathread.projects.models import Project, \
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED
 from mediathread.projects.views import SelectionAssignmentView, ProjectItemView
+import reversion
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):
@@ -48,11 +50,12 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
             title=None, range1=None, range2=None)
 
         # Sample Course Projects
-        self.project_private = ProjectFactory.create(
-            course=self.sample_course, author=self.student_one,
-            policy='PrivateEditorsAreOwners')
-        self.add_citation(self.project_private, self.student_note)
-        self.add_citation(self.project_private, self.student_ga)
+        with reversion.create_revision():
+            self.project_private = ProjectFactory.create(
+                course=self.sample_course, author=self.student_one,
+                policy='PrivateEditorsAreOwners')
+            self.add_citation(self.project_private, self.student_note)
+            self.add_citation(self.project_private, self.student_ga)
 
         self.project_instructor_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
@@ -110,6 +113,9 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 405)
 
     def test_project_save_valid(self):
+        versions = reversion.get_for_object(self.project_private).get_unique()
+        self.assertEquals(sum(1 for v in versions), 1)
+
         self.assertTrue(self.client.login(username=self.student_one.username,
                                           password='test'))
 
@@ -135,6 +141,9 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(project.author, self.student_one)
         self.assertIn(self.student_one, project.participants.all())
         self.assertIn(self.student_two, project.participants.all())
+
+        versions = reversion.get_for_object(self.project_private).get_unique()
+        self.assertEquals(sum(1 for v in versions), 2)
 
     def test_project_save_swap_authors(self):
         self.assertTrue(self.client.login(username=self.student_one.username,
@@ -199,8 +208,10 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         project = Project.objects.get(course=self.sample_course,
                                       title='Untitled')
-        self.assertEquals(project.versions.count(), 1)
-        self.assertIsNone(project.submitted_date())
+
+        versions = reversion.get_for_object(project).get_unique()
+        self.assertEquals(sum(1 for v in versions), 1)
+        self.assertIsNone(project.date_submitted)
         self.assertIn(self.student_one, project.participants.all())
         self.assertEquals(project.author, self.student_one)
 
@@ -215,8 +226,10 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
 
         project = Project.objects.get(title='Student Essay')
-        self.assertEquals(project.versions.count(), 2)
-        self.assertIsNotNone(project.submitted_date())
+
+        versions = reversion.get_for_object(project).get_unique()
+        self.assertEquals(sum(1 for v in versions), 2)
+        self.assertIsNotNone(project.date_submitted)
 
     def test_assignment_response_create(self):
         self.client.login(username=self.student_one.username,
@@ -283,7 +296,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         # resave the response as submitted
         assignment_response.create_or_update_collaboration('CourseProtected')
-        assignment_response.submitted = True
+        assignment_response.date_submitted = datetime.now()
         assignment_response.save()
 
         self.client.login(username=self.instructor_one.username,
@@ -294,7 +307,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
             'http://testserver/project/view/'))
 
         assignment_response = Project.objects.get(id=assignment_response.id)
-        self.assertFalse(assignment_response.submitted)
+        self.assertFalse(assignment_response.is_submitted())
         collaboration = assignment_response.get_collaboration()
         self.assertEquals(collaboration.policy_record.policy_name,
                           'PrivateEditorsAreOwners')
@@ -324,7 +337,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         the_json = loads(response.content)
-        self.assertTrue(len(the_json['revisions']) > 0)
+        self.assertEquals(len(the_json['revisions']), 1)
 
     def test_project_workspace_errors(self):
         project_id = self.project_private.id
@@ -671,7 +684,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         ProjectFactory.create(
             course=self.sample_course, author=self.student_three,
             policy='CourseProtected', parent=self.assignment,
-            submitted=True)
+            date_submitted=datetime.now())
 
         url = reverse('project-item-view',
                       args=[self.assignment.id, self.asset.id])
@@ -705,7 +718,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # submit student one's response
         self.response_one.create_or_update_collaboration(
             'CourseProtected')
-        self.response_one.submitted = True
+        self.response_one.date_submitted = datetime.now()
         self.response_one.save()
 
         self.assert_visible_notes(self.student_one,
@@ -741,7 +754,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # all students having submitted, the annotation is now citable
         self.response_two.create_or_update_collaboration(
             'CourseProtected')
-        self.response_two.submitted = True
+        self.response_two.date_submitted = datetime.now()
         self.response_two.save()
 
         self.assert_visible_notes(self.student_one,

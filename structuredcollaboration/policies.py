@@ -1,4 +1,5 @@
 from structuredcollaboration.models import Collaboration
+from mediathread.main.course_details import cached_course_is_faculty
 
 
 class CollaborationPolicy(object):
@@ -20,12 +21,12 @@ class PublicEditorsAreOwners(CollaborationPolicy):
 
     def edit(self, collaboration, course, user):
         user = user
-        if user.is_authenticated():
-            if user == collaboration.user:
-                return True
-            if collaboration.group_id:
-                qs = collaboration.group.user_set.filter(pk=user.pk)
-                return len(qs) > 0
+        if user == collaboration.user:
+            return True
+        if collaboration.group_id:
+            qs = collaboration.group.user_set.filter(pk=user.pk)
+            return qs.count() > 0
+
         return False
 
     manage = edit
@@ -41,16 +42,14 @@ class PrivateStudentAndFaculty(CollaborationPolicy):
     def manage(self, coll, course, user):
         course_collaboration = Collaboration.objects.get_for_object(course)
         return (coll.context == course_collaboration and
-                course and
-                course.is_faculty(user))
+                course and cached_course_is_faculty(course, user))
 
     delete = manage
 
     def read(self, coll, course, user):
         course_collaboration = Collaboration.objects.get_for_object(course)
         return (coll.context == course_collaboration and
-                ((course and
-                  course.is_faculty(user)) or
+                ((course and cached_course_is_faculty(course, user)) or
                  coll.user_id == user.id or
                  (coll.group_id and
                   user in coll.group.user_set.all())))
@@ -61,15 +60,14 @@ class PrivateStudentAndFaculty(CollaborationPolicy):
 class InstructorShared(PrivateEditorsAreOwners):
     def read(self, coll, course, user):
         return (self.manage(coll, course, user) or
-                course.is_faculty(user))
+                cached_course_is_faculty(course, user))
 
 
 class InstructorManaged(CollaborationPolicy):
     def manage(self, coll, course, user):
         course_collaboration = Collaboration.objects.get_for_object(course)
         return (coll.context == course_collaboration and
-                ((course and
-                  course.is_faculty(user)) or
+                ((course and cached_course_is_faculty(course, user)) or
                  coll.user == user))
     delete = manage
 

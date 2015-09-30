@@ -44,11 +44,23 @@ class CollaborationManager(models.Manager):
         else:
             ctype = ContentType.objects.get_for_model(object_list[0])
             ids = [str(o.id) for o in object_list]
-            return self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
+            return self.filter(
+                content_type=ctype,
+                object_pk__in=ids).select_related('user', 'group',
+                                                  '_parent',
+                                                  'policy_record')
 
     def get_for_object(self, obj):
         ctype = ContentType.objects.get_for_model(obj)
-        return self.get(content_type__pk=ctype.pk, object_pk=str(obj.pk))
+        return self.select_related(
+            'user', 'group', '_parent', 'policy_record').get(
+            content_type=ctype, object_pk=str(obj.pk))
+
+    def get_children_for_object(self, obj):
+        ctype = ContentType.objects.get_for_model(obj)
+        return self.select_related(
+            'user', 'group', '_parent', 'policy_record').filter(
+            content_type=ctype, _parent=obj)
 
 
 class Collaboration(models.Model):

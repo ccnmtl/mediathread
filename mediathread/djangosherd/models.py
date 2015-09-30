@@ -122,7 +122,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
 
         # For efficiency purposes, retrieve all related notes
         self = self.filter(asset__in=assets).order_by(
-            'asset__id', 'id').select_related()
+            'asset__id', 'id').select_related('author', 'asset')
 
         if record_owner:
             # only return author's selections

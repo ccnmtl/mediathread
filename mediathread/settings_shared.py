@@ -59,6 +59,12 @@ PROJECT_APPS = ['mediathread.main',
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 CACHE_BACKEND = 'locmem:///'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 3600  # One Hour
+    }
+}
 
 TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
@@ -103,7 +109,7 @@ MIDDLEWARE_CLASSES = [
     'courseaffils.middleware.CourseManagerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
-    'waffle.middleware.WaffleMiddleware',
+    'waffle.middleware.WaffleMiddleware'
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -130,7 +136,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'tagging',
-    'modelversions',
     'structuredcollaboration',
     'mediathread.assetmgr',
     'mediathread.djangosherd',
@@ -151,6 +156,7 @@ INSTALLED_APPS = [
     'registration',
     'waffle',
     'corsheaders',
+    'reversion'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )

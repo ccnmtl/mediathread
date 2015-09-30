@@ -6,9 +6,10 @@ import json
 import re
 import urllib
 import urllib2
+import lxml.etree as ET
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
-from courseaffils.models import CourseAccess
+from courseaffils.models import Course, CourseAccess
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -446,6 +447,160 @@ def final_cut_pro_xml(request, asset_id):
     except ImportError:
         return HttpResponse('Not Implemented: No Final Cut Pro Xmeml support',
                             status=503)
+
+def scalar_export(request):
+    root = 'http://' + request.get_host()
+    user = request.user
+    user_id = user.id
+    assets = Asset.objects.filter(course=request.course)
+    course =  Course.objects.get(id=request.course.id)
+    api_response = []
+    n = 0
+    for course_member in course.user_set.values():
+        n += 1
+        ar = AssetResource(include_annotations=True)
+        ar.Meta.excludes = ['added', 'modified', 'course', 'active']
+        lst = []
+        notes = SherdNote.objects.get_related_notes(assets, course_member['id'] or None,
+                                                [course_member['id']], True)
+
+        api_response += (ar.render_list(request, [course_member['id']],
+                                  [request.user.id], assets, notes))
+    #     if n is 1:
+    #         first = (ar.render_list(request, [course_member['id']],
+    #                               [request.user.id], assets, notes))
+    #     else:
+    #         second = (ar.render_list(request, [course_member['id']],
+    #                               [request.user.id], assets, notes))
+    #         print course_member
+    # ar = AssetResource(include_annotations=True)
+    # ar.Meta.excludes = ['added', 'modified', 'course', 'active']
+    # lst = []
+    # notes = SherdNote.objects.get_related_notes(assets, request.user.id or None,
+    #                                             [request.user.id], True)
+
+    # api_response = (ar.render_list(request, [request.user.id],
+    #                               [request.user.id], assets, notes))
+    export = {}
+    tag_num = 0
+    anno_num = 0
+    if len(api_response) == 0:
+        return HttpResponse("There are no videos in your collection")
+    for i in range(0, len(api_response)):
+        video_node = {}
+        data = []
+        data = api_response[i]
+        utf_blob = data.get('metadata_blob')
+        jsonmetadata_blob = dict()
+        if utf_blob is not None:
+            utf_blob = utf_blob.encode('UTF-8', 'ignore')
+            jsonmetadata_blob = json.loads(utf_blob)
+        #for the video node
+        video_node['http://purl.org/dc/terms/title'] = [{"value": data.get('title'), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/description'] = [{"value": data.get('description'), "type": "literal"}]
+        video_node['http://simile.mit.edu/2003/10/ontologies/artstor#url'] = [{"value": data.get('sources')[data.get('primary_type')]['url'], "type": "uri"}]
+        
+        # video_node["http://simile.mit.edu/2003/10/ontologies/artstor#sourceLocation"] = [{"value": data.get(''), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/source'] = [{"value": data.get('primary_type'), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/date'] = [{"value": data.get('modified'), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/contributor'] = [{"value": data.get('author')['username'], "type": "literal"}]
+        export[root +  data.get('local_url').rstrip('/')] = video_node
+        #for annotation node
+        for n in range(0, data.get('annotation_count')):
+            user_node = {}
+            username = data.get('annotations')[n]['author']['username']
+            try:
+                author_user = User.objects.get(username=username)
+                author_email = author_user.email
+                hash_or_username = hashlib.sha1(author_email).hexdigest()
+            except Exception:
+                hash_or_username = username
+            user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get('annotations')[n]['author']['public_name'], "type": "literal"}]
+            user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type']  = [{ "value" : "http://xmlns.com/foaf/0.1/Person", "type" : "uri" }]
+            user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = [{"value": hash_or_username, "type": "literal"}]
+            export[root + '/user/' + hash_or_username] = user_node
+
+            annotation_node = {}
+            annotation_node['http://purl.org/dc/terms/title'] = [{"value": data.get('annotations')[n]['title'], "type": "literal"}]
+            annotation_node['http://purl.org/dc/terms/description'] = [{"value": "This is an annotation", "type": "literal"}]
+            annotation_node['http://rdfs.org/sioc/ns#content'] = [{"value": data.get('annotations')[n]['metadata']['body'], "type": "literal"}]
+            annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [{"value":root + data.get('annotations')[n]['author']['resource_uri'].rstrip('/') + '/user/' + hash_or_username, "type": "uri"}]
+            a_annotation_node = {}
+            a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + data.get('annotations')[n]['url'].rstrip('/'), "type": "uri"}]
+            time = ''
+            time += root
+            time += data.get('local_url').rstrip('/')
+            time += '#t=npt:'
+            time += str(data.get('annotations')[n]['annotation']['start'])
+            time += ','
+            time += str(data.get('annotations')[n]['annotation']['end'])
+            try:
+                a_annotation_node['http://www.openannotation.org/ns/hasTarget'] = [{"value": time, "type": "uri"}]
+            except Exception:
+                pass
+            a_annotation_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
+            anno_urn = 'urn:mediathread:anno' + str(anno_num + 1)
+            export[anno_urn.rstrip('/')] = a_annotation_node
+            anno_num += 1
+
+            
+            tag = []
+            tag = (data.get('annotations')[n]['metadata']['tags'])
+            for k in range(0, len(data.get('annotations')[n]['metadata']['tags'])):
+                tag_node = {}
+                tag_node["http://www.w3.org/2000/01/rdf-schema#label"] = [{"value": tag[k]['name'], "type": "literal"}]
+                export[root + '/tag/' + tag[k]['name']] = tag_node
+                a_tag_node = {}
+                try:
+                    a_tag_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" : root + data.get('annotations')[n]['url'].rstrip('/'), "type": "uri"}]
+                except Exception:
+                    pass
+                try:
+                    if (len(tag[k]['resource_uri']) > 1):
+                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k]['resource_uri'].rstrip('/'), "type": "uri"}]
+                    else:
+                        a_tag_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/tag/' + tag[k]['name'].rstrip('/'), "type": "uri"}]
+                except Exception:
+                    pass
+                a_tag_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
+                tag_num += 1
+                a_tag_urn = 'urn:mediathread:tag' + str(tag_num)
+                export[a_tag_urn] = a_tag_node
+            
+            vocab = []
+            vocab = data.get('annotations')[n]['vocabulary']
+            try:
+                for j in range(0, len(vocab)):
+                    num = 0
+                    for t in vocab[j]['terms']:
+                        num += 1
+                        urn_vocab_node = {}
+                        urn_vocab_node['http://www.openannotation.org/ns/hasBody'] = [{"value": root + '/term/' + vocab[j]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        urn_vocab_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
+    
+                        term_node = {}
+                        term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#Description'] = [{"value": vocab[j]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        term_node['http://www.w3.org/2000/01/rdf-schema#label'] = [{"value": vocab[j]['display_name'] + '-' + t['name'], "type": "literal"}]
+                        try:
+                            # term_node['http://xmlns.com/foaf/0.1/'] = [{"value": t['resource_uri'], "type": "uri"}]
+                            term_node['http://www.w3.org/2004/02/skos/core#related'] = [{"value": t['skos_uri'].rstrip('/'), "type": "uri"}]
+                        except Exception:
+                            pass
+                        term_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{"type":"uri","value":"http://www.openannotation.org/ns/SemanticTag"}]
+                        export[root + '/term/'+ vocab[j]['display_name']+'-'+ t['name']] = term_node
+                        try:
+                            urn_vocab_node['http://www.openannotation.org/ns/hasTarget'] = [{"value" :root + data.get('annotations')[n]['url'].rstrip('/'), "type": "uri"}]
+                        except Exception:
+                            pass
+    
+                        export["urn:mediathread:term" + str(num)] = urn_vocab_node
+            except Exception:
+                pass
+            try:
+                export[root + data.get('annotations')[n]['url'].rstrip('/')] = annotation_node
+            except Exception:
+                pass
+    return HttpResponse(json.dumps(export))
 
 
 class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,

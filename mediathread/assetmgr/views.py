@@ -466,21 +466,6 @@ def scalar_export(request):
 
         api_response += (ar.render_list(request, [course_member['id']],
                                   [request.user.id], assets, notes))
-    #     if n is 1:
-    #         first = (ar.render_list(request, [course_member['id']],
-    #                               [request.user.id], assets, notes))
-    #     else:
-    #         second = (ar.render_list(request, [course_member['id']],
-    #                               [request.user.id], assets, notes))
-    #         print course_member
-    # ar = AssetResource(include_annotations=True)
-    # ar.Meta.excludes = ['added', 'modified', 'course', 'active']
-    # lst = []
-    # notes = SherdNote.objects.get_related_notes(assets, request.user.id or None,
-    #                                             [request.user.id], True)
-
-    # api_response = (ar.render_list(request, [request.user.id],
-    #                               [request.user.id], assets, notes))
     export = {}
     tag_num = 0
     anno_num = 0

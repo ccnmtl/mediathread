@@ -455,7 +455,9 @@ def scalar_export(request):
     assets = Asset.objects.filter(course=request.course)
     course =  Course.objects.get(id=request.course.id)
     api_response = []
+    n = 0
     for course_member in course.user_set.values():
+        n += 1
         ar = AssetResource(include_annotations=True)
         ar.Meta.excludes = ['added', 'modified', 'course', 'active']
         lst = []
@@ -464,14 +466,29 @@ def scalar_export(request):
 
         api_response += (ar.render_list(request, [course_member['id']],
                                   [request.user.id], assets, notes))
+    #     if n is 1:
+    #         first = (ar.render_list(request, [course_member['id']],
+    #                               [request.user.id], assets, notes))
+    #     else:
+    #         second = (ar.render_list(request, [course_member['id']],
+    #                               [request.user.id], assets, notes))
+    #         print course_member
+    # ar = AssetResource(include_annotations=True)
+    # ar.Meta.excludes = ['added', 'modified', 'course', 'active']
+    # lst = []
+    # notes = SherdNote.objects.get_related_notes(assets, request.user.id or None,
+    #                                             [request.user.id], True)
 
+    # api_response = (ar.render_list(request, [request.user.id],
+    #                               [request.user.id], assets, notes))
     export = {}
-    video_node = {}
     tag_num = 0
+    anno_num = 0
     if len(api_response) == 0:
         return HttpResponse("There are no videos in your collection")
     for i in range(0, len(api_response)):
-
+        video_node = {}
+        data = []
         data = api_response[i]
         utf_blob = data.get('metadata_blob')
         jsonmetadata_blob = dict()
@@ -487,6 +504,7 @@ def scalar_export(request):
         video_node['http://purl.org/dc/terms/source'] = [{"value": data.get('primary_type'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/date'] = [{"value": data.get('modified'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/contributor'] = [{"value": data.get('author')['username'], "type": "literal"}]
+        print root +  data.get('local_url').rstrip('/'), data.get('title'), video_node['http://purl.org/dc/terms/title']
         export[root +  data.get('local_url').rstrip('/')] = video_node
         #for annotation node
         for n in range(0, data.get('annotation_count')):
@@ -522,8 +540,9 @@ def scalar_export(request):
             except Exception:
                 pass
             a_annotation_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [{ "value" : "http://www.openannotation.org/ns/Annotation", "type" : "uri" }]
-            anno_urn = 'urn:mediathread:anno' + str(i + 1)
+            anno_urn = 'urn:mediathread:anno' + str(anno_num + 1)
             export[anno_urn.rstrip('/')] = a_annotation_node
+            anno_num += 1
 
             
             tag = []
@@ -579,10 +598,10 @@ def scalar_export(request):
             except Exception:
                 pass
             try:
+                print root + data.get('annotations')[n]['url'].rstrip('/')
                 export[root + data.get('annotations')[n]['url'].rstrip('/')] = annotation_node
             except Exception:
                 pass
-            print request.course
     return HttpResponse(json.dumps(export))
 
 

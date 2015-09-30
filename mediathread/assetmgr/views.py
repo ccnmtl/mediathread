@@ -498,7 +498,7 @@ def scalar_export(request):
         #for the video node
         video_node['http://purl.org/dc/terms/title'] = [{"value": data.get('title'), "type": "literal"}]
         video_node['http://purl.org/dc/terms/description'] = [{"value": data.get('description'), "type": "literal"}]
-        video_node['http://simile.mit.edu/2003/10/ontologies/artstor#url'] = [{"value": data.get('sources')['url']['url'], "type": "uri"}]
+        video_node['http://simile.mit.edu/2003/10/ontologies/artstor#url'] = [{"value": data.get('sources')['url'][data.get('primary_type')], "type": "uri"}]
         
         # video_node["http://simile.mit.edu/2003/10/ontologies/artstor#sourceLocation"] = [{"value": data.get(''), "type": "literal"}]
         video_node['http://purl.org/dc/terms/source'] = [{"value": data.get('primary_type'), "type": "literal"}]

@@ -416,18 +416,17 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
 
-        var target_parent = jQuery(self.el).find('.gallery-item-' +
-                                                 asset.id)[0];
+        var $targetParent = jQuery(self.el).find('.gallery-item-' + asset.id);
 
         if (!asset.thumbable) {
-            if (jQuery(target_parent).hasClass('static-height')) {
+            if ($targetParent.hasClass('static-height')) {
                 var thumbs = jQuery.grep(asset.sources, isThumb);
                 if (thumbs.length && thumbs[0].height > 240) {
-                    jQuery(target_parent).css({
+                    $targetParent.css({
                         height: (thumbs[0].height + 50) + 'px'
                     });
                 } else {
-                    jQuery(target_parent).css({height: '222px'});
+                    $targetParent.css({height: '222px'});
                 }
             }
         } else {
@@ -443,14 +442,14 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
             djangosherd.thumbs.push(view);
 
             // scale the height
-            var width = jQuery(target_parent).width();
+            var width = $targetParent.width();
             var height = (width / asset.width * asset.height + 85) + 'px';
-            if (jQuery(target_parent).hasClass('static-height')) {
-                jQuery(target_parent).css({height: height});
+            if ($targetParent.hasClass('static-height')) {
+                $targetParent.css({height: height});
             }
 
             var objDiv = document.createElement('div');
-            jQuery(target_parent).find('.asset-thumb').append(objDiv);
+            $targetParent.find('.asset-thumb').append(objDiv);
 
             asset.presentation = 'gallery';
             asset.x = 0;
@@ -638,13 +637,15 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
 
     self.updateSwitcher();
 
+    var $window = jQuery(window);
+    var $document = jQuery(document);
     if (self.current_asset === null) {
         // handles the maximized view
-        jQuery(window).scroll(function() {
+        $window.scroll(function() {
             if (!self.getLoading() &&
-                jQuery(window).scrollTop() >=
-                jQuery(document).height() -
-                jQuery(window).height() - 300) {
+                $window.scrollTop() >=
+                $document.height() -
+                $window.height() - 300) {
                 self.appendItems(self.current_records);
             }
         });

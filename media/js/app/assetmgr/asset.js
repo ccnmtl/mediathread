@@ -1070,7 +1070,7 @@
                 'readOnly': self.config.readOnly
             };
 
-            context = jQuery.extend(context, MediaThread.mustacheHelpers);
+            context = jQuery.extend({}, context, MediaThread.mustacheHelpers);
 
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);

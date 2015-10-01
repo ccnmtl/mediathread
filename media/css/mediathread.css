@@ -3053,6 +3053,7 @@ div.gallery-item h4 {
     width: 190px;
     overflow: hidden;
     max-height: 48px;
+    min-height: 20px;
 }
 
 ul.instructor-list {

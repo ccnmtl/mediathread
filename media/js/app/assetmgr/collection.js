@@ -35,7 +35,7 @@ var CollectionList = function(config) {
 
     self.el = jQuery(self.parent).find('div.' + self.template_label)[0];
 
-    self.switcher_context = MediaThread.mustacheHelpers;
+    self.switcher_context = jQuery.extend({}, MediaThread.mustacheHelpers);
 
     jQuery(window).on('asset.on_delete', {'self': self}, function(event) {
         var self = event.data.self;
@@ -612,13 +612,13 @@ CollectionList.prototype.updateAssets = function(the_records) {
     ).then(function() {
         var renderedMain = Mustache.render(
             MediaThread.templates[self.config.template],
-            jQuery.extend(the_records, MediaThread.mustacheHelpers)
+            jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
         );
         jQuery(self.el).html(renderedMain);
 
         var rendered = Mustache.render(
             MediaThread.templates[self.config.template + '_assets'],
-            jQuery.extend(the_records, MediaThread.mustacheHelpers)
+            jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
         );
         $elt = jQuery('#asset_table');
         $elt.html(rendered);

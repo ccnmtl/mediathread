@@ -6,6 +6,7 @@ import json
 import re
 import urllib
 import urllib2
+from urlparse import urlparse
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
@@ -20,7 +21,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 
 from mediathread.api import UserResource, TagResource
@@ -36,6 +37,32 @@ from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+
+
+def _parse_domain(url):
+    parsed_uri = urlparse(url)
+    return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+
+
+def _parse_metadata(req_dict):
+    metadata = {}
+    for key in req_dict:
+        if key.startswith('metadata-'):
+            metadata[key[len('metadata-'):]] = req_dict.getlist(key)
+    return metadata
+
+
+def _parse_user(request):
+    user = request.user
+    if ((user.is_staff or CourseAccess.allowed(request)) and
+            'as' in request.REQUEST):
+        as_user = request.REQUEST['as']
+        user = get_object_or_404(User, username=as_user)
+
+    if not request.course or not request.course.is_true_member(user):
+        return HttpResponseForbidden("You must be a member of the course to \
+            add assets.")
+    return user
 
 
 class ManageExternalCollectionView(LoggedInMixin, View):
@@ -100,27 +127,6 @@ def asset_workspace_courselookup(asset_id=None, annot_id=None):
     """
     if asset_id:
         return Asset.objects.get(pk=asset_id).course
-
-
-def _parse_metadata(req_dict):
-    metadata = {}
-    for key in req_dict:
-        if key.startswith('metadata-'):
-            metadata[key[len('metadata-'):]] = req_dict.getlist(key)
-    return metadata
-
-
-def _parse_user(request):
-    user = request.user
-    if ((user.is_staff or CourseAccess.allowed(request)) and
-            'as' in request.REQUEST):
-        as_user = request.REQUEST['as']
-        user = get_object_or_404(User, username=as_user)
-
-    if not request.course or not request.course.is_true_member(user):
-        return HttpResponseForbidden("You must be a member of the course to \
-            add assets.")
-    return user
 
 
 @login_required
@@ -476,6 +482,141 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
             return self.render_to_json_response(ctx)
         except Asset.DoesNotExist:
             return asset_switch_course(request, asset_id)
+
+
+class AssetEmbedListView(LoggedInMixin, RestrictedMaterialsMixin,
+                         TemplateView):
+
+    template_name = 'assetmgr/asset_embed_list.html'
+    EMBED_IMAGE_WIDTH = 200
+    EMBED_VIDEO_WIDTH = 350
+    EMBED_VIDEO_HEIGHT = 305
+
+    def get(self, request):
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
+        data = {
+            'owners': json.dumps(owners),
+            'return_url': request.GET.get('return_url', '')
+        }
+
+        return self.render_to_response(data)
+
+    def get_selection(self, keys, user):
+        for k in keys:
+            if k.startswith('item-'):
+                item_id = k.split('-')[1]
+                item = get_object_or_404(Asset, pk=item_id)
+                return item.global_annotation(user, True)
+
+            if k.startswith('selection-'):
+                selection_id = k.split('-')[1]
+                selection = get_object_or_404(SherdNote, pk=selection_id)
+                return selection
+
+        return None
+
+    def get_dimensions(self, source):
+        if source.is_image():
+            width = self.EMBED_IMAGE_WIDTH
+            if source.height > 0:
+                height = width * source.height / source.width + 100
+            else:
+                height = self.EMBED_IMAGE_WIDTH
+        else:
+            width = self.EMBED_VIDEO_WIDTH
+            height = self.EMBED_VIDEO_HEIGHT
+
+        return {'width': width, 'height': height}
+
+    def get_secret(self, return_url):
+        return_domain = _parse_domain(return_url)
+
+        special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+        if return_domain not in special.keys():
+            raise Http404("The domain is not recognized.")
+
+        return special[return_domain]
+
+    def get_iframe_url(self, secret, selection):
+        view_url = reverse('selection-embed-view',
+                           kwargs={'course_id': self.request.course.id,
+                                   'annot_id': selection.id})
+
+        nonce = '%smthc' % datetime.datetime.now().isoformat()
+        digest = hmac.new(
+            secret,
+            '%s:%s:%s' % (self.request.course.id, selection.id, nonce),
+            hashlib.sha1).hexdigest()
+
+        iframe_url = '%s://%s%s?nonce=%s&hmac=%s' % (
+            self.request.scheme, self.request.get_host(),
+            view_url, nonce, digest)
+        return urllib.quote(iframe_url, safe='~()*!.\'')
+
+    def post(self, request):
+        return_url = request.POST.get('return_url', '')
+        if len(return_url) == 0:
+            raise Http404("The domain is not recognized")
+
+        secret = self.get_secret(return_url)
+
+        selection = self.get_selection(self.request.POST.keys(),
+                                       self.request.user)
+
+        iframe_url = self.get_iframe_url(secret, selection)
+
+        dims = self.get_dimensions(selection.asset.primary)
+
+        url = ('%s?return_type=iframe&title=%s&url=%s&width=%s&height=%s'
+               '&') % (return_url, selection.display_title(), iframe_url,
+                       dims['width'], dims['height'])
+
+        return HttpResponseRedirect(url)
+
+
+class AssetEmbedView(TemplateView):
+    template_name = 'assetmgr/asset_embed_view.html'
+
+    def check_signature(self, course_id, selection_id):
+        # get the domain from the referer
+        referer = _parse_domain(self.request.META['HTTP_REFERER'])
+        special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+        if referer not in special.keys():
+            return False
+
+        nonce = self.request.GET.get('nonce')
+        digest = self.request.GET.get('hmac')
+
+        new_digest = hmac.new(
+            special[referer],
+            '%s:%s:%s' % (course_id, selection_id, nonce),
+            hashlib.sha1).hexdigest()
+
+        return digest == new_digest
+
+    def get_context_data(self, **kwargs):
+        course_id = kwargs.get('course_id')
+        selection_id = kwargs.get('annot_id', None)
+
+        if not self.check_signature(course_id, selection_id):
+            raise Http404()
+
+        selection = get_object_or_404(SherdNote, pk=selection_id)
+        ctx = AssetResource().render_one_context(
+            self.request, selection.asset, [selection])
+
+        if selection.asset.primary.is_image():
+            presentation = 'gallery'
+        else:
+            presentation = 'small'
+
+        return {'item': json.dumps(ctx),
+                'item_id': selection.asset.id,
+                'selection_id': selection.id,
+                'presentation': presentation,
+                'title': selection.display_title()}
 
 
 class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,

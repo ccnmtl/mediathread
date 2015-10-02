@@ -982,6 +982,8 @@ table#sliding-content-container, table#sliding-content-container tr {
     border-collapse: collapse;
 }
 
+.asset-embed-view tr,
+.asset-embed-view tr td, 
 #asset-workspace-panel-container tr, #asset-workspace-panel-container tr td,
 table#sliding-content-container tr, table#sliding-content-container tr td {
     border: none;

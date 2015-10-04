@@ -4,7 +4,8 @@ from django.conf.urls import patterns, url
 
 from mediathread.assetmgr.views import (AssetWorkspaceView,
                                         AssetReferenceView,
-                                        ManageExternalCollectionView)
+                                        ManageExternalCollectionView,
+                                        ScalarExportView)
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -47,6 +48,8 @@ urlpatterns = patterns(
     url(r'^xmeml/(?P<asset_id>\w+)/$',
         'final_cut_pro_xml',
         name="final_cut_pro_xml"),
+
+    url(r'scalar/', ScalarExportView.as_view(), name='scalar_export'),
 
     # Asset workspace variations
     url(r'^$', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),

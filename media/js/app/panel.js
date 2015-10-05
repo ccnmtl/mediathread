@@ -68,6 +68,23 @@
             jQuery(self.el).css('height', visible + 'px');
         };
 
+        this.loadTemplates = function(idx) {
+            if (idx === self.panels.length) {
+                // done. load content.
+                self.loadContent();
+
+            } else if (MediaThread.templates[self.panels[idx].template]) {
+                // it's already cached
+                self.loadTemplates(++idx);
+            } else {
+                // pull it off the wire
+                MediaThread.loadTemplate(self.panels[idx].template)
+                    .then(function() {
+                        self.loadTemplates(++idx);
+                    });
+            }
+        };
+
         this.loadContent = function() {
             var slidePanelCallback = function(event) {
                 self.slidePanel(this, event);

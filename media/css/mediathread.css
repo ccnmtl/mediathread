@@ -2994,6 +2994,11 @@ div.materials {
     background-color: #EDEDED;
 }
 
+.asset-embed-view .materials {
+    margin: 0;
+    background-color: white;
+}
+
 li.annotation-group {
     margin: 5px 5px 10px 0;
     overflow-x: hidden;
@@ -3130,6 +3135,11 @@ table.selection-level-info td {
     border: none;
     vertical-align: top;
     padding: 5px 0px;
+}
+
+.asset-embed-view .selection-inserter input {
+    margin-top: 5px;
+    margin-right: 5px;
 }
 
 table.selection-level-info td.selection-inserter {

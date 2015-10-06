@@ -10,15 +10,7 @@
         <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
         <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>    
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
-        
         <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
-        <script>
-         // Let Mediathread's custom Mustache library use the Mustache global.
-         var Mustache2 = Mustache;
-         Mustache = undefined;
-        </script>
-        <script src="{% static 'js/mustache/mustache-custom.js' %}"></script>
-
         <script src="{{STATIC_URL}}js/flowplayer/flowplayer-5.5.0.min.js"></script>
 
         <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
@@ -237,7 +229,7 @@
         <script type="text/javascript" src='{% static "js/app/ajaxDelete.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/browserdetect.js" %}'></script>
-        <script type="text/javascript" src='{% static "js/app/mediathread_mustache.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/mediathread_setup.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/panel.js" %}'></script>
         <script  type="text/javascript" src='{% static "js/app/shield.js" %}'></script>        
         

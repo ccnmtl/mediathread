@@ -1,6 +1,6 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
-/* global Mustache2: true, panelFactory: true, ProjectPanelHandler: true */
+/* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -39,7 +39,18 @@
                 success: function(json) {
                     self.panels = json.panels;
                     self.space_owner = json.space_owner;
-                    self.loadTemplates(0);
+
+                    var templates = [];
+                    jQuery.each(self.panels, function(idx, e) {
+                        templates.push(e.template);
+                    });
+
+                    jQuery.when.apply(
+                        this,
+                        MediaThread.loadTemplates(templates)
+                    ).then(function() {
+                        self.loadContent();
+                    });
                 }
             });
 
@@ -89,8 +100,8 @@
                     var lastCell = jQuery('#' + self.options.container +
                                           ' tr:first td:last');
                     lastCell.before(
-                        Mustache2.render(MediaThread.templates[panel.template],
-                                         panel));
+                        Mustache.render(MediaThread.templates[panel.template],
+                                        panel));
 
                     var newCell = jQuery(lastCell).prev().prev()[0];
                     var handler = panelFactory.create(newCell,

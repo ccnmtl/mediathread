@@ -1,5 +1,5 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
-/* global getVisibleContentHeight: true, MediaThread: true, Mustache2: true */
+/* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
 /* global SelectFilter: true, showMessage: true */
 /* global tinyMCE: true, tiny_mce_settings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
@@ -901,8 +901,8 @@ ProjectPanelHandler.prototype.updateRevisions = function() {
             dataType: 'json',
             error: function() {},
             success: function(json, textStatus, xhr) {
-                var rendered = Mustache2.render(
-                        MediaThread.templates.project_revisions, json);
+                var rendered = Mustache.render(
+                    MediaThread.templates.project_revisions, json);
                 $elt.html(rendered);
             }
         });

@@ -1,5 +1,5 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
-/* global DjangoSherd_Colors: true, MediaThread: true, Mustache2: true */
+/* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
 /* global updateUserSetting: true, console: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
@@ -8,12 +8,9 @@
     var AnnotationList = function() {
         var self = this;
 
-        /**
-         * Load all the asset-related templates.
-         *
-         * Returns an array of jqXHR objects.
-         */
-        this.loadTemplates = function() {
+        this.init = function(config) {
+            var self = this;
+
             var templates = [
                 'asset_view_help',
                 'asset_view_details',
@@ -26,19 +23,8 @@
                 'asset_sources',
                 'asset_feedback'
             ];
-            var promises = [];
 
-            for (var i = 0; i < templates.length; i++) {
-                promises.push(MediaThread.loadTemplate(templates[i]));
-            }
-
-            return promises;
-        };
-
-        this.init = function(config) {
-            var self = this;
-
-            jQuery.when.apply(this, this.loadTemplates())
+            jQuery.when.apply(this, MediaThread.loadTemplates(templates))
                 .then(function() {
                     // This is triggered once each promise created by
                     // this.loadTemplates() has either been resolved or
@@ -378,7 +364,7 @@
             var $elt = jQuery('#asset-details-annotations-list');
             $elt.hide();
             jQuery('.accordion').accordion('destroy');
-            var rendered = Mustache2.render(
+            var rendered = Mustache.render(
                 MediaThread.templates.asset_annotation_list, context);
             $elt.html(rendered);
             var options = {
@@ -671,7 +657,7 @@
 
                         var $elt = jQuery('#asset-global-annotation');
                         $elt.hide();
-                        var rendered = Mustache2.render(
+                        var rendered = Mustache.render(
                             MediaThread.templates.asset_global_annotation,
                             context);
                         $elt.html(rendered);
@@ -782,7 +768,7 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    var rendered = Mustache2.render(
+                    var rendered = Mustache.render(
                         MediaThread.templates.asset_annotation_current,
                         context);
                     jQuery('#annotation-current').html(rendered);
@@ -850,7 +836,7 @@
                 .done(function() {
                     var $elt = jQuery('#annotation-current');
                     $elt.hide();
-                    var rendered = Mustache2.render(
+                    var rendered = Mustache.render(
                         MediaThread.templates.asset_annotation_current,
                         context);
                     $elt.html(rendered);
@@ -1046,7 +1032,7 @@
                 dataType: 'json',
                 error: function() {},
                 success: function(json, textStatus, xhr) {
-                    var rendered = Mustache2.render(
+                    var rendered = Mustache.render(
                         MediaThread.templates.asset_references, json);
                     jQuery('#asset-references').html(rendered);
                 }
@@ -1081,13 +1067,10 @@
             var context = {
                 'asset-current': self.active_asset,
                 'vocabulary': self.vocabulary,
-                'readOnly': self.config.readOnly,
-                'lower': function() {
-                    return function(text, render) {
-                        return render(text).toLowerCase();
-                    };
-                }
+                'readOnly': self.config.readOnly
             };
+
+            context = jQuery.extend({}, context, MediaThread.mustacheHelpers);
 
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);
@@ -1136,15 +1119,15 @@
             self.edit_state = null;
 
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
-            var rendered = Mustache2.render(tpl, context);
+            var rendered = Mustache.render(tpl, context);
             if (template_label === 'asset-view-details') {
                 jQuery('#asset-view-details').html(rendered);
 
-                rendered = Mustache2.render(
+                rendered = Mustache.render(
                     MediaThread.templates.asset_sources, context);
                 jQuery('#asset-sources').html(rendered);
             } else if (template_label === 'asset-view-details-quick-edit') {
-                rendered = Mustache2.render(
+                rendered = Mustache.render(
                     MediaThread.templates.asset_view_details_quick_edit,
                     context);
                 var $el = jQuery('#asset-view-details-quick-edit');
@@ -1156,17 +1139,17 @@
                 console.error('Didn\'t attach template for:', template_label);
             }
 
-            rendered = Mustache2.render(MediaThread.templates.asset_view_help,
+            rendered = Mustache.render(MediaThread.templates.asset_view_help,
                                         context);
             jQuery('#asset-view-help').html(rendered);
             jQuery('.asset-view-title').text(context['asset-current'].title);
 
-            rendered = Mustache2.render(
+            rendered = Mustache.render(
                 MediaThread.templates.asset_global_annotation,
                 context);
             jQuery('#asset-global-annotation').html(rendered);
 
-            rendered = Mustache2.render(
+            rendered = Mustache.render(
                 MediaThread.templates.asset_global_annotation_quick_edit,
                 context);
             jQuery('#asset-global-annotation-quick-edit').html(rendered);

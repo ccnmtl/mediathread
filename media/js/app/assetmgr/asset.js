@@ -297,6 +297,11 @@
             self.updateAnnotationList();
         };
 
+        this.rgb = function(color) {
+            return 'rgb(' + parseInt(color.r, 10) + ',' +
+                parseInt(color.g, 10) + ',' + parseInt(color.b, 10) + ')';
+        };
+
         this.updateAnnotationList = function() {
             var frm = document.forms['annotation-list-filter'];
             if (!frm) {
@@ -320,7 +325,8 @@
                     var titles = self.layers[grouping].color_by(ann);
                     for (var j = 0; j < titles.length; j++) {
                         var title = titles[j];
-                        var color = DjangoSherd_Colors.get(title);
+                        var color = self.rgb(DjangoSherd_Colors.get(title));
+
                         /// add the annotation onto the layer w/the right color
                         if (ann.annotation) {
                             self.layers[grouping].add(

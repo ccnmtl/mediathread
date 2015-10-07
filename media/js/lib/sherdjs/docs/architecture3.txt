@@ -1,0 +1,57 @@
+.microformat
+  INTERCHANGE: self.microformat, self.components
+  find(html_dom) -> [{html:html_dom}]
+  create(obj,doc) -> {htmlID:id,object:obj,text:'htmlstring'}
+  type() -> 'type'
+  read/get(find_rv_item) -> obj
+  components(find_rv_item) -> .components
+
+.components (dom objects)
+
+
+//uses microformat,
+.html
+  get(dom)  //reads data in dom and plugs it in to obj
+  put(dom)  //takes data from obj and writes mf in dom (replacing contents?)
+
+.view
+  //for controllers, but NOT layers
+  show
+  hide
+  //
+  [custom methods like]
+
+.storage
+  save()
+  remove
+  updateKeys()
+  
+
+
+.events
+  
+.media
+  use: self.components
+
+==================
+Serialized objects
+==================
+.htmltext
+.url
+.start (float)
+.startCode
+.end (float)
+.endCode
+.title
+
+?.type
+?.metadata
+
+
+================
+Event functions
+===============
+select
+hover
+ready
+update

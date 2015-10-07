@@ -160,9 +160,9 @@ var tiny_mce_settings = {
 
 tinymce.PluginManager.load(
     'citation',
-    '/media/js/sherdjs/lib/mcePlugin_citation/editor_plugin.js');
+    '/media/js/lib/sherdjs/lib/mcePlugin_citation/editor_plugin.js');
 tinymce.PluginManager.load(
     'editorwindow',
-    '/media/js/sherdjs/lib/mcePlugin_editorwindow/editor_plugin.js');
+    '/media/js/lib/sherdjs/lib/mcePlugin_editorwindow/editor_plugin.js');
 
 tinyMCE.init(tiny_mce_settings);

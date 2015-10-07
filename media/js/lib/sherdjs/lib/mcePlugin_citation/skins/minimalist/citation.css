@@ -1,0 +1,68 @@
+a.materialCitation {
+    background-color: #fff;
+    background-image: url('./meth_video.png');
+    background-repeat: no-repeat;
+    padding-left: 23px;
+    width: auto;
+    text-decoration: underline;
+}
+
+a.materialCitation:after {
+    content: attr(title);
+}
+
+a.asset_title.asset-whole {
+    background-image: url('./meth_video.png');
+    background-repeat: no-repeat;
+}
+
+a.materialCitation,
+a.asset-mp3,
+a.asset-mp4_audio,
+a.asset-whole.asset-mp3,
+a.asset-whole.asset-mp4_audio,
+a.asset-image,
+a.asset-image_fpx,
+a.asset-whole.asset-image,
+a.asset-whole.asset-image_fpx,
+a.asset-youtube,
+a.asset-youtube_fpx {
+    color: #660000 !important;
+    cursor: pointer;
+    margin: 0 5px 0 5px;
+}
+
+a.asset-mp3,
+a.asset-mp4_audio,
+a.asset-whole.asset-mp3,
+a.asset-whole.asset-mp4_audio,
+a.asset-image,
+a.asset-image_fpx,
+a.asset-whole.asset-image,
+a.asset-whole.asset-image_fpx,
+a.asset-youtube,
+a.asset-youtube_fpx {
+    padding-left: 27px;
+    background-repeat: no-repeat;
+}
+
+a.asset-mp3,
+a.asset-mp4_audio,
+a.asset-whole.asset-mp3,
+a.asset-whole.asset-mp4_audio {
+    background-image: url('./meth_audio.png');
+    background-position: left -3px;
+}
+
+a.asset-image,
+a.asset-image_fpx,
+a.asset-whole.asset-image,
+a.asset-whole.asset-image_fpx {
+    background-image: url('./meth_image.png');
+    background-position: left -3px;
+}
+
+a.asset-youtube,
+a.asset-youtube_fpx {
+    background-image: url('./meth_video.png');
+}

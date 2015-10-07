@@ -1,6 +1,11 @@
 # pylint: disable-msg=R0904
+import datetime
+import hashlib
+import hmac
+from json import loads
 import json
 
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase
@@ -9,7 +14,8 @@ from django.test.client import RequestFactory
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
     RedirectToExternalCollectionView, \
-    RedirectToUploaderView, _parse_user, AssetCreateView
+    RedirectToUploaderView, _parse_user, AssetCreateView, AssetEmbedListView, \
+    _parse_domain, AssetEmbedView
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
@@ -503,3 +509,157 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.course = self.sample_course
         self.add_as_faculty(request.course, request.user)
         self.assertEquals(_parse_user(request), self.student_two)
+
+
+class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.url = reverse('asset-embed-list')
+
+    def tearDown(self):
+        cache.clear()
+
+    def test_parse_domain(self):
+        url = 'https://github.com/ccnmtl/mediathread/pull/354'
+        self.assertEquals(_parse_domain(url), 'https://github.com/')
+
+    def test_anonymous_user(self):
+        # not logged in
+        self.assertEquals(self.client.get(self.url).status_code, 302)
+
+    def test_get(self):
+        return_url = 'http://foo.bar/baz/'
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(self.url, {'return_url': return_url})
+        self.assertEquals(response.status_code, 200)
+
+        the_owners = loads(response.context_data['owners'])
+        self.assertEquals(len(the_owners), 5)
+        self.assertEquals(response.context_data['return_url'], return_url)
+
+    def test_get_selection(self):
+        asset = AssetFactory.create(course=self.sample_course,
+                                    primary_source='image',
+                                    author=self.instructor_one)
+        gann = SherdNoteFactory(
+            asset=asset, author=self.instructor_one,
+            title=None, range1=None, range2=None)
+        note = SherdNoteFactory(asset=asset, author=self.instructor_one,
+                                title='Selection')
+
+        view = AssetEmbedListView()
+
+        keys = ['foo-1234']
+        self.assertIsNone(view.get_selection(keys, self.instructor_one))
+
+        with self.assertRaises(Http404):
+            keys = ['item-666']
+            view.get_selection(keys, self.instructor_one)
+
+        with self.assertRaises(Http404):
+            keys = ['selection-666']
+            view.get_selection(keys, self.instructor_one)
+
+        keys = ['item-%s' % asset.id]
+        view = AssetEmbedListView()
+        self.assertEquals(view.get_selection(keys, self.instructor_one), gann)
+
+        keys = ['selection-%s' % note.id]
+        view = AssetEmbedListView()
+        self.assertEquals(view.get_selection(keys, self.instructor_one), note)
+
+    def test_get_dimensions_image(self):
+        asset = AssetFactory.create(course=self.sample_course,
+                                    primary_source='image',
+                                    author=self.instructor_one)
+        primary = asset.primary
+
+        view = AssetEmbedListView()
+        dims = view.get_dimensions(primary)
+        self.assertEquals(dims['width'], view.EMBED_IMAGE_WIDTH)
+        self.assertEquals(dims['height'], view.EMBED_IMAGE_WIDTH)
+
+        # set a width/height
+        primary.width = 400
+        primary.height = 600
+        primary.save()
+
+        dims = view.get_dimensions(primary)
+        self.assertEquals(dims['width'], view.EMBED_IMAGE_WIDTH)
+        self.assertEquals(dims['height'], 400)
+
+    def test_get_dimensions_video(self):
+        asset = AssetFactory.create(
+            course=self.sample_course, primary_source='youtube')
+
+        self.assertEquals(asset.media_type(), 'video')
+
+        view = AssetEmbedListView()
+        dims = view.get_dimensions(asset.primary)
+        self.assertEquals(dims['width'], view.EMBED_VIDEO_WIDTH)
+        self.assertEquals(dims['height'], view.EMBED_VIDEO_HEIGHT)
+
+    def test_get_secret(self):
+        secrets = {'http://testserver/': 'testing'}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            view = AssetEmbedListView()
+
+            with self.assertRaises(Http404):
+                view.get_secret('http://foo.bar')
+
+            self.assertEquals(view.get_secret('http://testserver/a/b/c'),
+                              'testing')
+
+    def test_get_iframe_url(self):
+        view = AssetEmbedListView()
+        view.request = RequestFactory().get('/')
+        view.request.course = self.sample_course
+
+        asset = AssetFactory.create(course=self.sample_course,
+                                    primary_source='image',
+                                    author=self.instructor_one)
+        note = SherdNoteFactory(asset=asset, author=self.instructor_one,
+                                title='Selection')
+
+        url = view.get_iframe_url('secret', note)
+        prefix = 'http%3A%2F%2Ftestserver%2Fasset%2Fembed%2Fview%2F1%2F1%2F%3F'
+        self.assertTrue(url.startswith(prefix))
+        self.assertTrue('nonce' in url)
+        self.assertTrue('hmac' in url)
+
+    def test_embed_view(self):
+        asset = AssetFactory.create(course=self.sample_course,
+                                    primary_source='image',
+                                    author=self.instructor_one)
+        note = SherdNoteFactory(asset=asset, author=self.instructor_one,
+                                title='Selection')
+
+        nonce = '%smthc' % datetime.datetime.now().isoformat()
+        digest = hmac.new(
+            'secret',
+            '%s:%s:%s' % (self.sample_course.id, note.id, nonce),
+            hashlib.sha1).hexdigest()
+
+        view = AssetEmbedView()
+        view.request = RequestFactory().get(
+            '/', {'nonce': nonce, 'hmac': digest},
+            HTTP_REFERER='http://testserver/a/b/c/')
+        view.request.course = self.sample_course
+        view.request.user = self.instructor_one
+
+        with self.assertRaises(Http404):
+            view.get_context_data(course_id=self.sample_course.id,
+                                  annot_id=note.id)
+
+        secrets = {'http://testserver/': 'secret'}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            ctx = view.get_context_data(course_id=self.sample_course.id,
+                                        annot_id=note.id)
+
+            self.assertTrue('item' in ctx)
+            self.assertEquals(ctx['item_id'], asset.id)
+            self.assertEquals(ctx['selection_id'], note.id)
+            self.assertEquals(ctx['presentation'], 'gallery')
+            self.assertEquals(ctx['title'], 'Selection')

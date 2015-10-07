@@ -4,7 +4,8 @@ from django.conf.urls import patterns, url
 
 from mediathread.assetmgr.views import (AssetWorkspaceView,
                                         AssetReferenceView,
-                                        ManageExternalCollectionView)
+                                        ManageExternalCollectionView,
+                                        AssetEmbedView, AssetEmbedListView)
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -47,6 +48,11 @@ urlpatterns = patterns(
     url(r'^xmeml/(?P<asset_id>\w+)/$',
         'final_cut_pro_xml',
         name="final_cut_pro_xml"),
+
+    url(r'^embed/view/(?P<course_id>\d+)/(?P<annot_id>\d+)/$',
+        AssetEmbedView.as_view(), {}, 'selection-embed-view'),
+
+    url(r'^embed', AssetEmbedListView.as_view(), {}, 'asset-embed-list'),
 
     # Asset workspace variations
     url(r'^$', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),

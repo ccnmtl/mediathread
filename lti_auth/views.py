@@ -5,30 +5,41 @@ from django.http.response import HttpResponseRedirect, HttpResponseForbidden
 from django.views.generic.base import View, TemplateView
 
 
-class LTILoginView(View):
-    request_type = 'initial'
+class LTIAuthMixin(object):
     role_type = 'any'
+    request_type = 'any'
 
-    def post(self, request):
+    def dispatch(self, *args, **kwargs):
         """ validates the LTI oAuth signature ticket and logs the user in """
-
-        user = authenticate(request=request,
+        user = authenticate(request=self.request,
                             request_type=self.request_type,
                             role_type=self.role_type)
         if user is None:
             return HttpResponseForbidden('unable to login through LTI')
 
-        login(request, user)
+        login(self.request, user)
 
-        lti_landing_page = request.POST.get('custom_landing_page', False)
-        if lti_landing_page:
+        return super(LTIAuthMixin, self).dispatch(*args, **kwargs)
+
+
+class LTIRoutingView(LTIAuthMixin, View):
+    request_type = 'initial'
+    role_type = 'any'
+
+    def post(self, request):
+        if request.POST.get('ext_content_intended_use', '') == 'embed':
+            domain = self.request.get_host()
+            url = '%s://%s/%s?return_url=%s' % (
+                self.request.scheme, domain,
+                settings.LTI_TOOL_CONFIGURATION['embed_url'],
+                request.POST.get('launch_presentation_return_url'))
+        elif len(request.POST.get('custom_landing_page', '')) > 0:
             # Canvas does not support launching in a new window/tab
             # Provide a "launch in new tab" landing page
             url = reverse('lti-landing-page')
         else:
             url = '/'
 
-        # navigate to the course or the switch course page
         return HttpResponseRedirect(url)
 
 
@@ -43,15 +54,15 @@ class LTIConfigView(TemplateView):
             settings.LTI_TOOL_CONFIGURATION['launch_url'])
         icon_url = '%s://%s/%s' % (
             self.request.scheme, domain,
-            settings.LTI_TOOL_CONFIGURATION['icon_url'])
+            settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
 
         ctx = {
             'domain': domain,
             'launch_url': launch_url,
-            'icon_url': icon_url,
             'title': settings.LTI_TOOL_CONFIGURATION['title'],
             'description': settings.LTI_TOOL_CONFIGURATION['description'],
-            'tool_id': settings.LTI_TOOL_CONFIGURATION['tool_id'],
+            'embed_icon_url': icon_url,
+            'embed_tool_id': settings.LTI_TOOL_CONFIGURATION['embed_tool_id'],
         }
         return ctx
 

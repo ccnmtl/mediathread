@@ -305,14 +305,15 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
                            'lti_auth.auth.LTIBackend']
 
 LTI_TOOL_CONFIGURATION = {
-    'launch_url': 'lti/',
-    'icon_url': 'media/img/icons/icon-16.png',
     'title': 'Mediathread',
-    'tool_id': 'mediathread',
     'description': 'View and filter your Mediathread selections. '
     'A new icon will show up in your course rich editor letting you '
     'search and filter your Mediathread selections and click to '
     'embed selections in your course material.',
+    'launch_url': 'lti/',
+    'embed_url': 'asset/embed/',
+    'embed_icon_url': 'media/img/icons/icon-16.png',
+    'embed_tool_id': 'mediathread',
 }
 
 # if you add a 'deploy_specific' directory

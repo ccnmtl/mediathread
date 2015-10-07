@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Item Embed View
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
+
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+    <script src="{{STATIC_URL}}js/app/assetmgr/assetembed.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block uncompressable_js %}
+    <!-- required project functionality -->
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>    
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            var view = new AssetEmbedView({
+                el: jQuery('.asset-embed-view').first(),
+                space_owner: '{{request.user.username}}',
+                owners: {{owners|safe}}
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block standardnav %}
+{% endblock %}
+
+{% block courseinformation %}
+{% endblock %}
+
+{% block content %}
+    <div class="asset-embed-view">
+        <form action='.' method='post'>
+            <input type="hidden" name="return_url" value="{{return_url}}" />
+            <div id="collection_table" class="collection_table"></div>
+        </form>    
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

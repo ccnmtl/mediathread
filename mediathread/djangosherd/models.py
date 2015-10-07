@@ -370,6 +370,12 @@ class SherdNote(Annotation):
         sub = r'\g<1>\g<2>%s\g<4>%s/' % (self.asset.id, self.id)
         return re.sub(regex_string, sub, text)
 
+    def display_title(self):
+        if self.is_global_annotation():
+            return self.asset.title
+        else:
+            return self.title
+
 
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants

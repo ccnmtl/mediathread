@@ -5,7 +5,8 @@ from django.conf.urls import patterns, url
 from mediathread.assetmgr.views import (AssetWorkspaceView,
                                         AssetReferenceView,
                                         ManageExternalCollectionView,
-                                        AssetEmbedView, AssetEmbedListView)
+                                        AssetEmbedView, AssetEmbedListView,
+                                        ScalarExportView)
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -53,6 +54,8 @@ urlpatterns = patterns(
         AssetEmbedView.as_view(), {}, 'selection-embed-view'),
 
     url(r'^embed', AssetEmbedListView.as_view(), {}, 'asset-embed-list'),
+
+    url(r'scalar/', ScalarExportView.as_view(), name='scalar_export'),
 
     # Asset workspace variations
     url(r'^$', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),

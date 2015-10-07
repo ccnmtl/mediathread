@@ -7,7 +7,7 @@ pyflakes==0.9.2
 mccabe==0.3.1
 flake8==2.3.0
 lxml==3.4.4
-fuzzywuzzy==0.6.0  # lettuce
+fuzzywuzzy==0.6.1  # lettuce
 mock==1.0.1  # sure
 sure==1.2.12  # lettuce
 extras==0.0.3
@@ -21,7 +21,7 @@ python-subunit==1.1.0  # lettuce
 requirements/src/lettuce-0.2.21.ccnmtl.tar.gz
 selenium==2.47.1
 six==1.9.0
-sqlparse==0.1.14  # django-debug-toolbar
+sqlparse==0.1.16  # django-debug-toolbar
 python-mimeparse==0.1.4  # tastypie
 python-dateutil==2.4.2  # tastypie
 django-tastypie==0.12.2

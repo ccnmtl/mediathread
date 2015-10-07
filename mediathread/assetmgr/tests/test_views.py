@@ -7,7 +7,7 @@ import json
 
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponseRedirect
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -27,6 +27,8 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
     def setUp(self):
         self.setup_sample_course()
         self.setup_alternate_course()
+
+        self.superuser = UserFactory(is_staff=True, is_superuser=True)
 
         # instructor that sees both Sample Course & Alternate Course
         self.instructor_three = UserFactory(username='instructor_three')
@@ -663,3 +665,20 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(ctx['selection_id'], note.id)
             self.assertEquals(ctx['presentation'], 'gallery')
             self.assertEquals(ctx['title'], 'Selection')
+
+    def test_scalar_no_super_redirect(self):
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+
+        response = self.client.get("/asset/scalar/")
+        self.assertTrue(isinstance(response, HttpResponseRedirect))
+
+    def test_scalar_super_no_redirect(self):
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+        self.client.login(username=self.superuser.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.get("/asset/scalar/")
+        self.assertFalse(isinstance(response, HttpResponseRedirect))

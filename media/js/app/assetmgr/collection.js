@@ -684,7 +684,8 @@ CollectionList.prototype.appendAssets = function(the_records) {
     if (the_records.assets.length > 0) {
         var html = jQuery(Mustache.render(
             MediaThread.templates[self.config.template + '_assets'],
-            the_records));
+            jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
+        ));
         var container = jQuery(self.el).find('div.asset-table');
         jQuery(container).append(html);
 

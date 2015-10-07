@@ -512,6 +512,23 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.add_as_faculty(request.course, request.user)
         self.assertEquals(_parse_user(request), self.student_two)
 
+    def test_scalar_no_super_redirect(self):
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+
+        response = self.client.get("/asset/scalar/")
+        self.assertTrue(isinstance(response, HttpResponseRedirect))
+
+    def test_scalar_super_no_redirect(self):
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+        self.client.login(username=self.superuser.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.get("/asset/scalar/")
+        self.assertFalse(isinstance(response, HttpResponseRedirect))
+
 
 class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
 
@@ -665,20 +682,3 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(ctx['selection_id'], note.id)
             self.assertEquals(ctx['presentation'], 'gallery')
             self.assertEquals(ctx['title'], 'Selection')
-
-    def test_scalar_no_super_redirect(self):
-        request = RequestFactory().get('/')
-        request.course = self.sample_course
-
-        response = self.client.get("/asset/scalar/")
-        self.assertTrue(isinstance(response, HttpResponseRedirect))
-
-    def test_scalar_super_no_redirect(self):
-        request = RequestFactory().get('/')
-        request.course = self.sample_course
-        self.client.login(username=self.superuser.username,
-                          password='test')
-        self.switch_course(self.client, self.sample_course)
-
-        response = self.client.get("/asset/scalar/")
-        self.assertFalse(isinstance(response, HttpResponseRedirect))

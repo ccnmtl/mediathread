@@ -35,7 +35,7 @@ from mediathread.djangosherd.views import create_annotation, edit_annotation, \
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
-    LoggedInMixinSuperuser
+    LoggedInSuperuserMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -456,7 +456,7 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 
-class ScalarExportView(LoggedInMixinSuperuser, RestrictedMaterialsMixin, View):
+class ScalarExportView(LoggedInSuperuserMixin, RestrictedMaterialsMixin, View):
 
     def __init__(self):
         self.export = {}

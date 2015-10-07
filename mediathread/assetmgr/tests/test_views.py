@@ -50,6 +50,22 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(sources['image'].height, 526)
         self.assertEquals(sources['image'].media_type, 'text/html')
 
+        data = {
+            'title': 'HTML5 video title',
+            'asset-source': 'bookmarklet',
+            'video': 'http://www.example.com/video.mp4',
+            'video-metadata': 'w480h358',
+            'metadata-description': 'Video description',
+        }
+        request = RequestFactory().post('/save/', data)
+        sources = AssetCreateView.sources_from_args(request)
+        self.assertEquals(len(sources.keys()), 2)
+        self.assertEquals(sources['video'].url,
+                          'http://www.example.com/video.mp4')
+        self.assertTrue(sources['video'].primary)
+        self.assertEquals(sources['video'].width, 480)
+        self.assertEquals(sources['video'].height, 358)
+
     def test_manage_external_collection_get(self):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
@@ -130,8 +146,27 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = view.post(request)
 
         self.assertEquals(response.status_code, 200)
-
         Asset.objects.get(title='YouTube Asset')
+
+        data = {
+            'title': 'HTML5 video title',
+            'asset-source': 'bookmarklet',
+            'video': 'http://www.example.com/video.mp4',
+            'video-metadata': 'w480h358',
+            'metadata-description': 'Video description',
+        }
+        request = RequestFactory().post('/save/', data)
+        request.user = self.instructor_one
+        request.course = self.sample_course
+
+        view = AssetCreateView()
+        view.request = request
+        response = view.post(request)
+
+        self.assertEquals(response.status_code, 200)
+        asset = Asset.objects.get(title='HTML5 video title')
+        self.assertEquals(asset.metadata()['description'],
+                          [data['metadata-description']])
 
     def test_asset_workspace_course_lookup(self):
         self.assertIsNone(asset_workspace_courselookup())

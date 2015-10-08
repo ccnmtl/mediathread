@@ -1,26 +1,26 @@
-        <div id="firefox" class="browser-instruction"> 
-            <strong>Install Bookmarklet in Firefox</strong>
+        <div id="firefox-instruction" class="browser-instruction">
+            <strong>How to install the bookmarklet in Firefox</strong>
             <ol>
               <li>In the <b>View</b> menu, show the "Bookmarks"  toolbar.</li><br />
               <li>Drag the link below onto your browser bookmarks toolbar.</li>
             </ol>
         </div>
-        <div id="ie" class="browser-instruction">
-            <strong>Install Bookmarklet in Internet Explorer</strong>
+        <div id="ie-instruction" class="browser-instruction">
+            <strong>How to install the bookmarklet in Internet Explorer</strong>
             <ol>
               <li>Right-click on the blue bookmarklet button below.</li>  
               <li>and choose <b>Add to Favorites</b></li>
             </ol>
         </div>
-        <div id="safari" class="browser-instruction"> 
-            <strong>Install Bookmarklet in Safari</strong>
+        <div id="safari-instruction" class="browser-instruction">
+            <strong>How to install the bookmarklet in Safari</strong>
             <ol>
              <li>In the <b>View</b> menu, show the "Favorites Bar".</li><br />
               <li>Drag the link below onto your browser bookmarks toolbar</li>
             </ol>
         </div>
-        <div id="chrome" class="browser-instruction"> 
-            <strong>Install Bookmarklet in Chrome</strong>
+        <div id="chrome-instruction" class="browser-instruction">
+            <strong>How to install the bookmarklet in Chrome</strong>
             <ol>
               <li>Under the <b>Tools</b> menu (the Wrench), show the "Bookmarks bar".</li><br />
               <li>Drag the link below onto your browser bookmarks toolbar:  <br />Collect w/Mediathread</li>
@@ -31,18 +31,18 @@
             var u = navigator.userAgent;
             if (/Trident/.test(u)) {
                 jQuery('.browser-instruction').hide();
-                jQuery('#ie').show();
+                jQuery('#ie-instruction').show();
             } else if (/Chrome/.test(u)) {
                 jQuery('.browser-instruction').hide();
-                jQuery('#chrome').show();
+                jQuery('#chrome-instruction').show();
             } else if (/Safari/.test(u)) {
                 jQuery('.browser-instruction').hide();
-                jQuery('#safari').show();
+                jQuery('#safari-instruction').show();
             } else if (/MSIE/.test(u)) {
                 jQuery('.browser-instruction').hide();
-                jQuery('#ie').show();
+                jQuery('#ie-instruction').show();
             } else if (/Gecko/.test(u)) {
                 jQuery('.browser-instruction').hide();
-                jQuery('#firefox').show();
+                jQuery('#firefox-instruction').show();
             }
         </script>

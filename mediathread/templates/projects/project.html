@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />    
     <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/project.print.css"  media="print" />
-    <link rel="stylesheet" href="{{STATIC_URL}}js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />
 
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
@@ -24,7 +24,7 @@
         
     <!--  TinyMCE -->
     <script type="text/javascript">
-        var tinyMCEPreInit = {query:'',suffix:'',base:'{{STATIC_URL}}js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
+        var tinyMCEPreInit = {query:'',suffix:'',base:'{{STATIC_URL}}js/lib/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'};
     </script>
 
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
@@ -40,7 +40,7 @@
 
     <!-- required project functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>    
-    <script type="text/javascript" src="{{STATIC_URL}}js/sherdjs/lib/tiny_mce3_min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tiny_mce3_min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tiny_mce_init3.js"></script>
     
     <!--  Generic Functionality -->

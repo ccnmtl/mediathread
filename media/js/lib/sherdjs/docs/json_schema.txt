@@ -1,0 +1,146 @@
+============================================
+PLANNED SCHEMA:
+============================================
+----
+goals:
+----
+1. annotation == notebook
+2. annotation == annotated asset
+   i. but how do we know someone is opening the asset vs. the annotation?
+   ii. which annotation?
+
+----
+questions:
+----
+1. a. annotation wraps the asset 
+      * annotation handling can be different
+      * annotation lists can span across assets, but stay sequential
+      -issue: how do multiple annotations share extra information about an asset?
+        + this could be necessary anyway
+   OR 
+   b. asset wraps the annotation
+      * asset handler is primary handler automatically for annotation 
+      * in this model the asset First LOADS the asset, and then the annotation gets to zoom in
+      -issue if annotation would get a modified asset for its context (e.g. thumbnail, etc)
+
+   c. serialization must support both
+      *when we're in an environment, 
+	    assets have: storage/data api, getAnnotations api, getHTMLs api, focus()
+	    annotations: getAsset() api, focus()
+      *buildUp creates a list of assets and annotations (which reference each other)
+       
+
+----
+conservative
+----
+1. rename 'timelines' to 'annotations'
+2. rename 'chapters' to 'annotations'
+
+============================================
+ORIGINAL HAVEL SCHEMA:
+============================================
+benefit: an annotation== an annotated asset (so asset loading is the same)
+
+
+
+----------
+Personal Notebook
+----------
+loadNotebook(
+    {"timelines":{}, 
+     "body":"<p><a class=\"clip\" href=\"javascript:openAsset(&#39;/media_panels/video_window/?material=havel_event_harriman_symposium&#38;timeline=WhatAntipoliticalPoliticsIsandWhatItIsNotAmbassadorMartinPalou&#39;,&#39;clip&#39;,&#39;unrestricted&#39;,&#39;WhatAntipoliticalPoliticsIsandWhatItIsNotAmbassadorMartinPalou&#39;)\">Ambassador Martin Palou&#353; - &#39;What Antipolitical Politics Is and What It Is Not&#39; </a> </p>
+             <p><a class=\"image\" href=\"javascript:openAsset(&#39;/pics/havel_in_new_york/?img=Public_Theater4&#39;,&#39;image&#39;,&#39;restricted&#39;,&#39;Public_Theater4&#39;)\"><img src=\"../../pics/thumbnails/Public_Theater4.jpg\" /> \tPlaybill of Public Theater 1967-8 production of The Memorandum \t</a> </p>", 
+     "title":"Schuyler's Awesome \"Notebook\"", 
+
+     "keywords":["access:private"]
+    },
+
+    [],
+    "sbd12")
+
+
+----------------
+Abrams Notebook
+----------------
+loadNotebook(
+    /*if notebook*/
+    {title:"Interviews",
+     caption:"Bradley Abrams <br /> <h3 id='captioninfo'>Associate Director, Harriman Institute and <br />Associate Professor of History, Columbia University</h3>",
+     timelines:{
+	 'havel1':{
+	     "type":"flv", //asset type
+	     "link":"http://ccnmtl.columbia.edu/broadcast/havel/flv/abrams/havel_abrams01.flv",
+	     "chapters":{//annotation list for this asset
+		 'urla':{"starttime":"00:00:05",
+			 "link":"http://havel.columbia.edu/biblio.html#bio", "title":"Bibliography: Biography", "target":"_parent"
+			}
+	     }
+	 }
+	 ,'havel2':{
+	     "type":"flv",
+	     "link":"http://ccnmtl.columbia.edu/broadcast/havel/flv/abrams/havel_abrams02.flv",
+	     "chapters":{
+		 'urlb':{"starttime":"00:00:20",
+			 "link":"http://nobelprize.org/nobel_prizes/peace/laureates/1991/", "title":"Link: Information on Nobel Peace Prize winner Aung San Suu Kyi, from the Nobel Foundation website"
+			}
+		 ,'urlc':{"starttime":"00:00:53",
+			  "link":"http://havel.columbia.edu/biblio.html#essays", "title":"Bibliography: Havel's essays", "target":"_parent"
+			 }
+		 ,'urld':{"starttime":"00:01:32",
+			  "link":"http://havel.columbia.edu/biblio.html#plays", "title":"Bibliography: Havel's plays", "target":"_parent"
+			 }
+	     }
+	 }
+     } //timelines
+    }//notebook
+);
+
+==================
+JSON Precedents
+==================
+http://www.ibm.com/developerworks/library/x-atom2json.html
+
+"links":[{ 
+     "href":"http://example.org/blog;json", 
+     "rel":"alternate", 
+     "type":"application/json" 
+   } ], 
+
+"items"
+ 
+Using the '$'/'$t' key
+http://badgerfish.ning.com/
+http://code.google.com/apis/gdata/json.html
+{'version':'1.0',"entry":
+
+
+Schemas: (META)
+http://www.json.com/json-schema-proposal/
+     {"$ref":"http://json-schema.org/geo.properties"},
+
+http://json-schema.org/card.properties
+
+===============
+brain farts
+===============
+[
+{ id:
+  type:(mime)
+  src:{mimeType:
+       url:
+  }
+  title:
+  image:
+  thumbnail:
+  url:
+}
+]
+
+class="asset asset-<ID>"
+
+display: {
+   public:['field1'],
+   private: ['field2'],
+   color:{}
+}
+

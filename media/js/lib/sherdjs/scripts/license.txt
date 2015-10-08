@@ -1,0 +1,8 @@
+/*
+SherdJS - a javascript library to allow annotating objects.
+Copyright 2008-2011 to Columbia University
+Center for New Media Teaching and Learning
+authors: Schuyler Duveen, Susan Dreher
+
+see: https://github.com/ccnmtl/sherdjs and https://github.com/ccnmtl/mediathread
+*/

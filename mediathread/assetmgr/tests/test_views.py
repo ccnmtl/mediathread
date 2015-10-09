@@ -14,7 +14,7 @@ from django.test.client import RequestFactory
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import asset_workspace_courselookup, \
     RedirectToExternalCollectionView, \
-    RedirectToUploaderView, _parse_user, AssetCreateView, AssetEmbedListView, \
+    RedirectToUploaderView, AssetCreateView, AssetEmbedListView, \
     _parse_domain, AssetEmbedView
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
@@ -73,6 +73,27 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(sources['video'].primary)
         self.assertEquals(sources['video'].width, 480)
         self.assertEquals(sources['video'].height, 358)
+
+    def test_parse_user(self):
+        view = AssetCreateView()
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+
+        # regular path
+        request.user = self.student_one
+        self.assertEquals(view.parse_user(request), self.student_one)
+
+        # "as" without permissions
+        request = RequestFactory().get('/', {'as': self.student_two.username})
+        request.user = self.student_one
+        request.course = self.sample_course
+        self.assertEquals(view.parse_user(request), self.student_one)
+
+        # "as" with permissions
+        request.user = UserFactory(is_staff=True)
+        request.course = self.sample_course
+        self.add_as_faculty(request.course, request.user)
+        self.assertEquals(view.parse_user(request), self.student_two)
 
     def test_manage_external_collection_get(self):
         self.assertTrue(
@@ -486,31 +507,6 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
             response = view.post(request, [], **{'collection_id': exc.id})
             self.assertEquals(response.status_code, 302)
             self.assertTrue(as_user in response.url)
-
-    def test_parse_user(self):
-        request = RequestFactory().get('/')
-        request.course = self.sample_course
-
-        # regular path
-        request.user = self.student_one
-        self.assertEquals(_parse_user(request), self.student_one)
-
-        # not a course member
-        request.user = self.alt_student
-        response = _parse_user(request)
-        self.assertEquals(response.status_code, 403)
-
-        # "as" without permissions
-        request = RequestFactory().get('/', {'as': self.student_two.username})
-        request.user = self.student_one
-        request.course = self.sample_course
-        self.assertEquals(_parse_user(request), self.student_one)
-
-        # "as" with permissions
-        request.user = UserFactory(is_staff=True)
-        request.course = self.sample_course
-        self.add_as_faculty(request.course, request.user)
-        self.assertEquals(_parse_user(request), self.student_two)
 
     def test_scalar_no_super_redirect(self):
         request = RequestFactory().get('/')

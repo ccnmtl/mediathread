@@ -45,27 +45,6 @@ def _parse_domain(url):
     return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
 
-def _parse_metadata(req_dict):
-    metadata = {}
-    for key in req_dict:
-        if key.startswith('metadata-'):
-            metadata[key[len('metadata-'):]] = req_dict.getlist(key)
-    return metadata
-
-
-def _parse_user(request):
-    user = request.user
-    if ((user.is_staff or CourseAccess.allowed(request)) and
-            'as' in request.REQUEST):
-        as_user = request.REQUEST['as']
-        user = get_object_or_404(User, username=as_user)
-
-    if not request.course or not request.course.is_true_member(user):
-        return HttpResponseForbidden("You must be a member of the course to \
-            add assets.")
-    return user
-
-
 class ManageExternalCollectionView(LoggedInMixin, View):
 
     def post(self, request):
@@ -206,12 +185,32 @@ class AssetCreateView(View):
             for each_tag in metadata["tag"]:
                 asset.save_tag(user, each_tag)
 
-    ''' No login required so server2server interface is possible'''
+    def parse_user(self, request):
+        user = request.user
+        if ((user.is_staff or CourseAccess.allowed(request)) and
+                'as' in request.REQUEST):
+            as_user = request.REQUEST['as']
+            user = get_object_or_404(User, username=as_user)
 
+        return user
+
+    def parse_metadata(self, req_dict):
+        metadata = {}
+        for key in req_dict:
+            if key.startswith('metadata-'):
+                metadata[key[len('metadata-'):]] = req_dict.getlist(key)
+        return metadata
+
+    ''' No login required so server2server interface is possible'''
     def post(self, request):
+        user = self.parse_user(request)
+        if not request.course or not request.course.is_member(user):
+            raise HttpResponseForbidden(
+                "You must be a member of the course to add assets.")
+
         req_dict = getattr(request, request.method)
-        user = _parse_user(request)
-        metadata = _parse_metadata(req_dict)
+
+        metadata = self.parse_metadata(req_dict)
         title = req_dict.get('title', '')
         success, asset = Asset.objects.get_by_args(
             req_dict, asset__course=request.course)
